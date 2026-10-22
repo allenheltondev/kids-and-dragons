@@ -505,7 +505,8 @@ describe("Gemfall and the other ordered campaigns", () => {
     const dir = new URL("content/campaigns/", REPO);
     const files = readdirSync(dir).filter((file) => file.endsWith(".json"));
     expect(files).toContain("gemfall.json");
-    for (const file of files) {
+    // Riftlight is the one shipped graph campaign; everything else is ordered.
+    for (const file of files.filter((f) => f !== "riftlight.json")) {
       const campaign = JSON.parse(readFileSync(new URL(file, dir), "utf8")) as Campaign;
       expect(campaignMode(campaign), file).toBe("ordered");
       expect(parseCampaignGraph(campaign)).toEqual({ graph: null, problems: [] });

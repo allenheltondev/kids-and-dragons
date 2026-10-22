@@ -1,0 +1,1250 @@
+{
+  "id": "riftlight-convergence",
+  "campaignId": "riftlight",
+  "index": 8,
+  "title": "The Maps Come Together",
+  "biome": "glacier_of_origins",
+  "music": "riftlight-theme",
+  "estimatedMinutes": 35,
+  "xpAward": 650,
+  "entry": "arrival",
+  "goal": {
+    "text": "Compare your discoveries and help the travelers steady a new opening.",
+    "steps": [
+      {
+        "id": "converge_accounts",
+        "label": "Compare the accounts",
+        "flag": "converge_accounts_done"
+      },
+      {
+        "id": "converge_people",
+        "label": "Get everyone clear",
+        "flag": "converge_people_done"
+      },
+      {
+        "id": "converge_skill",
+        "label": "Learn to hold a condition",
+        "flag": "converge_skill_done"
+      }
+    ]
+  },
+  "voiceGuide": {
+    "tone": "Warm, curious and practical. Short sentences. Show the consequence of each plan. Nobody dies.",
+    "vocabulary": "Read aloud to an eight-year-old.",
+    "forbidden": [
+      "gore",
+      "Hollow Gate",
+      "Legend Dragon",
+      "Corvane",
+      "emperor",
+      "Pangea"
+    ],
+    "npcVoices": {
+      "Orin Vale": "Methodical griffin scholar. Asks what a test actually showed.",
+      "Lady Olivia": "Ambitious unicorn. Certain at first, surprised by limits, never punished for disagreeing.",
+      "Bram Lock": "Protective bigfoot. Short practical requests, never orders the party.",
+      "Seren Wisp": "Patient kitsune specialist. Distinguishes holding a condition from changing a rule.",
+      "Pip Thistledown": "Eager manticore scout. His choice mirrors the party."
+    }
+  },
+  "scenes": {
+    "arrival": {
+      "type": "story",
+      "narration": "At a sheltered glacier ledge, Orin waves you over to a map on an upturned sled. Olivia greets you and steadies one corner. Your Riftseeker friends have made room for your account. A bigfoot named Bram Lock keeps the path clear. \"Help me keep everyone behind the line when an opening comes,\" he asks. Orin weights the map with his boot. \"Compare your discoveries. Then help us steady any opening before people go near it.\" His boot is still on his foot.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "accounts"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "accounts": {
+      "type": "choice_point",
+      "narration": "Your party has reached this ledge with discoveries from more than one place. Orin leaves blank paper beside his map instead of filling the blanks for you. How will you begin the comparison? Seren joins you with her chime. Pip brings the loose pages and greets you with a wave of his tail. Your friends are ready to listen.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Describe what you saw before drawing any joining lines",
+          "icon": "hand",
+          "goto": "accounts_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Mark where people live now before comparing old traces",
+          "icon": "hand",
+          "goto": "accounts_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "accounts_1": {
+      "type": "story",
+      "narration": "You put observations on separate pages. Orin writes a question beside every guess. Pip asks whether a very confident guess still needs one. \"Especially then,\" Orin says.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "measure"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "accounts_2": {
+      "type": "story",
+      "narration": "You begin with today's homes and paths. Olivia watches the busy places appear on the paper. The map is much less empty than her first sketch.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "measure"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "measure": {
+      "type": "choice_point",
+      "narration": "The accounts show ground arranged differently from the paths people use today. A line may belong to a river, a carved boundary or a remembered shore. You must compare shape without pretending every account says the same thing.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Trace the shapes on separate loose sheets",
+          "icon": "hand",
+          "goto": "measure_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Use string to compare bends and distances",
+          "icon": "hand",
+          "goto": "measure_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "measure_1": {
+      "type": "story",
+      "narration": "You trace only the lines your party actually learned. The separate pages can be moved without rubbing out the present map beneath them.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "measure_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "measure_2": {
+      "type": "story",
+      "narration": "You lay string along the known bends. Pip holds the end without putting a claw through the paper. That is his second attempt.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "measure_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "measure_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Match the observed shapes without filling in the missing stretches.",
+      "onSuccess": {
+        "goto": "measure_clear",
+        "narration": "Two of the old outlines meet without forcing their scale."
+      },
+      "onFailure": {
+        "goto": "measure_changed",
+        "narration": "One copied bend looks longer when the pages overlap."
+      },
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "measure_clear": {
+      "type": "story",
+      "narration": "The matching parts are marked. Gaps stay gaps; Orin refuses to join them with a confident thumb.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "converge_accounts_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "evidence"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "measure_changed": {
+      "type": "story",
+      "narration": "You separate the pages again and compare only the clear bends. Orin marks the mismatch instead of stretching the evidence.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "converge_accounts_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "evidence"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "evidence": {
+      "type": "choice_point",
+      "narration": "Orin asks what makes the comparison yours to use. What you learned on the road is knowledge, not something taken from the people who helped you. How will you keep that clear?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Label each account with the place it came from",
+          "icon": "hand",
+          "goto": "evidence_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Separate what you checked from what someone helped explain",
+          "icon": "hand",
+          "goto": "evidence_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "variants": [
+        {
+          "when": {
+            "flag": "fragment_paths_learned"
+          },
+          "text": "The memory readers showed you an old arrangement in the ice. Their memory stays with them; your account can be compared here."
+        },
+        {
+          "when": {
+            "flag": "fragment_coast_learned"
+          },
+          "text": "At the buried bridge, you checked an old river crossing against the coast around it. Your drawing carries the shape, without taking any stone."
+        },
+        {
+          "when": {
+            "flag": "fragment_sky_learned"
+          },
+          "text": "The island mooring stone showed an old boundary unlike the ground below it today. The stone stays with its keepers."
+        }
+      ]
+    },
+    "evidence_1": {
+      "type": "story",
+      "narration": "You name only the places your party visited and describe what remained there. The paper holds your account, not a stolen mountain.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "pull"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "evidence_2": {
+      "type": "story",
+      "narration": "You mark your own tests and the help you received. Orin keeps both, without turning an assisted reading into a test you passed alone.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "pull"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "pull": {
+      "type": "choice_point",
+      "narration": "The chime on the sled answers a distant tremble in the ice. Snow grains slide toward a deep glacier passage, then stop. Your Listening Chime tests readiness and a way back. Bram lays a spare board in the sheltered corner. How will you compare the pull?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Place loose snow on a marked board",
+          "icon": "hand",
+          "goto": "pull_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Hang a short plumb line out of the wind",
+          "icon": "hand",
+          "goto": "pull_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "pull_1": {
+      "type": "story",
+      "narration": "You mark a line on a board and watch the grains slide across it. Bram steadies the board. The snow moves even while the sled stays still.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "pull_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "pull_2": {
+      "type": "story",
+      "narration": "You shelter the line with your body and compare its swing with the chime. Pip moves his tail away before anyone blames it for the result.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "pull_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "pull_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Hold the markers steady through the next tremble.",
+      "onSuccess": {
+        "goto": "pull_clear",
+        "narration": "The markers agree on a pull toward the deep passage."
+      },
+      "onFailure": {
+        "goto": "pull_changed",
+        "narration": "A gust reaches one marker before the tremble ends."
+      },
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "pull_clear": {
+      "type": "story",
+      "narration": "The grains point toward the deep passage. The travelers mark that direction on the present map.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "clear_path"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "pull_changed": {
+      "type": "story",
+      "narration": "You discard the wind-caught reading and use the sheltered board with Bram. Its grains still slide toward the passage. The discarded count stays crossed out.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "clear_path"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "clear_path": {
+      "type": "choice_point",
+      "narration": "Bram wants the ledge kept clear while the travelers work. He can shift the sled with you or hold the loose pages while your party moves the benches. Which will you clear first?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Move the sled away from the working edge",
+          "icon": "hand",
+          "goto": "clear_path_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Move the benches out of the walking lane",
+          "icon": "hand",
+          "goto": "clear_path_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "clear_path_1": {
+      "type": "story",
+      "narration": "You move it toward the shelter. Orin briefly tries to lift his weighted corner without moving his foot, then solves his own experiment.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "clear_path_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "clear_path_2": {
+      "type": "story",
+      "narration": "You stack them beside the shelter, leaving a broad clear lane. Bram tests the lane with his shoulders before calling it wide enough.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "clear_path_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "clear_path_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Move the work area back without blocking the retreat lane.",
+      "onSuccess": {
+        "goto": "clear_path_clear",
+        "narration": "The lane is clear from sled to shelter."
+      },
+      "onFailure": {
+        "goto": "clear_path_changed",
+        "narration": "A bench foot catches on the sled runner."
+      },
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "clear_path_clear": {
+      "type": "story",
+      "narration": "Everyone can reach shelter without climbing over the map.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "signals"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "clear_path_changed": {
+      "type": "story",
+      "narration": "You lower the bench and move one piece at a time. Bram holds the runner clear. The lane opens after the extra work.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "signals"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "signals": {
+      "type": "choice_point",
+      "narration": "Seren wants a signal everybody can use if an opening appears. Her tools let her read what most people cannot see, but a raised hand is visible to everyone. Which signal will your party practice?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Raise a hand for wait and point to shelter for retreat",
+          "icon": "hand",
+          "goto": "signals_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Set a broad cloth at the safe boundary",
+          "icon": "hand",
+          "goto": "signals_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "signals_1": {
+      "type": "story",
+      "narration": "You repeat both signals around the ledge. Olivia copies them too. Pip checks that his wings do not hide the hand from the back of the shelter.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "signals_2": {
+      "type": "story",
+      "narration": "You stretch a cloth where everyone can see it. Crossing back behind it means stop working, even if the map has just become fascinating.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "rest": {
+      "type": "rest",
+      "narration": "Orin rolls the map away from the sled seat and opens the camp supper bag. You share dried apple rings and warm water from the camp flask. Pip tries to weigh a page with an apple ring, then eats the paperweight.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Rest here, then carry on",
+          "icon": "hand",
+          "goto": "proposal"
+        },
+        {
+          "id": "watch",
+          "label": "Rest while watching the path",
+          "icon": "hand",
+          "goto": "rest_watch"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "rest_watch": {
+      "type": "story",
+      "narration": "Bram takes the path watch while you sit beside the sled. Seren tops up your cup. Pip replaces his missing apple paperweight with a bootlace knot.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "proposal"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "proposal": {
+      "type": "choice_point",
+      "narration": "Olivia looks toward the deep passage. \"If we can call one small opening, we could study the pull close by.\" Orin asks for more observations first. Bram puts a hand on the clear lane. What will your party say before Olivia acts?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Ask her to wait until everyone is behind the boundary",
+          "icon": "hand",
+          "goto": "proposal_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Ask what she will do if it behaves differently",
+          "icon": "hand",
+          "goto": "proposal_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "proposal_1": {
+      "type": "story",
+      "narration": "Bram moves the loose gear back while you make the request. Olivia agrees to keep the working edge clear. She still believes she can choose what she calls.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "summoning"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "proposal_2": {
+      "type": "story",
+      "narration": "Olivia pauses, then says she will stop before anyone crosses. Pip repeats that promise. Seren moves the chime where everyone can hear it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "summoning"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "summoning": {
+      "type": "story",
+      "narration": "Olivia begins one summoning. A new opening unfolds above the empty snow, showing wind and moving grit. It stops widening, but does not answer her next gesture. Olivia looks twice at its light. \"That is not what I expected.\" The chime gives a sour note. Bram reaches toward her working hand. \"Enough. Step back before we learn this the hard way.\" Pip starts toward Olivia, then looks at your party.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "decision"
+        }
+      ],
+      "priority": 2,
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "open"
+    },
+    "decision": {
+      "type": "choice_point",
+      "narration": "Bram asks you to help him stop the experiment. Olivia asks you to stay beside her while she stops feeding it and watches what it does. What will you do?",
+      "choices": [
+        {
+          "id": "bram",
+          "label": "Help Bram bring Olivia behind the boundary",
+          "icon": "hand",
+          "goto": "bram_plan"
+        },
+        {
+          "id": "olivia",
+          "label": "Stay with Olivia while she stops and observes",
+          "icon": "hand",
+          "goto": "olivia_plan"
+        },
+        {
+          "id": "orin",
+          "label": "Ask Orin to talk her back with your readings",
+          "icon": "hand",
+          "goto": "orin_plan",
+          "requiresFlag": "orin_chime_shared"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "bram_plan": {
+      "type": "story",
+      "narration": "You stand with Bram across the lane, leaving Olivia room to step away. \"Look at us, not the opening,\" he says. Pip stops behind the boundary when he sees your choice. Olivia lowers her hand instead of reaching through.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_bram"
+        },
+        {
+          "type": "setFlag",
+          "flag": "olivia_continued",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "pip_stayed_back"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "steady"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "olivia_plan": {
+      "type": "story",
+      "narration": "You stay on the marked working ground beside Olivia. She stops the summoning gesture, and you hold the retreat lane clear. Pip follows you, keeping his paws behind the mark. \"We watch,\" Olivia says. \"We do not cross.\" Bram stays ready at the shelter.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_bram",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "olivia_continued"
+        },
+        {
+          "type": "setFlag",
+          "flag": "pip_stayed_back",
+          "value": false
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "steady"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "orin_plan": {
+      "type": "story",
+      "narration": "Orin repeats the chime readings your party shared beside the buried bridge. \"We learned something by waiting,\" he says. \"Let this one answer first.\" Olivia lowers her hand and walks behind the boundary. Pip stays back with you. Bram lets out the breath he was holding.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_bram"
+        },
+        {
+          "type": "setFlag",
+          "flag": "olivia_continued",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "pip_stayed_back"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "steady"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "steady": {
+      "type": "choice_point",
+      "narration": "The opening remains after Olivia has stopped. Wind lifts loose snow toward it. Bram holds the retreat lane while Seren points out a loose screen catching the gust. What will your party secure?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Lower the screen so it cannot pull anyone forward",
+          "icon": "hand",
+          "goto": "steady_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Pin the loose gear below the safe boundary",
+          "icon": "hand",
+          "goto": "steady_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "steady_1": {
+      "type": "story",
+      "narration": "You lower it from the sheltered side. The screen stops trying to become a sail, which improves everybody's opinion of it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "steady_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "steady_2": {
+      "type": "story",
+      "narration": "You fold the cloth and lay the sound benches across its loose edge. The map stays on the sheltered sled.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "steady_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "steady_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Secure the wind-caught gear without moving anyone across the mark.",
+      "onSuccess": {
+        "goto": "steady_clear",
+        "narration": "The gear settles behind the boundary."
+      },
+      "onFailure": {
+        "goto": "steady_changed",
+        "narration": "A loose fold slips free of the first bench."
+      },
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "steady_clear": {
+      "type": "story",
+      "narration": "Everyone stands clear of the opening, with nothing pulling at their hands.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "converge_people_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "count"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "steady_changed": {
+      "type": "story",
+      "narration": "You let the fold go instead of chasing it. The sturdy bench holds the rest, and Bram brings everyone behind the boundary.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "converge_people_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "count"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "count": {
+      "type": "choice_point",
+      "narration": "The chime note changes when a hanging cord on the screen is held still. Seren notices and asks for a test. The cord is ordinary expedition gear. Which test will keep the condition separate from the opening's rules?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Hold the cord still, then let it move while nobody crosses",
+          "icon": "hand",
+          "goto": "count_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Have Seren hold the cord while you listen from shelter",
+          "icon": "hand",
+          "goto": "count_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "count_1": {
+      "type": "story",
+      "narration": "You hold, release and watch from the safe mark. The chime answers differently. Olivia records both results rather than naming either a command.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "count_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "count_2": {
+      "type": "story",
+      "narration": "Seren steadies it while your party listens. Pip repeats the sounds so the people at the back hear them too. The opening does not move to a new place.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "count_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "count_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Compare the held and released cord without treating a single note as permission to cross.",
+      "onSuccess": {
+        "goto": "count_clear",
+        "narration": "The change repeats when the same cord is held still."
+      },
+      "onFailure": {
+        "goto": "count_changed",
+        "narration": "A gust moves the cord during the second count."
+      },
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "count_clear": {
+      "type": "story",
+      "narration": "The condition is clear enough to hold. It affects readiness; it does not promise a different destination or a different way back.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "lesson"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "count_changed": {
+      "type": "story",
+      "narration": "You shelter the cord and let Seren repeat the test. You keep her checked count separate from your gust-spoiled one.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "lesson"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "lesson": {
+      "type": "choice_point",
+      "narration": "Seren explains the next skill through the cord. \"You can hold a condition. You cannot tell a one-way opening to be two-way, or give a once-only crossing a second use.\" How will your party practice? Seren sets a short wooden prop wrapped in felt beside the cord. It can support the marked point while you learn the rhythm.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Take turns holding the cord steady while the others watch",
+          "icon": "hand",
+          "goto": "lesson_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Use a padded prop to keep the cord at the marked point",
+          "icon": "hand",
+          "goto": "lesson_2"
+        },
+        {
+          "id": "plan_3",
+          "label": "Let a starweaver hold the condition with Seren",
+          "icon": "hand",
+          "goto": "lesson_3",
+          "requiresClass": "starweaver"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "lesson_1": {
+      "type": "story",
+      "narration": "You hold the condition as a team. Seren checks that every seated hero has a turn at the work. Nobody calls a new opening into being.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "lesson_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "lesson_2": {
+      "type": "story",
+      "narration": "You set the prop, then watch for slack while Seren tests the note. A tiny knitted cover stops the prop scratching the screen.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "lesson_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "lesson_3": {
+      "type": "story",
+      "narration": "A starweaver practices holding the condition while the rest of the party checks the cord and the note. Seren corrects the moment it slackens, then lets the hero lead.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "lesson_check"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "lesson_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "roller": "party",
+      "checkKind": "doing",
+      "prompt": "Keep the shared holding rhythm steady until everyone has checked the safe mark.",
+      "onSuccess": {
+        "goto": "lesson_clear",
+        "narration": "The condition stays held for the whole practice."
+      },
+      "onFailure": {
+        "goto": "lesson_changed",
+        "narration": "The rhythm falters before the last signal."
+      },
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "lesson_clear": {
+      "type": "story",
+      "narration": "Seren calls the lesson Manipulate: hold a condition long enough for the group, never change the opening's nature.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "converge_skill_done"
+        },
+        {
+          "type": "setFlag",
+          "flag": "manipulate_learned"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "release"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "lesson_changed": {
+      "type": "story",
+      "narration": "You finish with the padded prop while Seren guides the rhythm. She calls the lesson Manipulate, holding a condition together rather than changing any rule.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "converge_skill_done"
+        },
+        {
+          "type": "setFlag",
+          "flag": "manipulate_learned"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "release"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "release": {
+      "type": "choice_point",
+      "narration": "Nobody needs to cross this experimental opening. The deep passage already has a walking route. How will you finish the test safely?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Release the cord with everyone behind the mark",
+          "icon": "hand",
+          "goto": "release_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Leave the prop while Seren moves everyone clear",
+          "icon": "hand",
+          "goto": "release_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "release_1": {
+      "type": "story",
+      "narration": "You let the cord move from the sheltered side. The note goes sour again. Seren records that result and keeps the boundary in place.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "account"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "release_2": {
+      "type": "story",
+      "narration": "Seren takes the prop out only after the people and loose gear are behind the boundary. The opening remains an object to watch, not a shortcut to trust.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "account"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "account": {
+      "type": "choice_point",
+      "narration": "Olivia closes her notebook. She did summon an opening. She did not choose how it behaved. Orin asks the party to record both facts, without putting a victory or a villain into the margin.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Record the surprise and the safe retreat",
+          "icon": "hand",
+          "goto": "account_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Record the held condition and the rules it did not change",
+          "icon": "hand",
+          "goto": "account_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "account_1": {
+      "type": "story",
+      "narration": "You write what the opening did and where everyone stood. Olivia reads the line without crossing it out. Pip copies the retreat signal beside it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "path"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "account_2": {
+      "type": "story",
+      "narration": "You draw the cord and its prop. Seren labels only what the test proved. Bram adds the safe boundary as a very thick line.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "path"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "path": {
+      "type": "choice_point",
+      "narration": "The old outlines agree in places, and the pull leads farther into this glacier. Orin will go with you by the ordinary passage. The maps show what has moved; the people living here show what needs protecting. What will you take into the investigation?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Carry checked accounts and leave the uncertain joins blank",
+          "icon": "hand",
+          "goto": "path_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Carry the present map beside the old outlines",
+          "icon": "hand",
+          "goto": "path_2"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "path_1": {
+      "type": "story",
+      "narration": "You fold the accounts with their sources showing. Orin brings the present map too, boot finally removed from its corner.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ending"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "path_2": {
+      "type": "story",
+      "narration": "You put today's homes on top where you can see them first. Bram checks the walking lane before anyone lifts the sled.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ending"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "ending": {
+      "type": "story",
+      "narration": "The travelers have heard the party's discoveries, the experiment is safely stopped, and you have learned to hold a condition without changing a rule. The pull points down the deep passage. Your party is ready to follow the ordinary walking route and find out.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "finish"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "olivia_trusted",
+            "notFlag": "olivia_continued"
+          },
+          "text": "Olivia remembers that you backed her at the whales and told her no here. \"I will compare the notes with Orin,\" she says. Pip stays beside the safe mark."
+        },
+        {
+          "when": {
+            "flag": "olivia_trusted",
+            "notFlag": "helped_bram"
+          },
+          "text": "Olivia remembers your help at the whales. \"I can hold a condition too,\" she says. \"If the ground starts moving, I will help hold it.\" Pip walks with her, watching the marked lane."
+        },
+        {
+          "when": {
+            "notFlag": "olivia_trusted"
+          },
+          "text": "Olivia closes her notebook and chooses her own work. \"I still think we can do more,\" she says. She leaves by the open walking path, free to disagree."
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    },
+    "finish": {
+      "type": "story",
+      "narration": "Seren checks the shelter once more. The experimental opening stays marked for watchers. You carry the map down the walking passage toward the heart of the glacier.",
+      "choices": [],
+      "outcome": "success",
+      "art": "scenes/riftlight/convergence-ledge",
+      "rift": "steady"
+    }
+  }
+}

@@ -7,7 +7,7 @@
 > screen with the rank-up moment (§4, §5) with #314, and the fitting stall (§1) with #312
 > ([content/README.md, "The fitting stall"](../content/README.md#the-fitting-stall-312)).
 > [spec §4.3](./spec.md) and [§8.1](./spec.md) state them. The four rooms are written for the
-> Riftlight draft (#315, [its README](../content/drafts/riftlight/README.md#class-rooms-315)).
+> Riftlight campaign (#315, [its routes and endings](campaigns/continental-rift/routes-and-endings.md)).
 > Tracked by epic
 > [#307](https://github.com/allenheltondev/kids-and-dragons/issues/307) (#308–#315); the reason to
 > come back to the Exchange is [#306](https://github.com/allenheltondev/kids-and-dragons/issues/306).

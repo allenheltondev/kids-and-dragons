@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  ATTACK_DAMAGE,
   ATTACK_ID,
+  CRITICAL_BONUS,
   HELP_UP_ID,
   ITEM_RANGE,
   READY_ID,
   beginEncounter,
   combatantById,
+  damageTier,
+  tieredDamage,
   currentActor,
   currentActorId,
   encounterOutcome,
@@ -51,6 +55,12 @@ const ALWAYS_HIT: Rng = { next: () => 0.999 };
 const ALWAYS_MISS: Rng = { next: () => 0 };
 /** One short of a natural 20: a hit only when the modifier carries it. */
 const ROLLS_19: Rng = { next: () => 18 / 20 + 0.001 };
+/**
+ * What an ALWAYS_HIT swing takes off: every die is a natural 20, and a natural
+ * 20 is a critical (`damageTier`), so the 3 an attack is authored with lands
+ * as 5.
+ */
+const CRIT = ATTACK_DAMAGE + CRITICAL_BONUS;
 
 /**
  * A catalog written from `content/rules.json` — the four class signatures and
@@ -1139,8 +1149,14 @@ describe("actions", () => {
     );
 
     const roll = hit.events.find((e) => e.type === "roll");
-    expect(roll).toEqual({ type: "roll", roll: expect.objectContaining({ die: 20, tn: 11, result: "hit" }) });
-    expect(hpOf(hit.state, "wisp#1")).toBe(3);
+    // The roll names who it was aimed at (whose Guard `tn` is) and how hard it landed.
+    expect(roll).toEqual({
+      type: "roll",
+      roll: expect.objectContaining({ die: 20, tn: 11, result: "hit" }),
+      targetId: "wisp#1",
+      tier: "critical",
+    });
+    expect(hpOf(hit.state, "wisp#1")).toBe(6 - CRIT);
 
     const miss = ok(
       performAction(state, ctxWith(ALWAYS_MISS), { abilityId: ATTACK_ID, targetId: "wisp#1" }),
@@ -1168,8 +1184,8 @@ describe("actions", () => {
       performAction(state, ctxWith(ALWAYS_HIT), { abilityId: "burst", targetTile: { x: 3, y: 2 } }),
     ).state;
 
-    expect(hpOf(burst, "wisp#1")).toBe(3);
-    expect(hpOf(burst, "wisp#2")).toBe(3);
+    expect(hpOf(burst, "wisp#1")).toBe(6 - CRIT);
+    expect(hpOf(burst, "wisp#2")).toBe(6 - CRIT);
     expect(hpOf(burst, "wisp#3")).toBe(6);
   });
 
@@ -1203,7 +1219,9 @@ describe("actions", () => {
     const boosted = ok(
       performAction(next, ctxWith(ROLLS_19), { abilityId: ATTACK_ID, targetId: "wisp#1" }),
     );
-    expect(hpOf(boosted.state, "wisp#1")).toBe(3);
+    // 19 + 2 is 21, exactly the Guard: a hit that only just lands is a graze.
+    expect(boosted.events).toContainEqual(expect.objectContaining({ type: "roll", tier: "graze" }));
+    expect(hpOf(boosted.state, "wisp#1")).toBe(6 - (ATTACK_DAMAGE - 1));
     expect(combatantById(boosted.state, "c_hero")?.rollBonus).toBe(0);
   });
 
@@ -1221,14 +1239,14 @@ describe("actions", () => {
     const lucky = ok(performAction(state, ctxWith(scripted), { abilityId: ATTACK_ID, targetId: "wisp#1" }));
     const rolls = lucky.events.filter((e) => e.type === "roll");
     expect(rolls.map((e) => (e.type === "roll" ? e.roll.die : 0))).toEqual([1, 20]);
-    expect(hpOf(lucky.state, "wisp#1")).toBe(17);
+    expect(hpOf(lucky.state, "wisp#1")).toBe(20 - CRIT);
     expect(combatantById(lucky.state, "c_hero")?.rerollOnes).toBe(0);
 
     let next = lucky.state;
     for (let i = 0; i < 2; i++) next = endTurn(next);
     const unlucky = ok(performAction(next, ctxWith(scripted), { abilityId: ATTACK_ID, targetId: "wisp#1" }));
     expect(unlucky.events.filter((e) => e.type === "roll")).toHaveLength(1);
-    expect(hpOf(unlucky.state, "wisp#1")).toBe(17);
+    expect(hpOf(unlucky.state, "wisp#1")).toBe(20 - CRIT);
   });
 
   it("takes the larger of two roll bonuses rather than adding them", () => {
@@ -1297,7 +1315,7 @@ describe("actions", () => {
     );
 
     expect(positionOf(pounced.state, "c_man")).toEqual({ x: 4, y: 2 });
-    expect(hpOf(pounced.state, "wisp#1")).toBe(3);
+    expect(hpOf(pounced.state, "wisp#1")).toBe(6 - CRIT);
   });
 
   it("puts a Thornguard in front of the friend they braced for", () => {
@@ -1328,7 +1346,7 @@ describe("actions", () => {
     );
 
     expect(hpOf(swing.state, "c_pal")).toBe(10);
-    expect(hpOf(swing.state, "c_thorn")).toBe(7);
+    expect(hpOf(swing.state, "c_thorn")).toBe(10 - CRIT);
     // One hit, then it is gone.
     expect(combatantById(swing.state, "c_pal")?.protectedBy).toBeNull();
 
@@ -1339,7 +1357,7 @@ describe("actions", () => {
         targetId: "c_pal",
       }),
     );
-    expect(hpOf(second.state, "c_pal")).toBe(7);
+    expect(hpOf(second.state, "c_pal")).toBe(10 - CRIT);
   });
 
   it("does not mutate the state it was handed", () => {
@@ -1367,6 +1385,89 @@ describe("actions", () => {
     expect(legalActions(revived, ctxWith(ALWAYS_HIT))).toEqual(
       legalActions(acted, ctxWith(ALWAYS_HIT)),
     );
+  });
+});
+
+// ---------------------------------------------------------------------------
+// How hard a hit lands — off the attack roll, no second die
+// ---------------------------------------------------------------------------
+
+describe("damage tiers", () => {
+  /** Every die shows `face`. */
+  const rolls = (face: number): Rng => ({ next: () => (face - 1) / 20 + 0.001 });
+  /** The hero (Might 3) swings once at the Guard-11, 6 HP wisp, every die on `face`. */
+  const swingOn = (face: number, enemy: Partial<EnemySpec> = {}) => {
+    const state = beginEncounter(setup({ enemies: [{ spec: wisp(enemy), at: { x: 2, y: 2 } }] }), ctxWith(rolls(face)));
+    return ok(performAction(state, ctxWith(rolls(face)), { abilityId: ATTACK_ID, targetId: "wisp#1" }));
+  };
+  const tierOf = (result: ReturnType<typeof swingOn>) => {
+    const roll = result.events.find((e) => e.type === "roll");
+    return roll?.type === "roll" ? roll.tier : undefined;
+  };
+
+  it("names the tier from the margin past Guard, and a natural 20 as a critical", () => {
+    // The margin is total minus Guard, the subtraction that decides the hit.
+    expect(damageTier({ die: 8, total: 11, tn: 11 })).toBe("graze");
+    expect(damageTier({ die: 12, total: 15, tn: 11 })).toBe("graze");
+    expect(damageTier({ die: 13, total: 16, tn: 11 })).toBe("solid");
+    expect(damageTier({ die: 19, total: 30, tn: 11 })).toBe("solid");
+    expect(damageTier({ die: 20, total: 23, tn: 11 })).toBe("critical");
+    // A natural 20 that only landed because it was a 20 is still the 20.
+    expect(damageTier({ die: 20, total: 21, tn: 30 })).toBe("critical");
+  });
+
+  it("turns an authored damage into a graze, a solid hit or a critical", () => {
+    expect([tieredDamage(3, "graze"), tieredDamage(3, "solid"), tieredDamage(3, "critical")]).toEqual([2, 3, 5]);
+    expect([tieredDamage(5, "graze"), tieredDamage(5, "solid"), tieredDamage(5, "critical")]).toEqual([4, 5, 7]);
+    // A graze never does nothing.
+    expect(tieredDamage(1, "graze")).toBe(1);
+    expect(tieredDamage(1, "critical")).toBe(1 + CRITICAL_BONUS);
+  });
+
+  it("a hit that only just meets the Guard grazes for 2", () => {
+    // 8 + 3 = 11 against Guard 11: margin 0.
+    const hit = swingOn(8);
+    expect(tierOf(hit)).toBe("graze");
+    expect(hpOf(hit.state, "wisp#1")).toBe(4);
+    // 12 + 3 = 15: four past, still a graze.
+    expect(hpOf(swingOn(12).state, "wisp#1")).toBe(4);
+  });
+
+  it("a hit five or more past the Guard is solid for 3", () => {
+    // 13 + 3 = 16 against Guard 11: margin 5.
+    const hit = swingOn(13);
+    expect(tierOf(hit)).toBe("solid");
+    expect(hpOf(hit.state, "wisp#1")).toBe(6 - ATTACK_DAMAGE);
+  });
+
+  it("a natural 20 is a critical for 5, even against a Guard only a 20 reaches", () => {
+    const hit = swingOn(20, { hp: 9, guard: 40 });
+    expect(tierOf(hit)).toBe("critical");
+    expect(hpOf(hit.state, "wisp#1")).toBe(9 - ATTACK_DAMAGE - CRITICAL_BONUS);
+  });
+
+  it("a miss has no tier and takes nothing", () => {
+    // 7 + 3 = 10 against Guard 11.
+    const miss = swingOn(7);
+    expect(miss.events.find((e) => e.type === "roll")).toEqual(
+      expect.objectContaining({ targetId: "wisp#1", roll: expect.objectContaining({ result: "miss" }) }),
+    );
+    expect(tierOf(miss)).toBeUndefined();
+    expect(hpOf(miss.state, "wisp#1")).toBe(6);
+  });
+
+  it("monsters roll their damage the same way", () => {
+    // The wisp (attack +3) swings at a Guard-10 hero: 9 + 3 = 12 grazes,
+    // 12 + 3 = 15 is solid. Quick 9 still has the hero leading, so the
+    // wisp's turn is one hand-over away.
+    const swingAtHero = (face: number) => {
+      const state = endTurn(beginEncounter(setup(), ctxWith(rolls(face))));
+      expect(currentActorId(state)).toBe("wisp#1");
+      return ok(performAction(state, ctxWith(rolls(face)), { abilityId: ATTACK_ID, targetId: "c_hero" }));
+    };
+    expect(hpOf(swingAtHero(9).state, "c_hero")).toBe(8);
+    expect(hpOf(swingAtHero(12).state, "c_hero")).toBe(7);
+    expect(hpOf(swingAtHero(20).state, "c_hero")).toBe(5);
   });
 });
 
@@ -1602,12 +1703,12 @@ describe("the chapter-5 verbs", () => {
     state = endTurn(endTurn(swing.state));
     expect(currentActorId(state)).toBe("wisp#1");
     const second = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: ATTACK_ID, targetId: "c_hero" }));
-    expect(hpOf(second.state, "c_hero")).toBe(7);
+    expect(hpOf(second.state, "c_hero")).toBe(10 - CRIT);
   });
 
   it("unbreakable: wards self and adjacent friends, shaves every hit, expires on the caster's next turn", () => {
     // Two heroes side by side; the guard (Quick 9) wards both, and the wisp's
-    // 3-damage hit lands as 2 on either of them.
+    // critical (a natural 20: 3 + 2) lands as 4 on either of them.
     let state = beginEncounter(
       setup({
         party: [
@@ -1627,7 +1728,7 @@ describe("the chapter-5 verbs", () => {
     expect(currentActorId(state)).toBe("wisp#1");
     const swing = ok(performAction(state, ctxWith(ALWAYS_HIT), { abilityId: ATTACK_ID, targetId: "c_guard" }));
     expect(swing.events).toContainEqual({ type: "warded", actorId: "c_guard", amount: 1 });
-    expect(hpOf(swing.state, "c_guard")).toBe(8);
+    expect(hpOf(swing.state, "c_guard")).toBe(10 - (CRIT - 1));
 
     // The caster's next turn starts, and every ward they granted comes down.
     state = endTurn(swing.state);
@@ -1702,8 +1803,8 @@ describe("the chapter-5 verbs", () => {
       abilityId: "storm_of_blades",
       targetIds: ["wisp#1", "wisp#2"],
     }));
-    expect(hpOf(both.state, "wisp#1")).toBe(3);
-    expect(hpOf(both.state, "wisp#2")).toBe(3);
+    expect(hpOf(both.state, "wisp#1")).toBe(6 - CRIT);
+    expect(hpOf(both.state, "wisp#2")).toBe(6 - CRIT);
     // Two attacks, two rolls — the dice decide each one (Burst's rule).
     expect(both.events.filter((e) => e.type === "roll")).toHaveLength(2);
   });
@@ -1717,7 +1818,7 @@ describe("the chapter-5 verbs", () => {
       abilityId: "storm_of_blades",
       targetId: "wisp#1",
     }));
-    expect(hpOf(one.state, "wisp#1")).toBe(3);
+    expect(hpOf(one.state, "wisp#1")).toBe(6 - CRIT);
   });
 
   it("twin step: movement comes back after the action, once, with a fresh budget", () => {

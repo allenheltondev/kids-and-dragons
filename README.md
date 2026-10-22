@@ -42,7 +42,7 @@ played.
 | **First Steps** | Shipped, 1 chapter | The practice: a meadow, a faun with a clipboard and a wisp who loves tag. Teaches the controls. No XP or items. |
 | **Gemfall** | Shipped, 16 chapter files | The main campaign. Mount Red Sky erupts and gemstones rain across the realm. Eight story beats, with branching roads in the middle (chapters 3, 4, 5 and 7 each come in three versions). See [docs/campaigns/gemfall.md](docs/campaigns/gemfall.md). |
 | **The Hollow Crown** | Reference, 1 chapter | `bramblewood-01`. It exists to prove the loader, schema and renderer end to end and pins the e2e suite. It is also the voice the other chapters are matched against. |
-| **Riftlight** | Draft, not shipped | The sequel to Gemfall, a nonlinear "graph" campaign. Its opening lives in [content/drafts/riftlight/](content/drafts/riftlight/README.md) and plays only in a local preview (`npm run riftlight:preview`). Design bible: [docs/campaigns/continental-rift/](docs/campaigns/continental-rift/). |
+| **Riftlight** | Shipped, 24 chapter files | The sequel to Gemfall, a nonlinear "graph" campaign: 24 story nodes from the Exchange to three glacier endings. Offered in every lobby beside Gemfall, locked until Gemfall is finished. `npm run riftlight:preview` plays it locally without the lock. Routes and endings: [routes-and-endings.md](docs/campaigns/continental-rift/routes-and-endings.md); design bible: [docs/campaigns/continental-rift/](docs/campaigns/continental-rift/). |
 
 Class mastery is partly built: heroes earn Apprentice, Expert and Master distinctions by doing
 their class's deeds, swap class once for free at the Exchange's fitting stall, and otherwise change
@@ -146,7 +146,7 @@ breathing loop; there is no animation rig runtime ([docs/art-pipeline.md](docs/a
 | `npm run content:graph` | Draws each chapter's scene graph to `.graph/*.html` |
 | `npm run content:balance` | Plays out each authored fight and reports rounds and damage. Reports only. |
 | `npm run content:journey` | Explores a graph campaign's journeys |
-| `npm run riftlight:preview` | Plays the Riftlight draft locally |
+| `npm run riftlight:preview` | Plays Riftlight locally, without finishing Gemfall first |
 | `npm run canon:check` | Validates `canon/` |
 | `npm run canon:bestiary`, `canon:items`, `canon:world`, `canon:field-guide` | Regenerate the content projections from canon |
 | `npm run art:verify` | The art contract against `assets/manifest.json` |

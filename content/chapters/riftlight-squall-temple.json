@@ -1,0 +1,1282 @@
+{
+  "id": "riftlight-squall-temple",
+  "campaignId": "riftlight",
+  "index": 7,
+  "title": "The Temple in the Squall",
+  "biome": "sky_islands",
+  "music": "riftlight-sky",
+  "estimatedMinutes": 35,
+  "xpAward": 140,
+  "entry": "arrival",
+  "goal": {
+    "text": "Keep the temple safe as the returning island drifts toward it.",
+    "steps": [
+      {
+        "id": "temple_people",
+        "label": "Get the keepers under cover",
+        "flag": "temple_people_done"
+      },
+      {
+        "id": "temple_plan",
+        "label": "Prepare the island approach",
+        "flag": "temple_plan_done"
+      },
+      {
+        "id": "temple_safe",
+        "label": "Make the temple safe",
+        "flag": "temple_safe_done"
+      }
+    ]
+  },
+  "voiceGuide": {
+    "tone": "Warm, curious and practical. Short sentences. Show the consequence of each plan. Nobody dies.",
+    "vocabulary": "Read aloud to an eight-year-old.",
+    "forbidden": [
+      "gore",
+      "Hollow Gate",
+      "Legend Dragon",
+      "Corvane",
+      "emperor",
+      "Pangea"
+    ],
+    "npcVoices": {}
+  },
+  "scenes": {
+    "arrival": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "The island you helped welcome home is drifting toward a temple island through heavy rain. A different kitsune keeper from the one at the lookout rings a lookout bell; its rope wears a tiny raincoat. Beside the temple, a fresh opening spills bone crawlers onto the wet landing: little scuttling creatures with jointed legs and rattling backs. \"Keep the temple safe as that island drifts toward us,\" the keeper calls. \"We can push its approach clear, or shelter this landing and let it settle.\" She points to people still carrying cushions across the yard.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "look"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "island_warning_sent"
+          },
+          "text": "Your earlier course warning reached this bell tower. The keepers have already moved the heavy furniture inside."
+        },
+        {
+          "when": {
+            "notFlag": "island_warning_sent"
+          },
+          "text": "Your first message asked for another reader. The keepers were checking the old carving when the storm bell rang; furniture still waits in the yard."
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "look": {
+      "type": "choice_point",
+      "narration": "A low fence divides the wet yard from the landing. Beyond it, the drifting island disappears into cloud and reappears closer. What will you use to watch its approach?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Sight along the bell tower and fence post",
+          "icon": "hand",
+          "goto": "look_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Follow the signal cloths along the landing",
+          "icon": "hand",
+          "goto": "look_2"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "look_1": {
+      "type": "story",
+      "narration": "You line up the post with the tower corner. A paper fish tied to the fence points downwind instead of north. You choose the wood, not the fish.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "look_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "look_2": {
+      "type": "story",
+      "narration": "You watch the nearest cloth before looking for the farther one. Each clear gap in the rain gives you a new position without anyone climbing beyond the fence.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "look_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "look_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Mark the island's approach against fixed points on the temple.",
+      "onSuccess": {
+        "goto": "look_clear",
+        "narration": "The island is moving toward the low landing, not the bell tower."
+      },
+      "onFailure": {
+        "goto": "look_changed",
+        "narration": "The rain hides the farther signal cloth."
+      },
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "look_clear": {
+      "type": "story",
+      "narration": "You mark the landing that needs clearing and the yard that can shelter people.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "people"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "look_changed": {
+      "type": "story",
+      "narration": "You use the near fence and tower only. The keeper checks the mark from another window before clearing the landing.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "people"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "people": {
+      "type": "choice_point",
+      "narration": "The keepers are carrying cushions and folded screens. The broad doorway is safe, but a loose screen keeps catching the wind. How will you open a clear lane?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Carry the screen flat between the keepers",
+          "icon": "hand",
+          "goto": "people_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Tie the screen shut and walk it along the fence",
+          "icon": "hand",
+          "goto": "people_2"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "people_1": {
+      "type": "story",
+      "narration": "You lower the screen so the gust passes over it. Painted birds on the screen travel beak-first into the doorway.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "people_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "people_2": {
+      "type": "story",
+      "narration": "You fold and tie it before lifting. The keeper checks the knot, then helps carry it inside without blocking the lane.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "people_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "people_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Keep the doorway clear while the last bulky screen goes inside.",
+      "onSuccess": {
+        "goto": "people_clear",
+        "narration": "The screen fits without catching its edge."
+      },
+      "onFailure": {
+        "goto": "people_changed",
+        "narration": "A gust swings the folded screen against the doorpost."
+      },
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "people_clear": {
+      "type": "story",
+      "narration": "The doorway stays clear for the people still in the yard.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "last_keeper"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "people_changed": {
+      "type": "story",
+      "narration": "You set the screen down and open the other door leaf. The keeper guides its far end inside while your party steadies the near end.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "last_keeper"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "last_keeper": {
+      "type": "choice_point",
+      "narration": "A keeper is gathering the last cushions from the dry side of the yard. The fence still protects the landing edge. How will you make sure everyone reaches cover?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Call from the open doorway and hold the lane",
+          "icon": "hand",
+          "goto": "last_keeper_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Walk the marked lane out and back together",
+          "icon": "hand",
+          "goto": "last_keeper_2"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "last_keeper_1": {
+      "type": "story",
+      "narration": "You stand where the keeper can see you. She comes in with a cushion balanced on her head like a very soft helmet.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "messages"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "last_keeper_2": {
+      "type": "story",
+      "narration": "You follow the fence to the keeper and carry the bulky cushions in turns. She checks the yard before closing the outer gate.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "messages"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "messages": {
+      "type": "story",
+      "narration": "The last keeper reaches the covered hall. The temple has shelter for everyone, even the bell rope's spare raincoat. Your party can now work on the landing while the keepers signal from inside. The temple's own griffin messenger shelters at the back of the hall, ready to carry travelers down to the Cairnstep once the wind clears.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_people_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "gear"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "island_messages_saved",
+            "notFlag": "island_relay_delayed"
+          },
+          "text": "The island letter courier whose sealed letters you saved offers to relay your signals from the hall."
+        },
+        {
+          "when": {
+            "flag": "island_relay_delayed"
+          },
+          "text": "The island letter courier is still finishing the delayed letter relay. A keeper takes the signal station until that courier arrives."
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "gear": {
+      "type": "choice_point",
+      "narration": "At the landing stand two heavy mooring posts, spare ropes and broad mats. The ropes belong to the temple; they can steady the island's edge, but they cannot tow an island through the whole sky. What will you check first?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Check the post bases and the clearest rope path",
+          "icon": "hand",
+          "goto": "gear_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Check the mats and the low sheltered corner",
+          "icon": "hand",
+          "goto": "gear_2"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "gear_1": {
+      "type": "story",
+      "narration": "You feel for loose soil around the bases. The keeper points out which rope has already been retired to drying socks. You leave that one alone.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "gear_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "gear_2": {
+      "type": "story",
+      "narration": "You spread the mats below the temple wall. The corner stays out of the strongest gusts, with room to hold the landing steady.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "gear_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "gear_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Choose firm posts and clear rope paths without stepping outside the fence.",
+      "onSuccess": {
+        "goto": "gear_clear",
+        "narration": "The useful rope runs clear of the keeper's doorway."
+      },
+      "onFailure": {
+        "goto": "gear_changed",
+        "narration": "A rope catches on the sock-drying line."
+      },
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "gear_clear": {
+      "type": "story",
+      "narration": "Your working rope is separate from the loose gear. The socks remain completely outside the rescue plan.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "signals"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "gear_changed": {
+      "type": "story",
+      "narration": "You put the caught rope aside and use a shorter strong line from the store. The reach is smaller; the keeper moves the working marker closer.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "signals"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "signals": {
+      "type": "choice_point",
+      "narration": "From the hall, a keeper can show a raised cloth for hold and a lowered cloth for release. The storm makes shouted instructions hard to hear. How will your party check the signals?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Repeat each cloth position before touching the rope",
+          "icon": "hand",
+          "goto": "signals_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Have the keeper signal one careful practice pull",
+          "icon": "hand",
+          "goto": "signals_2"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "signals_1": {
+      "type": "story",
+      "narration": "You raise and lower your own cloth. The keeper copies both positions. Her first cloth is inside out; the signal works exactly as well.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "shelter"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "signals_2": {
+      "type": "story",
+      "narration": "You move only the slack rope while the keeper signals. A rolled mat plays the part of the island and is much easier to impress.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "shelter"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "shelter": {
+      "type": "choice_point",
+      "narration": "The low temple wall has a gap where rain blows straight across the landing. You can lash mats across it or brace the nearby shutter. Which shelter will help your party work?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Lash broad mats across the low gap",
+          "icon": "hand",
+          "goto": "shelter_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Brace the shutter without closing the signal window",
+          "icon": "hand",
+          "goto": "shelter_2"
+        },
+        {
+          "id": "plan_3",
+          "label": "Have a thornguard brace while the party ties the mats",
+          "icon": "hand",
+          "goto": "shelter_3",
+          "requiresClass": "thornguard"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "shelter_1": {
+      "type": "story",
+      "narration": "You tie the mat edges below eye height so the signals stay visible. A painted temple bird peers over the top as if inspecting the knots.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "shelter_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "shelter_2": {
+      "type": "story",
+      "narration": "You wedge the shutter from inside the fence. The signal window stays clear and the working corner grows quieter.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "shelter_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "shelter_3": {
+      "type": "story",
+      "narration": "A thornguard supplies the steady brace. The rest of the party ties the mat edges and checks that the keeper can still see the whole working lane.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "shelter_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "shelter_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Hold the shelter steady while its loose edge is secured.",
+      "onSuccess": {
+        "goto": "shelter_clear",
+        "narration": "The shelter takes the gust without flapping free."
+      },
+      "onFailure": {
+        "goto": "shelter_changed",
+        "narration": "One lower tie comes loose in a spray of rain."
+      },
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "shelter_clear": {
+      "type": "story",
+      "narration": "The working corner has cover and a clear view of the signals.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "shelter_changed": {
+      "type": "story",
+      "narration": "You lower the shelter and secure it closer to the wall. It covers less ground, so the keeper narrows the working lane instead of calling it finished.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "rest": {
+      "type": "rest",
+      "narration": "Inside the covered hall, the keepers pass around a basket of rice buns. You rest on cushions rescued from the rain. One cushion has a solemn embroidered bird with a bun crumb on its beak.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Rest here, then carry on",
+          "icon": "hand",
+          "goto": "crawl"
+        },
+        {
+          "id": "watch",
+          "label": "Rest while watching the path",
+          "icon": "hand",
+          "goto": "rest_watch"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "rest_watch": {
+      "type": "story",
+      "narration": "You share the hall watch with a keeper, each settled on a dry cushion. The messenger shakes rain from one wing into a bucket. The embroidered bird remains perfectly dry.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "crawl"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "crawl": {
+      "type": "choice_point",
+      "rift": "steady",
+      "narration": "Bone crawlers are clustering where fresh magic spills from the opening. They have no quarrel with the cushions; they are simply between you and the work. How will you keep their path away from the people?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Clear the yard lane of everything loose",
+          "icon": "hand",
+          "goto": "crawl_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Draw a broad working boundary around the shimmer",
+          "icon": "hand",
+          "goto": "crawl_2"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "crawl_1": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "You move the buckets and folding stands inside the gate. A crawler can still cross the landing, but no keeper needs to follow it to retrieve a bucket.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "roof"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "crawl_2": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "You use wet chalk on the safe boards. The keepers stay behind that mark. The chalk has a string tied to it so it cannot become another flying object.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "roof"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "plan": {
+      "type": "choice_point",
+      "rift": "steady",
+      "narration": "The island's low edge is approaching the posts. You can work the ropes to turn its edge away, or hold the sheltered corner while it settles beside the temple. Both need time on the board with the crawlers. Which result will you work toward?",
+      "choices": [
+        {
+          "id": "push",
+          "label": "Turn the island away from the landing",
+          "icon": "hand",
+          "goto": "push_plan"
+        },
+        {
+          "id": "shelter",
+          "label": "Hold the shelter and let the island settle",
+          "icon": "hand",
+          "goto": "shelter_plan"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "push_plan": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "You run the strong ropes through the mooring posts and leave room for them to slip free afterward. The keeper holds the release cloth ready. The plan is a small turn at the edge, not a tug across the sky.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_plan_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "fight_push"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "shelter_plan": {
+      "type": "story",
+      "rift": "steady",
+      "narration": "You draw the sheltered corner tight and leave a clear place for the island's low edge to rest. The keeper marks a boundary the temple cushions must never cross, even after the storm.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_plan_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "fight_shelter"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "fight_push": {
+      "type": "encounter",
+      "map": "riftlight_squall_temple",
+      "narration": "The crawlers clatter between the posts. End three turns beside the working post to turn the island clear, or clear the crawlers so the keepers can finish the turn. The squall lowers everyone's Guard by one.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "modifiers": [
+          {
+            "id": "storm",
+            "label": "Squall gusts",
+            "kind": "guard",
+            "amount": -1,
+            "on": "everyone"
+          }
+        ],
+        "hazards": [
+          {
+            "id": "gust_lane",
+            "kind": "rift",
+            "label": "Crosswind on the landing",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "push": {
+              "direction": "west",
+              "tiles": 1
+            }
+          }
+        ],
+        "objectives": [
+          {
+            "id": "turn_island",
+            "kind": "close",
+            "label": "Work the turning rope",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 3,
+            "endsFight": true
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "pushed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "temple_island_diverted"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "damaged",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "temple_damaged"
+          }
+        ]
+      }
+    },
+    "fight_shelter": {
+      "type": "encounter",
+      "map": "riftlight_squall_temple",
+      "narration": "The crawlers crowd the sheltered corner. Hold its safe boards for two clear rounds, or clear the crawlers so the keepers can hold them. The squall lowers everyone's Guard by one.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "modifiers": [
+          {
+            "id": "storm",
+            "label": "Squall gusts",
+            "kind": "guard",
+            "amount": -1,
+            "on": "everyone"
+          }
+        ],
+        "hazards": [
+          {
+            "id": "gust_lane",
+            "kind": "rift",
+            "label": "Crosswind on the landing",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "push": {
+              "direction": "west",
+              "tiles": 1
+            }
+          }
+        ],
+        "objectives": [
+          {
+            "id": "hold_shelter",
+            "kind": "hold",
+            "label": "Hold the sheltered landing",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 3
+              },
+              {
+                "x": 6,
+                "y": 4
+              }
+            ],
+            "rounds": 2,
+            "endsFight": true
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "settled",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "temple_island_settled"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "damaged",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "temple_damaged"
+          }
+        ]
+      }
+    },
+    "pushed": {
+      "type": "story",
+      "narration": "The island's low edge turns past the posts. The keepers finish the pull from their sheltered side and release the line. The island drifts clear of the temple, leaving only a trail of rain from its grass. The keeper lowers the cloth and sits on a cushion immediately.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "record"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "settled": {
+      "type": "story",
+      "narration": "The low island edge settles beside the sheltered landing. Your cover holds. The keepers close the outer gate to mark where temple ends and new ground begins. Someone hangs a polite notice on the gate: PLEASE KNOCK, EVEN IF YOU ARE AN ISLAND.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "record"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "damaged": {
+      "type": "story",
+      "narration": "The crawlers force your party back behind the gate. The keepers pull the shelter shut and help you recover inside. The island bumps the empty landing. Boards crack and the outer awning folds; everyone is already under the stone roof. The outer landing must stay closed tonight. The morning crew will need your spare gear to repair it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "record"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "roof": {
+      "type": "choice_point",
+      "narration": "Rain runs down the stone roof into a blocked gutter above the hall. The people are safe inside, but their dry floor will not stay dry unless the water can drain. How will you clear it from the sheltered side?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Push the leaf wad clear with a long pole",
+          "icon": "hand",
+          "goto": "roof_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Lower the loose gutter end into a basin",
+          "icon": "hand",
+          "goto": "roof_2"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "roof_1": {
+      "type": "story",
+      "narration": "You work from below the roof edge while a keeper guides the pole tip. The leaf wad lands in an empty bucket with a deeply satisfying plop.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "roof_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "roof_2": {
+      "type": "story",
+      "narration": "You lower the firm gutter end from inside the window. The keeper braces the basin before the first rush of water arrives.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "roof_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "roof_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Guide the runoff away from the hall doorway.",
+      "onSuccess": {
+        "goto": "roof_clear",
+        "narration": "The water pours into the yard instead of the hall."
+      },
+      "onFailure": {
+        "goto": "roof_changed",
+        "narration": "The first splash reaches the threshold."
+      },
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "roof_clear": {
+      "type": "story",
+      "narration": "The runoff has a clear path away from the dry floor.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "boards"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "roof_changed": {
+      "type": "story",
+      "narration": "You bank the threshold with a rolled mat and move the basin closer. The keeper sweeps the small puddle out before opening the inner door.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "boards"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "boards": {
+      "type": "choice_point",
+      "narration": "The outer landing must be checked before anyone uses it. A board that looks firm may have shifted in the gusts. What will your party inspect?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Test each near board from the stone threshold",
+          "icon": "hand",
+          "goto": "boards_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Follow the post lines from inside the fence",
+          "icon": "hand",
+          "goto": "boards_2"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "boards_1": {
+      "type": "story",
+      "narration": "You use the long pole to press the boards. The keeper marks the ones that move. The pole earns a little cloth flag for good service.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "boards_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "boards_2": {
+      "type": "story",
+      "narration": "You check the alignment of posts and gate before testing the near boards. The keeper keeps everyone behind the threshold until the marks agree.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "boards_check"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "boards_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Mark the safe landing edge without stepping onto an untested board.",
+      "onSuccess": {
+        "goto": "boards_clear",
+        "narration": "Your marks leave a safe strip beside the temple."
+      },
+      "onFailure": {
+        "goto": "boards_changed",
+        "narration": "A near board rocks after looking firm."
+      },
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "boards_clear": {
+      "type": "story",
+      "narration": "The keeper opens only the checked strip. Nothing beyond the marks is called safe.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "repair"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "boards_changed": {
+      "type": "story",
+      "narration": "You narrow the strip to the stone threshold. The keeper keeps the outer landing closed until it can be repaired.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "repair"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "repair": {
+      "type": "choice_point",
+      "narration": "Rain blows through a gap between the landing boards and the low wall. The keepers have spare boards and mat covers. Which preparation will help the next crew work from behind the checked boundary?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Stack spare boards for the next crew",
+          "icon": "hand",
+          "goto": "repair_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Cover the rain gap beside the wall",
+          "icon": "hand",
+          "goto": "repair_2"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "repair_1": {
+      "type": "story",
+      "narration": "You stack them flat and tie them against the wall. The keeper adds a cushion on top, then thinks better of it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "plan"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "repair_2": {
+      "type": "story",
+      "narration": "You lash a mat from the safe side and leave the unsafe edge marked. The keeper can lift the cover tomorrow without crossing it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "plan"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "record": {
+      "type": "choice_point",
+      "narration": "The keeper records what happened beside the old island songs. She asks for the result your party actually reached, with no borrowed victory in it.",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Read the work account together before she copies it",
+          "icon": "hand",
+          "goto": "record_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Draw the landing boundary and the island's position",
+          "icon": "hand",
+          "goto": "record_2"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "record_1": {
+      "type": "story",
+      "narration": "You tell the order of signals, board work and shelter. The keeper writes the result under today's rain marks, where the next watch can find it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "watch"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_signal_log"
+        }
+      ]
+    },
+    "record_2": {
+      "type": "story",
+      "narration": "You draw only the ground you can see. The keeper labels the unchecked boards and leaves them firmly outside tomorrow's walking route.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "watch"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "watch": {
+      "type": "choice_point",
+      "narration": "Before the bell stops, the keeper asks how the first quiet watch should check the landing. The storm may end before the ground stops moving. Which check will you show her?",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Watch the posts against the far island edge",
+          "icon": "hand",
+          "goto": "watch_1"
+        },
+        {
+          "id": "plan_2",
+          "label": "Check the closed gate and the marked board line",
+          "icon": "hand",
+          "goto": "watch_2"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall",
+      "variants": [
+        {
+          "when": {
+            "flag": "temple_signal_log"
+          },
+          "text": "The keeper uses your signal log to show the relief watch when to hold and when to release. Your record becomes their first practice."
+        },
+        {
+          "when": {
+            "notFlag": "temple_signal_log"
+          },
+          "text": "The keeper hands your landing map to the relief watch. They find their safe station without stepping over its unchecked edge."
+        }
+      ]
+    },
+    "watch_1": {
+      "type": "story",
+      "narration": "You show the keeper the fixed sight line you can see from cover. She marks it on the sill, beside a drawing of the bell rope in its raincoat.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ending"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "watch_2": {
+      "type": "story",
+      "narration": "You walk the safe boundary with the keeper. She sets the watch where nobody must step onto untested boards to see a change.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "ending"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "ending": {
+      "type": "story",
+      "rift": "collapse",
+      "narration": "The temple is safe to shelter in, and every keeper has a dry place. The bell rope sheds its tiny raincoat into a bucket. A griffin messenger can carry you down to the Cairnstep when the wind clears; the path behind returns to the island's lookout. You have changed what the next watch will find. As the squall eases, the fresh opening shrinks shut. The keepers watch from behind a striped wait sign until its last shimmer is gone; no new crawlers can enter the hall.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "temple_safe_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "finish"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "temple_damaged"
+          },
+          "text": "The landing stays closed for repairs. Your account records the lost boards and the shelter that kept everyone safe."
+        },
+        {
+          "when": {
+            "flag": "temple_island_settled"
+          },
+          "text": "The returned island now rests beside the temple. The keepers will watch the new boundary instead of pretending the two islands always lay together."
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "finish": {
+      "type": "story",
+      "narration": "The keeper closes the log before the pages can drink any more rain. Your party can rest, return to the lookout, or follow the griffin messenger down to the Cairnstep.",
+      "choices": [],
+      "outcome": "success",
+      "art": "scenes/riftlight/temple-island-squall"
+    }
+  }
+}

@@ -10,7 +10,7 @@
  *
  * The board keeps its size for the turn. It takes whatever height is left
  * (`.combat__board`), so every row around it holds still: the title row and
- * the waiting line share one height, the log is a fixed box from the fight's
+ * the waiting line share one height, the log is one line from the fight's
  * first moment, the legend keeps all four keys, and under the board the dock
  * has a one-line seat for the hint or the question over the answers, which
  * never get shorter mid-turn (CombatPanel useTallestThisTurn). Whatever comes
@@ -42,27 +42,11 @@
 }
 
 /*
- * The title row and the waiting line take turns in the same seat, so both
- * get the same height: 1.7em of the title's font, which fits the steps chip.
- * The waiting line's font is the title's over 1.25 (md against lg), hence
- * the multiply.
+ * Somebody else's turn, in one line of a fixed height. Your own turn has no
+ * row here (PlayerPanel's strip lights up instead).
  */
-.combat > .combat__title {
-  flex-wrap: nowrap;
-  block-size: 1.7em;
-}
-
 .combat > .combat__waiting {
   block-size: calc(1.7 * var(--font-size-lg, 1.25em));
-}
-
-/* Steps left, on the title row's far end: the one number a turn starts with. */
-.combat__steps {
-  flex: none;
-  margin-inline-start: auto;
-  gap: 0.3em;
-  font-size: var(--font-size-sm, 0.875em);
-  font-variant-numeric: tabular-nums;
 }
 
 /* A monster's portrait in the target list. */
@@ -122,43 +106,29 @@
 }
 
 /*
- * What just happened. The roll is the thing that was missing: a d20 the
- * server threw and nobody saw. One list, the latest beat only, each line a
- * sentence or a roll drawn as its parts — the die, the bonus and its stat,
- * the total, the Guard it had to beat, the verdict.
+ * What just happened, in one line: the newest beat in words, a swing's sum
+ * and the Guard it needed included (fight-log.ts). It used to be a three-line
+ * box with each roll drawn as its parts, and those were rows the board gave
+ * up on every turn; the running log is the shared screen's now (FightLog).
+ * One line, always, from the fight's first moment, so a beat landing never
+ * moves the board; a long line ends in an ellipsis rather than wrapping.
  */
 .combat__log {
   display: flex;
-  flex-direction: column;
-  gap: 0.2em;
+  align-items: center;
+  flex: none;
   margin: 0;
-  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
-  list-style: none;
+  padding: 0.2em var(--space-3, 0.75em);
   border: 0.08em solid var(--color-border, #3a3468);
   border-inline-start: 0.3em solid var(--color-accent, #ffc95c);
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
   font-size: var(--font-size-sm, 0.875em);
-  /* About three lines, always: the box is there and this tall before the
-     first beat and after a quiet one, so a beat landing never moves the
-     board. A crowded round scrolls, newest at the bottom, and the older
-     lines fade out at the top rather than cutting off mid-word. */
-  flex: none;
-  block-size: 5.6em;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  mask-image: linear-gradient(to bottom, transparent 0, #000 1.2em);
 }
 
 .combat__beat {
+  margin: 0;
   line-height: 1.3;
-}
-
-/* A short beat sits at the bottom, out of the fade. An auto margin rather
-   than `justify-content: flex-end`, which would clip an overflowing log's
-   top where it cannot be scrolled back to. */
-.combat__beat:first-child {
-  margin-block-start: auto;
 }
 
 .combat__beat--quiet {
@@ -171,60 +141,6 @@
 
 .combat__beat--bad {
   color: var(--color-danger, #ff6b6b);
-}
-
-.combat__roll {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35em;
-  color: var(--color-text, #f4f1ff);
-  font-variant-numeric: tabular-nums;
-}
-
-.combat__roll-who {
-  font-weight: 800;
-}
-
-.combat__roll-die {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2em;
-  padding: 0 0.4em;
-  border-radius: 0.4em;
-  background: var(--color-surface, #191534);
-  color: var(--color-accent, #ffc95c);
-  font-size: 1.2em;
-  font-weight: 900;
-}
-
-.combat__roll-mod,
-.combat__roll-total {
-  font-weight: 700;
-}
-
-.combat__roll-stat {
-  color: var(--color-text-muted, #b7b0d8);
-  font-weight: 600;
-}
-
-.combat__roll-verdict {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2em;
-  padding: 0 0.5em;
-  border-radius: var(--radius-pill, 999em);
-  font-weight: 800;
-}
-
-.combat__roll-verdict--hit {
-  background: color-mix(in srgb, var(--color-success, #4ad991) 25%, transparent);
-  color: var(--color-success, #4ad991);
-}
-
-.combat__roll-verdict--miss {
-  background: color-mix(in srgb, var(--color-text-muted, #b7b0d8) 20%, transparent);
-  color: var(--color-text-muted, #b7b0d8);
 }
 
 /*
@@ -352,8 +268,8 @@
 
 /*
  * Fitting a fight on a phone without scrolling (PlayerPanel "deciding"): the
- * party's HP in one row, the action cards two to a row — their names are a
- * word or two — and the board keeping the width it needs.
+ * party's HP in one row, the action cards one to a row with what each does,
+ * and the board keeping the width it needs.
  */
 .combat.prompt {
   gap: var(--space-2, 0.5em);
@@ -472,60 +388,75 @@
     color-mix(in srgb, var(--color-accent, #ffc95c) 14%, var(--color-surface, #191534));
 }
 
-/* One card a row: each now carries a sentence saying what it does. */
+/*
+ * One card a row, always: each carries the sentence saying what it does.
+ * The story's prompt goes two to a row from six answers (PlayerPanel.css);
+ * a fight's cards never do, however many there are.
+ */
+.combat .prompt__options.combat__actions {
+  display: flex;
+  flex-direction: column;
+}
+
 .combat .combat__actions .choice {
   grid-template-columns: auto minmax(0, 1fr);
   padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
 }
 
 /*
- * Cards to a row, by how many there are (CombatPanel `cardColumns`). Two to
- * a row from three cards, three to a row from five: icon and name only, the
- * icon is what an eight-year-old reads first (spec §1.5), and the sentence
- * is what the card does *after* you tap it, which the who? step still says.
- * Every row saved is a row the board keeps.
+ * Three cards or more (CombatPanel `DENSE_CARDS`): still one to a row and
+ * still with the sentence, which a playtest missed when the cards packed two
+ * or three across, but each row is as short as a touch target allows. The
+ * name and the sentence share one small type size, and a long sentence ends
+ * on its second line rather than growing the row.
  */
-.combat .prompt__options[data-columns="2"],
-.combat .prompt__options[data-columns="3"] {
-  display: grid;
+.combat .combat__actions[data-dense] {
+  gap: var(--space-1, 0.25em);
+}
+
+.combat .combat__actions[data-dense] .choice {
+  min-block-size: var(--touch-min, 3em);
+  padding: var(--space-1, 0.25em) var(--space-2, 0.5em);
   gap: var(--space-2, 0.5em);
 }
 
+.combat .combat__actions[data-dense] .choice__icon {
+  width: 1.8em;
+  height: 1.8em;
+}
+
+.combat .prompt__options.combat__actions[data-dense] .choice__label {
+  font-size: var(--font-size-sm, 0.875em);
+  line-height: 1.15;
+}
+
+.combat .combat__actions[data-dense] .choice__sub {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: var(--font-size-xs, 0.78em);
+  line-height: 1.2;
+}
+
+/*
+ * The figures to pick in a who? step (CombatPanel `combat__targets`): two to
+ * a row from three. Names are a word or two, so they fit.
+ */
 .combat .prompt__options[data-columns="2"] {
+  display: grid;
+  gap: var(--space-2, 0.5em);
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.combat .prompt__options[data-columns="3"] {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.combat .prompt__options[data-columns="2"] .choice,
-.combat .prompt__options[data-columns="3"] .choice {
+.combat .prompt__options[data-columns="2"] .choice {
   min-block-size: var(--touch-min, 3em);
   padding: var(--space-2, 0.5em);
 }
 
-.combat .prompt__options[data-columns="2"] .choice__sub,
-.combat .prompt__options[data-columns="3"] .choice__sub {
+.combat .prompt__options[data-columns="2"] .choice__sub {
   display: none;
-}
-
-/* Three to a row is too narrow for icon beside name: icon over name. */
-.combat .prompt__options[data-columns="3"] .choice {
-  grid-template-columns: minmax(0, 1fr);
-  justify-items: center;
-  gap: var(--space-1, 0.25em);
-  text-align: center;
-}
-
-.combat .prompt__options[data-columns="3"] .choice__text {
-  align-items: center;
-  text-align: center;
-}
-
-.combat .prompt__options[data-columns="3"] .choice__label {
-  font-size: var(--font-size-sm, 0.875em);
-  line-height: 1.15;
 }
 
 /* Two of the same item: one card, and how many. */
@@ -577,6 +508,38 @@
   min-block-size: 0;
 }
 
+/*
+ * More cards than the pane can hold under the board's floor (six or more on
+ * a 390px phone, five on a 375x667 one): the cards scroll in their own box
+ * and the board stays put above them, rather than the whole pane scrolling
+ * the board away. The card half showing at the box's bottom says there is
+ * more. Short of that, nothing scrolls.
+ */
+.player--deciding .combat__dock {
+  flex: 0 1 auto;
+  min-block-size: 0;
+}
+
+.player--deciding .combat__seat {
+  flex: none;
+}
+
+.player--deciding .combat__answers {
+  flex: 1 1 auto;
+  min-block-size: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.player--deciding .combat__answers > * {
+  flex: none;
+}
+
+/* More cards below the box's edge (CombatPanel `useMoreBelow`): the edge fades. */
+.player--deciding .combat__answers[data-more] {
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 2.5em), transparent);
+}
+
 .combat__board {
   flex: 1 1 0;
   /* A floor, so a pane crowded past any phone we know keeps a usable map
@@ -596,8 +559,8 @@
 /*
  * A short pane (a small phone in Travel Mode): everything but the board gets
  * tighter, so the board keeps a size a finger can use. The legend goes (the
- * squares carry faces and colours of their own), the roll log keeps its last
- * two lines, and the cards shrink their padding and icon tiles. Touch targets
+ * squares carry faces and colours of their own), and the cards shrink their
+ * padding and icon tiles. Touch targets
  * stay at the 3em minimum (spec §11).
  */
 @container prompt (max-height: 34em) {
@@ -605,20 +568,11 @@
     gap: var(--space-1, 0.25em);
   }
 
-  .combat > .prompt__title {
-    font-size: var(--font-size-md, 1em);
-  }
-
   .combat__legend {
     display: none;
   }
 
-  .combat__log {
-    block-size: 3.6em;
-    padding-block: var(--space-1, 0.25em);
-  }
-
-  /* The title drops to md here, so its 1.7em seat does too. */
+  /* A short pane: the waiting line's seat drops to md. */
   .combat > .combat__waiting {
     block-size: calc(1.7 * var(--font-size-md, 1em));
   }
@@ -634,11 +588,6 @@
   .combat .prompt__options .choice__icon {
     width: 1.6em;
     height: 1.6em;
-  }
-
-  .combat .prompt__options[data-columns="3"] .choice {
-    gap: 0;
-    padding: var(--space-1, 0.25em);
   }
 }
 
@@ -700,11 +649,6 @@
   animation: combat-rise 300ms ease-out both;
 }
 
-/* "Your turn" arrives rather than appears. */
-.combat > .prompt__title {
-  animation: combat-rise 360ms ease-out both;
-}
-
 @keyframes combat-rise {
   from { transform: translateY(0.5em); opacity: 0; }
   to { transform: none; opacity: 1; }
@@ -723,7 +667,6 @@
   .combat__cell--aim > .kad-icon,
   .combat__down-badge,
   .combat__beat,
-  .combat > .prompt__title,
   .combat__end {
     animation: none;
   }

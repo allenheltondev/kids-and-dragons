@@ -1116,6 +1116,25 @@ export interface Campaign {
    */
   requires?: string[];
   /**
+   * Offered in every household's lobby, beside the campaign the room was opened
+   * for and any the household has part-way through. A sequel sets it so the
+   * table can see it coming: shown locked with its reason until `requires` is
+   * met, then choosable. Absent means the lobby offers it only when it is the
+   * room's own campaign or already under way, which is every campaign authored
+   * before it existed, Gemfall included (it is the launch campaign, so always
+   * the room's own). See `lobbyCampaigns`.
+   */
+  listed?: boolean;
+  /**
+   * A teaser, not a campaign yet: a `listed` card for a story still being
+   * written, with its title, blurb and art but no chapters. Always locked:
+   * with its prerequisites' reason while any is unmet, then "Coming soon".
+   * Nothing can start it. Publishing the real campaign replaces the file under
+   * the same id, so the household's lobby card and its art carry straight over.
+   * Requires `chapters: []`, and a campaign with chapters may not set it.
+   */
+  comingSoon?: boolean;
+  /**
    * Makes this a graph campaign (#192): the next chapter is chosen by the
    * graph's edges, not by `index`. Absent — every campaign authored before it
    * existed, Gemfall included — is an ordered campaign, played exactly as it

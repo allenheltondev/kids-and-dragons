@@ -112,7 +112,9 @@ describe("a hit from a numbing enemy", () => {
     state = endTurn(state); // that turn ends: 1 left, the Skupper's turn
     expect(currentActorId(state)).toBe("skupper#1");
     expect(numbed(state)[0]!.turnsLeft).toBe(1);
-    state = act(state, HIT, "c_a").state; // the Skupper stings again
+    // The Skupper stings again: a 15, a hit but not a second critical, which
+    // would knock the 10-heart hero down (and a sting never follows a fall).
+    state = act(state, ALWAYS(15), "c_a").state;
     expect(numbed(state)).toEqual([
       { id: "numbed", label: "Numbed", kind: "move", heroId: "c_a", amount: -2, turnsLeft: 2 },
     ]);

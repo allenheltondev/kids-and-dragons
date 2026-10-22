@@ -54,6 +54,7 @@ interface Manifest {
   biomes: string[];
   backgroundOnlyBiomes?: string[];
   sceneIllustrations?: string[];
+  campaignArt?: { campaigns: string[] };
   entities: { id: string; classification: string }[];
 }
 
@@ -249,6 +250,16 @@ const delivered = (line: Line): number => line.need - line.missing.length;
     need: illustrations.length,
     missing: illustrations.filter((id) => !has("assets", `${id}.webp`)),
     note: "optional story backdrops; biome art remains the fallback",
+  });
+}
+
+{
+  const campaigns = manifest.campaignArt?.campaigns ?? [];
+  lines.push({
+    category: "Campaign key art",
+    need: campaigns.length,
+    missing: campaigns.filter((id) => !has("assets/campaigns", `${id}.webp`)).map((id) => `${id}.webp`),
+    note: "lobby adventure cards; a story scene stands in until delivered",
   });
 }
 

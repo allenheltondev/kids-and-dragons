@@ -74,8 +74,11 @@ export type BandTable = Readonly<Record<string, BandRow>>;
  * fledgling party — the check `tools/canon/check.ts` runs over the band table.
  *
  * Derived, not chosen: a level-1 hero swings d20 + 2..4 against Guard 11 —
- * about 65% — for 3 damage (`ATTACK_DAMAGE`), so roughly 2 damage a round each
- * and ~6 for a party of three. Spec §7.1 tunes for about four rounds.
+ * about 65% — and a hit lands off the same die (`damageTier` in shared's
+ * encounter.ts): 2 for a graze, 3 (`ATTACK_DAMAGE`) for a solid hit five past
+ * the Guard, 5 for a natural 20. That is a little under 2 damage a round each
+ * (1.8 at +3) and ~5.5 for a party of three. Spec §7.1 tunes for about four
+ * rounds, which is ~22, inside the window either way the dice fall.
  *
  * Checked per *encounter* rather than per creature: one brute or three
  * skirmishers are both fine, and only the sum says which.

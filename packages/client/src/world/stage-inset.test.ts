@@ -2,8 +2,12 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   SKY_FRACTION,
   STAGE_KEEP,
+  boardInsetEnd,
+  boardStageWidth,
+  onBoardInsetEnd,
   onStageInset,
   onStageInsetTop,
+  setBoardInsetEnd,
   setStageInsetBottom,
   setStageInsetTop,
   stageInsetBottom,
@@ -83,5 +87,27 @@ describe("storyStageFrame (#356)", () => {
     setStageInsetTop(0);
     expect(heard.mock.calls).toEqual([[120]]);
     expect(stageInsetTop()).toBe(0);
+  });
+});
+
+describe("the fight log's side", () => {
+  afterEach(() => setBoardInsetEnd(0));
+
+  it("tells listeners when the log's width changes, and only then", () => {
+    const heard = vi.fn();
+    const stop = onBoardInsetEnd(heard);
+    setBoardInsetEnd(440.2);
+    setBoardInsetEnd(440);
+    setBoardInsetEnd(Number.NaN);
+    stop();
+    setBoardInsetEnd(300);
+    expect(heard.mock.calls).toEqual([[440], [0]]);
+    expect(boardInsetEnd()).toBe(300);
+  });
+
+  it("frames the board left of the log, and never into less than half the pane", () => {
+    expect(boardStageWidth(1280, 450)).toBe(830);
+    expect(boardStageWidth(1280, 0)).toBe(1280);
+    expect(boardStageWidth(1280, 1000)).toBe(640);
   });
 });

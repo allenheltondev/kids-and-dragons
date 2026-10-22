@@ -1,0 +1,522 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-riftseekers-departure",
+  "campaignId": "riftlight",
+  "index": 3,
+  "title": "A Map with a Missing Pass",
+  "biome": "glacier_of_origins",
+  "music": "riftlight-theme",
+  "estimatedMinutes": 10,
+  "xpAward": 140,
+  "entry": "map",
+  "goal": {
+    "text": "Meet the travelers and get ready for the road ahead.",
+    "steps": [
+      {
+        "id": "hear_plan",
+        "label": "Hear the travelers' plan",
+        "flag": "heard_the_travelers_plan"
+      },
+      {
+        "id": "decide_first",
+        "label": "Help decide what comes first",
+        "flag": "decided_what_comes_first"
+      },
+      {
+        "id": "get_ready",
+        "label": "Get ready for the road",
+        "flag": "got_ready_for_the_road"
+      }
+    ]
+  },
+  "scenes": {
+    "map": {
+      "type": "story",
+      "narration": "The griffin calls to the unicorn. \"Olivia. Your hoof.\" She steps aside. He folds his map, finds another corner stuck under a bag, and gives up. \"Good morning. I'm Orin Vale.\" \"Lady Olivia,\" the unicorn adds. Behind them, a kitsune tightens a strap on a case of small rings. \"Seren Wisp,\" she says, waving. An open case of little brass instruments rests beside Orin's pack. \"Were you the noise over the ridge?\" he asks.",
+      "choices": [
+        {
+          "id": "tell",
+          "label": "Tell them how you arrived",
+          "icon": "hand",
+          "goto": "arrival_story"
+        },
+        {
+          "id": "ask",
+          "label": "Ask whether they saw the fold",
+          "icon": "hand",
+          "goto": "arrival_question"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "arrival_story": {
+      "type": "story",
+      "narration": "You tell Orin about the snow, the kid, and the quay vanishing behind you. He writes down \"goat\" and underlines it. \"A place arrived first. Then you crossed.\" Olivia leans over his shoulder. \"And it reached all the way here.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Ask who they are",
+          "icon": "hand",
+          "goto": "fellowship"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "arrival_question": {
+      "type": "story",
+      "narration": "\"We saw it close,\" says Seren. She checks that everyone is standing steady. \"You all came through together? Good.\" Orin opens his notebook. Olivia is watching the slope where the fold closed.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Ask what they are doing here",
+          "icon": "hand",
+          "goto": "fellowship"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "fellowship": {
+      "type": "story",
+      "narration": "\"Riftseekers,\" says Orin, touching the broken-circle clasp on his cloak. \"We call these openings rifts. We follow them and write down what they do.\" \"Some of us would like to do more than write,\" says Lady Olivia. Seren closes her ring case. \"Some of us would like to arrive with all our luggage.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Show them what you noticed",
+          "icon": "hand",
+          "goto": "seren"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "seren": {
+      "type": "story",
+      "narration": "Seren asks where the opening appeared and how long it lasted. She listens without interrupting. Orin rolls the map around a wooden rod so nobody can stand on it again.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Hear Orin's lead",
+          "icon": "hand",
+          "goto": "lead"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "starweaver_read_first_rift"
+          },
+          "text": "When you describe studying the light around the opening, Seren looks up. \"One of you can see it. Keep looking. Later, I can show you how to listen too.\""
+        },
+        {
+          "when": {
+            "notFlag": "starweaver_read_first_rift"
+          },
+          "text": "\"You can learn a good deal without seeing what I see,\" Seren says. She glances at Orin's instruments. \"He brought half a bag of help.\""
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "lead": {
+      "type": "story",
+      "narration": "Orin unrolls his map and points east. \"The griffins at Frostfang keep a ledger of their passes. Last season, no pass here. This season, cairns and a path. They call it the Cairnstep.\" He marks the herder's flooded grazing route beside it. \"If the pass reaches this bank, supplies could get through to the herd. It might also show us why a road no longer leads where people expect. We need to find where it really goes.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Ask what they would do first",
+          "icon": "hand",
+          "goto": "olivia"
+        }
+      ],
+      "priority": 2,
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "heard_the_travelers_plan"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "olivia": {
+      "type": "choice_point",
+      "narration": "Olivia taps the flooded route on the map. \"There is food in my pack. If we could carry it through an opening, the herd could eat today.\" Orin lifts his own pack. \"I will carry food. But I will not send someone into a rift before we know whether they can return.\" Seren watches your faces. \"What would you put first?\"",
+      "choices": [
+        {
+          "id": "help",
+          "label": "Help the people waiting now",
+          "icon": "hand",
+          "goto": "help_now"
+        },
+        {
+          "id": "routes",
+          "label": "Find safe routes for the next travelers",
+          "icon": "hand",
+          "goto": "safe_routes"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "route": {
+      "type": "story",
+      "narration": "Orin points below the ice shelf, where melt channels join into a broad river. \"The Great River starts here. Stay on this bank. The shelf above the headwaters leads toward Frostfang. Test the ice. If it gives, let the river carry you to a place you can get out. Do not fight it under the shelf.\" Seren points toward the hall. \"Or study the seam that answered your song. Look for signs of openings around the glacier. Learning what they need might help you find a way home.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Check what you will need",
+          "icon": "hand",
+          "goto": "chime"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "chime": {
+      "type": "story",
+      "narration": "Orin takes a little chime from his bag. \"A Listening Chime, for you. Strike it near an opening. A sour note means it cannot open yet. An echo means it will stay open and let you come back.\" He waits while you take it. \"No echo? Do not promise anybody a return trip.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Try the Listening Chime",
+          "icon": "hand",
+          "goto": "test_chime"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantQuestItem",
+          "itemId": "listening_chime"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "test_chime": {
+      "type": "choice_point",
+      "narration": "The Listening Chime hangs from a short cord. It is light enough to carry in one hand. Orin holds his bag open while you decide how to test it.",
+      "choices": [
+        {
+          "id": "ring",
+          "label": "Ring it beside the empty air",
+          "icon": "hand",
+          "goto": "ring"
+        },
+        {
+          "id": "wrap",
+          "label": "Wrap it carefully and repeat the rules",
+          "icon": "hand",
+          "goto": "wrap"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "ring": {
+      "type": "story",
+      "narration": "You strike it. One clear note rings over the snow and fades. No opening answers. Orin nods. \"Away from a rift, it is a very small bell.\" Seren smiles. \"Still worth keeping.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get ready to leave",
+          "icon": "hand",
+          "goto": "parting"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_ready_for_the_road"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "wrap": {
+      "type": "story",
+      "narration": "\"Sour: not ready. Echo: a way back,\" you say. Orin nods and gives you a scrap of soft cloth for the chime. \"And never ask it for the name of a place. It does not know the names.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Pack the chime",
+          "icon": "hand",
+          "goto": "parting"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_ready_for_the_road"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "parting": {
+      "type": "story",
+      "narration": "Olivia shoulders her pack. Seren counts the cases once, then again. Orin takes the path behind them, holding the map up where everyone can see it. \"If the Cairnstep has moved,\" he calls back, \"do draw it in the right place.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Choose your next direction",
+          "icon": "hand",
+          "goto": "camp"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "camp": {
+      "type": "rest",
+      "narration": "You sit on a dry stone beside the singing hall. East, the ice shelf leads toward the Cairnstep: perhaps a supply route for the herd, if the shifting ice lets you reach it. Behind you, the sealed seam answered your song. Exploring the glacier might teach you how to find another opening. The Listening Chime rests between you. Safe roads for the people already here, or a better understanding of the openings that brought you? Up the slope, the door of a stone hut rattles in the wind, and something inside goes thump. Higher still, a round tower with no roof points a big brass telescope at the sky. Your party has something to talk about before setting out.",
+      "heal": 0,
+      "choices": [
+        {
+          "id": "hut",
+          "label": "Knock on the stone hut's door",
+          "icon": "hand",
+          "goto": "dojo"
+        },
+        {
+          "id": "tower",
+          "label": "Climb the tower with no roof",
+          "icon": "star",
+          "goto": "academy"
+        },
+        {
+          "id": "set_out",
+          "label": "Talk it over and set out",
+          "icon": "travel",
+          "goto": "set_out"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "set_out": {
+      "type": "rest",
+      "narration": "You brush the snow off your packs and stand. Inside the hall, the yetis hold their low note a little longer, as if they are waving. Which road comes first?",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success",
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "dojo": {
+      "type": "story",
+      "narration": "A bigfoot named Master Dunnick opens the door a crack and pulls you in out of the wind. Then he leans his back against it. The wind pushes. He pushes back. He has held this door shut for forty years. \"This school is called the Dojo,\" he says. \"Here we train the Thornguard, a hero who holds the line.\" A thorn bracer hangs on a hook by the fire. A Thornguard's strength lives in that bracer, and a song bell worn beside it will not ring. Thump. In the corner, students are catching pillows as they drop from the rafters. \"Anyone who wants the bracer,\" says Master Dunnick, \"may try it on.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "met_master_dunnick"
+          },
+          "text": "Master Dunnick is still leaning on the door of the Dojo. \"Back already? Good. The wind never stops, so neither do we.\" The thorn bracer waits on its hook for anyone who wants to try it on. Thump. Another pillow drops.",
+          "replace": true
+        }
+      ],
+      "classPlace": "thornguard",
+      "cast": [
+        {
+          "figure": "cast/master_dunnick",
+          "name": "Master Dunnick"
+        }
+      ],
+      "choices": [
+        {
+          "id": "pillows",
+          "label": "Catch the falling pillows",
+          "icon": "shield",
+          "goto": "dojo_pillows",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_master_dunnick",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "back",
+          "label": "Back to the camp",
+          "icon": "back",
+          "goto": "camp",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_master_dunnick",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/dojo"
+    },
+    "dojo_pillows": {
+      "type": "story",
+      "narration": "A student unties a rope. Pillows tumble from the rafters. You plant your feet and catch one, then another, then another. The next one lands on your head. Master Dunnick nods without leaving the door. \"That is how you brace. Stand still, and let it come to you.\"",
+      "cast": [
+        {
+          "figure": "cast/master_dunnick",
+          "name": "Master Dunnick"
+        }
+      ],
+      "choices": [
+        {
+          "id": "back",
+          "label": "Back to the camp",
+          "icon": "back",
+          "goto": "camp",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_master_dunnick",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/dojo"
+    },
+    "academy": {
+      "type": "story",
+      "narration": "At the top of the tower is a classroom with no roof at all, only sky. This school is called the Academy. Here students learn to be a Starweaver, a hero who reads the stars. A dragonling named Professor Nettle stands beside a huge brass telescope. Homework floats up off the desks and drifts away over the snow. Nobody chases it. \"It comes down somewhere,\" says the professor. On a cushion sits a star circlet. A Starweaver's light lives in that circlet, and a dusk hood worn beside it starts to itch. \"Anyone who wants the circlet,\" says Professor Nettle, \"may try it on.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "met_professor_nettle"
+          },
+          "text": "Professor Nettle waves from beside the big brass telescope. \"Back at the Academy! Mind the homework.\" A page floats past your nose and off over the snow. The star circlet waits on its cushion for anyone who wants to try it on.",
+          "replace": true
+        }
+      ],
+      "classPlace": "starweaver",
+      "cast": [
+        {
+          "figure": "cast/professor_nettle",
+          "name": "Professor Nettle"
+        }
+      ],
+      "choices": [
+        {
+          "id": "telescope",
+          "label": "Look through the telescope",
+          "icon": "eye",
+          "goto": "academy_stars",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_professor_nettle",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "back",
+          "label": "Back down to the camp",
+          "icon": "back",
+          "goto": "camp",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_professor_nettle",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/academy"
+    },
+    "academy_stars": {
+      "type": "story",
+      "narration": "Professor Nettle lets you look through the telescope. Even by day, the stars are so close you could count their points. Then the telescope sneezes. Brass rattles. Dust puffs out of the far end. \"Bless you,\" says the professor, to the telescope. \"It does that when it sees something new.\"",
+      "cast": [
+        {
+          "figure": "cast/professor_nettle",
+          "name": "Professor Nettle"
+        }
+      ],
+      "choices": [
+        {
+          "id": "back",
+          "label": "Back down to the camp",
+          "icon": "back",
+          "goto": "camp",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_professor_nettle",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/academy"
+    },
+    "help_now": {
+      "type": "story",
+      "narration": "Olivia takes a supper bundle from her pack and calls the herder over. \"This much can go by hand.\" Orin makes room for it on the sledge. \"And we can learn the route before we send more.\" Seren nods to you. \"A useful place to begin.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "route"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "decided_what_comes_first"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "safe_routes": {
+      "type": "story",
+      "narration": "Orin draws a careful line beside the Cairnstep. \"A route people can trust. Yes.\" Olivia leaves a supper bundle for the herder. \"We can feed someone while you check it.\" Seren looks at the glacier. \"And listen here, if the road is not the question you want to follow.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "route"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "decided_what_comes_first"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    }
+  },
+  "voiceGuide": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {
+      "Orin Vale": "He/him, griffin Riftseeker. Methodical, patient, plain speech, asks questions instead of explaining the world. Offers one optional practical lead; no Pangea theory yet.",
+      "Lady Olivia": "She/her, unicorn Riftseeker. Confident, mischievous, sees useful possibilities in rifts. Wants power to help, no threats and no early summoning.",
+      "Seren Wisp": "She/her, kitsune Riftseeker. Careful, perceptive, kind. Recognizes an earlier Starweaver reading by its flag. Promises teaching later; does not grant Attune here."
+    }
+  },
+  "props": {
+    "listening_chime": {
+      "kind": "quest",
+      "icon": "bell",
+      "name": "Listening Chime",
+      "text": "Near a rift: sour means not ready; an echo means it stays open and offers a way back."
+    }
+  }
+}

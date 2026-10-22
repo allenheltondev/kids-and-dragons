@@ -4,7 +4,7 @@ import { expect, it } from "vitest";
 import { campaign, chapters, allPaths } from "./riftlight-test-support.ts";
 
 it("proves regional prerequisites across every incoming graph route rather than assuming entry facts", () => {
-  const contracts = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, "../../content/drafts/riftlight/continuity.json"), "utf8")).chapters as Record<string, { entryFacts: string[] }>;
+  const contracts = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, "../../docs/campaigns/continental-rift/continuity.json"), "utf8")).chapters as Record<string, { entryFacts: string[] }>;
   const graph = campaign.graph!;
   const intersection = (sets: Set<string>[]) => new Set([...sets[0]!].filter((fact) => sets.every((s) => s.has(fact))));
   const introduced = new Map<string, Set<string>>();

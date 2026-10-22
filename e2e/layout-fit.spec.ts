@@ -268,6 +268,8 @@ async function misfits(page: Page): Promise<string[]> {
       let bottom = Math.min(box.bottom, innerHeight);
       // The browser's own answer covers display, visibility, opacity and a closed <details>.
       if (!el.checkVisibility({ opacityProperty: true, visibilityProperty: true })) return null;
+      // Words for a screen reader alone are clipped to a pixel on purpose (.kad-sr-only).
+      if (el.closest(".kad-sr-only")) return null;
       for (let at: Element | null = el; at; at = at.parentElement) {
         const style = getComputedStyle(at);
         if (at !== el && at !== document.documentElement && at !== document.body && style.overflow !== "visible") {
@@ -337,7 +339,9 @@ async function misfits(page: Page): Promise<string[]> {
       if (box.right > vw + 1 || box.left < -1) out.push(`${label(el)} runs off the screen (x ${Math.round(box.left)} to ${Math.round(box.right)}, y ${Math.round(box.top)}, of ${vw})`);
       const style = getComputedStyle(el);
       const hides = style.overflowX !== "visible" || style.textOverflow === "ellipsis";
-      if (hides && el.scrollWidth > el.clientWidth + 1 && !el.matches("input, textarea, select")) {
+      // The one cut on purpose: a phone's goal folded to its line ends in "…" and opens to the
+      // whole sentence on a tap (ChapterGoal, from the playtest's "too much vertical space").
+      if (hides && el.scrollWidth > el.clientWidth + 1 && !el.matches("input, textarea, select, .goal--closed .goal__sentence")) {
         out.push(`${label(el)} is clipped (${el.scrollWidth} > ${el.clientWidth})`);
       }
       // A word broken across lines, as the rendered text has it: font-independent.
