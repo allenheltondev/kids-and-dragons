@@ -1,7 +1,12 @@
 # Brief: painted chrome for the screens (frames, borders, rails and plates)
 
-**Status:** open. For whoever makes the game's images (Allen, or the image-generation agent working
-for him). This brief lists every piece of interface art the game needs so its screens look like the
+**Status:** art delivered; CSS integration and device review pending. All 38 filenames enumerated
+below (including optional pieces) are in `packages/client/src/assets/chrome/`; prompts and slicing
+are recorded in that folder's README. Contact sheets and technical previews are in
+[`docs/reviews/tablet-chrome-art/`](../reviews/tablet-chrome-art/). The PR summary's count of 42
+does not match the tables' 38 deliverables. The complete set was requested together for this pass.
+
+This brief lists every piece of interface art the game needs so its screens look like the
 storybook its pictures are. It covers the frames around and between the panes, the panels that sit
 on them, and the controls. The wiring (CSS, slicing, fallbacks) is Claude's and follows delivery.
 
