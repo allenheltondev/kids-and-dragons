@@ -461,7 +461,9 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
   });
 
   test("the header, a host's notices and stop offer, the room controls and the catch-up line", async ({ browser }) => {
-    test.setTimeout(300_000);
+    // Seven sizes on every screen, two of them a tablet's, and the lobby on the world pane: past
+    // five minutes on a CI runner.
+    test.setTimeout(480_000);
 
     // --- The start screen ---
     const host = await phone(browser);
