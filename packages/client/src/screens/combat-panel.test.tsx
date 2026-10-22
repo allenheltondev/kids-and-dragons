@@ -1025,12 +1025,19 @@ describe("the board keeps its size for the turn", () => {
     expect(dense()).toBe("true");
   });
 
-  it("keeps the steps chip and the walking key in their seats once there is nowhere to walk", () => {
+  it("gives your turn no row of its own and says the steps in the hint", () => {
+    // A playtest: "Your turn, Name!" over the board was not a good use of the
+    // room. The pinned strip lights up instead (player-panel.test.tsx).
+    mount({ encounter: encounterWith() });
+    expect(screen.queryByText(/Your turn/)).toBeNull();
+    expect(document.querySelector(".combat__waiting")).toBeNull();
+    expect(screen.getByRole("status").textContent).toMatch(/Walk up to \d+ steps on gold, or pick one thing\./);
+  });
+
+  it("keeps the walking key in its seat once there is nowhere to walk", () => {
     const base = encounterWith();
     const { container } = mount({ encounter: { ...base, stepsLeft: 0, actionTaken: true } });
-    const chip = container.querySelector<HTMLElement>(".combat__steps")!;
     const walkKey = container.querySelector(".combat__key--walk")!.parentElement!;
-    expect(chip.style.visibility).toBe("hidden");
     expect(walkKey.style.visibility).toBe("hidden");
     // And the hint's line is still there, empty, rather than gone.
     expect(screen.getByRole("status").textContent).toBe("");
@@ -1224,19 +1231,17 @@ describe("what just happened", () => {
     const log = screen.getByRole("group", { name: "What just happened" });
     expect(log.textContent).toContain("You take 3. 7 left.");
 
-    // And a fight that ends takes its log with it. The next one starts with
-    // the line already in its place, holding only its opening words, so its
-    // first beat moves nothing.
+    // And a fight that ends takes its log with it. The next one has nothing
+    // to say until its first beat: no line at all, not "The fight is on!".
     act(() => {
       useGameStore.setState({ state: { ...current, encounter: null } });
     });
     act(() => {
       useGameStore.setState({ state: { ...current, encounter: { ...encounterWith(), startedAt: 99 } } });
     });
-    const fresh = screen.getByRole("group", { name: "What just happened" });
-    expect(fresh.querySelector(".combat__beat")?.textContent).toBe("The fight is on!");
-    expect(within(fresh).queryAllByRole("listitem")).toEqual([]);
-    expect(fresh.textContent).not.toContain("You take 3");
+    expect(screen.queryByRole("group", { name: "What just happened" })).toBeNull();
+    expect(document.body.textContent).not.toContain("You take 3");
+    expect(document.body.textContent).not.toContain("The fight is on!");
   });
 
   it("shows the last beat on the phone in one line: the sum, the Guard it needed, how hard it landed", () => {

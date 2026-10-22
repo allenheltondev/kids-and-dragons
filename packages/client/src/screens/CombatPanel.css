@@ -42,27 +42,11 @@
 }
 
 /*
- * The title row and the waiting line take turns in the same seat, so both
- * get the same height: 1.7em of the title's font, which fits the steps chip.
- * The waiting line's font is the title's over 1.25 (md against lg), hence
- * the multiply.
+ * Somebody else's turn, in one line of a fixed height. Your own turn has no
+ * row here (PlayerPanel's strip lights up instead).
  */
-.combat > .combat__title {
-  flex-wrap: nowrap;
-  block-size: 1.7em;
-}
-
 .combat > .combat__waiting {
   block-size: calc(1.7 * var(--font-size-lg, 1.25em));
-}
-
-/* Steps left, on the title row's far end: the one number a turn starts with. */
-.combat__steps {
-  flex: none;
-  margin-inline-start: auto;
-  gap: 0.3em;
-  font-size: var(--font-size-sm, 0.875em);
-  font-variant-numeric: tabular-nums;
 }
 
 /* A monster's portrait in the target list. */
@@ -584,15 +568,11 @@
     gap: var(--space-1, 0.25em);
   }
 
-  .combat > .prompt__title {
-    font-size: var(--font-size-md, 1em);
-  }
-
   .combat__legend {
     display: none;
   }
 
-  /* The title drops to md here, so its 1.7em seat does too. */
+  /* A short pane: the waiting line's seat drops to md. */
   .combat > .combat__waiting {
     block-size: calc(1.7 * var(--font-size-md, 1em));
   }
@@ -669,11 +649,6 @@
   animation: combat-rise 300ms ease-out both;
 }
 
-/* "Your turn" arrives rather than appears. */
-.combat > .prompt__title {
-  animation: combat-rise 360ms ease-out both;
-}
-
 @keyframes combat-rise {
   from { transform: translateY(0.5em); opacity: 0; }
   to { transform: none; opacity: 1; }
@@ -692,7 +667,6 @@
   .combat__cell--aim > .kad-icon,
   .combat__down-badge,
   .combat__beat,
-  .combat > .prompt__title,
   .combat__end {
     animation: none;
   }

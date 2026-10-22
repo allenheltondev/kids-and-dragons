@@ -504,3 +504,26 @@ describe("a rank that just landed (#310)", () => {
     }
   });
 });
+
+describe("a check waiting on its roll", () => {
+  it("tells the whole table who rolls, what is added and the number to reach", () => {
+    // A playtest: the TV said only the question, and "Tricky: needed 12" was on
+    // the roller's phone alone.
+    mount({
+      phase: "scene",
+      sceneType: "check",
+      prompt: {
+        kind: "roll",
+        sceneId: "s_wall",
+        stat: "quick",
+        tn: 12,
+        prompt: "Sparklehoof, climb the wall!",
+        characterId: "c_p_1",
+        helper: { characterId: "c_p_2", sides: 4 },
+      },
+    });
+    const line = document.querySelector(".narration__check")!;
+    expect(line.textContent).toContain("Sparklehoof rolls d20 + 3 Quick, plus Thistle's d4.");
+    expect(line.querySelector(".narration__target")!.textContent).toBe("Tricky: 12 or more makes it.");
+  });
+});

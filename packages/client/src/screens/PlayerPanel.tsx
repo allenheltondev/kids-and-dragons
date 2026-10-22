@@ -253,8 +253,14 @@ function ConfirmBar({
 function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
   const { character } = me;
   const hpPct = character.maxHp === 0 ? 0 : Math.max(0, Math.min(1, me.hp / character.maxHp));
+  /*
+   * In a fight, your turn lights your own name and the glow behind your face.
+   * It was a "Your turn, Name!" row over the board, and a playtest asked for
+   * that row back: the strip is pinned and already says who you are.
+   */
+  const myTurn = useIsMyCombatTurn();
   return (
-    <header className="sheet">
+    <header className={`sheet${myTurn ? " sheet--turn" : ""}`}>
       {/* Your own face on your own sheet, at whatever tier you have grown to —
           the identity strip is pinned, so this is the one picture that is on
           screen for the whole session. */}
@@ -269,7 +275,10 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
         />
       </span>
       <span className="sheet__id">
-        <span className="sheet__name">{character.name}</span>
+        <span className="sheet__name">
+          {character.name}
+          {myTurn ? <span className="kad-sr-only" role="status">: your turn!</span> : null}
+        </span>
         {/* Knocked down (spec §7.3) takes the level line's place rather than
             a banner of its own: a banner pushed the question down a row the
             moment an enemy landed a hit, under a thumb already on its way. */}
@@ -891,9 +900,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       {inLobby ? <EntryScene scene={lobbySceneFor(party)} /> : null}
       {backdrop ? <SceneBackdrop src={backdrop} /> : null}
       <IdentityStrip me={me} />
-      {/* The chapter's goal (#356), on every phone with nothing to tap. Folded in a fight, where
-          the controls need the room. */}
-      {inChapter ? <ChapterGoalCard place="phone" folded={inEncounter} /> : null}
+      {/* The chapter's goal (#356), on every phone with nothing to tap. Not in a fight: a playtest
+          wanted the room for the cards, and the fight is the goal's step for now. */}
+      {inChapter && !inEncounter ? <ChapterGoalCard place="phone" /> : null}
 
       {/*
         What the world is asking, echoed here.

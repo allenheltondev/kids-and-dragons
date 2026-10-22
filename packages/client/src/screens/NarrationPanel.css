@@ -420,6 +420,27 @@
 }
 
 /*
+ * Under a waiting check's question: who rolls, what is added, and the number
+ * to reach (NarrationPanel `CheckPlanLine`), so the whole table knows what
+ * counts before the die is thrown. The target is the line's loudest part.
+ */
+.narration__check {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2em var(--space-2, 0.5em);
+  margin: 0;
+  padding-inline: var(--space-4, 1em);
+  font-size: var(--font-size-lg, 1.25em);
+  font-weight: 600;
+}
+
+.narration__target {
+  color: var(--color-accent, #f5c86c);
+  font-weight: 800;
+}
+
+/*
  * A phone-width world pane (Travel Mode): the TV's narration size leaves the
  * scene's choices below the fold. One step down still reads at arm's length.
  */
