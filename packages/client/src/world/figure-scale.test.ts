@@ -22,7 +22,7 @@ import {
   widthFit,
   type SizedFigure,
 } from "./figure-scale";
-import { FLY_DRIFT, HOVER_BOB, stanceIdle } from "./idle-motion";
+import { FLY_DRIFT, HOVER_BOB, STAND_SWAY, stanceIdle } from "./idle-motion";
 
 const standing = (heightCm: number, paint: StageFigure["paint"] = null): StageFigure => ({ heightCm, stance: "standing", paint });
 /** A unicorn, a kitsune and a bigfoot, with their Fledgling art as measured. */
@@ -175,12 +175,14 @@ describe("sizes and stances from data", () => {
 describe("stance idles", () => {
   const seconds = [0, 0.7, 1.5, 2.2, 3.1, 4.4];
 
-  it("breathes when standing and moves nothing else", () => {
+  it("breathes and leans a little when standing, with its feet where they were", () => {
     for (const t of seconds) {
       const idle = stanceIdle("standing", t, 0);
-      expect(idle).toMatchObject({ dx: 0, dy: 0, rotation: 0, shadow: 1, ripple: 1 });
+      expect(idle).toMatchObject({ dx: 0, dy: 0, shadow: 1, ripple: 1 });
+      expect(Math.abs(idle.rotation)).toBeLessThanOrEqual(STAND_SWAY);
     }
-    expect(stanceIdle("standing", 3, 0).breath).toBeGreaterThan(0);
+    expect(stanceIdle("standing", 2, 0).breath).toBeGreaterThan(0);
+    expect(seconds.some((t) => stanceIdle("standing", t, 0).rotation !== 0)).toBe(true);
   });
 
   it("bobs a hoverer up, never down through its rest, and tightens its shadow as it rises", () => {
