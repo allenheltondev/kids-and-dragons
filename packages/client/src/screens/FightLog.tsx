@@ -52,8 +52,7 @@ import "./FightLog.css";
 /** How many lines the TV shows: the last few beats, never a wall of text. */
 export const FIGHT_LOG_LINES = 4;
 
-/** Batches kept: enough to fill the lines even when a batch is one beat long. */
-const BATCHES_KEPT = FIGHT_LOG_LINES;
+
 
 /** What a kid needs to know about Guard, said once under the log. */
 export const GUARD_WORDS = "Guard is how hard someone is to hit. Roll that much or more to hit them.";
@@ -68,13 +67,35 @@ export function fightLogLines(
   return lines.filter((line) => !line.environment).slice(-limit);
 }
 
+/**
+ * The batches the log still needs: the newest ones that between them hold the
+ * last `limit` lines, and none older. Counted in lines, not batches, because a
+ * batch can say nothing at all (a step, a wall going up, a place's own beat
+ * the log leaves out): a cap of four batches let four steps push every swing
+ * out and put "The fight is on!" back mid-fight.
+ */
+export function batchesForLines<B extends { readonly seq: number; readonly events: readonly EncounterEvent[] }>(
+  batches: readonly B[],
+  encounter: Parameters<typeof describeBeats>[1],
+  limit: number = FIGHT_LOG_LINES,
+): B[] {
+  let lines = 0;
+  let from = batches.length;
+  while (from > 0 && lines < limit) {
+    from -= 1;
+    const batch = batches[from]!;
+    lines += describeBeats(batch.events, encounter, null, batch.seq).filter((line) => !line.environment).length;
+  }
+  return batches.slice(from);
+}
+
 export function FightLog(): ReactElement | null {
   const encounter = useRunState()?.encounter ?? null;
   const [batches, setBatches] = useState<{ seq: number; events: readonly EncounterEvent[] }[]>([]);
 
   const take = (events: readonly EncounterEvent[] | undefined, seq: number): void => {
     if (!events || events.length === 0) return;
-    setBatches((kept) => [...kept, { seq, events }].slice(-BATCHES_KEPT));
+    setBatches((kept) => [...kept, { seq, events }]);
   };
   usePresentation("COMBAT_SEQUENCE", (presentation, event) => take(presentation.events, event.seq));
   usePresentation("ENCOUNTER_BEGAN", (presentation, event) => take(presentation.events, event.seq));
@@ -91,6 +112,14 @@ export function FightLog(): ReactElement | null {
     if (previousFight.current !== null && previousFight.current !== fightId) setBatches([]);
     previousFight.current = fightId;
   }, [fightId]);
+
+  // Let go of the batches no line on screen comes from. Counted against the fight in state,
+  // so not before it arrives: the opening round can land first (see above).
+  useEffect(() => {
+    if (encounter === null) return;
+    const needed = batchesForLines(batches, encounter);
+    if (needed.length < batches.length) setBatches(needed);
+  }, [batches, encounter]);
 
   const box = useRef<HTMLElement | null>(null);
   const shown = encounter !== null;

@@ -1266,6 +1266,12 @@ describe("what just happened", () => {
         },
       });
     });
+    // The line takes its row when the turn moves on, never mid-turn.
+    const heroIndex = encounter.order.indexOf("c_hero");
+    act(() => {
+      const current = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...current, encounter: { ...current.encounter!, turnIndex: heroIndex } } });
+    });
 
     const log = screen.getByRole("group", { name: "What just happened" });
     // One line on screen, the newest: the swing and what it did, together.
@@ -1278,6 +1284,71 @@ describe("what just happened", () => {
       "Bramblewisp 1 gets 1 back. 6 now.",
       "Bramblewisp 1 rolled 16 + 3 = 19 vs Guard 12. Solid hit! You take 3. 7 left.",
     ]);
+  });
+});
+
+describe("the phone's line holds still", () => {
+  const roll = (over: Partial<import("@kad/shared").DiceRoll> = {}): import("@kad/shared").DiceRoll => ({
+    die: 14,
+    mod: 3,
+    total: 17,
+    tn: 11,
+    result: "hit",
+    characterId: "c_hero",
+    stat: "might",
+    ...over,
+  });
+  const swing = (seq: number) => ({
+    seq,
+    presentation: {
+      kind: "COMBAT_SEQUENCE" as const,
+      events: [
+        { type: "roll" as const, roll: roll({ characterId: "wisp#1", die: 16, mod: 3, total: 19, tn: 12, stat: undefined }), targetId: "c_hero", tier: "solid" as const },
+        { type: "damage" as const, actorId: "c_hero", amount: 3, hp: 7 },
+      ],
+    },
+  });
+  const step = (seq: number) => ({
+    seq,
+    presentation: { kind: "COMBAT_SEQUENCE" as const, events: [{ type: "moved" as const, actorId: "c_hero", to: { x: 1, y: 1 } }] },
+  });
+  const turnTo = (index: number) =>
+    act(() => {
+      const current = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...current, encounter: { ...current.encounter!, turnIndex: index } } });
+    });
+  const line = () => document.querySelector(".combat__beat")?.textContent ?? null;
+
+  it("keeps the last swing through a step, and a step after a step", () => {
+    // A review: a step arrives as a batch that says nothing, and taking it
+    // as the last beat blanked the line, so the board grew a row and lost it
+    // again between a step and an attack.
+    const encounter = encounterWith();
+    mount({ encounter: { ...encounter, turnIndex: encounter.order.findIndex((id) => id.startsWith("wisp")) } });
+    act(() => useGameStore.setState({ presentation: swing(201) }));
+    turnTo(encounter.order.indexOf("c_hero"));
+    expect(line()).toContain("Solid hit! You take 3.");
+
+    act(() => useGameStore.setState({ presentation: step(202) }));
+    expect(line()).toContain("Solid hit! You take 3.");
+    act(() => useGameStore.setState({ presentation: step(203) }));
+    expect(line()).toContain("Solid hit! You take 3.");
+  });
+
+  it("gives a first line its row at the next turn, not in the middle of this one", () => {
+    // Move, then attack, with steps still to walk: the board must not lose a
+    // row under the finger aiming at it.
+    const encounter = encounterWith();
+    mount({ encounter: { ...encounter, turnIndex: encounter.order.indexOf("c_hero") } });
+    act(() => useGameStore.setState({ presentation: step(301) }));
+    expect(document.querySelector(".combat__log")).toBeNull();
+    act(() => useGameStore.setState({ presentation: swing(302) }));
+    expect(document.querySelector(".combat__log")).toBeNull();
+    // Said to a screen reader all the same.
+    expect(screen.getByRole("group", { name: "What just happened" }).textContent).toContain("Solid hit!");
+
+    turnTo(encounter.order.findIndex((id) => id.startsWith("wisp")));
+    expect(line()).toContain("Solid hit! You take 3.");
   });
 });
 
