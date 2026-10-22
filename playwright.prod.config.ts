@@ -9,6 +9,7 @@ import { defineConfig } from "@playwright/test";
  *   perf.spec              what a phone downloads on its first visit and every one after
  *   production-locks.spec  the playtest drawer did not ship (#263)
  *   installable.spec      the manifest, icons and worker Chromium installs from (#410)
+ *   worker-update.spec    a deploy's new worker taking over a room mid-game (#413)
  *
  * Two servers: the dev API server, and `vite preview` serving the built
  * client, which proxies `/api`, `/events`, `/content` and `/assets` to it
@@ -19,7 +20,7 @@ const PORT = 4173;
 
 export default defineConfig({
   testDir: "./e2e",
-  testMatch: ["offline.spec.ts", "perf.spec.ts", "production-locks.spec.ts", "installable.spec.ts"],
+  testMatch: ["offline.spec.ts", "perf.spec.ts", "production-locks.spec.ts", "installable.spec.ts", "worker-update.spec.ts"],
   timeout: 180_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,
