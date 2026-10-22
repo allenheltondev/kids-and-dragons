@@ -11,8 +11,19 @@
 
 import { useEffect } from "react";
 import { useGameStore } from "../store";
-import { onWake } from "./wake";
+import { WAKE_COALESCE_MS, onWake } from "./wake";
+
+/*
+ * One wake is one fresh stream for the page, however many screens on it are
+ * listening: each `onWake` merges only its own burst.
+ */
+let lastReconnect = -Infinity;
 
 export function useReconnectOnWake(): void {
-  useEffect(() => onWake(() => { useGameStore.getState().reconnect(); }), []);
+  useEffect(() => onWake(() => {
+    const at = Date.now();
+    if (at - lastReconnect < WAKE_COALESCE_MS) return;
+    lastReconnect = at;
+    useGameStore.getState().reconnect();
+  }), []);
 }
