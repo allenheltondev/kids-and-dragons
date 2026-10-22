@@ -20,6 +20,7 @@ import type { PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
 import { TravelLayout } from "./TravelLayout";
 import { rollCardMs } from "../world/presentation";
+import { useHelpFocus } from "../help/focus";
 
 function character(): ResolvedCharacter {
   return {
@@ -359,5 +360,127 @@ describe("Travel Mode and the Field Guide (#112)", () => {
     expect(container.querySelector('[data-pane="player"] .field-guide')).toBeNull();
     expect(tab(container, "Guide").getAttribute("aria-pressed")).toBe("false");
     vi.unstubAllGlobals();
+  });
+});
+
+describe("Travel Mode on a tablet held sideways", () => {
+  beforeEach(() => {
+    vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+      matches: query.includes("orientation: landscape"),
+      media: query,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    })));
+  });
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  /** Every pane on screen, the way the CSS reads it. */
+  function shown(container: HTMLElement): string[] {
+    return [...container.querySelectorAll('.kad-travel__pane[data-showing="true"]')]
+      .map((pane) => pane.getAttribute("data-pane") ?? "")
+      .sort();
+  }
+
+  it("never hides the world or the controls: the map takes the world's place beside them", () => {
+    const { container } = mount();
+    expect(shown(container)).toEqual(["player", "world"]);
+    act(() => {
+      tab(container, "Map").click();
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+    // You is already on the screen: tapping it leaves the map where it is.
+    act(() => {
+      tab(container, "You").click();
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+    act(() => {
+      tab(container, "World").click();
+    });
+    expect(shown(container)).toEqual(["player", "world"]);
+  });
+
+  it("brings an open question forward when the tablet turns upright", () => {
+    // A matchMedia that can turn: sideways first, then upright.
+    let sideways = true;
+    const listeners = new Set<() => void>();
+    vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+      get matches() { return sideways && query.includes("orientation: landscape"); },
+      media: query,
+      addEventListener: (_: string, fn: () => void) => listeners.add(fn),
+      removeEventListener: (_: string, fn: () => void) => listeners.delete(fn),
+    })));
+    const { container } = mount();
+    act(() => {
+      tab(container, "Map").click();
+    });
+    // The question arrives while the controls are already beside the map: nothing moves.
+    act(() => {
+      useGameStore.setState({
+        state: {
+          ...state(),
+          seq: 10,
+          phase: "scene",
+          prompt: {
+            kind: "choice",
+            sceneId: "rest_lanternfall",
+            options: [{ id: "on", label: "Onward", icon: "arrow" }],
+            forPlayerIds: ["p_1"],
+            vote: false,
+          },
+        },
+      });
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+    // Upright, one pane at a time: the question, not the map.
+    act(() => {
+      sideways = false;
+      for (const fn of listeners) fn();
+    });
+    expect(shown(container)).toEqual(["player"]);
+  });
+
+  it("explains the pane she last went to: the map, then her controls beside it", () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise(() => undefined)));
+    const { container } = mount();
+    act(() => {
+      tab(container, "Map").click();
+    });
+    expect(useHelpFocus.getState().pane).toBe("map");
+    // You is already on the screen, so the map stays; the "?" follows her to the controls.
+    act(() => {
+      tab(container, "You").click();
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+    expect(useHelpFocus.getState().pane).toBe("player");
+    act(() => {
+      tab(container, "Map").click();
+    });
+    act(() => {
+      tab(container, "Guide").click();
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+    expect(useHelpFocus.getState().pane).toBe("player");
+  });
+
+  it("gives the die the big pane while the map is up, and keeps the controls", () => {
+    const { container } = mount();
+    act(() => {
+      tab(container, "Map").click();
+    });
+    act(() => {
+      useGameStore.setState({
+        presentation: {
+          seq: 10,
+          presentation: { kind: "ROLL", roll: { d20: 14, modifier: 0, total: 14, tn: 10, success: true } },
+        } as never,
+      });
+    });
+    expect(shown(container)).toEqual(["player", "world"]);
+    act(() => {
+      vi.advanceTimersByTime(rollCardMs({}) + 100);
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
   });
 });

@@ -1,0 +1,487 @@
+{
+  "files": 38,
+  "expected": 38,
+  "total_bytes": 132680,
+  "target_total_bytes": 160000,
+  "per_file_target_bytes": 8000,
+  "oversized": [],
+  "assets": [
+    {
+      "id": "pane-spine",
+      "bytes": 914,
+      "size": [
+        32,
+        256
+      ],
+      "alpha_extrema": [
+        18,
+        255
+      ],
+      "edge_mean_absolute_difference": {
+        "vertical": 3.242
+      }
+    },
+    {
+      "id": "pane-spine-cap",
+      "bytes": 1412,
+      "size": [
+        32,
+        64
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "pane-spine-boss",
+      "bytes": 2396,
+      "size": [
+        64,
+        64
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "pane-corner",
+      "bytes": 2266,
+      "size": [
+        96,
+        96
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "rail-wood",
+      "bytes": 722,
+      "size": [
+        208,
+        256
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "edge_mean_absolute_difference": {
+        "vertical": 1.218
+      }
+    },
+    {
+      "id": "rail-rim",
+      "bytes": 532,
+      "size": [
+        8,
+        256
+      ],
+      "alpha_extrema": [
+        163,
+        255
+      ],
+      "edge_mean_absolute_difference": {
+        "vertical": 21.75
+      }
+    },
+    {
+      "id": "tray-wood",
+      "bytes": 594,
+      "size": [
+        256,
+        144
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "edge_mean_absolute_difference": {
+        "horizontal": 1.054
+      }
+    },
+    {
+      "id": "tray-rim",
+      "bytes": 532,
+      "size": [
+        256,
+        8
+      ],
+      "alpha_extrema": [
+        164,
+        255
+      ],
+      "edge_mean_absolute_difference": {
+        "horizontal": 9.688
+      }
+    },
+    {
+      "id": "rail-socket",
+      "bytes": 3086,
+      "size": [
+        112,
+        112
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "rail-current",
+      "bytes": 1200,
+      "size": [
+        24,
+        160
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "tray-current",
+      "bytes": 1364,
+      "size": [
+        160,
+        24
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "rail-foot",
+      "bytes": 3730,
+      "size": [
+        208,
+        208
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "corner-bezel",
+      "bytes": 2908,
+      "size": [
+        96,
+        96
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "panel",
+      "bytes": 2514,
+      "size": [
+        192,
+        192
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "panel-featured",
+      "bytes": 5796,
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "panel-sunken",
+      "bytes": 662,
+      "size": [
+        128,
+        128
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "plate-story",
+      "bytes": 6624,
+      "size": [
+        512,
+        192
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "strip-identity",
+      "bytes": 3582,
+      "size": [
+        256,
+        128
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "heading-ribbon",
+      "bytes": 5460,
+      "size": [
+        384,
+        96
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "rule-flourish",
+      "bytes": 4252,
+      "size": [
+        512,
+        32
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "goal-paper",
+      "bytes": 7464,
+      "size": [
+        384,
+        192
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "goal-box",
+      "bytes": 900,
+      "size": [
+        64,
+        64
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "goal-box-ticked",
+      "bytes": 1902,
+      "size": [
+        64,
+        64
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "code-coin",
+      "bytes": 3900,
+      "size": [
+        128,
+        128
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "tag-place",
+      "bytes": 4332,
+      "size": [
+        192,
+        96
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "tab-flip",
+      "bytes": 5130,
+      "size": [
+        384,
+        112
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "tab-flip-on",
+      "bytes": 5896,
+      "size": [
+        384,
+        112
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "button-choice",
+      "bytes": 6190,
+      "size": [
+        384,
+        128
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "button-choice-picked",
+      "bytes": 7170,
+      "size": [
+        384,
+        128
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "button-choice-pressed",
+      "bytes": 6210,
+      "size": [
+        384,
+        128
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "button-primary",
+      "bytes": 4856,
+      "size": [
+        384,
+        128
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "button-primary-pressed",
+      "bytes": 4092,
+      "size": [
+        384,
+        128
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "button-secondary",
+      "bytes": 3014,
+      "size": [
+        384,
+        112
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "hp-frame",
+      "bytes": 2366,
+      "size": [
+        256,
+        40
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "slot-frame",
+      "bytes": 4708,
+      "size": [
+        160,
+        160
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "paper-night",
+      "bytes": 922,
+      "size": [
+        512,
+        512
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "luminance_range_fraction": 0.01176,
+      "edge_mean_absolute_difference": {
+        "vertical": 0.25,
+        "horizontal": 0.404
+      }
+    },
+    {
+      "id": "vignette",
+      "bytes": 5292,
+      "size": [
+        512,
+        512
+      ],
+      "alpha_extrema": [
+        0,
+        208
+      ],
+      "center_alpha": 0
+    },
+    {
+      "id": "ornament-empty",
+      "bytes": 7790,
+      "size": [
+        256,
+        256
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    }
+  ]
+}

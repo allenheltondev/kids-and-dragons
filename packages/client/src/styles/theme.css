@@ -409,6 +409,32 @@ html[data-motion="reduced"] *::after {
   /* The player pane is text and buttons, so it scales off the smaller axis to
      avoid enormous type on a landscape tablet. */
   font-size: calc(clamp(15px, min(2.2cqw, 4.6cqh), 21px) * var(--kad-text-scale));
+  /* A column, so a host's Room bar, the notices and the catch-up line above the controls take
+     their own height and the controls the rest. As a block, the controls were the whole pane
+     under them, so either the Room bar or the foot of the controls was out of sight. */
+  display: flex;
+  flex-direction: column;
+  /* A small phone at the largest text, with notices up, can need more than the pane: then the
+     pane scrolls, rather than hiding what does not fit. */
+  overflow-y: auto;
+}
+
+/* The rest of the height, and never less than their own pinned parts (the identity strip, the
+   commit); everything else in them scrolls inside. */
+.kad-surface--player > .player,
+.kad-surface--player > .player-view__creation > .creation {
+  flex: 1 1 0;
+  /* Not the 100% they ask for alone: in a column that would also be their least height, and a
+     host's Room bar above them would push their foot (the commit, Next) off the pane. */
+  block-size: auto;
+}
+
+/* The creation flow is a grid whose middle scrolls. Its least height would be all of its content
+   (Next a screen below the fold), and none at all lets a host's open Room controls crush it until
+   its head and foot cover the cards. So a floor: the pane, or 24em when the pane is taller; past
+   that the pane scrolls (above), and the middle scrolls within. */
+.kad-surface--player > .player-view__creation > .creation {
+  min-block-size: min(100%, 24em);
 }
 
 .kad-surface--map {
