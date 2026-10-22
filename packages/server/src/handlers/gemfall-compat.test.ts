@@ -231,13 +231,19 @@ const DIGESTS: PreEpicSave["digests"] = {
  * road question an ash-map check, and the spine reads shorter. A graph change,
  * but every terminal scene keeps its id, file order, outcome and effects, and
  * the endings, roads, setbacks and saves below still match their digests.
+ *
+ * Re-pinned 2026-10-22 for Gemfall's prologue (docs/story-plates.md): the campaign file
+ * gained `prologue`, four painted plates with the story told over them, shown once per
+ * device before chapter 1's first scene. Only the campaign file changed (no chapter file,
+ * scene, edge, flag, effect, stat or TN), and the engine and server never read the field.
+ * The endings, roads, setbacks and saves below still match their digests.
  */
 // Re-pinned for #384: fourteen commissioned cast figures replace role stand-ins;
 // chapter edits change cast figures and remove obsolete size overrides only.
 // Review follow-up also replaces four unnamed Keeper entries and the chapter-2 relay runner.
 // The gameplay digests (endings, roads, setbacks and saves) remain unchanged.
 const GEMFALL_FILES: Record<string, string> = {
-  "campaigns/gemfall.json": "cfb136f60708bcd2e5b68a7536ccd963a83dadb52e61e9e679377f264b10bf88",
+  "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
   "chapters/gemfall-01.json": "6a21e0dc2ca2e51b053ef8733c68d179484e31f39e048081c0fd36bfaef739a0",
   "chapters/gemfall-02.json": "d1963f88590f6c61256d50ca9f4e344948bd4a99c12650b725877b71f59d5503",
   "chapters/gemfall-03a.json": "940cc652383e330178142033b55ea966544b68ed0c7487eb64c0ae7db0d93769",

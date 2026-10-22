@@ -44,13 +44,13 @@ Snapshot — regenerate with `npm run art:inventory`.
 | Effect sheets, declared | **28 / 28** | — |
 | Entity cutouts | **32 / 32** | — |
 | Campaign key art | **2 / 2** | — |
-| **Story plates** (prologue + chapter plates) | **0 / 9** | **9 to paint** |
+| **Story plates** (prologue + chapter plates) | **0 / 13** | **13 to paint** |
 | Effect sheets, specified but undeclared | **0 / 0** | — |
 | **Entity part-sets (combat roster)** | **9 / 9** | — |
 
-**10 class figures and 9 story plates outstanding.** The character-and-gear paintings are complete.
+**10 class figures and 13 story plates outstanding.** The character-and-gear paintings are complete.
 What remains is a finished transparent `assembled.png` for each of the 10 Mythic Starweaver and
-Songkeeper figures, and the nine Riftlight story plates ([story-plates.md](./story-plates.md)).
+Songkeeper figures, and the thirteen story plates, Gemfall's four and Riftlight's nine ([story-plates.md](./story-plates.md)).
 
 ---
 
@@ -124,11 +124,11 @@ to the contract in [art-pipeline.md](./art-pipeline.md), declared in `manifest.f
 Undelivered combinations fall back to the un-geared species figure on figure surfaces; still-image
 surfaces already use the approved gear portrait.
 
-### 4.1b Story plates — 9 to paint
+### 4.1b Story plates — 13 to paint
 
 Full-screen paintings with the story told over them, before the table decides anything: a
-campaign's prologue and one-off chapter plates. Riftlight's four prologue plates and five chapter
-plates are written and wired; their paintings are owed. 1600×900 opaque WebP at
+campaign's prologue and one-off chapter plates. Gemfall's four prologue plates and Riftlight's four
+prologue plates and five chapter plates are written and wired; their paintings are owed. 1600×900 opaque WebP at
 `assets/plates/<campaign>/<name>.webp`, declared in `manifest.storyPlates`. The story plays without
 a plate until its painting lands. Spec, safe area and delivery steps: [story-plates.md](./story-plates.md);
 prompts: [story-plates-prompts.json](./story-plates-prompts.json); composition check:
