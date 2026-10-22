@@ -196,6 +196,14 @@ aws s3 sync content "s3://$BUCKET/content" --delete --cache-control "public,max-
 # be cached or a deploy leaves phones on the previous bundle.
 aws s3 sync packages/client/dist "s3://$BUCKET" \
   --exclude "bundle/*" \
+  --exclude "manifest.webmanifest" \
+  --cache-control "no-cache"
+
+# The install manifest (epic #410), by itself: `s3 sync` guesses types from
+# the extension, and an unknown one would go up as binary/octet-stream, which
+# browsers decline to read as a manifest.
+aws s3 cp packages/client/dist/manifest.webmanifest "s3://$BUCKET/manifest.webmanifest" \
+  --content-type "application/manifest+json" \
   --cache-control "no-cache"
 
 say "Invalidating CloudFront"
