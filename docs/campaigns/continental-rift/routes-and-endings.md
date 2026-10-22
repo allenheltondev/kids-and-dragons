@@ -14,12 +14,13 @@ of timed family playtests (see Production gates).
 **XP.** The agreed 140 / 650 / 140 awards are kept: 140 for each ordinary
 chapter and 650 at the convergence, paid once per chapter per attempt. The
 graph admits longer routes than the design bible's original 11–16-node
-estimate; one route visits all 24 places (review on #405), so the most any
-route pays is 3,870 XP. That is welcome: level 8 is not a cap (the curve
+estimate. An abstract search of the graph (review on #405, not an
+engine-driven playthrough) found a route through all 24 places, and every
+chapter's award once is 3,870 XP, the most any route can pay. That is welcome: level 8 is not a cap (the curve
 runs to 10 today and is meant to grow, perhaps toward 30), and exploring a
 new place should pay. `tools/content/riftlight-xp.test.ts` pins the awards.
 The open progression question is replay, not height: a new attempt after
-finishing a campaign pays its chapters again (review on #405).
+finishing a campaign pays its chapters again (#407).
 
 ## Play locally
 
