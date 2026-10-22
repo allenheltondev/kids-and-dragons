@@ -37,14 +37,15 @@
  * Mode phone has no other view of it), and a turn spent looking at a blank
  * pane is a turn not spent planning the next one. On your turn its squares
  * become the taps; on anybody else's it is a map to think over. Above it,
- * what just happened, in one line: the newest swing with its sum and the
- * Guard it needed, because a d20 that nobody sees is not a d20. The running
- * log is the shared screen's (FightLog), so the phone keeps only that line.
+ * once something has happened, what just happened, in one line: the newest
+ * swing with its sum and the Guard it needed. The running log is the shared
+ * screen's (FightLog), so the phone keeps only that line. Your own turn is
+ * the pinned strip's to say (PlayerPanel), not a row here.
  *
  * The board keeps its size for the whole turn. It takes whatever height the
  * pane has left, so anything around it that grew or shrank on a tap used to
  * resize the map under the finger aiming at it. So everything around it has a
- * seat that does not change: the title row, the log line, the legend, and the
+ * seat that does not change within a turn: the log line, the legend, and the
  * dock under the board — one line for the hint or the question, and the
  * cards below it, held at the tallest they have been this turn.
  */
@@ -475,7 +476,7 @@ export function CombatControls(): ReactElement | null {
           ? `You can still walk ${encounter.stepsLeft} step${encounter.stepsLeft === 1 ? "" : "s"}, or end your turn.`
           : null
         : moves.length > 0
-          ? "Walk on a gold square, or pick one thing."
+          ? `Walk up to ${encounter.stepsLeft} step${encounter.stepsLeft === 1 ? "" : "s"} on gold, or pick one thing.`
           : "Pick one thing to do.";
 
   const inBag = selection.step === "items";
@@ -487,24 +488,10 @@ export function CombatControls(): ReactElement | null {
 
   return (
     <div className="prompt combat">
-      {/* The title row and the waiting line swap at every turn, in a seat of
-          the same height (CombatPanel.css), so neither moves the board. */}
-      {myTurn ? (
-        <h3 className="prompt__title combat__title">
-          <Icon name="swords" />
-          <span className="combat__line">Your turn, {me.character.name}!</span>
-          {/* Steps left, kept on the row when there are none to spend; the
-              "s" keeps its room at 1 step, so 2 → 1 does not shift a thing. */}
-          <span className="kad-chip combat__steps" style={seat(!encounter.actionTaken || moves.length > 0)}>
-            <Icon name="steps" />
-            {/* One span: the chip is a flex row, and a bare "s" beside it was
-                its own item, set off by the chip's gap as "step s". */}
-            <span>
-              {encounter.stepsLeft} step<span style={seat(encounter.stepsLeft !== 1)}>s</span>
-            </span>
-          </span>
-        </h3>
-      ) : (
+      {/* Somebody else's turn: whose, in one line. Your own turn has no row
+          here: the pinned strip lights your name and face (PlayerPanel
+          IdentityStrip), and a playtest wanted the row for the cards. */}
+      {myTurn ? null : (
         <p className="player__waiting combat__waiting" role="status">
           <Icon name="waiting" />
           <span className="combat__line">
@@ -533,8 +520,8 @@ export function CombatControls(): ReactElement | null {
       {/* What the last beat did, in one line: the newest swing, its sum and
           the Guard it needed, or whatever else just happened. The running
           log with every roll drawn out is the TV's (FightLog); here it is a
-          single line, so a phone gives its rows to the board. There from the
-          fight's first moment. */}
+          single line, so a phone gives its rows to the board, and nothing
+          until the first beat lands. */}
       <LastBeat beats={beats} />
 
       {/*
@@ -1211,18 +1198,15 @@ function useBeats(encounter: EncounterState | null, myId: string | null): readon
  * swing's sum, what it needed and how hard it landed, all in the line's words
  * (fight-log.ts). The whole beat stays readable to a screen reader.
  */
-function LastBeat({ beats }: { beats: readonly Beat[] }): ReactElement {
+function LastBeat({ beats }: { beats: readonly Beat[] }): ReactElement | null {
   const last = beats.at(-1) ?? null;
+  // Before anything has happened there is nothing to say: "The fight is on!"
+  // held the row from the first moment, and a playtest asked for it back.
+  if (!last) return null;
   return (
     <div className="combat__log" aria-label="What just happened" role="group">
-      <p
-        key={last?.key ?? "quiet"}
-        className={`combat__beat combat__line combat__beat--${last?.tone ?? "quiet"}`}
-        aria-hidden="true"
-      >
-        {/* The box is up from the first moment of the fight; empty, it read as
-            something broken. */}
-        {last ? last.text : "The fight is on!"}
+      <p key={last.key} className={`combat__beat combat__line combat__beat--${last.tone}`} aria-hidden="true">
+        {last.text}
       </p>
       <ol className="kad-sr-only" aria-live="polite">
         {beats.map((beat) => (

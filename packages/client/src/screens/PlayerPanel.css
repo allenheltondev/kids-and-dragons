@@ -68,6 +68,48 @@
   flex: 1 1 auto;
 }
 
+/*
+ * Your turn in a fight (IdentityStrip `myTurn`): your name goes gold and a
+ * warm glow rises behind your face, breathing slowly so it catches the eye
+ * from across the room. Still under reduced motion, just lit.
+ */
+.sheet--turn {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--color-accent, #ffc95c) 22%, transparent), transparent 70%),
+    var(--color-surface, #191534);
+}
+
+.sheet--turn .sheet__portrait {
+  box-shadow:
+    0 0 0 0.14em var(--color-accent, #ffc95c),
+    0 0 0.9em 0.2em color-mix(in srgb, var(--color-accent, #ffc95c) 70%, transparent);
+  animation: sheet-turn-glow 2s ease-in-out infinite;
+}
+
+.sheet--turn .sheet__name {
+  color: var(--color-accent, #ffc95c);
+  text-shadow: 0 0 0.5em color-mix(in srgb, var(--color-accent, #ffc95c) 55%, transparent);
+}
+
+@keyframes sheet-turn-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 0 0.14em var(--color-accent, #ffc95c),
+      0 0 0.5em 0.1em color-mix(in srgb, var(--color-accent, #ffc95c) 50%, transparent);
+  }
+  50% {
+    box-shadow:
+      0 0 0 0.14em var(--color-accent, #ffc95c),
+      0 0 1.1em 0.3em color-mix(in srgb, var(--color-accent, #ffc95c) 80%, transparent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet--turn .sheet__portrait {
+    animation: none;
+  }
+}
+
 .sheet__name {
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 800;

@@ -1606,6 +1606,23 @@ describe("the party strip", () => {
     expect(screen.getByText("Your things")).toBeTruthy();
   });
 
+  it("lights your own strip on your turn in a fight, and shows no goal there", () => {
+    // A playtest: the goal banner and a "Your turn, Name!" row took the
+    // room the fight's cards needed. Your name and face light up instead.
+    mount({ phase: "encounter" });
+    const fight = realEncounter();
+    const hero = fight.order.findIndex((id) => !id.startsWith("wisp"));
+    serverSends({ encounter: { ...fight, turnIndex: hero } });
+    const strip = document.querySelector(".sheet")!;
+    expect(strip.classList.contains("sheet--turn")).toBe(true);
+    expect(strip.textContent).toContain("your turn!");
+    expect(document.querySelector(".goal")).toBeNull();
+
+    // Somebody else's turn: the strip is back to plain.
+    serverSends({ encounter: { ...fight, turnIndex: fight.order.findIndex((id) => id.startsWith("wisp")) } });
+    expect(document.querySelector(".sheet")!.classList.contains("sheet--turn")).toBe(false);
+  });
+
   it("gives the controller back when the tray dismisses a character sheet", async () => {
     // With a question open, the party waits behind the dock and covers the
     // prompt rather than sitting under it, so the way back has to put the

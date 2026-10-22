@@ -175,7 +175,8 @@ test.describe("the chapter's goal (#356)", () => {
     expect(await ticks(tvGoal)).toEqual([true, false, false]);
     await expect(tvGoal.locator(".goal__step--fresh")).toHaveCount(0);
 
-    // In a fight it folds to the goal and its pips, in the top corner, on both screens.
+    // In a fight it folds to the goal and its pips in the TV's top corner; the phone gives
+    // its room to the fight's cards and shows no goal at all.
     await jumpTo(kid, code, "encounter_bramblewisps");
     // The kid readies up on the phone, as before any fight; the TV is still only watched.
     await openPlayerTask(kid);
@@ -183,7 +184,7 @@ test.describe("the chapter's goal (#356)", () => {
     await expect.poll(async () => Boolean((await roomState<{ encounter?: unknown }>(kid, code)).encounter), TAP).toBe(true);
     await expect(tv.locator(".world__goal .goal--folded")).toBeVisible(TAP);
     await expect(tv.locator(".world__goal .goal__pips")).toHaveAttribute("aria-label", "1 of 3 done");
-    await expect(kid.locator(".goal--phone.goal--folded")).toBeVisible(TAP);
+    await expect(kid.locator(".goal--phone")).toHaveCount(0);
     await shot(tv, "tv-fight");
 
     // The rest of the way: through the wood, and the door opens whichever way the roll goes.
