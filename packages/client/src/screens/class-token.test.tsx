@@ -114,7 +114,7 @@ describe("spare tokens in the pack", () => {
       />,
     );
     expect(document.querySelectorAll(".sheetview__slot")).toHaveLength(INVENTORY_SLOTS);
-    expect(screen.getByText("Your old gear (it never takes a slot)")).toBeTruthy();
+    expect(screen.getByText("Your old gear")).toBeTruthy();
     expect(screen.getByRole("img", { name: "thorn bracer, 2 notches" })).toBeTruthy();
     expect(screen.getByRole("img", { name: "song bell, no notches yet" })).toBeTruthy();
     expect(screen.getByText("Your star circlet")).toBeTruthy();

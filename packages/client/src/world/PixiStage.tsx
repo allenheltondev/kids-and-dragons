@@ -18,7 +18,7 @@ import { RendererFallback } from "./RendererFallback";
 import { sceneArtFor } from "./art-paths";
 import { sceneRiftFor } from "./scene-rift";
 import { castFor } from "./cast";
-import { onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
+import { boardInsetEnd, onBoardInsetEnd, onStageInset, onStageInsetTop, stageInsetBottom, stageInsetTop } from "./stage-inset";
 
 /**
  * Enemy spec id → art id, read off the chapter's encounter scene. The
@@ -205,6 +205,7 @@ export function PixiStage(): React.JSX.Element {
       scene.setCast(visibleGuestsRef.current);
       scene.setStageInset(stageInsetBottom());
       scene.setStageInsetTop(stageInsetTop());
+      scene.setBoardInset(boardInsetEnd());
       scene.setEncounter(boardView(live.state, live.state?.party ?? [], live.chapter, live.previews));
 
       /** Run the ticker only when a frame could actually be seen. */
@@ -282,6 +283,8 @@ export function PixiStage(): React.JSX.Element {
   // The narration plate's height, so the story stands above it.
   useEffect(() => onStageInset((px) => sceneRef.current?.setStageInset(px)), []);
   useEffect(() => onStageInsetTop((px) => sceneRef.current?.setStageInsetTop(px)), []);
+  // The fight log's width, so the board stands clear of it.
+  useEffect(() => onBoardInsetEnd((px) => sceneRef.current?.setBoardInset(px)), []);
 
   // The board is a reader of the mirrored state (brief, trap 2): every patch
   // that touches the encounter flows through here and nowhere else.

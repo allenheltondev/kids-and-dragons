@@ -68,6 +68,89 @@
   flex: 1 1 auto;
 }
 
+/*
+ * The game is waiting on you (IdentityStrip `myTurn`): the whole strip turns
+ * gold, a gradient from the light gold to the deep one, and everything on it
+ * goes to the dark ink the theme sets for text on gold (--kad-accent-ink).
+ * Ink on the deepest stop (#c9962f) is about 7:1, past WCAG AA's 4.5:1 for
+ * small text, and nothing on the strip is told by colour alone: the change
+ * is the whole banner, and a screen reader hears "your turn". A gold glow
+ * spills from the banner's bottom edge and breathes, so it catches the eye
+ * from across the room; under reduced motion it stays lit and still.
+ */
+.sheet--turn {
+  --sheet-ink: var(--kad-accent-ink, #0d0b1a);
+  background: linear-gradient(
+    100deg,
+    var(--kad-gold-hi, #ffe6a8) 0%,
+    var(--kad-gold, #f5c86c) 45%,
+    var(--kad-gold-lo, #c9962f) 100%
+  );
+  border-bottom-color: var(--kad-gold-lo, #c9962f);
+  color: var(--sheet-ink);
+  /* Over what comes after it, so the glow below is painted on top. */
+  position: relative;
+  z-index: 2;
+}
+
+/*
+ * The glow under the banner: its own layer, so the breath animates opacity
+ * (cheap on a phone) rather than a box-shadow, and it never takes a tap.
+ */
+.sheet--turn::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 100%;
+  block-size: 1.1em;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--kad-gold, #f5c86c) 75%, transparent),
+    transparent
+  );
+  pointer-events: none;
+  animation: sheet-turn-glow 2.2s ease-in-out infinite;
+}
+
+@keyframes sheet-turn-glow {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+.sheet--turn .sheet__name,
+.sheet--turn .sheet__meta,
+.sheet--turn .sheet__down,
+.sheet--turn .sheet__hp-label,
+.sheet--turn .kad-muted {
+  color: var(--sheet-ink);
+}
+
+.sheet--turn .sheet__meta {
+  font-weight: 600;
+}
+
+.sheet--turn .sheet__portrait {
+  box-shadow: 0 0 0 0.14em var(--sheet-ink);
+}
+
+/* The bar's well stays dark, so the green fill keeps its contrast on gold. */
+.sheet--turn .sheet__hp-track {
+  box-shadow: 0 0 0 0.08em var(--sheet-ink);
+}
+
+/* The waiting point's gold chip would vanish on gold: it turns to ink. */
+.sheet--turn .sheet__points {
+  background: var(--sheet-ink);
+  color: var(--kad-gold-hi, #ffe6a8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet--turn::after {
+    animation: none;
+    opacity: 0.8;
+  }
+}
+
 .sheet__name {
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 800;
@@ -382,15 +465,6 @@
  * Everybody's face, as a way into their sheet. Horizontal and scrollable, so
  * four characters fit a phone without pushing the bag off the bottom.
  */
-.party-strip__heading {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2, 0.5em);
-  margin: 0 0 var(--space-2, 0.5em);
-  font-size: var(--font-size-md, 1em);
-  font-weight: 700;
-}
-
 .party-strip__list {
   display: flex;
   gap: var(--space-2, 0.5em);
@@ -632,13 +706,14 @@
 
 /* --- Sheet + inventory ------------------------------------------------- */
 
+/* Tight between sections: each fold's heading is already a touch-high row of its own. */
 .player__scroll {
   flex: 1 1 auto;
   min-block-size: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2, 0.5em);
-  padding: var(--space-3, 0.75em);
+  gap: var(--space-1, 0.25em);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
 }
 
 .stat-row {
@@ -671,25 +746,9 @@
   font-size: var(--font-size-lg, 1.25em);
 }
 
-.inv__heading,
-.inv__quest-heading {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2, 0.5em);
-  margin: 0 0 var(--space-2, 0.5em);
-  font-size: var(--font-size-md, 1em);
-  font-weight: 700;
-}
-
-/* The party purse sits at the far end of the bag's heading. */
+/* The party purse sits at the far end of the bag's heading, before its chevron. */
 .inv__purse {
-  margin-inline-start: auto;
   font-size: var(--font-size-sm, 0.875em);
-}
-
-.inv__quest-heading {
-  font-size: var(--font-size-sm, 0.875em);
-  color: var(--color-text-muted, #b7b0d8);
 }
 
 /* Six slots, always six — an empty slot is information (spec §9.1). */
@@ -768,7 +827,7 @@
 }
 
 .inv__quest {
-  margin-top: var(--space-2, 0.5em);
+  margin-top: var(--space-1, 0.25em);
 }
 
 .inv__quest-list {
@@ -961,10 +1020,13 @@
  * under the thumb, and the board floats centred in whatever is left — on a
  * tall phone that is a lot, and a board in the middle of it reads as the
  * table it is, where a board jammed against the cards read as "floating".
+ * It may shrink too, so a long list of cards scrolls in its own box under
+ * the board rather than scrolling the board out of the pane (CombatPanel.css).
  */
 .player--fighting .player__prompt > :first-child {
   margin-block-start: 0;
-  flex: 1 0 auto;
+  flex: 1 1 auto;
+  min-block-size: 0;
 }
 
 .player--fighting .combat__grid {
@@ -1167,10 +1229,9 @@
 
 .player__inventory-story { margin: 0 0 0.5em; flex: 0 0 auto; line-height: 1.4; color: var(--kad-ink); }
 .player .player__inventory-back { flex: 0 0 auto; margin: 0.5em 0.75em 0.75em; inline-size: calc(100% - 1.5em); }
-.player__room-settings { margin-block-start: auto; border-block-start: 1px solid var(--kad-border); padding-block-start: 0.5em; }
-.player__room-settings > summary { min-block-size: var(--kad-touch-min); display: flex; align-items: center; cursor: pointer; color: var(--kad-ink-dim); font-size: 0.85em; }
-.player__room-settings > summary::before { content: "▸"; margin-inline-end: 0.5em; }
-.player__room-settings[open] > summary::before { content: "▾"; }
+.player__room-settings { margin-block-start: auto; border-block-start: 1px solid var(--kad-border); padding-block-start: 0.25em; }
+.player__room-settings > .kad-fold__head { color: var(--kad-ink-dim); font-size: 0.85em; font-weight: 400; }
+.player__room-settings > .kad-fold__body:not([hidden]) { display: flex; flex-direction: column; gap: 0.5em; padding-block-end: 0.5em; }
 .kad-room-mode { display: flex; align-items: center; gap: 0.75em; inline-size: 100%; padding: 0.5em; border: 1px solid var(--kad-border); border-radius: var(--kad-radius-md); background: var(--kad-bg-raised); color: var(--kad-ink); font: inherit; text-align: start; }
 .kad-room-mode .kad-tray__object { inline-size: 2em; block-size: 2em; }
 

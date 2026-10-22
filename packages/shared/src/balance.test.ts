@@ -22,6 +22,7 @@ import {
   TARGET_ROUNDS,
   defaultParty,
   estimateEncounter,
+  expectedSwingDamage,
   hitChance,
 } from "./balance.js";
 import type { EnemySpec } from "./types/chapter.js";
@@ -80,6 +81,18 @@ describe("hit chance", () => {
   it("never reports more than 19 in 20 or less than 1 in 20", () => {
     expect(hitChance(100, 11)).toBe(19 / 20);
     expect(hitChance(-100, 11)).toBe(1 / 20);
+  });
+});
+
+describe("expected swing damage", () => {
+  it("weighs each face by the tier it lands at", () => {
+    // d20+3 vs Guard 11, authored 3: faces 8-12 graze (2), 13-19 are solid
+    // (3), and the 20 is a critical (5). (5×2 + 7×3 + 5) / 20.
+    expect(expectedSwingDamage(3, 11, 3)).toBeCloseTo(36 / 20, 5);
+  });
+
+  it("is a natural 20's critical alone when nothing else reaches", () => {
+    expect(expectedSwingDamage(0, 40, 3)).toBeCloseTo(5 / 20, 5);
   });
 });
 
@@ -222,7 +235,7 @@ describe("who gets hurt", () => {
      * them up. The distinct-hero count alone would call that the §7.3 moment
      * the design wants.
      */
-    const grinding = estimateEncounter([enemy({ count: 1, hp: 28, attack: 8 })], PARTY);
+    const grinding = estimateEncounter([enemy({ count: 1, hp: 28, attack: 9 })], PARTY);
     expect(grinding.heroesDown).toBe(1);
     expect(grinding.knockdowns).toBeGreaterThan(3);
   });
@@ -237,7 +250,7 @@ describe("who gets hurt", () => {
      * Reporting only the strict number would be quoting the pessimistic end of a
      * bracket as though it were a measurement.
      */
-    const grinding = estimateEncounter([enemy({ count: 1, hp: 28, attack: 8 })], PARTY);
+    const grinding = estimateEncounter([enemy({ count: 1, hp: 28, attack: 9 })], PARTY);
     expect(grinding.roundsIfRetreating).toBeLessThan(grinding.rounds);
     expect(grinding.notes.join(" ")).toMatch(/treat the pair as the range/);
   });
@@ -289,13 +302,14 @@ describe("who gets hurt", () => {
  * The shipped bands, measured.
  *
  * `encounterBands.$comment` derives every stat block from §7.1's four-round
- * target: "a level-1 hero swings d20+2..4 against Guard 11 for 3 damage, so
- * about 2 a round each and 6 for a party of three. Spec 7.1 tunes for four
- * rounds, so stats.hp x usualCount wants to land in 18-30."
+ * target: "a level-1 hero swings d20+2..4 against Guard 11, and the same die
+ * says how hard a hit lands ... So a little under 2 a round each and about 5.5
+ * for a party of three. Spec 7.1 tunes for four rounds, so stats.hp x
+ * usualCount wants to land in 18-30."
  *
  * Every band satisfies that heuristic — 18, 18, 28 and 20 hit points — and one
  * of them still runs long, which is the finding. The note fixes the party's
- * damage at 6 a round using the *skirmisher's* Guard of 11, and then the bands
+ * damage at about 5.5 a round using the *skirmisher's* Guard of 11, and then the bands
  * raise Guard alongside hit points. So the two move together: the brute has 56%
  * more hit points than the skirmisher band and the party hits it less often,
  * and the knock-on is the §7.3 revive spiral, which costs two actions a round
@@ -347,19 +361,19 @@ describe("the shipped encounter bands", () => {
      * Not a bug in the band and not a bug in the note — a gap between them, and
      * the reason a checker beats arithmetic in a comment. Two brutes are 28 hit
      * points behind Guard 12, and 28/6 is the note's own four-and-a-bit rounds.
-     * It gets to ten because Guard 12 drops the party to 5.4 a round, and
-     * because +4 against Guard 12 knocks a hero over often enough that the
-     * revive spiral starts and the party spends most of the fight at one
-     * attacker.
+     * It gets to nine because Guard 12 drops the party to about 5 a round
+     * (most hits against it are grazes), and because +4 against Guard 12
+     * knocks a hero over often enough that the revive spiral starts and the
+     * party spends most of the fight at one attacker.
      */
     const brute = fought.find((f) => f.name === "brute")?.estimate;
-    expect(brute?.rounds).toBe(10);
+    expect(brute?.rounds).toBe(9);
     // And still long at the optimistic end of the bracket, which is what makes
     // this a finding about the band rather than about the model's assumptions.
     expect(brute?.roundsIfRetreating).toBe(7);
     expect(brute?.roundsIfRetreating).toBeGreaterThan(TARGET_ROUNDS.max);
     expect(brute?.heroesDown).toBe(1);
-    expect(brute?.knockdowns).toBeGreaterThan(5);
+    expect(brute?.knockdowns).toBeGreaterThan(4);
     // Still winnable — it is a slog, not a defeat.
     expect(brute?.partyWiped).toBe(false);
   });

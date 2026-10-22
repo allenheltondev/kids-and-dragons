@@ -1,5 +1,5 @@
 {
-  "$comment": "The practice (#255). Teaches by doing, in this order, one `hint` per step: pick a choice (scene_meadow_gate), roll a check (check_latch / check_climb), take a story turn (scene_tansy), move on the board (encounter_stones), use a card (encounter_tag), help a knocked-down friend (encounter_bun: with two or more heroes, `friendDown` puts one of them on the ground for the others to Help Up; Bun, a captive with no deadline, is there for everybody, and is the whole lesson at a table of one), rest (rest_picnic). Nothing in it can cost anything: no damage effects, no items taken or given, no coins, no XP, every failed roll and lost fight goes on to the same next step, and every fight ends with the whole party healed, because HP outlives a scene and a hero knocked down in one fight would otherwise start the next one down. Short on purpose, so a mixed party is not slowed down much: the 30-scene bar is for a real evening's chapter, not this. See content/README.md, \"The practice\".",
+  "$comment": "The practice (#255). Teaches by doing, in this order, one `hint` per step: pick a choice (scene_meadow_gate), roll a check (check_latch / check_climb), take a story turn (scene_tansy), move on the board (encounter_stones), use a card (encounter_tag: its wisps have 2 hearts, so any hit, even a graze, is the one tag the hint promises), help a knocked-down friend (encounter_bun: with two or more heroes, `friendDown` puts one of them on the ground for the others to Help Up; Bun, a captive with no deadline, is there for everybody, and is the whole lesson at a table of one), rest (rest_picnic). Nothing in it can cost anything: no damage effects, no items taken or given, no coins, no XP, every failed roll and lost fight goes on to the same next step, and every fight ends with the whole party healed, because HP outlives a scene and a hero knocked down in one fight would otherwise start the next one down. Short on purpose, so a mixed party is not slowed down much: the 30-scene bar is for a real evening's chapter, not this. See content/README.md, \"The practice\".",
   "id": "first-steps-01",
   "campaignId": "first-steps",
   "index": 1,
@@ -354,7 +354,7 @@
           "name": "Flick",
           "creature": "will_o_wisp",
           "count": 1,
-          "hp": 3,
+          "hp": 2,
           "guard": 6,
           "attack": 1,
           "steps": 3
@@ -364,7 +364,7 @@
           "name": "Dot",
           "creature": "will_o_wisp",
           "count": 1,
-          "hp": 3,
+          "hp": 2,
           "guard": 6,
           "attack": 1,
           "steps": 3

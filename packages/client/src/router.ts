@@ -229,3 +229,16 @@ export function pairingFromSearch(search: string): string | null {
   const code = normalizePairingInput(raw);
   return code === "" ? null : code;
 }
+
+/**
+ * `/account?bring=1`: the accounts page with "Bring my hero to this device"
+ * already open and nothing typed. Where an installed app's first launch sends
+ * a family whose hero is still in Safari (#412).
+ */
+export const BRING_PARAM = "bring";
+
+export const BRING_HERO_PATH = `/account?${BRING_PARAM}=1`;
+
+export function bringHeroFromSearch(search: string): boolean {
+  return new URLSearchParams(search).has(BRING_PARAM);
+}

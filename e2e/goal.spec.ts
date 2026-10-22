@@ -76,7 +76,8 @@ function watchMoments(): void {
   const seen: Record<string, string[]> = {};
   (window as unknown as { __moments: typeof seen }).__moments = seen;
   new MutationObserver(() => {
-    for (const step of document.querySelectorAll(".goal__step--fresh")) {
+    // A step's moment where the steps show; on a phone's folded line (the default), its pip's.
+    for (const step of document.querySelectorAll(".goal__step--fresh, .goal__pip--fresh")) {
       const card = [...(step.closest(".goal")?.classList ?? [])].find((c) => c === "goal--world" || c === "goal--phone") ?? "?";
       requestAnimationFrame(() => {
         const names = step.getAnimations({ subtree: true }).filter((a) => a instanceof CSSAnimation).map((a) => (a as CSSAnimation).animationName);
@@ -157,8 +158,9 @@ test.describe("the chapter's goal (#356)", () => {
     await shot(tv, "tv-tick");
     // The TV pops the box, throws the sparks and washes the words gold.
     await expect.poll(() => moments(tv, "goal--world"), TAP).toEqual(expect.arrayContaining(["goal-pop", "goal-spark", "goal-glow"]));
-    // Reduced motion on the phone: the gold wash, without the pop or the sparks.
-    await expect.poll(() => moments(kid, "goal--phone"), TAP).toEqual(["goal-glow"]);
+    // The phone's card is folded to its line (nothing tapped), so the moment is the pip's, and
+    // with reduced motion it is the gold glow without the pop.
+    await expect.poll(() => moments(kid, "goal--phone"), TAP).toEqual(["goal-pip-glow"]);
     // Seen and chimed, never read out: once the new scene's story has been said, nothing follows it.
     await expect.poll(async () => (await said(tv)).some((line) => line.includes("lantern moths")), TAP).toBe(true);
     await tv.waitForTimeout(500);
@@ -173,7 +175,8 @@ test.describe("the chapter's goal (#356)", () => {
     expect(await ticks(tvGoal)).toEqual([true, false, false]);
     await expect(tvGoal.locator(".goal__step--fresh")).toHaveCount(0);
 
-    // In a fight it folds to the goal and its pips, in the top corner, on both screens.
+    // In a fight it folds to the goal and its pips in the TV's top corner; the phone gives
+    // its room to the fight's cards and shows no goal at all.
     await jumpTo(kid, code, "encounter_bramblewisps");
     // The kid readies up on the phone, as before any fight; the TV is still only watched.
     await openPlayerTask(kid);
@@ -181,7 +184,7 @@ test.describe("the chapter's goal (#356)", () => {
     await expect.poll(async () => Boolean((await roomState<{ encounter?: unknown }>(kid, code)).encounter), TAP).toBe(true);
     await expect(tv.locator(".world__goal .goal--folded")).toBeVisible(TAP);
     await expect(tv.locator(".world__goal .goal__pips")).toHaveAttribute("aria-label", "1 of 3 done");
-    await expect(kid.locator(".goal--phone.goal--folded")).toBeVisible(TAP);
+    await expect(kid.locator(".goal--phone")).toHaveCount(0);
     await shot(tv, "tv-fight");
 
     // The rest of the way: through the wood, and the door opens whichever way the roll goes.

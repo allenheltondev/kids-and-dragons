@@ -283,7 +283,7 @@ test.describe("drop in, drop out", () => {
       }
       if (hers) {
         await openPlayerTask(rosie);
-        await expect(rosie.getByText("Your turn, Rosie!")).toBeVisible(TAP);
+        await expect(rosie.locator(".sheet--turn")).toContainText("Rosie", TAP);
       }
     }
 
