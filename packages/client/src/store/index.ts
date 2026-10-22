@@ -30,7 +30,14 @@ import type {
   RunState,
   WorldMap,
 } from "@kad/shared";
-import { owesClassAnswer, previewContext, rollerAway, turnHolderAway } from "@kad/shared";
+import {
+  DECISION_INTENTS,
+  decisionContext,
+  owesClassAnswer,
+  previewContext,
+  rollerAway,
+  turnHolderAway,
+} from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
 import type {
   ClientSession,
@@ -254,6 +261,13 @@ interface Runtime {
 const BROADCAST_GRACE_MS = 4_000;
 
 /**
+ * What a phone says when a tap answered a question the story has already left
+ * (#413): the server's own `STALE_DECISION` words, so either way it reads the
+ * same. Nothing was done, and the new question is on screen to answer.
+ */
+export const STORY_MOVED_ON = "The story moved on. Choose again.";
+
+/**
  * Arrivals a non-host screen holds at once. A burst of phones joining a lobby
  * is a handful; past this, the oldest notice goes.
  */
@@ -395,6 +409,13 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           runtime.resyncAttempt = 0;
           sinceSeq = sequencer.seq;
         } while (runtime.resyncAgain);
+        // Caught up on an open stream: whatever was missed while it was down
+        // is in the mirror now, so the phone may offer decisions again
+        // (#413). A catch-up that finished before the stream reopened proves
+        // nothing; the one the reopening asks for (channel `onopen`) does.
+        if (runtime.sequencer === sequencer && get().connection === "open" && !get().synced) {
+          set({ synced: true });
+        }
       })().catch((error: unknown) => {
         if (runtime.sequencer === sequencer) {
           runtime.resyncRetry = setTimeout(() => {
@@ -423,6 +444,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       // has state to render during the one config fetch of a page load rather
       // than a blank screen.
       sequencer.reset(snapshot, seq);
+      // A snapshot fetched to enter the room is the server's state as of now.
+      set({ synced: true });
 
       let attempt = 0;
       const openTransport = async (): Promise<void> => {
@@ -433,13 +456,16 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             url: (sinceSeq) =>
               deps.eventsUrl(session.roomCode, sinceSeq, session.sessionToken || undefined),
             sequencer,
-            onStatus: (connection) => set({ connection }),
+            // A dropped (or replaced) stream may have missed anything, so the
+            // mirror stops counting as caught up until the reopen's catch-up.
+            onStatus: (connection) =>
+              set(connection === "reconnecting" ? { connection, synced: false } : { connection }),
             resync,
             ...(createEventSource ? { createEventSource } : {}),
           });
         } catch {
           if (runtime.sequencer !== sequencer) return;
-          set({ connection: "reconnecting" });
+          set({ connection: "reconnecting", synced: false });
           runtime.connectRetry = setTimeout(() => {
             runtime.connectRetry = null;
             void openTransport();
@@ -708,6 +734,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
     return {
       connection: "idle",
+      synced: true,
       session: null,
       state: null,
       presentation: null,
@@ -1121,6 +1148,24 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         const session = get().session;
         if (!session) return false;
         if (!session.playerId) return false; // display clients send nothing, ever
+        /*
+         * Not while catching up (#413). The screen offers nothing to tap then
+         * (`useSynced`), so this is the backstop for a tap already on its way
+         * to a button as it went: the question it answers may be one the
+         * server has left. Nothing to say about it, either: the banner is
+         * already saying the game is reconnecting.
+         */
+        if (!get().synced) return false;
+
+        /*
+         * The question this tap answers (#413), as this phone showed it. The
+         * server refuses a decision whose question has gone (`STALE_DECISION`),
+         * and the catch-up below checks it first, so a tap made on a stale
+         * screen never lands on the next question that happens to share its
+         * choice id.
+         */
+        const shown = get().state;
+        const context = shown && DECISION_INTENTS.has(intent.type) ? decisionContext(shown) : undefined;
 
         const post = (seq?: number): Promise<ActionResponse> =>
           deps.api.postAction(
@@ -1131,9 +1176,14 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
               // than applying it out of order (architecture §4.2).
               seq: seq ?? get().state?.seq ?? runtime.sequencer?.seq ?? 0,
               intent,
+              ...(context === undefined ? {} : { context }),
             },
             session.sessionToken,
           );
+        const movedOn = (): false => {
+          set({ error: STORY_MOVED_ON });
+          return false;
+        };
 
         try {
           let response = await post();
@@ -1151,6 +1201,15 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
              */
             await resync(runtime.sequencer?.seq ?? 0);
             /*
+             * Only an answer to the question still open. Caught up, the mirror
+             * says whether that is still the one this tap was made on; if not,
+             * the tap is dropped and the player chooses again from what is now
+             * on screen. A mirror held behind an animation can still look like
+             * the old question, which is why the server checks the stamp too.
+             */
+            const now = get().state;
+            if (context !== undefined && now && decisionContext(now) !== context) return movedOn();
+            /*
              * Retry at the seq the *server* reported, not the mirror's. The
              * mirror may still be behind on purpose: a patch carrying a dice
              * roll sits behind the WorldView animation for its ~1.5s, so in
@@ -1161,6 +1220,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
              */
             response = await post(response.seq);
           }
+
+          if (response.error?.code === "STALE_DECISION") return movedOn();
 
           if (response.ok) {
             /*
@@ -1242,6 +1303,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         clearFieldGuideNews();
         set({
           connection: "idle",
+          synced: true,
           session: null,
           state: null,
           presentation: null,
@@ -1346,6 +1408,16 @@ export function useSession(): ClientSession | null {
 
 export function useConnection(): ConnectionStatus {
   return useGameStore((store) => store.connection);
+}
+
+/**
+ * Whether this phone may offer decisions (#413): caught up with the server
+ * (`GameStore.synced`). False while the stream is down and until the catch-up
+ * after it reopens has landed, when the question on screen may be one the
+ * story has already left.
+ */
+export function useSynced(): boolean {
+  return useGameStore((store) => store.synced);
 }
 
 export function useMe(): PartyMember | null {

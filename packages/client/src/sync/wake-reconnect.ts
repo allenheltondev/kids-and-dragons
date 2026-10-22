@@ -18,6 +18,7 @@ import { WAKE_COALESCE_MS, onWake } from "./wake";
  * listening: each `onWake` merges only its own burst.
  */
 let lastReconnect = -Infinity;
+let lastDrop = -Infinity;
 
 export function useReconnectOnWake(): void {
   useEffect(() => onWake(() => {
@@ -26,4 +27,24 @@ export function useReconnectOnWake(): void {
     lastReconnect = at;
     useGameStore.getState().reconnect();
   }), []);
+
+  /*
+   * The other end of it (#413): the browser saying the signal is gone. A
+   * stream on a phone that lost its signal can sit "open" for minutes without
+   * a word, and the question on screen with it. Replacing it at once says
+   * "reconnecting" (channel.ts), which holds every answer until the signal is
+   * back and the catch-up has landed (`GameStore.synced`). Its own guard, so
+   * the `online` that follows a quick blip is still a wake.
+   */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const dropped = (): void => {
+      const at = Date.now();
+      if (at - lastDrop < WAKE_COALESCE_MS) return;
+      lastDrop = at;
+      useGameStore.getState().reconnect();
+    };
+    window.addEventListener("offline", dropped);
+    return () => window.removeEventListener("offline", dropped);
+  }, []);
 }

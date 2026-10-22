@@ -14,12 +14,14 @@
 
 import { TrayObject } from "../screens/TrayObjects";
 import { cue } from "../audio/cue";
-import { useLayoutMode, useSend, useSession } from "../store";
+import { useLayoutMode, useSend, useSession, useSynced } from "../store";
 
 export function ModeSwitch(): React.JSX.Element | null {
   const mode = useLayoutMode();
   const send = useSend();
   const isDisplay = (useSession()?.playerId ?? "") === "";
+  // Held while catching up after a drop, like every answer (#413).
+  const synced = useSynced();
 
   if (isDisplay) return null;
   const next = mode === "party" ? "travel" : "party";
@@ -29,6 +31,7 @@ export function ModeSwitch(): React.JSX.Element | null {
     <button
       type="button"
       className="kad-mode-switch kad-room-mode kad-tap kad-focusable"
+      disabled={!synced}
       onClick={() => {
         cue("tap");
         void send({ type: "SET_MODE", mode: next });

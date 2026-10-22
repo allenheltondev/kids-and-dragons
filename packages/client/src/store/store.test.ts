@@ -1,10 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createStore, type StoreApi } from "zustand/vanilla";
 import type { ActionResponse, ChannelMessage, JsonPatchOp, ResolvedCharacter, RunState, ServerMessage } from "@kad/shared";
+import { decisionContext } from "@kad/shared";
 import {
   gameStoreCreator,
   isPromptForPlayer,
   selectMe,
+  STORY_MOVED_ON,
   type GameStoreDeps,
   type InternalGameStore,
 } from "./index";
@@ -1964,5 +1966,151 @@ describe("reconnect (a display that woke up, #264)", () => {
     h.store.getState().reconnect();
     expect(h.reconnected()).toBe(1);
     expect(h.closed()).toBe(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// #413: decisions wait for a caught-up mirror, and stay on their question
+// ---------------------------------------------------------------------------
+
+/** A story question in the forest: "onward" is one of its answers. */
+function questionAt(seq: number, overrides: Partial<RunState> = {}): RunState {
+  return makeState({
+    seq,
+    phase: "scene",
+    chapterId: "bramblewood-01",
+    sceneId: "hedge",
+    visited: ["entry", "hedge"],
+    storyTurn: 2,
+    prompt: {
+      kind: "choice",
+      sceneId: "hedge",
+      options: [
+        { id: "onward", label: "Go on", icon: "forward" },
+        { id: "listen", label: "Listen", icon: "ear" },
+      ],
+      forPlayerIds: [],
+      vote: true,
+    },
+    ...overrides,
+  });
+}
+
+/** The next scene's question, which happens to have an "onward" too. */
+function nextQuestionAt(seq: number): RunState {
+  return questionAt(seq, {
+    sceneId: "stream",
+    visited: ["entry", "hedge", "stream"],
+    storyTurn: 3,
+    prompt: {
+      kind: "choice",
+      sceneId: "stream",
+      options: [{ id: "onward", label: "Wade across", icon: "forward" }],
+      forPlayerIds: [],
+      vote: true,
+    },
+  });
+}
+
+describe("caught up before deciding (#413)", () => {
+  it("counts as caught up from the room's snapshot, not from a reopened stream alone", async () => {
+    const h = harness(questionAt(5));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    expect(h.store.getState().synced).toBe(true);
+
+    // The stream drops, or a wake replaces it.
+    h.channelOptions().onStatus("reconnecting");
+    expect(h.store.getState().synced).toBe(false);
+
+    // Open again, but the old scene's question is still on screen until the
+    // catch-up the reopening asks for has landed.
+    h.channelOptions().onStatus("open");
+    expect(h.store.getState().synced).toBe(false);
+    h.api.fetchState.mockResolvedValueOnce({ seq: 7, state: nextQuestionAt(7) });
+    await h.channelOptions().resync(5);
+    expect(h.store.getState().synced).toBe(true);
+    expect(h.store.getState().state?.sceneId).toBe("stream");
+  });
+
+  it("is not caught up by a catch-up that finished while the stream was still down", async () => {
+    const h = harness(questionAt(5));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.channelOptions().onStatus("reconnecting");
+    await h.channelOptions().resync(5);
+    expect(h.store.getState().synced).toBe(false);
+  });
+
+  it("sends nothing while catching up, and says nothing scary about it", async () => {
+    const h = harness(questionAt(5));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.channelOptions().onStatus("reconnecting");
+
+    await expect(h.store.getState().send({ type: "CHOOSE", choiceId: "onward" })).resolves.toBe(false);
+    await expect(h.store.getState().send({ type: "READY", ready: true })).resolves.toBe(false);
+    expect(h.api.postAction).not.toHaveBeenCalled();
+    // The banner says the game is reconnecting; a toast would only alarm.
+    expect(h.store.getState().error).toBeNull();
+  });
+});
+
+describe("a tap stays on the question it was made on (#413)", () => {
+  it("stamps a decision with its question, and nothing else", async () => {
+    const h = harness(questionAt(5));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+
+    await h.store.getState().send({ type: "CHOOSE", choiceId: "onward" });
+    await h.store.getState().send({ type: "SET_MODE", mode: "party" });
+
+    const [chose, mode] = h.api.postAction.mock.calls.map((call) => call[0] as { context?: string });
+    expect(chose?.context).toBe(decisionContext(questionAt(5)));
+    expect(mode).not.toHaveProperty("context");
+  });
+
+  it("does not re-post an answer when the caught-up question is a different one with the same choice id", async () => {
+    const h = harness(questionAt(5));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    // Away while the party chose: the server is two steps on, at the stream.
+    h.api.postAction.mockResolvedValueOnce({ ok: false, seq: 7, error: { code: "STALE_SEQ", message: "behind" } });
+    h.api.fetchState.mockResolvedValueOnce({ seq: 7, state: nextQuestionAt(7) });
+
+    await expect(h.store.getState().send({ type: "CHOOSE", choiceId: "onward" })).resolves.toBe(false);
+
+    // "onward" is an answer at the stream too, and would have been taken as one.
+    expect(h.api.postAction).toHaveBeenCalledTimes(1);
+    expect(h.store.getState().error).toBe(STORY_MOVED_ON);
+    expect(h.store.getState().state?.sceneId).toBe("stream");
+  });
+
+  it("re-posts an answer when the question is still the one open (a friend voted first)", async () => {
+    const h = harness(questionAt(5));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    const friendVoted = questionAt(6);
+    if (friendVoted.prompt?.kind === "choice") friendVoted.prompt.votes = { p_friend: "listen" };
+    h.api.postAction.mockResolvedValueOnce({ ok: false, seq: 6, error: { code: "STALE_SEQ", message: "behind" } });
+    h.api.fetchState.mockResolvedValueOnce({ seq: 6, state: friendVoted });
+
+    await expect(h.store.getState().send({ type: "CHOOSE", choiceId: "onward" })).resolves.toBe(true);
+
+    expect(h.api.postAction).toHaveBeenCalledTimes(2);
+    const retry = h.api.postAction.mock.calls[1]?.[0] as { seq: number; context?: string };
+    expect(retry.seq).toBe(6);
+    // Still stamped with the question it was made on, for the server to check.
+    expect(retry.context).toBe(decisionContext(questionAt(5)));
+    expect(h.store.getState().error).toBeNull();
+  });
+
+  it("lets the player choose again when the server says the question has passed", async () => {
+    const h = harness(questionAt(5));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    // The mirror still looked like the old question (held behind an
+    // animation, say), so the retry went out; the server's stamp check caught it.
+    h.api.postAction
+      .mockResolvedValueOnce({ ok: false, seq: 7, error: { code: "STALE_SEQ", message: "behind" } })
+      .mockResolvedValueOnce({ ok: false, seq: 7, error: { code: "STALE_DECISION", message: STORY_MOVED_ON } });
+
+    await expect(h.store.getState().send({ type: "CHOOSE", choiceId: "onward" })).resolves.toBe(false);
+
+    expect(h.api.postAction).toHaveBeenCalledTimes(2);
+    expect(h.store.getState().error).toBe(STORY_MOVED_ON);
   });
 });

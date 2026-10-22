@@ -81,6 +81,7 @@ import {
   useRunState,
   useSend,
   useSharePreview,
+  useSynced,
 } from "../store";
 import { combatContext } from "../store/combat";
 import { useEnsureChapter } from "./content";
@@ -220,6 +221,7 @@ export function CombatControls(): ReactElement | null {
    * send clears it, so the turn is never stuck.
    */
   const [pending, setPending] = useState(false);
+  const synced = useSynced();
   /*
    * The same flag, readable the instant it is set. Two taps can land before
    * React re-renders — on Go!, on a card, on anything in the dock — and the
@@ -275,7 +277,10 @@ export function CombatControls(): ReactElement | null {
 
   const active = currentActor(encounter);
   const myTurn = active !== null && active.side === "party" && active.id === me.character.id;
-  const deciding = myTurn && !pending;
+  // Catching up after a drop (#413) holds the turn like a tap on its way does:
+  // the board on screen may be one the fight has already left.
+  const held = pending || !synced;
+  const deciding = myTurn && !held;
   // A friend's turn, and their phone is gone (#258): anybody here can pass it.
   const standIn = !myTurn && state !== null && combatTurnAway(state);
 
@@ -292,7 +297,9 @@ export function CombatControls(): ReactElement | null {
   // What the grid offers this render: move destinations, or the still-unpicked
   // tiles of the ability being aimed. Never both — one question at a time.
   const tappable: readonly (Position & { readonly cost?: number })[] =
-    selection.step === "tile"
+    !synced
+      ? []
+      : selection.step === "tile"
       ? selection.action.tiles.filter(
           (tile) => !selection.picked.some((p) => samePosition(p, tile)),
         )
@@ -479,7 +486,9 @@ export function CombatControls(): ReactElement | null {
 
   const hint = pending
     ? "Doing it…"
-    : !deciding
+    : myTurn && !synced
+      ? "Catching up with the game…"
+      : !deciding
       ? null
       : encounter.actionTaken
         ? moves.length > 0
@@ -728,8 +737,8 @@ export function CombatControls(): ReactElement | null {
               guard is for a browser too old to know `inert`. */}
           <div
             className={`combat__answers${pending ? " combat__answers--pending" : ""}`}
-            inert={pending}
-            onClickCapture={pending ? swallowTap : undefined}
+            inert={held}
+            onClickCapture={held ? swallowTap : undefined}
           >
             {selection.step === "idle" && cardCount > 0 ? (
               <ul className="prompt__options combat__actions" data-columns={columns}>
@@ -866,7 +875,7 @@ export function CombatControls(): ReactElement | null {
             block
             className="combat__end"
             icon={<Icon name="forward" />}
-            disabled={pending}
+            disabled={held}
             onClick={() => void dispatch({ type: "END_TURN" })}
           >
             Pass {combatantLabel(active)}&rsquo;s turn

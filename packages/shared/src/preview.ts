@@ -8,7 +8,7 @@
  * an arbitrarily large message on everyone else's channel.
  */
 
-import type { IntentPreview } from "./types/protocol.js";
+import type { ClientIntent, IntentPreview } from "./types/protocol.js";
 import type { RunState } from "./types/state.js";
 import { currentActorId } from "./encounter.js";
 
@@ -124,6 +124,64 @@ export function previewContext(state: RunState | null): string | null {
     state.chapterId ?? "-",
     state.visited?.length ?? 0,
     prompt.sceneId,
+    state.storyTurn ?? 0,
+  ].join(":");
+}
+
+/**
+ * The intents that answer the question on the table (#413): a story choice
+ * or vote, a roll, help on a roll, going on from a scene, and a fight turn's
+ * moves. A tap like that means something only against the question it was
+ * made on. The phone stamps it with `decisionContext`, and the server refuses
+ * it once that question is gone, so a tap made on a stale screen (a phone
+ * that was away) can never land on the next question that happens to share
+ * a choice id like "onward".
+ *
+ * Not the lobby, creation or journey intents: those name what they are about
+ * (`visit`, `classId`) or are the same answer whenever they land.
+ */
+export const DECISION_INTENTS: ReadonlySet<ClientIntent["type"]> = new Set<ClientIntent["type"]>([
+  "CHOOSE",
+  "ROLL",
+  "HELP",
+  "ADVANCE",
+  "MOVE",
+  "COMBAT_ACTION",
+  "END_TURN",
+]);
+
+/**
+ * Which question a decision intent answers, read off the state it was made on.
+ *
+ * - A fight: which fight, whose turn, which round and slot. Coarser than
+ *   `previewContext` on purpose: within one turn only its own hero acts, and
+ *   a step it just took must not make its next step look stale.
+ * - Anything else: the phase, the chapter, how many scenes it has entered (a
+ *   revisit of the same scene is a new question), the scene, what kind of
+ *   question is open, and the story turn marker (which moves on every
+ *   resolved choice but not on a friend's vote).
+ *
+ * A friend's vote, help or step leaves it as it was, so the ordinary "a
+ * friend tapped first" retry still goes through.
+ */
+export function decisionContext(state: RunState): string {
+  const encounter = state.encounter ?? null;
+  if (encounter) {
+    return [
+      "fight",
+      encounter.startedAt ?? "-",
+      currentActorId(encounter) ?? "nobody",
+      encounter.round,
+      encounter.turnIndex,
+    ].join(":");
+  }
+  return [
+    "story",
+    state.phase,
+    state.chapterId ?? "-",
+    state.visited?.length ?? 0,
+    state.sceneId ?? "-",
+    state.prompt?.kind ?? "-",
     state.storyTurn ?? 0,
   ].join(":");
 }

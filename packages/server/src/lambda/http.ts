@@ -605,11 +605,12 @@ async function postResume(req: Req, deps: HandlerDeps) {
 // ---------------------------------------------------------------------------
 
 async function postAction(req: Req, deps: HandlerDeps) {
-  const { runId, playerId, seq, intent } = req.body as {
+  const { runId, playerId, seq, intent, context } = req.body as {
     runId?: unknown;
     playerId?: unknown;
     seq?: unknown;
     intent?: unknown;
+    context?: unknown;
   };
   if (typeof runId !== "string" || typeof playerId !== "string" || !intent) {
     return error(400, "ILLEGAL", "expected { runId, playerId, seq, intent }");
@@ -633,7 +634,14 @@ async function postAction(req: Req, deps: HandlerDeps) {
   if (!principal) return error(401, "FORBIDDEN", "this action needs a room session token");
 
   const response = await applyAction(
-    { runId, playerId, seq: Number(seq ?? 0), intent: intent as never, principal },
+    {
+      runId,
+      playerId,
+      seq: Number(seq ?? 0),
+      intent: intent as never,
+      ...(typeof context === "string" ? { context } : {}),
+      principal,
+    },
     deps,
   );
   // A rejection is part of the protocol, not an HTTP failure: the client reads
@@ -1144,6 +1152,7 @@ function statusFor(err: ActionError): number {
     case "FORBIDDEN":
       return 403;
     case "STALE_SEQ":
+    case "STALE_DECISION":
     case "ILLEGAL":
     case "HERO_BUSY":
       return 409;

@@ -59,10 +59,22 @@ describe("a phone coming back to the game (#413)", () => {
     expect(reconnect).toHaveBeenCalledTimes(1);
   });
 
+  it("drops a stream the moment the signal goes, and catches up the moment it is back", () => {
+    render(<><Phone /><Phone /></>);
+    // Offline: the stream it holds may say nothing for minutes. Replaced at
+    // once (one page, one replacement), the phone says it is reconnecting.
+    act(() => { window.dispatchEvent(new Event("offline")); });
+    expect(reconnect).toHaveBeenCalledTimes(1);
+    // A quick blip: the signal is back within the second, and that is a wake.
+    act(() => { window.dispatchEvent(new Event("online")); });
+    expect(reconnect).toHaveBeenCalledTimes(2);
+  });
+
   it("stops listening when the phone leaves the room", () => {
     const { unmount } = render(<Phone />);
     unmount();
     act(() => { document.dispatchEvent(new Event("resume")); });
+    act(() => { window.dispatchEvent(new Event("offline")); });
     expect(reconnect).not.toHaveBeenCalled();
   });
 });

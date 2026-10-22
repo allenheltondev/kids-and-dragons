@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ChannelMessage } from "@kad/shared";
+import { decisionContext } from "@kad/shared";
 import { applyOps } from "../json-patch.ts";
 import type { EngineContext, IntentInput } from "../engine/port.ts";
 import {
@@ -119,6 +120,54 @@ describe("applyAction — the seq gate (architecture §4.2)", () => {
     );
     expect(response).toMatchObject({ ok: false, error: { code: "STALE_SEQ" } });
     expect(room.received).toHaveLength(0);
+  });
+});
+
+describe("applyAction — the question a decision answers (#413)", () => {
+  it("takes a decision stamped with the question that is open", async () => {
+    const harness = makeHarness();
+    const room = await setup(harness);
+    const state = await harness.repo.getState(room.runId);
+    if (!state) throw new Error("setup failed");
+
+    const response = await applyAction(
+      {
+        runId: room.runId,
+        playerId: room.player.principal.playerId,
+        seq: 0,
+        intent: choose("east"),
+        context: decisionContext(state),
+      },
+      harness.deps,
+    );
+    expect(response).toEqual({ ok: true, seq: 1 });
+  });
+
+  it("refuses one made on a question that has passed, even at the current seq", async () => {
+    const harness = makeHarness();
+    const room = await setup(harness);
+
+    // A phone that fell behind re-posts at the seq it was told; the stamp is
+    // what says its tap was made on some other question.
+    const response = await applyAction(
+      {
+        runId: room.runId,
+        playerId: room.player.principal.playerId,
+        seq: 0,
+        intent: choose("east"),
+        context: "story:scene:bramblewood-01:3:stream:choice:3",
+      },
+      harness.deps,
+    );
+
+    expect(response).toEqual({
+      ok: false,
+      seq: 0,
+      error: { code: "STALE_DECISION", message: "The story moved on. Choose again." },
+    });
+    expect((await harness.repo.getState(room.runId))?.seq).toBe(0);
+    expect(room.received).toHaveLength(0);
+    expect(await harness.repo.listEvents(room.runId, 0)).toHaveLength(0);
   });
 });
 
