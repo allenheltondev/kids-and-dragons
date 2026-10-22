@@ -44,7 +44,55 @@ import thornguardArt from "./painted/thornguard.webp";
 import duskrunnerArt from "./painted/duskrunner.webp";
 import starweaverArt from "./painted/starweaver.webp";
 import songkeeperArt from "./painted/songkeeper.webp";
+import eyeArt from "./painted/eye.webp";
+import facetBargeArt from "./painted/facet_barge.webp";
+import facetCaravanArt from "./painted/facet_caravan.webp";
+import facetClerksArt from "./painted/facet_clerks.webp";
+import facetConfiscatedArt from "./painted/facet_confiscated.webp";
+import facetDepotArt from "./painted/facet_depot.webp";
+import facetDrakesRateArt from "./painted/facet_drakes_rate.webp";
+import facetEmberArt from "./painted/facet_ember.webp";
+import facetFordArt from "./painted/facet_ford.webp";
+import facetGladeArt from "./painted/facet_glade.webp";
+import facetHarvestArt from "./painted/facet_harvest.webp";
+import facetKeystoneArt from "./painted/facet_keystone.webp";
+import facetPrideArt from "./painted/facet_pride.webp";
+import facetTableArt from "./painted/facet_table.webp";
+import facetUnassignedArt from "./painted/facet_unassigned.webp";
+import fistArt from "./painted/fist.webp";
+import flameArt from "./painted/flame.webp";
+import keyArt from "./painted/key.webp";
+import moonArt from "./painted/moon.webp";
+import potionArt from "./painted/potion.webp";
+import shieldArt from "./painted/shield.webp";
+import sparkArt from "./painted/spark.webp";
+import thornArt from "./painted/thorn.webp";
+import wingArt from "./painted/wing.webp";
 export const PAINTED_ART: Record<string, string> = {
+  eye: eyeArt,
+  facet_barge: facetBargeArt,
+  facet_caravan: facetCaravanArt,
+  facet_clerks: facetClerksArt,
+  facet_confiscated: facetConfiscatedArt,
+  facet_depot: facetDepotArt,
+  facet_drakes_rate: facetDrakesRateArt,
+  facet_ember: facetEmberArt,
+  facet_ford: facetFordArt,
+  facet_glade: facetGladeArt,
+  facet_harvest: facetHarvestArt,
+  facet_keystone: facetKeystoneArt,
+  facet_pride: facetPrideArt,
+  facet_table: facetTableArt,
+  facet_unassigned: facetUnassignedArt,
+  fist: fistArt,
+  flame: flameArt,
+  key: keyArt,
+  moon: moonArt,
+  potion: potionArt,
+  shield: shieldArt,
+  spark: sparkArt,
+  thorn: thornArt,
+  wing: wingArt,
   hand: handArt,
   arrow: arrowArt,
   name: nameArt,
