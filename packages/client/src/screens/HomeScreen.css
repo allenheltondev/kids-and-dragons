@@ -122,7 +122,9 @@
 /* --- Hosting (a grown-up's job, behind a link) ------------------------- */
 
 .home__host[hidden],
-.home__card--join[hidden] {
+.home__card--join[hidden],
+.home__journal[hidden],
+.home__guide[hidden] {
   display: none;
 }
 
