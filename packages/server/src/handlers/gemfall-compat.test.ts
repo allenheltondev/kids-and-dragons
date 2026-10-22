@@ -213,6 +213,16 @@ const DIGESTS: PreEpicSave["digests"] = {
  * chapter's first scene. The engine and server never read it, and no chapter
  * file changed. The endings, roads, setbacks and saves below still match their
  * pre-epic digests.
+ *
+ * Re-pinned 2026-10-22 for gemfall-08's titan finale (the owner's playtest:
+ * the ending was a menu pick, the titan barely appeared, and the chapter read
+ * more than it played). The seal now cracks and the titan opens its eye and
+ * asks its question before the choice (doing checks, the p1 still
+ * `scene_seal_chamber`); each answer plays out in checks and scenes that land
+ * it before its ending; the climb gains two doing checks, the Seal-Keeper's
+ * road question an ash-map check, and the spine reads shorter. A graph change,
+ * but every terminal scene keeps its id, file order, outcome and effects, and
+ * the endings, roads, setbacks and saves below still match their digests.
  */
 // Re-pinned for #384: fourteen commissioned cast figures replace role stand-ins;
 // chapter edits change cast figures and remove obsolete size overrides only.
@@ -235,7 +245,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-07h.json": "9d5eb63ab79d4cb00e4fc33f4b5337e1c93db0ab706dcc4159d9574ec4737d24",
   "chapters/gemfall-07l.json": "7d230e37d0326173af894286bc6abc41ad738d283198ea349538943baa581f78",
   "chapters/gemfall-07r.json": "34ecb159500c1b3659af7a77eb4886d99f21d2f011811b413f0dab5a232be8d8",
-  "chapters/gemfall-08.json": "cbd875b95ce97ebfd5dcb105f8ba52c034489ba4f6206d701795ae086b8f8e80",
+  "chapters/gemfall-08.json": "7ce72c3249f3fe9a803336f5dcafb5fc31db4aac6acf8b41d589e9b6125ccb05",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {
