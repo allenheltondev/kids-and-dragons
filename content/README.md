@@ -90,6 +90,12 @@ Tooling for a campaign graph (all read-only; the ordered campaigns are skipped, 
 
 - `npm run content:validate` — parses the declaration and lints it (unreachable places, dead ends,
   softlocks, rifts that strand a party).
+- `npm run content:proofs` — the same check, recording each clean walk of the route search in
+  `content/graph-proofs/<campaign>.json`. The search takes seconds (Riftlight walks over a hundred
+  thousand states), so the server trusts a proof that matches the content it loads instead of
+  walking at every start (`packages/shared/src/graph-proof.ts`). Changing a graph campaign's
+  `graph`, `routeSets` or any flag its chapters set makes the proof stale, and
+  `content:validate` fails until you run this and commit the proof. Prose edits do not.
 - `npm run content:journey -- --campaign <file-or-id>` — an outline of the places, doors and
   endings; `--format mermaid|dot|json` for a diagram or script-ready data; route coverage (what is
   reachable, the shortest way to each ending, what a used-up door leaves behind, where a party can

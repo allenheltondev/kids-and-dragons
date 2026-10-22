@@ -61,9 +61,9 @@ function writeJson(dir, parts, value) {
 }
 
 /** Run the gate over `dir`. Never throws — the exit code is the result. */
-function validate(dir) {
+function validate(dir, args = []) {
   try {
-    const stdout = execFileSync(process.execPath, [VALIDATOR], {
+    const stdout = execFileSync(process.execPath, [VALIDATOR, ...args], {
       env: { ...process.env, KAD_CONTENT_ROOT: dir, KAD_CLASS_PLACES: "off", NO_COLOR: "1" },
       encoding: "utf8",
     });
@@ -1034,8 +1034,25 @@ describe("graph campaigns (#192)", { timeout: 30_000 }, () => {
     };
     mutate({ dir, campaign });
     writeJson(dir, CAMPAIGN, campaign);
-    return validate(dir);
+    // A new graph, so a new proof, written as an author would (content:proofs).
+    return validate(dir, ["--write-proofs"]);
   }
+
+  it("refuses a graph campaign with no proof, or a stale one, so the server never walks at start", () => {
+    const missing = copyTree();
+    rmSync(join(missing, "content", "graph-proofs", "riftlight.json"));
+    const none = validate(missing);
+    expect(none.code, none.out).not.toBe(0);
+    expect(none.out).toMatch(/no graph proof .*graph-proofs\/riftlight\.json/);
+
+    const stale = copyTree();
+    const proof = readJson(stale, "content", "graph-proofs", "riftlight.json");
+    writeJson(stale, ["content", "graph-proofs", "riftlight.json"], { ...proof, fingerprint: "0".repeat(32) });
+    const result = validate(stale);
+    expect(result.code, result.out).not.toBe(0);
+    expect(result.out).toMatch(/the graph proof is stale/);
+    expect(result.out).toMatch(/npm run content:proofs/);
+  });
 
   it("accepts a whole graph, and skips the beat rules it has no beats for", () => {
     const { code, out } = graphTree();
@@ -1155,7 +1172,7 @@ describe("graph campaigns are walked, not just resolved (#193)", { timeout: 30_0
     writeJson(dir, CAMPAIGN, campaign);
     const file = join(dir, ...CAMPAIGN);
     writeFileSync(file, rawEdit(readFileSync(file, "utf8")));
-    return validate(dir);
+    return validate(dir, ["--write-proofs"]);
   }
 
   it("accepts a cyclic graph, and says it walked it", () => {
@@ -1253,7 +1270,9 @@ describe("graph campaigns are walked, not just resolved (#193)", { timeout: 30_0
     const result = validate(REPO);
     expect(result.code, result.out).toBe(0);
     expect(result.out).toMatch(/gemfall\.json {2}campaign/);
-    expect(result.out).not.toMatch(/graph v\d|walked \d+ state|UNREACHABLE_NODE|STRANDED/);
+    // Riftlight is the shipped graph campaign; every other line reads as before.
+    const ordered = result.out.split("\n").filter((line) => !line.includes("riftlight")).join("\n");
+    expect(ordered).not.toMatch(/graph v\d|walked \d+ state|UNREACHABLE_NODE|STRANDED/);
   });
 });
 
