@@ -263,8 +263,9 @@ html:not([data-contrast="high"]) .kad-button--primary {
   color: #1a1030;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
 }
-/* The plate is the press: it sinks, the button does not jump. */
-html:not([data-contrast="high"]) :is(.kad-button--primary, .kad-button--secondary) {
+/* Clear of the plate's corners. Inside the panes only: the corner row keeps each control's own
+   size, since it holds a place for Tap for sound at exactly that width. */
+html:not([data-contrast="high"]) .kad-surface :is(.kad-button--primary, .kad-button--secondary) {
   min-block-size: max(var(--kad-touch-min), 48px);
   padding-inline: max(var(--kad-space-4), 24px);
 }
