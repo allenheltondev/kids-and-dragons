@@ -60,7 +60,7 @@
   "scenes": {
     "scene_hedge_wall": {
       "type": "story",
-      "art": "bg/bramblewood/hedge_wall",
+      "art": "scenes/bramblewood/hedge_wall",
       "narration": "The path ends at a wall of thorns twice your height. Somewhere on the other side, something is humming a little tune, and it is definitely not a bird.",
       "choices": [
         {
@@ -110,7 +110,7 @@
     },
     "scene_humming": {
       "type": "story",
-      "art": "bg/bramblewood/hedge_wall",
+      "art": "scenes/bramblewood/hedge_wall",
       "narration": "You press an ear to the hedge. The tune goes up, up, down, and then stops, as if whoever is humming just noticed you.",
       "choices": [
         {
@@ -178,7 +178,7 @@
     },
     "scene_scratched": {
       "type": "story",
-      "art": "bg/bramblewood/hedge_wall",
+      "art": "scenes/bramblewood/hedge_wall",
       "narration": "You get through. You also get about forty small scratches, and one thorn in a very undignified place. A moth lands on your nose, as if to say bad luck.",
       "choices": [
         {
@@ -194,7 +194,7 @@
       "discovers": [
         "npc.harvest_sprite"
       ],
-      "art": "bg/bramblewood/clearing",
+      "art": "scenes/bramblewood/clearing",
       "narration": "On the other side is a clearing full of lantern moths, drifting like slow orange sparks. Sitting on a mushroom, holding a very large acorn, is a bramble sprite about the size of a teapot.",
       "cast": [
         {
@@ -231,7 +231,7 @@
       "discovers": [
         "individual.pib"
       ],
-      "art": "bg/bramblewood/clearing",
+      "art": "scenes/bramblewood/clearing",
       "narration": "\"I'm Pib,\" says the sprite, \"and somebody took the Hollow Crown out of the old shrine, and now the wood hums all night and nobody can sleep.\" Pib hands you half a map, drawn in berry juice, and gives you the acorn too, because Pib is generous.",
       "cast": [
         {
@@ -262,7 +262,7 @@
     },
     "choice_point_path": {
       "type": "choice_point",
-      "art": "bg/bramblewood/fork",
+      "art": "scenes/bramblewood/fork",
       "narration": "The path splits. To the left, mossy stone stairs climb up into the trees. To the right, a stream goes by making a sound very much like singing. Everybody vote.",
       "choices": [
         {
@@ -288,7 +288,7 @@
     },
     "scene_scouted": {
       "type": "story",
-      "art": "bg/bramblewood/canopy",
+      "art": "scenes/bramblewood/canopy",
       "narration": "From above, the whole wood lies open like a picture book. The stairs end at a gate knotted shut with roots. The stream bends around a thicket where three small lights are throwing something shiny back and forth. And behind both, a hill with a door in it.",
       "onEnter": [
         {
@@ -314,7 +314,7 @@
     },
     "scene_mossy_stair": {
       "type": "story",
-      "art": "bg/bramblewood/stair",
+      "art": "scenes/bramblewood/stair",
       "narration": "Twenty-two steps up, soft with moss, and at the top a little gate tied shut by roots as thick as your arm. The roots are not going to untie themselves.",
       "choices": [
         {
@@ -349,7 +349,7 @@
     },
     "scene_long_way": {
       "type": "story",
-      "art": "bg/bramblewood/stair",
+      "art": "scenes/bramblewood/stair",
       "narration": "So you go back down the twenty-two steps, which feels much longer the second time, and take the low path instead. It brings you out beside the stream, where somebody is singing.",
       "choices": [
         {
@@ -362,7 +362,7 @@
     },
     "scene_singing_stream": {
       "type": "story",
-      "art": "bg/bramblewood/stream",
+      "art": "scenes/bramblewood/stream",
       "narration": "Three bramblewisps (little blue lights with far too much energy) are tossing something shiny back and forth over the water and singing about it. Whatever it is, it is not theirs.",
       "cast": [
         {
@@ -423,7 +423,7 @@
     "encounter_bramblewisps": {
       "type": "encounter",
       "map": "thicket",
-      "art": "bg/bramblewood/stream",
+      "art": "scenes/bramblewood/stream",
       "narration": "The wisps scatter into the thicket and start a game of tag that nobody agreed to play.",
       "enemies": [
         {
@@ -443,7 +443,7 @@
     },
     "scene_bundled": {
       "type": "story",
-      "art": "bg/bramblewood/thicket",
+      "art": "scenes/bramblewood/thicket",
       "narration": "The wisps tie all your bootlaces together, eat the snacks, and then, feeling a bit guilty, tow you gently downstream to where you were going anyway. Lantern moths settle on your scratches, which turns out to be surprisingly nice.",
       "cast": [
         {
@@ -467,7 +467,7 @@
     },
     "scene_wisp_friends": {
       "type": "story",
-      "art": "bg/bramblewood/stream",
+      "art": "scenes/bramblewood/stream",
       "narration": "The shiny thing is a jar of mosslight, and the wisps hand it over with great ceremony. Then they point downstream, all three at once, at a hill with a door in it.",
       "cast": [
         {
@@ -493,7 +493,7 @@
     },
     "scene_shrine_hollow": {
       "type": "story",
-      "art": "bg/bramblewood/shrine",
+      "art": "scenes/bramblewood/shrine",
       "narration": "A small stone shrine sits in a hollow, half swallowed by roots. Two old words are carved over it: the Hollow Crown. The stone where it used to rest is empty, and cold, and there is a rusted key lying in the moss as if somebody dropped it in a hurry.",
       "onEnter": [
         {
@@ -529,7 +529,7 @@
     "scene_stone_words": {
       "type": "story",
       "priority": 2,
-      "art": "bg/bramblewood/shrine",
+      "art": "scenes/bramblewood/shrine",
       "narration": "The words are worn almost smooth, but you can still read them: WHAT IS BORROWED HUMS UNTIL IT IS HOME. Under that, somebody much less careful has scratched: sorry. sorry. sorry.",
       "choices": [
         {
@@ -542,7 +542,7 @@
     },
     "rest_mossbank": {
       "type": "rest",
-      "art": "bg/bramblewood/shrine",
+      "art": "scenes/bramblewood/shrine",
       "narration": "The moss on the bank below the hill is warm where the sun got to it, and the humming is not going anywhere. Somebody shares out whatever survived the day. Sit a while. This is the part of an afternoon where you notice you have got a little bit better at something.",
       "heal": 3,
       "choices": [
@@ -556,7 +556,7 @@
     },
     "scene_crown_door": {
       "type": "story",
-      "art": "bg/bramblewood/hill_door",
+      "art": "scenes/bramblewood/hill_door",
       "narration": "The door in the hill is round, wooden, and much too small for a grown-up. The humming is coming from behind it, and now that you are close you can hear that it is a sad sort of humming.",
       "choices": [
         {
@@ -575,7 +575,7 @@
     },
     "scene_door_listen": {
       "type": "story",
-      "art": "bg/bramblewood/hill_door",
+      "art": "scenes/bramblewood/hill_door",
       "narration": "Behind the door, somebody very small says: \"I only borrowed it. I was going to put it back.\" Then, quieter: \"I can't reach the shelf.\"",
       "choices": [
         {
@@ -622,7 +622,7 @@
     },
     "rest_lanternfall": {
       "type": "rest",
-      "art": "bg/bramblewood/lanternfall",
+      "art": "scenes/bramblewood/lanternfall",
       "narration": "You camp in the doorway with the lantern moths drifting up around you like sparks going the wrong way. Whoever is inside has stopped humming and started snoring. Whatever the Hollow Crown is, it is on the other side of this hill, and that is tomorrow's problem. Share out your things, patch each other up, and get some sleep.",
       "heal": 4,
       "choices": []

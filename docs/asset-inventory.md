@@ -1,5 +1,9 @@
 # Asset inventory — everything that has to be drawn
 
+> **Latest supplemental delivery:** all 36 remaining #421 paintings are delivered;
+> see §7 and [the review sheets](reviews/issue-421-remaining/README.md). The separate
+> Mythic-figure delivery and snapshot refresh are in PR #424.
+
 **One question: what is left to draw?** Not what it should look like — that is
 [asset-brief.md](./asset-brief.md), which is long, and stays long, because it is the thing that
 scales to twenty-four characters. This is the shorter document you read to find out where the work
@@ -198,3 +202,26 @@ still restates the roster by hand; adding both declarations should delete that c
 
 This does not change the image inventory. It is noted so rig integration does not mistake completed
 art for a complete machine-readable enemy contract.
+
+
+---
+
+## 7. Remaining #421 artwork — delivered 2026-10-22
+
+The former optional/conditional list is now delivered: ten Hollow Crown scene
+backdrops, First Steps and Hollow Crown campaign covers, eight painted ability
+icons, fourteen distinct facet icons, a rusted key and a Sunbloom potion icon.
+See [the delivery and visual review](reviews/issue-421-remaining/README.md) for
+exact paths, prompts, hashes and light/dark sheets at 128px, 48px and 24px.
+
+The live inventory on this branch reports **104/104 scene illustrations**,
+**4/4 campaign covers** and **24/24 additional painted icons**. These icons are
+client-bundled and declared separately in `manifest.paintedIcons`. All 19 Hollow
+Crown art references now resolve to the delivered scenes. Facet-specific display
+icons do not modify pinned Gemfall content or server item definitions.
+
+The ten missing Mythic figures are separately delivered and artistically approved
+in PR #424, which also refreshes the older snapshot above. This independent
+remaining-art branch keeps main's 62/72 figure baseline until that PR merges;
+its ten-figure inventory gap is covered by that delivery, not a new commission.
+After both deliveries land, none of #421's listed art remains undelivered.

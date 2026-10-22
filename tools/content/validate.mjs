@@ -95,10 +95,12 @@ function checkerFingerprint() {
     const file = queue.shift();
     if (seen.has(file)) continue;
     seen.add(file);
-    const text = readFileSync(join(src, file), "utf8");
+    // Proofs are shared across checkouts: Windows newlines and separators
+    // must hash exactly like the Linux source that produced the proof.
+    const text = readFileSync(join(src, file), "utf8").replace(/\r\n/g, "\n");
     texts.push(`${file}\n${text}`);
     for (const [, spec] of text.matchAll(/from\s+"\.\/([^"]+)"/g)) {
-      const next = join(dirname(file), spec).replace(/\.js$/, ".ts");
+      const next = join(dirname(file), spec).replaceAll("\\", "/").replace(/\.js$/, ".ts");
       queue.push(next.endsWith(".ts") ? next : `${next}.ts`);
     }
   }
