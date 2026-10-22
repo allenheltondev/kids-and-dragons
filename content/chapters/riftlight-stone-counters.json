@@ -9,6 +9,10 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "stone",
+  "plate": {
+    "art": "plates/riftlight/stone-counters",
+    "narration": "In the Red Sky Foothills, a broad stone stands beside a pale hollow in the grass. The stone is still. The hollow is empty. There is plenty here to look at carefully."
+  },
   "goal": {
     "text": "Help the stone keepers after their big stone moves overnight.",
     "steps": [

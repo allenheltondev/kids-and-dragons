@@ -8,6 +8,10 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "arrival",
+  "plate": {
+    "art": "plates/riftlight/bone-yard",
+    "narration": "At the edge of the Bone Yard, broken stone walls stand among enormous pale arches. Salt wind moves through the gaps. A narrow path curves between the quiet ruins."
+  },
   "goal": {
     "text": "Clear a safe way past the displaced ruins without taking anything from the Bone Yard.",
     "steps": [

@@ -9,6 +9,10 @@
   "estimatedMinutes": 8,
   "xpAward": 140,
   "entry": "bridge",
+  "plate": {
+    "art": "plates/riftlight/ashspan-bridge",
+    "narration": "At Ashspan Bridge, river water taps the ferry landing. A flat boat waits beside its long pole. The road crosses overhead, while the current carries on toward the coast."
+  },
   "goal": {
     "text": "Lend a hand at the river ferry before you go on.",
     "steps": [
