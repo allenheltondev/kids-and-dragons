@@ -217,7 +217,7 @@ export function SpareTokens({ spares, isMe }: { spares: ResolvedCharacter["spare
     <div className="spare-tokens">
       <h4 className="spare-tokens__heading">
         <TokenGlyph classId={spares[0]!.class} />
-        <span>{isMe ? "Your old gear (it never takes a slot)" : "Their old gear (it never takes a slot)"}</span>
+        <span>{isMe ? "Your old gear" : "Their old gear"}</span>
       </h4>
       <ul className="spare-tokens__list">
         {spares.map((spare) => (

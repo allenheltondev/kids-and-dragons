@@ -2037,7 +2037,7 @@ describe("the token and the rank-up moment on your own phone (#314)", () => {
     act(() => token.click());
     expect(token.getAttribute("aria-expanded")).toBe("true");
     expect(screen.getAllByText("Your song bell")).toHaveLength(1);
-    expect(screen.getByText("Your old gear (it never takes a slot)")).toBeTruthy();
+    expect(screen.getByText("Your old gear")).toBeTruthy();
     expect(screen.getByRole("img", { name: "thorn bracer, 1 notch" })).toBeTruthy();
     expect(document.querySelectorAll(".inv__slot")).toHaveLength(INVENTORY_SLOTS);
   });
