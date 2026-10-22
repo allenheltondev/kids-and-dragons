@@ -15,7 +15,8 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
 import { useKeepsakeStore } from "../store/keepsake";
-import { navigate, pairingFromSearch } from "../router";
+import { BRING_PARAM, bringHeroFromSearch, navigate, PAIR_PARAM, pairingFromSearch } from "../router";
+import { browserEnv, browserName } from "../install/detect";
 import { loadPlayerDeviceToken } from "../store/persistence";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
@@ -50,13 +51,21 @@ export function AccountScreen(): ReactElement {
    * the page cannot use it up.
    */
   const [pairCode] = useState(() => (typeof window === "undefined" ? null : pairingFromSearch(window.location.search)));
-  const [pairing, setPairing] = useState<"none" | "here" | "share">(pairCode === null ? "none" : "here");
+  /*
+   * An installed app's first launch (#412) sends a family whose hero is still
+   * in Safari here as `?bring=1`: the same panel, opened, with nothing typed,
+   * and words for getting the code from the browser on this same phone.
+   */
+  const [bring] = useState(() => typeof window !== "undefined" && bringHeroFromSearch(window.location.search));
+  const [pairing, setPairing] = useState<"none" | "here" | "share">(pairCode === null && !bring ? "none" : "here");
   useEffect(() => {
-    if (pairCode === null) return;
+    if (pairCode === null && !bring) return;
     const url = new URL(window.location.href);
-    url.searchParams.delete("pair");
+    url.searchParams.delete(PAIR_PARAM);
+    url.searchParams.delete(BRING_PARAM);
     window.history.replaceState(window.history.state, "", `${url.pathname}${url.search}${url.hash}`);
-  }, [pairCode]);
+  }, [pairCode, bring]);
+  const browser = useMemo(() => browserName(browserEnv()), []);
 
   // Read again as sign-in moves on: signing in can bind this device to a hero.
   const hasPlayed = useMemo(() => loadPlayerDeviceToken() !== null, [keepsakeStep, account]);
@@ -80,7 +89,22 @@ export function AccountScreen(): ReactElement {
             extra={<Button variant="ghost" onClick={() => setPairing("none")}>Not now</Button>}
           >
             <Suspense fallback={null}>
-              {pairing === "here" ? <PairHere initialCode={pairCode ?? ""} onClose={() => setPairing("none")} /> : null}
+              {pairing === "here" ? (
+                <PairHere
+                  initialCode={pairCode ?? ""}
+                  onClose={() => setPairing("none")}
+                  {...(bring
+                    ? {
+                        note: (
+                          <>
+                            In {browser}, open Kids &amp; Dragons and tap <b>Move a hero to another device</b>. Then tap{" "}
+                            <b>Play as me on another device</b>, and type the letters it shows here.
+                          </>
+                        ),
+                      }
+                    : {})}
+                />
+              ) : null}
               {pairing === "share" ? <PlayAsMe onClose={() => setPairing("none")} /> : null}
             </Suspense>
           </ChunkBoundary>
@@ -120,6 +144,11 @@ export function AccountScreen(): ReactElement {
             </h2>
             <p className="home__hint kad-muted">
               A hero lives on the device they were made on. A code moves them to a new one.
+            </p>
+            {/* #412: on iOS and iPadOS a Home Screen app can have its own storage. */}
+            <p className="home__hint kad-muted">
+              On iPhone and iPad, the app on your Home Screen keeps its own heroes, apart from Safari. A code moves them
+              there too.
             </p>
             <Button variant="secondary" block icon={<Icon name="forward" />} onClick={() => setPairing("here")}>
               Bring my hero to this device

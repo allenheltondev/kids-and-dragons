@@ -708,6 +708,35 @@ describe("backoffDelay", () => {
 });
 
 describe("openChannel.reconnect (a screen that woke up, #264)", () => {
+  it("says it is reconnecting, not connecting for the first time (#413)", () => {
+    const scheduler = manualScheduler();
+    const sequencer = new MessageSequencer({
+      handlers: { onState: () => undefined, onPresentation: () => undefined, onProgression: () => undefined, onGap: () => undefined },
+      schedule: scheduler.schedule,
+      cancel: scheduler.cancel,
+    });
+    sequencer.reset(makeState({ seq: 3 }), 3);
+    const sources: EventSourceLike[] = [];
+    const status = vi.fn();
+    const channel = openChannel({
+      url: () => "/events/ABCD", sequencer, onStatus: status, resync: async () => undefined,
+      createEventSource: () => {
+        const source: EventSourceLike = { onopen: null, onerror: null, onmessage: null, close: vi.fn() };
+        sources.push(source);
+        return source;
+      },
+      schedule: scheduler.schedule, cancel: scheduler.cancel,
+    });
+    expect(status).toHaveBeenLastCalledWith("connecting");
+    sources[0]!.onopen?.({});
+    channel.reconnect?.();
+    // The banner and the catch-up line both read this: a wake that is slow to
+    // find the network is a drop, and the story may have moved meanwhile.
+    expect(status).toHaveBeenLastCalledWith("reconnecting");
+    sources[1]!.onopen?.({});
+    expect(status).toHaveBeenLastCalledWith("open");
+  });
+
   it("drops the stream it no longer trusts and opens a fresh one from the last seq", () => {
     const scheduler = manualScheduler();
     const sources: EventSourceLike[] = [];

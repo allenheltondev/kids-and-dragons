@@ -17,7 +17,7 @@
 import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
 import type { ResolvedCharacter } from "@kad/shared";
-import { useGameStore, useSend } from "../store";
+import { useGameStore, useSend, useSynced } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
@@ -40,6 +40,8 @@ export function WelcomeBack(): ReactElement {
   const [makeNew, setMakeNew] = useState(false);
   const [chosen, setChosen] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Held while catching up after a drop, like every answer (#413).
+  const synced = useSynced();
   // Why the server would not seat the hero, in its words: "Sparklehoof is in
   // the middle of another adventure" (#282) names her, so it is shown as is.
   const [refused, setRefused] = useState<string | null>(null);
@@ -156,7 +158,7 @@ export function WelcomeBack(): ReactElement {
           variant="primary"
           size="lg"
           icon={<Icon name="forward" />}
-          disabled={hero === null || busy}
+          disabled={hero === null || busy || !synced}
           onClick={() => void bring()}
         >
           {hero === null ? "Pick a hero" : busy ? "Joining…" : `Play as ${hero.name}`}

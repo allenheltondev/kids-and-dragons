@@ -26,7 +26,7 @@ import { cue } from "../audio/cue";
 import { useGameStore } from "../store";
 import { NAME_REFUSED_MESSAGE, STAT_IDS, isBlockedName } from "@kad/shared";
 import type { ClassDef, ClassId, SpeciesDef, SpeciesId, StatId, Stats } from "@kad/shared";
-import { useRules, useSend } from "../store";
+import { useRules, useSend, useSynced } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
@@ -439,6 +439,8 @@ export function CreationFlow(): ReactElement {
   useEnsureContent();
   const rules = useRules();
   const send = useSend();
+  // Held while catching up after a drop, like every answer (#413).
+  const synced = useSynced();
   const draft = useCreationDraft();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -696,7 +698,7 @@ export function CreationFlow(): ReactElement {
             variant="primary"
             size="md"
             icon={<Icon name="check" />}
-            disabled={!stepDone || submitting}
+            disabled={!stepDone || submitting || !synced}
             onClick={() => void submit()}
           >
             {submitting ? "Making…" : "That's me!"}
