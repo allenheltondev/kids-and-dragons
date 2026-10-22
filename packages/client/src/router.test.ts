@@ -1,5 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { codeComplete, codeSlots, formatRoute, isRoomCode, normalizeCode, normalizeCodeInput, parseRoute, routeCode } from "./router";
+import { BRING_HERO_PATH, bringHeroFromSearch, codeComplete, codeSlots, formatRoute, isRoomCode, normalizeCode, normalizeCodeInput, pairingFromSearch, parseRoute, routeCode } from "./router";
+
+describe("bringing a hero to an installed app (#412)", () => {
+  it("opens the accounts page with nothing typed", () => {
+    expect(parseRoute(BRING_HERO_PATH)).toEqual({ name: "account" });
+    const search = BRING_HERO_PATH.slice(BRING_HERO_PATH.indexOf("?"));
+    expect(bringHeroFromSearch(search)).toBe(true);
+    expect(pairingFromSearch(search)).toBeNull();
+    expect(bringHeroFromSearch("?pair=ABCDEFGH")).toBe(false);
+  });
+});
 
 describe("parseRoute", () => {
   it("maps the three routes from architecture §4.6", () => {

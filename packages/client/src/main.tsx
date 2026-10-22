@@ -8,12 +8,17 @@ import { createRoot } from "react-dom/client";
 import "./report/listen";
 import { startA11y } from "./a11y/prefs";
 import { App } from "./App";
+import { listenForInstallPrompt } from "./install/prompt";
 import { registerServiceWorker } from "./sw/register";
 import "./styles/theme.css";
 import "./styles/components.css";
 
 // Saved text size, contrast, motion and reach, before the first paint (#262).
 startA11y();
+
+// Chromium offers installing once, early, and may do it before the home screen
+// mounts: hold the offer for the home screen's install card (#412).
+listenForInstallPrompt(window);
 
 const host = document.getElementById("root");
 if (!host) throw new Error("#root is missing from index.html");
