@@ -30,24 +30,26 @@ mine.**
 
 ## 2. Where it stands
 
-Snapshot — regenerate with `npm run art:inventory`.
+Snapshot **2026-10-22**, after #421 — regenerate with `npm run art:inventory`.
 
 | Category | Delivered | Outstanding |
 |---|---|---|
 | Character illustrations | **24 / 24** | — |
 | Gear portraits | **72 / 72** | — |
-| **Class figure variants** | **47 / 72** | **25 to illustrate** |
+| **Class figure variants** | **72 / 72** | — |
 | Biome backdrops, tiles + props | **51 / 51** | — |
 | Story-only environments | **5 / 5** | — |
 | Canon place coverage | **23 / 23** | — |
-| Scene illustrations | **70 / 70** | — |
-| Effect sheets, declared | **17 / 17** | — |
-| Entity cutouts | **30 / 30** | — |
+| Scene illustrations | **94 / 94** | — |
+| Effect sheets, declared | **28 / 28** | — |
+| Entity cutouts | **32 / 32** | — |
+| Campaign key art, declared | **2 / 2** | — |
 | Effect sheets, specified but undeclared | **0 / 0** | — |
 | **Entity part-sets (combat roster)** | **9 / 9** | — |
 
-**25 class figures outstanding.** The character-and-gear paintings are complete. What remains is
-a finished transparent `assembled.png` for each of the 25 class figures.
+**No declared image deliverables outstanding.** All 72 class figures are delivered, including
+the ten Mythic Starweaver and Songkeeper figures added for #421. Optional artwork outside the
+manifest is listed in §4.1; a complete inventory does not mean those optional commissions exist.
 
 ---
 
@@ -69,10 +71,10 @@ Recorded because "is that finished?" is the question this document exists to sto
 **Gear portraits — 72 files.** Four classes × three geared tiers × six species. Each is an approved,
 purpose-drawn creature-and-gear composite and is the visual source of truth for its exact fit.
 
-**Class figure variants — 47 files.** All Thornguard and Duskrunner tiers, plus Starweaver Sworn,
-for all six species, and Bigfoot's Starweaver Radiant/Mythic and all three Songkeeper tiers. Each
-is a finished transparent `assembled.png` declared in `manifest.figureVariants`, kept at its
-`assets/character-rigs/<class>/<tier>/<species>/` path.
+**Class figure variants — 72 files.** All four classes, all three geared tiers and all six
+species have a finished transparent `assembled.png`, declared in `manifest.figureVariants` and
+selected by the runtime lookup. The ten final Mythic figures, exact built-in imagegen prompts,
+reference roles, hashes and light/dark review sheets are in [the #421 review](./reviews/issue-421/README.md).
 
 **Biomes — 17 destinations.** Each with `bg.webp`, `tiles.png` and six props: 102 prop files, and
 12 unique tile sheets shared across the 17 (several destinations share a terrain family).
@@ -90,13 +92,16 @@ that is undeclared or missing on disk. Hollow Gate reuses its declared Gemfall i
 Shared artwork is allowed; this count measures coverage, not unique paintings. A new canon
 place therefore appears as a coverage gap even before anyone adds it to the asset manifest.
 
-**Effect sheets — 17.** Six `aura_<species>` loops plus `impact_strike`, `miss_veer`,
-`bonus_spark`, `dust_scuff`, `daze_swirl`, `guard_ward`, `burst_star`, `heal_bloom`,
-`revive_lift`, `down_settle` and `transform_flash`.
+**Effect sheets — 28.** All declared sheets are present, including the six species auras,
+combat feedback and group-action effects. `npm run art:inventory` also checks specified-but-
+undeclared effects; none remain.
 
-**Entity cutouts — 30 declared.** Each has a single `assembled.png`. No tier dimension:
-enemies do not level. All 18 creatures and 13 NPC peoples/orders in the current `canon/` files
-have cutouts; additional delivered entities and named cast are covered by the wiki audit.
+**Entity cutouts — 32 declared.** Each has a single `assembled.png`. Enemies do not level.
+Named cast are tracked separately: all 101 declared cast figures have files. All 48 field-guide
+portrait references resolve, as recorded in the #421 audit.
+
+**Campaign key art — 2 declared.** Gemfall and Riftlight have lobby paintings. Practice and
+fixture campaigns are optional commissions, not missing declared assets.
 
 `portrait.webp` never appears above because portraits are **derived, not drawn** —
 `npm run art:portraits` trims `assembled.png`, squares it and writes 384px WebP. Never commission
@@ -107,23 +112,30 @@ one. Inventory icons are painted WebP assets registered in `packages/client/src/
 
 ## 4. What is left
 
-### 4.1 Class figure variants — 25 to illustrate
+### 4.1 Class figure variants — complete; optional artwork remains
 
-Every approved geared character needs one transparent class figure. Forty-seven of 72 are delivered. Outstanding:
+All 72 class figures are delivered. No gear at `fledgling`, by design. Each is one finished
+`assembled.png` from the approved species and gear references, to the contract in
+[art-pipeline.md](./art-pipeline.md), declared in `manifest.figureVariants`. Fledgling figures
+continue to use the base species illustration.
 
-| Class | Tiers | Variants |
-|---|---|---:|
-| `starweaver` | radiant, mythic; five species excluding Bigfoot | 10 |
-| `songkeeper` | sworn, radiant, mythic; five species excluding Bigfoot | 15 |
+Issue #421 also records these conditional or optional commissions:
 
-No gear at `fledgling`, by design. Each is one finished `assembled.png` from art already approved,
-to the contract in [art-pipeline.md](./art-pipeline.md), declared in `manifest.figureVariants`.
-Undelivered combinations fall back to the un-geared species figure on figure surfaces; still-image
-surfaces already use the approved gear portrait.
+- **Hollow Crown backgrounds:** `hedge_wall`, `clearing`, `fork`, `canopy`, `stair`, `stream`,
+  `thicket`, `shrine`, `hill_door`, `lanternfall`. The reference chapter uses the existing
+  Bramblewood biome fallback; bespoke scenes are only needed if it becomes a real campaign.
+- **Campaign key art:** First Steps and The Hollow Crown, if they need dedicated lobby cards.
+- **Painted ability icons:** shield, wing, spark, fist, eye, moon, thorn and flame currently
+  use the working vector glyphs.
+- **Distinct item icons:** the 14 facets share `trinket`; key uses `quest`, potion uses
+  `consumable`. Dedicated paintings are optional.
+
+These are outside the current manifest requirements and are not included in the zero-outstanding
+count. The #421 delivery completes the required Mythic figures, not these optional commissions.
 
 ### 4.2 Effect sheets — complete
 
-All 17 are delivered and declared in the manifest. The six combat gaps identified by
+All 28 are delivered and declared in the manifest. The six combat gaps identified by
 [asset-brief §9.4](./asset-brief.md#94-effects--mapping-the-ten-verbs) are closed, including
 `down_settle` on the `down.settle` event.
 
@@ -133,7 +145,7 @@ it: that one plays when the fighting has stopped.
 
 ### 4.3 Entity part-sets — 9 delivered
 
-The 30 declared cutouts are delivered and the board draws them today. The approved `will_o_wisp` ships the
+The 32 declared cutouts are delivered and the board draws them today. The approved `will_o_wisp` ships the
 floating proof (`core`, `halo`, `trail`), and the approved `cinder_wolf` now ships the first shared
 quadruped plan plus its `ruff_alt` pack variant. The approved `glassback_crab` adds the first
 `low_shell` plan, and the approved `mire_mimic` extends it with the retractable `whiskers` sensory
@@ -181,11 +193,10 @@ count them. The full list, sizes and placements are in
 
 ## 5. Known warnings
 
-`art:verify` passes with **4 warnings, all the same one**: `bigfoot` palette drift at every tier.
-Its coat sits outside the hue tolerance `paletteRule` derives from the approved unicorn. A warning
-rather than a failure because it is a taste call, not a mechanical fault — but it is four tiers of
-one species disagreeing with the rule the other five follow, so it is worth a decision: retune the
-art, or widen bigfoot's latitude in the manifest and say why.
+`python tools/art/verify.py --strict` passes **752 checks with no failures or warnings** on
+2026-10-22. This is the mechanical gate. The #421 figures were also visually inspected on light
+and dark backgrounds at larger size and at 120px; the retained sheets support the owner's
+artistic review. Historical Bigfoot palette warnings are no longer reported by the current verifier.
 
 ---
 
