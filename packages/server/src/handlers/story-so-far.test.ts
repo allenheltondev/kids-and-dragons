@@ -96,6 +96,8 @@ describe("the Story page's record", () => {
     // The Keystone goes in the bag after the revelation, on the way to the ending.
     await t.choose("keystone");
     await t.choose("collectors");
+    // The Keeper lies down across the seal, and the party carries the stone out.
+    await t.choose("on");
 
     const attempt = (await h.attempt())!;
     const kept = attempt.story!.at(-1)!;
