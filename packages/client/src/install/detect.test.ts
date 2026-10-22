@@ -3,6 +3,7 @@ import {
   browserName,
   installCardVisible,
   installWay,
+  isFirstLaunch,
   isAppleTouch,
   isIosSafari,
   isStandalone,
@@ -95,20 +96,33 @@ describe("the install card", () => {
 });
 
 describe("the installed app's first launch", () => {
-  const empty = { standalone: true, hasIdentity: false, sharedDevice: false, answered: false };
+  const empty = { standalone: true, hasIdentity: false, sharedDevice: false, recorded: false };
 
-  it("asks only in the app, with nothing in its storage yet", () => {
-    expect(needsFirstLaunchChoice(empty)).toBe(true);
-    expect(needsFirstLaunchChoice({ ...empty, standalone: false })).toBe(false);
+  it("is the app opened with nothing in its storage yet", () => {
+    expect(isFirstLaunch(empty)).toBe(true);
+    expect(isFirstLaunch({ ...empty, standalone: false })).toBe(false);
   });
 
-  it("never asks a device that is already somebody, or a family tablet", () => {
-    expect(needsFirstLaunchChoice({ ...empty, hasIdentity: true })).toBe(false);
-    expect(needsFirstLaunchChoice({ ...empty, sharedDevice: true })).toBe(false);
+  it("is never a device that was already somebody at boot, or a family tablet", () => {
+    expect(isFirstLaunch({ ...empty, hasIdentity: true })).toBe(false);
+    expect(isFirstLaunch({ ...empty, sharedDevice: true })).toBe(false);
   });
 
-  it("asks once: a fresh start is an answer", () => {
-    expect(needsFirstLaunchChoice({ ...empty, answered: true })).toBe(false);
+  it("is decided once: whatever is recorded stands", () => {
+    expect(isFirstLaunch({ ...empty, recorded: true })).toBe(false);
+  });
+
+  const pending = { pending: true, hasPlayer: false, sharedDevice: false };
+
+  it("asks while pending, even once a TV's identity has been minted", () => {
+    // Nothing about a TV's identity is an input: only a player's token answers.
+    expect(needsFirstLaunchChoice(pending)).toBe(true);
+    expect(needsFirstLaunchChoice({ ...pending, pending: false })).toBe(false);
+  });
+
+  it("is answered by pairing, which leaves a player, or by becoming a family tablet", () => {
+    expect(needsFirstLaunchChoice({ ...pending, hasPlayer: true })).toBe(false);
+    expect(needsFirstLaunchChoice({ ...pending, sharedDevice: true })).toBe(false);
   });
 
   it("names Safari on an iPhone or iPad, and no browser in particular elsewhere", () => {

@@ -29,9 +29,9 @@ import { takeMoveLink } from "./move-link";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
 import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch, useRoute } from "../router";
-import { hasDeviceIdentity, loadPlayerDeviceToken, loadSharedDevice } from "../store/persistence";
-import { browserEnv, browserName, isStandalone, needsFirstLaunchChoice } from "../install/detect";
-import { firstLaunchAnswered } from "../install/remember";
+import { loadPlayerDeviceToken, loadSharedDevice } from "../store/persistence";
+import { browserEnv, browserName, needsFirstLaunchChoice } from "../install/detect";
+import { firstLaunch as firstLaunchRecord } from "../install/remember";
 import { InstallCard } from "../install/InstallCard";
 import { FirstLaunchChoice } from "../install/FirstLaunch";
 import { Button } from "../ui/Button";
@@ -170,17 +170,17 @@ function PersonalHome(): ReactElement {
   const hasPlayed = useMemo(() => loadPlayerDeviceToken() !== null, [keepsakeStep]);
 
   /*
-   * The installed app's first launch (#412). Decided from storage as it
-   * stands, before anything mints an identity: the questions below only read.
+   * The installed app's first launch (#412), recorded as pending at boot
+   * (main.tsx) before anything could mint an identity, so a TV's room opened
+   * first does not answer it. Only reads: nothing here makes anybody.
    */
   const [installEnv] = useState(browserEnv);
   const atHome = useRoute().name === "home";
   const [firstLaunch, setFirstLaunch] = useState(() =>
     needsFirstLaunchChoice({
-      standalone: isStandalone(installEnv),
-      hasIdentity: hasDeviceIdentity(),
+      pending: firstLaunchRecord() === "pending",
+      hasPlayer: loadPlayerDeviceToken() !== null,
       sharedDevice: loadSharedDevice() !== null,
-      answered: firstLaunchAnswered(),
     }),
   );
 
