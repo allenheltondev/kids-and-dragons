@@ -6,17 +6,19 @@ import "./ReadAloudControl.css";
 
 /*
  * Drawn here rather than in the shared icon set, which is part of the first
- * paint; this control loads after it. A speech bubble with lines of text, and
- * crossed out when off: shape, not colour, tells the two apart (spec §11).
+ * paint; this control loads after it. Lines of text with sound coming off
+ * them, so it reads as "say these words out loud" and not as a message; crossed
+ * out when off: shape, not colour, tells the two apart (spec §11).
  */
 const GLYPH = { fill: "none", stroke: "currentColor", strokeWidth: 1.9, strokeLinecap: "round", strokeLinejoin: "round" } as const;
 
-function BubbleIcon({ off }: { off: boolean }): React.JSX.Element {
+function ReadAloudIcon({ off }: { off: boolean }): React.JSX.Element {
   return (
     <svg className="kad-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <g {...GLYPH}>
-        <path d="M3 4h18v12h-9l-5 4v-4H3Z" />
-        <path d={off ? "M7 8h10M7 12h6M3 21 21 3" : "M7 8h10M7 12h6"} />
+        <path d="M3 7h9M3 12h6M3 17h9" />
+        <path d="M15 9.5a3.5 3.5 0 0 1 0 5M18 7a7 7 0 0 1 0 10" />
+        {off ? <path d="M3 21 21 3" /> : null}
       </g>
     </svg>
   );
@@ -32,9 +34,10 @@ export function ReadAloudControl(): React.JSX.Element | null {
         className="kad-readaloud__button kad-focusable"
         aria-label={on ? "Turn read-aloud off" : "Turn read-aloud on"}
         aria-pressed={on}
+        title="Read aloud"
         onClick={() => setOn(!on)}
       >
-        <BubbleIcon off={!on} />
+        <ReadAloudIcon off={!on} />
       </button>
     </div>
   );

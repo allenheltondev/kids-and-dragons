@@ -23,7 +23,6 @@ Each line below completes that shared prompt with the asset name, delivery size,
 - **rail-socket.webp** — 112×112; round. Prompt: A shallow round recessed dark plum well with subtle antique-brass edge; calm dark empty interior.
 - **rail-current.webp** — 24×160; 3S vertical caps 24. Prompt: Vertical brass bracket for selected tab, heavy protruding ends within 24px caps and plain stretchable middle; selected silhouette.
 - **tray-current.webp** — 160×24; 3S horizontal caps 24. Prompt: Horizontal brass bracket for selected tab, heavy protruding ends within 24px caps and plain stretchable middle; selected silhouette.
-- **rail-foot.webp** — 208×208; 9S inset 32. Prompt: Small square inset dark plum leather control tray, restrained brass edge, empty calm center. All corners contained in 32px inset.
 - **corner-bezel.webp** — 96×96; round. Prompt: Round chunky antique brass bezel with empty dark plum center for an overlaid control icon.
 - **panel.webp** — 192×192; 9S inset 40. Prompt: Standard square dark violet cloth card, thin brass rounded edge; completely flat calm #1a1730 center. Corners within 40px.
 - **panel-featured.webp** — 256×256; 9S inset 64. Prompt: Featured square dark violet card, heavier old gold frame and small leaf corner flourishes within 64px corners. Flat #1a1730 center.

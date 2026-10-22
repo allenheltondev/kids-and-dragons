@@ -8,7 +8,7 @@
  * Simple SVG, no raster art: below Sworn the token is an icon on the phone
  * (docs/class-mastery.md §4), and a finished Sworn class figure is a separate art
  * asset. Notches and pips are shapes, never colour alone (spec §11): a notch cut
- * is a filled chevron and one still to come is a short dash; a pip done is a
+ * is a filled diamond and one still to come is a short dash; a pip done is a
  * filled dot and one to go is an empty ring. On screen the token is always its
  * own name ("your thorn bracer"), never "class token".
  */
@@ -93,7 +93,7 @@ export function Notches({ rank, fresh }: { rank: ClassRank | undefined; fresh?: 
           viewBox="0 0 10 10"
           className={`token-notch${i < cut ? " token-notch--cut" : ""}${fresh === i + 1 ? " token-notch--fresh" : ""}`}
         >
-          {i < cut ? <path d="M1 2h8L5 9Z" /> : <path d="M2.5 5.5h5" />}
+          {i < cut ? <path d="M5 0.8 9.2 5 5 9.2 0.8 5Z" /> : <path d="M2.5 5.5h5" />}
         </svg>
       ))}
     </span>
@@ -178,30 +178,33 @@ export function TokenCard({ character, isMe, rules, partySize, named = true }: T
   const name = tokenName(character.class);
   return (
     <div className="token-card">
-      <ClassToken classId={character.class} rank={character.rank} owner={isMe ? "your" : `${character.name}'s`} />
-      <span className="token-card__words">
-        {named ? <span className="token-card__name">{isMe ? `Your ${name}` : `${character.name}'s ${name}`}</span> : null}
-        {title === null ? null : <span className="token-card__title">{title}</span>}
-        {track === null ? (
-          classDef && character.rank === "master" ? (
-            <span className="token-card__next kad-muted">Every notch is cut!</span>
-          ) : null
-        ) : (
-          <span className="token-card__next">
-            <span className="token-card__toward kad-muted">
-              Next notch: {rankTitle(classDef!, track.next)}
-            </span>
-            <ul className="token-card__deeds">
-              {track.steps.map((step) => (
-                <li className="token-card__deed" key={step.deed}>
-                  <span className="token-card__deed-label">{step.label}</span>
-                  <DeedPips step={step} />
-                </li>
-              ))}
-            </ul>
+      <div className="token-card__head">
+        <ClassToken classId={character.class} rank={character.rank} owner={isMe ? "your" : `${character.name}'s`} />
+        <span className="token-card__words">
+          {named ? <span className="token-card__name">{isMe ? `Your ${name}` : `${character.name}'s ${name}`}</span> : null}
+          {title === null ? null : <span className="token-card__title">{title}</span>}
+          <span className="token-card__notches kad-muted">{notchWords(character.rank)}</span>
+        </span>
+      </div>
+      {track === null ? (
+        classDef && character.rank === "master" ? (
+          <p className="token-card__next kad-muted">Every notch is cut!</p>
+        ) : null
+      ) : (
+        <div className="token-card__next">
+          <span className="token-card__toward kad-muted">
+            Next notch: {rankTitle(classDef!, track.next)}
           </span>
-        )}
-      </span>
+          <ul className="token-card__deeds">
+            {track.steps.map((step) => (
+              <li className="token-card__deed" key={step.deed}>
+                <span className="token-card__deed-label">{step.label}</span>
+                <DeedPips step={step} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

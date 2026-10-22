@@ -802,11 +802,6 @@ html[data-text] .kad-tray__label {
  * ======================================================================== */
 
 @media (orientation: landscape) and (min-width: 900px) and (min-height: 560px) {
-  body:has(.kad-party--player, .kad-travel) {
-    /* No strip at the top, and none at the bottom for one-handed play: the row is in the rail. */
-    --kad-corner-bottom: 0px;
-  }
-
   .kad-travel,
   .kad-party--player {
     flex-direction: row;
@@ -819,9 +814,7 @@ html[data-text] .kad-tray__label {
     gap: 0.5rem;
     inline-size: 6.5rem;
     margin: 0;
-    /* The corner row's two rows of 44px under the objects. px is zoomed with the
-       rest of the rail at larger text and the row is not, so it is scaled back. */
-    padding: 0.75rem 0.35rem calc((2 * 44px + 4px) * var(--kad-text-scale) + 1.25rem);
+    padding: 0.75rem 0.35rem;
     background:
       linear-gradient(to left, rgba(255, 220, 150, 0.08), transparent 35%),
       linear-gradient(to left, #2a1f45 0%, #1a1330 55%, #110c22 100%);
@@ -858,19 +851,25 @@ html[data-text] .kad-tray__label {
     box-shadow: inset -0.15rem 0 0 var(--kad-gold);
   }
 
-  /* The corner row, two by two at the foot of the rail. Specific enough to win over the phone's
-     one-handed placement in theme.css. */
-  html:not([data-hand="right"]) body:has(.kad-party--player, .kad-travel) .kad-corner,
-  html[data-hand="right"] body:has(.kad-party--player, .kad-travel) .kad-corner {
-    display: grid;
-    grid-template-columns: repeat(2, var(--kad-touch-min));
-    justify-content: center;
-    top: auto;
-    bottom: calc(0.75rem + env(safe-area-inset-bottom, 0px));
-    left: env(safe-area-inset-left, 0px);
+  /* The corner row stays across the top right, as on a phone, with the strip above the panes
+     that the shells reserve for it (theme.css). One-handed play moves the rail to the thumb's
+     side but not the row, which a wide screen has room to keep where it always is. */
+  html[data-hand][data-hand] body:has(.kad-party--player, .kad-travel) .kad-corner {
+    top: calc(0.25rem + env(safe-area-inset-top, 0px));
+    bottom: auto;
+    left: auto;
+    right: calc(0.25rem + env(safe-area-inset-right, 0px));
+    justify-content: flex-end;
+  }
+  html[data-hand][data-hand] body:has(.kad-party--player, .kad-travel) .kad-back {
+    top: calc(0.25rem + env(safe-area-inset-top, 0px));
+    bottom: auto;
+    left: calc(0.25rem + env(safe-area-inset-left, 0px));
     right: auto;
-    /* The rail's width: the rail cancels the text scale (zoom, above) and the row does not. */
-    inline-size: calc(6.5rem / var(--kad-text-scale));
+  }
+  html[data-hand][data-hand] .kad-party--player,
+  html[data-hand][data-hand] .kad-travel {
+    padding-block: calc(var(--kad-safe-top) + var(--kad-corner-bottom)) var(--kad-safe-bottom);
   }
 
   /* One-handed on the right: the rail, and the row with it, on that side. */
@@ -893,11 +892,6 @@ html[data-text] .kad-tray__label {
     background: linear-gradient(to right, rgba(245, 200, 108, 0.13), transparent);
     box-shadow: inset 0.15rem 0 0 var(--kad-gold);
   }
-  html[data-hand="right"] body:has(.kad-party--player, .kad-travel) .kad-corner {
-    left: auto;
-    right: env(safe-area-inset-right, 0px);
-  }
-
   /* Every pane takes the rest of the row, whichever shows. */
   .kad-travel > .kad-travel__pane,
   .kad-party--player > .kad-party__pane {

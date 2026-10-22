@@ -206,8 +206,10 @@ export function CharacterSheet({ member, isMe, items, explore = false, partySize
         {STAT_IDS.map((stat) => (
           <li className={`sheetview__stat sheetview__stat--${stat}`} key={stat}>
             <span className="sheetview__stat-glyph"><Icon name={stat} /></span>
-            <b>{character.stats[stat]}</b>
-            <span className="sheetview__word">{stat}</span>
+            <span className="sheetview__stat-text">
+              <b>{character.stats[stat]}</b>
+              <span className="sheetview__word">{stat}</span>
+            </span>
           </li>
         ))}
       </ul>
@@ -236,32 +238,6 @@ export function CharacterSheet({ member, isMe, items, explore = false, partySize
       {/* The worn token, its notches, and the deed toward the next (#314). */}
       <div className="sheetview__block">
         <TokenCard character={character} isMe={isMe} rules={rules} partySize={partySize} />
-      </div>
-
-      {/* The tier ladder — where they have got to, and where they are going. */}
-      <div className="sheetview__block">
-        <h4 className="sheetview__heading">
-          <Icon name="star" />
-          <span>How far {isMe ? "you have" : "they have"} come</span>
-        </h4>
-        <ol className="sheetview__ladder">
-          {ladder.map(({ tier, standing }) => (
-            <li className={`sheetview__rung sheetview__rung--${standing}`} key={tier}>
-              {/* Icon and word, never colour alone (spec §11). */}
-              <Icon
-                name={standing === "reached" ? "check" : standing === "lost" ? "scroll" : "waiting"}
-              />
-              <span className="sheetview__word">{TIER_WORD[tier]}</span>
-              <span className="sheetview__rung-note kad-muted">
-                {standing === "reached"
-                  ? "reached"
-                  : standing === "lost"
-                    ? "was this once"
-                    : "still to come"}
-              </span>
-            </li>
-          ))}
-        </ol>
       </div>
 
       {/*
@@ -367,7 +343,41 @@ export function CharacterSheet({ member, isMe, items, explore = false, partySize
         ) : null}
       </div>
 
-
+      {/* The tiers: where they have got to, and where they are going. Last, after the things they carry. */}
+      <div className="sheetview__block">
+        <h4 className="sheetview__heading">
+          <Icon name="star" />
+          <span>Hero tiers</span>
+        </h4>
+        <p className="sheetview__hint kad-muted">
+          Heroes grow through four tiers as they level up. {isMe ? "You are" : `${character.name} is`} a{" "}
+          <b className="sheetview__word">{character.tier}</b> now.
+        </p>
+        <ol className="sheetview__ladder">
+          {ladder.map(({ tier, standing }) => {
+            const from = rules?.tierLevels?.[tier];
+            return (
+              <li className={`sheetview__rung sheetview__rung--${standing}${tier === character.tier ? " sheetview__rung--now" : ""}`} key={tier}>
+                {/* Icon and word, never colour alone (spec §11). */}
+                <Icon
+                  name={standing === "reached" ? "check" : standing === "lost" ? "scroll" : "waiting"}
+                />
+                <span className="sheetview__word">{TIER_WORD[tier]}</span>
+                {from === undefined ? null : <span className="sheetview__rung-level">Level {from}+</span>}
+                <span className="sheetview__rung-note kad-muted">
+                  {tier === character.tier
+                    ? "you are here"
+                    : standing === "reached"
+                      ? "reached"
+                      : standing === "lost"
+                        ? "was this once"
+                        : "still to come"}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
     </section>
   );
 }

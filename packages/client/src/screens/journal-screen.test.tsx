@@ -73,27 +73,35 @@ afterEach(() => {
 });
 
 describe("JournalScreen", () => {
-  it("lists the adventures this hero has finished, wherever she finished them (#283)", async () => {
+  it("leaves the finished adventures to her own page, so the hero page does not say it twice", async () => {
     mount(
       journal({
-        heroes: [SPARKLEHOOF, THISTLE],
+        profile: { displayName: "Ada", badges: [], finds: { count: 0, recent: [] }, flair: { v: 1 } },
         finished: { c_1: [{ campaignId: "gemfall", title: "Gemfall", outcome: "setback", at: "2026-07-04T18:00:00.000Z" }] },
       }),
     );
+    await screen.findByRole("region", { name: /sparklehoof's character sheet/i });
+    expect(screen.queryByRole("region", { name: /adventures finished/i })).toBeNull();
+  });
+
+  it("keeps her finished adventures on the hero page when the book has no page of hers to list them", async () => {
+    const line = { campaignId: "gemfall", title: "Gemfall", outcome: "success" as const, at: "2026-07-04T18:00:00.000Z" };
+    mount(journal({ finished: { c_1: [line] } }));
     const finished = await screen.findByRole("region", { name: /adventures finished/i });
     expect(finished.textContent).toContain("Gemfall");
   });
 
-  it("shows no finished list for a hero who has finished nothing, or from a server that sends none", async () => {
+  it("offers her page and the story even before she has a hero", async () => {
     const user = userEvent.setup();
-    mount(journal({ heroes: [SPARKLEHOOF, THISTLE], finished: { c_1: [{ campaignId: "gemfall", title: "Gemfall", outcome: "success", at: "2026-07-04T18:00:00.000Z" }] } }));
-    await screen.findByRole("region", { name: /adventures finished/i });
-    await user.click(screen.getByRole("button", { name: /thistle/i }));
-    await waitFor(() => expect(screen.queryByRole("region", { name: /adventures finished/i })).toBeNull());
-    cleanup();
-    mount(journal());
-    await screen.findByRole("region", { name: /sparklehoof's character sheet/i });
-    expect(screen.queryByRole("region", { name: /adventures finished/i })).toBeNull();
+    mount(journal({
+      heroes: [],
+      profile: { displayName: "Ada", badges: [], finds: { count: 0, recent: [] }, flair: { v: 1 } },
+      story: [],
+    }));
+    expect(await screen.findByText(/no hero yet/i)).toBeTruthy();
+    expect(screen.getByRole("button", { name: "My page" })).toBeTruthy();
+    await user.click(screen.getByRole("button", { name: "Story" }));
+    expect(await screen.findByRole("heading", { name: "The story so far" })).toBeTruthy();
   });
 
   it("opens your hero, and the bag says what each thing does", async () => {

@@ -271,6 +271,61 @@ describe("the panel", () => {
     expect(screen.getByTestId("atlas-sheet").style.inlineSize).toBe("200%");
   });
 
+  describe("pinching", () => {
+    const touch = (x: number) => ({ clientX: x, clientY: 200, identifier: x });
+    const pinch = (view: Element, from: number, to: number) => {
+      fireEvent.touchStart(view, { touches: [touch(200 - from), touch(200 + from)] });
+      fireEvent.touchMove(view, { touches: [touch(200 - to), touch(200 + to)] });
+      fireEvent.touchEnd(view);
+    };
+    const sheet = () => screen.getByTestId("atlas-sheet").style.inlineSize;
+
+    it("zooms a step closer when two fingers spread, and a step back when they close", () => {
+      const { container } = mount({});
+      const view = container.querySelector(".atlas__viewport")!;
+      pinch(view, 40, 80);
+      expect(sheet()).toBe("200%");
+      pinch(view, 80, 40);
+      expect(sheet()).toBe("100%");
+    });
+
+    it("takes one step per real pinch and leaves a small wobble alone", () => {
+      const { container } = mount({});
+      const view = container.querySelector(".atlas__viewport")!;
+      pinch(view, 40, 44);
+      expect(sheet()).toBe("100%");
+      // A long spread keeps stepping as the fingers keep going apart.
+      fireEvent.touchStart(view, { touches: [touch(160), touch(240)] });
+      fireEvent.touchMove(view, { touches: [touch(130), touch(270)] });
+      fireEvent.touchMove(view, { touches: [touch(90), touch(310)] });
+      expect(sheet()).toBe("300%");
+    });
+
+    it("ignores one finger, which is panning", () => {
+      const { container } = mount({});
+      const view = container.querySelector(".atlas__viewport")!;
+      fireEvent.touchStart(view, { touches: [touch(100)] });
+      fireEvent.touchMove(view, { touches: [touch(300)] });
+      expect(sheet()).toBe("100%");
+    });
+
+    it("stops at the ends of the zoom, like the buttons", () => {
+      const { container } = mount({});
+      const view = container.querySelector(".atlas__viewport")!;
+      pinch(view, 40, 20);
+      expect(sheet()).toBe("100%");
+      for (let i = 0; i < 4; i++) pinch(view, 40, 100);
+      expect(sheet()).toBe("300%");
+    });
+
+    it("zooms with a trackpad's pinch too", () => {
+      const { container } = mount({});
+      const view = container.querySelector(".atlas__viewport")!;
+      fireEvent.wheel(view, { ctrlKey: true, deltaY: -60 });
+      expect(sheet()).toBe("200%");
+    });
+  });
+
   it("says so when the chapter is somewhere the map does not show", () => {
     const { container } = mount({ chapter: { ...CHAPTER, biome: "crystal_caverns" } });
     expect(container.querySelector('[aria-current="location"]')).toBeNull();
