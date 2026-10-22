@@ -18,7 +18,7 @@
 .kad-a11y__button:focus-visible,
 .kad-a11y__button[aria-expanded="true"] { opacity: 1; }
 html[data-contrast="high"] .kad-a11y__button { opacity: 1; }
-.kad-a11y__glyph { font-size: 1.05em; letter-spacing: -0.04em; }
+.kad-a11y__glyph { inline-size: 1.4em; block-size: 1.4em; }
 
 /* A bottom sheet: the choices are under the thumb, and the scrim's top is the way out. */
 .kad-a11y__scrim {

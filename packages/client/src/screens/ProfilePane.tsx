@@ -2,17 +2,20 @@
  * "Me" — a kid's own page in the adventure book (#299).
  *
  * Her heroes with their level and stats, the adventures she has finished, how
- * many things she has found in the Field Guide, and her badges, with a little
- * she can make her own: a color, a frame for each hero, a title from the badges
- * she has earned. Presets only; nothing typed and nothing uploaded.
+ * many things she has found in the Field Guide, and her badges, each a drawn
+ * medal in a carousel. A page to look at, and a page to change: it opens to
+ * look at, and "Edit my page" turns it into the editor, where what she picks
+ * (a color, a frame for each hero, a title from the badges she has earned)
+ * shows in the preview pinned above the choices. Presets only; nothing typed
+ * and nothing uploaded.
  *
  * Everything shown is derived on the server from what the game already keeps
  * (`JournalResponse.profile`), and nothing is ranked against anybody. The page
- * is only ever reached from her own device, through the journal; it has no
- * address of its own and nothing here can be shared.
+ * is only ever reached from her own device, through the journal (the Hero
+ * page's "My page"); it has no address of its own and nothing here can be shared.
  *
- * Lazy: JournalScreen loads this chunk the first time "Me" is opened, so none
- * of it is in the first paint.
+ * Lazy: JournalScreen loads this chunk the first time the page is opened, so
+ * none of it is in the first paint.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -21,13 +24,19 @@ import {
   HERO_FRAMES,
   PROFILE_COLORS,
   STAT_IDS,
+  type Badge,
   type FieldGuide,
   type FlairChoice,
+  type HeroFrameId,
   type JournalResponse,
   type KidProfileView,
   type ProfileFlair,
+  type ResolvedCharacter,
 } from "@kad/shared";
+import { useBackStep } from "../store/back-steps";
 import { useGameStore } from "../store";
+import { Button } from "../ui/Button";
+import { BadgeArt } from "./BadgeArt";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { Icon } from "./icons";
 import { loadFieldGuide } from "./content";
@@ -124,125 +133,232 @@ function Page({ journal, profile }: { journal: JournalResponse; profile: KidProf
   const title = profile.badges.find((b) => b.id === flair.title)?.name ?? "Adventurer";
   const finished = Object.values(journal.finished ?? {}).flat();
   const campaigns = [...new Map(finished.map((f) => [f.campaignId, f])).values()];
+  const [editing, setEditing] = useState(false);
+  // Back out of the editor before it backs out of the page.
+  useBackStep(editing ? () => { setEditing(false); return true; } : null);
+
+  const frameOf = (hero: ResolvedCharacter): HeroFrameId => flair.frames?.[hero.id] ?? "plain";
+  const pickFrame = (hero: ResolvedCharacter, id: HeroFrameId): void =>
+    pick((was) => {
+      const frames = { ...was.frames, [hero.id]: id };
+      if (id === "plain") delete frames[hero.id];
+      const { frames: _was, ...rest } = was;
+      return Object.keys(frames).length > 0 ? { ...rest, frames } : rest;
+    });
 
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">
-      <div className="profile kad-scroll" data-profile-color={color}>
-        <header className="profile__banner">
-          <h2 className="profile__name">{profile.displayName}</h2>
-          <p className="profile__title">{title}</p>
-        </header>
-
-        <p className="profile__notice" role="status">
-          {notice === "saved" ? "Saved. It will look like this on all your devices." : ""}
-          {notice === "failed" ? "We could not save that just now. Try again in a moment." : ""}
-        </p>
-
-        <section className="profile__section" aria-labelledby="profile-heroes">
-          <h3 id="profile-heroes" className="profile__heading"><Icon name="party" /> <span>Your heroes</span></h3>
-          {journal.heroes.length === 0 ? (
-            <p className="profile__hint">No hero yet. Make one in your next game and it will stand here.</p>
-          ) : (
-            <ul className="profile__heroes">
-              {journal.heroes.map((hero) => {
-                const frame = flair.frames?.[hero.id] ?? "plain";
-                return (
-                  <li key={hero.id} className="profile__hero">
-                    <div className={`profile__frame profile__frame--${frame}`} data-frame={frame}>
-                      <CharacterPortrait backdrop species={hero.species} accent={hero.appearance.accent}
-                        tier={hero.tier} characterClass={hero.class} lit />
-                    </div>
-                    <div className="profile__hero-text">
-                      <h4 className="profile__hero-name">{hero.name}</h4>
-                      <p className="profile__level"><Icon name="star" /> Level {hero.level}</p>
-                      <ul className="profile__stats" aria-label={`${hero.name}'s stats`}>
-                        {STAT_IDS.map((stat) => (
-                          <li key={stat} className="profile__stat">
-                            <Icon name={stat} />
-                            <b>{hero.stats[stat]}</b>
-                            <span>{stat}</span>
-                          </li>
-                        ))}
-                      </ul>
-                      <Choices label={`Frame for ${hero.name}`}
-                        options={HERO_FRAMES} value={frame}
-                        onPick={(id) => pick((was) => {
-                          const frames = { ...was.frames, [hero.id]: id };
-                          if (id === "plain") delete frames[hero.id];
-                          const { frames: _was, ...rest } = was;
-                          return Object.keys(frames).length > 0 ? { ...rest, frames } : rest;
-                        })} />
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </section>
-
-        <section className="profile__section" aria-labelledby="profile-badges">
-          <h3 id="profile-badges" className="profile__heading"><Icon name="levelup" /> <span>Your badges</span></h3>
-          {profile.badges.length === 0 ? (
-            <p className="profile__hint">No badges yet. The first one is hiding behind a bush.</p>
-          ) : (
-            <ul className="profile__badges">
-              {profile.badges.map((badge) => (
-                <li key={badge.id} className="profile__badge">
-                  <Icon name="star" />
-                  <span>
-                    <b className="profile__badge-name">{badge.name}</b>
-                    <span className="profile__badge-blurb">{badge.blurb}</span>
-                  </span>
+      <div className="profile kad-scroll" data-profile-color={color} data-mode={editing ? "edit" : "view"}>
+        {/* In the editor this stays pinned, so every pick shows in it without a scroll. */}
+        <div className="profile__top">
+          <header className="profile__banner">
+            <div className="profile__banner-words">
+              <h2 className="profile__name">{profile.displayName}</h2>
+              <p className="profile__title">{title}</p>
+            </div>
+            <Button className="profile__mode" variant={editing ? "primary" : "secondary"} size="md"
+              icon={<Icon name={editing ? "check" : "name"} />} onClick={() => setEditing(!editing)}>
+              {editing ? "Done" : "Edit my page"}
+            </Button>
+          </header>
+          {editing && journal.heroes.length > 0 ? (
+            <ul className="profile__faces" aria-label="Your heroes, as they will look">
+              {journal.heroes.map((hero) => (
+                <li key={hero.id}>
+                  <HeroFrame hero={hero} frame={frameOf(hero)} small />
                 </li>
               ))}
             </ul>
-          )}
-        </section>
+          ) : null}
+          <p className="profile__notice" role="status">
+            {notice === "saved" ? "Saved. It will look like this on all your devices." : ""}
+            {notice === "failed" ? "We could not save that just now. Try again in a moment." : ""}
+          </p>
+        </div>
 
-        <section className="profile__section" aria-labelledby="profile-finished">
-          <h3 id="profile-finished" className="profile__heading"><Icon name="check" /> <span>Adventures finished</span></h3>
-          {campaigns.length === 0 ? (
-            <p className="profile__hint">None yet. The first ending is waiting for you.</p>
-          ) : (
-            <ul className="profile__list">
-              {campaigns.map((c) => <li key={c.campaignId}>{c.title}</li>)}
-            </ul>
-          )}
-        </section>
+        {editing ? (
+          <>
+            <section className="profile__section" aria-labelledby="profile-yours">
+              <h3 id="profile-yours" className="profile__heading"><Icon name="spark" /> <span>Make it yours</span></h3>
+              <Choices label="Pick a color" options={PROFILE_COLORS} value={flair.color ?? ""} swatch
+                onPick={(id) => pick((was) => ({ ...was, color: id }))} />
+              {profile.badges.length === 0 ? (
+                <p className="profile__hint">Earn a badge and you can wear its name as a title.</p>
+              ) : (
+                <Choices label="Pick a title"
+                  options={[{ id: "", label: "No title" }, ...profile.badges.map((b) => ({ id: b.id, label: b.name }))]}
+                  value={flair.title ?? ""}
+                  onPick={(id) => pick((was) => {
+                    const { title: _was, ...rest } = was;
+                    return id === "" ? rest : { ...rest, title: id };
+                  })} />
+              )}
+            </section>
+            {journal.heroes.length > 0 ? (
+              <section className="profile__section" aria-labelledby="profile-frames">
+                <h3 id="profile-frames" className="profile__heading"><Icon name="party" /> <span>Frames for your heroes</span></h3>
+                <ul className="profile__editors">
+                  {journal.heroes.map((hero) => (
+                    <li key={hero.id} className="profile__editor">
+                      <HeroFrame hero={hero} frame={frameOf(hero)} small />
+                      <Choices label={`Frame for ${hero.name}`} options={HERO_FRAMES} value={frameOf(hero)}
+                        onPick={(id) => pickFrame(hero, id)} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+          </>
+        ) : (
+          <>
+            <section className="profile__section" aria-labelledby="profile-heroes">
+              <h3 id="profile-heroes" className="profile__heading"><Icon name="party" /> <span>Your heroes</span></h3>
+              {journal.heroes.length === 0 ? (
+                <p className="profile__hint">No hero yet. Make one in your next game and it will stand here.</p>
+              ) : (
+                <ul className="profile__heroes">
+                  {journal.heroes.map((hero) => (
+                    <li key={hero.id} className="profile__hero">
+                      <HeroFrame hero={hero} frame={frameOf(hero)} />
+                      <div className="profile__hero-text">
+                        <h4 className="profile__hero-name">{hero.name}</h4>
+                        <p className="profile__level">
+                          <Icon name="star" /> <span>Level {hero.level}</span>
+                        </p>
+                        <p className="profile__kind kad-muted">{hero.species} {hero.class}</p>
+                        <ul className="profile__stats" aria-label={`${hero.name}'s stats`}>
+                          {STAT_IDS.map((stat) => (
+                            <li key={stat} className="profile__stat">
+                              <Icon name={stat} />
+                              <b>{hero.stats[stat]}</b>
+                              <span>{stat}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
 
-        <section className="profile__section" aria-labelledby="profile-finds">
-          <h3 id="profile-finds" className="profile__heading"><Icon name="eye" /> <span>Field Guide finds</span></h3>
-          {profile.finds.count === 0 ? (
-            <p className="profile__hint">Nothing yet. Keep your eyes open, something odd is out there.</p>
-          ) : (
-            <>
-              <p className="profile__count">
-                You found <b>{profile.finds.count}</b> {profile.finds.count === 1 ? "thing" : "things"} for the Field Guide.
-              </p>
-              <ul className="profile__list" aria-label="Your newest finds">
-                {profile.finds.recent.map((id) => <li key={id}>{guide?.entries[id]?.title ?? "A new find"}</li>)}
-              </ul>
-            </>
-          )}
-        </section>
+            <section className="profile__section" aria-labelledby="profile-badges">
+              <h3 id="profile-badges" className="profile__heading"><Icon name="levelup" /> <span>Your badges</span></h3>
+              {profile.badges.length === 0 ? (
+                <p className="profile__hint">No badges yet. The first one is hiding behind a bush.</p>
+              ) : (
+                <BadgeCarousel badges={profile.badges} />
+              )}
+            </section>
 
-        <section className="profile__section" aria-labelledby="profile-yours">
-          <h3 id="profile-yours" className="profile__heading"><Icon name="spark" /> <span>Make it yours</span></h3>
-          <Choices label="Pick a color" options={PROFILE_COLORS} value={flair.color ?? ""} swatch
-            onPick={(id) => pick((was) => ({ ...was, color: id }))} />
-          {profile.badges.length === 0 ? (
-            <p className="profile__hint">Earn a badge and you can wear its name as a title.</p>
-          ) : (
-            <Choices label="Pick a title"
-              options={[{ id: "", label: "No title" }, ...profile.badges.map((b) => ({ id: b.id, label: b.name }))]}
-              value={flair.title ?? ""}
-              onPick={(id) => pick((was) => {
-                const { title: _was, ...rest } = was;
-                return id === "" ? rest : { ...rest, title: id };
-              })} />
-          )}
-        </section>
+            <section className="profile__section" aria-labelledby="profile-finished">
+              <h3 id="profile-finished" className="profile__heading"><Icon name="check" /> <span>Adventures finished</span></h3>
+              {campaigns.length === 0 ? (
+                <p className="profile__hint">None yet. The first ending is waiting for you.</p>
+              ) : (
+                <ul className="profile__list">
+                  {campaigns.map((c) => <li key={c.campaignId}><Icon name="check" /> <span>{c.title}</span></li>)}
+                </ul>
+              )}
+            </section>
+
+            <section className="profile__section" aria-labelledby="profile-finds">
+              <h3 id="profile-finds" className="profile__heading"><Icon name="eye" /> <span>Field Guide finds</span></h3>
+              {profile.finds.count === 0 ? (
+                <p className="profile__hint">Nothing yet. Keep your eyes open, something odd is out there.</p>
+              ) : (
+                <>
+                  <p className="profile__count">
+                    You found <b>{profile.finds.count}</b> {profile.finds.count === 1 ? "thing" : "things"} for the Field Guide.
+                  </p>
+                  <ul className="profile__list" aria-label="Your newest finds">
+                    {profile.finds.recent.map((id) => <li key={id}><Icon name="eye" /> <span>{guide?.entries[id]?.title ?? "A new find"}</span></li>)}
+                  </ul>
+                </>
+              )}
+            </section>
+          </>
+        )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * A hero in the frame she chose. The portrait fills the frame (the art is a
+ * square, so the frame is nearly one), and the frame differs in line as well as
+ * color, so no frame is told apart by color alone (spec §11).
+ */
+function HeroFrame({ hero, frame, small = false }: { hero: ResolvedCharacter; frame: HeroFrameId; small?: boolean }): ReactElement {
+  return (
+    <div className={`profile__frame profile__frame--${frame}${small ? " profile__frame--small" : ""}`} data-frame={frame}>
+      <CharacterPortrait backdrop lit size="100%" species={hero.species} accent={hero.appearance.accent}
+        tier={hero.tier} characterClass={hero.class} />
+    </div>
+  );
+}
+
+/**
+ * Her badges, one medal at a time with the next one peeking in: swipe along, or
+ * use the arrows. Every badge is in the page whether it is in view or not.
+ */
+function BadgeCarousel({ badges }: { badges: readonly Badge[] }): ReactElement {
+  const track = useRef<HTMLUListElement | null>(null);
+  const [at, setAt] = useState(0);
+  const slides = (): HTMLElement[] => [...(track.current?.children ?? [])] as HTMLElement[];
+
+  // Whichever medal is nearest the middle of the track is the one she is looking at.
+  const onScroll = (): void => {
+    const el = track.current;
+    if (!el) return;
+    const middle = el.scrollLeft + el.clientWidth / 2;
+    let nearest = 0;
+    let gap = Infinity;
+    slides().forEach((slide, i) => {
+      const away = Math.abs(slide.offsetLeft + slide.offsetWidth / 2 - middle);
+      if (away < gap) { gap = away; nearest = i; }
+    });
+    setAt(nearest);
+  };
+
+  const go = (to: number): void => {
+    const el = track.current;
+    const slide = slides()[to];
+    if (!el || !slide) return;
+    setAt(to);
+    if (typeof el.scrollTo !== "function") return;
+    const calm = typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+    el.scrollTo({ left: slide.offsetLeft - (el.clientWidth - slide.offsetWidth) / 2, behavior: calm ? "auto" : "smooth" });
+  };
+
+  return (
+    <div className="profile__carousel" role="group" aria-roledescription="carousel" aria-label="Your badges">
+      <ul className="profile__badges kad-scroll" ref={track} onScroll={onScroll} tabIndex={0}
+        aria-label="Swipe to see more badges">
+        {badges.map((badge, i) => (
+          <li key={badge.id} className="profile__badge" role="group" aria-roledescription="slide"
+            aria-label={`${String(i + 1)} of ${String(badges.length)}`}>
+            <BadgeArt id={badge.id} className="profile__badge-art" />
+            <b className="profile__badge-name">{badge.name}</b>
+            <span className="profile__badge-blurb">{badge.blurb}</span>
+          </li>
+        ))}
+      </ul>
+      {badges.length > 1 ? (
+        <div className="profile__carousel-bar">
+          <button type="button" className="profile__arrow kad-tap kad-focusable" aria-label="Previous badge"
+            disabled={at === 0} onClick={() => go(at - 1)}>
+            <Icon name="back" />
+          </button>
+          <span className="profile__dots" aria-hidden="true">
+            {badges.map((badge, i) => <span key={badge.id} className={`profile__dot${i === at ? " profile__dot--on" : ""}`} />)}
+          </span>
+          <button type="button" className="profile__arrow kad-tap kad-focusable" aria-label="Next badge"
+            disabled={at === badges.length - 1} onClick={() => go(at + 1)}>
+            <Icon name="forward" />
+          </button>
+        </div>
+      ) : null}
     </div>
   );
 }
