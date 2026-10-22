@@ -1,7 +1,8 @@
 /**
  * Nothing sits under the controls pinned over the screen, or is cut off (#257).
  * The screens: the start screen, the guide, a host's lobby and Rest scene,
- * the room controls, a returning kid's catch-up line, the adventure book, and
+ * the lobby on a phone's world pane, the room controls, a returning kid's
+ * catch-up line, the adventure book, and
  * what a screen that could not load says instead (#329).
  *
  * The corner row (help, display settings, read-aloud, sound) is fixed over
@@ -495,6 +496,14 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     // The host's phone says who joined, and keeps saying it until dismissed.
     await expect(host.locator(".kad-arrivals--inline .kad-arrival").first()).toBeVisible(TAP);
     await expectFits(host, "host's lobby with an arrival notice");
+
+    // The lobby itself, on a phone's world pane: the room code, the adventures and the party. At
+    // the largest text on a small phone it is taller than the pane, so it scrolls rather than
+    // cutting off its foot (the TV, which nobody can scroll, keeps it fixed).
+    await guest.getByRole("button", { name: /^world$/i }).click(TAP);
+    await expect(guest.locator("[data-pane='world'] .lobby")).toBeVisible(TAP);
+    await expectFits(guest, "the lobby on a phone's world pane");
+    await guest.getByRole("button", { name: /^you$/i }).click(TAP);
 
     // --- A Rest scene: the stop offer beside the arrival notice ---
     await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);
