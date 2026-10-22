@@ -25,6 +25,8 @@ import {
   campaignMode,
   chapterFlagWrites,
   chapterFor,
+  graphFingerprint,
+  graphProofPath,
   lintCampaignGraph,
   parseCampaignGraph,
   prerequisiteProblems,
@@ -37,6 +39,7 @@ import type {
   Chapter,
   CombatAbility,
   EncounterMap,
+  GraphProof,
   ItemCatalog,
   ItemDef,
   ParsedCampaignGraph,
@@ -93,6 +96,8 @@ export interface ContentStore {
    * campaign was supposed to take back.
    */
   campaign(id: string): Campaign | null;
+  /** Every campaign's id, in file order: the lobby's listed campaigns keep it. */
+  campaignIds(): string[];
   /**
    * The chapter a party plays at a beat, given the story flags they carry.
    *
@@ -206,6 +211,10 @@ class LoadedContent implements ContentStore {
 
   campaign(id: string): Campaign | null {
     return this._campaigns.get(id) ?? null;
+  }
+
+  campaignIds(): string[] {
+    return [...this._campaigns.keys()];
   }
 
   abilities(): AbilityCatalog {
@@ -382,7 +391,8 @@ async function readAll(root: string): Promise<ContentStore> {
   for (const file of campaignFiles) {
     const campaign = await readJson<Campaign>(path.join(campaignsDir, file), problems);
     if (!campaign) continue;
-    const campaignProblems = checkCampaign(campaign, chapters, `campaigns/${file}`);
+    const proof = campaign.graph ? await readProof(root, campaign.id) : null;
+    const campaignProblems = checkCampaign(campaign, chapters, `campaigns/${file}`, proof);
     if (campaignProblems.length > 0) {
       problems.push(...campaignProblems);
       continue;
@@ -422,10 +432,21 @@ function checkCampaign(
   campaign: Campaign,
   chapters: ReadonlyMap<string, Chapter>,
   label: string,
+  /** The campaign's recorded walk (`graph-proofs/`), if it has one. */
+  proof: GraphProof | null = null,
 ): string[] {
   const problems: string[] = [];
   if (typeof campaign.id !== "string" || campaign.id === "") {
     problems.push(`${label}: missing id`);
+  }
+  // A teaser (`comingSoon`) is a lobby card and nothing else: no chapters,
+  // and never startable, so it has no ending to need.
+  if (campaign.comingSoon === true) {
+    if (!Array.isArray(campaign.chapters) || campaign.chapters.length > 0) {
+      problems.push(`${label}: a comingSoon teaser has no chapters; publishing the campaign replaces it`);
+    }
+    if (campaign.listed !== true) problems.push(`${label}: a comingSoon teaser is only ever seen listed`);
+    return problems;
   }
   if (!Array.isArray(campaign.chapters) || campaign.chapters.length === 0) {
     problems.push(`${label}: a campaign with no chapters has no ending to commit at`);
@@ -449,14 +470,17 @@ function checkCampaign(
   // warning is for the author at `content:validate`, and must not stop a
   // server from starting. The same search the validator runs, so the two
   // never disagree about whether a content set is playable.
-  if (parsed.graph) {
-    const { findings } = lintCampaignGraph(parsed.graph, {
-      chapterFlags: (id) => {
-        const chapter = chapters.get(id);
-        return chapter ? chapterFlagWrites(chapter) : undefined;
-      },
-      routeSets: campaign.routeSets,
-    });
+  //
+  // The walk is the slow part (seconds, for Riftlight), so a proof that
+  // `content:validate` walked exactly this graph and these chapters' flags
+  // stands for it (shared `graph-proof.ts`). Anything else is walked here.
+  const chapterFlags = (id: string) => {
+    const chapter = chapters.get(id);
+    return chapter ? chapterFlagWrites(chapter) : undefined;
+  };
+  const proven = proof !== null && proof.fingerprint === graphFingerprint(campaign, chapterFlags);
+  if (parsed.graph && !proven) {
+    const { findings } = lintCampaignGraph(parsed.graph, { chapterFlags, routeSets: campaign.routeSets });
     for (const finding of findings) {
       if (finding.severity === "error") {
         problems.push(`${label}: ${finding.path}: ${finding.code}: ${finding.message} ${finding.hint}`);
@@ -549,6 +573,16 @@ function checkAbilities(catalog: Record<string, unknown>): string[] {
     }
   }
   return problems;
+}
+
+/** A graph campaign's recorded walk, or null: a missing or unreadable proof is just walked. */
+async function readProof(root: string, campaignId: string): Promise<GraphProof | null> {
+  try {
+    const proof = JSON.parse(await fs.readFile(path.join(root, graphProofPath(campaignId)), "utf8")) as GraphProof;
+    return proof.campaign === campaignId && typeof proof.fingerprint === "string" ? proof : null;
+  } catch {
+    return null;
+  }
 }
 
 async function readJson<T>(file: string, problems: string[]): Promise<T | null> {

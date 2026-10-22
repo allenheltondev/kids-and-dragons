@@ -809,6 +809,9 @@ describe("readying up", () => {
     expect(button.hasAttribute("disabled")).toBe(true);
     await user.click(button);
     expect(sent).toEqual([]);
+    // Gemfall is the only one that could start, so nobody has to vote for it.
+    expect(screen.getByRole("button", { name: /^Gemfall/ }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: /Play chapter 3/ })).toBeTruthy();
   });
 
   it("does not offer to begin before the campaign has loaded", () => {

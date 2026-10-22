@@ -12,17 +12,17 @@
  * Apprentice puts on the dusk hood, the song bell, the thorn bracer again
  * (still Expert) and the star circlet (still Apprentice).
  *
- * Riftlight is a draft (content/drafts/riftlight), so it is staged into a
- * scratch content root the way its preview stages it: its Gemfall
- * prerequisite dropped, its chapter props merged into the catalog.
+ * The shipped content is staged into a scratch root the way the local preview
+ * stages it, with Riftlight's Gemfall prerequisite dropped, so one hero can
+ * walk straight in.
  */
 
-import { cp, mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { cp, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { afterAll, describe, expect, it } from "vitest";
 import { applyIntent, createRunState, makeRng } from "@kad/shared";
-import type { Campaign, Chapter, ClassId, ClientIntent, RunState } from "@kad/shared";
+import type { Campaign, ClassId, ClientIntent, RunState } from "@kad/shared";
 import { loadContent, type ContentStore } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
 import { makeHarness, seedHousehold } from "../test-support.ts";
@@ -31,33 +31,21 @@ import { createRoom, joinRoom } from "./room.ts";
 
 const realEngine: Engine = { applyIntent, createRunState };
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..", "..");
-const DRAFT = path.join(ROOT, "content", "drafts", "riftlight");
 
 const scratch: string[] = [];
 afterAll(async () => {
   for (const dir of scratch) await rm(dir, { recursive: true, force: true });
 });
 
-let campaignId = "";
+const campaignId = "riftlight";
 const riftlight: Promise<ContentStore> = (async () => {
   const dir = await mkdtemp(path.join(tmpdir(), "kad-riftlight-rooms-"));
   scratch.push(dir);
-  for (const file of ["rules.json", "abilities.json", "bestiary.json", "world.json"]) {
-    await cp(path.join(ROOT, "content", file), path.join(dir, file));
-  }
-  for (const sub of ["chapters", "maps", "campaigns"]) await mkdir(path.join(dir, sub));
-  await cp(path.join(DRAFT, "maps"), path.join(dir, "maps"), { recursive: true });
-  const campaign = JSON.parse(await readFile(path.join(DRAFT, "opening-preview.campaign.json"), "utf8")) as Campaign;
-  campaignId = campaign.id;
+  await cp(path.join(ROOT, "content"), dir, { recursive: true });
+  const file = path.join(dir, "campaigns", `${campaignId}.json`);
+  const campaign = JSON.parse(await readFile(file, "utf8")) as Campaign;
   delete campaign.requires;
-  await writeFile(path.join(dir, "campaigns", `${campaign.id}.json`), JSON.stringify(campaign));
-  const items = JSON.parse(await readFile(path.join(ROOT, "content", "items.json"), "utf8")) as Record<string, unknown>;
-  for (const file of await readdir(path.join(DRAFT, "chapters"))) {
-    const chapter = JSON.parse(await readFile(path.join(DRAFT, "chapters", file), "utf8")) as Chapter;
-    Object.assign(items, chapter.props ?? {});
-    await cp(path.join(DRAFT, "chapters", file), path.join(dir, "chapters", file));
-  }
-  await writeFile(path.join(dir, "items.json"), JSON.stringify(items));
+  await writeFile(file, JSON.stringify(campaign));
   return loadContent(dir);
 })();
 

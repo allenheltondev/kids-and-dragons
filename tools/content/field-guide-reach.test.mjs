@@ -101,24 +101,24 @@ const EXPECTED_REACHABLE = [
   "npc.witch_order",
   "npc.yeti",
   "npc.boughkin",
+  "biome.frostfang_peaks",
+  "biome.glacier_of_origins",
+  "biome.sallow_wastelands",
+  "biome.sky_islands",
+  "creature.frost_wyrm",
+  "location.bone_yard",
 ];
 
 /** What no chapter reveals yet: places, peoples and creatures no campaign visits. */
 const EXPECTED_UNREACHABLE = [
   "biome.expanse",
-  "biome.frostfang_peaks",
-  "biome.glacier_of_origins",
   "biome.mermaid_cove",
   "biome.open_sea",
-  "biome.sallow_wastelands",
-  "biome.sky_islands",
   "creature.cloud_whale",
-  "creature.frost_wyrm",
   "creature.kavari", // Canon-only species; no chapter reveals it yet.
   "creature.loftmire",
   "creature.reefglider",
   "creature.silver_otter",
-  "location.bone_yard",
   "location.skullwater_cave",
   "location.the_whirlpool",
   "npc.skupper",

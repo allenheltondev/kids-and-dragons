@@ -56,10 +56,10 @@ adult-led table can still finish sooner; neither estimate guarantees a family's 
 Regression tests guard the shortest modeled path, not just the metadata or branch count.
 These content checks have passed; no family timing observation has been collected.
 
-## Production gate — not passed
+## Production gate — waived at publishing
 
-The substantial expansion and static pacing checks are implemented, including the two northern nodes. Before promoting these
-chapters out of `content/drafts/riftlight`, the campaign author still must:
+The substantial expansion and static pacing checks are implemented, including the two northern nodes. The owner published
+Riftlight before this gate was passed; these remain the checks to run at real tables:
 
 1. Record at least two real family playthroughs covering all six nodes across sessions,
    including a party without a Starweaver. Cover both whale choices, both bridge inspections,
@@ -67,7 +67,7 @@ chapters out of `content/drafts/riftlight`, the campaign author still must:
    a changed plan after failure, private/shared memory notes and the optional prior-Coast comparison.
    Cover both island rescue priorities, whale-dependent sightings, incomplete versus verified
    carving evidence, private/shared island records and warning/inspection message priority. Record elapsed and discussion
-   minutes, engagement, confusion and desired changes in the [observation log](../../../content/drafts/riftlight/playtest-observations.json).
+   minutes, engagement, confusion and desired changes in the [observation log](playtest-observations.json).
    Keep observations empty until actual play and exclude technical/meal breaks.
 2. Compare shortest and engaged measured runs with the 30–40-minute target. If ordinary nodes
    remain too short, add a consequential task or changed outcome, then play and remeasure.
@@ -77,6 +77,6 @@ chapters out of `content/drafts/riftlight`, the campaign author still must:
    gaps found at the table, and rerun content, continuity and pacing checks. Only then mark
    the regional gate passed. Any changed production length goal needs a named measured exception.
 
-The [opening pacing gate](opening-playtest.md) remains separate and open. Development pause
-endings are optional testing boundaries; they are not complete campaign endings or evidence
-of full-campaign play length. The remaining strands and convergence are still being authored.
+The [opening pacing gate](opening-playtest.md) remains separate and open. All 24 story nodes,
+the strands, convergence and the three finale endings, are authored and shipped; none of that
+is evidence of full-campaign play length until it is measured at real tables.

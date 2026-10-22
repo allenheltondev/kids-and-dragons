@@ -10,7 +10,7 @@ import { stageRiftlightOpening } from "./riftlight-preview.ts";
 import { campaign, chapters as allChapters, rules, items, context, start, send, allPaths } from "./riftlight-test-support.ts";
 const ROOT = path.resolve(import.meta.dirname, "../..");
 const chapters = new Map([...allChapters].filter(([, chapter]) => chapter.index <= 3));
-const continuity = JSON.parse(fs.readFileSync(path.join(ROOT, "content/drafts/riftlight/continuity.json"), "utf8")).chapters;
+const continuity = JSON.parse(fs.readFileSync(path.join(ROOT, "docs/campaigns/continental-rift/continuity.json"), "utf8")).chapters;
 const staged = stageRiftlightOpening();
 afterAll(() => fs.rmSync(staged, { recursive: true, force: true }));
 
@@ -45,7 +45,9 @@ describe("Riftlight's authored opening", () => {
     const result = runValidator(staged);
     expect(result.ok, result.output).toBe(true);
     expect(campaign.requires).toEqual(["gemfall"]);
-    expect(fs.existsSync(path.join(ROOT, "content/campaigns/riftlight.json"))).toBe(false);
+    // Shipped beside Gemfall, in every lobby, and locked until it is finished.
+    expect(campaign).toMatchObject({ id: "riftlight", listed: true });
+    expect(campaign.comingSoon).toBeUndefined();
     for (const chapter of allChapters.values()) expect(validateChapter(chapter), chapter.id).toEqual([]);
   });
 

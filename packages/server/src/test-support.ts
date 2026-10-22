@@ -92,6 +92,7 @@ export function makeContent(
     map: (id) => maps.get(id) ?? null,
     abilities: () => abilities,
     campaign: (id) => campaigns.get(id) ?? null,
+    campaignIds: () => [...campaigns.keys()],
     world: () => overrides.world ?? null,
     bestiary: () => overrides.bestiary ?? null,
     // The same selection the real store makes (shared `chapterFor`), over

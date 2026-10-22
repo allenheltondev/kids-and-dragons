@@ -9,6 +9,7 @@ contract; where a schema disagrees with them, the schema is wrong.
 - `npm run typecheck` — tsc across shared, server, client and tools
 - `npm test` — vitest (includes the `tools/**/*.test.mjs` content suites)
 - `npm run content:validate` — schemas and scene graphs; a malformed chapter must fail here, never at the table
+- `npm run content:proofs` — after changing a graph campaign's graph or the flags its chapters set: re-walks it and writes `content/graph-proofs/`, which the server trusts at start
 - `npm run content:continuity` — names a scene uses that some way in never showed, across every campaign in `content/campaigns`
 - `npm run content:graph` — a chapter's scene graph, with its gates labeled
 - `npm run content:pacing` — shortest and typical path through each chapter, and its predicted minutes (reports, never gates)
