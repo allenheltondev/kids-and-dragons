@@ -41,7 +41,7 @@ import {
 } from "@kad/shared";
 import { makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
-import { CombatControls, cardColumns } from "./CombatPanel";
+import { CombatControls } from "./CombatPanel";
 import { describeBeats, needsLine, rollWords } from "./fight-log";
 
 const RULES: RulesContent = makeRules();
@@ -475,51 +475,30 @@ describe("a tap does the thing (spec §11)", () => {
     expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "shout" }]);
   });
 
-  it("reads a packed card out first, and Go! or the same card again does it", async () => {
+  it("stands every card on a row of its own, sentence and all, and does it on one tap", async () => {
     /*
      * A playtest: "when you have 4+ options it hides the descriptions of what
-     * the options do." Packed two or three to a row a card has room for its
-     * name only, so its sentence goes up on the line over the cards when it
-     * is tapped, and nothing is sent until Go!. An aimed card's who? step is
-     * already that pause, and says the sentence beside its question.
+     * the options do." Packed two or three to a row a card had room for its
+     * name only; a tap-to-read pause fixed that at the cost of a second tap
+     * nobody guessed. So the cards stand one to a row with their sentences,
+     * however many there are, and the tap is the commit.
      */
     const SAID: AbilityCatalog = Object.fromEntries(
       Object.entries(CATALOG).map(([id, ability]) => [id, { ...ability, summary: `What ${ability.name} does.` }]),
     );
     const user = userEvent.setup();
-    const { sent } = mount({ characters: [character({ actions: ["strike", "shout"] })], abilities: SAID });
-    const reading = () => document.querySelector(".combat__reading")?.textContent;
-    expect(document.querySelector(".combat__actions")?.getAttribute("data-columns")).toBe("2");
-    // Up from the turn's first moment, so the first tap moves nothing.
-    expect(reading()).toBe("Tap a card to see what it does.");
+    const { sent } = mount({ characters: [character({ actions: ["strike", "shout", "volley"] })], abilities: SAID });
+    const list = document.querySelector(".combat__actions")!;
+    expect(list.hasAttribute("data-columns")).toBe(false);
+    expect(list.getAttribute("data-dense")).toBe("true");
+    for (const name of ["Strike", "Shout", "Volley"]) {
+      expect(screen.getByRole("button", { name: new RegExp(`^${name}`) }).textContent).toContain(`What ${name} does.`);
+    }
+    expect(screen.getByRole("button", { name: /^Get Ready/ }).textContent).toContain("+2 on your next roll");
+    expect(document.querySelector(".combat__reading")).toBeNull();
 
     await user.click(screen.getByRole("button", { name: /^Shout/ }));
-    expect(sent).toEqual([]);
-    expect(reading()).toBe("What Shout does.");
-    expect(screen.getByRole("button", { name: /^Shout/ }).getAttribute("aria-pressed")).toBe("true");
-    // Another card reads that one instead; the cards stay where they are.
-    await user.click(screen.getByRole("button", { name: /^Get Ready/ }));
-    expect(reading()).toBe("Wait this turn, and get +2 on your next roll.");
-    expect(sent).toEqual([]);
-    await user.click(screen.getByRole("button", { name: "Go! Get Ready" }));
-    expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "ready" }]);
-  });
-
-  it("does a packed card on a second tap of the same card", async () => {
-    const user = userEvent.setup();
-    const { sent } = mount({ characters: [character({ actions: ["strike", "shout"] })] });
-    await user.click(card("Shout"));
-    await user.click(card("Shout"));
     expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "shout" }]);
-  });
-
-  it("says an aimed packed card's sentence beside its question", async () => {
-    const SAID: AbilityCatalog = { ...CATALOG, strike: { ...CATALOG.strike!, summary: "Hit an enemy up to 6 squares away." } };
-    const user = userEvent.setup();
-    mount({ characters: [character({ actions: ["strike", "shout"] })], abilities: SAID });
-    await user.click(screen.getByRole("button", { name: /^Strike/ }));
-    expect(screen.getByText(/Strike: who\?/)).toBeTruthy();
-    expect(document.querySelector(".combat__reading")?.textContent).toBe("Hit an enemy up to 6 squares away.");
   });
 
   it("offers no End turn while there is a card to play — Get Ready is how you pass", () => {
@@ -909,11 +888,7 @@ describe("items in a fight", () => {
       encounter: wounded,
     });
 
-    // Attack, Get Ready and the draught: packed, so the first tap reads it.
     await user.click(screen.getByRole("button", { name: /Use Sunbloom Draught/ }));
-    expect(sent).toEqual([]);
-    expect(document.querySelector(".combat__reading")?.textContent).toMatch(/hearts back/);
-    await user.click(screen.getByRole("button", { name: "Go! Use Sunbloom Draught" }));
     expect(sent).toEqual([{ type: "USE_ITEM", itemId: "sunbloom_draught" }]);
   });
 
@@ -939,10 +914,6 @@ describe("items in a fight", () => {
 // ---------------------------------------------------------------------------
 
 describe("fitting every card on one screen", () => {
-  it("puts more cards to a row as there are more of them", () => {
-    expect([1, 2, 3, 4, 5, 6, 9].map(cardColumns)).toEqual([1, 1, 2, 2, 3, 3, 3]);
-  });
-
   it("shows two of the same item as one card that says how many", () => {
     const base = encounterWith();
     const hurt = {
@@ -981,7 +952,7 @@ describe("fitting every card on one screen", () => {
 
     expect(screen.queryByRole("button", { name: /Sunbloom/ })).toBeNull();
     const list = container.querySelector(".combat__actions")!;
-    expect(list.getAttribute("data-columns")).toBe("3");
+    expect(list.getAttribute("data-dense")).toBe("true");
 
     await user.click(screen.getByRole("button", { name: /^Use an item/ }));
     expect(screen.getByText("Use an item: which one?")).toBeTruthy();
@@ -1027,15 +998,15 @@ describe("the board keeps its size for the turn", () => {
    * measure, so these pin the seats instead: things are kept and hidden,
    * not removed, and the card rows hold their shape.
    */
-  it("keeps the cards' columns for the whole turn when one goes away", () => {
+  it("keeps the cards dense for the whole turn when one goes away", () => {
     mount({ characters: [character({ actions: ["strike"] })] });
-    const columns = () => document.querySelector(".combat__actions")?.getAttribute("data-columns");
-    // Attack (the wisp is beside her), Strike and Get Ready: two to a row.
+    const dense = () => document.querySelector(".combat__actions")?.getAttribute("data-dense");
+    // Attack (the wisp is beside her), Strike and Get Ready: three, so dense.
     expect(screen.getByRole("button", { name: /^Attack/ })).toBeTruthy();
-    expect(columns()).toBe("2");
+    expect(dense()).toBe("true");
 
-    // She steps away: Attack goes, and two cards alone would be one to a
-    // row. Same turn, so the same two columns.
+    // She steps away: Attack goes, and two cards alone would not be dense.
+    // Same turn, so the same short rows.
     const current = useGameStore.getState().state!;
     const enc = current.encounter!;
     act(() => {
@@ -1051,7 +1022,7 @@ describe("the board keeps its size for the turn", () => {
       });
     });
     expect(screen.queryByRole("button", { name: /^Attack/ })).toBeNull();
-    expect(columns()).toBe("2");
+    expect(dense()).toBe("true");
   });
 
   it("keeps the steps chip and the walking key in their seats once there is nowhere to walk", () => {
