@@ -24,6 +24,10 @@
       }
     ]
   },
+  "plate": {
+    "art": "plates/riftlight/cairnstep-pass",
+    "narration": "Stacked stone cairns climb a narrow notch between snowy peaks. Wind combs the ridges. Far above, griffin aeries cling to the cliffs like nests on a shelf."
+  },
   "scenes": {
     "cairns": {
       "type": "story",

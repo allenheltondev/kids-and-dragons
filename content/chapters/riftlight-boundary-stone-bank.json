@@ -9,6 +9,10 @@
   "estimatedMinutes": 8,
   "xpAward": 140,
   "entry": "stones",
+  "plate": {
+    "art": "plates/riftlight/boundary-stone-bank",
+    "narration": "Old boundary stones stand above the Great River. Wind bends the grass around their feet. Beyond the wet gravel, a quiet road follows the bank into the foothills."
+  },
   "goal": {
     "text": "Help the keeper of the old stones beside the river.",
     "steps": [

@@ -9,6 +9,10 @@
   "estimatedMinutes": 15,
   "xpAward": 140,
   "entry": "search",
+  "plate": {
+    "art": "plates/riftlight/hidden-glacier-rift",
+    "narration": "A fold in the air shivers at the end of the passage. Salt wind slips through, though the glacier lies all around. A low note trembles under the rock. Something here is waiting for an answer."
+  },
   "goal": {
     "text": "Search the glacier for another opening.",
     "steps": [

@@ -48,12 +48,14 @@ Snapshot **2026-10-22**, after #421 — regenerate with `npm run art:inventory`.
 | Effect sheets, declared | **28 / 28** | — |
 | Entity cutouts | **32 / 32** | — |
 | Campaign key art, declared | **2 / 2** | — |
+| **Story plates** (prologue + chapter plates) | **46 / 46** | — |
 | Effect sheets, specified but undeclared | **0 / 0** | — |
 | **Entity part-sets (combat roster)** | **9 / 9** | — |
 
 **No declared image deliverables outstanding.** All 72 class figures are delivered, including
-the ten Mythic Starweaver and Songkeeper figures added for #421. Optional artwork outside the
-manifest is listed in §4.1; a complete inventory does not mean those optional commissions exist.
+the ten Mythic Starweaver and Songkeeper figures added for #421, and so are all 46 story plates
+([story-plates.md](./story-plates.md)). Optional artwork outside the manifest is listed in §4.1;
+a complete inventory does not mean those optional commissions exist.
 
 ---
 
@@ -136,6 +138,18 @@ Issue #421 also records these conditional or optional commissions:
 
 These are outside the current manifest requirements and are not included in the zero-outstanding
 count. The #421 delivery completes the required Mythic figures, not these optional commissions.
+
+### 4.1b Story plates — complete
+
+Full-screen paintings with the story told over them, before the table decides anything: a
+campaign's prologue and representative chapter plates. Gemfall's four prologue plates and 15
+chapter plates, and Riftlight's four prologue plates and 23 chapter plates, are delivered and wired.
+Each opening chapter uses its prologue; every later chapter and Gemfall route variant has its
+own plate. 1600×900 opaque WebP at
+`assets/plates/<campaign>/<name>.webp`, declared in `manifest.storyPlates`. The story plays without
+a plate until its painting lands. Spec, safe area and delivery steps: [story-plates.md](./story-plates.md);
+prompts: [story-plates-prompts.json](./story-plates-prompts.json); composition check:
+`npm run art:plates`.
 
 ### 4.2 Effect sheets — complete
 
