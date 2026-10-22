@@ -592,6 +592,43 @@ def check_figure_variants(rep: Report, mf: dict) -> None:
         check_origin(rep, label, image, mf["canvas"], mf["tolerance"])
 
 
+def check_campaign_art(rep: Report, mf: dict) -> None:
+    """Lobby key art: the declared size, opaque, and nothing undeclared.
+
+    A missing painting is not a failure: the lobby stands in a scene from the
+    campaign's story until it lands (CampaignArt.tsx). `art:inventory` lists
+    what is still owed.
+    """
+    spec = mf.get("campaignArt")
+    if not spec:
+        return
+    canvas = spec["canvas"]
+    directory = os.path.join(ROOT, "assets", "campaigns")
+    declared = set(spec["campaigns"])
+    for cid in spec["campaigns"]:
+        path = os.path.join(directory, f"{cid}.webp")
+        label = f"campaigns/{cid}"
+        if not os.path.isfile(path):
+            rep.warn(f"{label}  not yet delivered", "the lobby shows a stand-in scene")
+            continue
+        with Image.open(path) as im:
+            if im.format != "WEBP":
+                rep.fail(f"{label} format", "WEBP", im.format)
+                continue
+            if im.size != (canvas["width"], canvas["height"]):
+                rep.fail(f"{label} canvas", f"{canvas['width']}x{canvas['height']}", f"{im.size[0]}x{im.size[1]}")
+                continue
+            if im.mode == "RGBA" and np.asarray(im)[..., 3].min() < 255:
+                rep.fail(f"{label} opaque", "no transparent pixels", "transparency")
+                continue
+        rep.ok(f"{label}  {canvas['width']}x{canvas['height']}")
+    if os.path.isdir(directory):
+        for filename in sorted(os.listdir(directory)):
+            stem, _ = os.path.splitext(filename)
+            if stem not in declared:
+                rep.fail(f"campaigns/{filename} undeclared", "listed in manifest.campaignArt.campaigns", "undeclared file")
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     strict = "--strict" in sys.argv
@@ -647,6 +684,7 @@ def main() -> int:
     # checking it is that nobody was going to remember to ask.
     check_gear_portraits(rep, mf)
     check_figure_variants(rep, mf)
+    check_campaign_art(rep, mf)
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
     if skipped:

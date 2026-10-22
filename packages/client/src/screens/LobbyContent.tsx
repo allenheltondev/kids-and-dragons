@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import type { ReactElement } from "react";
 import { lobbyCampaign, type PartyMember } from "@kad/shared";
 import { useGameStore, useParty, useRunState } from "../store";
+import { CampaignArt } from "./CampaignArt";
 import { campaignOptionLine, campaignPremise, journeyLine, lockedLine, nextChapterLine } from "./campaign-copy";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
@@ -145,6 +146,8 @@ export function LobbyContent(): ReactElement {
   const upNext = journeyLine(state?.campaign) ?? nextChapterLine(state?.campaign);
   // A campaign the household has not unlocked (#221) says why instead.
   const locked = lockedLine(state?.campaign);
+  const choice = state ? lobbyCampaign(state) : null;
+  const cards = (state?.campaignOptions?.length ?? 0) > 1;
 
   return (
     <section className="lobby entry-scene-host" aria-labelledby="lobby-heading">
@@ -170,8 +173,11 @@ export function LobbyContent(): ReactElement {
           otherwise the first scene is the first anyone hears of the story.
           Told while the room is filling, and gone once the lineup starts:
           from then on the party is what the screen is for, and a full
-          three-person lineup has to fit a 720p TV without scrolling. */}
-      {party.length === 0 && campaignPremise(state?.campaign) !== null ? (
+          three-person lineup has to fit a 720p TV without scrolling.
+          Not beside the adventure cards either: they name the choice, the
+          phones carry each one's premise, and the two together push the
+          room code off a 720p TV. */}
+      {party.length === 0 && !cards && campaignPremise(state?.campaign) !== null ? (
         <div className="lobby__premise">
           <p className="lobby__premise-title">
             <Icon name="scroll" />
@@ -180,26 +186,37 @@ export function LobbyContent(): ReactElement {
           <p className="lobby__premise-text">{campaignPremise(state?.campaign)}</p>
         </div>
       ) : null}
-      {/* More than one adventure on offer: the phones vote, and the screen
-          shows the race — one line each, so it still fits beside a full
-          party. One adventure is no question, so it is just "what's next". */}
-      {state && lobbyCampaign(state).contested ? (
+      {/* More than one adventure on offer: a card each, with its painting, so
+          the table sees what it could play and what is still to come (a
+          locked sequel, asleep with its reason). The phones vote when two or
+          more could start; one that could is simply what's next. Cards sit in
+          a row, so they still fit beside a full party. */}
+      {state && cards ? (
         <ul className="lobby__campaigns" aria-label="Which adventure?">
           {(state.campaignOptions ?? []).map((option) => {
             const votedIds = party
               .filter((member) => state.campaignVotes?.[member.playerId] === option.id)
               .map((member) => member.playerId);
+            const picked = option.locked === undefined && option.id === choice?.leader?.id;
             return (
-              <li className="lobby__next-chapter" key={option.id}>
-                <Icon name={option.id === state.campaign?.id ? "vote" : "map"} />
-                <span>
-                  {option.title}: {campaignOptionLine(option)}
+              <li
+                className={`lobby__campaign${picked ? " lobby__campaign--picked" : ""}`}
+                data-locked={option.locked !== undefined}
+                key={option.id}
+              >
+                <CampaignArt campaignId={option.id} />
+                <span className="lobby__campaign-title">
+                  <Icon name={option.locked ? "close" : picked ? "vote" : "map"} />
+                  <span>{option.title}</span>
                 </span>
-                <VoteTicks
-                  voterIds={party.map((member) => member.playerId)}
-                  votedIds={votedIds}
-                  party={party}
-                />
+                <span className="lobby__campaign-line">{campaignOptionLine(option)}</span>
+                {choice?.contested && option.locked === undefined ? (
+                  <VoteTicks
+                    voterIds={party.map((member) => member.playerId)}
+                    votedIds={votedIds}
+                    party={party}
+                  />
+                ) : null}
               </li>
             );
           })}

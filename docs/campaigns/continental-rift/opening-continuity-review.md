@@ -44,7 +44,7 @@ Songkeeper supplies the pace. The selected roller manages the line or leads the 
 parties are tested with a higher-stat hero who lacks the enabling species/class, on both
 success and failure; damage belongs to the roller without assigning them someone else's ability.
 
-[continuity.json](../../../content/drafts/riftlight/continuity.json) records each scene's narrative
+[continuity.json](continuity.json) records each scene's narrative
 prerequisites and the introduction wording that establishes them. The chapter walker checks these
 against actual engine-composed narration on every explored path, including both check outcomes,
 class/species options, and a three-player group check. A merge never borrows a fact from a sibling

@@ -236,6 +236,12 @@
     "name": "MossHome Knot-Cord",
     "text": "Old bigfoot knots that say the record knows you. Show it when the forest pays back."
   },
+  "listening_chime": {
+    "kind": "quest",
+    "icon": "bell",
+    "name": "Listening Chime",
+    "text": "Near a rift: sour means not ready; an echo means it stays open and offers a way back."
+  },
   "medal_not": {
     "kind": "quest",
     "icon": "trophy",

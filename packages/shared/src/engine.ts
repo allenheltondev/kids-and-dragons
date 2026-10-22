@@ -1776,7 +1776,11 @@ export interface LobbyCampaignChoice {
   leader: CampaignView | null;
   /** Seated, connected players who have not voted yet. Empty with one option. */
   waitingOn: PartyMember[];
-  /** True when the room has a real choice to make (two or more options). */
+  /**
+   * True when the room has a real choice to make: two or more options it could
+   * start. A locked option (#221) is shown, never voted for, so Gemfall beside
+   * a locked sequel is no question at all.
+   */
   contested: boolean;
 }
 
@@ -1784,20 +1788,26 @@ export interface LobbyCampaignChoice {
  * The lobby's campaign decision, as the server enforces it and the screens show
  * it — one function so the two can never disagree.
  *
- * One option is no decision at all: it is picked without a vote. Two or more,
- * and every connected seat votes before the chapter can start; a phone that has
+ * One startable option is no decision at all: it is picked without a vote,
+ * whatever locked options sit beside it. Two or more, and every connected seat votes before the chapter can start; a phone that has
  * dropped is not waited on, exactly as a Choice point does not wait on it. The
  * count is `tallyVotes`, so a tie breaks toward the story turn marker.
  */
 export function lobbyCampaign(state: RunState): LobbyCampaignChoice {
   const options = state.campaignOptions ?? [];
-  if (options.length <= 1) {
-    return { leader: options[0] ?? state.campaign ?? null, waitingOn: [], contested: false };
+  const unlocked = (option: CampaignView) => option.locked === undefined;
+  const open = options.filter(unlocked);
+  if (open.length <= 1) {
+    // With every option locked, the one the screens already show, so they
+    // give its reason instead of a Begin.
+    const leader =
+      open[0] ?? options.find((option) => option.id === state.campaign?.id) ?? options[0] ?? state.campaign ?? null;
+    return { leader, waitingOn: [], contested: false };
   }
   const votes: Record<string, string> = {};
   for (const member of state.party) {
     const vote = state.campaignVotes?.[member.playerId];
-    if (vote !== undefined && options.some((option) => option.id === vote)) {
+    if (vote !== undefined && open.some((option) => option.id === vote)) {
       votes[member.playerId] = vote;
     }
   }
@@ -1805,17 +1815,12 @@ export function lobbyCampaign(state: RunState): LobbyCampaignChoice {
   const leaderId = Object.keys(votes).length > 0 ? tallyVotes(state, votes) : null;
   // Before anybody votes, the leader is whatever the screens already show
   // (the room's campaign, or the one this room just played), else the first —
-  // skipping a locked campaign (#221), which a Begin could only be refused
-  // on. With every option locked it falls back as before, and the screens
-  // show the reason instead of a Begin.
+  // skipping a locked campaign (#221), which a Begin could only be refused on.
   const shownId = state.campaign?.id;
-  const unlocked = (option: CampaignView) => option.locked === undefined;
   const leader =
-    options.find((option) => option.id === leaderId) ??
-    options.find((option) => option.id === shownId && unlocked(option)) ??
-    options.find(unlocked) ??
-    options.find((option) => option.id === shownId) ??
-    options[0] ??
+    open.find((option) => option.id === leaderId) ??
+    open.find((option) => option.id === shownId) ??
+    open[0] ??
     null;
   return { leader, waitingOn, contested: true };
 }

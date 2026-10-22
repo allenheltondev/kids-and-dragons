@@ -6,7 +6,7 @@ import type { Bestiary, ClientIntent, EncounterMap, EngineContext, RunState } fr
 import { chapters, context, start, send } from "./riftlight-test-support.ts";
 const root = path.resolve(import.meta.dirname, "../..");
 const bestiary = JSON.parse(fs.readFileSync(path.join(root, "content/bestiary.json"), "utf8")) as Bestiary;
-const map = JSON.parse(fs.readFileSync(path.join(root, "content/drafts/riftlight/maps/riftlight_finale.json"), "utf8")) as EncounterMap;
+const map = JSON.parse(fs.readFileSync(path.join(root, "content/maps/riftlight_finale.json"), "utf8")) as EncounterMap;
 function setup(sceneId: string, face: number) {
   const chapter = structuredClone(chapters.get("riftlight-finale")!);
   for (const scene of Object.values(chapter.scenes)) if (scene.type === "encounter") scene.enemies = scene.enemies.map(e => {

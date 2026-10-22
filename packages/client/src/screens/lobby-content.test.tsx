@@ -114,6 +114,38 @@ describe("a campaign the household has not unlocked (#221)", () => {
   });
 });
 
+describe("the adventure cards", () => {
+  const SEQUEL: CampaignView = {
+    id: "riftlight",
+    title: "Riftlight",
+    blurb: "The ground opens.",
+    chapters: 6,
+    next: { index: 1, title: "The Crack" },
+    locked: { requires: ["gemfall"], reason: "Finish Gemfall first" },
+  };
+
+  it("shows each adventure with its painting, a locked sequel asleep with its reason", () => {
+    mount({ campaign: FIRST, campaignOptions: [FIRST, SEQUEL], campaignVotes: {}, party: [makeMember()] });
+    const cards = screen.getByRole("list", { name: "Which adventure?" }).querySelectorAll("li");
+    expect([...cards].map((card) => card.getAttribute("data-locked"))).toEqual(["false", "true"]);
+    expect(cards[0]?.className).toContain("lobby__campaign--picked");
+    expect(cards[1]?.textContent).toContain("Finish Gemfall first");
+    expect(cards[0]?.querySelector("img")?.getAttribute("src")).toBe("/assets/campaigns/gemfall.webp");
+  });
+
+  it("leaves the premise to the cards, so the room code still fits a 720p TV", () => {
+    mount({ campaign: FIRST, campaignOptions: [FIRST, SEQUEL], campaignVotes: {} });
+    expect(screen.getByRole("list", { name: "Which adventure?" })).toBeTruthy();
+    expect(screen.queryByText(PREMISE)).toBeNull();
+  });
+
+  it("draws no cards for a single adventure", () => {
+    mount({ campaign: FIRST, campaignOptions: [FIRST], party: [makeMember()] });
+    expect(screen.queryByRole("list", { name: "Which adventure?" })).toBeNull();
+    expect(screen.getByText(/Chapter 1:/)).toBeTruthy();
+  });
+});
+
 describe("the shared screen's line about where a graph campaign stands (#195)", () => {
   const journey = {
     node: "orchard",

@@ -13,6 +13,7 @@ import whistleArt from "./painted/whistle.webp";
 import cakeArt from "./painted/cake.webp";
 import supperArt from "./painted/supper.webp";
 import lanternArt from "./painted/lantern.webp";
+import bellArt from "./painted/bell.webp";
 import acornArt from "./painted/acorn.webp";
 import beadArt from "./painted/bead.webp";
 import starArt from "./painted/star.webp";
@@ -58,6 +59,7 @@ export const PAINTED_ART: Record<string, string> = {
   cake: cakeArt,
   supper: supperArt,
   lantern: lanternArt,
+  bell: bellArt,
   acorn: acornArt,
   bead: beadArt,
   star: starArt,
