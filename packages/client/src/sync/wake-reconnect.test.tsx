@@ -14,9 +14,13 @@ function Phone(): null {
 }
 
 let visibility: DocumentVisibilityState = "visible";
+let minutes = 0;
 
 beforeEach(() => {
   vi.useFakeTimers();
+  // Each case a minute after the last, clear of its page-wide wake.
+  minutes += 1;
+  vi.setSystemTime(Date.now() + minutes * 60_000);
   visibility = "visible";
   reconnect.mockClear();
   vi.spyOn(document, "visibilityState", "get").mockImplementation(() => visibility);
@@ -47,6 +51,12 @@ describe("a phone coming back to the game (#413)", () => {
     act(() => { vi.advanceTimersByTime(WAKE_COALESCE_MS); });
     act(() => { window.dispatchEvent(new Event("online")); });
     expect(reconnect).toHaveBeenCalledTimes(2);
+  });
+
+  it("opens one fresh stream for the page, however many screens on it listen", () => {
+    render(<><Phone /><Phone /></>);
+    act(() => { document.dispatchEvent(new Event("resume")); });
+    expect(reconnect).toHaveBeenCalledTimes(1);
   });
 
   it("stops listening when the phone leaves the room", () => {
