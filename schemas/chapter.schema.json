@@ -123,6 +123,27 @@
         "$ref": "#/$defs/scene"
       }
     },
+    "plate": {
+      "description": "Chapter.plate: one painting and a sentence or two, shown full screen before the chapter's first scene, once per device and skippable, for a chapter that begins somewhere new. Not allowed on a campaign's opening chapter, which has the campaign's prologue (validate.mjs). See docs/story-plates.md.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "art",
+        "narration"
+      ],
+      "properties": {
+        "art": {
+          "type": "string",
+          "pattern": "^plates/[a-z0-9]+(-[a-z0-9]+)*/[a-z0-9]+(-[a-z0-9]+)*$",
+          "description": "Asset-relative id, no extension: /assets/<art>.webp, 1600x900. Declared in assets/manifest.json storyPlates.ids (checked by tools/content/story-plates.test.mjs)."
+        },
+        "narration": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Read aloud and shown beneath the painting. Static for every party: no {tokens}, no counting the party, no great stones. At most PLATE_MAX_WORDS words (validate.mjs)."
+        }
+      }
+    },
     "voiceGuide": {
       "description": "The chapter's voice guide for its authors: tone, reading level, what never appears, and how its chapter-scoped characters sound. VoiceGuide in chapter.ts; nothing at play time reads it.",
       "type": "object",

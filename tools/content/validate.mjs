@@ -36,6 +36,7 @@ import { RIFT_ACTION_KINDS, campaignMode, journeyFlags, parseCampaignGraph, rift
 import { chapterFlagWrites, duplicateJsonKeys, lintCampaignGraph } from "../../packages/shared/src/campaign-graph-lint.ts";
 import { graphFingerprint, graphProofPath, stableHash } from "../../packages/shared/src/graph-proof.ts";
 import { prerequisiteProblems } from "../../packages/shared/src/campaign-prerequisites.ts";
+import { plateProblems } from "../../packages/shared/src/story-plates.ts";
 import { factTestProblems } from "../../packages/shared/src/world-state.ts";
 import { helpProblems } from "../../packages/shared/src/help.ts";
 import { DEED_OWNERS } from "../../packages/shared/src/types/domain.ts";
@@ -1307,6 +1308,14 @@ function checkCampaign(rep, file, campaign, chaptersById, brokenChapterIds, item
   }
 
   for (const [path, problem, hint] of lastTimeProblems(campaign, items)) fail(path, problem, hint);
+
+  // The prologue and chapter plates (docs/story-plates.md): short static words, a painting each,
+  // and never a prologue and a plate on the same start.
+  const stoneNames = Object.entries(items ?? {})
+    .filter(([id]) => id.startsWith("facet_"))
+    .map(([, item]) => String(item?.name ?? "").replace(/^the\s+/i, "").toLowerCase())
+    .filter((name) => name !== "");
+  for (const { path, problem, hint } of plateProblems(campaign, chaptersById, stoneNames)) fail(path, problem, hint);
 
   if (campaignMode(campaign) === "graph") return checkGraphCampaign(rep, file, campaign, chaptersById, fail, ok, items, classIds);
 

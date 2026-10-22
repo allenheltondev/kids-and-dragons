@@ -24,6 +24,10 @@
       }
     ]
   },
+  "plate": {
+    "art": "plates/riftlight/sky-islands-arrival",
+    "narration": "High above the realm, stone islands drift like slow boats. Gold-roofed temples glow on their backs. Roots dangle into the clouds, and wind banners snap in every direction at once."
+  },
   "scenes": {
     "island": {
       "type": "story",

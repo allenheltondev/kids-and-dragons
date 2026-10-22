@@ -22,17 +22,19 @@
  * viewport unit.
  */
 
-import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { lastTimeLines, leftOffLines, partyItemIds } from "@kad/shared";
-import type { Campaign, RunState } from "@kad/shared";
-import { useCampaign, useChapter, useRunState } from "../store";
+import type { RunState } from "@kad/shared";
+import { useChapter, useRunState } from "../store";
 import { onStageInset, stageInsetBottom } from "../world/stage-inset";
 import { useEnsureChapter } from "./content";
 import { useChapterGoal } from "./ChapterGoal";
 import { fitPlate } from "./fit-plate";
 import { Icon } from "./icons";
 import { midChapter, sceneKey } from "./presence-copy";
+import { atChapterStart, resetPrefaceCampaigns, useRunCampaign } from "./run-campaign";
+import { useStartPlates } from "./start-plates";
 import "./ChapterGoal.css";
 import "./ChapterPreface.css";
 
@@ -47,70 +49,15 @@ export function prefaceShowMs(words: number, kind: "start" | "back"): number {
 
 const wordCount = (texts: readonly string[]): number => texts.join(" ").split(/\s+/).filter((w) => w !== "").length;
 
-/*
- * The campaign in play. The store holds the one the lobby launches; a run in another (a
- * campaign the household picked from the shelf) has its file fetched here once and kept.
- * Undefined while that fetch is out; null when there is no campaign or it cannot be had.
- */
-const campaigns = new Map<string, Campaign | null>();
-const fetching = new Map<string, Promise<void>>();
-
-function fetchCampaign(id: string): Promise<void> {
-  let task = fetching.get(id);
-  if (!task) {
-    task = fetch(`/content/campaigns/${encodeURIComponent(id)}.json`)
-      .then((response) => (response.ok ? (response.json() as Promise<Campaign>) : null))
-      .catch(() => null)
-      .then((campaign) => {
-        campaigns.set(id, campaign);
-      });
-    fetching.set(id, task);
-  }
-  return task;
-}
-
 /** Test seam: forget fetched campaigns. */
-export function resetPrefaceCampaigns(): void {
-  campaigns.clear();
-  fetching.clear();
-}
-
-function useRunCampaign(id: string | null): Campaign | null | undefined {
-  const launched = useCampaign();
-  const [, fetched] = useReducer((n: number) => n + 1, 0);
-  const ours = id !== null && launched?.id === id;
-  useEffect(() => {
-    if (id === null || ours || campaigns.has(id)) return;
-    let live = true;
-    void fetchCampaign(id).then(() => {
-      if (live) fetched();
-    });
-    return () => {
-      live = false;
-    };
-  }, [id, ours]);
-  if (id === null) return null;
-  if (ours) return launched;
-  return campaigns.has(id) ? campaigns.get(id)! : undefined;
-}
-
-/**
- * A run standing in its chapter's first scene, before anything has happened: the trail holds
- * that scene alone. A run saved before the trail existed has none, and is never a start.
- */
-function atChapterStart(state: RunState): boolean {
-  return (
-    state.chapterId !== null &&
-    state.sceneId !== null &&
-    (state.phase === "scene" || state.phase === "check") &&
-    state.encounter == null &&
-    (state.visited ?? []).length === 1
-  );
-}
+export { resetPrefaceCampaigns };
 
 export type StartPreface =
   | { status: "none" }
-  /** At a chapter's start, with its files still on the way: the story waits for them, briefly. */
+  /**
+   * At a chapter's start with its files still on the way (the story waits for them, briefly), or
+   * with a prologue or chapter plate up (the story waits for it to finish).
+   */
   | { status: "pending"; key: string }
   | { status: "ready"; key: string; recap: boolean; lines: string[]; goal: string | null };
 
@@ -120,6 +67,7 @@ export function useStartPreface(): StartPreface {
   const state = useRunState();
   const chapter = useChapter();
   const campaign = useRunCampaign(state?.campaignId ?? null);
+  const plates = useStartPlates();
   const start = state !== null && atChapterStart(state);
   const key = start ? `${state.runId}:${state.chapterId ?? ""}` : "";
   // A campaign known to have no "Last time…" (the practice, an older one) never waits.
@@ -133,10 +81,14 @@ export function useStartPreface(): StartPreface {
     return () => clearTimeout(timer);
   }, [waiting, key]);
 
-  if (!start || state === null || without) return { status: "none" };
+  if (!start || state === null) return { status: "none" };
   // Gave up waiting: the story has been read without it, so it never comes back for this start,
   // however soon after the files land. A recap after the story would be out of order.
   if (gaveUp === key) return { status: "none" };
+  // A prologue or chapter plate is up (StoryPlates): the recap and the story wait behind the
+  // painting, and are said the moment it is done or skipped.
+  if (plates !== null) return { status: "pending", key };
+  if (without) return { status: "none" };
   if (!loaded) return { status: "pending", key };
   // A playtest jump, or a chapter that opens somewhere other than its entry: not a start.
   if (!campaign || !chapter || chapter.entry !== state.sceneId) return { status: "none" };

@@ -24,6 +24,10 @@
       }
     ]
   },
+  "plate": {
+    "art": "plates/riftlight/saltrot-arrival",
+    "narration": "Gray-green mudflats stretch toward a hazy sea. Silt banks, salt pools and crooked drowned trees. Out here the ground changes its mind with every tide."
+  },
   "scenes": {
     "flats": {
       "type": "story",
