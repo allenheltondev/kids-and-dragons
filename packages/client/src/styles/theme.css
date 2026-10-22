@@ -429,6 +429,12 @@ html[data-motion="reduced"] *::after {
   block-size: auto;
 }
 
+/* The creation flow is a grid whose middle scrolls; its least height would be all of its content
+   (Next a screen below the fold), so it takes the pane's height and its middle scrolls. */
+.kad-surface--player > .player-view__creation > .creation {
+  min-block-size: 0;
+}
+
 .kad-surface--map {
   container-name: map;
   background: var(--kad-bg);

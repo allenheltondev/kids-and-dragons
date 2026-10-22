@@ -22,7 +22,7 @@
 html:not([data-contrast="high"]) :is(
   .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .creation-species, .creation-card,
   .preface__card, .rankup__card,
-  .narration__plate, .sheet, .goal,
+  .narration__plate, .sheet:not(.sheet--turn), .goal,
   .lobby__heading, .lobby__party-heading, .party-strip__heading,
   .atlas__label, .atlas__landmark, .kad-map__flip-tab,
   .choice, .kad-button--primary, .kad-button--secondary,
@@ -38,7 +38,7 @@ html:not([data-contrast="high"]) :is(
 html:not([data-contrast="high"]) :is(
   .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .creation-species, .creation-card,
   .preface__card, .rankup__card, .narration__plate, .atlas__label, .goal:not(.goal--phone),
-  .sheet, .lobby__heading, .lobby__party-heading, .party-strip__heading,
+  .sheet:not(.sheet--turn), .lobby__heading, .lobby__party-heading, .party-strip__heading,
   .kad-map__flip-tab, .choice, .stat-row__item, .inv__button, .inv__slot--empty, .sheet__hp-track
 ) {
   position: relative;
@@ -47,7 +47,7 @@ html:not([data-contrast="high"]) :is(
 html:not([data-contrast="high"]) :is(
   .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .creation-species, .creation-card,
   .preface__card, .rankup__card,
-  .narration__plate, .sheet, .goal,
+  .narration__plate, .sheet:not(.sheet--turn), .goal,
   .lobby__heading, .lobby__party-heading, .party-strip__heading,
   .atlas__label, .atlas__landmark, .kad-map__flip-tab,
   .choice, .kad-button--primary, .kad-button--secondary,
@@ -112,12 +112,14 @@ html:not([data-contrast="high"]) :is(.inv__button, .inv__slot--empty, .sheet__hp
   --chrome-w: 16px 24px;
 }
 
+/* The nameplate, except while the game waits on you: then the strip is the gold banner that says
+   so (PlayerPanel.css, `.sheet--turn`), the one "your turn" signal, and nothing paints over it. */
 .sheet {
   --chrome: url("../assets/chrome/strip-identity.webp");
   --chrome-slice: 40;
   --chrome-w: 20px;
 }
-html:not([data-contrast="high"]) .sheet {
+html:not([data-contrast="high"]) .sheet:not(.sheet--turn) {
   border-bottom: 0;
 }
 
@@ -133,7 +135,20 @@ html:not([data-contrast="high"]) .sheet {
 html:not([data-contrast="high"]) :is(.lobby__heading, .lobby__party-heading, .party-strip__heading) {
   inline-size: fit-content;
   max-inline-size: 100%;
-  padding: 0.3em 34px;
+  /* Clear of the ribbon's ends, and no taller than the words: the lobby on a phone has no height
+     to give a heading. */
+  padding-inline: 34px;
+}
+
+/* A phone's world at larger text has no width for the ribbon's ends: the words take the line. */
+@container world (max-width: 40em) {
+  html[data-text]:not([data-contrast="high"]) :is(.lobby__heading, .lobby__party-heading) {
+    inline-size: auto;
+    padding-inline: 0;
+  }
+  html[data-text]:not([data-contrast="high"]) :is(.lobby__heading, .lobby__party-heading)::before {
+    content: none;
+  }
 }
 
 /* A divider at its own size: stretched, its star would smear. */
@@ -151,8 +166,8 @@ html:not([data-contrast="high"]) .preface__goal {
   --chrome-w: 24px;
 }
 html:not([data-contrast="high"]) .goal {
-  /* Clear of the pin and the curls in the paper's corners. */
-  padding: 14px 20px 14px 22px;
+  /* Its own padding, no more: on a phone, height here is height the world's stage gives up. The
+     paper's curls are at its corners, clear of the words. */
   color: #2a1f45;
   text-shadow: none;
 }
@@ -229,9 +244,19 @@ html:not([data-contrast="high"]) .lobby__code-letter {
 .choice--on {
   --chrome: url("../assets/chrome/button-choice-picked.webp");
 }
-html:not([data-contrast="high"]) .choice {
+html:not([data-contrast="high"]) .choice:has(> .choice__icon) {
   min-block-size: 4.3em;
   padding-inline-start: 0.48em;
+}
+/* A choice with a picture rather than an icon (an adventure to pick) has no socket to sit in: the
+   plain plate, and a gold ring when it is the one picked. */
+.choice:not(:has(> .choice__icon)) {
+  --chrome: url("../assets/chrome/button-secondary.webp");
+  --chrome-slice: 40;
+  --chrome-w: 20px;
+}
+html:not([data-contrast="high"]) .choice--on:not(:has(> .choice__icon)) {
+  box-shadow: 0 0 0 0.14em var(--kad-gold, #ffc95c), 0 0 0.8em rgba(245, 200, 108, 0.45);
 }
 /* The icon in the socket: round, and the socket is its well. */
 html:not([data-contrast="high"]) .choice__icon {
@@ -332,20 +357,20 @@ html:not([data-contrast="high"]) .kad-tray__tab:not(.kad-tray__tab--primary) .ka
 /* The tab now showing: a brass bracket under it. Shape, not only the gold label (spec §11). */
 html:not([data-contrast="high"]) .kad-tray__tab {
   position: relative;
-  /* Room under every label for the bracket, so choosing a tab never moves one. */
-  padding-block-end: 12px;
 }
+/* The bracket hangs in the shelf's own foot, under the label, so choosing a tab never moves one
+   and the shelf is no taller: every pixel of it on a phone is the world's stage. */
 html:not([data-contrast="high"]) .kad-tray__tab--on::after {
   content: "";
   position: absolute;
   inset-inline: 14%;
-  inset-block-end: 0;
-  block-size: 12px;
+  inset-block-end: -0.25rem;
+  block-size: 6px;
   pointer-events: none;
   border-style: solid;
   border-color: transparent;
-  border-width: 0 12px;
-  border-image: url("../assets/chrome/tray-current.webp") 0 24 fill / 0 12px stretch;
+  border-width: 0 6px;
+  border-image: url("../assets/chrome/tray-current.webp") 0 24 fill / 0 6px stretch;
 }
 html:not([data-contrast="high"]) [data-phone-magic] .kad-tray__tab--on {
   box-shadow: none;
@@ -372,10 +397,7 @@ html:not([data-contrast="high"]) .kad-corner :is(button, a) {
     inset-inline: -4px auto;
   }
 
-  /* On the rail the bracket stands on the edge that faces the game, so the labels need no room. */
-  html:not([data-contrast="high"]) :is(.kad-travel, .kad-party--player) > .kad-tray .kad-tray__tab {
-    padding-block-end: 0.1rem;
-  }
+  /* On the rail the bracket stands on the edge that faces the game, below. */
   html:not([data-contrast="high"]) :is(.kad-travel, .kad-party--player) > .kad-tray .kad-tray__tab--on::after {
     inset-inline: auto -0.35rem;
     inset-block: 10%;
