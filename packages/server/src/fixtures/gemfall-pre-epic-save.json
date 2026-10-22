@@ -1,11 +1,11 @@
 {
-  "$comment": "A Gemfall save taken on the build BEFORE the nonlinear-campaign epic (#191): main at 57c63ba8, just before #205, by running packages/server/src/handlers/gemfall-compat-golden.test.ts there (gemfall-compat-probe.ts says how). `digests` are that build's answers to the compatibility probe - every ending settled, the three roads and pursuits carried, setbacks to failure, and the save played on. `save` is every record one evening left in the store, stopped at the hero's first turn in the wolves fight of gemfall-02: the run state mid-fight (no journeyVisit, no buffs, no environment - none existed), the run and room records, the hero, the attempt row. `resumed` is what that build did next. gemfall-compat.test.ts holds today's build to all of it. Generated, never edited by hand.",
+  "$comment": "A Gemfall save taken on the build BEFORE the nonlinear-campaign epic (#191): main at 57c63ba8, just before #205, by running packages/server/src/handlers/gemfall-compat-golden.test.ts there (gemfall-compat-probe.ts says how). `digests` are that build's answers to the compatibility probe - every ending settled, the three roads and pursuits carried, setbacks to failure, and the save played on. `save` is every record one evening left in the store, stopped at the hero's first turn in the wolves fight of gemfall-02: the run state mid-fight (no journeyVisit, no buffs, no environment - none existed), the run and room records, the hero, the attempt row. `resumed` is what that build did next. gemfall-compat.test.ts holds today's build to all of it. Generated, never edited by hand. Re-taken once, deliberately, for the damage rule (a hit's damage comes off its attack roll: graze, solid or critical): `resumed` and `digests.resumed` only, by playing this same save on today's build. The fight plays out the same way to the same scene and the same knocked-down hero; only the beats moved, by their damage numbers and by the target and tier each roll now carries. `save` and the other three digests are still the pre-epic build's.",
   "build": "57c63ba8",
   "digests": {
     "endings": "05ebeefa182e40bec9e9eb653c4f110ac05f74ea498448abf6b0bbc3333ace27",
     "roads": "170c13018eb50c0cb91d4977e9dfaf062b9252b6425ebce8e377ac18015b9f98",
     "setbacks": "69a4f1bee2c9f7166277b2d11e28655a8571e5d522fb2c0eec1df4e1fc18d7b2",
-    "resumed": "90f82c1be301d53e1c47e7d80898404f694494d0af508a369e940b15fb90e8bf"
+    "resumed": "0e92c32c47de4e7e5dcaf9603212c54e6f9c831ead5f98472acf1c541ac6432d"
   },
   "save": {
     "state": {
@@ -458,7 +458,8 @@
               "result": "miss",
               "characterId": "c_r_a643e21e5a_p_1",
               "stat": "might"
-            }
+            },
+            "targetId": "wolf#1"
           },
           {
             "type": "roll",
@@ -469,7 +470,8 @@
               "tn": 13,
               "result": "miss",
               "characterId": "wolf#1"
-            }
+            },
+            "targetId": "c_r_a643e21e5a_p_1"
           },
           {
             "type": "moved",
@@ -488,13 +490,15 @@
               "tn": 13,
               "result": "hit",
               "characterId": "wolf#2"
-            }
+            },
+            "targetId": "c_r_a643e21e5a_p_1",
+            "tier": "graze"
           },
           {
             "type": "damage",
             "actorId": "c_r_a643e21e5a_p_1",
-            "amount": 3,
-            "hp": 7
+            "amount": 2,
+            "hp": 8
           }
         ]
       },
@@ -511,13 +515,15 @@
               "result": "hit",
               "characterId": "c_r_a643e21e5a_p_1",
               "stat": "might"
-            }
+            },
+            "targetId": "wolf#1",
+            "tier": "graze"
           },
           {
             "type": "damage",
             "actorId": "wolf#1",
-            "amount": 3,
-            "hp": 3
+            "amount": 2,
+            "hp": 4
           },
           {
             "type": "roll",
@@ -528,7 +534,8 @@
               "tn": 13,
               "result": "miss",
               "characterId": "wolf#1"
-            }
+            },
+            "targetId": "c_r_a643e21e5a_p_1"
           },
           {
             "type": "roll",
@@ -539,13 +546,15 @@
               "tn": 13,
               "result": "hit",
               "characterId": "wolf#2"
-            }
+            },
+            "targetId": "c_r_a643e21e5a_p_1",
+            "tier": "graze"
           },
           {
             "type": "damage",
             "actorId": "c_r_a643e21e5a_p_1",
-            "amount": 3,
-            "hp": 4
+            "amount": 2,
+            "hp": 6
           }
         ]
       },
@@ -562,7 +571,8 @@
               "result": "miss",
               "characterId": "c_r_a643e21e5a_p_1",
               "stat": "might"
-            }
+            },
+            "targetId": "wolf#1"
           },
           {
             "type": "roll",
@@ -573,13 +583,15 @@
               "tn": 13,
               "result": "hit",
               "characterId": "wolf#1"
-            }
+            },
+            "targetId": "c_r_a643e21e5a_p_1",
+            "tier": "graze"
           },
           {
             "type": "damage",
             "actorId": "c_r_a643e21e5a_p_1",
-            "amount": 3,
-            "hp": 1
+            "amount": 2,
+            "hp": 4
           },
           {
             "type": "roll",
@@ -590,7 +602,8 @@
               "tn": 13,
               "result": "miss",
               "characterId": "wolf#2"
-            }
+            },
+            "targetId": "c_r_a643e21e5a_p_1"
           }
         ]
       },
@@ -607,17 +620,15 @@
               "result": "hit",
               "characterId": "c_r_a643e21e5a_p_1",
               "stat": "might"
-            }
+            },
+            "targetId": "wolf#1",
+            "tier": "solid"
           },
           {
             "type": "damage",
             "actorId": "wolf#1",
             "amount": 3,
-            "hp": 0
-          },
-          {
-            "type": "down",
-            "actorId": "wolf#1"
+            "hp": 1
           },
           {
             "type": "roll",
@@ -627,8 +638,28 @@
               "total": 8,
               "tn": 13,
               "result": "miss",
+              "characterId": "wolf#1"
+            },
+            "targetId": "c_r_a643e21e5a_p_1"
+          },
+          {
+            "type": "roll",
+            "roll": {
+              "die": 13,
+              "mod": 3,
+              "total": 16,
+              "tn": 13,
+              "result": "hit",
               "characterId": "wolf#2"
-            }
+            },
+            "targetId": "c_r_a643e21e5a_p_1",
+            "tier": "graze"
+          },
+          {
+            "type": "damage",
+            "actorId": "c_r_a643e21e5a_p_1",
+            "amount": 2,
+            "hp": 2
           }
         ]
       },
@@ -645,13 +676,19 @@
               "result": "hit",
               "characterId": "c_r_a643e21e5a_p_1",
               "stat": "might"
-            }
+            },
+            "targetId": "wolf#1",
+            "tier": "graze"
           },
           {
             "type": "damage",
-            "actorId": "wolf#2",
-            "amount": 3,
-            "hp": 3
+            "actorId": "wolf#1",
+            "amount": 1,
+            "hp": 0
+          },
+          {
+            "type": "down",
+            "actorId": "wolf#1"
           },
           {
             "type": "roll",
@@ -662,12 +699,14 @@
               "tn": 13,
               "result": "hit",
               "characterId": "wolf#2"
-            }
+            },
+            "targetId": "c_r_a643e21e5a_p_1",
+            "tier": "solid"
           },
           {
             "type": "damage",
             "actorId": "c_r_a643e21e5a_p_1",
-            "amount": 1,
+            "amount": 2,
             "hp": 0
           },
           {

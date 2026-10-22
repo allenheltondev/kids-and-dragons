@@ -1,0 +1,23 @@
+/* A campaign's key art (CampaignArt.tsx): a 16:9 window onto the painting, a
+   night-sky panel when there is none yet. */
+.campaign-art {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  inline-size: 100%;
+  overflow: hidden;
+  border-radius: var(--radius-md, 0.75em);
+  background: radial-gradient(circle at 50% 30%, #2a2350, #0d0b1a);
+}
+
+.campaign-art__image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 50% 45%;
+}
+
+/* Locked: still visible, so the table can see what is coming, but asleep. */
+[data-locked="true"] .campaign-art__image {
+  filter: grayscale(0.85) brightness(0.55);
+}

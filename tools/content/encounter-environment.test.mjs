@@ -52,7 +52,7 @@ describe("the schema", () => {
     expect(map.ok, map.errors.join("\n")).toBe(true);
   });
 
-  it("still accepts every shipped chapter — and none but the practice declares an environment", () => {
+  it("still accepts every shipped chapter — and only the practice and Riftlight declare an environment", () => {
     const dir = join(REPO, "content", "chapters");
     for (const file of readdirSync(dir).filter((f) => f.endsWith(".json"))) {
       const chapter = read("content", "chapters", file);
@@ -68,6 +68,9 @@ describe("the schema", () => {
         }
         continue;
       }
+      // Riftlight, the graph campaign, is what environmental combat (#201) was
+      // built for; the ordered campaigns still fight exactly as before.
+      if (chapter.campaignId === "riftlight") continue;
       for (const scene of Object.values(chapter.scenes)) {
         expect(scene).not.toHaveProperty("environment");
         expect(scene).not.toHaveProperty("onEscape");

@@ -43,6 +43,7 @@ export * from "./journey.js";
 export * from "./rifts.js";
 export * from "./rift-actions.js";
 export * from "./campaign-graph-lint.js";
+export * from "./graph-proof.js";
 export * from "./campaign-prerequisites.js";
 export * from "./practice.js";
 export * from "./world-state.js";

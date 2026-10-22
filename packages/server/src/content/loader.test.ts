@@ -2,7 +2,8 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { campaignMode } from "@kad/shared";
+import { campaignMode, chapterFlagWrites, graphFingerprint } from "@kad/shared";
+import type { Campaign, Chapter } from "@kad/shared";
 import { contentDir } from "../paths.ts";
 import { makeChapter, makeItems, makeMap, makeRules } from "../test-support.ts";
 import { ContentError, clearContentCache, loadContent } from "./loader.ts";
@@ -400,6 +401,44 @@ describe("graph campaigns (#192)", () => {
     if (!(error instanceof ContentError)) return;
     expect(error.problems.join("\n")).toMatch(/\/graph\/nodes\/glade: DEAD_END: node "glade" is not an ending and has no exits/);
     expect(error.problems.join("\n")).toMatch(/\/graph\/nodes\/dawn: UNREACHABLE_NODE/);
+  });
+
+  describe("a graph proof (shared graph-proof.ts)", () => {
+    const stranding = {
+      ...graph,
+      nodes: { clearing: graph.nodes.clearing, glade: { chapter: "glade-01" }, dawn: { chapter: "glade-01", ending: { title: "x" } } },
+    };
+    async function withProof(fingerprint: (root: string) => Promise<string>): Promise<string> {
+      const root = await withCampaign({ graph: stranding });
+      await fs.mkdir(path.join(root, "graph-proofs"), { recursive: true });
+      await write(path.join(root, "graph-proofs", "the-hollow-crown.json"), {
+        campaign: "the-hollow-crown",
+        fingerprint: await fingerprint(root),
+        checker: "x",
+        states: 1,
+        warnings: [],
+      });
+      return root;
+    }
+
+    it("that is stale is walked anyway: a proof never vouches for a graph nobody walked", async () => {
+      const root = await withProof(async () => "0".repeat(32));
+      await expect(loadContent(root)).rejects.toThrow(/DEAD_END/);
+    });
+
+    it("that matches the content stands for the walk, which is what keeps a start fast", async () => {
+      const root = await withProof(async (dir) => {
+        const campaign = JSON.parse(await fs.readFile(path.join(dir, "campaigns", "the-hollow-crown.json"), "utf8")) as Campaign;
+        const chapters = new Map<string, Chapter>([
+          ["bramblewood-01", makeChapter()],
+          ["glade-01", { ...makeChapter(), id: "glade-01", title: "The Glade" }],
+        ]);
+        return graphFingerprint(campaign, (id) => (chapters.has(id) ? chapterFlagWrites(chapters.get(id)!) : undefined));
+      });
+      // Only the walk finds this graph's dead end; the proof says it was walked.
+      const content = await loadContent(root);
+      expect(content.campaign("the-hollow-crown")?.graph?.entry).toBe("clearing");
+    });
   });
 
   it("refuses a graph version this build cannot read rather than guessing at it", async () => {

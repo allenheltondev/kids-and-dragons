@@ -40,6 +40,7 @@ import type {
 import { beginEncounter, INVENTORY_SLOTS, parseBoard } from "@kad/shared";
 import { makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
+import { FOLDS_KEY } from "../ui/Collapsible";
 import { PlayerPanel } from "./PlayerPanel";
 
 const ITEMS: ItemCatalog = makeItems();
@@ -200,7 +201,11 @@ function realEncounter() {
   );
 }
 
-afterEach(cleanup);
+afterEach(() => {
+  cleanup();
+  // What a phone folded is remembered on the device; every test starts from the defaults.
+  localStorage.removeItem(FOLDS_KEY);
+});
 
 // ---------------------------------------------------------------------------
 // Before there is anything to show
@@ -809,6 +814,9 @@ describe("readying up", () => {
     expect(button.hasAttribute("disabled")).toBe(true);
     await user.click(button);
     expect(sent).toEqual([]);
+    // Gemfall is the only one that could start, so nobody has to vote for it.
+    expect(screen.getByRole("button", { name: /^Gemfall/ }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: /Play chapter 3/ })).toBeTruthy();
   });
 
   it("does not offer to begin before the campaign has loaded", () => {
@@ -1601,6 +1609,45 @@ describe("the party strip", () => {
     expect(screen.getByText("Your things")).toBeTruthy();
   });
 
+  it("lights your own strip on your turn in a fight, and shows no goal there", () => {
+    // A playtest: the goal banner and a "Your turn, Name!" row took the
+    // room the fight's cards needed. Your name and face light up instead.
+    mount({ phase: "encounter" });
+    const fight = realEncounter();
+    const hero = fight.order.findIndex((id) => !id.startsWith("wisp"));
+    serverSends({ encounter: { ...fight, turnIndex: hero } });
+    const strip = document.querySelector(".sheet")!;
+    expect(strip.classList.contains("sheet--turn")).toBe(true);
+    expect(strip.textContent).toContain("your turn!");
+    expect(document.querySelector(".goal")).toBeNull();
+
+    // Somebody else's turn: the strip is back to plain.
+    serverSends({ encounter: { ...fight, turnIndex: fight.order.findIndex((id) => id.startsWith("wisp")) } });
+    expect(document.querySelector(".sheet")!.classList.contains("sheet--turn")).toBe(false);
+  });
+
+  it("turns the strip gold whenever the game waits on you, and only then", () => {
+    const lit = () => document.querySelector(".sheet")!.classList.contains("sheet--turn");
+    // Your roll.
+    mount({
+      party: [member(), member({ character: THISTLE, playerId: "p_2" })],
+      prompt: { kind: "roll", sceneId: "s_1", stat: "quick", tn: 12, prompt: "Wriggle through", characterId: "c_1" },
+    });
+    expect(lit()).toBe(true);
+    // A friend's roll, with the friend at the table.
+    serverSends({ prompt: { kind: "roll", sceneId: "s_1", stat: "quick", tn: 12, prompt: "Wriggle through", characterId: THISTLE.id } });
+    expect(lit()).toBe(false);
+    // A vote you have not cast, then have.
+    serverSends({ prompt: choicePrompt({ vote: true, forPlayerIds: [] }) });
+    expect(lit()).toBe(true);
+    serverSends({ prompt: choicePrompt({ vote: true, forPlayerIds: [], votes: { p_1: "east" } }) });
+    expect(lit()).toBe(false);
+    // The words are gone: the gold says it.
+    serverSends({ prompt: choicePrompt({ forPlayerIds: ["p_1"] }) });
+    expect(lit()).toBe(true);
+    expect(screen.queryByText(/Your turn!/)).toBeNull();
+  });
+
   it("gives the controller back when the tray dismisses a character sheet", async () => {
     // With a question open, the party waits behind the dock and covers the
     // prompt rather than sitting under it, so the way back has to put the
@@ -1987,8 +2034,13 @@ describe("the token and the rank-up moment on your own phone (#314)", () => {
   it("shows your worn token in the bag, and your old gear outside the six slots", () => {
     mount({ party: [member({ character: character({ spares: [{ class: "thornguard", rank: "apprentice" }] }) })] });
     act(() => setPlayerSection("bag"));
-    expect(screen.getByText("Your song bell")).toBeTruthy();
-    expect(screen.getByText("Your old gear (it never takes a slot)")).toBeTruthy();
+    // Folded to its name at first (the You page's folds); the name is the heading's switch.
+    const token = screen.getByRole("button", { name: "Your song bell" });
+    expect(token.getAttribute("aria-expanded")).toBe("false");
+    act(() => token.click());
+    expect(token.getAttribute("aria-expanded")).toBe("true");
+    expect(screen.getAllByText("Your song bell")).toHaveLength(1);
+    expect(screen.getByText("Your old gear")).toBeTruthy();
     expect(screen.getByRole("img", { name: "thorn bracer, 1 notch" })).toBeTruthy();
     expect(document.querySelectorAll(".inv__slot")).toHaveLength(INVENTORY_SLOTS);
   });
@@ -2007,5 +2059,77 @@ describe("the token and the rank-up moment on your own phone (#314)", () => {
     mount({ playerId: "p_2", party: [member(), member({ character: character({ id: "c_2", ownerPlayerId: "p_2", name: "Thistle" }) })] });
     serverSends({ rankUps: { sceneId: "s_1", ups: [up] } });
     expect(screen.queryByTestId("player-rank-up")).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// The You page folds (playtest: "a lot of scrolling")
+// ---------------------------------------------------------------------------
+
+describe("the You page's sections fold under their headings", () => {
+  const heading = (name: RegExp | string) => screen.getByRole("button", { name });
+  const bagMember = () =>
+    member({ character: character({ inventory: [POTION], questItems: ["moonkey"] }) });
+
+  it("opens the stats, the party and the bag, and folds the token card and the story things", () => {
+    mount({ party: [bagMember()] });
+    act(() => setPlayerSection("bag"));
+    const open = (name: RegExp | string) => heading(name).getAttribute("aria-expanded");
+    expect(open("Your stats")).toBe("true");
+    expect(open("Everyone")).toBe("true");
+    expect(open(/^Your things/)).toBe("true");
+    expect(open("Your song bell")).toBe("false");
+    expect(open(/^Story things/)).toBe("false");
+    // Each switch names what it folds, for a screen reader.
+    for (const name of ["Your stats", "Everyone", /^Your things/, "Your song bell"]) {
+      const body = document.getElementById(heading(name).getAttribute("aria-controls") ?? "");
+      expect(body).not.toBeNull();
+      expect(body!.hidden).toBe(open(name) !== "true");
+    }
+    // The headings are still headings: the bag's carries its purse, folded or not.
+    expect(screen.getByRole("heading", { name: /Your things/ }).textContent).toContain("0");
+  });
+
+  it("folds the bag on a tap and opens it on the next, keeping a half-made selection", () => {
+    mount({ party: [bagMember()] });
+    act(() => setPlayerSection("bag"));
+    act(() => screen.getByRole("button", { name: new RegExp(POTION_NAME) }).click());
+    expect(screen.getByText(POTION_NAME, { selector: ".item-detail__title span" })).toBeTruthy();
+    act(() => heading(/^Your things/).click());
+    expect(heading(/^Your things/).getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByRole("button", { name: new RegExp(POTION_NAME) })).toBeNull();
+    act(() => heading(/^Your things/).click());
+    expect(screen.getByRole("button", { name: new RegExp(POTION_NAME) }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("remembers on this device how each section was left", () => {
+    const { unmount } = mount({ party: [bagMember()] });
+    act(() => setPlayerSection("bag"));
+    act(() => heading("Your stats").click());
+    act(() => heading(/^Story things/).click());
+    unmount();
+    mount({ party: [bagMember()] });
+    act(() => setPlayerSection("bag"));
+    expect(heading("Your stats").getAttribute("aria-expanded")).toBe("false");
+    expect(heading(/^Story things/).getAttribute("aria-expanded")).toBe("true");
+    expect(heading("Everyone").getAttribute("aria-expanded")).toBe("true");
+  });
+
+  it("still folds and opens where the device cannot remember", () => {
+    const getItem = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("private mode");
+    });
+    const setItem = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("private mode");
+    });
+    try {
+      mount({ party: [bagMember()] });
+      act(() => setPlayerSection("bag"));
+      act(() => heading("Everyone").click());
+      expect(heading("Everyone").getAttribute("aria-expanded")).toBe("false");
+    } finally {
+      getItem.mockRestore();
+      setItem.mockRestore();
+    }
   });
 });

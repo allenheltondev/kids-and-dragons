@@ -513,19 +513,31 @@ describe("buffs in a fight", () => {
       { id: "fury", label: "Fury", kind: "roll", heroId: "c_a", amount: 2 },
       { id: "surge", label: "Surge", kind: "damage", heroId: "c_a", amount: 1 },
     ];
-    const plain = swing(beginEncounter(setup(), ctxOf(ALWAYS(10))), ALWAYS(10));
-    const buffed = swing(beginEncounter(setup(buffs), ctxOf(ALWAYS(10))), ALWAYS(10));
+    // A 14: five past Guard 12 even without Fury, so both are solid hits and
+    // the damage buff is the only difference in what lands.
+    const plain = swing(beginEncounter(setup(), ctxOf(ALWAYS(14))), ALWAYS(14));
+    const buffed = swing(beginEncounter(setup(buffs), ctxOf(ALWAYS(14))), ALWAYS(14));
     const roll = (r: typeof plain) => r.events.find((e) => e.type === "roll")!;
     const dealt = (r: typeof plain) => r.events.find((e) => e.type === "damage");
-    expect(roll(plain)).toMatchObject({ roll: { die: 10, mod: 3, total: 13, result: "hit" } });
-    expect(roll(buffed)).toMatchObject({ roll: { die: 10, mod: 5, total: 15, result: "hit" } });
+    expect(roll(plain)).toMatchObject({ roll: { die: 14, mod: 3, total: 17, result: "hit" }, tier: "solid" });
+    expect(roll(buffed)).toMatchObject({ roll: { die: 14, mod: 5, total: 19, result: "hit" }, tier: "solid" });
     expect(dealt(plain)).toMatchObject({ amount: 3 });
     expect(dealt(buffed)).toMatchObject({ amount: 4 });
   });
 
+  it("a damage buff lands on top of the tier", () => {
+    const surge: CombatBuff[] = [{ id: "surge", label: "Surge", kind: "damage", heroId: "c_a", amount: 1 }];
+    const dealt = (die: number) =>
+      swing(beginEncounter(setup(surge), ctxOf(ALWAYS(die))), ALWAYS(die)).events.find((e) => e.type === "damage");
+    // A graze (9 + 3 = 12, exactly Guard 12) is 2, and a natural 20 is 5: one more on each.
+    expect(dealt(9)).toMatchObject({ amount: 3 });
+    expect(dealt(20)).toMatchObject({ amount: 6 });
+  });
+
   it("a burden never makes a hit do nothing", () => {
     const fray: CombatBuff[] = [{ id: "fray", label: "Fray", kind: "damage", heroId: "c_a", amount: -2 }];
-    const result = swing(beginEncounter(setup(fray), ctxOf(ALWAYS(20))), ALWAYS(20));
+    // A graze (9 + 3 = 12 against Guard 12) is 2, and Fray's -2 would make it 0.
+    const result = swing(beginEncounter(setup(fray), ctxOf(ALWAYS(9))), ALWAYS(9));
     expect(result.events.find((e) => e.type === "damage")).toMatchObject({ amount: 1 });
   });
 

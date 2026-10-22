@@ -172,7 +172,8 @@ describe("content:validate, with the slice dropped into content/", { timeout: 12
     let out = "";
     let code = 0;
     try {
-      out = execFileSync(process.execPath, [path.join(REPO_ROOT, "tools", "content", "validate.mjs")], {
+      // A new graph, so a new proof, written as an author would (content:proofs).
+      out = execFileSync(process.execPath, [path.join(REPO_ROOT, "tools", "content", "validate.mjs"), "--write-proofs"], {
         env: { ...process.env, KAD_CONTENT_ROOT: dir, KAD_CLASS_PLACES: "off", NO_COLOR: "1" },
         encoding: "utf8",
       });

@@ -4,11 +4,11 @@ import { expect } from "vitest";
 import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
-import { RIFTLIGHT_DRAFT } from "./riftlight-preview.ts";
+import { RIFTLIGHT_DESIGN } from "./riftlight-preview.ts";
 const ROOT = path.resolve(import.meta.dirname, "../..");
 const read = <T>(file: string): T => JSON.parse(fs.readFileSync(file, "utf8")) as T;
-export const campaign = read<Campaign>(path.join(RIFTLIGHT_DRAFT, "opening-preview.campaign.json"));
-export const chapters = new Map(campaign.chapters.map((id) => [id, read<Chapter>(path.join(RIFTLIGHT_DRAFT, "chapters", `${id}.json`))]));
+export const campaign = read<Campaign>(path.join(ROOT, "content/campaigns/riftlight.json"));
+export const chapters = new Map(campaign.chapters.map((id) => [id, read<Chapter>(path.join(ROOT, "content/chapters", `${id}.json`))]));
 export const rules = read<RulesContent>(path.join(ROOT, "content/rules.json"));
 export const items: ItemCatalog = itemCatalog(read(path.join(ROOT, "content/items.json")));
 for (const chapter of chapters.values()) Object.assign(items, chapter.props);
@@ -19,7 +19,7 @@ interface SceneContinuity {
   conditional?: { flag?: string; notFlag?: string; requires: string[] }[];
 }
 const continuity = read<{ chapters: Record<string, { entryFacts: string[]; entryByFlag?: Record<string, string[]>; scenes: Record<string, SceneContinuity> }> }>(
-  path.join(RIFTLIGHT_DRAFT, "continuity.json"),
+  path.join(RIFTLIGHT_DESIGN, "continuity.json"),
 ).chapters;
 
 

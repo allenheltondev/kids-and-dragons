@@ -162,7 +162,8 @@ async function takeCombatTurn(page: Page): Promise<boolean> {
   const panel = page.locator(".prompt.combat");
   if ((await panel.count()) === 0) return false;
   // Only the phone actually on the clock has anything to do.
-  if ((await panel.getByText(/Your turn,/i).count()) === 0) return false;
+  // Your turn lights your own strip rather than putting a row over the board.
+  if ((await page.locator(".sheet--turn").count()) === 0) return false;
 
   // Up to two steps: action -> target. The target tap is the commit, and a
   // spent turn ends on its own (engine `finishTurnIfSpent`). Bounded rather

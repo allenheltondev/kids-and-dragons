@@ -1,15 +1,29 @@
 import type { CastStance } from "@kad/shared";
 
-/** A gentle six-second breath around the figure's fixed ground anchor. */
+/**
+ * How far a standing breath stretches the figure at its peak, as a fraction
+ * of its height. 0.8% was the first try and nobody at the table could see it
+ * on the TV; 3% reads as breathing from the couch without looking like a
+ * bounce.
+ */
+export const BREATH_STRETCH = 0.03;
+/** Seconds in one breath: in, out. */
+export const BREATH_PERIOD = 4;
+/** A standing figure's lean at its widest, in radians (about half a degree). */
+export const STAND_SWAY = 0.009;
+
+/** A gentle breath around the figure's fixed ground anchor. */
 export function idleBreath(seconds: number, phase: number, still = false): number {
-  return still ? 0 : (1 - Math.cos(seconds * Math.PI / 3 + phase)) * 0.004;
+  return still ? 0 : ((1 - Math.cos((seconds * 2 * Math.PI) / BREATH_PERIOD + phase)) / 2) * BREATH_STRETCH;
 }
 
 /**
  * One frame of a figure's idle, by stance (#362). Offsets are fractions of
  * the figure's drawn height (`dy` negative is up); the caller multiplies.
  *
- * - standing: today's breath, a stretch about the feet, and nothing else.
+ * - standing: a breath, a stretch about the feet, and a slow lean side to
+ *   side on a longer period, so the lineup reads as alive and not as cutouts.
+ *   The feet never leave their shadow.
  * - hovering: a slow bob, the body only, so the shadow under it stays put
  *   and tightens as the figure rises.
  * - flying: a longer drift up and down, a sideways sway and a little tilt,
@@ -59,7 +73,7 @@ export function stanceIdle(stance: CastStance, seconds: number, phase: number, s
       return { ...REST, dy: SWIM_BOB * wave(4), rotation: SWIM_TILT * wave(6, 0.8), ripple: 1 + 0.08 * wave(2.5, 0.4) };
     default: {
       const breath = idleBreath(seconds, phase);
-      return { ...REST, breath };
+      return { ...REST, breath, rotation: STAND_SWAY * wave(BREATH_PERIOD * 1.75, 0.5) };
     }
   }
 }

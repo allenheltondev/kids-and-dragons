@@ -1,0 +1,127 @@
+{
+  "$comment": "Riftlight authored opening draft. Development preview only; see ../README.md. Production campaign id will be riftlight. No bonus XP: preserve the design bible campaign budget.",
+  "id": "riftlight-cairnstep-pass",
+  "campaignId": "riftlight",
+  "index": 4,
+  "title": "A Pass Not in the Ledger",
+  "biome": "frostfang_peaks",
+  "music": "riftlight-paths",
+  "estimatedMinutes": 10,
+  "xpAward": 140,
+  "entry": "cairns",
+  "goal": {
+    "text": "Climb the Cairnstep and see if it belongs on the map.",
+    "steps": [
+      {
+        "id": "compare",
+        "label": "Compare the old and new drawings",
+        "flag": "compared_the_pass_drawings"
+      },
+      {
+        "id": "mark",
+        "label": "Mark down what you find",
+        "flag": "marked_the_new_pass"
+      }
+    ]
+  },
+  "scenes": {
+    "cairns": {
+      "type": "story",
+      "narration": "Cairns climb to a notch in the Frostfang Peaks. At the top, a griffin keeper sets a heavy pass ledger on a flat rock. \"The Cairnstep,\" he says. \"This path was not here last season. We checked.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the two records",
+          "icon": "hand",
+          "goto": "ledger"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
+    },
+    "ledger": {
+      "type": "choice_point",
+      "narration": "Last season's drawing shows an unbroken ridge. This season's shows the notch you just walked through. Below it, the keeper has drawn the herders' grazing route, now cut by water. What will you compare?",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Compare the drawing with the actual ridge",
+          "icon": "hand",
+          "goto": "ridge"
+        },
+        {
+          "id": "routes",
+          "label": "Look for a safe supply path",
+          "icon": "hand",
+          "goto": "supplies"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "compared_the_pass_drawings"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
+    },
+    "ridge": {
+      "type": "story",
+      "narration": "You stand where the keeper made his old drawing. The cairns line up; the ridge does not. A whole section of stone has moved. \"We can argue about the ink,\" he says, \"but the mountain is harder to argue with.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "message"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "marked_the_new_pass"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
+    },
+    "supplies": {
+      "type": "story",
+      "narration": "You trace a route above the flooded grazing path. One stretch needs checking, but the keeper marks where supplies could be left in dry shelter. \"A real place to start,\" he says. \"Better than waiting for last year's road to return.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "message"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "marked_the_new_pass"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
+    },
+    "message": {
+      "type": "rest",
+      "narration": "The keeper raises a small signal flag toward a distant island in the sky. Another flag answers. \"Our neighbors have trouble with their routes too,\" he says. Your party records the changed pass and the possible supply path. There are more places to investigate after this first visit. \"We can bring your whole party across to ask them,\" the keeper offers.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success",
+      "art": "scenes/riftlight/cairnstep"
+    }
+  },
+  "voiceGuide": {
+    "tone": "Warm, funny, curious, with real consequences. Describe actions and sensory details directly. Short dialogue. Never use \"the kind of thing that\", \"the sort of thing that\", or \"it was X, the type of thing that makes you Y\" comparisons. Let a character act instead of explaining how the reader should feel.",
+    "vocabulary": "Read aloud to an eight-year-old. Concrete words, short sentences, distinct voices.",
+    "forbidden": [
+      "death",
+      "gore",
+      "Corvane",
+      "emperor",
+      "Pangea",
+      "Hollow Gate",
+      "Legend Dragon"
+    ],
+    "npcVoices": {}
+  }
+}

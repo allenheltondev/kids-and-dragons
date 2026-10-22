@@ -9,7 +9,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { DiceRoll } from "@kad/shared";
 import { useGameStore } from "../store";
 import { ROLL_HELP_TUMBLE_MS, ROLL_READ_MS, ROLL_TUMBLE_MS } from "../world/presentation";
-import { DiceOverlay, celebrationFor, groupLine, spokenRoll } from "./DiceOverlay";
+import { DiceOverlay, celebrationFor, checkPlan, groupLine, spokenRoll } from "./DiceOverlay";
 import { burst } from "./DiceCelebration";
 
 const HELPED: DiceRoll = {
@@ -119,5 +119,34 @@ describe("the dice card", () => {
     expect(document.querySelectorAll(".celebration__dizzy-star")).toHaveLength(3);
     expect(played).toContain("bonk");
     audio.setAudioSink(null);
+  });
+});
+
+describe("checkPlan", () => {
+  const party = [
+    { character: { id: "c_1", name: "Pip", stats: { might: 3, quick: 0, clever: -1, heart: 2 } } },
+    { character: { id: "c_2", name: "Rosie", stats: { might: 1, quick: 2, clever: 2, heart: 2 } } },
+  ];
+
+  it("says who rolls, what is added and what makes it", () => {
+    expect(checkPlan({ stat: "might", tn: 12, characterId: "c_1" }, party)).toEqual({
+      roll: "Pip rolls d20 + 3 Might",
+      target: "Tricky: 12 or more makes it.",
+    });
+    expect(checkPlan({ stat: "quick", tn: 8, characterId: "c_1" }, party).roll).toBe("Pip rolls d20 + 0 Quick");
+    expect(checkPlan({ stat: "clever", tn: 15, characterId: "c_1" }, party)).toEqual({
+      roll: "Pip rolls d20 − 1 Clever",
+      target: "Hard: 15 or more makes it.",
+    });
+  });
+
+  it("names a helper's die, and a whole-party check speaks to everyone", () => {
+    expect(checkPlan({ stat: "heart", tn: 12, characterId: "c_1", helper: { characterId: "c_2", sides: 4 } }, party).roll).toBe(
+      "Pip rolls d20 + 2 Heart, plus Rosie's d4",
+    );
+    expect(checkPlan({ stat: "might", tn: 12, characterId: "c_1", group: { pending: [], rolls: [] } }, party)).toEqual({
+      roll: "Everyone rolls d20 + their Might",
+      target: "Tricky: 12 or more makes it. Half of you or more need to.",
+    });
   });
 });
