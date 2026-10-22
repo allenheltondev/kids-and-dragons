@@ -217,7 +217,7 @@ html:not([data-contrast="high"]) .goal__step--done .goal__box > svg {
   --chrome-w: 16px;
 }
 html:not([data-contrast="high"]) :is(.atlas__label, .atlas__landmark) {
-  padding: 0.35em 0.8em;
+  padding: 0.6em 1.5em;
 }
 
 .kad-map__flip-tab {
@@ -412,7 +412,7 @@ html:not([data-contrast="high"]) [data-phone-magic] .kad-tray__tab--on {
 }
 
 /* The corner row's controls: a brass ring each. */
-html:not([data-contrast="high"]) .kad-corner :is(button, a) {
+html:not([data-contrast="high"]) :is(.kad-corner :is(button, a), .kad-back__button) {
   background: url("../assets/chrome/corner-bezel.webp") center / 100% no-repeat;
   border-radius: 50%;
 }
@@ -443,12 +443,6 @@ html:not([data-contrast="high"]) .kad-corner :is(button, a) {
   }
   html[data-hand="right"]:not([data-contrast="high"]) :is(.kad-travel, .kad-party--player) > .kad-tray .kad-tray__tab--on::after {
     inset-inline: -0.35rem auto;
-  }
-
-  /* The corner row's little tray at the rail's foot. */
-  html:not([data-contrast="high"]) body:has(.kad-party--player, .kad-travel) .kad-corner {
-    padding: 6px;
-    background: url("../assets/chrome/rail-foot.webp") center / 100% 100% no-repeat;
   }
 
   /* The spine where the two pages meet, with its finials and its boss. */

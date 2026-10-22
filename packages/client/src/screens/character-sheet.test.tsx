@@ -157,7 +157,8 @@ describe("the sheet", () => {
     show({ level: 4, tier: "sworn" });
     expect(screen.getByText("Sparklehoof")).toBeTruthy();
     expect(screen.getByText("Level 4")).toBeTruthy();
-    expect(screen.getAllByText("reached").length).toBe(2);
+    expect(screen.getAllByText("reached").length).toBe(1);
+    expect(screen.getAllByText("you are here").length).toBe(1);
     expect(screen.getAllByText("still to come").length).toBe(2);
   });
 
@@ -199,7 +200,7 @@ describe("the sheet", () => {
     // The same sheet, opened from the party strip, is about *them*.
     show({ level: 5, committedLevel: 4, isProvisional: true, name: "Thistle" }, false);
     expect(screen.getByText(/Level 4 is what they keep/)).toBeTruthy();
-    expect(screen.getByText(/How far they have come/)).toBeTruthy();
+    expect(screen.getByText(/Hero tiers/)).toBeTruthy();
   });
 
   it("shows their bag, including the empty slots", () => {

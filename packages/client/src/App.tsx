@@ -25,6 +25,7 @@ import { ArrivalNotices } from "./screens/ArrivalNotices";
 import { routeCode, useRoute } from "./router";
 import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./store";
 import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
+import { BackButton } from "./ui/BackButton";
 
 import { setQuiet } from "./quiet";
 import { STOPPED_MESSAGE } from "./screens/save-copy";
@@ -217,6 +218,8 @@ export function App(): React.JSX.Element {
           </ChunkBoundary>
         ) : null}
       </div>
+      {/* Opposite the corner row: one page back, wherever you are. */}
+      <BackButton />
       {pickLayout()}
       {/* On the shared screen the toast and the banner stand in its column, below. */}
       {tv ? null : <ErrorToast />}

@@ -1,0 +1,37 @@
+/* The corner row's other end (styles/theme.css .kad-corner): same 16px, same strip, same ring. */
+.kad-back {
+  position: fixed;
+  top: calc(0.25rem + env(safe-area-inset-top, 0px));
+  left: calc(0.25rem + env(safe-area-inset-left, 0px));
+  z-index: 5;
+  font-size: 16px;
+  --kad-touch-min: 44px;
+}
+.kad-back__button {
+  display: grid;
+  place-items: center;
+  inline-size: var(--kad-touch-min);
+  block-size: var(--kad-touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--kad-ink-dim);
+  font-size: 1em;
+  cursor: pointer;
+  opacity: 0.8;
+}
+.kad-back__button:hover,
+.kad-back__button:focus-visible { opacity: 1; }
+.kad-back__button .kad-icon { font-size: 1.5em; }
+html[data-contrast="high"] .kad-back__button { opacity: 1; }
+
+/* One-handed play puts the corner row at the foot of the phone, on the thumb's side; this goes to the other. */
+html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-back {
+  top: auto;
+  bottom: calc(2px + env(safe-area-inset-bottom, 0px));
+}
+html[data-hand="left"] body:has(.kad-party--player, .kad-travel) .kad-back {
+  left: auto;
+  right: calc(0.25rem + env(safe-area-inset-right, 0px));
+}

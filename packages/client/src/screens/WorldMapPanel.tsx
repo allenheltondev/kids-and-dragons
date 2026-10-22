@@ -11,10 +11,10 @@
  *
  * The painting is wider than a phone. It is shown fitted to the pane first,
  * because the shape of the realm is what makes "we are *here*" land, and two
- * buttons zoom it in steps; at every step the party stays centred, and the
- * pane scrolls natively in both directions for panning. No pinch handling of
- * our own — the browser's scroll is the gesture an eight-year-old already
- * knows, and it needs no code to go wrong.
+ * buttons zoom it in steps, as does pinching it (`usePinchSteps`); at every
+ * step the party stays centred, and the pane scrolls natively in both
+ * directions for panning — the browser's scroll is the gesture an eight-year-old
+ * already knows, so the only gesture of our own is the pinch.
  *
  * The usual two rules (layout/WorldView.tsx): nothing in here reads the room
  * mode, and nothing in here uses a viewport unit. Sizes are percentages of
@@ -25,6 +25,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactElement } from "react";
 import type { FieldGuide, PartyMember, WorldMap, WorldPlace } from "@kad/shared";
 import { useChapter, useParty, useRunState, useWorld, useGameStore } from "../store";
+import { DETAIL_STEP, useBackStep } from "../store/back-steps";
 import { getAtlasCenter, updateAtlasView, useAtlasNavigation } from "../store/atlas-navigation";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { atlasLevel, dangerBadge, explorerTrail, visibleMapPlaces, visibleMapRoutes, wobblyPath } from "./atlas-math";
@@ -84,6 +85,60 @@ export function WorldMapPanel(): ReactElement {
 
   return <Atlas world={world} place={placeOf(world, chapter.biome)} party={party}
     scope={JSON.stringify([runId, chapterId])} here="now" />;
+}
+
+/** How much further apart (or closer) two fingers get before the map takes a step. */
+const PINCH_STEP = 1.3;
+
+/**
+ * Two fingers spreading are a step closer, two coming together a step further
+ * away, the way every other map works. The browser's own pinch is not offered
+ * on the painting (`touch-action` in WorldMapPanel.css), so this is the only
+ * thing a pinch does, and a trackpad's pinch (a ctrl-wheel) does the same.
+ */
+function usePinchSteps(target: { current: HTMLElement | null }, onStep: (direction: 1 | -1) => void): void {
+  const onStepRef = useRef(onStep);
+  onStepRef.current = onStep;
+  useEffect(() => {
+    const el = target.current;
+    if (!el) return;
+    let from = 0;
+    const gap = (touches: TouchList): number =>
+      Math.hypot(touches[0]!.clientX - touches[1]!.clientX, touches[0]!.clientY - touches[1]!.clientY);
+    const start = (event: TouchEvent): void => {
+      from = event.touches.length === 2 ? gap(event.touches) : 0;
+    };
+    const move = (event: TouchEvent): void => {
+      if (event.touches.length !== 2 || from === 0) return;
+      const now = gap(event.touches);
+      if (now >= from * PINCH_STEP) onStepRef.current(1);
+      else if (now <= from / PINCH_STEP) onStepRef.current(-1);
+      else return;
+      from = now;
+    };
+    const end = (): void => { from = 0; };
+    let wheel = 0;
+    const onWheel = (event: WheelEvent): void => {
+      if (!event.ctrlKey) return;
+      event.preventDefault();
+      wheel += event.deltaY;
+      if (Math.abs(wheel) < 40) return;
+      onStepRef.current(wheel < 0 ? 1 : -1);
+      wheel = 0;
+    };
+    el.addEventListener("touchstart", start, { passive: true });
+    el.addEventListener("touchmove", move, { passive: true });
+    el.addEventListener("touchend", end, { passive: true });
+    el.addEventListener("touchcancel", end, { passive: true });
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => {
+      el.removeEventListener("touchstart", start);
+      el.removeEventListener("touchmove", move);
+      el.removeEventListener("touchend", end);
+      el.removeEventListener("touchcancel", end);
+      el.removeEventListener("wheel", onWheel);
+    };
+  }, [target]);
 }
 
 /** The world key is still on its way. */
@@ -228,6 +283,19 @@ export function Atlas({ world, place, party, scope, here }: AtlasProps): ReactEl
 
   const canCloser = step < zoomSteps.length - 1;
   const canFurther = step > 0;
+
+  // Pinching zooms a step at a time around whatever the pane is centred on, which is left as it is.
+  const stepBy = (direction: 1 | -1) => {
+    const next = Math.min(zoomSteps.length - 1, Math.max(0, step + direction));
+    if (next !== step) updateAtlasView(scope, { step: next });
+  };
+  const stepByRef = useRef(stepBy);
+  stepByRef.current = stepBy;
+  usePinchSteps(viewport, (direction) => stepByRef.current(direction));
+
+  // Back closes what is open over the map: an entry, then a region's card.
+  useBackStep(entryId && discoveries[entryId] ? () => { setEntryId(null); return true; } : null, DETAIL_STEP);
+  useBackStep(cardPlace ? () => { setCardId(null); return true; } : null, DETAIL_STEP - 1);
 
   return (
     <section className="atlas" aria-label="World map">

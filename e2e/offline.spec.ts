@@ -50,7 +50,9 @@ async function studyTheBook(page: Page): Promise<void> {
   await expect.poll(() => paintingShown(page), { timeout: 20_000 }).toBe(true);
 
   // The Story page (#358) is its own chunk, and the saved copy carries its words.
-  await tray.getByRole("button", { name: "Story" }).click(TAP);
+  // It is the hero's own, so it opens from the Hero page.
+  await tray.getByRole("button", { name: "Hero" }).click(TAP);
+  await page.getByRole("navigation", { name: "About you" }).getByRole("button", { name: "Story" }).click(TAP);
   await expect(page.getByRole("heading", { name: "The story so far" })).toBeVisible(TAP);
   await expect(page.getByText(/no story yet/i)).toBeVisible(TAP);
 

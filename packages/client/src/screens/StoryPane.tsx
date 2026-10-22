@@ -28,10 +28,13 @@ export default function StoryPane({ journal }: { journal: JournalResponse }): Re
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">
       <section className="story kad-scroll" aria-label="The story so far">
-        <h1 className="story__title">
-          <Icon name="story" />
-          <span>The story so far</span>
-        </h1>
+        <header className="story__head">
+          <h1 className="story__title">
+            <Icon name="story" />
+            <span>The story so far</span>
+          </h1>
+          <p className="story__lede kad-muted">Every chapter you have played, in the order you played it.</p>
+        </header>
         {story.length === 0 ? (
           <p className="story__empty">
             {journal.story === undefined
@@ -59,17 +62,20 @@ function Campaign({ campaign }: { campaign: JournalStoryCampaign }): ReactElemen
       </header>
       <ol className="story__chapters">
         {campaign.chapters.map((chapter, i) => (
-          <Chapter key={`${chapter.chapterId}:${String(i)}`} chapter={chapter} />
+          <Chapter key={`${chapter.chapterId}:${String(i)}`} chapter={chapter} number={i + 1} />
         ))}
       </ol>
     </article>
   );
 }
 
-function Chapter({ chapter }: { chapter: JournalStoryChapter }): ReactElement {
+function Chapter({ chapter, number }: { chapter: JournalStoryChapter; number: number }): ReactElement {
   const setback = chapter.outcome === "setback";
   return (
     <li className="story__chapter" data-outcome={chapter.outcome ?? "unknown"}>
+      {/* The seal on the road through the book: a chapter number, never the only way to tell chapters apart. */}
+      <span className="story__seal" aria-hidden="true">{number}</span>
+      <div className="story__card">
       <h3 className="story__chapter-title">{chapter.title}</h3>
       {chapter.goal ? (
         <p className="story__goal">
@@ -107,6 +113,7 @@ function Chapter({ chapter }: { chapter: JournalStoryChapter }): ReactElement {
           </span>
         </p>
       ) : null}
+      </div>
     </li>
   );
 }

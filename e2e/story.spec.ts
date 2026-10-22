@@ -82,7 +82,8 @@ test.describe("the story so far", () => {
       open.push(context);
       const page = await context.newPage();
       await page.goto("/journal");
-      await page.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Story" }).click(TAP);
+      // The story is the hero's own: it opens from the Hero page.
+      await page.getByRole("navigation", { name: "About you" }).getByRole("button", { name: "Story" }).click(TAP);
       await expect(page.getByRole("heading", { name: "The story so far" })).toBeVisible(TAP);
 
       const campaign = page.getByRole("article", { name: "The Hollow Crown" });
