@@ -22,7 +22,9 @@ describe("Riftlight's XP", () => {
     expect(campaign.chapters).toHaveLength(24);
   });
 
-  it(`pays at most ${String(FULL_ROUTE_XP)} on any route, each chapter once`, () => {
+  // The authored budget only: the runtime's once-per-chapter settlement, and
+  // replays across attempts (#407), are the progression code's to test.
+  it(`pins the total first-completion reward budget at ${String(FULL_ROUTE_XP)}`, () => {
     const total = [...chapters.values()].reduce((sum, chapter) => sum + (chapter.xpAward ?? 0), 0);
     expect(total).toBe(FULL_ROUTE_XP);
   });
