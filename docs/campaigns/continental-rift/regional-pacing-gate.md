@@ -77,6 +77,6 @@ Riftlight before this gate was passed; these remain the checks to run at real ta
    gaps found at the table, and rerun content, continuity and pacing checks. Only then mark
    the regional gate passed. Any changed production length goal needs a named measured exception.
 
-The [opening pacing gate](opening-playtest.md) remains separate and open. Development pause
-endings are optional testing boundaries; they are not complete campaign endings or evidence
-of full-campaign play length. The remaining strands and convergence are still being authored.
+The [opening pacing gate](opening-playtest.md) remains separate and open. All 24 story nodes,
+the strands, convergence and the three finale endings, are authored and shipped; none of that
+is evidence of full-campaign play length until it is measured at real tables.

@@ -5,7 +5,7 @@ derived from assets/manifest.json + what is on disk
                                       6 species x 4 tiers; one transparent illustration per appearance
   Gear portraits                        72/72    complete
                                       approved opaque source art — one exact fit per class, tier, and species
-  Class figure variants                 47/72    25 to illustrate
+  Class figure variants                 62/72    10 to illustrate
                                       finished transparent illustrations; assembled.png only
   Effect sheets (declared)              28/28    complete
   Effect sheets (spec'd, undeclared)     0/0     complete
@@ -16,7 +16,7 @@ derived from assets/manifest.json + what is on disk
                                       sallow_wastelands, bramblewood, redspire_citadel, open_sea, the_whirlpool; backdrops only — no tactical tiles or props required
   Canon place coverage                  23/23    complete
                                       biomes + named locations; every backdrop must be declared and present (shared art allowed)
-  Scene illustrations                   83/83    complete
+  Scene illustrations                   94/94    complete
                                       optional story backdrops; biome art remains the fallback
   Campaign key art                       2/2     complete
                                       lobby adventure cards; a story scene stands in until delivered
@@ -25,31 +25,16 @@ derived from assets/manifest.json + what is on disk
 
 Outstanding
 
-  Class figure variants — 25
-    starweaver/radiant/unicorn
-    starweaver/radiant/dragonling
-    starweaver/radiant/griffin
-    starweaver/radiant/kitsune
-    starweaver/radiant/manticore
+  Class figure variants — 10
     starweaver/mythic/unicorn
     starweaver/mythic/dragonling
     starweaver/mythic/griffin
     starweaver/mythic/kitsune
     starweaver/mythic/manticore
-    songkeeper/sworn/unicorn
-    songkeeper/sworn/dragonling
-    songkeeper/sworn/griffin
-    songkeeper/sworn/kitsune
-    songkeeper/sworn/manticore
-    songkeeper/radiant/unicorn
-    songkeeper/radiant/dragonling
-    songkeeper/radiant/griffin
-    songkeeper/radiant/kitsune
-    songkeeper/radiant/manticore
     songkeeper/mythic/unicorn
     songkeeper/mythic/dragonling
     songkeeper/mythic/griffin
     songkeeper/mythic/kitsune
     songkeeper/mythic/manticore
 
-25 deliverable(s) outstanding. This reports; it does not gate — see art:verify.
+10 deliverable(s) outstanding. This reports; it does not gate — see art:verify.
