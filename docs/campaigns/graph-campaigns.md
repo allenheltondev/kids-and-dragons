@@ -506,7 +506,9 @@ makes both idempotent on the visit's identity.
 **XP is paid once per chapter per attempt.** A chapter's `xpAward` (and objectives) pays on its
 first completion in the attempt and not on a replay: a cycle is a story device, not an XP farm. A
 variant is a different chapter, so a changed place pays once more. (`JourneyState.chaptersCompleted`
-records which have paid.)
+records which have paid.) And once per chapter per **hero**, across attempts (#408): a new attempt
+starts `chaptersCompleted` afresh, so the hero's own ledger (`CharacterProgress.paidChapters`) is
+what stops a replayed map paying her again; the first rule stays as defence in depth.
 
 ### Save/load compatibility
 
@@ -569,7 +571,8 @@ graph, or `null` for an ordered campaign — the branch every caller takes first
   its flags, inside the same conditional commit as every campaign write. A run of a finished or
   different attempt, without a stamp, or whose visit is a duplicate or stale, settles nothing and
   is shown no XP. A replay (`firstCompletion: false`) records the visit and folds the bag but pays
-  no XP. Setbacks count and the setback limit fails the attempt wherever the party is; completing
+  no XP. A first completion pays no XP to a hero whose ledger already holds the chapter
+  (`RunState.xpAlreadyPaid`, #408). Setbacks count and the setback limit fails the attempt wherever the party is; completing
   an ending completes it (`commitCampaign`). `lastIndex` and `routeFlags` are not maintained for a
   graph campaign — the journey is the whole of where the party got to.
 - **`CHOOSE_EXIT { edgeId, visit, campaignId? }`** (campaign defaults to the run's) calls

@@ -25,8 +25,8 @@ describe("a campaign's key art", () => {
     }
   });
 
-  it("has no stand-in for a campaign nobody painted for", () => {
-    expect(campaignArtSources("the-hollow-crown")).toEqual(["/assets/campaigns/the-hollow-crown.webp"]);
+  it("keeps an unknown campaign on the existing missing-art fallback", () => {
+    expect(campaignArtSources("unknown-campaign")).toEqual(["/assets/campaigns/unknown-campaign.webp"]);
   });
 
   it("ships every painting it declares", () => {

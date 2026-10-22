@@ -510,6 +510,10 @@ export async function applyAction(
       // table still sees its chapter end; it is not told it earned XP it did
       // not get.
       result = { ...result, state: { ...result.state, xpEarned: 0, bonuses: [] } };
+    } else if (settlement.alreadyPaid) {
+      // A hero the chapter paid before earned nothing now (#408). The others
+      // did, so the total stands; the screens say who it skipped.
+      result = { ...result, state: { ...result.state, xpAlreadyPaid: settlement.alreadyPaid } };
     }
   }
   const progression =

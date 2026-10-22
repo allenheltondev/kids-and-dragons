@@ -6,6 +6,8 @@
  */
 
 import { describe, expect, it } from "vitest";
+import { existsSync } from "node:fs";
+import bramblewood from "../../../../content/chapters/bramblewood-01.json";
 import type { Chapter, ClassId, SpeciesId, TierId } from "@kad/shared";
 import manifest from "../../../../assets/manifest.json";
 import gemfall from "../../../../content/chapters/gemfall-08.json";
@@ -28,6 +30,16 @@ import {
 } from "./art-paths";
 
 describe("art paths", () => {
+  it("resolves every Hollow Crown story backdrop to a declared shipped image", () => {
+    const chapter = bramblewood as unknown as Chapter;
+    for (const scene of Object.values(chapter.scenes)) {
+      if (!scene.art || scene.type === "encounter") continue;
+      expect(manifest.sceneIllustrations, scene.art).toContain(scene.art);
+      const url = sceneBackdropUrl(scene.art);
+      expect(url, scene.art).not.toBeNull();
+      expect(existsSync(new URL(`../../../../${url!.slice(1)}`, import.meta.url)), scene.art).toBe(true);
+    }
+  });
   it("follows scene art and returns to biome art for combat or stale chapter content", () => {
     const chapter = gemfall as unknown as Chapter;
     const state = makeState({ chapterId: chapter.id, sceneId: "scene_mouth" });

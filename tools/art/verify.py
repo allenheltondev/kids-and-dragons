@@ -663,6 +663,50 @@ def check_story_plates(rep: Report, mf: dict) -> None:
             plate = os.path.relpath(os.path.join(folder, stem), os.path.join(ROOT, "assets")).replace(os.sep, "/")
             if plate not in declared:
                 rep.fail(f"{plate} undeclared", "listed in manifest.storyPlates.ids", "undeclared file")
+def check_scene_illustrations(rep: Report, mf: dict) -> None:
+    """Declared story backdrops are opaque; entry portraits use their tall canvas."""
+    for art in mf.get("sceneIllustrations", []):
+        path = os.path.join(ROOT, "assets", f"{art}.webp")
+        if not os.path.isfile(path):
+            rep.fail(art, "declared scene illustration present", "missing")
+            continue
+        expected = (900, 1600) if art.endswith("-portrait") else (1920, 1080)
+        with Image.open(path) as im:
+            if im.format != "WEBP" or im.size != expected:
+                rep.fail(art, f"WEBP {expected}", f"{im.format} {im.size}")
+                continue
+            if im.convert("RGBA").getchannel("A").getextrema()[0] < 255:
+                rep.fail(art, "opaque backdrop", "transparent pixels")
+                continue
+        rep.ok(f"{art}  {expected[0]}x{expected[1]} opaque")
+
+
+def check_painted_icons(rep: Report, mf: dict) -> None:
+    """Additional #421 icons: real alpha and a clear border at their shipped size."""
+    spec = mf.get("paintedIcons")
+    if not spec:
+        return
+    size = (spec["canvas"]["width"], spec["canvas"]["height"])
+    for icon in spec["ids"]:
+        label = f"painted/{icon}"
+        path = os.path.join(ROOT, "packages", "client", "src", "assets", "painted", f"{icon}.webp")
+        if not os.path.isfile(path):
+            rep.fail(label, "declared painted icon present", "missing")
+            continue
+        with Image.open(path) as im:
+            if im.format != "WEBP" or im.mode != "RGBA" or im.size != size:
+                rep.fail(label, f"WEBP RGBA {size}", f"{im.format} {im.mode} {im.size}")
+                continue
+            alpha = np.asarray(im)[..., 3]
+            ys, xs = np.where(alpha > 8)
+            if not len(xs):
+                rep.fail(label, "nonempty icon", "fully transparent")
+                continue
+            margin = int(min(xs.min(), ys.min(), size[0]-1-xs.max(), size[1]-1-ys.max()))
+            if margin < 8:
+                rep.fail(label, "at least 8px transparent margin", margin)
+                continue
+        rep.ok(f"{label}  {size[0]}x{size[1]} RGBA  margin={margin}px")
 
 
 def main() -> int:
@@ -722,6 +766,8 @@ def main() -> int:
     check_figure_variants(rep, mf)
     check_campaign_art(rep, mf)
     check_story_plates(rep, mf)
+    check_scene_illustrations(rep, mf)
+    check_painted_icons(rep, mf)
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
     if skipped:

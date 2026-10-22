@@ -6,6 +6,7 @@
  */
 
 import { itemCatalog } from "@kad/shared";
+import { withItemIcons } from "../assets/item-icons";
 import type {
   ResolvedCharacter,
   ActionRequest,
@@ -581,7 +582,7 @@ export const api: Api = {
   loadItems() {
     /* Generated (D7) and carries a `$comment` header; `itemCatalog` strips it
        so the catalog the UI indexes holds only real items. */
-    return request<Record<string, unknown>>("/content/items.json").then(itemCatalog);
+    return request<Record<string, unknown>>("/content/items.json").then(itemCatalog).then(withItemIcons);
   },
 
   loadCampaign(id) {

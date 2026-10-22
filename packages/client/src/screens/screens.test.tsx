@@ -331,6 +331,15 @@ describe("what the dice card says", () => {
 
 
 describe("Icon", () => {
+  it("uses each new painted icon directly instead of its old alias", () => {
+    const sources = manifest.paintedIcons.ids.map(name => {
+      const html = renderToStaticMarkup(<Icon name={name} label={name} />);
+      expect(html, name).toContain(`<img`);
+      expect(html, name).toContain(`/${name}.webp`);
+      return html.match(/src="([^"]+)"/)?.[1];
+    });
+    expect(new Set(sources).size).toBe(manifest.paintedIcons.ids.length);
+  });
   it("uses painted artwork for every committed inventory icon", () => {
     const missing = [...iconNames(items)].filter(
       (name) => !renderToStaticMarkup(<Icon name={name} />).includes("<img"),
