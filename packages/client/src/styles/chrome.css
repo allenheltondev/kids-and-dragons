@@ -20,7 +20,7 @@
  * ----------------------------------------------------------------------- */
 
 html:not([data-contrast="high"]) :is(
-  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .creation-species, .creation-card,
+  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .lobby__campaign, .creation-species, .creation-card,
   .preface__card, .rankup__card,
   .narration__plate, .sheet:not(.sheet--turn), .goal,
   .lobby__heading, .lobby__party-heading, .party-strip__heading,
@@ -36,7 +36,7 @@ html:not([data-contrast="high"]) :is(
 
 /* The ones that are not already positioned. */
 html:not([data-contrast="high"]) :is(
-  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .creation-species, .creation-card,
+  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .lobby__campaign, .creation-species, .creation-card,
   .preface__card, .rankup__card, .narration__plate, .atlas__label, .goal:not(.goal--phone),
   .sheet:not(.sheet--turn), .lobby__heading, .lobby__party-heading, .party-strip__heading,
   .kad-map__flip-tab, .choice, .stat-row__item, .inv__button, .inv__slot--empty, .sheet__hp-track
@@ -45,7 +45,7 @@ html:not([data-contrast="high"]) :is(
 }
 
 html:not([data-contrast="high"]) :is(
-  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .creation-species, .creation-card,
+  .kad-host--inline, .catch-up, .lobby-member, .lobby__join, .lobby__campaign, .creation-species, .creation-card,
   .preface__card, .rankup__card,
   .narration__plate, .sheet:not(.sheet--turn), .goal,
   .lobby__heading, .lobby__party-heading, .party-strip__heading,
@@ -83,6 +83,7 @@ html:not([data-contrast="high"]) :is(.inv__button, .inv__slot--empty, .sheet__hp
 .catch-up,
 .lobby-member,
 .lobby__join,
+.lobby__campaign,
 .creation-species,
 .creation-card {
   --chrome: url("../assets/chrome/panel.webp");
@@ -93,7 +94,8 @@ html:not([data-contrast="high"]) :is(.inv__button, .inv__slot--empty, .sheet__hp
 .preface__card,
 .rankup__card,
 .creation-species--on,
-.creation-card--on {
+.creation-card--on,
+.lobby__campaign--picked {
   --chrome: url("../assets/chrome/panel-featured.webp");
   --chrome-slice: 64;
   --chrome-w: 32px;
@@ -112,8 +114,8 @@ html:not([data-contrast="high"]) :is(.inv__button, .inv__slot--empty, .sheet__hp
   --chrome-w: 16px 24px;
 }
 
-/* The nameplate, except while the game waits on you: then the strip is the gold banner that says
-   so (PlayerPanel.css, `.sheet--turn`), the one "your turn" signal, and nothing paints over it. */
+/* The nameplate. While the game waits on you the strip is the gold banner instead (PlayerPanel.css,
+   `.sheet--turn`), the one "your turn" signal, framed in the same brass (below). */
 .sheet {
   --chrome: url("../assets/chrome/strip-identity.webp");
   --chrome-slice: 40;
@@ -121,6 +123,32 @@ html:not([data-contrast="high"]) :is(.inv__button, .inv__slot--empty, .sheet__hp
 }
 html:not([data-contrast="high"]) .sheet:not(.sheet--turn) {
   border-bottom: 0;
+}
+/* While the game waits on you: the gold banner, in the nameplate's own brass frame (its plum middle
+   keyed out by tools/art/chrome-derive.py), so the gold signal and the painted strip are one thing. */
+html:not([data-contrast="high"]) .sheet--turn {
+  border-bottom: 0;
+  /* The gold moves onto the frame's layer, below, so it stops at the frame's rounded edge. */
+  background: none;
+}
+html:not([data-contrast="high"]) .sheet--turn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  /* The gold of PlayerPanel.css's `.sheet--turn`, clipped inside the brass: 2px in, rounded as the
+     frame's outer corners are (16 file pixels, 8 here), so none shows past them. The frame is drawn
+     over the whole box whatever this border's width. */
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: linear-gradient(
+    100deg,
+    var(--kad-gold-hi, #ffe6a8) 0%,
+    var(--kad-gold, #f5c86c) 45%,
+    var(--kad-gold-lo, #c9962f) 100%
+  ) padding-box;
+  border-image: url("../assets/chrome/strip-identity-frame.webp") 40 / 20px stretch;
 }
 
 /* --- Headings: a ribbon as wide as the words ---------------------------- */
@@ -138,17 +166,6 @@ html:not([data-contrast="high"]) :is(.lobby__heading, .lobby__party-heading, .pa
   /* Clear of the ribbon's ends, and no taller than the words: the lobby on a phone has no height
      to give a heading. */
   padding-inline: 34px;
-}
-
-/* A phone's world at larger text has no width for the ribbon's ends: the words take the line. */
-@container world (max-width: 40em) {
-  html[data-text]:not([data-contrast="high"]) :is(.lobby__heading, .lobby__party-heading) {
-    inline-size: auto;
-    padding-inline: 0;
-  }
-  html[data-text]:not([data-contrast="high"]) :is(.lobby__heading, .lobby__party-heading)::before {
-    content: none;
-  }
 }
 
 /* A divider at its own size: stretched, its star would smear. */

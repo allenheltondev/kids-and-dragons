@@ -51,6 +51,10 @@ Each line below completes that shared prompt with the asset name, delivery size,
 - **vignette.webp** — 512×512; overlay. Prompt: Square soft deep-plum dark vignette fading inward from all edges to a fully transparent large central area. No trim, shapes, objects or texture.
 - **ornament-empty.webp** — 256×256; ornament. Prompt: One small closed antique-brass storybook lantern with dark teal glass and a short curled vine wrapping its base, friendly chunky silhouette, gentle lamplight, isolated.
 
+## Derived
+
+- **strip-identity-frame.webp**: `strip-identity.webp` with its plum middle keyed out, so its brass frame can go round the gold "your turn" strip. Made by `python3 tools/art/chrome-derive.py`, not drawn; rerun it if the nameplate changes, or replace it with a painted gold variant.
+
 ## Review
 
 [Contact sheet on night background](../../../../../docs/reviews/tablet-chrome-art/contact-night.webp) · [Contact sheet on enchanted woods](../../../../../docs/reviews/tablet-chrome-art/contact-backdrop.webp) · [Tile repeats](../../../../../docs/reviews/tablet-chrome-art/tile-repeat-review.webp) · [3x slice stretches](../../../../../docs/reviews/tablet-chrome-art/slice-stretch-review.webp) · [Validation](../../../../../docs/reviews/tablet-chrome-art/validation.json).
