@@ -978,7 +978,18 @@
     "scenes/riftlight/buried-bridge-dry-channel",
     "scenes/riftlight/stone-counters-evidence",
     "scenes/riftlight/buried-bridge-evidence",
-    "scenes/riftlight/whale-road-cleared"
+    "scenes/riftlight/whale-road-cleared",
+    "scenes/riftlight/island-due-back",
+    "scenes/classes/conservatory",
+    "scenes/riftlight/wrong-valley",
+    "scenes/riftlight/convergence-ledge",
+    "scenes/riftlight/wyrm-nest",
+    "scenes/riftlight/bone-yard-ruins",
+    "scenes/riftlight/singing-hall",
+    "scenes/riftlight/singing-hall-camp",
+    "scenes/classes/dojo",
+    "scenes/classes/academy",
+    "scenes/classes/rookery"
   ],
   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
   "campaignArt": {
@@ -1650,6 +1661,46 @@
       "stance": "standing"
     },
     {
+      "id": "captain_thimble",
+      "name": "Captain Thimble",
+      "basis": "kitsune",
+      "scale": "medium",
+      "heightCm": 115,
+      "stance": "standing"
+    },
+    {
+      "id": "master_dunnick",
+      "name": "Master Dunnick",
+      "basis": "bigfoot",
+      "scale": "large",
+      "heightCm": 270,
+      "stance": "standing"
+    },
+    {
+      "id": "professor_nettle",
+      "name": "Professor Nettle",
+      "basis": "dragonling",
+      "scale": "medium",
+      "heightCm": 165,
+      "stance": "standing"
+    },
+    {
+      "id": "aunt_bellow",
+      "name": "Aunt Bellow",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 265,
+      "stance": "standing"
+    },
+    {
+      "id": "yeti_herder",
+      "name": "Yeti herder",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 250,
+      "stance": "standing"
+    },
+    {
       "id": "seal_keeper",
       "name": "Seal-Keeper",
       "basis": "legend_dragon",
@@ -1762,7 +1813,7 @@
       "stance": "standing"
     }
   ],
-  "$stageFiguresComment": "Entity art a chapter casts (`entities/<id>`) that is not a canon creature or people: working animals the stage draws beside a cart. Height and stance as for castFigures (#362). Not verified as entities, because they are not ones.",
+  "$stageFiguresComment": "Entity art a chapter casts (entities/<id>) that is not a canon creature or people: working animals and ordinary wildlife, including the Rookery's crow flock. Height and stance as for castFigures (#362). Each entry has its complete transparent figure at assets/entities/<id>/assembled.png.",
   "stageFigures": [
     {
       "id": "donkey",
@@ -1783,6 +1834,13 @@
       "name": "Pony",
       "scale": "small_to_medium",
       "heightCm": 110,
+      "stance": "standing"
+    },
+    {
+      "id": "rookery_crows",
+      "name": "The crows",
+      "scale": "small_to_medium",
+      "heightCm": 80,
       "stance": "standing"
     }
   ],
@@ -2033,6 +2091,81 @@
     {
       "class": "thornguard",
       "tier": "mythic",
+      "species": "manticore"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "kitsune"
+    },
+    {
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "unicorn"
+    },
+    {
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "dragonling"
+    },
+    {
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "griffin"
+    },
+    {
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "kitsune"
+    },
+    {
+      "class": "starweaver",
+      "tier": "radiant",
+      "species": "manticore"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "unicorn"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "dragonling"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "griffin"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "sworn",
+      "species": "manticore"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "radiant",
+      "species": "unicorn"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "radiant",
+      "species": "dragonling"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "radiant",
+      "species": "griffin"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "radiant",
+      "species": "kitsune"
+    },
+    {
+      "class": "songkeeper",
+      "tier": "radiant",
       "species": "manticore"
     }
   ],

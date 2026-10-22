@@ -60,7 +60,8 @@
           "type": "setFlag",
           "flag": "compared_the_pass_drawings"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/cairnstep"
     },
     "ridge": {
       "type": "story",
@@ -78,7 +79,8 @@
           "type": "setFlag",
           "flag": "marked_the_new_pass"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/cairnstep"
     },
     "supplies": {
       "type": "story",
@@ -96,14 +98,16 @@
           "type": "setFlag",
           "flag": "marked_the_new_pass"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/cairnstep"
     },
     "message": {
       "type": "rest",
       "narration": "The keeper raises a small signal flag toward a distant island in the sky. Another flag answers. \"Our neighbors have trouble with their routes too,\" he says. Your party records the changed pass and the possible supply path. There are more places to investigate after this first visit. \"We can bring your whole party across to ask them,\" the keeper offers.",
       "heal": 0,
       "choices": [],
-      "outcome": "success"
+      "outcome": "success",
+      "art": "scenes/riftlight/cairnstep"
     }
   },
   "voiceGuide": {

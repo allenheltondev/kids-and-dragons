@@ -91,7 +91,8 @@
           "icon": "hand",
           "goto": "delivery"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-quay"
     },
     "fish_help": {
       "type": "story",
@@ -110,7 +111,8 @@
           "flag": "helped_fish_seller",
           "value": true
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "gull": {
       "type": "story",
@@ -128,7 +130,8 @@
           "icon": "hand",
           "goto": "delivery"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-quay"
     },
     "gull_help": {
       "type": "story",
@@ -140,7 +143,8 @@
           "icon": "hand",
           "goto": "delivery"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-quay"
     },
     "ship": {
       "type": "story",
@@ -158,7 +162,14 @@
           "icon": "hand",
           "goto": "ship_cold"
         }
-      ]
+      ],
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "ship_help": {
       "type": "story",
@@ -170,7 +181,14 @@
           "icon": "hand",
           "goto": "delivery"
         }
-      ]
+      ],
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "ship_cold": {
       "type": "story",
@@ -182,7 +200,14 @@
           "icon": "hand",
           "goto": "delivery"
         }
-      ]
+      ],
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "quay": {
       "type": "choice_point",
@@ -200,7 +225,9 @@
           "icon": "hand",
           "goto": "clear_quay"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "check_pattern": {
       "type": "check",
@@ -222,7 +249,9 @@
       "onFailure": {
         "goto": "pattern_missed",
         "narration": "A barrel lid shoots past your ankle before you can point."
-      }
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "pattern_seen": {
       "type": "story",
@@ -234,7 +263,9 @@
           "icon": "hand",
           "goto": "shimmer"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "pattern_missed": {
       "type": "story",
@@ -246,7 +277,9 @@
           "icon": "hand",
           "goto": "shimmer"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "clear_quay": {
       "type": "story",
@@ -258,7 +291,9 @@
           "icon": "hand",
           "goto": "shimmer"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "shimmer": {
       "type": "story",
@@ -294,7 +329,9 @@
           "type": "setFlag",
           "flag": "found_the_cold_fold"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "open"
     },
     "read_light": {
       "type": "story",
@@ -306,7 +343,9 @@
           "icon": "hand",
           "goto": "pull"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "pull": {
       "type": "choice_point",
@@ -374,7 +413,9 @@
           },
           "text": "From his safely moored boat, the pilot calls, \"Watch that crate on your left!\" You see it tilt in time to step clear."
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "catch": {
       "type": "check",
@@ -396,7 +437,9 @@
             "to": "roller"
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "anchor": {
       "type": "check",
@@ -418,7 +461,9 @@
             "to": "roller"
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "swoop": {
       "type": "check",
@@ -440,7 +485,9 @@
             "to": "roller"
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "smash": {
       "type": "check",
@@ -462,7 +509,9 @@
             "to": "roller"
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "brace": {
       "type": "check",
@@ -484,7 +533,9 @@
             "to": "roller"
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "caught": {
       "type": "story",
@@ -496,7 +547,9 @@
           "icon": "hand",
           "goto": "through"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "together": {
       "type": "story",
@@ -508,7 +561,9 @@
           "icon": "hand",
           "goto": "through"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "tumbled": {
       "type": "story",
@@ -520,7 +575,9 @@
           "icon": "hand",
           "goto": "through"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
     },
     "through": {
       "type": "story",
@@ -539,14 +596,17 @@
           "type": "setFlag",
           "flag": "kept_the_kid_safe"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "rift": "collapse"
     },
     "white": {
       "type": "rest",
       "narration": "White slopes rise around you. Far below, water runs under a skin of ice. The goat kid wriggles out of your coat, takes one look at the empty snowfield, and climbs straight back in. You gather in the shelter of a low ridge. Somewhere beyond it, a bell rings.",
       "heal": 0,
       "choices": [],
-      "outcome": "success"
+      "outcome": "success",
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "delivery": {
       "type": "choice_point",
@@ -564,7 +624,8 @@
           "icon": "hand",
           "goto": "delivery_moor"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "delivery_sacks": {
       "type": "story",
@@ -587,7 +648,8 @@
           "type": "setFlag",
           "flag": "helped_the_barge"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "delivery_moor": {
       "type": "story",
@@ -610,7 +672,8 @@
           "type": "setFlag",
           "flag": "helped_the_barge"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-docks"
     },
     "quay_rest": {
       "type": "rest",
@@ -629,7 +692,8 @@
           "icon": "forward",
           "goto": "quay"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall"
     },
     "rookery": {
       "type": "story",
@@ -671,6 +735,13 @@
             }
           ]
         }
+      ],
+      "art": "scenes/classes/rookery",
+      "cast": [
+        {
+          "figure": "entities/rookery_crows",
+          "name": "The crows"
+        }
       ]
     },
     "rookery_lesson": {
@@ -689,6 +760,13 @@
               "value": true
             }
           ]
+        }
+      ],
+      "art": "scenes/classes/rookery",
+      "cast": [
+        {
+          "figure": "entities/rookery_crows",
+          "name": "The crows"
         }
       ]
     }

@@ -1,0 +1,68 @@
+{
+  "mode": "built-in image_gen",
+  "created": "2026-10-21",
+  "rookeryDecision": "Owner chose a separate flock cutout; keep the backdrop free of crows.",
+  "assets": [
+    {
+      "issue": 397,
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons game stage backdrop, 1920x1080 landscape 16:9. Create a warm crafted painterly storybook illustration matching the brushwork, atmosphere and finish of the reference (reference is style only, do not copy its ice/library subject). Subject: Island Due Back, a grassy lookout on a floating sky island. A modest lookout bell on a wooden post and a few thin sighting sticks are firmly planted in grass well back from the edge, at the sides in the upper/middle image. Beyond the lookout in the TOP HALF, a second low flat floating island emerges from soft cloud: its distinctive stone profile has a flat brow, a notch and a naturally pierced stone with an empty eye. Make this clear enough to recognize at phone size. Pale airy daylight, warm grass, atmospheric distant clouds. Stage composition: broad safe firm grassy standing area extends across the FULL WIDTH from 70% down to the bottom, feet floor line at 80% height, simple low detail foreground; island edge and all landmarks farther back above the standing band. No creatures, no people, no figures, no lettering, no symbols, no UI, no border, no rifts or magical portals, no threatening precipice in the foreground.",
+      "output": "assets/scenes/riftlight/island-due-back.webp",
+      "source": "exec-5b6cc843-3ace-4b06-b885-7a69f36a2958.png",
+      "references": [
+        "assets/scenes/riftlight/reading-room.webp"
+      ],
+      "sha256": "a6933ea866366857fee176dae5fd0ef837302b802477a8900924b5d005c9fad6",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "issue": 398,
+      "prompt": "Use case: illustration-story. Asset type: Kids & Dragons game stage backdrop, landscape 16:9, deliver 1920x1080. Paint the Conservatory: a music school that is also a warm damp greenhouse, beyond a glass door off an ice-carved hall. Match reference painterly storybook brushwork and crafted atmospheric finish, but replace the library entirely. Warm terracotta flagstones, curved glass panes with soft condensation, timber plant rails, large broad-leaf potted plants and ferns along the SIDES leaning toward one empty singing spot at back center; a simple wooden music stand with blank cream sheets at the back, and empty benches at the back edges. Through the rear glass door a discreet cool ice corridor links the glacier hall. No explicit snow landscape: this school is reusable in other campaigns. Soft upper-left sunshine and amber warmth, botanical greens, warm wood. Stage contract: floor at 80% image height, full width foreground from 70% down open and uncluttered for separately composited heroes, major foliage and glass architecture in upper half and sides, no pots in the standing band. No creatures, no figures, no people, no lettering or musical notation, no UI, no border, no rifts, no magic portal.",
+      "output": "assets/scenes/classes/conservatory.webp",
+      "source": "exec-36a726ed-f096-4dbe-9457-7bbc7bd66b8a.png",
+      "references": [
+        "assets/scenes/riftlight/reading-room.webp"
+      ],
+      "sha256": "87a18bb4a206629b15c88cf1f6b3b36715bce51d0e08668976c78788a6d6256d",
+      "dimensions": [
+        1920,
+        1080
+      ],
+      "mode": "RGB"
+    },
+    {
+      "issue": 399,
+      "prompt": "Use case: illustration-story. Asset type: transparent game cast figure for Kids & Dragons, 1024x1024 RGBA. Create Captain Thimble, an adult female kitsune sky-island ship captain. Input image is a SPECIES AND HOUSE STYLE reference (Tamsin), NOT the same individual. Keep unmistakable quadrupedal fox anatomy, cream coat, vermilion mane, three teal bushy tails with cream tips. Captain Thimble is practical, brisk, KIND and dignified, never a sly trickster. Give her an adult longer muzzle and sturdy experienced build, a simple weathered navy captain's cap with brass fastener (not a pirate tricorn), short practical navy shoulder cape with brass clasp, and a leather chart tube and folded route chart tucked securely in a saddle satchel. The chart has only abstract unlabeled route lines. No hands, no anthropomorphic posture: all FOUR paws planted and visible; complete tails. No sword, cards, witch hat, jewelry excess, skulls, eye patch, washing line or boat. Three-quarter facing LEFT, gently alert thoughtful expression, relaxed standing pose. Match reference hand-drawn warm dark-brown outlines, warm storybook painted fur, simple readable shapes, light from upper left. Framing: whole isolated figure, maximum silhouette height around 820 pixels; centered at x512 with feet on y900, generous transparent margins on every side including bottom 124 pixels. REAL transparent background, no shadow or floor, no scenery, no border, no text.",
+      "output": "assets/cast/captain_thimble/assembled.png",
+      "source": "exec-c147b28c-c4ef-463d-997d-0378404afa01.png",
+      "references": [
+        "assets/cast/tamsin/assembled.png"
+      ],
+      "sha256": "1f13473dda8e019d192b40e76412f46b3563ec7d342b91c743c7f3b1f76331ae",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    },
+    {
+      "issue": 400,
+      "prompt": "Use case: illustration-story. Asset type: finished transparent class hero illustration, Kids & Dragons, 1024x1024 RGBA. Create the SWORN SONGKEEPER KITSUNE variant. Reference 1 is the exact species/tier base: preserve its warm alert juvenile hero identity, cream coat, vermilion mane, THREE teal tails with cream tips, simple dark eyes with round upper-left highlight, sturdy QUADRUPED fox anatomy, all four paws planted, three-quarter facing LEFT and neutral standing pose. Reference 2 is the delivered Sworn Songkeeper BIGFOOT: transfer the CLASS LANGUAGE only, the warm gold embroidered shoulder wrap with triangular woven border, simple fringe, round bronze clasp and hanging small bronze bell/chime. Adapt the woven wrap to the kitsune's shoulders and upper chest so it doesn't cover legs or tails; add one small matching bell ear ornament. This is a friendly sworn music hero, not a captain or wizard. Do not transfer bigfoot anatomy or cream/umber fur palette. No hat, no instrument held by a paw, no humanoid hands, no weapons, no big magical aura. Match hand-drawn warm dark outline and painted fur finish, low detail density, upper-left lighting. Complete isolated figure with all ears and three tails and all four paws intact. Fill canvas height around 820 pixels, centered with feet baseline y900 and 124px transparent below on a 1024 square. Genuine transparent background, no floor or ground shadow, no scenery, no frame, no text, no music-note glyphs.",
+      "output": "assets/character-rigs/songkeeper/sworn/kitsune/assembled.png",
+      "source": "exec-2768c6d1-590b-43a5-ae17-4fdaccfc9c69.png",
+      "references": [
+        "assets/characters/kitsune/sworn/assembled.png",
+        "assets/character-rigs/songkeeper/sworn/bigfoot/assembled.png"
+      ],
+      "sha256": "5a9551b4722b397fd3c4aebfaaebce56d574145a963d11f2f2a01fc9a74d7f8a",
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "mode": "RGBA"
+    }
+  ]
+}

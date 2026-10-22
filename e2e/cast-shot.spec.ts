@@ -12,7 +12,7 @@
  */
 
 import { test, expect, type Page, type BrowserContext } from "@playwright/test";
-import type { Chapter, CastMember } from "../packages/shared/src/index";
+import type { Chapter, CastMember, SceneRift } from "../packages/shared/src/index";
 import { MUSIC_SPECS } from "../packages/client/src/audio/paths";
 
 const TAP = { timeout: 20_000 } as const;
@@ -28,7 +28,10 @@ async function previewCast(context: BrowserContext): Promise<void> {
   const castInput = process.env.KAD_CAST_PREVIEW;
   const artInput = process.env.KAD_SCENE_ART_PREVIEW;
   const musicInput = process.env.KAD_SCENE_MUSIC_PREVIEW;
-  if (!castInput && !artInput && !musicInput) return;
+  // A rift in plain view (#401): KAD_SCENE_RIFT_PREVIEW=steady|open|collapse.
+  const riftInput = process.env.KAD_SCENE_RIFT_PREVIEW;
+  if (!castInput && !artInput && !musicInput && !riftInput) return;
+  if (riftInput && !["steady", "open", "collapse"].includes(riftInput)) throw new Error("Invalid scene rift preview");
   const input = castInput ? JSON.parse(castInput) as CastMember | CastMember[] : undefined;
   const members = input ? (Array.isArray(input) ? input : [input]) : undefined;
   if (members && (!members.length || members.length > 3 || members.some((member) => !/^(characters|entities|cast)\/[a-z0-9]+(?:[_-][a-z0-9]+)*$/.test(member.figure)))) throw new Error("Invalid cast preview figures (one to three required)");
@@ -50,6 +53,7 @@ async function previewCast(context: BrowserContext): Promise<void> {
         if (backdrop) scene.art = backdrop;
         const track = typeof music === "object" ? music[id] : music;
         if (track) scene.music = track;
+        if (riftInput) scene.rift = riftInput as SceneRift;
       }
     }
     await route.fulfill({ response, json: chapter });
