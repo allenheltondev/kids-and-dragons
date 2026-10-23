@@ -30,6 +30,7 @@ import { makeRules } from "../../../shared/src/test-fixtures";
 import { fakeApp, installFakeCanvas2D, type FakeApp } from "../testing/fake-stage";
 import { BACKDROP_FLOOR, backdropFit, createScene, type PartyScene } from "./scene";
 import type { BoardViewState } from "./board";
+import { RIFT_SHEET, RIFT_SHEET_MS } from "../screens/riftlight";
 
 beforeAll(installFakeCanvas2D);
 
@@ -128,8 +129,8 @@ describe("a rift in plain view (#401)", () => {
   };
   const sheet = () => {
     const canvas = document.createElement("canvas");
-    canvas.width = 3072;
-    canvas.height = 256;
+    canvas.width = RIFT_SHEET.columns * RIFT_SHEET.size;
+    canvas.height = Math.ceil(RIFT_SHEET.frames / RIFT_SHEET.columns) * RIFT_SHEET.size;
     return Texture.from(canvas);
   };
 
@@ -150,6 +151,34 @@ describe("a rift in plain view (#401)", () => {
       expect(tear!.texture.frame.x).not.toBe(first);
       s.setRift(null, "c1/plain");
       expect(rifts(app)).toHaveLength(0);
+    } finally { s.destroy(); load.mockRestore(); }
+  });
+
+  it("slices the 4K-compatible atlas across rows and wraps after its final frame", async () => {
+    const source = sheet();
+    expect(source.width).toBeLessThanOrEqual(4096);
+    expect(source.height).toBeLessThanOrEqual(4096);
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(source as unknown as Record<string, unknown>);
+    const app = fakeApp();
+    const s = createScene(app as unknown as Application);
+    try {
+      s.setRift("steady", "c1/grid");
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      const step = 1000 / RIFT_SHEET.fps;
+      const drawn = () => {
+        const frame = rifts(app)[0]!.texture.frame;
+        expect(frame.right).toBeLessThanOrEqual(source.width);
+        expect(frame.bottom).toBeLessThanOrEqual(source.height);
+        return [frame.x, frame.y];
+      };
+      app.ticker.frame((RIFT_SHEET.columns - 0.5) * step);
+      expect(drawn()).toEqual([(RIFT_SHEET.columns - 1) * RIFT_SHEET.size, 0]);
+      app.ticker.frame(step);
+      expect(drawn()).toEqual([0, RIFT_SHEET.size]);
+      app.ticker.frame((RIFT_SHEET.frames - RIFT_SHEET.columns - 1) * step);
+      expect(drawn()).toEqual([(RIFT_SHEET.columns - 1) * RIFT_SHEET.size, RIFT_SHEET.size]);
+      app.ticker.frame(step);
+      expect(drawn()).toEqual([0, 0]);
     } finally { s.destroy(); load.mockRestore(); }
   });
 
@@ -177,8 +206,10 @@ describe("a rift in plain view (#401)", () => {
       app.ticker.frame(16);
       expect(rifts(app)[0]?.visible).toBe(true);
       expect(drawing()).toBe("/assets/effects/rift_open.sheet.png");
-      // Once: it plays through to the shimmer...
-      app.ticker.frame(1_100);
+      // Hold the opening until its final frame, then hand off to the shimmer.
+      app.ticker.frame(RIFT_SHEET_MS - 32);
+      expect(drawing()).toBe("/assets/effects/rift_open.sheet.png");
+      app.ticker.frame(32);
       expect(drawing()).toBe("/assets/effects/rift_neutral.sheet.png");
       // ...and the same scene and rift again is a re-render, which does not unfold it a second time.
       s.setRift("open", "c1/shimmer");
@@ -197,7 +228,9 @@ describe("a rift in plain view (#401)", () => {
       app.ticker.frame(16);
       expect(load).toHaveBeenCalledWith("/assets/effects/rift_collapse.sheet.png");
       expect(rifts(app)[0]?.visible).toBe(true);
-      app.ticker.frame(1_100);
+      app.ticker.frame(RIFT_SHEET_MS - 32);
+      expect(rifts(app)[0]?.visible).toBe(true);
+      app.ticker.frame(32);
       expect(rifts(app)).toHaveLength(0);
       s.setRift("collapse", "c1/through");
       app.ticker.frame(16);

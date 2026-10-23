@@ -273,27 +273,29 @@ def check_effects(rep: Report, mf: dict) -> None:
         if os.path.exists(side):
             with open(side, encoding="utf-8") as f:
                 meta = json.load(f)
-            for key in ("frames", "fps", "size"):
+            for key in ("frames", "fps", "size", "columns"):
                 if key in meta and key in entry and meta[key] != entry[key]:
                     rep.fail(f"{label}  {key} disagrees with its sidecar",
                              f"{key}={meta[key]} (from {eid}.json)", f"{key}={entry[key]}")
         else:
             rep.fail(f"{label}  no sidecar", f"assets/effects/{eid}.json", "missing")
 
-        # A strip is frames laid left to right at `size` square. Getting this
-        # wrong shows up as a sprite sampling half of the next frame.
+        # Old sheets are strips; an explicit column count enables a row-major
+        # grid without changing their default layout.
         img = load_rgba(os.path.join(directory, f"{eid}.sheet.png"))
         h, w = img.shape[0], img.shape[1]
-        if (w, h) != (frames * size, size):
+        columns = entry.get("columns", frames)
+        rows = (frames + columns - 1) // columns
+        if (w, h) != (columns * size, rows * size):
             rep.fail(f"{label}  sheet is the wrong size",
-                     f"{frames * size}x{size}  ({frames} frames of {size}px)", f"{w}x{h}")
+                     f"{columns * size}x{rows * size}  ({frames} frames of {size}px)", f"{w}x{h}")
             continue
 
         # An empty frame is a dropped frame, and it reads as a stutter rather
         # than as a missing file.
         blanks = [
             i for i in range(frames)
-            if not opaque_mask(img[:, i * size : (i + 1) * size], tol["alphaThreshold"]).any()
+            if not opaque_mask(effect_frame(img, entry, i, size), tol["alphaThreshold"]).any()
         ]
         if blanks:
             rep.fail(f"{label}  {len(blanks)} blank frame(s)",
@@ -304,6 +306,12 @@ def check_effects(rep: Report, mf: dict) -> None:
             continue
 
         rep.ok(f"{label}  {frames} frames @ {entry.get('fps', '?')}fps, {size}px")
+
+
+def effect_frame(img: np.ndarray, entry: dict, index: int, size: int) -> np.ndarray:
+    columns = entry.get("columns", img.shape[1] // size)
+    x, y = (index % columns) * size, (index // columns) * size
+    return img[y:y + size, x:x + size]
 
 
 def check_effect_composition(rep: Report, label: str, img: np.ndarray,
@@ -324,7 +332,7 @@ def check_effect_composition(rep: Report, label: str, img: np.ndarray,
     ok = True
 
     def frame(i: int) -> np.ndarray:
-        return img[:, i * size : (i + 1) * size]
+        return effect_frame(img, entry, i, size)
 
     # Three of the checks below only make sense for a **one-shot effect that
     # plays during a turn**, and getting that scoping wrong is how the first
@@ -347,6 +355,11 @@ def check_effect_composition(rep: Report, label: str, img: np.ndarray,
     end_max = tol["effectEndFrameCoverageMax"]
     if one_shot:
         for name, i in (("first", 0), ("last", frames - 1)):
+            # A story transition joins a continuous loop at one endpoint.
+            # Only that endpoint is exempt: its other end must still fade.
+            handoff = entry.get("handoff") if not in_combat else None
+            if (handoff == "toLoop" and name == "last") or (handoff == "fromLoop" and name == "first"):
+                continue
             coverage = float(opaque_mask(frame(i), alpha).mean())
             if coverage > end_max:
                 rep.fail(f"{label}  {name} frame does not fade",
