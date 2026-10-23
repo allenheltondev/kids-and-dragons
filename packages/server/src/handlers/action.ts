@@ -105,14 +105,22 @@ export async function applyAction(
   deps: HandlerDeps,
 ): Promise<ActionResponse> {
   let input = received;
-  const stored = await deps.repo.getState(input.runId);
+  // The three reads every tap needs, side by side rather than one after
+  // another: none depends on another's answer once the principal names the
+  // household (always, in prod). `authorize` still checks them in order.
+  const principalHome = input.principal?.householdId;
+  const [stored, run, principalPlayer] = await Promise.all([
+    deps.repo.getState(input.runId),
+    deps.repo.getRun(input.runId),
+    principalHome ? deps.repo.getPlayer(principalHome, input.playerId) : Promise.resolve(undefined),
+  ]);
   if (!stored) {
     return { ok: false, seq: input.seq, error: { code: "NOT_FOUND", message: `no run ${input.runId}` } };
   }
   // An open room idle too long closes now (#249), and `authorize` refuses.
   const state = await closedIfIdle(stored, deps);
 
-  const auth = await authorize(input, state, deps);
+  const auth = await authorize(input, state, deps, { run, principalPlayer });
   if ("error" in auth) return auth.error;
 
   // --- 1. seq gate (§4.2) --------------------------------------------------
@@ -1078,6 +1086,11 @@ async function authorize(
   input: ActionInput,
   state: RunState,
   deps: HandlerDeps,
+  read: {
+    run: RunRecord | null;
+    /** Read from the principal's household; undefined when there is no principal. */
+    principalPlayer: Awaited<ReturnType<HandlerDeps["repo"]["getPlayer"]>> | undefined;
+  },
 ): Promise<{ run: RunRecord; home: string } | { error: ActionResponse }> {
   if (input.principal && input.principal.playerId !== input.playerId) {
     return errorResult({
@@ -1106,7 +1119,7 @@ async function authorize(
     });
   }
 
-  const run = await deps.repo.getRun(input.runId);
+  const run = read.run;
   if (!run) {
     return errorResult({
       ok: false,
@@ -1125,7 +1138,8 @@ async function authorize(
     });
   }
 
-  const player = await deps.repo.getPlayer(home, input.playerId);
+  const player =
+    read.principalPlayer !== undefined ? read.principalPlayer : await deps.repo.getPlayer(home, input.playerId);
   if (!player) {
     return errorResult({
       ok: false,
