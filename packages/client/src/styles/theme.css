@@ -445,6 +445,20 @@ html[data-motion="reduced"] *::after {
   font-size: calc(clamp(15px, min(2.2cqw, 4.6cqh), 21px) * var(--kad-text-scale));
 }
 
+/* A phone held sideways has about 390px of height to give, and the 15px floor above is what the
+   narrow panes always sit on (their width never asks for more), so the words were as big there as
+   on a tall phone with twice the room. The floor drops to 13px; the text-size setting still
+   multiplies it, so a kid who asked for larger type still gets it. */
+@media (orientation: landscape) and (min-width: 600px) and (max-height: 559px) {
+  .kad-surface {
+    font-size: calc(clamp(13px, min(1.9cqw, 4.4cqh), 23px) * var(--kad-text-scale));
+  }
+  .kad-surface--player,
+  .kad-surface--map {
+    font-size: calc(clamp(13px, min(2.2cqw, 4.6cqh), 21px) * var(--kad-text-scale));
+  }
+}
+
 /* Full-bleed layer inside a surface (dice, cutscenes, lobby). Percentages, not
    viewport units — see the comments in layout/WorldView.tsx. */
 .kad-layer {

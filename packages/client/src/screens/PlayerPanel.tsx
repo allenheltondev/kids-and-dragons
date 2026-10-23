@@ -84,6 +84,7 @@ import { CharacterSheet } from "./CharacterSheet";
 import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
 import { ChapterGoalCard } from "./ChapterGoal";
+import { useSideBySide } from "../layout/landscape";
 import { PrologueReplay } from "./StoryPlates";
 import { useRunCampaign } from "./run-campaign";
 import { savedHeading, savedHeroes } from "./save-copy";
@@ -639,6 +640,20 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const globalPrompt = state?.prompt ?? null;
   const key = promptKey(myPrompt ?? globalPrompt);
 
+  // The prompt's box is the same element from one question to the next, so on a pane too short for
+  // everything in it (a phone held sideways) it kept the scroll of the last one: the lobby's Begin
+  // button, scrolled to, left the first scene's first choice out of sight above. A new question
+  // is read from its top. A vote ticking over on the same one is not a new question (`key`).
+  // Only side by side, where the world beside it tells the story and the choices are what is
+  // here: held upright, one pane shows at a time and the choices are meant to be in reach of the
+  // thumb, as they were.
+  const promptBox = useRef<HTMLDivElement>(null);
+  const sceneId = state?.sceneId ?? null;
+  const sideBySide = useSideBySide();
+  useEffect(() => {
+    if (sideBySide && promptBox.current) promptBox.current.scrollTop = 0;
+  }, [key, sceneId, sideBySide]);
+
   // A new question always starts from a clean slate — no stale selection can
   // ever be confirmed against the wrong prompt.
   useEffect(() => {
@@ -942,7 +957,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       */}
       {/* `hidden`, not unmounted: an aim half-made in a fight survives a look
           at the bag. */}
-      <div className="player__prompt" hidden={showSheet}>
+      <div className="player__prompt" ref={promptBox} hidden={showSheet}>
         {/* Inside the prompt's scroll box rather than above it, so that while
             deciding the words sit at the top and the answers sink to the
             bottom — read down, tap at the thumb — with the scene showing
