@@ -1,57 +1,53 @@
 /*
- * The room's cheers (RoomCheers.tsx, #388): a narrow column on the left edge,
- * standing on the story plate (`--cheers-bottom`, from stage-inset.ts). Each
- * cheer rises up the column and fades over CHEER_FLOAT_MS. Container-relative
- * units only.
+ * The room's cheers (RoomCheers.tsx, #388). Each cheer starts at the bottom
+ * of the screen at its own random spot across (`--cheer-x`), rises to the top
+ * and fades out gradually on the way, over CHEER_FLOAT_MS. The "watching"
+ * count stands on the story plate's left end (`--cheers-bottom`, from
+ * stage-inset.ts). The layer lets every tap through. Container-relative
+ * units only: `cqh` is the world surface's height (`.kad-surface` is a size
+ * container).
  */
 .room-cheers {
   position: absolute;
-  inset-inline-start: 0.75em;
-  inset-block-end: calc(var(--cheers-bottom, 0px) + 0.5em);
+  inset: 0;
   z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  inline-size: 4.5em;
+  overflow: hidden;
   pointer-events: none;
-}
-
-/* The column the cheers rise through. */
-.room-cheers__sky {
-  position: relative;
-  inline-size: 100%;
-  block-size: 9em;
 }
 
 .room-cheers__cheer {
   position: absolute;
   inset-block-end: 0;
-  inset-inline-start: calc(var(--cheer-lane, 0) * 1.4em);
+  inset-inline-start: var(--cheer-x, 50%);
   font-size: 1.6em;
+  translate: -50% 0;
   opacity: 0;
-  animation: room-cheer-rise 3200ms ease-out forwards;
+  animation: room-cheer-rise 5000ms linear forwards;
 }
 
+/* A quick pop in at the bottom, then a steady rise and a slow fade to nothing at the top. */
 @keyframes room-cheer-rise {
   0% {
     opacity: 0;
     transform: translateY(0) scale(0.6);
   }
+  6% {
+    opacity: 1;
+    transform: translateY(-6cqh) scale(1.1);
+  }
   12% {
     opacity: 1;
-    transform: translateY(-0.5em) scale(1.1);
-  }
-  70% {
-    opacity: 0.9;
+    transform: translateY(-12cqh) scale(1);
   }
   100% {
     opacity: 0;
-    transform: translateY(-5em) scale(1);
+    transform: translateY(calc(-100cqh + 1.5em)) scale(1);
   }
 }
 
 /* Quiet mode (#260): the cheer shows where it starts and fades, without rising. */
 html[data-quiet] .room-cheers__cheer {
+  inset-block-end: calc(var(--cheers-bottom, 0px) + 0.5em);
   animation-name: room-cheer-fade;
 }
 
@@ -60,26 +56,32 @@ html[data-quiet] .room-cheers__cheer {
   100% {
     opacity: 0;
   }
-  15%,
-  70% {
+  10%,
+  60% {
     opacity: 1;
   }
 }
 
 /* Reduced motion: theme.css flattens every animation to its last frame, which here is
-   invisible, so the cheer simply shows, still, until RoomCheers lets it go. */
+   invisible, so the cheer simply shows, still, just above the story, until RoomCheers
+   lets it go. */
 @media (prefers-reduced-motion: reduce) {
   .room-cheers__cheer {
+    inset-block-end: calc(var(--cheers-bottom, 0px) + 0.5em);
     animation: none;
     opacity: 1;
   }
 }
 html[data-motion="reduced"] .room-cheers__cheer {
+  inset-block-end: calc(var(--cheers-bottom, 0px) + 0.5em);
   animation: none;
   opacity: 1;
 }
 
 .room-cheers__watching {
+  position: absolute;
+  inset-inline-start: 0.75em;
+  inset-block-end: calc(var(--cheers-bottom, 0px) + 0.5em);
   display: inline-flex;
   align-items: center;
   gap: 0.3em;
