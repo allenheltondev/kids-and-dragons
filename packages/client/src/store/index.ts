@@ -1350,6 +1350,18 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
       },
 
+      async spectate(watching: boolean) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return false;
+        try {
+          await deps.api.postSpectate(watching, session.sessionToken);
+          return true;
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : "Could not reach the game." });
+          return false;
+        }
+      },
+
       dropCheer(key: number) {
         set({ cheers: get().cheers.filter((heard) => heard.key !== key) });
       },

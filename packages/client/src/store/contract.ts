@@ -249,6 +249,12 @@ export interface GameStore {
   /** The shared screen has finished floating a cheer up. */
   dropCheer(key: number): void;
   /**
+   * "Just watch" on this phone (`true`), or back to making a hero (`false`)
+   * (#388, server handlers/watch.ts). Resolves `true` once the server has it;
+   * a refusal lands in `error` and resolves `false`.
+   */
+  spectate(watching: boolean): Promise<boolean>;
+  /**
    * The host takes a player out of the room (#267). Resolves `true` once the
    * server has done it; a refusal lands in `error` and resolves `false`.
    */

@@ -211,6 +211,8 @@ export interface Api {
   postPresence(leaving: boolean, token: string): Promise<void>;
   /** A spectator's cheer, relayed to the room's screens (#388). */
   postCheer(cheer: string, token: string): Promise<void>;
+  /** "Just watch", or back to making a hero (#388). The patch arrives on the channel. */
+  postSpectate(watching: boolean, token: string): Promise<void>;
   /**
    * Take the household's stopped chapter into this room (#259, server
    * handlers/save.ts). The answer is the run's patch like any other change;
@@ -528,6 +530,15 @@ export const api: Api = {
       headers: JSON_HEADERS,
       token,
       body: JSON.stringify({ cheer }),
+    });
+  },
+
+  async postSpectate(watching, token) {
+    await request<{ ok: true; seq: number }>("/api/spectate", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token,
+      body: JSON.stringify({ watching }),
     });
   },
 

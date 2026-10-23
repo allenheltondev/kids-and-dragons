@@ -10,6 +10,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import {
   CHEER_COOLDOWN_MS,
   CHEERS,
+  CHOSE_TO_WATCH_MESSAGE,
   MAX_PARTY,
   SPECTATOR_MESSAGE,
   TABLE_FULL_MESSAGE,
@@ -148,5 +149,41 @@ describe("a full table (#389)", () => {
     // What the spectator can do instead (#388), in the same voice: never counting the party.
     for (const sentence of SPECTATOR_MESSAGE.split(/(?<=[.!?])\s+/)) expect(sentence.split(/\s+/).length).toBeLessThanOrEqual(14);
     expect(SPECTATOR_MESSAGE).not.toMatch(/\b(two|three|four|\d)\b/i);
+  });
+});
+
+describe("choosing to watch at a table with room (#388)", () => {
+  const seated = (watching?: true): RunState => {
+    const run = state(["p_4"]);
+    return { ...run, seats: { p_5: { name: "Posy", color: "#fff", device: "phone", ...(watching ? { watching } : {}) } } };
+  };
+
+  it("offers Just watch above the creation flow, and asks the server for it", () => {
+    const spectate = vi.fn(async () => true);
+    mount("p_5", seated());
+    act(() => useGameStore.setState({ spectate }));
+    expect(screen.queryByTestId("table-full")).toBeNull();
+    act(() => screen.getByRole("button", { name: "Just watch" }).click());
+    expect(spectate).toHaveBeenCalledWith(true);
+  });
+
+  it("watches once chosen, says they chose it, and offers the way back while a seat is open", () => {
+    const spectate = vi.fn(async () => true);
+    mount("p_5", seated(true));
+    act(() => useGameStore.setState({ spectate }));
+    const panel = screen.getByTestId("table-full");
+    expect(panel.textContent).toContain(CHOSE_TO_WATCH_MESSAGE);
+    expect(panel.textContent).not.toContain(TABLE_FULL_MESSAGE);
+    expect(screen.queryByTestId("just-watch")).toBeNull();
+    // The half-made hero waits, hidden, for a change of mind.
+    expect(document.querySelector<HTMLElement>(".player-view__creation")?.hidden).toBe(true);
+    act(() => screen.getByRole("button", { name: "Make my hero" }).click());
+    expect(spectate).toHaveBeenCalledWith(false);
+  });
+
+  it("has no way back once the table fills", () => {
+    mount("p_5", { ...seated(true), removed: [] });
+    expect(screen.getByTestId("table-full").textContent).toContain(TABLE_FULL_MESSAGE);
+    expect(screen.queryByRole("button", { name: "Make my hero" })).toBeNull();
   });
 });

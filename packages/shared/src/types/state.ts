@@ -497,7 +497,8 @@ export interface RunState {
   seats?: Record<string, RoomSeat>;
   /**
    * Spectators whose phones are still here (#388): players on the roster with
-   * no hero, at a table that is full, that have said "still here" recently.
+   * no hero who chose to watch or found the table full (`isSpectator`), and
+   * have said "still here" recently.
    * Written by presence alone, so the shared screen can say how many are
    * watching. Read it through `watchers()`, which drops anybody who has since
    * sat down or been taken out. Never counted by anything that counts the
@@ -585,6 +586,12 @@ export interface RoomSeat {
    * the roster can.
    */
   homeHouseholdId?: string;
+  /**
+   * They chose "Just watch" on their own phone (#388): a spectator even at a
+   * table with a seat open, until they choose to make a hero. Absent for
+   * everybody else, which is nearly everybody.
+   */
+  watching?: true;
 }
 
 /**

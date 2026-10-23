@@ -86,3 +86,23 @@
   border-color: var(--kad-accent);
   transform: scale(1.08);
 }
+
+/* "Just watch" (JustWatch): one row above the creation flow, taking its own height. */
+.just-watch {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-1, 0.25em) var(--space-3, 0.75em);
+  color: var(--kad-ink-dim);
+}
+
+.just-watch[hidden] {
+  display: none;
+}
+
+.just-watch__line {
+  margin: 0;
+  min-inline-size: 0;
+}

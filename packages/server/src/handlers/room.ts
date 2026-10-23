@@ -658,7 +658,8 @@ async function seatAndConnect(
       current,
       {
         ...current,
-        seats: { ...current.seats, [playerId]: seat },
+        // A kid who chose to watch (#388) still is, whatever else changed.
+        seats: { ...current.seats, [playerId]: was?.watching ? { ...seat, watching: true } : seat },
         party: reconnecting
           ? current.party.map((m) => (m.playerId === playerId ? { ...m, connected: true } : m))
           : current.party,
