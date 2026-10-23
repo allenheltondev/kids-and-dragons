@@ -420,6 +420,13 @@ async function expectFits(page: Page, screen: string, cases: Case[] = PHONE): Pr
   for (const { width, height, text, hand } of cases) {
     await page.setViewportSize({ width, height });
     await settings(page, text, hand);
+    // Measure from the top of every scroller. A pane left scrolled by a focus, a notice or a
+    // drawer opening (#395) slides its first controls under the pinned corner row, and how far
+    // it had settled by now is a race. Layout is what is under test, not where the last tap left it.
+    await page.evaluate(() => {
+      for (const el of document.querySelectorAll("*")) if (el.scrollTop !== 0) el.scrollTop = 0;
+      scrollTo(0, 0);
+    });
     // Two frames: the attributes restyle, then layout settles.
     await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))));
     const problems = [...(await misfits(page)), ...(await shiftsWhenTheRowLoads(page))];
