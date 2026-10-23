@@ -84,6 +84,13 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * screen still works, since this gate weighs only the static graph. Left alone on
  * purpose: `encounter` (shared/encounter.ts, 10KB) and the game store, which the
  * entry's own code uses.
+ *
+ * About 312 measured, cap still 315 (#388): `@kad/shared` is marked
+ * `"sideEffects": false`. Without it the bundler kept every shared module a
+ * lazy chunk used next to the shared index, which every page loads, so the
+ * spectator rules, used only once somebody is watching, cost every first
+ * paint. No shared module does anything on import, and none may: the flag
+ * lets the bundler drop a module nothing uses.
  */
 const FIRST_PAINT_BUDGET_KB = 315;
 
