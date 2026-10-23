@@ -81,6 +81,9 @@ import {
   type StartedAttempt,
 } from "./progression.ts";
 
+/** Far above any intent a client builds (a hero's creation is the largest). */
+const MAX_LOGGED_INTENT_CHARS = 4096;
+
 /** The part of an identity that authorises an action. */
 export type ActingPrincipal = Pick<DeviceIdentity, "householdId" | "playerId">;
 
@@ -581,7 +584,10 @@ export async function applyAction(
     ...(progression ? { progression } : {}),
     at: iso(nowMs),
     playerId: input.playerId,
-    intent: input.intent,
+    // Kept for the log's own sake, while it is the size of a real intent.
+    // The engine ignores fields it does not know, so a padded one would
+    // otherwise be accepted and stored as sent.
+    intent: JSON.stringify(input.intent).length <= MAX_LOGGED_INTENT_CHARS ? input.intent : ({ type: input.intent.type } as ClientIntent),
   };
 
   // State and event land together or not at all — the log can never disagree

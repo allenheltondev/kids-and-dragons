@@ -723,6 +723,16 @@ export class MemoryRepository implements GameRepository {
     this.put({ ...item, data: { ...device, lastSeen } });
   }
 
+  async rotateDevice(householdId: string, deviceId: string, tokenHash: string, lastSeen: string): Promise<boolean> {
+    const item = this.get(HH(householdId), DEVICE_SK(deviceId));
+    if (!item) return false;
+    const device = item.data as DeviceBinding;
+    // Mirrors the Dynamo condition: a revoked binding is never re-armed.
+    if (device.revoked) return false;
+    this.put({ ...item, data: { ...device, tokenHash, lastSeen } });
+    return true;
+  }
+
   // --- characters ------------------------------------------------------------
 
   async putCharacter(character: Character): Promise<void> {

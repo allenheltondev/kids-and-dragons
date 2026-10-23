@@ -29,7 +29,7 @@ import {
 import { applyIntent, createRunState } from "@kad/shared";
 import { createRoom } from "../handlers/room.ts";
 import { CODE_MISS_LIMIT } from "../handlers/code-guard.ts";
-import { respond, type HttpRuntime } from "./http.ts";
+import { MAX_BODY_BYTES, respond, type HttpRuntime } from "./http.ts";
 import type { VerifiedAccount } from "./runtime.ts";
 
 // ---------------------------------------------------------------------------
@@ -114,6 +114,19 @@ describe("routing", () => {
       ok: false,
       error: { code: "NOT_FOUND", message: "no route GET /api/nope" },
     });
+  });
+
+  it("refuses a body over the dev server's limit before reading it, plain or base64", async () => {
+    const rt = runtimeFor(makeHarness());
+    const huge = JSON.stringify({ intent: { type: "CHOOSE", pad: "x".repeat(MAX_BODY_BYTES) } });
+    for (const init of [{ rawBody: huge }, { rawBody: Buffer.from(huge).toString("base64"), isBase64Encoded: true }]) {
+      const result = await respond(event("POST", "/api/action", init), rt);
+      expect(result.statusCode).toBe(413);
+      expect(bodyOf(result).error).toMatchObject({ code: "ILLEGAL" });
+    }
+    // Just under it is still read, and then judged on what it says.
+    const fits = JSON.stringify({ pad: "x".repeat(MAX_BODY_BYTES - 64) });
+    expect((await respond(event("POST", "/api/action", { rawBody: fits }), rt)).statusCode).not.toBe(413);
   });
 
   it("does not treat a known path under the wrong method as routed", async () => {

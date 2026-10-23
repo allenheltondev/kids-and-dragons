@@ -105,11 +105,22 @@ export async function handler(
   return respond(event, AWS_RUNTIME);
 }
 
+/**
+ * The dev server's `express.json({ limit: "256kb" })`, held here too. Without
+ * it the Lambda took anything up to API Gateway's 6MB, and a seated phone
+ * could pad an intent that the event log then stores and replays verbatim on
+ * every reconnect.
+ */
+export const MAX_BODY_BYTES = 256 * 1024;
+
 /** `handler()` with the AWS wiring passed in rather than imported. */
 export async function respond(
   event: APIGatewayProxyEventV2,
   rt: HttpRuntime,
 ): Promise<APIGatewayProxyStructuredResultV2> {
+  if (event.body && Buffer.byteLength(event.body, event.isBase64Encoded ? "base64" : "utf8") > MAX_BODY_BYTES) {
+    return error(413, "ILLEGAL", "that request is too large");
+  }
   const req = parse(event, rt);
   try {
     return await route(req, rt);
