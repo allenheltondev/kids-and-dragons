@@ -13,12 +13,16 @@ the built-in image tool and the existing figures as species/style references.
 The traveler was corrected to remove scenery; the allied wyrm was corrected
 to face the party with a complete, uncropped silhouette.
 
-The new art replaces stand-ins and fills the newly drawable roles across 16
+The new art replaces stand-ins and fills the newly drawable roles across 14
 Riftlight chapters. Existing nameplates are preserved. All chapter fields
 outside `cast` are unchanged, including narration, choices, flags and graphs.
 
 ## Decisions and remaining constraints
 
+- The temple keeper retains her original gray-cloaked figure in Sky Islands
+  Arrival and Squall Temple. She is explicitly a different kitsune from the
+  green-cloaked lookout keeper; a regression test checks both her continuity
+  between temple visits and her distinction from the lookout.
 - The Stuttering Flats goat stays an adult: `glimpse` explicitly distinguishes
   it from the rescued kid. The new kid is used in Exchange, glacier survival
   and the finale loss epilogue.
@@ -36,6 +40,9 @@ outside `cast` are unchanged, including narration, choices, flags and graphs.
 
 - Content validation, continuity and graph proofs pass. Proof files unchanged.
 - 253 tests pass across the cast/scale and Riftlight content suites (24 files).
+- Keeper-identity follow-up: 27 targeted tests pass, including a regression
+  check for separate temple/lookout identities and consistent temple visits;
+  content validation and continuity were rerun and pass.
 - Art verification passes; all 18 outputs independently pass 1024px RGBA,
   transparent-margin and y=900 registration checks.
 - The real TV/phone screenshot review passes. The review tool now supplies

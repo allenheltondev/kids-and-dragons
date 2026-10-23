@@ -26,9 +26,14 @@ function add(chapter, ids, figure, name, count) {
   }
 }
 edit('stone-counters', (c) => swap(c, (m) => m.figure === 'characters/dragonling', 'cast/adult_dragonling'));
-for (const id of ['whale-road', 'the-island-due-back', 'squall-temple', 'sky-islands-arrival']) edit(id, (c) => {
+for (const id of ['whale-road', 'the-island-due-back']) edit(id, (c) => {
   swap(c, (m) => m.figure === 'cast/kitsune_temple_keeper' && m.name !== 'New keeper', 'cast/island_keeper');
   swap(c, (m) => m.name === 'New keeper', 'cast/new_island_keeper');
+});
+// Squall Temple explicitly introduces a different kitsune from the lookout.
+// Keep her original gray-cloaked figure through both temple visits.
+for (const id of ['squall-temple', 'sky-islands-arrival']) edit(id, (c) => {
+  swap(c, (m) => m.name === 'Temple keeper', 'cast/kitsune_temple_keeper');
 });
 edit('reading-room', (c) => {
   swap(c, (m) => m.name === 'Younger keeper', 'cast/younger_keeper');
