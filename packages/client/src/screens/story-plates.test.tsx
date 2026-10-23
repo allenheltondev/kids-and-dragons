@@ -16,7 +16,7 @@ import { useGameStore } from "../store";
 import { markStoryPlatesSeen, resetStoryPlatesSeen, STORY_PLATES_SEEN_KEY } from "../store/story-plates-seen";
 import { ChapterPreface, resetPrefaceCampaigns } from "./ChapterPreface";
 import { NarrationPanel } from "./NarrationPanel";
-import { StoryPlates, plateHoldMs } from "./StoryPlates";
+import { PrologueReplay, StoryPlates, plateHoldMs } from "./StoryPlates";
 
 const PLATES = [1, 2, 3].map((n) => ({ art: `plates/c/prologue-${String(n)}`, narration: `Plate ${String(n)} is a painting.` }));
 
@@ -250,6 +250,20 @@ describe("turning the pages", () => {
     await flush();
     fireEvent.keyDown(screen.getByRole("button", { name: "Skip" }), { key: "Enter" });
     expect(screen.getByTestId("story-plates").dataset.index).toBe("0");
+  });
+});
+
+describe("watching the prologue again", () => {
+  it("plays the intro over any screen, asks nothing of the run, and is not remembered", async () => {
+    const onClose = vi.fn();
+    render(<PrologueReplay campaign={CAMPAIGN} onClose={onClose} />);
+    await flush();
+    const reel = screen.getByTestId("story-plates");
+    expect(reel.dataset.replay).toBe("true");
+    expect(reel.dataset.kind).toBe("prologue");
+    fireEvent.click(screen.getByRole("button", { name: "Skip" }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem(STORY_PLATES_SEEN_KEY)).toBeNull();
   });
 });
 
