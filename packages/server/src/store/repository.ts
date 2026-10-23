@@ -758,6 +758,14 @@ export interface GameRepository {
    * A missing device is a no-op, not an error.
    */
   touchDevice(householdId: string, deviceId: string, lastSeen: string): Promise<void>;
+  /**
+   * A rotated token's hash and `lastSeen`, and nothing else, onto a binding
+   * that is still there and not revoked; false, and no write, otherwise. The
+   * sliding expiry's re-issue, for the reason `touchDevice` gives: a full
+   * `putDevice` of the copy read at resolve time could land after a
+   * revocation and hand the lost phone a fresh 30-day token.
+   */
+  rotateDevice(householdId: string, deviceId: string, tokenHash: string, lastSeen: string): Promise<boolean>;
 
   // --- characters (household-scoped, never run-scoped — §3) ----------------
   /**

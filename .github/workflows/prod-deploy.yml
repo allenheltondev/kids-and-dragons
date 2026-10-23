@@ -34,9 +34,10 @@ on:
   workflow_dispatch:
     inputs:
       # One-click rollback: point this at a known-good older commit and the
-      # dispatch builds and ships it. Dispatches always pass the stale-tip
-      # guard below — deploying something other than the tip of main is the
-      # entire point of choosing a ref.
+      # dispatch builds and ships it. Dispatches skip the stale-tip check
+      # below — deploying something other than the tip of main is the entire
+      # point of choosing a ref — but the ref must already be part of main's
+      # history, so a rollback works and an unreviewed branch does not ship.
       ref:
         description: >-
           Git ref to deploy (branch, tag, or SHA). Leave empty for the default
@@ -81,21 +82,38 @@ jobs:
     timeout-minutes: 5
     outputs:
       fresh: ${{ steps.check.outputs.fresh }}
+      # The commit the deploy job checks out on a dispatch: the operator's
+      # ref resolved once, here, so it cannot move between the check and the
+      # checkout.
+      sha: ${{ steps.check.outputs.sha }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
         with:
-          # Only refs are compared here; no tree is needed.
-          fetch-depth: 1
+          # main's whole history, without file contents: enough to ask whether
+          # a dispatched ref is an ancestor of it.
+          fetch-depth: 0
+          filter: blob:none
 
       - name: Compare against main
         id: check
         env:
           DEPLOY_SHA: ${{ github.event.workflow_run.head_sha }}
+          DISPATCH_REF: ${{ inputs.ref }}
         run: |
-          # A manual dispatch deploys the ref the operator chose, on purpose.
+          # A manual dispatch deploys the ref the operator chose, on purpose,
+          # as long as main already contains it. The staging role is
+          # assumable from any collaborator's PR; this keeps "merged to main"
+          # the only way code reaches the production role.
           if [ -z "$DEPLOY_SHA" ]; then
+            git fetch --no-tags --filter=blob:none origin "${DISPATCH_REF:-main}"
+            SHA=$(git rev-parse FETCH_HEAD)
+            if ! git merge-base --is-ancestor "$SHA" origin/main; then
+              echo "::error title=Not on main::${DISPATCH_REF:-main} resolves to ${SHA}, which is not part of main's history. Merge it first; production only ships what main has."
+              exit 1
+            fi
             echo "fresh=true" >> "$GITHUB_OUTPUT"
+            echo "sha=${SHA}" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           TIP=$(git ls-remote origin refs/heads/main | cut -f1)
@@ -122,9 +140,10 @@ jobs:
         with:
           # The exact commit CI went green on — not the branch tip, which may
           # have moved while CI ran. On workflow_dispatch there is no
-          # workflow_run, so the operator's `ref` input wins; empty means the
-          # default branch, an older commit means a rollback deploy.
-          ref: ${{ github.event.workflow_run.head_sha || inputs.ref || '' }}
+          # workflow_run, so it is the commit the guard resolved the
+          # operator's `ref` to and checked is on main; an older commit means
+          # a rollback deploy.
+          ref: ${{ github.event.workflow_run.head_sha || needs.guard.outputs.sha }}
 
       # Build once, ship to prod. CI already built this exact SHA; downloading
       # its artifact from the *triggering run* (run-id + github-token, which

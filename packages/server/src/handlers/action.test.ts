@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { ChannelMessage } from "@kad/shared";
 import { decisionContext } from "@kad/shared";
 import { applyOps } from "../json-patch.ts";
@@ -29,6 +29,41 @@ async function setup(harness: TestHarness) {
 function choose(choiceId: string) {
   return { type: "CHOOSE" as const, choiceId };
 }
+
+describe("applyAction — the reads a tap waits on", () => {
+  it("starts the state, run and player reads together, not one after another", async () => {
+    const harness = makeHarness();
+    const room = await setup(harness);
+    const realGetState = harness.repo.getState.bind(harness.repo);
+    let releaseState!: () => void;
+    const held = new Promise<void>((resolve) => (releaseState = resolve));
+    vi.spyOn(harness.repo, "getState").mockImplementationOnce(async (runId) => {
+      await held;
+      return realGetState(runId);
+    });
+    const getRun = vi.spyOn(harness.repo, "getRun");
+    const getPlayer = vi.spyOn(harness.repo, "getPlayer");
+
+    const acting = applyAction(
+      {
+        runId: room.runId,
+        playerId: room.player.principal.playerId,
+        seq: 0,
+        intent: choose("east"),
+        principal: room.player.principal,
+      },
+      harness.deps,
+    );
+    await Promise.resolve();
+    // The state has not answered, and the other two are already asked.
+    expect(getRun).toHaveBeenCalledTimes(1);
+    expect(getPlayer).toHaveBeenCalledWith(room.player.principal.householdId, room.player.principal.playerId);
+
+    releaseState();
+    expect(await acting).toEqual({ ok: true, seq: 1 });
+    expect(getPlayer).toHaveBeenCalledTimes(1);
+  });
+});
 
 describe("applyAction — the seq gate (architecture §4.2)", () => {
   it("accepts an intent built on the current seq and advances by exactly one", async () => {

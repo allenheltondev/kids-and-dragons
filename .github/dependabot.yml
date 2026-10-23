@@ -8,3 +8,17 @@ updates:
     directory: /
     schedule:
       interval: weekly
+
+  # npm: the advisories the 2026-10 pass found (vite, vitest, concurrently,
+  # express) had in-range fixes for weeks before anyone ran `npm audit`.
+  # Grouped so a week's patch and minor bumps arrive as one PR the full CI
+  # checks, instead of a dozen; majors come one at a time, since each is a
+  # real migration (typescript, vitest, jsdom).
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
