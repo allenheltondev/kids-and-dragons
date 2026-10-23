@@ -8,6 +8,7 @@ import { STORY_MEASURE, stageLayout, type StageFigure } from "./cast";
 import {
   NOMINAL_PAINT,
   STANCE_LIFT,
+  STANCE_LIFT_CM,
   castSize,
   drawnHeight,
   figureSize,
@@ -18,6 +19,8 @@ import {
   overflowOf,
   overflows,
   paintAspect,
+  reachCm,
+  stanceLift,
   stanceReach,
   widthFit,
   type SizedFigure,
@@ -208,5 +211,39 @@ describe("stance idles", () => {
         expect(stanceIdle(stance, t, 1.3, true)).toEqual({ dx: 0, dy: 0, rotation: 0, breath: 0, shadow: 1, ripple: 1 });
       }
     }
+  });
+});
+
+describe("how high a stance holds a figure", () => {
+  const px = STORY_MEASURE.pxPerCm;
+
+  it("anchors hovering at two feet and flying at six, whatever the figure's size", () => {
+    expect(STANCE_LIFT_CM.hovering).toBe(61);
+    expect(STANCE_LIFT_CM.flying).toBe(183);
+    // A moth and a griffin fly at the same height: the moth's own 40% is a speck beside it.
+    const moth = stanceLift("flying", 80, 1, STORY_MEASURE);
+    expect(moth).toBeCloseTo(183 * px);
+    expect(moth).toBeGreaterThan(STANCE_LIFT.flying * 80 * 10);
+    expect(stanceLift("hovering", 80, 1, STORY_MEASURE)).toBeCloseTo(61 * px);
+  });
+
+  it("lifts a big flyer by its own share when that is higher, and never below the anchor", () => {
+    const big = 1500;
+    expect(stanceLift("flying", big, 1, STORY_MEASURE)).toBeCloseTo(STANCE_LIFT.flying * big);
+    expect(stanceLift("flying", 400, 1, STORY_MEASURE)).toBeCloseTo(183 * px);
+  });
+
+  it("shrinks with the stage, and leaves standing and swimming as they were", () => {
+    expect(stanceLift("flying", 80, 0.5, STORY_MEASURE)).toBeCloseTo(0.5 * 183 * px);
+    expect(stanceLift("standing", 400, 1, STORY_MEASURE)).toBe(0);
+    expect(stanceLift("swimming", 400, 0.5, STORY_MEASURE)).toBeCloseTo(STANCE_LIFT.swimming * 400);
+  });
+
+  it("makes room in the frame for the lift: a person-sized flyer shrinks the stage, a moth does not", () => {
+    expect(reachCm(160, "flying")).toBe(160 + 183);
+    const griffin: SizedFigure = { heightCm: 170, stance: "flying", paint: null };
+    const moth: SizedFigure = { heightCm: 18, stance: "flying", paint: null };
+    expect(heightFit([griffin], STORY_MEASURE)).toBeLessThan(1);
+    expect(heightFit([moth], STORY_MEASURE)).toBe(1);
   });
 });
