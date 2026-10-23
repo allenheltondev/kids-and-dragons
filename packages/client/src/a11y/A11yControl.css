@@ -41,7 +41,7 @@ html[data-contrast="high"] .kad-a11y__button { opacity: 1; }
   overscroll-behavior: contain;
   display: flex;
   flex-direction: column;
-  gap: var(--kad-space-2);
+  gap: var(--kad-space-1);
   padding: var(--kad-space-3) var(--kad-space-4) var(--kad-space-4) calc(var(--kad-space-4) + env(safe-area-inset-bottom, 0px));
   border: 1px solid var(--kad-border);
   border-radius: var(--kad-radius-lg) var(--kad-radius-lg) 0 0;
@@ -54,9 +54,9 @@ html[data-contrast="high"] .kad-a11y__button { opacity: 1; }
   .kad-a11y__sheet { border-radius: var(--kad-radius-lg); max-block-size: 90%; }
 }
 .kad-a11y__title { margin: 0; font-size: var(--kad-text-xl); }
-.kad-a11y__heading { margin: 0; font-size: var(--kad-text-lg); }
+.kad-a11y__heading { margin: 0; font-size: var(--kad-text-md); }
 .kad-a11y__note { margin: 0; color: var(--kad-ink-dim); font-size: var(--kad-text-sm); }
-.kad-a11y__group { display: flex; flex-direction: column; gap: var(--kad-space-2); border: 0; }
+.kad-a11y__group { display: flex; flex-direction: column; gap: var(--kad-space-1); margin: 0; padding: 0; border: 0; }
 .kad-a11y__row { display: flex; gap: var(--kad-space-2); }
 .kad-a11y__row > .kad-a11y__option { flex: 1 1 0; min-inline-size: 0; padding-inline: var(--kad-space-2); }
 /* The size buttons show what they do. */

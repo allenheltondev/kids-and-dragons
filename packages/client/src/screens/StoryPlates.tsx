@@ -6,6 +6,8 @@
  * new (shared `startPlates`). Each plate is a full-pane painting with its words beneath, read
  * aloud as it comes up. Shown once per device (`store/story-plates-seen.ts`) and skippable.
  *
+ * - **Going back stops the turning.** A phone's Back (or a remote's left arrow) returns to the
+ *   page before, and from then on the pages wait to be turned by hand.
  * - **Nothing to tap on the shared screen** (docs/tv-read-only-audit.md): it turns the pages by
  *   itself, a plate staying up as long as its words take to say, and has no button there. A
  *   remote's OK (Enter) turns a page and Escape skips the rest, on any screen. A phone's pane
@@ -78,6 +80,8 @@ function Reel({ picked }: { picked: StartPlates }): ReactElement | null {
   const [frames, setFrames] = useState<Frame[] | null>(null);
   const [index, setIndex] = useState(0);
   const done = useRef(false);
+  /** Set once somebody goes back to re-read: the pages stop turning by themselves after that. */
+  const [held, setHeld] = useState(false);
 
   const finish = useCallback(() => {
     if (done.current) return;
@@ -105,17 +109,24 @@ function Reel({ picked }: { picked: StartPlates }): ReactElement | null {
     else setIndex(index + 1);
   }, [frames, index, finish]);
 
-  // Say the plate as it comes up, and turn the page once it has been said.
+  const back = useCallback(() => {
+    if (index === 0) return;
+    setHeld(true);
+    setIndex(index - 1);
+  }, [index]);
+
+  // Say the plate as it comes up, and turn the page once it has been said (unless somebody went back).
   const frame = frames?.[index];
   useEffect(() => {
     if (frames === null || frame === undefined) return;
     const text = spoken(picked, frame, index);
     speak(text, { source: "narration", interrupt: true });
+    if (held) return;
     const timer = setTimeout(advance, plateHoldMs(plateWordCount(text)));
     return () => clearTimeout(timer);
     // `advance` is for this very index and frames; the page turns once per plate.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [frames, index]);
+  }, [frames, index, held]);
 
   // A remote's OK turns the page and Escape skips the rest, on any screen. A focused control
   // keeps its own Enter and Space.
@@ -128,6 +139,9 @@ function Reel({ picked }: { picked: StartPlates }): ReactElement | null {
       if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
       if (event.key === "Escape") {
         finish();
+      } else if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        back();
       } else if (event.key === "ArrowRight" || ((event.key === "Enter" || event.key === " ") && !target?.closest("button, a[href], summary, [role='button']"))) {
         event.preventDefault();
         advance();
@@ -135,7 +149,7 @@ function Reel({ picked }: { picked: StartPlates }): ReactElement | null {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [ready, finish, advance]);
+  }, [ready, finish, advance, back]);
 
   if (frames === null || frame === undefined) return null;
   const last = index === frames.length - 1;
@@ -178,6 +192,11 @@ function Reel({ picked }: { picked: StartPlates }): ReactElement | null {
           ) : null}
           {display ? null : (
             <div className="plates__buttons">
+              {index === 0 ? null : (
+                <button type="button" className="plates__button" onClick={back}>
+                  Back
+                </button>
+              )}
               {last ? null : (
                 <button type="button" className="plates__button" onClick={advance}>
                   Next
