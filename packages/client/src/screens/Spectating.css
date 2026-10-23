@@ -11,6 +11,11 @@
   color: var(--kad-ink);
 }
 
+/* `display: grid` above would otherwise outrank `hidden`: the Guide stands over this screen. */
+.spectating[hidden] {
+  display: none;
+}
+
 .spectating__head {
   display: grid;
   justify-items: center;
