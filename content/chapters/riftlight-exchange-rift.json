@@ -474,6 +474,13 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ],
       "art": "scenes/gemfall/exchange-docks",
       "rift": "steady"
     },
@@ -498,6 +505,13 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ],
       "art": "scenes/gemfall/exchange-docks",
       "rift": "steady"
     },
@@ -522,6 +536,13 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ],
       "art": "scenes/gemfall/exchange-docks",
       "rift": "steady"
     },
@@ -546,6 +567,13 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ],
       "art": "scenes/gemfall/exchange-docks",
       "rift": "steady"
     },
@@ -570,6 +598,13 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ],
       "art": "scenes/gemfall/exchange-docks",
       "rift": "steady"
     },
