@@ -26,8 +26,9 @@ It does not change narration, choices, flags, or graphs.
 ## Art decisions
 
 - Separate green-cloaked island keeper and indigo-cloaked new keeper, so the two
-  whale-road keepers differ. The temple keeper in sky-islands-arrival gets the
-  same island-keeper figure as the later squall-temple visit.
+  whale-road keepers differ. The temple keeper keeps her original gray-cloaked
+  `kitsune_temple_keeper` figure in both sky-islands-arrival and squall-temple:
+  the latter explicitly says she is different from the lookout keeper.
 - Yetis differ by build, hair, clothing and work props: slate, travel roll,
   guide rope, watch chime, reading slates and a student's songbook.
 - The unnamed dock workers and fisher are frogfolk; the travelers are burrowfolk.
