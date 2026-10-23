@@ -1,10 +1,10 @@
 /*
  * RiftSight (#229): the rifts at the party's place, and their Riftlight.
  *
- * Each layer is a painted effect sheet (brief Part A1): one row of 12 square
+ * Each layer is a painted effect sheet (brief Part A1): one row of 24 square
  * frames, stepped through by CSS. The patterns are in the paint and read in
- * grayscale by their shape - green the outer brackets, amber one flame at the
- * foot, blue nested rings, violet an inward spiral. Under reduced motion each
+ * grayscale by their shape - green the outer brackets, amber the lower-rim
+ * glint, blue nested rings, violet an inward spiral. Under reduced motion each
  * loop holds one frame, so the shapes stay and only the movement stops.
  *
  * The palette lives in the sheets; the TV and every non-Starweaver phone are
@@ -51,47 +51,59 @@
 /* --- The glyph: a tear in the air, with its layers stacked over it. ------ */
 
 /*
- * The painted tear fills about 42% of its frame's height and a third of its
- * width, so each 5.6em frame is centred over a 2.4em slot and overflows it
+ * The painted doorway fills 72% of its frame's height and width, so each
+ * 4em frame is centred over a 3.2em slot and overflows it
  * (transparently) rather than shrinking the tear to a speck.
  */
 .rift-glyph {
   position: relative;
   flex: none;
-  inline-size: 2em;
-  block-size: 2.4em;
+  inline-size: 2.8em;
+  block-size: 3.2em;
+  transform-origin: 50% 95%;
 }
 
-/*
- * The painted tear is matte charcoal, made to sit on a backdrop; on the dark
- * UI it would all but vanish. A faint colourless glow behind it keeps "a rift
- * is here" readable, and says nothing about which rift.
- */
-.rift-glyph::before {
-  content: "";
-  position: absolute;
-  inset: -0.2em -0.4em;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgba(230, 228, 240, 0.32), rgba(230, 228, 240, 0.1) 65%, transparent);
+/* Conditions move the complete stack, keeping paint and colours registered. */
+.rift-glyph--shrinking {
+  animation: rift-contract var(--rift-duration) linear infinite;
+  animation-delay: var(--rift-delay);
+}
+
+.rift-glyph--unstable {
+  animation: rift-stutter var(--rift-duration) steps(1, end) infinite;
+  animation-delay: var(--rift-delay);
+}
+
+@keyframes rift-contract {
+  from { transform: scale(1); }
+  to { transform: scale(0.6); }
+}
+
+@keyframes rift-stutter {
+  0%, 18%, 32%, 65%, 82%, 100% { transform: translateX(0); }
+  20%, 30% { transform: translateX(0.12em); }
+  68%, 80% { transform: translateX(-0.1em); }
 }
 
 .rift-glyph__layer {
   position: absolute;
   inset-block-start: 50%;
   inset-inline-start: 50%;
-  inline-size: 5.6em;
-  block-size: 5.6em;
+  inline-size: 4em;
+  block-size: 4em;
   translate: -50% -50%;
   background-repeat: no-repeat;
-  background-size: 1200% 100%;
+  background-size: calc(var(--rift-frames) * 100%) 100%;
   pointer-events: none;
   animation-name: rift-frames;
-  animation-timing-function: steps(12, jump-end);
+  animation-timing-function: steps(var(--rift-frames), jump-end);
   animation-iteration-count: infinite;
 }
 
 /* A one-shot (open, collapse) plays once and holds its last frame. */
 .rift-glyph__layer--once {
+  animation-name: rift-frames-once;
+  animation-timing-function: steps(var(--rift-steps), jump-end);
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 }
@@ -102,12 +114,17 @@
 }
 
 /*
- * 12 frames, left to right. With a 1200% sheet, x = k/11 of the way across is
- * frame k, so twelve steps from 0 towards 12/11 land on frames 0..11.
+ * Loops step through every frame and wrap; one-shots stop at the final real
+ * frame instead of stepping beyond the sheet into an empty background.
  */
 @keyframes rift-frames {
   from { background-position: 0% 0; }
-  to { background-position: 109.0909% 0; }
+  to { background-position: var(--rift-loop-end) 0; }
+}
+
+@keyframes rift-frames-once {
+  from { background-position: 0% 0; }
+  to { background-position: 100% 0; }
 }
 
 /* The Starweaver's menu indicator: no palette colour, no gold. */
@@ -121,10 +138,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* Frame 6 of 12, mid-pattern: every layer at its most readable. */
+  /* Mid-pattern: preserve all colour silhouettes without movement. */
   .rift-glyph__layer {
     animation: none;
-    background-position: 54.5455% 0;
+    background-position: var(--rift-still) 0;
+  }
+
+  .rift-glyph--shrinking,
+  .rift-glyph--unstable {
+    animation: none;
   }
 
   /* Nothing unfolds or folds: the rift is simply there, or simply gone. */

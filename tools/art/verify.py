@@ -347,6 +347,11 @@ def check_effect_composition(rep: Report, label: str, img: np.ndarray,
     end_max = tol["effectEndFrameCoverageMax"]
     if one_shot:
         for name, i in (("first", 0), ("last", frames - 1)):
+            # A story transition joins a continuous loop at one endpoint.
+            # Only that endpoint is exempt: its other end must still fade.
+            handoff = entry.get("handoff") if not in_combat else None
+            if (handoff == "toLoop" and name == "last") or (handoff == "fromLoop" and name == "first"):
+                continue
             coverage = float(opaque_mask(frame(i), alpha).mean())
             if coverage > end_max:
                 rep.fail(f"{label}  {name} frame does not fade",

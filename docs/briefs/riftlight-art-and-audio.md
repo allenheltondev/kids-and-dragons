@@ -81,14 +81,16 @@ brief defines them:
 
 | id | Kind | Frames | Notes |
 | --- | --- | --- | --- |
-| `rift_neutral` | loop | 12 | What the TV and every non-Starweaver phone show: a colorless, quiet shimmer that gives no rule away. Readable as "a rift is here" and nothing more |
-| `rift_base` | loop | 12 | The tear itself, colorless and quiet, so color layers compose over it (Starweaver's phone only) |
-| `rift_green`, `rift_amber`, `rift_blue`, `rift_violet` | loop | 12 | One color layer each, with its pattern. Any two or three stack over `rift_base` and must still read |
-| `rift_shrink` | loop | 12 | Timed: the rift visibly contracts |
-| `rift_stutter` | loop | 12 | Unstable: it skips and jolts, irregular |
-| `rift_sync` | loop | 12 | Linked: a steady beat, so a rift's two mouths pulse together. Every two-way rift shows it |
-| `rift_open` | one-shot | 12 | |
-| `rift_collapse` | one-shot | 12 | Amber's end: folds closed, gentle, never an explosion |
+| `rift_neutral` | loop | 24 | What the TV and every non-Starweaver phone show: a colorless, quiet shimmer that gives no rule away. Readable as "a rift is here" and nothing more |
+| `rift_base` | loop | 24 | The tear itself, colorless and quiet, so color layers compose over it (Starweaver's phone only) |
+| `rift_green`, `rift_amber`, `rift_blue`, `rift_violet` | loop | 24 | One color layer each, with its pattern. Any two or three stack over `rift_base` and must still read |
+| `rift_shrink` | loop | 24 | Timed: the rift visibly contracts |
+| `rift_stutter` | loop | 24 | Unstable: it skips and jolts, irregular |
+| `rift_sync` | loop | 24 | Linked: a steady beat, so a rift's two mouths pulse together. Every two-way rift shows it |
+| `rift_open` | one-shot | 24 | |
+| `rift_collapse` | one-shot | 24 | Amber's end: folds closed, gentle, never an explosion |
+
+Delivered animation: 24 frames at 12fps, 320px square, a two-second cycle. The painted master and reproducible packager are in `art/source/painted-rifts/`; `node tools/art/painted-rifts-review.mjs` reviews the real CSS component and Pixi stage at TV and phone sizes.
 
 Acceptance: §9.8 of the asset brief, plus a contact sheet showing every common stack (green +
 amber + violet; amber + violet; green + blue; blue) in color **and** grayscale side by side. **The

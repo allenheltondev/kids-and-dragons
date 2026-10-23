@@ -58,7 +58,7 @@ export const riftEffect = (layer: RiftColor | RiftMotion): string => `rift_${lay
  * Every rift sheet's shape (assets/manifest.json `effects[]`, pinned by
  * riftlight.test.ts): one row of square frames, played at `fps`.
  */
-export const RIFT_SHEET = { frames: 12, fps: 12, size: 256 } as const;
+export const RIFT_SHEET = { frames: 24, fps: 12, size: 320 } as const;
 /** One pass of a sheet: a loop's period, and how long a one-shot plays. */
 export const RIFT_SHEET_MS = (RIFT_SHEET.frames / RIFT_SHEET.fps) * 1000;
 
@@ -67,10 +67,10 @@ export const riftSheetUrl = (effect: string): string => `/assets/effects/${effec
 /**
  * The sheets one lit rift stacks, bottom to top.
  *
- * The tear comes first, and is the one sheet that moves the whole rift:
- * `rift_stutter` and `rift_shrink` are the tear itself skipping or
- * contracting, so they replace `rift_base` rather than draw a second outline
- * over it. A rift both unstable and timed stutters; its words still say both.
+ * The doorway comes first. The condition sheets carry the same registered
+ * paint as `rift_base`; RiftGlyph moves the complete assembled stack for
+ * stuttering/shrinking so the colours stay on the doorway. A rift both
+ * unstable and timed stutters; its words still say both.
  * The colours stack over the tear, and `rift_sync` (a linked pair's beat) is
  * a small mark over everything.
  */
