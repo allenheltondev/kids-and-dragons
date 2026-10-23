@@ -10,13 +10,15 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { useState } from "react";
+import type { ReactElement } from "react";
 import { setSpeaker } from "@kad/shared";
 import type { Campaign, Chapter, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
 import { markStoryPlatesSeen, resetStoryPlatesSeen, STORY_PLATES_SEEN_KEY } from "../store/story-plates-seen";
 import { ChapterPreface, resetPrefaceCampaigns } from "./ChapterPreface";
 import { NarrationPanel } from "./NarrationPanel";
-import { StoryPlates, plateHoldMs } from "./StoryPlates";
+import { PrologueReplay, StoryPlates, plateHoldMs } from "./StoryPlates";
 
 const PLATES = [1, 2, 3].map((n) => ({ art: `plates/c/prologue-${String(n)}`, narration: `Plate ${String(n)} is a painting.` }));
 
@@ -224,12 +226,77 @@ describe("turning the pages", () => {
     expect(screen.queryByTestId("story-plates")).toBeNull();
   });
 
+  it("lets a phone go back to re-read, and then stops turning the pages by itself", async () => {
+    vi.useFakeTimers();
+    seed(run("ch_1"), OPENING, "p_1");
+    render(<StoryPlates />);
+    await flush();
+    expect(screen.queryByRole("button", { name: "Back" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    expect(screen.getByTestId("story-plates").dataset.index).toBe("1");
+    fireEvent.click(screen.getByRole("button", { name: "Back" }));
+    expect(screen.getByTestId("story-plates").dataset.index).toBe("0");
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(60_000);
+    });
+    expect(screen.getByTestId("story-plates").dataset.index).toBe("0");
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+    expect(screen.getByTestId("story-plates").dataset.index).toBe("1");
+    fireEvent.keyDown(window, { key: "ArrowLeft" });
+    expect(screen.getByTestId("story-plates").dataset.index).toBe("0");
+  });
+
   it("keeps a focused control's own Enter", async () => {
     seed(run("ch_1"), OPENING, "p_1");
     render(<StoryPlates />);
     await flush();
     fireEvent.keyDown(screen.getByRole("button", { name: "Skip" }), { key: "Enter" });
     expect(screen.getByTestId("story-plates").dataset.index).toBe("0");
+  });
+});
+
+describe("watching the prologue again", () => {
+  it("plays the intro over any screen, asks nothing of the run, and is not remembered", async () => {
+    const onClose = vi.fn();
+    render(<PrologueReplay campaign={CAMPAIGN} onClose={onClose} />);
+    await flush();
+    const reel = screen.getByTestId("story-plates");
+    expect(reel.dataset.replay).toBe("true");
+    expect(reel.dataset.kind).toBe("prologue");
+    fireEvent.click(screen.getByRole("button", { name: "Skip" }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem(STORY_PLATES_SEEN_KEY)).toBeNull();
+  });
+
+  it("is a modal dialog: the page behind it is inert, focus is inside it, and focus returns when it ends", async () => {
+    function Behind(): ReactElement {
+      const [open, setOpen] = useState(false);
+      const [answered, setAnswered] = useState(false);
+      return (
+        <main data-testid="behind">
+          <button type="button" onClick={() => setOpen(true)}>Watch the intro again</button>
+          <button type="button" onClick={() => setAnswered(true)}>Do it!</button>
+          {answered ? <p>answered</p> : null}
+          {open ? <PrologueReplay campaign={CAMPAIGN} onClose={() => setOpen(false)} /> : null}
+        </main>
+      );
+    }
+    const { container } = render(<Behind />);
+    const opener = screen.getByRole("button", { name: "Watch the intro again" });
+    opener.focus();
+    fireEvent.click(opener);
+    await flush();
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.getAttribute("aria-modal")).toBe("true");
+    expect(document.activeElement).toBe(dialog);
+    expect(dialog.closest("[inert]")).toBeNull();
+    // Everything else on the page, the controls behind included, is inert.
+    expect(container.hasAttribute("inert")).toBe(true);
+    expect(container.contains(dialog)).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: "Skip" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(container.hasAttribute("inert")).toBe(false);
+    expect(document.activeElement).toBe(opener);
   });
 });
 

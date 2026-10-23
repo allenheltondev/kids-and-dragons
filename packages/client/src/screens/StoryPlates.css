@@ -17,6 +17,11 @@
   animation: plates-in 600ms ease-out both;
 }
 
+.plates[data-replay="true"] {
+  position: fixed;
+  z-index: 80;
+}
+
 .plates[data-display="true"] {
   pointer-events: none;
 }

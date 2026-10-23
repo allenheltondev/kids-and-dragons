@@ -130,9 +130,14 @@ export function riftStand(
 
 /** The tear's middle, in sheet-frame pixels above the foot (the delivered art: y 76 to 183 of 256). */
 export const TEAR_MIDDLE_PX = (183 - 76) / 2;
-/** Half the tear's painted width and height, in sheet-frame pixels (x 103 to 152, y 76 to 183). */
-export const TEAR_HALF_WIDTH_PX = (152 - 103) / 2;
-export const TEAR_HALF_HEIGHT_PX = (183 - 76) / 2;
+/**
+ * Half the portal's width and height, in sheet-frame pixels. The painted tear
+ * (a tall slit) is no longer drawn on a scene's rift: a slit read as something
+ * it should not to a child, so the rift is a round, swirling doorway (see
+ * `holeTexturePixels`) and these are its radius.
+ */
+export const TEAR_HALF_WIDTH_PX = 44;
+export const TEAR_HALF_HEIGHT_PX = 44;
 
 /** The hole's near-black and the glow's mist (see above). */
 export const RIFT_HOLE_COLOR = 0x15121f;
@@ -158,8 +163,8 @@ export interface RiftRing {
 
 /** Broken dashes close around the tear, turning slowly clockwise. */
 export const RIFT_DASHES: RiftRing = {
-  rx: TEAR_HALF_WIDTH_PX * 1.6,
-  ry: TEAR_HALF_HEIGHT_PX * 1.17,
+  rx: TEAR_HALF_WIDTH_PX * 1.3,
+  ry: TEAR_HALF_HEIGHT_PX * 1.3,
   count: 13,
   fill: 0.74,
   speed: 0.32,
@@ -169,12 +174,12 @@ export const RIFT_DASHES: RiftRing = {
  * A faint unbroken line close around the tear, between it and the dashes. It
  * does not turn: it is what holds the rings together as one shape.
  */
-export const RIFT_HALO_LINE = { rx: TEAR_HALF_WIDTH_PX * 1.28, ry: TEAR_HALF_HEIGHT_PX * 1.08 } as const;
+export const RIFT_HALO_LINE = { rx: TEAR_HALF_WIDTH_PX * 1.12, ry: TEAR_HALF_HEIGHT_PX * 1.12 } as const;
 
 /** Small motes farther out, turning the other way, a little slower. */
 export const RIFT_MOTES: RiftRing = {
-  rx: TEAR_HALF_WIDTH_PX * 2.15,
-  ry: TEAR_HALF_HEIGHT_PX * 1.32,
+  rx: TEAR_HALF_WIDTH_PX * 1.65,
+  ry: TEAR_HALF_HEIGHT_PX * 1.65,
   count: 7,
   fill: 0,
   speed: -0.21,
@@ -273,8 +278,8 @@ export function riftPresence(pass: RiftPass | null, frame: number, frames = 12):
  */
 
 /** The texture's size in pixels: as tall as it is wide twice over, like the tear. */
-export const HOLE_TEXTURE_WIDTH = 96;
-export const HOLE_TEXTURE_HEIGHT = 192;
+export const HOLE_TEXTURE_WIDTH = 160;
+export const HOLE_TEXTURE_HEIGHT = 160;
 
 /** A repeatable hash of a lattice point to 0..1 (no Math.random: the same picture everywhere). */
 function lattice(x: number, y: number, seed: number): number {
@@ -303,7 +308,7 @@ const smoothstep = (a: number, b: number, x: number): number => {
 
 /**
  * The hole's pixels, RGBA, row by row, premultiplied by nothing (straight
- * alpha). `u` and `v` run -1..1 across the ellipse the hole fills.
+ * alpha). `u` and `v` run -1..1 across the circle the hole fills.
  */
 export function holeTexturePixels(width = HOLE_TEXTURE_WIDTH, height = HOLE_TEXTURE_HEIGHT): Uint8Array {
   const pixels = new Uint8Array(width * height * 4);
@@ -329,11 +334,14 @@ export function holeTexturePixels(width = HOLE_TEXTURE_WIDTH, height = HOLE_TEXT
       const rim = Math.exp(-Math.pow((r - 0.8) / 0.07, 2)) * (0.6 + 0.4 * valueNoise(px / 6, py / 10, 6));
       // A few tiny faint specks deep inside, like far-off light seen through the gap.
       const speck = lattice(px, py, 7) > 0.994 ? (1 - smoothstep(0.2, 0.7, r)) * 0.45 : 0;
+      // Slow spiral arms turning in toward the middle, so the doorway swirls instead of gaping.
+      const arms = 0.5 + 0.5 * Math.sin(3 * Math.atan2(v, u) + 7 * Math.log(r + 0.08) + 4 * valueNoise(px / 14, py / 14, 8));
+      const swirl = Math.pow(arms, 2) * smoothstep(0.08, 0.5, r) * (1 - smoothstep(0.85, 1, r));
       // Deep at the middle, lifting to a misty rim.
-      const lift = 0.05 + 0.5 * Math.pow(smoothstep(0.25, 1, r), 1.4);
+      const lift = 0.1 + 0.45 * Math.pow(smoothstep(0.2, 1, r), 1.4);
       const light = Math.min(
         0.85,
-        Math.max(0, lift + (mottle - 0.5) * 0.34 * (0.4 + r) + wisp * 0.32 + rim * 0.28 + speck),
+        Math.max(0, lift + (mottle - 0.5) * 0.34 * (0.4 + r) + wisp * 0.32 + rim * 0.28 + swirl * 0.3 + speck),
       );
       for (let c = 0; c < 3; c++) pixels[i + c] = Math.round(dark[c]! + (mist[c]! - dark[c]!) * light);
       // A feathered edge, so the hole melts into the painted outline.
