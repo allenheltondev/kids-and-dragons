@@ -50,6 +50,14 @@ export interface SequencerHandlers {
   /** A hole that did not fill in time. Resync from `sinceSeq`. */
   onGap(sinceSeq: number): void;
   /**
+   * The mirror can no longer be trusted: a patch failed to apply (it no longer
+   * fits the mirror it was built for), or the hole-filling buffer overflowed.
+   * Replaying events from `seq` would replay the same failure, so only a full
+   * snapshot repairs it; until one arrives through `reset`, nothing further is
+   * applied on top of the broken mirror.
+   */
+  onDesync?(seq: number): void;
+  /**
    * Field Guide ids a step found for the first time (`ServerMessage.discovered`,
    * #106), emitted once, right after that step's patch is applied. Only live
    * messages carry them — the server keeps them out of the event log — so a
@@ -83,6 +91,12 @@ export interface SequencerOptions {
   cancel?: (handle: TimerHandle) => void;
 }
 
+/**
+ * Out-of-order messages held while waiting on a hole. A chapter is a few
+ * hundred steps; past this many, the hole is not going to fill.
+ */
+const MAX_BUFFERED = 200;
+
 export class MessageSequencer {
   private readonly handlers: SequencerHandlers;
   private readonly gapTimeoutMs: number;
@@ -96,6 +110,8 @@ export class MessageSequencer {
   private gapTimer: TimerHandle | null = null;
   private draining = false;
   private disposed = false;
+  /** Waiting on a snapshot after `onDesync`; nothing is applied meanwhile. */
+  private desynced = false;
 
   constructor(options: SequencerOptions) {
     this.handlers = options.handlers;
@@ -128,6 +144,7 @@ export class MessageSequencer {
     if (this.disposed || seq < this.lastSeq) return;
     this.mirror = state;
     this.lastSeq = seq;
+    this.desynced = false;
     for (const key of [...this.buffer.keys()]) {
       if (key <= seq) this.buffer.delete(key);
     }
@@ -162,6 +179,14 @@ export class MessageSequencer {
     if (message.seq <= this.lastSeq) return;
 
     this.buffer.set(message.seq, message);
+    if (this.buffer.size > MAX_BUFFERED) {
+      // A hole that never fills, with the stream still flowing behind it:
+      // stop holding a session's worth of patches and start over from the
+      // server's own view.
+      this.buffer.clear();
+      this.desync();
+      return;
+    }
     this.drain();
   }
 
@@ -177,7 +202,7 @@ export class MessageSequencer {
   }
 
   private drain(): void {
-    if (this.draining || this.disposed) return;
+    if (this.draining || this.disposed || this.desynced) return;
 
     for (;;) {
       const next = this.buffer.get(this.lastSeq + 1);
@@ -217,11 +242,21 @@ export class MessageSequencer {
   }
 
   private apply(message: ServerMessage): void {
-    if (this.mirror === null) return;
+    if (this.mirror === null || this.desynced) return;
     // Structural sharing: React needs a new reference for what changed and the
     // *same* reference for what did not, a half-applied patch must never be
     // observable, and the old mirror is never mutated (see apply-patch.ts).
-    this.mirror = applyPatchShared(this.mirror, message.patch as Operation[]);
+    let next: RunState;
+    try {
+      next = applyPatchShared(this.mirror, message.patch as Operation[]);
+    } catch {
+      // The patch does not fit this mirror. The old mirror is intact (the
+      // apply is all-or-nothing), but it is behind, and every later patch
+      // was built on the step this one failed to take.
+      this.desync();
+      return;
+    }
+    this.mirror = next;
     this.lastSeq = message.seq;
     this.handlers.onState(this.mirror, this.lastSeq);
     if (message.progression) {
@@ -230,6 +265,13 @@ export class MessageSequencer {
     if (message.discovered && message.discovered.length > 0) {
       this.handlers.onDiscovered?.({ runId: message.runId, seq: message.seq, canonIds: message.discovered });
     }
+  }
+
+  private desync(): void {
+    if (this.desynced) return;
+    this.desynced = true;
+    this.clearGapTimer();
+    this.handlers.onDesync?.(this.lastSeq);
   }
 
   private emitPresentation(
