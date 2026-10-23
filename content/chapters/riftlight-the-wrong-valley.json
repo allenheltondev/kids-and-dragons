@@ -51,7 +51,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -94,7 +94,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -117,7 +117,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -141,7 +141,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -164,7 +164,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -187,7 +187,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -210,7 +210,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -234,7 +234,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -257,7 +257,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -280,7 +280,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -309,7 +309,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -332,7 +332,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -355,7 +355,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -384,7 +384,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -403,7 +403,7 @@
       ],
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -426,7 +426,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -455,7 +455,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -478,7 +478,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -514,7 +514,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -537,7 +537,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -560,7 +560,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -583,7 +583,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -619,7 +619,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -642,7 +642,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -665,7 +665,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         }
       ],
@@ -694,11 +694,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -721,11 +721,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -748,11 +748,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -788,11 +788,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -815,11 +815,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -843,11 +843,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -870,11 +870,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -897,11 +897,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -924,11 +924,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -952,11 +952,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -979,11 +979,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1006,11 +1006,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1039,11 +1039,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1066,11 +1066,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1093,11 +1093,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1133,11 +1133,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1160,11 +1160,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1188,11 +1188,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1215,11 +1215,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1242,11 +1242,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1269,11 +1269,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1297,11 +1297,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1324,11 +1324,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1351,11 +1351,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1384,11 +1384,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1411,11 +1411,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1439,11 +1439,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1466,11 +1466,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1500,11 +1500,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1534,11 +1534,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1562,11 +1562,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1589,11 +1589,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1623,11 +1623,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1663,11 +1663,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1696,11 +1696,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1723,11 +1723,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1756,11 +1756,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1783,11 +1783,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1811,11 +1811,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1838,11 +1838,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1865,11 +1865,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1892,11 +1892,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1920,11 +1920,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1947,11 +1947,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -1974,11 +1974,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2007,11 +2007,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2034,11 +2034,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2061,11 +2061,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2094,11 +2094,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2121,11 +2121,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2148,11 +2148,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2181,11 +2181,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2208,11 +2208,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2248,11 +2248,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2275,11 +2275,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2302,11 +2302,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2329,11 +2329,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2369,11 +2369,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2396,11 +2396,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2423,11 +2423,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2452,11 +2452,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2471,11 +2471,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2507,11 +2507,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2526,11 +2526,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],
@@ -2562,11 +2562,11 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Route worker"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/route_worker_yeti",
           "name": "Far worker"
         }
       ],

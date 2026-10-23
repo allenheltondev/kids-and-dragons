@@ -79,7 +79,13 @@
           ]
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ]
     },
     "fish": {
       "type": "story",
@@ -153,7 +159,13 @@
           "goto": "delivery"
         }
       ],
-      "art": "scenes/gemfall/exchange-quay"
+      "art": "scenes/gemfall/exchange-quay",
+      "cast": [
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ]
     },
     "gull_help": {
       "type": "story",
@@ -166,7 +178,13 @@
           "goto": "delivery"
         }
       ],
-      "art": "scenes/gemfall/exchange-quay"
+      "art": "scenes/gemfall/exchange-quay",
+      "cast": [
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ]
     },
     "ship": {
       "type": "story",
@@ -315,7 +333,14 @@
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
-      "rift": "steady"
+      "rift": "steady",
+      "cast": [
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock workers",
+          "count": 2
+        }
+      ]
     },
     "shimmer": {
       "type": "story",
@@ -356,9 +381,8 @@
       "rift": "open",
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -447,9 +471,12 @@
       "rift": "steady",
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        },
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock worker"
         }
       ]
     },
@@ -476,9 +503,12 @@
       },
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        },
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock worker"
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
@@ -507,9 +537,12 @@
       },
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        },
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock worker"
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
@@ -538,9 +571,12 @@
       },
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        },
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock worker"
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
@@ -569,9 +605,12 @@
       },
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        },
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock worker"
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
@@ -600,9 +639,12 @@
       },
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        },
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock worker"
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
@@ -623,9 +665,12 @@
       "rift": "steady",
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        },
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock worker"
         }
       ]
     },
@@ -644,9 +689,12 @@
       "rift": "steady",
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        },
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock worker"
         }
       ]
     },
@@ -665,9 +713,8 @@
       "rift": "steady",
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -693,9 +740,8 @@
       "rift": "collapse",
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -708,9 +754,8 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "entities/snowhorn_goat",
-          "name": "Goat kid",
-          "size": "tiny_to_small"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
