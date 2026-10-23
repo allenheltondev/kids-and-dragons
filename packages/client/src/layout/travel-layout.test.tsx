@@ -390,15 +390,86 @@ describe("Travel Mode on a tablet held sideways", () => {
       tab(container, "Map").click();
     });
     expect(shown(container)).toEqual(["map", "player"]);
-    // You is already on the screen: tapping it leaves the map where it is.
-    act(() => {
-      tab(container, "You").click();
-    });
-    expect(shown(container)).toEqual(["map", "player"]);
     act(() => {
       tab(container, "World").click();
     });
     expect(shown(container)).toEqual(["player", "world"]);
+  });
+
+  it("makes your controls a drawer: You shuts it, the world keeps the room, You opens it again", () => {
+    const { container } = mount();
+    expect(tab(container, "You").getAttribute("aria-pressed")).toBe("true");
+    act(() => {
+      tab(container, "You").click();
+    });
+    expect(shown(container)).toEqual(["world"]);
+    expect(tab(container, "You").getAttribute("aria-pressed")).toBe("false");
+    // The drawer is shut, not unmounted: what was half made in it is still there.
+    expect(container.querySelector('[data-pane="player"]')).not.toBeNull();
+    // The map takes the picture's place and the drawer stays shut.
+    act(() => {
+      tab(container, "Map").click();
+    });
+    expect(shown(container)).toEqual(["map"]);
+    act(() => {
+      tab(container, "You").click();
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
+  });
+
+  it("opens a shut drawer for a new question, and for the Guide", () => {
+    const { container } = mount();
+    act(() => {
+      tab(container, "You").click();
+    });
+    expect(shown(container)).toEqual(["world"]);
+    act(() => {
+      tab(container, "Guide").click();
+    });
+    expect(shown(container)).toEqual(["player", "world"]);
+    act(() => {
+      tab(container, "You").click();
+    });
+    // The guide was in the drawer, so this tap leaves it for the bag rather than shutting it.
+    expect(shown(container)).toEqual(["player", "world"]);
+    act(() => {
+      tab(container, "You").click();
+    });
+    expect(shown(container)).toEqual(["world"]);
+    act(() => {
+      useGameStore.setState({
+        state: {
+          ...state(),
+          seq: 11,
+          phase: "scene",
+          prompt: {
+            kind: "choice",
+            sceneId: "rest_lanternfall",
+            options: [{ id: "on", label: "Onward", icon: "arrow" }],
+            forPlayerIds: ["p_1"],
+            vote: false,
+          },
+        },
+      });
+    });
+    expect(shown(container)).toEqual(["player", "world"]);
+  });
+
+  it("does the same on a phone held sideways, which matches its own query", () => {
+    // Only the phone's query matches: landscape and short, never the tablet's.
+    vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+      matches: query.includes("max-height: 559px"),
+      media: query,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    })));
+    const { container } = mount();
+    expect(container.querySelector(".kad-travel[data-side-by-side]")).not.toBeNull();
+    expect(shown(container)).toEqual(["player", "world"]);
+    act(() => {
+      tab(container, "Map").click();
+    });
+    expect(shown(container)).toEqual(["map", "player"]);
   });
 
   it("brings an open question forward when the tablet turns upright", () => {
@@ -448,7 +519,12 @@ describe("Travel Mode on a tablet held sideways", () => {
       tab(container, "Map").click();
     });
     expect(useHelpFocus.getState().pane).toBe("map");
-    // You is already on the screen, so the map stays; the "?" follows her to the controls.
+    // You shuts the drawer, so the "?" stays with the map; tapping it again brings the controls back.
+    act(() => {
+      tab(container, "You").click();
+    });
+    expect(shown(container)).toEqual(["map"]);
+    expect(useHelpFocus.getState().pane).toBe("map");
     act(() => {
       tab(container, "You").click();
     });

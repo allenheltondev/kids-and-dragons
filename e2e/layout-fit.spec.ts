@@ -14,7 +14,7 @@
  * row, and what Room opens drops below it with who just joined, so none of them
  * covers a heading or a choice; that is checked at 1280x720 and at a tablet's
  * 1024x600. This walks a real room to each of those screens and then looks
- * at them at 360px and 390px and on a tablet held sideways, at normal and the largest text (#262), with
+ * at them at 360px and 390px, on a tablet and on a phone held sideways, at normal and the largest text (#262), with
  * one-handed play off, right and left (PHONE and SHARED below say which), and asserts on each:
  *
  * - no word, button or picture overlaps a corner control;
@@ -62,6 +62,10 @@ const PHONE: Case[] = [
   // foot, and the world sits beside the controls. An iPad, and the smallest iPad at the largest text.
   { width: 1180, height: 820, text: "normal", hand: "off" },
   { width: 1024, height: 768, text: "largest", hand: "right" },
+  // A phone held sideways: a slim rail, the corner row in a column down the far edge. The smallest
+  // one at normal text, and the phone as reported at the largest text one-handed, rail on the right.
+  { width: 667, height: 375, text: "normal", hand: "off" },
+  { width: 844, height: 390, text: "largest", hand: "right" },
 ];
 /* A television, and a tablet showing the game (#274) at the largest text: the row is widest there. */
 const SHARED: Case[] = [
@@ -76,6 +80,12 @@ const TV_SIZES: Case[] = [
   { width: 1024, height: 600, text: "normal", hand: "off" },
   { width: 1024, height: 600, text: "largest", hand: "off" },
 ];
+
+/** Your controls up, whatever the screen: held sideways they are a drawer that a tap on You would shut. */
+async function showYou(page: Page): Promise<void> {
+  const you = page.getByRole("button", { name: "You", exact: true });
+  if ((await you.getAttribute("aria-pressed")) !== "true") await you.click(TAP);
+}
 
 interface Member {
   connected: boolean;
@@ -505,7 +515,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await guest.getByRole("button", { name: /^world$/i }).click(TAP);
     await expect(guest.locator("[data-pane='world'] .lobby")).toBeVisible(TAP);
     await expectFits(guest, "the lobby on a phone's world pane");
-    await guest.getByRole("button", { name: /^you$/i }).click(TAP);
+    await showYou(guest);
 
     // --- A Rest scene: the stop offer beside the arrival notice ---
     await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);
@@ -530,7 +540,7 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expectFits(guest, "guest's catch-up line");
 
     // --- Class tokens (#314): her own view, a friend's sheet, and a rank landing ---
-    await guest.getByRole("button", { name: "You", exact: true }).click(TAP);
+    await showYou(guest);
     await expect(guest.getByText(/^Your (thorn bracer|dusk hood|star circlet|song bell)$/)).toBeVisible(TAP);
     await expectFits(guest, "guest's own view, with her worn token");
     await guest.getByRole("button", { name: "Sparklehoof's character sheet" }).click(TAP);
