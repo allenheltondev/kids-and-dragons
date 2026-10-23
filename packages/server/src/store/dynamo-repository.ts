@@ -146,6 +146,17 @@ const MAX_BATCH_ATTEMPTS = 6;
 
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
+/**
+ * Deadlines on every call. The SDK's defaults have none, so one hung socket
+ * held a request until the Lambda's own 15s timeout, after the commit may
+ * already have landed. A single item or query page answers in tens of
+ * milliseconds; three attempts at these deadlines still end well inside 15s.
+ */
+export const CLIENT_CONFIG = {
+  requestHandler: { connectionTimeout: 1_000, requestTimeout: 3_000 },
+  maxAttempts: 3,
+} as const;
+
 export interface DynamoRepositoryOptions {
   tableName: string;
   /** Injected by tests (DynamoDB Local); defaults to the ambient credentials. */
@@ -170,7 +181,7 @@ export class DynamoRepository implements GameRepository {
     this.table = options.tableName;
     this.index = options.indexName ?? GSI1_NAME;
     this.now = options.now ?? Date.now;
-    this.doc = DynamoDBDocumentClient.from(options.client ?? new DynamoDBClient({}), {
+    this.doc = DynamoDBDocumentClient.from(options.client ?? new DynamoDBClient(CLIENT_CONFIG), {
       marshallOptions: {
         // Optional fields (`userAgent`, `presentation`, `avatar`) are absent
         // rather than null all over the domain types. Without this every one of
