@@ -30,7 +30,7 @@
  * and nothing uses a viewport unit.
  */
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useContext, useEffect, useId, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { goalProgress, partyItemIds } from "@kad/shared";
 import type { ChapterGoal as Goal } from "@kad/shared";
@@ -39,7 +39,7 @@ import { useChapter, useRunState } from "../store";
 import { useEnsureChapter } from "./content";
 import { Icon } from "./icons";
 import { FoldChevron, useFold } from "../ui/Collapsible";
-import { useLandscapePhone } from "../layout/landscape";
+import { PlayerShell, useLandscapePhone } from "../layout/landscape";
 import "./ChapterGoal.css";
 
 /** How long a fresh tick keeps its moment. */
@@ -99,7 +99,8 @@ export function ChapterGoalCard({ place, folded = false }: ChapterGoalCardProps)
   // On a phone the card is one line until the kid opens it, and stays the way this device left it.
   const [open, toggle] = useFold("goal", false);
   const stepsId = `goal-steps-${useId().replace(/:/g, "")}`;
-  const sideways = useLandscapePhone();
+  // Only a player's own shell: the shared screen is read-only at any size (layout/WorldView.tsx).
+  const sideways = useLandscapePhone() && useContext(PlayerShell);
   // The chime is the room's, so only the shared surface plays it.
   const fresh = useFreshTicks(current, place === "world" ? () => cue("gem-pickup") : undefined);
   if (current === null) return null;
@@ -165,7 +166,7 @@ export function ChapterGoalCard({ place, folded = false }: ChapterGoalCardProps)
           type="button"
           className={`goal__badge kad-focusable${fresh.size > 0 ? " goal__badge--fresh" : ""}`}
           aria-expanded={open}
-          aria-controls={stepsId}
+          aria-controls={open ? stepsId : undefined}
           aria-label={`Your goal, ${summary}`}
           onClick={toggle}
         >

@@ -12,6 +12,7 @@ import type { Chapter, RunState } from "@kad/shared";
 import { setAudioSink } from "../audio/cue";
 import { useGameStore } from "../store";
 import { ChapterGoalCard, TICK_MOMENT_MS } from "./ChapterGoal";
+import { PlayerShell } from "../layout/landscape";
 
 const CHAPTER = {
   id: "ch_1",
@@ -252,7 +253,7 @@ describe("the chapter's goal on a phone held sideways", () => {
   it("is an icon with the steps done, and a tap opens the steps over the world", () => {
     sideways();
     seed({ found_ladder: true });
-    render(<ChapterGoalCard place="world" />);
+    render(<PlayerShell.Provider value><ChapterGoalCard place="world" /></PlayerShell.Provider>);
     const icon = screen.getByRole("button", { name: /your goal, 1 of 2 done/i });
     expect(icon.textContent).toBe("1/2");
     expect(icon.getAttribute("aria-expanded")).toBe("false");
@@ -268,7 +269,15 @@ describe("the chapter's goal on a phone held sideways", () => {
   it("gives the hero's own pane its line back", () => {
     sideways();
     seed({});
-    const { container } = render(<ChapterGoalCard place="phone" />);
+    const { container } = render(<PlayerShell.Provider value><ChapterGoalCard place="phone" /></PlayerShell.Provider>);
     expect(container.textContent).toBe("");
+  });
+
+  it("stays the plain card, with nothing to tap, on the shared screen at the same size", () => {
+    sideways();
+    seed({});
+    const { container } = render(<ChapterGoalCard place="world" />);
+    expect(container.querySelector("button")).toBeNull();
+    expect(screen.getByText("Find a ladder")).toBeTruthy();
   });
 });

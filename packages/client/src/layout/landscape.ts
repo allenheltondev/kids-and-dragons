@@ -22,7 +22,7 @@
  * neither.
  */
 
-import { useSyncExternalStore } from "react";
+import { createContext, useSyncExternalStore } from "react";
 // The painted chrome, which both room layouts dress (docs/briefs/tablet-chrome-art.md). Imported
 // here because both import this, so it loads with the room and never with the start screen.
 import "../styles/chrome.css";
@@ -43,6 +43,13 @@ function subscribe(onChange: () => void): () => void {
     for (const list of lists) list.removeEventListener("change", onChange);
   };
 }
+
+/**
+ * True inside a player's own shell (Travel or Party Mode on a phone or tablet), and false on the
+ * shared screen. The shared screen draws the same world and must stay read-only whatever its size,
+ * so what is only for a player to tap (the goal's icon) asks this as well as the viewport.
+ */
+export const PlayerShell = createContext(false);
 
 function subscribePhone(onChange: () => void): () => void {
   if (typeof matchMedia !== "function") return () => undefined;

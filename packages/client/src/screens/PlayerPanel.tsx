@@ -84,6 +84,7 @@ import { CharacterSheet } from "./CharacterSheet";
 import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
 import { ChapterGoalCard } from "./ChapterGoal";
+import { useSideBySide } from "../layout/landscape";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { ClassPlaceChoice } from "./ClassPlace";
@@ -635,11 +636,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // everything in it (a phone held sideways) it kept the scroll of the last one: the lobby's Begin
   // button, scrolled to, left the first scene's first choice out of sight above. A new question
   // is read from its top. A vote ticking over on the same one is not a new question (`key`).
+  // Only side by side, where the world beside it tells the story and the choices are what is
+  // here: held upright, one pane shows at a time and the choices are meant to be in reach of the
+  // thumb, as they were.
   const promptBox = useRef<HTMLDivElement>(null);
   const sceneId = state?.sceneId ?? null;
+  const sideBySide = useSideBySide();
   useEffect(() => {
-    if (promptBox.current) promptBox.current.scrollTop = 0;
-  }, [key, sceneId]);
+    if (sideBySide && promptBox.current) promptBox.current.scrollTop = 0;
+  }, [key, sceneId, sideBySide]);
 
   // A new question always starts from a clean slate — no stale selection can
   // ever be confirmed against the wrong prompt.
