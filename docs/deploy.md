@@ -158,9 +158,18 @@ drift. The workflows match on them exactly — a mismatch makes GitHub create a
 the name as configured, matched with `StringEquals`, so `Staging` and `staging`
 are different principals.
 
-Worth adding on Production: a required reviewer. That turns "merged to main"
-into "merged to main, and somebody pressed go", which is the version of this you
-want on a Tuesday evening.
+**Required on Production: deployment branches set to `main` only**
+(Settings → Environments → Production → Deployment branches and tags). A
+`pull_request` run executes the workflow file from the PR's own head, so a
+collaborator's PR could change `environment: Staging` to `Production` and the
+OIDC `sub` would then match the production role's trust policy. The branch
+rule is what refuses that job before it gets a token; nothing in the repo
+can. A manual dispatch of prod-deploy.yml is separately held to commits
+already on main by its guard job.
+
+Worth adding on Production as well: a required reviewer. That turns "merged to
+main" into "merged to main, and somebody pressed go", which is the version of
+this you want on a Tuesday evening.
 
 **3. Once the distribution exists**, set a repository variable `WEBAUTHN_RP_ID`
 to its domain to enable passkeys — see below.
