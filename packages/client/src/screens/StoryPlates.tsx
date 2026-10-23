@@ -23,10 +23,11 @@
  * mode (the shared screen is told from a phone by having no player).
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
+import { createPortal } from "react-dom";
 import { plateWordCount, speak, storyPlateUrl } from "@kad/shared";
-import type { StartPlates, StoryPlate } from "@kad/shared";
+import type { Campaign, StartPlates, StoryPlate } from "@kad/shared";
 import { useSession } from "../store";
 import { markStoryPlatesSeen, markStoryPlatesUnavailable } from "../store/story-plates-seen";
 import { useStartPlates } from "./start-plates";
@@ -75,7 +76,7 @@ function spoken(picked: StartPlates, frame: Frame, index: number): string {
   return index === 0 ? `${picked.ribbon}. ${frame.narration}` : frame.narration;
 }
 
-function Reel({ picked }: { picked: StartPlates }): ReactElement | null {
+function Reel({ picked, onDone }: { picked: StartPlates; onDone?: () => void }): ReactElement | null {
   const display = (useSession()?.playerId ?? "") === "";
   const [frames, setFrames] = useState<Frame[] | null>(null);
   const [index, setIndex] = useState(0);
@@ -86,14 +87,19 @@ function Reel({ picked }: { picked: StartPlates }): ReactElement | null {
   const finish = useCallback(() => {
     if (done.current) return;
     done.current = true;
-    markStoryPlatesSeen(picked.key);
-  }, [picked.key]);
+    // A replay was asked for, so it is neither remembered nor held against the story.
+    if (onDone) onDone();
+    else markStoryPlatesSeen(picked.key);
+  }, [picked.key, onDone]);
 
   useEffect(() => {
     let live = true;
     void preload(picked.plates).then((loaded) => {
       if (!live) return;
-      if (loaded.length === 0) markStoryPlatesUnavailable(picked.key);
+      if (loaded.length === 0) {
+        if (onDone) onDone();
+        else markStoryPlatesUnavailable(picked.key);
+      }
       else setFrames(loaded);
     });
     return () => {
@@ -163,6 +169,7 @@ function Reel({ picked }: { picked: StartPlates }): ReactElement | null {
       data-index={index}
       data-last={last}
       data-display={display}
+      data-replay={onDone ? "true" : undefined}
       aria-label={picked.ribbon}
       style={{ ["--plate-ms" as string]: `${String(hold)}ms` }}
     >
@@ -218,4 +225,21 @@ export function StoryPlates(): ReactElement | null {
   if (picked === null) return null;
   // Keyed, so a chapter that follows another's plate starts its own reel from the first page.
   return <Reel key={picked.key} picked={picked} />;
+}
+
+/**
+ * A campaign's prologue, asked for again from the phone mid-campaign: just the intro story, over
+ * the whole screen whatever pane is showing. It touches nothing in the run, is not remembered,
+ * and `onClose` is called when it ends or is skipped.
+ */
+export function PrologueReplay({ campaign, onClose }: { campaign: Campaign; onClose: () => void }): ReactElement | null {
+  const picked = useMemo<StartPlates | null>(
+    () =>
+      campaign.prologue && campaign.prologue.plates.length > 0
+        ? { kind: "prologue", key: `replay:${campaign.id}`, ribbon: campaign.title, plates: campaign.prologue.plates }
+        : null,
+    [campaign],
+  );
+  if (picked === null) return null;
+  return createPortal(<Reel key={picked.key} picked={picked} onDone={onClose} />, document.body);
 }
