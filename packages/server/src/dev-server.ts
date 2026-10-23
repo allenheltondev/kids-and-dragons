@@ -601,13 +601,16 @@ async function main(): Promise<void> {
     if (!Object.prototype.hasOwnProperty.call(req.body ?? {}, "stat")) {
       return sendError(res, 400, "ILLEGAL", "expected { stat }");
     }
+    // Held to its seq like every intent; see lambda/http.ts.
+    if (typeof req.body.seq !== "number" || !Number.isFinite(req.body.seq)) {
+      return sendError(res, 400, "ILLEGAL", "expected { stat, seq }");
+    }
 
-    const state = await deps.repo.getState(session.runId);
     const response = await applyAction(
       {
         runId: session.runId,
         playerId: session.playerId,
-        seq: Number(req.body.seq ?? state?.seq ?? 0),
+        seq: req.body.seq,
         intent: { type: "SPEND_STAT_POINT", stat: req.body.stat as never },
         principal: {
           householdId: session.householdId,

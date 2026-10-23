@@ -1238,7 +1238,8 @@ describe("POST /api/progression/spend", () => {
       runtimeFor(harness),
     );
     const { sessionToken } = bodyOf(join) as unknown as { sessionToken: string };
-    return { ...room, sessionToken };
+    const seq = (await harness.repo.getState(room.runId))?.seq ?? 0;
+    return { ...room, sessionToken, seq };
   }
 
   it("refuses a spend with no session token", async () => {
@@ -1270,6 +1271,24 @@ describe("POST /api/progression/spend", () => {
     expect(bodyOf(result).error).toMatchObject({ message: "expected { stat }" });
   });
 
+  it("refuses a spend that names no seq, rather than assuming the current one", async () => {
+    // Assuming it waved every request past the stale check: a double tap
+    // spent two points.
+    const harness = makeHarness();
+    const room = await joinedRoom(harness);
+    for (const seq of [undefined, "3", null]) {
+      const result = await respond(
+        event("POST", "/api/progression/spend", {
+          body: { stat: "might", ...(seq === undefined ? {} : { seq }) },
+          headers: { authorization: `Bearer ${room.sessionToken}` },
+        }),
+        runtimeFor(harness),
+      );
+      expect(result.statusCode).toBe(400);
+      expect(bodyOf(result).error).toMatchObject({ message: "expected { stat, seq }" });
+    }
+  });
+
   it("takes the run and the player from the session, never from the body", async () => {
     /*
      * The same rule `postAction` holds, and worth pinning separately because
@@ -1294,8 +1313,8 @@ describe("POST /api/progression/spend", () => {
         rt,
       );
 
-    const honest = await spend({ stat: "might" });
-    const lying = await spend({ stat: "might", runId: "r_somebody_else", playerId: "p_99" });
+    const honest = await spend({ stat: "might", seq: room.seq });
+    const lying = await spend({ stat: "might", seq: room.seq, runId: "r_somebody_else", playerId: "p_99" });
 
     expect(lying.statusCode).toBe(honest.statusCode);
     expect(bodyOf(lying)).toEqual(bodyOf(honest));
@@ -1315,7 +1334,7 @@ describe("POST /api/progression/spend", () => {
 
     const result = await respond(
       event("POST", "/api/progression/spend", {
-        body: { stat: "might" },
+        body: { stat: "might", seq: room.seq },
         headers: { authorization: `Bearer ${room.sessionToken}` },
       }),
       runtimeFor(harness),

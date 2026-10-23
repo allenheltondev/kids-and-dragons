@@ -757,13 +757,19 @@ async function postProgressionSpend(req: Req, deps: HandlerDeps) {
   if (!Object.prototype.hasOwnProperty.call(req.body, "stat")) {
     return error(400, "ILLEGAL", "expected { stat }");
   }
+  // The seq the spend was built on, as for every intent. Defaulting it to the
+  // run's current seq waved every request through the stale check, so a
+  // double tap spent two points. No client sends here any more (a spend
+  // rides /api/action); the route is kept for one that might.
+  if (typeof req.body.seq !== "number" || !Number.isFinite(req.body.seq)) {
+    return error(400, "ILLEGAL", "expected { stat, seq }");
+  }
 
-  const state = await deps.repo.getState(session.runId);
   const response = await applyAction(
     {
       runId: session.runId,
       playerId: session.playerId,
-      seq: Number(req.body.seq ?? state?.seq ?? 0),
+      seq: req.body.seq,
       intent: { type: "SPEND_STAT_POINT", stat: req.body.stat as never },
       principal: {
         householdId: session.householdId,
