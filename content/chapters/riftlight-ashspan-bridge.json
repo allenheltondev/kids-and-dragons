@@ -79,6 +79,12 @@
           "flag": "reached_the_ferry_landing"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ],
       "art": "scenes/gemfall/northern-bridge-foot"
     },
     "plank": {
@@ -96,6 +102,12 @@
         {
           "type": "setFlag",
           "flag": "helped_travelers_board"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
@@ -117,6 +129,12 @@
           "flag": "helped_travelers_board"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ],
       "art": "scenes/gemfall/northern-bridge-foot"
     },
     "routes": {
@@ -125,6 +143,12 @@
       "heal": 0,
       "choices": [],
       "outcome": "success",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ],
       "art": "scenes/gemfall/northern-bridge-foot"
     }
   },

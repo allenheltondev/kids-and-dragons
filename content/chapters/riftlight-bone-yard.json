@@ -57,6 +57,16 @@
           "goto": "limit"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 4
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -77,6 +87,12 @@
           "goto": "limit_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -91,6 +107,12 @@
           "goto": "survey"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -103,6 +125,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "survey"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
@@ -125,6 +153,16 @@
           "goto": "survey_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -139,6 +177,12 @@
           "goto": "survey_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -151,6 +195,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "survey_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
@@ -170,6 +220,12 @@
         "goto": "survey_changed",
         "narration": "A loose stone rolls into the hollow; you stop before following it."
       },
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -188,6 +244,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "markers"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
@@ -210,6 +272,12 @@
           "goto": "markers"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -230,6 +298,12 @@
           "goto": "markers_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -244,6 +318,12 @@
           "goto": "test"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -256,6 +336,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "test"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
@@ -278,6 +364,12 @@
           "goto": "test_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -292,6 +384,12 @@
           "goto": "vibration"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -304,6 +402,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "vibration"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
@@ -326,6 +430,16 @@
           "goto": "vibration_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -340,6 +454,15 @@
           "goto": "vibration_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        },
+        {
+          "figure": "entities/bone_crawler"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -352,6 +475,15 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "vibration_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        },
+        {
+          "figure": "entities/bone_crawler"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
@@ -371,6 +503,15 @@
         "goto": "vibration_changed",
         "narration": "A crawler pins the line under one small foot."
       },
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        },
+        {
+          "figure": "entities/bone_crawler"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -385,6 +526,12 @@
           "goto": "support"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -397,6 +544,15 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "support"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        },
+        {
+          "figure": "entities/bone_crawler"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
@@ -419,6 +575,12 @@
           "goto": "support_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -433,6 +595,12 @@
           "goto": "support_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -445,6 +613,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "support_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
@@ -464,6 +638,12 @@
         "goto": "support_changed",
         "narration": "The first brace tips and you pull back together."
       },
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -478,6 +658,12 @@
           "goto": "rest"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -490,6 +676,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "rest"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
@@ -513,6 +705,12 @@
           "goto": "rest_watch"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -525,6 +723,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "plan"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
@@ -547,6 +751,12 @@
           "goto": "plan_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -561,6 +771,12 @@
           "goto": "fight"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
@@ -573,6 +789,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "fight_seam"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
@@ -672,6 +894,15 @@
           "text": "You closed the tear rather than driving every crawler away. With the fresh magic gone, they turn toward the stones deeper in the yard."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        },
+        {
+          "figure": "entities/bone_crawler"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "rescued": {
@@ -689,6 +920,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "inventory"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        },
+        {
+          "figure": "entities/bone_crawler",
+          "count": 4
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"
@@ -710,6 +951,12 @@
           "goto": "inventory_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "inventory_1": {
@@ -723,6 +970,12 @@
           "goto": "unbrace"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "inventory_2": {
@@ -734,6 +987,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "unbrace"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"
@@ -763,6 +1022,12 @@
           "text": "The crawlers block the wall. Any gear caught there must stay; you can gather only the free mat and line from the outer strip."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "unbrace_1": {
@@ -776,6 +1041,12 @@
           "goto": "unbrace_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "unbrace_2": {
@@ -787,6 +1058,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "unbrace_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"
@@ -805,6 +1082,12 @@
         "goto": "unbrace_changed",
         "narration": "Dust spills from a crack when the line moves."
       },
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "unbrace_clear": {
@@ -818,6 +1101,12 @@
           "goto": "exit_strip"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "unbrace_changed": {
@@ -829,6 +1118,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "exit_strip"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"
@@ -858,6 +1153,12 @@
           "text": "The crawlers still block the short passage. Your marked return route bends out along the wide rim instead. The guide signals that longer route; your shoulders still ache from the retreat."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "exit_strip_1": {
@@ -879,6 +1180,12 @@
           "text": "You follow the marks around the wide rim, well clear of the blocked passage. It is a long walk back to the pool."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "exit_strip_2": {
@@ -890,6 +1197,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "exit_strip_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"
@@ -908,6 +1221,12 @@
         "goto": "exit_strip_changed",
         "narration": "A gust catches your empty mat against a stone."
       },
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "exit_strip_clear": {
@@ -921,6 +1240,12 @@
           "goto": "boundary"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "exit_strip_changed": {
@@ -932,6 +1257,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "boundary"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"
@@ -953,6 +1284,12 @@
           "goto": "boundary_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "boundary_1": {
@@ -966,6 +1303,12 @@
           "goto": "boundary_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "boundary_2": {
@@ -977,6 +1320,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "boundary_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"
@@ -995,6 +1344,12 @@
         "goto": "boundary_changed",
         "narration": "A tiny chip makes a determined rattle inside a fold."
       },
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "boundary_clear": {
@@ -1008,6 +1363,12 @@
           "goto": "report"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "boundary_changed": {
@@ -1019,6 +1380,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "report"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"
@@ -1040,6 +1407,12 @@
           "goto": "report_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "report_1": {
@@ -1053,6 +1426,12 @@
           "goto": "handoff"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "report_2": {
@@ -1064,6 +1443,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "handoff"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"
@@ -1085,6 +1470,12 @@
           "goto": "handoff_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "handoff_1": {
@@ -1098,6 +1489,12 @@
           "goto": "ending"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "handoff_2": {
@@ -1109,6 +1506,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"
@@ -1130,6 +1533,12 @@
             "flag": "bone_retreat"
           },
           "text": "The short passage is still theirs. Your account marks the longer route you used instead."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"

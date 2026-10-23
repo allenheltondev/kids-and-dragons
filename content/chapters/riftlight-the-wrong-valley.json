@@ -45,6 +45,16 @@
           "goto": "look_again"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley",
       "variants": [
         {
@@ -78,6 +88,16 @@
           "goto": "look_again_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_1": {
@@ -89,6 +109,16 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "look_again_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -105,6 +135,16 @@
       "onFailure": {
         "goto": "look_again_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_1_done": {
@@ -116,6 +156,16 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "worker_signal"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -131,6 +181,16 @@
           "goto": "worker_signal"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_2": {
@@ -142,6 +202,16 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "look_again_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -158,6 +228,16 @@
       "onFailure": {
         "goto": "look_again_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_2_done": {
@@ -171,6 +251,16 @@
           "goto": "worker_signal"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "look_again_2_changed": {
@@ -182,6 +272,16 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "worker_signal"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -203,6 +303,16 @@
           "goto": "worker_signal_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "worker_signal_1": {
@@ -216,6 +326,16 @@
           "goto": "two_jobs"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "worker_signal_2": {
@@ -227,6 +347,16 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "two_jobs"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -248,6 +378,16 @@
           "goto": "two_jobs_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "two_jobs_1": {
@@ -261,6 +401,12 @@
           "goto": "test_flow"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "two_jobs_2": {
@@ -272,6 +418,16 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "test_flow"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -293,6 +449,16 @@
           "goto": "test_flow_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_1": {
@@ -304,6 +470,16 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "test_flow_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -332,6 +508,16 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_1_done": {
@@ -343,6 +529,16 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "bundle_plan"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -358,6 +554,16 @@
           "goto": "bundle_plan"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_2": {
@@ -369,6 +575,16 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "test_flow_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -397,6 +613,16 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_2_done": {
@@ -410,6 +636,16 @@
           "goto": "bundle_plan"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "test_flow_2_changed": {
@@ -421,6 +657,16 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "bundle_plan"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -442,6 +688,20 @@
           "goto": "bundle_plan_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "bundle_plan_1": {
@@ -455,6 +715,20 @@
           "goto": "anchor"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "bundle_plan_2": {
@@ -466,6 +740,20 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "anchor"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -494,6 +782,20 @@
           "requiresClass": "thornguard"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_1": {
@@ -505,6 +807,20 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "anchor_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -521,6 +837,20 @@
       "onFailure": {
         "goto": "anchor_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_1_done": {
@@ -532,6 +862,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "signals"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -547,6 +891,20 @@
           "goto": "signals"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_2": {
@@ -558,6 +916,20 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "anchor_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -574,6 +946,20 @@
       "onFailure": {
         "goto": "anchor_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_2_done": {
@@ -587,6 +973,20 @@
           "goto": "signals"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_2_changed": {
@@ -598,6 +998,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "signals"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -619,6 +1033,20 @@
           "goto": "signals_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "signals_1": {
@@ -632,6 +1060,20 @@
           "goto": "tools_return"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "signals_2": {
@@ -643,6 +1085,20 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "tools_return"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -671,6 +1127,20 @@
           "requiresClass": "duskrunner"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_1": {
@@ -682,6 +1152,20 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "tools_return_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -698,6 +1182,20 @@
       "onFailure": {
         "goto": "tools_return_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_1_done": {
@@ -709,6 +1207,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "crossing_choice"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -724,6 +1236,20 @@
           "goto": "crossing_choice"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_2": {
@@ -735,6 +1261,20 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "tools_return_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -751,6 +1291,20 @@
       "onFailure": {
         "goto": "tools_return_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_2_done": {
@@ -764,6 +1318,20 @@
           "goto": "crossing_choice"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_2_changed": {
@@ -775,6 +1343,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "crossing_choice"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -796,6 +1378,20 @@
           "goto": "crossing_choice_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "crossing_choice_1": {
@@ -807,6 +1403,20 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "crossing_choice_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -823,6 +1433,20 @@
       "onFailure": {
         "goto": "crossing_choice_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "crossing_choice_1_done": {
@@ -834,6 +1458,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "river_turn"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley",
@@ -856,6 +1494,20 @@
           "goto": "river_turn"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley",
       "onEnter": [
         {
@@ -876,6 +1528,20 @@
           "goto": "crossing_choice_2_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "crossing_choice_2_check": {
@@ -890,6 +1556,20 @@
       "onFailure": {
         "goto": "crossing_choice_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "crossing_choice_2_done": {
@@ -901,6 +1581,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "river_turn"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley",
@@ -921,6 +1615,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "river_turn"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley",
@@ -949,6 +1657,20 @@
           "goto": "river_turn_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley",
       "onEnter": [
         {
@@ -968,6 +1690,20 @@
           "goto": "return_water"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "river_turn_2": {
@@ -979,6 +1715,20 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "return_water"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -1000,6 +1750,20 @@
           "goto": "return_water_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_1": {
@@ -1011,6 +1775,20 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "return_water_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -1027,6 +1805,20 @@
       "onFailure": {
         "goto": "return_water_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_1_done": {
@@ -1038,6 +1830,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "tell_together"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -1053,6 +1859,20 @@
           "goto": "tell_together"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_2": {
@@ -1064,6 +1884,20 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "return_water_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -1080,6 +1914,20 @@
       "onFailure": {
         "goto": "return_water_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_2_done": {
@@ -1093,6 +1941,20 @@
           "goto": "tell_together"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "return_water_2_changed": {
@@ -1104,6 +1966,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "tell_together"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -1125,6 +2001,20 @@
           "goto": "tell_together_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "tell_together_1": {
@@ -1138,6 +2028,20 @@
           "goto": "next_witness"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "tell_together_2": {
@@ -1149,6 +2053,20 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "next_witness"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -1170,6 +2088,20 @@
           "goto": "next_witness_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "next_witness_1": {
@@ -1183,6 +2115,20 @@
           "goto": "last_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "next_witness_2": {
@@ -1194,6 +2140,20 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "last_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -1215,6 +2175,20 @@
           "goto": "last_check_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_1": {
@@ -1226,6 +2200,20 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "last_check_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -1254,6 +2242,20 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_1_done": {
@@ -1265,6 +2267,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "rest"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -1280,6 +2296,20 @@
           "goto": "rest"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_2": {
@@ -1291,6 +2321,20 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "last_check_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -1319,6 +2363,20 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_2_done": {
@@ -1332,6 +2390,20 @@
           "goto": "rest"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "last_check_2_changed": {
@@ -1343,6 +2415,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "rest"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
         }
       ],
       "art": "scenes/riftlight/wrong-valley"
@@ -1360,11 +2446,39 @@
           "value": true
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "anchor_assisted": {
       "type": "story",
       "narration": "A thornguard steadies the carrying board with brace while your party tests the anchor from firm ground. The worker watches the rock, not the strongest hero's confidence. Whoever can best judge the load may lead the check; the ability supplies support without making uncertain ice sound.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley",
       "choices": [
         {
@@ -1387,11 +2501,39 @@
       "onFailure": {
         "goto": "anchor_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     },
     "tools_return_assisted": {
       "type": "story",
       "narration": "A duskrunner works from the safe bank to secure the bundle's loose straps before the haul. The workers hold their signals while your party prepares the line. The most nimble friend can lead the pull; nobody has to stand on the doubtful central rock.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley",
       "choices": [
         {
@@ -1414,6 +2556,20 @@
       "onFailure": {
         "goto": "tools_return_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "entities/yeti",
+          "name": "Far worker"
+        }
+      ],
       "art": "scenes/riftlight/wrong-valley"
     }
   },
