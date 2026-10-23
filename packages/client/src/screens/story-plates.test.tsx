@@ -10,6 +10,8 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { useState } from "react";
+import type { ReactElement } from "react";
 import { setSpeaker } from "@kad/shared";
 import type { Campaign, Chapter, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { useGameStore } from "../store";
@@ -264,6 +266,37 @@ describe("watching the prologue again", () => {
     fireEvent.click(screen.getByRole("button", { name: "Skip" }));
     expect(onClose).toHaveBeenCalledTimes(1);
     expect(localStorage.getItem(STORY_PLATES_SEEN_KEY)).toBeNull();
+  });
+
+  it("is a modal dialog: the page behind it is inert, focus is inside it, and focus returns when it ends", async () => {
+    function Behind(): ReactElement {
+      const [open, setOpen] = useState(false);
+      const [answered, setAnswered] = useState(false);
+      return (
+        <main data-testid="behind">
+          <button type="button" onClick={() => setOpen(true)}>Watch the intro again</button>
+          <button type="button" onClick={() => setAnswered(true)}>Do it!</button>
+          {answered ? <p>answered</p> : null}
+          {open ? <PrologueReplay campaign={CAMPAIGN} onClose={() => setOpen(false)} /> : null}
+        </main>
+      );
+    }
+    const { container } = render(<Behind />);
+    const opener = screen.getByRole("button", { name: "Watch the intro again" });
+    opener.focus();
+    fireEvent.click(opener);
+    await flush();
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.getAttribute("aria-modal")).toBe("true");
+    expect(document.activeElement).toBe(dialog);
+    expect(dialog.closest("[inert]")).toBeNull();
+    // Everything else on the page, the controls behind included, is inert.
+    expect(container.hasAttribute("inert")).toBe(true);
+    expect(container.contains(dialog)).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: "Skip" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(container.hasAttribute("inert")).toBe(false);
+    expect(document.activeElement).toBe(opener);
   });
 });
 

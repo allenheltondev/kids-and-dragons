@@ -81,6 +81,7 @@ function Reel({ picked, onDone }: { picked: StartPlates; onDone?: () => void }):
   const [frames, setFrames] = useState<Frame[] | null>(null);
   const [index, setIndex] = useState(0);
   const done = useRef(false);
+  const root = useRef<HTMLElement | null>(null);
   /** Set once somebody goes back to re-read: the pages stop turning by themselves after that. */
   const [held, setHeld] = useState(false);
 
@@ -114,6 +115,14 @@ function Reel({ picked, onDone }: { picked: StartPlates; onDone?: () => void }):
     if (index + 1 >= frames.length) finish();
     else setIndex(index + 1);
   }, [frames, index, finish]);
+
+  // A replay is a dialog: focus moves into it once the paintings are up.
+  const loaded = frames !== null;
+  useEffect(() => {
+    if (onDone && loaded) root.current?.focus();
+    // Once, when the paintings land.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded]);
 
   const back = useCallback(() => {
     if (index === 0) return;
@@ -163,6 +172,7 @@ function Reel({ picked, onDone }: { picked: StartPlates; onDone?: () => void }):
 
   return (
     <section
+      ref={root}
       className="plates"
       data-testid="story-plates"
       data-kind={picked.kind}
@@ -170,6 +180,7 @@ function Reel({ picked, onDone }: { picked: StartPlates; onDone?: () => void }):
       data-last={last}
       data-display={display}
       data-replay={onDone ? "true" : undefined}
+      {...(onDone ? { role: "dialog", "aria-modal": true, tabIndex: -1 } : {})}
       aria-label={picked.ribbon}
       style={{ ["--plate-ms" as string]: `${String(hold)}ms` }}
     >
@@ -240,6 +251,26 @@ export function PrologueReplay({ campaign, onClose }: { campaign: Campaign; onCl
         : null,
     [campaign],
   );
+  const [host] = useState(() => document.createElement("div"));
+
+  // Modal: everything else on the page goes inert (no Tab or tap reaches a decision behind it),
+  // and focus goes back to what opened the replay when it ends.
+  useEffect(() => {
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    document.body.appendChild(host);
+    const held: Element[] = [];
+    for (const child of Array.from(document.body.children)) {
+      if (child === host || child.hasAttribute("inert")) continue;
+      child.setAttribute("inert", "");
+      held.push(child);
+    }
+    return () => {
+      for (const child of held) child.removeAttribute("inert");
+      host.remove();
+      if (opener?.isConnected) opener.focus();
+    };
+  }, [host]);
+
   if (picked === null) return null;
-  return createPortal(<Reel key={picked.key} picked={picked} onDone={onClose} />, document.body);
+  return createPortal(<Reel key={picked.key} picked={picked} onDone={onClose} />, host);
 }
