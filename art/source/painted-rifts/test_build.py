@@ -44,10 +44,17 @@ class PaintedRifts(unittest.TestCase):
     def test_shipped_sheets_fit_mobile_textures_and_keep_transparent_margins(self):
         for kind in build.IDS:
             sheet = np.asarray(Image.open(build.OUT / f'rift_{kind}.sheet.png').convert('RGBA'))
-            self.assertEqual(sheet.shape, (320, 7680, 4))
-            self.assertLessEqual(sheet.shape[1], 8192)
+            self.assertEqual(sheet.shape, (640, 3840, 4))
+            self.assertLessEqual(max(sheet.shape[:2]), 4096)
             self.assertFalse(sheet[0, :, 3].any())
             self.assertFalse(sheet[-1, :, 3].any())
+            # Registration uses one shared packer; sample painted and coloured
+            # frames across both row boundaries without repainting every sheet.
+            for index in ((0, 11, 12, 23) if kind in ('neutral', 'amber') else ()):
+                x, y = (index % build.COLUMNS)*build.SIZE, (index // build.COLUMNS)*build.SIZE
+                actual = sheet[y:y+build.SIZE, x:x+build.SIZE, 3].astype(float)
+                expected = np.asarray(build.frame(kind, index))[:, :, 3].astype(float)
+                self.assertLess(np.abs(actual-expected).mean(), 3, (kind, index))
 
     def test_only_the_joined_endpoint_of_a_story_transition_can_skip_fading(self):
         manifest = json.loads((build.ROOT / 'assets/manifest.json').read_text(encoding='utf-8'))

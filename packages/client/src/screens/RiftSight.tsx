@@ -135,10 +135,8 @@ function SheetLayer({ effect, once = false }: { effect: string; once?: boolean }
     backgroundImage: `url("${riftSheetUrl(effect)}")`,
     animationDuration: `${RIFT_SHEET_MS}ms`,
     ...(once ? {} : { animationDelay: `-${phase}ms` }),
-    "--rift-frames": RIFT_SHEET.frames,
-    "--rift-steps": RIFT_SHEET.frames - 1,
-    "--rift-loop-end": `${(RIFT_SHEET.frames / (RIFT_SHEET.frames - 1)) * 100}%`,
-    "--rift-still": `${(Math.floor(RIFT_SHEET.frames / 2) / (RIFT_SHEET.frames - 1)) * 100}%`,
+    "--rift-columns": RIFT_SHEET.columns,
+    "--rift-rows": Math.ceil(RIFT_SHEET.frames / RIFT_SHEET.columns),
   } as CSSProperties;
   return (
     <span

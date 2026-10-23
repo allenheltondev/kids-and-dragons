@@ -162,6 +162,43 @@ describe("DynamoRepository character persistence", () => {
       ExpressionAttributeValues: { ":version": 3, ":claim": "campaign-1" },
     });
   });
+
+  function cancelled(...codes: string[]) {
+    return Object.assign(new Error("Transaction cancelled"), {
+      name: "TransactionCanceledException",
+      CancellationReasons: codes.map((Code) => ({ Code })),
+    });
+  }
+  const commitAt = (repo: DynamoRepository) =>
+    repo.commit({
+      runId: "r_1",
+      expectedSeq: 0,
+      state: state(1),
+      event: { runId: "r_1", seq: 1, patch: [], at: "2026-07-04T18:00:00.000Z" },
+    });
+
+  it("reads a run's state strongly consistent, since an action is gated on its seq", async () => {
+    send.mockResolvedValueOnce({ Item: { data: state(4) } });
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+    await expect(repo.getState("r_1")).resolves.toMatchObject({ seq: 4 });
+    const command = send.mock.calls[0]?.[0];
+    expect(command).toBeInstanceOf(GetCommand);
+    expect(command.input.ConsistentRead).toBe(true);
+  });
+
+  it("calls two phones' simultaneous commits a lost race, not an error", async () => {
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+    send.mockRejectedValueOnce(cancelled("TransactionConflict", "None"));
+    await expect(commitAt(repo)).resolves.toBe(false);
+    send.mockRejectedValueOnce(cancelled("ConditionalCheckFailed", "None"));
+    await expect(commitAt(repo)).resolves.toBe(false);
+  });
+
+  it("still throws a cancellation that carries a bug, even beside a lost race", async () => {
+    const repo = new DynamoRepository({ tableName: "kad-test", client });
+    send.mockRejectedValueOnce(cancelled("ConditionalCheckFailed", "ValidationError"));
+    await expect(commitAt(repo)).rejects.toThrow("Transaction cancelled");
+  });
 });
 
 describe("DynamoRepository field guide writes", () => {

@@ -378,7 +378,7 @@ export function Atlas({ world, place, party, scope, here }: AtlasProps): ReactEl
       <div className={`atlas__stage${(world.routes?.length ?? 0) > 0 ? " atlas__stage--routes" : ""}`}>
         {(world.routes?.length ?? 0) > 0 ? <div className="atlas__route-controls">
           <label><input type="checkbox" checked={showRoutes} onChange={(event) => setShowRoutes(event.target.checked)} /> Routes</label>
-          {atDetail ? <span>Solid: mapped · Dashed: approximate</span> : <span>Routes appear at the closest zoom.</span>}
+          {atDetail ? <span>Solid: mapped · Dashed: approximate</span> : <span className="atlas__route-hint">Routes appear at the closest zoom.</span>}
           {atDetail && showRoutes ? <details><summary>Roads and crossings ({routes.length})</summary>
             {routes.length === 0 ? <p>Discover places to learn their routes.</p> : routes.map((route) =>
               <button type="button" key={route.id} className="atlas__route-choice kad-focusable"

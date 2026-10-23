@@ -43,6 +43,7 @@ import type {
   ClientSession,
   ConnectionStatus,
   GameStore,
+  HeardCheer,
   HeldPreview,
   PresentationEvent,
   ProgressionEvent,
@@ -210,6 +211,8 @@ interface Runtime {
   content: Promise<void> | null;
   resyncing: Promise<void> | null;
   resyncAgain: boolean;
+  /** The next catch-up must be a full snapshot: the mirror desynced. */
+  resyncSnapshot: boolean;
   resyncRetry: ReturnType<typeof setTimeout> | null;
   resyncAttempt: number;
   connectRetry: ReturnType<typeof setTimeout> | null;
@@ -286,6 +289,16 @@ const MAX_ARRIVALS = 6;
  */
 const MAX_HOST_ARRIVALS = 50;
 
+/**
+ * Cheers a screen holds at once (#388). Each floats for a few seconds, and a
+ * phone may send only a few a window, so this is only ever reached by a room
+ * full of cousins; past it, the oldest goes.
+ */
+const MAX_CHEERS = 12;
+
+/** Tells two of the same cheer apart, for as long as the page lives. */
+let cheerKey = 0;
+
 export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGameStore> {
   return (set, get) => {
     const runtime: Runtime = {
@@ -295,6 +308,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       content: null,
       resyncing: null,
       resyncAgain: false,
+      resyncSnapshot: false,
       resyncRetry: null,
       resyncAttempt: 0,
       connectRetry: null,
@@ -383,9 +397,22 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
               ...(dropped > 0 && get().session?.host ? { arrivalsDropped: get().arrivalsDropped + dropped } : {}),
             });
           },
+          onCheer: ({ runId, cheer }) => {
+            if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
+            set({ cheers: [...get().cheers, { key: ++cheerKey, cheer }].slice(-MAX_CHEERS) });
+          },
           onGap: (sinceSeq) => {
             // Repeated hole notifications must respect a failed fetch's backoff.
             if (runtime.resyncRetry === null) void resync(sinceSeq).catch(() => undefined);
+          },
+          onDesync: (seq) => {
+            if (runtime.sequencer !== sequencer) return;
+            // Events from `seq` would replay the patch that just failed, so
+            // the catch-up asks for the whole state. Decisions wait for it:
+            // what is on screen is no longer what the server holds.
+            runtime.resyncSnapshot = true;
+            set({ synced: false });
+            if (runtime.resyncRetry === null) void resync(seq).catch(() => undefined);
           },
         },
       });
@@ -406,10 +433,17 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       const task = (async () => {
         do {
           runtime.resyncAgain = false;
+          // Cleared before the fetch, so a desync during this one's replay
+          // asks for another, and restored if it fails, so the retry does too.
+          const snapshot = runtime.resyncSnapshot;
+          runtime.resyncSnapshot = false;
           const response = await deps.api.fetchState(
-            { runId: session.runId, code: session.roomCode, sinceSeq },
+            { runId: session.runId, code: session.roomCode, ...(snapshot ? {} : { sinceSeq }) },
             session.sessionToken || undefined,
-          );
+          ).catch((error: unknown) => {
+            if (snapshot && runtime.sequencer === sequencer) runtime.resyncSnapshot = true;
+            throw error;
+          });
           if (runtime.sequencer !== sequencer) return;
           if (response.state) sequencer.reset(response.state, response.seq);
           else if (response.events) sequencer.ingestAll(response.events);
@@ -494,9 +528,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     }
 
     function disconnect(): void {
-      // Previews and arrivals are live-only: a fresh channel starts from nobody
-      // picking and nobody new.
-      set({ previews: {}, arrivals: [], arrivalsDropped: 0 });
+      // Previews, arrivals and cheers are live-only: a fresh channel starts
+      // from nobody picking, nobody new and nobody cheering.
+      set({ previews: {}, arrivals: [], arrivalsDropped: 0, cheers: [] });
       runtime.previewSent = "[null,null]";
       runtime.previewNext = null;
       runtime.channel?.close();
@@ -505,6 +539,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       runtime.sequencer = null;
       runtime.resyncing = null;
       runtime.resyncAgain = false;
+      runtime.resyncSnapshot = false;
       runtime.resyncAttempt = 0;
       if (runtime.resyncRetry !== null) clearTimeout(runtime.resyncRetry);
       runtime.resyncRetry = null;
@@ -761,6 +796,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       previews: {},
       arrivals: [],
       arrivalsDropped: 0,
+      cheers: [],
       savedHeroes: {},
       error: null,
       rules: null,
@@ -1343,6 +1379,34 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         set({ arrivals: get().arrivals.filter((a) => a.playerId !== playerId) });
       },
 
+      async cheer(cheer: string) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return false;
+        try {
+          await deps.api.postCheer(cheer, session.sessionToken);
+          return true;
+        } catch {
+          // A sparkle, not a turn: the next tap can try again.
+          return false;
+        }
+      },
+
+      async spectate(watching: boolean) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return false;
+        try {
+          await deps.api.postSpectate(watching, session.sessionToken);
+          return true;
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : "Could not reach the game." });
+          return false;
+        }
+      },
+
+      dropCheer(key: number) {
+        set({ cheers: get().cheers.filter((heard) => heard.key !== key) });
+      },
+
       async removePlayer(playerId: string) {
         const done = await hostControl("remove", { playerId }, "Could not take them out.");
         if (done) set({ arrivals: get().arrivals.filter((a) => a.playerId !== playerId) });
@@ -1473,6 +1537,11 @@ export function useIsMyPrompt(): boolean {
 
 export function useSend(): (intent: ClientIntent) => Promise<boolean> {
   return useGameStore((store) => store.send);
+}
+
+/** Spectators' cheers, live (`GameStore.cheers`, #388). */
+export function useCheers(): readonly HeardCheer[] {
+  return useGameStore((store) => store.cheers);
 }
 
 /** Every player's unconfirmed tap, by playerId (`GameStore.previews`). */

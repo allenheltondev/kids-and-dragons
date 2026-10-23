@@ -400,3 +400,10 @@ html[data-text] .kad-map__flip-tab,
 html[data-text] .atlas__route-controls label,
 html[data-text] .atlas__route-controls summary,
 html[data-text] .atlas__route-choice { min-block-size: 44px; }
+
+/* A phone held sideways has the map about half its height: the head keeps to one touch-high line
+   and the hint, which only says what the checkbox does at a distance, gives way to the painting. */
+@media (orientation: landscape) and (min-width: 600px) and (max-height: 559px) {
+  .atlas__head { padding-block: 2px; }
+  .atlas__route-hint { display: none; }
+}

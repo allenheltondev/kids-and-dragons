@@ -10,7 +10,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
-import yaml from 'js-yaml';
+import * as yaml from 'js-yaml';
 import type { CanonEntity, CanonRegistry, ReverseRef, ValidationMessage } from './types.ts';
 
 /** Known fields that map directly into CanonEntity (not metadata). */

@@ -542,10 +542,12 @@ reading about one.
   inside that band, so a size that restates the figure's own band changes nothing. Leave it off
   otherwise.
 - `stance` overrides how the figure occupies the scene: `standing` (feet on the ground), `hovering`
-  (lifted a little, bobbing), `flying` (lifted further, drifting) or `swimming` (the ground line is a
+  (held about two feet off the ground, bobbing), `flying` (held about six feet up, drifting, whatever its size) or `swimming` (the ground line is a
   water line hiding the lower body). Defaults to the figure's canon stance. A griffin landed in one
   scene and in flight in the next.
 - Three at most, and never a party member.
+- `npm run content:cast` lists the scenes that name someone the chapter casts elsewhere without casting them
+  there. A reading list, not a gate: a mention is fine, someone standing there is not.
 
 Guidance:
 

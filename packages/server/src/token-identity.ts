@@ -152,14 +152,7 @@ export class TokenIdentity implements IdentityService {
   ): Promise<{ token: string; deviceId: string }> {
     const deviceId = input.deviceId ?? newId("d");
     const nowMs = this.now();
-    const token = await this.sign<DeviceClaims>({
-      sub: deviceId,
-      aud: "device",
-      hh: input.householdId,
-      pid: input.playerId,
-      iat: Math.floor(nowMs / 1000),
-      exp: Math.floor((nowMs + DEVICE_TOKEN_TTL_MS) / 1000),
-    });
+    const token = await this.signDevice(deviceId, input.householdId, input.playerId, nowMs);
 
     await this.repo.putDevice({
       deviceId,
@@ -200,14 +193,11 @@ export class TokenIdentity implements IdentityService {
 
     // Re-issuing writes `lastSeen` as a side effect, so a rotation does not
     // also need to touch the device item.
-    const rotatedToken = await this.keepFresh(claims.exp, binding, () =>
-      this.issueDeviceToken({
-        householdId: binding.householdId,
-        playerId: binding.playerId,
-        deviceId: binding.deviceId,
-        ...(binding.userAgent ? { userAgent: binding.userAgent } : {}),
-      }),
+    const rotatedToken = await this.keepFresh(claims.exp, binding, (nowMs) =>
+      this.signDevice(binding.deviceId, binding.householdId, binding.playerId, nowMs),
     );
+    // Revoked between the read above and the rotation's write.
+    if (rotatedToken === false) return null;
 
     return {
       deviceId: binding.deviceId,
@@ -224,13 +214,7 @@ export class TokenIdentity implements IdentityService {
   ): Promise<{ token: string; deviceId: string }> {
     const deviceId = input.deviceId ?? newId("d");
     const nowMs = this.now();
-    const token = await this.sign<SharedClaims>({
-      sub: deviceId,
-      aud: "shared",
-      hh: input.householdId,
-      iat: Math.floor(nowMs / 1000),
-      exp: Math.floor((nowMs + DEVICE_TOKEN_TTL_MS) / 1000),
-    });
+    const token = await this.signShared(deviceId, input.householdId, nowMs);
     await this.repo.putDevice({
       kind: "shared",
       deviceId,
@@ -251,13 +235,10 @@ export class TokenIdentity implements IdentityService {
     if (!binding || binding.revoked || binding.kind !== "shared") return null;
     if (binding.householdId !== claims.hh) return null;
 
-    const rotatedToken = await this.keepFresh(claims.exp, binding, () =>
-      this.issueSharedDeviceToken({
-        householdId: binding.householdId,
-        deviceId: binding.deviceId,
-        ...(binding.userAgent ? { userAgent: binding.userAgent } : {}),
-      }),
+    const rotatedToken = await this.keepFresh(claims.exp, binding, (nowMs) =>
+      this.signShared(binding.deviceId, binding.householdId, nowMs),
     );
+    if (rotatedToken === false) return null;
     return {
       kind: "shared",
       deviceId: binding.deviceId,
@@ -266,18 +247,52 @@ export class TokenIdentity implements IdentityService {
     };
   }
 
+  private signDevice(deviceId: string, householdId: string, playerId: string, nowMs: number): Promise<string> {
+    return this.sign<DeviceClaims>({
+      sub: deviceId,
+      aud: "device",
+      hh: householdId,
+      pid: playerId,
+      iat: Math.floor(nowMs / 1000),
+      exp: Math.floor((nowMs + DEVICE_TOKEN_TTL_MS) / 1000),
+    });
+  }
+
+  private signShared(deviceId: string, householdId: string, nowMs: number): Promise<string> {
+    return this.sign<SharedClaims>({
+      sub: deviceId,
+      aud: "shared",
+      hh: householdId,
+      iat: Math.floor(nowMs / 1000),
+      exp: Math.floor((nowMs + DEVICE_TOKEN_TTL_MS) / 1000),
+    });
+  }
+
   /**
    * The sliding expiry, for either kind of device: a fresh token once this one
-   * is past halfway, else `lastSeen` kept honest. Returns the fresh token, if any.
+   * is past halfway, else `lastSeen` kept honest. Returns the fresh token, if
+   * any, or false when the binding was revoked (or removed) after it was read.
+   *
+   * The fresh token's hash goes on with `rotateDevice`, a conditional update,
+   * never `putDevice`: a full put of the binding read at resolve time could
+   * land just after the owner revoked the phone, erase `revoked`, and hand
+   * the lost phone a new 30-day token.
    */
   private async keepFresh(
     expSeconds: number,
     binding: { householdId: string; deviceId: string; lastSeen: string },
-    reissue: () => Promise<{ token: string }>,
-  ): Promise<string | undefined> {
+    sign: (nowMs: number) => Promise<string>,
+  ): Promise<string | undefined | false> {
     const nowMs = this.now();
     if (expSeconds * 1000 - nowMs < DEVICE_TOKEN_REFRESH_AFTER_MS) {
-      return (await reissue()).token;
+      const token = await sign(nowMs);
+      const rotated = await this.repo.rotateDevice(
+        binding.householdId,
+        binding.deviceId,
+        hashToken(token),
+        new Date(nowMs).toISOString(),
+      );
+      return rotated ? token : false;
     }
     if (nowMs - Date.parse(binding.lastSeen) >= LAST_SEEN_STALE_MS) {
       /*

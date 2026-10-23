@@ -35,7 +35,7 @@ conditional casting or dedicated branch scenes are introduced.
 
 ## Remaining work
 
-The new `content:cast` report supplies a repeatable advisory reading list, not
+The new `content:cast:mentions` report supplies a repeatable advisory reading list, not
 an automatic casting decision. It cannot judge whether a mention is physically
 present. The Riftlight visual playthrough is still outstanding, and should use
 PR #431's cast data once available. No visual playthrough was performed here.

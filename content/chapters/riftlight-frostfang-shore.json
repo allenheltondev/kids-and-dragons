@@ -39,6 +39,12 @@
           "icon": "hand",
           "goto": "help"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
       ]
     },
     "help": {
@@ -69,6 +75,12 @@
           "type": "setFlag",
           "flag": "got_the_griffins_ladder"
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
       ]
     },
     "ladder": {
@@ -87,6 +99,12 @@
             }
           ]
         }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
       ]
     },
     "climb": {
@@ -94,7 +112,13 @@
       "narration": "At the top of the ladder, the path turns toward the Cairnstep. You can reach the griffins without attempting the shelf again. Your rope and packs are still with you.",
       "heal": 0,
       "choices": [],
-      "outcome": "success"
+      "outcome": "success",
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ]
     }
   },
   "voiceGuide": {

@@ -53,6 +53,12 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "discovers": [
         "creature.snowhorn_goat"
+      ],
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
       ]
     },
     "shelter": {
@@ -79,7 +85,13 @@
           "requiresSpecies": "unicorn"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
     },
     "windbreak": {
       "type": "story",
@@ -99,7 +111,13 @@
           "value": true
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
     },
     "rocks": {
       "type": "story",
@@ -112,7 +130,13 @@
           "goto": "drift"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
     },
     "mend": {
       "type": "story",
@@ -125,7 +149,13 @@
           "goto": "drift"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
     },
     "tracks": {
       "type": "story",
@@ -148,6 +178,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ],
       "discovers": [
@@ -191,6 +225,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -210,6 +248,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -252,6 +294,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -281,6 +327,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -310,6 +360,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -339,6 +393,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -368,6 +426,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -398,6 +460,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -423,6 +489,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -454,6 +524,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -473,6 +547,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -492,6 +570,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -511,6 +593,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
@@ -563,6 +649,10 @@
         {
           "figure": "cast/aunt_bellow",
           "name": "Aunt Bellow"
+        },
+        {
+          "figure": "cast/frogfolk_student",
+          "name": "Frogfolk student"
         }
       ],
       "choices": [
@@ -602,6 +692,10 @@
         {
           "figure": "cast/aunt_bellow",
           "name": "Aunt Bellow"
+        },
+        {
+          "figure": "cast/frogfolk_student",
+          "name": "Frogfolk student"
         }
       ],
       "choices": [
@@ -643,6 +737,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/young_yeti_singer",
+          "name": "Young yeti singer"
         }
       ]
     },
@@ -662,6 +760,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/young_yeti_singer",
+          "name": "Young yeti singer"
         }
       ]
     },
@@ -693,6 +795,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/young_yeti_singer",
+          "name": "Young yeti singer"
         }
       ]
     },
@@ -732,6 +838,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/young_yeti_singer",
+          "name": "Young yeti singer"
         }
       ]
     },
@@ -758,6 +868,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/young_yeti_singer",
+          "name": "Young yeti singer"
         }
       ]
     },
@@ -773,6 +887,16 @@
             "flag": "helped_glacier_herder"
           },
           "text": "The herder lifts a hand from the newly cleared blanket rail. \"Dry blankets for the next arrivals. That matters.\""
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Cloaked griffin"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Cloaked unicorn"
         }
       ],
       "art": "scenes/riftlight/singing-hall-camp"
@@ -800,7 +924,13 @@
           "goto": "drift_slip"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
     },
     "drift_probe": {
       "type": "story",
@@ -824,7 +954,13 @@
           "flag": "got_past_the_drift"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
     },
     "drift_detour": {
       "type": "story",
@@ -848,7 +984,13 @@
           "flag": "got_past_the_drift"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
     },
     "drift_slip": {
       "type": "story",
@@ -872,7 +1014,13 @@
           "flag": "got_past_the_drift"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
     },
     "seam_response": {
       "type": "choice_point",
@@ -902,6 +1050,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/young_yeti_singer",
+          "name": "Young yeti singer"
         }
       ]
     },
@@ -928,6 +1080,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/young_yeti_singer",
+          "name": "Young yeti singer"
         }
       ]
     },
@@ -954,6 +1110,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/young_yeti_singer",
+          "name": "Young yeti singer"
         }
       ]
     },
@@ -980,6 +1140,10 @@
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/young_yeti_singer",
+          "name": "Young yeti singer"
         }
       ]
     }

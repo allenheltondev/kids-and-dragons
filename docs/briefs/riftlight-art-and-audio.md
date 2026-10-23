@@ -90,7 +90,7 @@ brief defines them:
 | `rift_open` | one-shot | 24 | |
 | `rift_collapse` | one-shot | 24 | Amber's end: folds closed, gentle, never an explosion |
 
-Delivered animation: 24 frames at 12fps, 320px square, a two-second cycle. The painted master and reproducible packager are in `art/source/painted-rifts/`; `node tools/art/painted-rifts-review.mjs` reviews the real CSS component and Pixi stage at TV and phone sizes.
+Delivered animation: 24 frames at 12fps, 320px square, a two-second cycle. Each sheet uses a 12-column, two-row 3840 x 640px grid so it fits a 4096px GPU texture limit. The painted master and reproducible packager are in `art/source/painted-rifts/`; `node tools/art/painted-rifts-review.mjs` reviews the real CSS component and Pixi stage at TV and phone sizes.
 
 Acceptance: §9.8 of the asset brief, plus a contact sheet showing every common stack (green +
 amber + violet; amber + violet; green + blue; blue) in color **and** grayscale side by side. **The

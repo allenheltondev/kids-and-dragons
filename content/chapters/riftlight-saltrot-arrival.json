@@ -60,6 +60,12 @@
           "text": "Behind you the linked fold carries the cloud whales' distant song. Its echo still answers from the island."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ],
       "art": "scenes/riftlight/stuttering-flats"
     },
     "lesson": {
@@ -93,6 +99,20 @@
           "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. Seren asks you to compare the sounds with what she taught you before. Pip adds the new place to his notes."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ],
       "art": "scenes/riftlight/stuttering-flats"
     },
     "local": {
@@ -112,6 +132,16 @@
           "goto": "path"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
+        }
+      ],
       "art": "scenes/riftlight/stuttering-flats"
     },
     "bag": {
@@ -123,6 +153,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "flats_rest"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
@@ -142,6 +182,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "flats_rest"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
@@ -164,6 +214,12 @@
             "flag": "glacier_rift_woken"
           },
           "text": "The open fold still hums nearby. Its echo offers a return to the glacier."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats"

@@ -411,6 +411,19 @@ the TV draws one only while its own state names the same decision (`client/src/w
 A late pick, or one whose clearing `null` was lost with a dropped phone, therefore never surfaces on
 a later turn or a later question — a lost or stale preview costs a highlight, never a turn.
 
+**Cheers** (`POST /api/cheer`, `{ "cheer": string }`, #388) ride the channel the same way. A
+**spectator** is a phone on the roster (`RunState.seats`) with no hero, at a table that is full or
+whose kid chose "Just watch" on that phone (`POST /api/spectate`, `RoomSeat.watching`; only the
+session's own player, so the host cannot set it) (`isSpectator`, shared/src/spectators.ts). It is never in `party`, so no vote, roll, turn, ready
+gate, encounter or spawn can count it. Its phone shows the goal, a line on what the party is doing
+and a row of fixed cheers; the server relays one as `{ "kind": "cheer", cheer }`, with no name,
+after checking the id is in `CHEERS`, the sender is a spectator, and its per-phone budget
+(`CHEER_LIMIT` per `CHEER_WINDOW_MS`, the wrong-code counter under a key of its own) has room.
+Presence keeps `RunState.watching`, the spectators whose phones are still beating, so the shared
+screen can show how many are watching; `watchers(state)` reads it through `isSpectator`, since
+presence does not hear a spectator sit down when a seat opens. Only the room's own screen draws
+cheers (`client/src/screens/RoomCheers.tsx`), never a hero's phone.
+
 ### 4.3 Reconnect
 
 Every client tracks the last `seq` it applied. On reconnect it calls `GET /state?runId&sinceSeq=N`,
@@ -1647,9 +1660,26 @@ type RoomMode = "party" | "travel";
 in `components.css`) is where kids most often play, and it is short of height rather than width. On
 `/p/:code` there, in either mode, the tray becomes a rail down the side, with the corner row (help,
 text, read-aloud, sound) at its foot, so nothing keeps a strip at the top or bottom. The world, or
-the map when it was asked for, sits beside the controls instead of behind them. The controls never
-leave the screen, so a new question does not take the map away, and a roll or a transformation
-takes only the big pane. A phone, and a tablet held upright, keep one surface at a time.
+the map when it was asked for, sits beside the controls instead of behind them. The controls are a
+drawer: tapping You in the rail slides it away, so the picture has the whole width, and tapping it
+again brings it back. It stays mounted while shut (a half-made choice survives), is hidden from
+focus and screen readers, and opens by itself for a new question or the Guide, so a question does
+not take the map away. A roll or a transformation takes only the big pane. A tablet held upright
+keeps one surface at a time.
+
+**A phone held sideways** (landscape, at least 600px wide and under 560px tall; the second query in
+`layout/landscape.ts`, repeated at the end of `components.css`) takes the same shape at a smaller
+scale, since the old one spent a 390px screen on the tray, the corner row's strip and one pane. The
+tray is a slim rail of objects and words, the world or map sits beside the controls (the same
+drawer, a narrower one, `--kad-drawer`), and the corner
+row (and the back button, when there is one) stands in a column down the opposite edge, which costs
+width, the thing a landscape phone has to spare. One-handed play puts the rail on the thumb's side
+and the column on the other. With so little height, the goal is not on screen all the time there:
+it is an icon over the world with the steps done ("1/3"), and a tap opens the steps in a card over
+the picture (`ChapterGoalCard`, `useLandscapePhone`); the hero's pane drops its goal line. The type
+floor is 13px rather than 15 (the text-size setting still multiplies it) and the painted frames are
+drawn at 0.6 of their width, so a panel's words keep their padding. A phone held upright keeps one
+surface at a time.
 
 `/journal` is the one surface with no room behind it. It reads `GET /api/journal`, authorised by
 the **device token** (`x-kad-device-token`) rather than a room session, which between games does

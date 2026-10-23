@@ -38,6 +38,8 @@ import {
   SLOW_DOWN,
 } from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
+import { relayCheer } from "./handlers/cheer.ts";
+import { chooseWatching } from "./handlers/watch.ts";
 import { beatPresence, setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
@@ -488,6 +490,45 @@ async function main(): Promise<void> {
     res.json({ ok: true });
   });
 
+  // A spectator's cheer (handlers/cheer.ts, #388): relayed, never committed.
+  app.post("/api/cheer", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "a cheer needs a room session token");
+    const result = await relayCheer(
+      {
+        runId: session.runId,
+        playerId: session.playerId,
+        householdId: session.householdId,
+        cheer: (req.body ?? {}).cheer,
+      },
+      deps,
+    );
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true });
+  });
+
+  // "Just watch", or back to making a hero (handlers/watch.ts, #388).
+  app.post("/api/spectate", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "watching needs a room session token");
+    const result = await chooseWatching(
+      {
+        runId: session.runId,
+        roomCode: session.roomCode,
+        playerId: session.playerId,
+        householdId: session.householdId,
+        watching: (req.body ?? {}).watching,
+      },
+      deps,
+    );
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json({ ok: true, seq: result.value.seq });
+  });
+
   // "Still here", or "leaving" (handlers/presence.ts): production's only
   // presence, and alongside the stream's here, so both paths are exercised.
   app.post("/api/presence", async (req: Request, res: Response) => {
@@ -560,13 +601,16 @@ async function main(): Promise<void> {
     if (!Object.prototype.hasOwnProperty.call(req.body ?? {}, "stat")) {
       return sendError(res, 400, "ILLEGAL", "expected { stat }");
     }
+    // Held to its seq like every intent; see lambda/http.ts.
+    if (typeof req.body.seq !== "number" || !Number.isFinite(req.body.seq)) {
+      return sendError(res, 400, "ILLEGAL", "expected { stat, seq }");
+    }
 
-    const state = await deps.repo.getState(session.runId);
     const response = await applyAction(
       {
         runId: session.runId,
         playerId: session.playerId,
-        seq: Number(req.body.seq ?? state?.seq ?? 0),
+        seq: req.body.seq,
         intent: { type: "SPEND_STAT_POINT", stat: req.body.stat as never },
         principal: {
           householdId: session.householdId,

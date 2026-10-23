@@ -30,6 +30,43 @@ test.describe("a full table", () => {
     await expect(page).toHaveURL(new RegExp(`/p/${code}$`), TAP);
   }
 
+  /** The Guide covers the watch screen: hidden and out of reach, then back on "You". */
+  async function expectGuideHidesWatching(page: Page): Promise<void> {
+    const watching = page.getByTestId("table-full");
+    const cheer = page.getByRole("button", { name: "Wow!" });
+    await expect(cheer).toBeVisible(TAP);
+    await page.getByRole("button", { name: "Guide" }).click();
+    await expect(watching).toBeHidden(TAP);
+    await expect(cheer).toBeHidden();
+    await page.getByRole("button", { name: "You", exact: true }).click();
+    await expect(watching).toBeVisible(TAP);
+    await expect(cheer).toBeVisible();
+  }
+
+  test("a kid at a table with room can just watch, and make a hero after all (#388)", async ({ browser }) => {
+    const host = await phone(browser);
+    await host.goto("/");
+    await host.getByRole("button", { name: /host a game/i }).click();
+    await host.getByText("Phone Mode").click();
+    await host.getByLabel(/adventurer name/i).fill("Grown-up");
+    await host.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    const code = new URL(host.url()).pathname.split("/").pop() ?? "";
+    await createCharacter(host, "unicorn", "Pip");
+
+    const watcher = await phone(browser);
+    await join(watcher, code);
+    await watcher.getByRole("button", { name: "Just watch" }).click(TAP);
+    const watching = watcher.getByTestId("table-full");
+    await expect(watching).toContainText("You are watching this time.", TAP);
+    await expect(watching).not.toContainText("This table is full.");
+    await expectGuideHidesWatching(watcher);
+
+    await watcher.getByRole("button", { name: "Make my hero" }).click();
+    await expect(watching).toHaveCount(0, TAP);
+    await createCharacter(watcher, "unicorn", "Bo");
+  });
+
   test("a fifth phone hears the table is full, and gets a seat when one frees", async ({ browser }) => {
     const host = await phone(browser);
     await host.goto("/");
@@ -57,6 +94,9 @@ test.describe("a full table", () => {
     await expect(full).toContainText("This table is full.");
     await expect(fifth.getByText(/party is full/i)).toHaveCount(0);
     await expect(fifth.getByRole("button", { name: /unicorn/i })).toHaveCount(0);
+
+    // --- The Guide stands over the watch screen, cheers and all (#388) ---
+    await expectGuideHidesWatching(fifth);
 
     // --- The host takes Dee out: the seat is free, and creation opens ---
     await host.getByText("Running this room").click();

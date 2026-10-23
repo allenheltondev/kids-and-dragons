@@ -57,6 +57,16 @@
           "goto": "listen"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "listen": {
@@ -76,6 +86,16 @@
           "goto": "listen_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "listen_1": {
@@ -89,6 +109,16 @@
           "goto": "watch"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "listen_2": {
@@ -100,6 +130,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "watch"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -121,6 +161,16 @@
           "goto": "watch_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "watch_1": {
@@ -134,6 +184,16 @@
           "goto": "watch_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "watch_2": {
@@ -145,6 +205,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "watch_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -163,6 +233,16 @@
         "goto": "watch_changed",
         "narration": "The tail shifts farther than your first mark."
       },
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "watch_clear": {
@@ -180,6 +260,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "supplies"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -201,6 +291,16 @@
           "goto": "supplies"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "supplies": {
@@ -220,6 +320,16 @@
           "goto": "supplies_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "supplies_1": {
@@ -233,6 +343,16 @@
           "goto": "cold_opening"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "supplies_2": {
@@ -244,6 +364,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "cold_opening"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -272,6 +402,16 @@
           "requiresClass": "starweaver"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest",
       "rift": "steady"
     },
@@ -284,6 +424,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "cold_opening_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
@@ -300,6 +450,16 @@
           "goto": "cold_opening_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest",
       "rift": "steady"
     },
@@ -312,6 +472,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "cold_opening_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
@@ -331,6 +501,16 @@
         "goto": "cold_opening_changed",
         "narration": "Drifting snow hides the far edge."
       },
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest",
       "rift": "steady"
     },
@@ -349,6 +529,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "bed"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
@@ -371,6 +561,16 @@
           "goto": "bed"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest",
       "rift": "steady"
     },
@@ -391,6 +591,16 @@
           "goto": "bed_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest",
       "rift": "steady"
     },
@@ -405,6 +615,16 @@
           "goto": "lanes"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest",
       "rift": "steady"
     },
@@ -417,6 +637,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "lanes"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
@@ -439,6 +669,16 @@
           "goto": "lanes_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest",
       "rift": "steady"
     },
@@ -453,6 +693,16 @@
           "goto": "lanes_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest",
       "rift": "steady"
     },
@@ -465,6 +715,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "lanes_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
@@ -484,6 +744,16 @@
         "goto": "lanes_changed",
         "narration": "One bench catches and the wyrm raises its head."
       },
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "lanes_clear": {
@@ -497,6 +767,16 @@
           "goto": "rest"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "lanes_changed": {
@@ -508,6 +788,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "rest"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -530,6 +820,12 @@
           "goto": "rest_watch"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "rest_watch": {
@@ -541,6 +837,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "signal"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -562,6 +864,16 @@
           "goto": "signal_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "signal_1": {
@@ -575,6 +887,16 @@
           "goto": "offer"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "signal_2": {
@@ -586,6 +908,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "offer"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -607,6 +939,16 @@
           "goto": "offer_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "offer_1": {
@@ -620,6 +962,16 @@
           "goto": "fight"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "offer_2": {
@@ -631,6 +983,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "fight"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -741,6 +1103,12 @@
           "text": "The wyrm backs into the broad outer tunnel, leaving the readers' doorway. The builders leave the sheltered hollow available. It has not chosen the hollow."
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "room_moved": {
@@ -752,6 +1120,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "tools"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -773,6 +1147,12 @@
           "goto": "tools_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "tools_1": {
@@ -786,6 +1166,12 @@
           "goto": "tools_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "tools_2": {
@@ -797,6 +1183,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "tools_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -815,6 +1207,12 @@
         "goto": "tools_changed",
         "narration": "A shadow looks like a crack until the lamp shifts."
       },
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "tools_clear": {
@@ -828,6 +1226,12 @@
           "goto": "shelves"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "tools_changed": {
@@ -839,6 +1243,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "shelves"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -863,6 +1273,12 @@
           "goto": "shelves_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest",
       "variants": [
         {
@@ -884,6 +1300,12 @@
           "goto": "shelves_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "shelves_2": {
@@ -895,6 +1317,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "shelves_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -913,6 +1341,12 @@
         "goto": "shelves_changed",
         "narration": "One foot rocks on a patch of loose snow."
       },
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "shelves_clear": {
@@ -926,6 +1360,12 @@
           "goto": "readers"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "shelves_changed": {
@@ -937,6 +1377,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "readers"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -956,6 +1402,17 @@
           "label": "Post a builder at each blind corner",
           "icon": "hand",
           "goto": "readers_2"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
@@ -979,6 +1436,17 @@
           "goto": "readers_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "readers_2": {
@@ -990,6 +1458,17 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "readers_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -1009,6 +1488,17 @@
         "goto": "readers_changed",
         "narration": "The first rhythm is too fast for the readers carrying notes."
       },
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "readers_clear": {
@@ -1026,6 +1516,17 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "quiet"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
@@ -1055,6 +1556,17 @@
           "goto": "quiet"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest",
       "variants": [
         {
@@ -1082,6 +1594,16 @@
           "goto": "quiet_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "quiet_1": {
@@ -1093,6 +1615,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "neighbors"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
@@ -1114,6 +1646,16 @@
           "goto": "neighbors"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "neighbors": {
@@ -1133,6 +1675,16 @@
           "goto": "neighbors_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "neighbors_1": {
@@ -1146,6 +1698,16 @@
           "goto": "departure"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "neighbors_2": {
@@ -1157,6 +1719,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "departure"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -1176,6 +1748,12 @@
           "label": "Carry the updated wall plan back to the readers",
           "icon": "hand",
           "goto": "departure_2"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
@@ -1205,6 +1783,12 @@
           "goto": "ending"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
       "art": "scenes/riftlight/wyrm-nest"
     },
     "departure_2": {
@@ -1216,6 +1800,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -1237,6 +1827,12 @@
             "flag": "wyrm_nest_kept"
           },
           "text": "The new chamber must wait. Today the readers share their old room with the extra table, and the builders give up their free morning to finish the move."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"

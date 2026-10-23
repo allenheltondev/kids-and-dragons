@@ -104,6 +104,10 @@
       ],
       "cast": [
         {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
@@ -133,6 +137,16 @@
           "requiresClass": "songkeeper"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "quiet_rule_1": {
@@ -144,6 +158,16 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "quiet_rule_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -160,6 +184,16 @@
       "onFailure": {
         "goto": "quiet_rule_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "quiet_rule_1_done": {
@@ -171,6 +205,16 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "witness_first"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -186,6 +230,16 @@
           "goto": "witness_first"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "quiet_rule_2": {
@@ -197,6 +251,16 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "quiet_rule_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -213,6 +277,16 @@
       "onFailure": {
         "goto": "quiet_rule_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "quiet_rule_2_done": {
@@ -226,6 +300,16 @@
           "goto": "witness_first"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "quiet_rule_2_changed": {
@@ -237,6 +321,16 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "witness_first"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -258,6 +352,16 @@
           "goto": "witness_first_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "witness_first_1": {
@@ -271,6 +375,16 @@
           "goto": "catalog_cards"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "witness_first_2": {
@@ -282,6 +396,16 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "catalog_cards"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -303,6 +427,20 @@
           "goto": "catalog_cards_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "catalog_cards_1": {
@@ -316,6 +454,20 @@
           "goto": "listening_floor"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "catalog_cards_2": {
@@ -327,6 +479,20 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "listening_floor"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -348,6 +514,16 @@
           "goto": "listening_floor_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "listening_floor_1": {
@@ -361,6 +537,16 @@
           "goto": "support_ice"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "listening_floor_2": {
@@ -372,6 +558,16 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "support_ice"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -393,6 +589,16 @@
           "goto": "support_ice_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "support_ice_1": {
@@ -404,6 +610,16 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "support_ice_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -420,6 +636,16 @@
       "onFailure": {
         "goto": "support_ice_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "support_ice_1_done": {
@@ -431,6 +657,16 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "first_memory"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -446,6 +682,16 @@
           "goto": "first_memory"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "support_ice_2": {
@@ -457,6 +703,16 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "support_ice_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -473,6 +729,16 @@
       "onFailure": {
         "goto": "support_ice_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "support_ice_2_done": {
@@ -486,6 +752,16 @@
           "goto": "first_memory"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "support_ice_2_changed": {
@@ -497,6 +773,16 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "first_memory"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -516,6 +802,16 @@
           "label": "Have everyone follow one fixed landmark through the view",
           "icon": "hand",
           "goto": "first_memory_2"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -544,6 +840,16 @@
           ]
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "first_memory_2": {
@@ -562,6 +868,16 @@
               "value": false
             }
           ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -592,6 +908,16 @@
           }
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "second_view_1": {
@@ -603,6 +929,16 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "second_view_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -619,6 +955,16 @@
       "onFailure": {
         "goto": "second_view_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "second_view_1_done": {
@@ -630,6 +976,16 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "what_matches"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -662,6 +1018,16 @@
           "goto": "what_matches"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "onEnter": [
         {
@@ -692,6 +1058,16 @@
           "goto": "second_view_2_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "second_view_2_check": {
@@ -706,6 +1082,16 @@
       "onFailure": {
         "goto": "second_view_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "second_view_2_done": {
@@ -717,6 +1103,16 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "what_matches"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -747,6 +1143,16 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "what_matches"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -812,6 +1218,16 @@
           ]
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "onEnter": [
         {
@@ -858,6 +1274,16 @@
           ]
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "variants": [
         {
@@ -883,6 +1309,16 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "catalog_test"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -911,6 +1347,20 @@
           "when": {
             "flag": "memory_keeper_endorsed"
           }
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -947,6 +1397,20 @@
           "goto": "catalog_test_1_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "catalog_test_1_check": {
@@ -961,6 +1425,20 @@
       "onFailure": {
         "goto": "catalog_test_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "catalog_test_1_done": {
@@ -972,6 +1450,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "sliding_tray"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -994,6 +1486,20 @@
           "goto": "sliding_tray"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "onEnter": [
         {
@@ -1014,6 +1520,20 @@
           "goto": "catalog_test_2_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "catalog_test_2_check": {
@@ -1028,6 +1548,20 @@
       "onFailure": {
         "goto": "catalog_test_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "catalog_test_2_done": {
@@ -1039,6 +1573,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "sliding_tray"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -1059,6 +1607,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "sliding_tray"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -1097,6 +1659,20 @@
           ]
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "onEnter": [
         {
@@ -1116,6 +1692,20 @@
           "goto": "sliding_tray_1_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "sliding_tray_1_check": {
@@ -1130,6 +1720,20 @@
       "onFailure": {
         "goto": "sliding_tray_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "sliding_tray_1_done": {
@@ -1141,6 +1745,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "compare_accounts"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -1156,6 +1774,20 @@
           "goto": "compare_accounts"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "sliding_tray_2": {
@@ -1167,6 +1799,20 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "sliding_tray_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -1183,6 +1829,20 @@
       "onFailure": {
         "goto": "sliding_tray_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "sliding_tray_2_done": {
@@ -1196,6 +1856,20 @@
           "goto": "compare_accounts"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "sliding_tray_2_changed": {
@@ -1207,6 +1881,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "compare_accounts"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -1226,6 +1914,16 @@
           "label": "Ask the elder to keep the new clue on its own page",
           "icon": "hand",
           "goto": "compare_accounts_2"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -1249,6 +1947,16 @@
           "goto": "claim_limit"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "compare_accounts_2": {
@@ -1260,6 +1968,16 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "claim_limit"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -1281,6 +1999,20 @@
           "goto": "claim_limit_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "claim_limit_1": {
@@ -1294,6 +2026,20 @@
           "goto": "record_choice"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "claim_limit_2": {
@@ -1305,6 +2051,20 @@
           "label": "See what follows",
           "icon": "hand",
           "goto": "record_choice"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -1342,6 +2102,20 @@
           "when": {
             "notFlag": "memory_catalog_clear"
           }
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -1385,6 +2159,20 @@
           ]
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "record_choice_2": {
@@ -1405,6 +2193,20 @@
           ]
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "teach_back": {
@@ -1422,6 +2224,20 @@
           "label": "Ask the visitor to separate a view from an explanation",
           "icon": "hand",
           "goto": "teach_back_2"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -1464,6 +2280,20 @@
           "goto": "teach_back_1_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "teach_back_1_check": {
@@ -1490,6 +2320,20 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "teach_back_1_done": {
@@ -1501,6 +2345,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "rest"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -1516,6 +2374,20 @@
           "goto": "rest"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "teach_back_2": {
@@ -1527,6 +2399,20 @@
           "label": "Put the plan into action",
           "icon": "hand",
           "goto": "teach_back_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -1555,6 +2441,20 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "teach_back_2_done": {
@@ -1566,6 +2466,20 @@
           "label": "Continue with this result",
           "icon": "hand",
           "goto": "rest"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
         }
       ],
       "art": "scenes/riftlight/reading-room"
@@ -1581,6 +2495,20 @@
           "goto": "rest"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "rest": {
@@ -1594,6 +2522,16 @@
           "type": "setFlag",
           "flag": "fragment_paths_learned",
           "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/reading-room",
@@ -1622,6 +2560,16 @@
     "quiet_rule_assisted": {
       "type": "story",
       "narration": "A songkeeper helps the party practice the quiet pause at a comfortable breath. The elder listens from the marked floor and gives the least confident friend room to call it. Another hero can lead the check of whether everyone understood. The song does not command the old ice.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "choices": [
         {
@@ -1644,11 +2592,35 @@
       "onFailure": {
         "goto": "quiet_rule_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "sliding_tray_assisted": {
       "type": "story",
       "narration": "A winged friend holds a broad wing beside the safe walking space to keep blank slips from drifting toward the boundary. Your party stays on the floor, not in flight among the ice shelves. The most nimble helper can collect the tray while the wing supplies a quiet barrier.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "choices": [
         {
@@ -1671,11 +2643,35 @@
       "onFailure": {
         "goto": "sliding_tray_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "second_view_prepared": {
       "type": "story",
       "narration": "Your two observers open their separate accounts. One followed the water; the other kept the ridges fixed. You compare the accounts before Pip lays the outside sketch beside them. The elder asks the observers to point out their own positions. A prepared comparison can challenge the reflection without asking one witness to remember everything.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "choices": [
         {
@@ -1698,11 +2694,31 @@
       "onFailure": {
         "goto": "second_view_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "what_matches_keeper": {
       "type": "story",
       "narration": "You ask the elder to co-read the direction and put her name beside it. She follows the visible course from a clear side view, then signs only that part of the account. Your own observations stay separately marked. A later reader can ask the keeper about her contribution rather than treating either a respected name or your party's confidence as the whole proof.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "choices": [
         {
@@ -1737,6 +2753,20 @@
     "catalog_endorsed": {
       "type": "story",
       "narration": "You give the younger keeper the elder's signed reference and ask her to follow it before anyone adds instructions. The signature identifies the co-reader; it does not supply a date. Your party can test whether the reference leads to the view and its limits, rather than treating a respected name as an answer.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "choices": [
         {
@@ -1759,11 +2789,39 @@
       "onFailure": {
         "goto": "catalog_test_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room"
     },
     "record_publish": {
       "type": "story",
       "narration": "You give permission to post the checked account and its route through the catalog. Pip copies the limits beside the view, not on a separate sheet someone might miss. The younger keeper puts the guide where arriving visitors can find it. Your party has changed how the next reader can use the room, without handing out a complete history.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "choices": [
         {
@@ -1789,6 +2847,20 @@
     "record_staff_copy": {
       "type": "story",
       "narration": "You leave a copy that clearly marks where a keeper must help. The younger keeper puts it beside her seat instead of posting it as a self-service guide. She agrees to explain the corrected date label to the next visitor. Your party has chosen a useful assisted record rather than hiding the failed test.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
       "art": "scenes/riftlight/reading-room",
       "choices": [
         {

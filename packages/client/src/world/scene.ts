@@ -72,7 +72,7 @@ import {
   shadowOffset,
   type Footprint,
 } from "./actor-art";
-import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, type Overflow, type PaintBox } from "./figure-scale";
+import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
 import {
   RIFT_FOOT,
@@ -121,6 +121,9 @@ const VICTORY_PEAK = 0.5;
 
 /** The story scene is authored at this size and framed into whatever pane it gets. */
 const DESIGN = { width: 1600, height: 900 } as const;
+
+/** Backdrops kept decoded: the one on screen and the one before it. */
+const KEPT_BACKDROPS = 2;
 /** One camera "tile" of story space, in design units. See the header. */
 export const STORY_TILE = 100;
 const STORY_BOARD = { width: DESIGN.width / STORY_TILE, height: DESIGN.height / STORY_TILE } as const;
@@ -360,6 +363,8 @@ interface StageFigureArt {
   mask: Graphics | null;
   /** The most its stance may lift it: a figure overflowing off the right is trimmed to fit the frame's height. */
   maxLift: number;
+  /** The scale the stage was laid out at, which a stance's fixed height (flying, hovering) shrinks with. */
+  k: number;
   /** Drawn with its paint's left edge on the container, not its middle: a figure overflowing the frame, anchored at its slot. */
   anchorLeft: boolean;
 }
@@ -482,6 +487,22 @@ export function createScene(app: Application): PartyScene {
   /** The selected backdrop URL, and the sprite drawing it. */
   let biomeId: string | null = null;
   let biomeSprite: Sprite | null = null;
+  /**
+   * Backdrops shown, oldest first, by the URL each was loaded under. A 1920x1080
+   * backdrop is about 8MB decoded, a chapter has eight to twelve, and nothing
+   * ever let go of one: a TV gained a hundred megabytes a chapter. The last two
+   * stay (stepping back to the room just left is common); older ones unload.
+   */
+  const shownBackdrops: string[] = [];
+  const keepBackdrop = (url: string) => {
+    const at = shownBackdrops.indexOf(url);
+    if (at >= 0) shownBackdrops.splice(at, 1);
+    shownBackdrops.push(url);
+    while (shownBackdrops.length > KEPT_BACKDROPS) {
+      const old = shownBackdrops.shift();
+      if (old !== undefined) void Assets.unload(old).catch(() => undefined);
+    }
+  };
 
   const actorsLayer = new Container();
   // Painter's order by zIndex, so the depth stagger in layoutActors() reads
@@ -527,7 +548,7 @@ export function createScene(app: Application): PartyScene {
         const frames = Array.from(
           { length: RIFT_SHEET.frames },
           (_, i) =>
-            new Texture({ source: sheet.source, frame: new Rectangle(i * RIFT_SHEET.size, 0, RIFT_SHEET.size, RIFT_SHEET.size) }),
+            new Texture({ source: sheet.source, frame: new Rectangle((i % RIFT_SHEET.columns) * RIFT_SHEET.size, Math.floor(i / RIFT_SHEET.columns) * RIFT_SHEET.size, RIFT_SHEET.size, RIFT_SHEET.size) }),
         );
         riftFrames.set(effect, frames);
         return frames;
@@ -832,6 +853,7 @@ export function createScene(app: Application): PartyScene {
       const way = fit.castOverflow[index] ?? null;
       member.overflowing = way;
       member.maxLift = fit.castMaxLift[index] ?? Infinity;
+      member.k = fit.k;
       // Too big for the frame (#366): anchored at the left of its slot, so it
       // runs off the top or the right and never back over the party.
       member.anchorLeft = way !== null;
@@ -871,6 +893,7 @@ export function createScene(app: Application): PartyScene {
     });
     const still = prefersReducedMotion();
     list.forEach((actor, index) => {
+      actor.k = fit.k;
       fitFigure(actor, fit.party[index] ?? actor.height);
       if (actor.label) {
         actor.label.visible = nameplatesVisible;
@@ -1103,6 +1126,7 @@ export function createScene(app: Application): PartyScene {
       ripple: null,
       mask: null,
       maxLift: Infinity,
+      k: 1,
       anchorLeft: false,
       ...(member.overflow ? { overflow: member.overflow } : {}),
       overflowing: null,
@@ -1311,6 +1335,7 @@ export function createScene(app: Application): PartyScene {
       ripple: null,
       mask: null,
       maxLift: Infinity,
+      k: 1,
       anchorLeft: false,
     };
     applyStance(actor);
@@ -1636,17 +1661,34 @@ export function createScene(app: Application): PartyScene {
       biomeSprite = null;
       if (wanted === null) return;
 
-      void Assets.load<Texture>(wanted)
+      let loadedAs = wanted;
+      /*
+       * Assets.unload drops a URL from the cache at once but from the loader
+       * only after an await, and a load in between is handed the texture that
+       * unload is about to destroy. Rare (a step back onto a backdrop as it
+       * falls out of the kept two), and answered by loading it once more.
+       */
+      const load = (url: string) =>
+        Assets.load<Texture>(url).then((texture) => (texture.destroyed ? Assets.load<Texture>(url) : texture));
+      void load(wanted)
         .catch((error: unknown) => {
           // A missing illustration returns to the chapter's environment.
           if (destroyed || biomeId !== wanted || fallback === null || wanted === fallback) {
             throw error;
           }
-          return Assets.load<Texture>(fallback);
+          loadedAs = fallback;
+          return load(fallback);
         })
         .then((texture) => {
           // The chapter may have moved on (or the stage gone) while it loaded.
-          if (destroyed || biomeId !== wanted) return;
+          if (destroyed || biomeId !== wanted) {
+            // Never shown, so never kept: let it go, unless it is still in use.
+            if (!destroyed && loadedAs !== biomeId && !shownBackdrops.includes(loadedAs)) {
+              void Assets.unload(loadedAs).catch(() => undefined);
+            }
+            return;
+          }
+          keepBackdrop(loadedAs);
           const sprite = new Sprite(texture);
           /*
            * Cover the design rect, then centre in it. Backdrops are authored
@@ -1798,7 +1840,7 @@ function motionReach(height: number): number {
 
 /** Where the art rests above (or, for a swimmer, below) the ground line. */
 function restY(figure: StageFigureArt): number {
-  const lift = STANCE_LIFT[figure.stance] * figure.height;
+  const lift = stanceLift(figure.stance, figure.height, figure.k, STORY_MEASURE);
   return -(lift > 0 ? Math.min(lift, figure.maxLift) : lift);
 }
 

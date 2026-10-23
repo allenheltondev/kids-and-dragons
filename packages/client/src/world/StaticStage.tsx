@@ -52,8 +52,8 @@ export function StaticStage(): React.JSX.Element {
       {backdrop ? <img className="kad-static-stage__backdrop" src={backdrop} alt="" /> : null}
       {(rift === "steady" || rift === "open") && <span className="kad-static-stage__rift" style={{
         backgroundImage: `url("${riftSheetUrl(RIFT_NEUTRAL_EFFECT)}")`,
-        backgroundSize: `${RIFT_SHEET.frames * 100}% 100%`,
-        backgroundPosition: `${STILL_FRAME / (RIFT_SHEET.frames - 1) * 100}% 0`,
+        backgroundSize: `${RIFT_SHEET.columns * 100}% ${Math.ceil(RIFT_SHEET.frames / RIFT_SHEET.columns) * 100}%`,
+        backgroundPosition: `${(STILL_FRAME % RIFT_SHEET.columns) / (RIFT_SHEET.columns - 1) * 100}% ${Math.floor(STILL_FRAME / RIFT_SHEET.columns) / (Math.ceil(RIFT_SHEET.frames / RIFT_SHEET.columns) - 1) * 100}%`,
       }} />}
       <ul className="kad-static-stage__row kad-static-stage__row--enemies">
         {guests.map((guest) => (

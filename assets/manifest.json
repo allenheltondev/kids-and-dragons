@@ -558,7 +558,7 @@
       }
     }
   ],
-  "$effectsComment": "Every sheet in assets/effects/ must appear here, and every entry must have a sheet — verify.py checks both directions. `frames` x `size` is the sheet width in pixels; `fps` is the rate the sidecar JSON carries, declared here too so a 24fps sheet cannot arrive undetected. `tileScoped: false` marks an effect that plays on a figure rather than on a tile. `loop: true` marks one that plays continuously — the tier auras — and is what exempts it from the fade-in/fade-out rule, since a continuous effect that faded at both ends would pulse to nothing once a second. `outOfCombat: true` marks one that plays between turns, exempting it from the 12-frame turn budget and from the damage-number band, because a cutscene has nothing else on the screen. `startsOn: { clip, event }` names the rigContract clip event that fires the sheet — it is the contract verify-rig.ts derives every sync and effect-tail check from, so a pairing nobody wrote here is a pairing nothing checks. `startsOn: null` is the ambient case (the auras): the sheet starts with the figure, not with an event, and is deliberately declared as null rather than omitted so a new sheet cannot skip the question. `handoff: \"toLoop\" | \"fromLoop\"` marks an out-of-combat transition that joins a continuous loop: only the joined endpoint may skip fading; the other endpoint must fade normally.",
+  "$effectsComment": "Every sheet in assets/effects/ must appear here, and every entry must have a sheet — verify.py checks both directions. `columns` (defaulting to `frames`) x `size` is the sheet width in pixels; a grid has ceil(frames / columns) rows; `fps` is the rate the sidecar JSON carries, declared here too so a 24fps sheet cannot arrive undetected. `tileScoped: false` marks an effect that plays on a figure rather than on a tile. `loop: true` marks one that plays continuously — the tier auras — and is what exempts it from the fade-in/fade-out rule, since a continuous effect that faded at both ends would pulse to nothing once a second. `outOfCombat: true` marks one that plays between turns, exempting it from the 12-frame turn budget and from the damage-number band, because a cutscene has nothing else on the screen. `startsOn: { clip, event }` names the rigContract clip event that fires the sheet — it is the contract verify-rig.ts derives every sync and effect-tail check from, so a pairing nobody wrote here is a pairing nothing checks. `startsOn: null` is the ambient case (the auras): the sheet starts with the figure, not with an event, and is deliberately declared as null rather than omitted so a new sheet cannot skip the question. `handoff: \"toLoop\" | \"fromLoop\"` marks an out-of-combat transition that joins a continuous loop: only the joined endpoint may skip fading; the other endpoint must fade normally.",
   "effects": [
     {
       "id": "aura_bigfoot",
@@ -736,7 +736,8 @@
       "startsOn": null,
       "outOfCombat": true,
       "loop": true,
-      "tileScoped": false
+      "tileScoped": false,
+      "columns": 12
     },
     {
       "id": "rift_base",
@@ -746,7 +747,8 @@
       "startsOn": null,
       "outOfCombat": true,
       "loop": true,
-      "tileScoped": false
+      "tileScoped": false,
+      "columns": 12
     },
     {
       "id": "rift_green",
@@ -756,7 +758,8 @@
       "startsOn": null,
       "outOfCombat": true,
       "loop": true,
-      "tileScoped": false
+      "tileScoped": false,
+      "columns": 12
     },
     {
       "id": "rift_amber",
@@ -766,7 +769,8 @@
       "startsOn": null,
       "outOfCombat": true,
       "loop": true,
-      "tileScoped": false
+      "tileScoped": false,
+      "columns": 12
     },
     {
       "id": "rift_blue",
@@ -776,7 +780,8 @@
       "startsOn": null,
       "outOfCombat": true,
       "loop": true,
-      "tileScoped": false
+      "tileScoped": false,
+      "columns": 12
     },
     {
       "id": "rift_violet",
@@ -786,7 +791,8 @@
       "startsOn": null,
       "outOfCombat": true,
       "loop": true,
-      "tileScoped": false
+      "tileScoped": false,
+      "columns": 12
     },
     {
       "id": "rift_shrink",
@@ -796,7 +802,8 @@
       "startsOn": null,
       "outOfCombat": true,
       "loop": true,
-      "tileScoped": false
+      "tileScoped": false,
+      "columns": 12
     },
     {
       "id": "rift_stutter",
@@ -806,7 +813,8 @@
       "startsOn": null,
       "outOfCombat": true,
       "loop": true,
-      "tileScoped": false
+      "tileScoped": false,
+      "columns": 12
     },
     {
       "id": "rift_sync",
@@ -816,7 +824,8 @@
       "startsOn": null,
       "outOfCombat": true,
       "loop": true,
-      "tileScoped": false
+      "tileScoped": false,
+      "columns": 12
     },
     {
       "id": "rift_open",
@@ -826,7 +835,8 @@
       "startsOn": null,
       "outOfCombat": true,
       "tileScoped": false,
-      "handoff": "toLoop"
+      "handoff": "toLoop",
+      "columns": 12
     },
     {
       "id": "rift_collapse",
@@ -836,7 +846,8 @@
       "startsOn": null,
       "outOfCombat": true,
       "tileScoped": false,
-      "handoff": "fromLoop"
+      "handoff": "fromLoop",
+      "columns": 12
     }
   ],
   "biomes": [
@@ -1891,6 +1902,142 @@
       "scale": "medium",
       "heightCm": 140,
       "stance": "standing"
+    },
+    {
+      "id": "goat_kid",
+      "name": "Goat kid",
+      "basis": "snowhorn_goat",
+      "scale": "tiny_to_small",
+      "heightCm": 45,
+      "stance": "standing"
+    },
+    {
+      "id": "adult_dragonling",
+      "name": "Adult dragonling",
+      "basis": "dragonling",
+      "scale": "medium",
+      "heightCm": 150,
+      "stance": "standing"
+    },
+    {
+      "id": "island_keeper",
+      "name": "Island keeper",
+      "basis": "kitsune",
+      "scale": "medium",
+      "heightCm": 145,
+      "stance": "standing"
+    },
+    {
+      "id": "new_island_keeper",
+      "name": "New island keeper",
+      "basis": "kitsune",
+      "scale": "medium",
+      "heightCm": 130,
+      "stance": "standing"
+    },
+    {
+      "id": "younger_keeper",
+      "name": "Younger keeper",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 220,
+      "stance": "standing"
+    },
+    {
+      "id": "newcomer_yeti",
+      "name": "Newcomer",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 235,
+      "stance": "standing"
+    },
+    {
+      "id": "route_worker_yeti",
+      "name": "Route worker",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 250,
+      "stance": "standing"
+    },
+    {
+      "id": "yeti_watcher",
+      "name": "Yeti watcher",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 255,
+      "stance": "standing"
+    },
+    {
+      "id": "pass_keeper",
+      "name": "Pass keeper",
+      "basis": "griffin",
+      "scale": "medium_to_large",
+      "heightCm": 210,
+      "stance": "standing"
+    },
+    {
+      "id": "ridge_griffin",
+      "name": "Ridge griffin",
+      "basis": "griffin",
+      "scale": "medium_to_large",
+      "heightCm": 205,
+      "stance": "standing"
+    },
+    {
+      "id": "allied_wyrm",
+      "name": "Allied frost wyrm",
+      "basis": "frost_wyrm",
+      "scale": "very_large",
+      "heightCm": 260,
+      "stance": "standing"
+    },
+    {
+      "id": "memory_reader",
+      "name": "Memory reader",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 230,
+      "stance": "standing"
+    },
+    {
+      "id": "frogfolk_student",
+      "name": "Frogfolk student",
+      "basis": "frogfolk",
+      "scale": "small",
+      "heightCm": 60,
+      "stance": "standing"
+    },
+    {
+      "id": "young_yeti_singer",
+      "name": "Young yeti singer",
+      "basis": "yeti",
+      "scale": "large",
+      "heightCm": 155,
+      "stance": "standing"
+    },
+    {
+      "id": "dock_worker",
+      "name": "Dock worker",
+      "basis": "frogfolk",
+      "scale": "small_to_medium",
+      "heightCm": 115,
+      "stance": "standing"
+    },
+    {
+      "id": "passing_fisher",
+      "name": "Passing fisher",
+      "basis": "frogfolk",
+      "scale": "small_to_medium",
+      "heightCm": 110,
+      "stance": "standing"
+    },
+    {
+      "id": "boarding_traveler",
+      "name": "Boarding traveler",
+      "basis": "burrowfolk",
+      "scale": "small_to_medium",
+      "heightCm": 95,
+      "stance": "standing"
     }
   ],
   "$stageFiguresComment": "Entity art a chapter casts (entities/<id>) that is not a canon creature or people: working animals and ordinary wildlife, including the Rookery's crow flock. Height and stance as for castFigures (#362). Each entry has its complete transparent figure at assets/entities/<id>/assembled.png.",
@@ -1921,6 +2068,13 @@
       "name": "The crows",
       "scale": "small_to_medium",
       "heightCm": 80,
+      "stance": "standing"
+    },
+    {
+      "id": "quay_gull",
+      "name": "Quay gull",
+      "scale": "small",
+      "heightCm": 35,
       "stance": "standing"
     }
   ],

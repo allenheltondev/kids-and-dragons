@@ -127,3 +127,25 @@
 .fgd__art--place img { inline-size: 100%; block-size: 100%; object-fit: cover; }
 .field-guide__art--place { border-radius: 0.4em; }
 .field-guide__art--place img { object-fit: cover; }
+/*
+ * Subtle life in the pictures, by stance (world/idle-motion.ts has the stage's version of the same):
+ * standing figures breathe and lean a hair, hovering ones bob, flying ones drift and tilt, swimming ones
+ * rise and fall. The frame stays put; only the picture moves. Reduced motion flattens it (theme.css).
+ */
+.field-guide__art img, .fgd__art img {
+  transform-origin: 50% 92%;
+  animation-delay: var(--fg-phase, 0s);
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  will-change: transform;
+}
+[data-stance="standing"] > img { animation-name: fg-breathe, fg-lean; animation-duration: 4s, 7s; }
+[data-stance="hovering"] > img { animation-name: fg-hover; animation-duration: 3s; animation-direction: alternate; }
+[data-stance="flying"] > img { animation-name: fg-fly; animation-duration: 6s; animation-direction: alternate; }
+[data-stance="swimming"] > img { animation-name: fg-swim; animation-duration: 5s; animation-direction: alternate; }
+@keyframes fg-breathe { 50% { scale: 1 1.03; } }
+@keyframes fg-lean { 0%, 100% { rotate: -0.5deg; } 50% { rotate: 0.5deg; } }
+@keyframes fg-hover { from { translate: 0 0; } to { translate: 0 -3.5%; } }
+@keyframes fg-fly { from { translate: -2% 0; rotate: -2deg; } to { translate: 2% -5%; rotate: 2deg; } }
+@keyframes fg-swim { from { translate: 0 -1.2%; rotate: -1.2deg; } to { translate: 0 1.2%; rotate: 1.2deg; } }
+@media (prefers-reduced-motion: reduce) { .field-guide__art img, .fgd__art img { animation: none; } }

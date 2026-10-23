@@ -56,9 +56,9 @@ export const riftEffect = (layer: RiftColor | RiftMotion): string => `rift_${lay
 
 /**
  * Every rift sheet's shape (assets/manifest.json `effects[]`, pinned by
- * riftlight.test.ts): one row of square frames, played at `fps`.
+ * riftlight.test.ts): a row-major grid of square frames, played at `fps`.
  */
-export const RIFT_SHEET = { frames: 24, fps: 12, size: 320 } as const;
+export const RIFT_SHEET = { frames: 24, fps: 12, size: 320, columns: 12 } as const;
 /** One pass of a sheet: a loop's period, and how long a one-shot plays. */
 export const RIFT_SHEET_MS = (RIFT_SHEET.frames / RIFT_SHEET.fps) * 1000;
 

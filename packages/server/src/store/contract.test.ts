@@ -230,6 +230,29 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         await repo.touchDevice("h_1", "d_ghost", "2026-07-05T09:00:00.000Z");
       });
 
+      it("rotates a token onto a live binding, and never re-arms a revoked one", async () => {
+        await repo.putDevice({
+          deviceId: "d_1",
+          householdId: "h_1",
+          playerId: "p_1",
+          tokenHash: "old",
+          lastSeen: "2026-07-04T18:00:00.000Z",
+          userAgent: "Pixel",
+        });
+        expect(await repo.rotateDevice("h_1", "d_1", "new", "2026-07-05T09:00:00.000Z")).toBe(true);
+        expect(await repo.getDevice("h_1", "d_1")).toMatchObject({
+          tokenHash: "new",
+          lastSeen: "2026-07-05T09:00:00.000Z",
+          userAgent: "Pixel",
+        });
+
+        await repo.revokeDevice("h_1", "d_1");
+        expect(await repo.rotateDevice("h_1", "d_1", "newer", "2026-07-06T09:00:00.000Z")).toBe(false);
+        expect(await repo.getDevice("h_1", "d_1")).toMatchObject({ revoked: true, tokenHash: "new" });
+
+        expect(await repo.rotateDevice("h_1", "d_ghost", "x", "2026-07-06T09:00:00.000Z")).toBe(false);
+      });
+
       it("maps an account to its households", async () => {
         await repo.putAccountPointer("sub_a", "h_1");
         await repo.putAccountPointer("sub_a", "h_2");

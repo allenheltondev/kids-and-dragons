@@ -146,6 +146,17 @@ const MAX_BATCH_ATTEMPTS = 6;
 
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));
 
+/**
+ * Deadlines on every call. The SDK's defaults have none, so one hung socket
+ * held a request until the Lambda's own 15s timeout, after the commit may
+ * already have landed. A single item or query page answers in tens of
+ * milliseconds; three attempts at these deadlines still end well inside 15s.
+ */
+export const CLIENT_CONFIG = {
+  requestHandler: { connectionTimeout: 1_000, requestTimeout: 3_000 },
+  maxAttempts: 3,
+} as const;
+
 export interface DynamoRepositoryOptions {
   tableName: string;
   /** Injected by tests (DynamoDB Local); defaults to the ambient credentials. */
@@ -170,7 +181,7 @@ export class DynamoRepository implements GameRepository {
     this.table = options.tableName;
     this.index = options.indexName ?? GSI1_NAME;
     this.now = options.now ?? Date.now;
-    this.doc = DynamoDBDocumentClient.from(options.client ?? new DynamoDBClient({}), {
+    this.doc = DynamoDBDocumentClient.from(options.client ?? new DynamoDBClient(CLIENT_CONFIG), {
       marshallOptions: {
         // Optional fields (`userAgent`, `presentation`, `avatar`) are absent
         // rather than null all over the domain types. Without this every one of
@@ -186,9 +197,9 @@ export class DynamoRepository implements GameRepository {
     await this.doc.send(new PutCommand({ TableName: this.table, Item: item }));
   }
 
-  private async get(pk: string, sk: string): Promise<TableItem | undefined> {
+  private async get(pk: string, sk: string, consistent = false): Promise<TableItem | undefined> {
     const out = await this.doc.send(
-      new GetCommand({ TableName: this.table, Key: { PK: pk, SK: sk } }),
+      new GetCommand({ TableName: this.table, Key: { PK: pk, SK: sk }, ConsistentRead: consistent || undefined }),
     );
     return out.Item as TableItem | undefined;
   }
@@ -1209,6 +1220,27 @@ export class DynamoRepository implements GameRepository {
     }
   }
 
+  async rotateDevice(householdId: string, deviceId: string, tokenHash: string, lastSeen: string): Promise<boolean> {
+    try {
+      await this.doc.send(
+        new UpdateCommand({
+          TableName: this.table,
+          Key: { PK: HH(householdId), SK: DEVICE_SK(deviceId) },
+          UpdateExpression: "SET #d.#hash = :h, #d.#seen = :t",
+          // The revocation check and the write are one operation, so a
+          // revocation that lands after the resolve read still wins.
+          ConditionExpression: "attribute_exists(PK) AND (attribute_not_exists(#d.#revoked) OR #d.#revoked = :no)",
+          ExpressionAttributeNames: { "#d": "data", "#hash": "tokenHash", "#seen": "lastSeen", "#revoked": "revoked" },
+          ExpressionAttributeValues: { ":h": tokenHash, ":t": lastSeen, ":no": false },
+        }),
+      );
+      return true;
+    } catch (err) {
+      if (isConditionalFailure(err)) return false;
+      throw err;
+    }
+  }
+
   // --- characters ------------------------------------------------------------
 
   async putCharacter(character: Character): Promise<void> {
@@ -1398,7 +1430,10 @@ export class DynamoRepository implements GameRepository {
   }
 
   async getState(runId: string): Promise<RunState | null> {
-    return ((await this.get(RUN(runId), STATE))?.data as RunState | undefined) ?? null;
+    // Strongly consistent: an action is gated on the seq read here, and an
+    // eventually consistent read right after another phone's commit can hand
+    // back the step before it, refusing a good tap as stale.
+    return ((await this.get(RUN(runId), STATE, true))?.data as RunState | undefined) ?? null;
   }
 
   async putState(state: RunState): Promise<void> {
@@ -1879,15 +1914,20 @@ function isConditionalFailure(err: unknown): boolean {
 }
 
 /**
- * A cancelled transaction. Every cancellation `commit()` can provoke is a lost
- * race, but a *validation* error is a bug and must not be swallowed as one —
- * hence checking the cancellation reasons rather than the exception name alone.
+ * A cancelled transaction that lost a race. Two can: a condition that failed
+ * because another writer got there first, and `TransactionConflict`, which is
+ * how DynamoDB cancels two transactions touching the same item at the same
+ * moment (two phones tapping at once). The SDK does not retry either. Any
+ * other reason (a validation error, a size limit) is a bug and must not be
+ * swallowed as a race, hence checking every reason rather than the exception
+ * name alone.
  */
 function isTransactionCancelled(err: unknown): boolean {
   if (nameOf(err) !== "TransactionCanceledException") return false;
   const reasons = (err as { CancellationReasons?: { Code?: string }[] }).CancellationReasons;
   if (!reasons) return true;
-  return reasons.some((r) => r.Code === "ConditionalCheckFailed");
+  const lost = (code: string | undefined) => code === "ConditionalCheckFailed" || code === "TransactionConflict";
+  return reasons.some((r) => lost(r.Code)) && reasons.every((r) => !r.Code || r.Code === "None" || lost(r.Code));
 }
 
 function nameOf(err: unknown): string | undefined {

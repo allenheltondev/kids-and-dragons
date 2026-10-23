@@ -31,6 +31,8 @@ import {
 } from "../handlers/code-guard.ts";
 import { reportClientError } from "../handlers/client-error.ts";
 import { relayPreview } from "../handlers/preview.ts";
+import { relayCheer } from "../handlers/cheer.ts";
+import { chooseWatching } from "../handlers/watch.ts";
 import { beatPresence } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
@@ -103,11 +105,22 @@ export async function handler(
   return respond(event, AWS_RUNTIME);
 }
 
+/**
+ * The dev server's `express.json({ limit: "256kb" })`, held here too. Without
+ * it the Lambda took anything up to API Gateway's 6MB, and a seated phone
+ * could pad an intent that the event log then stores and replays verbatim on
+ * every reconnect.
+ */
+export const MAX_BODY_BYTES = 256 * 1024;
+
 /** `handler()` with the AWS wiring passed in rather than imported. */
 export async function respond(
   event: APIGatewayProxyEventV2,
   rt: HttpRuntime,
 ): Promise<APIGatewayProxyStructuredResultV2> {
+  if (event.body && Buffer.byteLength(event.body, event.isBase64Encoded ? "base64" : "utf8") > MAX_BODY_BYTES) {
+    return error(413, "ILLEGAL", "that request is too large");
+  }
   const req = parse(event, rt);
   try {
     return await route(req, rt);
@@ -146,6 +159,8 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/action") return (deps) => postAction(req, deps);
     if (req.path === "/api/preview") return (deps) => postPreview(req, deps);
     if (req.path === "/api/presence") return (deps) => postPresence(req, deps);
+    if (req.path === "/api/cheer") return (deps) => postCheer(req, deps);
+    if (req.path === "/api/spectate") return (deps) => postSpectate(req, deps);
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/resume") return (deps) => postResume(req, deps);
     if (req.path === "/api/save/release") return (deps) => postReleaseHero(req, deps);
@@ -673,6 +688,46 @@ async function postPreview(req: Req, deps: HandlerDeps) {
 }
 
 /**
+ * A spectator's cheer (handlers/cheer.ts, #388). Session token only, like a
+ * preview: the seat comes from the token, never the body.
+ */
+async function postCheer(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "a cheer needs a room session token");
+  const result = await relayCheer(
+    {
+      runId: session.runId,
+      playerId: session.playerId,
+      householdId: session.householdId,
+      cheer: req.body.cheer,
+    },
+    deps,
+  );
+  if (!result.ok) return error(result.status, result.code, result.message);
+  return json(200, { ok: true });
+}
+
+/**
+ * "Just watch", or back to making a hero (handlers/watch.ts, #388). Session
+ * token only: a phone chooses for its own kid and nobody else.
+ */
+async function postSpectate(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "watching needs a room session token");
+  const result = await chooseWatching(
+    {
+      runId: session.runId,
+      roomCode: session.roomCode,
+      playerId: session.playerId,
+      householdId: session.householdId,
+      watching: req.body.watching,
+    },
+    deps,
+  );
+  return result.ok ? json(200, { ok: true, seq: result.value.seq }) : fromError(result.error);
+}
+
+/**
  * A seated phone saying it is still here, or that it is leaving
  * (handlers/presence.ts). The only presence production has: AppSync Events
  * tells this Lambda nothing when a socket closes (#258). Session token only,
@@ -702,13 +757,19 @@ async function postProgressionSpend(req: Req, deps: HandlerDeps) {
   if (!Object.prototype.hasOwnProperty.call(req.body, "stat")) {
     return error(400, "ILLEGAL", "expected { stat }");
   }
+  // The seq the spend was built on, as for every intent. Defaulting it to the
+  // run's current seq waved every request through the stale check, so a
+  // double tap spent two points. No client sends here any more (a spend
+  // rides /api/action); the route is kept for one that might.
+  if (typeof req.body.seq !== "number" || !Number.isFinite(req.body.seq)) {
+    return error(400, "ILLEGAL", "expected { stat, seq }");
+  }
 
-  const state = await deps.repo.getState(session.runId);
   const response = await applyAction(
     {
       runId: session.runId,
       playerId: session.playerId,
-      seq: Number(req.body.seq ?? state?.seq ?? 0),
+      seq: req.body.seq,
       intent: { type: "SPEND_STAT_POINT", stat: req.body.stat as never },
       principal: {
         householdId: session.householdId,
