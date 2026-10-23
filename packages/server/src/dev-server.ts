@@ -38,6 +38,7 @@ import {
   SLOW_DOWN,
 } from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
+import { relayCheer } from "./handlers/cheer.ts";
 import { beatPresence, setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
@@ -481,6 +482,25 @@ async function main(): Promise<void> {
         householdId: session.householdId,
         preview: (req.body ?? {}).preview,
         context: (req.body ?? {}).context,
+      },
+      deps,
+    );
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true });
+  });
+
+  // A spectator's cheer (handlers/cheer.ts, #388): relayed, never committed.
+  app.post("/api/cheer", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "a cheer needs a room session token");
+    const result = await relayCheer(
+      {
+        runId: session.runId,
+        playerId: session.playerId,
+        householdId: session.householdId,
+        cheer: (req.body ?? {}).cheer,
       },
       deps,
     );

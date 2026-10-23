@@ -864,6 +864,9 @@ export interface GameRepository {
    * One conditional write rather than a read then a write, so a burst of
    * parallel requests cannot all read "below the limit" before any of them
    * is counted.
+   *
+   * The same counter, under keys of their own, budgets crash reports (#317)
+   * and a spectator's cheers (#388).
    */
   reserveCodeLookup(clientKey: string, window: number, limit: number, ttl: number): Promise<boolean>;
   /**

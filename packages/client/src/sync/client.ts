@@ -209,6 +209,8 @@ export interface Api {
    * survives the page that sends it closing.
    */
   postPresence(leaving: boolean, token: string): Promise<void>;
+  /** A spectator's cheer, relayed to the room's screens (#388). */
+  postCheer(cheer: string, token: string): Promise<void>;
   /**
    * Take the household's stopped chapter into this room (#259, server
    * handlers/save.ts). The answer is the run's patch like any other change;
@@ -517,6 +519,15 @@ export const api: Api = {
       token,
       body: JSON.stringify({ leaving }),
       ...(leaving ? { keepalive: true } : {}),
+    });
+  },
+
+  async postCheer(cheer, token) {
+    await request<{ ok: boolean }>("/api/cheer", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token,
+      body: JSON.stringify({ cheer }),
     });
   },
 

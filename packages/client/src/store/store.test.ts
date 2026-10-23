@@ -132,6 +132,7 @@ function harness(state: RunState = makeState()): Harness {
     hostControl: vi.fn(async (): Promise<void> => undefined),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     postPreview: vi.fn(async (): Promise<void> => undefined),
+    postCheer: vi.fn(async (): Promise<void> => undefined),
     postPresence: vi.fn(async (): Promise<void> => undefined),
     postResume: vi.fn(async (): Promise<void> => undefined),
     releaseSavedHero: vi.fn(async (): Promise<void> => undefined),
@@ -616,6 +617,34 @@ describe("preview", () => {
     h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: null, context: null });
     expect(h.store.getState().previews).toEqual({});
     expect(h.store.getState().state?.seq).toBe(7);
+  });
+});
+
+describe("cheers (#388)", () => {
+  it("holds each cheer heard until the screen lets it go, without touching the mirror", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.publish({ kind: "cheer", seq: 7, runId: "r_1", cheer: "star" });
+    h.publish({ kind: "cheer", seq: 7, runId: "r_1", cheer: "star" });
+    h.publish({ kind: "cheer", seq: 7, runId: "r_other", cheer: "heart" });
+    const cheers = h.store.getState().cheers;
+    expect(cheers.map((c) => c.cheer)).toEqual(["star", "star"]);
+    expect(new Set(cheers.map((c) => c.key)).size).toBe(2);
+    expect(h.store.getState().state?.seq).toBe(7);
+
+    h.store.getState().dropCheer(cheers[0]!.key);
+    expect(h.store.getState().cheers).toEqual([cheers[1]]);
+  });
+
+  it("sends a cheer with the session token, and says when it did not go", async () => {
+    const h = harness();
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    expect(await h.store.getState().cheer("heart")).toBe(true);
+    expect(h.api.postCheer).toHaveBeenCalledWith("heart", "tok_1");
+
+    h.api.postCheer.mockRejectedValueOnce(new Error("Wait a moment, then cheer again!"));
+    expect(await h.store.getState().cheer("heart")).toBe(false);
+    expect(h.store.getState().error).toBeNull();
   });
 });
 

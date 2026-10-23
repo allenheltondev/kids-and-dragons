@@ -496,6 +496,15 @@ export interface RunState {
    */
   seats?: Record<string, RoomSeat>;
   /**
+   * Spectators whose phones are still here (#388): players on the roster with
+   * no hero, at a table that is full, that have said "still here" recently.
+   * Written by presence alone, so the shared screen can say how many are
+   * watching. Read it through `watchers()`, which drops anybody who has since
+   * sat down or been taken out. Never counted by anything that counts the
+   * party. Absent when nobody is watching.
+   */
+  watching?: string[];
+  /**
    * The host locked the room (#263): nobody new may join. Everybody already
    * seated (`seats`) can still come back to it, from any device. Absent when
    * open.

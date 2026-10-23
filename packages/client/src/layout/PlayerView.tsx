@@ -31,7 +31,8 @@ import { HostControls } from "../screens/HostControls";
 // barrel is what every surface pulls in, and the playtest drawer should reach
 // exactly one call site — the one below, behind `import.meta.env.DEV`.
 import { PlaytestPanel } from "../screens/PlaytestPanel";
-import { TABLE_FULL_MESSAGE, tableFull } from "@kad/shared";
+import { tableFull } from "@kad/shared";
+import { Spectating } from "../screens/Spectating";
 import { useMe, useRunState, useSession } from "../store";
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 import { FieldGuide } from "../screens/FieldGuide";
@@ -78,8 +79,9 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
   // none goes straight through to the creation flow.
   const creating = me === null;
   // Every seat is taken and none is ours (#389): say so before anybody builds
-  // a hero the engine would refuse. Read from every patch, so a seat that
-  // opens (the host takes somebody out) puts the creation flow back.
+  // a hero the engine would refuse, and let them watch and cheer instead
+  // (#388). Read from every patch, so a seat that opens (the host takes
+  // somebody out) puts the creation flow back.
   const full = creating && state !== null && tableFull(state, session?.playerId);
   // The tray's Guide tab works before there is a character too. PlayerPanel
   // shows the guide itself once there is one; until then it stands over the
@@ -101,9 +103,7 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
       <CatchUp />
       {guideOverCreation ? <FieldGuide /> : null}
       {full ? (
-        <div className="kad-removed" role="status" data-testid="table-full" hidden={guideOverCreation}>
-          <p>{TABLE_FULL_MESSAGE}</p>
-        </div>
+        <Spectating hidden={guideOverCreation} />
       ) : creating ? (
         <div className="player-view__creation" hidden={guideOverCreation}><WelcomeBack /></div>
       ) : <PlayerPanel roomControls={roomControls} />}

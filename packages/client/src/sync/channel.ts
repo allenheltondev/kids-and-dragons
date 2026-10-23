@@ -13,9 +13,10 @@
  */
 
 import type { Operation } from "fast-json-patch";
-import { readIntentPreview } from "@kad/shared";
+import { cheerById, readIntentPreview } from "@kad/shared";
 import type {
   ArrivalMessage,
+  CheerMessage,
   ChannelMessage,
   Presentation,
   PreviewMessage,
@@ -63,6 +64,8 @@ export interface SequencerHandlers {
   onPreview?(message: PreviewMessage): void;
   /** Somebody joined the room (`ArrivalMessage`, #267). Live, unordered, like a preview. */
   onArrival?(message: ArrivalMessage): void;
+  /** A spectator cheered (`CheerMessage`, #388). Live, unordered, like a preview. */
+  onCheer?(message: CheerMessage): void;
 }
 
 export type TimerHandle = ReturnType<typeof setTimeout> | number;
@@ -142,6 +145,10 @@ export class MessageSequencer {
     }
     if (message.kind === "arrival") {
       this.handlers.onArrival?.(message);
+      return;
+    }
+    if (message.kind === "cheer") {
+      this.handlers.onCheer?.(message);
       return;
     }
 
@@ -331,6 +338,13 @@ export function parseChannelMessage(raw: string): ChannelMessage | null {
     const { playerId, name, color } = candidate as Partial<ArrivalMessage>;
     if (typeof playerId !== "string" || typeof name !== "string" || typeof color !== "string") return null;
     return { kind: "arrival", seq: candidate.seq, runId: candidate.runId, playerId, name, color };
+  }
+
+  if (candidate.kind === "cheer") {
+    // Only a cheer the game knows: the TV draws its picture, never its text.
+    const cheer = cheerById((candidate as Partial<CheerMessage>).cheer);
+    if (!cheer) return null;
+    return { kind: "cheer", seq: candidate.seq, runId: candidate.runId, cheer: cheer.id };
   }
 
   if (candidate.kind === "snapshot" || (candidate.kind === undefined && candidate.state)) {

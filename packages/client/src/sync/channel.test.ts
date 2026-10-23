@@ -627,6 +627,34 @@ describe("arrivals (#267)", () => {
   });
 });
 
+describe("cheers (#388)", () => {
+  it("are handed over at once and never move seq or the mirror", () => {
+    const cheers: unknown[] = [];
+    const sequencer = new MessageSequencer({
+      handlers: {
+        onState: () => undefined,
+        onPresentation: () => undefined,
+        onProgression: () => undefined,
+        onGap: () => undefined,
+        onCheer: (message) => void cheers.push(message),
+      },
+    });
+    sequencer.reset(makeState({ seq: 4 }), 4);
+    const message = { kind: "cheer" as const, seq: 9, runId: "r_1", cheer: "star" };
+    sequencer.ingest(message);
+    expect(cheers).toEqual([message]);
+    expect(sequencer.seq).toBe(4);
+    expect(sequencer.buffered).toEqual([]);
+  });
+
+  it("parse only as one of the fixed cheers", () => {
+    const good = { kind: "cheer", seq: 3, runId: "r_1", cheer: "heart" };
+    expect(parseChannelMessage(JSON.stringify(good))).toEqual(good);
+    expect(parseChannelMessage(JSON.stringify({ ...good, cheer: "<b>hi</b>" }))).toBeNull();
+    expect(parseChannelMessage(JSON.stringify({ ...good, cheer: undefined }))).toBeNull();
+  });
+});
+
 describe("parseChannelMessage", () => {
   it("parses a patch message", () => {
     const parsed = parseChannelMessage(

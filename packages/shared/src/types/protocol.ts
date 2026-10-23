@@ -430,11 +430,30 @@ export interface ArrivalMessage {
   color: string;
 }
 
+/**
+ * A spectator cheered (#388). Live only, like an arrival: never committed,
+ * never moves `seq`, and a screen that attaches later never sees it. Carries
+ * no name, because the shared screen never says who is watching.
+ */
+export interface CheerMessage {
+  /** The state's seq when it was sent. Ordering only; never applied. */
+  seq: number;
+  runId: string;
+  /** A `CHEERS` id. */
+  cheer: string;
+}
+
+/** `POST /api/cheer`, with a room session token: the seat comes from the token. */
+export interface CheerRequest {
+  cheer: string;
+}
+
 export type ChannelMessage =
   | ({ kind: "patch" } & ServerMessage)
   | ({ kind: "snapshot" } & SnapshotMessage)
   | ({ kind: "preview" } & PreviewMessage)
-  | ({ kind: "arrival" } & ArrivalMessage);
+  | ({ kind: "arrival" } & ArrivalMessage)
+  | ({ kind: "cheer" } & CheerMessage);
 
 // ---------------------------------------------------------------------------
 // Transport seam — architecture §4.4
