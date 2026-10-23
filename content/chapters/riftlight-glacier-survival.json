@@ -775,6 +775,16 @@
           "text": "The herder lifts a hand from the newly cleared blanket rail. \"Dry blankets for the next arrivals. That matters.\""
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Cloaked griffin"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Cloaked unicorn"
+        }
+      ],
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "drift": {
