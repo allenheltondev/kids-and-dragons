@@ -40,3 +40,7 @@ A separate browser scenario forces the animated renderer to fail, then verifies 
 ## Boundaries
 
 These checks validate all referenced image sources and every published guide detail, not the visual composition of every branch of every campaign. A same-name file can still be artistically wrong, and untagged scene art cannot be detected from a URL alone. Existing scene/cast composition tests and manual story reviews remain relevant. Empty undiscovered cards, unavailable campaigns, basic navigation SVGs and the creation silhouette before choosing a species are intentional; they are not counted as missing commissioned paintings.
+
+## CI follow-up
+
+The original combined guide walkthrough exceeded its 180-second limit on the CI runner. It now runs as ten tests split by category and viewport, preserving all 134 entry views. The walkthrough uses the journal's shared Field Guide renderer so room heartbeats cannot replace its discovery fixture, and reduced motion keeps this image-coverage check independent of decorative animation. The complete 12-test art suite passed locally; guide batches took 10–19 seconds each.

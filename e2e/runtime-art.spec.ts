@@ -86,42 +86,52 @@ test("all runtime content, character and UI image URLs decode in the browser", a
   expect(unknown, "content must never silently render the unknown glyph").toEqual([]);
 });
 
-test("every discovered guide entry renders its own illustration on phone and tablet", async ({ page }) => {
-  test.setTimeout(180_000);
-  const guide = json("content/field-guide.json");
-  await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
-  await page.getByRole("button", { name: /host a game/i }).click();
-  await page.getByText("Phone Mode", { exact: true }).click();
-  await page.getByLabel("Your adventurer name").fill("Art reviewer");
-  await page.getByRole("button", { name: /^start a game$/i }).click();
-  await createCharacter(page, "unicorn", "Moonbeam");
-  await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
-  await page.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: /^Guide$/ }).click();
-  await page.evaluate(async (ids) => {
-    const modulePath = "/src/store/field-guide-discoveries.ts";
-    const { setFieldGuideDiscoveries } = await import(modulePath);
-    setFieldGuideDiscoveries(Object.fromEntries(ids.map(id => [id, { firstFoundBy: "art-review", foundAt: new Date().toISOString() }])));
-  }, Object.keys(guide.entries));
-  for (const viewport of [{ width: 390, height: 844 }, { width: 1024, height: 768 }]) {
-    await page.setViewportSize(viewport);
-    for (const [id, entry] of Object.entries<any>(guide.entries)) {
-      await page.evaluate(async ({ id, ids }) => {
-        const discoveriesPath = "/src/store/field-guide-discoveries.ts";
-        (await import(discoveriesPath)).setFieldGuideDiscoveries(Object.fromEntries(ids.map(id => [id, { firstFoundBy: "art-review", foundAt: new Date().toISOString() }])));
-        const modulePath = "/src/store/player-navigation.ts";
-        (await import(modulePath)).openGuide(id);
-      }, { id, ids: Object.keys(guide.entries) });
-      const art = page.locator(".fgd__art img");
-      await expect(art, id).toHaveAttribute("src", entry.art);
-      await expect(art).toBeVisible();
-      await expect.poll(() => art.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
-      if (["individual.marda_thorn", "location.exchange", "faction.deep_hollow_cult", "creature.loftmire"].includes(id)) {
-        await page.screenshot({ path: test.info().outputPath(`${id}-${viewport.width}.png`) });
+// Split by category and viewport so CI can shard all 134 entry views and no
+// single walkthrough must fit both devices into one test timeout.
+for (const viewport of [{ width: 390, height: 844 }, { width: 1024, height: 768 }]) {
+  for (const category of ["creatures", "peoples", "folk", "places", "factions"]) {
+    test(`discovered ${category} render their illustrations at ${viewport.width}x${viewport.height}`, async ({ page }) => {
+      test.setTimeout(180_000);
+      const guide = json("content/field-guide.json");
+      await page.setViewportSize(viewport);
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.goto("/");
+      await page.getByRole("button", { name: /host a game/i }).click();
+      await page.getByText("Phone Mode", { exact: true }).click();
+      await page.getByLabel("Your adventurer name").fill("Art reviewer");
+      await page.getByRole("button", { name: /^start a game$/i }).click();
+      await createCharacter(page, "unicorn", "Moonbeam");
+      await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
+      await page.getByRole("button", { name: /begin the adventure/i }).click();
+      await expect(page.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0);
+      // The journal uses the same FieldGuide renderer without a live room mirror
+      // replacing the discovery fixture when a heartbeat/state patch arrives.
+      await page.goto("/journal");
+      await expect(page.getByRole("region", { name: "Moonbeam's character sheet" })).toBeVisible();
+      await page.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: /^Guide$/ }).click();
+      await page.evaluate(async (ids) => {
+        const modulePath = "/src/store/field-guide-discoveries.ts";
+        const { setFieldGuideDiscoveries } = await import(modulePath);
+        setFieldGuideDiscoveries(Object.fromEntries(ids.map(id => [id, { firstFoundBy: "art-review", foundAt: new Date().toISOString() }])));
+      }, Object.keys(guide.entries));
+      for (const [id, entry] of Object.entries<any>(guide.entries).filter(([, entry]) => entry.category === category)) {
+        await page.evaluate(async ({ id, ids }) => {
+          const discoveriesPath = "/src/store/field-guide-discoveries.ts";
+          (await import(discoveriesPath)).setFieldGuideDiscoveries(Object.fromEntries(ids.map(id => [id, { firstFoundBy: "art-review", foundAt: new Date().toISOString() }])));
+          const modulePath = "/src/store/player-navigation.ts";
+          (await import(modulePath)).openGuide(id);
+        }, { id, ids: Object.keys(guide.entries) });
+        const art = page.locator(".fgd__art img");
+        await expect(art, id).toHaveAttribute("src", entry.art);
+        await expect(art).toBeVisible();
+        await expect.poll(() => art.evaluate((el: HTMLImageElement) => el.complete && el.naturalWidth > 0)).toBe(true);
+        if (["individual.marda_thorn", "location.exchange", "faction.deep_hollow_cult", "creature.loftmire"].includes(id)) {
+          await page.screenshot({ path: test.info().outputPath(`${id}-${viewport.width}.png`) });
+        }
       }
-    }
+    });
   }
-});
+}
 
 test("the still-image experience keeps the story's cast and visible rift", async ({ page }) => {
   await page.route("**/src/world/PixiStage.tsx*", route => route.abort());
