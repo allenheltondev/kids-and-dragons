@@ -86,8 +86,8 @@ describe("a rift in plain view (#401)", () => {
   };
   const sheet = () => {
     const canvas = document.createElement("canvas");
-    canvas.width = RIFT_SHEET.frames * RIFT_SHEET.size;
-    canvas.height = RIFT_SHEET.size;
+    canvas.width = RIFT_SHEET.columns * RIFT_SHEET.size;
+    canvas.height = Math.ceil(RIFT_SHEET.frames / RIFT_SHEET.columns) * RIFT_SHEET.size;
     return Texture.from(canvas);
   };
 
@@ -108,6 +108,34 @@ describe("a rift in plain view (#401)", () => {
       expect(tear!.texture.frame.x).not.toBe(first);
       s.setRift(null, "c1/plain");
       expect(rifts(app)).toHaveLength(0);
+    } finally { s.destroy(); load.mockRestore(); }
+  });
+
+  it("slices the 4K-compatible atlas across rows and wraps after its final frame", async () => {
+    const source = sheet();
+    expect(source.width).toBeLessThanOrEqual(4096);
+    expect(source.height).toBeLessThanOrEqual(4096);
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(source as unknown as Record<string, unknown>);
+    const app = fakeApp();
+    const s = createScene(app as unknown as Application);
+    try {
+      s.setRift("steady", "c1/grid");
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      const step = 1000 / RIFT_SHEET.fps;
+      const drawn = () => {
+        const frame = rifts(app)[0]!.texture.frame;
+        expect(frame.right).toBeLessThanOrEqual(source.width);
+        expect(frame.bottom).toBeLessThanOrEqual(source.height);
+        return [frame.x, frame.y];
+      };
+      app.ticker.frame((RIFT_SHEET.columns - 0.5) * step);
+      expect(drawn()).toEqual([(RIFT_SHEET.columns - 1) * RIFT_SHEET.size, 0]);
+      app.ticker.frame(step);
+      expect(drawn()).toEqual([0, RIFT_SHEET.size]);
+      app.ticker.frame((RIFT_SHEET.frames - RIFT_SHEET.columns - 1) * step);
+      expect(drawn()).toEqual([(RIFT_SHEET.columns - 1) * RIFT_SHEET.size, RIFT_SHEET.size]);
+      app.ticker.frame(step);
+      expect(drawn()).toEqual([0, 0]);
     } finally { s.destroy(); load.mockRestore(); }
   });
 

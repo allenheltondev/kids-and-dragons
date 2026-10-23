@@ -44,7 +44,7 @@ const examples=[['Neutral shimmer',{status:'open',persistent:true},false,'TV and
 createRoot(document.querySelector('#root')).render(h(React.Fragment,null,
 h('div',{className:'scenes'},h('div',{className:'scene'}),h('div',{className:'scene'})),
 h('div',{className:'cards'},...examples.map(([title,rift,riftlight,caption])=>h('article',{className:'card','data-title':title},h('b',null,title),h('div',{className:'paint'},h(RiftGlyph,{rift,riftlight})),h('div',{className:'caption'},caption))))));
-function transition(effect){return h('article',{className:'card'},h('b',null,effect),h('div',{className:'paint'},h('span',{className:'rift-glyph','aria-hidden':true},h('span',{className:'rift-glyph__layer rift-glyph__layer--once','data-effect':effect,style:{backgroundImage:'url(/assets/effects/'+effect+'.sheet.png)',animationDuration:RIFT_SHEET_MS+'ms','--rift-frames':RIFT_SHEET.frames,'--rift-steps':RIFT_SHEET.frames-1,'--rift-loop-end':(RIFT_SHEET.frames/(RIFT_SHEET.frames-1)*100)+'%','--rift-still':(12/23*100)+'%'}}))))}
+function transition(effect){return h('article',{className:'card'},h('b',null,effect),h('div',{className:'paint'},h('span',{className:'rift-glyph','aria-hidden':true},h('span',{className:'rift-glyph__layer rift-glyph__layer--once','data-effect':effect,style:{backgroundImage:'url(/assets/effects/'+effect+'.sheet.png)',animationDuration:RIFT_SHEET_MS+'ms','--rift-columns':RIFT_SHEET.columns,'--rift-rows':Math.ceil(RIFT_SHEET.frames/RIFT_SHEET.columns)}}))))}
 createRoot(document.querySelector('#transitions')).render(h(React.Fragment,null,transition('rift_open'),transition('rift_collapse')));
 document.querySelector('#gray').onchange=e=>document.body.classList.toggle('grayscale',e.target.checked);
 while(document.querySelectorAll('.scene').length!==2)await new Promise(requestAnimationFrame);
@@ -81,6 +81,24 @@ try {
   const errors=[];
   for (const [mode,width,height] of [['tv',1440,1080],['phone',390,844]]) {
     const page = await browser.newPage({viewport:{width,height}});
+    // Exercise Pixi with a reported 4K limit and reject oversized uploads,
+    // even when the development computer's GPU supports larger textures.
+    await page.addInitScript(()=>{
+      for(const Context of [window.WebGLRenderingContext,window.WebGL2RenderingContext]){
+        if(!Context)continue;
+        const proto=Context.prototype;
+        const getParameter=proto.getParameter;
+        proto.getParameter=function(parameter){return parameter===this.MAX_TEXTURE_SIZE?4096:getParameter.call(this,parameter);};
+        const texImage2D=proto.texImage2D;
+        proto.texImage2D=function(...args){
+          const source=args.at(-1);
+          const width=args.length>=9?args[3]:source?.width;
+          const height=args.length>=9?args[4]:source?.height;
+          if(width>4096||height>4096)throw new Error('Texture exceeds 4K: '+width+'x'+height);
+          return texImage2D.apply(this,args);
+        };
+      }
+    });
     page.on('pageerror', error=>errors.push(error.message));
     await page.route('**/assets/**', async route=>{
       const relative=new URL(route.request().url()).pathname;
@@ -99,7 +117,22 @@ try {
       for(const animation of document.getAnimations()){animation.pause();animation.currentTime=1000;}
       return layers.map(el=>({name:getComputedStyle(el).animationName,size:getComputedStyle(el).backgroundSize}));
     });
-    assert(metrics.every(m=>m.name.startsWith('rift-frames')&&m.size==='2400% 100%'));
+    assert(metrics.every(m=>m.name.startsWith('rift-frames')&&m.size==='1200% 200%'));
+    // Sample every CSS frame, including both sides of the row transition.
+    const positions=await page.evaluate(()=>{
+      const layer=document.querySelector('[data-title="Neutral shimmer"] .rift-glyph__layer');
+      const animation=layer.getAnimations()[0];
+      animation.effect.updateTiming({delay:0});
+      return Array.from({length:24},(_,i)=>{
+        animation.currentTime=(i+0.5)*2000/24;
+        const css=getComputedStyle(layer);
+        return [parseFloat(css.backgroundPositionX),parseFloat(css.backgroundPositionY)];
+      });
+    });
+    positions.forEach(([x,y],i)=>{
+      assert(Math.abs(x-(i%12)*100/11)<0.001, 'CSS column '+i);
+      assert.equal(y,Math.floor(i/12)*100,'CSS row '+i);
+    });
     await page.waitForFunction(()=>window.reviewReady&&window.reviewStages.length===2&&window.reviewStages.every(({app,scene})=>app.stage.getChildByLabel('rift',true)?.visible&&scene.storyFigureReport().every(f=>f.paint)));
     await page.waitForTimeout(2000); // Let the real stage's entrance/camera settle.
     const stageAlpha=await page.evaluate(()=>window.reviewStages.map(({app})=>app.stage.getChildByLabel('rift',true).alpha));
@@ -120,11 +153,11 @@ try {
     // Last frame of a one-shot must stay on the sheet, never the phantom 25th frame.
     const end=await page.evaluate(()=>{
       for(const animation of document.getAnimations())animation.currentTime=2000;
-      return [...document.querySelectorAll('.rift-glyph__layer--once')].map(el=>getComputedStyle(el).backgroundPositionX);
+      return [...document.querySelectorAll('.rift-glyph__layer--once')].map(el=>getComputedStyle(el).backgroundPosition);
     });
-    assert.deepEqual(end,['100%','100%']);
+    assert.deepEqual(end,['100% 100%','100% 100%']);
     await page.emulateMedia({reducedMotion:'reduce'});
-    const still=await page.locator('.rift-glyph__layer:not(.rift-glyph__layer--once)').evaluateAll(nodes=>nodes.every(n=>getComputedStyle(n).animationName==='none'));
+    const still=await page.locator('.rift-glyph__layer:not(.rift-glyph__layer--once)').evaluateAll(nodes=>nodes.every(n=>getComputedStyle(n).animationName==='none'&&getComputedStyle(n).backgroundPosition==='0% 100%'));
     assert(still);
     await page.screenshot({path:path.join(output,`review-${mode}-reduced.png`),fullPage:true});
     await page.close();

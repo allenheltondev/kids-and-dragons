@@ -3,7 +3,7 @@
 Run: python art/source/painted-rifts/build.py
 The master is generated artwork; this script handles registration, texture
 sampling, palette mapping and animation, rather than drawing a substitute rim.
-24 x 320px fits a single 7680px strip on an 8192px GPU texture.
+24 x 320px frames occupy a 12-column, two-row 3840x640 grid for 4K GPUs.
 """
 import json
 import math
@@ -16,7 +16,8 @@ ROOT = Path(__file__).resolve().parents[3]
 HERE = Path(__file__).resolve().parent
 OUT = ROOT / 'assets/effects'
 REVIEW = ROOT / 'art/review/painted-rifts'
-SIZE, FRAMES, FPS = 320, 24, 12
+SIZE, FRAMES, FPS, COLUMNS = 320, 24, 12, 12
+ROWS = math.ceil(FRAMES / COLUMNS)
 IDS = ['neutral', 'base', 'green', 'amber', 'blue', 'violet', 'shrink', 'stutter', 'sync', 'open', 'collapse']
 # Preserve the shipped palette, not destination-dependent colours.
 PALETTE = {'green': (61, 164, 97), 'amber': (191, 116, 48),
@@ -131,17 +132,17 @@ def main():
     REVIEW.mkdir(parents=True, exist_ok=True)
     frames = {kind: [frame(kind, i) for i in range(FRAMES)] for kind in IDS}
     for kind, images in frames.items():
-        sheet = Image.new('RGBA', (FRAMES*SIZE, SIZE))
+        sheet = Image.new('RGBA', (COLUMNS*SIZE, ROWS*SIZE))
         for i, image in enumerate(images):
-            sheet.paste(image, (i*SIZE, 0))
+            sheet.paste(image, ((i % COLUMNS)*SIZE, (i // COLUMNS)*SIZE))
         sheet.quantize(colors=256, method=Image.Quantize.FASTOCTREE).save(
             OUT / f'rift_{kind}.sheet.png', optimize=True)
-        (OUT / f'rift_{kind}.json').write_text(json.dumps(dict(frames=FRAMES, fps=FPS, size=SIZE), indent=2)+'\n')
+        (OUT / f'rift_{kind}.json').write_text(json.dumps(dict(frames=FRAMES, fps=FPS, size=SIZE, columns=COLUMNS), indent=2)+'\n')
     path = ROOT / 'assets/manifest.json'
     manifest = json.loads(path.read_text(encoding='utf-8'))
     for effect in manifest['effects']:
         if effect['id'] in [f'rift_{kind}' for kind in IDS]:
-            effect.update(frames=FRAMES, fps=FPS, size=SIZE, tileScoped=False)
+            effect.update(frames=FRAMES, fps=FPS, size=SIZE, columns=COLUMNS, tileScoped=False)
             if effect['id'] in ('rift_open', 'rift_collapse'):
                 # Opening ends exactly where the neutral loop begins; closing
                 # starts there. Neither may fade out/in at that shared endpoint.

@@ -20,10 +20,10 @@ Review output goes to ignored `art/review/painted-rifts/`: real Pixi scenes
 and React glyphs on bright/dark backgrounds, TV and phone screenshots,
 grayscale/reduced-motion variants, and an animated WebP of common stacks.
 
-Each runtime sheet is 24 frames at 12fps, 320px square, on one 7680px strip
-(below an 8192px texture limit). The doorway is registered at x=50%, with
+Each runtime sheet is 24 frames at 12fps, 320px square, in a 12-column, two-row 3840 x 640px atlas
+(both dimensions below a 4096px texture limit). The doorway is registered at x=50%, with
 its foot at y=86%, and fills 72% of the frame. PNG palette compression
-preserves transparency and keeps all eleven sheets around 1.4MB combined.
+preserves transparency and keeps all eleven sheets around 1.5MB combined.
 
 Palette colours preserve the existing art contract:
 
