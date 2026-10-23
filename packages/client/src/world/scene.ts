@@ -72,7 +72,7 @@ import {
   shadowOffset,
   type Footprint,
 } from "./actor-art";
-import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, STANCE_LIFT, type Overflow, type PaintBox } from "./figure-scale";
+import { figureSize, fitCanvas, NOMINAL_PAINT, paintAspect, stanceLift, type Overflow, type PaintBox } from "./figure-scale";
 import { sceneBackdropUrl } from "./art-paths";
 import {
   RIFT_FOOT,
@@ -375,6 +375,8 @@ interface StageFigureArt {
   mask: Graphics | null;
   /** The most its stance may lift it: a figure overflowing off the right is trimmed to fit the frame's height. */
   maxLift: number;
+  /** The scale the stage was laid out at, which a stance's fixed height (flying, hovering) shrinks with. */
+  k: number;
   /** Drawn with its paint's left edge on the container, not its middle: a figure overflowing the frame, anchored at its slot. */
   anchorLeft: boolean;
 }
@@ -946,6 +948,7 @@ export function createScene(app: Application): PartyScene {
       const way = fit.castOverflow[index] ?? null;
       member.overflowing = way;
       member.maxLift = fit.castMaxLift[index] ?? Infinity;
+      member.k = fit.k;
       // Too big for the frame (#366): anchored at the left of its slot, so it
       // runs off the top or the right and never back over the party.
       member.anchorLeft = way !== null;
@@ -985,6 +988,7 @@ export function createScene(app: Application): PartyScene {
     });
     const still = prefersReducedMotion();
     list.forEach((actor, index) => {
+      actor.k = fit.k;
       fitFigure(actor, fit.party[index] ?? actor.height);
       if (actor.label) {
         actor.label.visible = nameplatesVisible;
@@ -1217,6 +1221,7 @@ export function createScene(app: Application): PartyScene {
       ripple: null,
       mask: null,
       maxLift: Infinity,
+      k: 1,
       anchorLeft: false,
       ...(member.overflow ? { overflow: member.overflow } : {}),
       overflowing: null,
@@ -1425,6 +1430,7 @@ export function createScene(app: Application): PartyScene {
       ripple: null,
       mask: null,
       maxLift: Infinity,
+      k: 1,
       anchorLeft: false,
     };
     applyStance(actor);
@@ -1914,7 +1920,7 @@ function motionReach(height: number): number {
 
 /** Where the art rests above (or, for a swimmer, below) the ground line. */
 function restY(figure: StageFigureArt): number {
-  const lift = STANCE_LIFT[figure.stance] * figure.height;
+  const lift = stanceLift(figure.stance, figure.height, figure.k, STORY_MEASURE);
   return -(lift > 0 ? Math.min(lift, figure.maxLift) : lift);
 }
 

@@ -100,9 +100,40 @@ export const STANCE_LIFT: Readonly<Record<CastStance, number>> = {
   swimming: -0.38,
 };
 
+/**
+ * How high a stance holds a figure's feet above the ground, in centimeters of
+ * the world, whatever its own size: a wisp and a griffin that hover hover at
+ * the same height, and so does everything that flies, at the height of a tall
+ * man. Lifting by a share of the figure's height instead left a moth, 18 cm
+ * tall, a few pixels off the ground.
+ */
+export const STANCE_LIFT_CM: Readonly<Record<CastStance, number>> = {
+  standing: 0,
+  hovering: 61, // two feet
+  flying: 183, // six feet
+  swimming: 0,
+};
+
+/**
+ * How far above the ground line a stance holds the figure, in the stage's
+ * units (negative sinks it into the water): the fixed height or the share of
+ * the figure's own height, whichever is higher, so a big flyer still clears
+ * the ground by a good deal more than a small one. `k` is the scale the stage
+ * was laid out at, so the fixed height shrinks with everything else.
+ */
+export function stanceLift(stance: CastStance, height: number, k: number, measure: StageMeasure): number {
+  const share = STANCE_LIFT[stance] * height;
+  return share < 0 ? share : Math.max(share, STANCE_LIFT_CM[stance] * measure.pxPerCm * k);
+}
+
 /** How much of the frame above the ground a figure in this stance reaches, per unit of its height. */
 export function stanceReach(stance: CastStance): number {
   return 1 + STANCE_LIFT[stance];
+}
+
+/** How high a figure reaches above the ground line at natural scale, in centimeters: its lift and its body. */
+export function reachCm(heightCm: number, stance: CastStance): number {
+  return Math.max(heightCm * stanceReach(stance), heightCm + STANCE_LIFT_CM[stance]);
 }
 
 /** The painted figure's width over its height. */
@@ -139,7 +170,7 @@ export interface StageMeasure {
 export function heightFit(figures: readonly SizedFigure[], measure: StageMeasure): number {
   let reach = 0;
   for (const figure of figures) {
-    reach = Math.max(reach, figure.heightCm * measure.pxPerCm * stanceReach(figure.stance));
+    reach = Math.max(reach, reachCm(figure.heightCm, figure.stance) * measure.pxPerCm);
   }
   return reach > measure.headroom ? measure.headroom / reach : 1;
 }
@@ -214,7 +245,7 @@ export function fitCanvas(
  */
 export function overflows(figure: SizedFigure, measure: StageMeasure): boolean {
   if (measure.minScale === undefined) return false;
-  return figure.heightCm * measure.pxPerCm * measure.minScale * stanceReach(figure.stance) > measure.headroom;
+  return reachCm(figure.heightCm, figure.stance) * measure.pxPerCm * measure.minScale > measure.headroom;
 }
 
 /**
