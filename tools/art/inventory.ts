@@ -57,6 +57,7 @@ interface Manifest {
   campaignArt?: { campaigns: string[] };
   storyPlates?: { ids: string[] };
   paintedIcons?: { ids: string[] };
+  badgeArt?: { ids: string[] };
   entities: { id: string; classification: string }[];
 }
 
@@ -102,6 +103,15 @@ interface Line {
 }
 
 const lines: Line[] = [];
+{
+  const badges = manifest.badgeArt?.ids ?? [];
+  lines.push({
+    category: "Painted badge medals",
+    need: badges.length,
+    missing: badges.filter(id => !has("packages/client/src/assets/badges", `${id}.webp`)),
+    note: "#426 Me page medals; bundled and precached with the client",
+  });
+}
 const delivered = (line: Line): number => line.need - line.missing.length;
 
 // --- Character illustrations -----------------------------------------------------
