@@ -1,12 +1,13 @@
 /**
  * The room's cheers, on the shared screen (#388): a small eye and a number
- * while anybody is watching a full table, and each cheer they send floating
- * up from beside it and fading.
+ * while anybody is watching a full table, and each cheer they send rising
+ * from the bottom of the screen to the top, at a spot across picked at
+ * random, fading out gradually as it goes.
  *
- * Small and out of the way on purpose. Nothing here waits, blocks or asks for
- * a tap, and it never says who is watching or who cheered, only how many are
- * watching. It sits on the left edge just above the story plate
- * (stage-inset.ts), where the figures and the fight log are not.
+ * Nothing here waits, blocks or asks for a tap: the layer lets every tap
+ * through. It never says who is watching or who cheered, only how many are
+ * watching, and that count stands at the left end of the story plate
+ * (stage-inset.ts).
  *
  * Only on a surface that is the room's screen (WorldView's
  * `gatesPresentations`): a party phone keeps its world pane mounted behind
@@ -26,10 +27,15 @@ import { Icon } from "./icons";
 import "./RoomCheers.css";
 
 /** How long one cheer floats before it is let go. Matches RoomCheers.css. */
-export const CHEER_FLOAT_MS = 3200;
+export const CHEER_FLOAT_MS = 5000;
 
-/** Lanes a burst of cheers spreads across, so two at once do not sit on each other. */
-const LANES = 3;
+/**
+ * Where across the screen a cheer rises, as a percent of its width: anywhere
+ * but the very edges, where half the picture would be off the screen.
+ */
+export function cheerX(random: () => number = Math.random): number {
+  return 6 + random() * 88;
+}
 
 export function RoomCheers(): ReactElement | null {
   const state = useRunState();
@@ -65,9 +71,11 @@ function Floating({ heard }: { heard: HeardCheer }): ReactElement | null {
     const timer = setTimeout(() => drop(heard.key), CHEER_FLOAT_MS);
     return () => clearTimeout(timer);
   }, [drop, heard.key]);
+  // Picked once, so a re-render never moves a cheer already on its way up.
+  const [x] = useState(() => cheerX());
   const cheer = cheerById(heard.cheer);
   if (!cheer) return null;
-  const style = { "--cheer-lane": heard.key % LANES } as CSSProperties;
+  const style = { "--cheer-x": `${x.toFixed(1)}%` } as CSSProperties;
   return (
     <span className="room-cheers__cheer" style={style} data-testid="cheer">
       <Icon name={cheer.icon} />

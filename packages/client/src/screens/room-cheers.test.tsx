@@ -9,7 +9,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import { MAX_PARTY, type PartyMember, type RunState } from "@kad/shared";
 import { useGameStore } from "../store";
 import { makeState } from "../testing/fixtures";
-import { CHEER_FLOAT_MS, RoomCheers } from "./RoomCheers";
+import { CHEER_FLOAT_MS, RoomCheers, cheerX } from "./RoomCheers";
 
 const hero = (i: number): PartyMember =>
   ({ playerId: `p_${i}`, character: { id: `c_${i}`, name: `Hero ${i}` }, hp: 10, down: false, connected: true, ready: false }) as never;
@@ -50,6 +50,17 @@ describe("RoomCheers", () => {
     useGameStore.setState({ state: { ...state, party: [...state.party.slice(0, MAX_PARTY - 1), hero(5)] }, cheers: [] });
     render(<RoomCheers />);
     expect(screen.queryByTestId("watching")).toBeNull();
+  });
+
+  it("puts each cheer somewhere across the screen, never off its edge", () => {
+    expect(cheerX(() => 0)).toBeGreaterThan(0);
+    expect(cheerX(() => 0.999999)).toBeLessThan(100);
+    vi.spyOn(Math, "random").mockReturnValueOnce(0.25).mockReturnValueOnce(0.75);
+    useGameStore.setState({ state: fullTable(), cheers: [{ key: 1, cheer: "star" }, { key: 2, cheer: "heart" }] });
+    render(<RoomCheers />);
+    const xs = screen.getAllByTestId("cheer").map((cheer) => cheer.style.getPropertyValue("--cheer-x"));
+    expect(xs).toEqual([`${cheerX(() => 0.25).toFixed(1)}%`, `${cheerX(() => 0.75).toFixed(1)}%`]);
+    vi.restoreAllMocks();
   });
 
   it("floats each cheer and lets it go", () => {
