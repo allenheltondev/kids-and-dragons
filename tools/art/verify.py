@@ -694,15 +694,15 @@ def check_scene_illustrations(rep: Report, mf: dict) -> None:
         rep.ok(f"{art}  {expected[0]}x{expected[1]} opaque")
 
 
-def check_painted_icons(rep: Report, mf: dict) -> None:
-    """Additional #421 icons: real alpha and a clear border at their shipped size."""
-    spec = mf.get("paintedIcons")
+def check_painted_icons(rep: Report, mf: dict, section: str = "paintedIcons", directory: str = "painted") -> None:
+    """Painted icons and badge medals: real alpha and a clear shipped border."""
+    spec = mf.get(section)
     if not spec:
         return
     size = (spec["canvas"]["width"], spec["canvas"]["height"])
     for icon in spec["ids"]:
-        label = f"painted/{icon}"
-        path = os.path.join(ROOT, "packages", "client", "src", "assets", "painted", f"{icon}.webp")
+        label = f"{directory}/{icon}"
+        path = os.path.join(ROOT, "packages", "client", "src", "assets", directory, f"{icon}.webp")
         if not os.path.isfile(path):
             rep.fail(label, "declared painted icon present", "missing")
             continue
@@ -781,6 +781,7 @@ def main() -> int:
     check_story_plates(rep, mf)
     check_scene_illustrations(rep, mf)
     check_painted_icons(rep, mf)
+    check_painted_icons(rep, mf, "badgeArt", "badges")
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
     if skipped:

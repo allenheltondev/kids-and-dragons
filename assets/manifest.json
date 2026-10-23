@@ -2558,5 +2558,22 @@
       "thorn",
       "wing"
     ]
+  },
+  "badgeArt": {
+    "canvas": {
+      "width": 256,
+      "height": 256
+    },
+    "ids": [
+      "finished",
+      "finished-3",
+      "guest-star",
+      "kept-going",
+      "level-3",
+      "level-5",
+      "finds-1",
+      "finds-5",
+      "finds-15"
+    ]
   }
 }
