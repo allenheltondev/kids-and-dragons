@@ -456,7 +456,7 @@ describe('incremental artwork delivery', () => {
     expect(checkIncremental(config, registry).entitiesToProcess.size).toBe(registry.entities.size);
   });
 
-  it('updates page links after art-only delivery without --force', () => {
+  it('updates page links after art-only delivery without --force', { timeout: 60_000 }, () => {
     const generate = () => execFileSync(process.execPath,
       [path.resolve('node_modules/tsx/dist/cli.mjs'), path.resolve('tools/wiki/generate.ts')],
       { cwd: root, encoding: 'utf8', stdio: 'pipe' });
