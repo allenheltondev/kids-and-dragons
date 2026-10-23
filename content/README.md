@@ -503,6 +503,17 @@ Guidance:
 
 ## Who is on stage: `cast`
 
+`npm run content:cast:mentions` reports prose that names a known manifest cast figure, entity or
+chapter-local nameplate without a matching figure in that scene's cast. Use
+`-- --chapter bramblewood-01` to filter by chapter ID prefix, or `-- --json` for findings with
+the source text and field location. It also reads check prompts, choice labels, variants and
+branch narration, skips encounters (which draw their own enemies), and marks scenes already
+at the three-entry cap. This is advisory, like `content:pacing`: memories, remote speakers,
+conditional variants and generic roles can all produce candidates that should stay uncast.
+It matches complete names and singular entity IDs with spaces in place of underscores or
+hyphens; it does not infer nicknames, plurals, pronouns, presence on later scenes, or missing art.
+Read every scene before editing; a clean report is not proof of complete casting.
+
 A story, check, choice-point or rest scene may say who is standing there with the party. The shared
 screen draws them opposite the heroes, the heroes turn to face them, and they walk in when they arrive
 and out when the story leaves them behind. Without it, meeting a selkie professor looks exactly like
