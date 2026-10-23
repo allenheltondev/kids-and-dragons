@@ -139,6 +139,7 @@ test("the still-image experience keeps the story's cast and visible rift", async
     const modulePath = "/src/store/index.ts";
     const { useGameStore } = await import(modulePath);
     const state = useGameStore.getState().state;
+    await useGameStore.getState().loadChapter(state.chapterId);
     const chapter = useGameStore.getState().chapter;
     useGameStore.setState({
       chapter: { ...chapter, scenes: { ...chapter.scenes, art_review: {
