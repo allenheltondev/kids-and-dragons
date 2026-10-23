@@ -83,6 +83,11 @@
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Travelers",
+          "count": 2
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
@@ -108,6 +113,11 @@
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Travelers",
+          "count": 2
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
@@ -133,6 +143,11 @@
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Travelers",
+          "count": 2
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
