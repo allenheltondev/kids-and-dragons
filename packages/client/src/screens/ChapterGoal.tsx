@@ -100,7 +100,10 @@ export function ChapterGoalCard({ place, folded = false }: ChapterGoalCardProps)
   const [open, toggle] = useFold("goal", false);
   const stepsId = `goal-steps-${useId().replace(/:/g, "")}`;
   // Only a player's own shell: the shared screen is read-only at any size (layout/WorldView.tsx).
-  const sideways = useLandscapePhone() && useContext(PlayerShell);
+  // Both hooks run every render, whichever is true: a phone turning must not change their order.
+  const landscapePhone = useLandscapePhone();
+  const inPlayerShell = useContext(PlayerShell);
+  const sideways = landscapePhone && inPlayerShell;
   // The chime is the room's, so only the shared surface plays it.
   const fresh = useFreshTicks(current, place === "world" ? () => cue("gem-pickup") : undefined);
   if (current === null) return null;

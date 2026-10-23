@@ -266,6 +266,34 @@ describe("the chapter's goal on a phone held sideways", () => {
     expect(screen.queryByText("Find a ladder")).toBeNull();
   });
 
+  it("follows a phone turning, in the same mounted card", () => {
+    // A matchMedia that can turn: upright first, then sideways, then upright again.
+    let turned = false;
+    const listeners = new Set<() => void>();
+    vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+      get matches() { return turned && query.includes("max-height: 559px"); },
+      media: query,
+      addEventListener: (_: string, fn: () => void) => listeners.add(fn),
+      removeEventListener: (_: string, fn: () => void) => listeners.delete(fn),
+    })));
+    const turn = (to: boolean): void => {
+      act(() => {
+        turned = to;
+        for (const fn of listeners) fn();
+      });
+    };
+    seed({});
+    render(<PlayerShell.Provider value><ChapterGoalCard place="world" /></PlayerShell.Provider>);
+    expect(screen.queryByRole("button", { name: /your goal/i })).toBeNull();
+    expect(screen.getByText("Find a ladder")).toBeTruthy();
+    turn(true);
+    expect(screen.getByRole("button", { name: /your goal, 0 of 2 done/i })).toBeTruthy();
+    expect(screen.queryByText("Find a ladder")).toBeNull();
+    turn(false);
+    expect(screen.queryByRole("button", { name: /your goal/i })).toBeNull();
+    expect(screen.getByText("Find a ladder")).toBeTruthy();
+  });
+
   it("gives the hero's own pane its line back", () => {
     sideways();
     seed({});
