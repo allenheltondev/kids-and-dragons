@@ -105,11 +105,22 @@ export async function handler(
   return respond(event, AWS_RUNTIME);
 }
 
+/**
+ * The dev server's `express.json({ limit: "256kb" })`, held here too. Without
+ * it the Lambda took anything up to API Gateway's 6MB, and a seated phone
+ * could pad an intent that the event log then stores and replays verbatim on
+ * every reconnect.
+ */
+export const MAX_BODY_BYTES = 256 * 1024;
+
 /** `handler()` with the AWS wiring passed in rather than imported. */
 export async function respond(
   event: APIGatewayProxyEventV2,
   rt: HttpRuntime,
 ): Promise<APIGatewayProxyStructuredResultV2> {
+  if (event.body && Buffer.byteLength(event.body, event.isBase64Encoded ? "base64" : "utf8") > MAX_BODY_BYTES) {
+    return error(413, "ILLEGAL", "that request is too large");
+  }
   const req = parse(event, rt);
   try {
     return await route(req, rt);
@@ -746,13 +757,19 @@ async function postProgressionSpend(req: Req, deps: HandlerDeps) {
   if (!Object.prototype.hasOwnProperty.call(req.body, "stat")) {
     return error(400, "ILLEGAL", "expected { stat }");
   }
+  // The seq the spend was built on, as for every intent. Defaulting it to the
+  // run's current seq waved every request through the stale check, so a
+  // double tap spent two points. No client sends here any more (a spend
+  // rides /api/action); the route is kept for one that might.
+  if (typeof req.body.seq !== "number" || !Number.isFinite(req.body.seq)) {
+    return error(400, "ILLEGAL", "expected { stat, seq }");
+  }
 
-  const state = await deps.repo.getState(session.runId);
   const response = await applyAction(
     {
       runId: session.runId,
       playerId: session.playerId,
-      seq: Number(req.body.seq ?? state?.seq ?? 0),
+      seq: req.body.seq,
       intent: { type: "SPEND_STAT_POINT", stat: req.body.stat as never },
       principal: {
         householdId: session.householdId,

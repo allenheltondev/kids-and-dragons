@@ -569,6 +569,34 @@ describe("the mirror", () => {
   });
 });
 
+describe("a replayed patch that does not fit", () => {
+  it("fetches a full snapshot, holds decisions until it lands, and repairs the mirror", async () => {
+    const h = harness(makeState({ seq: 1, narration: "one" }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.api.fetchState.mockClear();
+    h.api.fetchState
+      .mockResolvedValueOnce({
+        seq: 2,
+        events: [{ seq: 2, runId: "r_1", patch: [{ op: "remove", path: "/no/such/thing" }] }],
+      } as never)
+      .mockImplementationOnce(async () => {
+        syncedDuringSnapshot = h.store.getState().synced;
+        return { seq: 2, state: makeState({ seq: 2, narration: "two" }) } as never;
+      });
+    let syncedDuringSnapshot: boolean | undefined;
+
+    await h.channelOptions().resync(1);
+
+    expect(syncedDuringSnapshot).toBe(false);
+
+    expect(h.api.fetchState).toHaveBeenCalledTimes(2);
+    expect(h.api.fetchState).toHaveBeenNthCalledWith(1, { runId: "r_1", code: "ABCD", sinceSeq: 1 }, "tok_1");
+    expect(h.api.fetchState).toHaveBeenNthCalledWith(2, { runId: "r_1", code: "ABCD" }, "tok_1");
+    expect(h.store.getState().state?.narration).toBe("two");
+    expect(h.store.getState().state?.seq).toBe(2);
+  });
+});
+
 describe("beat (#258)", () => {
   it("says still here, or leaving, with this phone's session, and shrugs off a failure", async () => {
     const h = harness(makeState({ seq: 7 }));

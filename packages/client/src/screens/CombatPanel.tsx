@@ -937,21 +937,52 @@ function swallowTap(event: MouseEvent): void {
  * paid for by changing size under the player's finger. Growing is allowed (a
  * bigger question has to fit); getting shorter waits for the next turn.
  */
-function useTallestThisTurn(ref: RefObject<HTMLElement | null>, turn: string): void {
-  const tallest = useRef<{ el: HTMLElement | null; turn: string; px: number }>({ el: null, turn, px: 0 });
+export function useTallestThisTurn(ref: RefObject<HTMLElement | null>, turn: string): void {
+  const tallest = useRef<{ el: HTMLElement | null; turn: string; px: number; stop: () => void }>({
+    el: null,
+    turn,
+    px: 0,
+    stop: () => undefined,
+  });
+  // No deps: the dock comes and goes with the turn, so the element can be a
+  // new one on any render. But it only measures, and only re-subscribes, when
+  // the element or the turn changed; growth in between arrives through the
+  // ResizeObserver rather than a forced layout on every patch.
   useLayoutEffect(() => {
     const el = ref.current;
-    if (!el) return;
-    if (tallest.current.el !== el || tallest.current.turn !== turn) {
-      tallest.current = { el, turn, px: 0 };
+    const held = tallest.current;
+    const fresh = held.el !== el || held.turn !== turn;
+    if (!fresh && typeof ResizeObserver !== "undefined") return;
+    const hold = () => {
+      if (!el) return;
+      const px = el.getBoundingClientRect().height;
+      if (px > tallest.current.px) {
+        tallest.current.px = px;
+        el.style.minBlockSize = `${px}px`;
+      }
+    };
+    if (fresh) {
+      held.stop();
+      tallest.current = { el, turn, px: 0, stop: () => undefined };
+      if (!el) return;
       el.style.minBlockSize = "";
+      if (typeof ResizeObserver !== "undefined") {
+        const grown = new ResizeObserver(hold);
+        grown.observe(el);
+        tallest.current.stop = () => grown.disconnect();
+      }
     }
-    const px = el.getBoundingClientRect().height;
-    if (px > tallest.current.px) {
-      tallest.current.px = px;
-      el.style.minBlockSize = `${px}px`;
-    }
+    hold();
   });
+  // Forget the element too, so a remount (Strict Mode's, or a kept-alive
+  // pane's) subscribes again instead of finding it "already watched".
+  useLayoutEffect(
+    () => () => {
+      tallest.current.stop();
+      tallest.current = { el: null, turn: tallest.current.turn, px: 0, stop: () => undefined };
+    },
+    [],
+  );
 }
 
 /**
@@ -960,9 +991,16 @@ function useTallestThisTurn(ref: RefObject<HTMLElement | null>, turn: string): v
  * (CombatPanel.css), and a card list cut cleanly at a card's edge reads as
  * the whole list; the mark fades the bottom edge so it reads as "keep going".
  */
-function useMoreBelow(ref: RefObject<HTMLElement | null>): void {
+export function useMoreBelow(ref: RefObject<HTMLElement | null>): void {
+  const watched = useRef<{ el: HTMLElement; stop: () => void } | null>(null);
+  // No deps, for the reason useTallestThisTurn gives, but it subscribes only
+  // when the box is a new element. Tearing the observers down and putting
+  // them back on every render cost a forced layout per patch mid-fight.
   useEffect(() => {
     const el = ref.current;
+    if (watched.current?.el === el) return;
+    watched.current?.stop();
+    watched.current = null;
     if (!el) return;
     const check = () => {
       const more = el.scrollHeight - el.clientHeight - el.scrollTop > 2;
@@ -974,17 +1012,37 @@ function useMoreBelow(ref: RefObject<HTMLElement | null>): void {
     // The cards slide in, and a card mid-slide overhangs the box: look again once it lands.
     el.addEventListener("animationend", check);
     const resized = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(check);
-    resized?.observe(el);
-    for (const child of el.children) resized?.observe(child);
-    const changed = typeof MutationObserver === "undefined" ? null : new MutationObserver(check);
+    const observeChildren = () => {
+      resized?.observe(el);
+      for (const child of el.children) resized?.observe(child);
+    };
+    observeChildren();
+    // New cards are new children: watch their size too, then look again.
+    const changed =
+      typeof MutationObserver === "undefined"
+        ? null
+        : new MutationObserver(() => {
+            observeChildren();
+            check();
+          });
     changed?.observe(el, { childList: true, subtree: true });
-    return () => {
-      el.removeEventListener("scroll", check);
-      el.removeEventListener("animationend", check);
-      resized?.disconnect();
-      changed?.disconnect();
+    watched.current = {
+      el,
+      stop: () => {
+        el.removeEventListener("scroll", check);
+        el.removeEventListener("animationend", check);
+        resized?.disconnect();
+        changed?.disconnect();
+      },
     };
   });
+  useEffect(
+    () => () => {
+      watched.current?.stop();
+      watched.current = null;
+    },
+    [],
+  );
 }
 
 /**

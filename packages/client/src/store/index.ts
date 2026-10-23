@@ -211,6 +211,8 @@ interface Runtime {
   content: Promise<void> | null;
   resyncing: Promise<void> | null;
   resyncAgain: boolean;
+  /** The next catch-up must be a full snapshot: the mirror desynced. */
+  resyncSnapshot: boolean;
   resyncRetry: ReturnType<typeof setTimeout> | null;
   resyncAttempt: number;
   connectRetry: ReturnType<typeof setTimeout> | null;
@@ -306,6 +308,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       content: null,
       resyncing: null,
       resyncAgain: false,
+      resyncSnapshot: false,
       resyncRetry: null,
       resyncAttempt: 0,
       connectRetry: null,
@@ -402,6 +405,15 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             // Repeated hole notifications must respect a failed fetch's backoff.
             if (runtime.resyncRetry === null) void resync(sinceSeq).catch(() => undefined);
           },
+          onDesync: (seq) => {
+            if (runtime.sequencer !== sequencer) return;
+            // Events from `seq` would replay the patch that just failed, so
+            // the catch-up asks for the whole state. Decisions wait for it:
+            // what is on screen is no longer what the server holds.
+            runtime.resyncSnapshot = true;
+            set({ synced: false });
+            if (runtime.resyncRetry === null) void resync(seq).catch(() => undefined);
+          },
         },
       });
       return sequencer;
@@ -421,10 +433,17 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       const task = (async () => {
         do {
           runtime.resyncAgain = false;
+          // Cleared before the fetch, so a desync during this one's replay
+          // asks for another, and restored if it fails, so the retry does too.
+          const snapshot = runtime.resyncSnapshot;
+          runtime.resyncSnapshot = false;
           const response = await deps.api.fetchState(
-            { runId: session.runId, code: session.roomCode, sinceSeq },
+            { runId: session.runId, code: session.roomCode, ...(snapshot ? {} : { sinceSeq }) },
             session.sessionToken || undefined,
-          );
+          ).catch((error: unknown) => {
+            if (snapshot && runtime.sequencer === sequencer) runtime.resyncSnapshot = true;
+            throw error;
+          });
           if (runtime.sequencer !== sequencer) return;
           if (response.state) sequencer.reset(response.state, response.seq);
           else if (response.events) sequencer.ingestAll(response.events);
@@ -520,6 +539,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       runtime.sequencer = null;
       runtime.resyncing = null;
       runtime.resyncAgain = false;
+      runtime.resyncSnapshot = false;
       runtime.resyncAttempt = 0;
       if (runtime.resyncRetry !== null) clearTimeout(runtime.resyncRetry);
       runtime.resyncRetry = null;

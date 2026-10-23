@@ -79,6 +79,9 @@ Parameters:
     Description: Route 53 hosted zone that holds AppDomainName's parent domain.
 
 Conditions:
+  # The stage that holds families' heroes. Staging and dev hold test rows and
+  # are torn down by hand (docs/deploy.md), so they skip the guards below.
+  IsProd: !Equals [!Ref StageName, prod]
   # Passkeys need a relying-party domain. Without one, email OTP alone.
   Passkeys: !Not [!Equals [!Ref WebAuthnRelyingPartyId, ""]]
   # Both halves are needed: the certificate validates, and the alias records
@@ -162,12 +165,17 @@ Resources:
         # sweeper — see the long note in store/keys.ts.
         AttributeName: ttl
         Enabled: true
-      # No point-in-time recovery, deliberately. The only restore it offers is
-      # the whole table at a moment in time, which for a shared family table
-      # means trading everyone else's evening for one recovered character — a
-      # trade nobody would make. `DeletionPolicy: Retain` above is the guard
-      # that actually matters, and it guards the accident that could plausibly
-      # happen: `sam delete` pointed at the wrong stack.
+      # `DeletionPolicy: Retain` above guards `sam delete` pointed at the wrong
+      # stack. It does nothing for a DeleteTable call, or for a sweeper bug that
+      # deletes households it should have kept — and the sweeper holds CRUD on
+      # this table. On prod, deletion protection refuses the first, and
+      # point-in-time recovery answers the second: a restore goes to a *new*
+      # table, from which one family's rows are copied back, so nobody else's
+      # evening is rolled back to recover them. At this table's size it costs
+      # cents a month.
+      DeletionProtectionEnabled: !If [IsProd, true, false]
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: !If [IsProd, true, false]
 
   # ---------------------------------------------------------------------------
   # Token signing — architecture §4.5
@@ -211,6 +219,8 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       UserPoolName: !Sub "kad-${StageName}"
+      # Grown-ups' sign-ins are not recreatable either; see the table above.
+      DeletionProtection: !If [IsProd, ACTIVE, INACTIVE]
       # Passwordless first-factor sign-in (email OTP, passkeys) needs the
       # Essentials tier. Its free tier is far above a household.
       UserPoolTier: ESSENTIALS

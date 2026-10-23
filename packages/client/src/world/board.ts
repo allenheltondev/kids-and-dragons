@@ -396,9 +396,16 @@ export function createBoardLayer(): BoardLayer {
   container.addChild(tilesLayer, highlightLayer, trailLayer, actorsLayer, nameLayer, floatLayer);
   const trail: TrailMark[] = [];
 
-  const activeRing = new Graphics();
+  // Drawn once, around its own origin; the ticker moves it and pulses its
+  // alpha. Redrawing it each frame re-tessellated and re-uploaded the
+  // geometry sixty times a second for the whole fight.
+  const activeRing = new Graphics()
+    .ellipse(0, BOARD_TILE_PX * 0.02, BOARD_TILE_PX * 0.42, BOARD_TILE_PX * 0.18)
+    .stroke({ width: 5, color: 0xffc95c });
   activeRing.visible = false;
   actorsLayer.addChild(activeRing);
+  /** Footprints are on the trail layer, so an empty trail must clear it once. */
+  let trailDrawn = false;
 
   const actors = new Map<string, BoardActor>();
   const floaters: Floater[] = [];
@@ -1140,15 +1147,8 @@ export function createBoardLayer(): BoardLayer {
       if (active) {
         activeRing.visible = true;
         activeRing.zIndex = active.container.y - 1;
-        activeRing.clear();
-        activeRing
-          .ellipse(
-            active.container.x,
-            active.container.y + BOARD_TILE_PX * 0.02,
-            BOARD_TILE_PX * 0.42,
-            BOARD_TILE_PX * 0.18,
-          )
-          .stroke({ width: 5, color: 0xffc95c, alpha: 0.55 + 0.35 * Math.sin(pulse * 4) });
+        activeRing.position.set(active.container.x, active.container.y);
+        activeRing.alpha = 0.55 + 0.35 * Math.sin(pulse * 4);
       } else {
         activeRing.visible = false;
       }
@@ -1160,11 +1160,16 @@ export function createBoardLayer(): BoardLayer {
         mark.age += dtSeconds;
         if (mark.age >= TRAIL_LIFE_S) trail.splice(i, 1);
       }
-      trailLayer.clear();
-      for (const mark of trail) {
-        trailLayer
-          .ellipse(mark.x, mark.y, BOARD_TILE_PX * 0.22, BOARD_TILE_PX * 0.1)
-          .fill({ color: 0xffc95c, alpha: 0.85 * (1 - mark.age / TRAIL_LIFE_S) });
+      // Each mark fades, so a live trail redraws every frame; an empty one
+      // is cleared once and then left alone.
+      if (trail.length > 0 || trailDrawn) {
+        trailLayer.clear();
+        for (const mark of trail) {
+          trailLayer
+            .ellipse(mark.x, mark.y, BOARD_TILE_PX * 0.22, BOARD_TILE_PX * 0.1)
+            .fill({ color: 0xffc95c, alpha: 0.85 * (1 - mark.age / TRAIL_LIFE_S) });
+        }
+        trailDrawn = trail.length > 0;
       }
 
       for (let i = floaters.length - 1; i >= 0; i--) {

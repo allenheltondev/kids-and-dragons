@@ -1100,6 +1100,53 @@ export function applyIntent(
   }
 }
 
+const isTile = (value: unknown): value is { x: number; y: number } =>
+  typeof value === "object" &&
+  value !== null &&
+  Number.isInteger((value as { x?: unknown }).x) &&
+  Number.isInteger((value as { y?: unknown }).y);
+
+/**
+ * The intent's fields that are stored, or walked, before any handler checks
+ * them. An intent arrives as JSON from a phone, typed only by the server's
+ * cast, so without this a `MOVE` with no `to` threw a TypeError deep in the
+ * encounter (a 500 every retry), `targetIds: "a"` slipped past the length
+ * check, and `mode` or `ready` stored whatever was sent and broadcast it to
+ * every screen (`ready: "yes"` counted as ready; `accept: "no"` accepted).
+ */
+function checkIntentShape(intent: ClientIntent): void {
+  const malformed = (field: string): never => {
+    throw new Illegal("ILLEGAL", `malformed ${intent.type}: ${field}`);
+  };
+  switch (intent.type) {
+    case "MOVE":
+      if (!isTile(intent.to)) malformed("to");
+      return;
+    case "COMBAT_ACTION":
+      if (typeof intent.abilityId !== "string") malformed("abilityId");
+      if (intent.targetId !== undefined && typeof intent.targetId !== "string") malformed("targetId");
+      if (intent.targetTile !== undefined && !isTile(intent.targetTile)) malformed("targetTile");
+      if (
+        intent.targetIds !== undefined &&
+        !(Array.isArray(intent.targetIds) && intent.targetIds.every((id) => typeof id === "string"))
+      ) malformed("targetIds");
+      if (
+        intent.targetTiles !== undefined &&
+        !(Array.isArray(intent.targetTiles) && intent.targetTiles.every(isTile))
+      ) malformed("targetTiles");
+      return;
+    case "SET_MODE":
+      if (intent.mode !== "party" && intent.mode !== "travel") malformed("mode");
+      return;
+    case "READY":
+      if (typeof intent.ready !== "boolean") malformed("ready");
+      return;
+    case "RESOLVE_TRADE":
+      if (typeof intent.accept !== "boolean") malformed("accept");
+      return;
+  }
+}
+
 function dispatch(
   draft: RunState,
   envelope: IntentEnvelope,
@@ -1107,6 +1154,7 @@ function dispatch(
   effects: EngineEffects,
 ): Presentation | undefined {
   const { playerId, intent } = envelope;
+  checkIntentShape(intent);
 
   /*
    * The playtest gate, in one place rather than in each handler. A second
@@ -1210,6 +1258,13 @@ function dispatch(
     case "PLAYTEST_SET_DIE":
       draft.playtestDie = readDie(intent.die);
       return undefined;
+
+    default: {
+      // Exhaustive at compile time; at run time, a type no client sends. It
+      // was accepted as a no-op before, and still moved the run's seq.
+      const unknown: never = intent;
+      throw new Illegal("ILLEGAL", `no such intent: ${String((unknown as { type?: unknown }).type)}`);
+    }
   }
 }
 

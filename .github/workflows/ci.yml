@@ -69,7 +69,9 @@ jobs:
   build:
     needs: changes
     if: needs.changes.outputs.build == 'true'
-    name: typecheck, test, content, art, build
+    # Not the required check; build-result below is, under the name this job
+    # used to carry.
+    name: build (run)
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -362,6 +364,32 @@ jobs:
           name: playwright-traces-${{ matrix.id }}
           path: test-results/
           retention-days: 7
+
+  build-result:
+    # The check named "typecheck, test, content, art, build", as before this
+    # gate existed, so a required check on that name keeps its meaning. A job
+    # whose `needs` failed reports as skipped, and skipped satisfies a
+    # required check — so without this, a broken `changes` job would wave
+    # every pull request through untested. Passes when build passed or when
+    # `changes` deliberately skipped it, never when `changes` itself failed.
+    name: typecheck, test, content, art, build
+    needs: [changes, build]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Build passed, or was not needed
+        env:
+          CHANGES: ${{ needs.changes.result }}
+          RESULT: ${{ needs.build.result }}
+        run: |
+          if [ "$CHANGES" != "success" ]; then
+            echo "::error::build: the changes job finished with '$CHANGES', so the build never ran"
+            exit 1
+          fi
+          if [ "$RESULT" = "success" ] || [ "$RESULT" = "skipped" ]; then exit 0; fi
+          echo "::error::build: finished with '$RESULT'"
+          exit 1
 
   e2e-result:
     # The one check named "end to end", as before the suite was sharded, so a

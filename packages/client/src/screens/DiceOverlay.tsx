@@ -220,7 +220,9 @@ export function DiceOverlay(): ReactElement | null {
   const [helpFace, setHelpFace] = useState(1);
   const helpSides = shownRoll?.help?.sides ?? null;
   useEffect(() => {
-    if (shownId === null || prefersReducedMotion()) return;
+    // Keyed on `settled` too: without it the interval re-rendered the card,
+    // portrait and all, every 80ms for as long as it stayed up.
+    if (shownId === null || settled || prefersReducedMotion()) return;
     const timer = window.setInterval(() => {
       setFace((previous) => nextFace(previous, Math.random()));
       if (helpSides !== null) setHelpFace((previous) => nextFace(previous, Math.random(), helpSides));
@@ -228,7 +230,7 @@ export function DiceOverlay(): ReactElement | null {
     return () => {
       window.clearInterval(timer);
     };
-  }, [shownId, helpSides]);
+  }, [shownId, helpSides, settled]);
 
   const roll = shown?.roll ?? null;
   const good = roll === null ? false : GOOD.has(roll.result);

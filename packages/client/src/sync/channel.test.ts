@@ -77,6 +77,74 @@ function patch(
 }
 
 describe("MessageSequencer", () => {
+  describe("a patch that does not fit the mirror", () => {
+    function desyncHarness() {
+      const h = harness();
+      const desyncs: number[] = [];
+      const sequencer = new MessageSequencer({
+        handlers: {
+          onState: (state) => void h.states.push(state),
+          onPresentation: () => undefined,
+          onProgression: () => undefined,
+          onGap: (sinceSeq) => void h.gaps.push(sinceSeq),
+          onDesync: (seq) => void desyncs.push(seq),
+        },
+        schedule: h.scheduler.schedule,
+        cancel: h.scheduler.cancel,
+      });
+      return { ...h, sequencer, desyncs };
+    }
+    const broken = (seq: number): ChannelMessage => ({
+      kind: "patch",
+      seq,
+      runId: "r_1",
+      patch: [{ op: "remove", path: "/no/such/thing" }],
+    });
+
+    it("asks for a snapshot rather than throwing out of ingest or replaying it", () => {
+      const h = desyncHarness();
+      h.sequencer.reset(makeState({ seq: 1, narration: "one" }), 1);
+
+      expect(() => h.sequencer.ingest(broken(2))).not.toThrow();
+      expect(h.desyncs).toEqual([1]);
+      expect(h.sequencer.seq).toBe(1);
+      expect(h.sequencer.state?.narration).toBe("one");
+
+      // Nothing more lands on a mirror known to be wrong, and no gap timer
+      // turns into an events replay of the same failure.
+      h.sequencer.ingest(patch(3, "three"));
+      expect(h.sequencer.state?.narration).toBe("one");
+      h.scheduler.flush();
+      expect(h.gaps).toEqual([]);
+      expect(h.desyncs).toEqual([1]);
+    });
+
+    it("recovers on the snapshot and applies what it buffered after it", () => {
+      const h = desyncHarness();
+      h.sequencer.reset(makeState({ seq: 1 }), 1);
+      h.sequencer.ingest(broken(2));
+      h.sequencer.ingest(patch(4, "four"));
+
+      h.sequencer.reset(makeState({ seq: 3, narration: "three" }), 3);
+      expect(h.sequencer.seq).toBe(4);
+      expect(h.sequencer.state?.narration).toBe("four");
+
+      // Healthy again: a later bad patch is a fresh desync.
+      h.sequencer.ingest(broken(5));
+      expect(h.desyncs).toEqual([1, 4]);
+    });
+
+    it("gives up on a hole that never fills instead of buffering forever", () => {
+      const h = desyncHarness();
+      h.sequencer.reset(makeState({ seq: 1 }), 1);
+      for (let seq = 3; seq < 3 + 200; seq++) h.sequencer.ingest(patch(seq, `n${seq}`));
+      expect(h.desyncs).toEqual([]);
+      h.sequencer.ingest(patch(203, "one too many"));
+      expect(h.desyncs).toEqual([1]);
+      expect(h.sequencer.buffered).toEqual([]);
+    });
+  });
+
   it("ignores snapshots older than realtime state and snapshots after disposal", () => {
     const { sequencer, states } = harness();
     sequencer.reset(makeState({ seq: 1 }), 1);

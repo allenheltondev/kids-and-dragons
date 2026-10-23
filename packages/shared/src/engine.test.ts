@@ -2636,6 +2636,32 @@ describe("SET_MODE", () => {
   });
 });
 
+describe("an intent the server only cast, never checked", () => {
+  // The server hands the engine a phone's JSON with a type cast. These
+  // shapes used to throw a TypeError (a 500, every retry) or land in state.
+  const malformed: [string, unknown][] = [
+    ["MOVE with no tile", { type: "MOVE" }],
+    ["MOVE to null", { type: "MOVE", to: null }],
+    ["MOVE to half a tile", { type: "MOVE", to: { x: 1 } }],
+    ["targets as a string", { type: "COMBAT_ACTION", abilityId: "strike", targetIds: "a" }],
+    ["tiles as a string", { type: "COMBAT_ACTION", abilityId: "strike", targetTiles: "ab" }],
+    ["a tile that is not one", { type: "COMBAT_ACTION", abilityId: "strike", targetTile: [1, 2] }],
+    ["no ability", { type: "COMBAT_ACTION", targetId: "e_1" }],
+    ["a mode that is not one", { type: "SET_MODE", mode: { x: "y".repeat(1000) } }],
+    ["ready as a word", { type: "READY", ready: "yes" }],
+    ["accept as a word", { type: "RESOLVE_TRADE", tradeId: "t_1", accept: "no" }],
+    ["a type nobody sends", { type: "NOT_A_THING" }],
+  ];
+
+  it.each(malformed)("refuses %s, and leaves the run where it was", (_, intent) => {
+    const context = ctx();
+    const before = seatedParty(context);
+    const result = applyIntent(before, { playerId: "p_1", intent: intent as ClientIntent }, context);
+    expect(result.error?.code).toBe("ILLEGAL");
+    expect(result.state).toEqual(before);
+  });
+});
+
 describe("the end of a chapter", () => {
   /** The fixture chapter, played to its end by a party of two. */
   function toChapterEnd(context: EngineContext): RunState {
@@ -3046,6 +3072,17 @@ describe("items in a fight (spec §7.2's fourth universal action)", () => {
     if (!actor || !member) throw new Error("expected a party member on the clock");
     return member;
   }
+
+  it("refuses a malformed move on the hero's own turn, rather than throwing out of the engine", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const state = midFight(context);
+    const member = activeMember(state);
+    for (const intent of [{ type: "MOVE" }, { type: "MOVE", to: null }, { type: "MOVE", to: { x: "1", y: 2 } }]) {
+      const result = applyIntent(state, { playerId: member.playerId, intent: intent as ClientIntent }, context);
+      expect(result.error?.code).toBe("ILLEGAL");
+      expect(result.state).toEqual(state);
+    }
+  });
 
   it("a consumable is the turn's one action, and its bonus lands on the fight", () => {
     const context = ctx({ rng: fixedRng(20) });

@@ -136,6 +136,9 @@ const VICTORY_PEAK = 0.5;
 
 /** The story scene is authored at this size and framed into whatever pane it gets. */
 const DESIGN = { width: 1600, height: 900 } as const;
+
+/** Backdrops kept decoded: the one on screen and the one before it. */
+const KEPT_BACKDROPS = 2;
 /** One camera "tile" of story space, in design units. See the header. */
 export const STORY_TILE = 100;
 const STORY_BOARD = { width: DESIGN.width / STORY_TILE, height: DESIGN.height / STORY_TILE } as const;
@@ -499,6 +502,22 @@ export function createScene(app: Application): PartyScene {
   /** The selected backdrop URL, and the sprite drawing it. */
   let biomeId: string | null = null;
   let biomeSprite: Sprite | null = null;
+  /**
+   * Backdrops shown, oldest first, by the URL each was loaded under. A 1920x1080
+   * backdrop is about 8MB decoded, a chapter has eight to twelve, and nothing
+   * ever let go of one: a TV gained a hundred megabytes a chapter. The last two
+   * stay (stepping back to the room just left is common); older ones unload.
+   */
+  const shownBackdrops: string[] = [];
+  const keepBackdrop = (url: string) => {
+    const at = shownBackdrops.indexOf(url);
+    if (at >= 0) shownBackdrops.splice(at, 1);
+    shownBackdrops.push(url);
+    while (shownBackdrops.length > KEPT_BACKDROPS) {
+      const old = shownBackdrops.shift();
+      if (old !== undefined) void Assets.unload(old).catch(() => undefined);
+    }
+  };
 
   const actorsLayer = new Container();
   // Painter's order by zIndex, so the depth stagger in layoutActors() reads
@@ -1756,17 +1775,34 @@ export function createScene(app: Application): PartyScene {
       biomeSprite = null;
       if (wanted === null) return;
 
-      void Assets.load<Texture>(wanted)
+      let loadedAs = wanted;
+      /*
+       * Assets.unload drops a URL from the cache at once but from the loader
+       * only after an await, and a load in between is handed the texture that
+       * unload is about to destroy. Rare (a step back onto a backdrop as it
+       * falls out of the kept two), and answered by loading it once more.
+       */
+      const load = (url: string) =>
+        Assets.load<Texture>(url).then((texture) => (texture.destroyed ? Assets.load<Texture>(url) : texture));
+      void load(wanted)
         .catch((error: unknown) => {
           // A missing illustration returns to the chapter's environment.
           if (destroyed || biomeId !== wanted || fallback === null || wanted === fallback) {
             throw error;
           }
-          return Assets.load<Texture>(fallback);
+          loadedAs = fallback;
+          return load(fallback);
         })
         .then((texture) => {
           // The chapter may have moved on (or the stage gone) while it loaded.
-          if (destroyed || biomeId !== wanted) return;
+          if (destroyed || biomeId !== wanted) {
+            // Never shown, so never kept: let it go, unless it is still in use.
+            if (!destroyed && loadedAs !== biomeId && !shownBackdrops.includes(loadedAs)) {
+              void Assets.unload(loadedAs).catch(() => undefined);
+            }
+            return;
+          }
+          keepBackdrop(loadedAs);
           const sprite = new Sprite(texture);
           /*
            * Cover the design rect, then centre in it. Backdrops are authored

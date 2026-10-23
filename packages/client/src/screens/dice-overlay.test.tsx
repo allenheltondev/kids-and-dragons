@@ -59,6 +59,18 @@ describe("the dice card", () => {
     expect(document.querySelector(".dice")).toBeNull();
   });
 
+  it("stops scrambling faces once every die is down", () => {
+    render(<DiceOverlay />);
+    throwRoll(HELPED);
+    act(() => vi.advanceTimersByTime(ROLL_TUMBLE_MS + ROLL_HELP_TUMBLE_MS));
+    expect(document.querySelector(".dice__card--settled")).not.toBeNull();
+    // The read time that follows has nothing moving: no scramble left to fire,
+    // only the timer that takes the card down.
+    expect(vi.getTimerCount()).toBe(1);
+    act(() => vi.advanceTimersByTime(ROLL_READ_MS + 100));
+    expect(document.querySelector(".dice")).toBeNull();
+  });
+
   it("says the helper's share out loud", () => {
     expect(spokenRoll(HELPED, "Sparklehoof", "Windstep")).toBe(
       "Sparklehoof rolled 9 plus 2 plus 3 from Windstep, 14. Success!",
