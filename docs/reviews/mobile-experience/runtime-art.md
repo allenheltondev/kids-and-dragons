@@ -30,10 +30,10 @@ A separate browser scenario forces the animated renderer to fail, then verifies 
 
 ## Validation results
 
-- 746 distinct runtime image URLs successfully decoded in Chromium, including all referenced scene/cast art, character variants, UI images, map images and effect sheets.
+- 769 distinct runtime image URLs successfully decoded in Chromium after integrating current main (746 on the original audit checkout), including all referenced scene/cast art, character variants, UI images, map images and effect sheets.
 - All 67 discovered guide entries rendered loaded art at both phone and tablet sizes (134 entry views).
 - All 3 runtime-art browser scenarios passed. The still-stage scenario passed again after correcting figure placement.
-- 39 targeted component/generator tests passed, including the fallback renderer and guide-art coverage.
+- 45 targeted component/generator tests passed after integrating current main, including the fallback renderer, guide-art coverage and cast-mention report.
 - Client TypeScript check and production build passed.
 - [Reviewed still-stage tablet screenshot](still-stage-tablet.png).
 
