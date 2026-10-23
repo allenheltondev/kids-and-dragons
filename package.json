@@ -65,7 +65,7 @@
     "@testing-library/user-event": "^14.6.8",
     "@types/js-yaml": "4.0.9",
     "@types/node": "^22.10.2",
-    "@vitest/coverage-v8": "^4.1.12",
+    "@vitest/coverage-v8": "^5.0.5",
     "ajv": "^8.20.0",
     "ajv-formats": "^3.0.1",
     "concurrently": "^10.0.4",
@@ -75,6 +75,6 @@
     "pagefind": "1.5.2",
     "tsx": "^4.23.15",
     "typescript": "~5.9.0",
-    "vitest": "^4.1.12"
+    "vitest": "^5.0.5"
   }
 }
