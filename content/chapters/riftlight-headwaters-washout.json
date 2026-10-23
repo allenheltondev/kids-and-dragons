@@ -723,6 +723,12 @@
           "value": true
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ],
       "art": "scenes/gemfall/northern-bridge-foot"
     }
   },
