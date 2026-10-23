@@ -1,0 +1,93 @@
+/*
+ * The room's cheers (RoomCheers.tsx, #388): a narrow column on the left edge,
+ * standing on the story plate (`--cheers-bottom`, from stage-inset.ts). Each
+ * cheer rises up the column and fades over CHEER_FLOAT_MS. Container-relative
+ * units only.
+ */
+.room-cheers {
+  position: absolute;
+  inset-inline-start: 0.75em;
+  inset-block-end: calc(var(--cheers-bottom, 0px) + 0.5em);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  inline-size: 4.5em;
+  pointer-events: none;
+}
+
+/* The column the cheers rise through. */
+.room-cheers__sky {
+  position: relative;
+  inline-size: 100%;
+  block-size: 9em;
+}
+
+.room-cheers__cheer {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: calc(var(--cheer-lane, 0) * 1.4em);
+  font-size: 1.6em;
+  opacity: 0;
+  animation: room-cheer-rise 3200ms ease-out forwards;
+}
+
+@keyframes room-cheer-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  12% {
+    opacity: 1;
+    transform: translateY(-0.5em) scale(1.1);
+  }
+  70% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-5em) scale(1);
+  }
+}
+
+/* Quiet mode (#260): the cheer shows where it starts and fades, without rising. */
+html[data-quiet] .room-cheers__cheer {
+  animation-name: room-cheer-fade;
+}
+
+@keyframes room-cheer-fade {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  15%,
+  70% {
+    opacity: 1;
+  }
+}
+
+/* Reduced motion: theme.css flattens every animation to its last frame, which here is
+   invisible, so the cheer simply shows, still, until RoomCheers lets it go. */
+@media (prefers-reduced-motion: reduce) {
+  .room-cheers__cheer {
+    animation: none;
+    opacity: 1;
+  }
+}
+html[data-motion="reduced"] .room-cheers__cheer {
+  animation: none;
+  opacity: 1;
+}
+
+.room-cheers__watching {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  margin: 0;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  background: var(--kad-bg-overlay);
+  color: var(--kad-ink-dim);
+  font-size: 0.9em;
+  font-weight: 600;
+}

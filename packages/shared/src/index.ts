@@ -55,6 +55,7 @@ export * from "./environment.js";
 export * from "./engine.js";
 export * from "./seats.js";
 export * from "./away.js";
+export * from "./spectators.js";
 export * from "./enemy-ai.js";
 export * from "./balance.js";
 export * from "./playtest.js";

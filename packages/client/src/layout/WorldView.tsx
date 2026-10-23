@@ -37,6 +37,7 @@ import { FieldGuideBanner } from "../screens/FieldGuideNews";
 import { RiftStatus } from "../screens/RiftStatus";
 import { ChapterGoalCard } from "../screens/ChapterGoal";
 import { ChapterPreface } from "../screens/ChapterPreface";
+import { RoomCheers } from "../screens/RoomCheers";
 import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
 // The hold table lives in world/presentation.ts because the board renderer
@@ -180,6 +181,10 @@ export function WorldView({
           nothing outside a fight. */}
       {isSceneLike(phase) && <FightLog />}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
+      {/* Spectators' cheers and how many are watching (#388). Only on the room's
+          own screen: a party phone's world pane, mounted behind its controls,
+          does not gate presentations, and the heroes' phones never show cheers. */}
+      {gatesPresentations ? <RoomCheers /> : null}
 
       {/* The roll is the centrepiece of whatever pane it lands in. On a TV that
           is the room; on a phone the shell hands the world the whole screen for

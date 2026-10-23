@@ -31,6 +31,7 @@ import {
 } from "../handlers/code-guard.ts";
 import { reportClientError } from "../handlers/client-error.ts";
 import { relayPreview } from "../handlers/preview.ts";
+import { relayCheer } from "../handlers/cheer.ts";
 import { beatPresence } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
@@ -146,6 +147,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/action") return (deps) => postAction(req, deps);
     if (req.path === "/api/preview") return (deps) => postPreview(req, deps);
     if (req.path === "/api/presence") return (deps) => postPresence(req, deps);
+    if (req.path === "/api/cheer") return (deps) => postCheer(req, deps);
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/resume") return (deps) => postResume(req, deps);
     if (req.path === "/api/save/release") return (deps) => postReleaseHero(req, deps);
@@ -665,6 +667,26 @@ async function postPreview(req: Req, deps: HandlerDeps) {
       householdId: session.householdId,
       preview: req.body.preview,
       context: req.body.context,
+    },
+    deps,
+  );
+  if (!result.ok) return error(result.status, result.code, result.message);
+  return json(200, { ok: true });
+}
+
+/**
+ * A spectator's cheer (handlers/cheer.ts, #388). Session token only, like a
+ * preview: the seat comes from the token, never the body.
+ */
+async function postCheer(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "a cheer needs a room session token");
+  const result = await relayCheer(
+    {
+      runId: session.runId,
+      playerId: session.playerId,
+      householdId: session.householdId,
+      cheer: req.body.cheer,
     },
     deps,
   );

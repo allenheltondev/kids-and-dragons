@@ -7,7 +7,15 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
-import { MAX_PARTY, TABLE_FULL_MESSAGE, type PartyMember, type RunState } from "@kad/shared";
+import {
+  CHEER_COOLDOWN_MS,
+  CHEERS,
+  MAX_PARTY,
+  SPECTATOR_MESSAGE,
+  TABLE_FULL_MESSAGE,
+  type PartyMember,
+  type RunState,
+} from "@kad/shared";
 import { useGameStore } from "../store";
 import { PlayerView } from "./PlayerView";
 
@@ -93,7 +101,7 @@ afterEach(() => {
 describe("a full table (#389)", () => {
   it("tells a fifth phone the table is full, not how to make a hero", () => {
     mount("p_5", state());
-    expect(screen.getByTestId("table-full").textContent).toBe(TABLE_FULL_MESSAGE);
+    expect(screen.getByTestId("table-full").textContent).toContain(TABLE_FULL_MESSAGE);
     expect(document.querySelector(".player-view__creation")).toBeNull();
   });
 
@@ -106,9 +114,39 @@ describe("a full table (#389)", () => {
     expect(document.querySelector(".player-view__creation")).not.toBeNull();
   });
 
+  it("lets a spectator cheer, then rests the buttons a moment (#388)", async () => {
+    vi.useFakeTimers();
+    try {
+      const cheer = vi.fn(async () => true);
+      mount("p_5", state());
+      act(() => useGameStore.setState({ cheer }));
+      const buttons = screen.getAllByRole("button", { name: /!$/ });
+      expect(buttons.map((b) => b.getAttribute("aria-label"))).toEqual(CHEERS.map((c) => c.label));
+
+      act(() => buttons[1]!.click());
+      expect(cheer).toHaveBeenCalledWith(CHEERS[1]!.id);
+      expect(buttons.every((b) => (b as HTMLButtonElement).disabled)).toBe(true);
+      act(() => buttons[2]!.click());
+      expect(cheer).toHaveBeenCalledTimes(1);
+
+      act(() => vi.advanceTimersByTime(CHEER_COOLDOWN_MS));
+      expect(buttons.every((b) => !(b as HTMLButtonElement).disabled)).toBe(true);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("says what the party is doing once the story has started (#388)", () => {
+    mount("p_5", { ...state(), phase: "scene", prompt: { kind: "choice", sceneId: "s", options: [], forPlayerIds: [], vote: true } });
+    expect(screen.getByTestId("spectating-doing").textContent).toBe("The party is voting on what to do next.");
+  });
+
   it("reads short and kind, and promises nothing we do not have", () => {
     const sentences = TABLE_FULL_MESSAGE.split(/(?<=[.!?])\s+/);
     for (const sentence of sentences) expect(sentence.split(/\s+/).length).toBeLessThanOrEqual(14);
     expect(TABLE_FULL_MESSAGE).not.toMatch(/watch|spectat|error|\(4\)/i);
+    // What the spectator can do instead (#388), in the same voice: never counting the party.
+    for (const sentence of SPECTATOR_MESSAGE.split(/(?<=[.!?])\s+/)) expect(sentence.split(/\s+/).length).toBeLessThanOrEqual(14);
+    expect(SPECTATOR_MESSAGE).not.toMatch(/\b(two|three|four|\d)\b/i);
   });
 });
