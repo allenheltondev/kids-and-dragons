@@ -72,6 +72,49 @@ describe("illustrated backdrops", () => {
   });
 });
 
+describe("letting go of backdrops", () => {
+  const settle = () => new Promise((resolve) => setTimeout(resolve, 0));
+
+  it("keeps the one on screen and the one before it, and unloads the rest", async () => {
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
+    const unload = vi.spyOn(Assets, "unload").mockResolvedValue(undefined);
+    const scene = createScene(fakeApp() as unknown as Application);
+    try {
+      for (const biome of ["plains", "whispering_marsh", "enchanted_woods"]) {
+        scene.setBiome(biome);
+        await settle();
+      }
+      expect(unload.mock.calls).toEqual([["/assets/biomes/plains/bg.webp"]]);
+
+      // Back to the room just left: still loaded, so nothing new lets go
+      // except what falls off the end.
+      scene.setBiome("whispering_marsh");
+      await settle();
+      expect(unload.mock.calls).toEqual([["/assets/biomes/plains/bg.webp"]]);
+      scene.setBiome("plains");
+      await settle();
+      expect(unload.mock.calls.at(-1)).toEqual(["/assets/biomes/enchanted_woods/bg.webp"]);
+    } finally { scene.destroy(); load.mockRestore(); unload.mockRestore(); }
+  });
+
+  it("loads again when handed a texture an unload just destroyed", async () => {
+    const gone = { destroyed: true } as unknown as Record<string, unknown>;
+    const load = vi.spyOn(Assets, "load")
+      .mockResolvedValueOnce(gone)
+      .mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
+    const app = fakeApp();
+    const scene = createScene(app as unknown as Application);
+    try {
+      scene.setBiome("plains");
+      await vi.waitFor(() => expect(load).toHaveBeenCalledTimes(2));
+      await settle();
+      const art = (app.stage.children[0] as Container).children[1] as Container;
+      const shown = art.children.filter((c): c is Sprite => c instanceof Sprite);
+      expect(shown.at(-1)?.texture).toBe(Texture.WHITE);
+    } finally { scene.destroy(); load.mockRestore(); }
+  });
+});
+
 describe("a rift in plain view (#401)", () => {
   /** Every sprite drawing a rift sheet frame, by the sheet it was cut from. */
   const rifts = (app: FakeApp): Sprite[] => {
