@@ -14,6 +14,7 @@ vi.mock("../store", () => ({
   useRunState: () => scene.state,
   useMe: () => null,
   useSession: () => null,
+  useCheers: () => [],
   useGameStore: Object.assign(
     (select: (store: unknown) => unknown) => select({ state: scene.state, loadChapter: () => Promise.resolve() }),
     { getState: () => ({ registerPresentationPlayer: () => () => undefined }), subscribe: () => () => undefined },
