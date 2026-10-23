@@ -49,6 +49,13 @@ function keysDeep(value: unknown, into = new Set<string>()): Set<string> {
 }
 
 describe("field guide", () => {
+  it("gives every published entry its delivered illustration", () => {
+    for (const entry of Object.values(guide.entries)) {
+      expect(entry.art, `${entry.id} must not silently render a category glyph`).toBeDefined();
+      expect(exists(entry.art!.replace(/^\/assets\//, "")), entry.id).toBe(true);
+    }
+  });
+
   it("covers every kind of thing a player can meet", () => {
     const categories = new Set(Object.values(guide.entries).map((e) => e.category));
     expect([...categories].sort()).toEqual(["creatures", "factions", "folk", "peoples", "places"]);

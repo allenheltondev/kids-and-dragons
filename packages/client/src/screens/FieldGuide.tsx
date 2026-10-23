@@ -119,6 +119,7 @@ export function FieldGuideIndex({ guide }: { guide: FieldGuideData | null }) {
         {section && (
           <>
             <p className="field-guide__progress">{foundHere} of {items.length} {section.label.toLowerCase()} found</p>
+            {foundHere === 0 && <p className="field-guide__progress">Keep exploring! Your discoveries will appear here as you play.</p>}
             <ul className="field-guide__grid">
               {items.map((entry) => (
                 <li key={entry.id}>
@@ -127,7 +128,7 @@ export function FieldGuideIndex({ guide }: { guide: FieldGuideData | null }) {
                   ) : (
                     <button type="button" className="field-guide__card field-guide__card--hidden" disabled
                       aria-label={`Undiscovered ${section.one}`}>
-                      <span className="field-guide__art" aria-hidden="true">?</span>
+                      <span className={`field-guide__art${entry.category === "places" ? " field-guide__art--place" : ""}`} aria-hidden="true">?</span>
                     </button>
                   )}
                 </li>
@@ -144,7 +145,7 @@ function FoundCard({ entry, icon, isNew }: { entry: FieldGuideEntry; icon: strin
   return (
     <button type="button" className="field-guide__card"
       onClick={() => { markFieldGuideSeen(entry.id); selectGuideEntry(entry.id); }}>
-      <span className="field-guide__art" aria-hidden="true" {...motionProps(entry.art, entry.id)}>
+      <span className={`field-guide__art${entry.category === "places" ? " field-guide__art--place" : ""}`} aria-hidden="true" {...motionProps(entry.art, entry.id)}>
         {entry.art ? <img src={entry.art} alt="" loading="lazy" /> : <Icon name={icon} />}
       </span>
       <span className="field-guide__name">{entry.title}</span>

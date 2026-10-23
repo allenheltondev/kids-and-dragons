@@ -73,16 +73,27 @@ function isIncluded(entity: Loose, taxonomy: Taxonomy): boolean {
 
 /** Where the picture is, if there is one. Mirrors the client's art-paths.ts. */
 function artFor(taxonomy: Taxonomy, entity: Loose, exists: FileExists): string | undefined {
-  const id = entity.asset_id;
+  // Lore-only canon entries can still have delivered art under their canon slug.
+  const id = entity.asset_id ?? entity.id.split(".").at(-1);
   if (!id) return undefined;
   const candidates: string[] =
     taxonomy === "species"
       ? [`characters/${id}/fledgling/assembled.png`]
-      : taxonomy === "biome"
+      : taxonomy === "biome" || taxonomy === "location"
         ? [`biomes/${id}/portrait.webp`, `biomes/${id}/bg.webp`]
         : taxonomy === "creature" || taxonomy === "people"
           ? [`entities/${id}/portrait.webp`, `entities/${id}/assembled.png`]
-          : [];
+          : taxonomy === "individual"
+            ? [`cast/${id}/portrait.webp`, `cast/${id}/assembled.png`, `entities/${id}/portrait.webp`, `entities/${id}/assembled.png`]
+            : taxonomy === "faction"
+              ? [`entities/${id}/portrait.webp`, `entities/${id}/assembled.png`]
+              : [];
+  // These places/groups have scene or cast art rather than a same-name portrait.
+  const illustrations: Record<string, string> = {
+    "location.hollow_gate": "scenes/gemfall/hollow-gate.webp",
+    "faction.deep_hollow_cult": "cast/cult_bigfoot/assembled.png",
+  };
+  if (illustrations[entity.id]) candidates.push(illustrations[entity.id]!);
   const found = candidates.find((candidate) => exists(candidate));
   return found === undefined ? undefined : `/assets/${found}`;
 }

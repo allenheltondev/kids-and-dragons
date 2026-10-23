@@ -22,6 +22,7 @@
     "content:balance": "tsx tools/content/balance.ts",
     "content:pacing": "tsx tools/content/pacing.ts",
     "content:cast": "node tools/content/cast-gaps.mjs",
+    "content:cast:mentions": "node tools/content/cast-report.mjs",
     "content:graph": "tsx tools/content/graph.ts",
     "content:journey": "tsx tools/content/journey.ts",
     "canon:check": "tsx tools/canon/check.ts",
