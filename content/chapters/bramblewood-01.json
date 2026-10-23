@@ -447,7 +447,8 @@
       "narration": "The wisps tie all your bootlaces together, eat the snacks, and then, feeling a bit guilty, tow you gently downstream to where you were going anyway. Lantern moths settle on your scratches, which turns out to be surprisingly nice.",
       "cast": [
         {
-          "figure": "entities/will_o_wisp"
+          "figure": "entities/will_o_wisp",
+          "count": 3
         }
       ],
       "onEnter": [
