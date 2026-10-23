@@ -405,6 +405,9 @@
 }
 
 .home__link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
   padding: var(--space-1, 0.25em) 0;
   border: 0;
   background: none;

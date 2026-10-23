@@ -811,7 +811,7 @@
 }
 
 .inv__slot-name {
-  font-size: 0.72em;
+  font-size: 0.85em;
   line-height: 1.15;
   /* break-word, not `anywhere`: `anywhere` also collapses the element's
      min-content width to a single character, so a flex column holding a
@@ -823,7 +823,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.2em;
-  font-size: 0.62em;
+  font-size: 0.8em;
 }
 
 .inv__quest {
@@ -1146,7 +1146,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3, 0.75em);
-  min-block-size: 2.75em;
+  min-block-size: max(44px, 2.75em);
   padding: var(--space-1, 0.25em) var(--space-3, 0.75em);
   border: 0;
   border-top: 0.08em solid var(--color-border, #3a3468);

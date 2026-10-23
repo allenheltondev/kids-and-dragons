@@ -152,3 +152,17 @@ it("sounds a scene's rift once its chapter arrives, when the scene was named fir
     setAudioSink(null);
   }
 });
+
+it("keeps story guests illustrated on devices without the animated renderer", async () => {
+  vi.spyOn(console, "error").mockImplementation(() => undefined);
+  scene.chapter = {
+    id: "ch1", biome: "enchanted_woods",
+    scenes: { meeting: { type: "story", rift: "steady", choices: [], cast: [{ figure: "cast/marda_thorn", name: "Marda Thorn" }] } },
+  };
+  scene.state = { phase: "scene", chapterId: "ch1", sceneId: "meeting", party: [] };
+  render(<WorldView />);
+  const board = await screen.findByTestId("static-stage");
+  expect(board.querySelector('img[src="/assets/cast/marda_thorn/assembled.png"]')).not.toBeNull();
+  expect(board.textContent).toContain("Marda Thorn");
+  expect((board.querySelector(".kad-static-stage__rift") as HTMLElement).style.backgroundImage).toContain("rift_neutral.sheet.png");
+});
