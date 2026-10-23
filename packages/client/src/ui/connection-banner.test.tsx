@@ -7,7 +7,7 @@
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { useGameStore } from "../store";
 import { ConnectionBanner, RECONNECT_GRACE_MS } from "./ConnectionBanner";
 
@@ -81,6 +81,25 @@ describe("the reconnecting banner", () => {
     expect(screen.queryByText("Reconnecting…")).toBeNull();
     act(() => {
       useGameStore.setState({ session: null });
+    });
+  });
+
+  it("offers Try again, which opens a fresh stream now", () => {
+    vi.useFakeTimers();
+    const reconnect = vi.fn();
+    const original = useGameStore.getState().reconnect;
+    act(() => {
+      useGameStore.setState({ reconnect });
+    });
+    render(<ConnectionBanner />);
+    setConnection("reconnecting");
+    act(() => {
+      vi.advanceTimersByTime(RECONNECT_GRACE_MS + 50);
+    });
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+    expect(reconnect).toHaveBeenCalledTimes(1);
+    act(() => {
+      useGameStore.setState({ reconnect: original });
     });
   });
 

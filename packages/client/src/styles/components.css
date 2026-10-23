@@ -701,6 +701,22 @@
   animation: kad-toast-in var(--kad-dur-base) var(--kad-ease-out);
 }
 
+.kad-connection__retry {
+  min-block-size: 2.75rem;
+  margin-block: -0.45rem;
+  margin-inline-end: -0.5rem;
+  padding-inline: 0.9rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
 /* Party Mode's slim chrome for the mid-session mode switch, mirroring the
    Travel bar. In flow, never floating: on a phone the thing underneath a
    floating control is the primary action of whatever screen you are on. */
