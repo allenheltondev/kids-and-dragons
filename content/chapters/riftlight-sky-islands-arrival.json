@@ -33,7 +33,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Temple keeper"
         }
       ],
@@ -98,7 +98,7 @@
           "name": "Pip Thistledown"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Temple keeper"
         }
       ]
@@ -122,7 +122,7 @@
       ],
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Temple keeper"
         }
       ]
@@ -146,7 +146,7 @@
       ],
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Temple keeper"
         }
       ]
@@ -170,7 +170,7 @@
       ],
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Temple keeper"
         }
       ]
@@ -191,7 +191,7 @@
       ],
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Temple keeper"
         }
       ]

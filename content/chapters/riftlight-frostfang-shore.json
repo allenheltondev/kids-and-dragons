@@ -42,7 +42,7 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
       ]
@@ -78,7 +78,7 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
       ]
@@ -102,7 +102,7 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
       ]
@@ -115,7 +115,7 @@
       "outcome": "success",
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
       ]

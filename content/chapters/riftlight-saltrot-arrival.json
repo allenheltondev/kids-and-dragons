@@ -136,6 +136,10 @@
         {
           "figure": "cast/saltrot_guide",
           "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats"
@@ -155,6 +159,10 @@
         {
           "figure": "cast/saltrot_guide",
           "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
@@ -180,6 +188,10 @@
         {
           "figure": "cast/saltrot_guide",
           "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
