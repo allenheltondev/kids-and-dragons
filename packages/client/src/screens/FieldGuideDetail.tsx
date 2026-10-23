@@ -10,6 +10,7 @@ import { useParty } from "../store";
 import { useJournalFinders } from "../store/journal-finders";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
+import { motionProps } from "./guide-motion";
 
 /** Canon `scale` values in kid words (canon/creatures.yaml controlled_values). */
 export const SCALE_LABELS: Readonly<Record<string, string>> = {
@@ -98,7 +99,7 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
           {backLabel.replace(/^Back to/, "Return to")}
         </Button>
         <header className="fgd__header">
-          <span className="fgd__art" aria-hidden="true">
+          <span className="fgd__art" aria-hidden="true" {...motionProps(entry.art, entry.id)}>
             {entry.art ? <img src={entry.art} alt="" /> : <Icon name={CATEGORY_ICON[entry.category] ?? "leaf"} />}
           </span>
           <h3 className="field-guide__detail-title">{entry.title}</h3>
