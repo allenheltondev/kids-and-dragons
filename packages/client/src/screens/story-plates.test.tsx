@@ -224,6 +224,26 @@ describe("turning the pages", () => {
     expect(screen.queryByTestId("story-plates")).toBeNull();
   });
 
+  it("lets a phone go back to re-read, and then stops turning the pages by itself", async () => {
+    vi.useFakeTimers();
+    seed(run("ch_1"), OPENING, "p_1");
+    render(<StoryPlates />);
+    await flush();
+    expect(screen.queryByRole("button", { name: "Back" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    expect(screen.getByTestId("story-plates").dataset.index).toBe("1");
+    fireEvent.click(screen.getByRole("button", { name: "Back" }));
+    expect(screen.getByTestId("story-plates").dataset.index).toBe("0");
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(60_000);
+    });
+    expect(screen.getByTestId("story-plates").dataset.index).toBe("0");
+    fireEvent.keyDown(window, { key: "ArrowRight" });
+    expect(screen.getByTestId("story-plates").dataset.index).toBe("1");
+    fireEvent.keyDown(window, { key: "ArrowLeft" });
+    expect(screen.getByTestId("story-plates").dataset.index).toBe("0");
+  });
+
   it("keeps a focused control's own Enter", async () => {
     seed(run("ch_1"), OPENING, "p_1");
     render(<StoryPlates />);

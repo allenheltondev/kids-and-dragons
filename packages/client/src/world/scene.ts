@@ -516,6 +516,8 @@ export function createScene(app: Application): PartyScene {
   riftSprite.anchor.set(0.5, RIFT_FOOT);
   riftSprite.visible = false;
   riftSprite.label = "rift";
+  // The painted slit is not drawn (scene-rift.ts): its frames only time the opening and the fold.
+  riftSprite.alpha = 0;
   /*
    * Around the painted tear, the layers that make it easy to see and give it
    * presence (scene-rift.ts, "Making the tear easy to see"): a steady mist, a
@@ -526,9 +528,9 @@ export function createScene(app: Application): PartyScene {
   const riftGlow = new Graphics();
   // Many faint rings rather than a few strong ones, so the mist has no visible edge.
   for (let ring = 16; ring >= 1; ring--) {
-    const spread = 1 + ring * 0.12;
+    const spread = 1 + ring * 0.05;
     riftGlow
-      .ellipse(0, 0, TEAR_HALF_WIDTH_PX * spread * 1.2, TEAR_HALF_HEIGHT_PX * (1 + ring * 0.045))
+      .ellipse(0, 0, TEAR_HALF_WIDTH_PX * spread, TEAR_HALF_HEIGHT_PX * spread)
       .fill({ color: RIFT_GLOW_COLOR, alpha: 0.065 });
   }
   // The painted inside (scene-rift.ts `holeTexturePixels`): deep, mottled and misty at the rim.
@@ -542,8 +544,8 @@ export function createScene(app: Application): PartyScene {
   });
   const riftHole = new Sprite(holeTexture);
   riftHole.anchor.set(0.5);
-  riftHole.width = TEAR_HALF_WIDTH_PX * 0.84 * 2;
-  riftHole.height = TEAR_HALF_HEIGHT_PX * 0.92 * 2;
+  riftHole.width = TEAR_HALF_WIDTH_PX * 2;
+  riftHole.height = TEAR_HALF_HEIGHT_PX * 2;
   const riftRings = new Graphics();
   /**
    * Redraw the rings where they stand now. Each dash is a tapered brushstroke,
