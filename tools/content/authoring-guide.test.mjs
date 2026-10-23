@@ -65,7 +65,7 @@ describe("the authoring guide's examples", () => {
   });
 
   all.forEach((example, index) => {
-    it(`example ${index + 1} (${example.kind}) passes content:validate`, { timeout: 60_000 }, () => {
+    it(`example ${index + 1} (${example.kind}) passes content:validate`, () => {
       const dir = copyTree();
       const chapter = JSON.parse(readFileSync(join(dir, ...CHAPTER), "utf8"));
       const scene = chapter.scenes[chapter.entry];
