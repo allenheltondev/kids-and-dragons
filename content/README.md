@@ -535,6 +535,8 @@ reading about one.
   water line hiding the lower body). Defaults to the figure's canon stance. A griffin landed in one
   scene and in flight in the next.
 - Three at most, and never a party member.
+- `npm run content:cast` lists the scenes that name someone the chapter casts elsewhere without casting them
+  there. A reading list, not a gate: a mention is fine, someone standing there is not.
 
 Guidance:
 
