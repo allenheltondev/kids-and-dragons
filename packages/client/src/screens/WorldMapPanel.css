@@ -157,10 +157,10 @@
   background: var(--kad-bg);
   font-size: var(--kad-text-sm);
 }
-.atlas__route-controls label { display: flex; align-items: center; min-block-size: 2.75em; gap: 0.5em; }
+.atlas__route-controls label { display: flex; align-items: center; min-block-size: max(44px, 2.75em); gap: 0.5em; }
 .atlas__route-controls details { flex-basis: 100%; }
-.atlas__route-controls summary { cursor: pointer; min-block-size: 2.75em; }
-.atlas__route-choice { font: inherit; color: var(--kad-ink); background: var(--kad-bg-raised); border: 1px solid var(--kad-border); border-radius: 0.4em; min-block-size: 2.75em; padding: 0.4em; margin: 0.2em; cursor: pointer; }
+.atlas__route-controls summary { cursor: pointer; min-block-size: max(44px, 2.75em); }
+.atlas__route-choice { font: inherit; color: var(--kad-ink); background: var(--kad-bg-raised); border: 1px solid var(--kad-border); border-radius: 0.4em; min-block-size: max(44px, 2.75em); padding: 0.4em; margin: 0.2em; cursor: pointer; }
 .atlas__route-choice[aria-pressed="true"] { outline: 2px solid var(--kad-accent); }
 .atlas__route-info { flex-basis: 100%; margin: 0; }
 .atlas__landmark {
@@ -168,7 +168,7 @@
   transform: translate(-50%, -50%);
   max-inline-size: 12em;
   padding: 0.6em 1.1em;
-  min-block-size: 2.75em;
+  min-block-size: max(44px, 2.75em);
   border: 1px solid var(--kad-border);
   border-radius: var(--kad-radius-md);
   color: var(--kad-ink);
@@ -181,7 +181,7 @@
 .atlas__landmark--region { opacity: 0.85; }
 .atlas__landmark[aria-pressed="true"] { outline: 2px solid var(--kad-accent); outline-offset: 1px; opacity: 1; }
 .atlas__place--button {
-  pointer-events: auto; min-block-size: 2.75em; padding: 0 0.5em; font: inherit; font-size: var(--kad-text-sm);
+  pointer-events: auto; min-block-size: max(44px, 2.75em); padding: 0 0.5em; font: inherit; font-size: var(--kad-text-sm);
   font-weight: var(--kad-weight-bold); color: inherit; background: none; border: 0; cursor: pointer;
   text-decoration: underline dotted; text-underline-offset: 0.2em;
 }
@@ -228,7 +228,7 @@
 .atlas__card-hint { margin: 0; font-size: var(--kad-text-sm); color: var(--kad-ink-dim); font-style: italic; }
 @keyframes atlas-card-in { from { opacity: 0; transform: translateY(0.75em); } }
 @media (prefers-reduced-motion: reduce) { .atlas__card { animation: none; } }
-.atlas__read { pointer-events: auto; min-block-size: 2.75em; cursor: pointer; font: inherit; }
+.atlas__read { pointer-events: auto; min-block-size: max(44px, 2.75em); cursor: pointer; font: inherit; }
 .atlas__entry {
   position: absolute;
   inset: 0;

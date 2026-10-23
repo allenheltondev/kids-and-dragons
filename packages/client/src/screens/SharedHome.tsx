@@ -264,7 +264,7 @@ export function SharedHome(): ReactElement {
                 <Icon name="qr" />
                 <span>Hi, {name}!</span>
               </h1>
-              <p className="home__hint home__join-hint">Type the four letters on the big screen.</p>
+              <p className="home__hint home__join-hint">Ask your grown-up for the room code, then type it here.</p>
 
               <label className="home__code">
                 <input

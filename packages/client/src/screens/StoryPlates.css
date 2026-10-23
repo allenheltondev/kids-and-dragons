@@ -114,7 +114,7 @@
 }
 
 .plates__button {
-  min-block-size: 2.75em;
+  min-block-size: max(44px, 2.75em);
   min-inline-size: 5.5em;
   padding: 0.4em 1.2em;
   border: 0.1em solid color-mix(in srgb, var(--kad-gold, #ffc95c) 70%, transparent);

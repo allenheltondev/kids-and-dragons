@@ -314,6 +314,7 @@ const ALIASES: Record<string, string> = {
   confirm: "check",
   cancel: "close",
   surprise: "shuffle",
+  song: "note",
   players: "party",
   phone: "travel",
   hp: "heart",

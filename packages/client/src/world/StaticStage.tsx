@@ -14,6 +14,10 @@ import { useChapter, useRunState } from "../store";
 import { useEnsureChapter } from "../screens/content";
 import { biomeBackdropUrl, characterWorldArtUrl, enemyArtUrl, sceneArtFor, sceneBackdropUrl } from "./art-paths";
 
+import { castFor } from "./cast";
+import { sceneRiftFor, STILL_FRAME } from "./scene-rift";
+import { RIFT_NEUTRAL_EFFECT, RIFT_SHEET, riftSheetUrl } from "../screens/riftlight";
+
 import "./StaticStage.css";
 
 /** Enemy art for the chapter's encounter scene, by spec id (the same lookup the board makes). */
@@ -38,13 +42,26 @@ export function StaticStage(): React.JSX.Element {
   const sceneArt = sceneArtFor(chapter, state);
   const backdrop = (sceneArt ? sceneBackdropUrl(sceneArt) : null)
     ?? (chapter?.biome ? biomeBackdropUrl(chapter.biome) : null);
+  const rift = sceneRiftFor(chapter, state);
+  const guests = castFor(chapter, state);
   const enemyArt = enemyArtBySpec(chapter, state?.sceneId ?? null);
   const enemies: readonly Combatant[] = encounter?.combatants.filter((c) => c.side !== "party" && !c.down) ?? [];
 
   return (
     <div className="kad-static-stage" data-testid="static-stage" aria-hidden="true">
       {backdrop ? <img className="kad-static-stage__backdrop" src={backdrop} alt="" /> : null}
+      {(rift === "steady" || rift === "open") && <span className="kad-static-stage__rift" style={{
+        backgroundImage: `url("${riftSheetUrl(RIFT_NEUTRAL_EFFECT)}")`,
+        backgroundSize: `${RIFT_SHEET.frames * 100}% 100%`,
+        backgroundPosition: `${STILL_FRAME / (RIFT_SHEET.frames - 1) * 100}% 0`,
+      }} />}
       <ul className="kad-static-stage__row kad-static-stage__row--enemies">
+        {guests.map((guest) => (
+          <li key={guest.key} className="kad-static-stage__figure">
+            <img src={guest.url} alt="" />
+            {guest.name ? <span>{guest.name}</span> : null}
+          </li>
+        ))}
         {enemies.map((enemy) => {
           const art = enemyArt[enemy.id.split("#")[0] ?? enemy.id];
           return (

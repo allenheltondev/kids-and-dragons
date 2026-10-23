@@ -33,6 +33,7 @@ import { resetFieldGuideCache } from "./content";
 import { dismissPlayerSheet } from "../store/player-navigation";
 import { LobbyContent } from "./LobbyContent";
 import { forgetRiftSightings } from "./RiftSight";
+import { RIFT_SHEET_MS } from "./riftlight";
 import { setAudioSink, type CueId } from "../audio/cue";
 import { PartyLayout } from "../layout/PartyLayout";
 import { TravelLayout } from "../layout/TravelLayout";
@@ -431,6 +432,20 @@ describe("the Riftlight indicator", () => {
 // ---------------------------------------------------------------------------
 
 describe("the painted sheets", () => {
+  it("moves the complete coloured stack for timed and unstable rifts", () => {
+    const { container } = lobby(STARWEAVER.playerId);
+    expect(container.querySelectorAll(".rift-glyph--shrinking")).toHaveLength(1);
+    expect(container.querySelectorAll(".rift-glyph--unstable")).toHaveLength(1);
+    for (const layer of container.querySelectorAll<HTMLElement>(".rift-glyph__layer")) {
+      expect(layer.style.animationDuration).toBe(`${RIFT_SHEET_MS}ms`);
+    }
+  });
+
+  it("never exposes diagnostic motion on the TV", () => {
+    const { container } = lobby(TV);
+    expect(container.querySelector(".rift-glyph--shrinking, .rift-glyph--unstable")).toBeNull();
+  });
+
   it("every layer draws its own sheet", () => {
     const { container } = lobby(STARWEAVER.playerId);
     for (const layer of container.querySelectorAll<HTMLElement>(".rift-glyph [data-effect]")) {
@@ -479,7 +494,7 @@ describe("a rift opening or collapsing", () => {
     expect(once(container)).toEqual(["rift_open"]);
     expect(container.querySelectorAll(".rift-glyph--opening")).toHaveLength(1);
     expect(heard).toEqual(["rift-open"]);
-    act(() => vi.advanceTimersByTime(1000));
+    act(() => vi.advanceTimersByTime(RIFT_SHEET_MS));
     expect(once(container)).toEqual([]);
     expect(drawnEffects(container)).toEqual(RIFTS.map(() => ["rift_neutral"]));
     expect(heard).toEqual(["rift-open"]);
@@ -494,7 +509,7 @@ describe("a rift opening or collapsing", () => {
     const folding = container.querySelector<HTMLElement>(".rift-sight__rift--collapsing")!;
     expect(folding.getAttribute("aria-hidden")).toBe("true");
     expect(heard).toEqual(["rift-collapse"]);
-    act(() => vi.advanceTimersByTime(1000));
+    act(() => vi.advanceTimersByTime(RIFT_SHEET_MS));
     expect(container.querySelector(".rift-sight__rift--collapsing")).toBeNull();
     expect(container.querySelectorAll(".rift-sight__rift")).toHaveLength(RIFTS.length - 1);
   });

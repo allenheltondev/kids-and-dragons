@@ -98,7 +98,7 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
           {backLabel.replace(/^Back to/, "Return to")}
         </Button>
         <header className="fgd__header">
-          <span className="fgd__art" aria-hidden="true">
+          <span className={`fgd__art${entry.category === "places" ? " fgd__art--place" : ""}`} aria-hidden="true">
             {entry.art ? <img src={entry.art} alt="" /> : <Icon name={CATEGORY_ICON[entry.category] ?? "leaf"} />}
           </span>
           <h3 className="field-guide__detail-title">{entry.title}</h3>

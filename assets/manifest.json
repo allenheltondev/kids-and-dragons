@@ -558,7 +558,7 @@
       }
     }
   ],
-  "$effectsComment": "Every sheet in assets/effects/ must appear here, and every entry must have a sheet — verify.py checks both directions. `frames` x `size` is the sheet width in pixels; `fps` is the rate the sidecar JSON carries, declared here too so a 24fps sheet cannot arrive undetected. `tileScoped: false` marks an effect that plays on a figure rather than on a tile. `loop: true` marks one that plays continuously — the tier auras — and is what exempts it from the fade-in/fade-out rule, since a continuous effect that faded at both ends would pulse to nothing once a second. `outOfCombat: true` marks one that plays between turns, exempting it from the 12-frame turn budget and from the damage-number band, because a cutscene has nothing else on the screen. `startsOn: { clip, event }` names the rigContract clip event that fires the sheet — it is the contract verify-rig.ts derives every sync and effect-tail check from, so a pairing nobody wrote here is a pairing nothing checks. `startsOn: null` is the ambient case (the auras): the sheet starts with the figure, not with an event, and is deliberately declared as null rather than omitted so a new sheet cannot skip the question.",
+  "$effectsComment": "Every sheet in assets/effects/ must appear here, and every entry must have a sheet — verify.py checks both directions. `frames` x `size` is the sheet width in pixels; `fps` is the rate the sidecar JSON carries, declared here too so a 24fps sheet cannot arrive undetected. `tileScoped: false` marks an effect that plays on a figure rather than on a tile. `loop: true` marks one that plays continuously — the tier auras — and is what exempts it from the fade-in/fade-out rule, since a continuous effect that faded at both ends would pulse to nothing once a second. `outOfCombat: true` marks one that plays between turns, exempting it from the 12-frame turn budget and from the damage-number band, because a cutscene has nothing else on the screen. `startsOn: { clip, event }` names the rigContract clip event that fires the sheet — it is the contract verify-rig.ts derives every sync and effect-tail check from, so a pairing nobody wrote here is a pairing nothing checks. `startsOn: null` is the ambient case (the auras): the sheet starts with the figure, not with an event, and is deliberately declared as null rather than omitted so a new sheet cannot skip the question. `handoff: \"toLoop\" | \"fromLoop\"` marks an out-of-combat transition that joins a continuous loop: only the joined endpoint may skip fading; the other endpoint must fade normally.",
   "effects": [
     {
       "id": "aura_bigfoot",
@@ -730,100 +730,113 @@
     },
     {
       "id": "rift_neutral",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
-      "size": 256,
+      "size": 320,
       "startsOn": null,
       "outOfCombat": true,
-      "loop": true
+      "loop": true,
+      "tileScoped": false
     },
     {
       "id": "rift_base",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
-      "size": 256,
+      "size": 320,
       "startsOn": null,
       "outOfCombat": true,
-      "loop": true
+      "loop": true,
+      "tileScoped": false
     },
     {
       "id": "rift_green",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
-      "size": 256,
+      "size": 320,
       "startsOn": null,
       "outOfCombat": true,
-      "loop": true
+      "loop": true,
+      "tileScoped": false
     },
     {
       "id": "rift_amber",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
-      "size": 256,
+      "size": 320,
       "startsOn": null,
       "outOfCombat": true,
-      "loop": true
+      "loop": true,
+      "tileScoped": false
     },
     {
       "id": "rift_blue",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
-      "size": 256,
+      "size": 320,
       "startsOn": null,
       "outOfCombat": true,
-      "loop": true
+      "loop": true,
+      "tileScoped": false
     },
     {
       "id": "rift_violet",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
-      "size": 256,
+      "size": 320,
       "startsOn": null,
       "outOfCombat": true,
-      "loop": true
+      "loop": true,
+      "tileScoped": false
     },
     {
       "id": "rift_shrink",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
-      "size": 256,
+      "size": 320,
       "startsOn": null,
       "outOfCombat": true,
-      "loop": true
+      "loop": true,
+      "tileScoped": false
     },
     {
       "id": "rift_stutter",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
-      "size": 256,
+      "size": 320,
       "startsOn": null,
       "outOfCombat": true,
-      "loop": true
+      "loop": true,
+      "tileScoped": false
     },
     {
       "id": "rift_sync",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
-      "size": 256,
+      "size": 320,
       "startsOn": null,
       "outOfCombat": true,
-      "loop": true
+      "loop": true,
+      "tileScoped": false
     },
     {
       "id": "rift_open",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
-      "size": 256,
+      "size": 320,
       "startsOn": null,
-      "outOfCombat": true
+      "outOfCombat": true,
+      "tileScoped": false,
+      "handoff": "toLoop"
     },
     {
       "id": "rift_collapse",
-      "frames": 12,
+      "frames": 24,
       "fps": 12,
-      "size": 256,
+      "size": 320,
       "startsOn": null,
-      "outOfCombat": true
+      "outOfCombat": true,
+      "tileScoped": false,
+      "handoff": "fromLoop"
     }
   ],
   "biomes": [
@@ -2390,6 +2403,23 @@
       "spark",
       "thorn",
       "wing"
+    ]
+  },
+  "badgeArt": {
+    "canvas": {
+      "width": 256,
+      "height": 256
+    },
+    "ids": [
+      "finished",
+      "finished-3",
+      "guest-star",
+      "kept-going",
+      "level-3",
+      "level-5",
+      "finds-1",
+      "finds-5",
+      "finds-15"
     ]
   }
 }
