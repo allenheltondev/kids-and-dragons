@@ -38,4 +38,3 @@ test("Field Guide sections remain easy to tap on a small phone and tablet", asyn
     await page.screenshot({ path: test.info().outputPath(`field-guide-${viewport.width}.png`) });
   }
 });
-

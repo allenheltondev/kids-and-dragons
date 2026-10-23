@@ -503,7 +503,7 @@ Guidance:
 
 ## Who is on stage: `cast`
 
-`npm run content:cast` reports prose that names a known manifest cast figure, entity or
+`npm run content:cast:mentions` reports prose that names a known manifest cast figure, entity or
 chapter-local nameplate without a matching figure in that scene's cast. Use
 `-- --chapter bramblewood-01` to filter by chapter ID prefix, or `-- --json` for findings with
 the source text and field location. It also reads check prompts, choice labels, variants and
