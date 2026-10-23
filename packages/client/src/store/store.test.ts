@@ -1402,6 +1402,31 @@ describe("choosing a transport (architecture §4.4)", () => {
     }
   });
 
+  it("reconnect skips the config backoff and opens the transport at once", async () => {
+    vi.useFakeTimers();
+    const h = harness();
+    try {
+      h.api.fetchConfig.mockRejectedValueOnce(new Error("offline")).mockResolvedValue(REALTIME);
+      await h.store.getState().joinRoom("ABCD", "Allen");
+      expect(h.store.getState().connection).toBe("reconnecting");
+      expect(() => h.channelOptions()).toThrow("no channel");
+
+      // No timers advanced: the click alone retries.
+      h.store.getState().reconnect();
+      await vi.advanceTimersByTimeAsync(0);
+      expect(h.api.fetchConfig).toHaveBeenCalledTimes(2);
+      expect(h.channelOptions().createEventSource).toBeTypeOf("function");
+      expect(h.store.getState().connection).toBe("open");
+
+      // The cancelled backoff timer must not open a second stream later.
+      await vi.advanceTimersByTimeAsync(30_000);
+      expect(h.api.fetchConfig).toHaveBeenCalledTimes(2);
+    } finally {
+      h.store.getState().leave();
+      vi.useRealTimers();
+    }
+  });
+
   it("cancels config retries when leaving", async () => {
     vi.useFakeTimers();
     try {
