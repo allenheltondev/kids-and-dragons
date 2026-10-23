@@ -631,6 +631,16 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   const globalPrompt = state?.prompt ?? null;
   const key = promptKey(myPrompt ?? globalPrompt);
 
+  // The prompt's box is the same element from one question to the next, so on a pane too short for
+  // everything in it (a phone held sideways) it kept the scroll of the last one: the lobby's Begin
+  // button, scrolled to, left the first scene's first choice out of sight above. A new question
+  // is read from its top. A vote ticking over on the same one is not a new question (`key`).
+  const promptBox = useRef<HTMLDivElement>(null);
+  const sceneId = state?.sceneId ?? null;
+  useEffect(() => {
+    if (promptBox.current) promptBox.current.scrollTop = 0;
+  }, [key, sceneId]);
+
   // A new question always starts from a clean slate — no stale selection can
   // ever be confirmed against the wrong prompt.
   useEffect(() => {
@@ -933,7 +943,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       */}
       {/* `hidden`, not unmounted: an aim half-made in a fight survives a look
           at the bag. */}
-      <div className="player__prompt" hidden={showSheet}>
+      <div className="player__prompt" ref={promptBox} hidden={showSheet}>
         {/* Inside the prompt's scroll box rather than above it, so that while
             deciding the words sit at the top and the answers sink to the
             bottom — read down, tap at the thumb — with the scene showing

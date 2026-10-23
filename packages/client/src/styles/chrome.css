@@ -606,4 +606,16 @@ html:not([data-contrast="high"]) .kad-surface--player {
   :root .kad-host--inline {
     padding-inline: calc(var(--space-3, 0.75em) + 6px);
   }
+  /* The gold banner's brass is not drawn from `--chrome-w`, so it is thinned here, and the strip
+     gets the height its words need inside it. */
+  html:not([data-contrast="high"]) .sheet--turn::before {
+    border-image: url("../assets/chrome/strip-identity-frame.webp") 40 / 12px stretch;
+  }
+  :root .sheet {
+    padding-block: calc(var(--space-1, 0.25em) + 4px);
+  }
+  /* The stat tiles are the smallest frames, and their words sat right on the paint. */
+  :root .stat-row__item {
+    padding: calc(var(--space-1, 0.25em) + 3px) calc(var(--space-2, 0.5em) + 5px);
+  }
 }
