@@ -2045,6 +2045,8 @@ const SHARED = [
   { path: "/api/room/:code/visitors", method: "POST", probe: "/api/room/ABCD/visitors" },
   { path: "/api/action", method: "POST", probe: "/api/action" },
   { path: "/api/preview", method: "POST", probe: "/api/preview" },
+  { path: "/api/cheer", method: "POST", probe: "/api/cheer" },
+  { path: "/api/spectate", method: "POST", probe: "/api/spectate" },
   // A phone saying it is still here, or leaving (#258, handlers/presence.ts).
   { path: "/api/presence", method: "POST", probe: "/api/presence" },
   { path: "/api/progression/spend", method: "POST", probe: "/api/progression/spend" },

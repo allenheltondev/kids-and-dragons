@@ -43,6 +43,7 @@ import type {
   ClientSession,
   ConnectionStatus,
   GameStore,
+  HeardCheer,
   HeldPreview,
   PresentationEvent,
   ProgressionEvent,
@@ -286,6 +287,16 @@ const MAX_ARRIVALS = 6;
  */
 const MAX_HOST_ARRIVALS = 50;
 
+/**
+ * Cheers a screen holds at once (#388). Each floats for a few seconds, and a
+ * phone may send only a few a window, so this is only ever reached by a room
+ * full of cousins; past it, the oldest goes.
+ */
+const MAX_CHEERS = 12;
+
+/** Tells two of the same cheer apart, for as long as the page lives. */
+let cheerKey = 0;
+
 export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGameStore> {
   return (set, get) => {
     const runtime: Runtime = {
@@ -382,6 +393,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
               arrivals: arrivals.slice(-cap),
               ...(dropped > 0 && get().session?.host ? { arrivalsDropped: get().arrivalsDropped + dropped } : {}),
             });
+          },
+          onCheer: ({ runId, cheer }) => {
+            if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
+            set({ cheers: [...get().cheers, { key: ++cheerKey, cheer }].slice(-MAX_CHEERS) });
           },
           onGap: (sinceSeq) => {
             // Repeated hole notifications must respect a failed fetch's backoff.
@@ -494,9 +509,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     }
 
     function disconnect(): void {
-      // Previews and arrivals are live-only: a fresh channel starts from nobody
-      // picking and nobody new.
-      set({ previews: {}, arrivals: [], arrivalsDropped: 0 });
+      // Previews, arrivals and cheers are live-only: a fresh channel starts
+      // from nobody picking, nobody new and nobody cheering.
+      set({ previews: {}, arrivals: [], arrivalsDropped: 0, cheers: [] });
       runtime.previewSent = "[null,null]";
       runtime.previewNext = null;
       runtime.channel?.close();
@@ -761,6 +776,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       previews: {},
       arrivals: [],
       arrivalsDropped: 0,
+      cheers: [],
       savedHeroes: {},
       error: null,
       rules: null,
@@ -1343,6 +1359,34 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         set({ arrivals: get().arrivals.filter((a) => a.playerId !== playerId) });
       },
 
+      async cheer(cheer: string) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return false;
+        try {
+          await deps.api.postCheer(cheer, session.sessionToken);
+          return true;
+        } catch {
+          // A sparkle, not a turn: the next tap can try again.
+          return false;
+        }
+      },
+
+      async spectate(watching: boolean) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return false;
+        try {
+          await deps.api.postSpectate(watching, session.sessionToken);
+          return true;
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : "Could not reach the game." });
+          return false;
+        }
+      },
+
+      dropCheer(key: number) {
+        set({ cheers: get().cheers.filter((heard) => heard.key !== key) });
+      },
+
       async removePlayer(playerId: string) {
         const done = await hostControl("remove", { playerId }, "Could not take them out.");
         if (done) set({ arrivals: get().arrivals.filter((a) => a.playerId !== playerId) });
@@ -1473,6 +1517,11 @@ export function useIsMyPrompt(): boolean {
 
 export function useSend(): (intent: ClientIntent) => Promise<boolean> {
   return useGameStore((store) => store.send);
+}
+
+/** Spectators' cheers, live (`GameStore.cheers`, #388). */
+export function useCheers(): readonly HeardCheer[] {
+  return useGameStore((store) => store.cheers);
 }
 
 /** Every player's unconfirmed tap, by playerId (`GameStore.previews`). */

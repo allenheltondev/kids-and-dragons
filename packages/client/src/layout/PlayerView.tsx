@@ -31,7 +31,8 @@ import { HostControls } from "../screens/HostControls";
 // barrel is what every surface pulls in, and the playtest drawer should reach
 // exactly one call site — the one below, behind `import.meta.env.DEV`.
 import { PlaytestPanel } from "../screens/PlaytestPanel";
-import { TABLE_FULL_MESSAGE, tableFull } from "@kad/shared";
+import { isSpectator, tableFull } from "@kad/shared";
+import { JustWatch, Spectating } from "../screens/Spectating";
 import { useMe, useRunState, useSession } from "../store";
 import { dismissPlayerSheet, usePlayerNavigation } from "../store/player-navigation";
 import { FieldGuide } from "../screens/FieldGuide";
@@ -78,9 +79,14 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
   // none goes straight through to the creation flow.
   const creating = me === null;
   // Every seat is taken and none is ours (#389): say so before anybody builds
-  // a hero the engine would refuse. Read from every patch, so a seat that
-  // opens (the host takes somebody out) puts the creation flow back.
+  // a hero the engine would refuse, and let them watch and cheer instead
+  // (#388). Read from every patch, so a seat that opens (the host takes
+  // somebody out) puts the creation flow back.
   const full = creating && state !== null && tableFull(state, session?.playerId);
+  // Watching (#388): the table is full, or this kid chose "Just watch" on this
+  // phone. The creation flow stays mounted (hidden) behind a choice to watch,
+  // so a half-made hero survives changing their mind.
+  const watching = full || (creating && state !== null && isSpectator(state, session?.playerId));
   // The tray's Guide tab works before there is a character too. PlayerPanel
   // shows the guide itself once there is one; until then it stands over the
   // creation flow, which stays mounted (hidden) so a half-made hero survives.
@@ -100,13 +106,15 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
           to say. */}
       <CatchUp />
       {guideOverCreation ? <FieldGuide /> : null}
-      {full ? (
-        <div className="kad-removed" role="status" data-testid="table-full" hidden={guideOverCreation}>
-          <p>{TABLE_FULL_MESSAGE}</p>
-        </div>
-      ) : creating ? (
-        <div className="player-view__creation" hidden={guideOverCreation}><WelcomeBack /></div>
-      ) : <PlayerPanel roomControls={roomControls} />}
+      {watching ? <Spectating hidden={guideOverCreation} /> : null}
+      {creating && !full ? (
+        <>
+          {/* Not playing this time (#388): one tap to watch instead. */}
+          {!watching ? <JustWatch hidden={guideOverCreation} /> : null}
+          <div className="player-view__creation" hidden={guideOverCreation || watching}><WelcomeBack /></div>
+        </>
+      ) : null}
+      {!creating ? <PlayerPanel roomControls={roomControls} /> : null}
       {/* A panel over the surface, not a route: the game keeps running behind
           it and closing it costs nobody their place. Renders nothing until
           somebody opens it. */}

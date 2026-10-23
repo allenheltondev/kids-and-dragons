@@ -74,6 +74,13 @@ export interface ProgressionEvent {
 }
 
 /** A player's live pick and the decision it was made for (`previewContext`). */
+/** A spectator's cheer, heard live (#388). `key` tells two of the same cheer apart. */
+export interface HeardCheer {
+  key: number;
+  /** A `CHEERS` id. */
+  cheer: string;
+}
+
 export interface HeldPreview {
   preview: IntentPreview;
   context: string;
@@ -121,6 +128,12 @@ export interface GameStore {
    * the newest). Non-zero only in a flood, which is the screen's cue to say so.
    */
   arrivalsDropped: number;
+  /**
+   * Spectators' cheers since this screen attached, oldest first (#388). Live
+   * only, like `arrivals`; the shared screen floats each one up and lets it
+   * go (`dropCheer`).
+   */
+  cheers: readonly HeardCheer[];
   /** Set when an intent was rejected. Cleared by `dismissError()`. */
   error: string | null;
   rules: RulesContent | null;
@@ -227,6 +240,20 @@ export interface GameStore {
   reconnect(): void;
   /** Stops showing an arrival. */
   dismissArrival(playerId: string): void;
+  /**
+   * A spectator's cheer for the shared screen (#388, server handlers/cheer.ts).
+   * Resolves `false` when it was not sent (too many too fast, or no longer
+   * watching); nothing else depends on it, so nothing lands in `error`.
+   */
+  cheer(cheer: string): Promise<boolean>;
+  /** The shared screen has finished floating a cheer up. */
+  dropCheer(key: number): void;
+  /**
+   * "Just watch" on this phone (`true`), or back to making a hero (`false`)
+   * (#388, server handlers/watch.ts). Resolves `true` once the server has it;
+   * a refusal lands in `error` and resolves `false`.
+   */
+  spectate(watching: boolean): Promise<boolean>;
   /**
    * The host takes a player out of the room (#267). Resolves `true` once the
    * server has done it; a refusal lands in `error` and resolves `false`.
