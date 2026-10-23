@@ -3,7 +3,8 @@
 Rifts now use the same illustrated doorway in story scenes and the World view.
 The procedural hole, orbital dashes, dots, and CSS glow have been replaced with
 registered painted animation layers. Each sheet is 24 frames at 12fps, with all
-eleven runtime sheets totaling approximately 1.4MB.
+eleven runtime sheets totaling approximately 1.5MB. Each atlas is a 12-column,
+two-row 3840 x 640px grid, fitting devices limited to 4096px textures.
 
 The existing palette and its private-information boundary are preserved:
 green breathes in outer brackets, amber flickers at the lower rim, blue ripples
@@ -35,7 +36,7 @@ node tools/art/painted-rifts-review.mjs
 ```
 
 The browser review asserts phone and TV rendering, reduced motion, valid CSS
-frame endpoints, and the stage's opening → neutral loop → closing → gone
+frame endpoints, all 24 CSS frame positions, a simulated 4K GPU limit, and the stage's opening → neutral loop → closing → gone
 lifecycle. Its local screenshots go to `art/review/painted-rifts/`.
 The older room-based `cast-shot` harness redirected its TV to the join screen
 before reaching the scene, so the direct-renderer review is used here.

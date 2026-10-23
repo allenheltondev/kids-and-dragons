@@ -9,4 +9,4 @@ it("keeps the painted rift palette, animation seams, amber flicker and transitio
     timeout: 30_000,
     stdio: "pipe",
   });
-});
+}, 45_000);

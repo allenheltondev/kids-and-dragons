@@ -529,7 +529,7 @@ export function createScene(app: Application): PartyScene {
         const frames = Array.from(
           { length: RIFT_SHEET.frames },
           (_, i) =>
-            new Texture({ source: sheet.source, frame: new Rectangle(i * RIFT_SHEET.size, 0, RIFT_SHEET.size, RIFT_SHEET.size) }),
+            new Texture({ source: sheet.source, frame: new Rectangle((i % RIFT_SHEET.columns) * RIFT_SHEET.size, Math.floor(i / RIFT_SHEET.columns) * RIFT_SHEET.size, RIFT_SHEET.size, RIFT_SHEET.size) }),
         );
         riftFrames.set(effect, frames);
         return frames;
