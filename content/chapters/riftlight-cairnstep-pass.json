@@ -24,6 +24,10 @@
       }
     ]
   },
+  "plate": {
+    "art": "plates/riftlight/cairnstep-pass",
+    "narration": "Stacked stone cairns climb a narrow notch between snowy peaks. Wind combs the ridges. Far above, griffin aeries cling to the cliffs like nests on a shelf."
+  },
   "scenes": {
     "cairns": {
       "type": "story",
@@ -34,6 +38,12 @@
           "label": "Look at the two records",
           "icon": "hand",
           "goto": "ledger"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "characters/griffin",
+          "name": "Pass keeper"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -61,6 +71,12 @@
           "flag": "compared_the_pass_drawings"
         }
       ],
+      "cast": [
+        {
+          "figure": "characters/griffin",
+          "name": "Pass keeper"
+        }
+      ],
       "art": "scenes/riftlight/cairnstep"
     },
     "ridge": {
@@ -78,6 +94,12 @@
         {
           "type": "setFlag",
           "flag": "marked_the_new_pass"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "characters/griffin",
+          "name": "Pass keeper"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -99,6 +121,12 @@
           "flag": "marked_the_new_pass"
         }
       ],
+      "cast": [
+        {
+          "figure": "characters/griffin",
+          "name": "Pass keeper"
+        }
+      ],
       "art": "scenes/riftlight/cairnstep"
     },
     "message": {
@@ -107,6 +135,12 @@
       "heal": 0,
       "choices": [],
       "outcome": "success",
+      "cast": [
+        {
+          "figure": "characters/griffin",
+          "name": "Pass keeper"
+        }
+      ],
       "art": "scenes/riftlight/cairnstep"
     }
   },

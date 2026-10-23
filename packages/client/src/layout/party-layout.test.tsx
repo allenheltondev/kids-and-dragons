@@ -332,6 +332,9 @@ describe("Party Mode on a tablet held sideways", () => {
     mount();
     act(() => screen.getByRole("button", { name: /^map$/i }).click());
     expect(useHelpFocus.getState().pane).toBe("map");
+    // You shuts the drawer, so the "?" stays with the map; tapping it again brings the controls back.
+    act(() => screen.getByRole("button", { name: /^you$/i }).click());
+    expect(useHelpFocus.getState().pane).toBe("map");
     act(() => screen.getByRole("button", { name: /^you$/i }).click());
     expect(useHelpFocus.getState().pane).toBe("player");
     act(() => screen.getByRole("button", { name: /^map$/i }).click());

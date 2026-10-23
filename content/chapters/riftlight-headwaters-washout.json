@@ -9,6 +9,10 @@
   "estimatedMinutes": 20,
   "xpAward": 140,
   "entry": "current",
+  "plate": {
+    "art": "plates/riftlight/headwaters-washout",
+    "narration": "The Great River sweeps past the Frostfang ice. A rope pulls tight across the current. Just ahead, a dark ledge juts over the water. One good hold could bring everyone ashore."
+  },
   "goal": {
     "text": "Hold on to each other and find a way out of the river.",
     "steps": [
@@ -717,6 +721,12 @@
           "type": "setFlag",
           "flag": "river_escaped_late",
           "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"

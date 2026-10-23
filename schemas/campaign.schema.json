@@ -169,6 +169,42 @@
     },
     "graph": {
       "$ref": "#/$defs/graph"
+    },
+    "prologue": {
+      "description": "Campaign.prologue: the campaign's opening, told in paintings before anything is asked of the table. Three to six plates, shown once per device on the first scene of the opening chapter (a graph campaign's entry node, an ordered campaign's index 1), skippable. See docs/story-plates.md.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plates"
+      ],
+      "properties": {
+        "plates": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 6,
+          "items": {
+            "description": "One painting and the words read over it.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "art",
+              "narration"
+            ],
+            "properties": {
+              "art": {
+                "type": "string",
+                "pattern": "^plates/[a-z0-9]+(-[a-z0-9]+)*/[a-z0-9]+(-[a-z0-9]+)*$",
+                "description": "Asset-relative id, no extension: /assets/<art>.webp, 1600x900. Declared in assets/manifest.json storyPlates.ids (checked by tools/content/story-plates.test.mjs)."
+              },
+              "narration": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Read aloud and shown beneath the painting. Static for every party: no {tokens}, no counting the party, no great stones. At most PLATE_MAX_WORDS words (validate.mjs)."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "$defs": {

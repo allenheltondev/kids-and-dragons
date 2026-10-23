@@ -215,6 +215,12 @@ interface Runtime {
   resyncAttempt: number;
   connectRetry: ReturnType<typeof setTimeout> | null;
   /**
+   * Try the transport setup again now, ahead of `connectRetry`'s backoff. Set
+   * only while a failed setup is waiting on that timer (no channel yet), so
+   * `reconnect` can tell "no stream because setup failed" from "still resolving".
+   */
+  retryTransport: (() => void) | null;
+  /**
    * Watchdog for a broadcast the server owes us. A successful action response
    * names the seq it committed; the patch normally arrives on the channel a
    * beat later. If it never does — the server's publish failed after the
@@ -303,6 +309,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       resyncRetry: null,
       resyncAttempt: 0,
       connectRetry: null,
+      retryTransport: null,
       attaching: null,
       realtime: null,
       broadcastWatchdog: null,
@@ -464,6 +471,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       let attempt = 0;
       const openTransport = async (): Promise<void> => {
+        runtime.retryTransport = null;
         try {
           const createEventSource = await transportFor(session);
           if (runtime.sequencer !== sequencer) return;
@@ -485,6 +493,16 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
             runtime.connectRetry = null;
             void openTransport();
           }, backoffDelay(attempt++));
+          // Only reachable while that timer is pending, and `openTransport`
+          // clears it on entry, so a click can never start a second setup
+          // beside one already in flight.
+          runtime.retryTransport = () => {
+            if (runtime.connectRetry === null) return;
+            clearTimeout(runtime.connectRetry);
+            runtime.connectRetry = null;
+            attempt = 0;
+            void openTransport();
+          };
         }
       };
       await openTransport();
@@ -507,6 +525,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       runtime.resyncRetry = null;
       if (runtime.connectRetry !== null) clearTimeout(runtime.connectRetry);
       runtime.connectRetry = null;
+      runtime.retryTransport = null;
       if (runtime.broadcastWatchdog) {
         clearTimeout(runtime.broadcastWatchdog);
         runtime.broadcastWatchdog = null;
@@ -1303,6 +1322,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       reconnect() {
         if (!get().session) return;
         if (runtime.channel?.reconnect) runtime.channel.reconnect();
+        // Transport setup failed and is waiting out its backoff: retry it now.
+        else if (runtime.retryTransport) runtime.retryTransport();
         // No stream yet (still resolving the transport): the fetch alone still
         // brings the mirror forward.
         else if (runtime.sequencer) void resync(runtime.sequencer.seq).catch(() => undefined);

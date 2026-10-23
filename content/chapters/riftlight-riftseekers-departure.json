@@ -9,6 +9,10 @@
   "estimatedMinutes": 10,
   "xpAward": 140,
   "entry": "map",
+  "plate": {
+    "art": "plates/riftlight/riftseekers-departure",
+    "narration": "Outside the singing hall, packs rest beside a waiting sledge. Beyond its sheltered ledge, white paths disappear between the peaks. There is room on the map for more than one road."
+  },
   "goal": {
     "text": "Meet the travelers and get ready for the road ahead.",
     "steps": [
@@ -74,6 +78,20 @@
           "goto": "fellowship"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "arrival_question": {
@@ -87,6 +105,20 @@
           "goto": "fellowship"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "fellowship": {
@@ -98,6 +130,20 @@
           "label": "Show them what you noticed",
           "icon": "hand",
           "goto": "seren"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/singing-hall-camp"
@@ -127,6 +173,20 @@
           "text": "\"You can learn a good deal without seeing what I see,\" Seren says. She glances at Orin's instruments. \"He brought half a bag of help.\""
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "lead": {
@@ -138,6 +198,20 @@
           "label": "Ask what they would do first",
           "icon": "hand",
           "goto": "olivia"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "priority": 2,
@@ -166,6 +240,20 @@
           "goto": "safe_routes"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "route": {
@@ -177,6 +265,20 @@
           "label": "Check what you will need",
           "icon": "hand",
           "goto": "chime"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/singing-hall-camp"
@@ -198,6 +300,20 @@
           "itemId": "listening_chime"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "test_chime": {
@@ -215,6 +331,20 @@
           "label": "Wrap it carefully and repeat the rules",
           "icon": "hand",
           "goto": "wrap"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/singing-hall-camp"
@@ -236,6 +366,20 @@
           "flag": "got_ready_for_the_road"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "wrap": {
@@ -255,6 +399,20 @@
           "flag": "got_ready_for_the_road"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "parting": {
@@ -266,6 +424,20 @@
           "label": "Choose your next direction",
           "icon": "hand",
           "goto": "camp"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/singing-hall-camp"
@@ -471,6 +643,20 @@
           "flag": "decided_what_comes_first"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "safe_routes": {
@@ -488,6 +674,20 @@
         {
           "type": "setFlag",
           "flag": "decided_what_comes_first"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/singing-hall-camp"

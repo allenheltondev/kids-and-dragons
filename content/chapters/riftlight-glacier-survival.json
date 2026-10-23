@@ -9,6 +9,10 @@
   "estimatedMinutes": 15,
   "xpAward": 140,
   "entry": "arrival",
+  "plate": {
+    "art": "plates/riftlight/glacier-survival",
+    "narration": "A little snowhorn goat bleats across the meltwater. Its herd answers from a snowy ledge, bells clinking. Between them, the water runs cold and quick. Those small hooves need a way home."
+  },
   "goal": {
     "text": "Get the little goat home safe and find somewhere warm.",
     "steps": [
@@ -769,6 +773,16 @@
             "flag": "helped_glacier_herder"
           },
           "text": "The herder lifts a hand from the newly cleared blanket rail. \"Dry blankets for the next arrivals. That matters.\""
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Cloaked griffin"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Cloaked unicorn"
         }
       ],
       "art": "scenes/riftlight/singing-hall-camp"

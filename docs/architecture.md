@@ -1660,9 +1660,26 @@ type RoomMode = "party" | "travel";
 in `components.css`) is where kids most often play, and it is short of height rather than width. On
 `/p/:code` there, in either mode, the tray becomes a rail down the side, with the corner row (help,
 text, read-aloud, sound) at its foot, so nothing keeps a strip at the top or bottom. The world, or
-the map when it was asked for, sits beside the controls instead of behind them. The controls never
-leave the screen, so a new question does not take the map away, and a roll or a transformation
-takes only the big pane. A phone, and a tablet held upright, keep one surface at a time.
+the map when it was asked for, sits beside the controls instead of behind them. The controls are a
+drawer: tapping You in the rail slides it away, so the picture has the whole width, and tapping it
+again brings it back. It stays mounted while shut (a half-made choice survives), is hidden from
+focus and screen readers, and opens by itself for a new question or the Guide, so a question does
+not take the map away. A roll or a transformation takes only the big pane. A tablet held upright
+keeps one surface at a time.
+
+**A phone held sideways** (landscape, at least 600px wide and under 560px tall; the second query in
+`layout/landscape.ts`, repeated at the end of `components.css`) takes the same shape at a smaller
+scale, since the old one spent a 390px screen on the tray, the corner row's strip and one pane. The
+tray is a slim rail of objects and words, the world or map sits beside the controls (the same
+drawer, a narrower one, `--kad-drawer`), and the corner
+row (and the back button, when there is one) stands in a column down the opposite edge, which costs
+width, the thing a landscape phone has to spare. One-handed play puts the rail on the thumb's side
+and the column on the other. With so little height, the goal is not on screen all the time there:
+it is an icon over the world with the steps done ("1/3"), and a tap opens the steps in a card over
+the picture (`ChapterGoalCard`, `useLandscapePhone`); the hero's pane drops its goal line. The type
+floor is 13px rather than 15 (the text-size setting still multiplies it) and the painted frames are
+drawn at 0.6 of their width, so a panel's words keep their padding. A phone held upright keeps one
+surface at a time.
 
 `/journal` is the one surface with no room behind it. It reads `GET /api/journal`, authorised by
 the **device token** (`x-kad-device-token`) rather than a room session, which between games does

@@ -9,6 +9,10 @@
   "estimatedMinutes": 15,
   "xpAward": 140,
   "entry": "shelf",
+  "plate": {
+    "art": "plates/riftlight/ice-shelf-traverse",
+    "narration": "The Great River runs beneath a narrow shelf of blue ice. Dark rock rises on one side; cold water slides along the other. Ahead, the path bends out of sight."
+  },
   "goal": {
     "text": "Follow the icy path along the river.",
     "steps": [

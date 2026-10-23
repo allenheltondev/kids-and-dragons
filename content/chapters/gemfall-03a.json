@@ -12,6 +12,10 @@
   "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_east_road",
+  "plate": {
+    "art": "plates/gemfall/03a",
+    "narration": "At Stone Crossing, a mossy troll rests one enormous palm on the first stone. A bird is building a nest on his shoulder. The queue can wait. Every traveler owes him a story or a riddle."
+  },
   "objectives": [
     {
       "id": "markers",

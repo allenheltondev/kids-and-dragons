@@ -9,6 +9,10 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "arrival",
+  "plate": {
+    "art": "plates/riftlight/the-island-due-back",
+    "narration": "Beneath the clouds, a low island comes into view. A notch breaks its flat brow. On the lookout, a bell waits beside folded signal cloths and a landing board."
+  },
   "goal": {
     "text": "Help the keepers meet the island that is due back.",
     "steps": [
@@ -124,6 +128,16 @@
           "text": "The cloud whales you guided clear are singing beyond the open lane. The keeper hears a turning note and points beneath the cloud. \"They have seen something low. We should look there first.\" Their song offers a place to look, not a promise about where the island will stop."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "return_song": {
@@ -143,6 +157,16 @@
           "goto": "return_song_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "return_song_1": {
@@ -156,6 +180,16 @@
           "goto": "sightings"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "return_song_2": {
@@ -167,6 +201,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "sightings"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -198,6 +242,16 @@
           }
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "sightings_1": {
@@ -209,6 +263,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "sightings_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -225,6 +289,16 @@
       "onFailure": {
         "goto": "sightings_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "sightings_1_done": {
@@ -242,6 +316,16 @@
         {
           "type": "setFlag",
           "flag": "sighted_the_returning_island"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -263,6 +347,16 @@
           "flag": "sighted_the_returning_island"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "sightings_2": {
@@ -274,6 +368,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "sightings_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -290,6 +394,16 @@
       "onFailure": {
         "goto": "sightings_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "sightings_2_done": {
@@ -307,6 +421,16 @@
         {
           "type": "setFlag",
           "flag": "sighted_the_returning_island"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -328,6 +452,16 @@
           "flag": "sighted_the_returning_island"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "priority": {
@@ -347,6 +481,20 @@
           "goto": "priority_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "priority_1": {
@@ -360,6 +508,20 @@
           "goto": "letters"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "priority_2": {
@@ -371,6 +533,20 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "station"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -399,6 +575,20 @@
           "requiresClass": "duskrunner"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "letters_1": {
@@ -410,6 +600,20 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "letters_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -426,6 +630,20 @@
       "onFailure": {
         "goto": "letters_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "letters_1_done": {
@@ -444,6 +662,20 @@
           "type": "setFlag",
           "flag": "island_messages_saved",
           "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -466,6 +698,20 @@
           "value": false
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "letters_2": {
@@ -477,6 +723,20 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "letters_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -493,6 +753,20 @@
       "onFailure": {
         "goto": "letters_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "letters_2_done": {
@@ -511,6 +785,20 @@
           "type": "setFlag",
           "flag": "island_messages_saved",
           "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -533,6 +821,20 @@
           "value": false
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "station": {
@@ -552,6 +854,16 @@
           "goto": "station_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "station_1": {
@@ -563,6 +875,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "station_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -579,6 +901,16 @@
       "onFailure": {
         "goto": "station_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "station_1_done": {
@@ -597,6 +929,16 @@
           "type": "setFlag",
           "flag": "island_station_ready",
           "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -619,6 +961,16 @@
           "value": false
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "station_2": {
@@ -630,6 +982,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "station_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -646,6 +1008,16 @@
       "onFailure": {
         "goto": "station_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "station_2_done": {
@@ -664,6 +1036,16 @@
           "type": "setFlag",
           "flag": "island_station_ready",
           "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -686,6 +1068,16 @@
           "value": false
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "signal_plan": {
@@ -703,6 +1095,16 @@
           "label": "Keep Pip watching the island and use the keeper's call",
           "icon": "hand",
           "goto": "signal_plan_2"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -725,6 +1127,16 @@
           "value": true
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "signal_plan_2": {
@@ -743,6 +1155,16 @@
           "type": "setFlag",
           "flag": "island_signal_repeated",
           "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -773,6 +1195,16 @@
           }
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "bearings_1": {
@@ -784,6 +1216,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "bearings_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -800,6 +1242,16 @@
       "onFailure": {
         "goto": "bearings_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "bearings_1_done": {
@@ -823,6 +1275,16 @@
           "type": "setFlag",
           "flag": "island_signal_repeated",
           "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -850,6 +1312,16 @@
           "value": false
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "bearings_2": {
@@ -861,6 +1333,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "bearings_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -877,6 +1359,16 @@
       "onFailure": {
         "goto": "bearings_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "bearings_2_done": {
@@ -900,6 +1392,16 @@
           "type": "setFlag",
           "flag": "island_signal_repeated",
           "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -927,6 +1429,16 @@
           "value": false
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "bearings_relay": {
@@ -938,6 +1450,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "bearings_relay_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -954,6 +1476,16 @@
       "onFailure": {
         "goto": "bearings_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "landing": {
@@ -994,6 +1526,16 @@
           "text": "The keeper assigns a second lookout to the return gap because your own estimate was unfinished. Pip repeats her calls rather than presenting them as your measurement."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "landing_1": {
@@ -1005,6 +1547,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "landing_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1021,6 +1573,16 @@
       "onFailure": {
         "goto": "landing_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "landing_1_done": {
@@ -1032,6 +1594,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "stone_care"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1047,6 +1619,16 @@
           "goto": "landing_recovery"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "landing_2": {
@@ -1058,6 +1640,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "landing_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1074,6 +1666,16 @@
       "onFailure": {
         "goto": "landing_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "landing_2_done": {
@@ -1087,6 +1689,16 @@
           "goto": "stone_care"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "landing_2_changed": {
@@ -1098,6 +1710,16 @@
           "label": "Choose a lighter crossing plan",
           "icon": "hand",
           "goto": "landing_recovery"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1125,6 +1747,16 @@
           "flag": "crossed_to_the_returning_island"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "stone_care_1": {
@@ -1138,6 +1770,16 @@
           "goto": "carving"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "stone_care_2": {
@@ -1149,6 +1791,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "carving"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1170,6 +1822,16 @@
           "goto": "carving_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "carving_1": {
@@ -1181,6 +1843,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "carving_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1197,6 +1869,16 @@
       "onFailure": {
         "goto": "carving_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "carving_1_done": {
@@ -1215,6 +1897,16 @@
           "type": "setFlag",
           "flag": "island_carving_clear",
           "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1237,6 +1929,16 @@
           "value": false
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "carving_2": {
@@ -1248,6 +1950,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "carving_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1264,6 +1976,16 @@
       "onFailure": {
         "goto": "carving_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "carving_2_done": {
@@ -1284,6 +2006,16 @@
           "value": true
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "carving_2_changed": {
@@ -1302,6 +2034,16 @@
           "type": "setFlag",
           "flag": "island_carving_clear",
           "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1329,6 +2071,16 @@
           "flag": "copied_the_old_carving"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "orientation_1": {
@@ -1342,6 +2094,16 @@
           "goto": "comparison"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "orientation_2": {
@@ -1353,6 +2115,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "comparison"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1397,6 +2169,16 @@
           "text": "Your meeting point remains dotted. The keeper sets the present lookout sketch beside it, leaving that gap for your party to work around."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "comparison_1": {
@@ -1408,6 +2190,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "comparison_1_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1424,6 +2216,16 @@
       "onFailure": {
         "goto": "comparison_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "comparison_1_done": {
@@ -1442,6 +2244,16 @@
           "type": "setFlag",
           "flag": "island_land_match",
           "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1464,6 +2276,16 @@
           "value": false
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "comparison_2": {
@@ -1475,6 +2297,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "comparison_2_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1491,6 +2323,16 @@
       "onFailure": {
         "goto": "comparison_2_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "comparison_2_done": {
@@ -1509,6 +2351,16 @@
           "type": "setFlag",
           "flag": "island_land_match",
           "value": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1531,6 +2383,16 @@
           "value": false
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "alternative": {
@@ -1550,6 +2412,16 @@
           "goto": "alternative_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "alternative_1": {
@@ -1563,6 +2435,16 @@
           "goto": "record"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "alternative_2": {
@@ -1574,6 +2456,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "record"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1609,6 +2501,16 @@
           "text": "Your first comparison was unfinished. The shared account can credit the follow-up your party made with help, while keeping the failed measure or missing turn visible."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "record_1": {
@@ -1629,6 +2531,16 @@
           "value": true
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "record_2": {
@@ -1647,6 +2559,16 @@
           "type": "setFlag",
           "flag": "island_record_shared",
           "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1690,6 +2612,16 @@
           "text": "Your batch-carrying plan keeps the messenger relay waiting for the return. Choose the first message now; it will leave after your party finishes bringing the kit back."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "departure_1": {
@@ -1710,6 +2642,16 @@
           ]
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "departure_2": {
@@ -1728,6 +2670,16 @@
               "value": false
             }
           ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1806,6 +2758,16 @@
           "flag": "came_back_across_the_board"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "rest": {
@@ -1834,6 +2796,16 @@
           "goto": "landing_brace_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "landing_brace_check": {
@@ -1848,6 +2820,16 @@
       "onFailure": {
         "goto": "landing_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "letters_runner": {
@@ -1859,6 +2841,20 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "letters_runner_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1875,6 +2871,20 @@
       "onFailure": {
         "goto": "letters_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Letter messenger"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "sightings_whales": {
@@ -1886,6 +2896,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "sightings_whales_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1902,6 +2922,16 @@
       "onFailure": {
         "goto": "sightings_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "comparison_clear": {
@@ -1913,6 +2943,16 @@
           "label": "Go on with this result",
           "icon": "hand",
           "goto": "comparison_clear_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1929,6 +2969,16 @@
       "onFailure": {
         "goto": "comparison_1_changed"
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "comparison_recovery": {
@@ -1948,6 +2998,16 @@
           "goto": "comparison_recover_view"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "comparison_recover_scale": {
@@ -1961,6 +3021,16 @@
           "goto": "alternative"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "comparison_recover_view": {
@@ -1972,6 +3042,16 @@
           "label": "Continue with what you found",
           "icon": "hand",
           "goto": "alternative"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -1991,6 +3071,16 @@
           "label": "Leave bulky gear and borrow the keeper's small kit",
           "icon": "hand",
           "goto": "landing_borrow"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"
@@ -2013,6 +3103,16 @@
           "value": true
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/island-due-back"
     },
     "landing_borrow": {
@@ -2031,6 +3131,16 @@
           "type": "setFlag",
           "flag": "island_relay_delayed",
           "value": false
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/island-due-back"

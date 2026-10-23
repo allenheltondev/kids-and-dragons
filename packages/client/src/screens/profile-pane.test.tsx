@@ -51,10 +51,18 @@ function mount(found: JournalResponse, saveFlair = vi.fn(async (c: Record<string
   return saveFlair;
 }
 
+/** Her page is opened from the Hero page, and opens to look at. */
 async function openPage() {
   const user = userEvent.setup();
-  await user.click(await screen.findByRole("button", { name: "Me" }));
+  await user.click(await screen.findByRole("button", { name: "My page" }));
   await screen.findByRole("heading", { name: "Ada" });
+  return user;
+}
+
+/** The editor, where the choices are. */
+async function openEditor() {
+  const user = await openPage();
+  await user.click(screen.getByRole("button", { name: "Edit my page" }));
   return user;
 }
 
@@ -86,19 +94,65 @@ describe("her page", () => {
     expect(screen.getByText(/hiding behind a bush/i)).toBeTruthy();
     expect(screen.getByText(/none yet/i)).toBeTruthy();
     // No badge, no title to pick.
+    await userEvent.setup().click(screen.getByRole("button", { name: "Edit my page" }));
     expect(screen.queryByRole("radiogroup", { name: /pick a title/i })).toBeNull();
+    expect(screen.getByText(/earn a badge/i)).toBeTruthy();
+  });
+
+  it("opens to look at, with no choices on it, and the editor is one tap away and one tap back", async () => {
+    mount(journal());
+    const user = await openPage();
+    expect(screen.queryByRole("radiogroup")).toBeNull();
+    expect(document.querySelector(".profile")?.getAttribute("data-mode")).toBe("view");
+
+    await user.click(screen.getByRole("button", { name: "Edit my page" }));
+    expect(document.querySelector(".profile")?.getAttribute("data-mode")).toBe("edit");
+    expect(screen.getByRole("radiogroup", { name: /pick a color/i })).toBeTruthy();
+    // The preview that stays in view while she picks: her name and a face for each hero.
+    expect(screen.getByRole("heading", { name: "Ada" })).toBeTruthy();
+    expect(screen.getByRole("list", { name: /as they will look/i }).querySelectorAll("li")).toHaveLength(2);
+
+    await user.click(screen.getByRole("button", { name: "Done" }));
+    expect(screen.queryByRole("radiogroup")).toBeNull();
+    expect(screen.getByRole("region", { name: /your badges/i })).toBeTruthy();
+  });
+
+  it("draws each badge as a medal and walks through them one at a time", async () => {
+    mount(journal());
+    const user = await openPage();
+    const badges = screen.getByRole("region", { name: /your badges/i });
+    expect(badges.querySelectorAll(".badge-art")).toHaveLength(2);
+    expect(badges.querySelector('[data-badge="finished:gemfall"]')).not.toBeNull();
+    expect(badges.querySelector('[data-badge="finds-1"]')).not.toBeNull();
+
+    const previous = within(badges).getByRole("button", { name: /previous badge/i }) as HTMLButtonElement;
+    const next = within(badges).getByRole("button", { name: /next badge/i }) as HTMLButtonElement;
+    expect(previous.disabled).toBe(true);
+    await user.click(next);
+    expect(next.disabled).toBe(true);
+    expect(previous.disabled).toBe(false);
+    expect(badges.querySelectorAll(".profile__dot--on")).toHaveLength(1);
+    await user.click(previous);
+    expect(previous.disabled).toBe(true);
+  });
+
+  it("has no carousel to walk for a single badge", async () => {
+    mount(journal({ profile: { ...PROFILE, badges: [PROFILE.badges[0]!] } }));
+    await openPage();
+    const badges = screen.getByRole("region", { name: /your badges/i });
+    expect(within(badges).queryByRole("button", { name: /next badge/i })).toBeNull();
   });
 
   it("offers no page from a server that sends none", async () => {
     const { profile: _none, ...old } = journal();
     mount(old);
     await screen.findByRole("button", { name: "Guide" });
-    expect(screen.queryByRole("button", { name: "Me" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "My page" })).toBeNull();
   });
 
   it("saves a color as the whole choice, and says so", async () => {
     const save = mount(journal());
-    const user = await openPage();
+    const user = await openEditor();
     await user.click(screen.getByRole("radio", { name: /berry/i }));
     expect(save).toHaveBeenCalledWith({ color: "berry", frames: null, title: null });
     await screen.findByText(/saved/i);
@@ -108,7 +162,7 @@ describe("her page", () => {
 
   it("frames each hero on her own, and picks a title only from her badges", async () => {
     const save = mount(journal());
-    const user = await openPage();
+    const user = await openEditor();
     const frames = screen.getByRole("radiogroup", { name: /frame for sparklehoof/i });
     await user.click(within(frames).getByRole("radio", { name: /ivy/i }));
     expect(save).toHaveBeenLastCalledWith({ color: null, frames: { c_1: "ivy" }, title: null });
@@ -125,7 +179,7 @@ describe("her page", () => {
   it("puts a pick back and says so when it could not be saved", async () => {
     const save = vi.fn(async () => { throw new Error("offline"); });
     mount(journal(), save as never);
-    const user = await openPage();
+    const user = await openEditor();
     await user.click(screen.getByRole("radio", { name: /plum/i }));
     expect(await screen.findByText(/could not save that/i)).toBeTruthy();
     expect(document.querySelector(".profile")?.getAttribute("data-profile-color")).toBe("meadow");
@@ -139,7 +193,7 @@ describe("her page", () => {
         calls.push({ choice, done: (flair) => resolve(flair), fail: () => reject(new Error("offline")) });
       }));
     mount(journal(), save as never);
-    const user = await openPage();
+    const user = await openEditor();
     const saved = (choice: Record<string, unknown>): KidProfileView => ({
       ...PROFILE, flair: { v: 1, ...Object.fromEntries(Object.entries(choice).filter(([, v]) => v !== null)) } as never,
     });
@@ -171,7 +225,7 @@ describe("her page", () => {
         calls.push({ choice, done: (v) => resolve(v), fail: () => reject(new Error("offline")) });
       }));
     mount(journal(), save as never);
-    const user = await openPage();
+    const user = await openEditor();
     await user.click(screen.getByRole("radio", { name: /berry/i }));
     calls[0]!.done({ ...PROFILE, flair: { v: 1, color: "berry" } });
     await screen.findByText(/^saved/i);

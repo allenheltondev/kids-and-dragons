@@ -9,6 +9,10 @@
   "estimatedMinutes": 8,
   "xpAward": 140,
   "entry": "stones",
+  "plate": {
+    "art": "plates/riftlight/boundary-stone-bank",
+    "narration": "Old boundary stones stand above the Great River. Wind bends the grass around their feet. Beyond the wet gravel, a quiet road follows the bank into the foothills."
+  },
   "goal": {
     "text": "Help the keeper of the old stones beside the river.",
     "steps": [
@@ -36,6 +40,12 @@
           "goto": "markings"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        }
+      ],
       "art": "scenes/riftlight/stone-counters"
     },
     "markings": {
@@ -61,6 +71,12 @@
           "flag": "saw_the_carved_stone"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        }
+      ],
       "art": "scenes/riftlight/stone-counters"
     },
     "carving": {
@@ -78,6 +94,12 @@
         {
           "type": "setFlag",
           "flag": "helped_the_stone_keeper"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
         }
       ],
       "art": "scenes/riftlight/stone-counters"
@@ -99,6 +121,12 @@
           "flag": "helped_the_stone_keeper"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        }
+      ],
       "art": "scenes/riftlight/stone-counters"
     },
     "bank_rest": {
@@ -107,6 +135,12 @@
       "heal": 0,
       "choices": [],
       "outcome": "success",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        }
+      ],
       "art": "scenes/riftlight/stone-counters"
     }
   },

@@ -38,6 +38,7 @@ import { RiftStatus } from "../screens/RiftStatus";
 import { ChapterGoalCard } from "../screens/ChapterGoal";
 import { ChapterPreface } from "../screens/ChapterPreface";
 import { RoomCheers } from "../screens/RoomCheers";
+import { StoryPlates } from "../screens/StoryPlates";
 import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
 // The hold table lives in world/presentation.ts because the board renderer
@@ -174,6 +175,10 @@ export function WorldView({
           comes back partway (#357). Over the stage, between the corner row and the plate, and
           gone by itself once read or once play moves on. */}
       {isSceneLike(phase) && <ChapterPreface />}
+      {/* A campaign's prologue or a chapter's plate, painted full pane before the first scene
+          (docs/story-plates.md). Once per device and skippable; the story and "Last time…" wait
+          behind it (useStartPreface), and it has nothing to tap on the shared screen. */}
+      {isSceneLike(phase) && <StoryPlates />}
       {/* The fight so far, every roll with what it needed (FightLog). Mounted
           for any scene-like phase, not only once a fight is in state: the
           opening monster round rides ENCOUNTER_BEGAN, ahead of the patch that

@@ -37,7 +37,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-3, 0.75em);
-  padding: var(--space-1, 0.25em) var(--space-3, 0.75em);
+  padding: var(--space-3, 0.75em) var(--space-3, 0.75em);
   border-bottom: 0.08em solid var(--color-border, #3a3468);
   background: var(--color-surface, #191534);
 }
@@ -780,7 +780,7 @@
   gap: var(--space-1, 0.25em);
   width: 100%;
   min-height: 3.25em;
-  padding: var(--space-2, 0.5em);
+  padding: var(--space-3, 0.75em) var(--space-2, 0.5em);
   border: 0.08em solid var(--color-border, #3a3468);
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface, #191534);
@@ -1335,6 +1335,8 @@
 .inv__grid {
   flex: 0 0 auto;
   grid-auto-rows: minmax(4.25em, auto);
+  gap: var(--space-3, 0.75em);
+  padding-block: var(--space-2, 0.5em);
 }
 
 .inv__button,
@@ -1426,10 +1428,9 @@ html[data-text] .sheet__hp-track { flex: 1 1 4em; width: auto; }
 html[data-hand] body:has(.kad-party--player, .kad-travel) .sheet,
 html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { padding-inline-end: var(--space-3, 0.75em); }
 
-/* Larger text and one-handed play: the commit stays on screen under the answers it commits,
-   rather than scrolling off the foot of a pane that the text has filled. */
-html[data-text] .confirm,
-html[data-hand] .confirm {
+/* The commit stays on screen under the answers it commits, rather than scrolling off the foot
+   of a pane that a long scene or larger text has filled. */
+.confirm {
   position: sticky;
   inset-block-end: calc(-1 * var(--space-3, 0.75em));
   z-index: 1;

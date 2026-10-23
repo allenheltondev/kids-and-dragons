@@ -1515,7 +1515,7 @@ describe("the party strip", () => {
     twoPlayers();
 
     await user.click(screen.getByRole("button", { name: /Sparklehoof's character sheet/ }));
-    expect(screen.getByText(/How far you have come/)).toBeTruthy();
+    expect(screen.getByText(/Hero tiers/)).toBeTruthy();
   });
 
   it("opens somebody else's, and says so in their words", async () => {
@@ -1523,7 +1523,7 @@ describe("the party strip", () => {
     twoPlayers();
 
     await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
-    expect(screen.getByText(/How far they have come/)).toBeTruthy();
+    expect(screen.getByText(/Hero tiers/)).toBeTruthy();
   });
 
   it("opens a new question by itself, even from the bag", async () => {
@@ -1686,7 +1686,7 @@ describe("the party strip", () => {
     const user = userEvent.setup();
     mount({ party: [member(), member({ character: THISTLE })], sceneType: "story" });
     await user.click(screen.getByRole("button", { name: /Thistle's character sheet/ }));
-    expect(screen.getByText(/How far they have come/)).toBeTruthy();
+    expect(screen.getByText(/Hero tiers/)).toBeTruthy();
   });
 });
 

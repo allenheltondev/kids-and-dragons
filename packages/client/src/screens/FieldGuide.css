@@ -3,9 +3,18 @@
    surface's `overflow: hidden` clipped the rest. With a height of its own the
    body below is what scrolls. */
 .field-guide { display: flex; flex-direction: column; block-size: 100%; min-block-size: 0; flex: 1 1 auto; }
-.field-guide__title { margin: 0.75em 0.75em 0.25em; font-size: 1.2em; }
+.field-guide__title {
+  display: flex; align-items: center; gap: 0.45em; margin: 0.75em 0.75em 0.15em;
+  font-family: var(--kad-font-display); font-size: 1.35em; color: #f3ddb3; text-shadow: 0 0.1em #0006;
+}
+.field-guide__title::before, .field-guide__title::after { content: "✦"; color: #e9c985; font-size: 0.6em; }
 .field-guide__body { flex: 1 1 auto; min-block-size: 0; padding: 0.5em 0.75em; }
 .field-guide__summary { margin: 0 0.75em; color: var(--kad-ink-dim); }
+/* How much of the book is filled in: a thin brass-rimmed bar under the count. */
+.field-guide__meter {
+  block-size: 0.5em; margin: 0.35em 0.75em 0; overflow: hidden; border: 1px solid #ad885777; border-radius: 999px; background: #0d0a1e88;
+}
+.field-guide__meter > span { display: block; block-size: 100%; border-radius: inherit; background: linear-gradient(90deg, #d9a24a, #ffe9a8); }
 .field-guide .field-guide__back { flex: 0 0 auto; margin: 0.5em 0.75em 0.75em; inline-size: calc(100% - 1.5em); }
 /* PlayerView keeps the creation flow mounted (not unmounted) under the guide. */
 .player-view__creation:not([hidden]) { display: contents; }
@@ -28,12 +37,17 @@
   ), 1fr));
 }
 .field-guide__tab {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.35em;
   min-inline-size: 0; min-block-size: 2.75em; padding: 0 0.45em; font-size: 0.85em; font-weight: 700;
   border-radius: 999px; font-family: inherit;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  color: var(--kad-ink-dim); background: var(--kad-bg-raised); border: 0.08em solid var(--kad-border);
+  color: #e6d3b0; background: linear-gradient(#3c2d42, #20192f); border: 0.08em solid #ad885777; box-shadow: inset 0 -0.2em #0003;
 }
-.field-guide__tab[aria-selected="true"] { color: var(--kad-accent-ink); background: var(--kad-gold); border-color: var(--kad-gold); }
+.field-guide__tab .kad-icon { flex: none; color: #e5c281; }
+.field-guide__tab[aria-selected="true"] {
+  color: var(--kad-accent-ink); background: linear-gradient(#ffe9a8, #e8b85a); border-color: #ffe9a8; box-shadow: 0 0.15em 0.4em #0007;
+}
+.field-guide__tab[aria-selected="true"] .kad-icon { color: inherit; }
 .field-guide__progress { margin: 0 0 0.6em; color: var(--kad-ink-dim); }
 .field-guide__grid {
   list-style: none; margin: 0; padding: 0;
@@ -42,35 +56,62 @@
 .field-guide__card {
   position: relative; inline-size: 100%; min-block-size: 8em; padding: 0.5em; font: inherit; color: var(--kad-ink);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.4em;
-  background: var(--kad-bg-raised); border: 0.08em solid var(--kad-border-strong); border-radius: var(--kad-radius-md);
+  background: radial-gradient(ellipse at 50% 25%, #5a4668aa, #231d35 78%);
+  border: 0.08em solid #ad8857aa; border-radius: 1.1em 0.6em 1.1em 0.6em;
+  box-shadow: inset 0 0.15em #ffffff10, 0 0.3em 0.9em #0003;
   transition: transform 0.12s ease;
 }
 .field-guide__card:not(:disabled):active { transform: scale(0.97); }
-.field-guide__card--hidden { background: var(--kad-bg-sunken); border-color: var(--kad-border); color: var(--kad-ink-faint); }
-.field-guide__art { display: grid; place-items: center; inline-size: 3em; block-size: 3em; overflow: hidden; font-size: 1.6em; }
-.field-guide__card--hidden .field-guide__art { opacity: 0.6; }
-.field-guide__art img { inline-size: 100%; block-size: 100%; object-fit: contain; }
-.field-guide__name { font-size: 0.95em; font-weight: 600; text-align: center; overflow-wrap: anywhere; }
+/* Not found yet: a dashed page waiting for its picture. */
+.field-guide__card--hidden {
+  background: #1a1528aa; border: 0.1em dashed #ad885766; box-shadow: none; color: #ad885799;
+}
+.field-guide__art { display: grid; place-items: center; inline-size: 3.4em; block-size: 3.4em; overflow: hidden; font-size: 1.6em; }
+.field-guide__card--hidden .field-guide__art { font-family: var(--kad-font-display); font-size: 2.2em; opacity: 0.7; }
+.field-guide__art img { inline-size: 100%; block-size: 100%; object-fit: contain; filter: drop-shadow(0 0.15em 0.2em #0009); }
+.field-guide__name { font-family: var(--kad-font-display); font-size: 0.9em; font-weight: 600; color: #f3ddb3; text-align: center; overflow-wrap: anywhere; }
 .field-guide__new {
   position: absolute; inset-block-start: 0.3em; inset-inline-end: 0.3em; padding: 0.1em 0.5em; border-radius: 999px;
-  font-size: 0.75em; font-weight: 700; color: var(--kad-accent-ink); background: var(--kad-gold);
+  font-size: 0.75em; font-weight: 700; color: var(--kad-accent-ink); background: linear-gradient(#ffe9a8, #e8b85a);
 }
 .field-guide__detail-title { margin: 0 0 0.5em; }
 @media (prefers-reduced-motion: reduce) { .field-guide__card { transition: none; } }
 
-.fgd__header { display: flex; flex-direction: column; align-items: flex-start; gap: 0.5em; margin-block-end: 1em; }
-.fgd__art { display: grid; place-items: center; inline-size: 7em; block-size: 7em; overflow: hidden; font-size: 3em; align-self: center; }
-.fgd__art img { inline-size: 100%; block-size: 100%; object-fit: contain; }
-.fgd__header .field-guide__detail-title { margin: 0; font-size: 1.4em; overflow-wrap: anywhere; }
-.fgd__hook { margin: 0; font-size: 1.1em; font-style: italic; }
+.fgd__return {
+  position: sticky; inset-block-start: 0.25em; z-index: 1; align-self: flex-start;
+  margin-block-end: 0.5em; box-shadow: 0 0.2em 0.6em #0008;
+}
+.fgd__header { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6em; margin-block-end: 1em; }
+/* The entry's painting in a gold arch, standing in its own light, like a hero on the sheet. */
+.fgd__art {
+  display: grid; place-items: center; inline-size: 10em; block-size: 10em; overflow: hidden; align-self: center;
+  border: 0.08em solid #e1bd7f; border-radius: 5em 5em 1.2em 1.2em;
+  background: radial-gradient(ellipse at 50% 80%, #6a5280, #231d35 75%);
+  box-shadow: 0 0 0 0.12em #30263b, 0 0 0 0.15em #b4926359, 0 0.4em 0.8em #0006;
+}
+.fgd__art > .kad-icon { font-size: 4em; color: #e5c281; }
+.fgd__art img { inline-size: 88%; block-size: 88%; object-fit: contain; filter: drop-shadow(0 0.1em 0.15em #0009); }
+.fgd__header .field-guide__detail-title { margin: 0; font-family: var(--kad-font-display); font-size: 1.5em; color: #ffe4a1; overflow-wrap: anywhere; }
+.fgd__hook {
+  margin: 0; padding-inline-start: 0.7em; border-inline-start: 0.25em solid #e1bd7f;
+  font-size: 1.05em; font-style: italic; color: #f3ddb3;
+}
 .fgd__short { margin: 0; }
 .fgd__badges { display: flex; flex-wrap: wrap; gap: 0.4em; list-style: none; margin: 0; padding: 0; }
+/* A chip says what it measures, then the answer: "Size  About as big as a person". */
 .fgd__badge {
-  padding: 0.25em 0.8em; border-radius: 999px; font-weight: 600;
-  background: var(--kad-bg-raised); border: 0.08em solid var(--kad-border-strong);
+  display: inline-flex; align-items: center; flex-wrap: wrap; gap: 0.1em 0.45em; padding: 0.25em 0.9em 0.25em 0.5em; border-radius: 999px; font-weight: 600;
+  background: linear-gradient(#3c2d42, #20192f); border: 0.08em solid #ad885777;
 }
-.fgd__section { margin-block-end: 1em; }
-.fgd__section h4 { margin: 0 0 0.3em; font-size: 1.1em; }
+.fgd__badge-label {
+  display: inline-flex; align-items: center; gap: 0.3em; padding: 0.05em 0.55em; border-radius: 999px;
+  background: #0d0a1e99; color: #e5c281; font-size: 0.8em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+}
+.fgd__section {
+  margin-block-end: 0.8em; padding: 0.65em 0.8em; border: 1px solid #ad885744; border-radius: 0.5em 1.1em 0.5em 1.1em;
+  background: linear-gradient(150deg, #3e30442b, #191529d9);
+}
+.fgd__section h4 { margin: 0 0 0.3em; font-family: var(--kad-font-display); font-size: 1.05em; color: #f3ddb3; }
 .fgd__section p { margin: 0; line-height: 1.5; overflow-wrap: anywhere; }
 .fgd__list { margin: 0; padding-inline-start: 1.2em; line-height: 1.5; }
 .fgd__list li { margin-block-end: 0.4em; overflow-wrap: anywhere; }
@@ -80,3 +121,26 @@
 }
 .fgd__unknown { font-weight: 700; color: var(--kad-ink-faint); }
 .fgd__found { margin: 1em 0 0; color: var(--kad-ink-dim); }
+
+/*
+ * Subtle life in the pictures, by stance (world/idle-motion.ts has the stage's version of the same):
+ * standing figures breathe and lean a hair, hovering ones bob, flying ones drift and tilt, swimming ones
+ * rise and fall. The frame stays put; only the picture moves. Reduced motion flattens it (theme.css).
+ */
+.field-guide__art img, .fgd__art img {
+  transform-origin: 50% 92%;
+  animation-delay: var(--fg-phase, 0s);
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  will-change: transform;
+}
+[data-stance="standing"] > img { animation-name: fg-breathe, fg-lean; animation-duration: 4s, 7s; }
+[data-stance="hovering"] > img { animation-name: fg-hover; animation-duration: 3s; animation-direction: alternate; }
+[data-stance="flying"] > img { animation-name: fg-fly; animation-duration: 6s; animation-direction: alternate; }
+[data-stance="swimming"] > img { animation-name: fg-swim; animation-duration: 5s; animation-direction: alternate; }
+@keyframes fg-breathe { 50% { scale: 1 1.03; } }
+@keyframes fg-lean { 0%, 100% { rotate: -0.5deg; } 50% { rotate: 0.5deg; } }
+@keyframes fg-hover { from { translate: 0 0; } to { translate: 0 -3.5%; } }
+@keyframes fg-fly { from { translate: -2% 0; rotate: -2deg; } to { translate: 2% -5%; rotate: 2deg; } }
+@keyframes fg-swim { from { translate: 0 -1.2%; rotate: -1.2deg; } to { translate: 0 1.2%; rotate: 1.2deg; } }
+@media (prefers-reduced-motion: reduce) { .field-guide__art img, .fgd__art img { animation: none; } }

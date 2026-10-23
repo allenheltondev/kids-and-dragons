@@ -629,6 +629,40 @@ def check_campaign_art(rep: Report, mf: dict) -> None:
                 rep.fail(f"campaigns/{filename} undeclared", "listed in manifest.campaignArt.campaigns", "undeclared file")
 
 
+def check_story_plates(rep: Report, mf: dict) -> None:
+    """Story plates (docs/story-plates.md): the declared size, opaque, nothing undeclared.
+
+    A missing painting is not a failure: the story leaves that plate out until it
+    lands. `art:inventory` lists what is still owed.
+    """
+    spec = mf.get("storyPlates")
+    if not spec:
+        return
+    canvas = spec["canvas"]
+    declared = set(spec["ids"])
+    for plate in spec["ids"]:
+        path = os.path.join(ROOT, "assets", f"{plate}.webp")
+        if not os.path.isfile(path):
+            rep.warn(f"{plate}  not yet delivered", "the story plays without this plate")
+            continue
+        with Image.open(path) as im:
+            if im.format != "WEBP":
+                rep.fail(f"{plate} format", "WEBP", im.format)
+                continue
+            if im.size != (canvas["width"], canvas["height"]):
+                rep.fail(f"{plate} canvas", f"{canvas['width']}x{canvas['height']}", f"{im.size[0]}x{im.size[1]}")
+                continue
+            if im.mode == "RGBA" and np.asarray(im)[..., 3].min() < 255:
+                rep.fail(f"{plate} opaque", "no transparent pixels", "transparency")
+                continue
+        rep.ok(f"{plate}  {canvas['width']}x{canvas['height']}")
+    root = os.path.join(ROOT, "assets", "plates")
+    for folder, _, files in os.walk(root):
+        for filename in sorted(files):
+            stem, _ = os.path.splitext(filename)
+            plate = os.path.relpath(os.path.join(folder, stem), os.path.join(ROOT, "assets")).replace(os.sep, "/")
+            if plate not in declared:
+                rep.fail(f"{plate} undeclared", "listed in manifest.storyPlates.ids", "undeclared file")
 def check_scene_illustrations(rep: Report, mf: dict) -> None:
     """Declared story backdrops are opaque; entry portraits use their tall canvas."""
     for art in mf.get("sceneIllustrations", []):
@@ -731,6 +765,7 @@ def main() -> int:
     check_gear_portraits(rep, mf)
     check_figure_variants(rep, mf)
     check_campaign_art(rep, mf)
+    check_story_plates(rep, mf)
     check_scene_illustrations(rep, mf)
     check_painted_icons(rep, mf)
 

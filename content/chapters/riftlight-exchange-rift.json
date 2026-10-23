@@ -41,7 +41,13 @@
           "goto": "morning"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
     },
     "morning": {
       "type": "choice_point",
@@ -92,7 +98,13 @@
           "goto": "delivery"
         }
       ],
-      "art": "scenes/gemfall/exchange-quay"
+      "art": "scenes/gemfall/exchange-quay",
+      "cast": [
+        {
+          "figure": "cast/fishmonger",
+          "name": "Fish seller"
+        }
+      ]
     },
     "fish_help": {
       "type": "story",
@@ -112,7 +124,17 @@
           "value": true
         }
       ],
-      "art": "scenes/gemfall/exchange-noodle-stall"
+      "art": "scenes/gemfall/exchange-noodle-stall",
+      "cast": [
+        {
+          "figure": "cast/fishmonger",
+          "name": "Fish seller"
+        },
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
     },
     "gull": {
       "type": "story",
@@ -331,7 +353,14 @@
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
-      "rift": "open"
+      "rift": "open",
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ]
     },
     "read_light": {
       "type": "story",
@@ -415,7 +444,14 @@
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
-      "rift": "steady"
+      "rift": "steady",
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ]
     },
     "catch": {
       "type": "check",
@@ -438,6 +474,13 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ],
       "art": "scenes/gemfall/exchange-docks",
       "rift": "steady"
     },
@@ -462,6 +505,13 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ],
       "art": "scenes/gemfall/exchange-docks",
       "rift": "steady"
     },
@@ -486,6 +536,13 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ],
       "art": "scenes/gemfall/exchange-docks",
       "rift": "steady"
     },
@@ -510,6 +567,13 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ],
       "art": "scenes/gemfall/exchange-docks",
       "rift": "steady"
     },
@@ -534,6 +598,13 @@
           }
         ]
       },
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ],
       "art": "scenes/gemfall/exchange-docks",
       "rift": "steady"
     },
@@ -549,7 +620,14 @@
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
-      "rift": "steady"
+      "rift": "steady",
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ]
     },
     "together": {
       "type": "story",
@@ -563,7 +641,14 @@
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
-      "rift": "steady"
+      "rift": "steady",
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ]
     },
     "tumbled": {
       "type": "story",
@@ -577,7 +662,14 @@
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
-      "rift": "steady"
+      "rift": "steady",
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ]
     },
     "through": {
       "type": "story",
@@ -598,7 +690,14 @@
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters",
-      "rift": "collapse"
+      "rift": "collapse",
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ]
     },
     "white": {
       "type": "rest",
@@ -606,7 +705,14 @@
       "heal": 0,
       "choices": [],
       "outcome": "success",
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Goat kid",
+          "size": "tiny_to_small"
+        }
+      ]
     },
     "delivery": {
       "type": "choice_point",
@@ -625,7 +731,13 @@
           "goto": "delivery_moor"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
     },
     "delivery_sacks": {
       "type": "story",
@@ -649,7 +761,13 @@
           "flag": "helped_the_barge"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
     },
     "delivery_moor": {
       "type": "story",
@@ -673,7 +791,13 @@
           "flag": "helped_the_barge"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
     },
     "quay_rest": {
       "type": "rest",
@@ -693,7 +817,13 @@
           "goto": "quay"
         }
       ],
-      "art": "scenes/gemfall/exchange-noodle-stall"
+      "art": "scenes/gemfall/exchange-noodle-stall",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
     },
     "rookery": {
       "type": "story",

@@ -11,6 +11,10 @@
   "estimatedMinutes": 42,
   "xpAward": 90,
   "entry": "scene_mosshome",
+  "plate": {
+    "art": "plates/gemfall/05b",
+    "narration": "In MossHome, a tree door swings open above a mat of welcome moss. A bigfoot archivist waits with an armful of knotted cords. Root stairs twist upward behind her. This town keeps its stories in surprising places."
+  },
   "objectives": [
     {
       "id": "archive",
