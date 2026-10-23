@@ -10,14 +10,18 @@
  *
  * A name is a `cast` entry's `name` anywhere in the same chapter (nameplates
  * like "Noodle seller" count). A scene's words are its narration, prompt,
- * choice labels and narration variants. Each finding says whether the scene
- * still has a free slot: a full stage (MAX_CAST) means casting them needs
- * somebody else out, which is a call for the author.
+ * choice labels, narration variants and a check's result narration. Each
+ * finding says whether the scene still has a free slot, counted in cast
+ * entries (a counted group or an unnamed creature takes one too): a full stage
+ * (MAX_CAST) means casting them needs somebody else out, which is a call for
+ * the author.
  */
 
 import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+
+import { sceneTexts } from "./cohesion.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 
@@ -35,15 +39,15 @@ export function castNames(chapter) {
   return [...names];
 }
 
-/** What the scene says aloud or shows to be read: where a name can turn up. */
+/**
+ * What a party reads in a scene: where a name can turn up. Narration, prompt,
+ * choice labels, variants, and a check's result narration (cohesion.mjs's
+ * `sceneTexts`), but not the scene's own cast nameplates.
+ */
 export function sceneWords(scene) {
-  return [
-    scene.narration,
-    scene.prompt,
-    ...(scene.choices ?? []).map((choice) => choice.label),
-    ...(scene.variants ?? []).map((variant) => variant.text),
-  ]
-    .filter((text) => typeof text === "string")
+  return sceneTexts(scene)
+    .filter(({ field }) => field !== "cast")
+    .map(({ text }) => text)
     .join("\n");
 }
 
@@ -53,13 +57,14 @@ export function castGaps(chapter) {
   const gaps = [];
   for (const [sceneId, scene] of Object.entries(chapter.scenes ?? {})) {
     if (["encounter", "combat"].includes(scene.type)) continue; // the board draws its own ground
-    const here = new Set((scene.cast ?? []).map((member) => member.name));
+    // Named figures to match against; every entry, named or not, takes a slot on the stage.
+    const here = new Set((scene.cast ?? []).map((member) => member.name).filter(Boolean));
     const words = sceneWords(scene);
     const missing = names.filter(
       (name) => !here.has(name) && new RegExp(`(?<![\\w'’])${escape(name)}(?![\\w])`, "i").test(words),
     );
     if (missing.length === 0) continue;
-    gaps.push({ scene: sceneId, names: missing, cast: [...here], room: MAX_CAST - here.size });
+    gaps.push({ scene: sceneId, names: missing, cast: [...here], room: Math.max(0, MAX_CAST - (scene.cast?.length ?? 0)) });
   }
   return gaps;
 }
