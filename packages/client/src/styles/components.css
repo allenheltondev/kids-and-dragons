@@ -932,6 +932,12 @@ html[data-text] .kad-tray__label {
       margin-inline-end var(--kad-dur-base, 240ms) var(--kad-ease-out, ease-out),
       visibility 0s linear var(--kad-dur-base, 240ms);
   }
+  /* The pane repeats the scene's words so a phone showing only it still has them (PlayerPanel).
+     With the world, which tells the story, beside it they are twice on one screen, and they cost
+     the choices room: about half of a phone's pane, and the largest text's on a tablet's. */
+  [data-side-by-side]:has(> [data-pane="world"][data-showing="true"]) .player__echo {
+    display: none;
+  }
   /* The rail stays above a drawer sliding under it, one-handed on the right. */
   :is(.kad-travel, .kad-party--player) > .kad-tray {
     z-index: 2;
@@ -1049,12 +1055,5 @@ html[data-text] .kad-tray__label {
      column are out, so open, the picture is the narrow one; shut, it has all of it. */
   [data-side-by-side] {
     --kad-drawer: max(320px, 46%);
-  }
-
-  /* The pane repeats the scene's words so a phone showing only it still has them (PlayerPanel).
-     With the world, which tells the story, beside it they are twice on one screen, and they
-     cost the choices about half of a pane this short. */
-  [data-side-by-side]:has(> [data-pane="world"][data-showing="true"]) .player__echo {
-    display: none;
   }
 }
