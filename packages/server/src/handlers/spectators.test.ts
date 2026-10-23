@@ -19,6 +19,7 @@ import { makeHarness, seedHousehold, type TestHarness } from "../test-support.ts
 import { createRoom, joinRoom } from "./room.ts";
 import { AWAY_AFTER_MS, beatPresence, setPresence } from "./presence.ts";
 import { relayCheer } from "./cheer.ts";
+import { chooseWatching } from "./watch.ts";
 
 /** A hero at the table, as presence and the relay read one. */
 function hero(playerId: string): PartyMember {
@@ -48,7 +49,7 @@ async function fullTable(seated = MAX_PARTY) {
   const runId = created.value.runId;
   const party = players.slice(0, seated).map((player) => hero(player.principal.playerId));
   await commit(harness, runId, (state) => ({ ...state, phase: "scene", party }));
-  return { harness, runId, watcher: `p_${MAX_PARTY + 1}`, heroId: "p_1" };
+  return { harness, runId, code: created.value.code, watcher: `p_${MAX_PARTY + 1}`, heroId: "p_1", players };
 }
 
 async function commit(harness: TestHarness, runId: string, change: (state: RunState) => RunState): Promise<void> {
@@ -170,5 +171,49 @@ describe("relayCheer", () => {
     });
     harness.clock.advance(CHEER_WINDOW_MS);
     expect(await relayCheer({ runId, playerId: watcher, cheer: "heart" }, harness.deps)).toEqual({ ok: true });
+  });
+});
+
+describe("chooseWatching (Just watch)", () => {
+  const choose = (t: Awaited<ReturnType<typeof fullTable>>, playerId: string, watching: unknown) =>
+    chooseWatching({ runId: t.runId, roomCode: t.code, playerId, householdId: "h_test", watching }, t.harness.deps);
+
+  it("makes a kid with a seat open a spectator, watching at once, and lets them change their mind", async () => {
+    const t = await fullTable(MAX_PARTY - 1);
+    expect(await choose(t, t.watcher, true)).toMatchObject({ ok: true });
+    let state = await stateOf(t.harness, t.runId);
+    expect(state.seats?.[t.watcher]?.watching).toBe(true);
+    expect(watchers(state)).toEqual([t.watcher]);
+    expect(state.party).toHaveLength(MAX_PARTY - 1);
+    expect(await relayCheer({ runId: t.runId, playerId: t.watcher, cheer: "star" }, t.harness.deps)).toEqual({ ok: true });
+
+    expect(await choose(t, t.watcher, false)).toMatchObject({ ok: true });
+    state = await stateOf(t.harness, t.runId);
+    expect(state.seats?.[t.watcher]?.watching).toBeUndefined();
+    expect(state.watching).toBeUndefined();
+  });
+
+  it("writes nothing when the choice is already made", async () => {
+    const t = await fullTable(MAX_PARTY - 1);
+    await choose(t, t.watcher, true);
+    const before = (await stateOf(t.harness, t.runId)).seq;
+    await choose(t, t.watcher, true);
+    expect((await stateOf(t.harness, t.runId)).seq).toBe(before);
+  });
+
+  it("refuses a kid whose hero is already playing, and a body that is not a yes or no", async () => {
+    const t = await fullTable(MAX_PARTY - 1);
+    expect(await choose(t, t.heroId, true)).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+    expect(await choose(t, t.watcher, "yes")).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
+  });
+
+  it("keeps the choice when the phone joins again", async () => {
+    const t = await fullTable(MAX_PARTY - 1);
+    await choose(t, t.watcher, true);
+    await t.harness.repo.putPlayer({ id: t.watcher, householdId: "h_test", displayName: "New name", color: "#7FD4C1" });
+    const again = await joinRoom({ code: t.code, principal: t.players[MAX_PARTY]!.principal }, t.harness.deps);
+    expect(again.ok).toBe(true);
+    const seat = (await stateOf(t.harness, t.runId)).seats?.[t.watcher];
+    expect(seat).toMatchObject({ name: "New name", watching: true });
   });
 });

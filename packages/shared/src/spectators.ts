@@ -1,8 +1,9 @@
 /**
- * Spectators (#388): a phone in the room at a table that is already full.
+ * Spectators (#388): a phone in the room that watches instead of playing.
  *
- * A spectator is a player on the roster (`RunState.seats`) with no hero, at a
- * table where every seat is taken (`tableFull`), who has not been taken out.
+ * A spectator is a player on the roster (`RunState.seats`) with no hero, who
+ * has not been taken out, at a table where every seat is taken (`tableFull`)
+ * or who chose "Just watch" on their own phone (`RoomSeat.watching`).
  * They are never in `party`, and that is the whole design: votes, group
  * checks, helper dice, ready gates, the away rules, encounters and spawns all
  * count `party`, so none of them can see a spectator. Nothing that counts the
@@ -57,17 +58,26 @@ export const CHEER_COOLDOWN_MS = Math.ceil(CHEER_WINDOW_MS / CHEER_LIMIT);
 /** What a spectator's phone says. Read aloud to an eight-year-old; never counts the party. */
 export const SPECTATOR_MESSAGE = "You can watch the story and cheer the heroes on!";
 
+/** What a kid who chose to watch reads at the top, in place of "the table is full". */
+export const CHOSE_TO_WATCH_MESSAGE = "You are watching this time.";
+
 type SpectatorView = Pick<RunState, "party" | "removed" | "seats">;
 
 /**
  * Whether `playerId` is a spectator here: on the roster, with no hero, not
- * taken out, at a table with no seat for them.
+ * taken out, and either chose to watch or has no seat to sit in.
  */
 export function isSpectator(state: SpectatorView, playerId: string | null | undefined): boolean {
-  if (!playerId || state.seats?.[playerId] === undefined) return false;
+  const seat = playerId ? state.seats?.[playerId] : undefined;
+  if (!playerId || seat === undefined) return false;
   if (state.removed?.includes(playerId)) return false;
   if (state.party.some((member) => member.playerId === playerId)) return false;
-  return tableFull(state, playerId);
+  return seat.watching === true || tableFull(state, playerId);
+}
+
+/** Whether `playerId` chose to watch (`RoomSeat.watching`), whether or not a seat is open. */
+export function choseToWatch(state: Pick<RunState, "seats">, playerId: string | null | undefined): boolean {
+  return playerId ? state.seats?.[playerId]?.watching === true : false;
 }
 
 /**

@@ -412,8 +412,9 @@ A late pick, or one whose clearing `null` was lost with a dropped phone, therefo
 a later turn or a later question — a lost or stale preview costs a highlight, never a turn.
 
 **Cheers** (`POST /api/cheer`, `{ "cheer": string }`, #388) ride the channel the same way. A
-**spectator** is a phone on the roster (`RunState.seats`) with no hero at a table that is full
-(`isSpectator`, shared/src/spectators.ts). It is never in `party`, so no vote, roll, turn, ready
+**spectator** is a phone on the roster (`RunState.seats`) with no hero, at a table that is full or
+whose kid chose "Just watch" on that phone (`POST /api/spectate`, `RoomSeat.watching`; only the
+session's own player, so the host cannot set it) (`isSpectator`, shared/src/spectators.ts). It is never in `party`, so no vote, roll, turn, ready
 gate, encounter or spawn can count it. Its phone shows the goal, a line on what the party is doing
 and a row of fixed cheers; the server relays one as `{ "kind": "cheer", cheer }`, with no name,
 after checking the id is in `CHEERS`, the sender is a spectator, and its per-phone budget

@@ -1,8 +1,10 @@
 /**
- * Watching a full table (#388): what a phone shows when every seat is taken
- * and none is theirs. It used to be one line, "This table is full", and
- * nothing to do. Now it says so, then gives them the game to follow and a row
- * of cheers to send to the shared screen.
+ * Watching (#388): what a phone shows when every seat is taken and none is
+ * theirs, or when its kid chose "Just watch" (`JustWatch`, below). A full
+ * table used to be one line, "This table is full", and nothing to do. Now it
+ * says why they are watching, then gives them the game to follow and a row of
+ * cheers to send to the shared screen. A kid who chose to watch can go back
+ * to making a hero whenever a seat is open.
  *
  * Nothing here is a game control. A spectator is never in the party, so no
  * vote, roll or turn waits on them, and nothing on this screen can make one.
@@ -18,9 +20,18 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
-import { CHEER_COOLDOWN_MS, CHEERS, SPECTATOR_MESSAGE, TABLE_FULL_MESSAGE } from "@kad/shared";
+import {
+  CHEER_COOLDOWN_MS,
+  CHEERS,
+  CHOSE_TO_WATCH_MESSAGE,
+  choseToWatch,
+  SPECTATOR_MESSAGE,
+  TABLE_FULL_MESSAGE,
+  tableFull,
+} from "@kad/shared";
 import { cue } from "../audio/cue";
-import { useGameStore, useRunState } from "../store";
+import { useGameStore, useRunState, useSession } from "../store";
+import { Button } from "../ui/Button";
 import { ChapterGoalCard } from "./ChapterGoal";
 import { Icon } from "./icons";
 import { watchingLine } from "./presence-copy";
@@ -28,7 +39,10 @@ import "./Spectating.css";
 
 export function Spectating({ hidden = false }: { hidden?: boolean }): ReactElement {
   const state = useRunState();
+  const playerId = useSession()?.playerId;
   const cheer = useGameStore((store) => store.cheer);
+  const spectate = useGameStore((store) => store.spectate);
+  const [going, setGoing] = useState(false);
   // The cheer just sent, lit while the buttons rest.
   const [sent, setSent] = useState<string | null>(null);
   const rest = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -48,12 +62,25 @@ export function Spectating({ hidden = false }: { hidden?: boolean }): ReactEleme
   };
 
   const doing = state ? watchingLine(state) : null;
+  // Why they are watching: the full table says so; a kid who chose it is told
+  // they chose it, and while a seat is open they can take it.
+  const full = state !== null && tableFull(state, playerId);
+  const chose = state !== null && choseToWatch(state, playerId);
+  const play = (): void => {
+    setGoing(true);
+    void spectate(false).finally(() => setGoing(false));
+  };
   return (
     <section className="spectating kad-scroll" data-testid="table-full" aria-label="Watching" hidden={hidden}>
       <div className="spectating__head" role="status">
         <Icon name="eye" size="var(--kad-icon-md)" />
-        <p className="spectating__full">{TABLE_FULL_MESSAGE}</p>
+        <p className="spectating__full">{full ? TABLE_FULL_MESSAGE : CHOSE_TO_WATCH_MESSAGE}</p>
         <p className="spectating__watch">{SPECTATOR_MESSAGE}</p>
+        {chose && !full ? (
+          <Button variant="secondary" icon={<Icon name="plus" />} disabled={going} onClick={play}>
+            Make my hero
+          </Button>
+        ) : null}
       </div>
 
       <ChapterGoalCard place="phone" />
@@ -78,5 +105,27 @@ export function Spectating({ hidden = false }: { hidden?: boolean }): ReactEleme
         ))}
       </div>
     </section>
+  );
+}
+
+/**
+ * "Just watch" (#388): a row above the creation flow for a kid who would
+ * rather watch this time. One tap, on their own phone; the watch screen has
+ * "Make my hero" to come back while a seat is open.
+ */
+export function JustWatch({ hidden = false }: { hidden?: boolean }): ReactElement {
+  const spectate = useGameStore((store) => store.spectate);
+  const [going, setGoing] = useState(false);
+  const watch = (): void => {
+    setGoing(true);
+    void spectate(true).finally(() => setGoing(false));
+  };
+  return (
+    <div className="just-watch" hidden={hidden} data-testid="just-watch">
+      <p className="just-watch__line">Not playing this time?</p>
+      <Button variant="ghost" icon={<Icon name="eye" />} disabled={going} onClick={watch}>
+        Just watch
+      </Button>
+    </div>
   );
 }

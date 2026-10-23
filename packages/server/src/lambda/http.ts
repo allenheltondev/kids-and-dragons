@@ -32,6 +32,7 @@ import {
 import { reportClientError } from "../handlers/client-error.ts";
 import { relayPreview } from "../handlers/preview.ts";
 import { relayCheer } from "../handlers/cheer.ts";
+import { chooseWatching } from "../handlers/watch.ts";
 import { beatPresence } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
@@ -148,6 +149,7 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/preview") return (deps) => postPreview(req, deps);
     if (req.path === "/api/presence") return (deps) => postPresence(req, deps);
     if (req.path === "/api/cheer") return (deps) => postCheer(req, deps);
+    if (req.path === "/api/spectate") return (deps) => postSpectate(req, deps);
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/resume") return (deps) => postResume(req, deps);
     if (req.path === "/api/save/release") return (deps) => postReleaseHero(req, deps);
@@ -692,6 +694,26 @@ async function postCheer(req: Req, deps: HandlerDeps) {
   );
   if (!result.ok) return error(result.status, result.code, result.message);
   return json(200, { ok: true });
+}
+
+/**
+ * "Just watch", or back to making a hero (handlers/watch.ts, #388). Session
+ * token only: a phone chooses for its own kid and nobody else.
+ */
+async function postSpectate(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "watching needs a room session token");
+  const result = await chooseWatching(
+    {
+      runId: session.runId,
+      roomCode: session.roomCode,
+      playerId: session.playerId,
+      householdId: session.householdId,
+      watching: req.body.watching,
+    },
+    deps,
+  );
+  return result.ok ? json(200, { ok: true, seq: result.value.seq }) : fromError(result.error);
 }
 
 /**

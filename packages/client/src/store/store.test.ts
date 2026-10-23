@@ -133,6 +133,7 @@ function harness(state: RunState = makeState()): Harness {
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     postPreview: vi.fn(async (): Promise<void> => undefined),
     postCheer: vi.fn(async (): Promise<void> => undefined),
+    postSpectate: vi.fn(async (): Promise<void> => undefined),
     postPresence: vi.fn(async (): Promise<void> => undefined),
     postResume: vi.fn(async (): Promise<void> => undefined),
     releaseSavedHero: vi.fn(async (): Promise<void> => undefined),

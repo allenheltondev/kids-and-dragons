@@ -39,6 +39,7 @@ import {
 } from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
 import { relayCheer } from "./handlers/cheer.ts";
+import { chooseWatching } from "./handlers/watch.ts";
 import { beatPresence, setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
@@ -506,6 +507,26 @@ async function main(): Promise<void> {
     );
     if (!result.ok) return sendError(res, result.status, result.code, result.message);
     res.json({ ok: true });
+  });
+
+  // "Just watch", or back to making a hero (handlers/watch.ts, #388).
+  app.post("/api/spectate", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "watching needs a room session token");
+    const result = await chooseWatching(
+      {
+        runId: session.runId,
+        roomCode: session.roomCode,
+        playerId: session.playerId,
+        householdId: session.householdId,
+        watching: (req.body ?? {}).watching,
+      },
+      deps,
+    );
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json({ ok: true, seq: result.value.seq });
   });
 
   // "Still here", or "leaving" (handlers/presence.ts): production's only

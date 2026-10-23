@@ -443,6 +443,15 @@ export interface CheerMessage {
   cheer: string;
 }
 
+/**
+ * `POST /api/spectate`, with a room session token (#388): this phone's kid chose
+ * "Just watch" (`true`), or to make a hero after all (`false`). Only ever
+ * about the phone that sends it.
+ */
+export interface SpectateRequest {
+  watching: boolean;
+}
+
 /** `POST /api/cheer`, with a room session token: the seat comes from the token. */
 export interface CheerRequest {
   cheer: string;
