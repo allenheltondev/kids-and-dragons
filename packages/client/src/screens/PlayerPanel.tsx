@@ -85,6 +85,8 @@ import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./Cla
 import { Icon } from "./icons";
 import { ChapterGoalCard } from "./ChapterGoal";
 import { useSideBySide } from "../layout/landscape";
+import { PrologueReplay } from "./StoryPlates";
+import { useRunCampaign } from "./run-campaign";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { ClassPlaceChoice } from "./ClassPlace";
@@ -530,6 +532,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // In the practice a banked point waits for a real rest (the server refuses it).
   const practicing = isPracticeCampaign(state?.campaignId);
 
+  // "Watch the intro again" (Room settings): the campaign's prologue over the pane, nothing in the run touched.
+  const runCampaign = useRunCampaign(state?.campaignId ?? null);
+  const [replayingIntro, setReplayingIntro] = useState(false);
+  const closeIntro = useCallback(() => setReplayingIntro(false), []);
+  const hasIntro = (runCampaign?.prologue?.plates.length ?? 0) > 0;
+
   const [pendingChoice, setPendingChoice] = useState<string | null>(null);
   const [pendingDrop, setPendingDrop] = useState<string | null | undefined>(undefined);
   /**
@@ -920,6 +928,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   return (
     <>
     {guideOpen ? <FieldGuide /> : null}
+    {replayingIntro && runCampaign ? <PrologueReplay campaign={runCampaign} onClose={closeIntro} /> : null}
     {/* `hidden`, not unmounted, while the guide is open: a half-made aim in a
         fight survives a look at the guide, like the bag. */}
     <section
@@ -2171,9 +2180,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </div>
         ) : null}
 
-        {roomControls ? (
+        {roomControls || hasIntro ? (
           <Collapsible id="room" level={4} defaultOpen={false} className="player__room-settings" title={<span>Room settings</span>}>
             {roomControls}
+            {/* The intro story again, from any point in the adventure: only the pictures and words. */}
+            {hasIntro ? (
+              <Button variant="secondary" size="md" block icon={<Icon name="story" />} onClick={() => setReplayingIntro(true)}>
+                Watch the intro again
+              </Button>
+            ) : null}
             {/* Text size, contrast and one-handed play (#262), reachable from the bottom of the phone. */}
             <Button variant="secondary" size="md" block
               onClick={() => { void import("../a11y").then((module) => { module.openA11ySettings(); }); }}>

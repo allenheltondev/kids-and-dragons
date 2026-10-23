@@ -113,7 +113,7 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
           <h3 className="kad-a11y__heading">Text size</h3>
           <div className="kad-a11y__row">
             {TEXT_SIZES.map((size) => (
-              <Button key={size.id} variant="secondary" size="lg" selected={prefs.text === size.id}
+              <Button key={size.id} variant="secondary" size="md" selected={prefs.text === size.id}
                 className={`kad-a11y__option kad-a11y__option--${size.id}`} onClick={() => set({ text: size.id })}>
                 {size.label}
               </Button>
@@ -126,7 +126,7 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
           <p className="kad-a11y__note">Buttons move to your thumb.</p>
           <div className="kad-a11y__row">
             {HANDS.map((hand) => (
-              <Button key={hand.id} variant="secondary" size="lg" selected={prefs.hand === hand.id}
+              <Button key={hand.id} variant="secondary" size="md" selected={prefs.hand === hand.id}
                 className="kad-a11y__option" aria-label={hand.name} onClick={() => set({ hand: hand.id })}>
                 {hand.label}
               </Button>
@@ -136,11 +136,11 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
 
         <section className="kad-a11y__group" aria-label="Looks and motion">
           <div className="kad-a11y__row">
-            <Button variant="secondary" size="lg" selected={prefs.contrast}
+            <Button variant="secondary" size="md" selected={prefs.contrast}
               className="kad-a11y__option" onClick={() => set({ contrast: !prefs.contrast })}>
               High contrast
             </Button>
-            <Button variant="secondary" size="lg" selected={prefs.motion}
+            <Button variant="secondary" size="md" selected={prefs.motion}
               className="kad-a11y__option" onClick={() => set({ motion: !prefs.motion })}>
               Less movement
             </Button>
@@ -150,7 +150,7 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
           ) : null}
         </section>
 
-        <Button variant="primary" size="lg" block className="kad-a11y__done" onClick={onClose}>Done</Button>
+        <Button variant="primary" size="md" block className="kad-a11y__done" onClick={onClose}>Done</Button>
       </div>
     </div>,
     document.body,
