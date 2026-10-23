@@ -7,6 +7,10 @@
   "estimatedMinutes": 45,
   "xpAward": 120,
   "entry": "scene_tree_line",
+  "plate": {
+    "art": "plates/gemfall/08",
+    "narration": "At the last tree, the road gives out. Old steps zigzag toward the red glow; loose stones offer another climb. Below, a traveler hurries downhill. Above, the mountain waits for an answer."
+  },
   "objectives": [
     {
       "id": "settled_bones",

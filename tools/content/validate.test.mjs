@@ -1405,3 +1405,71 @@ describe("the fitting stall (#312)", { timeout: 30_000 }, () => {
     expect(result.out).toContain("keeper");
   });
 });
+
+describe("story plates (docs/story-plates.md)", () => {
+  const RIFTLIGHT = ["content", "campaigns", "riftlight.json"];
+  const OPENING = ["content", "chapters", "riftlight-exchange-rift.json"];
+  const FINALE = ["content", "chapters", "riftlight-finale.json"];
+
+  /** Break one thing in Riftlight's campaign file or a chapter's, then run the gate. */
+  function breaking(parts, mutate) {
+    const dir = copyTree();
+    const file = readJson(dir, ...parts);
+    mutate(file);
+    writeJson(dir, parts, file);
+    return validate(dir);
+  }
+
+  it("passes the real prologue and chapter plates", () => {
+    const result = validate(copyTree());
+    expect(result.out).not.toContain("plate");
+    expect(result.code).toBe(0);
+  });
+
+  it("catches a plate that says too much", () => {
+    const result = breaking(RIFTLIGHT, (c) => {
+      c.prologue.plates[0].narration = Array(60).fill("snow").join(" ");
+    });
+    expect(result.out).toContain("/prologue/plates/0/narration");
+    expect(result.out).toContain("a plate says at most");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a plate that counts the party or leaves a token", () => {
+    const counted = breaking(RIFTLIGHT, (c) => {
+      c.prologue.plates[1].narration = "All three of you hear the bell.";
+    });
+    expect(counted.out).toContain("counts the party");
+    const token = breaking(FINALE, (c) => {
+      c.plate.narration = "Welcome back, {party}.";
+    });
+    expect(token.out).toContain("has a {token}");
+  });
+
+  it("catches a prologue of two plates, and a painting in another campaign's folder", () => {
+    const short = breaking(RIFTLIGHT, (c) => {
+      c.prologue.plates.length = 2;
+    });
+    expect(short.out).toContain("/prologue");
+    expect(short.code).not.toBe(0);
+    const strayed = breaking(FINALE, (c) => {
+      c.plate.art = "plates/gemfall/finale";
+    });
+    expect(strayed.out).toContain("is not under plates/riftlight/");
+  });
+
+  it("catches a painting used twice", () => {
+    const result = breaking(FINALE, (c) => {
+      c.plate.art = "plates/riftlight/prologue-1";
+    });
+    expect(result.out).toContain("is already used at /prologue/plates/0");
+  });
+
+  it("catches a plate on the opening chapter, which has the prologue", () => {
+    const result = breaking(OPENING, (c) => {
+      c.plate = { art: "plates/riftlight/exchange-rift", narration: "A busy quay." };
+    });
+    expect(result.out).toContain("takes no plate of its own");
+    expect(result.code).not.toBe(0);
+  });
+});

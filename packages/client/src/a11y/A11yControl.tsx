@@ -21,6 +21,18 @@ const HANDS: readonly { id: Hand; label: string; name: string }[] = [
   { id: "left", label: "Left", name: "Left hand" },
 ];
 
+/* Drawn here rather than in the shared icon set, which is part of the first paint; this control loads after it. */
+function GearIcon(): React.JSX.Element {
+  return (
+    <svg className="kad-a11y__glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <g fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="3" />
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+      </g>
+    </svg>
+  );
+}
+
 export function A11yControl(): React.JSX.Element {
   const open = useA11y((state) => state.open);
   const setOpen = useA11y((state) => state.setOpen);
@@ -36,7 +48,7 @@ export function A11yControl(): React.JSX.Element {
         aria-expanded={open}
         onClick={() => setOpen(true)}
       >
-        <span aria-hidden="true" className="kad-a11y__glyph">Aa</span>
+        <GearIcon />
       </button>
       {open ? <A11ySheet onClose={close} /> : null}
     </>
@@ -101,7 +113,7 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
           <h3 className="kad-a11y__heading">Text size</h3>
           <div className="kad-a11y__row">
             {TEXT_SIZES.map((size) => (
-              <Button key={size.id} variant="secondary" size="lg" selected={prefs.text === size.id}
+              <Button key={size.id} variant="secondary" size="md" selected={prefs.text === size.id}
                 className={`kad-a11y__option kad-a11y__option--${size.id}`} onClick={() => set({ text: size.id })}>
                 {size.label}
               </Button>
@@ -114,7 +126,7 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
           <p className="kad-a11y__note">Buttons move to your thumb.</p>
           <div className="kad-a11y__row">
             {HANDS.map((hand) => (
-              <Button key={hand.id} variant="secondary" size="lg" selected={prefs.hand === hand.id}
+              <Button key={hand.id} variant="secondary" size="md" selected={prefs.hand === hand.id}
                 className="kad-a11y__option" aria-label={hand.name} onClick={() => set({ hand: hand.id })}>
                 {hand.label}
               </Button>
@@ -124,11 +136,11 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
 
         <section className="kad-a11y__group" aria-label="Looks and motion">
           <div className="kad-a11y__row">
-            <Button variant="secondary" size="lg" selected={prefs.contrast}
+            <Button variant="secondary" size="md" selected={prefs.contrast}
               className="kad-a11y__option" onClick={() => set({ contrast: !prefs.contrast })}>
               High contrast
             </Button>
-            <Button variant="secondary" size="lg" selected={prefs.motion}
+            <Button variant="secondary" size="md" selected={prefs.motion}
               className="kad-a11y__option" onClick={() => set({ motion: !prefs.motion })}>
               Less movement
             </Button>
@@ -138,7 +150,7 @@ function A11ySheet({ onClose }: { onClose: () => void }): React.JSX.Element {
           ) : null}
         </section>
 
-        <Button variant="primary" size="lg" block className="kad-a11y__done" onClick={onClose}>Done</Button>
+        <Button variant="primary" size="md" block className="kad-a11y__done" onClick={onClose}>Done</Button>
       </div>
     </div>,
     document.body,

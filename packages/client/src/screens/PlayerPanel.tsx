@@ -84,6 +84,9 @@ import { CharacterSheet } from "./CharacterSheet";
 import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
 import { ChapterGoalCard } from "./ChapterGoal";
+import { useSideBySide } from "../layout/landscape";
+import { PrologueReplay } from "./StoryPlates";
+import { useRunCampaign } from "./run-campaign";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { ClassPlaceChoice } from "./ClassPlace";
@@ -529,6 +532,12 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // In the practice a banked point waits for a real rest (the server refuses it).
   const practicing = isPracticeCampaign(state?.campaignId);
 
+  // "Watch the intro again" (Room settings): the campaign's prologue over the pane, nothing in the run touched.
+  const runCampaign = useRunCampaign(state?.campaignId ?? null);
+  const [replayingIntro, setReplayingIntro] = useState(false);
+  const closeIntro = useCallback(() => setReplayingIntro(false), []);
+  const hasIntro = (runCampaign?.prologue?.plates.length ?? 0) > 0;
+
   const [pendingChoice, setPendingChoice] = useState<string | null>(null);
   const [pendingDrop, setPendingDrop] = useState<string | null | undefined>(undefined);
   /**
@@ -630,6 +639,20 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
 
   const globalPrompt = state?.prompt ?? null;
   const key = promptKey(myPrompt ?? globalPrompt);
+
+  // The prompt's box is the same element from one question to the next, so on a pane too short for
+  // everything in it (a phone held sideways) it kept the scroll of the last one: the lobby's Begin
+  // button, scrolled to, left the first scene's first choice out of sight above. A new question
+  // is read from its top. A vote ticking over on the same one is not a new question (`key`).
+  // Only side by side, where the world beside it tells the story and the choices are what is
+  // here: held upright, one pane shows at a time and the choices are meant to be in reach of the
+  // thumb, as they were.
+  const promptBox = useRef<HTMLDivElement>(null);
+  const sceneId = state?.sceneId ?? null;
+  const sideBySide = useSideBySide();
+  useEffect(() => {
+    if (sideBySide && promptBox.current) promptBox.current.scrollTop = 0;
+  }, [key, sceneId, sideBySide]);
 
   // A new question always starts from a clean slate — no stale selection can
   // ever be confirmed against the wrong prompt.
@@ -905,6 +928,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   return (
     <>
     {guideOpen ? <FieldGuide /> : null}
+    {replayingIntro && runCampaign ? <PrologueReplay campaign={runCampaign} onClose={closeIntro} /> : null}
     {/* `hidden`, not unmounted, while the guide is open: a half-made aim in a
         fight survives a look at the guide, like the bag. */}
     <section
@@ -933,7 +957,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       */}
       {/* `hidden`, not unmounted: an aim half-made in a fight survives a look
           at the bag. */}
-      <div className="player__prompt" hidden={showSheet}>
+      <div className="player__prompt" ref={promptBox} hidden={showSheet}>
         {/* Inside the prompt's scroll box rather than above it, so that while
             deciding the words sit at the top and the answers sink to the
             bottom — read down, tap at the thumb — with the scene showing
@@ -2156,9 +2180,15 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </div>
         ) : null}
 
-        {roomControls ? (
+        {roomControls || hasIntro ? (
           <Collapsible id="room" level={4} defaultOpen={false} className="player__room-settings" title={<span>Room settings</span>}>
             {roomControls}
+            {/* The intro story again, from any point in the adventure: only the pictures and words. */}
+            {hasIntro ? (
+              <Button variant="secondary" size="md" block icon={<Icon name="story" />} onClick={() => setReplayingIntro(true)}>
+                Watch the intro again
+              </Button>
+            ) : null}
             {/* Text size, contrast and one-handed play (#262), reachable from the bottom of the phone. */}
             <Button variant="secondary" size="md" block
               onClick={() => { void import("../a11y").then((module) => { module.openA11ySettings(); }); }}>

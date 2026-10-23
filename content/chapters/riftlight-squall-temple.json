@@ -8,6 +8,10 @@
   "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "arrival",
+  "plate": {
+    "art": "plates/riftlight/squall-temple",
+    "narration": "Rain sweeps across a temple island high above the realm. Wind banners stream over the wet landing. Through the clouds, another island appears for a moment, then fades behind the rain."
+  },
   "goal": {
     "text": "Keep the temple safe as the returning island drifts toward it.",
     "steps": [
@@ -44,6 +48,12 @@
   "scenes": {
     "arrival": {
       "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "rift": "steady",
       "narration": "The island you helped welcome home is drifting toward a temple island through heavy rain. A different kitsune keeper from the one at the lookout rings a lookout bell; its rope wears a tiny raincoat. Beside the temple, a fresh opening spills bone crawlers onto the wet landing: little scuttling creatures with jointed legs and rattling backs. \"Keep the temple safe as that island drifts toward us,\" the keeper calls. \"We can push its approach clear, or shelter this landing and let it settle.\" She points to people still carrying cushions across the yard.",
       "choices": [
@@ -87,6 +97,12 @@
           "goto": "look_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "look_1": {
@@ -100,6 +116,12 @@
           "goto": "look_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "look_2": {
@@ -111,6 +133,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "look_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -129,6 +157,12 @@
         "goto": "look_changed",
         "narration": "The rain hides the farther signal cloth."
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "look_clear": {
@@ -142,6 +176,12 @@
           "goto": "people"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "look_changed": {
@@ -153,6 +193,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "people"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -174,6 +220,12 @@
           "goto": "people_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "people_1": {
@@ -187,6 +239,12 @@
           "goto": "people_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "people_2": {
@@ -198,6 +256,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "people_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -216,6 +280,12 @@
         "goto": "people_changed",
         "narration": "A gust swings the folded screen against the doorpost."
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "people_clear": {
@@ -229,6 +299,12 @@
           "goto": "last_keeper"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "people_changed": {
@@ -240,6 +316,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "last_keeper"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -261,6 +343,12 @@
           "goto": "last_keeper_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "last_keeper_1": {
@@ -274,6 +362,12 @@
           "goto": "messages"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "last_keeper_2": {
@@ -285,6 +379,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "messages"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -321,6 +421,16 @@
           "text": "The island letter courier is still finishing the delayed letter relay. A keeper takes the signal station until that courier arrives."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Griffin messenger"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "gear": {
@@ -340,6 +450,12 @@
           "goto": "gear_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "gear_1": {
@@ -353,6 +469,12 @@
           "goto": "gear_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "gear_2": {
@@ -364,6 +486,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "gear_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -382,6 +510,12 @@
         "goto": "gear_changed",
         "narration": "A rope catches on the sock-drying line."
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "gear_clear": {
@@ -395,6 +529,12 @@
           "goto": "signals"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "gear_changed": {
@@ -406,6 +546,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "signals"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -427,6 +573,12 @@
           "goto": "signals_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "signals_1": {
@@ -440,6 +592,12 @@
           "goto": "shelter"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "signals_2": {
@@ -451,6 +609,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "shelter"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -479,6 +643,12 @@
           "requiresClass": "thornguard"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "shelter_1": {
@@ -490,6 +660,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "shelter_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -505,6 +681,12 @@
           "goto": "shelter_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "shelter_3": {
@@ -516,6 +698,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "shelter_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -534,6 +722,12 @@
         "goto": "shelter_changed",
         "narration": "One lower tie comes loose in a spray of rain."
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "shelter_clear": {
@@ -547,6 +741,12 @@
           "goto": "rest"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "shelter_changed": {
@@ -558,6 +758,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "rest"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -580,6 +786,12 @@
           "goto": "rest_watch"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "rest_watch": {
@@ -593,10 +805,26 @@
           "goto": "crawl"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Griffin messenger"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "crawl": {
       "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "rift": "steady",
       "narration": "Bone crawlers are clustering where fresh magic spills from the opening. They have no quarrel with the cushions; they are simply between you and the work. How will you keep their path away from the people?",
       "choices": [
@@ -617,6 +845,12 @@
     },
     "crawl_1": {
       "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "rift": "steady",
       "narration": "You move the buckets and folding stands inside the gate. A crawler can still cross the landing, but no keeper needs to follow it to retrieve a bucket.",
       "choices": [
@@ -631,6 +865,12 @@
     },
     "crawl_2": {
       "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "rift": "steady",
       "narration": "You use wet chalk on the safe boards. The keepers stay behind that mark. The chalk has a string tied to it so it cannot become another flying object.",
       "choices": [
@@ -645,6 +885,12 @@
     },
     "plan": {
       "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "rift": "steady",
       "narration": "The island's low edge is approaching the posts. You can work the ropes to turn its edge away, or hold the sheltered corner while it settles beside the temple. Both need time on the board with the crawlers. Which result will you work toward?",
       "choices": [
@@ -665,6 +911,12 @@
     },
     "push_plan": {
       "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "rift": "steady",
       "narration": "You run the strong ropes through the mooring posts and leave room for them to slip free afterward. The keeper holds the release cloth ready. The plan is a small turn at the edge, not a tug across the sky.",
       "onEnter": [
@@ -685,6 +937,12 @@
     },
     "shelter_plan": {
       "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "rift": "steady",
       "narration": "You draw the sheltered corner tight and leave a clear place for the island's low edge to rest. The keeper marks a boundary the temple cushions must never cross, even after the storm.",
       "onEnter": [
@@ -880,6 +1138,12 @@
           "goto": "record"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "settled": {
@@ -893,6 +1157,12 @@
           "goto": "record"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "damaged": {
@@ -904,6 +1174,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "record"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -925,6 +1201,12 @@
           "goto": "roof_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "roof_1": {
@@ -938,6 +1220,12 @@
           "goto": "roof_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "roof_2": {
@@ -949,6 +1237,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "roof_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -967,6 +1261,12 @@
         "goto": "roof_changed",
         "narration": "The first splash reaches the threshold."
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "roof_clear": {
@@ -980,6 +1280,12 @@
           "goto": "boards"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "roof_changed": {
@@ -991,6 +1297,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "boards"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -1012,6 +1324,12 @@
           "goto": "boards_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "boards_1": {
@@ -1025,6 +1343,12 @@
           "goto": "boards_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "boards_2": {
@@ -1036,6 +1360,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "boards_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -1054,6 +1384,12 @@
         "goto": "boards_changed",
         "narration": "A near board rocks after looking firm."
       },
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "boards_clear": {
@@ -1067,6 +1403,12 @@
           "goto": "repair"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "boards_changed": {
@@ -1078,6 +1420,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "repair"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -1099,6 +1447,12 @@
           "goto": "repair_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "repair_1": {
@@ -1112,6 +1466,12 @@
           "goto": "plan"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "repair_2": {
@@ -1123,6 +1483,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "plan"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
@@ -1144,6 +1510,12 @@
           "goto": "record_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "record_1": {
@@ -1155,6 +1527,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "watch"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall",
@@ -1176,6 +1554,12 @@
           "goto": "watch"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "watch": {
@@ -1193,6 +1577,12 @@
           "label": "Check the closed gate and the marked board line",
           "icon": "hand",
           "goto": "watch_2"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
         }
       ],
       "art": "scenes/riftlight/temple-island-squall",
@@ -1222,6 +1612,12 @@
           "goto": "ending"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "watch_2": {
@@ -1235,10 +1631,22 @@
           "goto": "ending"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     },
     "ending": {
       "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "rift": "collapse",
       "narration": "The temple is safe to shelter in, and every keeper has a dry place. The bell rope sheds its tiny raincoat into a bucket. A griffin messenger can carry you down to the Cairnstep when the wind clears; the path behind returns to the island's lookout. You have changed what the next watch will find. As the squall eases, the fresh opening shrinks shut. The keepers watch from behind a striped wait sign until its last shimmer is gone; no new crawlers can enter the hall.",
       "onEnter": [
@@ -1276,6 +1684,12 @@
       "narration": "The keeper closes the log before the pages can drink any more rain. Your party can rest, return to the lookout, or follow the griffin messenger down to the Cairnstep.",
       "choices": [],
       "outcome": "success",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
       "art": "scenes/riftlight/temple-island-squall"
     }
   }

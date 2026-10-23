@@ -168,15 +168,44 @@ export function currentRoute(): Route {
   return current;
 }
 
+/*
+ * How many of this tab's history entries the app itself pushed, kept in
+ * `history.state` so a refresh remembers it. It is what tells "back" whether
+ * there is a page of ours behind this one (go there) or this page is where the
+ * visit began (go home, and never off to whatever site the browser came from).
+ */
+function readDepth(): number {
+  if (typeof history === "undefined") return 0;
+  const depth = (history.state as { kadDepth?: unknown } | null)?.kadDepth;
+  return typeof depth === "number" && depth > 0 ? depth : 0;
+}
+
+let depth = readDepth();
+
 export function navigate(to: Route | string, options: { replace?: boolean } = {}): void {
   const path = typeof to === "string" ? to : formatRoute(to);
   const next = parseRoute(path);
   if (typeof history !== "undefined") {
-    if (options.replace) history.replaceState(null, "", path);
-    else history.pushState(null, "", path);
+    if (options.replace) history.replaceState({ kadDepth: depth }, "", path);
+    else history.pushState({ kadDepth: depth + 1 }, "", path);
   }
+  if (!options.replace) depth += 1;
   current = next;
   emit();
+}
+
+/** Whether the app has a page of its own to step back to. */
+export function canGoBack(): boolean {
+  return depth > 0;
+}
+
+/**
+ * One page back: the one the app came from, or home when this is where the
+ * visit began.
+ */
+export function goBack(): void {
+  if (depth > 0 && typeof history !== "undefined") history.back();
+  else navigate({ name: "home" }, { replace: true });
 }
 
 export function subscribeRoute(listener: (route: Route) => void): () => void {
@@ -188,6 +217,7 @@ export function subscribeRoute(listener: (route: Route) => void): () => void {
 
 if (typeof window !== "undefined") {
   window.addEventListener("popstate", () => {
+    depth = readDepth();
     current = parseRoute(location.pathname);
     emit();
   });

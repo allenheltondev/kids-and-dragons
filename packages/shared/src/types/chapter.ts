@@ -1002,7 +1002,37 @@ export interface Chapter {
    * ever authored before this existed.
    */
   route?: ChapterRoute;
+  /**
+   * A chapter plate: one painting and a sentence or two, shown full screen before the chapter's
+   * first scene, for a chapter that begins somewhere new. Shown once per device, skippable, and
+   * never on the campaign's opening chapter, which has the campaign's `prologue` instead.
+   * Absent is the normal case. See story-plates.ts.
+   */
+  plate?: StoryPlate;
   voiceGuide?: VoiceGuide;
+}
+
+/**
+ * One painting and the words read over it: a frame of a campaign's prologue, or a chapter plate.
+ *
+ * `art` is an asset-relative id with no extension (`plates/riftlight/prologue-1`), loaded from
+ * `/assets/<art>.webp` and declared in `assets/manifest.json` → `storyPlates`. `narration` is
+ * read aloud and shown beneath the painting. It is the same for every party, so it never counts
+ * the party, never names a great stone, and never depends on a choice. A painting that has not
+ * been delivered yet is simply left out when the story plays.
+ */
+export interface StoryPlate {
+  art: string;
+  narration: string;
+}
+
+/**
+ * A campaign's prologue: a short series of paintings with the story told over them, before the
+ * first scene of the campaign's opening chapter, so the table is in the world before it is asked
+ * to decide anything. Three to six plates (`PROLOGUE_MIN_PLATES`, `PROLOGUE_MAX_PLATES`).
+ */
+export interface Prologue {
+  plates: StoryPlate[];
 }
 
 /**
@@ -1147,4 +1177,10 @@ export interface Campaign {
    * id, never an edit.
    */
   graph?: CampaignGraph;
+  /**
+   * The campaign's opening, told in paintings before anything is asked of the table. Shown once
+   * per device on the first scene of the opening chapter, and skippable. Absent is every
+   * campaign authored before it existed, Gemfall included. See `Prologue` and story-plates.ts.
+   */
+  prologue?: Prologue;
 }

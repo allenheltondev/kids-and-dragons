@@ -22,6 +22,9 @@
 .profile {
   --profile-accent: #8fd9a8;
   --profile-ink: #1b1631;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8em;
 }
 .profile[data-profile-color="meadow"] { --profile-accent: #8fd9a8; }
 .profile[data-profile-color="sky"] { --profile-accent: #8ec9f5; }
@@ -32,17 +35,47 @@
 .profile[data-profile-color="plum"] { --profile-accent: #c4a3ee; }
 .profile[data-profile-color="honey"] { --profile-accent: #f3d36b; }
 
-.profile__banner {
-  padding: 0.9em 1em;
-  border-radius: 1em;
-  background: var(--profile-accent);
-  color: var(--profile-ink);
+/* --- The banner: her name on her color, and the way into the editor -------- */
+
+/* In the editor the banner and the heroes under it are pinned, so each pick shows without a scroll. */
+.profile__top {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
 }
+.profile[data-mode="edit"] .profile__top {
+  position: sticky;
+  inset-block-start: -0.75em;
+  z-index: 2;
+  margin: -0.75em -0.75em 0;
+  padding: 0.75em;
+  background: var(--kad-bg) url("../assets/chrome/paper-night.webp") 0 0 / 256px;
+  border-block-end: 1px solid #ad885766;
+  box-shadow: 0 0.5em 0.8em #0009;
+}
+
+.profile__banner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6em 0.9em;
+  padding: 0.8em 0.9em;
+  border: 0.14em solid color-mix(in srgb, var(--profile-accent) 55%, #1b1631);
+  border-radius: 1.2em 0.7em 1.2em 0.7em;
+  background:
+    radial-gradient(circle at 12% 0%, #ffffff55, transparent 9em),
+    linear-gradient(135deg, var(--profile-accent), color-mix(in srgb, var(--profile-accent) 70%, #ffffff));
+  color: var(--profile-ink);
+  box-shadow: inset 0 0.15em #ffffff66, 0 0.4em 1em #0004;
+}
+.profile__banner-words { flex: 1 1 8em; min-inline-size: 0; }
 
 .profile__name {
   margin: 0;
   font-family: var(--kad-font-display);
   font-size: 1.5em;
+  line-height: 1.1;
   overflow-wrap: anywhere;
 }
 
@@ -51,33 +84,51 @@
   font-weight: 700;
 }
 
+.profile__mode { flex: none; }
+
+/* The editor's preview: every hero in the frame she has picked. */
+.profile__faces {
+  display: flex;
+  gap: 0.6em;
+  margin: 0;
+  padding: 0 0 0.1em;
+  list-style: none;
+  overflow-x: auto;
+}
+
 /* Polite, and always in the page so the live region exists before it speaks. */
 .profile__notice {
-  min-block-size: 1.5em;
-  margin: 0.4em 0 0;
+  margin: 0;
   font-size: 0.9em;
 }
 
+/* --- Sections ------------------------------------------------------------- */
+
 .profile__section {
-  margin: 0.75em 0 0;
-  padding: 0.6em 0.75em;
-  border-radius: 0.6em;
-  background: color-mix(in srgb, currentColor 6%, transparent);
+  padding: 0.75em 0.85em 0.9em;
+  border: 1px solid #ad885747;
+  border-radius: 1.1em;
+  background: linear-gradient(150deg, #3e30442b, #191529d9);
 }
 
 .profile__heading {
   display: flex;
   align-items: center;
-  gap: 0.4em;
-  margin: 0 0 0.5em;
+  gap: 0.5em;
+  margin: 0 0 0.6em;
+  font-family: var(--kad-font-display);
   font-size: 1.05em;
+  color: #f3ddb3;
 }
+.profile__heading > .kad-icon { color: #d5af73; font-size: 1.3em; }
 
 .profile__hint { margin: 0; }
-.profile__count { margin: 0 0 0.4em; }
-.profile__list { margin: 0; padding-inline-start: 1.2em; }
+.profile__count { margin: 0 0 0.5em; }
+.profile__list { display: grid; gap: 0.4em; margin: 0; padding: 0; list-style: none; }
+.profile__list li { display: flex; align-items: center; gap: 0.5em; }
+.profile__list .kad-icon { color: #d5af73; }
 
-/* --- Heroes -------------------------------------------------------------- */
+/* --- Heroes ---------------------------------------------------------------- */
 
 .profile__heroes {
   display: grid;
@@ -89,60 +140,113 @@
 
 .profile__hero {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75em;
+  align-items: center;
+  gap: 0.9em;
 }
 
-.profile__hero-text { flex: 1 1 12em; min-inline-size: 0; }
-.profile__hero-name { margin: 0; font-size: 1.1em; overflow-wrap: anywhere; }
-.profile__level { display: flex; align-items: center; gap: 0.3em; margin: 0.1em 0 0.4em; }
+.profile__hero-text { flex: 1 1 0; min-inline-size: 0; }
+.profile__hero-name { margin: 0; font-family: var(--kad-font-display); font-size: 1.15em; overflow-wrap: anywhere; }
+.profile__level { display: flex; align-items: center; gap: 0.35em; margin: 0.1em 0 0; color: #ffe4a1; font-weight: 700; }
+.profile__kind { margin: 0 0 0.5em; text-transform: capitalize; }
 
 .profile__stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.3em 0.9em;
-  margin: 0 0 0.5em;
-  padding: 0;
-  list-style: none;
-}
-
-.profile__stat { display: flex; align-items: center; gap: 0.25em; }
-
-/*
- * The frames differ in line style as well as color, so no frame is told apart
- * by color alone (spec §11).
- */
-.profile__frame {
-  inline-size: 6em;
-  block-size: 7em;
-  padding: 0.2em;
-  border-radius: 0.9em;
-  background: #20192f;
-  border: 0.15em solid #6f6a8f;
-}
-.profile__frame--ivy { border: 0.3em double #7bc97b; }
-.profile__frame--stars { border: 0.3em dotted #ffd86b; }
-.profile__frame--embers { border: 0.3em dashed #ff8a5c; }
-.profile__frame--waves { border: 0.3em ridge #6fb8ff; }
-
-/* --- Badges, lists ------------------------------------------------------- */
-
-.profile__badges {
   display: grid;
-  gap: 0.5em;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.3em 0.8em;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.profile__badge {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.5em;
-}
+.profile__stat { display: flex; align-items: center; gap: 0.3em; }
+.profile__stat span { text-transform: capitalize; }
 
-.profile__badge-name { display: block; }
-.profile__badge-blurb { display: block; font-size: 0.9em; }
+/*
+ * The frames differ in line style as well as color, so no frame is told apart
+ * by color alone (spec §11). The portrait fills the frame edge to edge.
+ */
+.profile__frame {
+  box-sizing: border-box;
+  flex: none;
+  inline-size: 7em;
+  block-size: 8em;
+  overflow: hidden;
+  border-radius: 1em;
+  background: #20192f;
+  border: 0.16em solid #6f6a8f;
+  box-shadow: 0 0.4em 0.8em #0006;
+}
+.profile__frame--small { inline-size: 4em; block-size: 4.6em; border-radius: 0.7em; }
+.profile__frame--ivy { border: 0.3em double #7bc97b; }
+.profile__frame--stars { border: 0.3em dotted #ffd86b; }
+.profile__frame--embers { border: 0.3em dashed #ff8a5c; }
+.profile__frame--waves { border: 0.3em ridge #6fb8ff; }
+.profile__frame--small.profile__frame--ivy,
+.profile__frame--small.profile__frame--stars,
+.profile__frame--small.profile__frame--embers,
+.profile__frame--small.profile__frame--waves { border-width: 0.22em; }
+
+/* --- Badges: a carousel of medals -------------------------------------------- */
+
+.profile__carousel { display: flex; flex-direction: column; gap: 0.5em; }
+
+.profile__badges {
+  position: relative;
+  display: flex;
+  gap: 0.7em;
+  margin: 0;
+  /* Room at both ends so the first and last medals can stand in the middle. */
+  padding: 0.2em 11%;
+  list-style: none;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.profile__badges::-webkit-scrollbar { display: none; }
+
+.profile__badge {
+  flex: 0 0 78%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0.8em 0.7em 0.9em;
+  border: 1px solid #ad885766;
+  border-radius: 1.2em 0.7em 1.2em 0.7em;
+  background: radial-gradient(ellipse at 50% 20%, #5a4668aa, #231d35 75%);
+  box-shadow: inset 0 0.15em #ffffff10, 0 0.3em 0.9em #0003;
+  text-align: center;
+  scroll-snap-align: center;
+}
+.profile__badge-art { inline-size: 7.5em; block-size: 7.5em; filter: drop-shadow(0 0.3em 0.4em #0008); }
+.profile__badge-name { font-family: var(--kad-font-display); font-size: 1.1em; color: #f3ddb3; overflow-wrap: anywhere; }
+.profile__badge-blurb { font-size: 0.9em; line-height: 1.35; color: var(--kad-ink-dim); }
+
+.profile__carousel-bar { display: flex; align-items: center; justify-content: center; gap: 0.9em; }
+.profile__arrow {
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  padding: 0;
+  border: 1px solid #ad885777;
+  border-radius: 50%;
+  background: #20192f;
+  color: #f3ddb3;
+  font: inherit;
+  cursor: pointer;
+}
+.profile__arrow:disabled { opacity: 0.35; cursor: default; }
+.profile__dots { display: inline-flex; gap: 0.4em; }
+.profile__dot { inline-size: 0.55em; block-size: 0.55em; border-radius: 50%; background: #ffffff30; }
+.profile__dot--on { background: #f3ddb3; transform: scale(1.3); }
+
+/* --- The editor ------------------------------------------------------------- */
+
+.profile__editors { display: grid; gap: 1em; margin: 0; padding: 0; list-style: none; }
+.profile__editor { display: flex; align-items: center; gap: 0.8em; }
+.profile__editor > .profile__choices { flex: 1 1 0; min-inline-size: 0; margin: 0; }
 
 /* --- The presets --------------------------------------------------------- */
 

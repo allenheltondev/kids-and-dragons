@@ -11,6 +11,10 @@
   "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_poling_in",
+  "plate": {
+    "art": "plates/gemfall/03b",
+    "narration": "A frogfolk ferrywoman pushes into the Whispering Marsh. Tiny bells hang from her ribbons. Beyond them, new wisps bob over the water, crowding close as if they have something to say. Where will the channel lead?"
+  },
   "objectives": [
     {
       "id": "named_mimic",

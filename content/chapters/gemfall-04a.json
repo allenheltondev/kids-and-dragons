@@ -12,6 +12,10 @@
   "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_east_bank",
+  "plate": {
+    "art": "plates/gemfall/04a",
+    "narration": "In the Eastern Plains, a manticore watches a road that bends far out through the grass. Fresh earth clings to the old route markers. Even the caravans are taking the long way round. Something has made pride country uneasy."
+  },
   "objectives": [
     {
       "id": "bend",

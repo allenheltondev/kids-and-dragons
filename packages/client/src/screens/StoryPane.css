@@ -11,14 +11,20 @@
   line-height: 1.4;
 }
 
+.story__head { margin: 0 0 0.9em; }
+
 .story__title {
   display: flex;
   align-items: center;
-  gap: 0.4em;
-  margin: 0 0 0.6em;
+  gap: 0.45em;
+  margin: 0;
   font-family: var(--kad-font-display);
   font-size: 1.4em;
+  color: #f3ddb3;
+  text-shadow: 0 0.1em #0006;
 }
+
+.story__lede { margin: 0.2em 0 0; font-size: 0.9em; }
 
 .story__empty {
   padding: 2em 1em;
@@ -26,57 +32,106 @@
 }
 
 .story__campaign + .story__campaign {
-  margin-block-start: 1.25em;
+  margin-block-start: 1.5em;
 }
 
+/* A campaign opens with a ribbon: its title, and where the whole story stands. */
 .story__campaign-head {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
-  gap: 0.25em 0.75em;
-  margin-block-end: 0.5em;
+  gap: 0.35em 0.75em;
+  margin-block-end: 0.8em;
+  padding: 0.55em 0.9em;
+  border: 1px solid #ad885777;
+  border-radius: 1.2em 0.6em 1.2em 0.6em;
+  background: linear-gradient(120deg, #8d683d55, #30243a);
+  box-shadow: inset 0 0.15em #ffffff10, 0 0.3em 0.9em #0003;
 }
 
 .story__campaign-title {
   margin: 0;
   font-family: var(--kad-font-display);
-  font-size: 1.25em;
+  font-size: 1.2em;
+  color: #ffe4a1;
   overflow-wrap: anywhere;
 }
 
 .story__standing {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.35em;
   margin: 0;
+  padding: 0.15em 0.7em;
+  border-radius: 999px;
+  background: #0d0a1e88;
+  font-size: 0.85em;
   font-weight: 700;
 }
 
+/* The road: a line down the left with a numbered seal for each chapter on it. */
 .story__chapters {
+  position: relative;
   display: grid;
-  gap: 0.75em;
+  gap: 0.9em;
   margin: 0;
   padding: 0;
   list-style: none;
 }
+.story__chapters::before {
+  content: "";
+  position: absolute;
+  inset-block: 1em;
+  inset-inline-start: 1.05em;
+  inline-size: 0;
+  border-inline-start: 0.2em dotted #ad8857aa;
+}
 
 .story__chapter {
+  position: relative;
   display: grid;
-  gap: 0.5em;
-  padding: 0.75em 0.9em;
-  border-radius: 0.75em;
-  background: color-mix(in srgb, currentColor 6%, transparent);
-  border-inline-start: 0.3em solid color-mix(in srgb, var(--kad-gold, #ffc95c) 70%, transparent);
+  grid-template-columns: 2.2em minmax(0, 1fr);
+  align-items: start;
+  gap: 0.7em;
+}
+
+.story__seal {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 2.1em;
+  block-size: 2.1em;
+  margin-block-start: 0.3em;
+  border: 0.14em solid #e1bd7f;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #7a5a8c, #2c213b);
+  box-shadow: 0 0 0 0.2em #1d1830, 0 0.3em 0.5em #0008;
+  color: #ffe4a1;
+  font-family: var(--kad-font-display);
+  font-weight: 700;
+}
+.story__chapter[data-outcome="setback"] .story__seal { border-style: dashed; }
+
+.story__card {
+  display: grid;
+  gap: 0.55em;
+  padding: 0.8em 0.9em;
+  border: 1px solid #ad885755;
+  border-radius: 0.5em 1.2em 0.5em 1.2em;
+  background: linear-gradient(150deg, #3e30442b, #191529e6);
+  box-shadow: inset 0 0.15em #ffffff0a, 0 0.3em 0.9em #0003;
 }
 
 .story__chapter-title {
   margin: 0;
+  font-family: var(--kad-font-display);
   font-size: 1.1em;
+  color: #f3ddb3;
   overflow-wrap: anywhere;
 }
 
-.story__chapter p {
+.story__card p {
   margin: 0;
 }
 
@@ -85,7 +140,7 @@
 .story__label {
   display: flex;
   align-items: flex-start;
-  gap: 0.4em;
+  gap: 0.45em;
 }
 
 .story__goal > .kad-icon,
@@ -97,17 +152,28 @@
 
 .story__label {
   font-weight: 700;
+  color: #ffe4a1;
 }
 
-/* The revelation, in the scene's own words: the one thing on the card set apart. */
+/* Where the chapter set out to go: a strip of its own, the way the goal sits on the table. */
+.story__goal {
+  padding: 0.4em 0.65em;
+  border-radius: 0.6em;
+  background: #0d0a1e66;
+}
+
+/* The revelation, in the scene's own words: the one thing on the card set apart, like a page pasted in. */
 .story__revealed {
   display: grid;
   gap: 0.4em;
   margin: 0;
-  padding: 0.6em 0.75em;
-  border-radius: 0.6em;
-  background: color-mix(in srgb, var(--kad-gold, #ffc95c) 14%, transparent);
+  padding: 0.65em 0.8em;
+  border-inline-start: 0.25em solid #e1bd7f;
+  border-radius: 0.3em 0.8em 0.8em 0.3em;
+  background: color-mix(in srgb, var(--kad-gold, #ffc95c) 13%, #191529);
+  font-style: italic;
 }
+.story__revealed .story__label { font-style: normal; }
 
 .story__chose ul {
   margin: 0.3em 0 0;
@@ -116,4 +182,10 @@
 
 .story__chose li + li {
   margin-block-start: 0.2em;
+}
+
+/* How it ended: the last line on the card, with a rule over it. */
+.story__ending {
+  padding-block-start: 0.5em;
+  border-block-start: 1px dashed #ad885766;
 }

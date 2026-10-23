@@ -1,0 +1,164 @@
+/*
+ * StoryPlates: a painting over the whole pane, with its words in a band beneath.
+ *
+ * Over everything in the pane but the corner row (z-index 4: above the turn banner). The
+ * paintings are 16:9 and cover whatever shape the pane is, so the art keeps its subject in the
+ * middle (docs/story-plates.md, "Safe area"). `em` and container units only. On the shared
+ * screen nothing is clickable: it lets every pointer through.
+ */
+
+.plates {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  background: var(--kad-bg, #0d0b1a);
+  color: var(--color-text, #f4f0ff);
+  animation: plates-in 600ms ease-out both;
+}
+
+.plates[data-replay="true"] {
+  position: fixed;
+  z-index: 80;
+}
+
+.plates[data-display="true"] {
+  pointer-events: none;
+}
+
+.plates__image {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: 50% 45%;
+  opacity: 0;
+  transform-origin: 50% 45%;
+  transition: opacity 900ms ease-in-out;
+}
+
+.plates__image[data-active="true"] {
+  opacity: 1;
+  animation: plates-drift-in var(--plate-ms, 12s) ease-out both;
+}
+
+.plates__image[data-active="true"][data-drift="out"] {
+  animation-name: plates-drift-out;
+}
+
+.plates__caption {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  box-sizing: border-box;
+  padding: 3em 5% calc(var(--kad-safe-bottom, 0px) + 1em);
+  background: linear-gradient(to top, rgb(8 6 20 / 0.92) 0%, rgb(8 6 20 / 0.78) 55%, transparent 100%);
+  text-align: center;
+}
+
+.plates__ribbon {
+  margin: 0;
+  color: var(--kad-gold, #ffc95c);
+  font-size: var(--font-size-md, 1em);
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: plates-text-in 700ms ease-out both;
+}
+
+.plates__text {
+  margin: 0 auto;
+  max-inline-size: 36em;
+  font-size: max(var(--font-size-xl, 1.5em), calc(0.9em / var(--kad-text-scale, 1)));
+  line-height: 1.35;
+  text-shadow: 0 0.08em 0.3em rgb(0 0 0 / 0.6);
+  animation: plates-text-in 700ms ease-out both;
+}
+
+.plates__foot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4, 1em);
+  min-block-size: 0.6em;
+}
+
+.plates__dots {
+  display: flex;
+  gap: 0.5em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plates__dot {
+  inline-size: 0.6em;
+  block-size: 0.6em;
+  border-radius: 50%;
+  border: 0.08em solid var(--kad-gold, #ffc95c);
+  opacity: 0.55;
+}
+
+.plates__dot[data-on="true"] {
+  background: var(--kad-gold, #ffc95c);
+  opacity: 1;
+}
+
+.plates__buttons {
+  display: flex;
+  gap: var(--space-2, 0.5em);
+}
+
+.plates__button {
+  min-block-size: 2.75em;
+  min-inline-size: 5.5em;
+  padding: 0.4em 1.2em;
+  border: 0.1em solid color-mix(in srgb, var(--kad-gold, #ffc95c) 70%, transparent);
+  border-radius: var(--radius-lg, 1em);
+  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 70%, transparent);
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+}
+
+.plates__button--skip {
+  background: var(--kad-gold, #ffc95c);
+  color: #1a1330;
+}
+
+@keyframes plates-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes plates-text-in {
+  from { opacity: 0; transform: translateY(0.4em); }
+  to { opacity: 1; transform: none; }
+}
+
+/* A slow push in or pull out over the time the plate is up: the painting is alive, not busy. */
+@keyframes plates-drift-in {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+@keyframes plates-drift-out {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+
+/* Reduced motion: the pages still turn, with a plain fade and no drift. */
+@media (prefers-reduced-motion: reduce) {
+  .plates__image[data-active="true"] { animation: none; }
+  .plates__text, .plates__ribbon { animation: none; }
+}
+
+html[data-motion="reduced"] .plates__image[data-active="true"],
+html[data-motion="reduced"] .plates__text,
+html[data-motion="reduced"] .plates__ribbon {
+  animation: none;
+}

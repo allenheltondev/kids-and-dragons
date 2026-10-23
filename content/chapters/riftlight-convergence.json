@@ -8,6 +8,10 @@
   "estimatedMinutes": 35,
   "xpAward": 650,
   "entry": "arrival",
+  "plate": {
+    "art": "plates/riftlight/convergence",
+    "narration": "A sheltered ledge looks out across the glacier. On an upturned sledge, a broad map waits beside loose sheets and a warm lantern. Beyond the shelter, the ice stretches blue and quiet."
+  },
   "goal": {
     "text": "Compare your discoveries and help the travelers steady a new opening.",
     "steps": [
@@ -119,6 +123,16 @@
           "goto": "measure"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "accounts_2": {
@@ -130,6 +144,20 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "measure"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge"
@@ -151,6 +179,16 @@
           "goto": "measure_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "measure_1": {
@@ -164,6 +202,16 @@
           "goto": "measure_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "measure_2": {
@@ -175,6 +223,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "measure_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge"
@@ -193,6 +251,16 @@
         "goto": "measure_changed",
         "narration": "One copied bend looks longer when the pages overlap."
       },
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "measure_clear": {
@@ -210,6 +278,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "evidence"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge"
@@ -231,6 +309,16 @@
           "goto": "evidence"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "evidence": {
@@ -248,6 +336,16 @@
           "label": "Separate what you checked from what someone helped explain",
           "icon": "hand",
           "goto": "evidence_2"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -283,6 +381,16 @@
           "goto": "pull"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "evidence_2": {
@@ -294,6 +402,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "pull"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge"
@@ -315,6 +433,20 @@
           "goto": "pull_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "pull_1": {
@@ -328,6 +460,20 @@
           "goto": "pull_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "pull_2": {
@@ -339,6 +485,20 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "pull_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge"
@@ -357,6 +517,20 @@
         "goto": "pull_changed",
         "narration": "A gust reaches one marker before the tremble ends."
       },
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "pull_clear": {
@@ -370,6 +544,20 @@
           "goto": "clear_path"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "pull_changed": {
@@ -381,6 +569,20 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "clear_path"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge"
@@ -402,6 +604,16 @@
           "goto": "clear_path_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "clear_path_1": {
@@ -415,6 +627,16 @@
           "goto": "clear_path_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "clear_path_2": {
@@ -426,6 +648,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "clear_path_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge"
@@ -444,6 +676,16 @@
         "goto": "clear_path_changed",
         "narration": "A bench foot catches on the sled runner."
       },
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "clear_path_clear": {
@@ -457,6 +699,16 @@
           "goto": "signals"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "clear_path_changed": {
@@ -468,6 +720,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "signals"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge"
@@ -489,6 +751,20 @@
           "goto": "signals_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "signals_1": {
@@ -502,6 +778,20 @@
           "goto": "rest"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "signals_2": {
@@ -513,6 +803,20 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "rest"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge"
@@ -535,6 +839,16 @@
           "goto": "rest_watch"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "rest_watch": {
@@ -546,6 +860,20 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "proposal"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge"
@@ -567,6 +895,20 @@
           "goto": "proposal_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "proposal_1": {
@@ -578,6 +920,20 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "summoning"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge"
@@ -593,6 +949,20 @@
           "goto": "summoning"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge"
     },
     "summoning": {
@@ -604,6 +974,20 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "decision"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "priority": 2,
@@ -634,6 +1018,20 @@
           "requiresFlag": "orin_chime_shared"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -661,6 +1059,20 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "steady"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -693,6 +1105,20 @@
           "goto": "steady"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -722,6 +1148,20 @@
           "goto": "steady"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -742,6 +1182,16 @@
           "goto": "steady_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -756,6 +1206,16 @@
           "goto": "steady_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -768,6 +1228,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "steady_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -787,6 +1257,16 @@
         "goto": "steady_changed",
         "narration": "A loose fold slips free of the first bench."
       },
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -805,6 +1285,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "count"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -827,6 +1317,16 @@
           "goto": "count"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -847,6 +1347,20 @@
           "goto": "count_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -861,6 +1375,20 @@
           "goto": "count_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -873,6 +1401,20 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "count_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -892,6 +1434,20 @@
         "goto": "count_changed",
         "narration": "A gust moves the cord during the second count."
       },
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -906,6 +1462,20 @@
           "goto": "lesson"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -918,6 +1488,20 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "lesson"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -947,6 +1531,12 @@
           "requiresClass": "starweaver"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -959,6 +1549,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "lesson_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -975,6 +1571,12 @@
           "goto": "lesson_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -987,6 +1589,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "lesson_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -1007,6 +1615,12 @@
         "goto": "lesson_changed",
         "narration": "The rhythm falters before the last signal."
       },
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -1029,6 +1643,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "release"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -1055,6 +1675,12 @@
           "goto": "release"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -1075,6 +1701,12 @@
           "goto": "release_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -1089,6 +1721,12 @@
           "goto": "account"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -1101,6 +1739,12 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "account"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -1123,6 +1767,16 @@
           "goto": "account_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -1137,6 +1791,16 @@
           "goto": "path"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -1149,6 +1813,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "path"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -1171,6 +1845,16 @@
           "goto": "path_2"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -1185,6 +1869,16 @@
           "goto": "ending"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -1197,6 +1891,16 @@
           "label": "Go on",
           "icon": "hand",
           "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
@@ -1235,6 +1939,12 @@
           "text": "Olivia closes her notebook and chooses her own work. \"I still think we can do more,\" she says. She leaves by the open walking path, free to disagree."
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
@@ -1243,6 +1953,12 @@
       "narration": "Seren checks the shelter once more. The experimental opening stays marked for watchers. You carry the map down the walking passage toward the heart of the glacier.",
       "choices": [],
       "outcome": "success",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     }

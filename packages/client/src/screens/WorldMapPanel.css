@@ -167,10 +167,10 @@
   position: absolute;
   transform: translate(-50%, -50%);
   max-inline-size: 12em;
-  padding: 0.5em;
+  padding: 0.6em 1.1em;
   min-block-size: 2.75em;
   border: 1px solid var(--kad-border);
-  border-radius: var(--kad-radius-sm);
+  border-radius: var(--kad-radius-md);
   color: var(--kad-ink);
   background: var(--kad-bg);
   font: inherit;
@@ -327,8 +327,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.15em 0.5em;
-  border-radius: var(--kad-radius-sm);
+  gap: 0.2em;
+  padding: 0.5em 1.1em;
+  border-radius: var(--kad-radius-md);
   background: color-mix(in srgb, var(--kad-bg) 82%, transparent);
   box-shadow: var(--kad-shadow-sm);
   white-space: nowrap;
@@ -399,3 +400,10 @@ html[data-text] .kad-map__flip-tab,
 html[data-text] .atlas__route-controls label,
 html[data-text] .atlas__route-controls summary,
 html[data-text] .atlas__route-choice { min-block-size: 44px; }
+
+/* A phone held sideways has the map about half its height: the head keeps to one touch-high line
+   and the hint, which only says what the checkbox does at a distance, gives way to the painting. */
+@media (orientation: landscape) and (min-width: 600px) and (max-height: 559px) {
+  .atlas__head { padding-block: 2px; }
+  .atlas__route-hint { display: none; }
+}

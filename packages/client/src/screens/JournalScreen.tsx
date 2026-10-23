@@ -28,6 +28,7 @@ import { useGameStore, useItems, useWorld } from "../store";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { setJournalFinders } from "../store/journal-finders";
 import { loadPlayerDeviceToken } from "../store/persistence";
+import { useBackStep } from "../store/back-steps";
 import { selectGuideEntry } from "../store/player-navigation";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
@@ -44,10 +45,11 @@ import "./JournalScreen.css";
 // The tray, painted as it is in the room (docs/briefs/tablet-chrome-art.md).
 import "../styles/chrome.css";
 
+/** `story` and `me` are the hero's own, opened from the Hero page rather than from the shelf. */
 export type JournalPane = "hero" | "map" | "story" | "guide" | "me";
 
 /**
- * Her own page (#299) is a chunk of its own, fetched the first time "Me" is
+ * Her own page (#299) is a chunk of its own, fetched the first time "My page" is
  * opened: the book's first look stays the hero, and nothing of the page is in
  * the journal chunk, let alone the first paint.
  */
@@ -83,7 +85,27 @@ export function JournalScreen(): ReactElement {
   const loadJournal = useGameStore((s) => s.loadJournal);
   const [load, setLoad] = useState<Load>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
-  const [pane, setPane] = useState<JournalPane>("hero");
+  const [pane, setPaneNow] = useState<JournalPane>("hero");
+  /*
+   * The panes you came through, newest last, so the back button in the corner
+   * goes to the one you were just looking at rather than straight out of the
+   * book. A tab you are already on adds nothing.
+   */
+  const [trail, setTrail] = useState<JournalPane[]>([]);
+  const setPane = (next: JournalPane): void => {
+    if (next === pane) return;
+    setTrail((was) => [...was.slice(-19), pane]);
+    setPaneNow(next);
+  };
+  useBackStep(
+    trail.length === 0
+      ? null
+      : () => {
+          setPaneNow(trail[trail.length - 1]!);
+          setTrail(trail.slice(0, -1));
+          return true;
+        },
+  );
 
   useEffect(() => {
     let live = true;
@@ -183,13 +205,10 @@ export function JournalScreen(): ReactElement {
   return (
     <div className="kad-travel journal">
       <nav className="kad-travel__bar kad-tray" aria-label="What to look at">
-        <TrayTab on={pane === "hero"} object="satchel" label="Hero" onClick={() => setPane("hero")} />
+        {/* Her page and the story are the hero's own, so they open from the Hero page and the shelf keeps Hero lit. */}
+        <TrayTab on={pane === "hero" || pane === "story" || pane === "me"} object="satchel" label="Hero" onClick={() => setPane("hero")} />
         <TrayTab on={pane === "map"} object="map" label="Map" onClick={() => setPane("map")} />
-        <TrayTab on={pane === "story"} object="storybook" label="Story" onClick={() => setPane("story")} />
         <TrayTab on={pane === "guide"} object="fieldGuide" label="Guide" onClick={() => setPane("guide")} />
-        {load.journal.profile ? (
-          <TrayTab on={pane === "me"} object="scroll" label="Me" onClick={() => setPane("me")} />
-        ) : null}
         <TrayTab on={false} object="lantern" label="Play" onClick={play} />
       </nav>
       {load.savedAt !== null ? (
@@ -202,7 +221,7 @@ export function JournalScreen(): ReactElement {
         </p>
       ) : null}
       <div className="kad-travel__pane" data-pane={pane} data-showing>
-        {pane === "hero" ? <HeroPane journal={load.journal} onPlay={play} /> : null}
+        {pane === "hero" ? <HeroPane journal={load.journal} onPlay={play} onOpen={setPane} /> : null}
         {pane === "map" ? <MapPane journal={load.journal} /> : null}
         {pane === "me" ? (
           <ChunkBoundary inline message="Your page couldn’t open.">
@@ -271,7 +290,7 @@ function useChosenHero(heroes: readonly ResolvedCharacter[]): [ResolvedCharacter
   return [hero, choose];
 }
 
-function HeroPane({ journal, onPlay }: { journal: JournalResponse; onPlay: () => void }): ReactElement {
+function HeroPane({ journal, onPlay, onOpen }: { journal: JournalResponse; onPlay: () => void; onOpen: (pane: JournalPane) => void }): ReactElement {
   useEnsureContent();
   const items = useItems();
   const [hero, choose] = useChosenHero(journal.heroes);
@@ -280,6 +299,8 @@ function HeroPane({ journal, onPlay }: { journal: JournalResponse; onPlay: () =>
     return (
       <div className="kad-surface kad-surface--player" data-surface="player">
         <section className="journal__empty">
+          {/* Her page and the household's story do not wait on a hero. */}
+          <HeroLinks journal={journal} onOpen={onOpen} />
           <Icon name="name" size="2.4em" />
           <p>No hero yet. Make one in your next game, and they will be waiting here.</p>
           <Button variant="primary" size="lg" icon={<Icon name="play" />} onClick={onPlay}>
@@ -293,7 +314,8 @@ function HeroPane({ journal, onPlay }: { journal: JournalResponse; onPlay: () =>
   return (
     <div className="kad-surface kad-surface--player" data-surface="player">
       <section className="journal__hero kad-scroll">
-        {journal.heroes.length > 1 ? (
+        <div className="journal__bar">
+          {journal.heroes.length > 1 ? (
           <ul className="journal__heroes" aria-label="Your heroes">
             {journal.heroes.map((h) => {
               const on = h.id === hero.id;
@@ -311,18 +333,39 @@ function HeroPane({ journal, onPlay }: { journal: JournalResponse; onPlay: () =>
               );
             })}
           </ul>
-        ) : null}
+          ) : null}
+          <HeroLinks journal={journal} onOpen={onOpen} />
+        </div>
         <CharacterSheet key={hero.id} member={restingMember(hero)} isMe items={items} explore />
-        <FinishedAdventures lines={journal.finished?.[hero.id] ?? []} />
+        {/* Her page lists these when she has one; a book without it (an older server, or its saved copy) keeps them here. */}
+        {journal.profile ? null : <FinishedAdventures lines={journal.finished?.[hero.id] ?? []} />}
       </section>
     </div>
   );
 }
 
+/** Her page, and the story so far: the hero's own, a tap away in the corner. */
+function HeroLinks({ journal, onOpen }: { journal: JournalResponse; onOpen: (pane: JournalPane) => void }): ReactElement {
+  return (
+    <nav className="journal__links" aria-label="About you">
+      {journal.profile ? (
+        <button type="button" className="journal__link kad-tap kad-focusable" onClick={() => onOpen("me")}>
+          <Icon name="name" />
+          <span>My page</span>
+        </button>
+      ) : null}
+      <button type="button" className="journal__link kad-tap kad-focusable" onClick={() => onOpen("story")}>
+        <Icon name="story" />
+        <span>Story</span>
+      </button>
+    </nav>
+  );
+}
+
 /**
- * The adventures this hero has seen to the end (#283). Her own record, so one
- * she finished at a friend's table is here too. Nothing shows until there is
- * one: a new hero's book has no empty list in it.
+ * The adventures this hero has seen to the end (#283), only for a book with no
+ * page of her own, where this is the one place they show. Her record, so one she
+ * finished at a friend's table is here too.
  */
 function FinishedAdventures({ lines }: { lines: readonly JournalFinishedCampaign[] }): ReactElement | null {
   if (lines.length === 0) return null;

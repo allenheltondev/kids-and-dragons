@@ -1,7 +1,7 @@
 /**
  * A kid's own page (#299), in a real browser against the real stack.
  *
- * Ada plays a little on her phone, opens "Me" in her adventure book, and sees
+ * Ada plays a little on her phone, opens "My page" from her hero in her adventure book, and sees
  * her hero and the badge her first find earned. She sets a color, a frame for
  * her hero and a title. A second device paired to her (#281) shows the same
  * page, and so does her phone after a reload. A browser that is nobody has no
@@ -33,8 +33,14 @@ test.describe("a kid's own page", () => {
     await page.goto("/");
     await page.getByRole("button", { name: /open your book/i }).click(TAP);
     await expect(page).toHaveURL(/\/journal$/);
-    await page.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Me" }).click(TAP);
+    await page.getByRole("button", { name: "My page" }).click(TAP);
     await expect(page.getByRole("heading", { name: "Ada", level: 2 })).toBeVisible(TAP);
+  }
+
+  /** Her page opens to look at; the choices are in the editor, one tap away. */
+  async function startEditing(page: Page): Promise<void> {
+    await page.getByRole("button", { name: "Edit my page" }).click(TAP);
+    await expect(page.getByRole("radiogroup", { name: "Pick a color" })).toBeVisible(TAP);
   }
 
   async function play(phone: Page): Promise<void> {
@@ -79,12 +85,17 @@ test.describe("a kid's own page", () => {
     await expect(phone.getByText(/you found/i)).toBeVisible();
     await expect(phone.locator(".profile__title")).toHaveText("Adventurer");
 
-    // --- She makes it hers ---
+    // --- She makes it hers: the editor keeps her name and her heroes pinned above the choices ---
+    await startEditing(phone);
+    const pinned = phone.locator(".profile__top");
     await choose(phone.getByRole("radiogroup", { name: "Pick a color" }), /berry/i);
     await choose(phone.getByRole("radiogroup", { name: `Frame for ${HERO}` }), /ivy/i);
     await choose(phone.getByRole("radiogroup", { name: "Pick a title" }), /sharp eyes/i);
     await expect(phone.getByRole("status").filter({ hasText: /saved/i })).toBeVisible(TAP);
     await expectPicked(phone);
+    // What she picked shows in the pinned preview with no scrolling to find it.
+    await expect(pinned).toBeInViewport();
+    await expect(pinned.locator(".profile__title")).toHaveText("Sharp Eyes");
 
     // --- A second device, paired to her, shows the same page ---
     await phone.goto("/account");
@@ -98,12 +109,14 @@ test.describe("a kid's own page", () => {
     await second.getByLabel("Your code").fill(code);
     await second.getByRole("button", { name: /that.s me/i }).click(TAP);
     await expect(second).toHaveURL(/\/journal$/, TAP);
-    await second.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Me" }).click(TAP);
+    await second.getByRole("button", { name: "My page" }).click(TAP);
     await expect(second.getByRole("heading", { name: "Ada", level: 2 })).toBeVisible(TAP);
+    await startEditing(second);
     await expectPicked(second);
 
     // --- And her own phone, opened fresh ---
     await openMe(phone);
+    await startEditing(phone);
     await expectPicked(phone);
 
     // --- A browser that is nobody has no page, and cannot save one ---
@@ -128,6 +141,7 @@ test.describe("a kid's own page", () => {
     });
     await play(phone);
     await openMe(phone);
+    await startEditing(phone);
 
     const viewport = phone.viewportSize()!;
     const controls: Locator[] = [
@@ -223,8 +237,9 @@ test.describe("a kid's own page", () => {
     // --- Her page opens with her seat; she changes a color; it is saved ---
     await book.click(TAP);
     await expect(tablet).toHaveURL(/\/journal$/);
-    await tablet.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Me" }).click(TAP);
+    await tablet.getByRole("button", { name: "My page" }).click(TAP);
     await expect(tablet.getByRole("heading", { name: "Ada", level: 2 })).toBeVisible(TAP);
+    await tablet.getByRole("button", { name: "Edit my page" }).click(TAP);
     await choose(tablet.getByRole("radiogroup", { name: "Pick a color" }), /lagoon/i);
     await expect(tablet.getByRole("status").filter({ hasText: /saved/i })).toBeVisible(TAP);
     await expect(tablet.locator(".profile")).toHaveAttribute("data-profile-color", "lagoon");
@@ -234,7 +249,8 @@ test.describe("a kid's own page", () => {
     await tablet.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Play" }).click(TAP);
     await expect(tablet).toHaveURL(new RegExp(`/p/${code}$`), TAP);
     await tray.getByRole("button", { name: "Book" }).click(TAP);
-    await tablet.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Me" }).click(TAP);
+    await tablet.getByRole("button", { name: "My page" }).click(TAP);
+    await tablet.getByRole("button", { name: "Edit my page" }).click(TAP);
     await expect(tablet.getByRole("radio", { name: /lagoon/i })).toBeChecked(TAP);
     expect(await tablet.evaluate(() => Object.keys(localStorage))).not.toContain("kad.journal");
   });

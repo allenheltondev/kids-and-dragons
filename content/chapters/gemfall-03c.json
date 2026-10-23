@@ -11,6 +11,10 @@
   "estimatedMinutes": 40,
   "xpAward": 90,
   "entry": "scene_parade",
+  "plate": {
+    "art": "plates/gemfall/03c",
+    "narration": "The rush road has stopped at the ford. Wagon wheels sink into ruts while a centaur hurries past with queue tokens. Somewhere ahead, the river is deciding who gets across. First, everyone has to wait their turn."
+  },
   "objectives": [
     {
       "id": "markers",
