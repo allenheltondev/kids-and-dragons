@@ -93,6 +93,9 @@ export function TravelLayout(): React.JSX.Element {
   // The pane she last went to, for the "?": side by side, two are up at once, and the one she
   // tapped (or the one a new question put in front of her) is the one to explain.
   const [engaged, setEngaged] = useState<Focus>("player");
+  // Side by side, your controls are a drawer: tapping You slides it away and gives the picture the
+  // whole width, and tapping it again brings it back. Open to start, and a new question opens it.
+  const [youOpen, setYouOpen] = useState(true);
   const [rolling, setRolling] = useState(false);
   const [transforming, setTransforming] = useState(false);
   const rollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -110,6 +113,7 @@ export function TravelLayout(): React.JSX.Element {
   useEffect(() => {
     if (turnKey !== null && turnKey !== previousTurnKey.current) {
       setEngaged("player");
+      setYouOpen(true);
       if (!sideBySide) setFocus("player");
     }
     previousTurnKey.current = turnKey;
@@ -167,17 +171,18 @@ export function TravelLayout(): React.JSX.Element {
    */
   const showing: Focus = transforming || rolling ? "world" : focus;
   /*
-   * Side by side (landscape.ts): your controls are always up, and the big pane
-   * beside them is the world unless the map was asked for. The roll and the
-   * transformation take that pane, as they take the screen on a phone.
+   * Side by side (landscape.ts): your controls are a drawer beside the big pane, which is the
+   * world unless the map was asked for, and the whole width while the drawer is shut. The roll
+   * and the transformation take that pane, as they take the screen on a phone.
    */
   const beside: Focus = showing === "map" ? "map" : "world";
   const shows = (pane: Focus): boolean =>
-    sideBySide ? pane === "player" || pane === beside : pane === showing;
+    sideBySide ? (pane === "player" ? youOpen : pane === beside) : pane === showing;
   const inGuide = shows("player") && section === "guide";
-  // Side by side, You and Guide are already on the screen: they leave the map where it is.
+  // Side by side, You and Guide open the drawer and leave the map where it is.
   const showPlayer = (): void => {
     setEngaged("player");
+    setYouOpen(true);
     setFocus((at) => (sideBySide && at === "map" ? at : "player"));
   };
   const show = (pane: "world" | "map"): void => {
@@ -185,7 +190,7 @@ export function TravelLayout(): React.JSX.Element {
     setFocus(pane);
   };
   // The "?" in the corner row (#256) explains whatever pane is up; side by side, the one she is in.
-  const helpPane: Focus = sideBySide ? engaged : showing;
+  const helpPane: Focus = sideBySide ? (engaged === "player" && !youOpen ? beside : engaged) : showing;
   useEffect(() => {
     setHelpPane(helpPane);
     return () => setHelpPane("player");
@@ -216,7 +221,16 @@ export function TravelLayout(): React.JSX.Element {
           className={`kad-travel__tab kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${shows("player") && !inGuide ? " kad-travel__tab--on kad-tray__tab--on" : ""}`}
           aria-label="You"
           aria-pressed={shows("player") && !inGuide}
-          onClick={() => { dismissPlayerSheet(); showPlayer(); }}
+          onClick={() => {
+            // A shut drawer opens; an open one shuts, unless the guide is in it, which You leaves first.
+            if (sideBySide && youOpen && !inGuide) {
+              setYouOpen(false);
+              setEngaged(beside);
+              return;
+            }
+            dismissPlayerSheet();
+            showPlayer();
+          }}
         >
           <span className="kad-tray__object">
             <TrayObject name="satchel" />

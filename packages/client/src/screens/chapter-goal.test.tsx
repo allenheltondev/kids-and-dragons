@@ -237,3 +237,38 @@ describe("the chapter's goal", () => {
     expect(container.innerHTML).toBe("");
   });
 });
+
+describe("the chapter's goal on a phone held sideways", () => {
+  function sideways(): void {
+    vi.stubGlobal("matchMedia", vi.fn((query: string) => ({
+      matches: query.includes("max-height: 559px"),
+      media: query,
+      addEventListener: () => undefined,
+      removeEventListener: () => undefined,
+    })));
+  }
+  afterEach(() => vi.unstubAllGlobals());
+
+  it("is an icon with the steps done, and a tap opens the steps over the world", () => {
+    sideways();
+    seed({ found_ladder: true });
+    render(<ChapterGoalCard place="world" />);
+    const icon = screen.getByRole("button", { name: /your goal, 1 of 2 done/i });
+    expect(icon.textContent).toBe("1/2");
+    expect(icon.getAttribute("aria-expanded")).toBe("false");
+    expect(screen.queryByText("Find a ladder")).toBeNull();
+    act(() => icon.click());
+    expect(screen.getByText("Get the cat down from the tree.")).toBeTruthy();
+    expect(screen.getByText("Find a ladder")).toBeTruthy();
+    expect(icon.getAttribute("aria-expanded")).toBe("true");
+    act(() => icon.click());
+    expect(screen.queryByText("Find a ladder")).toBeNull();
+  });
+
+  it("gives the hero's own pane its line back", () => {
+    sideways();
+    seed({});
+    const { container } = render(<ChapterGoalCard place="phone" />);
+    expect(container.textContent).toBe("");
+  });
+});

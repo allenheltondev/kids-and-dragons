@@ -59,6 +59,8 @@ function PhoneLayout(): React.JSX.Element {
   // The pane she last went to, for the "?": side by side, two are up at once, and the one she
   // tapped (or the one a new question put in front of her) is the one to explain.
   const [engaged, setEngaged] = useState<Showing>("player");
+  // Side by side, your controls are a drawer (see TravelLayout): You slides it away and back.
+  const [youOpen, setYouOpen] = useState(true);
 
   // Each new question takes focus, including two consecutive questions for
   // the same player. An update to the current question (such as another vote)
@@ -69,6 +71,7 @@ function PhoneLayout(): React.JSX.Element {
   useEffect(() => {
     if (turnKey !== null && turnKey !== previousTurnKey.current) {
       setEngaged("player");
+      setYouOpen(true);
       if (!sideBySide) setShowing("player");
     }
     previousTurnKey.current = turnKey;
@@ -83,20 +86,22 @@ function PhoneLayout(): React.JSX.Element {
 
   const section = usePlayerNavigation((navigation) => navigation.section);
   // The "?" in the corner row (#256) explains whatever pane is up; side by side, the one she is in.
-  const helpPane: Showing = sideBySide ? engaged : showing;
+  const beside: Showing = showing === "map" ? "map" : "world";
+  const helpPane: Showing = sideBySide ? (engaged === "player" && !youOpen ? beside : engaged) : showing;
   useEffect(() => {
     setHelpPane(helpPane);
     return () => setHelpPane("player");
   }, [helpPane]);
-  // Side by side, the controls are always up and the pane beside them is the
-  // world unless the map was asked for.
+  // Side by side, the controls are a drawer and the pane beside them is the
+  // world unless the map was asked for, the whole width while the drawer is shut.
   const shows = (pane: Showing): boolean =>
-    sideBySide ? pane === "player" || pane === (showing === "map" ? "map" : "world") : pane === showing;
+    sideBySide ? (pane === "player" ? youOpen : pane === beside) : pane === showing;
   const onMap = shows("map");
   const inGuide = shows("player") && section === "guide";
-  // Side by side, You and Guide are already on the screen: they leave the map where it is.
+  // Side by side, You and Guide open the drawer and leave the map where it is.
   const showPlayer = (): void => {
     setEngaged("player");
+    setYouOpen(true);
     setShowing((at) => (sideBySide && at === "map" ? at : "player"));
   };
   const show = (pane: "world" | "map"): void => {
@@ -127,7 +132,15 @@ function PhoneLayout(): React.JSX.Element {
           className={`kad-tray__tab kad-tray__tab--primary kad-tap kad-focusable${shows("player") && !inGuide ? " kad-tray__tab--on" : ""}`}
           aria-label="You"
           aria-pressed={shows("player") && !inGuide}
-          onClick={() => { dismissPlayerSheet(); showPlayer(); }}
+          onClick={() => {
+            if (sideBySide && youOpen && !inGuide) {
+              setYouOpen(false);
+              setEngaged(beside);
+              return;
+            }
+            dismissPlayerSheet();
+            showPlayer();
+          }}
         >
           <span className="kad-tray__object">
             <TrayObject name="satchel" />

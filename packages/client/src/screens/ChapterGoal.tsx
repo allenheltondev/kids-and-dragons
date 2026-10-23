@@ -16,6 +16,10 @@
  * without celebrating it all again. Reduced motion keeps the gold and a soft
  * glow, and drops the pop and the sparks.
  *
+ * A phone held sideways has no height to spare for it, so there it is an icon over the world with
+ * how many steps are done, and a tap opens the steps over the picture (the hero's own pane drops
+ * its line). The words are still said when the chapter opens, and the entry scene says them.
+ *
  * In a fight the board is the picture, so the card folds to the goal and a
  * row of pips, out of the way of the figures. On a short pane (a tablet at the
  * largest text) it keeps the pips and names only the next step, so the head
@@ -35,6 +39,7 @@ import { useChapter, useRunState } from "../store";
 import { useEnsureChapter } from "./content";
 import { Icon } from "./icons";
 import { FoldChevron, useFold } from "../ui/Collapsible";
+import { useLandscapePhone } from "../layout/landscape";
 import "./ChapterGoal.css";
 
 /** How long a fresh tick keeps its moment. */
@@ -94,6 +99,7 @@ export function ChapterGoalCard({ place, folded = false }: ChapterGoalCardProps)
   // On a phone the card is one line until the kid opens it, and stays the way this device left it.
   const [open, toggle] = useFold("goal", false);
   const stepsId = `goal-steps-${useId().replace(/:/g, "")}`;
+  const sideways = useLandscapePhone();
   // The chime is the room's, so only the shared surface plays it.
   const fresh = useFreshTicks(current, place === "world" ? () => cue("gem-pickup") : undefined);
   if (current === null) return null;
@@ -116,6 +122,65 @@ export function ChapterGoalCard({ place, folded = false }: ChapterGoalCardProps)
 
   // Only a phone folds, and not in a fight, where the card is already one line with nothing under it.
   const foldable = place === "phone" && !folded;
+
+  const steps = (hidden: boolean): ReactElement => (
+    <ul className="goal__steps" id={stepsId} hidden={hidden}>
+      {goal.steps.map((step, i) => (
+        <li
+          key={step.id}
+          className={`goal__step${done[i] ? " goal__step--done" : ""}${fresh.has(i) ? " goal__step--fresh" : ""}${step.optional ? " goal__step--optional" : ""}`}
+          data-done={done[i] ? "true" : "false"}
+          data-next={i === next ? "true" : undefined}
+        >
+          {/* The box says its state in words, never colour alone (spec §11). */}
+          <span className="goal__box" role="img" aria-label={done[i] ? "Done" : "Not yet"}>
+            {done[i] ? <Icon name="check" /> : null}
+          </span>
+          <span className="goal__label">
+            {step.label}
+            {step.optional ? <span className="goal__maybe"> (if you can)</span> : null}
+          </span>
+          {fresh.has(i) ? (
+            <span className="goal__sparks" aria-hidden="true">
+              <i /><i /><i /><i /><i /><i />
+            </span>
+          ) : null}
+        </li>
+      ))}
+    </ul>
+  );
+
+  // A phone held sideways: the hero's pane keeps its height, and the world carries an icon.
+  if (sideways) {
+    if (place === "phone") return null;
+    const count = needed.length > 0 ? needed.filter((step) => step.done).length : extras.filter((step) => step.done).length;
+    const total = needed.length > 0 ? needed.length : extras.length;
+    return (
+      <section
+        className={`goal goal--badge${all ? " goal--all" : ""}${open ? " goal--open" : ""}`}
+        aria-label="Your goal"
+        data-testid="chapter-goal"
+      >
+        <button
+          type="button"
+          className={`goal__badge kad-focusable${fresh.size > 0 ? " goal__badge--fresh" : ""}`}
+          aria-expanded={open}
+          aria-controls={stepsId}
+          aria-label={`Your goal, ${summary}`}
+          onClick={toggle}
+        >
+          <Icon name={all ? "trophy" : "star"} />
+          <span className="goal__count" aria-hidden="true">{`${String(count)}/${String(total)}`}</span>
+        </button>
+        {open ? (
+          <div className="goal__popover">
+            <p className="goal__sentence-full">{goal.text}</p>
+            {steps(false)}
+          </div>
+        ) : null}
+      </section>
+    );
+  }
   const head = (
     <>
       <Icon name={all ? "trophy" : "star"} />
@@ -153,32 +218,7 @@ export function ChapterGoalCard({ place, folded = false }: ChapterGoalCardProps)
       ) : (
         <p className="goal__text">{head}</p>
       )}
-      {folded ? null : (
-        <ul className="goal__steps" id={stepsId} hidden={foldable && !open}>
-          {goal.steps.map((step, i) => (
-            <li
-              key={step.id}
-              className={`goal__step${done[i] ? " goal__step--done" : ""}${fresh.has(i) ? " goal__step--fresh" : ""}${step.optional ? " goal__step--optional" : ""}`}
-              data-done={done[i] ? "true" : "false"}
-              data-next={i === next ? "true" : undefined}
-            >
-              {/* The box says its state in words, never colour alone (spec §11). */}
-              <span className="goal__box" role="img" aria-label={done[i] ? "Done" : "Not yet"}>
-                {done[i] ? <Icon name="check" /> : null}
-              </span>
-              <span className="goal__label">
-                {step.label}
-                {step.optional ? <span className="goal__maybe"> (if you can)</span> : null}
-              </span>
-              {fresh.has(i) ? (
-                <span className="goal__sparks" aria-hidden="true">
-                  <i /><i /><i /><i /><i /><i />
-                </span>
-              ) : null}
-            </li>
-          ))}
-        </ul>
-      )}
+      {folded ? null : steps(foldable && !open)}
     </section>
   );
 }
