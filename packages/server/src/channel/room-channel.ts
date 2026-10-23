@@ -140,10 +140,10 @@ export class LocalSseChannel implements RoomChannel {
       // the message kinds up front. `ChannelMessage.kind` already carries the
       // discriminator inside the payload, where the ordering logic reads it.
       //
-      // A preview carries no `id:` at all. It is not a step the client has
+      // A preview (or a cheer, #388) carries no `id:` at all. It is not a step the client has
       // applied, and an SSE event with no id leaves Last-Event-ID where the
       // last patch put it — so a reconnect can never skip a patch over one.
-      if (message.kind === "preview") {
+      if (message.kind === "preview" || message.kind === "cheer") {
         sink.write(`data: ${JSON.stringify(message)}\n\n`);
         return;
       }
