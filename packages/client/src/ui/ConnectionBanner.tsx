@@ -17,9 +17,10 @@
  *   connection *look* worse than it is. Nothing is shown until a drop has
  *   lasted `RECONNECT_GRACE_MS`.
  * - **A wait, not an alarm.** It reads "Reconnecting…" in the panel's own
- *   colours with a spinner — never red, no dismiss button, because there is
- *   nothing anybody at the table can do and nothing they need to. It removes
- *   itself the moment the channel is back.
+ *   colours with a spinner — never red, no dismiss button, because nobody
+ *   needs to do anything. It does offer "Try again", which skips the backoff
+ *   and opens a fresh stream, so a stuck connection never costs a full app
+ *   restart. It removes itself the moment the channel is back.
  *
  * "Back" means caught up, not just reopened (#413): until the catch-up after
  * a reopen has landed, the phone's answers are held (`GameStore.synced`), and
@@ -58,6 +59,19 @@ export function ConnectionBanner(): React.JSX.Element | null {
     <div className="kad-connection">
       <Spinner size="sm" label="Reconnecting" />
       <span aria-hidden="true">Reconnecting…</span>
+      {/* The channel retries on its own, backing off up to 15 seconds between
+          tries. This is for the table that would rather not wait out the
+          backoff, or whose stream is wedged: a fresh stream and a catch-up now,
+          so nobody has to close the app to get one. */}
+      <button
+        type="button"
+        className="kad-connection__retry"
+        onClick={() => {
+          useGameStore.getState().reconnect();
+        }}
+      >
+        Try again
+      </button>
     </div>
   );
 }
