@@ -1304,7 +1304,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1338,7 +1338,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1366,7 +1366,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1394,7 +1394,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1428,7 +1428,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1456,7 +1456,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1484,7 +1484,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1525,7 +1525,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1553,7 +1553,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1581,7 +1581,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1609,7 +1609,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1640,7 +1640,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1668,7 +1668,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -1923,7 +1923,13 @@
           "goto": "fight_weakened"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "cast": [
+        {
+          "figure": "cast/allied_wyrm",
+          "name": "Frost wyrm"
+        }
+      ]
     },
     "olivia_plan": {
       "type": "story",
@@ -2163,7 +2169,7 @@
           "name": "Orin Vale"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
       ],
@@ -2227,7 +2233,7 @@
           "name": "Orin Vale"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
       ],
@@ -2255,7 +2261,7 @@
           "name": "Orin Vale"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
       ],
@@ -2283,7 +2289,7 @@
           "name": "Orin Vale"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
       ],
@@ -2317,7 +2323,7 @@
           "name": "Orin Vale"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
       ],
@@ -2353,7 +2359,7 @@
           "name": "Orin Vale"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
       ],
@@ -2381,7 +2387,7 @@
           "name": "Orin Vale"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
       ],
@@ -2415,7 +2421,7 @@
           "name": "Orin Vale"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
       ],
@@ -2439,7 +2445,7 @@
           "size": "very_large"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
       ],
@@ -2477,7 +2483,7 @@
           "size": "very_large"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
       ],
@@ -2561,7 +2567,7 @@
       ],
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -2639,7 +2645,7 @@
       ],
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -2672,7 +2678,7 @@
       ],
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -2690,7 +2696,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -2724,7 +2730,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -2758,7 +2764,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -2799,7 +2805,7 @@
           "name": "Orin Vale"
         },
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
       ],
@@ -2863,6 +2869,9 @@
         {
           "figure": "cast/seren_wisp",
           "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/goat_kid"
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
@@ -2871,7 +2880,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -2919,7 +2928,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -2947,7 +2956,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -2975,7 +2984,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
@@ -3029,7 +3038,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "entities/yeti",
+          "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         },
         {
