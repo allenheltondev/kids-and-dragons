@@ -73,8 +73,9 @@ import {
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
 import { verifyDevToken } from "./dev-auth.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
-import { pushKey, subscribePush, unsubscribePush, type PushConfig } from "./handlers/push.ts";
-import { devVapidKeys, pushConfig, pushMode, recordingSender, webPushSender, type RecordedPush } from "./web-push.ts";
+import { pushKey, subscribePush, unsubscribePush, type PushConfig, type PushSender } from "./handlers/push.ts";
+import { devVapidKeys, inProcessDispatch, pushConfig, pushMode, recordingSender, webPushSender, type RecordedPush } from "./web-push.ts";
+import type { GameRepository } from "./store/repository.ts";
 
 const PORT = Number(process.env.PORT ?? 8787);
 const HOST = process.env.HOST ?? "0.0.0.0";
@@ -92,13 +93,19 @@ const PRESENCE_AWAY_MS = Number(process.env.KAD_PRESENCE_AWAY_MS) || undefined;
  *   tunnel or a staging-like setup, not the usual `npm run dev`.
  * - `record` sends nothing anywhere: every push is kept for `GET /api/dev/push`,
  *   with a key pair minted at boot. The prod e2e suite runs this way.
+ *
+ * Either way the send is off the request path, as in production: the action
+ * hands its job to `inProcessDispatch`, which runs the push-sender's own job
+ * (`deliverTurnPush`) after the response has gone.
  */
-function devPush(): { config: PushConfig; recorded: RecordedPush[] | null } | undefined {
+function devPush(repo: GameRepository): { config: PushConfig; recorded: RecordedPush[] | null } | undefined {
+  const run = (sender: PushSender) =>
+    inProcessDispatch({ repo, now: () => Date.now(), delivery: { sender, awayAfterMs: PRESENCE_AWAY_MS } });
   const mode = pushMode(process.env.KAD_PUSH);
   if (mode === "off") return undefined;
   if (mode === "record") {
     const sender = recordingSender();
-    return { config: pushConfig(devVapidKeys(), sender, PRESENCE_AWAY_MS), recorded: sender.sent };
+    return { config: pushConfig(devVapidKeys(), run(sender)), recorded: sender.sent };
   }
   const publicKey = process.env.KAD_VAPID_PUBLIC_KEY ?? "";
   const privateKey = process.env.KAD_VAPID_PRIVATE_KEY ?? "";
@@ -108,7 +115,7 @@ function devPush(): { config: PushConfig; recorded: RecordedPush[] | null } | un
     return undefined;
   }
   const keys = { publicKey, privateKey };
-  return { config: pushConfig(keys, webPushSender(keys, subject), PRESENCE_AWAY_MS), recorded: null };
+  return { config: pushConfig(keys, run(webPushSender(keys, subject))), recorded: null };
 }
 
 /** Everything that does not come out of `@kad/shared`; see `withRuntime()`. */
@@ -134,7 +141,7 @@ async function main(): Promise<void> {
   const channel = new LocalSseChannel();
   const presence = new PresenceTracker();
   const identity = new DevIdentity(repo);
-  const push = devPush();
+  const push = devPush(repo);
 
   const base: BaseDeps = {
     repo,

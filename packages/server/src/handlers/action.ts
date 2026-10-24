@@ -60,7 +60,7 @@ import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import { closedIfIdle } from "./host.ts";
 import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
-import { notifyTurn } from "./push.ts";
+import { dispatchTurnPush } from "./push.ts";
 import { practiceChapterId, practiceRefusal, settlePractice } from "./practice.ts";
 import {
   attemptJourney,
@@ -694,10 +694,11 @@ export async function applyAction(
 
   if (renewal) await renewal;
 
-  // A question this step opened for a kid whose phone has gone quiet (#466).
-  // After the broadcast, so the table never waits on a push service, and
-  // never failing: `notifyTurn` logs and swallows its own trouble.
-  await notifyTurn({ before: state, after: next, actorId: input.playerId }, deps);
+  // A question this step opened for somebody (#466): the job is decided here,
+  // from the two states already in hand, and handed to the push sender, off
+  // the request path. Only the hand-over is awaited, and never for long
+  // (`DISPATCH_WAIT_MS`); nothing about presence, phones or push services is.
+  await dispatchTurnPush({ before: state, after: next, actorId: input.playerId }, deps);
 
   return { ok: true, seq: nextSeq };
 }

@@ -4,16 +4,21 @@ import { makeHarness, seedHousehold, stubEngine, T0, type TestHarness } from "..
 import type { PushSubscriptionRecord } from "../store/repository.ts";
 import { applyAction } from "./action.ts";
 import { AWAY_AFTER_MS } from "./presence.ts";
+import { inProcessDispatch, recordingSender } from "../web-push.ts";
 import {
-  notifyTurn,
+  deliverTurnPush,
+  dispatchTurnPush,
   openedFor,
   pushKey,
   quietOnes,
   readSubscription,
+  readTurnPushJob,
   subscribePush,
+  turnPushJob,
   unsubscribePush,
-  type PushConfig,
   type PushSendResult,
+  type PushSenderDeps,
+  type TurnPushJob,
 } from "./push.ts";
 import { createRoom, joinRoom } from "./room.ts";
 
@@ -87,16 +92,23 @@ function sender(answer: (s: PushSubscriptionRecord) => PushSendResult | Promise<
   };
 }
 
-/** A harness with push on, a kid `p_2` with a bound phone, and that phone subscribed. */
+/** A store with a kid `p_2` whose bound phone is subscribed, and the sender's deps over it. */
 async function withPush(answer?: (s: PushSubscriptionRecord) => PushSendResult | Promise<PushSendResult>) {
   const harness = makeHarness();
   const { players } = await seedHousehold(harness, 2);
   const push = sender(answer);
-  const config: PushConfig = { sender: push, publicKey: "BPublicKey" };
-  harness.deps.push = config;
+  const deps: PushSenderDeps = { repo: harness.repo, now: harness.clock.now, delivery: { sender: push } };
   const kid = players[1]!.principal;
   await harness.repo.putPushSubscription(subscription(kid.playerId, kid.deviceId));
-  return { harness, push, kid, players };
+  return { harness, push, kid, players, deps };
+}
+
+/** The job a step makes, and the room as the sender will find it. */
+async function stepped(harness: TestHarness, before: RunState, after: RunState): Promise<TurnPushJob> {
+  await harness.repo.putState(after);
+  const job = turnPushJob(before, after, "p_1", harness.clock.now());
+  if (!job) throw new Error("the step opened nothing");
+  return job;
 }
 
 async function beat(harness: TestHarness, playerId: string, at: number): Promise<void> {
@@ -170,22 +182,39 @@ describe("quietOnes: whose phone has gone quiet", () => {
 // The send
 // ---------------------------------------------------------------------------
 
-describe("notifyTurn", () => {
+describe("the job a step hands over", () => {
+  it("names the kids it opened a question for, and nothing when it opened none", () => {
+    expect(turnPushJob(runState(null), runState(choiceFor(["p_2"])), "p_1", T0)).toEqual({
+      kind: "turn",
+      runId: "r_1",
+      roomCode: "ABCD",
+      seq: 1,
+      candidates: ["p_2"],
+      actorId: "p_1",
+      at: T0,
+    });
+    expect(turnPushJob(runState(choiceFor(["p_2"])), runState(choiceFor(["p_2"])), "p_1", T0)).toBeNull();
+  });
+
+  it("is read back off the wire as it was sent, and anything else is not a job", () => {
+    const job = turnPushJob(runState(null), runState(choiceFor(["p_2"])), "p_1", T0)!;
+    expect(readTurnPushJob(JSON.parse(JSON.stringify(job)))).toEqual(job);
+    expect(readTurnPushJob(null)).toBeNull();
+    expect(readTurnPushJob({ ...job, kind: "other" })).toBeNull();
+    expect(readTurnPushJob({ ...job, candidates: "p_2" })).toBeNull();
+    expect(readTurnPushJob({ ...job, runId: "" })).toBeNull();
+  });
+});
+
+describe("the push sender's job (deliverTurnPush)", () => {
   const before = runState(null);
   const after = runState(choiceFor(["p_2"]));
 
-  it("with pushes off, reads nothing and sends nothing", async () => {
-    const harness = makeHarness();
-    const presence = vi.spyOn(harness.repo, "getPresence");
-    expect(await notifyTurn({ before, after, actorId: "p_1" }, harness.deps)).toEqual({ sent: 0, dropped: 0, failed: 0 });
-    expect(presence).not.toHaveBeenCalled();
-  });
-
   it("sends one push, saying only the sentence, to a quiet kid's phone", async () => {
-    const { harness, push, kid } = await withPush();
+    const { harness, push, kid, deps } = await withPush();
     await beat(harness, kid.playerId, T0 - AWAY_AFTER_MS - 1);
 
-    expect(await notifyTurn({ before, after, actorId: "p_1" }, harness.deps)).toEqual({ sent: 1, dropped: 0, failed: 0 });
+    expect(await deliverTurnPush(await stepped(harness, before, after), deps)).toEqual({ sent: 1, dropped: 0, failed: 0 });
     expect(push.sent).toHaveLength(1);
     expect(push.sent[0]?.subscription.deviceId).toBe(kid.deviceId);
     expect(push.sent[0]?.payload).toEqual({ title: PUSH_TITLE, body: PUSH_BODY, url: "/p/ABCD" });
@@ -193,61 +222,71 @@ describe("notifyTurn", () => {
   });
 
   it("sends nothing to a kid whose phone is here", async () => {
-    const { harness, push, kid } = await withPush();
+    const { harness, push, kid, deps } = await withPush();
     await beat(harness, kid.playerId, T0 - 5_000);
-    expect((await notifyTurn({ before, after, actorId: "p_1" }, harness.deps)).sent).toBe(0);
+    expect((await deliverTurnPush(await stepped(harness, before, after), deps)).sent).toBe(0);
+    expect(push.send).not.toHaveBeenCalled();
+  });
+
+  it("sends nothing once the question has been answered by the time the job runs", async () => {
+    const { harness, push, kid, deps } = await withPush();
+    await beat(harness, kid.playerId, T0 - AWAY_AFTER_MS - 1);
+    const job = await stepped(harness, before, after);
+    await harness.repo.putState(runState(null));
+    expect((await deliverTurnPush(job, deps)).sent).toBe(0);
     expect(push.send).not.toHaveBeenCalled();
   });
 
   it("sends nothing to a quiet kid with no subscription", async () => {
-    const { harness, push, kid } = await withPush();
+    const { harness, push, kid, deps } = await withPush();
     await harness.repo.deletePushSubscription(kid.playerId, kid.deviceId);
     await beat(harness, kid.playerId, T0 - AWAY_AFTER_MS - 1);
-    expect(await notifyTurn({ before, after, actorId: "p_1" }, harness.deps)).toEqual({ sent: 0, dropped: 0, failed: 0 });
+    expect(await deliverTurnPush(await stepped(harness, before, after), deps)).toEqual({ sent: 0, dropped: 0, failed: 0 });
     expect(push.send).not.toHaveBeenCalled();
   });
 
   it("forgets a subscription the push service says is gone", async () => {
-    const { harness, kid } = await withPush(() => "gone");
+    const { harness, kid, deps } = await withPush(() => "gone");
     await beat(harness, kid.playerId, T0 - AWAY_AFTER_MS - 1);
-    expect(await notifyTurn({ before, after, actorId: "p_1" }, harness.deps)).toEqual({ sent: 0, dropped: 1, failed: 0 });
+    expect(await deliverTurnPush(await stepped(harness, before, after), deps)).toEqual({ sent: 0, dropped: 1, failed: 0 });
     expect(await harness.repo.listPushSubscriptions(kid.playerId)).toEqual([]);
   });
 
   it("forgets, without sending, a phone that is no longer hers", async () => {
-    const { harness, push, kid } = await withPush();
+    const { harness, push, kid, deps } = await withPush();
     await harness.repo.revokeDevice(kid.householdId, kid.deviceId);
     await beat(harness, kid.playerId, T0 - AWAY_AFTER_MS - 1);
-    expect((await notifyTurn({ before, after, actorId: "p_1" }, harness.deps)).dropped).toBe(1);
+    expect((await deliverTurnPush(await stepped(harness, before, after), deps)).dropped).toBe(1);
     expect(push.send).not.toHaveBeenCalled();
     expect(await harness.repo.listPushSubscriptions(kid.playerId)).toEqual([]);
   });
 
   it("keeps the subscription and never throws when the push service fails", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    const { harness, kid } = await withPush(() => {
+    const { harness, kid, deps } = await withPush(() => {
       throw new Error("push service down");
     });
     await beat(harness, kid.playerId, T0 - AWAY_AFTER_MS - 1);
-    expect(await notifyTurn({ before, after, actorId: "p_1" }, harness.deps)).toEqual({ sent: 0, dropped: 0, failed: 1 });
+    expect(await deliverTurnPush(await stepped(harness, before, after), deps)).toEqual({ sent: 0, dropped: 0, failed: 1 });
     expect(await harness.repo.listPushSubscriptions(kid.playerId)).toHaveLength(1);
     warn.mockRestore();
   });
 
   it("never throws when the store does", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    const { harness } = await withPush();
+    const { harness, deps } = await withPush();
+    const job = await stepped(harness, before, after);
     vi.spyOn(harness.repo, "getPresence").mockRejectedValue(new Error("throttled"));
-    expect(await notifyTurn({ before, after, actorId: "p_1" }, harness.deps)).toEqual({ sent: 0, dropped: 0, failed: 0 });
+    expect(await deliverTurnPush(job, deps)).toEqual({ sent: 0, dropped: 0, failed: 0 });
     warn.mockRestore();
   });
 });
 
 // ---------------------------------------------------------------------------
-// Through an action
+// Through an action: the hand-over, never the send
 // ---------------------------------------------------------------------------
 
-describe("an action that opens a question for a quiet phone", () => {
+describe("an action that opens a question for somebody", () => {
   /** Seats both kids on "seat", then hands kid 2 the turn on "ask". */
   const engine = stubEngine((state, input) => {
     if (input.intent.type !== "CHOOSE") return { state };
@@ -256,7 +295,7 @@ describe("an action that opens a question for a quiet phone", () => {
     return { state };
   });
 
-  async function room(answer?: () => PushSendResult | Promise<PushSendResult>) {
+  async function room() {
     const harness = makeHarness({ engine });
     const { householdId, players } = await seedHousehold(harness, 2);
     const created = await createRoom({ householdId, mode: "party" }, harness.deps);
@@ -267,27 +306,86 @@ describe("an action that opens a question for a quiet phone", () => {
     const runId = created.value.runId;
     const seat = await applyAction({ runId, playerId: "p_1", seq: (await harness.repo.getState(runId))!.seq, intent: { type: "CHOOSE", choiceId: "seat" } }, harness.deps);
     if (!seat.ok) throw new Error("seat failed");
-    const push = sender(answer);
-    harness.deps.push = { sender: push, publicKey: "BPublicKey" };
     await harness.repo.putPushSubscription(subscription("p_2", two.principal.deviceId));
     const at = harness.clock.now();
     await harness.repo.touchPresence(runId, "p_2", new Date(at - AWAY_AFTER_MS - 1).toISOString(), Math.floor(at / 1000) + 3600);
-    return { harness, push, runId, seq: seat.seq, code: created.value.code };
+    const ask = () => applyAction({ runId, playerId: "p_1", seq: seat.seq, intent: { type: "CHOOSE", choiceId: "ask" } }, harness.deps);
+    return { harness, runId, seq: seat.seq, code: created.value.code, ask };
   }
 
-  it("pushes the quiet kid once the step has landed", async () => {
-    const { harness, push, runId, seq, code } = await room();
-    const result = await applyAction({ runId, playerId: "p_1", seq, intent: { type: "CHOOSE", choiceId: "ask" } }, harness.deps);
-    expect(result.ok).toBe(true);
-    expect(push.sent.map((s) => s.payload)).toEqual([{ title: PUSH_TITLE, body: PUSH_BODY, url: `/p/${code}` }]);
+  /** How long a test lets an action take before calling it stuck. */
+  const PATIENCE_MS = 2_000;
+  const settledWithin = <T>(work: Promise<T>, ms: number) =>
+    Promise.race([work.then((value) => ({ value })), new Promise<"stuck">((resolve) => setTimeout(() => resolve("stuck"), ms))]);
+
+  it("hands over exactly the job, and reads no presence or phone on the way", async () => {
+    const { harness, runId, seq, code, ask } = await room();
+    const jobs: TurnPushJob[] = [];
+    harness.deps.push = { publicKey: "BPublicKey", dispatch: async (job) => void jobs.push(job) };
+    const presence = vi.spyOn(harness.repo, "getPresence");
+    const phones = vi.spyOn(harness.repo, "listPushSubscriptions");
+    expect(await ask()).toEqual({ ok: true, seq: seq + 1 });
+    expect(jobs).toEqual([{ kind: "turn", runId, roomCode: code, seq: seq + 1, candidates: ["p_2"], actorId: "p_1", at: harness.clock.now() }]);
+    expect(presence).not.toHaveBeenCalled();
+    expect(phones).not.toHaveBeenCalled();
   });
 
-  it("still succeeds when the push fails", async () => {
+  it("answers the tap even when the hand-over never finishes (a hung invoke)", async () => {
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    const { harness, runId, seq } = await room(() => Promise.reject(new Error("push service down")));
-    const result = await applyAction({ runId, playerId: "p_1", seq, intent: { type: "CHOOSE", choiceId: "ask" } }, harness.deps);
-    expect(result).toEqual({ ok: true, seq: seq + 1 });
+    const { harness, seq, ask } = await room();
+    harness.deps.push = { publicKey: "BPublicKey", dispatch: () => new Promise<void>(() => undefined) };
+    const started = Date.now();
+    const outcome = await settledWithin(ask(), PATIENCE_MS);
+    expect(outcome).toEqual({ value: { ok: true, seq: seq + 1 } });
+    expect(Date.now() - started).toBeLessThan(PATIENCE_MS);
+    expect(warn).toHaveBeenCalledWith(expect.stringMatching(/moved on/));
+    warn.mockRestore();
+  });
+
+  it("succeeds, and says so in the log, when the hand-over fails", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const { harness, runId, seq, ask } = await room();
+    harness.deps.push = { publicKey: "BPublicKey", dispatch: () => Promise.reject(new Error("throttled")) };
+    expect(await ask()).toEqual({ ok: true, seq: seq + 1 });
     expect((await harness.repo.getState(runId))?.prompt?.kind).toBe("choice");
+    expect(warn).toHaveBeenCalledWith(expect.stringMatching(/could not be handed over/), expect.any(Error));
+    warn.mockRestore();
+  });
+
+  it("answers before a slow push service does, and the push still goes after (the dev server's path)", async () => {
+    const { harness, code, ask } = await room();
+    let release: (() => void) | null = null;
+    const slow = recordingSender(harness.clock.now);
+    const held = { ...slow, send: async (...args: Parameters<typeof slow.send>) => {
+      await new Promise<void>((resolve) => (release = resolve));
+      return slow.send(...args);
+    } };
+    const dispatch = inProcessDispatch({ repo: harness.repo, now: harness.clock.now, delivery: { sender: held } });
+    harness.deps.push = { publicKey: "BPublicKey", dispatch };
+    expect(await settledWithin(ask(), PATIENCE_MS)).not.toBe("stuck");
+    expect(slow.sent).toEqual([]);
+    // The sender reaches the push service after the answer, and is held there.
+    await vi.waitFor(() => expect(release).not.toBeNull());
+    release!();
+    await dispatch.settled();
+    expect(slow.sent.map((p) => p.payload.url)).toEqual([`/p/${code}`]);
+  });
+
+  it("with pushes off, hands over nothing", async () => {
+    const { harness, seq, ask } = await room();
+    expect(harness.deps.push).toBeUndefined();
+    expect(await ask()).toEqual({ ok: true, seq: seq + 1 });
+  });
+
+  it("never waits on a dispatch longer than it is told to", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const started = Date.now();
+    await dispatchTurnPush(
+      { before: runState(null), after: runState(choiceFor(["p_2"])), actorId: "p_1" },
+      { now: () => T0, push: { publicKey: "k", dispatch: () => new Promise<void>(() => undefined) } },
+      50,
+    );
+    expect(Date.now() - started).toBeLessThan(1_000);
     warn.mockRestore();
   });
 });
@@ -301,11 +399,12 @@ describe("subscribing and unsubscribing", () => {
 
   it("hands out the public key only when pushes are on", async () => {
     expect(pushKey({})).toEqual({ enabled: false });
-    expect(pushKey({ push: { sender: sender(), publicKey: "BKey" } })).toEqual({ enabled: true, publicKey: "BKey" });
+    expect(pushKey({ push: { dispatch: async () => undefined, publicKey: "BKey" } })).toEqual({ enabled: true, publicKey: "BKey" });
   });
 
   it("stores a kid's phone's subscription under her and that phone", async () => {
     const { harness, players } = await withPush();
+    harness.deps.push = { dispatch: async () => undefined, publicKey: "BKey" };
     const me = players[0]!.principal;
     expect(await subscribePush({ principal: me, body }, harness.deps)).toEqual({ ok: true });
     expect(await harness.repo.listPushSubscriptions(me.playerId)).toEqual([
@@ -319,7 +418,7 @@ describe("subscribing and unsubscribing", () => {
     const harness = makeHarness();
     const me = { deviceId: "d_1", householdId: "h_1", playerId: "p_1" };
     expect((await subscribePush({ principal: me, body }, harness.deps)).ok).toBe(false);
-    harness.deps.push = { sender: sender(), publicKey: "BKey" };
+    harness.deps.push = { dispatch: async () => undefined, publicKey: "BKey" };
     expect(await subscribePush({ principal: null, body }, harness.deps)).toMatchObject({ status: 403 });
     expect(await subscribePush({ principal: { ...me, playerId: "" }, body }, harness.deps)).toMatchObject({ status: 403 });
     expect(await subscribePush({ principal: me, body: { ...body, endpoint: "http://push.example/abc" } }, harness.deps)).toMatchObject({ status: 400 });

@@ -2363,7 +2363,7 @@ describe("push subscriptions (#466)", () => {
   it("keeps a kid's phone's subscription by its device token, and lets it go again", async () => {
     const harness = makeHarness();
     const { players } = await seedHousehold(harness, 1);
-    harness.deps.push = { sender: { send: async () => "sent" }, publicKey: "BPublicKey" };
+    harness.deps.push = { dispatch: async () => undefined, publicKey: "BPublicKey" };
     const rt = runtimeFor(harness);
     const me = players[0]!;
 

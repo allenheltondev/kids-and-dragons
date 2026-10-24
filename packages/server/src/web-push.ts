@@ -23,7 +23,7 @@
 
 import webpush from "web-push";
 import { PUSH_TAG, type TurnPushPayload } from "@kad/shared";
-import type { PushConfig, PushSender, PushSendResult } from "./handlers/push.ts";
+import { deliverTurnPush, type PushConfig, type PushDispatch, type PushSender, type PushSenderDeps, type PushSendResult } from "./handlers/push.ts";
 import type { PushSubscriptionRecord } from "./store/repository.ts";
 
 export interface VapidKeys {
@@ -139,6 +139,29 @@ export function pushMode(value: string | undefined): "off" | "on" | "record" {
 }
 
 /** The config the handlers get, when pushes are on. */
-export function pushConfig(keys: VapidKeys, sender: PushSender, awayAfterMs?: number): PushConfig {
-  return { sender, publicKey: keys.publicKey, ...(awayAfterMs === undefined ? {} : { awayAfterMs }) };
+export function pushConfig(keys: VapidKeys, dispatch: PushDispatch): PushConfig {
+  return { publicKey: keys.publicKey, dispatch };
+}
+
+/**
+ * The dev server's dispatcher: the same job the push-sender Lambda runs, run
+ * in this process once the current request has been answered (`setImmediate`
+ * fires after the response is written). Hand-over is immediate; the send
+ * happens later, exactly as an async invoke's does. `settled` lets a test
+ * wait for the sends.
+ */
+export function inProcessDispatch(deps: PushSenderDeps): PushDispatch & { settled(): Promise<void> } {
+  let pending: Promise<unknown> = Promise.resolve();
+  const dispatch = (async (job) => {
+    const run = new Promise<void>((resolve) => {
+      setImmediate(() => {
+        void deliverTurnPush(job, deps).finally(resolve);
+      });
+    });
+    pending = Promise.all([pending, run]);
+  }) as PushDispatch & { settled(): Promise<void> };
+  dispatch.settled = async () => {
+    await pending;
+  };
+  return dispatch;
 }

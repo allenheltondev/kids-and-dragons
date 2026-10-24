@@ -17,7 +17,7 @@ import { applyIntent, createRunState } from "@kad/shared";
 import { applyAction } from "../handlers/action.ts";
 import { createRoom, joinRoom } from "../handlers/room.ts";
 import { makeHarness, seedHousehold } from "../test-support.ts";
-import { pushFromEnv, runtime } from "./runtime.ts";
+import { pushDeliveryFromEnv, pushFromEnv, runtime } from "./runtime.ts";
 import { mintVapidKeys } from "../web-push.ts";
 
 const ENV = {
@@ -77,7 +77,12 @@ describe("production's push switch (#466)", () => {
     expect(name).toBe("/kad/test/push-vapid-keys");
     return keys;
   };
-  const on = { KAD_PUSH: "on", KAD_PUSH_SUBJECT: "mailto:grown-ups@example.com", PUSH_KEY_PARAMETER: "/kad/test/push-vapid-keys" };
+  const on = {
+    KAD_PUSH: "on",
+    KAD_PUSH_SUBJECT: "mailto:grown-ups@example.com",
+    PUSH_KEY_PARAMETER: "/kad/test/push-vapid-keys",
+    PUSH_SENDER_FUNCTION: "kad-test-push-sender",
+  };
 
   it("is off unless the stack says on, and reads no key while off", async () => {
     const never = () => async () => {
@@ -108,8 +113,25 @@ describe("production's push switch (#466)", () => {
     error.mockRestore();
   });
 
-  it("hands the handlers the stored public key when on", async () => {
-    const config = await pushFromEnv(on, source);
+  it("hands the handlers the stored public key, and a dispatcher to the sender function, when on", async () => {
+    const named: string[] = [];
+    const config = await pushFromEnv(on, source, (name) => {
+      named.push(name);
+      return async () => undefined;
+    });
     expect(config?.publicKey).toBe((JSON.parse(keys) as { publicKey: string }).publicKey);
+    expect(named).toEqual(["kad-test-push-sender"]);
+  });
+
+  it("stays off with no sender function to hand jobs to", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    expect(await pushFromEnv({ ...on, PUSH_SENDER_FUNCTION: "" }, source)).toBeUndefined();
+    expect(error).toHaveBeenCalled();
+    error.mockRestore();
+  });
+
+  it("gives the sender function a transport when on, and nothing when off", async () => {
+    expect((await pushDeliveryFromEnv(on, source))?.sender).toBeDefined();
+    expect(await pushDeliveryFromEnv({ ...on, KAD_PUSH: "off" }, source)).toBeUndefined();
   });
 });

@@ -13,10 +13,13 @@
  * - **Off unless configured.** `deps.push` is absent unless the entry point
  *   was given VAPID keys and `KAD_PUSH=on`; absent, nothing here reads the
  *   store or sends anything.
- * - **Never in the way.** A push is sent after the action has landed and been
- *   broadcast. A push service that is slow, down, or says no is logged and
- *   forgotten: the action already succeeded, and the table must never wait on
- *   somebody's phone vendor.
+ * - **Never in the way.** The request path only decides who a step opened a
+ *   question for (`turnPushJob`, pure, from the states it already holds) and
+ *   hands that job over (`PushConfig.dispatch`): an asynchronous invoke of a
+ *   second Lambda in production (`lambda/push-sender.ts`), a task after the
+ *   response in the dev server. Presence, subscriptions, devices and the push
+ *   service are all the sender's (`deliverTurnPush`), so a slow push vendor
+ *   never slows a tap, and a push service that says no is logged and forgotten.
  * - **Nothing but the sentence (#320).** The notification says `PUSH_BODY`
  *   and nothing else; the room's path rides encrypted, as data.
  *
@@ -53,19 +56,43 @@ export interface PushSender {
   send(subscription: PushSubscriptionRecord, payload: TurnPushPayload): Promise<PushSendResult>;
 }
 
-/** Present only when the entry point turned pushes on (`KAD_PUSH=on`) and has keys. */
+/**
+ * Present only when the entry point turned pushes on (`KAD_PUSH=on`) and has
+ * keys. The request path needs only these two: the key to hand the client,
+ * and a way to hand a job to whatever sends it. It never sends.
+ */
 export interface PushConfig {
-  sender: PushSender;
   /** The VAPID public key, base64url, as `pushManager.subscribe` wants it. */
   publicKey: string;
+  /**
+   * Hand one turn's job to the sender, off the request path: an asynchronous
+   * invoke of the push-sender Lambda in production, a task after the
+   * response in the dev server. Resolves once the job is handed over, never
+   * once it is sent (`dispatchTurnPush`).
+   */
+  dispatch: PushDispatch;
+}
+
+export type PushDispatch = (job: TurnPushJob) => Promise<void>;
+
+/** What the sender needs that the request path does not: the transport and the away rule. */
+export interface PushDelivery {
+  sender: PushSender;
   /** `AWAY_AFTER_MS` unless the dev server says otherwise (`KAD_PRESENCE_AWAY_MS`). */
-  awayAfterMs?: number;
+  awayAfterMs?: number | undefined;
 }
 
 export interface PushDeps {
   repo: GameRepository;
   now: () => number;
   push?: PushConfig | undefined;
+}
+
+/** The sender's own dependencies (`lambda/push-sender.ts`, the dev server's in-process copy). */
+export interface PushSenderDeps {
+  repo: GameRepository;
+  now: () => number;
+  delivery: PushDelivery;
 }
 
 // ---------------------------------------------------------------------------
@@ -210,10 +237,92 @@ export function quietOnes(
 }
 
 // ---------------------------------------------------------------------------
-// The send
+// The job: decided on the request path, sent off it
 // ---------------------------------------------------------------------------
 
-/** What `notifyTurn` did, for tests and the log. */
+/**
+ * One step's worth of turn notices, as handed from the action handler to the
+ * sender: everything the decision needs that the step already knew, and
+ * nothing about the kids but their ids.
+ */
+export interface TurnPushJob {
+  kind: "turn";
+  runId: string;
+  roomCode: string;
+  /** The step that opened the question. */
+  seq: number;
+  /** The kids it opened a question for (`openedFor`), the actor never among them. */
+  candidates: string[];
+  actorId: string;
+  /** Epoch millis of the step. */
+  at: number;
+}
+
+/** The job for a step, or `null` when it opened a question for nobody. Pure. */
+export function turnPushJob(before: RunState, after: RunState, actorId: string, at: number): TurnPushJob | null {
+  const candidates = openedFor(before, after, actorId);
+  if (candidates.length === 0) return null;
+  return { kind: "turn", runId: after.runId, roomCode: after.roomCode, seq: after.seq, candidates, actorId, at };
+}
+
+/** A job off the wire (an async invoke's payload), checked. `null` when it is not one. */
+export function readTurnPushJob(value: unknown): TurnPushJob | null {
+  const job = value as Partial<TurnPushJob> | null;
+  if (typeof job !== "object" || job === null || job.kind !== "turn") return null;
+  const id = (v: unknown): v is string => typeof v === "string" && v.length > 0 && v.length <= 128;
+  if (!id(job.runId) || !id(job.roomCode) || typeof job.actorId !== "string") return null;
+  if (typeof job.seq !== "number" || typeof job.at !== "number") return null;
+  if (!Array.isArray(job.candidates) || job.candidates.length > 16 || !job.candidates.every(id)) return null;
+  return { kind: "turn", runId: job.runId, roomCode: job.roomCode, seq: job.seq, candidates: [...job.candidates], actorId: job.actorId, at: job.at };
+}
+
+/**
+ * The longest the action handler waits for a job to be handed over. An async
+ * Lambda invoke answers in tens of milliseconds; one that has not answered by
+ * then is abandoned and logged, so a slow or broken dispatch can never hold a
+ * tap's answer for longer than this.
+ */
+export const DISPATCH_WAIT_MS = 500;
+
+/**
+ * The request path's whole part in a push: decide whether this step opened a
+ * question for anybody, and if so hand the job over. No store reads, no
+ * sends. Never throws, and never waits longer than `DISPATCH_WAIT_MS`.
+ */
+export async function dispatchTurnPush(
+  input: { before: RunState; after: RunState; actorId: string },
+  deps: Pick<PushDeps, "push" | "now">,
+  waitMs: number = DISPATCH_WAIT_MS,
+): Promise<void> {
+  const push = deps.push;
+  if (!push) return;
+  let job: TurnPushJob | null;
+  try {
+    job = turnPushJob(input.before, input.after, input.actorId, deps.now());
+  } catch (err) {
+    console.warn(`push: could not decide turn notices for run ${input.after.runId}:`, err);
+    return;
+  }
+  if (!job) return;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const late = new Promise<"late">((resolve) => {
+    timer = setTimeout(() => resolve("late"), waitMs);
+  });
+  try {
+    const handed = await Promise.race([push.dispatch(job).then(() => "handed" as const), late]);
+    if (handed === "late") console.warn(`push: handing over turn notices for run ${job.runId} took over ${String(waitMs)}ms; moved on`);
+  } catch (err) {
+    console.warn(`push: turn notices for run ${job.runId} could not be handed over:`, err);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// The send (the push-sender's job)
+// ---------------------------------------------------------------------------
+
+/** What `deliverTurnPush` did, for tests and the log. */
 export interface TurnPushReport {
   sent: number;
   /** Subscriptions forgotten: the push service said gone, or the phone is no longer hers. */
@@ -224,35 +333,32 @@ export interface TurnPushReport {
 const NOTHING: TurnPushReport = { sent: 0, dropped: 0, failed: 0 };
 
 /**
- * After a step lands: one push to each subscribed phone of each kid it opened
- * a question for whose phone is quiet. Never throws; every failure is logged
- * and swallowed, because the step it follows has already succeeded.
+ * One job: of the kids the step opened a question for, those whose phone is
+ * quiet now and who are still being asked, get one push per subscribed
+ * phone. Read against the room as it is now, not as it was: a question
+ * answered by the time the job runs tells nobody. Never throws; every
+ * failure is logged and swallowed, so an async retry only ever follows a
+ * crash of the sender itself.
  */
-export async function notifyTurn(
-  input: { before: RunState; after: RunState; actorId: string },
-  deps: PushDeps,
-): Promise<TurnPushReport> {
-  const push = deps.push;
-  if (!push) return NOTHING;
+export async function deliverTurnPush(job: TurnPushJob, deps: PushSenderDeps): Promise<TurnPushReport> {
   try {
-    const opened = openedFor(input.before, input.after, input.actorId);
-    if (opened.length === 0) return NOTHING;
-    const beats = await deps.repo.getPresence(input.after.runId);
-    const quiet = quietOnes(opened, input.after, beats, deps.now(), push.awayAfterMs);
+    const [state, beats] = await Promise.all([deps.repo.getState(job.runId), deps.repo.getPresence(job.runId)]);
+    if (!state || state.closed || !state.prompt) return NOTHING;
+    const asked = job.candidates.filter((playerId) => isPromptForPlayer(state.prompt, playerId, state.party));
+    const quiet = quietOnes(asked, state, beats, deps.now(), deps.delivery.awayAfterMs);
     if (quiet.length === 0) return NOTHING;
 
-    const payload = turnPushPayload(input.after.roomCode);
+    const payload = turnPushPayload(job.roomCode);
     const report = { sent: 0, dropped: 0, failed: 0 };
-    // Every phone at once: the acting phone's answer waits on the slowest.
     const subscriptions = (await Promise.all(quiet.map((playerId) => deps.repo.listPushSubscriptions(playerId)))).flat();
-    const outcomes = await Promise.all(subscriptions.map((s) => deliver(s, payload, push.sender, deps.repo)));
+    const outcomes = await Promise.all(subscriptions.map((s) => deliver(s, payload, deps.delivery.sender, deps.repo)));
     for (const outcome of outcomes) report[outcome] += 1;
     if (report.failed > 0) {
-      console.warn(`push: ${String(report.failed)} turn notice(s) for run ${input.after.runId} were not accepted`);
+      console.warn(`push: ${String(report.failed)} turn notice(s) for run ${job.runId} were not accepted`);
     }
     return report;
   } catch (err) {
-    console.warn(`push: turn notices for run ${input.after.runId} were skipped:`, err);
+    console.warn(`push: turn notices for run ${job.runId} were skipped:`, err);
     return NOTHING;
   }
 }
