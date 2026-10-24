@@ -80,8 +80,14 @@ test.describe("phone screen wake lock", () => {
     const held = await readLog(phone);
     expect(held.releases).toBeLessThan(held.requests);
 
-    // Leaving the room (back to the lobby) lets the screen sleep again.
-    await phone.goto("/");
+    // Leaving the room (back to the lobby) lets the screen sleep again. In-app
+    // navigation, not a page load: a new document would start a fresh log and
+    // never see the release the old one made on its way out.
+    await phone.evaluate(() => {
+      history.pushState({ kadDepth: 1 }, "", "/");
+      dispatchEvent(new PopStateEvent("popstate"));
+    });
+    await expect(phone).toHaveURL(/\/$/, TAP);
     await expect.poll(async () => {
       const log = await readLog(phone);
       return log.releases >= 1;
