@@ -256,8 +256,12 @@ test("an unfinished hero survives a worker takeover, and the page moves on once 
     await phone.getByPlaceholder("Tap to type").fill("Moonbeam", TAP);
     // "That's me" is the hero: the draft is saved, the page is calm, and it reloads.
     await phone.getByRole("button", { name: /that's me/i }).click(TAP);
+    // The reload can land mid-evaluate; a torn-down context is the reload happening, not a failure.
     await expect
-      .poll(() => phone.evaluate(() => (window as unknown as { __kadLoad?: number }).__kadLoad === undefined), { timeout: 60_000 })
+      .poll(
+        () => phone.evaluate(() => (window as unknown as { __kadLoad?: number }).__kadLoad === undefined).catch(() => false),
+        { timeout: 60_000 },
+      )
       .toBe(true);
     await expect(phone).toHaveURL(new RegExp(`/p/${code}$`));
     await expect(phone.getByText("Moonbeam").first()).toBeVisible(TAP);
