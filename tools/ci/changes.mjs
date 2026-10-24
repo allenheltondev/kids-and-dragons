@@ -42,7 +42,8 @@ const NOT_GAME = [
   ...DOCS,
   /^art\//,
   /^tools\/art\//,
-  /^tools\/ci\//,
+  // Except e2e-shard, which decides what the end-to-end shards run.
+  /^tools\/ci\/(?!e2e-shard\.)/,
   /^tools\/wiki\//,
   /^wiki\//,
   /^requirements-dev\.txt$/,
@@ -53,6 +54,7 @@ const NOT_GAME = [
 const NOT_SHIPPED = [
   ...NOT_GAME,
   /^e2e\//,
+  /^tools\/ci\/e2e-shard\./,
   /^playwright(\.wiki|\.prod)?\.config\.ts$/,
   /^vitest\.config\.ts$/,
   /\.test\.(ts|tsx|mjs|js)$/,

@@ -375,14 +375,19 @@ jobs:
     # `e2e` plus 3 of `e2e:prod`, back to back, while every other job was done
     # inside 8. Each shard is its own runner with its own dev server, so the
     # suite's one-worker rule (shared server state) still holds inside a shard.
-    # `--fully-parallel` lets a shard boundary fall inside a file: Playwright
-    # splits by test count, not time, and by file it always put drop-in and
-    # first-playable (~8 minutes together) in one shard. Every test builds its
-    # own rooms and browser contexts, so none leans on a sibling having run.
-    # Ten shards, from six: the suite is about 48 minutes of tests, so a shard
-    # is about five, and no single test is longer than four (layout-fit's two
-    # longest walks were split for exactly this). A shard's floor is its
-    # slowest test, so a new test past four minutes is worth splitting first.
+    # Every test builds its own rooms and browser contexts, so none leans on a
+    # sibling having run.
+    #
+    # The shards are dealt by measured time, not by Playwright's `--shard`,
+    # which deals by count in file order and so put all eight layout-fit walks
+    # (8 minutes) in one shard and two-second install cards in another: nine
+    # minutes against two. tools/ci/e2e-shard.mjs weighs every test by its
+    # last duration in e2e/timings.json and deals longest-first onto the
+    # lightest shard: the suite is about 55 minutes of tests, so each of ten
+    # carries about five and a half. A shard's floor is still its slowest
+    # test (drop-in's walk, under four minutes), so a new test past that is
+    # worth splitting first. Each shard uploads its report so the timings can
+    # be refreshed (`--timings`, see the script) when they drift.
     # The production suite is not sharded: offline.spec is `serial`.
     name: end to end (${{ matrix.name }})
     needs: changes
@@ -394,16 +399,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { name: "1/10", id: "1", run: "npm run e2e -- --fully-parallel --shard=1/10" }
-          - { name: "2/10", id: "2", run: "npm run e2e -- --fully-parallel --shard=2/10" }
-          - { name: "3/10", id: "3", run: "npm run e2e -- --fully-parallel --shard=3/10" }
-          - { name: "4/10", id: "4", run: "npm run e2e -- --fully-parallel --shard=4/10" }
-          - { name: "5/10", id: "5", run: "npm run e2e -- --fully-parallel --shard=5/10" }
-          - { name: "6/10", id: "6", run: "npm run e2e -- --fully-parallel --shard=6/10" }
-          - { name: "7/10", id: "7", run: "npm run e2e -- --fully-parallel --shard=7/10" }
-          - { name: "8/10", id: "8", run: "npm run e2e -- --fully-parallel --shard=8/10" }
-          - { name: "9/10", id: "9", run: "npm run e2e -- --fully-parallel --shard=9/10" }
-          - { name: "10/10", id: "10", run: "npm run e2e -- --fully-parallel --shard=10/10" }
+          - { name: "1/10", id: "1", run: "node tools/ci/e2e-shard.mjs 1/10" }
+          - { name: "2/10", id: "2", run: "node tools/ci/e2e-shard.mjs 2/10" }
+          - { name: "3/10", id: "3", run: "node tools/ci/e2e-shard.mjs 3/10" }
+          - { name: "4/10", id: "4", run: "node tools/ci/e2e-shard.mjs 4/10" }
+          - { name: "5/10", id: "5", run: "node tools/ci/e2e-shard.mjs 5/10" }
+          - { name: "6/10", id: "6", run: "node tools/ci/e2e-shard.mjs 6/10" }
+          - { name: "7/10", id: "7", run: "node tools/ci/e2e-shard.mjs 7/10" }
+          - { name: "8/10", id: "8", run: "node tools/ci/e2e-shard.mjs 8/10" }
+          - { name: "9/10", id: "9", run: "node tools/ci/e2e-shard.mjs 9/10" }
+          - { name: "10/10", id: "10", run: "node tools/ci/e2e-shard.mjs 10/10" }
           # The adventure book with no signal, and what a phone downloads on a
           # repeat visit. Against a production build and `vite preview`,
           # because the service worker exists nowhere else
@@ -451,6 +456,16 @@ jobs:
           name: playwright-traces-${{ matrix.id }}
           path: test-results/
           retention-days: 7
+
+      # How long each test took, for `node tools/ci/e2e-shard.mjs --timings`.
+      - name: Upload timings
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: e2e-timings-${{ matrix.id }}
+          path: test-results/report.json
+          retention-days: 14
+          if-no-files-found: ignore
 
   build-result:
     # The check named "typecheck, test, content, art, build", as before this
