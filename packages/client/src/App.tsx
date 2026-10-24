@@ -34,6 +34,7 @@ import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
 import { useDisplayDock } from "./ui/display-dock";
 import { ChunkBoundary, lazyChunk } from "./ui/ChunkBoundary";
+import { useConvergeOnUpdate } from "./sw/converge";
 
 /*
  * The room — both shells and everything they compose: the player panel, the
@@ -138,6 +139,7 @@ export function App(): React.JSX.Element {
   const soundtrack = home || creating ? "entry-home" : inEntry ? "entry-lobby" : musicForScene(chapter, state);
   const tv = route.name === "tv";
   const dock = useDisplayDock(tv);
+  useConvergeOnUpdate();
 
   // Rules and items are static content, not game state (roadmap, "Content as
   // data"). Idempotent, so strict mode's double-invoke costs nothing.

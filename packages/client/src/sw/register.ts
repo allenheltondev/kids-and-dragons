@@ -5,7 +5,25 @@
  *
  * After `load`, so installing it (and the code and content it saves) never
  * competes with the first paint for the network.
+ *
+ * The registration is kept (#456) so a screen that wakes can ask for a newer
+ * build (`checkForUpdate`); a browser only does that on its own at navigation,
+ * and an installed app or a TV can go days without one.
  */
+
+import { updateDue } from "./calm";
+
+type Registration = ServiceWorkerRegistration | undefined;
+
+let resolveRegistration: (registration: Registration) => void = () => undefined;
+let registration: Promise<Registration> = new Promise((resolve) => { resolveRegistration = resolve; });
+let lastCheck: number | null = null;
+
+/** The registration, once made; `undefined` where there is none (dev, a refusing browser). */
+export function serviceWorkerRegistration(): Promise<Registration> {
+  return registration;
+}
+
 export function registerServiceWorker(): void {
   if (!import.meta.env.PROD) return;
   if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
@@ -13,6 +31,21 @@ export function registerServiceWorker(): void {
     // A browser that refuses (private mode, a policy) just has no offline book.
     navigator.serviceWorker
       .register("/sw.js")
-      .catch(() => undefined);
+      .then(resolveRegistration, () => resolveRegistration(undefined));
   });
+}
+
+/**
+ * Ask the worker for a newer build, at most once per few minutes. A failure
+ * (offline, a server blip) is swallowed: the next wake asks again.
+ */
+export async function checkForUpdate(now: number = Date.now()): Promise<void> {
+  if (!import.meta.env.PROD) return;
+  if (!updateDue(lastCheck, now)) return;
+  lastCheck = now;
+  try {
+    await (await registration)?.update();
+  } catch {
+    // Nothing to do; this is only a nudge.
+  }
 }

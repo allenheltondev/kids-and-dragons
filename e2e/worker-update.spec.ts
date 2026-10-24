@@ -111,3 +111,78 @@ test("a room keeps playing when a new build's worker takes over mid-game", async
     await proxy.close();
   }
 });
+
+test("the page moves onto the new build only once the open question is answered (#456)", async ({ browser, baseURL }) => {
+  test.setTimeout(180_000);
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
+  const phone = await context.newPage();
+  try {
+    // --- Into a room, on a question, as in the case above ---
+    await phone.goto("/");
+    await phone.getByRole("button", { name: /host a game/i }).click();
+    await phone.getByText("Phone Mode").click();
+    await phone.getByLabel(/adventurer name/i).fill("Ada");
+    await phone.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(phone).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
+    const code = new URL(phone.url()).pathname.split("/").pop()!;
+    await createCharacter(phone, "unicorn", "Moonbeam");
+    await phone.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect(phone.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0, TAP);
+    await controlled(phone);
+    await expect
+      .poll(() => phone.evaluate(async () => (await caches.match("/__kad/bundle-list")) !== undefined), { timeout: 20_000 })
+      .toBe(true);
+    type Room = { seq: number; prompt: { kind: string; options?: { label: string }[] } | null };
+    const room = (): Promise<Room> => roomState<Room>(phone, code);
+    await expect.poll(async () => (await room()).prompt?.kind, TAP).toBe("choice");
+    const opening = await room();
+    const answer = opening.prompt?.options?.[0]?.label ?? "";
+    expect(answer).not.toBe("");
+    await openPlayerTask(phone);
+    const choices = phone.locator(".prompt .choice");
+    await expect(choices.filter({ hasText: answer })).toBeEnabled(TAP);
+
+    // A mark that only this load of the page carries: a reload loses it.
+    await phone.evaluate(() => {
+      (window as unknown as { __kadLoad: number }).__kadLoad = 1;
+    });
+    const entry = await phone.evaluate(() => document.querySelector("script[type=module][src]")?.getAttribute("src") ?? "");
+    expect(entry).not.toBe("");
+
+    // --- A deploy: a new worker takes over the page while the question is open ---
+    proxy.configure({
+      rewrite: (path) =>
+        path === "/sw.js"
+          ? (text) => text.replace(/const __KAD_PRECACHE__ = \[[^\]]*\];/, "const __KAD_PRECACHE__ = [];")
+          : undefined,
+    });
+    await phone.evaluate(async () => {
+      const taken = new Promise((resolve) => navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true }));
+      await (await navigator.serviceWorker.getRegistration())?.update();
+      await taken;
+    });
+
+    // --- Not while the question is open: the page stays, and so does the question ---
+    await phone.waitForTimeout(3_000);
+    expect(await phone.evaluate(() => (window as unknown as { __kadLoad?: number }).__kadLoad)).toBe(1);
+    await expect(choices.filter({ hasText: answer })).toBeEnabled();
+
+    // --- Answered: at the next calm moment the page reloads onto the new build ---
+    await choices.filter({ hasText: answer }).click(TAP);
+    await phone.getByRole("button", { name: /do it!/i }).click(TAP);
+    await expect
+      .poll(() => phone.evaluate(() => (window as unknown as { __kadLoad?: number }).__kadLoad === undefined), { timeout: 60_000 })
+      .toBe(true);
+
+    // --- Same room, same hero, new build's entry script, still playing ---
+    await expect(phone).toHaveURL(new RegExp(`/p/${code}$`));
+    await expect(phone.locator("script[type=module][src]").first()).toHaveAttribute("src", entry);
+    await expect.poll(async () => (await room()).seq, TAP).toBeGreaterThan(opening.seq);
+    expect(await phone.locator("#root > *").count()).toBeGreaterThan(0);
+    await expect(phone.getByText(/couldn.t (load|open)/i)).toHaveCount(0);
+  } finally {
+    await context.close();
+    await proxy.close();
+  }
+});
