@@ -64,3 +64,46 @@ test("a page that cannot start clears its caches and workers and starts", async 
     await proxy.close();
   }
 });
+
+test("with no signal, two failed boots keep the saved copies and wait", async ({ browser, baseURL }) => {
+  test.setTimeout(150_000);
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
+  const page = await context.newPage();
+  try {
+    await page.goto("/");
+    await expect(page.getByRole("button", { name: /host a game/i })).toBeVisible({ timeout: 20_000 });
+    await controlled(page);
+    await expect
+      .poll(() => page.evaluate(async () => (await caches.match("/__kad/bundle-list")) !== undefined), { timeout: 20_000 })
+      .toBe(true);
+    await page.evaluate(() => localStorage.setItem("kad.e2e.keep", "yes"));
+    const cachesBefore = (await page.evaluate(() => caches.keys())).filter((name) => name.startsWith("kad-"));
+    expect(cachesBefore.length).toBeGreaterThan(0);
+
+    // --- The break, in the car: the entry script is gone from the worker and there is no signal ---
+    const entry = await page.evaluate(() => new URL(document.querySelector<HTMLScriptElement>("script[type=module][src]")!.src).pathname);
+    await page.evaluate(async (path) => {
+      for (const name of await caches.keys()) {
+        const cache = await caches.open(name);
+        for (const request of await cache.keys()) if (new URL(request.url).pathname === path) await cache.delete(request);
+      }
+    }, entry);
+    proxy.configure({ down: true });
+    await context.setOffline(true);
+
+    // --- Two failed boots: nothing is wiped, the page says to come back with a signal ---
+    await page.reload().catch(() => undefined);
+    await expect(page.getByText(HOLD_MESSAGE)).toBeVisible({ timeout: 90_000 });
+    const cachesAfter = (await page.evaluate(() => caches.keys())).filter((name) => name.startsWith("kad-"));
+    expect(cachesAfter).toEqual(cachesBefore);
+    expect(await page.evaluate(async () => (await navigator.serviceWorker.getRegistrations()).length)).toBeGreaterThan(0);
+    expect(await page.evaluate((k) => sessionStorage.getItem(k), HEALS_KEY)).toBeNull();
+    // The next open starts its tries afresh.
+    expect(await page.evaluate((k) => sessionStorage.getItem(k), ATTEMPTS_KEY)).toBeNull();
+    expect(await page.evaluate(() => localStorage.getItem("kad.e2e.keep"))).toBe("yes");
+  } finally {
+    await context.close();
+    await proxy.close();
+  }
+});

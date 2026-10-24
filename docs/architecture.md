@@ -1817,11 +1817,15 @@ pick it up on their next page load.
 **Broken cache recovers.** A worker or cache that serves a page which cannot start would trap a
 phone on a blank screen. An inline script in `index.html`, ahead of the bundle (`src/boot/`, #455),
 counts each load in `sessionStorage` and expects the app to mark itself booted (`BootMark`, on the
-first commit) within 8 seconds; a window `error` or `unhandledrejection` before that fails the boot
-at once. The first failure reloads. The second deletes every Cache Storage cache, unregisters every
-worker and reloads once. The third writes "Kids & Dragons could not start. Check the Wi-Fi and open
-it again." into `#root` and stops, so it never loops. It touches nothing in `localStorage`, so the
-hero and the journal are safe. `e2e/boot-heal.spec.ts` proves it.
+first commit) within 15 seconds; a window `error` or `unhandledrejection` before that fails the boot
+at once. The first failure reloads. The second heals, but only once fresh bytes are reachable (the
+phone says it is online and a `HEAD` of the page, past the worker, answers): it deletes this app's
+caches (`kad-*`), unregisters every worker and reloads once. With no signal the saved copies are the
+only way the app opens at all, so nothing is deleted; it writes "No Wi-Fi right now. Check the
+connection and open Kids & Dragons again." into `#root` and resets the count for the next open. The
+third failure writes "Kids & Dragons could not start. Check the Wi-Fi and open it again." and stops,
+so it never loops. It touches nothing in `localStorage` or IndexedDB, so the hero and the journal are
+safe. `e2e/boot-heal.spec.ts` proves both the heal and the hold.
 
 **Proof.** Both specs below run against a real production build (`playwright.prod.config.ts`,
 `npm run e2e:prod`, also run by CI).

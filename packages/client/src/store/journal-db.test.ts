@@ -103,6 +103,28 @@ describe("when IndexedDB is missing or throws", () => {
     expect(ls.getItem("kad.journal")).toBeNull();
   });
 
+  it("a failed request falls back without an unhandled rejection", async () => {
+    // The request fails and the transaction aborts with it: two rejections for
+    // one failure. Only the request's may surface, as the fallback it triggers.
+    vi.spyOn(IDBObjectStore.prototype, "put").mockImplementation(function (this: IDBObjectStore) {
+      const req = { onsuccess: null, onerror: null, error: new DOMException("full", "QuotaExceededError") } as unknown as IDBRequest;
+      this.transaction.abort();
+      setTimeout(() => (req as { onerror: ((e: Event) => void) | null }).onerror?.(new Event("error")), 0);
+      return req;
+    });
+    const unhandled = vi.fn();
+    process.on("unhandledRejection", unhandled);
+    try {
+      const ls = memStorage();
+      await saveJournal(saved(), ls);
+      expect(ls.getItem("kad.journal")).not.toBeNull();
+      await new Promise((resolve) => setTimeout(resolve, 20));
+      expect(unhandled).not.toHaveBeenCalled();
+    } finally {
+      process.off("unhandledRejection", unhandled);
+    }
+  });
+
   it("falls back to localStorage when open throws, and keeps a legacy copy", async () => {
     vi.spyOn(globalThis.indexedDB, "open").mockImplementation(() => {
       throw new DOMException("denied", "SecurityError");

@@ -4,7 +4,8 @@
  * On every wake the page asks the worker for updates (`checkForUpdate`). When
  * a new worker takes control, the page is still running the build it loaded,
  * and reloads onto the new one at the next calm moment (`calm.ts`): never with
- * a half-made answer on screen or while the page is out of sync. The room code is in the
+ * a half-made answer or an unfinished hero on screen, or while the page is
+ * out of sync. The room code is in the
  * URL and the session is in storage, so a reload loses nothing.
  */
 
@@ -13,6 +14,7 @@ import { useRoute } from "../router";
 import { useGameStore, useSynced } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
 import { onWake } from "../sync/wake";
+import { useIsBusy } from "./busy";
 import { shouldReload, type CalmInputs } from "./calm";
 import { checkForUpdate } from "./register";
 
@@ -43,6 +45,7 @@ export function useConvergeOnUpdate(): void {
   const synced = useSynced();
   const picking = useGameStore((store) => store.myPreview !== null);
   const inFight = useGameStore((store) => store.state?.phase === "encounter");
+  const editing = useIsBusy();
   const keepsakeOpen = useKeepsakeStore((store) => store.step !== "closed");
   const [visible, setVisible] = useState(() => typeof document === "undefined" || document.visibilityState !== "hidden");
   const [pending, setPending] = useState(false);
@@ -70,7 +73,7 @@ export function useConvergeOnUpdate(): void {
     return () => container.removeEventListener("controllerchange", onChange);
   }, []);
 
-  const input: CalmInputs = { visible, synced, picking, inFight, keepsakeOpen, pairing };
+  const input: CalmInputs = { visible, synced, picking, inFight, editing, keepsakeOpen, pairing };
   // Scene ends, back to the lobby and the journal opening all change one of the inputs (or the route).
   useEffect(() => {
     if (shouldReload(pending, input, lastReload(), Date.now())) reload();

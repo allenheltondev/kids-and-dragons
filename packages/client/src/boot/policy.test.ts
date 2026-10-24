@@ -9,14 +9,18 @@ import {
   BOOT_TIMEOUT_MS,
   GIVE_UP_AT_ATTEMPT,
   HEAL_AT_ATTEMPT,
-  stepAfterFailure,
-} from "./policy";
+  stepAfterFailure, BOOT_HOLD_MESSAGE, BOOT_CACHE_PREFIX, healPlan } from "./policy";
 
 describe("stepAfterFailure", () => {
   it("retries once, heals on the second failure, then gives up", () => {
     expect(stepAfterFailure(1)).toBe("retry");
     expect(stepAfterFailure(2)).toBe("heal");
     expect(stepAfterFailure(3)).toBe("give-up");
+  });
+  it("wipes only when replacement bytes are reachable, else holds", () => {
+    expect(healPlan({ online: true, reachable: true })).toBe("wipe");
+    expect(healPlan({ online: false, reachable: true })).toBe("hold");
+    expect(healPlan({ online: true, reachable: false })).toBe("hold");
   });
   it("never loops on odd input", () => {
     expect(stepAfterFailure(99)).toBe("give-up");
@@ -62,6 +66,8 @@ describe("index.html watchdog", () => {
     expect(constant("HEAL_AT")).toBe(String(HEAL_AT_ATTEMPT));
     expect(constant("GIVE_UP_AT")).toBe(String(GIVE_UP_AT_ATTEMPT));
     expect(constant("MESSAGE")).toBe(JSON.stringify(BOOT_GIVE_UP_MESSAGE));
+    expect(constant("HOLD_MESSAGE")).toBe(JSON.stringify(BOOT_HOLD_MESSAGE));
+    expect(constant("CACHE_PREFIX")).toBe(JSON.stringify(BOOT_CACHE_PREFIX));
   });
   it("never touches localStorage", () => {
     expect(inline).not.toMatch(/localStorage|indexedDB/);

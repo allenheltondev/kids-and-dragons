@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { RELOAD_GUARD_MS, UPDATE_CHECK_MS, isCalm, mayReload, shouldReload, updateDue, type CalmInputs } from "./calm";
 
-const calm: CalmInputs = { visible: true, synced: true, picking: false, inFight: false, keepsakeOpen: false, pairing: false };
+const calm: CalmInputs = { visible: true, synced: true, picking: false, inFight: false, editing: false, keepsakeOpen: false, pairing: false };
 
 describe("isCalm", () => {
   it("is calm when nothing is going on", () => {
@@ -10,7 +10,7 @@ describe("isCalm", () => {
   it.each(["visible", "synced"] as const)("is not calm when %s is false", (key) => {
     expect(isCalm({ ...calm, [key]: false })).toBe(false);
   });
-  it.each(["picking", "inFight", "keepsakeOpen", "pairing"] as const)("is not calm when %s", (key) => {
+  it.each(["picking", "inFight", "editing", "keepsakeOpen", "pairing"] as const)("is not calm when %s", (key) => {
     expect(isCalm({ ...calm, [key]: true })).toBe(false);
   });
 });
@@ -34,6 +34,7 @@ describe("shouldReload", () => {
   it("waits for an update to be pending", () => expect(shouldReload(false, calm, null, 0)).toBe(false));
   it("never reloads mid-decision or unsynced", () => {
     expect(shouldReload(true, { ...calm, picking: true }, null, 0)).toBe(false);
+    expect(shouldReload(true, { ...calm, editing: true }, null, 0)).toBe(false);
     expect(shouldReload(true, { ...calm, synced: false }, null, 0)).toBe(false);
   });
   it("reloads once at a calm moment", () => {

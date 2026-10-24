@@ -23,6 +23,12 @@ export interface CalmInputs {
   picking: boolean;
   /** A fight is on (its animations play on the shared screen). */
   inFight: boolean;
+  /**
+   * Unsaved work on the page (`busy.ts`): a hero being made, a join or host
+   * form with something typed. None of it survives a reload, so none of it
+   * is calm.
+   */
+  editing: boolean;
   /** The keepsake (sign-in) flow is open. */
   keepsakeOpen: boolean;
   /** The pairing flow is open. */
@@ -35,6 +41,7 @@ export function isCalm(input: CalmInputs): boolean {
     input.synced &&
     !input.picking &&
     !input.inFight &&
+    !input.editing &&
     !input.keepsakeOpen &&
     !input.pairing
   );

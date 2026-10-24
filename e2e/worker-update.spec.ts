@@ -196,6 +196,78 @@ test("the page moves onto the new build only once a half-made answer is confirme
   }
 });
 
+test("an unfinished hero survives a worker takeover, and the page moves on once it is made (#456)", async ({ browser, baseURL }) => {
+  test.setTimeout(180_000);
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
+  const phone = await context.newPage();
+  try {
+    await phone.goto("/");
+    await phone.getByRole("button", { name: /host a game/i }).click();
+    await phone.getByText("Phone Mode").click();
+    await phone.getByLabel(/adventurer name/i).fill("Ada");
+    await phone.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(phone).toHaveURL(/\/p\/[A-Z0-9]{4}$/);
+    const code = new URL(phone.url()).pathname.split("/").pop()!;
+    await controlled(phone);
+    await expect
+      .poll(() => phone.evaluate(async () => (await caches.match("/__kad/bundle-list")) !== undefined), { timeout: 20_000 })
+      .toBe(true);
+
+    // --- Halfway through making a hero: a species picked, the class step open ---
+    await phone.getByRole("button", { name: /unicorn/i }).first().click(TAP);
+    await phone.getByRole("button", { name: /^next$/i }).click(TAP);
+    const classChoice = phone
+      .locator(".creation-choice, .creation-card, button")
+      .filter({ hasText: /thornguard|duskrunner|starweaver|songkeeper/i })
+      .first();
+    await expect(classChoice).toBeVisible(TAP);
+    await phone.evaluate(() => {
+      (window as unknown as { __kadLoad: number }).__kadLoad = 1;
+    });
+
+    // --- A deploy: a new worker takes over mid-hero ---
+    proxy.configure({
+      rewrite: (path) =>
+        path === "/sw.js"
+          ? (text) => text.replace(/const __KAD_PRECACHE__ = \[[^\]]*\];/, "const __KAD_PRECACHE__ = [];")
+          : undefined,
+    });
+    await phone.evaluate(async () => {
+      const taken = new Promise((resolve) => navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true }));
+      await (await navigator.serviceWorker.getRegistration())?.update();
+      await taken;
+    });
+
+    // --- The draft is the page's alone: no reload while it is open ---
+    await phone.waitForTimeout(3_000);
+    expect(await phone.evaluate(() => (window as unknown as { __kadLoad?: number }).__kadLoad)).toBe(1);
+    await expect(classChoice).toBeVisible();
+
+    // --- The hero is finished: the page moves onto the new build and the hero is there ---
+    await classChoice.click(TAP);
+    await phone.getByRole("button", { name: /^next$/i }).click(TAP);
+    for (let i = 0; i < 12; i++) {
+      const adds = phone.getByRole("button", { name: /add a point to/i });
+      if ((await adds.count()) === 0) break;
+      await adds.first().click(TAP);
+    }
+    await phone.getByRole("button", { name: /^next$/i }).click(TAP);
+    await phone.getByPlaceholder("Tap to type").fill("Moonbeam", TAP);
+    await phone.getByRole("button", { name: /that's me/i }).click(TAP);
+    await phone.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
+    await expect
+      .poll(() => phone.evaluate(() => (window as unknown as { __kadLoad?: number }).__kadLoad === undefined), { timeout: 60_000 })
+      .toBe(true);
+    await expect(phone).toHaveURL(new RegExp(`/p/${code}$`));
+    await expect(phone.getByText("Moonbeam").first()).toBeVisible(TAP);
+    await expect(phone.getByText(/couldn.t (load|open)/i)).toHaveCount(0);
+  } finally {
+    await context.close();
+    await proxy.close();
+  }
+});
+
 // A worker's install or activate failure reaches the crash reporter (#459). A
 // real worker cannot be made to post one from here, so the page is handed the
 // message the worker would send, through the same `navigator.serviceWorker`

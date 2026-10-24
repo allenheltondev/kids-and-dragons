@@ -75,6 +75,11 @@ async function withStore<T>(mode: IDBTransactionMode, run: (store: IDBObjectStor
   try {
     const tx = db.transaction(STORE, mode);
     const finished = done(tx);
+    // A request that fails aborts the transaction too, so `finished` rejects
+    // while `run` is already throwing. Observed from the start, so that second
+    // rejection is never an unhandled one; the failure is reported once, by
+    // `run`, and the success path still waits for the commit below.
+    void finished.catch(() => undefined);
     const result = await run(tx.objectStore(STORE));
     await finished;
     return result;

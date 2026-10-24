@@ -44,6 +44,7 @@ import { NAME_MAX_LENGTH, randomNames, sanitizeName } from "./creationContent";
 import "./shared.css";
 import "./CreationFlow.css";
 import { EntryScene } from "./EntryScene";
+import { useBusy } from "../sw/busy";
 
 const STEP_TITLE: Record<CreationStep, string> = {
   species: "Who are you?",
@@ -437,6 +438,8 @@ function OptionButton({
 
 export function CreationFlow(): ReactElement {
   useEnsureContent();
+  // The draft lives only in this page (creationDraft.ts): no update reload while it is open.
+  useBusy("creation");
   const rules = useRules();
   const send = useSend();
   // Held while catching up after a drop, like every answer (#413).
