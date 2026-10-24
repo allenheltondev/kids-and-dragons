@@ -9,10 +9,11 @@
  * atlas, first-playable and read-aloud specs.
  */
 
-import { test, expect, type Locator, type Page } from "@playwright/test";
+import { test, expect, type BrowserContext, type Locator, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
 import { openPlayerTask } from "./player-navigation";
 import { guidePicture } from "./guide-pictures";
+import { phoneStorage, seedTable, toTheLobby, tvStorage } from "./seed";
 
 const TAP = { timeout: 20_000 } as const;
 
@@ -103,6 +104,11 @@ async function expectSettingsApplied(page: Page, prefs: Prefs): Promise<void> {
 
 async function openAdventure(page: Page, name: string): Promise<void> {
   await createCharacter(page, "unicorn", name);
+  await beginAdventure(page);
+}
+
+/** From the lobby with a hero made and ready: Begin, and the first story turn is up. */
+async function beginAdventure(page: Page): Promise<void> {
   await expect(page.getByRole("button", { name: /wait, not yet/i })).toBeVisible(TAP);
   await page.getByRole("button", { name: /begin the adventure/i }).click(TAP);
   await expect(page.locator(".player__scroll:visible .player__task-entry, .player__prompt:visible .prompt__title")
@@ -283,19 +289,16 @@ for (const hand of ["right", "left"] as const) {
 
 test("Party Mode: the TV and a left-handed phone at the largest text", async ({ browser }) => {
   const prefs = { ...EVERYTHING_ON, hand: "left" };
-  const tvContext = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  // Seeded (seed.ts): the TV's room, and then, after the empty lobby is checked, the phone's
+  // hero made and ready. Making the hero is the creation flow's spec, not this one.
+  const table = await seedTable({ mode: "party", tv: true, heroes: [] });
+  const code = table.code;
+  const tvContext = await browser.newContext({ viewport: { width: 1280, height: 720 }, storageState: tvStorage(table) });
   const tv = await tvContext.newPage();
   await withPrefs(tv, prefs);
-  const phoneContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
-  const phone = await phoneContext.newPage();
-  await withPrefs(phone, prefs);
+  let phoneContext: BrowserContext | undefined;
   try {
-    await tv.goto("/");
-    await tv.getByRole("button", { name: /host a game/i }).click(TAP);
-    await tv.getByText("Party Mode", { exact: true }).click(TAP);
-    await tv.getByRole("button", { name: /open the lobby here/i }).click(TAP);
-    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
-    const code = new URL(tv.url()).pathname.split("/").pop()!;
+    await tv.goto(`/tv/${code}`);
 
     // The TV keeps the top corner (one-handed play is a phone setting) and its controls clear
     // of the host controls and arrival notices.
@@ -305,11 +308,13 @@ test("Party Mode: the TV and a left-handed phone at the largest text", async ({ 
     expect(tvSettings.y, "the TV's corner row stays at the top").toBeLessThan(100);
     await expectNoSideScroll(tv);
 
-    await phone.goto("/");
-    await phone.getByLabel(/room code/i).fill(code);
-    await phone.getByRole("button", { name: /join a game/i }).click(TAP);
-    await expect(phone).toHaveURL(new RegExp(`/p/${code}$`));
-    await openAdventure(phone, "Lefty");
+    const [lefty] = (await seedTable({ mode: "party", code, heroes: [{ name: "Lefty", species: "unicorn" }] })).phones;
+    phoneContext = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: phoneStorage(lefty!) });
+    const phone = await phoneContext.newPage();
+    await withPrefs(phone, prefs);
+    await phone.goto(`/p/${code}`);
+    await toTheLobby(phone);
+    await beginAdventure(phone);
 
     // The TV now shows the story: its narration and its corner still do not collide.
     await expect(tv.locator(".narration__body")).toBeVisible(TAP);
@@ -342,6 +347,6 @@ test("Party Mode: the TV and a left-handed phone at the largest text", async ({ 
     await expectCornerClear(tv);
   } finally {
     await tvContext.close();
-    await phoneContext.close();
+    await phoneContext?.close();
   }
 });

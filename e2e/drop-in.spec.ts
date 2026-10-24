@@ -15,10 +15,10 @@
  */
 
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
-import { createCharacter } from "./characters";
 import { guidePicture } from "./guide-pictures";
 import { openPlayerTask } from "./player-navigation";
 import { API } from "./api";
+import { phoneStorage, seedTable, toTheLobby, tvStorage, type StorageState } from "./seed";
 
 const TAP = { timeout: 20_000 } as const;
 
@@ -101,8 +101,13 @@ function actorId(state: State): string | null {
 test.describe("drop in, drop out", () => {
   const openContexts: BrowserContext[] = [];
 
-  async function device(browser: Browser, width = 390, height = 844): Promise<Page> {
-    const context = await browser.newContext({ viewport: { width, height } });
+  async function device(
+    browser: Browser,
+    width = 390,
+    height = 844,
+    storageState?: StorageState,
+  ): Promise<Page> {
+    const context = await browser.newContext({ viewport: { width, height }, ...(storageState ? { storageState } : {}) });
     openContexts.push(context);
     return context.newPage();
   }
@@ -114,16 +119,22 @@ test.describe("drop in, drop out", () => {
   test("a phone steps away and comes back at every point the game waits on it", async ({ browser }) => {
     test.setTimeout(420_000);
 
-    // --- The TV opens the room; two phones join and make heroes ---
-    const tv = await device(browser, 1280, 720);
+    // --- The TV's room, with two phones' heroes made and ready ---
+    // Seeded (seed.ts): Sam first, so Sam holds the first story turn (spec §6.1).
+    // Joining and making a hero are first-playable's; Pip, below, still walks them.
+    const table = await seedTable({
+      mode: "party",
+      tv: true,
+      heroes: [
+        { name: "Sam", species: "unicorn" },
+        { name: "Rosie", species: "griffin" },
+      ],
+    });
+    const code = table.code;
+    const tv = await device(browser, 1280, 720, tvStorage(table));
     const tvErrors: string[] = [];
     tv.on("pageerror", (e) => tvErrors.push(e.message));
-    await tv.goto("/");
-    await tv.getByRole("button", { name: /host a game/i }).click();
-    await tv.getByText("Party Mode").click();
-    await tv.getByRole("button", { name: /open the lobby here/i }).click();
-    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
-    const code = new URL(tv.url()).pathname.split("/").pop()!;
+    await tv.goto(`/tv/${code}`);
 
     async function join(page: Page): Promise<void> {
       await page.goto("/");
@@ -132,13 +143,12 @@ test.describe("drop in, drop out", () => {
       await expect(page).toHaveURL(new RegExp(`/p/${code}$`), TAP);
     }
 
-    // Sam first, so Sam holds the first story turn (spec §6.1).
-    const sam = await device(browser);
-    await join(sam);
-    await createCharacter(sam, "unicorn", "Sam");
-    const rosie = await device(browser);
-    await join(rosie);
-    await createCharacter(rosie, "griffin", "Rosie");
+    const sam = await device(browser, 390, 844, phoneStorage(table.phones[0]!));
+    await sam.goto(`/p/${code}`);
+    await toTheLobby(sam);
+    const rosie = await device(browser, 390, 844, phoneStorage(table.phones[1]!));
+    await rosie.goto(`/p/${code}`);
+    await toTheLobby(rosie);
 
     const samSession: Session = await sessionOf(sam, code);
     const state = (): Promise<State> => readState(code, samSession.sessionToken);
