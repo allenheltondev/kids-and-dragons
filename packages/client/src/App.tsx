@@ -22,7 +22,8 @@ import { Suspense, useEffect } from "react";
 // still be fetched before the join screen could paint.
 import { HomeScreen } from "./screens/HomeScreen";
 import { ArrivalNotices } from "./screens/ArrivalNotices";
-import { routeCode, useRoute } from "./router";
+import { shareDestination } from "./install/share-target";
+import { navigate, routeCode, useRoute } from "./router";
 import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./store";
 import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
 import { BackButton } from "./ui/BackButton";
@@ -182,6 +183,11 @@ export function App(): React.JSX.Element {
    * localStorage, and the TV needs neither.
    */
   useEffect(() => {
+    // The manifest's share target (#461): on to the room it names, or home.
+    if (route.name === "share") {
+      navigate(shareDestination(window.location.search), { replace: true });
+      return;
+    }
     const code = routeCode(route);
     if (!code) return;
     prefetchRoom(route.name === "tv");
