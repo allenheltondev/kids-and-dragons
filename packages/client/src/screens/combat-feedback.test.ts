@@ -40,6 +40,25 @@ describe("phone combat feedback", () => {
     const two = { ...encounter, combatants: [...encounter.combatants, { ...encounter.combatants.find(c => c.id === "wisp#1")!, id: "wisp#2" }] };
     expect(combatFeedback([{ type: "down", actorId: "wisp#1" }], two)).toEqual([]);
   });
+  it.each(["pre-batch", "post-batch"])("celebrates only the second sequential enemy knockdown with a %s snapshot", snapshot => {
+    const first = encounter.combatants.find(c => c.id === "wisp#1")!;
+    const down = snapshot === "post-batch";
+    const two = { ...encounter, combatants: [
+      ...encounter.combatants.filter(c => c.side === "party"),
+      { ...first, down, hp: down ? 0 : first.hp },
+      { ...first, id: "wisp#2", down, hp: down ? 0 : first.hp },
+    ] };
+    const events: EncounterEvent[] = [
+      { type: "damage", actorId: "wisp#1", amount: 6, hp: 0 },
+      { type: "down", actorId: "wisp#1" },
+      { type: "warded", actorId: "c_1", amount: 1 },
+      { type: "damage", actorId: "wisp#2", amount: 6, hp: 0 },
+      { type: "down", actorId: "wisp#2" },
+    ];
+    expect(combatFeedback(events, two).filter(feedback => feedback.label === "We did it!")).toEqual([
+      { actorId: "c_1", effect: "burst_star", reaction: "celebrate", label: "We did it!", eventIndex: 4 },
+    ]);
+  });
   it("marks rescues, recovery and readiness without another interaction", () => {
     expect(combatFeedback([
       { type: "freed", byId: "c_1" }, { type: "revived", actorId: "c_1", hp: 1 }, { type: "bonus", actorId: "c_1", amount: 2 },

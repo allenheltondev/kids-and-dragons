@@ -11,13 +11,19 @@ export interface CombatFeedback {
 /** Read events, never infer damage or consume input. The same batch drives both screens. */
 export function combatFeedback(events: readonly EncounterEvent[], encounter: EncounterState): CombatFeedback[] {
   const out: CombatFeedback[] = [];
-  const defeated = new Set(encounter.combatants.filter(c => c.side === "enemy" && c.down).map(c => c.id));
+  const enemyIds = new Set(encounter.combatants.filter(c => c.side === "enemy").map(c => c.id));
   const downAfterBatch = new Set(encounter.combatants.filter(c => c.down).map(c => c.id));
-  for (const event of events) {
-    if (event.type === "down") downAfterBatch.add(event.actorId);
+  // The snapshot may be from before or after this batch. Its down flags cannot
+  // tell us which beat finished the fight; only the ordered events can.
+  let lastEnemyDown = -1;
+  events.forEach((event, index) => {
+    if (event.type === "down") {
+      downAfterBatch.add(event.actorId);
+      if (enemyIds.has(event.actorId)) lastEnemyDown = index;
+    }
     if (event.type === "revived") downAfterBatch.delete(event.actorId);
-  }
-  let celebrated = false;
+  });
+  const enemiesDownAfterBatch = [...enemyIds].every(id => downAfterBatch.has(id));
   events.forEach((event, eventIndex) => {
     const add = (actorId: string, effect: CombatFeedback["effect"], label: string, reaction?: CombatReaction) =>
       out.push({ actorId, effect, label, eventIndex, ...(reaction ? { reaction } : {}) });
@@ -36,13 +42,9 @@ export function combatFeedback(events: readonly EncounterEvent[], encounter: Enc
       case "freed": add(event.byId, "burst_star", "Safe!", "celebrate"); break;
       case "objective": if (event.progress >= event.target && event.byId) add(event.byId, "burst_star", "Done!", "celebrate"); break;
       case "down": {
-        if (!encounter.combatants.some(c => c.id === event.actorId && c.side === "enemy")) break;
-        defeated.add(event.actorId);
-        if (!celebrated && encounter.combatants.filter(c => c.side === "enemy").every(c => defeated.has(c.id))) {
-          celebrated = true;
-          for (const c of encounter.combatants.filter(c => c.side === "party" && !downAfterBatch.has(c.id)))
-            add(c.id, "burst_star", "We did it!", "celebrate");
-        }
+        if (eventIndex !== lastEnemyDown || !enemiesDownAfterBatch) break;
+        for (const c of encounter.combatants.filter(c => c.side === "party" && !downAfterBatch.has(c.id)))
+          add(c.id, "burst_star", "We did it!", "celebrate");
         break;
       }
     }
