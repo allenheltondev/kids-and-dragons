@@ -156,7 +156,8 @@ test("the book saves its art even when it opens before the worker has taken over
   await createCharacter(before, "unicorn", HERO);
   await before.getByRole("button", { name: /begin the adventure/i }).click(TAP);
   await expect(before.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0, TAP);
-  const identity = await earlier.storageState();
+  // The saved journal lives in IndexedDB now (#458), so it has to travel too.
+  const identity = await earlier.storageState({ indexedDB: true });
   await earlier.close();
 
   // Its first visit with a worker goes straight to the book, which is open —

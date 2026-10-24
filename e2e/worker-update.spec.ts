@@ -70,6 +70,11 @@ test("a room keeps playing when a new build's worker takes over mid-game", async
       gone: (path) => path.startsWith("/bundle/"),
     });
     const before = await phone.evaluate(() => navigator.serviceWorker.controller?.scriptURL ?? "");
+    // This is the page that keeps running the old build under the new worker:
+    // one not calm enough to reload yet (sw/calm.ts). The reload at the next
+    // calm moment is the #456 case below; here it is held back the way a
+    // reload a moment ago holds it back, so the old build can be watched.
+    await phone.evaluate(() => sessionStorage.setItem("kad-update-reload", String(Date.now())));
     await phone.evaluate(async () => {
       const taken = new Promise((resolve) => navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true }));
       await (await navigator.serviceWorker.getRegistration())?.update();
