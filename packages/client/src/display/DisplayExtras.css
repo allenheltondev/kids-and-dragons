@@ -116,3 +116,13 @@ body:has(.kad-tap-for-sound--in-corner) .kad-party--world { --kad-top-reserve: 3
 }
 .kad-fullscreen--in-corner:hover,
 .kad-fullscreen--in-corner:focus-visible { opacity: 1; }
+
+/*
+ * While Tap for sound is up, it is the one ask (#257) and this stands down, exactly as the
+ * row's smaller sound hint does above. Not only for tidiness: the row is fixed to the right
+ * and grows leftwards, so a seventh control pushes Tap for sound 44px further left, and at
+ * 1024px with the largest text that put it over the chapter's title (layout-fit.spec.ts).
+ * Six is the width the row is proven at, so the row never carries both asks at once; Full
+ * screen comes back the moment sound is allowed or turned off.
+ */
+body:has(.kad-tap-for-sound) .kad-fullscreen--in-corner { display: none; }
