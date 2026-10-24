@@ -172,6 +172,7 @@ export function characterPortraitArtUrl(
  * not a directory — strip it if present, trust the rest.
  */
 export function enemyArtUrl(artId: string): string {
+  if (artId.startsWith("cast/")) return `/assets/${artId}/assembled.png`;
   const id = artId.startsWith("enemies/") ? artId.slice("enemies/".length) : artId;
   return `/assets/entities/${id}/assembled.png`;
 }

@@ -59,6 +59,7 @@ export interface OverlayTile {
   readonly y: number;
   readonly kind: "hazard" | "exit" | "captive" | "objective";
   readonly glyph: OverlayGlyph;
+  readonly objectiveKind?: "hold" | "close";
   readonly state: OverlayState;
   /** The authored label, or the captive's name. */
   readonly label: string;
@@ -123,6 +124,7 @@ export function environmentOverlay(encounter: EncounterState): EnvironmentOverla
       mark(at, {
         kind: "objective",
         glyph: "objective",
+        objectiveKind: objective.kind,
         state: objective.done ? "done" : "active",
         label: objective.label,
         ...(objective.done ? {} : { count: left }),
@@ -142,7 +144,7 @@ export function environmentOverlay(encounter: EncounterState): EnvironmentOverla
   }
 
   const tiles = [...marks.values()].sort((a, b) => a.y - b.y || a.x - b.x);
-  const key = tiles.map((t) => `${t.x},${t.y}:${t.glyph}:${t.state}:${t.count ?? ""}`).join("|");
+  const key = tiles.map((t) => `${t.x},${t.y}:${t.glyph}:${t.objectiveKind ?? ""}:${t.label}:${t.state}:${t.count ?? ""}`).join("|");
   return { tiles, key };
 }
 
