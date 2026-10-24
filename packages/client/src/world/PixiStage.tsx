@@ -11,6 +11,7 @@ import { presentationDuration } from "./presentation";
 import { shakeStrengthFor } from "./shake";
 import { justWonAFight } from "./victory";
 import { cue } from "../audio/cue";
+import { isTvBrowser } from "../display/tv";
 import { useChapter, useGameStore, useParty, usePresentation, usePreviews, useRunState, useSession } from "../store";
 import { boardAim, tablePreviews } from "./previews";
 import { useEnsureChapter } from "../screens/content";
@@ -166,8 +167,13 @@ export function PixiStage(): React.JSX.Element {
         preference: ["webgl"],
         antialias: true,
         backgroundAlpha: 0,
-        // The TV may be a modest mini-PC; capping DPR keeps fill rate sane.
-        resolution: Math.min(globalThis.devicePixelRatio || 1, 2),
+        /*
+         * The TV may be a modest mini-PC; capping DPR keeps fill rate sane. A television's
+         * own browser gets a harder cap: a 4K set reports a ratio of 2 over a 1920-wide
+         * viewport, which is a 3840x2160 framebuffer with antialiasing on a set-top GPU, and
+         * the board is painted art rather than hairlines, so it loses little at 1.
+         */
+        resolution: isTvBrowser() ? 1 : Math.min(globalThis.devicePixelRatio || 1, 2),
         autoDensity: true,
         resizeTo: undefined,
         width: Math.max(1, host.clientWidth),

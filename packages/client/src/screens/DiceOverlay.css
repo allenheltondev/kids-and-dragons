@@ -103,7 +103,7 @@
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--color-success, #5fd6a0) 45%, transparent) 0%,
+    rgb(var(--color-success-rgb) / 45%) 0%,
     transparent 62%
   );
   animation: dice-flash 520ms ease-out 1 forwards;
@@ -138,7 +138,7 @@
   border-radius: 50%;
   background: radial-gradient(
     ellipse,
-    color-mix(in srgb, var(--color-primary, #8b6cf5) 55%, transparent),
+    rgb(var(--color-primary-rgb) / 55%),
     transparent 70%
   );
   filter: blur(0.08em);
