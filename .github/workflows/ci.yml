@@ -424,7 +424,21 @@ jobs:
           - { name: "production build", id: "prod", run: "npm run e2e:prod" }
 
     steps:
+      # Everything but what no shard reads: the source art (art/, 677 MB of
+      # the repo's 1.2 GB), the docs and the wiki. The game the suite plays is
+      # packages/, content/ and assets/ (which the dev server serves, and
+      # runtime-art.spec decodes), all of which stay. Blobless, so the fetch
+      # brings only the files the sparse checkout writes: the full checkout
+      # was 36 seconds of every shard's first minute.
       - uses: actions/checkout@v7
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/art/
+            !/docs/
+            !/wiki/
 
       - uses: actions/setup-node@v7
         with:
@@ -448,10 +462,19 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
 
-      # OS-level deps are not cached with the browser; install them either way.
+      # OS-level deps are not cached with the browser. The runner image
+      # already has every library Chromium links against (install-deps found
+      # them all "already the newest version" and added only CJK, Thai and
+      # unifont fallback fonts the game never draws), so they are installed
+      # only when the browser cannot start without them: ten seconds a shard.
       - name: Install Chromium system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
+        run: |
+          if node -e "require('@playwright/test').chromium.launch().then((b) => b.close())"; then
+            echo "Chromium starts on this image; nothing to install."
+          else
+            npx playwright install-deps chromium
+          fi
 
       # Each Playwright config starts its own servers and waits for them.
       - name: Play
@@ -549,7 +572,16 @@ jobs:
     timeout-minutes: 8
 
     steps:
+      # The same checkout as the e2e shards, and for their reason.
       - uses: actions/checkout@v7
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/art/
+            !/docs/
+            !/wiki/
 
       - uses: actions/setup-node@v7
         with:
