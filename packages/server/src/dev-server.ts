@@ -73,6 +73,8 @@ import {
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
 import { verifyDevToken } from "./dev-auth.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
+import { pushKey, subscribePush, unsubscribePush, type PushConfig } from "./handlers/push.ts";
+import { devVapidKeys, pushConfig, pushMode, recordingSender, webPushSender, type RecordedPush } from "./web-push.ts";
 
 const PORT = Number(process.env.PORT ?? 8787);
 const HOST = process.env.HOST ?? "0.0.0.0";
@@ -80,6 +82,34 @@ const HOST = process.env.HOST ?? "0.0.0.0";
 const STREAM_PRESENCE = process.env.KAD_STREAM_PRESENCE !== "off";
 /** How long a quiet phone stays here; the handler's two minutes when unset. */
 const PRESENCE_AWAY_MS = Number(process.env.KAD_PRESENCE_AWAY_MS) || undefined;
+
+/**
+ * "It's your turn" pushes (#466). Off unless `KAD_PUSH` says otherwise:
+ *
+ * - `on` sends real pushes, with `KAD_VAPID_PUBLIC_KEY`, `KAD_VAPID_PRIVATE_KEY`
+ *   and `KAD_PUSH_SUBJECT` (`npx web-push generate-vapid-keys` makes a pair).
+ *   A phone on the LAN needs https for a service worker, so this is for a
+ *   tunnel or a staging-like setup, not the usual `npm run dev`.
+ * - `record` sends nothing anywhere: every push is kept for `GET /api/dev/push`,
+ *   with a key pair minted at boot. The prod e2e suite runs this way.
+ */
+function devPush(): { config: PushConfig; recorded: RecordedPush[] | null } | undefined {
+  const mode = pushMode(process.env.KAD_PUSH);
+  if (mode === "off") return undefined;
+  if (mode === "record") {
+    const sender = recordingSender();
+    return { config: pushConfig(devVapidKeys(), sender, PRESENCE_AWAY_MS), recorded: sender.sent };
+  }
+  const publicKey = process.env.KAD_VAPID_PUBLIC_KEY ?? "";
+  const privateKey = process.env.KAD_VAPID_PRIVATE_KEY ?? "";
+  const subject = process.env.KAD_PUSH_SUBJECT ?? "";
+  if (!publicKey || !privateKey || !/^(mailto:|https:\/\/)/.test(subject)) {
+    console.warn("push: KAD_PUSH=on needs KAD_VAPID_PUBLIC_KEY, KAD_VAPID_PRIVATE_KEY and KAD_PUSH_SUBJECT; pushes stay off");
+    return undefined;
+  }
+  const keys = { publicKey, privateKey };
+  return { config: pushConfig(keys, webPushSender(keys, subject), PRESENCE_AWAY_MS), recorded: null };
+}
 
 /** Everything that does not come out of `@kad/shared`; see `withRuntime()`. */
 type BaseDeps = Omit<HandlerDeps, "engine" | "rng">;
@@ -104,6 +134,7 @@ async function main(): Promise<void> {
   const channel = new LocalSseChannel();
   const presence = new PresenceTracker();
   const identity = new DevIdentity(repo);
+  const push = devPush();
 
   const base: BaseDeps = {
     repo,
@@ -121,6 +152,7 @@ async function main(): Promise<void> {
      * a literal `false`, so there is nothing to misconfigure in prod.
      */
     playtest: true,
+    ...(push ? { push: push.config } : {}),
   };
 
   const app = express();
@@ -674,6 +706,41 @@ async function main(): Promise<void> {
     const result = await listSharedPlayers(shared, base);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
+  });
+
+  // "It's your turn" while the app is in the background (#466, handlers/push.ts).
+  app.get("/api/push/key", (_req: Request, res: Response) => {
+    res.json(pushKey(base));
+  });
+
+  app.post("/api/push/subscribe", async (req: Request, res: Response) => {
+    const found = await resolvePrincipal(req, base);
+    const result = await subscribePush({ principal: found?.principal ?? null, body: req.body }, base);
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true });
+  });
+
+  app.post("/api/push/unsubscribe", async (req: Request, res: Response) => {
+    const found = await resolvePrincipal(req, base);
+    const result = await unsubscribePush({ principal: found?.principal ?? null }, base);
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true });
+  });
+
+  /*
+   * What the stand-in push service holds for this phone's kid (`KAD_PUSH=record`):
+   * her subscriptions, and every push it was handed for her. For the prod e2e
+   * suite; production keeps no record of a push.
+   */
+  app.get("/api/dev/push", async (req: Request, res: Response) => {
+    if (!push?.recorded) return sendError(res, 404, "NOT_FOUND", "the dev server is not recording pushes (KAD_PUSH=record)");
+    const found = await resolvePrincipal(req, base);
+    if (!found) return sendError(res, 401, "FORBIDDEN", "this needs the phone's device token");
+    const playerId = found.principal.playerId;
+    res.json({
+      subscriptions: await repo.listPushSubscriptions(playerId),
+      sent: push.recorded.filter((p) => p.playerId === playerId),
+    });
   });
 
   app.get("/api/state", async (req: Request, res: Response) => {

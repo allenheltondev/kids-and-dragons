@@ -461,6 +461,13 @@ export interface SsmSourceOptions {
    * failing is the right answer.
    */
   createIfMissing?: boolean;
+  /**
+   * What a minted value is, when it is not a signing key: the push keys
+   * (#466) are a VAPID key pair, minted the same way, by the same function.
+   */
+  mint?: () => string;
+  /** The minted parameter's description in the console. */
+  description?: string;
 }
 
 export function ssmParameterSource(
@@ -476,7 +483,7 @@ export function ssmParameterSource(
       throw new Error(`signing key parameter ${parameterName} does not exist`);
     }
 
-    const minted = randomBytes(KEY_BYTES).toString("base64url");
+    const minted = options.mint ? options.mint() : randomBytes(KEY_BYTES).toString("base64url");
     try {
       await client.send(
         new PutParameterCommand({
@@ -485,7 +492,7 @@ export function ssmParameterSource(
           Type: "SecureString",
           // No `KeyId`: that is what selects the Amazon-managed `aws/ssm` key.
           Overwrite: false,
-          Description: "Kids & Dragons device and session token signing key",
+          Description: options.description ?? "Kids & Dragons device and session token signing key",
         }),
       );
       return minted;

@@ -19,6 +19,8 @@ import { loadSharedRuntime } from "../engine/shared-engine.ts";
 import type { HandlerDeps } from "../handlers/deps.ts";
 import { DynamoRepository } from "../store/dynamo-repository.ts";
 import { ssmParameterSource, TokenIdentity } from "../token-identity.ts";
+import { mintVapidKeys, parseVapidKeys, pushConfig, pushMode, webPushSender } from "../web-push.ts";
+import type { PushConfig } from "../handlers/push.ts";
 
 /**
  * Read at module load so a missing variable fails the **first** invocation
@@ -48,6 +50,7 @@ async function build(): Promise<HandlerDeps> {
   const repo = new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") });
   const shared = await loadSharedRuntime();
   const loaded = await content();
+  const push = await pushFromEnv();
 
   return {
     repo,
@@ -72,7 +75,37 @@ async function build(): Promise<HandlerDeps> {
      * zero (playtest.ts).
      */
     playtest: false,
+    ...(push ? { push } : {}),
   };
+}
+
+/**
+ * "It's your turn" pushes (#466): on only when the stack says `KAD_PUSH=on`
+ * and names a subject (`KAD_PUSH_SUBJECT`, a `mailto:` or `https:` contact the
+ * push services can reach). The VAPID key pair lives in one SecureString,
+ * `PUSH_KEY_PARAMETER`, minted here on first use like the signing key, so
+ * there is no secret to type in. A subject missing while pushes are on is a
+ * stack mistake: logged, and pushes stay off rather than the API failing.
+ */
+export async function pushFromEnv(
+  env: NodeJS.ProcessEnv = process.env,
+  source: (name: string) => () => Promise<string> = (name) =>
+    ssmParameterSource(name, {
+      createIfMissing: true,
+      mint: mintVapidKeys,
+      description: "Kids & Dragons Web Push VAPID key pair (#466)",
+    }),
+): Promise<PushConfig | undefined> {
+  if (pushMode(env.KAD_PUSH) !== "on") return undefined;
+  const subject = env.KAD_PUSH_SUBJECT ?? "";
+  if (!/^(mailto:|https:\/\/)/.test(subject)) {
+    console.warn("push: KAD_PUSH is on but KAD_PUSH_SUBJECT is not a mailto: or https: address; pushes stay off");
+    return undefined;
+  }
+  const parameter = env.PUSH_KEY_PARAMETER;
+  if (!parameter) throw new Error("missing required environment variable PUSH_KEY_PARAMETER");
+  const keys = parseVapidKeys(await source(parameter)());
+  return pushConfig(keys, webPushSender(keys, subject));
 }
 
 let contentCache: ContentStore | null = null;
