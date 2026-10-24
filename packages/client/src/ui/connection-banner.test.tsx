@@ -24,7 +24,7 @@ afterEach(() => {
   });
 });
 
-function setConnection(status: "idle" | "connecting" | "open" | "reconnecting" | "error"): void {
+function setConnection(status: "idle" | "connecting" | "open" | "reconnecting" | "error" | "lost"): void {
   act(() => {
     useGameStore.setState({ connection: status });
   });
@@ -126,7 +126,7 @@ describe("the reconnecting banner", () => {
 
 describe("the words the banner uses", () => {
   it("says reconnecting, with Try again, while the device has a network", () => {
-    expect(bannerCopy(true)).toEqual({ words: "Reconnecting…", label: "Reconnecting", canRetry: true });
+    expect(bannerCopy(true)).toEqual({ words: "Reconnecting…", label: "Reconnecting", canRetry: true, canLeave: false });
   });
 
   it("says no signal, with no Try again, when the device is offline", () => {
@@ -156,5 +156,40 @@ describe("the banner when the phone goes offline", () => {
     });
     expect(screen.getByText("Reconnecting…")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Try again" })).toBeTruthy();
+  });
+});
+
+describe("the banner when the room is gone", () => {
+  it("has its own words and both buttons", () => {
+    for (const online of [true, false]) {
+      expect(bannerCopy(online, true)).toMatchObject({
+        words: "This game has ended or the phone was signed out.",
+        canRetry: true,
+        canLeave: true,
+      });
+    }
+  });
+
+  it("shows at once, with Try again and Back to the start, as the only status", () => {
+    vi.useFakeTimers();
+    render(<ConnectionBanner />);
+    setConnection("lost");
+    expect(screen.getByText("This game has ended or the phone was signed out.")).toBeTruthy();
+    expect(screen.getAllByRole("status")).toHaveLength(1);
+    expect(screen.getByRole("button", { name: "Try again" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Back to the start" })).toBeTruthy();
+  });
+
+  it("Try again reconnects and Back to the start leaves", () => {
+    const reconnect = vi.fn();
+    const leave = vi.fn();
+    act(() => {
+      useGameStore.setState({ connection: "lost", reconnect, leave });
+    });
+    render(<ConnectionBanner />);
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+    expect(reconnect).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole("button", { name: "Back to the start" }));
+    expect(leave).toHaveBeenCalledTimes(1);
   });
 });

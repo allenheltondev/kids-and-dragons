@@ -254,8 +254,8 @@ test("an unfinished hero survives a worker takeover, and the page moves on once 
     }
     await phone.getByRole("button", { name: /^next$/i }).click(TAP);
     await phone.getByPlaceholder("Tap to type").fill("Moonbeam", TAP);
+    // "That's me" is the hero: the draft is saved, the page is calm, and it reloads.
     await phone.getByRole("button", { name: /that's me/i }).click(TAP);
-    await phone.getByRole("button", { name: /^Ready to play$/i }).click(TAP);
     await expect
       .poll(() => phone.evaluate(() => (window as unknown as { __kadLoad?: number }).__kadLoad === undefined), { timeout: 60_000 })
       .toBe(true);

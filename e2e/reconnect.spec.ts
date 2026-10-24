@@ -222,4 +222,45 @@ test.describe("losing the signal in a room", () => {
     await expect(choices.filter({ hasText: "Say hello" })).toBeEnabled(TAP);
     await expect(choices.filter({ hasText: "Listen first" })).toHaveCount(0);
   });
+
+  test("a room closed while the phone was offline says so, and leads home (#470)", async ({ browser }) => {
+    test.setTimeout(180_000);
+
+    // --- The host opens a Phone Mode room and a guest joins it ---
+    const host = await device(browser);
+    await host.goto("/");
+    await host.getByRole("button", { name: /host a game/i }).click();
+    await host.getByText("Phone Mode").click();
+    await host.getByLabel(/adventurer name/i).fill("Grown-up");
+    await host.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    const code = new URL(host.url()).pathname.split("/").pop() ?? "";
+
+    const guest = await device(browser);
+    await guest.goto("/");
+    await guest.getByLabel(/room code/i).fill(code);
+    await guest.getByRole("button", { name: /join a game/i }).click();
+    await expect(guest).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+
+    // --- The guest drops off the network ---
+    await guest.context().setOffline(true);
+    await expect(guest.getByText("No signal. Waiting for Wi-Fi…")).toBeVisible(TAP);
+
+    // --- Meanwhile the host closes the room for everyone ---
+    await host.getByText("Running this room").click();
+    await host.getByRole("button", { name: "Close the room" }).click();
+    await host.getByRole("button", { name: "Close it" }).click();
+    await expect(host.getByText(/closed the room/i)).toBeVisible(TAP);
+
+    // --- The guest comes back: not "Reconnecting" forever, but the truth ---
+    await guest.context().setOffline(false);
+    await expect(guest.getByText("This game has ended or the phone was signed out.")).toBeVisible(TAP);
+    await expect(guest.getByRole("button", { name: "Try again" })).toBeVisible();
+    await expect(guest.getByText("Reconnecting…")).toBeHidden();
+
+    // --- "Back to the start" lands on the home screen ---
+    await guest.getByRole("button", { name: "Back to the start" }).click();
+    await expect(guest).toHaveURL(/\/$/, TAP);
+    await expect(guest.getByRole("button", { name: /host a game/i })).toBeVisible(TAP);
+  });
 });

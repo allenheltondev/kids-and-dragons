@@ -34,6 +34,7 @@
 
 import { useEffect, useState } from "react";
 import { useGameStore } from "../store";
+import { navigate } from "../router";
 import { Spinner } from "./Spinner";
 import { useOnline } from "./useOnline";
 
@@ -45,10 +46,24 @@ export const RECONNECT_GRACE_MS = 1500;
  * on the app is the wrong picture and "Try again" could not help; online, it is
  * the app reconnecting and the button skips the backoff.
  */
-export function bannerCopy(online: boolean): { words: string; label: string; canRetry: boolean } {
-  return online
+export function bannerCopy(
+  online: boolean,
+  lost = false,
+): { words: string; label: string; canRetry: boolean; canLeave: boolean } {
+  // The room is gone (#470): the same words whether or not the network is up,
+  // and a way home, because waiting will not bring it back.
+  if (lost) {
+    return {
+      words: "This game has ended or the phone was signed out.",
+      label: "This game has ended or the phone was signed out",
+      canRetry: true,
+      canLeave: true,
+    };
+  }
+  const copy = online
     ? { words: "Reconnecting…", label: "Reconnecting", canRetry: true }
     : { words: "No signal. Waiting for Wi-Fi…", label: "No signal. Waiting for Wi-Fi", canRetry: false };
+  return { ...copy, canLeave: false };
 }
 
 export function ConnectionBanner(): React.JSX.Element | null {
@@ -69,8 +84,37 @@ export function ConnectionBanner(): React.JSX.Element | null {
     return () => clearTimeout(timer);
   }, [dropped]);
 
-  if (!shown) return null;
-  const copy = bannerCopy(online);
+  const lost = connection === "lost";
+  // A lost room shows at once: there is nothing to wait out.
+  if (!lost && !shown) return null;
+  const copy = bannerCopy(online, lost);
+
+  if (lost) {
+    return (
+      <div className="kad-connection kad-connection--lost" role="status">
+        <span>{copy.words}</span>
+        <button
+          type="button"
+          className="kad-connection__retry"
+          onClick={() => {
+            useGameStore.getState().reconnect();
+          }}
+        >
+          Try again
+        </button>
+        <button
+          type="button"
+          className="kad-connection__retry"
+          onClick={() => {
+            useGameStore.getState().leave();
+            navigate({ name: "home" });
+          }}
+        >
+          Back to the start
+        </button>
+      </div>
+    );
+  }
 
   return (
     // The spinner carries role="status" and the announcement; the visible

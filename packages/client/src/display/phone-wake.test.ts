@@ -18,7 +18,7 @@ describe("shouldHoldPhoneWake", () => {
   });
 
   it("does not hold before connecting, when idle or on error", () => {
-    for (const connection of ["idle", "connecting", "error"] as const) {
+    for (const connection of ["idle", "connecting", "error", "lost"] as const) {
       expect(shouldHoldPhoneWake({ ...inRoom, connection })).toBe(false);
     }
   });

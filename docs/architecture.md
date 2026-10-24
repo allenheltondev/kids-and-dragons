@@ -430,6 +430,15 @@ Every client tracks the last `seq` it applied. On reconnect it calls `GET /state
 which returns either the missed events or a full snapshot if the gap is too large. The TV can be
 hard-refreshed mid-encounter and recover in under a second.
 
+A room that is gone must not look like a reconnect (#470). The connection status `"lost"` is reached
+two ways, and both stop retrying: the AppSync transport marks every failure that happens before
+`subscribe_success` (`beforeSubscribe`), and after `TERMINAL_AFTER` (5) of them in a row with no
+subscribe between, the channel reports `lost` (the SSE path never marks one, so it keeps retrying);
+or a catch-up `GET /state` answers 401, 403, 404 or 410, which the store treats as terminal (it clears
+the resync retry and closes the channel). 5xx and network errors stay transient. The banner then
+shows at once, without the grace period: "This game has ended or the phone was signed out." with
+"Try again" (re-attaches from the mirror held) and "Back to the start" (leaves and goes home).
+
 #### Stepping away: absence is `connected: false`
 
 A player who is not at the table is a party member with `connected: false`
@@ -465,6 +474,15 @@ header and fades their figure on the board and in the lineup (never the
 knocked-down pose), and a phone that opens on a chapter in progress, or whose
 channel came back after the story moved, shows a one-line catch-up
 (`screens/CatchUp.tsx`).
+
+**How a screen learns its own stream has died: silence and failed requests (#469).** The
+browser socket (`sync/appsync-socket.ts`) arms a silence watchdog at the lesser of the
+`connection_ack`'s `connectionTimeoutMs` (five minutes) and `SILENCE_MS` (two minutes). AppSync
+sends a `ka` about every minute, so two minutes is two missed; any inbound frame resets it. A
+phone also has a faster signal: a presence beat or an action whose fetch fails at the network (a
+`TypeError`, not an HTTP status, which is the server answering) calls `nudgeReconnect()`
+(`sync/wake-reconnect.ts`), one `reconnect()` coalesced with wake reconnects by `WAKE_COALESCE_MS`.
+The TV sends no beat and relies on the shortened watchdog alone.
 
 **How the server learns a phone has gone: heartbeats.** AppSync Events tells
 the Lambda nothing when a socket opens or closes, so every seated phone says

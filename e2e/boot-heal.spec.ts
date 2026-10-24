@@ -13,6 +13,7 @@ import { test, expect, type Page } from "@playwright/test";
 import { startCountingProxy } from "./counting-proxy";
 
 const ATTEMPTS_KEY = "kad.boot.attempts";
+const HOLD_MESSAGE = "No Wi-Fi right now. Check the connection and open Kids & Dragons again.";
 const HEALS_KEY = "kad.boot.heals";
 
 async function controlled(page: Page): Promise<void> {
@@ -95,8 +96,9 @@ test("with no signal, two failed boots keep the saved copies and wait", async ({
     // --- Two failed boots: nothing is wiped, the page says to come back with a signal ---
     await page.reload().catch(() => undefined);
     await expect(page.getByText(HOLD_MESSAGE)).toBeVisible({ timeout: 90_000 });
+    // Every cache that was there still is (a failed load may open an empty one, which is no loss).
     const cachesAfter = (await page.evaluate(() => caches.keys())).filter((name) => name.startsWith("kad-"));
-    expect(cachesAfter).toEqual(cachesBefore);
+    for (const name of cachesBefore) expect(cachesAfter, `${name} was deleted`).toContain(name);
     expect(await page.evaluate(async () => (await navigator.serviceWorker.getRegistrations()).length)).toBeGreaterThan(0);
     expect(await page.evaluate((k) => sessionStorage.getItem(k), HEALS_KEY)).toBeNull();
     // The next open starts its tries afresh.

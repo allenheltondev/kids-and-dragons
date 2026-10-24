@@ -34,7 +34,9 @@ export type ConnectionStatus =
   | "connecting"
   | "open"
   | "reconnecting"
-  | "error";
+  | "error"
+  /** The room is gone (ended, or this phone was signed out); retrying cannot help. */
+  | "lost";
 
 export interface ClientSession {
   runId: string;

@@ -2,7 +2,9 @@ import { describe, expect, it, vi } from "vitest";
 import type { ChannelMessage, RunState, ServerMessage } from "@kad/shared";
 import {
   MessageSequencer,
+  TERMINAL_AFTER,
   backoffDelay,
+  nextFailureRun,
   openChannel,
   parseChannelMessage,
   type EventSourceLike,
@@ -894,5 +896,97 @@ describe("openChannel.reconnect (a screen that woke up, #264)", () => {
     channel.close();
     channel.reconnect?.();
     expect(sources).toHaveLength(2);
+  });
+});
+
+describe("a room that is gone (lost)", () => {
+  const before = { beforeSubscribe: true };
+
+  it("counts consecutive pre-subscribe failures and resets on anything else", () => {
+    expect(nextFailureRun(0, before)).toEqual({ run: 1, lost: false });
+    expect(nextFailureRun(TERMINAL_AFTER - 1, before)).toEqual({ run: TERMINAL_AFTER, lost: true });
+    expect(nextFailureRun(3, { beforeSubscribe: false })).toEqual({ run: 0, lost: false });
+    expect(nextFailureRun(3, {})).toEqual({ run: 0, lost: false });
+    expect(nextFailureRun(3, undefined)).toEqual({ run: 0, lost: false });
+  });
+
+  function setup() {
+    const scheduler = manualScheduler();
+    const sources: EventSourceLike[] = [];
+    const status = vi.fn();
+    const sequencer = new MessageSequencer({
+      handlers: {
+        onState: () => undefined,
+        onPresentation: () => undefined,
+        onProgression: () => undefined,
+        onGap: () => undefined,
+      },
+    });
+    const channel = openChannel({
+      url: () => "/events/ABCD",
+      sequencer,
+      onStatus: status,
+      resync: async () => undefined,
+      createEventSource: () => {
+        const source: EventSourceLike = { onopen: null, onerror: null, onmessage: null, close: vi.fn() };
+        sources.push(source);
+        return source;
+      },
+      schedule: scheduler.schedule,
+      cancel: scheduler.cancel,
+    });
+    return { scheduler, sources, status, channel };
+  }
+
+  it("stops retrying and reports lost after TERMINAL_AFTER failures before subscribing", () => {
+    const { scheduler, sources, status } = setup();
+    for (let i = 0; i < TERMINAL_AFTER - 1; i++) {
+      sources.at(-1)!.onerror?.(before);
+      expect(status).not.toHaveBeenCalledWith("lost");
+      scheduler.flush();
+    }
+    expect(sources).toHaveLength(TERMINAL_AFTER);
+    sources.at(-1)!.onerror?.(before);
+    expect(status).toHaveBeenLastCalledWith("lost");
+    expect(scheduler.size).toBe(0);
+    expect(sources).toHaveLength(TERMINAL_AFTER);
+  });
+
+  it("a successful subscribe resets the count", () => {
+    const { scheduler, sources, status } = setup();
+    for (let i = 0; i < TERMINAL_AFTER - 1; i++) {
+      sources.at(-1)!.onerror?.(before);
+      scheduler.flush();
+    }
+    sources.at(-1)!.onopen?.({});
+    sources.at(-1)!.onerror?.(before);
+    scheduler.flush();
+    expect(status).not.toHaveBeenCalledWith("lost");
+    expect(scheduler.size).toBe(0);
+    expect(sources).toHaveLength(TERMINAL_AFTER + 1);
+  });
+
+  it("never counts failures the transport did not mark (SSE, or a drop after subscribing)", () => {
+    const { scheduler, sources, status } = setup();
+    for (let i = 0; i < TERMINAL_AFTER * 2; i++) {
+      sources.at(-1)!.onerror?.({});
+      scheduler.flush();
+    }
+    expect(status).not.toHaveBeenCalledWith("lost");
+  });
+
+  it("reconnect() after lost starts over with a fresh count", () => {
+    const { scheduler, sources, status, channel } = setup();
+    for (let i = 0; i < TERMINAL_AFTER; i++) {
+      sources.at(-1)!.onerror?.(before);
+      scheduler.flush();
+    }
+    expect(status).toHaveBeenLastCalledWith("lost");
+    const count = sources.length;
+    channel.reconnect?.();
+    expect(sources).toHaveLength(count + 1);
+    expect(status).toHaveBeenLastCalledWith("reconnecting");
+    sources.at(-1)!.onerror?.(before);
+    expect(status).not.toHaveBeenLastCalledWith("lost");
   });
 });
