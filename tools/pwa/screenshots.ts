@@ -26,7 +26,9 @@ if (base === undefined) {
 }
 
 mkdirSync(outDir, { recursive: true });
-const browser = await chromium.launch();
+// The preinstalled Chromium where Playwright's own is missing, as the e2e configs do.
+const executablePath = process.env.KAD_CHROMIUM;
+const browser = await chromium.launch(executablePath ? { executablePath } : {});
 try {
   for (const shot of SHOTS) {
     const context = await browser.newContext({
