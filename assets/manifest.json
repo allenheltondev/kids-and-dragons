@@ -2575,5 +2575,29 @@
       "finds-5",
       "finds-15"
     ]
+  },
+  "combatUx": {
+    "runtimeSize": 256,
+    "prompts": "combat-ux/prompts.json",
+    "markers": [
+      "hazard-fire",
+      "hazard-thorns",
+      "hazard-rift",
+      "exit-gate",
+      "objective-hold",
+      "objective-seal"
+    ],
+    "reactions": [
+      "reaction-hurt",
+      "reaction-ready",
+      "reaction-celebrate"
+    ],
+    "rescueCharacters": [
+      {
+        "name": "Bun",
+        "waiting": "rescue-bun",
+        "freed": "entities/snowhorn_goat/portrait.webp"
+      }
+    ]
   }
 }

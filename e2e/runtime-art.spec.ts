@@ -50,6 +50,7 @@ for (const file of readdirSync("content/chapters")) {
 }
 for (const file of readdirSync("content/campaigns")) if (file.endsWith(".json")) urls.add(`/assets/campaigns/${json(`content/campaigns/${file}`).id}.webp`);
 for (const file of readdirSync("assets/effects")) if (file.endsWith(".sheet.png")) urls.add(`/assets/effects/${file}`);
+for (const file of readdirSync("assets/combat-ux")) if (file.endsWith(".webp")) urls.add(`/assets/combat-ux/${file}`);
 for (const file of readdirSync("assets/scenes/entry")) if (file.endsWith(".webp")) urls.add(`/assets/scenes/entry/${file}`);
 for (const rel of readdirSync("packages/client/src", { recursive: true })) {
   const file = String(rel);
@@ -57,6 +58,9 @@ for (const rel of readdirSync("packages/client/src", { recursive: true })) {
   const full = path.join("packages/client/src", file);
   const source = readFileSync(full, "utf8");
   for (const match of source.matchAll(/(?:from\s+["']|url\(["']?)([^"')]+\.(?:png|webp|svg|jpg))/g)) {
+    // Interpolated URLs are not literal files. Their finite asset families
+    // (including effect sheets and combat illustrations) are enumerated above.
+    if (match[1]!.includes("${")) continue;
     if (match[1]!.startsWith("/")) urls.add(match[1]!);
     else urls.add("/" + path.relative("packages/client", path.resolve(path.dirname(full), match[1]!)).replaceAll("\\", "/"));
   }

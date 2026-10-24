@@ -8,8 +8,8 @@
  */
 
 import { createHash } from "node:crypto";
-import { beforeAll, describe, expect, it } from "vitest";
-import { Container, Graphics, Text } from "pixi.js";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+import { Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import { beginEncounter, parseBoard, resolveEnemy } from "@kad/shared";
 import type {
   AuthoredEnemySpec,
@@ -289,5 +289,20 @@ describe("the place's beats on the board", () => {
     expect(routes[0]).toBeUndefined();
     expect(routes[1]).toBeUndefined();
     expect(routes[2]).toEqual([{ x: 1, y: 1 }, { x: 0, y: 0 }]);
+  });
+});
+
+
+describe("painted environment markers", () => {
+  it("loads Bun on the shared board, switches to her upright art when freed", async () => {
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
+    const encounter = riftFight({ rescue: { name: "Bun", at: { x: 1, y: 7 } } });
+    const layer = drawn(encounter);
+    try {
+      await vi.waitFor(() => expect(nodes(layer).some(n => n instanceof Sprite && n.label === "combat-marker:Bun")).toBe(true));
+      expect(load).toHaveBeenCalledWith("/assets/combat-ux/rescue-bun.webp");
+      layer.update(viewOf({ ...encounter, environment: { ...encounter.environment!, rescue: "freed" } }));
+      await vi.waitFor(() => expect(load).toHaveBeenCalledWith("/assets/entities/snowhorn_goat/portrait.webp"));
+    } finally { layer.destroy(); load.mockRestore(); }
   });
 });
