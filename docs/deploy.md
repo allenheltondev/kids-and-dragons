@@ -215,7 +215,7 @@ API bundle, which is load-bearing — see below.
 | **SSM SecureString** `/kad/<stage>/push-vapid-keys` | The VAPID key pair "It's your turn" pushes are signed with (#466). Minted by the API on first use, like the signing key, and only while pushes are on — see below. |
 | **Cognito** user pool | Optional sign-in. Essentials tier (passwordless needs it). `Retain`. |
 | **AppSync Events** | `room/<code>`. IAM publishes; the authorizer admits subscribers. |
-| **HTTP API** + 4 Lambdas | `api`, `channel-authorizer`, `sweep`, and the inline Cognito `PreSignUp` trigger. |
+| **HTTP API** + 5 Lambdas | `api`, `channel-authorizer`, `sweep`, `push-sender` (#466, invoked by `api` asynchronously), and the inline Cognito `PreSignUp` trigger. |
 | **S3 + CloudFront** | SPA, art, content. OAC — the bucket is not public. Two CloudFront functions: the SPA router, and one that passes the viewer's address to `/api/*`. |
 
 The table and the user pool are `Retain` on purpose: a family's characters are
@@ -320,7 +320,18 @@ Variables), or export them before a by-hand `deploy.sh`:
 | `KAD_PUSH_SUBJECT` | The VAPID subject: a `mailto:` or `https:` address the push services (Apple's, Google's, Mozilla's) can reach the operator at, e.g. `mailto:allen@example.com`. |
 
 `deploy.sh` passes them to the stack as `PushNotifications` and `PushContact`
-on every deploy, so a stage turns pushes off only when a deploy says so. There
+on every deploy, so a stage turns pushes off only when a deploy says so.
+
+Pushes are sent by their own function, `PushSenderFunction`, never by the API:
+after a step, the API invokes it with the step's job (`InvocationType: Event`,
+so the API waits only for Lambda to queue it) and the sender does the reads and
+the push-service calls. The API may invoke that one function
+(`lambda:InvokeFunction` on its ARN, its name in `PUSH_SENDER_FUNCTION`); the
+sender has the table and read-only access to the key pair. It keeps Lambda's
+default two async retries, drops events older than 15 minutes, and reserves a
+concurrency of 5 while pushes are on. An account whose concurrency limit is
+the new-account default of 10 cannot reserve any; raise the limit (Service
+Quotas → Lambda → Concurrent executions) before turning pushes on there. There
 is no secret to type in: the first request that needs the key pair mints it
 into `/kad/<stage>/push-vapid-keys` (a SecureString holding
 `{"publicKey","privateKey"}`), with `Overwrite: false` exactly as the signing

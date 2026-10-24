@@ -1879,16 +1879,26 @@ waiting. The badge (`ui/app-badge.ts`) marks the icon while the page is alive; a
 phone whose page is not. On an iPhone a push reaches only a Home Screen app, which is the install
 we ask for anyway.
 
-- **When.** After an action lands and is broadcast (`handlers/action.ts` → `notifyTurn`,
-  `handlers/push.ts`), for each kid the step just opened a question for (`isPromptForPlayer`, the
-  same answer her buttons and badge read, now in `@kad/shared`; the actor never; a question that only
-  moved on, a vote cast or somebody else's die, opens nothing new) whose phone is quiet in that
-  room: marked away, or last beat older than `AWAY_AFTER_MS`. A phone with no beat on record and
-  still marked here is left alone, as the presence sweep leaves it. One push per subscribed phone.
-- **Never in the way.** The send is after the broadcast and never fails the action: every error is
-  logged and swallowed, a push service gets three seconds, and the phones go at once. A 404 or 410
-  from the push service, or a phone revoked, moved to another kid or deleted since it subscribed,
-  forgets that subscription.
+- **When.** After an action lands and is broadcast, the action handler works out, from the two
+  states it already holds, which kids the step just opened a question for (`turnPushJob`,
+  `handlers/push.ts`: `isPromptForPlayer`, the same answer her buttons and badge read, now in
+  `@kad/shared`; the actor never; a question that only moved on, a vote cast or somebody else's die,
+  opens nothing new). If anybody, it hands that job over and is done.
+- **Never in the way.** The request path reads nothing and sends nothing for a push. In Lambda the
+  job goes to a second function, `PushSenderFunction` (`lambda/push-sender.ts`), by an asynchronous
+  invoke (`InvocationType: "Event"`, `lambda/push-dispatch.ts`): Lambda queues it and answers 202,
+  and the API waits only for that, never more than `DISPATCH_WAIT_MS` (500 ms) even when the invoke
+  hangs, after which it logs and moves on. Not awaiting at all would not do: a Lambda's container
+  is frozen once it returns, and an invoke still in flight may never leave. The sender, in its own
+  invocation, reads the room as it is then (a question already answered tells nobody), keeps the
+  kids whose phone is quiet in that room (marked away, or last beat older than `AWAY_AFTER_MS`; a
+  phone with no beat on record and still marked here is left alone, as the presence sweep leaves
+  it), and sends one push per subscribed phone, all at once, three seconds each at most. A 404 or
+  410 from the push service, or a phone revoked, moved to another kid or deleted since it
+  subscribed, forgets that subscription. It swallows every push failure and succeeds, so Lambda's
+  default async retries (two, and only within 15 minutes) follow only a crash of the sender itself.
+  Its reserved concurrency is 5 while pushes are on. The dev server runs the same job in-process
+  after the response is written (`inProcessDispatch`, `setImmediate`).
 - **Nothing but the sentence (#320).** The notification is "Kids & Dragons" / "It's your turn in
   Kids & Dragons", one tag so a second turn replaces the first. The payload, encrypted for the
   browser (RFC 8291, so the push service carries bytes it cannot read), is those words and the
@@ -1903,15 +1913,18 @@ we ask for anyway.
   `POST /api/push/subscribe` by the device token; off unsubscribes and posts
   `/api/push/unsubscribe`. `GET /api/push/key` says whether the server sends any.
 - **Stored** as `PUSH#<playerId> / DEVICE#<deviceId>` (§3), deleted with her or her home.
-- **Off unless configured.** `HandlerDeps.push` is absent unless the entry point was given
-  `KAD_PUSH=on` and keys. Lambda: the stack's `PushNotifications` and `PushContact` parameters,
-  and a VAPID key pair in `/kad/<stage>/push-vapid-keys`, minted on first use like the signing key
-  ([deploy.md](./deploy.md#turning-on-its-your-turn-pushes-466)). The dev server:
+- **Off unless configured.** `HandlerDeps.push` (the public key and the dispatcher) is absent
+  unless the entry point was given `KAD_PUSH=on` and keys. Lambda: the stack's `PushNotifications`
+  and `PushContact` parameters, a VAPID key pair in `/kad/<stage>/push-vapid-keys`, minted by the
+  API on first use like the signing key and only read by the sender, and the sender's name in the
+  API's `PUSH_SENDER_FUNCTION` ([deploy.md](./deploy.md#turning-on-its-your-turn-pushes-466)). The dev server:
   `KAD_VAPID_PUBLIC_KEY`, `KAD_VAPID_PRIVATE_KEY` and `KAD_PUSH_SUBJECT`, or `KAD_PUSH=record`,
   which mints a pair and keeps every push for `GET /api/dev/push` rather than sending it (the prod
   e2e suite's stand-in push service).
 - **Proof.** The decision, the send and the routes: `handlers/push.test.ts`, `web-push.test.ts`,
-  `lambda/http.test.ts`; the store: the contract suite. The worker, built and run in a vm:
+  `lambda/http.test.ts`; that a tap is answered when the hand-over hangs or fails, and before a
+  slow push service answers: `handlers/push.test.ts`; the sender function and the async invoke:
+  `lambda/push-sender.test.ts`; the store: the contract suite. The worker, built and run in a vm:
   `sw/sw.test.ts`. The switch: `push/push.test.tsx`. In a production build, `e2e/push.spec.ts`
   grants the notifications permission, stubs `PushManager.subscribe`, flips the switch, sees the
   server hold the subscription, delivers a push to the worker through DevTools and reads back the

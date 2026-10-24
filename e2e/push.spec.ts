@@ -122,7 +122,9 @@ test("the installed app's switch subscribes, the worker shows the turn, and the 
       expect(response.ok()).toBe(true);
       return (await response.json()) as DevPush;
     };
-    expect((await server()).subscriptions).toEqual([]);
+    // What the server holds is read by polling throughout: anything it does
+    // about a push happens after its response (the push sender's job, #466).
+    await expect.poll(async () => (await server()).subscriptions, TAP).toEqual([]);
 
     // --- The grown-up's place: Account. Showing the switch asks nothing ---
     await phone.goto("/account");

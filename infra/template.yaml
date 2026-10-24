@@ -105,6 +105,8 @@ Conditions:
   Passkeys: !Not [!Equals [!Ref WebAuthnRelyingPartyId, ""]]
   # Both halves are needed: the certificate validates, and the alias records
   # live, in the hosted zone.
+  # "It's your turn" pushes (#466).
+  PushOn: !Equals [!Ref PushNotifications, "on"]
   CustomDomain: !And
     - !Not [!Equals [!Ref AppDomainName, ""]]
     - !Not [!Equals [!Ref AppHostedZoneId, ""]]
@@ -471,6 +473,9 @@ Resources:
           KAD_PUSH: !Ref PushNotifications
           KAD_PUSH_SUBJECT: !Ref PushContact
           PUSH_KEY_PARAMETER: !Sub "/kad/${StageName}/push-vapid-keys"
+          # Where each step's push job goes, by an asynchronous invoke: the API
+          # never sends a push itself (lambda/push-dispatch.ts).
+          PUSH_SENDER_FUNCTION: !Ref PushSenderFunction
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
@@ -492,6 +497,12 @@ Resources:
                 - ssm:GetParameter
                 - ssm:PutParameter
               Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kad/${StageName}/push-vapid-keys"
+            - Effect: Allow
+              # Handing a turn's push job to the sender (#466). Its own
+              # function, so this grant names another resource rather than
+              # this function's own ARN, which would be a cycle.
+              Action: lambda:InvokeFunction
+              Resource: !GetAtt PushSenderFunction.Arn
             - Effect: Allow
               # See the note on the authorizer's copy of this.
               Action:
@@ -518,6 +529,51 @@ Resources:
             # take this path, and CloudFront's /api/* behavior forwards POST.
             Path: /{proxy+}
             Method: ANY
+
+  # ---------------------------------------------------------------------------
+  # "It's your turn" pushes (#466) — off the request path
+  # ---------------------------------------------------------------------------
+
+  # The API decides who a step opened a question for and invokes this with
+  # that job, InvocationType Event, so a tap never waits on presence reads,
+  # phones or a push vendor. This reads the room, picks the quiet phones, sends
+  # and forgets dead subscriptions (lambda/push-sender.ts). It swallows every
+  # push failure and succeeds, so Lambda's default async retries (two) only
+  # follow a crash. A turn older than a quarter of an hour is not worth sending.
+  PushSenderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/push-sender
+      Description: Sends "It's your turn" Web Pushes for the API, asynchronously
+      MemorySize: 256
+      # A handful at once is plenty for a family game, and a burst of turns
+      # can never crowd the API out of the account's concurrency. Reserved only
+      # while pushes are on, so a stack with them off reserves nothing.
+      ReservedConcurrentExecutions: !If [PushOn, 5, !Ref AWS::NoValue]
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 900
+        MaximumRetryAttempts: 2
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          KAD_PUSH: !Ref PushNotifications
+          KAD_PUSH_SUBJECT: !Ref PushContact
+          PUSH_KEY_PARAMETER: !Sub "/kad/${StageName}/push-vapid-keys"
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+        - Statement:
+            - Effect: Allow
+              # Read only: the API mints the pair before any job can exist.
+              Action: ssm:GetParameter
+              Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kad/${StageName}/push-vapid-keys"
+            - Effect: Allow
+              # See the note on the authorizer's copy of this.
+              Action: kms:Decrypt
+              Resource: "*"
+              Condition:
+                StringEquals:
+                  kms:ViaService: !Sub "ssm.${AWS::Region}.amazonaws.com"
 
   # ---------------------------------------------------------------------------
   # Anonymous play expiry — the sweeper
