@@ -1871,6 +1871,53 @@ safe. `e2e/boot-heal.spec.ts` proves both the heal and the hold.
   - mismatched bytes are never saved;
   - a scene's art is saved before the party reaches it.
 
+#### Push: "It's your turn" in the background (#466)
+
+The one thing an installed app has that a tab never will. A kid's phone set down while the TV
+reads goes quiet: a hidden page does not beat (#258) and nothing on it can say a question is
+waiting. The badge (`ui/app-badge.ts`) marks the icon while the page is alive; a push wakes a
+phone whose page is not. On an iPhone a push reaches only a Home Screen app, which is the install
+we ask for anyway.
+
+- **When.** After an action lands and is broadcast (`handlers/action.ts` → `notifyTurn`,
+  `handlers/push.ts`), for each kid the step just opened a question for (`isPromptForPlayer`, the
+  same answer her buttons and badge read, now in `@kad/shared`; the actor never; a question that only
+  moved on, a vote cast or somebody else's die, opens nothing new) whose phone is quiet in that
+  room: marked away, or last beat older than `AWAY_AFTER_MS`. A phone with no beat on record and
+  still marked here is left alone, as the presence sweep leaves it. One push per subscribed phone.
+- **Never in the way.** The send is after the broadcast and never fails the action: every error is
+  logged and swallowed, a push service gets three seconds, and the phones go at once. A 404 or 410
+  from the push service, or a phone revoked, moved to another kid or deleted since it subscribed,
+  forgets that subscription.
+- **Nothing but the sentence (#320).** The notification is "Kids & Dragons" / "It's your turn in
+  Kids & Dragons", one tag so a second turn replaces the first. The payload, encrypted for the
+  browser (RFC 8291, so the push service carries bytes it cannot read), is those words and the
+  room's `/p/CODE` path. The worker shows its own copy of the words, never the payload's
+  (`swPushNotice`), and opens only a same-site room path; a tap focuses a window on that room, or
+  any of the app's, or opens one.
+- **Asked in one place.** The Account screen's switch (`push/PushSwitch.tsx`, its own chunk),
+  drawn only in the installed app, on a browser with Web Push, on a kid's own phone (a player's
+  device token, not a family tablet or a TV), with a server that sends pushes. Never on first
+  launch: the browser's permission prompt appears only when a grown-up flips the switch on.
+  `pushManager.subscribe({ userVisibleOnly: true })` with the server's key, then
+  `POST /api/push/subscribe` by the device token; off unsubscribes and posts
+  `/api/push/unsubscribe`. `GET /api/push/key` says whether the server sends any.
+- **Stored** as `PUSH#<playerId> / DEVICE#<deviceId>` (§3), deleted with her or her home.
+- **Off unless configured.** `HandlerDeps.push` is absent unless the entry point was given
+  `KAD_PUSH=on` and keys. Lambda: the stack's `PushNotifications` and `PushContact` parameters,
+  and a VAPID key pair in `/kad/<stage>/push-vapid-keys`, minted on first use like the signing key
+  ([deploy.md](./deploy.md#turning-on-its-your-turn-pushes-466)). The dev server:
+  `KAD_VAPID_PUBLIC_KEY`, `KAD_VAPID_PRIVATE_KEY` and `KAD_PUSH_SUBJECT`, or `KAD_PUSH=record`,
+  which mints a pair and keeps every push for `GET /api/dev/push` rather than sending it (the prod
+  e2e suite's stand-in push service).
+- **Proof.** The decision, the send and the routes: `handlers/push.test.ts`, `web-push.test.ts`,
+  `lambda/http.test.ts`; the store: the contract suite. The worker, built and run in a vm:
+  `sw/sw.test.ts`. The switch: `push/push.test.tsx`. In a production build, `e2e/push.spec.ts`
+  grants the notifications permission, stubs `PushManager.subscribe`, flips the switch, sees the
+  server hold the subscription, delivers a push to the worker through DevTools and reads back the
+  notice. A real phone buzzing with its screen locked is device QA
+  ([pwa-device-qa.md](./pwa-device-qa.md)).
+
 #### The display beyond a laptop (#264)
 
 A smart TV, a stick or a tablet may lack things a laptop has, so the display (`/tv/:code`) asks for

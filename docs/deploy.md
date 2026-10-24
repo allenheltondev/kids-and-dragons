@@ -212,6 +212,7 @@ API bundle, which is load-bearing — see below.
 | **DynamoDB** `kad-<stage>` | Single table, GSI1, TTL on `ttl`. `DeletionPolicy: Retain`. |
 | **SSM SecureString** `/kad/<stage>/token-signing-key` | Signs device, session, and viewer tokens. Not a stack resource — see below. |
 | **SSM String** `/kad/<stage>/origin-secret` | Proves a request came through CloudFront. Made by `deploy.sh` — see below. |
+| **SSM SecureString** `/kad/<stage>/push-vapid-keys` | The VAPID key pair "It's your turn" pushes are signed with (#466). Minted by the API on first use, like the signing key, and only while pushes are on — see below. |
 | **Cognito** user pool | Optional sign-in. Essentials tier (passwordless needs it). `Retain`. |
 | **AppSync Events** | `room/<code>`. IAM publishes; the authorizer admits subscribers. |
 | **HTTP API** + 4 Lambdas | `api`, `channel-authorizer`, `sweep`, and the inline Cognito `PreSignUp` trigger. |
@@ -233,6 +234,7 @@ aws dynamodb delete-table --table-name kad-staging
 aws cognito-idp delete-user-pool --user-pool-id <from the stack outputs>
 aws ssm delete-parameter --name /kad/staging/token-signing-key
 aws ssm delete-parameter --name /kad/staging/origin-secret
+aws ssm delete-parameter --name /kad/staging/push-vapid-keys   # only if pushes were ever on
 ```
 
 Leaving the parameters behind is harmless and usually what you want: redeploy the
@@ -305,6 +307,38 @@ missing parameter rather than deploying something half-configured. It is a plain
 `String`, not a `SecureString`: CloudFront does not accept `ssm-secure`
 references, and the value only ever means "believe this request's viewer
 address". It is never printed, because this repository's Actions logs are public.
+
+### Turning on "It's your turn" pushes (#466)
+
+Off by default, on every stage. To turn them on for one, set two variables on
+that GitHub environment (Settings → Environments → Staging or Production →
+Variables), or export them before a by-hand `deploy.sh`:
+
+| Variable | Value |
+|---|---|
+| `KAD_PUSH` | `on`. Anything else, or unset, is off. |
+| `KAD_PUSH_SUBJECT` | The VAPID subject: a `mailto:` or `https:` address the push services (Apple's, Google's, Mozilla's) can reach the operator at, e.g. `mailto:allen@example.com`. |
+
+`deploy.sh` passes them to the stack as `PushNotifications` and `PushContact`
+on every deploy, so a stage turns pushes off only when a deploy says so. There
+is no secret to type in: the first request that needs the key pair mints it
+into `/kad/<stage>/push-vapid-keys` (a SecureString holding
+`{"publicKey","privateKey"}`), with `Overwrite: false` exactly as the signing
+key is, and the API's role may read and create that one parameter. With
+`KAD_PUSH=on` and no subject, the API logs a warning and pushes stay off.
+
+To bring keys of your own instead (say, to keep one pair across stages), put
+the parameter before the first deploy with pushes on:
+
+```bash
+npx web-push generate-vapid-keys --json > /tmp/vapid.json
+aws ssm put-parameter --name /kad/staging/push-vapid-keys --type SecureString \
+  --value "$(cat /tmp/vapid.json)" && rm /tmp/vapid.json
+```
+
+Changing the pair later strands every phone's subscription: each one is
+re-made the next time that phone opens Account. Deleting the parameter does the
+same, and the next request mints a new one.
 
 ### Cost
 
