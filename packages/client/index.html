@@ -8,6 +8,7 @@
     />
     <meta name="theme-color" content="#0d0b1a" />
     <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Kids &amp; Dragons" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
@@ -17,6 +18,89 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function () {
+        var ATTEMPTS_KEY = "kad.boot.attempts";
+        var HEALS_KEY = "kad.boot.heals";
+        var GLOBAL_NAME = "__kadBoot";
+        var TIMEOUT_MS = 8000;
+        var HEAL_AT = 2;
+        var GIVE_UP_AT = 3;
+        var MESSAGE = "Kids & Dragons could not start. Check the Wi-Fi and open it again.";
+        // Boot watchdog (#455). Counts this load; if the app never marks itself
+        // booted, retries once, then clears caches and workers and reloads, then
+        // stops. Only sessionStorage, caches and workers: never the saved hero.
+        var store = null;
+        var attempt = GIVE_UP_AT;
+        try {
+          store = window.sessionStorage;
+          attempt = (parseInt(store.getItem(ATTEMPTS_KEY), 10) || 0) + 1;
+          store.setItem(ATTEMPTS_KEY, String(attempt));
+        } catch (e) {
+          // No way to count, so no way to promise a reload ends: never reload.
+          attempt = GIVE_UP_AT;
+        }
+        var finished = false;
+        var timer = 0;
+        function stop() {
+          finished = true;
+          clearTimeout(timer);
+          removeEventListener("error", fail);
+          removeEventListener("unhandledrejection", fail);
+        }
+        function reload() {
+          location.reload();
+        }
+        function giveUp() {
+          var root = document.getElementById("root");
+          if (!root) return;
+          root.textContent = "";
+          var p = document.createElement("p");
+          p.textContent = MESSAGE;
+          p.style.cssText = "margin:0;padding:32px 24px;color:#f4efe6;font:600 20px/1.4 system-ui,sans-serif;text-align:center";
+          root.appendChild(p);
+        }
+        function heal() {
+          var work = [];
+          try {
+            if (window.caches) {
+              work.push(
+                caches.keys().then(function (keys) {
+                  return Promise.all(keys.map(function (k) { return caches.delete(k); }));
+                })
+              );
+            }
+            if (navigator.serviceWorker) {
+              work.push(
+                navigator.serviceWorker.getRegistrations().then(function (regs) {
+                  return Promise.all(regs.map(function (r) { return r.unregister(); }));
+                })
+              );
+            }
+            store.setItem(HEALS_KEY, String((parseInt(store.getItem(HEALS_KEY), 10) || 0) + 1));
+          } catch (e) {}
+          var cap = new Promise(function (resolve) { setTimeout(resolve, 4000); });
+          Promise.race([Promise.all(work), cap]).then(reload, reload);
+        }
+        function fail() {
+          if (finished) return;
+          stop();
+          if (attempt >= GIVE_UP_AT) giveUp();
+          else if (attempt >= HEAL_AT) heal();
+          else reload();
+        }
+        window[GLOBAL_NAME] = {
+          booted: function () {
+            if (finished) return;
+            stop();
+            try { store.removeItem(ATTEMPTS_KEY); } catch (e) {}
+          },
+        };
+        addEventListener("error", fail);
+        addEventListener("unhandledrejection", fail);
+        timer = setTimeout(fail, TIMEOUT_MS);
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
