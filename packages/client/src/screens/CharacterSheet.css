@@ -100,7 +100,7 @@
 .sheetview__rung--now .sheetview__rung-note { color: #ffe4a1; font-weight: 700; }
 .sheetview__rung--reached { border-color: #dfbd7a; background: linear-gradient(140deg, #62472b66, #30243c); }
 .sheetview__rung--lost { border-style: dashed; border-color: #dfbd7a; }
-.sheetview__rung--ahead { opacity: 0.65; }
+.sheetview__rung--ahead { opacity: 0.8; }
 .sheetview__souvenirs { display: flex; flex-direction: column; gap: 0.65em; }
 .sheetview__souvenir { display: flex; align-items: center; gap: 0.8em; padding: 1em; border: 1px dashed #ba925b; border-radius: 1em 0.5em; background: #2c213b; font-size: 0.9em; }
 .sheetview__souvenir > .kad-icon { font-size: 1.7em; color: #e5c281; }

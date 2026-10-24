@@ -89,7 +89,7 @@ body:has(.kad-tap-for-sound) .kad-audio-control__hint { display: none; }
 /* The shared screen has its own ask for sound (Tap for sound, above), so the row's small hint
    never hangs under its corner, over the room's own column (#257). */
 .kad-corner:has(.kad-about--in-corner) .kad-audio-control__hint { display: none; }
-body:has(.kad-tap-for-sound--in-corner) .kad-party--world { --kad-top-reserve: 3.25rem; }
+body:has(.kad-tap-for-sound--in-corner) .kad-party--world { --kad-top-reserve: 2.75rem; }
 
 /*
  * The report's own ask (fullscreen.ts). It sits on the row that reports full screen rather

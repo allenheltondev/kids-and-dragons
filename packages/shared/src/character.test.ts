@@ -1217,3 +1217,34 @@ describe("fitClass: the fitting stall's one swap (#312, docs/class-mastery.md §
     expect(classOf(fitClass(startCampaign(failed, "r_2"), rules, "thornguard"))).toBe("thornguard");
   });
 });
+
+describe("level rewards (max HP and Guard)", () => {
+  const rewarded = makeRules({
+    levelRewards: [
+      { level: 2, maxHp: 1 },
+      { level: 3, maxHp: 2, guard: 1 },
+    ],
+  });
+  // makeRules' curve: level 2 at 300 XP, level 3 at 700.
+  it("adds every reward up to the hero's level, and none before it", () => {
+    const base = resolveCharacter(makeCharacter(), rewarded, items);
+    const two = resolveCharacter(makeCharacter({ xp: 300 }), rewarded, items);
+    const three = resolveCharacter(makeCharacter({ xp: 700 }), rewarded, items);
+    expect(two.maxHp).toBe(base.maxHp + 1);
+    expect(two.guard).toBe(base.guard);
+    expect(three.maxHp).toBe(base.maxHp + 3);
+    expect(three.guard).toBe(base.guard + 1);
+  });
+
+  it("keeps the Guard reward when the bag changes mid-chapter", () => {
+    const three = resolveCharacter(makeCharacter({ xp: 700 }), rewarded, items);
+    expect(withInventory(three, [], rewarded, items).guard).toBe(three.guard);
+  });
+
+  it("changes nothing for rules without rewards", () => {
+    const plain = resolveCharacter(makeCharacter({ xp: 700 }), rules, items);
+    const none = resolveCharacter(makeCharacter(), rules, items);
+    expect(plain.maxHp).toBe(none.maxHp);
+    expect(plain.guard).toBe(none.guard);
+  });
+});

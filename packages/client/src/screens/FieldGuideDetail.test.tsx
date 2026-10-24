@@ -8,6 +8,7 @@ import real from "../../../../content/field-guide.json";
 import { FieldGuide } from "./FieldGuide";
 import { FieldGuideDetail } from "./FieldGuideDetail";
 import { resetFieldGuideCache } from "./content";
+import { runBackStep } from "../store/back-steps";
 import { openGuide, setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { FIELD_GUIDE_SEEN_KEY, resetFieldGuideSeen } from "../store/field-guide-seen";
@@ -226,7 +227,8 @@ describe("FieldGuide shell guard", () => {
     expect(await screen.findByText(/found$/, { selector: "p.field-guide__summary" })).toBeTruthy();
     act(() => { openGuide("creature.bone_crawler"); });
     expect(await screen.findByTestId("guide-detail")).toBeTruthy();
-    await userEvent.setup().click(screen.getByRole("button", { name: "Back to the guide" }));
+    expect(screen.queryByRole("button", { name: /Back to the guide|Return to the guide/ })).toBeNull();
+    act(() => { expect(runBackStep()).toBe(true); });
     expect(usePlayerNavigation.getState().guideEntry).toBeNull();
   });
 });
