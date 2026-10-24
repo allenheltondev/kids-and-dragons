@@ -1,6 +1,7 @@
 /**
  * The service worker (`/sw.js`) — see `policy.ts` for what it is for and what
- * it decides. This file is only the wiring: install, activate, fetch, message.
+ * it decides. This file is only the wiring: install, activate, fetch, and the
+ * "It's your turn" push and its notification (#466).
  *
  * Built by `sw-build.ts` into one classic script with this build's lists
  * prepended, so a deploy is a new `sw.js` and the browser installs it on its
@@ -27,7 +28,9 @@ import {
   swCacheable,
   swEvictions,
   swIsImage,
+  swNoticeWindow,
   swOverLimit,
+  swPushNotice,
   swQuotaTrim,
   swShellAnswer,
   swShellEntry,
@@ -63,17 +66,35 @@ interface SwFetchEvent extends SwExtendableEvent {
 interface SwMessageEvent extends SwExtendableEvent {
   readonly data: unknown;
 }
+interface SwPushEvent extends SwExtendableEvent {
+  readonly data: { json(): unknown } | null;
+}
+interface SwNotificationEvent extends SwExtendableEvent {
+  readonly notification: { readonly data: unknown; close(): void };
+}
+interface SwWindowClient {
+  readonly url: string;
+  postMessage(message: unknown): void;
+  focus(): Promise<SwWindowClient>;
+  navigate?(url: string): Promise<SwWindowClient | null>;
+}
 interface SwScope {
   readonly location: Location;
   readonly clients: {
     claim(): Promise<void>;
-    matchAll(options?: { includeUncontrolled?: boolean; type?: "window" | "worker" | "sharedworker" | "all" }): Promise<readonly { postMessage(message: unknown): void }[]>;
+    matchAll(options?: { includeUncontrolled?: boolean; type?: "window" | "worker" | "sharedworker" | "all" }): Promise<readonly SwWindowClient[]>;
+    openWindow(url: string): Promise<SwWindowClient | null>;
   };
-  readonly registration: { navigationPreload?: { enable(): Promise<void> } };
+  readonly registration: {
+    navigationPreload?: { enable(): Promise<void> };
+    showNotification(title: string, options: { body: string; tag: string; data: unknown; icon?: string; badge?: string }): Promise<void>;
+  };
   skipWaiting(): Promise<void>;
   addEventListener(type: "install" | "activate", listener: (event: SwExtendableEvent) => void): void;
   addEventListener(type: "fetch", listener: (event: SwFetchEvent) => void): void;
   addEventListener(type: "message", listener: (event: SwMessageEvent) => void): void;
+  addEventListener(type: "push", listener: (event: SwPushEvent) => void): void;
+  addEventListener(type: "notificationclick", listener: (event: SwNotificationEvent) => void): void;
 }
 
 const worker = self as unknown as SwScope;
@@ -247,6 +268,53 @@ worker.addEventListener("fetch", (event) => {
       event.respondWith(fingerprinted(event, request, "asset"));
       return;
   }
+});
+
+// ---------------------------------------------------------------------------
+// "It's your turn" (#466)
+// ---------------------------------------------------------------------------
+
+/*
+ * A push from the server: a question is waiting for this phone's kid and the
+ * app is in the background. Always shows the notice (a browser requires it of
+ * every push), always in this worker's own words (`swPushNotice`), and the
+ * one tag means a second turn replaces the first rather than stacking.
+ */
+worker.addEventListener("push", (event) => {
+  let data: unknown = null;
+  try {
+    data = event.data?.json() ?? null;
+  } catch {
+    data = null;
+  }
+  const notice = swPushNotice(data);
+  event.waitUntil(
+    worker.registration.showNotification(notice.title, {
+      body: notice.body,
+      tag: notice.tag,
+      data: { url: notice.url },
+      icon: "/icons/icon-192.png",
+    }),
+  );
+});
+
+/** A tap on the notice: the room, in a window already open on it, or any of the app's, or a new one. */
+worker.addEventListener("notificationclick", (event) => {
+  event.notification.close();
+  const { url } = swPushNotice(event.notification.data);
+  event.waitUntil(
+    (async () => {
+      const windows = await worker.clients.matchAll({ type: "window", includeUncontrolled: true });
+      const pick = swNoticeWindow(windows, url, worker.location.origin);
+      const open = pick.index >= 0 ? windows[pick.index] : undefined;
+      if (open) {
+        const there = pick.navigate && open.navigate ? ((await open.navigate(url).catch(() => null)) ?? open) : open;
+        await there.focus();
+        return;
+      }
+      await worker.clients.openWindow(url);
+    })().catch(() => undefined),
+  );
 });
 
 // ---------------------------------------------------------------------------
