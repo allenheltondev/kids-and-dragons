@@ -313,3 +313,140 @@ export function swQuotaTrim(meta: Readonly<Record<string, FileMeta>>): string[] 
   const total = Object.values(meta).reduce((sum, entry) => sum + entry.bytes, 0);
   return swEvictions(meta, total * SW_QUOTA_TRIM_SHARE);
 }
+
+// ---------------------------------------------------------------------------
+// Overnight refresh (#467): Periodic Background Sync
+// ---------------------------------------------------------------------------
+
+/** The one periodic sync the installed app registers (`periodic.ts`), and the worker answers. */
+export const SW_PERIODIC_TAG = "kad-refresh";
+
+/** At most once a day: the browser stretches it further for an app that is seldom opened. */
+export const SW_PERIODIC_MIN_INTERVAL_MS = 24 * 60 * 60 * 1000;
+
+/**
+ * Where the worker records its last overnight run, inside the files cache
+ * under a path no request can have. Help's Diagnostics panel reads it.
+ */
+export const SW_PERIODIC_KEY = "/__kad/periodic-sync";
+
+/**
+ * The message a worker sends the newer one an overnight `update()` found, so
+ * the refresh runs against the new build's index instead of this one's.
+ */
+export const SW_PERIODIC_HANDOFF = "kad:periodic-refresh";
+
+/**
+ * How long one overnight run may keep fetching. The browser gives a periodic
+ * sync a few minutes before it stops the worker; the run stops starting new
+ * downloads well inside that, so it ends on its own terms and records how far
+ * it got.
+ */
+export const SW_PERIODIC_DEADLINE_MS = 2 * 60 * 1000;
+
+/** How a run ended, for Diagnostics. */
+export type SwPeriodicOutcome =
+  /** Content refreshed and the next chapter's art saved. */
+  | "done"
+  /** A newer build was waiting; it was asked to do the run instead. */
+  | "handed-over"
+  /** Data Saver is on: content refreshed, no art guessed at. */
+  | "saved-data"
+  /** Content refreshed; the journal names no chapter to get ready. */
+  | "nothing-next"
+  /** Stopped at the deadline or the night's byte cap; the next run carries on. */
+  | "partial"
+  | "failed";
+
+export interface SwPeriodicRecord {
+  /** When the run ended (ms since epoch). */
+  at: number;
+  outcome: SwPeriodicOutcome;
+  /** The build whose worker ran it. */
+  build: string;
+  /** Content files fetched again. */
+  refreshed: number;
+  /** Art files saved for the next chapter. */
+  warmed: number;
+  /** The chapters it got ready. */
+  chapters: string[];
+}
+
+const PERIODIC_OUTCOMES: readonly string[] = ["done", "handed-over", "saved-data", "nothing-next", "partial", "failed"];
+
+/** A stored record, or null when it is missing or not one. */
+export function swPeriodicRecordOf(raw: unknown): SwPeriodicRecord | null {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const r = raw as Partial<Record<keyof SwPeriodicRecord, unknown>>;
+  if (typeof r.at !== "number" || !Number.isFinite(r.at)) return null;
+  if (typeof r.outcome !== "string" || !PERIODIC_OUTCOMES.includes(r.outcome)) return null;
+  return {
+    at: r.at,
+    outcome: r.outcome as SwPeriodicOutcome,
+    build: typeof r.build === "string" ? r.build : "",
+    refreshed: typeof r.refreshed === "number" ? r.refreshed : 0,
+    warmed: typeof r.warmed === "number" ? r.warmed : 0,
+    chapters: Array.isArray(r.chapters) ? r.chapters.filter((id): id is string => typeof id === "string") : [],
+  };
+}
+
+/** What a run does: content always (it is small and the book reads it); art only when data is not being saved. */
+export function swPeriodicWork(saveData: boolean): { refreshContent: true; warmNext: boolean } {
+  return { refreshContent: true, warmNext: !saveData };
+}
+
+/**
+ * Content to fetch again, as paths: every `/content/*` file the phone keeps or
+ * wants (`wanted`) whose copy at this index's fingerprint is not saved. A
+ * saved copy under another fingerprint is a file the deploy changed, so this
+ * is "what changed between the index the copy was saved against and this
+ * one", read off the saved keys themselves. Unindexed paths are left alone.
+ */
+export function swContentToRefresh(index: FileIndex, saved: readonly string[], wanted: readonly string[]): string[] {
+  const have = new Set(saved);
+  const kept: string[] = [];
+  for (const key of saved) {
+    const read = swReadVersionedKey(key);
+    if (read) kept.push(read.path);
+  }
+  const out: string[] = [];
+  for (const path of new Set([...wanted, ...kept])) {
+    if (!path.startsWith("/content/")) continue;
+    const fingerprint = index[path];
+    if (fingerprint === undefined || have.has(swVersionedKey(path, fingerprint))) continue;
+    out.push(path);
+  }
+  return out;
+}
+
+/**
+ * The art to download, in order, with the fingerprint to check it against:
+ * indexed files not already saved. Anything unindexed is skipped, since a
+ * copy that cannot be checked is not worth a night's download.
+ */
+export function swWarmList(
+  urls: readonly string[],
+  index: FileIndex,
+  saved: readonly string[],
+): { path: string; fingerprint: string }[] {
+  const have = new Set(saved);
+  const out: { path: string; fingerprint: string }[] = [];
+  for (const path of new Set(urls)) {
+    const fingerprint = index[path];
+    if (fingerprint === undefined || have.has(swVersionedKey(path, fingerprint))) continue;
+    out.push({ path, fingerprint });
+  }
+  return out;
+}
+
+/** The share of the files budget one night may download. */
+export const SW_PERIODIC_BUDGET_SHARE = 0.25;
+
+/**
+ * The most one overnight run downloads: a quarter of the files budget, so a
+ * night never pushes out most of what the phone already keeps. A chapter's
+ * art is a few MB, far inside it.
+ */
+export function swPeriodicByteCap(budget: number): number {
+  return Math.round(budget * SW_PERIODIC_BUDGET_SHARE);
+}
