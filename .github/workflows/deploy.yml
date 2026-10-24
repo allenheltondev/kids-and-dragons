@@ -50,14 +50,19 @@ jobs:
     outputs:
       deploy: ${{ steps.classify.outputs.deploy }}
     steps:
+      # Commits, trees and tools/ci only: a tree diff needs no file contents
+      # (ci.yml's `changes` job says why this matters).
       - uses: actions/checkout@v7
+        with:
+          filter: blob:none
+          sparse-checkout: tools/ci
       - name: Classify the change
         id: classify
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            git fetch --no-tags --depth=1 origin "$BASE"
+            git fetch --no-tags --depth=1 --filter=blob:none origin "$BASE"
             node tools/ci/changes.mjs "$BASE" HEAD
           else
             node tools/ci/changes.mjs --all

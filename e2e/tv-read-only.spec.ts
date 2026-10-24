@@ -17,6 +17,7 @@
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
 import { roomState } from "./room-state";
+import { API } from "./api";
 
 const TAP = { timeout: 20_000 } as const;
 const SHOTS = process.env.KAD_TV_SHOTS;
@@ -133,7 +134,7 @@ async function jumpTo(page: Page, code: string, sceneId: string): Promise<void> 
   }, code);
   for (let attempt = 0; attempt < 5; attempt++) {
     const state = await roomState<{ runId: string; seq: number }>(page, code);
-    const response = await fetch("http://localhost:8787/api/action", {
+    const response = await fetch(`${API}/api/action`, {
       method: "POST",
       headers: { "content-type": "application/json", authorization: `Bearer ${session.sessionToken}` },
       body: JSON.stringify({ runId: state.runId, playerId: session.playerId, seq: state.seq, intent: { type: "PLAYTEST_GOTO", sceneId } }),
