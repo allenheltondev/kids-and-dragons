@@ -2137,6 +2137,9 @@ const DEV_ONLY = [
   // How the client learns it may offer the pool-free dev sign-in. Prod must
   // never answer it: the dev token it unlocks is unsigned.
   { path: "/api/auth/dev", method: "GET" },
+  // The end-to-end suite's seeded table (dev-seed.ts): a room with its heroes
+  // made in one call, and a playtest jump. Prod must never have it.
+  { path: "/api/dev/seed", method: "POST" },
   // What the dev server's stand-in push service was handed (#466, KAD_PUSH=record),
   // for the e2e test. Prod sends real pushes and keeps no record of them.
   { path: "/api/dev/push", method: "GET" },

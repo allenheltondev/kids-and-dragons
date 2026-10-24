@@ -35,12 +35,12 @@
 
 import { readdirSync, readFileSync } from "node:fs";
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
-import { createCharacter } from "./characters";
 import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
+import { API } from "./api";
+import { onAir, phoneStorage, seedTable, toTheLobby, tvStorage, type SeededPhone } from "./seed";
 
 const TAP = { timeout: 20_000 } as const;
-const API = "http://localhost:8787";
 
 type Text = "normal" | "largest";
 type Hand = "off" | "right" | "left";
@@ -157,7 +157,6 @@ async function withRankUp(page: Page, name: string): Promise<void> {
     });
   }, name);
 }
-
 
 interface Passage { name: string; narration: string; options: { id: string; label: string; icon: string }[] }
 
@@ -446,8 +445,12 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await Promise.all(open.splice(0).map((c) => c.close().catch(() => undefined)));
   });
 
-  async function phone(browser: Browser): Promise<Page> {
-    const context = await browser.newContext({ viewport: { width: 390, height: 800 } });
+  /** A phone; `seated`, one a seeded table sat down at its room (seed.ts). */
+  async function phone(browser: Browser, seated?: SeededPhone): Promise<Page> {
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 800 },
+      ...(seated ? { storageState: phoneStorage(seated) } : {}),
+    });
     open.push(context);
     const page = await context.newPage();
     // The dev drawer is a developer's tool that production does not have.
@@ -481,23 +484,20 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
    * The room both of the next two tests walk: a Phone Mode host with a hero,
    * a guest with another, and the host's phone showing who joined. Each test
    * opens its own, so the two run on different runners (CI shards by test).
+   * Seeded (seed.ts): the creation flow is phone-fit's and first-playable's to
+   * walk. The guest sits down once the host is on air, so the host hears of it.
    */
   async function hostAndGuest(browser: Browser): Promise<{ host: Page; guest: Page; code: string }> {
-    const host = await phone(browser);
-    await host.goto("/");
-    await host.getByRole("button", { name: /host a game/i }).click();
-    await host.getByText("Phone Mode").click();
-    await host.getByLabel("Your adventurer name").fill("Grown-up");
-    await host.getByRole("button", { name: /^start a game$/i }).click();
-    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
-    const code = new URL(host.url()).pathname.split("/").pop() ?? "";
-    await createCharacter(host, "unicorn", "Sparklehoof");
-    const guest = await phone(browser);
-    await guest.goto("/");
-    await guest.getByLabel(/room code/i).fill(code);
-    await guest.getByRole("button", { name: /join a game/i }).click();
-    await expect(guest).toHaveURL(new RegExp(`/p/${code}$`), TAP);
-    await createCharacter(guest, "griffin", "Rosie");
+    const table = await seedTable({ mode: "travel", heroes: [{ name: "Sparklehoof", species: "unicorn", player: "Grown-up" }] });
+    const code = table.code;
+    const host = await phone(browser, table.phones[0]);
+    await host.goto(`/p/${code}`);
+    await toTheLobby(host);
+    await onAir(host);
+    const [rosie] = (await seedTable({ mode: "travel", code, heroes: [{ name: "Rosie", species: "griffin" }] })).phones;
+    const guest = await phone(browser, rosie);
+    await guest.goto(`/p/${code}`);
+    await toTheLobby(guest);
     // The host's phone says who joined, and keeps saying it until dismissed.
     await expect(host.locator(".kad-arrivals--inline .kad-arrival").first()).toBeVisible(TAP);
     return { host, guest, code };
@@ -589,27 +589,15 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     // A new hero in Gemfall, which opens at the Exchange. The launch campaign
     // is the Hollow Crown, so the room is opened for Gemfall instead, and the
     // dev jump goes straight to the scene the stall stands in.
-    const kid = await phone(browser);
-    // In the page rather than on the wire (no request interception): the
-    // client's own create-room call names Gemfall.
-    await kid.addInitScript(() => {
-      const send = window.fetch.bind(window);
-      window.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
-        if (input === "/api/room" && init?.method === "POST" && typeof init.body === "string") {
-          const body = JSON.parse(init.body) as Record<string, unknown>;
-          if (body.campaignId) return send(input, { ...init, body: JSON.stringify({ ...body, campaignId: "gemfall" }) });
-        }
-        return send(input, init);
-      };
+    const table = await seedTable({
+      mode: "travel",
+      campaignId: "gemfall",
+      heroes: [{ name: "Sparklehoof", species: "unicorn", player: "Grown-up" }],
     });
-    await kid.goto("/");
-    await kid.getByRole("button", { name: /host a game/i }).click(TAP);
-    await kid.getByText("Phone Mode").click();
-    await kid.getByLabel("Your adventurer name").fill("Grown-up");
-    await kid.getByRole("button", { name: /^start a game$/i }).click();
-    await expect(kid).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
-    const code = new URL(kid.url()).pathname.split("/").pop() ?? "";
-    await createCharacter(kid, "unicorn", "Sparklehoof");
+    const code = table.code;
+    const kid = await phone(browser, table.phones[0]);
+    await kid.goto(`/p/${code}`);
+    await toTheLobby(kid);
     await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
     await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
     await jumpTo(kid, code, "scene_prologue_city");
@@ -644,7 +632,11 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
    * its table. Each shared-screen test opens its own, so the two run on different runners.
    */
   async function sharedScreen(browser: Browser): Promise<{ tv: Page; kid: Page; code: string }> {
-    const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+    // Seeded (seed.ts): a TV's room first, and the kid sits down once the TV
+    // is on air, so the TV hears of the arrival as it would have.
+    const table = await seedTable({ mode: "party", tv: true, heroes: [] });
+    const code = table.code;
+    const context = await browser.newContext({ viewport: { width: 1280, height: 720 }, storageState: tvStorage(table) });
     open.push(context);
     await context.addInitScript(() => {
       class BlockedContext {
@@ -665,21 +657,15 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
       Object.defineProperty(window, "AudioContext", { value: BlockedContext, configurable: true });
     });
     const tv = await context.newPage();
-    await tv.goto("/");
-    await tv.getByRole("button", { name: /host a game/i }).click();
-    await tv.getByText("Party Mode").click();
-    await tv.getByRole("button", { name: /open the lobby here/i }).click();
-    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
-    const code = new URL(tv.url()).pathname.split("/").pop() ?? "";
+    await tv.goto(`/tv/${code}`);
     await expect(tv.getByRole("button", { name: "About this screen" })).toBeVisible(TAP);
     await expect(tv.getByRole("button", { name: "Tap for sound" })).toBeVisible(TAP);
+    await onAir(tv);
 
-    const kid = await phone(browser);
-    await kid.goto("/");
-    await kid.getByLabel(/room code/i).fill(code);
-    await kid.getByRole("button", { name: /join a game/i }).click();
-    await expect(kid).toHaveURL(new RegExp(`/p/${code}$`), TAP);
-    await createCharacter(kid, "unicorn", "Sparklehoof");
+    const [sparklehoof] = (await seedTable({ mode: "party", code, heroes: [{ name: "Sparklehoof", species: "unicorn" }] })).phones;
+    const kid = await phone(browser, sparklehoof);
+    await kid.goto(`/p/${code}`);
+    await toTheLobby(kid);
     await expect(tv.getByText("Sparklehoof").first()).toBeVisible(TAP);
 
     return { tv, kid, code };
