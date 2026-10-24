@@ -187,14 +187,23 @@ Resources:
       # `DeletionPolicy: Retain` above guards `sam delete` pointed at the wrong
       # stack. It does nothing for a DeleteTable call, or for a sweeper bug that
       # deletes households it should have kept — and the sweeper holds CRUD on
-      # this table. On prod, deletion protection refuses the first, and
-      # point-in-time recovery answers the second: a restore goes to a *new*
-      # table, from which one family's rows are copied back, so nobody else's
-      # evening is rolled back to recover them. At this table's size it costs
-      # cents a month.
+      # this table. On prod, deletion protection refuses the first.
+      #
+      # No point-in-time recovery, by the owner's decision: #440 turned it on
+      # and this turns it off again. It also could not be turned on. Enabling
+      # it makes CloudFormation call `dynamodb:UpdateContinuousBackups`, and
+      # the GithubDeploy role is not allowed that action, so from #440 merging
+      # until this line went every production deploy failed on the table and
+      # rolled the whole stack back — three releases' worth, with nothing but
+      # a red workflow to say so. Staging never saw it: `IsProd` made the value
+      # false there, and false asks for no call at all.
+      #
+      # If PITR is ever wanted back, the role's policy is the thing to change
+      # first, and the question to settle is what the restore is for. It hands
+      # back the whole table at a moment in time, into a *new* table, so one
+      # family's rows can be copied out of it — a drill somebody has to be
+      # willing to run on a Saturday evening for it to be worth its permission.
       DeletionProtectionEnabled: !If [IsProd, true, false]
-      PointInTimeRecoverySpecification:
-        PointInTimeRecoveryEnabled: !If [IsProd, true, false]
 
   # ---------------------------------------------------------------------------
   # Token signing — architecture §4.5
