@@ -50,17 +50,25 @@ jobs:
       build: ${{ steps.classify.outputs.build }}
       e2e: ${{ steps.classify.outputs.e2e }}
     steps:
+      # Every other job waits on this one, so it fetches only what it reads:
+      # commits and trees (no file contents, `filter: blob:none`) and the one
+      # directory it runs, tools/ci. A tree diff needs no blobs. The whole
+      # checkout was 36 of this job's 42 seconds, because the repo is 1.2 GB
+      # of mostly source art; this one is a few hundred kilobytes.
       - uses: actions/checkout@v7
+        with:
+          filter: blob:none
+          sparse-checkout: tools/ci
 
-      # The PR's own changes: the base tip fetched shallow, and a tree diff
-      # from it to the merge commit checkout@v7 gives us.
+      # The PR's own changes: the base tip fetched shallow (trees only, as
+      # above), and a tree diff from it to the merge commit checkout@v7 gives us.
       - name: Classify the change
         id: classify
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            git fetch --no-tags --depth=1 origin "$BASE"
+            git fetch --no-tags --depth=1 --filter=blob:none origin "$BASE"
             node tools/ci/changes.mjs "$BASE" HEAD
           else
             node tools/ci/changes.mjs --all
