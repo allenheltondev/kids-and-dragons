@@ -5,7 +5,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { installRemoteFocus, isBackKey, nearest, step, type Box } from "./remote-focus";
+import { installRemoteFocus, isBackKey, nearest, openSheet, step, type Box } from "./remote-focus";
 
 const at = (left: number, top: number, size = 40): Box => ({ left, top, right: left + size, bottom: top + size });
 
@@ -323,5 +323,79 @@ describe("Back on a confirm that does not listen for Escape", () => {
     expect(event.defaultPrevented).toBe(true);
     expect(document.getElementById("stop")).not.toBeNull();
     stop();
+  });
+});
+
+describe("what Back relays, and where from", () => {
+  /** Back, as a TV sends it: no named key, the platform's legacy code. */
+  function pressBack(): KeyboardEvent {
+    const event = new KeyboardEvent("keydown", { key: "", cancelable: true, bubbles: true });
+    Object.defineProperty(event, "keyCode", { value: 10009 });
+    document.dispatchEvent(event);
+    return event;
+  }
+
+  it("relays through the sheet, so a listener on the sheet itself sees it", () => {
+    // The sheets today listen on document or window. One that listened on its own element, or
+    // through React's onKeyDown in its subtree, would never see an event dispatched *at* the
+    // document, so the relay starts inside the sheet and bubbles out.
+    lay(
+      '<button id="out">out</button><div id="sheet" role="dialog"><button id="close">Close</button></div>',
+      { out: at(0, 200), close: at(0, 0) },
+    );
+    const seen: string[] = [];
+    document.getElementById("sheet")!.addEventListener("keydown", (event) => {
+      if ((event as KeyboardEvent).key === "Escape") seen.push("sheet");
+    });
+    document.addEventListener("keydown", (event) => {
+      if ((event as KeyboardEvent).key === "Escape") seen.push("document");
+    });
+    window.addEventListener("keydown", (event) => {
+      if ((event as KeyboardEvent).key === "Escape") seen.push("window");
+    });
+    const stop = installRemoteFocus();
+    document.getElementById("close")!.focus();
+    expect(pressBack().defaultPrevented).toBe(true);
+    // Up from the focused control, through the sheet, to the document and the window.
+    expect(seen).toEqual(["sheet", "document", "window"]);
+    stop();
+  });
+
+  it("relays from the sheet when focus is somewhere else entirely", () => {
+    lay(
+      '<button id="out">out</button><div id="sheet" role="dialog"><button id="close">Close</button></div>',
+      { out: at(0, 200), close: at(0, 0) },
+    );
+    let from = "";
+    document.addEventListener("keydown", (event) => {
+      if ((event as KeyboardEvent).key === "Escape") from = (event.target as HTMLElement).id;
+    });
+    const stop = installRemoteFocus();
+    document.getElementById("out")!.focus();
+    pressBack();
+    expect(from).toBe("sheet");
+    stop();
+  });
+
+  it("ignores a dialog that is in the DOM but not open", () => {
+    for (const markup of [
+      '<div inert><div role="dialog"><button id="a">a</button></div></div>',
+      '<div role="dialog" aria-hidden="true"><button id="a">a</button></div>',
+      '<div role="dialog" hidden><button id="a">a</button></div>',
+    ]) {
+      document.body.innerHTML = markup;
+      expect(openSheet(document)).toBeNull();
+      const stop = installRemoteFocus();
+      // Nothing is really open, so Back stays the browser's: a TV is never a trap.
+      expect(pressBack().defaultPrevented).toBe(false);
+      stop();
+    }
+  });
+
+  it("closes the top sheet when two are stacked", () => {
+    document.body.innerHTML =
+      '<div id="under" role="dialog"><button>under</button></div>' +
+      '<div id="over" role="alertdialog"><button>over</button></div>';
+    expect(openSheet(document)?.id).toBe("over");
   });
 });

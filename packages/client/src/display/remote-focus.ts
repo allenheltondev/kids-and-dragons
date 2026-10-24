@@ -16,8 +16,8 @@
  * arrows are the field's own, with two ways out, so a remote is never stuck in it: Up and
  * Down leave a one-line text field (Left and Right still move the caret), and Escape and
  * then any arrow leaves any field. A select, a slider or a listbox keeps its arrows the same
- * way. The Back key gets the same answer Escape does, but only while a sheet is open: see
- * `isBackKey`. In a group of radios (the start screen's Party Mode and Phone Mode) selection follows
+ * way. The Back key gets the same answer Escape does, but only while a sheet is really open:
+ * see `isBackKey` and `openSheet`. In a group of radios (the start screen's Party Mode and Phone Mode) selection follows
  * focus, as a browser's own radio arrows do: an arrow to the next radio of the same name checks
  * it. Past the group's last radio that way the arrow leaves the group, where a browser would wrap
  * round, so a remote is never caught in it. Those radios are hidden inside the cards that draw
@@ -46,9 +46,23 @@ export function isBackKey(event: Pick<KeyboardEvent, "key" | "keyCode">): boolea
   return (event.key === "" || event.key === "Unidentified") && (event.keyCode === 10009 || event.keyCode === 461);
 }
 
-/** What is open over the screen now, if anything: the sheets and dialogs Escape closes. */
-function openSheet(doc: Document): Element | null {
-  return doc.querySelector("[aria-modal='true'], [role='dialog'], [role='alertdialog']");
+const SHEETS = "[aria-modal='true'], [role='dialog'], [role='alertdialog']";
+
+/**
+ * What is really open over the screen now, if anything. A dialog in the DOM is not necessarily
+ * one a person can see: a sheet behind another is `inert`, and a panel can be rendered and
+ * hidden. Only a sheet that is actually up may swallow a Back press, or Back would die on a
+ * screen with nothing open. When sheets stack, the last in document order is the top one.
+ */
+export function openSheet(doc: Document): HTMLElement | null {
+  const open = [...doc.querySelectorAll<HTMLElement>(SHEETS)].filter(
+    (el) =>
+      el.closest("[inert]") === null &&
+      el.getAttribute("aria-hidden") !== "true" &&
+      !el.hasAttribute("hidden") &&
+      (el.checkVisibility?.() ?? true),
+  );
+  return open.at(-1) ?? null;
 }
 
 const KEYS: Record<string, Direction> = {
@@ -229,9 +243,19 @@ export function installRemoteFocus(doc: Document = document, { armed = true }: {
       const sheet = openSheet(doc);
       if (!sheet) return;
       event.preventDefault();
-      // The sheets already close on Escape and move focus back themselves (A11yControl,
-      // DisplayExtras), so Back is relayed as one rather than reimplemented per sheet.
-      doc.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }));
+      /*
+       * The sheets already close on Escape and move focus back themselves (A11yControl,
+       * DisplayExtras), so Back is relayed as one rather than reimplemented per sheet.
+       *
+       * Relayed from inside the sheet rather than at the document: every sheet today listens
+       * on `document` or `window`, which a bubbling event dispatched at the document does
+       * reach, but one dispatched there passes nothing on its way — a handler on the sheet
+       * itself, or a React `onKeyDown` in its subtree, would never see it. From the focused
+       * control (or the sheet, when focus is elsewhere) it bubbles up through the sheet and
+       * on to the document and window, so both kinds of listener get it.
+       */
+      const from = active instanceof HTMLElement && sheet.contains(active) ? active : sheet;
+      from.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }));
       return;
     }
     if (event.key === "Escape") {
