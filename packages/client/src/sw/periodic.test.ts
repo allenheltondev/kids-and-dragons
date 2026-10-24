@@ -8,8 +8,10 @@ import { describe, expect, it, vi } from "vitest";
 import {
   SW_FILES_BUDGET_BYTES,
   SW_PERIODIC_MIN_INTERVAL_MS,
+  SW_PERIODIC_PENDING_MAX_AGE_MS,
   SW_PERIODIC_TAG,
   swContentToRefresh,
+  swPendingFresh,
   swPeriodicByteCap,
   swPeriodicRecordOf,
   swPeriodicWork,
@@ -164,5 +166,21 @@ describe("the record of the last run", () => {
     expect(swPeriodicRecordOf([])).toBeNull();
     expect(swPeriodicRecordOf({ at: "yesterday", outcome: "done" })).toBeNull();
     expect(swPeriodicRecordOf({ at: 1, outcome: "exploded" })).toBeNull();
+  });
+});
+
+describe("the hand-off marker to a newer build", () => {
+  const now = 1_000_000_000_000;
+  it("is taken while under a day old, for this tag", () => {
+    expect(swPendingFresh({ at: now - 1000, tag: "kad-refresh" }, now)).toBe(true);
+    expect(swPendingFresh({ at: now, tag: "kad-refresh" }, now)).toBe(true);
+  });
+  it("is ignored when stale, from the future, for another tag or not one at all", () => {
+    expect(swPendingFresh({ at: now - SW_PERIODIC_PENDING_MAX_AGE_MS, tag: "kad-refresh" }, now)).toBe(false);
+    expect(swPendingFresh({ at: now + 60_000, tag: "kad-refresh" }, now)).toBe(false);
+    expect(swPendingFresh({ at: now, tag: "other" }, now)).toBe(false);
+    expect(swPendingFresh({ at: "now", tag: "kad-refresh" }, now)).toBe(false);
+    expect(swPendingFresh(null, now)).toBe(false);
+    expect(swPendingFresh([], now)).toBe(false);
   });
 });

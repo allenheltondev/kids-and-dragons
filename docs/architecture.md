@@ -1826,7 +1826,14 @@ browser grants it only to an installed app it has seen used recently, and stretc
 for one that is seldom opened; Safari and Firefox have no such API and do nothing. On
 `periodicsync` the worker (`sw.ts`) first asks for a newer `sw.js` (`registration.update()`); a
 new build's install re-reads its own file index and fetches the content that changed, so when one
-turns up the run is handed to it by message and this worker stops. Otherwise it fetches again every
+is installing or waiting this worker writes a hand-off marker (`/__kad/periodic-pending` in the files
+cache: the time and the tag), records "handed-over" and stops. The new worker's own `activate`,
+after its usual work and `clients.claim()`, takes a marker under a day old, deletes it and runs the
+same refresh under that `waitUntil`; a stale one is dropped. It does so only with no page open,
+because until activate finishes the browser holds every request a page makes; with a page open,
+or when the new worker never takes over, the next `periodicsync` of whichever worker is active
+clears the marker first and does the run itself, so a hand-off is never dropped and never runs
+twice. Otherwise it fetches again every
 `/content/*` file it keeps or wants (the book's content, the campaigns, the next chapter) whose
 copy at this index's fingerprint is missing, which is what a deploy changed, read off the saved
 keys (`swContentToRefresh`). Then, unless Data Saver is on, it decides the next chapter **on the

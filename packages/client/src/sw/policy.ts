@@ -331,10 +331,33 @@ export const SW_PERIODIC_MIN_INTERVAL_MS = 24 * 60 * 60 * 1000;
 export const SW_PERIODIC_KEY = "/__kad/periodic-sync";
 
 /**
- * The message a worker sends the newer one an overnight `update()` found, so
- * the refresh runs against the new build's index instead of this one's.
+ * The hand-off to a newer build (files cache, a path no request can have).
+ * A run whose `update()` finds a newer worker installing or waiting writes
+ * this marker and stops, so the refresh runs against the new build's index.
+ * The new worker's `activate` consumes it; if that worker never takes over,
+ * the next run of whichever worker is active clears it first and does the
+ * refresh itself, so a hand-off is never dropped and never runs twice.
  */
-export const SW_PERIODIC_HANDOFF = "kad:periodic-refresh";
+export const SW_PERIODIC_PENDING_KEY = "/__kad/periodic-pending";
+
+/** A marker older than this is a hand-off nobody took: ignored, and the next run is the refresh. */
+export const SW_PERIODIC_PENDING_MAX_AGE_MS = 24 * 60 * 60 * 1000;
+
+/** What the hand-off marker holds. */
+export interface SwPeriodicPending {
+  /** When it was written (ms since epoch). */
+  at: number;
+  tag: string;
+}
+
+/** Whether a stored marker is a hand-off still worth taking at `now`. */
+export function swPendingFresh(raw: unknown, now: number): boolean {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return false;
+  const { at, tag } = raw as Partial<Record<keyof SwPeriodicPending, unknown>>;
+  if (tag !== SW_PERIODIC_TAG || typeof at !== "number" || !Number.isFinite(at)) return false;
+  const age = now - at;
+  return age >= 0 && age < SW_PERIODIC_PENDING_MAX_AGE_MS;
+}
 
 /**
  * How long one overnight run may keep fetching. The browser gives a periodic
@@ -348,7 +371,7 @@ export const SW_PERIODIC_DEADLINE_MS = 2 * 60 * 1000;
 export type SwPeriodicOutcome =
   /** Content refreshed and the next chapter's art saved. */
   | "done"
-  /** A newer build was waiting; it was asked to do the run instead. */
+  /** A newer build was installing or waiting; it was left a marker to do the run instead. */
   | "handed-over"
   /** Data Saver is on: content refreshed, no art guessed at. */
   | "saved-data"

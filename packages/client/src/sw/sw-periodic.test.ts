@@ -10,7 +10,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { createContext, Script } from "node:vm";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import type { Chapter } from "@kad/shared";
 import { buildServiceWorker } from "../../sw-build";
 import { swNextChapterArt, swHeroesOf } from "./next-chapter";
@@ -66,13 +66,24 @@ interface Harness {
   listeners: Map<string, (event: unknown) => void>;
   files: MemoryCache;
   fetched: string[];
-  posted: unknown[];
+  /** The Cache Storage, to hand a second worker the same origin. */
+  caches: Map<string, MemoryCache>;
 }
 
-function harness({ saveData = false, waiting = false, broken = false } = {}): Harness {
-  const next = { state: "installed", postMessage: vi.fn(), addEventListener() {}, removeEventListener() {} };
-  const posted: unknown[] = [];
-  next.postMessage.mockImplementation((message: unknown) => posted.push(message));
+interface HarnessOptions {
+  saveData?: boolean;
+  /** A newer build the update finds, and where it stands. */
+  newer?: "installing" | "waiting";
+  broken?: boolean;
+  /** Pages open on the origin. */
+  pages?: number;
+  /** Another worker's Cache Storage: the same origin, a new build's worker. */
+  caches?: Map<string, MemoryCache>;
+}
+
+function harness({ saveData = false, newer, broken = false, pages = 0, caches: shared }: HarnessOptions = {}): Harness {
+  // A plain object, as a scope sees another `ServiceWorker`: nothing on it is called.
+  const next = {};
   const chapters = ["gemfall-01", "gemfall-02", "gemfall-03a", "gemfall-03b", "gemfall-03c", "gemfall-04a"];
   const served = new Map<string, Uint8Array>();
   served.set("/content/campaigns/gemfall.json", repo("/content/campaigns/gemfall.json"));
@@ -91,9 +102,8 @@ function harness({ saveData = false, waiting = false, broken = false } = {}): Ha
     return basic(bytes ? new Response(bytes.slice()) : new Response("missing", { status: 404 }));
   };
 
-  const caches = new Map<string, MemoryCache>();
-  const files = new MemoryCache();
-  caches.set("kad-files-v1", files);
+  const caches = shared ?? new Map<string, MemoryCache>([["kad-files-v1", new MemoryCache()]]);
+  const files = caches.get("kad-files-v1")!;
   const storage = {
     open: async (name: string) => {
       if (broken) throw new Error("storage is gone");
@@ -124,8 +134,13 @@ function harness({ saveData = false, waiting = false, broken = false } = {}): Ha
   const listeners = new Map<string, (event: unknown) => void>();
   const self = {
     location: new URL(ORIGIN),
-    clients: { claim: async () => undefined, matchAll: async () => [] },
-    registration: { update: async () => undefined, installing: null, waiting: waiting ? next : null, active: { state: "activated" } },
+    clients: { claim: async () => undefined, matchAll: async () => Array.from({ length: pages }, () => ({ postMessage() {} })) },
+    registration: {
+      update: async () => undefined,
+      installing: newer === "installing" ? next : null,
+      waiting: newer === "waiting" ? next : null,
+      active: {},
+    },
     skipWaiting: async () => undefined,
     addEventListener: (type: string, listener: (event: unknown) => void) => listeners.set(type, listener),
   };
@@ -147,7 +162,7 @@ function harness({ saveData = false, waiting = false, broken = false } = {}): Ha
     console,
   });
   new Script(source).runInContext(context);
-  return { listeners, files, fetched, posted };
+  return { listeners, files, fetched, caches };
 }
 
 /** Fire an event and wait for everything it handed `waitUntil`. */
@@ -194,18 +209,50 @@ describe("the built worker's overnight refresh", () => {
     expect(await record(h)).toMatchObject({ outcome: "saved-data", warmed: 0 });
   }, 15_000);
 
-  it("hands the run to a newer build the update found", async () => {
-    const h = harness({ waiting: true });
-    await fire(h, "periodicsync", { tag: "kad-refresh" });
-    expect(h.posted).toEqual([{ type: "kad:periodic-refresh" }]);
-    expect(h.fetched.some((path) => path.startsWith("/assets/"))).toBe(false);
-    expect(await record(h)).toMatchObject({ outcome: "handed-over" });
+  it("hands the run to a newer build through a marker its activate takes", async () => {
+    // Worker A: the update finds B installing. A posts nothing; it leaves a marker.
+    const a = harness({ newer: "installing" });
+    await fire(a, "periodicsync", { tag: "kad-refresh" });
+    expect(a.fetched.some((path) => path.startsWith("/assets/"))).toBe(false);
+    expect(await record(a)).toMatchObject({ outcome: "handed-over", build: "abc123def456" });
+    const marker = (await (await a.files.match("/__kad/periodic-pending"))?.json()) as { at: number; tag: string };
+    expect(marker.tag).toBe("kad-refresh");
+    expect(Date.now() - marker.at).toBeLessThan(60_000);
+
+    // Worker B: a fresh scope on the same caches, with no `self.serviceWorker`, activates.
+    const b = harness({ caches: a.caches });
+    await fire(b, "activate", {});
+    expect(await a.files.match("/__kad/periodic-pending")).toBeUndefined();
+    expect(b.fetched.some((path) => path.startsWith("/assets/"))).toBe(true);
+    expect(await record(b)).toMatchObject({ outcome: "done", chapters: ["gemfall-02"] });
   }, 15_000);
 
-  it("takes a handed-over run only from another worker, never from a page", async () => {
+  it("leaves the hand-off for the next run while a page is open, which takes it once", async () => {
+    const a = harness({ newer: "waiting" });
+    await fire(a, "periodicsync", { tag: "kad-refresh" });
+    const b = harness({ caches: a.caches, pages: 1 });
+    await fire(b, "activate", {});
+    expect(b.fetched.some((path) => path.startsWith("/assets/"))).toBe(false);
+    expect(await a.files.match("/__kad/periodic-pending")).toBeDefined();
+    await fire(b, "periodicsync", { tag: "kad-refresh" });
+    expect(await a.files.match("/__kad/periodic-pending")).toBeUndefined();
+    expect(await record(b)).toMatchObject({ outcome: "done" });
+  }, 15_000);
+
+  it("ignores a stale hand-off, and drops it", async () => {
+    const a = harness();
+    const old = { at: Date.now() - 25 * 60 * 60 * 1000, tag: "kad-refresh" };
+    await a.files.put("/__kad/periodic-pending", new Response(JSON.stringify(old)));
+    await fire(a, "activate", {});
+    expect(a.fetched.some((path) => path.startsWith("/assets/") || path === "/api/journal")).toBe(false);
+    expect(await record(a)).toBeUndefined();
+    expect(await a.files.match("/__kad/periodic-pending")).toBeUndefined();
+  }, 15_000);
+
+  it("leaves no marker when there is no newer build", async () => {
     const h = harness();
-    expect(await fire(h, "message", { data: { type: "kad:periodic-refresh" }, source: { url: `${ORIGIN}/` } })).toBe(0);
-    expect(await fire(h, "message", { data: { type: "kad:periodic-refresh" }, source: { scriptURL: `${ORIGIN}/sw.js` } })).toBe(1);
+    await fire(h, "periodicsync", { tag: "kad-refresh" });
+    expect(await h.files.match("/__kad/periodic-pending")).toBeUndefined();
     expect(await record(h)).toMatchObject({ outcome: "done" });
   }, 15_000);
 

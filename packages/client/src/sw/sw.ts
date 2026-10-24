@@ -32,8 +32,8 @@ import {
   SW_IMAGE_LIMIT,
   SW_LEGACY_IMAGE_CACHES,
   SW_PERIODIC_DEADLINE_MS,
-  SW_PERIODIC_HANDOFF,
   SW_PERIODIC_KEY,
+  SW_PERIODIC_PENDING_KEY,
   SW_PERIODIC_TAG,
   SW_PRECACHE_CONTENT,
   SW_SHELL_KEY,
@@ -46,6 +46,7 @@ import {
   swEvictions,
   swIsImage,
   swOverLimit,
+  swPendingFresh,
   swPeriodicByteCap,
   swPeriodicWork,
   swQuotaTrim,
@@ -59,6 +60,7 @@ import {
   type FileIndex,
   type FileMeta,
   type SwPeriodicOutcome,
+  type SwPeriodicPending,
   type SwPeriodicRecord,
   type SwShellNetwork,
 } from "./policy";
@@ -85,19 +87,12 @@ interface SwFetchEvent extends SwExtendableEvent {
 }
 interface SwMessageEvent extends SwExtendableEvent {
   readonly data: unknown;
-  /** A page (a `Client`, which has a `url`) or another worker (a `ServiceWorker`, which has a `scriptURL`). */
-  readonly source?: { readonly url?: unknown; readonly scriptURL?: unknown } | null;
 }
 interface SwPeriodicSyncEvent extends SwExtendableEvent {
   readonly tag: string;
 }
-/** A `ServiceWorker` as the worker sees one: itself, or another build's. */
-interface SwWorkerRef {
-  readonly state: string;
-  postMessage(message: unknown): void;
-  addEventListener(type: "statechange", listener: () => void): void;
-  removeEventListener(type: "statechange", listener: () => void): void;
-}
+/** A `ServiceWorker` on the registration, as far as the worker compares them. */
+type SwWorkerRef = object;
 interface SwScope {
   readonly location: Location;
   readonly clients: {
@@ -111,8 +106,6 @@ interface SwScope {
     readonly waiting?: SwWorkerRef | null;
     readonly active?: SwWorkerRef | null;
   };
-  /** This worker itself, where the browser exposes it. */
-  readonly serviceWorker?: SwWorkerRef;
   skipWaiting(): Promise<void>;
   addEventListener(type: "install" | "activate", listener: (event: SwExtendableEvent) => void): void;
   addEventListener(type: "fetch", listener: (event: SwFetchEvent) => void): void;
@@ -262,7 +255,7 @@ worker.addEventListener("activate", (event) => {
       // Start the page's request while the worker is still waking up.
       await worker.registration.navigationPreload?.enable().catch(() => undefined);
       await worker.clients.claim();
-    }),
+    }).then(takePendingRefresh),
   );
 });
 
@@ -303,8 +296,9 @@ worker.addEventListener("fetch", (event) => {
  *
  *   1. asks the browser for a newer `sw.js` (`registration.update()`). A new
  *      build's install re-reads its own file index and fetches the content
- *      that changed, so when one turns up this run hands over to it
- *      (`SW_PERIODIC_HANDOFF`) and stops: its index is the one to warm by;
+ *      that changed, so when one turns up this run leaves it a marker
+ *      (`SW_PERIODIC_PENDING_KEY`) and stops: its index is the one to warm
+ *      by, and its `activate` runs the refresh (`takePendingRefresh`);
  *   2. fetches again every `/content/*` file kept or wanted whose copy at this
  *      index's fingerprint is missing (`swContentToRefresh`);
  *   3. unless Data Saver is on, finds the household's next chapter from the
@@ -322,18 +316,6 @@ worker.addEventListener("periodicsync", (event) => {
   event.waitUntil(periodicOnce(true));
 });
 
-worker.addEventListener("message", (event) => {
-  const data = event.data as { type?: unknown } | null | undefined;
-  if (data?.type !== SW_PERIODIC_HANDOFF) return;
-  // Only another worker hands a run over; a page cannot start one.
-  if (typeof event.source?.scriptURL !== "string") return;
-  event.waitUntil(
-    afterActivation()
-      .then((active) => (active ? periodicOnce(false) : undefined))
-      .catch(() => undefined),
-  );
-});
-
 let periodicRun: Promise<void> | null = null;
 
 /** One run at a time, never rejecting, and never outlasting the deadline by much. */
@@ -341,6 +323,8 @@ function periodicOnce(mayUpdate: boolean): Promise<void> {
   periodicRun ??= (async () => {
     const deadline = Date.now() + SW_PERIODIC_DEADLINE_MS;
     const record: SwPeriodicRecord = { at: 0, outcome: "failed", build: __KAD_BUILD__, refreshed: 0, warmed: 0, chapters: [] };
+    // Any hand-off still waiting is this run now: taken once, never twice.
+    await clearPending().catch(() => undefined);
     try {
       record.outcome = await periodicRefresh(record, deadline, mayUpdate);
     } catch (error) {
@@ -390,8 +374,9 @@ async function periodicRefresh(record: SwPeriodicRecord, deadline: number, mayUp
 }
 
 /**
- * Ask for a newer build. When one is installing or waiting, hand the run to
- * it and say so; anything that goes wrong just means this worker does the run.
+ * Ask for a newer build. When one is installing or waiting, leave it the
+ * hand-off marker and say so; anything that goes wrong just means this
+ * worker does the run.
  */
 async function handedToNewerWorker(): Promise<boolean> {
   const registration = worker.registration;
@@ -399,31 +384,44 @@ async function handedToNewerWorker(): Promise<boolean> {
     await registration.update?.();
     const next = registration.installing ?? registration.waiting;
     if (!next || next === registration.active) return false;
-    next.postMessage({ type: SW_PERIODIC_HANDOFF });
+    const marker: SwPeriodicPending = { at: Date.now(), tag: SW_PERIODIC_TAG };
+    const files = await caches.open(SW_CACHES.files);
+    await put(files, SW_PERIODIC_PENDING_KEY, new Response(JSON.stringify(marker), { headers: { "content-type": "application/json" } }));
     return true;
   } catch {
     return false;
   }
 }
 
-/** Resolves true once this worker is the active one (a handed-over run waits for its own activate). */
-function afterActivation(timeoutMs = 60_000): Promise<boolean> {
-  const me = worker.serviceWorker;
-  if (!me) return Promise.resolve(!worker.registration.installing && !worker.registration.waiting);
-  if (me.state === "activated") return Promise.resolve(true);
-  return new Promise((resolve) => {
-    const done = (value: boolean): void => {
-      clearTimeout(timer);
-      me.removeEventListener("statechange", changed);
-      resolve(value);
-    };
-    const changed = (): void => {
-      if (me.state === "activated") done(true);
-      else if (me.state === "redundant") done(false);
-    };
-    const timer = setTimeout(() => done(false), timeoutMs);
-    me.addEventListener("statechange", changed);
-  });
+/**
+ * The end of `activate`: a hand-off an older worker left (`SW_PERIODIC_PENDING_KEY`)
+ * is this worker's refresh to run, under the same `waitUntil`.
+ *
+ * Only with no page open. Until activate's work is done the browser holds
+ * every request a page makes, so an open page would wait out a whole
+ * refresh; the marker is left instead, and the next `periodicsync` (which
+ * clears it first) does the run. A stale marker is dropped. Never throws.
+ */
+async function takePendingRefresh(): Promise<void> {
+  try {
+    const files = await caches.open(SW_CACHES.files);
+    const saved = await files.match(SW_PERIODIC_PENDING_KEY, SAME);
+    if (!saved) return;
+    const marker = (await saved.json().catch(() => null)) as unknown;
+    if (!swPendingFresh(marker, Date.now())) {
+      await files.delete(SW_PERIODIC_PENDING_KEY);
+      return;
+    }
+    const open = await worker.clients.matchAll({ type: "window" });
+    if (open.length > 0) return;
+    await periodicOnce(false);
+  } catch {
+    // The marker stays; the next periodicsync takes it.
+  }
+}
+
+async function clearPending(): Promise<void> {
+  await (await caches.open(SW_CACHES.files)).delete(SW_PERIODIC_PENDING_KEY);
 }
 
 /** The chapters to get ready, read from what the phone has; null when nothing says. */
