@@ -5,7 +5,8 @@ epic closes and again after any change to the manifest, the service worker or ro
 
 On every device, open Help, then Diagnostics, tap Copy, and paste the text into the pass record.
 It names the build, the worker's state, whether the page is controlled, installed app or tab, the
-space used and kept safe, and how many files are saved for offline (#459).
+space used and kept safe, how many files are saved for offline (#459), and whether the overnight
+refresh is on and when it last ran (#467).
 
 ## Why this exists
 
@@ -51,6 +52,7 @@ Start each pass with a fresh install, and with no saved site data for the site.
 | Badge while backgrounded | Android installed, or iPhone 16.4+ Home Screen app: join a room, background the app, and have the TV ask this player a question. Then open the app, and repeat and answer from another device. Try a shared family tablet that is only watching. | The icon shows a badge while the question waits and the app is in the background. It clears when the app comes forward, when the question is answered and when the player leaves the room. A shared tablet and the TV never show one. A plain tab shows nothing. May need the notifications permission on iPhone. | Decision and calls with a stubbed badge API: `packages/client/src/ui/app-badge.test.tsx`. The real icon: device only. |
 | App killed, then relaunched | In a room, swipe the installed app away from the app switcher. Reopen it. | It opens to the hero and offers the room again, or the lobby. It never shows a blank screen or a second copy of the hero. | "PWA 3 (#413)" planned. Device only. |
 | Audio unlock and read-aloud | In the installed app, tap into a scene with sound and turn on read-aloud. Do it once after a fresh launch. | Sound plays after the first tap. Read-aloud speaks. Silent mode and volume behave as they do in the browser (note any difference). | Read-aloud logic: `e2e/read-aloud.spec.ts`. The unlock on a real phone: device only. |
+| Overnight refresh, next chapter ready | Android installed only. Play a chapter to its end on the TV with this phone's hero, open the book once on the phone, then leave the phone on Wi-Fi and charging overnight (Chrome fires it at most once a day, and only for an app used recently). Next day, open Help, then Diagnostics. Then, with Chrome DevTools remote debugging throttling to Slow 3G (or a slow real network), start the next chapter with this phone's world showing. | Diagnostics reads "Overnight refresh: On, last ran" with a time after you left it. The next chapter's story plate and every backdrop show at once, with no picture arriving late. With Data Saver on, it still runs but saves no art. A plain tab and an iPhone show "Not on this device" or "Off": N/A. | Registration decision: `packages/client/src/sw/periodic.test.ts`. Next chapter: `next-chapter.test.ts`. The built worker's run, refresh, Data Saver and hand-over: `sw-periodic.test.ts`. A real overnight wake: device only (DevTools, Application, Periodic Background Sync can fire `kad-refresh` by hand). |
 | Adventure book, online then offline | Open the book with a signal (hero, Map, Field Guide). Turn on airplane mode. Close and reopen the installed app, then open the book. | The hero, the map painting and the Field Guide all show. Nothing is a broken image. | `e2e/offline.spec.ts` (reload and new tab, offline art). On an installed app: device only. |
 | Airplane mode inside a room | Join a room. Turn on airplane mode, then try to commit a decision. Turn it off. | While offline, no decision is accepted and the phone says "No signal. Waiting for Wi-Fi…" with no Try again button. After reconnecting, it reads "Reconnecting…" until synced, then the phone resyncs to the current scene without a double vote. | "PWA 3 (#413)" planned. Device only. |
 | Safari hero to installed app, by pairing | Make a hero in a Safari tab. Install. In Safari, open Account and get a pairing code. In the installed app, open Account and enter it. | The installed app shows the same hero. If the Home Screen app started empty, this is the way across, and the steps are clear. | Pairing flow: `e2e/pairing.spec.ts`. Storage split on iOS: device only. |
@@ -90,6 +92,7 @@ every N/A or Not run says why there.
 | Badge while backgrounded |  |  |  |  |  |  |  |  |
 | App killed, then relaunched |  |  |  |  |  |  |  |  |
 | Audio unlock and read-aloud |  |  |  |  |  |  |  |  |
+| Overnight refresh, next chapter ready |  |  |  |  |  |  |  |  |
 | Adventure book, online then offline |  |  |  |  |  |  |  |  |
 | Airplane mode inside a room |  |  |  |  |  |  |  |  |
 | Safari hero to installed app, by pairing |  |  |  |  |  |  |  |  |
