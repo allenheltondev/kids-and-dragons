@@ -1815,6 +1815,42 @@ the answer is recorded so it is not asked again. Lookups ignore
   enemy with art, the biome's tiles, the party's figures; a few MB) is fetched at idle priority in two
   lanes (`chapterAssets`, `useWarmChapter` in `sw/prefetch.ts`), so the TV never waits on a picture
   mid-story. Phones never do this, and it too is skipped when Data Saver is on.
+- **Overnight, on the installed app (Chromium on Android, #467):** content that changed and the art
+  of the household's next chapter, so the next evening opens with no late backdrops (below).
+
+**Overnight refresh.** Once a worker already controls the page (never on the very first launch),
+the installed app registers a Periodic Background Sync, tag `kad-refresh`, at most once a day
+(`sw/periodic.ts`, loaded lazily by `register.ts` only where the registration has `periodicSync`),
+and only where `navigator.permissions.query({ name: "periodic-background-sync" })` grants it. The
+browser grants it only to an installed app it has seen used recently, and stretches the interval
+for one that is seldom opened; Safari and Firefox have no such API and do nothing. On
+`periodicsync` the worker (`sw.ts`) first asks for a newer `sw.js` (`registration.update()`); a
+new build's install re-reads its own file index and fetches the content that changed, so when one
+is installing or waiting this worker writes a hand-off marker (`/__kad/periodic-pending` in the files
+cache: the time and the tag), records "handed-over" and stops. The new worker's own `activate`,
+after its usual work and `clients.claim()`, takes a marker under a day old, deletes it and runs the
+same refresh under that `waitUntil`; a stale one is dropped. It does so only with no page open,
+because until activate finishes the browser holds every request a page makes; with a page open,
+or when the new worker never takes over, the next `periodicsync` of whichever worker is active
+clears the marker first and does the run itself, so a hand-off is never dropped and never runs
+twice. Otherwise it fetches again every
+`/content/*` file it keeps or wants (the book's content, the campaigns, the next chapter) whose
+copy at this index's fingerprint is missing, which is what a deploy changed, read off the saved
+keys (`swContentToRefresh`). Then, unless Data Saver is on, it decides the next chapter **on the
+phone, with no new endpoint**: the saved journal in IndexedDB (read only; refreshed from the
+existing `/api/journal` with the device token the page saved, when that answers) gives the newest
+campaign still `active` and the chapters played, and the campaign's own content gives what follows
+(`sw/next-chapter.ts`). An ordered campaign takes the beat after the last one played, narrowed to
+the road the party holds where a "Last time…" line or the chapter just played says which, else
+every road of that beat; a graph campaign takes where the ways out of the last place played lead.
+At most three chapters. Their story plates and everything `chapterAssets` names (now
+`sw/chapter-art.ts`, which `sw-build.ts` concatenates into the worker with `world/art-paths.ts`)
+are saved by fingerprint, at most a quarter of the files budget a night (`swPeriodicByteCap`), with
+the usual budget eviction after. The run stops starting downloads after two minutes, lets nothing
+escape its `waitUntil`, and records how it ended in the files cache (`/__kad/periodic-sync`), which
+Diagnostics shows as "Overnight refresh" with whether it is registered. The guess can be wrong
+(the server picks the real chapter from route flags the phone does not hold); a wrong guess costs
+one night's download of art that LRU eviction later drops.
 
 **Updates.** Each build's `sw.js` names its own files, so every deploy is a new worker. It takes
 over at once, including pages that are already open. Those pages were built against the previous

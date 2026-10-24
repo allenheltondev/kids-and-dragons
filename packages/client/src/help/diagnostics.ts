@@ -7,7 +7,15 @@
  * throws is no use on the device it is for.
  */
 
-import { SW_CACHES, SW_FILES_META_KEY, type FileMeta } from "../sw/policy";
+import {
+  SW_CACHES,
+  SW_FILES_META_KEY,
+  SW_PERIODIC_KEY,
+  SW_PERIODIC_TAG,
+  swPeriodicRecordOf,
+  type FileMeta,
+  type SwPeriodicRecord,
+} from "../sw/policy";
 import { browserEnv, isStandalone } from "../install/detect";
 
 export type WorkerState = "none" | "installing" | "waiting" | "active";
@@ -24,6 +32,12 @@ export interface Diagnostics {
   persisted: boolean | null;
   /** Files the app saved for offline, from the worker's own bookkeeping. */
   saved: { count: number; bytes: number } | null;
+  /**
+   * The overnight refresh (#467): whether it is registered (null where the
+   * browser has no Periodic Background Sync), and the worker's record of its
+   * last run.
+   */
+  periodic: { registered: boolean | null; lastRun: SwPeriodicRecord | null };
 }
 
 export interface DiagnosticRow {
@@ -70,6 +84,22 @@ export function savedFilesOf(meta: unknown): { count: number; bytes: number } | 
   return { count, bytes };
 }
 
+/** `2026-10-24 06:12 UTC`: the same on every device, for a pass record. */
+export function formatWhen(at: number): string {
+  const date = new Date(at);
+  if (!Number.isFinite(date.getTime())) return "unknown";
+  return `${date.toISOString().slice(0, 16).replace("T", " ")} UTC`;
+}
+
+/** The overnight refresh, in words. */
+export function periodicWords(periodic: Diagnostics["periodic"]): string {
+  const last = periodic.lastRun;
+  const ran = last ? `last ran ${formatWhen(last.at)}${last.outcome === "failed" ? ", and it went wrong" : ""}` : null;
+  if (periodic.registered === null) return ran ? `Not on this device (${ran})` : "Not on this device";
+  if (!periodic.registered) return ran ? `Off (${ran})` : "Off";
+  return ran ? `On, ${ran}` : "On, not run yet";
+}
+
 const WORKER_WORDS: Record<WorkerState, string> = {
   none: "None",
   installing: "Getting ready",
@@ -100,6 +130,7 @@ export function diagnosticRows(d: Diagnostics): DiagnosticRow[] {
       label: "Saved for offline",
       value: d.saved ? `${String(d.saved.count)} ${d.saved.count === 1 ? "file" : "files"}, ${formatBytes(d.saved.bytes)}` : "Unknown",
     },
+    { id: "periodic", label: "Overnight refresh", value: periodicWords(d.periodic) },
   ];
 }
 
@@ -119,6 +150,14 @@ export async function collectDiagnostics(): Promise<Diagnostics> {
     const saved = await (await caches.open(SW_CACHES.files)).match(SW_FILES_META_KEY);
     return saved ? ((await saved.json()) as unknown) : undefined;
   });
+  const tags = await attempt(() =>
+    (registration as (ServiceWorkerRegistration & { periodicSync?: { getTags(): Promise<string[]> } }) | undefined)?.periodicSync?.getTags(),
+  );
+  const lastRun = await attempt(async () => {
+    if (typeof caches === "undefined") return undefined;
+    const saved = await (await caches.open(SW_CACHES.files)).match(SW_PERIODIC_KEY);
+    return saved ? ((await saved.json()) as unknown) : undefined;
+  });
   const worker = registration?.active ?? registration?.waiting ?? registration?.installing;
   return {
     build: import.meta.env.VITE_KAD_BUILD,
@@ -131,6 +170,10 @@ export async function collectDiagnostics(): Promise<Diagnostics> {
         : null,
     persisted: typeof persisted === "boolean" ? persisted : null,
     saved: savedFilesOf(meta),
+    periodic: {
+      registered: Array.isArray(tags) ? tags.includes(SW_PERIODIC_TAG) : null,
+      lastRun: swPeriodicRecordOf(lastRun),
+    },
   };
 }
 
