@@ -38,3 +38,16 @@ updates:
       # together with the runtime.
       - dependency-name: "@types/node"
         update-types: ["version-update:semver-major"]
+      # React stays on 19.2 for now: react-dom 19.3 grew 17%, which took the
+      # first paint from 315 KB to 343 KB (8.6 KB gzipped) against the budget
+      # in tools/perf/bundle-budget.ts, for additions nothing here uses yet
+      # (#450). Patches still arrive. Lift this together with the budget when a
+      # feature needs 19.3; the types move with the runtime.
+      - dependency-name: "react"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
