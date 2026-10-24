@@ -119,7 +119,7 @@ test("the adventure book opens on a reload and in a new tab with no signal", asy
   // --- No signal: a reload ---
   await noSignal(context, proxy, phone);
   await phone.reload();
-  await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
+  await expect(phone.getByText(/no signal/i).first()).toBeVisible(TAP);
   await studyTheBook(phone);
 
   // --- No signal: a fresh tab, straight to the book ---
@@ -156,7 +156,7 @@ test("the book saves its art even when it opens before the worker has taken over
   await createCharacter(before, "unicorn", HERO);
   await before.getByRole("button", { name: /begin the adventure/i }).click(TAP);
   await expect(before.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0, TAP);
-  const identity = await earlier.storageState();
+  const identity = await earlier.storageState({ indexedDB: true });
   await earlier.close();
 
   // Its first visit with a worker goes straight to the book, which is open —
@@ -211,6 +211,11 @@ test("a tab left open across a deploy can still open the book", async ({ browser
           : undefined,
       gone: (path) => path.startsWith("/bundle/"),
     });
+    // This is the tab that stays on the old build: one that is not calm enough
+    // to move onto the new one yet (sw/calm.ts). The reload itself, at the next
+    // calm moment, is worker-update.spec's case; here it is held back the way
+    // a reload a moment ago holds it back, so the old tab can be watched.
+    await phone.evaluate(() => sessionStorage.setItem("kad-update-reload", String(Date.now())));
     await phone.evaluate(async () => {
       const taken = new Promise((resolve) => navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true }));
       await (await navigator.serviceWorker.getRegistration())?.update();
@@ -314,7 +319,7 @@ test("a deploy whose content an edge has not caught up with never takes over", a
     await phone.goto("/journal");
     // The failed install's page was never made the offline app.
     expect(await phone.content(), "the failed deploy's page became the offline app").not.toContain("deploy 2");
-    await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
+    await expect(phone.getByText(/no signal/i).first()).toBeVisible(TAP);
     await studyTheBook(phone);
   } finally {
     await context.close();
@@ -338,7 +343,8 @@ test("pictures an earlier worker saved survive the upgrade to this one", async (
   await before.goto("/");
   await before.getByRole("button", { name: BOOK }).click(TAP);
   await expect(before.getByRole("region", { name: `${HERO}'s character sheet` })).toBeVisible(TAP);
-  const identity = await earlier.storageState();
+  // The saved journal lives in IndexedDB now (#458), so it has to travel too.
+  const identity = await earlier.storageState({ indexedDB: true });
   await earlier.close();
 
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: identity, baseURL: proxy.url });
@@ -360,7 +366,7 @@ test("pictures an earlier worker saved survive the upgrade to this one", async (
     // And the book, opened with no signal, still has its map.
     await noSignal(context, proxy, phone);
     await phone.goto("/journal");
-    await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
+    await expect(phone.getByText(/no signal/i).first()).toBeVisible(TAP);
     await phone.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Map" }).click(TAP);
     await expect.poll(() => paintingShown(phone), { timeout: 20_000 }).toBe(true);
   } finally {
@@ -422,6 +428,38 @@ test("an upgrade with many saved pictures takes over promptly, keeping them all"
     // Install and adoption together, on a fast local network.
     expect(took, `taking over took ${String(took)}ms`).toBeLessThan(15_000);
     for (const path of pictures) expect(await kept(phone, path), `${path} was lost in the upgrade`).toBe(true);
+  } finally {
+    await context.close();
+    await proxy.close();
+  }
+});
+
+test("a page load on a network that hangs opens the saved book within a few seconds", async ({ browser, baseURL }) => {
+  // A captive portal or one bar of signal: the page's request is not refused,
+  // it is held. The worker waits about three seconds (policy.ts
+  // `SW_SHELL_TIMEOUT_MS`), then shows the saved app (#454).
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
+  const phone = await context.newPage();
+  const errors: string[] = [];
+  phone.on("pageerror", (error) => errors.push(error.message));
+  try {
+    await phone.goto("/");
+    await controlled(phone);
+    await playALittle(phone);
+    // The saved app is in place (activate made the staged page the saved one).
+    await expect
+      .poll(() => phone.evaluate(async () => (await (await caches.open("kad-shell-v1")).match("/")) !== undefined), { timeout: 20_000 })
+      .toBe(true);
+
+    // Every page load now stalls far longer than the worker waits.
+    proxy.configure({ delay: (path) => (path === "/" || path === "/journal" || /^\/p\//.test(path) ? 20_000 : 0) });
+    const started = Date.now();
+    await phone.goto("/journal", { timeout: 15_000 });
+    await expect(phone.getByRole("region", { name: `${HERO}'s character sheet` })).toBeVisible(TAP);
+    const took = Date.now() - started;
+    expect(took, `the book took ${String(took)}ms behind a hung network`).toBeLessThan(10_000);
+    expect(errors, "the page threw while the network hung").toEqual([]);
   } finally {
     await context.close();
     await proxy.close();

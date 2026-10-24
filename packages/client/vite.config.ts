@@ -1,7 +1,7 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { serviceWorker } from "./sw-build";
+import { buildId, serviceWorker } from "./sw-build";
 
 const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
 const apiTarget = process.env.KAD_DEV_API_TARGET ?? "http://localhost:8787";
@@ -14,9 +14,7 @@ const apiTarget = process.env.KAD_DEV_API_TARGET ?? "http://localhost:8787";
 export default defineConfig({
   // Which build a crash report came from (#317): the commit CI built, else "dev".
   define: {
-    "import.meta.env.VITE_KAD_BUILD": JSON.stringify(
-      (process.env.KAD_BUILD ?? process.env.GITHUB_SHA ?? "dev").slice(0, 12),
-    ),
+    "import.meta.env.VITE_KAD_BUILD": JSON.stringify(buildId()),
   },
   // The service worker (src/sw/) is emitted as `/sw.js` by its own plugin:
   // a fixed URL and a single classic script, which a Vite entry is not.

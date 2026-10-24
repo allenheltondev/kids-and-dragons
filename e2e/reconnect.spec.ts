@@ -111,7 +111,8 @@ test.describe("losing the signal in a room", () => {
 
     // --- Offline: it says so, and offers nothing ---
     await sam.context().setOffline(true);
-    await expect(sam.getByText("Reconnecting…")).toBeVisible(TAP);
+    // Offline, the banner says so in its own words (#460), not "Reconnecting".
+    await expect(sam.getByText("No signal. Waiting for Wi-Fi…")).toBeVisible(TAP);
     await expect(choices.filter({ hasText: "Listen first" })).toBeDisabled(TAP);
     expect(await choices.evaluateAll((buttons) => buttons.filter((b) => !(b as HTMLButtonElement).disabled).length)).toBe(0);
 
@@ -127,6 +128,7 @@ test.describe("losing the signal in a room", () => {
 
     // --- Back online: it catches up to the question open now, then offers it ---
     await sam.context().setOffline(false);
+    await expect(sam.getByText("No signal. Waiting for Wi-Fi…")).toBeHidden(TAP);
     await expect(sam.getByText("Reconnecting…")).toBeHidden(TAP);
     await openPlayerTask(sam);
     await expect(choices.filter({ hasText: "Say hello" })).toBeEnabled(TAP);
@@ -176,5 +178,94 @@ test.describe("losing the signal in a room", () => {
     await expect.poll(async () => (await state()).sceneId, TAP).toBe("scene_humming");
 
     expect(samErrors).toEqual([]);
+  });
+
+  test("says there is no signal while offline, then catches up", async ({ browser }) => {
+    test.setTimeout(180_000);
+
+    const tv = await device(browser, 1280, 720);
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /host a game/i }).click();
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
+    const code = new URL(tv.url()).pathname.split("/").pop()!;
+
+    const sam = await device(browser);
+    await sam.goto("/");
+    await sam.getByLabel(/room code/i).fill(code);
+    await sam.getByRole("button", { name: /join a game/i }).click();
+    await expect(sam).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+    await createCharacter(sam, "unicorn", "Sam");
+    const session = await sessionOf(sam, code);
+
+    await sam.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect.poll(async () => (await readState(code, session.sessionToken)).sceneId, TAP).toBe("scene_hedge_wall");
+    await openPlayerTask(sam);
+    const choices = sam.locator(".prompt .choice");
+    await expect(choices.filter({ hasText: "Listen first" })).toBeEnabled(TAP);
+
+    // Offline: the banner names the missing signal and offers no retry.
+    await sam.context().setOffline(true);
+    await expect(sam.getByText("No signal. Waiting for Wi-Fi…")).toBeVisible(TAP);
+    await expect(sam.getByRole("button", { name: "Try again" })).toHaveCount(0);
+    await expect(choices.filter({ hasText: "Listen first" })).toBeDisabled(TAP);
+
+    // The story moves on without this phone.
+    await jump(session, code, "scene_first_clearing");
+
+    // Back online: the room catches up and the banner goes.
+    await sam.context().setOffline(false);
+    await expect(sam.getByText("No signal. Waiting for Wi-Fi…")).toBeHidden(TAP);
+    await expect(sam.getByText("Reconnecting…")).toBeHidden(TAP);
+    await openPlayerTask(sam);
+    await expect(choices.filter({ hasText: "Say hello" })).toBeEnabled(TAP);
+    await expect(choices.filter({ hasText: "Listen first" })).toHaveCount(0);
+  });
+
+  test("a room gone while the phone was offline says so, and leads home (#470)", async ({ browser }) => {
+    test.setTimeout(180_000);
+    // --- A TV opens the room; a phone joins with a hero ---
+    const tv = await device(browser, 1280, 720);
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /host a game/i }).click();
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
+    const code = new URL(tv.url()).pathname.split("/").pop()!;
+    const guest = await device(browser);
+    await guest.goto("/");
+    await guest.getByLabel(/room code/i).fill(code);
+    await guest.getByRole("button", { name: /join a game/i }).click();
+    await expect(guest).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+    await createCharacter(guest, "unicorn", "Rosie");
+    await expect(guest.getByRole("button", { name: "You", exact: true })).toBeVisible(TAP);
+
+    // --- The guest drops off the network ---
+    await guest.context().setOffline(true);
+    await expect(guest.getByText("No signal. Waiting for Wi-Fi…")).toBeVisible(TAP);
+
+    // --- Meanwhile the room expires: the server no longer knows it. (A host
+    // closing the room is a different case: the state itself says `closed`,
+    // and every screen leaves. This is the room being gone altogether, which
+    // only the catch-up fetch can find out.) ---
+    await guest.route("**/api/state**", (route) =>
+      route.fulfill({ status: 404, contentType: "application/json", body: JSON.stringify({ error: { code: "NOT_FOUND", message: "No such room." } }) }),
+    );
+    await guest.route("**/events/**", (route) => route.abort());
+
+    // --- The guest comes back: not "Reconnecting" forever, but the truth ---
+    // (Playwright's offline switch flips `navigator.onLine` but fires no
+    // `online` event; a real phone does, so it is dispatched here.)
+    await guest.context().setOffline(false);
+    await guest.evaluate(() => window.dispatchEvent(new Event("online")));
+    await expect(guest.getByText("This game has ended or the phone was signed out.")).toBeVisible(TAP);
+    await expect(guest.getByRole("button", { name: "Try again" })).toBeVisible();
+    await expect(guest.getByText("Reconnecting…")).toBeHidden();
+
+    // --- "Back to the start" lands on the home screen ---
+    await guest.getByRole("button", { name: "Back to the start" }).click();
+    await expect(guest).toHaveURL(/\/$/, TAP);
+    await expect(guest.getByRole("button", { name: /host a game/i })).toBeVisible(TAP);
   });
 });

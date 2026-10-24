@@ -15,17 +15,21 @@
 import {
   SW_BUNDLE_LIST_KEY,
   SW_CACHES,
-  SW_FILES_BUDGET_BYTES,
   SW_FILES_META_KEY,
   SW_IMAGE_LIMIT,
   SW_LEGACY_IMAGE_CACHES,
   SW_PRECACHE_CONTENT,
   SW_SHELL_KEY,
   SW_SHELL_STAGED_KEY,
+  SW_SHELL_TIMEOUT_MS,
+  swAfterInstallError,
+  swBudgetFor,
   swCacheable,
   swEvictions,
   swIsImage,
   swOverLimit,
+  swQuotaTrim,
+  swShellAnswer,
   swShellEntry,
   swStaleBundles,
   swStaleVersions,
@@ -33,6 +37,7 @@ import {
   swVersionedKey,
   type FileIndex,
   type FileMeta,
+  type SwShellNetwork,
 } from "./policy";
 
 /** Prepended by `sw-build.ts`: every `/bundle/*` file of this build. */
@@ -43,6 +48,8 @@ declare const __KAD_PRECACHE__: readonly string[];
 declare const __KAD_PRECACHE_CAMPAIGNS__: readonly string[];
 /** Prepended by `sw-build.ts`: the URL of this build's `FileIndex` (a hashed `/bundle/` file). */
 declare const __KAD_FILE_INDEX__: string;
+/** Prepended by `sw-build.ts`: this build's id, the same one the page reports (`VITE_KAD_BUILD`). */
+declare const __KAD_BUILD__: string;
 
 interface SwExtendableEvent extends Event {
   waitUntil(work: Promise<unknown>): void;
@@ -58,7 +65,10 @@ interface SwMessageEvent extends SwExtendableEvent {
 }
 interface SwScope {
   readonly location: Location;
-  readonly clients: { claim(): Promise<void> };
+  readonly clients: {
+    claim(): Promise<void>;
+    matchAll(options?: { includeUncontrolled?: boolean; type?: "window" | "worker" | "sharedworker" | "all" }): Promise<readonly { postMessage(message: unknown): void }[]>;
+  };
   readonly registration: { navigationPreload?: { enable(): Promise<void> } };
   skipWaiting(): Promise<void>;
   addEventListener(type: "install" | "activate", listener: (event: SwExtendableEvent) => void): void;
@@ -84,60 +94,93 @@ const SAME: CacheQueryOptions = { ignoreVary: true };
 
 worker.addEventListener("install", (event) => {
   event.waitUntil(
-    (async () => {
-      // The page itself, fresh past the HTTP cache (it is `no-cache` anyway),
-      // staged rather than saved: the worker in charge still serves its own
-      // build's page offline, and must keep doing so if this install fails.
-      // Activate makes it the saved page.
-      const shell = await caches.open(SW_CACHES.shell);
-      const page = await fetch(SW_SHELL_KEY, { cache: "reload" });
-      if (swCacheable(page)) await shell.put(SW_SHELL_STAGED_KEY, page);
-
-      // Hashed code: what is already saved from an earlier build is the same
-      // bytes, so only what is new is fetched. The file index is one of them.
-      const bundle = await caches.open(SW_CACHES.bundle);
-      await addMissing(bundle, __KAD_PRECACHE__);
-
-      // The content the offline book reads, by fingerprint: a deploy that
-      // changed none of it fetches none of it.
-      const fingerprints = await fileIndex();
-      const files = await caches.open(SW_CACHES.files);
-      const loose: string[] = [];
-      for (const path of [...SW_PRECACHE_CONTENT, ...__KAD_PRECACHE_CAMPAIGNS__]) {
-        const fingerprint = fingerprints[path];
-        if (fingerprint === undefined) {
-          loose.push(path);
-          continue;
+    guarded("install", async () => {
+      // A full disk gets one trim of the saved art and one more try
+      // (`swAfterInstallError`); anything else fails the install as it is.
+      for (let attempt = 0; ; attempt += 1) {
+        try {
+          await installCopies();
+          break;
+        } catch (error) {
+          if (swAfterInstallError(error, attempt) === "fail") throw error;
+          await trimForQuota();
         }
-        if (await files.match(swVersionedKey(path, fingerprint), SAME)) continue;
-        // The book needs every one of these offline. If one cannot be had as
-        // this build's bytes — a CDN edge still serving the previous deploy —
-        // install fails, so this worker never takes over and the old one (and
-        // its copies) stays in charge; the browser tries the update again later.
-        const response = await fetch(path, { cache: "no-cache" });
-        const kept =
-          swCacheable(response) &&
-          (await keepVersioned(files, path, fingerprint, response, { replaceOlder: false, persist: false }));
-        if (!kept) throw new Error(`install: ${path} is not the bytes this build fingerprinted`);
       }
-      await saveMeta();
-      if (loose.length > 0) await (await caches.open(SW_CACHES.content)).addAll(loose);
 
       // Take over at once. Every build's worker answers the same way, so an
       // open page loses nothing by being served by the new one.
       await worker.skipWaiting();
-    })(),
+    }),
   );
 });
 
+/**
+ * Everything an install saves. Safe to run twice: what is already saved is
+ * skipped, so a retry after a trim fetches only what did not fit.
+ */
+async function installCopies(): Promise<void> {
+  // The page itself, fresh past the HTTP cache (it is `no-cache` anyway),
+  // staged rather than saved: the worker in charge still serves its own
+  // build's page offline, and must keep doing so if this install fails.
+  // Activate makes it the saved page.
+  const shell = await caches.open(SW_CACHES.shell);
+  const page = await fetch(SW_SHELL_KEY, { cache: "reload" });
+  if (swCacheable(page)) await put(shell, SW_SHELL_STAGED_KEY, page);
+
+  // Hashed code: what is already saved from an earlier build is the same
+  // bytes, so only what is new is fetched. The file index is one of them.
+  const bundle = await caches.open(SW_CACHES.bundle);
+  await addMissing(bundle, __KAD_PRECACHE__);
+
+  // The content the offline book reads, by fingerprint: a deploy that
+  // changed none of it fetches none of it.
+  const fingerprints = await fileIndex();
+  const files = await caches.open(SW_CACHES.files);
+  const loose: string[] = [];
+  for (const path of [...SW_PRECACHE_CONTENT, ...__KAD_PRECACHE_CAMPAIGNS__]) {
+    const fingerprint = fingerprints[path];
+    if (fingerprint === undefined) {
+      loose.push(path);
+      continue;
+    }
+    if (await files.match(swVersionedKey(path, fingerprint), SAME)) continue;
+    // The book needs every one of these offline. If one cannot be had as
+    // this build's bytes — a CDN edge still serving the previous deploy —
+    // install fails, so this worker never takes over and the old one (and
+    // its copies) stays in charge; the browser tries the update again later.
+    const response = await fetch(path, { cache: "no-cache" });
+    const kept =
+      swCacheable(response) &&
+      (await keepVersioned(files, path, fingerprint, response, { replaceOlder: false, persist: false }));
+    if (!kept) throw new Error(`install: ${path} is not the bytes this build fingerprinted`);
+  }
+  await saveMeta();
+  if (loose.length > 0) await (await caches.open(SW_CACHES.content)).addAll(loose);
+}
+
+/**
+ * The disk filled mid-install: drop the least recently used art and audio, to
+ * about half of what is saved (`swQuotaTrim`; content never goes), so the
+ * retry has room. That art is downloaded again when a screen next draws it.
+ */
+async function trimForQuota(): Promise<void> {
+  const files = await caches.open(SW_CACHES.files);
+  const current = await filesMeta();
+  for (const key of swQuotaTrim(current)) {
+    await files.delete(key);
+    delete current[key];
+  }
+  await saveMeta().catch(() => undefined);
+}
+
 worker.addEventListener("activate", (event) => {
   event.waitUntil(
-    (async () => {
+    guarded("activate", async () => {
       // This build's page, staged at install, becomes the offline app.
       const shellCache = await caches.open(SW_CACHES.shell);
       const staged = await shellCache.match(SW_SHELL_STAGED_KEY, SAME);
       if (staged) {
-        await shellCache.put(SW_SHELL_KEY, staged);
+        await put(shellCache, SW_SHELL_KEY, staged);
         await shellCache.delete(SW_SHELL_STAGED_KEY);
       }
 
@@ -161,7 +204,7 @@ worker.addEventListener("activate", (event) => {
       const previous = recorded ? ((await recorded.json()) as string[]) : [];
       const cachedCode = (await bundle.keys()).map((request) => new URL(request.url).pathname);
       for (const path of swStaleBundles(cachedCode, __KAD_BUNDLE__, previous)) await bundle.delete(path);
-      await bundle.put(SW_BUNDLE_LIST_KEY, new Response(JSON.stringify(__KAD_BUNDLE__)));
+      await put(bundle, SW_BUNDLE_LIST_KEY, new Response(JSON.stringify(__KAD_BUNDLE__)));
 
       // Art, rigs, audio and content a deploy replaced or removed.
       const current = await filesMeta();
@@ -175,7 +218,7 @@ worker.addEventListener("activate", (event) => {
       // Start the page's request while the worker is still waking up.
       await worker.registration.navigationPreload?.enable().catch(() => undefined);
       await worker.clients.claim();
-    })(),
+    }),
   );
 });
 
@@ -207,21 +250,142 @@ worker.addEventListener("fetch", (event) => {
 });
 
 // ---------------------------------------------------------------------------
+// Telling the crash reporter (#459)
+// ---------------------------------------------------------------------------
+
+type SwStage = "install" | "activate" | "fingerprint" | "quota";
+
+/**
+ * The phrases the server accepts (`diagnose` in shared/error-report.ts): a
+ * report names a kind of failure, never what the exception said.
+ */
+const STAGE_MESSAGE: Record<SwStage, string> = {
+  install: "Error: service worker install failed",
+  activate: "Error: service worker activate failed",
+  fingerprint: "Error: service worker file mismatch",
+  quota: "Error: service worker out of space",
+};
+
+/** Reporting may never hold up an install or an activate for longer than this. */
+const REPORT_WAIT_MS = 2000;
+
+const reported = new Set<SwStage>();
+
+/**
+ * Run an install or activate body; if it throws, tell the reporter, then throw
+ * the same error so the browser still treats the step as failed.
+ */
+async function guarded(stage: "install" | "activate", body: () => Promise<void>): Promise<void> {
+  try {
+    await body();
+  } catch (error) {
+    noteQuota(error);
+    await reportOnce(stage, error);
+    throw error;
+  }
+}
+
+/** A full disk is worth one report per worker lifetime, wherever it surfaces. */
+function noteQuota(error: unknown): void {
+  const thrown = error as { name?: unknown; message?: unknown } | null | undefined;
+  if (thrown?.name === "QuotaExceededError" || /quota/i.test(String(thrown?.message))) void reportOnce("quota", error);
+}
+
+/** `cache.put`, noting a full disk on the way past. */
+async function put(cache: Cache, request: RequestInfo | URL, response: Response): Promise<void> {
+  try {
+    await cache.put(request, response);
+  } catch (error) {
+    noteQuota(error);
+    throw error;
+  }
+}
+
+/**
+ * At most once per stage per worker lifetime. Never throws, and never takes
+ * longer than `REPORT_WAIT_MS`, so it is safe to await inside `waitUntil`.
+ */
+function reportOnce(stage: SwStage, error?: unknown): Promise<void> {
+  if (reported.has(stage)) return Promise.resolve();
+  reported.add(stage);
+  const sent = (async () => {
+    try {
+      const open = await worker.clients.matchAll({ includeUncontrolled: true });
+      if (open.length > 0) {
+        const message = String((error as { message?: unknown } | null | undefined)?.message ?? "").slice(0, 200);
+        for (const client of open) client.postMessage({ type: "kad:sw-error", stage, message, build: __KAD_BUILD__ });
+        return;
+      }
+      // No page is open to hand it to: the same endpoint and body as report.ts.
+      const id = Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => b.toString(16).padStart(2, "0")).join("");
+      await fetch("/api/client-error", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          message: STAGE_MESSAGE[stage],
+          stack: [],
+          version: __KAD_BUILD__,
+          route: "other",
+          layout: "other",
+          browser: "other",
+          id,
+        }),
+        keepalive: true,
+      });
+    } catch {
+      // Never throw from the thing that reports throwing.
+    }
+  })();
+  return Promise.race([sent, new Promise<void>((resolve) => setTimeout(resolve, REPORT_WAIT_MS))]);
+}
+
+// ---------------------------------------------------------------------------
 // Strategies
 // ---------------------------------------------------------------------------
 
-/** A page load: the network (preloaded when it can be), else the saved app. */
-async function shell(event: SwFetchEvent): Promise<Response> {
-  const cache = await caches.open(SW_CACHES.shell);
-  try {
-    const response = (await event.preloadResponse) ?? (await fetch(event.request));
-    if (swCacheable(response)) event.waitUntil(keepShell(cache, response.clone()));
-    return response;
-  } catch (error) {
-    const saved = await cache.match(SW_SHELL_KEY, SAME);
-    if (saved) return saved;
-    throw error;
-  }
+/**
+ * A page load: the network (preloaded when it can be), raced against a short
+ * timer. The saved app answers when the network fails, or is still out when
+ * the timer fires (a captive portal, one bar of signal); with no saved app the
+ * network is waited for as long as it takes (`swShellAnswer`). Whenever the
+ * network's page arrives, early or late, it is kept for the next load.
+ */
+function shell(event: SwFetchEvent): Promise<Response> {
+  const network = (async () => (await event.preloadResponse) ?? (await fetch(event.request)))();
+  const cache = caches.open(SW_CACHES.shell);
+  // Registered before the page is handed the response, so the clone is taken
+  // while the body is still unread; the worker stays up for a late answer.
+  event.waitUntil(
+    network
+      .then(async (response) => {
+        if (!swCacheable(response)) return;
+        const copy = response.clone();
+        await keepShell(await cache, copy);
+      })
+      .catch(() => undefined),
+  );
+  return (async () => {
+    const saved = await (await cache).match(SW_SHELL_KEY, SAME);
+    type Settled = { state: Exclude<SwShellNetwork, "pending">; response?: Response; error?: unknown };
+    const settled: Promise<Settled> = network.then(
+      (response) => ({ state: "ok", response }),
+      (error: unknown) => ({ state: "failed", error }),
+    );
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<{ state: "pending" }>((resolve) => {
+      timer = setTimeout(() => resolve({ state: "pending" }), SW_SHELL_TIMEOUT_MS);
+    });
+    let outcome: Settled | { state: "pending" } = await Promise.race([settled, timeout]);
+    clearTimeout(timer);
+    let answer = swShellAnswer(outcome.state, saved !== undefined);
+    if (answer === "wait") {
+      outcome = await settled;
+      answer = swShellAnswer(outcome.state, saved !== undefined);
+    }
+    if (answer === "network" && "response" in outcome && outcome.response) return outcome.response;
+    if (answer === "saved" && saved) return saved;
+    throw "error" in outcome ? outcome.error : new Error("page load failed");
+  })();
 }
 
 /**
@@ -232,7 +396,7 @@ async function shell(event: SwFetchEvent): Promise<Response> {
  */
 async function keepShell(cache: Cache, response: Response): Promise<void> {
   const entry = swShellEntry(await response.clone().text());
-  if (entry !== null && __KAD_BUNDLE__.includes(entry)) await cache.put(SW_SHELL_KEY, response);
+  if (entry !== null && __KAD_BUNDLE__.includes(entry)) await put(cache, SW_SHELL_KEY, response);
 }
 
 async function cacheFirst(request: Request, cacheName: string): Promise<Response> {
@@ -240,7 +404,7 @@ async function cacheFirst(request: Request, cacheName: string): Promise<Response
   const saved = await cache.match(request, SAME);
   if (saved) return saved;
   const response = await fetch(request);
-  if (swCacheable(response)) await cache.put(request, response.clone());
+  if (swCacheable(response)) await put(cache, request, response.clone());
   return response;
 }
 
@@ -279,7 +443,7 @@ async function networkFirst(request: Request, cacheName: string): Promise<Respon
   const cache = await caches.open(cacheName);
   try {
     const response = await fetch(request);
-    if (swCacheable(response)) await cache.put(request, response.clone());
+    if (swCacheable(response)) await put(cache, request, response.clone());
     return response;
   } catch (error) {
     const saved = await cache.match(request, SAME);
@@ -307,7 +471,7 @@ async function staleWhileRevalidate(event: SwExtendableEvent, request: Request):
 }
 
 async function keepImage(cache: Cache, request: Request, response: Response): Promise<void> {
-  await cache.put(request, response);
+  await put(cache, request, response);
   for (const old of swOverLimit(await cache.keys(), SW_IMAGE_LIMIT)) await cache.delete(old);
 }
 
@@ -344,7 +508,10 @@ async function keepVersioned(
   { replaceOlder = true, persist = true }: { replaceOlder?: boolean; persist?: boolean } = {},
 ): Promise<boolean> {
   const bytes = await response.arrayBuffer();
-  if ((await fingerprintOf(bytes)) !== fingerprint) return false;
+  if ((await fingerprintOf(bytes)) !== fingerprint) {
+    void reportOnce("fingerprint");
+    return false;
+  }
   // Re-wrapped, so the saved copy carries no transfer framing from this fetch.
   const headers = new Headers(response.headers);
   headers.delete("content-encoding");
@@ -360,7 +527,7 @@ async function keepVersioned(
     }
   }
   const key = swVersionedKey(path, fingerprint);
-  await cache.put(key, new Response(bytes, { status: 200, headers }));
+  await put(cache, key, new Response(bytes, { status: 200, headers }));
   current[key] = { bytes: bytes.byteLength, used: Date.now() };
   // A batch (install, adoption) saves the bookkeeping once at the end, rather
   // than waiting out `saveMeta`'s coalescing pause for every file.
@@ -413,16 +580,26 @@ function saveMeta(): Promise<void> {
     saving = null;
     const files = await caches.open(SW_CACHES.files);
     const current = await filesMeta();
-    for (const key of swEvictions(current, SW_FILES_BUDGET_BYTES)) {
+    for (const key of swEvictions(current, swBudgetFor(await storageQuota()))) {
       await files.delete(key);
       delete current[key];
     }
-    await files.put(
+    await put(
+      files,
       SW_FILES_META_KEY,
       new Response(JSON.stringify(current), { headers: { "content-type": "application/json" } }),
     );
   })();
   return saving;
+}
+
+/** The origin's storage quota, where the browser says (`navigator.storage` in the worker). */
+async function storageQuota(): Promise<number | undefined> {
+  try {
+    return (await (navigator as Partial<Navigator>).storage?.estimate?.())?.quota;
+  } catch {
+    return undefined;
+  }
 }
 
 async function touch(key: string): Promise<void> {

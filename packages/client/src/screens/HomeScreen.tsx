@@ -36,6 +36,7 @@ import { InstallCard } from "../install/InstallCard";
 import { FirstLaunchChoice } from "../install/FirstLaunch";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
+import { useBusy } from "../sw/busy";
 import { Icon } from "./icons";
 import { EntryScene } from "./EntryScene";
 import "./shared.css";
@@ -122,6 +123,8 @@ function PersonalHome(): ReactElement {
   const [mode, setMode] = useState<RoomMode>("party");
   const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
   const [busy, setBusy] = useState<null | "create" | "join">(null);
+  // A code half typed or the host form open is unsaved work: no update reload meanwhile.
+  useBusy("home-form", hosting || code.length > 0);
   const [error, setError] = useState<string | null>(null);
 
   const nameFieldId = useId();

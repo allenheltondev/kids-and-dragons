@@ -7,8 +7,7 @@ import {
   parseChannelMessage,
   type EventSourceLike,
   type SequencerHandlers,
-  type TimerHandle,
-} from "./channel";
+  type TimerHandle, RESYNC_AFTER_FAILURES } from "./channel";
 import type { PresentationEvent, ProgressionEvent } from "../store/contract";
 import { makeState } from "../testing/fixtures";
 
@@ -894,5 +893,77 @@ describe("openChannel.reconnect (a screen that woke up, #264)", () => {
     channel.close();
     channel.reconnect?.();
     expect(sources).toHaveLength(2);
+  });
+});
+
+describe("a stream that keeps failing asks for the catch-up once (#470)", () => {
+  it("fetches on the third consecutive failure, and not again in that run", () => {
+    const { sequencer, scheduler } = harness();
+    const sources: EventSourceLike[] = [];
+    const resync = vi.fn(async () => undefined);
+    openChannel({
+      url: () => "/events/ABCD", sequencer, onStatus: () => undefined, resync,
+      createEventSource: () => {
+        const source: EventSourceLike = { onopen: null, onerror: null, onmessage: null, close: vi.fn() };
+        sources.push(source);
+        return source;
+      },
+      schedule: scheduler.schedule, cancel: scheduler.cancel,
+    });
+    for (let failure = 1; failure <= RESYNC_AFTER_FAILURES + 2; failure += 1) {
+      sources.at(-1)!.onerror?.({});
+      expect(resync).toHaveBeenCalledTimes(failure >= RESYNC_AFTER_FAILURES ? 1 : 0);
+      scheduler.flush();
+    }
+  });
+});
+
+describe("a stream the network keeps refusing is never a room that is gone (#470, review)", () => {
+  function setup() {
+    const scheduler = manualScheduler();
+    const sources: EventSourceLike[] = [];
+    const status = vi.fn();
+    const resync = vi.fn(async () => undefined);
+    const sequencer = new MessageSequencer({
+      handlers: {
+        onState: () => undefined,
+        onPresentation: () => undefined,
+        onProgression: () => undefined,
+        onGap: () => undefined,
+      },
+    });
+    const channel = openChannel({
+      url: () => "/events/ABCD",
+      sequencer,
+      onStatus: status,
+      resync,
+      createEventSource: () => {
+        const source: EventSourceLike = { onopen: null, onerror: null, onmessage: null, close: vi.fn() };
+        sources.push(source);
+        return source;
+      },
+      schedule: scheduler.schedule,
+      cancel: scheduler.cancel,
+    });
+    return { scheduler, sources, status, resync, channel };
+  }
+
+  it("keeps retrying through five closes before subscribing, and asks the catch-up to say whether the room is gone", () => {
+    // Lost Wi-Fi, an unreachable endpoint, a stalled handshake: five in a row
+    // on a phone network are ordinary. Only the catch-up fetch (the store, on
+    // a 401, 403, 404 or 410) may call the room gone.
+    const { scheduler, sources, status, resync } = setup();
+    for (let i = 0; i < 5; i++) {
+      sources.at(-1)!.onerror?.({ reason: new Error("closed before subscribing"), beforeSubscribe: true });
+      expect(status).toHaveBeenLastCalledWith("reconnecting");
+      expect(status).not.toHaveBeenCalledWith("lost");
+      expect(scheduler.size).toBe(1);
+      scheduler.flush();
+    }
+    expect(sources).toHaveLength(6);
+    expect(resync).toHaveBeenCalledTimes(1);
+    // The sixth attempt opens: the room was there all along.
+    sources.at(-1)!.onopen?.({});
+    expect(status).toHaveBeenLastCalledWith("open");
   });
 });

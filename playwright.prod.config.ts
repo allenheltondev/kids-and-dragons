@@ -10,6 +10,7 @@ import { defineConfig } from "@playwright/test";
  *   production-locks.spec  the playtest drawer did not ship (#263)
  *   installable.spec      the manifest, icons and worker Chromium installs from (#410)
  *   worker-update.spec    a deploy's new worker taking over a room mid-game (#413)
+ *   boot-heal.spec        a page that cannot start clearing its caches and workers (#455)
  *
  * Two servers: the dev API server, and `vite preview` serving the built
  * client, which proxies `/api`, `/events`, `/content` and `/assets` to it
@@ -20,7 +21,7 @@ const PORT = 4173;
 
 export default defineConfig({
   testDir: "./e2e",
-  testMatch: ["offline.spec.ts", "perf.spec.ts", "production-locks.spec.ts", "installable.spec.ts", "worker-update.spec.ts"],
+  testMatch: ["offline.spec.ts", "perf.spec.ts", "production-locks.spec.ts", "installable.spec.ts", "worker-update.spec.ts", "boot-heal.spec.ts"],
   timeout: 180_000,
   expect: { timeout: 10_000 },
   fullyParallel: false,

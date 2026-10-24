@@ -20,12 +20,13 @@
  *     is fetched again.
  *
  * The API and the event stream are never touched, and a page load always
- * tries the network first.
+ * tries the network first, but waits for it only briefly when a saved app is
+ * there to show instead (`swShellAnswer`).
  */
 
 /** How one request is answered. */
 export type SwStrategy =
-  /** A page load: the network, or the saved page when there is none. */
+  /** A page load: the network, or the saved page when it fails or is slow. */
   | "shell"
   /** Hashed code (`/bundle/*`): never changes, so the cache answers first. */
   | "bundle"
@@ -60,6 +61,37 @@ export const SW_LEGACY_IMAGE_CACHES: readonly string[] = ["kad-image-v1"];
 export const SW_SHELL_KEY = "/";
 
 /**
+ * How long a page load waits for the network before the saved app is shown
+ * instead. A captive portal (a hotel's or a car's Wi-Fi sign-in page) or one
+ * bar of signal does not fail a request, it holds it, and without a limit the
+ * phone shows a white screen for tens of seconds before the browser gives up.
+ * A healthy network answers a page well inside three seconds even on a slow
+ * phone, so a load that takes longer is better served by the copy already on
+ * the phone; the network's page, when it does arrive, is still saved for the
+ * next load (`keepShell`). Long enough that an ordinary 3G load is not
+ * cut short and handed an older page after every deploy.
+ */
+export const SW_SHELL_TIMEOUT_MS = 3_000;
+
+/** Where a page load stands: the network answered, failed, or is still out past the timeout. */
+export type SwShellNetwork = "ok" | "failed" | "pending";
+
+/** What a page load is answered with now, or whether to keep waiting. */
+export type SwShellAnswer = "network" | "saved" | "wait" | "fail";
+
+/**
+ * A page load's answer. The network's page whenever it has one; the saved app
+ * when the network fails, or is still out at the timeout; with no saved app,
+ * the network is waited for however long it takes, and its failure is the
+ * page's.
+ */
+export function swShellAnswer(network: SwShellNetwork, hasSaved: boolean): SwShellAnswer {
+  if (network === "ok") return "network";
+  if (hasSaved) return "saved";
+  return network === "pending" ? "wait" : "fail";
+}
+
+/**
  * Where an installing worker keeps its build's page until it takes over. The
  * worker in charge keeps serving its own page offline meanwhile, and keeps it
  * if the install fails.
@@ -91,8 +123,29 @@ export const SW_PRECACHE_CONTENT: readonly string[] = [
   "/content/help.json",
 ];
 
-/** Limit cached art and audio on a family phone; evict least recently used files first. */
+/**
+ * Limit cached art and audio on a family phone; evict least recently used
+ * files first. The most it ever is, and what is used where the browser will
+ * not say how much room there is (`swBudgetFor`).
+ */
 export const SW_FILES_BUDGET_BYTES = 200 * 1024 * 1024;
+
+/** The least the budget is, however small the quota: a chapter's art is a few MB. */
+export const SW_FILES_BUDGET_FLOOR_BYTES = 50 * 1024 * 1024;
+
+/** The share of the origin's quota art and audio may take. */
+export const SW_FILES_BUDGET_SHARE = 0.2;
+
+/**
+ * The budget for this phone, from `navigator.storage.estimate()`'s quota:
+ * a fifth of it, at most `SW_FILES_BUDGET_BYTES` and at least the floor. A
+ * phone short on space gets a smaller cache rather than an install that fails;
+ * a missing or nonsense quota gets the fixed budget.
+ */
+export function swBudgetFor(quota: number | undefined): number {
+  if (quota === undefined || !Number.isFinite(quota) || quota <= 0) return SW_FILES_BUDGET_BYTES;
+  return Math.round(Math.max(SW_FILES_BUDGET_FLOOR_BYTES, Math.min(SW_FILES_BUDGET_BYTES, quota * SW_FILES_BUDGET_SHARE)));
+}
 
 /** Unindexed pictures are few (brand art); a count is enough. */
 export const SW_IMAGE_LIMIT = 100;
@@ -228,4 +281,35 @@ export function swEvictions(meta: Readonly<Record<string, FileMeta>>, budget: nu
     total -= entry.bytes;
   }
   return out;
+}
+
+/** Whether an error is the browser refusing to store more (`QuotaExceededError`). */
+export function swIsQuotaError(error: unknown): boolean {
+  if (typeof error !== "object" || error === null) return false;
+  const { name, code } = error as { name?: unknown; code?: unknown };
+  // 22 is the legacy `DOMException.QUOTA_EXCEEDED_ERR`, which old WebKit still reports.
+  return name === "QuotaExceededError" || code === 22;
+}
+
+/**
+ * An install that failed: trim the saved art and try once more, or fail as
+ * ever. Only a full disk is worth a retry, and only once: anything else
+ * (a content file whose bytes are not this build's, a network failure) fails
+ * the install, so the worker in charge stays in charge with its copies.
+ */
+export function swAfterInstallError(error: unknown, attempt: number): "trim-and-retry" | "fail" {
+  return attempt === 0 && swIsQuotaError(error) ? "trim-and-retry" : "fail";
+}
+
+/** How far a full disk trims the saved art: to this share of what is saved now. */
+export const SW_QUOTA_TRIM_SHARE = 0.5;
+
+/**
+ * What to drop when the disk is full mid-install: least recently used art and
+ * audio until about half of what is saved now is left. Content is never
+ * dropped (`swEvictions`).
+ */
+export function swQuotaTrim(meta: Readonly<Record<string, FileMeta>>): string[] {
+  const total = Object.values(meta).reduce((sum, entry) => sum + entry.bytes, 0);
+  return swEvictions(meta, total * SW_QUOTA_TRIM_SHARE);
 }
