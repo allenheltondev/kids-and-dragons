@@ -2,9 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { ChannelMessage, RunState, ServerMessage } from "@kad/shared";
 import {
   MessageSequencer,
-  TERMINAL_AFTER,
   backoffDelay,
-  nextFailureRun,
   openChannel,
   parseChannelMessage,
   type EventSourceLike,
@@ -920,21 +918,12 @@ describe("a stream that keeps failing asks for the catch-up once (#470)", () => 
   });
 });
 
-describe("a room that is gone (lost)", () => {
-  const before = { beforeSubscribe: true };
-
-  it("counts consecutive pre-subscribe failures and resets on anything else", () => {
-    expect(nextFailureRun(0, before)).toEqual({ run: 1, lost: false });
-    expect(nextFailureRun(TERMINAL_AFTER - 1, before)).toEqual({ run: TERMINAL_AFTER, lost: true });
-    expect(nextFailureRun(3, { beforeSubscribe: false })).toEqual({ run: 0, lost: false });
-    expect(nextFailureRun(3, {})).toEqual({ run: 0, lost: false });
-    expect(nextFailureRun(3, undefined)).toEqual({ run: 0, lost: false });
-  });
-
+describe("a stream the network keeps refusing is never a room that is gone (#470, review)", () => {
   function setup() {
     const scheduler = manualScheduler();
     const sources: EventSourceLike[] = [];
     const status = vi.fn();
+    const resync = vi.fn(async () => undefined);
     const sequencer = new MessageSequencer({
       handlers: {
         onState: () => undefined,
@@ -947,7 +936,7 @@ describe("a room that is gone (lost)", () => {
       url: () => "/events/ABCD",
       sequencer,
       onStatus: status,
-      resync: async () => undefined,
+      resync,
       createEventSource: () => {
         const source: EventSourceLike = { onopen: null, onerror: null, onmessage: null, close: vi.fn() };
         sources.push(source);
@@ -956,58 +945,25 @@ describe("a room that is gone (lost)", () => {
       schedule: scheduler.schedule,
       cancel: scheduler.cancel,
     });
-    return { scheduler, sources, status, channel };
+    return { scheduler, sources, status, resync, channel };
   }
 
-  it("stops retrying and reports lost after TERMINAL_AFTER failures before subscribing", () => {
-    const { scheduler, sources, status } = setup();
-    for (let i = 0; i < TERMINAL_AFTER - 1; i++) {
-      sources.at(-1)!.onerror?.(before);
+  it("keeps retrying through five closes before subscribing, and asks the catch-up to say whether the room is gone", () => {
+    // Lost Wi-Fi, an unreachable endpoint, a stalled handshake: five in a row
+    // on a phone network are ordinary. Only the catch-up fetch (the store, on
+    // a 401, 403, 404 or 410) may call the room gone.
+    const { scheduler, sources, status, resync } = setup();
+    for (let i = 0; i < 5; i++) {
+      sources.at(-1)!.onerror?.({ reason: new Error("closed before subscribing"), beforeSubscribe: true });
+      expect(status).toHaveBeenLastCalledWith("reconnecting");
       expect(status).not.toHaveBeenCalledWith("lost");
+      expect(scheduler.size).toBe(1);
       scheduler.flush();
     }
-    expect(sources).toHaveLength(TERMINAL_AFTER);
-    sources.at(-1)!.onerror?.(before);
-    expect(status).toHaveBeenLastCalledWith("lost");
-    expect(scheduler.size).toBe(0);
-    expect(sources).toHaveLength(TERMINAL_AFTER);
-  });
-
-  it("a successful subscribe resets the count", () => {
-    const { scheduler, sources, status } = setup();
-    for (let i = 0; i < TERMINAL_AFTER - 1; i++) {
-      sources.at(-1)!.onerror?.(before);
-      scheduler.flush();
-    }
+    expect(sources).toHaveLength(6);
+    expect(resync).toHaveBeenCalledTimes(1);
+    // The sixth attempt opens: the room was there all along.
     sources.at(-1)!.onopen?.({});
-    sources.at(-1)!.onerror?.(before);
-    scheduler.flush();
-    expect(status).not.toHaveBeenCalledWith("lost");
-    expect(scheduler.size).toBe(0);
-    expect(sources).toHaveLength(TERMINAL_AFTER + 1);
-  });
-
-  it("never counts failures the transport did not mark (SSE, or a drop after subscribing)", () => {
-    const { scheduler, sources, status } = setup();
-    for (let i = 0; i < TERMINAL_AFTER * 2; i++) {
-      sources.at(-1)!.onerror?.({});
-      scheduler.flush();
-    }
-    expect(status).not.toHaveBeenCalledWith("lost");
-  });
-
-  it("reconnect() after lost starts over with a fresh count", () => {
-    const { scheduler, sources, status, channel } = setup();
-    for (let i = 0; i < TERMINAL_AFTER; i++) {
-      sources.at(-1)!.onerror?.(before);
-      scheduler.flush();
-    }
-    expect(status).toHaveBeenLastCalledWith("lost");
-    const count = sources.length;
-    channel.reconnect?.();
-    expect(sources).toHaveLength(count + 1);
-    expect(status).toHaveBeenLastCalledWith("reconnecting");
-    sources.at(-1)!.onerror?.(before);
-    expect(status).not.toHaveBeenLastCalledWith("lost");
+    expect(status).toHaveBeenLastCalledWith("open");
   });
 });

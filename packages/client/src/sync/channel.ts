@@ -477,29 +477,14 @@ export interface Channel {
 }
 
 /**
- * Consecutive failures before the stream ever subscribed, after which the room
- * is treated as gone (ended, or this phone signed out) rather than as a bad
- * network. A network drop after a subscribe never counts.
+ * Consecutive stream failures after which the catch-up is fetched once, to
+ * learn whether the room is gone. The stream itself never proves that: lost
+ * Wi-Fi, an unreachable endpoint and a stalled handshake all look the same
+ * from the socket, so however many times it fails the channel keeps retrying,
+ * and only the catch-up's answer (the store, on 401, 403, 404 or 410) may end
+ * on "lost".
  */
-export const TERMINAL_AFTER = 5;
-
-/** Consecutive stream failures after which the catch-up is fetched once, to learn whether the room is gone. */
 export const RESYNC_AFTER_FAILURES = 3;
-
-/** The transport marks a failure that happened before `subscribe_success`. */
-export function failedBeforeSubscribe(reason: unknown): boolean {
-  return typeof reason === "object" && reason !== null && (reason as { beforeSubscribe?: unknown }).beforeSubscribe === true;
-}
-
-/**
- * Pure counter step: the next run of pre-subscribe failures, and whether that
- * run is long enough to stop retrying. A failure that is not pre-subscribe
- * (the SSE path never marks one) resets the count.
- */
-export function nextFailureRun(run: number, reason: unknown): { run: number; lost: boolean } {
-  const next = failedBeforeSubscribe(reason) ? run + 1 : 0;
-  return { run: next, lost: next >= TERMINAL_AFTER };
-}
 
 export function openChannel(options: ChannelOptions): Channel {
   const schedule = options.schedule ?? ((fn, ms) => setTimeout(fn, ms));
@@ -510,7 +495,6 @@ export function openChannel(options: ChannelOptions): Channel {
   let source: EventSourceLike | null = null;
   let retryTimer: TimerHandle | null = null;
   let attempt = 0;
-  let preSubscribeFailures = 0;
   let closed = false;
 
   /**
@@ -529,7 +513,6 @@ export function openChannel(options: ChannelOptions): Channel {
     es.onopen = () => {
       if (closed || source !== es) return;
       attempt = 0;
-      preSubscribeFailures = 0;
       options.onStatus("open");
       // Anything published while we were away is fetched, not waited for
       // (architecture §4.3 — hard-refresh recovery in under a second).
@@ -543,16 +526,10 @@ export function openChannel(options: ChannelOptions): Channel {
       if (message) options.sequencer.ingest(message);
     };
 
-    es.onerror = (reason) => {
+    es.onerror = () => {
       if (closed || source !== es) return;
       source = null;
       es.close();
-      const step = nextFailureRun(preSubscribeFailures, reason);
-      preSubscribeFailures = step.run;
-      if (step.lost) {
-        options.onStatus("lost");
-        return;
-      }
       options.onStatus("reconnecting");
       const delay = backoffDelay(attempt, options.backoff);
       attempt += 1;
@@ -576,7 +553,6 @@ export function openChannel(options: ChannelOptions): Channel {
       source = null;
       old?.close();
       attempt = 0;
-      preSubscribeFailures = 0;
       connect(true);
     },
     close() {

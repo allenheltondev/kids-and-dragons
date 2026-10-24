@@ -430,14 +430,16 @@ Every client tracks the last `seq` it applied. On reconnect it calls `GET /state
 which returns either the missed events or a full snapshot if the gap is too large. The TV can be
 hard-refreshed mid-encounter and recover in under a second.
 
-A room that is gone must not look like a reconnect (#470). The connection status `"lost"` is reached
-two ways, and both stop retrying: the AppSync transport marks every failure that happens before
-`subscribe_success` (`beforeSubscribe`), and after `TERMINAL_AFTER` (5) of them in a row with no
-subscribe between, the channel reports `lost` (the SSE path never marks one, so it keeps retrying);
-or a catch-up `GET /state` answers 401, 403, 404 or 410, which the store treats as terminal (it clears
-the resync retry and closes the channel). 5xx and network errors stay transient. The banner then
-shows at once, without the grace period: "This game has ended or the phone was signed out." with
-"Try again" (re-attaches from the mirror held) and "Back to the start" (leaves and goes home).
+A room that is gone must not look like a reconnect (#470), and a bad network must not look like a
+room that is gone. Only the catch-up `GET /state` may say so: answered 401, 403, 404 or 410, the
+store treats it as terminal, clears the resync retry, closes the channel and sets the connection
+status `"lost"`. A stream that keeps failing proves nothing by itself (lost Wi-Fi, an unreachable
+endpoint and a stalled handshake all look the same from the socket), so the channel keeps retrying
+with backoff however many times it fails; on the third consecutive failure it asks for the catch-up
+once (`RESYNC_AFTER_FAILURES`), which is how a gone room is found out on either transport without
+waiting for a stream to open. 5xx and network errors stay transient. The banner then shows at once,
+without the grace period: "This game has ended or the phone was signed out." with "Try again"
+(re-attaches from the mirror held) and "Back to the start" (leaves and goes home).
 
 #### Stepping away: absence is `connected: false`
 

@@ -22,7 +22,6 @@ import type {
   PairingCode,
 } from "@kad/shared";
 import { api as defaultApi, type Api, type OrganizerEdit } from "../sync/client";
-import { clearSavedJournal } from "./journal-db";
 
 /** An edit, minus the household it applies to: always the one on screen. */
 export type OrganizerChange = OrganizerEdit extends infer E
@@ -283,7 +282,7 @@ export function createOrganizerStore(api: Api = defaultApi) {
         await run(async (t) => {
           const { households, cleanupPending } = await api.deleteHousehold(t, householdId);
           // This browser's saved book (IndexedDB since #458) goes with the household.
-          await clearSavedJournal();
+          await (await import("./journal-db")).clearSavedJournal();
           set({
             view: null,
             devices: [],

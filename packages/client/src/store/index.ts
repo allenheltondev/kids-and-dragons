@@ -48,7 +48,6 @@ import type {
   PresentationEvent,
   ProgressionEvent,
 } from "./contract";
-import { clearSavedJournal, loadSavedJournal, saveJournal } from "./journal-db";
 import {
   clearSession,
   clearSharedDevice,
@@ -146,6 +145,15 @@ export interface GameStoreDeps {
 }
 
 /** A fetch that never reached the server rejects with a TypeError, not an HTTP status. */
+/**
+ * The saved book's store (IndexedDB, #458), loaded when the book is first
+ * saved, read or cleared: not at first paint, which the payload budget
+ * (tools/perf/bundle-budget.ts) keeps for the join screen.
+ */
+function journalDb(): Promise<typeof import("./journal-db")> {
+  return import("./journal-db");
+}
+
 /**
  * A request that never got an answer: fetch rejected (a TypeError), or the
  * client gave up waiting (`ApiError` status 0). An HTTP status is an answer,
@@ -1036,7 +1044,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
         try {
           const journal = await deps.api.loadJournal(deviceToken);
-          await saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
+          await (await journalDb()).saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
           return { journal, savedAt: null };
         } catch (error) {
           /*
@@ -1046,10 +1054,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
            * a 5xx — is the car, and last time's book is the right answer.
            */
           if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
-            await clearSavedJournal(deps.storage);
+            await (await journalDb()).clearSavedJournal(deps.storage);
             throw error;
           }
-          const saved = await loadSavedJournal(deviceToken, deps.storage);
+          const saved = await (await journalDb()).loadSavedJournal(deviceToken, deps.storage);
           if (!saved) throw error;
           return { journal: saved.journal, savedAt: saved.savedAt };
         }
@@ -1063,8 +1071,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           return deps.api.saveFlairAsSeat(choice, seat);
         }
         const profile = await deps.api.saveFlair(choice, deviceToken);
-        const saved = await loadSavedJournal(deviceToken, deps.storage);
-        if (saved) await saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);
+        const db = await journalDb();
+        const saved = await db.loadSavedJournal(deviceToken, deps.storage);
+        if (saved) await db.saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);
         return profile;
       },
 

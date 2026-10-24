@@ -22,7 +22,6 @@ import { Suspense, useEffect } from "react";
 // still be fetched before the join screen could paint.
 import { HomeScreen } from "./screens/HomeScreen";
 import { ArrivalNotices } from "./screens/ArrivalNotices";
-import { shareDestination } from "./install/share-target";
 import { navigate, routeCode, useRoute } from "./router";
 import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./store";
 import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
@@ -34,7 +33,6 @@ import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
 import { useDisplayDock } from "./ui/display-dock";
 import { ChunkBoundary, lazyChunk } from "./ui/ChunkBoundary";
-import { useConvergeOnUpdate } from "./sw/converge";
 
 /*
  * The room — both shells and everything they compose: the player panel, the
@@ -64,6 +62,10 @@ const A11yControl = lazyChunk(loadA11y, (module) => module.A11yControl);
 // Help (#256): the "?" and the press-and-hold sheet load after first paint too, for the same reason.
 const loadHelp = () => import("./help");
 const HelpControl = lazyChunk(loadHelp, (module) => module.HelpControl);
+
+// The update reload (#456): asks the worker for updates on wake and moves the page onto a new
+// build at a calm moment. Nothing to draw, so it loads after first paint like the controls.
+const ConvergeOnUpdate = lazyChunk(() => import("./sw/ConvergeOnUpdate"), (module) => module.ConvergeOnUpdate);
 
 // Sound (#318): the engine, its synth and the sample table load after first paint. The
 // control sits in a corner, nobody can hear anything before a first tap, and the
@@ -139,7 +141,6 @@ export function App(): React.JSX.Element {
   const soundtrack = home || creating ? "entry-home" : inEntry ? "entry-lobby" : musicForScene(chapter, state);
   const tv = route.name === "tv";
   const dock = useDisplayDock(tv);
-  useConvergeOnUpdate();
 
   // Rules and items are static content, not game state (roadmap, "Content as
   // data"). Idempotent, so strict mode's double-invoke costs nothing.
@@ -187,7 +188,10 @@ export function App(): React.JSX.Element {
   useEffect(() => {
     // The manifest's share target (#461): on to the room it names, or home.
     if (route.name === "share") {
-      navigate(shareDestination(window.location.search), { replace: true });
+      // Loaded on demand: the parser is only ever needed on this one route.
+      void import("./install/share-target").then(({ shareDestination }) => {
+        navigate(shareDestination(window.location.search), { replace: true });
+      });
       return;
     }
     const code = routeCode(route);
@@ -234,6 +238,11 @@ export function App(): React.JSX.Element {
       {/* Shell-level like the toast, and for the same reason: a dropped
           connection is true on every surface in every mode at once. */}
       {tv ? null : <ConnectionBanner />}
+      <ChunkBoundary quiet>
+        <Suspense fallback={null}>
+          <ConvergeOnUpdate />
+        </Suspense>
+      </ChunkBoundary>
       {/* The shared display's right-hand column (#257): the host's stop offer and room
           panel (#263), who just joined (#267), a rejection, a dropped connection and the
           Field Guide's news (portalled in from WorldView), one under the other so none

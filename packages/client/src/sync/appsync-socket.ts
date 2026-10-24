@@ -149,9 +149,7 @@ function connect(options: AppSyncSocketOptions): EventSourceLike {
     if (closed) return;
     // One error shape out, whatever went wrong: `openChannel` reconnects with
     // backoff and does not care why.
-    // `beforeSubscribe` lets `openChannel` count failures that never reached
-    // a subscription, which is what a room that is gone looks like.
-    adapter.onerror?.({ reason, beforeSubscribe: !opened });
+    adapter.onerror?.(reason);
   };
 
   socket.onopen = () => {
