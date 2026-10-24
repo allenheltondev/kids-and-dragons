@@ -29,14 +29,14 @@ const SIZES = [
 /**
  * Everything on the TV's story view that may take a click or focus, by its name: the corner
  * row's device controls (display settings, read-aloud, sound), the shared screen's own (About
- * this screen; Tap for sound while a TV holds sound back; Full screen until the screen is full,
- * since the Fullscreen API only answers a gesture) and the host's Room button. Nothing else,
- * and all of it in the corner row.
+ * this screen, Tap for sound while a TV holds sound back) and the host's Room button. Nothing
+ * else, and all of it in the corner row.
  *
  * This list is the executable half of docs/tv-read-only-audit.md. Adding to it is a decision
- * about what a remote has to drive, so a new entry belongs in that table too.
+ * about what a remote has to drive, so a new entry belongs in that table too — and the row is
+ * proven at these six: `layout-fit.spec.ts` fails on a seventh, and on any that comes and goes.
  */
-const KEEP = [/^Display settings$/, /^Turn read-aloud (on|off)$/, /^Turn sound (on|off)$/, /^About this screen$/, /^Tap for sound$/, /^Full screen$/, /^Room( \(locked\))?$/];
+const KEEP = [/^Display settings$/, /^Turn read-aloud (on|off)$/, /^Turn sound (on|off)$/, /^About this screen$/, /^Tap for sound$/, /^Room( \(locked\))?$/];
 
 /** What on screen takes a click or focus, with its name and whether it is in the corner row. */
 async function clickables(page: Page): Promise<{ name: string; inCorner: boolean }[]> {

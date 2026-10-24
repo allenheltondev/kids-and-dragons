@@ -76,7 +76,6 @@ export function DisplayExtras({ controls = true }: { controls?: boolean } = {}):
   return (
     <>
       <SoundPrompt inCorner={false} />
-      <FullscreenPrompt inCorner={false} />
       <About inCorner={false} />
     </>
   );
@@ -92,7 +91,6 @@ export function DisplayCornerControls(): React.JSX.Element {
   return (
     <>
       <SoundPrompt inCorner />
-      <FullscreenPrompt inCorner />
       <About inCorner />
     </>
   );
@@ -183,34 +181,6 @@ function SoundPrompt({ inCorner }: { inCorner: boolean }): React.JSX.Element | n
   );
 }
 
-/**
- * **Full screen**, shown only while this browser can go full and is not (fullscreen.ts). A TV
- * browser keeps an address bar over the top of the scene and will only drop it from a gesture,
- * so this is the gesture: one 44px button in the corner row, which a remote reaches with the
- * arrows, and which takes itself away once pressed. A device that has been full before asks on
- * its own at the next first key press, so this is a one-time setup, not furniture.
- */
-function FullscreenPrompt({ inCorner }: { inCorner: boolean }): React.JSX.Element | null {
-  const state = useFullscreenState();
-  if (state === "on" || state === "unsupported") return null;
-  const press = (): void => { screenWatch?.enter(); };
-  return inCorner ? (
-    <button
-      type="button"
-      className="kad-fullscreen kad-fullscreen--in-corner kad-focusable"
-      aria-label="Full screen"
-      title="Full screen"
-      onClick={press}
-    >
-      <span aria-hidden="true">⛶</span>
-    </button>
-  ) : (
-    <div className="kad-fullscreen">
-      <Button size="md" onClick={press}>Full screen</Button>
-    </div>
-  );
-}
-
 function CapabilityReport({ wake, takeFocus, onClose }: { wake: WakeLockState; takeFocus: boolean; onClose: () => void }): React.JSX.Element {
   const screen = useFullscreenState();
   const [rows, setRows] = useState<Capability[] | null>(null);
@@ -257,6 +227,25 @@ function CapabilityReport({ wake, takeFocus, onClose }: { wake: WakeLockState; t
               <b>{row.label}</b>
               <span>{row.ok ? "Yes" : "No"}</span>
               <small>{row.detail}</small>
+              {/*
+                * The Fullscreen API only answers a user gesture, so somewhere on this screen has
+                * to ask, and it is here rather than in the corner row: that row is fixed to the
+                * right and proven at six controls, a seventh pushed Tap for sound over the
+                * chapter's title, and anything that comes and goes in it moves the controls
+                * beside it (layout-fit.spec.ts, both counts). The host is already in this panel
+                * to see what the screen can do, and the row that says so is where the answer
+                * belongs. Once pressed it is a one-time setup: a screen that has been full asks
+                * again by itself on the next load's first remote press (fullscreen.ts).
+                */}
+              {row.id === "fullscreen" && (screen === "off" || screen === "denied") ? (
+                <button
+                  type="button"
+                  className="kad-about__act kad-focusable"
+                  onClick={() => { screenWatch?.enter(); }}
+                >
+                  Fill the screen
+                </button>
+              ) : null}
             </li>
           ))}
         </ul>

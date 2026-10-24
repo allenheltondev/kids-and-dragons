@@ -92,37 +92,22 @@ body:has(.kad-tap-for-sound) .kad-audio-control__hint { display: none; }
 body:has(.kad-tap-for-sound--in-corner) .kad-party--world { --kad-top-reserve: 3.25rem; }
 
 /*
- * Full screen (fullscreen.ts). A 44px button like its neighbours in the corner row, dimmed
- * the same way, and it takes itself away the moment the screen is full, which on a TV is
- * once per household rather than once per chapter. Ordered after Tap for sound so the one
- * urgent ask stays leftmost and nothing moves under a remote mid-press (#257).
+ * The report's own ask (fullscreen.ts). It sits on the row that reports full screen rather
+ * than in the corner row: that row is fixed to the right, proven at six controls, and held
+ * still to the pixel while sound loads and asks (layout-fit.spec.ts), so a seventh that came
+ * and went was both too wide and too restless. Spanning from the second column keeps it under
+ * the Yes/No rather than squeezing the row's three columns into four.
  */
-.kad-fullscreen--in-corner {
-  order: -3;
-  display: grid;
-  place-items: center;
-  inline-size: var(--kad-touch-min);
-  block-size: var(--kad-touch-min);
-  padding: 0;
+.kad-about__act {
+  grid-column: 2 / -1;
+  justify-self: start;
+  margin-block-start: 0.4em;
+  padding: 0.3em 0.7em;
   border: 0;
   border-radius: 999px;
-  background: transparent;
-  color: var(--kad-ink-dim);
+  background: var(--kad-accent);
+  color: var(--kad-accent-ink);
   font: inherit;
-  font-size: 1.1em;
-  line-height: 1;
-  opacity: 0.45;
+  font-weight: 700;
   cursor: pointer;
 }
-.kad-fullscreen--in-corner:hover,
-.kad-fullscreen--in-corner:focus-visible { opacity: 1; }
-
-/*
- * While Tap for sound is up, it is the one ask (#257) and this stands down, exactly as the
- * row's smaller sound hint does above. Not only for tidiness: the row is fixed to the right
- * and grows leftwards, so a seventh control pushes Tap for sound 44px further left, and at
- * 1024px with the largest text that put it over the chapter's title (layout-fit.spec.ts).
- * Six is the width the row is proven at, so the row never carries both asks at once; Full
- * screen comes back the moment sound is allowed or turned off.
- */
-body:has(.kad-tap-for-sound) .kad-fullscreen--in-corner { display: none; }

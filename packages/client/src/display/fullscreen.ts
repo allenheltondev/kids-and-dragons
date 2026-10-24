@@ -10,8 +10,11 @@
  * deliberately short of: the TV is read, not driven (docs/tv-read-only-audit.md). So there are
  * two ways in, and the device remembers:
  *
- *   - A **Full screen** button in the corner row, shown only while the screen is not full
- *     and the browser says it can be. A remote reaches it with the arrows, and OK presses it.
+ *   - A **Fill the screen** button in the "About this screen" panel, on the row that reports
+ *     full screen, shown only while the browser says it can and the screen is not. A remote
+ *     reaches the panel from the corner row's (i) and the button with the arrows. It is not in
+ *     the corner row itself: that row is proven at six controls and holds still by the metre
+ *     (layout-fit.spec.ts), and a seventh that came and went moved the rest.
  *   - Once a screen has been full, the next load asks again on the *first* gesture of any kind
  *     (a remote key, a tap), so a host who sets it up on Saturday does not press it again on
  *     Sunday. A browser that refuses outside a gesture is why this waits for one at all.
@@ -193,7 +196,7 @@ export function watchFullscreen(env: FullscreenEnv = {}): FullscreenWatch {
 export function describeFullscreen(state: FullscreenState): { ok: boolean; detail: string } {
   switch (state) {
     case "on": return { ok: true, detail: "Filling the screen" };
-    case "off": return { ok: true, detail: "Available. Choose Full screen in the corner." };
+    case "off": return { ok: true, detail: "Available" };
     case "denied": return { ok: false, detail: "The browser refused it" };
     case "unsupported": return { ok: false, detail: "Not available on this browser" };
   }
