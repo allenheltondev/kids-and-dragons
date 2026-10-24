@@ -130,6 +130,7 @@ describe("art paths", () => {
   it("treats a chapter's `enemies/` prefix as convention, not a directory", () => {
     expect(enemyArtUrl("enemies/will_o_wisp")).toBe("/assets/entities/will_o_wisp/assembled.png");
     expect(enemyArtUrl("will_o_wisp")).toBe("/assets/entities/will_o_wisp/assembled.png");
+    expect(enemyArtUrl("cast/deep-ice-figure")).toBe("/assets/cast/deep-ice-figure/assembled.png");
   });
 
   it("addresses a biome's backdrop and tile sheet", () => {

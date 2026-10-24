@@ -24,7 +24,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { act, cleanup, render, screen, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import {
   beginEncounter,
@@ -251,6 +251,7 @@ function mount(options: MountOptions = {}) {
 function cardNames(): string[] {
   return screen
     .queryAllByRole("button")
+    .filter(button => button.getAttribute("aria-label") !== "Enlarge battle map")
     .map((b) => b.textContent?.trim() ?? "")
     .filter((t) => t.length > 0);
 }
@@ -284,7 +285,7 @@ describe("whose turn it is", () => {
     // The board stays — it is the map to plan the next turn on — but not one
     // of its squares is a button, and there are no cards: absent, not disabled.
     expect(screen.getByRole("grid")).toBeTruthy();
-    expect(screen.queryAllByRole("button")).toEqual([]);
+    expect(screen.queryAllByRole("button").filter(button => button.getAttribute("aria-label") !== "Enlarge battle map")).toEqual([]);
   });
 
   it("renders nothing at all once the fight is over", () => {
@@ -448,7 +449,7 @@ describe("a friend who stepped away (#258)", () => {
   it("offers nothing while they are still here", () => {
     onAwayFriendsTurn(true);
     expect(screen.getByText("It's Sparklehoof's turn.")).toBeTruthy();
-    expect(screen.queryAllByRole("button")).toEqual([]);
+    expect(screen.queryAllByRole("button").filter(button => button.getAttribute("aria-label") !== "Enlarge battle map")).toEqual([]);
   });
 });
 
@@ -608,13 +609,13 @@ describe("aiming", () => {
     const { sent } = mount({ characters: [character({ actions: ["strike"] })] });
 
     await user.click(card("Strike"));
-    expect(screen.getByText(/Strike: who\?/)).toBeTruthy();
+    expect(screen.getByText(/Strike: tap a glowing figure/)).toBeTruthy();
     expect(sent).toEqual([]);
 
     // Enemy ids carry their placement ordinal, so "which one am I about to
     // hit" survives three identical wisps (combat-grid.ts `combatantLabel`).
     // The target button also says how many hearts it has left.
-    const target = screen.getByRole("button", { name: /Bramblewisp 1/ });
+    const target = screen.getByRole("button", { name: /^Bramblewisp 1/ });
     expect(target.textContent).toContain("6/6");
     await user.click(target);
     expect(sent).toEqual([
@@ -670,16 +671,16 @@ describe("aiming", () => {
     });
 
     await user.click(card("Volley"));
-    expect(screen.getByText(/Volley: who\? \(1 of 2\)/)).toBeTruthy();
+    expect(screen.getByText(/Volley:.*\(1 of 2\)/)).toBeTruthy();
 
-    await user.click(screen.getByRole("button", { name: /Bramblewisp 1/ }));
+    await user.click(screen.getByRole("button", { name: /^Bramblewisp 1/ }));
     // The one already picked is gone from the list — the same figure twice is
     // not two targets, and the server would refuse it.
-    expect(screen.getByText(/Volley: who\? \(2 of 2\)/)).toBeTruthy();
-    expect(screen.queryByRole("button", { name: /Bramblewisp 1/ })).toBeNull();
+    expect(screen.getByText(/Volley:.*\(2 of 2\)/)).toBeTruthy();
+    expect(screen.queryByRole("button", { name: /^Bramblewisp 1/ })).toBeNull();
 
     // The last pick is the commit.
-    await user.click(screen.getByRole("button", { name: /Bramblewisp 2/ }));
+    await user.click(screen.getByRole("button", { name: /^Bramblewisp 2/ }));
 
     // Several chosen things ride the *plural* field. One would ride `targetId`.
     expect(sent).toEqual([
@@ -705,7 +706,7 @@ describe("aiming", () => {
 
     await user.click(card("Volley"));
     expect(screen.queryByRole("button", { name: /Go!/ })).toBeNull();
-    await user.click(screen.getByRole("button", { name: /Bramblewisp 1/ }));
+    await user.click(screen.getByRole("button", { name: /^Bramblewisp 1/ }));
     await user.click(screen.getByRole("button", { name: /Go!/ }));
     expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "volley", targetId: "wisp#1" }]);
   });
@@ -729,7 +730,7 @@ describe("aiming", () => {
     useGameStore.setState({ send });
 
     await user.click(card("Volley"));
-    await user.click(screen.getByRole("button", { name: /Bramblewisp 1/ }));
+    await user.click(screen.getByRole("button", { name: /^Bramblewisp 1/ }));
     const go = screen.getByRole("button", { name: /Go!/ });
     act(() => {
       go.click();
@@ -793,15 +794,7 @@ describe("aiming", () => {
 
     await user.click(card("Pounce"));
     await user.click(tile(3, 4));
-    expect(screen.getByText(/Pounce: who\?/)).toBeTruthy();
-
-    // Exactly one victim is reachable from where it would land.
-    const offered = screen.getAllByRole("button", { name: /Bramblewisp/ });
-    expect(offered.map((b) => b.textContent)).toHaveLength(1);
-    expect(offered[0]!.textContent).toContain("Bramblewisp 1");
-
-    await user.click(offered[0]!);
-
+    // The landing square determines the only reachable victim: no extra confirmation.
     expect(sent).toEqual([
       {
         type: "COMBAT_ACTION",
@@ -1055,7 +1048,7 @@ describe("the board keeps its size for the turn", () => {
     mount({ encounter: encounterWith() });
     expect(screen.queryByText(/Your turn/)).toBeNull();
     expect(document.querySelector(".combat__waiting")).toBeNull();
-    expect(screen.getByRole("status").textContent).toMatch(/Walk up to \d+ steps on gold, or pick one thing\./);
+    expect(screen.getByRole("status").textContent).toMatch(/Walk on gold, or choose an action\./);
   });
 
   it("keeps the walking key in its seat once there is nowhere to walk", () => {
@@ -1083,7 +1076,7 @@ describe("the turn boundary", () => {
     mount({ characters: [character({ actions: ["strike"] })] });
 
     await user.click(card("Strike"));
-    expect(screen.getByText(/Strike: who\?/)).toBeTruthy();
+    expect(screen.getByText(/Strike: tap a glowing figure/)).toBeTruthy();
 
     // The same turn, one step spent: still a new question. Wrapped in `act` so
     // the store write and the effect it triggers land before the assertion —
@@ -1098,7 +1091,7 @@ describe("the turn boundary", () => {
       });
     });
 
-    expect(screen.queryByText(/Strike: who\?/)).toBeNull();
+    expect(screen.queryByText(/Strike: tap a glowing figure/)).toBeNull();
     expect(screen.getByRole("button", { name: "Strike" })).toBeTruthy();
   });
 
@@ -1127,7 +1120,7 @@ describe("the turn boundary", () => {
     mount({ characters: [character({ actions: ["strike"] })] });
 
     await user.click(card("Strike"));
-    expect(screen.getByText(/Strike: who\?/)).toBeTruthy();
+    expect(screen.getByText(/Strike: tap a glowing figure/)).toBeTruthy();
 
     const current = useGameStore.getState().state!;
     const wispIndex = current.encounter!.order.findIndex((id) => id.startsWith("wisp"));
@@ -1137,7 +1130,7 @@ describe("the turn boundary", () => {
       });
     });
 
-    expect(screen.queryByText(/Strike: who\?/)).toBeNull();
+    expect(screen.queryByText(/Strike: tap a glowing figure/)).toBeNull();
     expect(screen.getByRole("status").textContent).toContain("Bramblewisp");
   });
 });
@@ -1442,5 +1435,75 @@ describe("the place fighting back (#201)", () => {
       "The rift surges: everyone still here loses 1.",
       "Pip is lost to the rift.",
     ]);
+  });
+});
+
+
+describe("combat review improvements", () => {
+  it("lets a legal figure on the board commit the selected action", async () => {
+    const user = userEvent.setup();
+    const { sent } = mount({ characters: [character({ actions: ["strike"] })] });
+    await user.click(card("Strike"));
+    const target = screen.getByRole("button", { name: "Choose Bramblewisp 1, 6 hearts" });
+    expect(document.querySelector('[data-aim-target="wisp#1"]')).toBe(target);
+    expect(screen.queryAllByRole("button", { name: /^Move to/ })).toEqual([]);
+    await user.click(target);
+    expect(sent).toEqual([{ type: "COMBAT_ACTION", abilityId: "strike", targetId: "wisp#1" }]);
+  });
+
+  it("offers readable health, Guard and turn order without spending an action", async () => {
+    const { sent } = mount();
+    const summary = document.querySelector(".combat__roster summary")!;
+    fireEvent.click(summary);
+    // jsdom does not implement the native details toggle.
+    document.querySelector("details")!.open = true;
+    const roster = screen.getByRole("list", { name: "Fighter details" });
+    expect(roster.textContent).toContain("10/10 hearts");
+    expect(roster.textContent).toContain("Guard 12");
+    expect(roster.textContent).toContain("Bramblewisp 1");
+    expect(screen.getByLabelText("Your turn budget").textContent).toContain("4 steps");
+    expect(screen.getByLabelText("Your turn budget").textContent).toContain("1 action");
+    expect(sent).toEqual([]);
+  });
+});
+
+
+describe("combat art feedback", () => {
+  it("plays a timed damage reaction once, preserves hearts, and never sends an intent", () => {
+    vi.useFakeTimers();
+    try {
+      const { sent } = mount();
+      act(() => useGameStore.setState({ presentation: { seq: 90001, presentation: { kind: "COMBAT_SEQUENCE", events: [
+        { type: "damage", actorId: "wisp#1", amount: 3, hp: 3 },
+      ] } } }));
+      act(() => vi.advanceTimersByTime(400));
+      expect(document.querySelector('[data-effect="impact_strike"]')?.textContent).toContain("−3");
+      expect(document.querySelector('[data-reaction="hurt"] .combat__cell-hp')?.textContent).toBe("6");
+      act(() => vi.advanceTimersByTime(1100));
+      expect(document.querySelector(".combat__feedback")).toBeNull();
+      expect(sent).toEqual([]);
+    } finally { vi.useRealTimers(); }
+  });
+  it("falls back to the rescue symbol if the separately deployed Bun art fails", () => {
+    mount({ encounter: encounterWith({ environment: { rescue: { name: "Bun", at: { x: 0, y: 0 } } } }) });
+    const image = document.querySelector<HTMLImageElement>('.combat__feature--captive img')!;
+    expect(image.src).toContain("rescue-bun.webp");
+    fireEvent.error(image);
+    expect(document.querySelector('.combat__feature--captive img[src="/assets/combat-ux/rescue-bun.webp"]')).toBeNull();
+    expect(document.querySelector('.combat__feature--captive .kad-icon')).not.toBeNull();
+  });
+});
+
+
+describe("enlarged map lifecycle", () => {
+  it("restores the compact map when a fight ends while its enlarged map was open", () => {
+    mount();
+    const state = useGameStore.getState().state!;
+    fireEvent.click(screen.getByRole("button", { name: "Enlarge battle map" }));
+    expect(document.querySelector(".combat__map-scroll .combat__grid")).not.toBeNull();
+    act(() => useGameStore.setState({ state: { ...state, encounter: null } }));
+    act(() => useGameStore.setState({ state }));
+    expect(document.querySelector(".combat__board .combat__grid")).not.toBeNull();
+    expect(document.querySelector(".combat__map-scroll .combat__grid")).toBeNull();
   });
 });

@@ -40,8 +40,8 @@
  * THE PLACE FIGHTING BACK (#201): a fight with an `environment` gets one more
  * layer over the floor — hazard ground, rift exits, the captive's square —
  * decided square by square in world/environment-overlay.ts and only stroked
- * here, in procedural shapes (no art: the overlay must read on every biome's
- * sheet and on the flat fallback alike). A fight without one never builds the
+ * here with painted markers and distinct procedural outlines that remain
+ * readable on every biome and serve as the art-loading fallback. A fight without one never builds the
  * layer, so its scene graph is node for node what it was. A hero who steps
  * through an exit fades out on the `escaped` beat and leaves the board with the
  * patch, the way a beaten monster does (§7.3); the clock and the words for
@@ -102,6 +102,7 @@ import {
   type NameplateBox,
 } from "./nameplate";
 import { BOARD_TILE_PX, beatOffsetsMs, facingFor, naturalPath, tileVariant } from "./board-math";
+import { combatMarkerArt } from "./combat-art";
 import { dashedSquare, environmentOverlay, type OverlayTile } from "./environment-overlay";
 import type { BoardAim } from "./previews";
 
@@ -431,6 +432,9 @@ export function createBoardLayer(): BoardLayer {
   let envLayer: Container | null = null;
   /** What `envLayer` was last drawn from (`EnvironmentOverlay.key`). */
   let envKey = "";
+  const environmentTextures = new Map<string, Texture>();
+  const environmentLoads = new Set<string>();
+  let environmentFight: number | undefined;
 
   // -------------------------------------------------------------------------
   // Tiles
@@ -813,6 +817,10 @@ export function createBoardLayer(): BoardLayer {
   // -------------------------------------------------------------------------
 
   function drawEnvironment(encounter: EncounterState): void {
+    if (environmentFight !== encounter.startedAt) {
+      environmentFight = encounter.startedAt;
+      environmentLoads.clear();
+    }
     const overlay = environmentOverlay(encounter);
     if (!overlay) {
       // A new fight without one, on a board that drew one before.
@@ -836,7 +844,30 @@ export function createBoardLayer(): BoardLayer {
     const g = new Graphics();
     envLayer.addChild(g);
     for (const tile of overlay.tiles) {
-      drawOverlayTile(g, tile);
+      const marker = tile.glyph === "objective" ? tile.objectiveKind === "hold" ? "hold" : "seal" : tile.glyph;
+      const url = tile.state === "lost" || tile.state === "gone" ? null : combatMarkerArt(marker, tile.label, tile.state === "freed");
+      const texture = url ? environmentTextures.get(url) : undefined;
+      drawOverlayTile(g, tile, texture !== undefined);
+      if (texture) {
+        const sprite = new Sprite(texture);
+        sprite.label = `combat-marker:${tile.label}`;
+        sprite.anchor.set(0.5);
+        sprite.x = (tile.x + 0.5) * BOARD_TILE_PX;
+        sprite.y = (tile.y + 0.5) * BOARD_TILE_PX;
+        const size = BOARD_TILE_PX * 0.88;
+        const scale = size / Math.max(texture.width, texture.height);
+        sprite.scale.set(scale);
+        sprite.alpha = tile.state === "active" || tile.state === "waiting" || tile.state === "freed" ? 1 : 0.42;
+        envLayer.addChild(sprite);
+      } else if (url && !environmentLoads.has(url)) {
+        environmentLoads.add(url);
+        void Assets.load<Texture>(url).then(texture => {
+          if (destroyed) return;
+          environmentTextures.set(url, texture);
+          envKey = "";
+          if (view) drawEnvironment(view.encounter);
+        }).catch(() => { /* The existing glyph and outline remain a complete fallback. */ });
+      }
       if (tile.count !== undefined) envLayer.addChild(drawCountBadge(g, tile));
     }
   }
@@ -1375,7 +1406,7 @@ const ENV_INK = 0x120f26;
  * and crossed out. The captive's square gets a plate of its own first: it is
  * walled for the fight, and without one it read as one more blocked tile.
  */
-function drawOverlayTile(g: Graphics, tile: OverlayTile): void {
+function drawOverlayTile(g: Graphics, tile: OverlayTile, painted = false): void {
   const T = BOARD_TILE_PX;
   const x = tile.x * T;
   const y = tile.y * T;
@@ -1390,6 +1421,7 @@ function drawOverlayTile(g: Graphics, tile: OverlayTile): void {
       g.moveTo(d.x1, d.y1).lineTo(d.x2, d.y2);
     }
     g.stroke({ width: live ? 6 : 4, color, alpha });
+    if (painted) return;
     if (tile.glyph === "fire") {
       drawFlame(g, x + T * 0.27, y + T * 0.36, T * 0.16, color, alpha);
       drawFlame(g, x + T * 0.73, y + T * 0.36, T * 0.16, color, alpha);
@@ -1409,6 +1441,7 @@ function drawOverlayTile(g: Graphics, tile: OverlayTile): void {
     // The doubled border the phone grid gives an exit.
     g.roundRect(x + T * 0.05, y + T * 0.05, T * 0.9, T * 0.9, T * 0.1).stroke({ width: 6, color, alpha });
     g.roundRect(x + T * 0.15, y + T * 0.15, T * 0.7, T * 0.7, T * 0.06).stroke({ width: 3, color, alpha });
+    if (painted) return;
     // Two chevrons pointing out of the board: this way out.
     const cx = x + T * 0.5;
     for (const dy of [0.38, 0.58]) {
@@ -1439,12 +1472,14 @@ function drawOverlayTile(g: Graphics, tile: OverlayTile): void {
     const a = done ? 0.42 : 1;
     if (!done) g.rect(x, y, T, T).fill({ color, alpha: 0.16 });
     g.circle(x + T * 0.5, y + T * 0.5, T * 0.4).stroke({ width: 6, color, alpha: a });
-    g.moveTo(x + T * 0.5, y + T * 0.28)
+    if (!painted) {
+      g.moveTo(x + T * 0.5, y + T * 0.28)
       .lineTo(x + T * 0.72, y + T * 0.5)
       .lineTo(x + T * 0.5, y + T * 0.72)
       .lineTo(x + T * 0.28, y + T * 0.5)
       .closePath();
-    g.fill({ color, alpha: a * 0.85 }).stroke({ width: 4, color: ENV_INK, alpha: 0.8 });
+      g.fill({ color, alpha: a * 0.85 }).stroke({ width: 4, color: ENV_INK, alpha: 0.8 });
+    }
     if (done) {
       g.moveTo(x + T * 0.3, y + T * 0.52).lineTo(x + T * 0.45, y + T * 0.66).lineTo(x + T * 0.72, y + T * 0.34);
       g.stroke({ width: 8, color: 0xffffff, alpha: 0.95, cap: "round", join: "round" });
@@ -1459,6 +1494,7 @@ function drawOverlayTile(g: Graphics, tile: OverlayTile): void {
     color: ENV_INK,
     alpha: tile.state === "waiting" ? 0.82 : 0.35,
   });
+  if (painted) return;
   if (tile.state === "lost") {
     // An empty, broken outline: they were here.
     drawHeart(g, cx, cy, T * 0.26);
