@@ -18,9 +18,9 @@ import { test, expect, type Browser, type BrowserContext, type Page } from "@pla
 import { createCharacter } from "./characters";
 import { guidePicture } from "./guide-pictures";
 import { openPlayerTask } from "./player-navigation";
+import { API } from "./api";
 
 const TAP = { timeout: 20_000 } as const;
-const API = "http://localhost:8787";
 
 interface Member {
   playerId: string;

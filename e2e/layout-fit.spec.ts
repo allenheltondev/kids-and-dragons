@@ -38,9 +38,9 @@ import { test, expect, type Browser, type BrowserContext, type Page } from "@pla
 import { createCharacter } from "./characters";
 import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
+import { API } from "./api";
 
 const TAP = { timeout: 20_000 } as const;
-const API = "http://localhost:8787";
 
 type Text = "normal" | "largest";
 type Hand = "off" | "right" | "left";
@@ -157,7 +157,6 @@ async function withRankUp(page: Page, name: string): Promise<void> {
     });
   }, name);
 }
-
 
 interface Passage { name: string; narration: string; options: { id: string; label: string; icon: string }[] }
 
