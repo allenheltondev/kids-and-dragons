@@ -72,6 +72,7 @@ import {
 } from "./identity.ts";
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
 import { verifyDevToken } from "./dev-auth.ts";
+import { readSeedRequest, seedRoom } from "./dev-seed.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
 
 const PORT = Number(process.env.PORT ?? 8787);
@@ -331,6 +332,22 @@ async function main(): Promise<void> {
       return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     }
     res.json(result.value);
+  });
+
+  /*
+   * A table already sitting down, for the end-to-end suite (dev-seed.ts):
+   * a room, its heroes made and ready, and optionally begun at a scene, in
+   * one call. Here and only here, as the playtest cheats are: nothing under
+   * lambda/ mounts it, so a deployed build has no such route.
+   */
+  app.post("/api/dev/seed", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const input = readSeedRequest(req.body);
+    if (typeof input === "string") return sendError(res, 400, "ILLEGAL", input);
+    const seeded = await seedRoom(input, deps);
+    if (!seeded.ok) return sendError(res, statusFor(seeded.error), seeded.error.code, seeded.error.message);
+    res.json(seeded.value);
   });
 
   /*

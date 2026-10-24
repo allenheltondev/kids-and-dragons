@@ -2133,6 +2133,9 @@ const DEV_ONLY = [
   // How the client learns it may offer the pool-free dev sign-in. Prod must
   // never answer it: the dev token it unlocks is unsigned.
   { path: "/api/auth/dev", method: "GET" },
+  // The end-to-end suite's seeded table (dev-seed.ts): a room with its heroes
+  // made in one call, and a playtest jump. Prod must never have it.
+  { path: "/api/dev/seed", method: "POST" },
 ] as const;
 
 function routed(result: APIGatewayProxyStructuredResultV2): boolean {
