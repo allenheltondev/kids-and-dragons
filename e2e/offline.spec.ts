@@ -119,7 +119,7 @@ test("the adventure book opens on a reload and in a new tab with no signal", asy
   // --- No signal: a reload ---
   await noSignal(context, proxy, phone);
   await phone.reload();
-  await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
+  await expect(phone.getByText(/no signal/i).first()).toBeVisible(TAP);
   await studyTheBook(phone);
 
   // --- No signal: a fresh tab, straight to the book ---
@@ -211,6 +211,11 @@ test("a tab left open across a deploy can still open the book", async ({ browser
           : undefined,
       gone: (path) => path.startsWith("/bundle/"),
     });
+    // This is the tab that stays on the old build: one that is not calm enough
+    // to move onto the new one yet (sw/calm.ts). The reload itself, at the next
+    // calm moment, is worker-update.spec's case; here it is held back the way
+    // a reload a moment ago holds it back, so the old tab can be watched.
+    await phone.evaluate(() => sessionStorage.setItem("kad-update-reload", String(Date.now())));
     await phone.evaluate(async () => {
       const taken = new Promise((resolve) => navigator.serviceWorker.addEventListener("controllerchange", resolve, { once: true }));
       await (await navigator.serviceWorker.getRegistration())?.update();
@@ -314,7 +319,7 @@ test("a deploy whose content an edge has not caught up with never takes over", a
     await phone.goto("/journal");
     // The failed install's page was never made the offline app.
     expect(await phone.content(), "the failed deploy's page became the offline app").not.toContain("deploy 2");
-    await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
+    await expect(phone.getByText(/no signal/i).first()).toBeVisible(TAP);
     await studyTheBook(phone);
   } finally {
     await context.close();
@@ -360,7 +365,7 @@ test("pictures an earlier worker saved survive the upgrade to this one", async (
     // And the book, opened with no signal, still has its map.
     await noSignal(context, proxy, phone);
     await phone.goto("/journal");
-    await expect(phone.getByText(/no signal/i)).toBeVisible(TAP);
+    await expect(phone.getByText(/no signal/i).first()).toBeVisible(TAP);
     await phone.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "Map" }).click(TAP);
     await expect.poll(() => paintingShown(phone), { timeout: 20_000 }).toBe(true);
   } finally {

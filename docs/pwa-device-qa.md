@@ -3,6 +3,10 @@
 The last step of the installable-app epic (#410). Run it by hand, on real phones, before the
 epic closes and again after any change to the manifest, the service worker or room rejoin.
 
+On every device, open Help, then Diagnostics, tap Copy, and paste the text into the pass record.
+It names the build, the worker's state, whether the page is controlled, installed app or tab, the
+space used and kept safe, and how many files are saved for offline (#459).
+
 ## Why this exists
 
 Headless Chromium is not an iPhone. It cannot show Safari's Add to Home Screen sheet, and it

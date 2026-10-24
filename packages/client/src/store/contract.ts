@@ -118,6 +118,11 @@ export interface GameStore {
    */
   previews: Readonly<Record<string, HeldPreview>>;
   /**
+   * What this phone has picked but not confirmed, or null: the half-made
+   * answer a reload would lose (sw/calm.ts, #456). Set by `preview`.
+   */
+  myPreview: IntentPreview | null;
+  /**
    * Who has joined since this screen attached, newest last (#267). Live only,
    * like `previews`: an arrival is news, never part of the mirror, so a screen
    * that attaches later starts with none.

@@ -112,7 +112,7 @@ test("a room keeps playing when a new build's worker takes over mid-game", async
   }
 });
 
-test("the page moves onto the new build only once the open question is answered (#456)", async ({ browser, baseURL }) => {
+test("the page moves onto the new build only once a half-made answer is confirmed (#456)", async ({ browser, baseURL }) => {
   test.setTimeout(180_000);
   const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
@@ -143,6 +143,11 @@ test("the page moves onto the new build only once the open question is answered 
     const choices = phone.locator(".prompt .choice");
     await expect(choices.filter({ hasText: answer })).toBeEnabled(TAP);
 
+    // Halfway through answering: picked, not yet confirmed. A reload would lose
+    // the pick, so this is the moment the page must not move (sw/calm.ts).
+    await choices.filter({ hasText: answer }).click(TAP);
+    await expect(phone.getByRole("button", { name: /do it!/i })).toBeVisible(TAP);
+
     // A mark that only this load of the page carries: a reload loses it.
     await phone.evaluate(() => {
       (window as unknown as { __kadLoad: number }).__kadLoad = 1;
@@ -150,7 +155,7 @@ test("the page moves onto the new build only once the open question is answered 
     const entry = await phone.evaluate(() => document.querySelector("script[type=module][src]")?.getAttribute("src") ?? "");
     expect(entry).not.toBe("");
 
-    // --- A deploy: a new worker takes over the page while the question is open ---
+    // --- A deploy: a new worker takes over the page mid-answer ---
     proxy.configure({
       rewrite: (path) =>
         path === "/sw.js"
@@ -163,13 +168,12 @@ test("the page moves onto the new build only once the open question is answered 
       await taken;
     });
 
-    // --- Not while the question is open: the page stays, and so does the question ---
+    // --- Not mid-answer: the page stays, and so does the pick ---
     await phone.waitForTimeout(3_000);
     expect(await phone.evaluate(() => (window as unknown as { __kadLoad?: number }).__kadLoad)).toBe(1);
-    await expect(choices.filter({ hasText: answer })).toBeEnabled();
+    await expect(phone.getByRole("button", { name: /do it!/i })).toBeVisible();
 
-    // --- Answered: at the next calm moment the page reloads onto the new build ---
-    await choices.filter({ hasText: answer }).click(TAP);
+    // --- Confirmed: at the next calm moment the page reloads onto the new build ---
     await phone.getByRole("button", { name: /do it!/i }).click(TAP);
     await expect
       .poll(() => phone.evaluate(() => (window as unknown as { __kadLoad?: number }).__kadLoad === undefined), { timeout: 60_000 })
@@ -185,4 +189,25 @@ test("the page moves onto the new build only once the open question is answered 
     await context.close();
     await proxy.close();
   }
+// A worker's install or activate failure reaches the crash reporter (#459). A
+// real worker cannot be made to post one from here, so the page is handed the
+// message the worker would send, through the same `navigator.serviceWorker`
+// the listener (report/listen.ts) is attached to.
+test("a worker's error message is reported as a kind of failure", async ({ page }) => {
+  await page.goto("/");
+  await controlled(page);
+
+  const sent = page.waitForRequest((r) => r.url().endsWith("/api/client-error"));
+  await page.evaluate(() => {
+    navigator.serviceWorker.dispatchEvent(
+      new MessageEvent("message", {
+        data: { type: "kad:sw-error", stage: "install", message: "for Maya in room WXYZ", build: "abc123def456" },
+      }),
+    );
+  });
+
+  const request = await sent;
+  const body = JSON.parse(request.postData() ?? "{}") as Record<string, unknown>;
+  expect(body).toMatchObject({ message: "Error: service worker install failed", stack: [] });
+  expect(request.postData()).not.toMatch(/maya|WXYZ/i);
 });

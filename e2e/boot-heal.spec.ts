@@ -45,6 +45,11 @@ test("a page that cannot start clears its caches and workers and starts", async 
     }, entry);
     let asked = 0;
     proxy.configure({ gone: (path) => path === entry && (asked += 1) <= 2 });
+    // The browser's own HTTP cache still holds the script from the first load
+    // and would hand it back without asking the proxy; the break has to reach it.
+    const cdp = await context.newCDPSession(page);
+    await cdp.send("Network.clearBrowserCache");
+    await cdp.detach();
 
     // --- One load; the page does the rest ---
     await page.reload();

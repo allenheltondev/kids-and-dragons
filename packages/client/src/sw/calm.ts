@@ -14,8 +14,13 @@ export interface CalmInputs {
   visible: boolean;
   /** Caught up with the server (`GameStore.synced`): what is drawn is true. */
   synced: boolean;
-  /** A prompt is open for this player: a vote, a roll, a swap, a ready. */
-  promptPending: boolean;
+  /**
+   * This phone has picked something it has not confirmed yet (`GameStore.myPreview`).
+   * An open question on its own is not unrest: nearly every scene asks one, and
+   * a reload brings the same question straight back from the server. A
+   * half-made answer is what a reload would lose.
+   */
+  picking: boolean;
   /** A fight is on (its animations play on the shared screen). */
   inFight: boolean;
   /** The keepsake (sign-in) flow is open. */
@@ -28,7 +33,7 @@ export function isCalm(input: CalmInputs): boolean {
   return (
     input.visible &&
     input.synced &&
-    !input.promptPending &&
+    !input.picking &&
     !input.inFight &&
     !input.keepsakeOpen &&
     !input.pairing

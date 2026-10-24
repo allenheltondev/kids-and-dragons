@@ -12,7 +12,7 @@ import type { FieldGuide, WorldMap } from "@kad/shared";
 import { createHash } from "node:crypto";
 import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { buildServiceWorker, campaignFiles, fileIndexOf, fingerprint, precacheOf } from "../../sw-build";
+import { buildId, buildServiceWorker, campaignFiles, fileIndexOf, fingerprint, precacheOf } from "../../sw-build";
 import {
   SW_FILES_BUDGET_BYTES,
   SW_FILES_BUDGET_FLOOR_BYTES,
@@ -224,6 +224,7 @@ describe("the built sw.js", () => {
     bundleFiles: files,
     campaignFiles: ["/content/campaigns/gemfall.json"],
     fileIndexUrl: "/bundle/files-x1.json",
+    build: "abc123def456",
   });
 
   it("is one classic script: no import or export survives", () => {
@@ -236,6 +237,14 @@ describe("the built sw.js", () => {
     expect(precacheOf(files)).toContain("/bundle/extra-z9.js");
     expect(source).toContain('"/content/campaigns/gemfall.json"');
     expect(source).toContain('const __KAD_FILE_INDEX__ = "/bundle/files-x1.json";');
+  });
+
+  it("carries the build id the page reports, and still imports nothing (#459)", () => {
+    expect(source).toContain('const __KAD_BUILD__ = "abc123def456";');
+    expect(source).not.toMatch(/\bimport\s*[({"'\w]/);
+    expect(buildId({ KAD_BUILD: "0123456789abcdef", GITHUB_SHA: "ffff" })).toBe("0123456789ab");
+    expect(buildId({ GITHUB_SHA: "fedcba9876543210" })).toBe("fedcba987654");
+    expect(buildId({})).toBe("dev");
   });
 
   it("precaches every campaign the deploy uploads", () => {

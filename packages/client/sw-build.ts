@@ -11,6 +11,7 @@
  *   __KAD_PRECACHE__            the files saved at install
  *   __KAD_PRECACHE_CAMPAIGNS__  every `/content/campaigns/*.json` in the repo
  *   __KAD_FILE_INDEX__          the URL of this build's file index (below)
+ *   __KAD_BUILD__               this build's id, as the page's `VITE_KAD_BUILD` (crash reports, #459)
  *
  * The file index is a fingerprint of every file the deploy uploads under
  * `/assets/` and `/content/` (scripts/deploy.sh syncs both directories whole)
@@ -65,13 +66,20 @@ export function fileIndexOf(root: string, dirs: readonly string[]): Record<strin
   return Object.fromEntries(Object.entries(index).sort(([a], [b]) => a.localeCompare(b)));
 }
 
+/** This build's id: the commit CI built, else "dev". The page's `VITE_KAD_BUILD` (vite.config.ts) and the worker's `__KAD_BUILD__` both read it here. */
+export function buildId(env: Record<string, string | undefined> = process.env): string {
+  return (env.KAD_BUILD ?? env.GITHUB_SHA ?? "dev").slice(0, 12);
+}
+
 export interface WorkerInputs {
   bundleFiles: readonly string[];
   campaignFiles: readonly string[];
   fileIndexUrl: string;
+  /** Defaults to `buildId()`. */
+  build?: string;
 }
 
-export function buildServiceWorker({ bundleFiles, campaignFiles, fileIndexUrl }: WorkerInputs): string {
+export function buildServiceWorker({ bundleFiles, campaignFiles, fileIndexUrl, build = buildId() }: WorkerInputs): string {
   const policy = readFileSync(`${here}src/sw/policy.ts`, "utf8").replace(EXPORT, "");
   const worker = readFileSync(`${here}src/sw/sw.ts`, "utf8").replace(IMPORT, "");
   const { outputText } = ts.transpileModule(`${policy}\n${worker}`, {
@@ -83,6 +91,7 @@ export function buildServiceWorker({ bundleFiles, campaignFiles, fileIndexUrl }:
     `const __KAD_PRECACHE__ = ${JSON.stringify(precacheOf(bundleFiles).sort())};`,
     `const __KAD_PRECACHE_CAMPAIGNS__ = ${JSON.stringify([...campaignFiles].sort())};`,
     `const __KAD_FILE_INDEX__ = ${JSON.stringify(fileIndexUrl)};`,
+    `const __KAD_BUILD__ = ${JSON.stringify(build)};`,
     outputText,
   ].join("\n");
 }

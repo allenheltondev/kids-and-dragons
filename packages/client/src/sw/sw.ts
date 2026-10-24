@@ -48,6 +48,8 @@ declare const __KAD_PRECACHE__: readonly string[];
 declare const __KAD_PRECACHE_CAMPAIGNS__: readonly string[];
 /** Prepended by `sw-build.ts`: the URL of this build's `FileIndex` (a hashed `/bundle/` file). */
 declare const __KAD_FILE_INDEX__: string;
+/** Prepended by `sw-build.ts`: this build's id, the same one the page reports (`VITE_KAD_BUILD`). */
+declare const __KAD_BUILD__: string;
 
 interface SwExtendableEvent extends Event {
   waitUntil(work: Promise<unknown>): void;
@@ -63,7 +65,10 @@ interface SwMessageEvent extends SwExtendableEvent {
 }
 interface SwScope {
   readonly location: Location;
-  readonly clients: { claim(): Promise<void> };
+  readonly clients: {
+    claim(): Promise<void>;
+    matchAll(options?: { includeUncontrolled?: boolean; type?: "window" | "worker" | "sharedworker" | "all" }): Promise<readonly { postMessage(message: unknown): void }[]>;
+  };
   readonly registration: { navigationPreload?: { enable(): Promise<void> } };
   skipWaiting(): Promise<void>;
   addEventListener(type: "install" | "activate", listener: (event: SwExtendableEvent) => void): void;
@@ -89,7 +94,7 @@ const SAME: CacheQueryOptions = { ignoreVary: true };
 
 worker.addEventListener("install", (event) => {
   event.waitUntil(
-    (async () => {
+    guarded("install", async () => {
       // A full disk gets one trim of the saved art and one more try
       // (`swAfterInstallError`); anything else fails the install as it is.
       for (let attempt = 0; ; attempt += 1) {
@@ -105,7 +110,7 @@ worker.addEventListener("install", (event) => {
       // Take over at once. Every build's worker answers the same way, so an
       // open page loses nothing by being served by the new one.
       await worker.skipWaiting();
-    })(),
+    }),
   );
 });
 
@@ -120,7 +125,7 @@ async function installCopies(): Promise<void> {
   // Activate makes it the saved page.
   const shell = await caches.open(SW_CACHES.shell);
   const page = await fetch(SW_SHELL_KEY, { cache: "reload" });
-  if (swCacheable(page)) await shell.put(SW_SHELL_STAGED_KEY, page);
+  if (swCacheable(page)) await put(shell, SW_SHELL_STAGED_KEY, page);
 
   // Hashed code: what is already saved from an earlier build is the same
   // bytes, so only what is new is fetched. The file index is one of them.
@@ -170,12 +175,12 @@ async function trimForQuota(): Promise<void> {
 
 worker.addEventListener("activate", (event) => {
   event.waitUntil(
-    (async () => {
+    guarded("activate", async () => {
       // This build's page, staged at install, becomes the offline app.
       const shellCache = await caches.open(SW_CACHES.shell);
       const staged = await shellCache.match(SW_SHELL_STAGED_KEY, SAME);
       if (staged) {
-        await shellCache.put(SW_SHELL_KEY, staged);
+        await put(shellCache, SW_SHELL_KEY, staged);
         await shellCache.delete(SW_SHELL_STAGED_KEY);
       }
 
@@ -199,7 +204,7 @@ worker.addEventListener("activate", (event) => {
       const previous = recorded ? ((await recorded.json()) as string[]) : [];
       const cachedCode = (await bundle.keys()).map((request) => new URL(request.url).pathname);
       for (const path of swStaleBundles(cachedCode, __KAD_BUNDLE__, previous)) await bundle.delete(path);
-      await bundle.put(SW_BUNDLE_LIST_KEY, new Response(JSON.stringify(__KAD_BUNDLE__)));
+      await put(bundle, SW_BUNDLE_LIST_KEY, new Response(JSON.stringify(__KAD_BUNDLE__)));
 
       // Art, rigs, audio and content a deploy replaced or removed.
       const current = await filesMeta();
@@ -213,7 +218,7 @@ worker.addEventListener("activate", (event) => {
       // Start the page's request while the worker is still waking up.
       await worker.registration.navigationPreload?.enable().catch(() => undefined);
       await worker.clients.claim();
-    })(),
+    }),
   );
 });
 
@@ -243,6 +248,96 @@ worker.addEventListener("fetch", (event) => {
       return;
   }
 });
+
+// ---------------------------------------------------------------------------
+// Telling the crash reporter (#459)
+// ---------------------------------------------------------------------------
+
+type SwStage = "install" | "activate" | "fingerprint" | "quota";
+
+/**
+ * The phrases the server accepts (`diagnose` in shared/error-report.ts): a
+ * report names a kind of failure, never what the exception said.
+ */
+const STAGE_MESSAGE: Record<SwStage, string> = {
+  install: "Error: service worker install failed",
+  activate: "Error: service worker activate failed",
+  fingerprint: "Error: service worker file mismatch",
+  quota: "Error: service worker out of space",
+};
+
+/** Reporting may never hold up an install or an activate for longer than this. */
+const REPORT_WAIT_MS = 2000;
+
+const reported = new Set<SwStage>();
+
+/**
+ * Run an install or activate body; if it throws, tell the reporter, then throw
+ * the same error so the browser still treats the step as failed.
+ */
+async function guarded(stage: "install" | "activate", body: () => Promise<void>): Promise<void> {
+  try {
+    await body();
+  } catch (error) {
+    noteQuota(error);
+    await reportOnce(stage, error);
+    throw error;
+  }
+}
+
+/** A full disk is worth one report per worker lifetime, wherever it surfaces. */
+function noteQuota(error: unknown): void {
+  const thrown = error as { name?: unknown; message?: unknown } | null | undefined;
+  if (thrown?.name === "QuotaExceededError" || /quota/i.test(String(thrown?.message))) void reportOnce("quota", error);
+}
+
+/** `cache.put`, noting a full disk on the way past. */
+async function put(cache: Cache, request: RequestInfo | URL, response: Response): Promise<void> {
+  try {
+    await cache.put(request, response);
+  } catch (error) {
+    noteQuota(error);
+    throw error;
+  }
+}
+
+/**
+ * At most once per stage per worker lifetime. Never throws, and never takes
+ * longer than `REPORT_WAIT_MS`, so it is safe to await inside `waitUntil`.
+ */
+function reportOnce(stage: SwStage, error?: unknown): Promise<void> {
+  if (reported.has(stage)) return Promise.resolve();
+  reported.add(stage);
+  const sent = (async () => {
+    try {
+      const open = await worker.clients.matchAll({ includeUncontrolled: true });
+      if (open.length > 0) {
+        const message = String((error as { message?: unknown } | null | undefined)?.message ?? "").slice(0, 200);
+        for (const client of open) client.postMessage({ type: "kad:sw-error", stage, message, build: __KAD_BUILD__ });
+        return;
+      }
+      // No page is open to hand it to: the same endpoint and body as report.ts.
+      const id = Array.from(crypto.getRandomValues(new Uint8Array(6)), (b) => b.toString(16).padStart(2, "0")).join("");
+      await fetch("/api/client-error", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          message: STAGE_MESSAGE[stage],
+          stack: [],
+          version: __KAD_BUILD__,
+          route: "other",
+          layout: "other",
+          browser: "other",
+          id,
+        }),
+        keepalive: true,
+      });
+    } catch {
+      // Never throw from the thing that reports throwing.
+    }
+  })();
+  return Promise.race([sent, new Promise<void>((resolve) => setTimeout(resolve, REPORT_WAIT_MS))]);
+}
 
 // ---------------------------------------------------------------------------
 // Strategies
@@ -301,7 +396,7 @@ function shell(event: SwFetchEvent): Promise<Response> {
  */
 async function keepShell(cache: Cache, response: Response): Promise<void> {
   const entry = swShellEntry(await response.clone().text());
-  if (entry !== null && __KAD_BUNDLE__.includes(entry)) await cache.put(SW_SHELL_KEY, response);
+  if (entry !== null && __KAD_BUNDLE__.includes(entry)) await put(cache, SW_SHELL_KEY, response);
 }
 
 async function cacheFirst(request: Request, cacheName: string): Promise<Response> {
@@ -309,7 +404,7 @@ async function cacheFirst(request: Request, cacheName: string): Promise<Response
   const saved = await cache.match(request, SAME);
   if (saved) return saved;
   const response = await fetch(request);
-  if (swCacheable(response)) await cache.put(request, response.clone());
+  if (swCacheable(response)) await put(cache, request, response.clone());
   return response;
 }
 
@@ -348,7 +443,7 @@ async function networkFirst(request: Request, cacheName: string): Promise<Respon
   const cache = await caches.open(cacheName);
   try {
     const response = await fetch(request);
-    if (swCacheable(response)) await cache.put(request, response.clone());
+    if (swCacheable(response)) await put(cache, request, response.clone());
     return response;
   } catch (error) {
     const saved = await cache.match(request, SAME);
@@ -376,7 +471,7 @@ async function staleWhileRevalidate(event: SwExtendableEvent, request: Request):
 }
 
 async function keepImage(cache: Cache, request: Request, response: Response): Promise<void> {
-  await cache.put(request, response);
+  await put(cache, request, response);
   for (const old of swOverLimit(await cache.keys(), SW_IMAGE_LIMIT)) await cache.delete(old);
 }
 
@@ -413,7 +508,10 @@ async function keepVersioned(
   { replaceOlder = true, persist = true }: { replaceOlder?: boolean; persist?: boolean } = {},
 ): Promise<boolean> {
   const bytes = await response.arrayBuffer();
-  if ((await fingerprintOf(bytes)) !== fingerprint) return false;
+  if ((await fingerprintOf(bytes)) !== fingerprint) {
+    void reportOnce("fingerprint");
+    return false;
+  }
   // Re-wrapped, so the saved copy carries no transfer framing from this fetch.
   const headers = new Headers(response.headers);
   headers.delete("content-encoding");
@@ -429,7 +527,7 @@ async function keepVersioned(
     }
   }
   const key = swVersionedKey(path, fingerprint);
-  await cache.put(key, new Response(bytes, { status: 200, headers }));
+  await put(cache, key, new Response(bytes, { status: 200, headers }));
   current[key] = { bytes: bytes.byteLength, used: Date.now() };
   // A batch (install, adoption) saves the bookkeeping once at the end, rather
   // than waiting out `saveMeta`'s coalescing pause for every file.
@@ -486,7 +584,8 @@ function saveMeta(): Promise<void> {
       await files.delete(key);
       delete current[key];
     }
-    await files.put(
+    await put(
+      files,
       SW_FILES_META_KEY,
       new Response(JSON.stringify(current), { headers: { "content-type": "application/json" } }),
     );

@@ -156,8 +156,11 @@ test("later visits download none of the art, audio or content a phone already ha
     // evening re-downloaded assets the phone already had.
     for (const [name, visit] of [["repeat", repeat], ["next evening", evening]] as const) {
       expect(bodiesOf(visit, ["bundle", "content", "audio"]), `${name}: re-downloaded code, content, or audio`).toBe(0);
-      // Browsers fetch the favicon outside any service worker; nothing else may come down.
-      const art = visit.art.downloaded.filter((path) => path !== "/favicon.ico");
+      // Browsers fetch the favicon and the apple touch icon (Chromium reads it
+      // for the install sheet, #461) outside any service worker; nothing else
+      // may come down.
+      const BROWSER_OWN = new Set(["/favicon.ico", "/apple-touch-icon.png"]);
+      const art = visit.art.downloaded.filter((path) => !BROWSER_OWN.has(path));
       expect(art, `${name}: re-downloaded art`).toEqual([]);
     }
   } finally {

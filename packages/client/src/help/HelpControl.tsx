@@ -1,8 +1,9 @@
 /** The "?" button in the corner row, the sheet it opens, and the press-and-hold on cards, buffs and things (#256). */
 
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, useState, Suspense } from "react";
 import { createPortal } from "react-dom";
 import { Button } from "../ui/Button";
+import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import { Icon } from "../screens/icons";
 import { hear, stopSpeaking } from "../speech/read-aloud";
 import { routeCode, useRoute } from "../router";
@@ -12,6 +13,9 @@ import { closeHelp, openHelp, showThingHelp, useHelpFocus, useHelpSurface } from
 import { installLongPress } from "./longpress";
 
 import "./HelpControl.css";
+
+/** A grown-up's list of how the installed app is doing (#459). Fetched only when opened. */
+const DiagnosticsPanel = lazyChunk(() => import("./DiagnosticsPanel"), (module) => module.default);
 
 export function HelpControl(): React.JSX.Element | null {
   const route = useRoute();
@@ -48,6 +52,7 @@ function HelpSheet(): React.JSX.Element {
   const thing = useHelpFocus((focus) => focus.thing);
   const titleId = useId();
   const sheet = useRef<HTMLDivElement>(null);
+  const [diagnostics, setDiagnostics] = useState(false);
 
   const kind = thing === null ? undefined : help?.things[thing.kind];
   const entry = thing === null ? help?.surfaces[surface] : kind;
@@ -112,6 +117,25 @@ function HelpSheet(): React.JSX.Element {
             {text !== "" ? <p className="kad-help__text">{text}</p> : <p className="kad-help__text kad-muted">One moment…</p>}
           </div>
         </div>
+        {thing === null ? (
+          <div className="kad-help__grownups">
+            <button
+              type="button"
+              className="kad-help__diagnostics-toggle kad-focusable"
+              aria-expanded={diagnostics}
+              onClick={() => { setDiagnostics((open) => !open); }}
+            >
+              Diagnostics
+            </button>
+            {diagnostics ? (
+              <ChunkBoundary inline message="The diagnostics could not load.">
+                <Suspense fallback={<p>Checking…</p>}>
+                  <DiagnosticsPanel />
+                </Suspense>
+              </ChunkBoundary>
+            ) : null}
+          </div>
+        ) : null}
         <div className="kad-help__actions">
           <Button variant="secondary" size="lg" icon={<Icon name="sound" />} disabled={text === ""}
             onClick={() => hear(text, { source: "ui" })}>

@@ -1743,7 +1743,10 @@ A service worker (`packages/client/src/sw/`, served as `/sw.js`) does two jobs. 
 adventure book open with no signal, on a reload too: the saved journal is only half of that, since
 the page, its code, the content and the map painting also have to be on the phone. And it makes
 sure nothing a phone already has is downloaded twice. It is registered only by a production build,
-after `load`, and touches nothing the game needs live:
+after `load`, and touches nothing the game needs live. A failed install or activate, a full disk and
+a file that is not the one fingerprinted are reported to the crash reporter (a message to the open
+pages, else a direct post; `report/worker-errors.ts`), and Help has a Diagnostics panel showing
+the worker's state and what is saved (#459):
 
 | Request | Answered by |
 |---|---|

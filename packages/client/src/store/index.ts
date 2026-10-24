@@ -528,7 +528,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     function disconnect(): void {
       // Previews, arrivals and cheers are live-only: a fresh channel starts
       // from nobody picking, nobody new and nobody cheering.
-      set({ previews: {}, arrivals: [], arrivalsDropped: 0, cheers: [] });
+      set({ previews: {}, myPreview: null, arrivals: [], arrivalsDropped: 0, cheers: [] });
       runtime.previewSent = "[null,null]";
       runtime.previewNext = null;
       runtime.channel?.close();
@@ -792,6 +792,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       presentation: null,
       progression: null,
       previews: {},
+      myPreview: null,
       arrivals: [],
       arrivalsDropped: 0,
       cheers: [],
@@ -1303,6 +1304,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         if (!session?.playerId || !session.sessionToken) return;
         // A pick with no decision to belong to is not worth sending.
         if (preview !== null && context === null) preview = null;
+        if (get().myPreview !== preview) set({ myPreview: preview });
         const key = JSON.stringify([preview, preview === null ? null : context]);
         runtime.previewNext = { key, preview, context: preview === null ? null : context };
         if (runtime.previewInFlight) return;
