@@ -116,6 +116,10 @@ describe("a seeded table", () => {
     expect(readSeedRequest({ mode: "travel", heroes: [] })).toMatch(/needs a hero/);
     expect(readSeedRequest({ mode: "party", heroes: [{ name: "Sam" }] })).toMatch(/species/);
     expect(readSeedRequest({ mode: "party", tv: true, heroes: [], sceneId: "x" })).toMatch(/needs begin/);
+    // A TV alone cannot tap Begin: refused as a bad request, never a thrown error inside seedRoom.
+    expect(readSeedRequest({ mode: "party", tv: true, heroes: [], begin: true })).toMatch(/at least one hero/);
+    expect(readSeedRequest({ mode: "party", tv: true, heroes: [], begin: true, sceneId: "x" })).toMatch(/at least one hero/);
+    expect(typeof readSeedRequest({ mode: "party", tv: true, heroes: [{ name: "Sam", species: "fox" }], begin: true })).toBe("object");
     expect(typeof readSeedRequest({ mode: "party", tv: true, heroes: [] })).toBe("object");
   });
 

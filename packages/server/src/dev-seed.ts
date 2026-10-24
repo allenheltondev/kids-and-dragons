@@ -103,6 +103,10 @@ export function readSeedRequest(body: unknown): SeedRequest | string {
     if (typeof h.name !== "string" || typeof h.species !== "string") return "every hero needs a name and a species";
   }
   if (b.begin === true && b.ready === false) return "begin needs everyone ready";
+  // Begin is a tap on the first phone, so a TV alone cannot begin (and a
+  // scene jump rides on begin); otherwise seedRoom would reach for a phone
+  // that is not there.
+  if (b.begin === true && b.heroes.length === 0) return "begin needs at least one hero to tap it";
   if (b.sceneId !== undefined && (typeof b.sceneId !== "string" || b.begin !== true)) return "sceneId needs begin";
   return b as unknown as SeedRequest;
 }
