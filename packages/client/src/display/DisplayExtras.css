@@ -90,3 +90,29 @@ body:has(.kad-tap-for-sound) .kad-audio-control__hint { display: none; }
    never hangs under its corner, over the room's own column (#257). */
 .kad-corner:has(.kad-about--in-corner) .kad-audio-control__hint { display: none; }
 body:has(.kad-tap-for-sound--in-corner) .kad-party--world { --kad-top-reserve: 3.25rem; }
+
+/*
+ * Full screen (fullscreen.ts). A 44px button like its neighbours in the corner row, dimmed
+ * the same way, and it takes itself away the moment the screen is full, which on a TV is
+ * once per household rather than once per chapter. Ordered after Tap for sound so the one
+ * urgent ask stays leftmost and nothing moves under a remote mid-press (#257).
+ */
+.kad-fullscreen--in-corner {
+  order: -3;
+  display: grid;
+  place-items: center;
+  inline-size: var(--kad-touch-min);
+  block-size: var(--kad-touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--kad-ink-dim);
+  font: inherit;
+  font-size: 1.1em;
+  line-height: 1;
+  opacity: 0.45;
+  cursor: pointer;
+}
+.kad-fullscreen--in-corner:hover,
+.kad-fullscreen--in-corner:focus-visible { opacity: 1; }

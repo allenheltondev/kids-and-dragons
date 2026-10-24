@@ -16,7 +16,8 @@
  * arrows are the field's own, with two ways out, so a remote is never stuck in it: Up and
  * Down leave a one-line text field (Left and Right still move the caret), and Escape and
  * then any arrow leaves any field. A select, a slider or a listbox keeps its arrows the same
- * way. In a group of radios (the start screen's Party Mode and Phone Mode) selection follows
+ * way. The Back key gets the same answer Escape does, but only while a sheet is open: see
+ * `isBackKey`. In a group of radios (the start screen's Party Mode and Phone Mode) selection follows
  * focus, as a browser's own radio arrows do: an arrow to the next radio of the same name checks
  * it. Past the group's last radio that way the arrow leaves the group, where a browser would wrap
  * round, so a remote is never caught in it. Those radios are hidden inside the cards that draw
@@ -24,6 +25,31 @@
  */
 
 export type Direction = "left" | "right" | "up" | "down";
+
+/**
+ * The Back key on a television's remote. It is not a `key` any standard names: Tizen (Samsung)
+ * sends keyCode 10009 and webOS (LG) 461, both with an empty or `Unidentified` `key`. Left to
+ * the browser it goes back in history, which mid-chapter takes the room off the screen for a
+ * press nobody meant.
+ *
+ * So while a sheet is open, Back is relayed as Escape and the sheet closes itself (the display
+ * settings, the capability report, the story plates, the atlas card all listen for it). The
+ * host's confirms ("Stop for today?", the grown-up's sign-in) do not listen, and there Back
+ * does nothing at all — deliberately: those are two-button questions with both answers on
+ * screen and reachable by the arrows, and the alternative is a stray press leaving the room.
+ *
+ * With nothing open, Back is left entirely alone: a TV is nobody's hostage, and Back is how a
+ * person gets out of the page.
+ */
+export function isBackKey(event: Pick<KeyboardEvent, "key" | "keyCode">): boolean {
+  if (event.key === "BrowserBack" || event.key === "GoBack") return true;
+  return (event.key === "" || event.key === "Unidentified") && (event.keyCode === 10009 || event.keyCode === 461);
+}
+
+/** What is open over the screen now, if anything: the sheets and dialogs Escape closes. */
+function openSheet(doc: Document): Element | null {
+  return doc.querySelector("[aria-modal='true'], [role='dialog'], [role='alertdialog']");
+}
 
 const KEYS: Record<string, Direction> = {
   ArrowLeft: "left",
@@ -198,6 +224,15 @@ export function installRemoteFocus(doc: Document = document, { armed = true }: {
       const nothing = active === null || active === doc.body || active === doc.documentElement;
       if (!(event.key in KEYS) || !nothing || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
       on = true;
+    }
+    if (isBackKey(event)) {
+      const sheet = openSheet(doc);
+      if (!sheet) return;
+      event.preventDefault();
+      // The sheets already close on Escape and move focus back themselves (A11yControl,
+      // DisplayExtras), so Back is relayed as one rather than reimplemented per sheet.
+      doc.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true }));
+      return;
     }
     if (event.key === "Escape") {
       escaped = answersArrowsItself(active) ? active : null;

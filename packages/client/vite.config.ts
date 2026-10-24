@@ -34,6 +34,18 @@ export default defineConfig({
     outDir: "dist",
     sourcemap: true,
     /*
+     * The shared screen's most likely home is a smart TV's own browser, which runs years
+     * behind the panel it is in: a 2024 Samsung is Tizen 8, Chromium 108 (docs/hardware.md).
+     * Vite's default here is `baseline-widely-available`, which at the time of writing is
+     * Chromium 111 — newer than any TV in a living room, and nothing in the build says so.
+     *
+     * This only lowers JavaScript syntax. CSS functions are emitted exactly as written, so a
+     * value newer than this needs a fallback declaration before it; `styles/baseline.test.ts`
+     * holds the same number and fails when one is missing. Raise both together, once
+     * docs/hardware.md has a device row that proves the newer floor.
+     */
+    target: ["chrome108", "edge108", "firefox115", "safari16.4"],
+    /*
      * Not Vite's default of `assets`. In production the SPA, the commissioned
      * art, and the chapter JSON all sit in one S3 bucket behind one
      * distribution, and the art is already served at `/assets/*` — in dev by the

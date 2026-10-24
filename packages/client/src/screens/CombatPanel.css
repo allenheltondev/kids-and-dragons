@@ -184,11 +184,16 @@
    red icon alone did not read as "the enemy is here". The legend under the
    board uses the same fills. */
 .combat__cell--enemy {
+  /* The flat blend first: `color-mix()` is Chromium 111 and the shared screen may be a
+     smart TV years behind that, where a dropped declaration would leave the enemy's
+     square untinted and the board unreadable. */
+  background: #98455d;
   background: color-mix(in srgb, var(--color-danger, #ff6b6b) 55%, var(--color-surface, #191534));
   color: #fff;
 }
 
 .combat__cell--party {
+  background: #7d674b;
   background: color-mix(in srgb, var(--color-accent, #ffc95c) 45%, var(--color-surface, #191534));
   color: var(--kad-accent-ink, #0d0b1a);
 }
@@ -201,6 +206,7 @@
 
 .combat__cell--tap {
   border: 0.12em solid var(--color-accent, #ffc95c);
+  background: #393038;
   background: color-mix(in srgb, var(--color-accent, #ffc95c) 14%, var(--color-surface, #191534));
   color: var(--color-accent, #ffc95c);
   cursor: pointer;
@@ -256,7 +262,7 @@
   block-size: calc(20% + 30% * var(--nearness, 1));
   border-radius: 50%;
   background: var(--color-accent, #ffc95c);
-  box-shadow: 0 0 0.35em color-mix(in srgb, var(--color-accent, #ffc95c) 70%, transparent);
+  box-shadow: 0 0 0.35em rgb(var(--color-accent-rgb) / 70%);
 }
 
 .combat__cell--selected {
@@ -374,6 +380,7 @@
 }
 
 .combat__key--friend {
+  background: #7d674b;
   background: color-mix(in srgb, var(--color-accent, #ffc95c) 45%, var(--color-surface, #191534));
 }
 
@@ -383,6 +390,9 @@
 
 .combat__key--walk {
   border: 0.12em solid var(--color-accent, #ffc95c);
+  background:
+    radial-gradient(circle, var(--color-accent, #ffc95c) 0 28%, transparent 32%),
+    #393038;
   background:
     radial-gradient(circle, var(--color-accent, #ffc95c) 0 28%, transparent 32%),
     color-mix(in srgb, var(--color-accent, #ffc95c) 14%, var(--color-surface, #191534));

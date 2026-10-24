@@ -5,7 +5,7 @@
  */
 
 import { afterEach, describe, expect, it } from "vitest";
-import { installRemoteFocus, nearest, step, type Box } from "./remote-focus";
+import { installRemoteFocus, isBackKey, nearest, step, type Box } from "./remote-focus";
 
 const at = (left: number, top: number, size = 40): Box => ({ left, top, right: left + size, bottom: top + size });
 
@@ -267,6 +267,61 @@ describe("on the start screen, which waits for a remote", () => {
     expect(document.activeElement?.id).toBe("a");
     key("ArrowRight");
     expect(document.activeElement?.id).toBe("b");
+    stop();
+  });
+});
+
+describe("the remote's Back key", () => {
+  it("knows the key each TV platform sends, and nothing else", () => {
+    expect(isBackKey({ key: "", keyCode: 10009 })).toBe(true);
+    expect(isBackKey({ key: "Unidentified", keyCode: 461 })).toBe(true);
+    expect(isBackKey({ key: "BrowserBack", keyCode: 0 })).toBe(true);
+    // A keyboard's own keys are not Back, whatever their legacy code.
+    expect(isBackKey({ key: "Escape", keyCode: 27 })).toBe(false);
+    expect(isBackKey({ key: "Enter", keyCode: 13 })).toBe(false);
+    expect(isBackKey({ key: "a", keyCode: 10009 })).toBe(false);
+  });
+
+  it("closes an open sheet, as Escape would, instead of leaving the page", () => {
+    lay(
+      '<button id="out">out</button><div role="dialog"><button id="close">Close</button></div>',
+      { out: at(0, 200), close: at(0, 0) },
+    );
+    let escapes = 0;
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") escapes += 1; });
+    const stop = installRemoteFocus();
+    const event = new KeyboardEvent("keydown", { key: "", cancelable: true, bubbles: true });
+    Object.defineProperty(event, "keyCode", { value: 10009 });
+    document.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(escapes).toBe(1);
+    stop();
+  });
+
+  it("leaves Back alone with nothing open, so a TV is never a trap", () => {
+    lay('<button id="a">a</button>', { a: at(0, 0) });
+    const stop = installRemoteFocus();
+    const event = new KeyboardEvent("keydown", { key: "", cancelable: true, bubbles: true });
+    Object.defineProperty(event, "keyCode", { value: 10009 });
+    document.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(false);
+    stop();
+  });
+});
+
+describe("Back on a confirm that does not listen for Escape", () => {
+  it("absorbs the press rather than letting the browser leave the room", () => {
+    // The host's "Stop for today?" has both answers on screen; a stray Back must not navigate.
+    lay(
+      '<div role="alertdialog"><button id="stop">Stop</button><button id="keep">Keep playing</button></div>',
+      { stop: at(0, 0), keep: at(60, 0) },
+    );
+    const stop = installRemoteFocus();
+    const event = new KeyboardEvent("keydown", { key: "", cancelable: true, bubbles: true });
+    Object.defineProperty(event, "keyCode", { value: 10009 });
+    document.dispatchEvent(event);
+    expect(event.defaultPrevented).toBe(true);
+    expect(document.getElementById("stop")).not.toBeNull();
     stop();
   });
 });

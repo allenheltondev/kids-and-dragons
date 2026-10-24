@@ -5,9 +5,10 @@
  */
 
 import { getAudioProbe, type AudioState } from "../audio/cue";
+import { describeFullscreen, type FullscreenState } from "./fullscreen";
 import type { WakeLockState } from "./wake-lock";
 
-export type CapabilityId = "webgl" | "wakeLock" | "audio" | "serviceWorker";
+export type CapabilityId = "webgl" | "wakeLock" | "fullscreen" | "audio" | "serviceWorker";
 
 export interface Capability {
   id: CapabilityId;
@@ -64,10 +65,11 @@ export function probeServiceWorker(nav: Pick<Navigator, "serviceWorker"> | undef
     : { ok: true, detail: "Available, not controlling this page yet" };
 }
 
-export async function probeCapabilities(wakeLock: WakeLockState): Promise<Capability[]> {
+export async function probeCapabilities(wakeLock: WakeLockState, fullscreen: FullscreenState = "unsupported"): Promise<Capability[]> {
   return [
     { id: "webgl", label: "WebGL", ...probeWebGL() },
     { id: "wakeLock", label: "Wake lock", ...describeWakeLock(wakeLock) },
+    { id: "fullscreen", label: "Full screen", ...describeFullscreen(fullscreen) },
     { id: "audio", label: "Audio", ...describeAudio(getAudioProbe()?.state() ?? "unknown") },
     { id: "serviceWorker", label: "Service worker", ...probeServiceWorker() },
   ];

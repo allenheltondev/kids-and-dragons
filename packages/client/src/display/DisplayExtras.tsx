@@ -10,6 +10,7 @@ import { perfRequested } from "../world/frame-stats";
 import { getAudioProbe, onAudioProbe } from "../audio/cue";
 import { Button } from "../ui/Button";
 import { probeCapabilities, type Capability } from "./capabilities";
+import { watchFullscreen, type FullscreenState, type FullscreenWatch } from "./fullscreen";
 import { keepAwake, type KeepAwake, type WakeLockState } from "./wake-lock";
 import { useReconnectOnWake } from "../sync/wake-reconnect";
 
@@ -30,6 +31,22 @@ function useWakeState(): WakeLockState {
   );
 }
 
+/* The same for full screen (fullscreen.ts), which the corner button drives and the report reads. */
+let screenNow: FullscreenState = "unsupported";
+let screenWatch: FullscreenWatch | null = null;
+const screenListeners = new Set<() => void>();
+function setScreenNow(next: FullscreenState): void {
+  screenNow = next;
+  for (const listener of screenListeners) listener();
+}
+function useFullscreenState(): FullscreenState {
+  return useSyncExternalStore(
+    (listener) => { screenListeners.add(listener); return () => { screenListeners.delete(listener); }; },
+    () => screenNow,
+    () => screenNow,
+  );
+}
+
 /**
  * `controls={false}` when App draws the screen's own controls in its corner row
  * (`DisplayCornerControls`, #257); rendered on its own, it draws them where it is.
@@ -39,9 +56,17 @@ export function DisplayExtras({ controls = true }: { controls?: boolean } = {}):
     const lock: KeepAwake = keepAwake();
     setWakeNow(lock.state());
     const stopWatching = lock.onChange(() => { setWakeNow(lock.state()); });
+    const screen = watchFullscreen();
+    screenWatch = screen;
+    setScreenNow(screen.state());
+    const stopScreen = screen.onChange(() => { setScreenNow(screen.state()); });
     return () => {
       stopWatching();
       lock.stop();
+      stopScreen();
+      screen.stop();
+      screenWatch = null;
+      setScreenNow("unsupported");
     };
   }, []);
   // Asleep and back: a fresh stream, then everything missed from the last seq.
@@ -51,6 +76,7 @@ export function DisplayExtras({ controls = true }: { controls?: boolean } = {}):
   return (
     <>
       <SoundPrompt inCorner={false} />
+      <FullscreenPrompt inCorner={false} />
       <About inCorner={false} />
     </>
   );
@@ -66,6 +92,7 @@ export function DisplayCornerControls(): React.JSX.Element {
   return (
     <>
       <SoundPrompt inCorner />
+      <FullscreenPrompt inCorner />
       <About inCorner />
     </>
   );
@@ -156,7 +183,36 @@ function SoundPrompt({ inCorner }: { inCorner: boolean }): React.JSX.Element | n
   );
 }
 
+/**
+ * **Full screen**, shown only while this browser can go full and is not (fullscreen.ts). A TV
+ * browser keeps an address bar over the top of the scene and will only drop it from a gesture,
+ * so this is the gesture: one 44px button in the corner row, which a remote reaches with the
+ * arrows, and which takes itself away once pressed. A device that has been full before asks on
+ * its own at the next first key press, so this is a one-time setup, not furniture.
+ */
+function FullscreenPrompt({ inCorner }: { inCorner: boolean }): React.JSX.Element | null {
+  const state = useFullscreenState();
+  if (state === "on" || state === "unsupported") return null;
+  const press = (): void => { screenWatch?.enter(); };
+  return inCorner ? (
+    <button
+      type="button"
+      className="kad-fullscreen kad-fullscreen--in-corner kad-focusable"
+      aria-label="Full screen"
+      title="Full screen"
+      onClick={press}
+    >
+      <span aria-hidden="true">⛶</span>
+    </button>
+  ) : (
+    <div className="kad-fullscreen">
+      <Button size="md" onClick={press}>Full screen</Button>
+    </div>
+  );
+}
+
 function CapabilityReport({ wake, takeFocus, onClose }: { wake: WakeLockState; takeFocus: boolean; onClose: () => void }): React.JSX.Element {
+  const screen = useFullscreenState();
   const [rows, setRows] = useState<Capability[] | null>(null);
   const [tick, setTick] = useState(0);
   const close = useRef<HTMLButtonElement | null>(null);
@@ -184,9 +240,9 @@ function CapabilityReport({ wake, takeFocus, onClose }: { wake: WakeLockState; t
   }, []);
   useEffect(() => {
     let live = true;
-    void probeCapabilities(wake).then((next) => { if (live) setRows(next); });
+    void probeCapabilities(wake, screen).then((next) => { if (live) setRows(next); });
     return () => { live = false; };
-  }, [wake, tick]);
+  }, [wake, screen, tick]);
 
   const screenSize = typeof window === "undefined" ? "" : `${window.innerWidth}×${window.innerHeight} at ${window.devicePixelRatio || 1}x`;
   const agent = typeof navigator === "undefined" ? "" : navigator.userAgent;

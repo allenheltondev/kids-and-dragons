@@ -282,7 +282,7 @@
   margin: 0;
   padding: var(--kad-space-2) var(--kad-space-3);
   border-radius: var(--kad-radius-md);
-  background: color-mix(in srgb, var(--kad-danger) 18%, transparent);
+  background: rgb(var(--kad-danger-rgb) / 18%);
   color: var(--kad-danger);
   text-align: start;
 }
