@@ -28,6 +28,7 @@
  * | Pairing code     | PAIR#<code>     | META               |
  * | Visit            | VISIT#<playerId>| HH#<tableHhId>     |
  * | Forget job       | FORGET#<playerId>| META              |
+ * | Push subscription| PUSH#<playerId> | DEVICE#<deviceId>  |
  *
  * GSI1 indexes devices by device id so a returning phone resolves to its
  * household without a scan (§3), and runs by id so `runId` alone is enough to
@@ -111,6 +112,14 @@ export const VISIT = (playerId: string) => `VISIT#${playerId}`;
  * than something nobody can find again once her visits are gone.
  */
 export const FORGET = (playerId: string) => `FORGET#${playerId}`;
+
+/**
+ * Where a kid's own phones take "It's your turn" while the app is in the
+ * background (#466): one row per phone, keyed by the kid like a visit, so a
+ * move (#251) carries nothing and "delete her" (#252) finds them by her id.
+ * The sort key is the device (`DEVICE_SK`): one subscription per phone.
+ */
+export const PUSH = (playerId: string) => `PUSH#${playerId}`;
 
 /** GSI1: every forget job still owed, oldest first. */
 export const GSI1_FORGET = "FORGET";
