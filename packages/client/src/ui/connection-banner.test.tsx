@@ -9,9 +9,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { useGameStore } from "../store";
-import { ConnectionBanner, RECONNECT_GRACE_MS } from "./ConnectionBanner";
+import { bannerCopy, ConnectionBanner, RECONNECT_GRACE_MS } from "./ConnectionBanner";
+
+function setOnLine(value: boolean): void {
+  Object.defineProperty(navigator, "onLine", { value, configurable: true });
+}
 
 afterEach(() => {
+  setOnLine(true);
   cleanup();
   vi.useRealTimers();
   act(() => {
@@ -116,5 +121,40 @@ describe("the reconnecting banner", () => {
       });
       expect(screen.queryByText("Reconnecting…")).toBeNull();
     }
+  });
+});
+
+describe("the words the banner uses", () => {
+  it("says reconnecting, with Try again, while the device has a network", () => {
+    expect(bannerCopy(true)).toEqual({ words: "Reconnecting…", label: "Reconnecting", canRetry: true });
+  });
+
+  it("says no signal, with no Try again, when the device is offline", () => {
+    const copy = bannerCopy(false);
+    expect(copy.words).toBe("No signal. Waiting for Wi-Fi…");
+    expect(copy.canRetry).toBe(false);
+  });
+});
+
+describe("the banner when the phone goes offline", () => {
+  it("says no signal without Try again, then returns to reconnecting when back online", () => {
+    vi.useFakeTimers();
+    render(<ConnectionBanner />);
+    setConnection("reconnecting");
+    act(() => {
+      setOnLine(false);
+      window.dispatchEvent(new Event("offline"));
+      vi.advanceTimersByTime(RECONNECT_GRACE_MS + 50);
+    });
+    expect(screen.getByText("No signal. Waiting for Wi-Fi…")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Try again" })).toBeNull();
+    expect(screen.getAllByRole("status")).toHaveLength(1);
+
+    act(() => {
+      setOnLine(true);
+      window.dispatchEvent(new Event("online"));
+    });
+    expect(screen.getByText("Reconnecting…")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Try again" })).toBeTruthy();
   });
 });

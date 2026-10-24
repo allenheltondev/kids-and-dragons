@@ -177,4 +177,47 @@ test.describe("losing the signal in a room", () => {
 
     expect(samErrors).toEqual([]);
   });
+
+  test("says there is no signal while offline, then catches up", async ({ browser }) => {
+    test.setTimeout(180_000);
+
+    const tv = await device(browser, 1280, 720);
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /host a game/i }).click();
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
+    const code = new URL(tv.url()).pathname.split("/").pop()!;
+
+    const sam = await device(browser);
+    await sam.goto("/");
+    await sam.getByLabel(/room code/i).fill(code);
+    await sam.getByRole("button", { name: /join a game/i }).click();
+    await expect(sam).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+    await createCharacter(sam, "unicorn", "Sam");
+    const session = await sessionOf(sam, code);
+
+    await sam.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect.poll(async () => (await readState(code, session.sessionToken)).sceneId, TAP).toBe("scene_hedge_wall");
+    await openPlayerTask(sam);
+    const choices = sam.locator(".prompt .choice");
+    await expect(choices.filter({ hasText: "Listen first" })).toBeEnabled(TAP);
+
+    // Offline: the banner names the missing signal and offers no retry.
+    await sam.context().setOffline(true);
+    await expect(sam.getByText("No signal. Waiting for Wi-Fi…")).toBeVisible(TAP);
+    await expect(sam.getByRole("button", { name: "Try again" })).toHaveCount(0);
+    await expect(choices.filter({ hasText: "Listen first" })).toBeDisabled(TAP);
+
+    // The story moves on without this phone.
+    await jump(session, code, "scene_first_clearing");
+
+    // Back online: the room catches up and the banner goes.
+    await sam.context().setOffline(false);
+    await expect(sam.getByText("No signal. Waiting for Wi-Fi…")).toBeHidden(TAP);
+    await expect(sam.getByText("Reconnecting…")).toBeHidden(TAP);
+    await openPlayerTask(sam);
+    await expect(choices.filter({ hasText: "Say hello" })).toBeEnabled(TAP);
+    await expect(choices.filter({ hasText: "Listen first" })).toHaveCount(0);
+  });
 });
