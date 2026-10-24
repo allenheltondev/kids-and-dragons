@@ -9,8 +9,7 @@ import {
   parseChannelMessage,
   type EventSourceLike,
   type SequencerHandlers,
-  type TimerHandle,
-} from "./channel";
+  type TimerHandle, RESYNC_AFTER_FAILURES } from "./channel";
 import type { PresentationEvent, ProgressionEvent } from "../store/contract";
 import { makeState } from "../testing/fixtures";
 
@@ -896,6 +895,28 @@ describe("openChannel.reconnect (a screen that woke up, #264)", () => {
     channel.close();
     channel.reconnect?.();
     expect(sources).toHaveLength(2);
+  });
+});
+
+describe("a stream that keeps failing asks for the catch-up once (#470)", () => {
+  it("fetches on the third consecutive failure, and not again in that run", () => {
+    const { sequencer, scheduler } = harness();
+    const sources: EventSourceLike[] = [];
+    const resync = vi.fn(async () => undefined);
+    openChannel({
+      url: () => "/events/ABCD", sequencer, onStatus: () => undefined, resync,
+      createEventSource: () => {
+        const source: EventSourceLike = { onopen: null, onerror: null, onmessage: null, close: vi.fn() };
+        sources.push(source);
+        return source;
+      },
+      schedule: scheduler.schedule, cancel: scheduler.cancel,
+    });
+    for (let failure = 1; failure <= RESYNC_AFTER_FAILURES + 2; failure += 1) {
+      sources.at(-1)!.onerror?.({});
+      expect(resync).toHaveBeenCalledTimes(failure >= RESYNC_AFTER_FAILURES ? 1 : 0);
+      scheduler.flush();
+    }
   });
 });
 

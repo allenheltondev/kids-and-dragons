@@ -483,6 +483,9 @@ export interface Channel {
  */
 export const TERMINAL_AFTER = 5;
 
+/** Consecutive stream failures after which the catch-up is fetched once, to learn whether the room is gone. */
+export const RESYNC_AFTER_FAILURES = 3;
+
 /** The transport marks a failure that happened before `subscribe_success`. */
 export function failedBeforeSubscribe(reason: unknown): boolean {
   return typeof reason === "object" && reason !== null && (reason as { beforeSubscribe?: unknown }).beforeSubscribe === true;
@@ -553,6 +556,11 @@ export function openChannel(options: ChannelOptions): Channel {
       options.onStatus("reconnecting");
       const delay = backoffDelay(attempt, options.backoff);
       attempt += 1;
+      // A stream that keeps failing may be refused because the room is gone,
+      // which only the catch-up fetch can tell (the store ends on "lost" when
+      // it answers so). Once per run of failures, on the third: a blip never
+      // asks, an outage asks once and the fetch fails as cheaply as the stream.
+      if (attempt === RESYNC_AFTER_FAILURES) void options.resync(options.sequencer.seq).catch(() => undefined);
       retryTimer = schedule(() => { connect(); }, delay);
     };
   }

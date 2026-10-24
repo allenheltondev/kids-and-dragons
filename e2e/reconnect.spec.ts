@@ -223,37 +223,42 @@ test.describe("losing the signal in a room", () => {
     await expect(choices.filter({ hasText: "Listen first" })).toHaveCount(0);
   });
 
-  test("a room closed while the phone was offline says so, and leads home (#470)", async ({ browser }) => {
+  test("a room gone while the phone was offline says so, and leads home (#470)", async ({ browser }) => {
     test.setTimeout(180_000);
-
-    // --- The host opens a Phone Mode room and a guest joins it ---
-    const host = await device(browser);
-    await host.goto("/");
-    await host.getByRole("button", { name: /host a game/i }).click();
-    await host.getByText("Phone Mode").click();
-    await host.getByLabel(/adventurer name/i).fill("Grown-up");
-    await host.getByRole("button", { name: /^start a game$/i }).click();
-    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
-    const code = new URL(host.url()).pathname.split("/").pop() ?? "";
-
+    // --- A TV opens the room; a phone joins with a hero ---
+    const tv = await device(browser, 1280, 720);
+    await tv.goto("/");
+    await tv.getByRole("button", { name: /host a game/i }).click();
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
+    const code = new URL(tv.url()).pathname.split("/").pop()!;
     const guest = await device(browser);
     await guest.goto("/");
     await guest.getByLabel(/room code/i).fill(code);
     await guest.getByRole("button", { name: /join a game/i }).click();
     await expect(guest).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+    await createCharacter(guest, "unicorn", "Rosie");
+    await expect(guest.getByRole("button", { name: "You", exact: true })).toBeVisible(TAP);
 
     // --- The guest drops off the network ---
     await guest.context().setOffline(true);
     await expect(guest.getByText("No signal. Waiting for Wi-Fi…")).toBeVisible(TAP);
 
-    // --- Meanwhile the host closes the room for everyone ---
-    await host.getByText("Running this room").click();
-    await host.getByRole("button", { name: "Close the room" }).click();
-    await host.getByRole("button", { name: "Close it" }).click();
-    await expect(host.getByText(/closed the room/i)).toBeVisible(TAP);
+    // --- Meanwhile the room expires: the server no longer knows it. (A host
+    // closing the room is a different case: the state itself says `closed`,
+    // and every screen leaves. This is the room being gone altogether, which
+    // only the catch-up fetch can find out.) ---
+    await guest.route("**/api/state**", (route) =>
+      route.fulfill({ status: 404, contentType: "application/json", body: JSON.stringify({ error: { code: "NOT_FOUND", message: "No such room." } }) }),
+    );
+    await guest.route("**/events/**", (route) => route.abort());
 
     // --- The guest comes back: not "Reconnecting" forever, but the truth ---
+    // (Playwright's offline switch flips `navigator.onLine` but fires no
+    // `online` event; a real phone does, so it is dispatched here.)
     await guest.context().setOffline(false);
+    await guest.evaluate(() => window.dispatchEvent(new Event("online")));
     await expect(guest.getByText("This game has ended or the phone was signed out.")).toBeVisible(TAP);
     await expect(guest.getByRole("button", { name: "Try again" })).toBeVisible();
     await expect(guest.getByText("Reconnecting…")).toBeHidden();
