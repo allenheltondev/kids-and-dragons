@@ -51,8 +51,8 @@
   background: linear-gradient(
     to bottom,
     transparent 0,
-    color-mix(in srgb, var(--kad-bg, #0d0b1a) 84%, transparent) var(--space-6, 1.5em),
-    color-mix(in srgb, var(--kad-bg, #0d0b1a) 94%, transparent) 100%
+    rgb(var(--kad-bg-rgb) / 84%) var(--space-6, 1.5em),
+    rgb(var(--kad-bg-rgb) / 94%) 100%
   );
   pointer-events: auto;
 }
@@ -235,7 +235,7 @@
   max-inline-size: min(var(--kad-measure, 34em), 100%);
   padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
   border-radius: var(--radius-md, 0.75em);
-  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 78%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 78%);
   font-size: var(--font-size-lg, 1.25em);
   animation:
     narration-arrive 320ms ease-out,
@@ -309,7 +309,7 @@
   padding: var(--space-2, 0.5em) var(--space-4, 1em);
   border: 0.08em dashed var(--color-border, rgba(190, 178, 255, 0.16));
   border-radius: var(--radius-pill, 999em);
-  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 78%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 78%);
   font-size: var(--font-size-md, 1em);
   color: var(--color-text-muted, #b7b0d8);
   text-shadow: none;
@@ -517,8 +517,8 @@
   border-color: var(--kad-gold, #f5c86c);
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--kad-gold-hi, #ffe6a8) 30%, transparent),
-    color-mix(in srgb, var(--kad-gold-lo, #c9962f) 22%, transparent)
+    rgb(var(--kad-gold-hi-rgb) / 30%),
+    rgb(var(--kad-gold-lo-rgb) / 22%)
   );
   color: var(--kad-gold-hi, #ffe6a8);
   font-size: var(--font-size-lg, 1.25em);
@@ -551,8 +551,8 @@
     linear-gradient(
       to bottom,
       transparent 0,
-      color-mix(in srgb, var(--kad-bg, #0d0b1a) 84%, transparent) var(--space-6, 1.5em),
-      color-mix(in srgb, var(--kad-bg, #0d0b1a) 94%, transparent) 100%
+      rgb(var(--kad-bg-rgb) / 84%) var(--space-6, 1.5em),
+      rgb(var(--kad-bg-rgb) / 94%) 100%
     );
 }
 
@@ -591,7 +591,7 @@
   padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
   border: 0.08em dashed var(--color-accent, #f5c86c);
   border-radius: var(--radius-md, 0.75em);
-  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 78%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 78%);
   color: var(--color-accent, #f5c86c);
   font-size: var(--font-size-md, 1em);
   font-weight: 600;

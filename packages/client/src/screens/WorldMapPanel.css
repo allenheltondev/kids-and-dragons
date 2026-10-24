@@ -330,7 +330,7 @@
   gap: 0.2em;
   padding: 0.5em 1.1em;
   border-radius: var(--kad-radius-md);
-  background: color-mix(in srgb, var(--kad-bg) 82%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 82%);
   box-shadow: var(--kad-shadow-sm);
   white-space: nowrap;
   line-height: 1.15;

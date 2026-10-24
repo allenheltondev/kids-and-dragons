@@ -32,6 +32,10 @@ const SIZES = [
  * row's device controls (display settings, read-aloud, sound), the shared screen's own (About
  * this screen, Tap for sound while a TV holds sound back) and the host's Room button. Nothing
  * else, and all of it in the corner row.
+ *
+ * This list is the executable half of docs/tv-read-only-audit.md. Adding to it is a decision
+ * about what a remote has to drive, so a new entry belongs in that table too — and the row is
+ * proven at these six: `layout-fit.spec.ts` fails on a seventh, and on any that comes and goes.
  */
 const KEEP = [/^Display settings$/, /^Turn read-aloud (on|off)$/, /^Turn sound (on|off)$/, /^About this screen$/, /^Tap for sound$/, /^Room( \(locked\))?$/];
 

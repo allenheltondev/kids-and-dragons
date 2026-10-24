@@ -30,7 +30,7 @@
   border: 0.08em solid var(--color-border, #3a3468);
   border-inline-start: 0.3em solid var(--color-accent, #ffc95c);
   border-radius: var(--radius-md, 0.75em);
-  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 84%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 84%);
   box-shadow: 0 0.3em 1em rgba(0, 0, 0, 0.45);
   color: var(--color-text, #f4f0ff);
   pointer-events: none;
@@ -119,25 +119,25 @@
 
 .fight-log__verdict--graze,
 .fight-log__verdict--solid {
-  background: color-mix(in srgb, var(--color-success, #4ad991) 25%, transparent);
+  background: rgb(var(--color-success-rgb) / 25%);
   color: var(--color-success, #4ad991);
 }
 
 .fight-log__verdict--critical {
-  background: color-mix(in srgb, var(--color-accent, #ffc95c) 30%, transparent);
+  background: rgb(var(--color-accent-rgb) / 30%);
   color: var(--color-accent, #ffc95c);
   box-shadow: 0 0 0 0.12em var(--color-accent, #ffc95c);
 }
 
 .fight-log__verdict--miss {
-  background: color-mix(in srgb, var(--color-text-muted, #b7b0d8) 20%, transparent);
+  background: rgb(var(--color-text-muted-rgb) / 20%);
   color: var(--color-text-muted, #b7b0d8);
 }
 
 /* A monster's hit lands on the party: the hearts it took read as bad news. */
 .fight-log__line--bad .fight-log__verdict--graze,
 .fight-log__line--bad .fight-log__verdict--solid {
-  background: color-mix(in srgb, var(--color-danger, #ff6b6b) 25%, transparent);
+  background: rgb(var(--color-danger-rgb) / 25%);
   color: var(--color-danger, #ff6b6b);
 }
 

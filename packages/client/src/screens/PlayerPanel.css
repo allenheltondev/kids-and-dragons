@@ -105,7 +105,7 @@
   block-size: 1.1em;
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--kad-gold, #f5c86c) 75%, transparent),
+    rgb(var(--kad-gold-rgb) / 75%),
     transparent
   );
   pointer-events: none;
@@ -198,7 +198,7 @@
   margin-block-start: var(--space-1, 0.25em);
   padding: 0.1em var(--space-2, 0.5em);
   border-radius: var(--radius-pill, 999em);
-  background: color-mix(in srgb, var(--color-accent, #ffc95c) 18%, transparent);
+  background: rgb(var(--color-accent-rgb) / 18%);
   color: var(--color-accent, #ffc95c);
   font-size: var(--font-size-sm, 0.875em);
   font-weight: 700;
