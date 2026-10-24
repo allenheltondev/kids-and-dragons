@@ -42,6 +42,7 @@ import { useReconnectOnWake } from "../sync/wake-reconnect";
 import { usePhoneWakeLock } from "../display/usePhoneWakeLock";
 import { usePersistStorage } from "../storage/persist";
 import { usePromptBuzz } from "../ui/prompt-buzz";
+import { useAppBadge } from "../ui/app-badge";
 
 export function PlayerView({ roomControls }: { roomControls?: ReactNode }): React.JSX.Element {
   const me = useMe();
@@ -60,6 +61,7 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
   // Ask the browser to keep this phone's storage once a scene has been played (#457).
   usePersistStorage(state !== null && state.phase !== "lobby" && state.phase !== "creation");
   usePromptBuzz();
+  useAppBadge();
 
   /*
    * Ask once whether this deployment can offer sign-in at all (§4.5). It is a
