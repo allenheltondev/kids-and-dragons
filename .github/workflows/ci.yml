@@ -223,6 +223,19 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
+      # The suite shells out to Python for the art checks it covers
+      # (tools/art/verify_entity_states.test.ts, the manifest's maskable
+      # icons in packages/client/src/sw/manifest.test.ts): Pillow and numpy,
+      # from the same requirements-dev.txt as checks and build.
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
+
       - name: Wait for DynamoDB Local
         run: |
           for i in $(seq 1 30); do
