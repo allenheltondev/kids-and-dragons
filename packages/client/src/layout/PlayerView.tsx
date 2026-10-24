@@ -40,6 +40,7 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { usePresenceBeat } from "../sync/presence-beat";
 import { useReconnectOnWake } from "../sync/wake-reconnect";
 import { usePhoneWakeLock } from "../display/usePhoneWakeLock";
+import { usePromptBuzz } from "../ui/prompt-buzz";
 
 export function PlayerView({ roomControls }: { roomControls?: ReactNode }): React.JSX.Element {
   const me = useMe();
@@ -55,6 +56,7 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
   useReconnectOnWake();
   // Screen stays on while the room is open, and only then (#463).
   usePhoneWakeLock();
+  usePromptBuzz();
 
   /*
    * Ask once whether this deployment can offer sign-in at all (§4.5). It is a
