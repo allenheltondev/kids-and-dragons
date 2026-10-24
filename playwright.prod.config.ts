@@ -32,7 +32,10 @@ export default defineConfig({
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: "retain-on-failure",
-    ...(CHROMIUM ? { launchOptions: { executablePath: CHROMIUM } } : {}),
+    // The full Chromium, never the headless shell Playwright otherwise runs
+    // headless tests in: the shell has no PushManager, so push.spec's switch
+    // would stay hidden there (#466). `install chromium` puts both on disk.
+    ...(CHROMIUM ? { launchOptions: { executablePath: CHROMIUM } } : { channel: "chromium" as const }),
   },
   webServer: [
     {
