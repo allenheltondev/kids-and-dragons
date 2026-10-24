@@ -11,8 +11,13 @@
  * tell a 4K panel from a retina laptop.
  */
 
-/** The names the TV platforms put in their user agent. Samsung's is `Tizen`, with `SMART-TV`. */
-const TV_NAMES = /\b(?:smart-?tv|smarttv|tizen|web0s|webos|hbbtv|netcast|viera|bravia|aquos|vidaa|googletv|crkey|appletv|roku|silk\/|aft[a-z]{1,4}\b)/i;
+/**
+ * The names the TV platforms put in their user agent. Samsung's is `Tizen`, with `SMART-TV`.
+ *
+ * Deliberately not `Silk/`: Amazon's browser is on the Fire tablets too, and a tablet is a
+ * thing a player holds or a family props up as the display. Fire TV is the `AFT…` model codes.
+ */
+const TV_NAMES = /\b(?:smart-?tv|smarttv|tizen|web0s|webos|hbbtv|netcast|viera|bravia|aquos|vidaa|googletv|crkey|roku|aft[a-z]{1,4}\b)/i;
 
 export function isTvBrowser(agent: string | undefined = typeof navigator === "undefined" ? undefined : navigator.userAgent): boolean {
   return agent !== undefined && TV_NAMES.test(agent);

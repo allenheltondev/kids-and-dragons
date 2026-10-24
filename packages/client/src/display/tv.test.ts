@@ -16,4 +16,11 @@ describe("spotting a television's own browser", () => {
     expect(isTvBrowser("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0.0.0 Safari/537.36")).toBe(false);
     expect(isTvBrowser(undefined)).toBe(false);
   });
+
+  it("leaves an Amazon tablet alone, which shares its browser with Fire TV", () => {
+    // Silk on a Fire HD tablet, which a family may hold or prop up as the display.
+    expect(isTvBrowser("Mozilla/5.0 (Linux; Android 11; KFRAWI) AppleWebKit/537.36 Chrome/106.0.0.0 Safari/537.36 Silk/106.3.3")).toBe(false);
+    // The same browser on a Fire TV stick, which is one.
+    expect(isTvBrowser("Mozilla/5.0 (Linux; Android 9; AFTSS) AppleWebKit/537.36 Chrome/106.0.0.0 Safari/537.36 Silk/106.3.3")).toBe(true);
+  });
 });

@@ -44,7 +44,7 @@ export default defineConfig({
      * holds the same number and fails when one is missing. Raise both together, once
      * docs/hardware.md has a device row that proves the newer floor.
      */
-    target: ["chrome108", "edge108", "firefox115", "safari16.4"],
+    target: ["chrome108", "edge108", "firefox114", "safari16.4"],
     /*
      * Not Vite's default of `assets`. In production the SPA, the commissioned
      * art, and the chapter JSON all sit in one S3 bucket behind one
