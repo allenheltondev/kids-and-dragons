@@ -6,6 +6,8 @@ import {
   diagnosticRows,
   diagnosticsText,
   formatBytes,
+  formatWhen,
+  periodicWords,
   savedFilesOf,
   workerStateOf,
   type Diagnostics,
@@ -19,6 +21,10 @@ const full: Diagnostics = {
   storage: { usage: 5 * 1024 * 1024, quota: 2 * 1024 ** 3 },
   persisted: true,
   saved: { count: 42, bytes: 31_457_280 },
+  periodic: {
+    registered: true,
+    lastRun: { at: Date.UTC(2026, 9, 24, 6, 12), outcome: "done", build: "abc123def456", refreshed: 1, warmed: 30, chapters: ["gemfall-03a"] },
+  },
 };
 
 afterEach(() => vi.unstubAllGlobals());
@@ -74,6 +80,7 @@ describe("diagnosticsText", () => {
       "Space used: 5.0 MB of 2.0 GB",
       "Space kept safe: Yes",
       "Saved for offline: 42 files, 30 MB",
+      "Overnight refresh: On, last ran 2026-10-24 06:12 UTC",
     ]);
   });
 
@@ -86,12 +93,29 @@ describe("diagnosticsText", () => {
       storage: null,
       persisted: null,
       saved: null,
+      periodic: { registered: null, lastRun: null },
     });
-    expect(rows.map((row) => row.value)).toEqual(["abc123def456", "None", "No", "A browser tab", "Unknown", "Unknown", "Unknown"]);
+    expect(rows.map((row) => row.value)).toEqual(["abc123def456", "None", "No", "A browser tab", "Unknown", "Unknown", "Unknown", "Not on this device"]);
   });
 
   it("uses no dashes in its words", () => {
     expect(diagnosticsText(full)).not.toMatch(/[–—]/);
+  });
+});
+
+describe("the overnight refresh (#467)", () => {
+  const run = full.periodic.lastRun!;
+  it("says whether it is on and when it last ran", () => {
+    expect(periodicWords({ registered: true, lastRun: null })).toBe("On, not run yet");
+    expect(periodicWords({ registered: true, lastRun: run })).toBe("On, last ran 2026-10-24 06:12 UTC");
+    expect(periodicWords({ registered: true, lastRun: { ...run, outcome: "failed" } })).toBe("On, last ran 2026-10-24 06:12 UTC, and it went wrong");
+    expect(periodicWords({ registered: false, lastRun: null })).toBe("Off");
+    expect(periodicWords({ registered: false, lastRun: run })).toBe("Off (last ran 2026-10-24 06:12 UTC)");
+    expect(periodicWords({ registered: null, lastRun: null })).toBe("Not on this device");
+  });
+  it("writes times the same on every device", () => {
+    expect(formatWhen(Date.UTC(2026, 0, 2, 3, 4))).toBe("2026-01-02 03:04 UTC");
+    expect(formatWhen(NaN)).toBe("unknown");
   });
 });
 
@@ -106,6 +130,7 @@ describe("collectDiagnostics", () => {
       storage: null,
       persisted: null,
       saved: null,
+      periodic: { registered: null, lastRun: null },
     });
   });
 
@@ -114,13 +139,23 @@ describe("collectDiagnostics", () => {
       userAgent: "Mozilla/5.0",
       serviceWorker: {
         controller: {},
-        getRegistration: async () => ({ active: { scriptURL: "https://kad.test/sw.js" }, waiting: null, installing: null }),
+        getRegistration: async () => ({
+          active: { scriptURL: "https://kad.test/sw.js" },
+          waiting: null,
+          installing: null,
+          periodicSync: { getTags: async () => ["kad-refresh"] },
+        }),
       },
       storage: { estimate: async () => ({ usage: 100, quota: 1000 }), persisted: async () => false },
     });
     vi.stubGlobal("caches", {
       open: async () => ({
-        match: async (key: string) => (key === "/__kad/files-meta" ? new Response(JSON.stringify({ "/a?v=1": { bytes: 7, used: 1 } })) : undefined),
+        match: async (key: string) =>
+          key === "/__kad/files-meta"
+            ? new Response(JSON.stringify({ "/a?v=1": { bytes: 7, used: 1 } }))
+            : key === "/__kad/periodic-sync"
+              ? new Response(JSON.stringify({ at: 5, outcome: "partial", build: "b", refreshed: 0, warmed: 2, chapters: ["x"] }))
+              : undefined,
       }),
     });
     const found = await collectDiagnostics();
@@ -130,6 +165,7 @@ describe("collectDiagnostics", () => {
       storage: { usage: 100, quota: 1000 },
       persisted: false,
       saved: { count: 1, bytes: 7 },
+      periodic: { registered: true, lastRun: { at: 5, outcome: "partial", build: "b", refreshed: 0, warmed: 2, chapters: ["x"] } },
     });
   });
 });

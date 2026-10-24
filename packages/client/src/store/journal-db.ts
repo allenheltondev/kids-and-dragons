@@ -26,8 +26,11 @@ import {
 export type { SavedJournal } from "./persistence";
 
 export const JOURNAL_DB_NAME = "kad";
-const STORE = "journal";
-const RECORD_KEY = "current";
+/** The store and key the book lives under; the worker reads them too (sw/next-chapter.ts `SW_JOURNAL_DB`). */
+export const JOURNAL_STORE = "journal";
+export const JOURNAL_RECORD_KEY = "current";
+const STORE = JOURNAL_STORE;
+const RECORD_KEY = JOURNAL_RECORD_KEY;
 
 /** Last resort when neither IndexedDB nor localStorage will hold the book. */
 let memory: SavedJournal | null = null;

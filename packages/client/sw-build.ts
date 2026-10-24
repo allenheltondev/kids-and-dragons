@@ -3,9 +3,10 @@
  *
  * A worker registered as a classic script cannot import anything, and its URL
  * must be fixed (`/sw.js`, so its scope is the whole site) while Vite hashes
- * every chunk it emits. So it is not a Vite entry: this concatenates
- * `policy.ts` and `sw.ts`, drops their `import`/`export` lines, transpiles the
- * result to plain JavaScript, and prepends what the worker is given:
+ * every chunk it emits. So it is not a Vite entry: this concatenates the
+ * worker's modules (`WORKER_SOURCES`), drops their `import`/`export` lines,
+ * transpiles the result to plain JavaScript, and prepends what the worker is
+ * given:
  *
  *   __KAD_BUNDLE__              every `/bundle/*` file this build emitted (no maps)
  *   __KAD_PRECACHE__            the files saved at install
@@ -30,7 +31,21 @@ import type { Plugin } from "vite";
 
 const here = fileURLToPath(new URL(".", import.meta.url));
 
-/** `import … from "…";`, however many lines it spans. Only `sw.ts` has one. */
+/**
+ * What `sw.js` is made of, in order. Each file but `sw.ts` is pure: it imports
+ * nothing at runtime but the files before it, so its names are globals in the
+ * worker. `art-paths.ts` and `chapter-art.ts` are the page's own, so the
+ * overnight refresh (#467) warms exactly the files a chapter draws.
+ */
+export const WORKER_SOURCES = [
+  "src/world/art-paths.ts",
+  "src/sw/chapter-art.ts",
+  "src/sw/next-chapter.ts",
+  "src/sw/policy.ts",
+  "src/sw/sw.ts",
+] as const;
+
+/** `import … from "…";`, however many lines it spans. */
 const IMPORT = /^import[\s\S]*?from\s+"[^"]+";\s*$/gm;
 const EXPORT = /^export\s+/gm;
 
@@ -80,9 +95,8 @@ export interface WorkerInputs {
 }
 
 export function buildServiceWorker({ bundleFiles, campaignFiles, fileIndexUrl, build = buildId() }: WorkerInputs): string {
-  const policy = readFileSync(`${here}src/sw/policy.ts`, "utf8").replace(EXPORT, "");
-  const worker = readFileSync(`${here}src/sw/sw.ts`, "utf8").replace(IMPORT, "");
-  const { outputText } = ts.transpileModule(`${policy}\n${worker}`, {
+  const sources = WORKER_SOURCES.map((file) => readFileSync(`${here}${file}`, "utf8").replace(IMPORT, "").replace(EXPORT, ""));
+  const { outputText } = ts.transpileModule(sources.join("\n"), {
     compilerOptions: { target: ts.ScriptTarget.ES2020, module: ts.ModuleKind.None, removeComments: true },
   });
   return [
