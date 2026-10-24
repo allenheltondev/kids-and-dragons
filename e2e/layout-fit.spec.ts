@@ -477,12 +477,34 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect(page.getByRole("alert")).toHaveCount(0);
   });
 
-  test("the header, a host's notices and stop offer, the room controls and the catch-up line", async ({ browser }) => {
-    // Seven sizes on every screen, two of them a tablet's, and the lobby on the world pane: past
-    // five minutes on a CI runner.
-    test.setTimeout(480_000);
+  /**
+   * The room both of the next two tests walk: a Phone Mode host with a hero,
+   * a guest with another, and the host's phone showing who joined. Each test
+   * opens its own, so the two run on different runners (CI shards by test).
+   */
+  async function hostAndGuest(browser: Browser): Promise<{ host: Page; guest: Page; code: string }> {
+    const host = await phone(browser);
+    await host.goto("/");
+    await host.getByRole("button", { name: /host a game/i }).click();
+    await host.getByText("Phone Mode").click();
+    await host.getByLabel("Your adventurer name").fill("Grown-up");
+    await host.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    const code = new URL(host.url()).pathname.split("/").pop() ?? "";
+    await createCharacter(host, "unicorn", "Sparklehoof");
+    const guest = await phone(browser);
+    await guest.goto("/");
+    await guest.getByLabel(/room code/i).fill(code);
+    await guest.getByRole("button", { name: /join a game/i }).click();
+    await expect(guest).toHaveURL(new RegExp(`/p/${code}$`), TAP);
+    await createCharacter(guest, "griffin", "Rosie");
+    // The host's phone says who joined, and keeps saying it until dismissed.
+    await expect(host.locator(".kad-arrivals--inline .kad-arrival").first()).toBeVisible(TAP);
+    return { host, guest, code };
+  }
 
-    // --- The start screen ---
+  test("the start screen and the grown-up's guide", async ({ browser }) => {
+    test.setTimeout(180_000);
     const host = await phone(browser);
     await host.goto("/");
     await expect(host.getByRole("button", { name: /host a game/i })).toBeVisible(TAP);
@@ -494,26 +516,12 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expectFits(host, "the guide");
     await host.locator(".guide").evaluate((el) => el.scrollTo(0, 1200));
     await expectFits(host, "the guide, scrolled");
-    await host.goto("/");
+  });
 
-    // --- A Phone Mode room, a host and a guest, each with a hero ---
-    await host.getByRole("button", { name: /host a game/i }).click();
-    await host.getByText("Phone Mode").click();
-    await host.getByLabel("Your adventurer name").fill("Grown-up");
-    await host.getByRole("button", { name: /^start a game$/i }).click();
-    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
-    const code = new URL(host.url()).pathname.split("/").pop() ?? "";
-    await createCharacter(host, "unicorn", "Sparklehoof");
-
-    const guest = await phone(browser);
-    await guest.goto("/");
-    await guest.getByLabel(/room code/i).fill(code);
-    await guest.getByRole("button", { name: /join a game/i }).click();
-    await expect(guest).toHaveURL(new RegExp(`/p/${code}$`), TAP);
-    await createCharacter(guest, "griffin", "Rosie");
-
-    // The host's phone says who joined, and keeps saying it until dismissed.
-    await expect(host.locator(".kad-arrivals--inline .kad-arrival").first()).toBeVisible(TAP);
+  test("a host's arrival notice, the lobby on a world pane, the stop offer and the room controls", async ({ browser }) => {
+    // Five screens at seven sizes each: past three minutes on a CI runner.
+    test.setTimeout(300_000);
+    const { host, guest, code } = await hostAndGuest(browser);
     await expectFits(host, "host's lobby with an arrival notice");
 
     // The lobby itself, on a phone's world pane: the room code, the adventures and the party. At
@@ -536,6 +544,15 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await host.getByText("Running this room").click();
     await expect(host.getByRole("button", { name: "Lock the room" })).toBeVisible(TAP);
     await expectFits(host, "host's room controls");
+  });
+
+  test("a guest's catch-up line, the class tokens, the rank-up card and the adventure book", async ({ browser }) => {
+    // Six screens at seven sizes each: past three minutes on a CI runner.
+    test.setTimeout(360_000);
+    const { host, guest, code } = await hostAndGuest(browser);
+    await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect.poll(async () => (await roomState<{ phase: string }>(host, code)).phase, TAP).toBe("scene");
+    await jumpTo(host, code, "rest_mossbank");
 
     // --- The guest steps away and comes back to the catch-up line ---
     const member = async (): Promise<Member | undefined> =>
@@ -621,12 +638,14 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect(kid.getByRole("button", { name: /^Be a / })).toHaveCount(0);
   });
 
-  test("the shared screen: its corner row (Room, About this screen, Tap for sound) keeps off the lobby and the story", async ({ browser }) => {
-    test.setTimeout(240_000);
+  /**
+   * A television that holds sound back until a tap, as most do (display-hardware.spec), so the
+   * "Tap for sound" ask is up the whole time and has to keep clear too; one phone with a hero at
+   * its table. Each shared-screen test opens its own, so the two run on different runners.
+   */
+  async function sharedScreen(browser: Browser): Promise<{ tv: Page; kid: Page; code: string }> {
     const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
     open.push(context);
-    // A TV that holds sound back until a tap, as most do (display-hardware.spec), so the
-    // "Tap for sound" ask is up the whole time and has to keep clear too.
     await context.addInitScript(() => {
       class BlockedContext {
         currentTime = 0;
@@ -663,6 +682,12 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await createCharacter(kid, "unicorn", "Sparklehoof");
     await expect(tv.getByText("Sparklehoof").first()).toBeVisible(TAP);
 
+    return { tv, kid, code };
+  }
+
+  test("the shared screen: its corner row (Room, About this screen, Tap for sound) keeps off the lobby, the story and a rank-up", async ({ browser }) => {
+    test.setTimeout(240_000);
+    const { tv, kid, code } = await sharedScreen(browser);
     // A television, and a tablet showing the game (#274).
     await expectFits(tv, "the shared screen's lobby", SHARED);
 
@@ -671,6 +696,27 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await expect(tv.locator(".narration__body").first()).toBeVisible(TAP);
     await expectFits(tv, "the shared screen's story", SHARED);
 
+    // A rank lands (#314): the line with its token under the story, and the moment over
+    // the stage, which lets every tap through and is gone by itself in a few seconds.
+    await withRankUp(tv, "Sparklehoof");
+    const moment = tv.getByTestId("rank-up-moment");
+    await expect(moment).toBeVisible(TAP);
+    const shown = Date.now();
+    expect(await moment.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
+    await expect(moment).toHaveCount(0, { timeout: 8_000 });
+    expect(Date.now() - shown, "the moment does not hold the table up").toBeLessThan(6_000);
+    // The words of record stay under the story, token and all, and fit where they are
+    // tightest: the tablet at the largest text.
+    await expect(tv.getByTestId("rank-up")).toContainText("Duskrunner Apprentice", TAP);
+    await expectFits(tv, "the shared screen's story, with a rank-up", SHARED.filter((c) => c.text === "largest"));
+  });
+
+  test("the shared screen: the hardest stories' choices fit the plate at every size, and refit when the plate's content grows", async ({ browser }) => {
+    test.setTimeout(240_000);
+    const { tv, kid, code } = await sharedScreen(browser);
+    await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect.poll(async () => (await roomState<{ phase: string }>(kid, code)).phase, TAP).toBe("scene");
+    await expect(tv.locator(".narration__body").first()).toBeVisible(TAP);
     // The choices are on the TV whole, at both sizes and both text sizes (#331): for the scene the
     // room is on, and for the hardest stories shipped, each with its own choices. The story steps
     // its type down to fit them (fit-plate.ts), and never under the app's body size.
@@ -716,19 +762,6 @@ test.describe("nothing sits under the controls pinned over the screen, or is cut
     await tv.setViewportSize({ width: 1280, height: 720 });
     expect.soft(unfit, unfit.join("\n")).toEqual([]);
 
-    // A rank lands (#314): the line with its token under the story, and the moment over
-    // the stage, which lets every tap through and is gone by itself in a few seconds.
-    await withRankUp(tv, "Sparklehoof");
-    const moment = tv.getByTestId("rank-up-moment");
-    await expect(moment).toBeVisible(TAP);
-    const shown = Date.now();
-    expect(await moment.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe("none");
-    await expect(moment).toHaveCount(0, { timeout: 8_000 });
-    expect(Date.now() - shown, "the moment does not hold the table up").toBeLessThan(6_000);
-    // The words of record stay under the story, token and all, and fit where they are
-    // tightest: the tablet at the largest text.
-    await expect(tv.getByTestId("rank-up")).toContainText("Duskrunner Apprentice", TAP);
-    await expectFits(tv, "the shared screen's story, with a rank-up", SHARED.filter((c) => c.text === "largest"));
   });
 
   test("the shared screen's corner row holds still while sound loads, asks, and unlocks", async ({ browser }) => {

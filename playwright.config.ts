@@ -25,7 +25,10 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   retries: process.env.CI ? 1 : 0,
-  reporter: process.env.CI ? "list" : "line",
+  // On CI, the list with each test's time, and the JSON report that
+  // tools/ci/e2e-shard.mjs --timings turns into e2e/timings.json, the weights
+  // the shards are balanced by.
+  reporter: process.env.CI ? [["list"], ["json", { outputFile: "test-results/report.json" }]] : "line",
   use: {
     baseURL: BASE_URL,
     trace: "retain-on-failure",
