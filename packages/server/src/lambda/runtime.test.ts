@@ -96,6 +96,18 @@ describe("production's push switch (#466)", () => {
     warn.mockRestore();
   });
 
+  it("stays off, rather than failing the API, when the key pair cannot be read", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const denied = () => async () => {
+      throw Object.assign(new Error("not allowed"), { name: "AccessDeniedException" });
+    };
+    expect(await pushFromEnv(on, denied)).toBeUndefined();
+    expect(await pushFromEnv(on, () => async () => "{}")).toBeUndefined();
+    expect(await pushFromEnv({ ...on, PUSH_KEY_PARAMETER: "" }, source)).toBeUndefined();
+    expect(error).toHaveBeenCalledTimes(3);
+    error.mockRestore();
+  });
+
   it("hands the handlers the stored public key when on", async () => {
     const config = await pushFromEnv(on, source);
     expect(config?.publicKey).toBe((JSON.parse(keys) as { publicKey: string }).publicKey);

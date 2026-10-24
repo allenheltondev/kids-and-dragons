@@ -84,8 +84,9 @@ async function build(): Promise<HandlerDeps> {
  * and names a subject (`KAD_PUSH_SUBJECT`, a `mailto:` or `https:` contact the
  * push services can reach). The VAPID key pair lives in one SecureString,
  * `PUSH_KEY_PARAMETER`, minted here on first use like the signing key, so
- * there is no secret to type in. A subject missing while pushes are on is a
- * stack mistake: logged, and pushes stay off rather than the API failing.
+ * there is no secret to type in. A subject missing while pushes are on, or a
+ * key pair that cannot be read, is a stack mistake: logged, and pushes stay
+ * off for this container rather than the API failing.
  */
 export async function pushFromEnv(
   env: NodeJS.ProcessEnv = process.env,
@@ -103,9 +104,18 @@ export async function pushFromEnv(
     return undefined;
   }
   const parameter = env.PUSH_KEY_PARAMETER;
-  if (!parameter) throw new Error("missing required environment variable PUSH_KEY_PARAMETER");
-  const keys = parseVapidKeys(await source(parameter)());
-  return pushConfig(keys, webPushSender(keys, subject));
+  if (!parameter) {
+    console.error("push: KAD_PUSH is on but PUSH_KEY_PARAMETER is not set; pushes stay off");
+    return undefined;
+  }
+  try {
+    const keys = parseVapidKeys(await source(parameter)());
+    return pushConfig(keys, webPushSender(keys, subject));
+  } catch (err) {
+    // A push key that cannot be read must never take the game down with it.
+    console.error(`push: the key pair in ${parameter} could not be read; pushes stay off:`, err);
+    return undefined;
+  }
 }
 
 let contentCache: ContentStore | null = null;
