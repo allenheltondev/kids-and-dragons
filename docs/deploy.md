@@ -328,11 +328,9 @@ so the API waits only for Lambda to queue it) and the sender does the reads and
 the push-service calls. The API may invoke that one function
 (`lambda:InvokeFunction` on its ARN, its name in `PUSH_SENDER_FUNCTION`); the
 sender has the table and read-only access to the key pair. It keeps Lambda's
-default two async retries, drops events older than 15 minutes, and reserves a
-concurrency of 5 while pushes are on. An account whose concurrency limit is
-the new-account default of 10 cannot reserve any; raise the limit (Service
-Quotas → Lambda → Concurrent executions) before turning pushes on there. There
-is no secret to type in: the first request that needs the key pair mints it
+default two async retries and drops events older than 15 minutes. It reserves
+no concurrency: async invocations queue, and a reservation would be refused
+in an account at the new-account limit. There is no secret to type in: the first request that needs the key pair mints it
 into `/kad/<stage>/push-vapid-keys` (a SecureString holding
 `{"publicKey","privateKey"}`), with `Overwrite: false` exactly as the signing
 key is, and the API's role may read and create that one parameter. With

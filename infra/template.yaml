@@ -106,7 +106,6 @@ Conditions:
   # Both halves are needed: the certificate validates, and the alias records
   # live, in the hosted zone.
   # "It's your turn" pushes (#466).
-  PushOn: !Equals [!Ref PushNotifications, "on"]
   CustomDomain: !And
     - !Not [!Equals [!Ref AppDomainName, ""]]
     - !Not [!Equals [!Ref AppHostedZoneId, ""]]
@@ -546,10 +545,10 @@ Resources:
       CodeUri: .build/push-sender
       Description: Sends "It's your turn" Web Pushes for the API, asynchronously
       MemorySize: 256
-      # A handful at once is plenty for a family game, and a burst of turns
-      # can never crowd the API out of the account's concurrency. Reserved only
-      # while pushes are on, so a stack with them off reserves nothing.
-      ReservedConcurrentExecutions: !If [PushOn, 5, !Ref AWS::NoValue]
+      # No reserved concurrency: a reservation is refused in an account at the
+      # new-account limit, and only when pushes are turned on, which is the
+      # wrong moment to learn it. Async invocations queue, and a family game
+      # is a handful of pushes a minute.
       EventInvokeConfig:
         MaximumEventAgeInSeconds: 900
         MaximumRetryAttempts: 2
