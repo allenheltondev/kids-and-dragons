@@ -48,6 +48,7 @@ import type {
   PresentationEvent,
   ProgressionEvent,
 } from "./contract";
+import { clearSavedJournal, loadSavedJournal, saveJournal } from "./journal-db";
 import {
   clearSession,
   clearSharedDevice,
@@ -56,12 +57,9 @@ import {
   saveSharedDevice,
   tabStorage,
   asPlayerIdentity,
-  clearSavedJournal,
   loadIdentity,
   loadPlayerDeviceToken,
-  loadSavedJournal,
   loadSession,
-  saveJournal,
   saveIdentity,
   saveSession,
   type KeyValueStorage,
@@ -1002,7 +1000,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
         try {
           const journal = await deps.api.loadJournal(deviceToken);
-          saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
+          await saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
           return { journal, savedAt: null };
         } catch (error) {
           /*
@@ -1012,10 +1010,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
            * a 5xx — is the car, and last time's book is the right answer.
            */
           if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
-            clearSavedJournal(deps.storage);
+            await clearSavedJournal(deps.storage);
             throw error;
           }
-          const saved = loadSavedJournal(deviceToken, deps.storage);
+          const saved = await loadSavedJournal(deviceToken, deps.storage);
           if (!saved) throw error;
           return { journal: saved.journal, savedAt: saved.savedAt };
         }
@@ -1029,8 +1027,8 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           return deps.api.saveFlairAsSeat(choice, seat);
         }
         const profile = await deps.api.saveFlair(choice, deviceToken);
-        const saved = loadSavedJournal(deviceToken, deps.storage);
-        if (saved) saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);
+        const saved = await loadSavedJournal(deviceToken, deps.storage);
+        if (saved) await saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);
         return profile;
       },
 

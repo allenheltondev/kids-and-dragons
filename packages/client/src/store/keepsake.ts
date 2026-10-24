@@ -19,6 +19,7 @@
 import { create } from "zustand";
 import type { AuthTokens, CognitoClient, PendingChallenge, createCognitoClient } from "../sync/auth";
 import { api as defaultApi, type Api, type LinkAccountResponse } from "../sync/client";
+import { clearSavedJournal } from "./journal-db";
 import {
   asPlayerIdentity,
   becomeSharedDevice,
@@ -309,6 +310,8 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         ? await deps.api.shareDevice(tokens.idToken, deviceToken, shared?.token, householdId)
         : await deps.api.shareDevice(tokens.idToken, deviceToken, shared?.token);
       becomeSharedDevice({ token: result.sharedToken, householdId: result.householdId }, deps.storage);
+      // The sync call above clears localStorage; the book may live in IndexedDB (#458).
+      await clearSavedJournal(deps.storage);
       doneOnTablet();
     }
 

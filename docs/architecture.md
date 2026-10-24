@@ -1685,7 +1685,7 @@ surface at a time.
 the **device token** (`x-kad-device-token`) rather than a room session, which between games does
 not exist: the player's own heroes, the household's Field Guide, a player-id → name map for "found
 by", and the biome of the household's most recent run that left the lobby. It is read-only. The
-client keeps the last answer in `localStorage`, keyed by the device token, and shows it (marked as
+client keeps the last answer in IndexedDB (`store/journal-db.ts`; a pre-existing `kad.journal` in `localStorage` is moved over on first read, and `localStorage` then memory stand in where IndexedDB is blocked), keyed by the device token, and shows it (marked as
 last time's) when the request fails for want of a network; a 4xx means the binding is gone and
 discards it. A browser whose binding came from opening a Party Mode room on itself is marked
 `screenOnly` and is never offered the book, until it is seated or adopted as a player.
@@ -1781,6 +1781,10 @@ Content is never evicted: it is small, and it is what the offline book reads. Lo
   pane mounted behind its controls and map, and the layout tells `WorldView` when it is hidden, so a
   Party Mode phone (whose world is the TV's job) spends nothing on it. Prefetching is skipped when the phone asks to save data;
   the book's offline art is not, since it is what makes the book open in the car at all.
+- **When a chapter starts, on the TV only:** all of that chapter's art (every scene's backdrop, every
+  enemy with art, the biome's tiles, the party's figures; a few MB) is fetched at idle priority in two
+  lanes (`chapterAssets`, `useWarmChapter` in `sw/prefetch.ts`), so the TV never waits on a picture
+  mid-story. Phones never do this, and it too is skipped when Data Saver is on.
 
 **Updates.** Each build's `sw.js` names its own files, so every deploy is a new worker. It takes
 over at once, including pages that are already open. Those pages were built against the previous
@@ -1792,6 +1796,15 @@ worker kept under an old cache name (#224's `kad-image-v1`) are moved into the f
 verified, before that cache is dropped. **To turn it off**, ship
 a `sw.js` whose `activate` deletes every cache and calls `self.registration.unregister()`. Phones
 pick it up on their next page load.
+
+**Broken cache recovers.** A worker or cache that serves a page which cannot start would trap a
+phone on a blank screen. An inline script in `index.html`, ahead of the bundle (`src/boot/`, #455),
+counts each load in `sessionStorage` and expects the app to mark itself booted (`BootMark`, on the
+first commit) within 8 seconds; a window `error` or `unhandledrejection` before that fails the boot
+at once. The first failure reloads. The second deletes every Cache Storage cache, unregisters every
+worker and reloads once. The third writes "Kids & Dragons could not start. Check the Wi-Fi and open
+it again." into `#root` and stops, so it never loops. It touches nothing in `localStorage`, so the
+hero and the journal are safe. `e2e/boot-heal.spec.ts` proves it.
 
 **Proof.** Both specs below run against a real production build (`playwright.prod.config.ts`,
 `npm run e2e:prod`, also run by CI).
