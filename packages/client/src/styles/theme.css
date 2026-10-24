@@ -75,7 +75,7 @@
 
   --kad-ink: #f4f0ff;
   --kad-ink-dim: #b9b0d8;
-  --kad-ink-faint: #7d7599;
+  --kad-ink-faint: #a39bc4;
 
   --kad-accent: #8b6cf5;
   --kad-accent-ink: #0d0b1a;
@@ -198,10 +198,10 @@
 
   /* --- accessibility, set by a11y/prefs.ts (#262) ------------------------ */
   --kad-text-scale: 1;
-  /* The corner row (App.tsx) is up to four 44px controls (help, settings, read-aloud, sound). The strip a phone leaves it, at
+  /* The corner row (App.tsx) is up to four 36px controls (help, settings, read-aloud, sound). The strip a phone leaves it, at
      the top or (one-handed) the bottom, is the row's height and a little air. Pixels, not em: the row does not grow with the
      text, so what clears it never has to guess. */
-  --kad-corner-bottom: 52px;
+  --kad-corner-bottom: 44px;
 
   color-scheme: dark;
 }
@@ -563,7 +563,7 @@ html[data-quiet] .rift-status__clock--urgent {
   font-size: 16px;
   /* Exactly the minimum, whatever each control's own icon size: the row's height is what the
      one-handed layout reserves. */
-  --kad-touch-min: 44px;
+  --kad-touch-min: 36px;
   /* The row is not a surface; only the controls in it take taps. */
   pointer-events: none;
 }

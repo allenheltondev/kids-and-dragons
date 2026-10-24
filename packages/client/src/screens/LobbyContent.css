@@ -106,6 +106,7 @@
   font-size: var(--font-size-lg, 1.15em);
   font-weight: 700;
   text-align: start;
+  text-wrap: balance;
 }
 
 /* Compact: everything on one line, sized so three party rows still fit the
@@ -137,6 +138,32 @@
 .lobby__join--compact { flex-wrap: wrap; }
 .lobby__join--compact .lobby__join-step {
   font-size: var(--font-size-sm, 0.875em);
+}
+
+/* A pane wide enough for it (a TV): code, the one line of how to join, and the QR share a single
+   row instead of the QR stranded at one end and the line alone under them. That also gives the
+   party the row back, so the QR can be big enough to scan from the couch. */
+@container (min-width: 40em) {
+  .lobby__join--compact {
+    flex-wrap: nowrap;
+    justify-content: center;
+    gap: var(--space-5, 1.5em);
+  }
+  .lobby__join--compact .lobby__join-step {
+    flex: 1 1 0;
+    min-inline-size: 0;
+    order: 2;
+    justify-content: flex-start;
+  }
+  .lobby__join--compact .lobby__qr-block { order: 3; }
+  .lobby__join--compact .lobby__qr {
+    inline-size: 5.2em;
+    block-size: 5.2em;
+  }
+  /* How to join is the first thing read across the room, so even stepped down it stays
+     the biggest type on the screen. */
+  .lobby__join--compact .lobby__code-letter { font-size: 2.2em; }
+  .lobby__join--compact .lobby__join-step { font-size: var(--font-size-md, 1em); }
 }
 
 .lobby__party {
@@ -293,13 +320,13 @@
   align-items: center;
   gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: var(--font-size-lg, 1.25em);
+  font-size: var(--font-size-md, 1em);
   font-weight: 800;
 }
 
 .lobby__premise-text {
   margin: 0;
-  font-size: var(--font-size-md, 1em);
+  font-size: var(--font-size-sm, 0.875em);
   line-height: 1.4;
 }
 
@@ -308,7 +335,7 @@
   align-items: center;
   gap: var(--space-2, 0.5em);
   margin: 0;
-  font-size: var(--font-size-md, 1em);
+  font-size: var(--font-size-sm, 0.875em);
   color: var(--color-text-muted, #b7b0d8);
 }
 
@@ -326,12 +353,16 @@
 
 .lobby__campaign {
   display: grid;
-  grid-template-columns: 6.5em minmax(0, 1fr);
+  grid-template-columns: 7em minmax(0, 1fr);
   grid-template-rows: auto auto 1fr;
   column-gap: var(--space-3, 0.75em);
   row-gap: var(--space-1, 0.25em);
   align-items: start;
-  inline-size: 18em;
+  /* Cards share the row out between them rather than each being a fixed 18em: three fit the TV's
+     column side by side, and two do not leave a ragged gap. */
+  flex: 1 1 15em;
+  min-inline-size: 0;
+  max-inline-size: 20em;
   padding: var(--space-2, 0.5em);
   border-radius: var(--radius-lg, 1.25em);
   background: rgb(13 11 26 / 70%);
@@ -349,6 +380,9 @@
 
 .lobby__campaign-title {
   display: flex;
+  min-inline-size: 0;
+  text-wrap: balance;
+  overflow-wrap: break-word;
   align-items: center;
   gap: var(--space-2, 0.5em);
   font-size: var(--font-size-md, 1em);
@@ -356,6 +390,29 @@
 }
 
 .lobby__campaign-line {
+  text-wrap: balance;
   font-size: var(--font-size-sm, 0.875em);
   color: var(--color-text-muted, #b7b0d8);
+}
+
+/* A short pane (a 720p TV): the adventure row, the room strip and four party cards all have to fit
+   under the heading with nothing to scroll, so each steps down a little together. */
+@container (max-height: 36em) {
+  .lobby { gap: var(--space-2, 0.5em); padding-block: var(--space-2, 0.5em); }
+  /* Lowest priority gives first: the story so far and the adventure cards shrink before the
+     room code or the party do. */
+  .lobby__premise-text { font-size: 0.8em; line-height: 1.3; }
+  .lobby__campaign { grid-template-columns: 5em minmax(0, 1fr); padding: 0.35em; align-items: center; }
+  .lobby__campaign-line { font-size: 0.8em; }
+  .lobby__campaign-title { font-size: 0.9em; }
+  .lobby__join--compact .lobby__code-letter { font-size: 1.8em; }
+  .lobby__join--compact .lobby__qr { inline-size: 4.4em; block-size: 4.4em; }
+  .lobby__join--compact .lobby__join-step { font-size: var(--font-size-sm, 0.875em); }
+  .lobby-member { padding: var(--space-2, 0.5em); gap: var(--space-2, 0.5em); }
+  .lobby-member__name { font-size: 1.1em; line-height: 1.15; }
+  .lobby-member__portrait { inline-size: 2.4em; block-size: 2.9em; }
+  .lobby__heading { font-size: 1.25em; }
+  .lobby__party-heading { font-size: var(--font-size-md, 1em); }
+  .entry-scene-host .lobby__premise { padding-block: 0.3em; }
+  .lobby__join--compact { padding-block: 0.3em; }
 }

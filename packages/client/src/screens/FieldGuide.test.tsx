@@ -5,6 +5,7 @@ import userEvent from "@testing-library/user-event";
 import type { FieldGuide as FieldGuideData, FieldGuideEntry } from "@kad/shared";
 import { FieldGuideIndex, FieldGuide } from "./FieldGuide";
 import { resetFieldGuideCache } from "./content";
+import { runBackStep } from "../store/back-steps";
 import { openGuide, usePlayerNavigation, setPlayerSection } from "../store/player-navigation";
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { resetFieldGuideSeen, FIELD_GUIDE_SEEN_KEY } from "../store/field-guide-seen";
@@ -124,7 +125,8 @@ describe("FieldGuide shell", () => {
     render(<FieldGuide />);
     act(() => { openGuide("creature.a"); });
     expect(await screen.findByRole("heading", { name: "Mossback" })).toBeTruthy();
-    await user.click(screen.getByRole("button", { name: "Back to the guide" }));
+    expect(screen.queryByRole("button", { name: /Back to the guide|Return to the guide/ })).toBeNull();
+    act(() => { expect(runBackStep()).toBe(true); });
     expect(usePlayerNavigation.getState().guideEntry).toBeNull();
     expect(await screen.findByText("1 of 5 found")).toBeTruthy();
     vi.unstubAllGlobals();

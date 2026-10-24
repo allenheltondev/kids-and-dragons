@@ -16,7 +16,7 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  padding-block: calc(var(--kad-safe-top, 0px) + var(--kad-corner-bottom, 52px)) calc(var(--preface-plate, 0px) + var(--space-2, 0.5em));
+  padding-block: calc(var(--kad-safe-top, 0px) + var(--kad-corner-bottom, 44px)) calc(var(--preface-plate, 0px) + var(--space-2, 0.5em));
   padding-inline: 4%;
   pointer-events: none;
 }

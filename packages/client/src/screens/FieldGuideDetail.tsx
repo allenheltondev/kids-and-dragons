@@ -58,8 +58,8 @@ const prettify = (kind: string) => {
 };
 
 /** The detail screen for one discovered entry. Renders nothing about an undiscovered one. */
-export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, backLabel = "Back to the guide" }: {
-  guide: FieldGuideData; entryId: string; onSelect?: (id: string | null) => void; backLabel?: string;
+export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }: {
+  guide: FieldGuideData; entryId: string; onSelect?: (id: string | null) => void;
 }) {
   const discoveries = useFieldGuideDiscoveries();
   const party = useParty();
@@ -93,13 +93,8 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
           same scroller would open the new one wherever you had read down to
           in the old. A fresh one starts at the top. */}
       <div key={entryId} className="field-guide__body kad-scroll field-guide__detail" data-testid="guide-detail">
-        {/* The way back at the top as well as the foot, floating over the page as it scrolls. */}
-        <Button className="fgd__return" variant="secondary" size="md" icon={<Icon name="back" />}
-          onClick={() => onSelect(null)}>
-          {backLabel.replace(/^Back to/, "Return to")}
-        </Button>
         <header className="fgd__header">
-          <span className={`fgd__art${entry.category === "places" ? " fgd__art--place" : ""}`} aria-hidden="true" {...motionProps(entry.art, entry.id)}>
+          <span className={`fgd__art${entry.category === "places" ? " fgd__art--place" : ""}`} aria-hidden="true" {...(entry.category === "places" ? {} : motionProps(entry.art, entry.id))}>
             {entry.art ? <img src={entry.art} alt="" /> : <Icon name={CATEGORY_ICON[entry.category] ?? "leaf"} />}
           </span>
           <h3 className="field-guide__detail-title">{entry.title}</h3>
@@ -168,10 +163,6 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
           {finder ? `First found by ${finder}` : "First found by someone in your household"}
         </p>
       </div>
-      <Button className="field-guide__back" variant="secondary" size="md" block
-        icon={<Icon name="back" />} onClick={() => onSelect(null)}>
-        {backLabel}
-      </Button>
     </>
   );
 }

@@ -10,7 +10,7 @@
  */
 
 import { describe, expect, it } from "vitest";
-import { nameplateGap, nameplateLabel, nameplateScale, nameplatesCollide } from "./nameplate";
+import { NAMEPLATE_MIN_SCALE, nameplateGap, nameplateLabel, nameplateScale, nameplatesCollide } from "./nameplate";
 
 describe("nameplateLabel", () => {
   it("keeps a real name, trimmed", () => {
@@ -98,5 +98,12 @@ describe("nameplatesVisibleIn", () => {
     // pairing holds everywhere except at startup.
     expect(nameplatesVisibleIn(null)).toBe(false);
     expect(nameplatesVisibleIn(undefined)).toBe(false);
+  });
+});
+
+describe("NAMEPLATE_MIN_SCALE", () => {
+  it("is a sensible floor, so a small figure's name never shrinks to a speck", () => {
+    expect(NAMEPLATE_MIN_SCALE).toBeGreaterThanOrEqual(0.7);
+    expect(NAMEPLATE_MIN_SCALE).toBeLessThan(1);
   });
 });
