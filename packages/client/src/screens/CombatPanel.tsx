@@ -2,8 +2,8 @@
  * CombatControls — PlayerView's half of a fight (spec §7.2, §11).
  *
  * The Pixi board on the WorldView is the spectacle; this is the *input*. A DOM
- * grid of buttons is the right tool for that: 44px-ish targets, accessible
- * names, and — the rule that shapes everything here — only legal taps exist.
+ * grid of buttons is the right tool for that: a compact overview with an
+ * optional enlarged map for finger-sized targets, accessible names, and — the rule that shapes everything here — only legal taps exist.
  * Reachable tiles come from `legalMoves`, action cards from `legalActions`,
  * both the exact functions the server re-runs to validate (encounter.ts);
  * everything else is an inert cell or simply absent. Nothing is ever disabled:
@@ -124,6 +124,9 @@ import {
 import type { Facing } from "../world/board-math";
 import { helpAttrs } from "../help/longpress";
 import "./shared.css";
+import { combatMarkerArt, markerFromIcon } from "../world/combat-art";
+import { EFFECT_FRAMES } from "./combat-feedback";
+import { useCombatFeedback, type ActiveFeedback } from "./use-combat-feedback";
 import "./CombatPanel.css";
 
 /**
@@ -188,8 +191,20 @@ export function CombatControls(): ReactElement | null {
   const abilities = useAbilities();
   const items = useItems();
   const send = useSend();
+  const encounter = state?.encounter ?? null;
+  const hasEncounter = encounter !== null;
 
   const [selection, setSelection] = useState<Selection>(IDLE);
+  const [mapOpen, setMapOpen] = useState(false);
+  const mapDialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    if (!hasEncounter) {
+      setMapOpen(false);
+      return;
+    }
+    if (mapOpen) mapDialog.current?.showModal?.();
+    else mapDialog.current?.close?.();
+  }, [mapOpen, hasEncounter]);
   /*
    * The facing each figure was last drawn with, for this fight only. Ids
    * repeat from one fight to the next (heroes always, `wisp#1` often), so a
@@ -231,7 +246,7 @@ export function CombatControls(): ReactElement | null {
   // Party Mode phone draws no board of its own, so nothing else fetched it.
   useEnsureChapter();
 
-  const encounter = state?.encounter ?? null;
+  const feedback = useCombatFeedback(encounter);
   // A new question always starts from a clean slate — a selection made against
   // last turn's board must never be committed against this one.
   const key = turnKey(encounter);
@@ -247,6 +262,7 @@ export function CombatControls(): ReactElement | null {
       sending.current = true;
       setPending(true);
       setSelection(IDLE);
+      setMapOpen(false);
       const ok = await send(intent);
       if (!ok) {
         sending.current = false;
@@ -284,30 +300,6 @@ export function CombatControls(): ReactElement | null {
   const moves = myTurn ? legalMoves(encounter) : [];
   // The gold squares, though, go the moment a tap is on its way.
   const walkTiles = deciding && selection.step === "idle" ? moves : [];
-
-  // What the grid offers this render: move destinations, or the still-unpicked
-  // tiles of the ability being aimed. Never both — one question at a time.
-  const tappable: readonly (Position & { readonly cost?: number })[] =
-    !synced
-      ? []
-      : selection.step === "tile"
-      ? selection.action.tiles.filter(
-          (tile) => !selection.picked.some((p) => samePosition(p, tile)),
-        )
-      : walkTiles;
-  const selectedTiles: readonly Position[] =
-    selection.step === "tile"
-      ? selection.picked
-      : selection.step === "tile-target"
-        ? [selection.tile]
-        : [];
-
-  // The facing each figure was last drawn with, so a figure straight above
-  // or below its nearest foe keeps it, exactly as the TV board does.
-  const fight = encounter.startedAt ?? null;
-  if (lastFacing.current.fight !== fight) lastFacing.current = { fight, facing: {} };
-  const cells = gridCells(encounter, party, tappable, selectedTiles, lastFacing.current.facing);
-  for (const cell of cells) if (cell.occupant) lastFacing.current.facing[cell.occupant.id] = cell.occupant.facing;
 
   // The consumables this turn could spend the action on (§7.2's fourth
   // universal action). Hidden, never disabled: gone once the action is spent,
@@ -373,7 +365,9 @@ export function CombatControls(): ReactElement | null {
       // Pounce pairs the tile with a follow-up figure; the pairing is the
       // server's list, never recombined here (encounter.ts tileTargets).
       if (action.tileTargets) {
-        setSelection({ step: "tile-target", action, tile: at });
+        const targets = action.tileTargets.find(option => samePosition(option.tile, at))?.targets ?? [];
+        if (targets.length === 1) commitAction(action, targets, [at]);
+        else setSelection({ step: "tile-target", action, tile: at });
         return;
       }
       // Bramble Wall wants two tiles: keep collecting until the card's count
@@ -447,6 +441,33 @@ export function CombatControls(): ReactElement | null {
           ? throwTargets
           : [];
 
+  // What the grid offers this render: move destinations, or the still-unpicked
+  // tiles of the ability being aimed. Never both — one question at a time.
+  const tappable: readonly (Position & { readonly cost?: number })[] =
+    !deciding
+      ? []
+      : selection.step === "tile"
+      ? selection.action.tiles.filter(
+          (tile) => !selection.picked.some((p) => samePosition(p, tile)),
+        )
+      : targetIds.length > 0
+        ? encounter.board.actors.filter(actor => targetIds.includes(actor.id))
+        : walkTiles;
+  const selectedTiles: readonly Position[] =
+    selection.step === "tile"
+      ? selection.picked
+      : selection.step === "tile-target"
+        ? [selection.tile]
+        : [];
+
+  // The facing each figure was last drawn with, so a figure straight above
+  // or below its nearest foe keeps it, exactly as the TV board does.
+  const fight = encounter.startedAt ?? null;
+  if (lastFacing.current.fight !== fight) lastFacing.current = { fight, facing: {} };
+  const cells = gridCells(encounter, party, tappable, selectedTiles, lastFacing.current.facing);
+  for (const cell of cells) if (cell.occupant) lastFacing.current.facing[cell.occupant.id] = cell.occupant.facing;
+
+
   /** What the who-step is aiming — an ability, or a thrown item. */
   const aimingWho =
     selection.step === "target" || selection.step === "tile-target"
@@ -485,7 +506,7 @@ export function CombatControls(): ReactElement | null {
           ? `You can still walk ${encounter.stepsLeft} step${encounter.stepsLeft === 1 ? "" : "s"}, or end your turn.`
           : null
         : moves.length > 0
-          ? `Walk up to ${encounter.stepsLeft} step${encounter.stepsLeft === 1 ? "" : "s"} on gold, or pick one thing.`
+          ? "Walk on gold, or choose an action."
           : "Pick one thing to do.";
 
   const inBag = selection.step === "items";
@@ -495,8 +516,95 @@ export function CombatControls(): ReactElement | null {
   const targetPool =
     selection.step === "target" ? selection.action.targets.length : targetIds.length;
 
+  const battleGrid = (
+      <div
+        className="combat__grid"
+        role="grid"
+        aria-label="The battle grid"
+        style={
+          {
+            gridTemplateColumns: `repeat(${encounter.board.width}, 1fr)`,
+            "--cols": encounter.board.width,
+            "--rows": encounter.board.height,
+          } as CSSProperties
+        }
+      >
+        {cells.map((cell) => {
+          const cellKey = `${cell.x},${cell.y}`;
+          const marks = [
+            cell.blocked ? " combat__cell--blocked" : "",
+            cell.selected ? " combat__cell--selected" : "",
+            cell.occupant?.active ? " combat__cell--active" : "",
+            cell.occupant ? ` combat__cell--${cell.occupant.side}` : "",
+            cell.occupant?.down ? " combat__cell--down" : "",
+            cell.occupant?.facing === "right" ? " combat__cell--faces-right" : "",
+            cell.feature ? ` combat__cell--${cell.feature.kind}` : "",
+            cell.feature && !cell.feature.active ? " combat__cell--quiet" : "",
+          ].join("");
+          const figure = cell.occupant ? (
+            <CellFigure occupant={cell.occupant} numbed={isNumbedHero(encounter, me.character.id, cell.occupant.id)} />
+          ) : null;
+          // The environment's mark (#201): a glyph in the corner, its shape
+          // the meaning — the captive fills the square, being somebody.
+          const mark = cell.feature ? <FeatureMark feature={cell.feature} /> : null;
+          const reaction = cell.occupant ? feedback[cell.occupant.id] : undefined;
+          const effect = reaction ? <CellFeedback key={reaction.key} feedback={reaction} /> : null;
+          if (cell.tappable) {
+            const aiming = selection.step === "tile" || aimingWho !== null;
+            const target = aimingWho !== null && cell.occupant ? cell.occupant : null;
+            return (
+              <button
+                key={cellKey}
+                type="button"
+                data-move-tile={aiming ? undefined : true}
+                data-aim-tile={selection.step === "tile" ? true : undefined}
+                data-aim-target={target?.id}
+                data-reaction={reaction?.reaction}
+                data-x={cell.x}
+                data-y={cell.y}
+                className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
+                aria-label={target ? `Choose ${target.name}, ${target.hp} hearts` : `${aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}${
+                  cell.feature ? `: ${tileWords(cell.feature)}` : ""
+                }`}
+                onClick={() => target ? tapTarget(target.id) : tapTile({ x: cell.x, y: cell.y })}
+              >
+                {mark}
+                {figure ??
+                  (aiming ? (
+                    <Icon name="spark" size="70%" />
+                  ) : (
+                    <span
+                      className="combat__dot"
+                      // Near squares get a big dot, the edge of the reach a
+                      // small one (combat-grid.ts `nearness`).
+                      style={{ "--nearness": cell.nearness ?? 1 } as CSSProperties}
+                    />
+                  ))}
+                {effect}
+              </button>
+            );
+          }
+          return (
+            <span key={cellKey} className={`combat__cell${marks}`} data-reaction={reaction?.reaction} aria-hidden="true">
+              {mark}
+              {figure}
+              {effect}
+            </span>
+          );
+        })}
+      </div>
+  );
+
   return (
     <div className="prompt combat">
+      <div className="combat__overview">
+        <FighterRoster encounter={encounter} myId={me.character.id} />
+        <button type="button" className="combat__enlarge kad-focusable" onClick={() => setMapOpen(true)} aria-label="Enlarge battle map">＋</button>
+        {myTurn && <p className="combat__budget" aria-label="Your turn budget">
+          <span><Icon name="steps" />{encounter.stepsLeft} {encounter.stepsLeft === 1 ? "step" : "steps"}</span>
+          <span><Icon name="swords" />{encounter.actionTaken ? "Action used" : "1 action"}</span>
+        </p>}
+      </div>
       {/* Somebody else's turn: whose, in one line. Your own turn has no row
           here: the pinned strip lights your name and face (PlayerPanel
           IdentityStrip), and a playtest wanted the row for the cards. */}
@@ -541,80 +649,19 @@ export function CombatControls(): ReactElement | null {
         each, and a step is the cheapest thing in the game to spend by
         mistake.
       */}
-      {/* The board takes whatever height the pane has left once everything
-          else has its rows (CombatPanel.css), so more cards make a smaller
-          board rather than a pane that scrolls. */}
-      <div className="combat__board">
-      <div
-        className="combat__grid"
-        role="grid"
-        aria-label="The battle grid"
-        style={
-          {
-            gridTemplateColumns: `repeat(${encounter.board.width}, 1fr)`,
-            "--cols": encounter.board.width,
-            "--rows": encounter.board.height,
-          } as CSSProperties
-        }
-      >
-        {cells.map((cell) => {
-          const cellKey = `${cell.x},${cell.y}`;
-          const marks = [
-            cell.blocked ? " combat__cell--blocked" : "",
-            cell.selected ? " combat__cell--selected" : "",
-            cell.occupant?.active ? " combat__cell--active" : "",
-            cell.occupant ? ` combat__cell--${cell.occupant.side}` : "",
-            cell.occupant?.down ? " combat__cell--down" : "",
-            cell.occupant?.facing === "right" ? " combat__cell--faces-right" : "",
-            cell.feature ? ` combat__cell--${cell.feature.kind}` : "",
-            cell.feature && !cell.feature.active ? " combat__cell--quiet" : "",
-          ].join("");
-          const figure = cell.occupant ? (
-            <CellFigure occupant={cell.occupant} numbed={isNumbedHero(encounter, me.character.id, cell.occupant.id)} />
-          ) : null;
-          // The environment's mark (#201): a glyph in the corner, its shape
-          // the meaning — the captive fills the square, being somebody.
-          const mark = cell.feature ? <FeatureMark feature={cell.feature} /> : null;
-          if (cell.tappable) {
-            const aiming = selection.step === "tile";
-            return (
-              <button
-                key={cellKey}
-                type="button"
-                data-move-tile={aiming ? undefined : true}
-                data-aim-tile={aiming ? true : undefined}
-                data-x={cell.x}
-                data-y={cell.y}
-                className={`combat__cell combat__cell--tap${aiming ? " combat__cell--aim" : " combat__cell--walk"} kad-focusable${marks}`}
-                aria-label={`${aiming ? "Aim at" : "Move to"} column ${cell.x + 1}, row ${cell.y + 1}${
-                  cell.feature ? `: ${tileWords(cell.feature)}` : ""
-                }`}
-                onClick={() => tapTile({ x: cell.x, y: cell.y })}
-              >
-                {mark}
-                {figure ??
-                  (aiming ? (
-                    <Icon name="spark" size="70%" />
-                  ) : (
-                    <span
-                      className="combat__dot"
-                      // Near squares get a big dot, the edge of the reach a
-                      // small one (combat-grid.ts `nearness`).
-                      style={{ "--nearness": cell.nearness ?? 1 } as CSSProperties}
-                    />
-                  ))}
-              </button>
-            );
-          }
-          return (
-            <span key={cellKey} className={`combat__cell${marks}`} aria-hidden="true">
-              {mark}
-              {figure}
-            </span>
-          );
-        })}
+      {/* The compact board shares the pane with actions, retaining a minimum
+          height. The enlarged map provides precise targets without adding a
+          confirmation to a normal move. */}
+      <div className="combat__board" style={{ "--cols": encounter.board.width, "--rows": encounter.board.height } as CSSProperties}>
+        {!mapOpen && battleGrid}
       </div>
-      </div>
+      <dialog ref={mapDialog} className="combat__map-dialog" onCancel={() => setMapOpen(false)} onClose={() => setMapOpen(false)} aria-label="Enlarged battle map">
+        <div className="combat__map-header">
+          <p>Drag to explore. Tap a glowing square to move or aim.</p>
+          <Button onClick={() => setMapOpen(false)}>Close map</Button>
+        </div>
+        <div className="combat__map-scroll">{mapOpen && battleGrid}</div>
+      </dialog>
 
       {/*
         The board's squares are hidden from screen readers (a map of buttons
@@ -692,7 +739,7 @@ export function CombatControls(): ReactElement | null {
                     : undefined
                 }
               >
-                {aimingWho.name}: who?
+                {aimingWho.name}: tap a glowing figure or choose below.
                 {selection.step === "target" && (selection.action.maxTargets ?? 1) > 1
                   ? ` (${selection.picked.length + 1} of ${Math.min(
                       selection.action.maxTargets ?? 1,
@@ -797,16 +844,15 @@ export function CombatControls(): ReactElement | null {
                         onClick={() => tapTarget(targetId)}
                       >
                         <span className="choice__icon">
-                          {target.side === "enemy" ? (
-                            <EnemyFace combatantId={target.id} icon={combatantIcon(target, party)} large />
-                          ) : (
-                            <Icon name={combatantIcon(target, party)} size="1.8em" />
-                          )}
+                          <FighterFace combatant={target} />
                         </span>
-                        <span className="choice__label">
-                          {target.id === me.character.id
-                            ? `${combatantLabel(target)} (you)`
-                            : combatantLabel(target)}
+                        <span className="choice__text">
+                          <span className="choice__label">
+                            {target.id === me.character.id
+                              ? `${combatantLabel(target)} (you)`
+                              : combatantLabel(target)}
+                          </span>
+                          <span className="choice__sub">Guard {target.guard}</span>
                         </span>
                         <HpBadge combatant={target} />
                         {target.puffed !== undefined ? (
@@ -835,6 +881,7 @@ export function CombatControls(): ReactElement | null {
               </Button>
             ) : null}
           </div>
+          <p className="combat__more" aria-hidden="true">Scroll for more choices ↓</p>
         </div>
       ) : standIn && active ? (
         /*
@@ -906,13 +953,71 @@ function EnvironmentStatus({ encounter }: { encounter: EncounterState }): ReactE
   );
 }
 
+/** Readable health and turn order without a permanent row for every fighter. */
+function FighterRoster({ encounter, myId }: { encounter: EncounterState; myId: string }): ReactElement {
+  const activeId = currentActorId(encounter);
+  const order = encounter.round === 1 ? encounter.openingOrder : encounter.order;
+  const fighters = [...encounter.combatants].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+  return <details className="combat__roster" onKeyDown={(event) => {
+    if (event.key !== "Escape") return;
+    event.currentTarget.open = false;
+    event.currentTarget.querySelector("summary")?.focus();
+    event.stopPropagation();
+  }}>
+    <summary aria-label={`Round ${encounter.round}: Fighters and hearts`}><span>Fighters</span></summary>
+    <div className="combat__roster-panel">
+      <p className="combat__roster-help">Round {encounter.round}. Turn order. Guard is the number an attack roll must reach.</p>
+      <ul aria-label="Fighter details">
+        {fighters.map(fighter => <li key={fighter.id} data-active={fighter.id === activeId || undefined}>
+          <FighterFace combatant={fighter} />
+          <div>
+            <strong>{fighter.id === myId ? `${combatantLabel(fighter)} (you)` : combatantLabel(fighter)}</strong>
+            <span>{fighter.down ? "Knocked down" : `${fighter.hp}/${fighter.maxHp} hearts · Guard ${fighter.guard}`}</span>
+            {fighter.id === activeId && <span className="combat__roster-turn">Taking a turn</span>}
+            {fighter.puffed !== undefined && !fighter.down && <span>{PUFFED_WORDS}: {PUFFED_HINT}</span>}
+            {isNumbedHero(encounter, myId, fighter.id) && <span>Numbed: fewer steps until it wears off.</span>}
+          </div>
+        </li>)}
+      </ul>
+    </div>
+  </details>;
+}
+
+function FighterFace({ combatant }: { combatant: Combatant }): ReactElement {
+  const party = useParty();
+  const member = party.find(member => member.character.id === combatant.id);
+  return member ? <CharacterPortrait species={member.character.species} tier={member.character.tier}
+    characterClass={member.character.class} className="combat__friend-art" size="2em" />
+    : <EnemyFace combatantId={combatant.id} icon={combatantIcon(combatant, party)} large />;
+}
+
 /** The environment's glyph on a square: the captive fills it, the rest sit in a corner. */
 function FeatureMark({ feature }: { feature: GridFeature }): ReactElement {
   return (
     <span className={`combat__feature combat__feature--${feature.kind}`} aria-hidden="true">
-      <Icon name={feature.icon} size="100%" />
+      <CombatPaint src={combatMarkerArt(markerFromIcon(feature.kind, feature.icon), feature.label)} icon={feature.icon} />
     </span>
   );
+}
+
+/** A separately deployed illustration can fail without losing the mark's meaning. */
+function CombatPaint({ src, icon }: { src: string | null; icon: string }): ReactElement {
+  const [failed, setFailed] = useState<string | null>(null);
+  return src && failed !== src ? <img src={src} alt="" draggable={false} onError={() => setFailed(src)} />
+    : <Icon name={icon} size="100%" />;
+}
+
+function CellFeedback({ feedback }: { feedback: ActiveFeedback }): ReactElement {
+  const frames = EFFECT_FRAMES[feedback.effect];
+  return <span className="combat__feedback" aria-hidden="true" data-effect={feedback.effect}>
+    <span className="combat__effect" style={{
+      backgroundImage: `url(/assets/effects/${feedback.effect}.sheet.png)`,
+      "--effect-frames": frames, "--effect-steps": frames - 1, "--effect-ms": `${frames / 12}s`,
+      "--effect-still": `${Math.floor((frames - 1) / 2) / (frames - 1) * 100}%`,
+    } as CSSProperties} />
+    {feedback.reaction && <img className="combat__reaction-art" src={`/assets/combat-ux/reaction-${feedback.reaction}.webp`} alt="" draggable={false} onError={event => { event.currentTarget.hidden = true; }} />}
+    <span className="combat__feedback-number">{feedback.label}</span>
+  </span>;
 }
 
 /** One legend entry per kind of mark on the board, in board order. */
@@ -1306,9 +1411,12 @@ function LastBeat({ beats, turn }: { beats: readonly Beat[]; turn: string }): Re
   return (
     <div className={row.current.shown ? "combat__log" : "kad-sr-only"} aria-label="What just happened" role="group">
       {row.current.shown ? (
-        <p key={last.key} className={`combat__beat combat__line combat__beat--${last.tone}`} aria-hidden="true">
-          {last.text}
-        </p>
+        <details className="combat__result" key={last.key}>
+          <summary className={`combat__beat combat__line combat__beat--${last.tone}`} aria-label="Read the full combat result">
+            {last.text}
+          </summary>
+          <p className="combat__result-text">{last.text}</p>
+        </details>
       ) : null}
       <ol className="kad-sr-only" aria-live="polite">
         {beats.map((beat) => (
