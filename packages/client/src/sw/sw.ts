@@ -1,7 +1,8 @@
 /**
  * The service worker (`/sw.js`) — see `policy.ts` for what it is for and what
- * it decides. This file is only the wiring: install, activate, fetch, and the
- * "It's your turn" push and its notification (#466).
+ * it decides. This file is only the wiring: install, activate, fetch, message,
+ * the "It's your turn" push and its notification (#466), and the overnight
+ * refresh (`periodicsync`, #467).
  *
  * Built by `sw-build.ts` into one classic script with this build's lists
  * prepended, so a deploy is a new `sw.js` and the browser installs it on its
@@ -13,12 +14,28 @@
  * WebWorker lib (which cannot share a compilation with DOM).
  */
 
+import type { Campaign, Chapter, JournalResponse } from "@kad/shared";
+import {
+  SW_JOURNAL_DB,
+  swActiveStory,
+  swCampaignPath,
+  swChapterPath,
+  swChaptersToRead,
+  swHeroesOf,
+  swNextChapterArt,
+  swNextChapters,
+  type SwChapterFacts,
+} from "./next-chapter";
 import {
   SW_BUNDLE_LIST_KEY,
   SW_CACHES,
   SW_FILES_META_KEY,
   SW_IMAGE_LIMIT,
   SW_LEGACY_IMAGE_CACHES,
+  SW_PERIODIC_DEADLINE_MS,
+  SW_PERIODIC_KEY,
+  SW_PERIODIC_PENDING_KEY,
+  SW_PERIODIC_TAG,
   SW_PRECACHE_CONTENT,
   SW_SHELL_KEY,
   SW_SHELL_STAGED_KEY,
@@ -26,11 +43,15 @@ import {
   swAfterInstallError,
   swBudgetFor,
   swCacheable,
+  swContentToRefresh,
   swEvictions,
   swIsImage,
   swNoticeWindow,
   swOverLimit,
   swPushNotice,
+  swPendingFresh,
+  swPeriodicByteCap,
+  swPeriodicWork,
   swQuotaTrim,
   swShellAnswer,
   swShellEntry,
@@ -38,8 +59,12 @@ import {
   swStaleVersions,
   swStrategyFor,
   swVersionedKey,
+  swWarmList,
   type FileIndex,
   type FileMeta,
+  type SwPeriodicOutcome,
+  type SwPeriodicPending,
+  type SwPeriodicRecord,
   type SwShellNetwork,
 } from "./policy";
 
@@ -78,6 +103,11 @@ interface SwWindowClient {
   focus(): Promise<SwWindowClient>;
   navigate?(url: string): Promise<SwWindowClient | null>;
 }
+interface SwPeriodicSyncEvent extends SwExtendableEvent {
+  readonly tag: string;
+}
+/** A `ServiceWorker` on the registration, as far as the worker compares them. */
+type SwWorkerRef = object;
 interface SwScope {
   readonly location: Location;
   readonly clients: {
@@ -88,6 +118,10 @@ interface SwScope {
   readonly registration: {
     navigationPreload?: { enable(): Promise<void> };
     showNotification(title: string, options: { body: string; tag: string; data: unknown; icon?: string; badge?: string }): Promise<void>;
+    update?(): Promise<unknown>;
+    readonly installing?: SwWorkerRef | null;
+    readonly waiting?: SwWorkerRef | null;
+    readonly active?: SwWorkerRef | null;
   };
   skipWaiting(): Promise<void>;
   addEventListener(type: "install" | "activate", listener: (event: SwExtendableEvent) => void): void;
@@ -95,6 +129,7 @@ interface SwScope {
   addEventListener(type: "message", listener: (event: SwMessageEvent) => void): void;
   addEventListener(type: "push", listener: (event: SwPushEvent) => void): void;
   addEventListener(type: "notificationclick", listener: (event: SwNotificationEvent) => void): void;
+  addEventListener(type: "periodicsync", listener: (event: SwPeriodicSyncEvent) => void): void;
 }
 
 const worker = self as unknown as SwScope;
@@ -239,7 +274,7 @@ worker.addEventListener("activate", (event) => {
       // Start the page's request while the worker is still waking up.
       await worker.registration.navigationPreload?.enable().catch(() => undefined);
       await worker.clients.claim();
-    }),
+    }).then(takePendingRefresh),
   );
 });
 
@@ -316,6 +351,276 @@ worker.addEventListener("notificationclick", (event) => {
     })().catch(() => undefined),
   );
 });
+
+// ---------------------------------------------------------------------------
+// Overnight refresh (#467)
+// ---------------------------------------------------------------------------
+
+/*
+ * Chromium on Android wakes an installed app's worker about once a day for a
+ * periodic sync the page registered (`periodic.ts`). The run:
+ *
+ *   1. asks the browser for a newer `sw.js` (`registration.update()`). A new
+ *      build's install re-reads its own file index and fetches the content
+ *      that changed, so when one turns up this run leaves it a marker
+ *      (`SW_PERIODIC_PENDING_KEY`) and stops: its index is the one to warm
+ *      by, and its `activate` runs the refresh (`takePendingRefresh`);
+ *   2. fetches again every `/content/*` file kept or wanted whose copy at this
+ *      index's fingerprint is missing (`swContentToRefresh`);
+ *   3. unless Data Saver is on, finds the household's next chapter from the
+ *      saved journal (refreshed from `/api/journal` with the saved device
+ *      token when it answers) and the campaign's content (next-chapter.ts),
+ *      and saves its art (`swNextChapterArt`), at most a quarter of the files
+ *      budget a night (`swPeriodicByteCap`) and inside `SW_PERIODIC_DEADLINE_MS`.
+ *
+ * Nothing escapes: every step is caught, the whole run is bounded inside
+ * `waitUntil`, and how it ended is recorded for Diagnostics (`SW_PERIODIC_KEY`).
+ */
+
+worker.addEventListener("periodicsync", (event) => {
+  if (event.tag !== SW_PERIODIC_TAG) return;
+  event.waitUntil(periodicOnce(true));
+});
+
+let periodicRun: Promise<void> | null = null;
+
+/** One run at a time, never rejecting, and never outlasting the deadline by much. */
+function periodicOnce(mayUpdate: boolean): Promise<void> {
+  periodicRun ??= (async () => {
+    const deadline = Date.now() + SW_PERIODIC_DEADLINE_MS;
+    const record: SwPeriodicRecord = { at: 0, outcome: "failed", build: __KAD_BUILD__, refreshed: 0, warmed: 0, chapters: [] };
+    // Any hand-off still waiting is this run now: taken once, never twice.
+    await clearPending().catch(() => undefined);
+    try {
+      record.outcome = await periodicRefresh(record, deadline, mayUpdate);
+    } catch (error) {
+      noteQuota(error);
+      record.outcome = "failed";
+    }
+    await saveMeta().catch(() => undefined);
+    record.at = Date.now();
+    await savePeriodicRecord(record).catch(() => undefined);
+  })()
+    .catch(() => undefined)
+    .finally(() => {
+      periodicRun = null;
+    });
+  const run = periodicRun;
+  return Promise.race([run, new Promise<void>((resolve) => setTimeout(resolve, SW_PERIODIC_DEADLINE_MS + 15_000))]);
+}
+
+async function periodicRefresh(record: SwPeriodicRecord, deadline: number, mayUpdate: boolean): Promise<SwPeriodicOutcome> {
+  if (mayUpdate && (await handedToNewerWorker())) return "handed-over";
+  const index = await fileIndex();
+  if (Object.keys(index).length === 0) return "failed";
+  const files = await caches.open(SW_CACHES.files);
+  const work = swPeriodicWork(savingData());
+  const next = work.warmNext ? await nextChapterPlan(index, files) : null;
+
+  const wanted = [...SW_PRECACHE_CONTENT, ...__KAD_PRECACHE_CAMPAIGNS__, ...(next?.ids ?? []).map(swChapterPath)];
+  for (const path of swContentToRefresh(index, await savedKeys(files), wanted)) {
+    if (Date.now() > deadline) return "partial";
+    if ((await keepFromNetwork(files, path, index[path]!)) > 0) record.refreshed += 1;
+  }
+
+  if (!work.warmNext) return "saved-data";
+  if (!next || next.chapters.length === 0) return "nothing-next";
+  record.chapters = next.ids;
+  const cap = swPeriodicByteCap(swBudgetFor(await storageQuota()));
+  let bytes = 0;
+  for (const { path, fingerprint } of swWarmList(swNextChapterArt(next.chapters, next.heroes), index, await savedKeys(files))) {
+    if (Date.now() > deadline || bytes >= cap) return "partial";
+    const kept = await keepFromNetwork(files, path, fingerprint);
+    if (kept > 0) {
+      record.warmed += 1;
+      bytes += kept;
+    }
+  }
+  return "done";
+}
+
+/**
+ * Ask for a newer build. When one is installing or waiting, leave it the
+ * hand-off marker and say so; anything that goes wrong just means this
+ * worker does the run.
+ */
+async function handedToNewerWorker(): Promise<boolean> {
+  const registration = worker.registration;
+  try {
+    await registration.update?.();
+    const next = registration.installing ?? registration.waiting;
+    if (!next || next === registration.active) return false;
+    const marker: SwPeriodicPending = { at: Date.now(), tag: SW_PERIODIC_TAG };
+    const files = await caches.open(SW_CACHES.files);
+    await put(files, SW_PERIODIC_PENDING_KEY, new Response(JSON.stringify(marker), { headers: { "content-type": "application/json" } }));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * The end of `activate`: a hand-off an older worker left (`SW_PERIODIC_PENDING_KEY`)
+ * is this worker's refresh to run, under the same `waitUntil`.
+ *
+ * Only with no page open. Until activate's work is done the browser holds
+ * every request a page makes, so an open page would wait out a whole
+ * refresh; the marker is left instead, and the next `periodicsync` (which
+ * clears it first) does the run. A stale marker is dropped. Never throws.
+ */
+async function takePendingRefresh(): Promise<void> {
+  try {
+    const files = await caches.open(SW_CACHES.files);
+    const saved = await files.match(SW_PERIODIC_PENDING_KEY, SAME);
+    if (!saved) return;
+    const marker = (await saved.json().catch(() => null)) as unknown;
+    if (!swPendingFresh(marker, Date.now())) {
+      await files.delete(SW_PERIODIC_PENDING_KEY);
+      return;
+    }
+    const open = await worker.clients.matchAll({ type: "window" });
+    if (open.length > 0) return;
+    await periodicOnce(false);
+  } catch {
+    // The marker stays; the next periodicsync takes it.
+  }
+}
+
+async function clearPending(): Promise<void> {
+  await (await caches.open(SW_CACHES.files)).delete(SW_PERIODIC_PENDING_KEY);
+}
+
+/** The chapters to get ready, read from what the phone has; null when nothing says. */
+async function nextChapterPlan(
+  index: FileIndex,
+  files: Cache,
+): Promise<{ ids: string[]; chapters: Chapter[]; heroes: ReturnType<typeof swHeroesOf> } | null> {
+  const journal = await freshJournal();
+  const story = swActiveStory(journal);
+  if (!story) return null;
+  const campaign = await contentJson<Campaign>(swCampaignPath(story.campaignId), index, files);
+  if (!campaign) return null;
+  const read: Record<string, Chapter> = {};
+  for (const id of swChaptersToRead(campaign, story.played)) {
+    const chapter = await contentJson<Chapter>(swChapterPath(id), index, files);
+    if (chapter) read[id] = chapter;
+  }
+  const facts: SwChapterFacts = read;
+  const chapters: Chapter[] = [];
+  for (const id of swNextChapters(campaign, story, facts)) {
+    const chapter = read[id] ?? (await contentJson<Chapter>(swChapterPath(id), index, files));
+    if (chapter && chapter.scenes && typeof chapter.entry === "string") chapters.push(chapter);
+  }
+  return { ids: chapters.map((chapter) => chapter.id), chapters, heroes: swHeroesOf(journal) };
+}
+
+/**
+ * The household's journal: fresh from `/api/journal` (the same read the book
+ * makes, with the device token the page saved), else the saved copy. Never
+ * written back: the page owns that store.
+ */
+async function freshJournal(): Promise<Partial<JournalResponse> | null> {
+  const saved = await savedJournal();
+  if (saved?.deviceToken) {
+    try {
+      const response = await fetch("/api/journal", {
+        headers: { "x-kad-device-token": saved.deviceToken },
+        cache: "no-store",
+        ...(typeof AbortSignal.timeout === "function" ? { signal: AbortSignal.timeout(15_000) } : {}),
+      });
+      if (response.ok) return (await response.json()) as Partial<JournalResponse>;
+    } catch {
+      // Offline or refused: the saved copy is what there is.
+    }
+  }
+  return saved?.journal ?? null;
+}
+
+/**
+ * The page's saved journal (store/journal-db.ts), read only. Opened at
+ * whatever version it is; a database that does not exist yet is not
+ * created, so the page's own first open still makes its store.
+ */
+function savedJournal(): Promise<{ deviceToken?: string; journal?: Partial<JournalResponse> } | null> {
+  return new Promise((resolve) => {
+    try {
+      if (typeof indexedDB === "undefined") return resolve(null);
+      const open = indexedDB.open(SW_JOURNAL_DB.name);
+      open.onupgradeneeded = () => open.transaction?.abort();
+      open.onerror = () => resolve(null);
+      open.onblocked = () => resolve(null);
+      open.onsuccess = () => {
+        const db = open.result;
+        try {
+          if (!db.objectStoreNames.contains(SW_JOURNAL_DB.store)) {
+            db.close();
+            return resolve(null);
+          }
+          const get = db.transaction(SW_JOURNAL_DB.store, "readonly").objectStore(SW_JOURNAL_DB.store).get(SW_JOURNAL_DB.key);
+          get.onsuccess = () => {
+            db.close();
+            const value = get.result as { deviceToken?: unknown; journal?: unknown } | undefined;
+            if (!value || typeof value !== "object") return resolve(null);
+            resolve({
+              ...(typeof value.deviceToken === "string" ? { deviceToken: value.deviceToken } : {}),
+              ...(value.journal && typeof value.journal === "object" ? { journal: value.journal as Partial<JournalResponse> } : {}),
+            });
+          };
+          get.onerror = () => {
+            db.close();
+            resolve(null);
+          };
+        } catch {
+          db.close();
+          resolve(null);
+        }
+      };
+    } catch {
+      resolve(null);
+    }
+  });
+}
+
+/** A content file as JSON: the saved copy at this build's fingerprint, else the network (not kept). */
+async function contentJson<T>(path: string, index: FileIndex, files: Cache): Promise<T | null> {
+  try {
+    const fingerprint = index[path];
+    const saved = fingerprint === undefined ? undefined : await files.match(swVersionedKey(path, fingerprint), SAME);
+    const response = saved ?? (await fetch(path, { cache: "no-cache" }));
+    if (!response.ok) return null;
+    const value = (await response.json()) as unknown;
+    return value && typeof value === "object" ? (value as T) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** Download one fingerprinted file and keep it if its bytes check out; the bytes kept, or 0. */
+async function keepFromNetwork(files: Cache, path: string, fingerprint: string): Promise<number> {
+  try {
+    const response = await fetch(path, { cache: "no-cache" });
+    if (!swCacheable(response)) return 0;
+    if (!(await keepVersioned(files, path, fingerprint, response, { persist: false }))) return 0;
+    return (await filesMeta())[swVersionedKey(path, fingerprint)]?.bytes ?? 0;
+  } catch (error) {
+    noteQuota(error);
+    return 0;
+  }
+}
+
+async function savedKeys(files: Cache): Promise<string[]> {
+  return (await files.keys()).map(keyOf);
+}
+
+/** Data Saver, as the worker's navigator reports it. */
+function savingData(): boolean {
+  return (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+}
+
+async function savePeriodicRecord(record: SwPeriodicRecord): Promise<void> {
+  const files = await caches.open(SW_CACHES.files);
+  await put(files, SW_PERIODIC_KEY, new Response(JSON.stringify(record), { headers: { "content-type": "application/json" } }));
+}
 
 // ---------------------------------------------------------------------------
 // Telling the crash reporter (#459)

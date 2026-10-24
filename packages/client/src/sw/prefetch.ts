@@ -25,7 +25,10 @@ import {
   enemyArtUrl,
   sceneBackdropUrl,
 } from "../world/art-paths";
+import { chapterAssets } from "./chapter-art";
 import { warm } from "./warm";
+
+export { chapterAssets } from "./chapter-art";
 
 /** How many steps of the story ahead to fetch. */
 export const PREFETCH_DEPTH = 2;
@@ -68,34 +71,6 @@ export function upcomingAssets(
       after.push(...next(chapter, id));
     }
     frontier = after;
-  }
-  return [...urls];
-}
-
-/**
- * Everything the chapter can draw, whichever road the party takes: the party's
- * figures, and for every scene its backdrop (or the biome's) and, for a fight,
- * its enemies and the biome's tiles. Each scene is visited once, in the
- * chapter's own order, so the entry's art comes first.
- */
-export function chapterAssets(chapter: Chapter | null, party: readonly PartyMember[]): string[] {
-  const urls = new Set<string>();
-  for (const { character } of party) {
-    urls.add(characterWorldArtUrl(character.species, character.tier, character.class));
-  }
-  if (!chapter) return [...urls];
-  const order = [chapter.entry, ...Object.keys(chapter.scenes)];
-  const seen = new Set<SceneId>();
-  for (const id of order) {
-    if (seen.has(id)) continue;
-    seen.add(id);
-    const scene = chapter.scenes[id];
-    if (!scene) continue;
-    urls.add((scene.art ? sceneBackdropUrl(scene.art) : null) ?? biomeBackdropUrl(chapter.biome));
-    if (scene.type === "encounter") {
-      urls.add(biomeTilesUrl(chapter.biome));
-      for (const enemy of scene.enemies) if (enemy.art) urls.add(enemyArtUrl(enemy.art));
-    }
   }
   return [...urls];
 }
