@@ -11,6 +11,9 @@
  *   /account     → accounts and devices: sign in, move a hero between
  *                  devices, set up a family tablet or a group. A grown-up's
  *                  errands, kept off the join screen.
+ *   /share       → the manifest's share target (#461): a join link or room code
+ *                  shared to the installed app. Passes through to /p/:code
+ *                  or home (install/share-target.ts).
  *   /tv/:code    → Party Mode WorldView. A pure display client with no
  *                  authority, refreshable at any time (spec §2.1).
  *   /p/:code     → PlayerView in Party Mode, or the toggled
@@ -30,6 +33,7 @@ export type Route =
   | { name: "journal" }
   | { name: "guide" }
   | { name: "account" }
+  | { name: "share" }
   | { name: "tv"; code: string }
   | { name: "player"; code: string }
   | { name: "notFound"; path: string };
@@ -101,6 +105,7 @@ export function parseRoute(input: string): Route {
   if (segments.length === 1 && head === "journal") return { name: "journal" };
   if (segments.length === 1 && head === "guide") return { name: "guide" };
   if (segments.length === 1 && head === "account") return { name: "account" };
+  if (segments.length === 1 && head === "share") return { name: "share" };
 
   if (segments.length === 2 && second !== undefined) {
     const code = normalizeCode(second);
@@ -124,6 +129,8 @@ export function formatRoute(route: Route): string {
       return "/guide";
     case "account":
       return "/account";
+    case "share":
+      return "/share";
     case "tv":
       return `/tv/${normalizeCode(route.code)}`;
     case "player":

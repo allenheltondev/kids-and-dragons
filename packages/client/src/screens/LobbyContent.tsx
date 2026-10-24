@@ -23,16 +23,11 @@ import { Icon } from "./icons";
 import { savedHeading, savedHeroes } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { useHelp } from "../help/content";
+import { joinUrl } from "../ui/share-invite";
 import "./shared.css";
 import "./LobbyContent.css";
 import { EntryScene, lobbySceneFor } from "./EntryScene";
 import { RiftSightings } from "./RiftSight";
-
-/** Where a scanning phone lands (architecture §4.6 routes). */
-function joinUrl(code: string): string {
-  const origin = typeof window === "undefined" ? "" : window.location.origin;
-  return `${origin}/p/${code}`;
-}
 
 /**
  * The QR is a convenience, never a requirement — the code is always readable

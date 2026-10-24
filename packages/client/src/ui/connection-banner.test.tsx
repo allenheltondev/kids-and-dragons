@@ -9,9 +9,14 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { useGameStore } from "../store";
-import { ConnectionBanner, RECONNECT_GRACE_MS } from "./ConnectionBanner";
+import { bannerCopy, ConnectionBanner, RECONNECT_GRACE_MS } from "./ConnectionBanner";
+
+function setOnLine(value: boolean): void {
+  Object.defineProperty(navigator, "onLine", { value, configurable: true });
+}
 
 afterEach(() => {
+  setOnLine(true);
   cleanup();
   vi.useRealTimers();
   act(() => {
@@ -19,7 +24,7 @@ afterEach(() => {
   });
 });
 
-function setConnection(status: "idle" | "connecting" | "open" | "reconnecting" | "error"): void {
+function setConnection(status: "idle" | "connecting" | "open" | "reconnecting" | "error" | "lost"): void {
   act(() => {
     useGameStore.setState({ connection: status });
   });
@@ -116,5 +121,75 @@ describe("the reconnecting banner", () => {
       });
       expect(screen.queryByText("Reconnecting…")).toBeNull();
     }
+  });
+});
+
+describe("the words the banner uses", () => {
+  it("says reconnecting, with Try again, while the device has a network", () => {
+    expect(bannerCopy(true)).toEqual({ words: "Reconnecting…", label: "Reconnecting", canRetry: true, canLeave: false });
+  });
+
+  it("says no signal, with no Try again, when the device is offline", () => {
+    const copy = bannerCopy(false);
+    expect(copy.words).toBe("No signal. Waiting for Wi-Fi…");
+    expect(copy.canRetry).toBe(false);
+  });
+});
+
+describe("the banner when the phone goes offline", () => {
+  it("says no signal without Try again, then returns to reconnecting when back online", () => {
+    vi.useFakeTimers();
+    render(<ConnectionBanner />);
+    setConnection("reconnecting");
+    act(() => {
+      setOnLine(false);
+      window.dispatchEvent(new Event("offline"));
+      vi.advanceTimersByTime(RECONNECT_GRACE_MS + 50);
+    });
+    expect(screen.getByText("No signal. Waiting for Wi-Fi…")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Try again" })).toBeNull();
+    expect(screen.getAllByRole("status")).toHaveLength(1);
+
+    act(() => {
+      setOnLine(true);
+      window.dispatchEvent(new Event("online"));
+    });
+    expect(screen.getByText("Reconnecting…")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Try again" })).toBeTruthy();
+  });
+});
+
+describe("the banner when the room is gone", () => {
+  it("has its own words and both buttons", () => {
+    for (const online of [true, false]) {
+      expect(bannerCopy(online, true)).toMatchObject({
+        words: "This game has ended or the phone was signed out.",
+        canRetry: true,
+        canLeave: true,
+      });
+    }
+  });
+
+  it("shows at once, with Try again and Back to the start, as the only status", () => {
+    vi.useFakeTimers();
+    render(<ConnectionBanner />);
+    setConnection("lost");
+    expect(screen.getByText("This game has ended or the phone was signed out.")).toBeTruthy();
+    expect(screen.getAllByRole("status")).toHaveLength(1);
+    expect(screen.getByRole("button", { name: "Try again" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Back to the start" })).toBeTruthy();
+  });
+
+  it("Try again reconnects and Back to the start leaves", () => {
+    const reconnect = vi.fn();
+    const leave = vi.fn();
+    act(() => {
+      useGameStore.setState({ connection: "lost", reconnect, leave });
+    });
+    render(<ConnectionBanner />);
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+    expect(reconnect).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole("button", { name: "Back to the start" }));
+    expect(leave).toHaveBeenCalledTimes(1);
   });
 });

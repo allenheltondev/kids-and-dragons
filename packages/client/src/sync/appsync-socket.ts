@@ -69,6 +69,20 @@ const WS_PROTOCOL = "aws-appsync-event-ws";
  */
 const DEFAULT_IDLE_TIMEOUT_MS = 5 * 60_000;
 
+/**
+ * The longest we sit in silence, whatever the server would tolerate. AppSync
+ * sends `ka` about every minute, so two minutes is two missed keepalives: a
+ * live link has never been this quiet, and a half-open one (the TV has no
+ * presence beat to notice for it) would otherwise show a frozen scene for the
+ * server's full five minutes.
+ */
+export const SILENCE_MS = 2 * 60_000;
+
+/** When to arm the watchdog: the server's own timeout, but never longer than `SILENCE_MS`. */
+export function watchdogMs(connectionTimeoutMs: number): number {
+  return Math.min(connectionTimeoutMs, SILENCE_MS);
+}
+
 export function channelPath(namespace: string, roomCode: string): string {
   return `/${namespace}/${roomCode.toUpperCase()}`;
 }
@@ -112,7 +126,7 @@ function connect(options: AppSyncSocketOptions): EventSourceLike {
   // The silence watchdog. Reset by *every* inbound frame — data and `ka`
   // alike — and fatal when it fires: `fail` hands the socket to `openChannel`,
   // whose existing backoff reconnects.
-  let idleTimeoutMs = DEFAULT_IDLE_TIMEOUT_MS;
+  let idleTimeoutMs = watchdogMs(DEFAULT_IDLE_TIMEOUT_MS);
   let watchdog: ReturnType<typeof setTimeout> | null = null;
 
   const clearWatchdog = (): void => {
@@ -163,7 +177,7 @@ function connect(options: AppSyncSocketOptions): EventSourceLike {
         // The ack names how long AppSync itself will tolerate silence; trust
         // it over our default and re-arm on the new deadline.
         if (typeof message.connectionTimeoutMs === "number" && message.connectionTimeoutMs > 0) {
-          idleTimeoutMs = message.connectionTimeoutMs;
+          idleTimeoutMs = watchdogMs(message.connectionTimeoutMs);
           armWatchdog();
         }
         socket.send(

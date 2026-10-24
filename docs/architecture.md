@@ -430,6 +430,17 @@ Every client tracks the last `seq` it applied. On reconnect it calls `GET /state
 which returns either the missed events or a full snapshot if the gap is too large. The TV can be
 hard-refreshed mid-encounter and recover in under a second.
 
+A room that is gone must not look like a reconnect (#470), and a bad network must not look like a
+room that is gone. Only the catch-up `GET /state` may say so: answered 401, 403, 404 or 410, the
+store treats it as terminal, clears the resync retry, closes the channel and sets the connection
+status `"lost"`. A stream that keeps failing proves nothing by itself (lost Wi-Fi, an unreachable
+endpoint and a stalled handshake all look the same from the socket), so the channel keeps retrying
+with backoff however many times it fails; on the third consecutive failure it asks for the catch-up
+once (`RESYNC_AFTER_FAILURES`), which is how a gone room is found out on either transport without
+waiting for a stream to open. 5xx and network errors stay transient. The banner then shows at once,
+without the grace period: "This game has ended or the phone was signed out." with "Try again"
+(re-attaches from the mirror held) and "Back to the start" (leaves and goes home).
+
 #### Stepping away: absence is `connected: false`
 
 A player who is not at the table is a party member with `connected: false`
@@ -465,6 +476,15 @@ header and fades their figure on the board and in the lineup (never the
 knocked-down pose), and a phone that opens on a chapter in progress, or whose
 channel came back after the story moved, shows a one-line catch-up
 (`screens/CatchUp.tsx`).
+
+**How a screen learns its own stream has died: silence and failed requests (#469).** The
+browser socket (`sync/appsync-socket.ts`) arms a silence watchdog at the lesser of the
+`connection_ack`'s `connectionTimeoutMs` (five minutes) and `SILENCE_MS` (two minutes). AppSync
+sends a `ka` about every minute, so two minutes is two missed; any inbound frame resets it. A
+phone also has a faster signal: a presence beat or an action whose fetch fails at the network (a
+`TypeError`, not an HTTP status, which is the server answering) calls `nudgeReconnect()`
+(`sync/wake-reconnect.ts`), one `reconnect()` coalesced with wake reconnects by `WAKE_COALESCE_MS`.
+The TV sends no beat and relies on the shortened watchdog alone.
 
 **How the server learns a phone has gone: heartbeats.** AppSync Events tells
 the Lambda nothing when a socket opens or closes, so every seated phone says
@@ -1685,7 +1705,7 @@ surface at a time.
 the **device token** (`x-kad-device-token`) rather than a room session, which between games does
 not exist: the player's own heroes, the household's Field Guide, a player-id → name map for "found
 by", and the biome of the household's most recent run that left the lobby. It is read-only. The
-client keeps the last answer in `localStorage`, keyed by the device token, and shows it (marked as
+client keeps the last answer in IndexedDB (`store/journal-db.ts`; a pre-existing `kad.journal` in `localStorage` is moved over on first read, and `localStorage` then memory stand in where IndexedDB is blocked), keyed by the device token, and shows it (marked as
 last time's) when the request fails for want of a network; a 4xx means the binding is gone and
 discards it. A browser whose binding came from opening a Party Mode room on itself is marked
 `screenOnly` and is never offered the book, until it is seated or adopted as a player.
@@ -1743,12 +1763,15 @@ A service worker (`packages/client/src/sw/`, served as `/sw.js`) does two jobs. 
 adventure book open with no signal, on a reload too: the saved journal is only half of that, since
 the page, its code, the content and the map painting also have to be on the phone. And it makes
 sure nothing a phone already has is downloaded twice. It is registered only by a production build,
-after `load`, and touches nothing the game needs live:
+after `load`, and touches nothing the game needs live. A failed install or activate, a full disk and
+a file that is not the one fingerprinted are reported to the crash reporter (a message to the open
+pages, else a direct post; `report/worker-errors.ts`), and Help has a Diagnostics panel showing
+the worker's state and what is saved (#459):
 
 | Request | Answered by |
 |---|---|
 | `/api/*`, `/events/*`, anything cross-origin, non-GET or ranged | the browser, as if there were no worker |
-| a page load (any route) | the network (started by navigation preload); the saved app when there is none |
+| a page load (any route) | the network (started by navigation preload), else the saved app after a short wait: when the network fails, or has not answered in 3 seconds (a captive portal, one bar of signal). A late answer is still kept for the next load. With no saved app, the network however long it takes |
 | `/bundle/*` (hashed) | the saved copy; the network the first time |
 | `/assets/*`, `/content/*.json`, `public/` files | the saved copy **if its fingerprint matches this build's**; else the network, kept if the bytes match |
 | anything else not fingerprinted | content: network first; pictures: saved copy, refreshed behind; otherwise untouched |
@@ -1762,8 +1785,15 @@ file changes its fingerprint, so that file alone is fetched again, past the HTTP
 worker drops replaced copies when it takes over. Every download is checked against its
 fingerprint before it is kept, so a CDN edge still serving the old bytes is served but never saved.
 
-**Budget.** Fingerprinted art and audio are capped at 200 MB, least recently used first.
-Content is never evicted: it is small, and it is what the offline book reads. Lookups ignore
+**Budget.** Fingerprinted art and audio are capped at a fifth of the origin's quota
+(`navigator.storage.estimate()`, read in the worker), at most 200 MB and at least 50 MB, and 200 MB
+where the browser does not say (`swBudgetFor`), least recently used first. An install that hits a
+full disk (`QuotaExceededError`) trims the saved art to about half once and tries again, and only
+then fails as before (`swAfterInstallError`); a content file whose bytes are not this build's still
+fails it outright. Content is never evicted: it is small, and it is what the offline book reads.
+Phones ask the browser to keep their storage (`navigator.storage.persist()`, `src/storage/persist.ts`)
+once, after a scene has been played or the book opens, never at first paint and never on the TV;
+the answer is recorded so it is not asked again. Lookups ignore
 `Vary`: servers send `Vary: Origin`, module scripts send an `Origin` header, and without
 `ignoreVary` every saved script quietly missed and went back to the network.
 
@@ -1781,17 +1811,41 @@ Content is never evicted: it is small, and it is what the offline book reads. Lo
   pane mounted behind its controls and map, and the layout tells `WorldView` when it is hidden, so a
   Party Mode phone (whose world is the TV's job) spends nothing on it. Prefetching is skipped when the phone asks to save data;
   the book's offline art is not, since it is what makes the book open in the car at all.
+- **When a chapter starts, on the TV only:** all of that chapter's art (every scene's backdrop, every
+  enemy with art, the biome's tiles, the party's figures; a few MB) is fetched at idle priority in two
+  lanes (`chapterAssets`, `useWarmChapter` in `sw/prefetch.ts`), so the TV never waits on a picture
+  mid-story. Phones never do this, and it too is skipped when Data Saver is on.
 
 **Updates.** Each build's `sw.js` names its own files, so every deploy is a new worker. It takes
 over at once, including pages that are already open. Those pages were built against the previous
 build and import its chunks the first time they open the book or a room, and the deploy has deleted
 those chunks from the bucket. So the worker keeps the previous build's code as well as its own
 (`/__kad/bundle-list` records which), and drops only what neither uses. A tab left open across two
-deploys gets the "Try again" a missing chunk always gets, which reloads it. Pictures an earlier
+deploys gets the "Try again" a missing chunk always gets, which reloads it. An open page also moves itself onto
+the new build (#456): on every wake it asks the worker for updates (`registration.update()`, at most
+once per five minutes, failures swallowed), and when a new worker takes control of a page that
+already had one (`controllerchange`) it reloads once, at a calm moment decided by the pure
+`sw/calm.ts`: page visible, `synced`, no prompt open for this player, no fight, no keepsake or
+pairing flow. Otherwise the update stays pending until the next calm moment (a scene ends, back to
+the lobby, the journal). A sessionStorage stamp keeps it to one reload per change, and a reload
+loses nothing: the room code is in the URL and the session in storage. Pictures an earlier
 worker kept under an old cache name (#224's `kad-image-v1`) are moved into the fingerprinted cache,
 verified, before that cache is dropped. **To turn it off**, ship
 a `sw.js` whose `activate` deletes every cache and calls `self.registration.unregister()`. Phones
 pick it up on their next page load.
+
+**Broken cache recovers.** A worker or cache that serves a page which cannot start would trap a
+phone on a blank screen. An inline script in `index.html`, ahead of the bundle (`src/boot/`, #455),
+counts each load in `sessionStorage` and expects the app to mark itself booted (`BootMark`, on the
+first commit) within 15 seconds; a window `error` or `unhandledrejection` before that fails the boot
+at once. The first failure reloads. The second heals, but only once fresh bytes are reachable (the
+phone says it is online and a `HEAD` of the page, past the worker, answers): it deletes this app's
+caches (`kad-*`), unregisters every worker and reloads once. With no signal the saved copies are the
+only way the app opens at all, so nothing is deleted; it writes "No Wi-Fi right now. Check the
+connection and open Kids & Dragons again." into `#root` and resets the count for the next open. The
+third failure writes "Kids & Dragons could not start. Check the Wi-Fi and open it again." and stops,
+so it never loops. It touches nothing in `localStorage` or IndexedDB, so the hero and the journal are
+safe. `e2e/boot-heal.spec.ts` proves both the heal and the hold.
 
 **Proof.** Both specs below run against a real production build (`playwright.prod.config.ts`,
 `npm run e2e:prod`, also run by CI).
@@ -1807,6 +1861,8 @@ pick it up on their next page load.
     still sends the old bytes never takes over, and the book still opens offline with its guide.
   - **From #224:** pictures in `kad-image-v1` survive the upgrade, and the offline map shows.
   - **Data Saver:** the book still saves its painting.
+  - **Hung network:** with every page load held by the proxy for 20 seconds, the book opens from
+    the saved app well inside ten, and the page throws nothing.
 - `e2e/perf.spec.ts` counts every byte through a proxy, the worker's own fetches included. Before
   the fingerprinted cache, the next evening re-downloaded about 3.8 MB in 41 round trips; now
   13 KB in 10 (the page, live game traffic and the favicon, which browsers fetch outside any

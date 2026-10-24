@@ -56,12 +56,9 @@ import {
   saveSharedDevice,
   tabStorage,
   asPlayerIdentity,
-  clearSavedJournal,
   loadIdentity,
   loadPlayerDeviceToken,
-  loadSavedJournal,
   loadSession,
-  saveJournal,
   saveIdentity,
   saveSession,
   type KeyValueStorage,
@@ -88,6 +85,7 @@ import { appSyncEventSource } from "../sync/appsync-socket";
 import { setFieldGuideDiscoveries } from "./field-guide-discoveries";
 import { announceFieldGuideNews, clearFieldGuideNews } from "./field-guide-news";
 import { navigate } from "../router";
+import { nudgeReconnect } from "../sync/wake-reconnect";
 
 /**
  * The campaign a new room is opened for. Gemfall is the authored arc; the
@@ -138,6 +136,31 @@ export interface GameStoreDeps {
   eventsUrl: typeof defaultEventsUrl;
   /** Injected so tests can assert routing without a DOM. */
   navigate: typeof navigate;
+  /**
+   * Called when a beat or a send fails at the network (#469): the stream is
+   * probably dead too. The real one is coalesced with the wake reconnects
+   * (`sync/wake-reconnect.ts`); absent, nothing happens.
+   */
+  nudgeReconnect?: () => void;
+}
+
+/** A fetch that never reached the server rejects with a TypeError, not an HTTP status. */
+/**
+ * The saved book's store (IndexedDB, #458), loaded when the book is first
+ * saved, read or cleared: not at first paint, which the payload budget
+ * (tools/perf/bundle-budget.ts) keeps for the join screen.
+ */
+function journalDb(): Promise<typeof import("./journal-db")> {
+  return import("./journal-db");
+}
+
+/**
+ * A request that never got an answer: fetch rejected (a TypeError), or the
+ * client gave up waiting (`ApiError` status 0). An HTTP status is an answer,
+ * and says nothing about the stream.
+ */
+function isNetworkFailure(error: unknown): boolean {
+  return error instanceof TypeError || (error instanceof ApiError && error.status === 0);
 }
 
 export function defaultDeps(): GameStoreDeps {
@@ -148,6 +171,7 @@ export function defaultDeps(): GameStoreDeps {
     openChannel: defaultOpenChannel,
     eventsUrl: defaultEventsUrl,
     navigate,
+    nudgeReconnect: () => nudgeReconnect(),
   };
 }
 
@@ -419,6 +443,11 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       return sequencer;
     }
 
+    /** A catch-up answer that means the room is gone, not that the network is. */
+    function isGoneError(error: unknown): boolean {
+      return error instanceof ApiError && [401, 403, 404, 410].includes(error.status);
+    }
+
     async function resync(sinceSeq: number): Promise<void> {
       const session = get().session;
       const sequencer = runtime.sequencer;
@@ -458,7 +487,19 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           set({ synced: true });
         }
       })().catch((error: unknown) => {
-        if (runtime.sequencer === sequencer) {
+        if (runtime.sequencer === sequencer && isGoneError(error)) {
+          // The room is gone or this phone is signed out: no retry can help.
+          // Close first (closing reports "idle"), then say so.
+          runtime.resyncAgain = false;
+          if (runtime.resyncRetry !== null) clearTimeout(runtime.resyncRetry);
+          runtime.resyncRetry = null;
+          runtime.channel?.close();
+          runtime.channel = null;
+          if (runtime.connectRetry !== null) clearTimeout(runtime.connectRetry);
+          runtime.connectRetry = null;
+          runtime.retryTransport = null;
+          set({ connection: "lost", synced: false });
+        } else if (runtime.sequencer === sequencer) {
           runtime.resyncRetry = setTimeout(() => {
             runtime.resyncRetry = null;
             void resync(sequencer.seq).catch(() => undefined);
@@ -530,7 +571,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     function disconnect(): void {
       // Previews, arrivals and cheers are live-only: a fresh channel starts
       // from nobody picking, nobody new and nobody cheering.
-      set({ previews: {}, arrivals: [], arrivalsDropped: 0, cheers: [] });
+      set({ previews: {}, myPreview: null, arrivals: [], arrivalsDropped: 0, cheers: [] });
       runtime.previewSent = "[null,null]";
       runtime.previewNext = null;
       runtime.channel?.close();
@@ -794,6 +835,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       presentation: null,
       progression: null,
       previews: {},
+      myPreview: null,
       arrivals: [],
       arrivalsDropped: 0,
       cheers: [],
@@ -1002,7 +1044,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
         try {
           const journal = await deps.api.loadJournal(deviceToken);
-          saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
+          await (await journalDb()).saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
           return { journal, savedAt: null };
         } catch (error) {
           /*
@@ -1012,10 +1054,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
            * a 5xx — is the car, and last time's book is the right answer.
            */
           if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
-            clearSavedJournal(deps.storage);
+            await (await journalDb()).clearSavedJournal(deps.storage);
             throw error;
           }
-          const saved = loadSavedJournal(deviceToken, deps.storage);
+          const saved = await (await journalDb()).loadSavedJournal(deviceToken, deps.storage);
           if (!saved) throw error;
           return { journal: saved.journal, savedAt: saved.savedAt };
         }
@@ -1029,8 +1071,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           return deps.api.saveFlairAsSeat(choice, seat);
         }
         const profile = await deps.api.saveFlair(choice, deviceToken);
-        const saved = loadSavedJournal(deviceToken, deps.storage);
-        if (saved) saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);
+        const db = await journalDb();
+        const saved = await db.loadSavedJournal(deviceToken, deps.storage);
+        if (saved) await db.saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);
         return profile;
       },
 
@@ -1293,6 +1336,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           set({ error: response.error?.message ?? "That isn't allowed right now." });
           return false;
         } catch (error) {
+          // The request never reached the server: the stream is likely dead
+          // too, so replace it now rather than wait for the watchdog (#469).
+          // An HTTP error status is the server answering and does not.
+          if (isNetworkFailure(error)) deps.nudgeReconnect?.();
           set({
             error: error instanceof Error ? error.message : "Could not reach the game.",
           });
@@ -1305,6 +1352,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         if (!session?.playerId || !session.sessionToken) return;
         // A pick with no decision to belong to is not worth sending.
         if (preview !== null && context === null) preview = null;
+        if (get().myPreview !== preview) set({ myPreview: preview });
         const key = JSON.stringify([preview, preview === null ? null : context]);
         runtime.previewNext = { key, preview, context: preview === null ? null : context };
         if (runtime.previewInFlight) return;
@@ -1336,12 +1384,38 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       beat(leaving = false) {
         const session = get().session;
         if (!session?.playerId || !session.sessionToken) return;
-        void deps.api.postPresence(leaving, session.sessionToken).catch(() => undefined);
+        void deps.api.postPresence(leaving, session.sessionToken).catch((error: unknown) => {
+          // Fire-and-forget, but a beat that cannot get out says the stream
+          // probably cannot either (#469). Not when leaving: the page is going.
+          if (!leaving && isNetworkFailure(error)) deps.nudgeReconnect?.();
+        });
       },
 
       reconnect() {
-        if (!get().session) return;
-        if (runtime.channel?.reconnect) runtime.channel.reconnect();
+        const session = get().session;
+        if (!session) return;
+        // Lost: the channel was closed. Start over by attaching again from the
+        // mirror we hold; the reopened stream's catch-up brings it forward, or
+        // says "lost" again.
+        if (get().connection === "lost" && !runtime.channel && runtime.sequencer?.state) {
+          const sequencer = runtime.sequencer;
+          const snapshot = sequencer.state!;
+          const seq = sequencer.seq;
+          set({ connection: "connecting", synced: false });
+          void connect(session, snapshot, seq).then(() => {
+            if (runtime.sequencer && get().connection !== "open") set({ synced: false });
+            if (runtime.sequencer) void resync(runtime.sequencer.seq).catch(() => undefined);
+          });
+          return;
+        }
+        if (runtime.channel?.reconnect) {
+          runtime.channel.reconnect();
+          // And the catch-up now, not only once the fresh stream opens: a
+          // stream a gone room refuses never opens, and the fetch is what says
+          // the room is gone (`isGoneError`). Serialized with the one the
+          // stream's open asks for, so at most one is in flight.
+          if (runtime.sequencer) void resync(runtime.sequencer.seq).catch(() => undefined);
+        }
         // Transport setup failed and is waiting out its backoff: retry it now.
         else if (runtime.retryTransport) runtime.retryTransport();
         // No stream yet (still resolving the transport): the fetch alone still
