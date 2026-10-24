@@ -54,7 +54,7 @@ import { riftCueFor } from "../world/scene-rift";
 import { perfRequested } from "../world/frame-stats";
 import { RendererBoundary } from "../world/RendererFallback";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
-import { usePrefetchUpcoming } from "../sw/prefetch";
+import { usePrefetchUpcoming, useWarmChapter } from "../sw/prefetch";
 
 // Loaded on demand: PixiStage pulls in all of pixi.js, which is most of the
 // bundle and pure decoration (the stage is aria-hidden). Nothing waits on it —
@@ -95,6 +95,7 @@ export function WorldView({
   // A display client has no player (spec §2.1), so it never has a character and
   // must never be parked on the creation preview waiting for one.
   const isDisplay = (useSession()?.playerId ?? "") === "";
+  useWarmChapter(isDisplay && prefetch);
 
   // Same trigger PlayerView uses: "I have no character yet", not the run phase.
   const creating = (phase === "lobby" || phase === "creation") && me === null && !isDisplay;

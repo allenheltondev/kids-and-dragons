@@ -72,6 +72,34 @@ export function upcomingAssets(
   return [...urls];
 }
 
+/**
+ * Everything the chapter can draw, whichever road the party takes: the party's
+ * figures, and for every scene its backdrop (or the biome's) and, for a fight,
+ * its enemies and the biome's tiles. Each scene is visited once, in the
+ * chapter's own order, so the entry's art comes first.
+ */
+export function chapterAssets(chapter: Chapter | null, party: readonly PartyMember[]): string[] {
+  const urls = new Set<string>();
+  for (const { character } of party) {
+    urls.add(characterWorldArtUrl(character.species, character.tier, character.class));
+  }
+  if (!chapter) return [...urls];
+  const order = [chapter.entry, ...Object.keys(chapter.scenes)];
+  const seen = new Set<SceneId>();
+  for (const id of order) {
+    if (seen.has(id)) continue;
+    seen.add(id);
+    const scene = chapter.scenes[id];
+    if (!scene) continue;
+    urls.add((scene.art ? sceneBackdropUrl(scene.art) : null) ?? biomeBackdropUrl(chapter.biome));
+    if (scene.type === "encounter") {
+      urls.add(biomeTilesUrl(chapter.biome));
+      for (const enemy of scene.enemies) if (enemy.art) urls.add(enemyArtUrl(enemy.art));
+    }
+  }
+  return [...urls];
+}
+
 function next(chapter: Chapter, id: SceneId): SceneId[] {
   const scene = chapter.scenes[id];
   return scene ? edgesOf(id, scene).map((edge) => edge.to) : [];
@@ -112,6 +140,36 @@ export function usePrefetchUpcoming(enabled = true): void {
     return () => clearTimeout(timer);
     // `party` is read through `partyKey`: a new array every patch, the same figures.
   }, [enabled, chapter, chapterId, sceneId, partyKey]);
+}
+
+/**
+ * On the television only: when a chapter starts, fetch all of its art, since
+ * the TV is plugged in and shows the whole story. Idle, after the scene's own
+ * loads, and never on a phone. `warm` skips it when Data Saver is on.
+ */
+export function useWarmChapter(display: boolean): void {
+  const chapter = useChapter();
+  const state = useRunState();
+  const chapterId = state?.chapterId ?? null;
+  const party = state?.party;
+  const partyKey = (party ?? []).map((m) => `${m.character.species}/${m.character.tier}/${m.character.class}`).join(",");
+
+  useEffect(() => {
+    if (!display || chapter === null || chapter.id !== chapterId) return;
+    const fresh = chapterAssets(chapter, party ?? []).filter((url) => !asked.has(url));
+    if (fresh.length === 0) return;
+    const start = (): void => {
+      for (const url of fresh) asked.add(url);
+      void warm(fresh, { lanes: 2 });
+    };
+    if (typeof window !== "undefined" && "requestIdleCallback" in window) {
+      const handle = window.requestIdleCallback(start, { timeout: 4_000 });
+      return () => window.cancelIdleCallback(handle);
+    }
+    const timer = setTimeout(start, 1_500);
+    return () => clearTimeout(timer);
+    // Keyed on the chapter, not the scene; `party` is read through `partyKey`.
+  }, [display, chapter, chapterId, partyKey]);
 }
 
 /** Test seam: forget what this page has asked for. */
