@@ -5,10 +5,10 @@
  * production build.
  */
 
-import { Script } from "node:vm";
+import { Script, createContext } from "node:vm";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import type { FieldGuide, WorldMap } from "@kad/shared";
+import { PUSH_BODY, PUSH_TAG, PUSH_TITLE, turnPushPayload, type FieldGuide, type WorldMap } from "@kad/shared";
 import { createHash } from "node:crypto";
 import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -16,12 +16,17 @@ import { buildId, buildServiceWorker, campaignFiles, fileIndexOf, fingerprint, p
 import {
   SW_FILES_BUDGET_BYTES,
   SW_FILES_BUDGET_FLOOR_BYTES,
+  SW_PUSH_BODY,
+  SW_PUSH_TAG,
+  SW_PUSH_TITLE,
   SW_SHELL_TIMEOUT_MS,
   swAfterInstallError,
   swBudgetFor,
   swCacheable,
   swEvictions,
   swIsQuotaError,
+  swNoticeWindow,
+  swPushNotice,
   swQuotaTrim,
   swShellAnswer,
   swOverLimit,
@@ -283,5 +288,90 @@ describe("the art saved for the offline book", () => {
 
   it("is nothing before the world and the guide have loaded", () => {
     expect(offlineArtFor(null, null, ["wisp"])).toEqual([]);
+  });
+});
+
+describe("\"It's your turn\" (#466)", () => {
+  it("says the shared words, and only those (#320)", () => {
+    expect(SW_PUSH_TITLE).toBe(PUSH_TITLE);
+    expect(SW_PUSH_BODY).toBe(PUSH_BODY);
+    expect(SW_PUSH_BODY).toBe("It's your turn in Kids & Dragons");
+    expect(SW_PUSH_TAG).toBe(PUSH_TAG);
+  });
+
+  it("shows its own words whatever the push carried, and opens only a room on this site", () => {
+    expect(swPushNotice(turnPushPayload("abcd"))).toEqual({ title: PUSH_TITLE, body: PUSH_BODY, tag: PUSH_TAG, url: "/p/ABCD" });
+    expect(swPushNotice({ title: "Ada's turn!", body: "Ada, roll for the troll", url: "/p/ABCDEF" })).toEqual({
+      title: PUSH_TITLE,
+      body: PUSH_BODY,
+      tag: PUSH_TAG,
+      url: "/p/ABCDEF",
+    });
+    for (const url of ["https://evil.example/p/ABCD", "//evil.example", "/account", "/p/abcd", "/p/ABCD/../x", 7]) {
+      expect(swPushNotice({ url }).url).toBe("/");
+    }
+    expect(swPushNotice(null).url).toBe("/");
+  });
+
+  it("brings forward a window on the room, else any of the app's, else none", () => {
+    const origin = "https://kad.example";
+    const windows = [{ url: "https://other.example/p/ABCD" }, { url: `${origin}/journal` }, { url: `${origin}/p/ABCD` }];
+    expect(swNoticeWindow(windows, "/p/ABCD", origin)).toEqual({ index: 2, navigate: false });
+    expect(swNoticeWindow(windows, "/p/WXYZ", origin)).toEqual({ index: 1, navigate: true });
+    expect(swNoticeWindow([{ url: "not a url" }, windows[0]!], "/p/ABCD", origin)).toEqual({ index: -1, navigate: false });
+  });
+
+  /** The built worker, run with just enough of a worker scope to take a push. */
+  function runWorker() {
+    const listeners: Record<string, (event: unknown) => void> = {};
+    const shown: { title: string; options: Record<string, unknown> }[] = [];
+    const opened: string[] = [];
+    const scope = {
+      location: new URL("https://kad.example/sw.js"),
+      addEventListener: (type: string, listener: (event: unknown) => void) => {
+        listeners[type] = listener;
+      },
+      registration: {
+        showNotification: async (title: string, options: Record<string, unknown>) => {
+          shown.push({ title, options });
+        },
+      },
+      clients: {
+        matchAll: async () => [],
+        openWindow: async (url: string) => {
+          opened.push(url);
+          return null;
+        },
+      },
+    };
+    const context = createContext({ self: scope, URL, console });
+    new Script(
+      buildServiceWorker({ bundleFiles: ["/bundle/index-a1.js"], campaignFiles: [], fileIndexUrl: "/bundle/files-x1.json", build: "b" }),
+    ).runInContext(context);
+    const dispatch = async (type: string, event: Record<string, unknown>) => {
+      const work: Promise<unknown>[] = [];
+      listeners[type]?.({ ...event, waitUntil: (p: Promise<unknown>) => work.push(p) });
+      await Promise.all(work);
+    };
+    return { listeners, shown, opened, dispatch };
+  }
+
+  it("the built worker shows the notice for a push, and opens the room on a tap", async () => {
+    const sw = runWorker();
+    expect(Object.keys(sw.listeners)).toEqual(expect.arrayContaining(["push", "notificationclick"]));
+
+    await sw.dispatch("push", { data: { json: () => ({ ...turnPushPayload("WXYZ"), body: "secret" }) } });
+    expect(sw.shown).toEqual([
+      { title: PUSH_TITLE, options: expect.objectContaining({ body: PUSH_BODY, tag: PUSH_TAG, data: { url: "/p/WXYZ" } }) },
+    ]);
+
+    // A push with nothing readable in it still shows the notice.
+    await sw.dispatch("push", { data: { json: () => { throw new SyntaxError("not json"); } } });
+    expect(sw.shown[1]?.options).toMatchObject({ body: PUSH_BODY, data: { url: "/" } });
+
+    let closed = false;
+    await sw.dispatch("notificationclick", { notification: { data: { url: "/p/WXYZ" }, close: () => (closed = true) } });
+    expect(closed).toBe(true);
+    expect(sw.opened).toEqual(["/p/WXYZ"]);
   });
 });

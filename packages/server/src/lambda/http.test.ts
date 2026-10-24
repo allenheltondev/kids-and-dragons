@@ -2105,6 +2105,10 @@ const SHARED = [
   // makes a code, the new device redeems it.
   { path: "/api/pair/code", method: "POST", probe: "/api/pair/code" },
   { path: "/api/pair/redeem", method: "POST", probe: "/api/pair/redeem" },
+  // "It's your turn" while the app is in the background (#466, handlers/push.ts).
+  { path: "/api/push/key", method: "GET", probe: "/api/push/key" },
+  { path: "/api/push/subscribe", method: "POST", probe: "/api/push/subscribe" },
+  { path: "/api/push/unsubscribe", method: "POST", probe: "/api/push/unsubscribe" },
 ] as const;
 
 /**
@@ -2136,6 +2140,9 @@ const DEV_ONLY = [
   // The end-to-end suite's seeded table (dev-seed.ts): a room with its heroes
   // made in one call, and a playtest jump. Prod must never have it.
   { path: "/api/dev/seed", method: "POST" },
+  // What the dev server's stand-in push service was handed (#466, KAD_PUSH=record),
+  // for the e2e test. Prod sends real pushes and keeps no record of them.
+  { path: "/api/dev/push", method: "GET" },
 ] as const;
 
 function routed(result: APIGatewayProxyStructuredResultV2): boolean {
@@ -2336,5 +2343,44 @@ describe("bringing a hero back (spec §5)", () => {
   it("needs a room session to list heroes", async () => {
     const result = await respond(event("GET", "/api/heroes"), runtimeFor(makeHarness()));
     expect(result.statusCode).toBe(401);
+  });
+});
+
+describe("push subscriptions (#466)", () => {
+  const subscription = { endpoint: "https://push.example/abc", keys: { p256dh: "BPub", auth: "c2VjcmV0" } };
+
+  it("says pushes are off, and refuses a subscription, when the stack has not turned them on", async () => {
+    const harness = makeHarness();
+    const { players } = await seedHousehold(harness, 1);
+    const rt = runtimeFor(harness);
+    const key = await respond(event("GET", "/api/push/key"), rt);
+    expect(key.statusCode).toBe(200);
+    expect(bodyOf(key)).toEqual({ enabled: false });
+    const refused = await respond(
+      event("POST", "/api/push/subscribe", { body: subscription, headers: { "x-kad-device-token": players[0]!.deviceToken } }),
+      rt,
+    );
+    expect(refused.statusCode).toBe(404);
+  });
+
+  it("keeps a kid's phone's subscription by its device token, and lets it go again", async () => {
+    const harness = makeHarness();
+    const { players } = await seedHousehold(harness, 1);
+    harness.deps.push = { dispatch: async () => undefined, publicKey: "BPublicKey" };
+    const rt = runtimeFor(harness);
+    const me = players[0]!;
+
+    expect(bodyOf(await respond(event("GET", "/api/push/key"), rt))).toEqual({ enabled: true, publicKey: "BPublicKey" });
+    const headers = { "x-kad-device-token": me.deviceToken };
+    const saved = await respond(event("POST", "/api/push/subscribe", { body: subscription, headers }), rt);
+    expect(saved.statusCode).toBe(200);
+    expect((await harness.repo.listPushSubscriptions(me.principal.playerId)).map((s) => s.deviceId)).toEqual([me.principal.deviceId]);
+
+    // No token, no subscription: the body never names the phone.
+    expect((await respond(event("POST", "/api/push/subscribe", { body: subscription }), rt)).statusCode).toBe(403);
+    expect((await respond(event("POST", "/api/push/subscribe", { body: { endpoint: "nope" }, headers }), rt)).statusCode).toBe(400);
+
+    expect((await respond(event("POST", "/api/push/unsubscribe", { headers }), rt)).statusCode).toBe(200);
+    expect(await harness.repo.listPushSubscriptions(me.principal.playerId)).toEqual([]);
   });
 });

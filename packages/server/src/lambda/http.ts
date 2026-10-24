@@ -57,6 +57,7 @@ import {
 } from "../handlers/shared-device.ts";
 import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
 import type { RoomMode } from "@kad/shared";
+import { pushKey, subscribePush, unsubscribePush } from "../handlers/push.ts";
 import { requiredEnv, runtime, verifyAccountToken, type VerifiedAccount } from "./runtime.ts";
 
 /** A request, already parsed into the few things the routes actually read. */
@@ -223,6 +224,10 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "GET" && req.path === "/api/journal") return (deps) => getJournalRoute(req, deps);
   if (req.method === "POST" && req.path === "/api/profile/flair") return (deps) => postFlairRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/household/players") return (deps) => getSharedPlayers(req, deps);
+  // "It's your turn" while the app is in the background (#466).
+  if (req.method === "GET" && req.path === "/api/push/key") return async (deps) => json(200, pushKey(deps));
+  if (req.method === "POST" && req.path === "/api/push/subscribe") return (deps) => postPushSubscription(req, deps, true);
+  if (req.method === "POST" && req.path === "/api/push/unsubscribe") return (deps) => postPushSubscription(req, deps, false);
 
   // A grown-up running a household or a group (#248). Signed in, always.
   const organizer = organizerRoute(req);
@@ -827,6 +832,18 @@ async function postFlairRoute(req: Req, deps: HandlerDeps) {
   if (!kid) return error(401, "FORBIDDEN", "your page needs this device's token");
   const result = await saveFlair({ householdId: kid.householdId, playerId: kid.playerId, body: req.body }, deps);
   return result.ok ? json(200, result.value, kid.principal) : fromError(result.error);
+}
+
+/**
+ * This phone takes "It's your turn" pushes, or stops (#466). The device token
+ * names the phone and its kid; the body is only the browser's subscription.
+ */
+async function postPushSubscription(req: Req, deps: HandlerDeps, on: boolean) {
+  const found = await resolvePrincipal(req, deps);
+  const result = on
+    ? await subscribePush({ principal: found?.principal ?? null, body: req.body }, deps)
+    : await unsubscribePush({ principal: found?.principal ?? null }, deps);
+  return result.ok ? json(200, { ok: true }, found?.principal) : error(result.status, result.code, result.message);
 }
 
 async function getStateRoute(req: Req, deps: HandlerDeps) {
