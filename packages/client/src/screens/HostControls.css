@@ -201,3 +201,17 @@
   .kad-host__offer-bar > span { animation-name: none; }
 }
 html[data-motion="reduced"] .kad-host__offer-bar > span { animation-name: none; }
+
+.kad-host__invite {
+  display: grid;
+  gap: var(--kad-space-2, 0.5rem);
+}
+
+.kad-host__invite-link {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: var(--kad-text-sm);
+  padding: 0.5rem;
+  user-select: all;
+}

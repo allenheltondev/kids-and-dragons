@@ -8,7 +8,7 @@ import { describe, expect, it } from "vitest";
 import type { Chapter } from "@kad/shared";
 import { makeChapter } from "../../../shared/src/test-fixtures";
 import { makeCharacter, makeMember } from "../testing/fixtures";
-import { upcomingAssets } from "./prefetch";
+import { chapterAssets, upcomingAssets } from "./prefetch";
 
 /**
  * The shared fixture, with real art: clearing → (check_squeeze | shrine);
@@ -61,5 +61,32 @@ describe("the scenes ahead", () => {
   it("never lists a file twice", () => {
     const urls = upcomingAssets(chapter(), "scene_clearing", PARTY);
     expect(new Set(urls).size).toBe(urls.length);
+  });
+});
+
+describe("the whole chapter", () => {
+  it("lists the entry's backdrop first, every enemy with art, and the biome's tiles", () => {
+    const urls = chapterAssets(chapter(), PARTY);
+    expect(urls[0]).toBe("/assets/characters/unicorn/fledgling/assembled.png");
+    expect(urls[1]).toBe("/assets/scenes/bramblewood/clearing.webp");
+    expect(urls).toContain("/assets/scenes/bramblewood/shrine.webp");
+    expect(urls).toContain("/assets/entities/will_o_wisp/assembled.png");
+    expect(urls).toContain("/assets/biomes/enchanted_woods/tiles.png");
+    expect(urls).toContain("/assets/biomes/enchanted_woods/bg.webp");
+    expect(new Set(urls).size).toBe(urls.length);
+  });
+
+  it("reaches scenes beyond the prefetch depth, and visits each scene once", () => {
+    const c = chapter();
+    const scenes = { ...c.scenes };
+    // A scene no more than the entry's neighbours away from nothing: unreachable by depth.
+    scenes["scene_far"] = { ...scenes["scene_shrine"]!, art: "scenes/bramblewood/far" } as never;
+    const deep = { ...c, scenes };
+    expect(upcomingAssets(deep, null, [])).not.toContain("/assets/scenes/bramblewood/far.webp");
+    expect(chapterAssets(deep, [])).toContain("/assets/scenes/bramblewood/far.webp");
+  });
+
+  it("is just the party when there is no chapter", () => {
+    expect(chapterAssets(null, PARTY)).toHaveLength(1);
   });
 });

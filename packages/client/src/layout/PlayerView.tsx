@@ -39,6 +39,10 @@ import { FieldGuide } from "../screens/FieldGuide";
 import { useKeepsakeStore } from "../store/keepsake";
 import { usePresenceBeat } from "../sync/presence-beat";
 import { useReconnectOnWake } from "../sync/wake-reconnect";
+import { usePhoneWakeLock } from "../display/usePhoneWakeLock";
+import { usePersistStorage } from "../storage/persist";
+import { usePromptBuzz } from "../ui/prompt-buzz";
+import { useAppBadge } from "../ui/app-badge";
 
 export function PlayerView({ roomControls }: { roomControls?: ReactNode }): React.JSX.Element {
   const me = useMe();
@@ -52,6 +56,12 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
   // Back from another app, a locked screen or a frozen background: a fresh
   // stream and a catch-up, before this phone offers last scene's question.
   useReconnectOnWake();
+  // Screen stays on while the room is open, and only then (#463).
+  usePhoneWakeLock();
+  // Ask the browser to keep this phone's storage once a scene has been played (#457).
+  usePersistStorage(state !== null && state.phase !== "lobby" && state.phase !== "creation");
+  usePromptBuzz();
+  useAppBadge();
 
   /*
    * Ask once whether this deployment can offer sign-in at all (§4.5). It is a

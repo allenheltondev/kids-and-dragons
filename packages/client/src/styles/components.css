@@ -701,6 +701,16 @@
   animation: kad-toast-in var(--kad-dur-base) var(--kad-ease-out);
 }
 
+/* A room that is gone: same calm panel, but it holds a sentence and two
+   buttons, so it wraps instead of staying a single-line pill. */
+.kad-connection--lost {
+  flex-wrap: wrap;
+  justify-content: center;
+  max-inline-size: min(32rem, calc(100vw - 2rem));
+  border-radius: 1.25rem;
+  padding-block: 0.6rem;
+}
+
 .kad-connection__retry {
   min-block-size: 2.75rem;
   margin-block: -0.45rem;

@@ -40,6 +40,7 @@ import { TrayObject } from "./TrayObjects";
 import { Atlas, AtlasUnrolling, placeOf } from "./WorldMapPanel";
 import { loadFieldGuide, useEnsureContent, useEnsureWorld } from "./content";
 import { offlineArtFor, warm } from "../sw/warm";
+import { usePersistStorage } from "../storage/persist";
 import "./shared.css";
 import "./JournalScreen.css";
 // The tray, painted as it is in the room (docs/briefs/tablet-chrome-art.md).
@@ -83,6 +84,7 @@ type Load =
 
 export function JournalScreen(): ReactElement {
   const loadJournal = useGameStore((s) => s.loadJournal);
+  usePersistStorage(true); // the book is open: ask the browser to keep it (#457)
   const [load, setLoad] = useState<Load>({ status: "loading" });
   const [attempt, setAttempt] = useState(0);
   const [pane, setPaneNow] = useState<JournalPane>("hero");

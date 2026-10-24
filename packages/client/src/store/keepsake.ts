@@ -309,6 +309,8 @@ export function createKeepsakeStore(deps: KeepsakeDeps = defaultKeepsakeDeps()) 
         ? await deps.api.shareDevice(tokens.idToken, deviceToken, shared?.token, householdId)
         : await deps.api.shareDevice(tokens.idToken, deviceToken, shared?.token);
       becomeSharedDevice({ token: result.sharedToken, householdId: result.householdId }, deps.storage);
+      // The sync call above clears localStorage; the book may live in IndexedDB (#458).
+      await (await import("./journal-db")).clearSavedJournal(deps.storage);
       doneOnTablet();
     }
 

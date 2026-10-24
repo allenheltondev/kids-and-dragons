@@ -12,10 +12,18 @@ import type { FieldGuide, WorldMap } from "@kad/shared";
 import { createHash } from "node:crypto";
 import { mkdtempSync, mkdirSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { buildServiceWorker, campaignFiles, fileIndexOf, fingerprint, precacheOf } from "../../sw-build";
+import { buildId, buildServiceWorker, campaignFiles, fileIndexOf, fingerprint, precacheOf } from "../../sw-build";
 import {
+  SW_FILES_BUDGET_BYTES,
+  SW_FILES_BUDGET_FLOOR_BYTES,
+  SW_SHELL_TIMEOUT_MS,
+  swAfterInstallError,
+  swBudgetFor,
   swCacheable,
   swEvictions,
+  swIsQuotaError,
+  swQuotaTrim,
+  swShellAnswer,
   swOverLimit,
   swReadVersionedKey,
   swShellEntry,
@@ -87,6 +95,79 @@ describe("the offline app's page", () => {
   });
 });
 
+describe("a page load on a slow or captive network (#454)", () => {
+  it("waits only a few seconds for the network", () => {
+    expect(SW_SHELL_TIMEOUT_MS).toBeGreaterThanOrEqual(2_000);
+    expect(SW_SHELL_TIMEOUT_MS).toBeLessThanOrEqual(5_000);
+  });
+
+  it("takes the network's page whenever it wins", () => {
+    expect(swShellAnswer("ok", true)).toBe("network");
+    expect(swShellAnswer("ok", false)).toBe("network");
+  });
+
+  it("shows the saved app when the network is still out at the timeout", () => {
+    expect(swShellAnswer("pending", true)).toBe("saved");
+  });
+
+  it("shows the saved app when the network fails fast", () => {
+    expect(swShellAnswer("failed", true)).toBe("saved");
+  });
+
+  it("with no saved app, waits for the network however long, and fails only with it", () => {
+    expect(swShellAnswer("pending", false)).toBe("wait");
+    expect(swShellAnswer("failed", false)).toBe("fail");
+  });
+});
+
+describe("room on the phone (#457)", () => {
+  const MB = 1024 * 1024;
+
+  it("budgets a fifth of the quota, between the floor and the cap", () => {
+    expect(swBudgetFor(10_000 * MB)).toBe(SW_FILES_BUDGET_BYTES);
+    expect(swBudgetFor(500 * MB)).toBe(100 * MB);
+    expect(swBudgetFor(100 * MB)).toBe(SW_FILES_BUDGET_FLOOR_BYTES);
+  });
+
+  it("falls back to the fixed budget where the browser will not say", () => {
+    expect(swBudgetFor(undefined)).toBe(SW_FILES_BUDGET_BYTES);
+    expect(swBudgetFor(0)).toBe(SW_FILES_BUDGET_BYTES);
+    expect(swBudgetFor(Number.NaN)).toBe(SW_FILES_BUDGET_BYTES);
+    expect(swBudgetFor(Number.POSITIVE_INFINITY)).toBe(SW_FILES_BUDGET_BYTES);
+  });
+
+  it("knows a full disk when it sees one", () => {
+    expect(swIsQuotaError({ name: "QuotaExceededError" })).toBe(true);
+    expect(swIsQuotaError({ name: "Error", code: 22 })).toBe(true);
+    expect(swIsQuotaError(new Error("install: /content/rules.json is not the bytes this build fingerprinted"))).toBe(false);
+    expect(swIsQuotaError(new TypeError("Failed to fetch"))).toBe(false);
+    expect(swIsQuotaError(null)).toBe(false);
+    expect(swIsQuotaError("QuotaExceededError")).toBe(false);
+  });
+
+  it("trims and retries an install once on a full disk, and fails on anything else", () => {
+    const full = { name: "QuotaExceededError" };
+    expect(swAfterInstallError(full, 0)).toBe("trim-and-retry");
+    expect(swAfterInstallError(full, 1)).toBe("fail");
+    // The stale-edge guarantee: a content file whose bytes are not this build's still fails install.
+    expect(swAfterInstallError(new Error("install: /content/field-guide.json is not the bytes this build fingerprinted"), 0)).toBe("fail");
+    expect(swAfterInstallError(new TypeError("Failed to fetch"), 0)).toBe("fail");
+  });
+
+  it("trims to about half of what is saved, oldest first, and never content", () => {
+    const meta = {
+      "/content/rules.json?v=1": { bytes: 10, used: 0 },
+      "/assets/old.webp?v=2": { bytes: 40, used: 1 },
+      "/assets/mid.webp?v=3": { bytes: 30, used: 2 },
+      "/assets/new.webp?v=4": { bytes: 20, used: 3 },
+    };
+    // 100 saved: down to 45, so the two oldest pictures go, and the content stays.
+    expect(swQuotaTrim(meta)).toEqual(["/assets/old.webp?v=2", "/assets/mid.webp?v=3"]);
+    expect(swQuotaTrim({ "/content/rules.json?v=1": { bytes: 40, used: 0 } })).toEqual([]);
+    expect(swQuotaTrim({})).toEqual([]);
+  });
+});
+
 describe("fingerprinted files", () => {
   it("are saved under their fingerprint, and read back from it", () => {
     const key = swVersionedKey("/assets/x/assembled.png", "0123456789abcdef");
@@ -143,6 +224,7 @@ describe("the built sw.js", () => {
     bundleFiles: files,
     campaignFiles: ["/content/campaigns/gemfall.json"],
     fileIndexUrl: "/bundle/files-x1.json",
+    build: "abc123def456",
   });
 
   it("is one classic script: no import or export survives", () => {
@@ -155,6 +237,14 @@ describe("the built sw.js", () => {
     expect(precacheOf(files)).toContain("/bundle/extra-z9.js");
     expect(source).toContain('"/content/campaigns/gemfall.json"');
     expect(source).toContain('const __KAD_FILE_INDEX__ = "/bundle/files-x1.json";');
+  });
+
+  it("carries the build id the page reports, and still imports nothing (#459)", () => {
+    expect(source).toContain('const __KAD_BUILD__ = "abc123def456";');
+    expect(source).not.toMatch(/\bimport\s*[({"'\w]/);
+    expect(buildId({ KAD_BUILD: "0123456789abcdef", GITHUB_SHA: "ffff" })).toBe("0123456789ab");
+    expect(buildId({ GITHUB_SHA: "fedcba9876543210" })).toBe("fedcba987654");
+    expect(buildId({})).toBe("dev");
   });
 
   it("precaches every campaign the deploy uploads", () => {

@@ -441,6 +441,17 @@ export interface SavedJournal {
 
 const JOURNAL_KEY = "kad.journal";
 
+/** The saved copy if `parsed` is a well-formed one read with `deviceToken`, else null. */
+export function validSavedJournal(parsed: unknown, deviceToken: string): SavedJournal | null {
+  if (typeof parsed !== "object" || parsed === null) return null;
+  const p = parsed as Partial<SavedJournal>;
+  if (p.deviceToken !== deviceToken || typeof p.savedAt !== "string") return null;
+  const journal = p.journal;
+  if (typeof journal !== "object" || journal === null || !Array.isArray(journal.heroes)) return null;
+  return { deviceToken, savedAt: p.savedAt, journal };
+}
+
+/** The pre-IndexedDB path (#458), kept for the fallback and the migration. */
 export function loadSavedJournal(
   deviceToken: string,
   storage: KeyValueStorage = defaultStorage(),
@@ -448,11 +459,7 @@ export function loadSavedJournal(
   const raw = storage.getItem(JOURNAL_KEY);
   if (!raw) return null;
   try {
-    const parsed = JSON.parse(raw) as Partial<SavedJournal>;
-    if (parsed.deviceToken !== deviceToken || typeof parsed.savedAt !== "string") return null;
-    const journal = parsed.journal;
-    if (typeof journal !== "object" || journal === null || !Array.isArray(journal.heroes)) return null;
-    return { deviceToken, savedAt: parsed.savedAt, journal };
+    return validSavedJournal(JSON.parse(raw), deviceToken);
   } catch {
     return null;
   }

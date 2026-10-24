@@ -156,8 +156,11 @@ test("later visits download none of the art, audio or content a phone already ha
     // evening re-downloaded assets the phone already had.
     for (const [name, visit] of [["repeat", repeat], ["next evening", evening]] as const) {
       expect(bodiesOf(visit, ["bundle", "content", "audio"]), `${name}: re-downloaded code, content, or audio`).toBe(0);
-      // Browsers fetch the favicon outside any service worker; nothing else may come down.
-      const art = visit.art.downloaded.filter((path) => path !== "/favicon.ico");
+      // Browsers fetch the favicon and the apple touch icon (Chromium reads it
+      // for the install sheet, #461) outside any service worker; nothing else
+      // may come down.
+      const BROWSER_OWN = new Set(["/favicon.ico", "/apple-touch-icon.png"]);
+      const art = visit.art.downloaded.filter((path) => !BROWSER_OWN.has(path));
       expect(art, `${name}: re-downloaded art`).toEqual([]);
     }
   } finally {
@@ -295,5 +298,83 @@ test("a Party Mode phone with its controls up fetches nothing ahead; the TV does
   } finally {
     await tvContext.close();
     await phoneContext.close();
+  }
+});
+
+test("the TV warms the whole chapter's art once the chapter starts, beyond the two steps ahead", async ({ browser, baseURL }) => {
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
+  const tvContext = await browser.newContext({ viewport: { width: 1280, height: 720 }, baseURL: proxy.url });
+  const phoneContext = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
+  const tv = await tvContext.newPage();
+  const phone = await phoneContext.newPage();
+  try {
+    await tv.goto("/");
+    await controlled(tv);
+    await tv.getByRole("button", { name: /host a game/i }).click();
+    await tv.getByText("Party Mode").click();
+    await tv.getByRole("button", { name: /open the lobby here/i }).click();
+    await expect(tv).toHaveURL(/\/tv\/[A-Z0-9]{4}$/);
+    const code = new URL(tv.url()).pathname.split("/").pop()!;
+
+    await phone.goto("/");
+    await controlled(phone);
+    await phone.getByLabel(/room code/i).fill(code);
+    await phone.getByRole("button", { name: /join a game/i }).click();
+    await expect(phone).toHaveURL(new RegExp(`/p/${code}$`));
+    await createCharacter(phone, "unicorn", HERO);
+    await phone.getByRole("button", { name: /begin the adventure/i }).click(TAP);
+    await expect(phone.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0, TAP);
+
+    // The chapter that started, and the art of every scene more than two steps from its entry.
+    const far = await phone.evaluate(async (room) => {
+      const saved = JSON.parse(localStorage.getItem(`kad.session.${room}`) ?? "{}") as { sessionToken?: string };
+      const headers: Record<string, string> = saved.sessionToken ? { authorization: `Bearer ${saved.sessionToken}` } : {};
+      const { state } = (await (await fetch(`/api/state?code=${room}`, { headers })).json()) as { state: { chapterId: string } };
+      const chapter = (await (await fetch(`/content/chapters/${state.chapterId}.json`)).json()) as {
+        entry: string;
+        scenes: Record<string, { art?: string; choices?: { goto: string }[] } & Record<string, unknown>>;
+      };
+      const targets = (id: string): string[] => {
+        const scene = chapter.scenes[id];
+        return [
+          ...(scene?.choices ?? []).map((choice) => choice.goto),
+          ...(["onSuccess", "onFailure", "onVictory", "onDefeat"] as const).map((key) => (scene?.[key] as { goto?: string } | undefined)?.goto),
+        ].filter((to): to is string => typeof to === "string");
+      };
+      const near = new Set<string>([chapter.entry]);
+      let frontier = [chapter.entry];
+      for (let step = 0; step < 2; step += 1) {
+        frontier = frontier.flatMap(targets).filter((id) => !near.has(id));
+        for (const id of frontier) near.add(id);
+      }
+      const nearArt = new Set([...near].map((id) => chapter.scenes[id]?.art));
+      return [...new Set(Object.values(chapter.scenes).map((scene) => scene.art))]
+        .filter((art): art is string => !!art?.startsWith("scenes/") && !nearArt.has(art))
+        .map((art) => `/assets/${art}.webp`);
+    }, code);
+    expect(far.length, "the chapter has no art beyond two steps of its entry").toBeGreaterThan(0);
+
+    const saved = (page: Page) =>
+      page.evaluate(
+        async (urls) =>
+          (await Promise.all(urls.map(async (url) => (await caches.match(url, { ignoreSearch: true })) !== undefined))).filter(Boolean)
+            .length,
+        far,
+      );
+
+    // The TV is idle, nobody has moved on, and the far scenes are already saved…
+    await expect.poll(() => saved(tv), { timeout: 60_000, message: "the TV did not warm the whole chapter" }).toBe(far.length);
+    // …so asking for one now never reaches the network…
+    await proxy.settled();
+    proxy.reset();
+    await tv.evaluate(async (url) => void (await (await fetch(url)).arrayBuffer()), far[0]!);
+    await proxy.settled(1_000);
+    expect(proxy.report().art.bodies, "a warmed scene's art came down again").toBe(0);
+    // …while the phone, which is not the picture, kept to itself.
+    expect(await saved(phone), "the phone warmed the chapter").toBe(0);
+  } finally {
+    await tvContext.close();
+    await phoneContext.close();
+    await proxy.close();
   }
 });

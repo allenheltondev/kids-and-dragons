@@ -476,6 +476,16 @@ export interface Channel {
   reconnect?(): void;
 }
 
+/**
+ * Consecutive stream failures after which the catch-up is fetched once, to
+ * learn whether the room is gone. The stream itself never proves that: lost
+ * Wi-Fi, an unreachable endpoint and a stalled handshake all look the same
+ * from the socket, so however many times it fails the channel keeps retrying,
+ * and only the catch-up's answer (the store, on 401, 403, 404 or 410) may end
+ * on "lost".
+ */
+export const RESYNC_AFTER_FAILURES = 3;
+
 export function openChannel(options: ChannelOptions): Channel {
   const schedule = options.schedule ?? ((fn, ms) => setTimeout(fn, ms));
   const cancel = options.cancel ?? ((h: TimerHandle) => clearTimeout(h as ReturnType<typeof setTimeout>));
@@ -523,6 +533,11 @@ export function openChannel(options: ChannelOptions): Channel {
       options.onStatus("reconnecting");
       const delay = backoffDelay(attempt, options.backoff);
       attempt += 1;
+      // A stream that keeps failing may be refused because the room is gone,
+      // which only the catch-up fetch can tell (the store ends on "lost" when
+      // it answers so). Once per run of failures, on the third: a blip never
+      // asks, an outage asks once and the fetch fails as cheaply as the stream.
+      if (attempt === RESYNC_AFTER_FAILURES) void options.resync(options.sequencer.seq).catch(() => undefined);
       retryTimer = schedule(() => { connect(); }, delay);
     };
   }

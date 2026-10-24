@@ -16,7 +16,7 @@ export default defineConfig({
   // Visual review tools run explicitly with playwright.cast-review.config.ts.
   // Offline, performance, production-lock and installability checks need a
   // production build (the service worker): playwright.prod.config.ts.
-  testIgnore: ["wiki-*.spec.ts", "static-figures-shot.spec.ts", "cast-shot.spec.ts", "offline.spec.ts", "perf.spec.ts", "production-locks.spec.ts", "installable.spec.ts", "worker-update.spec.ts"],
+  testIgnore: ["wiki-*.spec.ts", "static-figures-shot.spec.ts", "cast-shot.spec.ts", "offline.spec.ts", "perf.spec.ts", "production-locks.spec.ts", "installable.spec.ts", "worker-update.spec.ts", "boot-heal.spec.ts"],
   // Three players each walking a five-step creation flow, and then a whole
   // chapter with real roll animations, is a lot of genuine interaction — the
   // playthrough spends about two minutes of this on its own.
