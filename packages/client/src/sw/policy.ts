@@ -315,6 +315,70 @@ export function swQuotaTrim(meta: Readonly<Record<string, FileMeta>>): string[] 
 }
 
 // ---------------------------------------------------------------------------
+// "It's your turn" (#466)
+// ---------------------------------------------------------------------------
+
+/** The notification's title: `PUSH_TITLE` in @kad/shared (this file may import nothing). */
+export const SW_PUSH_TITLE = "Kids & Dragons";
+/** Its only words, exactly (#320): `PUSH_BODY` in @kad/shared. */
+export const SW_PUSH_BODY = "It's your turn in Kids & Dragons";
+/** One tag for every turn, so a second push replaces the first: `PUSH_TAG`. */
+export const SW_PUSH_TAG = "kad-turn";
+
+export interface SwPushNotice {
+  title: string;
+  body: string;
+  tag: string;
+  /** The page a tap opens: a room's `/p/CODE`, or the start. */
+  url: string;
+}
+
+/** A player's room path, and nothing else: four letters, or a visitor's six. */
+const ROOM_PATH = /^\/p\/[A-Z0-9]{4}(?:[A-Z0-9]{2})?$/;
+
+/**
+ * What a push shows, whatever it carried. The words are always this file's
+ * own, never the payload's, so nothing a push says can reach a lock screen
+ * (#320); the payload only picks which room a tap opens, and only a room
+ * path on this site is taken. A push with no payload, or one that will not
+ * parse, still shows the notice, which a browser requires of every push.
+ */
+export function swPushNotice(data: unknown): SwPushNotice {
+  const url = (data as { url?: unknown } | null | undefined)?.url;
+  return {
+    title: SW_PUSH_TITLE,
+    body: SW_PUSH_BODY,
+    tag: SW_PUSH_TAG,
+    url: typeof url === "string" && ROOM_PATH.test(url) ? url : "/",
+  };
+}
+
+/**
+ * Which open window a tap on the notice should bring forward: one already on
+ * that room, else any of the app's windows (navigated there), else none (a new
+ * one is opened). Indexes into `windows`, or -1.
+ */
+export function swNoticeWindow(
+  windows: readonly { url: string }[],
+  url: string,
+  origin: string,
+): { index: number; navigate: boolean } {
+  const ours = windows.map((w, index) => ({ index, at: safeUrl(w.url) })).filter((w) => w.at?.origin === origin);
+  const there = ours.find((w) => w.at?.pathname === url);
+  if (there) return { index: there.index, navigate: false };
+  const any = ours[0];
+  return any ? { index: any.index, navigate: true } : { index: -1, navigate: false };
+}
+
+function safeUrl(url: string): URL | null {
+  try {
+    return new URL(url);
+  } catch {
+    return null;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Overnight refresh (#467): Periodic Background Sync
 // ---------------------------------------------------------------------------
 

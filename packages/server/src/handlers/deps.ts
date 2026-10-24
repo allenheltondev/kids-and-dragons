@@ -18,6 +18,7 @@ import type { ContentStore } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
 import type { IdentityService } from "../identity.ts";
 import type { GameRepository } from "../store/repository.ts";
+import type { PushConfig } from "./push.ts";
 
 export interface HandlerDeps {
   repo: GameRepository;
@@ -53,6 +54,12 @@ export interface HandlerDeps {
    * that must never be reached by accident (playtest.ts).
    */
   playtest: boolean;
+  /**
+   * "It's your turn" pushes (#466), when this entry point turned them on
+   * (`KAD_PUSH`) and has VAPID keys. Absent means off: nothing is sent, and the
+   * client is told there is nothing to subscribe to (`handlers/push.ts`).
+   */
+  push?: PushConfig | undefined;
 }
 
 /** The error shape the protocol already defines (`ActionResponse.error`). */

@@ -156,6 +156,11 @@ jobs:
           # `sam deploy` reverts any parameter it is not given. Empty is a
           # complete state: email-code sign-in only.
           WEBAUTHN_RP_ID: ${{ vars.WEBAUTHN_RP_ID }}
+          # "It's your turn" pushes (#466): the environment's KAD_PUSH ("on" or
+          # empty, which is off) and KAD_PUSH_SUBJECT (a mailto: or https:
+          # contact for the push services). deploy.sh passes both every deploy.
+          KAD_PUSH: ${{ vars.KAD_PUSH }}
+          KAD_PUSH_SUBJECT: ${{ vars.KAD_PUSH_SUBJECT }}
 
       - name: Diagnose failed deploy
         if: ${{ failure() }}

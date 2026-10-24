@@ -492,6 +492,25 @@ export interface MoveProfileInput {
  */
 export type MoveOutcome = "moved" | "spent" | "changed" | "too-big";
 
+/**
+ * A kid's own phone's Web Push subscription (#466): where the push service
+ * delivers "It's your turn" while the app is in the background. What the
+ * browser's `PushSubscription.toJSON()` gives, and whose phone it is.
+ *
+ * Nothing about the kid but her id: the endpoint is the push service's
+ * address for this browser, and the keys encrypt a payload that only ever
+ * says the one fixed sentence (#320).
+ */
+export interface PushSubscriptionRecord {
+  playerId: string;
+  /** Her household when she subscribed. The send reads her device binding, not this. */
+  householdId: string;
+  deviceId: string;
+  endpoint: string;
+  keys: { p256dh: string; auth: string };
+  createdAt: string;
+}
+
 export interface GameRepository {
   // --- household, players, devices -----------------------------------------
   putHousehold(household: Household): Promise<void>;
@@ -632,7 +651,8 @@ export interface GameRepository {
 
   /**
    * Deletes a household and everything under it — players, devices, characters,
-   * runs, and each run's state and event log. Only the sweeper calls this, and
+   * runs, and each run's state and event log, and each kid's visits and push
+   * subscriptions (#466), which are keyed by her. Only the sweeper calls this, and
    * only for expired guests; a claimed household is deleted only by its owner
    * (`deleteHousehold`), which shares every step below but the gate.
    *
@@ -669,7 +689,8 @@ export interface GameRepository {
 
   /**
    * Delete one kid (#252): her profile, every hero she owns, her own phones'
-   * bindings and her visits, all from her home `householdId`. The profile is
+   * bindings, their push subscriptions (#466) and her visits, all from her
+   * home `householdId`. The profile is
    * marked first (`sweeping`, as a household is), and a marked profile reads
    * as gone from then on (`getPlayer`, `listPlayers`), so every room door
    * treats her as out while the rest goes; the profile row goes last, so an
@@ -892,4 +913,21 @@ export interface GameRepository {
    * one another's times.
    */
   touchPresence(runId: string, playerId: string, at: string, ttl: number): Promise<Record<string, string>>;
+  /**
+   * Every seated phone's last word in this run, as `touchPresence` returns it,
+   * without beating for anybody. Empty when nobody has beaten (or the row has
+   * expired). For the push that tells a quiet phone it is its turn (#466).
+   */
+  getPresence(runId: string): Promise<Record<string, string>>;
+
+  // --- push subscriptions (#466) ---------------------------------------------
+  /**
+   * Write (or replace) the subscription for one of a kid's own phones. One per
+   * phone: a phone that subscribes again replaces what it had.
+   */
+  putPushSubscription(subscription: PushSubscriptionRecord): Promise<void>;
+  /** Every phone of hers that takes pushes. Empty when none does. */
+  listPushSubscriptions(playerId: string): Promise<PushSubscriptionRecord[]>;
+  /** The phone stops taking pushes. A missing one is a no-op. */
+  deletePushSubscription(playerId: string, deviceId: string): Promise<void>;
 }

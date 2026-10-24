@@ -113,6 +113,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Pairing code | `PAIR#<code>` | `META` | A single-use code that makes whoever redeems it a device bound to one kid (§4.5, "Pairing a new device"). Spent by a conditional delete. **TTL 10 minutes.** |
 | Visit | `VISIT#<playerId>` | `HH#<tableHhId>` | A table that is not her home that a kid sat down at (#249), written by the join. Keyed by the kid, so a move (#251) never carries it. Only so that deleting her can find the saves that name her (§4.5, "Deleting and keeping"). Deleted with her or her home. |
 | Forget job | `FORGET#<playerId>` | `META` | A kid being deleted (#252): her nicknames, her heroes' names, the tables still to clean, and how to finish the delete that wrote it. Written before any of her rows go, rewritten with the tables a scrub could not clean, removed when none are left. In GSI1's `FORGET` partition, so the sweeper finishes what is owed. |
+| Push subscription | `PUSH#<playerId>` | `DEVICE#<deviceId>` | One of a kid's own phones that takes "It's your turn" pushes (#466, §4.6 "Push"): the push service's endpoint for that browser and the two keys that encrypt for it. One per phone, keyed by the kid like a visit, so a move carries nothing. Forgotten when the push service says it is gone, when the phone is no longer hers, when the switch goes off, and with her or her home. |
 
 GSI1 does five jobs, all of them lookups that would otherwise be scans:
 
@@ -1905,6 +1906,66 @@ safe. `e2e/boot-heal.spec.ts` proves both the heal and the hold.
   worker). It also checks that:
   - mismatched bytes are never saved;
   - a scene's art is saved before the party reaches it.
+
+#### Push: "It's your turn" in the background (#466)
+
+The one thing an installed app has that a tab never will. A kid's phone set down while the TV
+reads goes quiet: a hidden page does not beat (#258) and nothing on it can say a question is
+waiting. The badge (`ui/app-badge.ts`) marks the icon while the page is alive; a push wakes a
+phone whose page is not. On an iPhone a push reaches only a Home Screen app, which is the install
+we ask for anyway.
+
+- **When.** After an action lands and is broadcast, the action handler works out, from the two
+  states it already holds, which kids the step just opened a question for (`turnPushJob`,
+  `handlers/push.ts`: `isPromptForPlayer`, the same answer her buttons and badge read, now in
+  `@kad/shared`; the actor never; a question that only moved on, a vote cast or somebody else's die,
+  opens nothing new). If anybody, it hands that job over and is done.
+- **Never in the way.** The request path reads nothing and sends nothing for a push. In Lambda the
+  job goes to a second function, `PushSenderFunction` (`lambda/push-sender.ts`), by an asynchronous
+  invoke (`InvocationType: "Event"`, `lambda/push-dispatch.ts`): Lambda queues it and answers 202,
+  and the API waits only for that, never more than `DISPATCH_WAIT_MS` (500 ms) even when the invoke
+  hangs, after which it logs and moves on. Not awaiting at all would not do: a Lambda's container
+  is frozen once it returns, and an invoke still in flight may never leave. The sender, in its own
+  invocation, reads the room as it is then (a question already answered tells nobody), keeps the
+  kids whose phone is quiet in that room (marked away, or last beat older than `AWAY_AFTER_MS`; a
+  phone with no beat on record and still marked here is left alone, as the presence sweep leaves
+  it), and sends one push per subscribed phone, all at once, three seconds each at most. A 404 or
+  410 from the push service, or a phone revoked, moved to another kid or deleted since it
+  subscribed, forgets that subscription. It swallows every push failure and succeeds, so Lambda's
+  default async retries (two, and only within 15 minutes) follow only a crash of the sender itself.
+  Its reserved concurrency is 5 while pushes are on. The dev server runs the same job in-process
+  after the response is written (`inProcessDispatch`, `setImmediate`).
+- **Nothing but the sentence (#320).** The notification is "Kids & Dragons" / "It's your turn in
+  Kids & Dragons", one tag so a second turn replaces the first. The payload, encrypted for the
+  browser (RFC 8291, so the push service carries bytes it cannot read), is those words and the
+  room's `/p/CODE` path. The worker shows its own copy of the words, never the payload's
+  (`swPushNotice`), and opens only a same-site room path; a tap focuses a window on that room, or
+  any of the app's, or opens one.
+- **Asked in one place.** The Account screen's switch (`push/PushSwitch.tsx`, its own chunk),
+  drawn only in the installed app, on a browser with Web Push, on a kid's own phone (a player's
+  device token, not a family tablet or a TV), with a server that sends pushes. Never on first
+  launch: the browser's permission prompt appears only when a grown-up flips the switch on.
+  `pushManager.subscribe({ userVisibleOnly: true })` with the server's key, then
+  `POST /api/push/subscribe` by the device token; off unsubscribes and posts
+  `/api/push/unsubscribe`. `GET /api/push/key` says whether the server sends any.
+- **Stored** as `PUSH#<playerId> / DEVICE#<deviceId>` (§3), deleted with her or her home.
+- **Off unless configured.** `HandlerDeps.push` (the public key and the dispatcher) is absent
+  unless the entry point was given `KAD_PUSH=on` and keys. Lambda: the stack's `PushNotifications`
+  and `PushContact` parameters, a VAPID key pair in `/kad/<stage>/push-vapid-keys`, minted by the
+  API on first use like the signing key and only read by the sender, and the sender's name in the
+  API's `PUSH_SENDER_FUNCTION` ([deploy.md](./deploy.md#turning-on-its-your-turn-pushes-466)). The dev server:
+  `KAD_VAPID_PUBLIC_KEY`, `KAD_VAPID_PRIVATE_KEY` and `KAD_PUSH_SUBJECT`, or `KAD_PUSH=record`,
+  which mints a pair and keeps every push for `GET /api/dev/push` rather than sending it (the prod
+  e2e suite's stand-in push service).
+- **Proof.** The decision, the send and the routes: `handlers/push.test.ts`, `web-push.test.ts`,
+  `lambda/http.test.ts`; that a tap is answered when the hand-over hangs or fails, and before a
+  slow push service answers: `handlers/push.test.ts`; the sender function and the async invoke:
+  `lambda/push-sender.test.ts`; the store: the contract suite. The worker, built and run in a vm:
+  `sw/sw.test.ts`. The switch: `push/push.test.tsx`. In a production build, `e2e/push.spec.ts`
+  grants the notifications permission, stubs `PushManager.subscribe`, flips the switch, sees the
+  server hold the subscription, delivers a push to the worker through DevTools and reads back the
+  notice. A real phone buzzing with its screen locked is device QA
+  ([pwa-device-qa.md](./pwa-device-qa.md)).
 
 #### The display beyond a laptop (#264)
 

@@ -146,6 +146,11 @@ fi
 # An empty value has to be written as a quoted empty string (`Name=""`): sam
 # rejects a bare `Name=` as "not a valid format".
 PARAMS+=("AppDomainName=${APP_DOMAIN_NAME:-\"\"}" "AppHostedZoneId=${APP_HOSTED_ZONE_ID:-\"\"}")
+# "It's your turn" pushes (#466). Same rule: passed every deploy, so a stack
+# that had them on turns them off only when a deploy says so. Anything but
+# `on` is off; the subject is the contact the push services see.
+if [ "${KAD_PUSH:-}" = "on" ]; then PUSH_MODE=on; else PUSH_MODE=off; fi
+PARAMS+=("PushNotifications=$PUSH_MODE" "PushContact=${KAD_PUSH_SUBJECT:-\"\"}")
 
 sam deploy \
   --template-file infra/template.yaml \
