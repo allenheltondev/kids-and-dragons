@@ -50,6 +50,7 @@ import type {
   OrganizerInviteRecord,
   PairingCodeRecord,
   ProfileMove,
+  PushSubscriptionRecord,
   RoomRecord,
   RunRecord,
   TransferCodeRecord,
@@ -83,6 +84,7 @@ import {
   PLAYER_SK,
   PREFIX,
   PRESENCE,
+  PUSH,
   ROOM,
   RUN,
   RUN_SK,
@@ -382,10 +384,12 @@ export class MemoryRepository implements GameRepository {
     const subs = new Set(this.query(HH(householdId), PREFIX.owner).map((i) => (i.data as HouseholdOwnerRecord).cognitoSub));
     if (household?.ownerSub) subs.add(household.ownerSub);
     for (const sub of subs) this.items.delete(rowKey(ACCT(sub), HH(householdId)));
-    // Each kid's visits, which are keyed by her and not by this household.
+    // Each kid's visits and push subscriptions (#466), which are keyed by her
+    // and not by this household.
     for (const item of this.query(HH(householdId), PREFIX.player)) {
-      for (const visit of this.query(VISIT((item.data as PlayerProfile).id))) {
-        this.items.delete(rowKey(visit.PK, visit.SK));
+      const playerId = (item.data as PlayerProfile).id;
+      for (const row of [...this.query(VISIT(playerId)), ...this.query(PUSH(playerId))]) {
+        this.items.delete(rowKey(row.PK, row.SK));
       }
     }
 
@@ -416,6 +420,7 @@ export class MemoryRepository implements GameRepository {
       if (device.kind !== "shared" && device.playerId === playerId) this.items.delete(rowKey(item.PK, item.SK));
     }
     for (const visit of this.query(VISIT(playerId))) this.items.delete(rowKey(visit.PK, visit.SK));
+    for (const push of this.query(PUSH(playerId))) this.items.delete(rowKey(push.PK, push.SK));
 
     // Phase 3 — the profile, which is what marks her and what indexes her.
     this.items.delete(rowKey(HH(householdId), PLAYER_SK(playerId)));
@@ -1060,6 +1065,29 @@ export class MemoryRepository implements GameRepository {
     const beats = { ...((existing?.data as Record<string, string> | undefined) ?? {}), [playerId]: at };
     this.put({ PK: RUN(runId), SK: PRESENCE, ttl, entity: "presence", data: beats });
     return { ...beats };
+  }
+
+  async getPresence(runId: string): Promise<Record<string, string>> {
+    return { ...((this.get(RUN(runId), PRESENCE)?.data as Record<string, string> | undefined) ?? {}) };
+  }
+
+  // --- push subscriptions (#466) --------------------------------------------
+
+  async putPushSubscription(subscription: PushSubscriptionRecord): Promise<void> {
+    this.put({
+      PK: PUSH(subscription.playerId),
+      SK: DEVICE_SK(subscription.deviceId),
+      entity: "push-subscription",
+      data: subscription,
+    });
+  }
+
+  async listPushSubscriptions(playerId: string): Promise<PushSubscriptionRecord[]> {
+    return this.query(PUSH(playerId), PREFIX.device).map((item) => item.data as PushSubscriptionRecord);
+  }
+
+  async deletePushSubscription(playerId: string, deviceId: string): Promise<void> {
+    if (this.items.delete(rowKey(PUSH(playerId), DEVICE_SK(deviceId)))) this.persist();
   }
 }
 

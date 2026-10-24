@@ -34,9 +34,8 @@ import {
   DECISION_INTENTS,
   decisionContext,
   owesClassAnswer,
+  isPromptForPlayer,
   previewContext,
-  rollerAway,
-  turnHolderAway,
 } from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
 import type {
@@ -184,45 +183,8 @@ export function selectMe(state: RunState | null, playerId: string): PartyMember 
   return state.party.find((member) => member.playerId === playerId) ?? null;
 }
 
-/**
- * "Is this prompt mine?" A display client (`playerId === ""`) is never the
- * answerer — the TV has no authority (spec §2.1).
- */
-export function isPromptForPlayer(
-  prompt: Prompt | null,
-  playerId: string,
-  party: readonly PartyMember[],
-): boolean {
-  if (!prompt || !playerId) return false;
-
-  switch (prompt.kind) {
-    case "choice":
-      // A turn holder whose phone dropped leaves the story beat to anyone
-      // (spec §6.1) — the engine takes the answer, so the button has to show.
-      return (
-        prompt.forPlayerIds.length === 0 ||
-        prompt.forPlayerIds.includes(playerId) ||
-        turnHolderAway(party, prompt)
-      );
-    case "ready":
-      return prompt.forPlayerIds.length === 0 || prompt.forPlayerIds.includes(playerId);
-    case "roll": {
-      // The nominee's phone dropped: anyone at the table can roll instead.
-      if (rollerAway(party, prompt)) return party.some((m) => m.playerId === playerId);
-      // A whole-party check is yours until you have rolled your own die.
-      if (prompt.group) {
-        const mine = party.find((member) => member.playerId === playerId);
-        return mine !== undefined && prompt.group.pending.includes(mine.character.id);
-      }
-      const owner = party.find((member) => member.character.id === prompt.characterId);
-      return owner?.playerId === playerId;
-    }
-    case "item_swap": {
-      const owner = party.find((member) => member.character.id === prompt.characterId);
-      return owner?.playerId === playerId;
-    }
-  }
-}
+/** "Is this prompt mine?" Shared with the server, which pushes "It's your turn" by it (#466). */
+export { isPromptForPlayer };
 
 // ---------------------------------------------------------------------------
 // Store

@@ -265,6 +265,11 @@ jobs:
           # quietly take the domain away; the step above the deploy refuses.
           APP_DOMAIN_NAME: kd.readysetcloud.io
           APP_HOSTED_ZONE_ID: ${{ vars.HOSTED_ZONE_ID }}
+          # "It's your turn" pushes (#466): the environment's KAD_PUSH ("on" or
+          # empty, which is off) and KAD_PUSH_SUBJECT (a mailto: or https:
+          # contact for the push services). deploy.sh passes both every deploy.
+          KAD_PUSH: ${{ vars.KAD_PUSH }}
+          KAD_PUSH_SUBJECT: ${{ vars.KAD_PUSH_SUBJECT }}
 
       - name: Diagnose failed deploy
         if: ${{ failure() }}

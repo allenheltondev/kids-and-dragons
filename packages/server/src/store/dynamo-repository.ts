@@ -65,6 +65,7 @@ import type {
   OrganizerInviteRecord,
   PairingCodeRecord,
   ProfileMove,
+  PushSubscriptionRecord,
   RoomRecord,
   RunRecord,
   TransferCodeRecord,
@@ -99,6 +100,7 @@ import {
   PLAYER_SK,
   PREFIX,
   PRESENCE,
+  PUSH,
   ROOM,
   RUN,
   RUN_SK,
@@ -543,10 +545,12 @@ export class DynamoRepository implements GameRepository {
     const owners = await this.listOwners(householdId);
     const subs = new Set(owners.map((o) => o.cognitoSub));
     if (household?.ownerSub) subs.add(household.ownerSub);
-    // Each kid's visits, which are keyed by her and not by this household.
+    // Each kid's visits and push subscriptions (#466), which are keyed by her
+    // and not by this household.
     const visits: { PK: string; SK: string }[] = [];
     for (const player of await this.partition(HH(householdId), PREFIX.player)) {
-      const items = await this.partition(VISIT((player.data as PlayerProfile).id));
+      const playerId = (player.data as PlayerProfile).id;
+      const items = [...(await this.partition(VISIT(playerId))), ...(await this.partition(PUSH(playerId)))];
       visits.push(...items.map(({ PK, SK }) => ({ PK, SK })));
     }
     await this.deleteAll([...[...subs].map((sub) => ({ PK: ACCT(sub), SK: HH(householdId) })), ...visits]);
@@ -588,7 +592,7 @@ export class DynamoRepository implements GameRepository {
 
     // Phase 2 — hers, by what each row says. Consistent, so a hero made a
     // moment before the mark is not missed.
-    const [characters, devices, visits] = await Promise.all([
+    const [characters, devices, visits, pushes] = await Promise.all([
       this.query({
         KeyConditionExpression: "PK = :pk AND begins_with(SK, :sk)",
         ExpressionAttributeValues: { ":pk": HH(householdId), ":sk": PREFIX.character },
@@ -600,6 +604,7 @@ export class DynamoRepository implements GameRepository {
         ConsistentRead: true,
       }),
       this.partition(VISIT(playerId)),
+      this.partition(PUSH(playerId)),
     ]);
     const hers = [
       ...characters.filter((i) => (i.data as { ownerPlayerId?: string }).ownerPlayerId === playerId),
@@ -608,6 +613,7 @@ export class DynamoRepository implements GameRepository {
         return device.kind !== "shared" && device.playerId === playerId;
       }),
       ...visits,
+      ...pushes,
     ];
     await this.deleteAll(hers.map(({ PK, SK }) => ({ PK, SK })));
 
@@ -1823,6 +1829,35 @@ export class DynamoRepository implements GameRepository {
         );
       }
     }
+  }
+
+  async getPresence(runId: string): Promise<Record<string, string>> {
+    const item = await this.get(RUN(runId), PRESENCE);
+    // An expired row the TTL sweep has not reached yet is nobody's word.
+    if (!item || (item.ttl !== undefined && item.ttl * 1000 <= this.now())) return {};
+    return { ...((item.data as Record<string, string> | undefined) ?? {}) };
+  }
+
+  // --- push subscriptions (#466) --------------------------------------------
+
+  async putPushSubscription(subscription: PushSubscriptionRecord): Promise<void> {
+    await this.put({
+      PK: PUSH(subscription.playerId),
+      SK: DEVICE_SK(subscription.deviceId),
+      entity: "push-subscription",
+      data: subscription,
+    });
+  }
+
+  async listPushSubscriptions(playerId: string): Promise<PushSubscriptionRecord[]> {
+    const items = await this.partition(PUSH(playerId), PREFIX.device);
+    return items.map((i) => i.data as PushSubscriptionRecord);
+  }
+
+  async deletePushSubscription(playerId: string, deviceId: string): Promise<void> {
+    await this.doc.send(
+      new DeleteCommand({ TableName: this.table, Key: { PK: PUSH(playerId), SK: DEVICE_SK(deviceId) } }),
+    );
   }
 }
 
