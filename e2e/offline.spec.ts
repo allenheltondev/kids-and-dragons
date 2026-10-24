@@ -427,3 +427,35 @@ test("an upgrade with many saved pictures takes over promptly, keeping them all"
     await proxy.close();
   }
 });
+
+test("a page load on a network that hangs opens the saved book within a few seconds", async ({ browser, baseURL }) => {
+  // A captive portal or one bar of signal: the page's request is not refused,
+  // it is held. The worker waits about three seconds (policy.ts
+  // `SW_SHELL_TIMEOUT_MS`), then shows the saved app (#454).
+  const proxy = await startCountingProxy(baseURL ?? "http://localhost:4173");
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, baseURL: proxy.url });
+  const phone = await context.newPage();
+  const errors: string[] = [];
+  phone.on("pageerror", (error) => errors.push(error.message));
+  try {
+    await phone.goto("/");
+    await controlled(phone);
+    await playALittle(phone);
+    // The saved app is in place (activate made the staged page the saved one).
+    await expect
+      .poll(() => phone.evaluate(async () => (await (await caches.open("kad-shell-v1")).match("/")) !== undefined), { timeout: 20_000 })
+      .toBe(true);
+
+    // Every page load now stalls far longer than the worker waits.
+    proxy.configure({ delay: (path) => (path === "/" || path === "/journal" || /^\/p\//.test(path) ? 20_000 : 0) });
+    const started = Date.now();
+    await phone.goto("/journal", { timeout: 15_000 });
+    await expect(phone.getByRole("region", { name: `${HERO}'s character sheet` })).toBeVisible(TAP);
+    const took = Date.now() - started;
+    expect(took, `the book took ${String(took)}ms behind a hung network`).toBeLessThan(10_000);
+    expect(errors, "the page threw while the network hung").toEqual([]);
+  } finally {
+    await context.close();
+    await proxy.close();
+  }
+});

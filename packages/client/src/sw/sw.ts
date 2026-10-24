@@ -15,17 +15,21 @@
 import {
   SW_BUNDLE_LIST_KEY,
   SW_CACHES,
-  SW_FILES_BUDGET_BYTES,
   SW_FILES_META_KEY,
   SW_IMAGE_LIMIT,
   SW_LEGACY_IMAGE_CACHES,
   SW_PRECACHE_CONTENT,
   SW_SHELL_KEY,
   SW_SHELL_STAGED_KEY,
+  SW_SHELL_TIMEOUT_MS,
+  swAfterInstallError,
+  swBudgetFor,
   swCacheable,
   swEvictions,
   swIsImage,
   swOverLimit,
+  swQuotaTrim,
+  swShellAnswer,
   swShellEntry,
   swStaleBundles,
   swStaleVersions,
@@ -33,6 +37,7 @@ import {
   swVersionedKey,
   type FileIndex,
   type FileMeta,
+  type SwShellNetwork,
 } from "./policy";
 
 /** Prepended by `sw-build.ts`: every `/bundle/*` file of this build. */
@@ -85,43 +90,17 @@ const SAME: CacheQueryOptions = { ignoreVary: true };
 worker.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
-      // The page itself, fresh past the HTTP cache (it is `no-cache` anyway),
-      // staged rather than saved: the worker in charge still serves its own
-      // build's page offline, and must keep doing so if this install fails.
-      // Activate makes it the saved page.
-      const shell = await caches.open(SW_CACHES.shell);
-      const page = await fetch(SW_SHELL_KEY, { cache: "reload" });
-      if (swCacheable(page)) await shell.put(SW_SHELL_STAGED_KEY, page);
-
-      // Hashed code: what is already saved from an earlier build is the same
-      // bytes, so only what is new is fetched. The file index is one of them.
-      const bundle = await caches.open(SW_CACHES.bundle);
-      await addMissing(bundle, __KAD_PRECACHE__);
-
-      // The content the offline book reads, by fingerprint: a deploy that
-      // changed none of it fetches none of it.
-      const fingerprints = await fileIndex();
-      const files = await caches.open(SW_CACHES.files);
-      const loose: string[] = [];
-      for (const path of [...SW_PRECACHE_CONTENT, ...__KAD_PRECACHE_CAMPAIGNS__]) {
-        const fingerprint = fingerprints[path];
-        if (fingerprint === undefined) {
-          loose.push(path);
-          continue;
+      // A full disk gets one trim of the saved art and one more try
+      // (`swAfterInstallError`); anything else fails the install as it is.
+      for (let attempt = 0; ; attempt += 1) {
+        try {
+          await installCopies();
+          break;
+        } catch (error) {
+          if (swAfterInstallError(error, attempt) === "fail") throw error;
+          await trimForQuota();
         }
-        if (await files.match(swVersionedKey(path, fingerprint), SAME)) continue;
-        // The book needs every one of these offline. If one cannot be had as
-        // this build's bytes — a CDN edge still serving the previous deploy —
-        // install fails, so this worker never takes over and the old one (and
-        // its copies) stays in charge; the browser tries the update again later.
-        const response = await fetch(path, { cache: "no-cache" });
-        const kept =
-          swCacheable(response) &&
-          (await keepVersioned(files, path, fingerprint, response, { replaceOlder: false, persist: false }));
-        if (!kept) throw new Error(`install: ${path} is not the bytes this build fingerprinted`);
       }
-      await saveMeta();
-      if (loose.length > 0) await (await caches.open(SW_CACHES.content)).addAll(loose);
 
       // Take over at once. Every build's worker answers the same way, so an
       // open page loses nothing by being served by the new one.
@@ -129,6 +108,65 @@ worker.addEventListener("install", (event) => {
     })(),
   );
 });
+
+/**
+ * Everything an install saves. Safe to run twice: what is already saved is
+ * skipped, so a retry after a trim fetches only what did not fit.
+ */
+async function installCopies(): Promise<void> {
+  // The page itself, fresh past the HTTP cache (it is `no-cache` anyway),
+  // staged rather than saved: the worker in charge still serves its own
+  // build's page offline, and must keep doing so if this install fails.
+  // Activate makes it the saved page.
+  const shell = await caches.open(SW_CACHES.shell);
+  const page = await fetch(SW_SHELL_KEY, { cache: "reload" });
+  if (swCacheable(page)) await shell.put(SW_SHELL_STAGED_KEY, page);
+
+  // Hashed code: what is already saved from an earlier build is the same
+  // bytes, so only what is new is fetched. The file index is one of them.
+  const bundle = await caches.open(SW_CACHES.bundle);
+  await addMissing(bundle, __KAD_PRECACHE__);
+
+  // The content the offline book reads, by fingerprint: a deploy that
+  // changed none of it fetches none of it.
+  const fingerprints = await fileIndex();
+  const files = await caches.open(SW_CACHES.files);
+  const loose: string[] = [];
+  for (const path of [...SW_PRECACHE_CONTENT, ...__KAD_PRECACHE_CAMPAIGNS__]) {
+    const fingerprint = fingerprints[path];
+    if (fingerprint === undefined) {
+      loose.push(path);
+      continue;
+    }
+    if (await files.match(swVersionedKey(path, fingerprint), SAME)) continue;
+    // The book needs every one of these offline. If one cannot be had as
+    // this build's bytes — a CDN edge still serving the previous deploy —
+    // install fails, so this worker never takes over and the old one (and
+    // its copies) stays in charge; the browser tries the update again later.
+    const response = await fetch(path, { cache: "no-cache" });
+    const kept =
+      swCacheable(response) &&
+      (await keepVersioned(files, path, fingerprint, response, { replaceOlder: false, persist: false }));
+    if (!kept) throw new Error(`install: ${path} is not the bytes this build fingerprinted`);
+  }
+  await saveMeta();
+  if (loose.length > 0) await (await caches.open(SW_CACHES.content)).addAll(loose);
+}
+
+/**
+ * The disk filled mid-install: drop the least recently used art and audio, to
+ * about half of what is saved (`swQuotaTrim`; content never goes), so the
+ * retry has room. That art is downloaded again when a screen next draws it.
+ */
+async function trimForQuota(): Promise<void> {
+  const files = await caches.open(SW_CACHES.files);
+  const current = await filesMeta();
+  for (const key of swQuotaTrim(current)) {
+    await files.delete(key);
+    delete current[key];
+  }
+  await saveMeta().catch(() => undefined);
+}
 
 worker.addEventListener("activate", (event) => {
   event.waitUntil(
@@ -210,18 +248,49 @@ worker.addEventListener("fetch", (event) => {
 // Strategies
 // ---------------------------------------------------------------------------
 
-/** A page load: the network (preloaded when it can be), else the saved app. */
-async function shell(event: SwFetchEvent): Promise<Response> {
-  const cache = await caches.open(SW_CACHES.shell);
-  try {
-    const response = (await event.preloadResponse) ?? (await fetch(event.request));
-    if (swCacheable(response)) event.waitUntil(keepShell(cache, response.clone()));
-    return response;
-  } catch (error) {
-    const saved = await cache.match(SW_SHELL_KEY, SAME);
-    if (saved) return saved;
-    throw error;
-  }
+/**
+ * A page load: the network (preloaded when it can be), raced against a short
+ * timer. The saved app answers when the network fails, or is still out when
+ * the timer fires (a captive portal, one bar of signal); with no saved app the
+ * network is waited for as long as it takes (`swShellAnswer`). Whenever the
+ * network's page arrives, early or late, it is kept for the next load.
+ */
+function shell(event: SwFetchEvent): Promise<Response> {
+  const network = (async () => (await event.preloadResponse) ?? (await fetch(event.request)))();
+  const cache = caches.open(SW_CACHES.shell);
+  // Registered before the page is handed the response, so the clone is taken
+  // while the body is still unread; the worker stays up for a late answer.
+  event.waitUntil(
+    network
+      .then(async (response) => {
+        if (!swCacheable(response)) return;
+        const copy = response.clone();
+        await keepShell(await cache, copy);
+      })
+      .catch(() => undefined),
+  );
+  return (async () => {
+    const saved = await (await cache).match(SW_SHELL_KEY, SAME);
+    type Settled = { state: Exclude<SwShellNetwork, "pending">; response?: Response; error?: unknown };
+    const settled: Promise<Settled> = network.then(
+      (response) => ({ state: "ok", response }),
+      (error: unknown) => ({ state: "failed", error }),
+    );
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const timeout = new Promise<{ state: "pending" }>((resolve) => {
+      timer = setTimeout(() => resolve({ state: "pending" }), SW_SHELL_TIMEOUT_MS);
+    });
+    let outcome: Settled | { state: "pending" } = await Promise.race([settled, timeout]);
+    clearTimeout(timer);
+    let answer = swShellAnswer(outcome.state, saved !== undefined);
+    if (answer === "wait") {
+      outcome = await settled;
+      answer = swShellAnswer(outcome.state, saved !== undefined);
+    }
+    if (answer === "network" && "response" in outcome && outcome.response) return outcome.response;
+    if (answer === "saved" && saved) return saved;
+    throw "error" in outcome ? outcome.error : new Error("page load failed");
+  })();
 }
 
 /**
@@ -413,7 +482,7 @@ function saveMeta(): Promise<void> {
     saving = null;
     const files = await caches.open(SW_CACHES.files);
     const current = await filesMeta();
-    for (const key of swEvictions(current, SW_FILES_BUDGET_BYTES)) {
+    for (const key of swEvictions(current, swBudgetFor(await storageQuota()))) {
       await files.delete(key);
       delete current[key];
     }
@@ -423,6 +492,15 @@ function saveMeta(): Promise<void> {
     );
   })();
   return saving;
+}
+
+/** The origin's storage quota, where the browser says (`navigator.storage` in the worker). */
+async function storageQuota(): Promise<number | undefined> {
+  try {
+    return (await (navigator as Partial<Navigator>).storage?.estimate?.())?.quota;
+  } catch {
+    return undefined;
+  }
 }
 
 async function touch(key: string): Promise<void> {

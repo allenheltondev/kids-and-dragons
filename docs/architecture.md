@@ -1748,7 +1748,7 @@ after `load`, and touches nothing the game needs live:
 | Request | Answered by |
 |---|---|
 | `/api/*`, `/events/*`, anything cross-origin, non-GET or ranged | the browser, as if there were no worker |
-| a page load (any route) | the network (started by navigation preload); the saved app when there is none |
+| a page load (any route) | the network (started by navigation preload), else the saved app after a short wait: when the network fails, or has not answered in 3 seconds (a captive portal, one bar of signal). A late answer is still kept for the next load. With no saved app, the network however long it takes |
 | `/bundle/*` (hashed) | the saved copy; the network the first time |
 | `/assets/*`, `/content/*.json`, `public/` files | the saved copy **if its fingerprint matches this build's**; else the network, kept if the bytes match |
 | anything else not fingerprinted | content: network first; pictures: saved copy, refreshed behind; otherwise untouched |
@@ -1762,8 +1762,15 @@ file changes its fingerprint, so that file alone is fetched again, past the HTTP
 worker drops replaced copies when it takes over. Every download is checked against its
 fingerprint before it is kept, so a CDN edge still serving the old bytes is served but never saved.
 
-**Budget.** Fingerprinted art and audio are capped at 200 MB, least recently used first.
-Content is never evicted: it is small, and it is what the offline book reads. Lookups ignore
+**Budget.** Fingerprinted art and audio are capped at a fifth of the origin's quota
+(`navigator.storage.estimate()`, read in the worker), at most 200 MB and at least 50 MB, and 200 MB
+where the browser does not say (`swBudgetFor`), least recently used first. An install that hits a
+full disk (`QuotaExceededError`) trims the saved art to about half once and tries again, and only
+then fails as before (`swAfterInstallError`); a content file whose bytes are not this build's still
+fails it outright. Content is never evicted: it is small, and it is what the offline book reads.
+Phones ask the browser to keep their storage (`navigator.storage.persist()`, `src/storage/persist.ts`)
+once, after a scene has been played or the book opens, never at first paint and never on the TV;
+the answer is recorded so it is not asked again. Lookups ignore
 `Vary`: servers send `Vary: Origin`, module scripts send an `Origin` header, and without
 `ignoreVary` every saved script quietly missed and went back to the network.
 
@@ -1791,7 +1798,14 @@ over at once, including pages that are already open. Those pages were built agai
 build and import its chunks the first time they open the book or a room, and the deploy has deleted
 those chunks from the bucket. So the worker keeps the previous build's code as well as its own
 (`/__kad/bundle-list` records which), and drops only what neither uses. A tab left open across two
-deploys gets the "Try again" a missing chunk always gets, which reloads it. Pictures an earlier
+deploys gets the "Try again" a missing chunk always gets, which reloads it. An open page also moves itself onto
+the new build (#456): on every wake it asks the worker for updates (`registration.update()`, at most
+once per five minutes, failures swallowed), and when a new worker takes control of a page that
+already had one (`controllerchange`) it reloads once, at a calm moment decided by the pure
+`sw/calm.ts`: page visible, `synced`, no prompt open for this player, no fight, no keepsake or
+pairing flow. Otherwise the update stays pending until the next calm moment (a scene ends, back to
+the lobby, the journal). A sessionStorage stamp keeps it to one reload per change, and a reload
+loses nothing: the room code is in the URL and the session in storage. Pictures an earlier
 worker kept under an old cache name (#224's `kad-image-v1`) are moved into the fingerprinted cache,
 verified, before that cache is dropped. **To turn it off**, ship
 a `sw.js` whose `activate` deletes every cache and calls `self.registration.unregister()`. Phones
@@ -1820,6 +1834,8 @@ hero and the journal are safe. `e2e/boot-heal.spec.ts` proves it.
     still sends the old bytes never takes over, and the book still opens offline with its guide.
   - **From #224:** pictures in `kad-image-v1` survive the upgrade, and the offline map shows.
   - **Data Saver:** the book still saves its painting.
+  - **Hung network:** with every page load held by the proxy for 20 seconds, the book opens from
+    the saved app well inside ten, and the page throws nothing.
 - `e2e/perf.spec.ts` counts every byte through a proxy, the worker's own fetches included. Before
   the fingerprinted cache, the next evening re-downloaded about 3.8 MB in 41 round trips; now
   13 KB in 10 (the page, live game traffic and the favicon, which browsers fetch outside any

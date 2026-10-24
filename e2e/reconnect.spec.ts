@@ -111,7 +111,8 @@ test.describe("losing the signal in a room", () => {
 
     // --- Offline: it says so, and offers nothing ---
     await sam.context().setOffline(true);
-    await expect(sam.getByText("Reconnecting…")).toBeVisible(TAP);
+    // Offline, the banner says so in its own words (#460), not "Reconnecting".
+    await expect(sam.getByText("No signal. Waiting for Wi-Fi…")).toBeVisible(TAP);
     await expect(choices.filter({ hasText: "Listen first" })).toBeDisabled(TAP);
     expect(await choices.evaluateAll((buttons) => buttons.filter((b) => !(b as HTMLButtonElement).disabled).length)).toBe(0);
 
@@ -127,6 +128,7 @@ test.describe("losing the signal in a room", () => {
 
     // --- Back online: it catches up to the question open now, then offers it ---
     await sam.context().setOffline(false);
+    await expect(sam.getByText("No signal. Waiting for Wi-Fi…")).toBeHidden(TAP);
     await expect(sam.getByText("Reconnecting…")).toBeHidden(TAP);
     await openPlayerTask(sam);
     await expect(choices.filter({ hasText: "Say hello" })).toBeEnabled(TAP);
