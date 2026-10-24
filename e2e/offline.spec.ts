@@ -156,7 +156,6 @@ test("the book saves its art even when it opens before the worker has taken over
   await createCharacter(before, "unicorn", HERO);
   await before.getByRole("button", { name: /begin the adventure/i }).click(TAP);
   await expect(before.getByRole("button", { name: /begin the adventure/i })).toHaveCount(0, TAP);
-  // The saved journal lives in IndexedDB now (#458), so it has to travel too.
   const identity = await earlier.storageState({ indexedDB: true });
   await earlier.close();
 
@@ -344,7 +343,8 @@ test("pictures an earlier worker saved survive the upgrade to this one", async (
   await before.goto("/");
   await before.getByRole("button", { name: BOOK }).click(TAP);
   await expect(before.getByRole("region", { name: `${HERO}'s character sheet` })).toBeVisible(TAP);
-  const identity = await earlier.storageState();
+  // The saved journal lives in IndexedDB now (#458), so it has to travel too.
+  const identity = await earlier.storageState({ indexedDB: true });
   await earlier.close();
 
   const context = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: identity, baseURL: proxy.url });
