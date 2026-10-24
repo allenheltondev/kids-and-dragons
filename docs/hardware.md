@@ -21,11 +21,29 @@ the last event it had, the same recovery as a hard refresh
 
 ## How old the browser is, and why it matters more than the panel
 
-A TV's browser is years behind the TV. A 2024 Samsung is Tizen 8, whose browser is Chromium
-around 108; a 2023 set is nearer 94. The year on the box says nothing about it, and the number is
-the only fact that decides whether the display draws correctly, because CSS does not degrade
-politely: a declaration the browser cannot parse is dropped whole, so one colour function too new
-takes the scrim out from behind the narration and leaves the words on painted art.
+A TV's browser is years behind the TV, and Samsung publishes exactly how far. Its web engine
+table, the authority for a Samsung set, reads:
+
+| Model year | Tizen | Web engine |
+|---|---|---|
+| 2022 | 6.5 | Chromium M85 |
+| 2023 | 7.0 | Chromium M94 |
+| 2024 | 8.0 | **Chromium M108** |
+| 2025 | 9.0 | Chromium M120 |
+| 2026 | 10.0 | Chromium M130 |
+
+([developer.samsung.com, Web Engine Specifications](https://developer.samsung.com/smarttv/develop/specifications/web-engine-specifications.html) — the page is edited in place, so check it rather than this copy.)
+
+The year on the box is the only thing that looks informative and the engine is the only thing
+that is, because CSS does not degrade politely: a declaration the browser cannot parse is
+dropped whole, so one colour function too new takes the scrim out from behind the narration and
+leaves the words on painted art.
+
+**The browser app's own version is not the engine.** A 2024 set reports something like
+`tizenbrowser 8.1.07220` on the browser's About screen; that is the app build, and it says
+nothing about Chromium. There is no `TizenBrowser` token in a Samsung TV's user agent either —
+a TV sends `SamsungBrowser/7.0 Chrome/108.x TV Safari/537.36`, and the `Chrome/` number in
+**About this screen** is the fact worth writing down.
 
 So the display is written to a floor, and the floor is written down twice:
 
@@ -35,8 +53,12 @@ So the display is written to a floor, and the floor is written down twice:
   the same number for CSS, which the build does **not** lower. Anything newer needs a plain
   fallback declaration before it, and the test fails when one is missing.
 
-The floor is Chromium 108, the 2024 Samsung above. Raising it is a deliberate act: change both,
-and only once a row below proves a newer browser on a real screen.
+The floor is Chromium 108: the 2024 Samsung in the table, which is the oldest set this household
+actually plays on. Raising it is a deliberate act: change both, and only once a row below proves
+a newer browser on a real screen. Note what the floor buys at exactly 108 — `color-mix()` wants
+111 and so needs a fallback, while dynamic viewport units (108), container queries (105) and
+`:has()` (105) are all in. Lowering the floor to reach a 2023 set (M94) would put those three
+back in play, which is a much larger job than the colours were.
 
 ## Seeing what a screen supports
 
@@ -65,7 +87,7 @@ Please fill a row in after trying a device, and note the date and the browser ve
 
 | Device | Browser and version | WebGL | Wake lock | Audio | Service worker | Chapter plays to the end | Frame rate (`?perf`) | Date | Notes |
 |---|---|---|---|---|---|---|---|---|---|
-| Samsung smart TV, 2024 | Tizen 8 (Chromium ~108) — confirm from **About this screen** | | Expected No (no Wake Lock API in the TV browser; turn off Energy Saving) | | | | | | The browser app draws straight to the panel, so there is no overscan to pad for; that is an HDMI-input picture mode, not this. The display is written to this browser's floor (above). |
+| Samsung smart TV, 2024 | Tizen 8.0, browser app `tizenbrowser 8.1.07220`; engine M108 per Samsung's table — confirm the `Chrome/` token from **About this screen** | | Expected No (no Wake Lock API in the TV browser; turn off Energy Saving) | | | | | | Owner's set, the one the floor is written to. The browser app draws straight to the panel, so there is no overscan to pad for; that is an HDMI-input picture mode, not this. |
 | Smart TV (make, model, year) | | | | | | | | | |
 | Casting or streaming stick (make, model) | | | | | | | | | |
 | Tablet used as the display (make, model) | | | | | | | | | |
