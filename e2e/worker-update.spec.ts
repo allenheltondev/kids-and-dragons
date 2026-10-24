@@ -189,6 +189,8 @@ test("the page moves onto the new build only once a half-made answer is confirme
     await context.close();
     await proxy.close();
   }
+});
+
 // A worker's install or activate failure reaches the crash reporter (#459). A
 // real worker cannot be made to post one from here, so the page is handed the
 // message the worker would send, through the same `navigator.serviceWorker`
