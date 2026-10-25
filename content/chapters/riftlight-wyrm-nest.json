@@ -1195,6 +1195,7 @@
     },
     "tools_check": {
       "type": "check",
+      "tags": ["search"],
       "stat": "clever",
       "tn": 12,
       "roller": "party",

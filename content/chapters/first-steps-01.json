@@ -72,6 +72,7 @@
     },
     "check_climb": {
       "type": "check",
+      "tags": ["climb", "sneak"],
       "narration": "You grab the top rail. The gate wobbles, and it squeaks like a duck every time it moves.",
       "hint": "Time to roll! When your phone says Roll, tap it. A big number is great. A small number still keeps the story going.",
       "stat": "quick",

@@ -1663,6 +1663,7 @@
     },
     "whale_choice_2_check": {
       "type": "check",
+      "tags": ["sneak"],
       "cast": [
         {
           "figure": "cast/island_keeper",
