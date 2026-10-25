@@ -155,6 +155,17 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
           pending.push({ state: result.state, known, introduced });
         }
       }
+    } else if (chapter.scenes[state.sceneId!]!.type === "interaction") {
+      // Like an encounter, an interaction is a mechanic the engine tests cover. Story coverage
+      // enumerates its declared outcomes: success, the gentle failure and the helping hand.
+      const scene = chapter.scenes[state.sceneId!]!;
+      if (scene.type !== "interaction") throw new Error("Expected interaction");
+      for (const branch of [scene.onSuccess, scene.onFailure, scene.onAssisted].filter(Boolean)) {
+        const settled = applyEffects(state, branch!.effects ?? [], context(chapter));
+        const result = enterScene(settled, branch!.goto, context(chapter));
+        expect(result.error).toBeUndefined();
+        pending.push({ state: result.state, known, introduced });
+      }
     } else if (state.prompt?.kind === "choice") {
       expect(state.prompt.options.length).toBeGreaterThan(0);
       for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known, introduced });
