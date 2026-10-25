@@ -451,24 +451,33 @@
       "art": "scenes/riftlight/stone-counters"
     },
     "surge_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "A melt surge is coming! Everyone grab something the river wants, like the cord, the board and the tea things, and race it up the bank!",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "surge_safe"
-      },
-      "onFailure": {
-        "goto": "surge_wet"
-      },
+      "type": "interaction",
+      "narration": "A melt surge is racing down the river! Everything the river might like must go up the bank, fast, passed from hand to hand: the cord, the board, the kettle and the tea things.",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the load, then pass it up the bank to your friend.",
+        "actionLabel": "Pass it up!",
+        "objectLabel": "the kettle and the cord"
+      },
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "surge_safe",
+        "narration": "Hand to hand to hand, the whole pile climbs the bank."
+      },
+      "onFailure": {
+        "goto": "surge_safe",
+        "narration": "A sock goes one way, the kettle goes another, and the surge takes both."
+      },
+      "onAssisted": {
+        "goto": "surge_safe",
+        "narration": "The keeper lends a pair of arms, and the pile climbs the bank in a neat little line."
+      }
     },
     "surge_safe": {
       "type": "story",
@@ -482,38 +491,6 @@
         }
       ],
       "onEnter": [
-        {
-          "type": "grantItem",
-          "itemId": "mosslight_jar",
-          "to": "party"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters"
-    },
-    "surge_wet": {
-      "type": "story",
-      "narration": "The surge catches your ankles and snatches the kettle and a sock. The kettle bobs away downriver, steaming like a tiny boat with a very small captain. \"Someone will find that,\" says the keeper. \"Someone always does.\" She heats the water in a tin cup instead, and the sock is never mentioned again. She presses a jar of glowing moss into your hands. \"Mosslight. For finishing work when the dusk comes.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Catch your breath",
-          "icon": "hand",
-          "goto": "notch_plan"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "damage",
-          "amount": 1,
-          "to": "party",
-          "nonlethal": true
-        },
         {
           "type": "grantItem",
           "itemId": "mosslight_jar",
@@ -650,13 +627,13 @@
     },
     "notch_cut": {
       "type": "story",
-      "narration": "The notch comes out clean and straight, with a curl of stone like a ribbon. The keeper runs her finger along it. \"That is this year,\" she says softly. \"Someone will read it when I am a very old dragon.\" She blows the dust away and puts the chisel in its own little bag. \"Next, the cord. The old one hangs there like a sad noodle.\" She presses four coins and a honeycake into your hand. \"The counters pay me in coins, and I pay my helpers in cake.\"",
+      "narration": "The notch comes out clean and straight, with a curl of stone like a ribbon. The keeper runs her finger along it. \"That is this year,\" she says softly. \"Someone will read it when I am a very old dragon.\" She blows the dust away and puts the chisel in its own little bag. \"Next, a chalk line, to check it.\" She presses four coins and a honeycake into your hand. \"The counters pay me in coins, and I pay my helpers in cake.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the cord",
+          "label": "Snap a chalk line",
           "icon": "hand",
-          "goto": "cord_plan"
+          "goto": "chalk_snap"
         }
       ],
       "onEnter": [
@@ -680,13 +657,13 @@
     },
     "notch_crooked": {
       "type": "story",
-      "narration": "The notch wobbles like a worm. The keeper studies it for a long moment. \"Honest,\" she says at last. \"An honest notch. Next year's keeper can learn from it.\" You rub a blister on your thumb, and she gives you a leaf to hold on it. \"Now, the cord. The old one hangs there like a sad noodle.\" She presses four coins and a honeycake into your hand. \"The counters pay me in coins, and I pay my helpers in cake.\"",
+      "narration": "The notch wobbles like a worm. The keeper studies it for a long moment. \"Honest,\" she says at last. \"An honest notch. Next year's keeper can learn from it.\" You rub a blister on your thumb, and she gives you a leaf to hold on it. \"Now, a chalk line, to check it.\" She presses four coins and a honeycake into your hand. \"The counters pay me in coins, and I pay my helpers in cake.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the cord",
+          "label": "Snap a chalk line",
           "icon": "hand",
-          "goto": "cord_plan"
+          "goto": "chalk_snap"
         }
       ],
       "onEnter": [
@@ -714,9 +691,40 @@
       ],
       "art": "scenes/riftlight/stone-counters"
     },
+    "chalk_snap": {
+      "type": "interaction",
+      "narration": "The keeper dusts a piece of cord with chalk and holds it tight from the new notch to the top stone. \"One snap,\" she says, \"and the line shows if the notch sits true. You do the snapping. My arms are tired from being right all day.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        }
+      ],
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap when the chalk cord reaches the gold.",
+        "actionLabel": "Snap the line!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "cord_plan",
+        "narration": "Snap! A thin chalk line runs straight up the row, and the notch sits right on it."
+      },
+      "onFailure": {
+        "goto": "cord_plan",
+        "narration": "The cord snaps against her finger instead. \"Ow,\" she says, happily. \"Honest chalk. The notch is true enough.\""
+      },
+      "onAssisted": {
+        "goto": "cord_plan",
+        "narration": "She holds the cord steady and nods at you. Snap! The line runs straight and the notch sits right on it."
+      }
+    },
     "cord_plan": {
       "type": "choice_point",
-      "narration": "The old count cord is snapped in three places, so a new one must run from Splash up through the ring on every stone. The keeper hands you the ball. It is as big as a cabbage and twice as tight. \"Every ring,\" she says. \"Miss one, and the row will whisper about it.\" How will you carry the cord up?",
+      "narration": "The old count cord hangs there like a sad noodle, snapped in three places, so a new one must run from Splash up through the ring on every stone. The keeper hands you the ball. It is as big as a cabbage and twice as tight. \"Every ring,\" she says. \"Miss one, and the row will whisper about it.\" How will you carry the cord up?",
       "choices": [
         {
           "id": "climb",
@@ -856,24 +864,33 @@
       "art": "scenes/riftlight/stone-counters"
     },
     "tighten": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "prompt": "Everyone takes hold of the cord. Lean uphill together, slowly, until it hums!",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "tight"
-      },
-      "onFailure": {
-        "goto": "tight_slack"
-      },
+      "type": "interaction",
+      "narration": "The new cord sags between the stones like a washing line. Everyone takes hold of a loop of it. Lean too far and it snaps back; lean too little and it just sags.",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "interaction": {
+        "kind": "balance",
+        "cue": "Lift or lower your end until the cord is steady in the middle.",
+        "actionLabel": "Pull it tight",
+        "objectLabel": "The count cord"
+      },
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "tight",
+        "narration": "The cord rises out of the grass, steady as a held breath."
+      },
+      "onFailure": {
+        "goto": "tight",
+        "narration": "The cord wobbles, flops, and sits down in the grass."
+      },
+      "onAssisted": {
+        "goto": "tight",
+        "narration": "The keeper steadies the cord with a claw, and you feel it come tight."
+      }
     },
     "tight": {
       "type": "story",
@@ -890,37 +907,6 @@
         {
           "type": "setFlag",
           "flag": "pulled_the_count_cord"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters"
-    },
-    "tight_slack": {
-      "type": "story",
-      "narration": "The cord slips and everyone sits down in a row, like the stones. The keeper helps you up and ties it off at the top herself with a knot as big as her fist. It hums, a little. A tired little hum, but a hum. \"Honest enough,\" she says. \"But the ends must be knotted, or it will un-hum the moment you let go.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look at the ends",
-          "icon": "hand",
-          "goto": "tie_plan"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "pulled_the_count_cord"
-        },
-        {
-          "type": "damage",
-          "amount": 1,
-          "to": "party",
-          "nonlethal": true
         }
       ],
       "cast": [
@@ -1343,9 +1329,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Ask what to check",
+          "label": "Look at the three old stones",
           "icon": "hand",
-          "goto": "compare"
+          "goto": "stone_order"
         }
       ],
       "variants": [
@@ -1375,6 +1361,61 @@
         }
       ],
       "art": "scenes/riftlight/stone-counters"
+    },
+    "stone_order": {
+      "type": "interaction",
+      "narration": "Three of the oldest stones near the top have been shoved about by the river. The keeper hands you scraps of paper with her notes. \"Put them back in order, oldest first,\" she says. \"Share what you read. The scraps are all I have, and they are mostly tea.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        }
+      ],
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share your clues, then put the stones in order, oldest first.",
+        "actionLabel": "Try our order",
+        "options": [
+          {
+            "id": "mossy",
+            "label": "Mossy stone",
+            "icon": "leaf"
+          },
+          {
+            "id": "notched",
+            "label": "Notched stone",
+            "icon": "hand"
+          },
+          {
+            "id": "carved",
+            "label": "Carved stone",
+            "icon": "star"
+          }
+        ],
+        "answer": [
+          "mossy",
+          "notched",
+          "carved"
+        ],
+        "clues": [
+          "The mossy stone is the oldest of the three.",
+          "The carved stone is younger than the notched stone.",
+          "Use each stone once."
+        ]
+      },
+      "art": "scenes/riftlight/stone-counters",
+      "onSuccess": {
+        "goto": "compare",
+        "narration": "Mossy, notched, carved. The three stones sit in their old places, and the row looks calmer for it."
+      },
+      "onFailure": {
+        "goto": "compare",
+        "narration": "The stones end up in a funny order. The keeper tuts, then moves them herself. \"The tea got to the notes,\" she says."
+      },
+      "onAssisted": {
+        "goto": "compare",
+        "narration": "You spread every clue side by side. Mossy, notched, carved. Together you set them right."
+      }
     },
     "compare": {
       "type": "choice_point",

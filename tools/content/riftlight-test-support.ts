@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
+import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, interactionActor, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DESIGN } from "./riftlight-preview.ts";
@@ -153,6 +153,32 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
           const result = enterScene(settled, branch!.goto, context(chapter));
           expect(result.error).toBeUndefined();
           pending.push({ state: result.state, known, introduced });
+        }
+      }
+    } else if (state.prompt?.kind === "interaction") {
+      // A story interaction: take the untimed helping hand, and, where the
+      // mechanic can really be missed (aim, timing, ordering), miss it too.
+      const prompt = state.prompt;
+      const connected = state.party.map((member) => member.playerId);
+      const actor = interactionActor(prompt, connected) ?? connected[0]!;
+      const act = (from: RunState, action: Record<string, unknown>) => {
+        const result = applyIntent(from, { playerId: actor, intent: { type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, ...action } as ClientIntent }, context(chapter));
+        expect(result.error, `${chapter.id}/${from.sceneId}: INTERACT ${JSON.stringify(action)}`).toBeUndefined();
+        return result.state;
+      };
+      if (prompt.phase === "result") {
+        pending.push({ state: act(state, { action: "continue" }), known, introduced });
+      } else {
+        pending.push({ state: act(state, { action: "assist" }), known, introduced });
+        const spec = prompt.spec;
+        if (spec.kind === "precision" || spec.kind === "timing") {
+          const started = act(state, { action: "start", relaxed: false });
+          pending.push({ state: act(started, { action: "stop", position: spec.target < 0.5 ? 1 : 0 }), known, introduced });
+        } else if (spec.kind === "sequence") {
+          const started = act(state, { action: "start", relaxed: false });
+          const wrong = [...spec.answer].reverse();
+          if (wrong.every((id, index) => id === spec.answer[index])) wrong.push(wrong.shift()!);
+          pending.push({ state: act(started, { action: "answer", answer: wrong }), known, introduced });
         }
       }
     } else if (state.prompt?.kind === "choice") {
