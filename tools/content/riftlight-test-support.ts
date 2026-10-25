@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
+import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, interactionActor, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DESIGN } from "./riftlight-preview.ts";
@@ -102,6 +102,24 @@ export function answerClassPlace(state: RunState, chapter: Chapter, answer: Clas
   return current;
 }
 
+/**
+ * An interaction scene takes the untimed helping hand (`assist`, the `onAssisted` branch) and then
+ * continues, as the playthrough driver does. The engine's own tests cover the mechanics and the
+ * success and failure branches; the walker only needs the story to move on.
+ */
+function finishInteraction(state: RunState, chapter: Chapter): RunState {
+  let current = state;
+  for (const action of ["assist", "continue"] as const) {
+    const prompt = current.prompt;
+    if (prompt?.kind !== "interaction") break;
+    const actor = interactionActor(prompt, current.party.filter((member) => member.connected).map((member) => member.playerId)) ?? "p1";
+    const result = applyIntent(current, { playerId: actor, intent: { type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, action } }, context(chapter));
+    expect(result.error, `${chapter.id}/${current.sceneId}: INTERACT ${action}`).toBeUndefined();
+    current = result.state;
+  }
+  return current;
+}
+
 /** Walk every actual choice and both dice extremes through the real engine. */
 function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags: Record<string, boolean> = {}, partySize = 1, initialHp?: number, classAnswer: ClassAnswer = "keep") {
   const contract = continuity[chapter.id]!;
@@ -158,6 +176,8 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
     } else if (state.prompt?.kind === "choice") {
       expect(state.prompt.options.length).toBeGreaterThan(0);
       for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known, introduced });
+    } else if (state.prompt?.kind === "interaction") {
+      pending.push({ state: finishInteraction(state, chapter), known, introduced });
     } else if (state.prompt?.kind === "roll") {
       for (const face of [1, 20]) pending.push({ state: send(state, { type: "ROLL" }, chapter, face), known, introduced });
     } else {
