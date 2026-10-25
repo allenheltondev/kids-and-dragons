@@ -325,6 +325,14 @@ export interface RunState {
    */
   heroRollXp?: Record<string, number>;
   /**
+   * Legacy. The party's shared roll XP, from a run begun before roll XP became
+   * individual. It is already in `xpEarned`. A chapter that carries it keeps
+   * that one shared pot, capped by the chapter's cap, until it ends, so no
+   * hero gets a fresh allowance on top. Absent on every new chapter, and
+   * cleared when one starts.
+   */
+  rollXp?: number;
+  /**
    * How the chapter now in `chapterId` ended, once it has (spec §8.2). Null
    * while one is still being played.
    *

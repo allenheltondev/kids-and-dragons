@@ -482,6 +482,17 @@ function creditRollXp(
 ): void {
   const pay = ctx.rules.rollXp;
   if (!pay || times <= 0 || isPracticeCampaign(draft.campaignId)) return;
+  // A chapter begun before roll XP was individual keeps its one shared pot
+  // until it ends (`RunState.rollXp`), so no hero gets a fresh allowance on
+  // top of what the party already earned this chapter.
+  if (draft.rollXp !== undefined) {
+    const room = Math.max(0, pay.chapterCap - draft.rollXp);
+    const amount = Math.min(room, (pay[kind] ?? 0) * times);
+    if (amount <= 0) return;
+    draft.rollXp += amount;
+    draft.xpEarned += amount;
+    return;
+  }
   const paid = draft.heroRollXp?.[characterId] ?? 0;
   const room = Math.max(0, pay.chapterCap - paid);
   const amount = Math.min(room, (pay[kind] ?? 0) * times);
@@ -1668,6 +1679,7 @@ function doStartChapter(
   draft.chapterInfo = { index: chapter.index, title: chapter.title };
   draft.xpEarned = 0;
   delete draft.heroRollXp;
+  delete draft.rollXp;
   // Cleared with the XP they belong to. Left behind, the previous chapter's
   // setback and its bonus list would still be on the state the moment this one
   // starts, so a phone that renders from `chapterOutcome` would open the
