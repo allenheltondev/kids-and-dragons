@@ -31,7 +31,7 @@
   padding: 0.3em 0.9em 0.3em 0.35em;
   border: 0.1em solid var(--color-accent, #ffc95c);
   border-radius: var(--radius-pill, 999em);
-  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 86%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 86%);
   box-shadow: 0 0.3em 1em rgba(0, 0, 0, 0.45);
   font-size: var(--font-size-xl, 1.5em);
   font-weight: 800;
@@ -55,6 +55,8 @@
 
 .rift-status__clock--expired {
   border-color: var(--color-danger, #ff6b6b);
+  /* Flat first, for a TV browser with no `color-mix()` (Chromium 111). */
+  background: #924053;
   background: color-mix(in srgb, var(--color-danger, #ff6b6b) 55%, var(--kad-bg, #0d0b1a));
 }
 
@@ -79,7 +81,7 @@
   gap: 0.4em;
   padding: 0.15em 0.6em;
   border-radius: var(--radius-md, 0.75em);
-  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 78%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 78%);
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 700;
 }
@@ -101,7 +103,7 @@
   padding: 0.2em 0.7em;
   border-inline-start: 0.25em solid var(--color-accent, #ffc95c);
   border-radius: var(--radius-sm, 0.4em);
-  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 86%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 86%);
   font-size: var(--font-size-lg, 1.25em);
   font-weight: 800;
 }

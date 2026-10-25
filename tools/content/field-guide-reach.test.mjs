@@ -107,6 +107,16 @@ const EXPECTED_REACHABLE = [
   "biome.sky_islands",
   "creature.frost_wyrm",
   "location.bone_yard",
+  // Riftlight's four class rooms (docs/class-mastery.md §2): walking in finds the
+  // room and the class it teaches (a scene marked `classPlace`).
+  "location.academy",
+  "location.conservatory",
+  "location.dojo",
+  "location.rookery",
+  "class.duskrunner",
+  "class.songkeeper",
+  "class.starweaver",
+  "class.thornguard",
 ];
 
 /** What no chapter reveals yet: places, peoples and creatures no campaign visits. */

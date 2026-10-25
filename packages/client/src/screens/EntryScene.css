@@ -52,6 +52,19 @@
   inline-size: min(100%, 54em);
   align-self: center;
 }
+/* The adventures and the story so far stand in the same column as the room code and the party,
+   so the three blocks share one left edge instead of three. */
+.entry-scene-host .lobby__campaigns, .entry-scene-host .lobby__premise {
+  inline-size: min(100%, 54em);
+  max-inline-size: none;
+  align-self: center;
+  box-sizing: border-box;
+}
+.entry-scene-host .lobby__next-chapter {
+  align-self: center;
+  inline-size: min(100%, 54em);
+  box-sizing: border-box;
+}
 .entry-scene-host .lobby__party-heading {
   inline-size: fit-content;
   padding: 0.3em 0.55em;

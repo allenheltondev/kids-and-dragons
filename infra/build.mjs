@@ -36,6 +36,8 @@ const FUNCTIONS = [
   { name: "api", entry: "packages/server/src/lambda/http.ts", content: true },
   { name: "channel-authorizer", entry: "packages/server/src/lambda/channel-authorizer.ts" },
   { name: "sweep", entry: "packages/server/src/lambda/sweep.ts" },
+  // "It's your turn" pushes (#466), invoked by the API asynchronously.
+  { name: "push-sender", entry: "packages/server/src/lambda/push-sender.ts" },
 ];
 
 await rm(OUT, { recursive: true, force: true });

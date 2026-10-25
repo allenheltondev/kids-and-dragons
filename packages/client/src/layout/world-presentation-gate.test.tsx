@@ -4,6 +4,7 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import { PartyLayout } from "./PartyLayout";
 import { TravelLayout } from "./TravelLayout";
 import { useGameStore } from "../store";
+import { rollRevealMs } from "../world/presentation";
 import { MessageSequencer } from "../sync/channel";
 import { makeState } from "../testing/fixtures";
 import type { PresentationGate } from "../sync/channel";
@@ -73,7 +74,10 @@ describe("World surfaces and authoritative patch timing", () => {
     roll();
     expect(sequencer.seq).toBe(before);
     expect(useGameStore.getState().state?.narration).toBe("Before roll");
-    await act(async () => { await vi.advanceTimersByTimeAsync(2000); });
+    // Hold the patch until all dice land, then the presentation's 500ms grace.
+    await act(async () => { await vi.advanceTimersByTimeAsync(rollRevealMs({}) - 1); });
+    expect(sequencer.seq).toBe(before);
+    await act(async () => { await vi.advanceTimersByTimeAsync(502); });
     expect(sequencer.seq).toBe(before + 1);
     expect(useGameStore.getState().state?.narration).toBe(`After roll ${before + 1}`);
   });

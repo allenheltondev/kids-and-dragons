@@ -41,7 +41,7 @@
   "scenes": {
     "bank": {
       "type": "story",
-      "narration": "You crawl onto the east bank under Frostfang, wet to the whiskers. High above, the broken shelf hangs like a bitten cracker. Behind you the river is climbing the stones, one pebble at a time. A griffin on a low ridge has been watching. \"I am Tamsin! I keep the river line for the aerie,\" she calls. \"The water is rising, and I cannot carry you all up. Are all of you here?\" Tonight you need a dry way back uphill, toward the mountain pass called the Cairnstep.",
+      "narration": "You crawl onto the east bank under Frostfang, wet to the whiskers. High above, the broken shelf hangs like a bitten cracker. Behind you the river is climbing the stones, one pebble at a time. A griffin on a low ridge has been watching. \"I am Tamsin! I keep the river line for the aerie,\" she calls. \"The path to the pass starts up here, but the water is rising. Are all of you here? I can lower a ladder.\" Tonight you need a dry way back uphill, toward the mountain pass called the Cairnstep.",
       "choices": [
         {
           "id": "continue",
@@ -52,8 +52,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -77,8 +77,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -96,8 +96,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters",
@@ -121,8 +121,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -160,8 +160,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters",
@@ -185,8 +185,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -221,8 +221,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -249,8 +249,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -277,8 +277,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -305,8 +305,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -324,8 +324,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters",
@@ -364,8 +364,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -386,8 +386,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -408,8 +408,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -427,8 +427,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -459,8 +459,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -487,8 +487,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -515,8 +515,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -543,8 +543,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -562,8 +562,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters",
@@ -615,8 +615,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -649,8 +649,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -682,8 +682,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -715,8 +715,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -748,8 +748,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -770,8 +770,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -832,8 +832,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -867,8 +867,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -901,8 +901,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -934,8 +934,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -967,8 +967,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1001,8 +1001,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1023,8 +1023,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1065,8 +1065,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1091,8 +1091,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1113,8 +1113,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1132,8 +1132,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1164,8 +1164,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1195,8 +1195,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1227,8 +1227,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1258,8 +1258,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1311,8 +1311,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1333,8 +1333,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1355,8 +1355,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1384,8 +1384,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1426,8 +1426,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1460,8 +1460,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1494,8 +1494,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1527,8 +1527,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1560,8 +1560,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -1582,8 +1582,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters",
@@ -1633,8 +1633,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1663,8 +1663,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1693,8 +1693,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1723,8 +1723,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1753,8 +1753,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1772,8 +1772,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/cairnstep",
@@ -1820,8 +1820,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -1842,8 +1842,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -1865,8 +1865,8 @@
       },
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -1884,8 +1884,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -1903,8 +1903,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/cairnstep",
@@ -1935,8 +1935,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -1954,8 +1954,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/cairnstep",
@@ -1979,8 +1979,8 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/cairnstep",
@@ -1999,8 +1999,8 @@
       "outcome": "success",
       "cast": [
         {
-          "figure": "characters/griffin",
-          "name": "Tamsin"
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"

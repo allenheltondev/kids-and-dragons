@@ -29,7 +29,7 @@ import {
 import { applyIntent, createRunState } from "@kad/shared";
 import { createRoom } from "../handlers/room.ts";
 import { CODE_MISS_LIMIT } from "../handlers/code-guard.ts";
-import { respond, type HttpRuntime } from "./http.ts";
+import { MAX_BODY_BYTES, respond, type HttpRuntime } from "./http.ts";
 import type { VerifiedAccount } from "./runtime.ts";
 
 // ---------------------------------------------------------------------------
@@ -114,6 +114,19 @@ describe("routing", () => {
       ok: false,
       error: { code: "NOT_FOUND", message: "no route GET /api/nope" },
     });
+  });
+
+  it("refuses a body over the dev server's limit before reading it, plain or base64", async () => {
+    const rt = runtimeFor(makeHarness());
+    const huge = JSON.stringify({ intent: { type: "CHOOSE", pad: "x".repeat(MAX_BODY_BYTES) } });
+    for (const init of [{ rawBody: huge }, { rawBody: Buffer.from(huge).toString("base64"), isBase64Encoded: true }]) {
+      const result = await respond(event("POST", "/api/action", init), rt);
+      expect(result.statusCode).toBe(413);
+      expect(bodyOf(result).error).toMatchObject({ code: "ILLEGAL" });
+    }
+    // Just under it is still read, and then judged on what it says.
+    const fits = JSON.stringify({ pad: "x".repeat(MAX_BODY_BYTES - 64) });
+    expect((await respond(event("POST", "/api/action", { rawBody: fits }), rt)).statusCode).not.toBe(413);
   });
 
   it("does not treat a known path under the wrong method as routed", async () => {
@@ -352,6 +365,37 @@ describe("POST /api/room", () => {
       rt,
     );
     expect(bodyOf(watched)).toMatchObject({ state: { party: [] } });
+  });
+
+  it("keeps the name a TV gave its table, trimmed, and refuses one the word filter turns away", async () => {
+    const rt = runtimeFor(makeHarness());
+    const opened = await respond(
+      event("POST", "/api/room", { body: { mode: "party", display: true, location: "  Kitchen   table " } }),
+      rt,
+    );
+    expect(opened.statusCode).toBe(200);
+    const payload = bodyOf(opened) as Record<string, unknown>;
+    const watched = await respond(
+      event("POST", `/api/room/${String(payload.code)}/watch`, {
+        body: {},
+        headers: { "x-kad-device-token": String(payload.deviceToken) },
+      }),
+      rt,
+    );
+    expect(bodyOf(watched)).toMatchObject({ state: { location: "Kitchen table" } });
+
+    // Blank is an unnamed table, not an error; a refused name is turned away.
+    const blank = await respond(event("POST", "/api/room", { body: { mode: "party", display: true, location: "   " } }), rt);
+    expect(blank.statusCode).toBe(200);
+    const refused = await respond(event("POST", "/api/room", { body: { mode: "party", display: true, location: "F U C K" } }), rt);
+    // The same status a refused player name gets (`fromError`).
+    expect(refused.statusCode).toBe(409);
+    // Only a TV has a table to name: a phone host's request carries none.
+    const phone = await respond(
+      event("POST", "/api/room", { body: { mode: "travel", displayName: "Ada", location: "Kitchen table" } }),
+      rt,
+    );
+    expect((bodyOf(phone) as { state?: { location?: string } }).state?.location).toBeUndefined();
   });
 
   it("hands the TV's room to the family whose phone joins first", async () => {
@@ -1225,7 +1269,8 @@ describe("POST /api/progression/spend", () => {
       runtimeFor(harness),
     );
     const { sessionToken } = bodyOf(join) as unknown as { sessionToken: string };
-    return { ...room, sessionToken };
+    const seq = (await harness.repo.getState(room.runId))?.seq ?? 0;
+    return { ...room, sessionToken, seq };
   }
 
   it("refuses a spend with no session token", async () => {
@@ -1257,6 +1302,24 @@ describe("POST /api/progression/spend", () => {
     expect(bodyOf(result).error).toMatchObject({ message: "expected { stat }" });
   });
 
+  it("refuses a spend that names no seq, rather than assuming the current one", async () => {
+    // Assuming it waved every request past the stale check: a double tap
+    // spent two points.
+    const harness = makeHarness();
+    const room = await joinedRoom(harness);
+    for (const seq of [undefined, "3", null]) {
+      const result = await respond(
+        event("POST", "/api/progression/spend", {
+          body: { stat: "might", ...(seq === undefined ? {} : { seq }) },
+          headers: { authorization: `Bearer ${room.sessionToken}` },
+        }),
+        runtimeFor(harness),
+      );
+      expect(result.statusCode).toBe(400);
+      expect(bodyOf(result).error).toMatchObject({ message: "expected { stat, seq }" });
+    }
+  });
+
   it("takes the run and the player from the session, never from the body", async () => {
     /*
      * The same rule `postAction` holds, and worth pinning separately because
@@ -1281,8 +1344,8 @@ describe("POST /api/progression/spend", () => {
         rt,
       );
 
-    const honest = await spend({ stat: "might" });
-    const lying = await spend({ stat: "might", runId: "r_somebody_else", playerId: "p_99" });
+    const honest = await spend({ stat: "might", seq: room.seq });
+    const lying = await spend({ stat: "might", seq: room.seq, runId: "r_somebody_else", playerId: "p_99" });
 
     expect(lying.statusCode).toBe(honest.statusCode);
     expect(bodyOf(lying)).toEqual(bodyOf(honest));
@@ -1302,7 +1365,7 @@ describe("POST /api/progression/spend", () => {
 
     const result = await respond(
       event("POST", "/api/progression/spend", {
-        body: { stat: "might" },
+        body: { stat: "might", seq: room.seq },
         headers: { authorization: `Bearer ${room.sessionToken}` },
       }),
       runtimeFor(harness),
@@ -2045,6 +2108,8 @@ const SHARED = [
   { path: "/api/room/:code/visitors", method: "POST", probe: "/api/room/ABCD/visitors" },
   { path: "/api/action", method: "POST", probe: "/api/action" },
   { path: "/api/preview", method: "POST", probe: "/api/preview" },
+  { path: "/api/cheer", method: "POST", probe: "/api/cheer" },
+  { path: "/api/spectate", method: "POST", probe: "/api/spectate" },
   // A phone saying it is still here, or leaving (#258, handlers/presence.ts).
   { path: "/api/presence", method: "POST", probe: "/api/presence" },
   { path: "/api/progression/spend", method: "POST", probe: "/api/progression/spend" },
@@ -2071,6 +2136,10 @@ const SHARED = [
   // makes a code, the new device redeems it.
   { path: "/api/pair/code", method: "POST", probe: "/api/pair/code" },
   { path: "/api/pair/redeem", method: "POST", probe: "/api/pair/redeem" },
+  // "It's your turn" while the app is in the background (#466, handlers/push.ts).
+  { path: "/api/push/key", method: "GET", probe: "/api/push/key" },
+  { path: "/api/push/subscribe", method: "POST", probe: "/api/push/subscribe" },
+  { path: "/api/push/unsubscribe", method: "POST", probe: "/api/push/unsubscribe" },
 ] as const;
 
 /**
@@ -2099,6 +2168,12 @@ const DEV_ONLY = [
   // How the client learns it may offer the pool-free dev sign-in. Prod must
   // never answer it: the dev token it unlocks is unsigned.
   { path: "/api/auth/dev", method: "GET" },
+  // The end-to-end suite's seeded table (dev-seed.ts): a room with its heroes
+  // made in one call, and a playtest jump. Prod must never have it.
+  { path: "/api/dev/seed", method: "POST" },
+  // What the dev server's stand-in push service was handed (#466, KAD_PUSH=record),
+  // for the e2e test. Prod sends real pushes and keeps no record of them.
+  { path: "/api/dev/push", method: "GET" },
 ] as const;
 
 function routed(result: APIGatewayProxyStructuredResultV2): boolean {
@@ -2299,5 +2374,44 @@ describe("bringing a hero back (spec §5)", () => {
   it("needs a room session to list heroes", async () => {
     const result = await respond(event("GET", "/api/heroes"), runtimeFor(makeHarness()));
     expect(result.statusCode).toBe(401);
+  });
+});
+
+describe("push subscriptions (#466)", () => {
+  const subscription = { endpoint: "https://push.example/abc", keys: { p256dh: "BPub", auth: "c2VjcmV0" } };
+
+  it("says pushes are off, and refuses a subscription, when the stack has not turned them on", async () => {
+    const harness = makeHarness();
+    const { players } = await seedHousehold(harness, 1);
+    const rt = runtimeFor(harness);
+    const key = await respond(event("GET", "/api/push/key"), rt);
+    expect(key.statusCode).toBe(200);
+    expect(bodyOf(key)).toEqual({ enabled: false });
+    const refused = await respond(
+      event("POST", "/api/push/subscribe", { body: subscription, headers: { "x-kad-device-token": players[0]!.deviceToken } }),
+      rt,
+    );
+    expect(refused.statusCode).toBe(404);
+  });
+
+  it("keeps a kid's phone's subscription by its device token, and lets it go again", async () => {
+    const harness = makeHarness();
+    const { players } = await seedHousehold(harness, 1);
+    harness.deps.push = { dispatch: async () => undefined, publicKey: "BPublicKey" };
+    const rt = runtimeFor(harness);
+    const me = players[0]!;
+
+    expect(bodyOf(await respond(event("GET", "/api/push/key"), rt))).toEqual({ enabled: true, publicKey: "BPublicKey" });
+    const headers = { "x-kad-device-token": me.deviceToken };
+    const saved = await respond(event("POST", "/api/push/subscribe", { body: subscription, headers }), rt);
+    expect(saved.statusCode).toBe(200);
+    expect((await harness.repo.listPushSubscriptions(me.principal.playerId)).map((s) => s.deviceId)).toEqual([me.principal.deviceId]);
+
+    // No token, no subscription: the body never names the phone.
+    expect((await respond(event("POST", "/api/push/subscribe", { body: subscription }), rt)).statusCode).toBe(403);
+    expect((await respond(event("POST", "/api/push/subscribe", { body: { endpoint: "nope" }, headers }), rt)).statusCode).toBe(400);
+
+    expect((await respond(event("POST", "/api/push/unsubscribe", { headers }), rt)).statusCode).toBe(200);
+    expect(await harness.repo.listPushSubscriptions(me.principal.playerId)).toEqual([]);
   });
 });

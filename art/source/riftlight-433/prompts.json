@@ -1,0 +1,110 @@
+[
+  {
+    "id": "goat_kid",
+    "tool": "built-in image_gen",
+    "prompt": "Create ONE new game figure: a snowhorn GOAT KID, a juvenile of the exact white snowy goat species in the reference image. Reference is species/style only; do not reproduce the adult. Warm crafted children's storybook illustration, pale snowy fur with subtle icy blue shading, little short curved translucent blue ice horns, small compact juvenile body and proportionately large warm alert head, sturdy short legs. Neutral four-legged standing pose, three-quarter facing LEFT. One complete isolated animal, all hooves visible, NO ground shadow, NO ground, NO text, NO frame. Genuine transparent background. 1024x1024 square, figure fits between x80 and944 and y80 and900, lowest hoof exactly y900, centered horizontally. Match hand-painted reference quality, warm dark colored outlines, readable at120px. No clothes, no extra props. Save the generated image file.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-45e0194f-c357-4271-8dae-d76dc0b5476c.png"
+  },
+  {
+    "id": "adult_dragonling",
+    "tool": "built-in image_gen",
+    "prompt": "Use case: illustration-story. Produce ONE complete isolated game character on genuine transparent background. Warm hand-painted children's storybook style matching reference, colored dark outlines, soft two-tone shading, light upper left, readable at120px. Neutral three-quarter facing LEFT, whole body including all feet, no cropping, no ground/shadow, no text. 1024x1024 RGBA; figure inside x60..964 y60..900 with lowest foot at y900. Reference is species/style only; create a distinct new character. A grown adult dragonling cart owner, same mint-white scaled species with dark emerald dorsal spines and orange wing membranes as reference. Quadruped, sturdy mature longer proportions rather than baby head. Simple brown canvas work apron over chest, broad folded wings, warm capable face. No cart.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-d2014232-f237-49c1-a116-80fb9aa160b7.png"
+  },
+  {
+    "id": "island_keeper",
+    "tool": "built-in image_gen",
+    "prompt": "Use case: illustration-story. Produce ONE complete isolated game character on genuine transparent background. Warm hand-painted children's storybook style matching reference, colored dark outlines, soft two-tone shading, light upper left, readable at120px. Neutral three-quarter facing LEFT, whole body including all feet, no cropping, no ground/shadow, no text. 1024x1024 RGBA; figure inside x60..964 y60..900 with lowest foot at y900. Reference is species/style only; create a distinct new character. A distinct experienced adult kitsune island sky keeper. Quadruped fox with vermilion orange and cream fur and three broad teal-tipped tails as reference. Practical moss-green short travel cape with a simple bronze wind-vane clasp and small weatherproof satchel. Calm alert, older than a student. No staff, no platform.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-34d1ec55-aa9b-40b2-be23-da043863fa97.png"
+  },
+  {
+    "id": "new_island_keeper",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedA distinct younger adult kitsune NEW SKY KEEPER. Quadruped orange vermilion and cream fox, three broad teal-tipped tails like reference. Short indigo weather cloak with ochre hem and simple rope toggle; a small rolled blank course chart strapped to the flank. Neat shorter cheek fur, attentive face. No pendant, no platform. Clearly different from temple keeper.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-2f55a323-0cc8-4514-9480-3bb770bd4fe1.png"
+  },
+  {
+    "id": "younger_keeper",
+    "tool": "built-in image_gen",
+    "prompt": "Use case: illustration-story. Produce ONE complete isolated game character on genuine transparent background. Warm hand-painted children's storybook style matching reference, colored dark outlines, soft two-tone shading, light upper left, readable at120px. Neutral three-quarter facing LEFT, whole body including all feet, no cropping, no ground/shadow, no text. 1024x1024 RGBA; figure inside x60..964 y60..900 with lowest foot at y900. Reference is species/style only; create a distinct new character. A younger adult yeti keeper in training, white shaggy fur with blue shadows, warm cream face and palms, bipedal same species as reference. Shorter neat head fur, simple teal woven vest and plum scarf, holds a broad blank slate in both hands. No staff, no writing. Warm thoughtful expression.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-5a5d2773-e6dc-4e35-869f-4596c35ee774.png"
+  },
+  {
+    "id": "newcomer_yeti",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedA newcomer adult yeti visitor, white shaggy fur with cool blue shading, cream warm face and palms, bipedal. Rounded unruly hair, rusty-orange travel shawl and small purple shoulder satchel, holds a rolled blank note. Curious attentive welcoming face. No staff.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-54b827c3-8c47-4020-b27d-5af9699c1203.png"
+  },
+  {
+    "id": "route_worker_yeti",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedA practical adult yeti route worker, white fur cream face and hands, bipedal, broad build. Ochre work vest, blue scarf, coiled guide rope over shoulder and a short wooden route marker tucked under one arm. Marker entirely blank. Steady friendly face. No staff.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-91df1b78-3d1a-4fc0-8319-14050f4884ba.png"
+  },
+  {
+    "id": "yeti_watcher",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedAn adult FEMALE yeti watcher, same white-furred species as reference, bipedal. Broad calm face, subtle long braided side locks, deep moss-green watch cloak with pale woven border, modest copper clasp, carries a plain wooden chime in one hand. Warm vigilant expression, no eyelashes or makeup. Full sturdy complete figure.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-342fc4fb-a528-44e2-84a4-40ae83b42583.png"
+  },
+  {
+    "id": "pass_keeper",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedA mature MALE griffin mountain pass keeper. Quadruped eagle-lion same slate blue and cream species with golden beak and forefeet, gold wings as reference. Older robust proportions, folded wings, plain dark moss-gray hooded cloak resting over back, a small simple travel bell on chest. Hood lowered showing wise alert face, short swept-back crest. No humanoid arms.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-8027b5d7-972e-4844-a1e0-915011cfba1a.png"
+  },
+  {
+    "id": "ridge_griffin",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedA mature FEMALE griffin mountain ridge rescuer. Quadruped eagle-lion same slate blue and cream species, golden beak and forefeet and folded gold wings. Short practical teal shoulder cape; a neatly folded coil of ROPE LADDER strapped safely over her back, clearly visible two ropes with several wooden rungs. Warm capable alert face, no makeup or lashes. No humanoid arms.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-223d947c-b3c4-4862-b92d-4f5b7fb35b1b.png"
+  },
+  {
+    "id": "allied_wyrm",
+    "tool": "built-in image_gen",
+    "prompt": "Zoom out significantly and create a COMPLETE standalone small game sprite of this calm allied blue crystalline frost wyrm, head and snout facing LEFT. CRITICAL: all of the creature MUST fit in the CENTRAL 65 PERCENT of a square transparent image. Leave a large completely empty TRANSPARENT border at least 120 pixels on EVERY SIDE. The dragon must be visibly SMALLER than the canvas, NOT a close-up. Include every tail tip, spike and claw without touching or cutting any edge. Same relaxed protective coil, same gentle eye, closed mouth, blue crystalline scales, four short legs. Warm painted storybook rendering, upper-left light. No ground, no shadow, no text, no additional objects. Entire single cutout on real transparent background. Prior image is a reference for the creature only; provide a zoomed-out full composition.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-9043e51e-8ade-4ed8-9c07-c4441681a732.png"
+  },
+  {
+    "id": "memory_reader",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedAn adult yeti MEMORY READER, white shaggy fur with blue shadow and warm cream face, bipedal. Soft plum woven robe and blue waist belt, holds two broad blank memory slates against chest and one wooden slate stylus in hand. Thoughtful friendly face, no staff, no text.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-b19605f0-ecd5-44ab-a6e8-d6b501223ff7.png"
+  },
+  {
+    "id": "frogfolk_student",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedA very small young frogfolk music STUDENT, green mottled frog skin, warm expressive face, bipedal same frog people as reference. Simple golden yellow school tunic and teal scarf, holds an open blank music book. No staff, lantern or backpack. Mouth slightly open singing. No musical symbols or text.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-7fd6b075-f362-4349-9ef5-6b68c2e2f380.png"
+  },
+  {
+    "id": "young_yeti_singer",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedA YOUNG yeti student singer, white shaggy fur with blue shadows and cream face, bipedal, smaller juvenile proportions. Simple warm rust-red choir vest and teal sash, holding an OPEN SONGBOOK with BLANK pages at chest height, turning one page. Friendly attentive mouth gently open, no staff.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-eb8ec04a-b8d9-4655-b10d-b9cd4845ac01.png"
+  },
+  {
+    "id": "dock_worker",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedAn adult frogfolk DOCK WORKER, green mottled frog skin and wide friendly frog face, bipedal same people as reference. Ochre oilskin work vest over blue tunic, rolled sleeves, heavy coiled dock rope on one shoulder, practical belt. No lantern or staff, no text. Full webbed feet visible.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-8fe33582-b12d-40ca-a477-44320029c8b9.png"
+  },
+  {
+    "id": "passing_fisher",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedAn adult female frogfolk FISHER, green mottled frog skin, wide friendly frog face, bipedal same people as reference. Faded blue-green weatherproof poncho, wide soft straw sunhat, small woven fish basket held at side, short fishing rod strapped diagonally across back fitting fully in image. No fish carcasses, no staff, no text. Complete webbed feet.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-aea820cb-6c7a-4921-bdd1-96cc325e170c.png"
+  },
+  {
+    "id": "boarding_traveler",
+    "tool": "built-in image_gen",
+    "prompt": "Correct this game sprite. Keep the same warm painted badger-like burrowfolk traveler identity, blue coat, rust scarf, tan luggage bag and green backpack. REMOVE THE ENTIRE TRAIN, DOOR, STEPS, STATION, BACKGROUND, FLOOR AND SHADOW. Only ONE isolated full-body traveler on GENUINE TRANSPARENT background. Repose in neutral standing stance with BOTH feet side by side on the same ground line, left hand holding bag, right hand relaxed at side, body and head three-quarter facing LEFT. No walking or climbing, no touching scenery, no architecture. Whole figure, ears, tail, pack and bag fully contained with ample clear margins ALL FOUR SIDES. 1024 square canvas, feet y900, warm storybook illustration, no text. This is a standalone inventory character cutout, not a scene.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-546c977f-1f1d-47cb-93ca-3afc7d46615c.png"
+  },
+  {
+    "id": "quay_gull",
+    "tool": "built-in image_gen",
+    "prompt": "undefinedA talking SEAGULL for a winter quay scene, one complete ordinary friendly white and soft slate-gray seabird with short golden beak, folded gray wings with dark wing tips, dark expressive eyes, warm colored outlines. Three-quarter facing LEFT, standing on ONE orange foot with the other tucked into belly feathers, mildly indignant but friendly expression, no clothing or props. Warm painted storybook style matching Kids & Dragons figures, no realistic photographic detail, no ground shadow.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a1688f-a217-76c3-9d04-8a9a917bb1d7\\exec-1fb4aa30-b3ff-417b-a189-e46224998acc.png"
+  }
+]
