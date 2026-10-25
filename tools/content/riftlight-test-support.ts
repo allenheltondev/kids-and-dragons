@@ -155,6 +155,17 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
           pending.push({ state: result.state, known, introduced });
         }
       }
+    } else if (state.prompt?.kind === "interaction") {
+      // The mechanic itself is exercised in packages/shared/src/interactions.test.ts;
+      // here both of its authored outcomes are walked to their continuation.
+      for (const outcome of ["success", "failure"] as const) {
+        const resolved = structuredClone(state);
+        if (resolved.prompt?.kind !== "interaction") throw new Error("Expected interaction");
+        resolved.prompt.phase = "result";
+        resolved.prompt.outcome = outcome;
+        const { openedSeq, attempt } = resolved.prompt;
+        pending.push({ state: send(resolved, { type: "INTERACT", action: "continue", openedSeq, attempt }, chapter), known, introduced });
+      }
     } else if (state.prompt?.kind === "choice") {
       expect(state.prompt.options.length).toBeGreaterThan(0);
       for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known, introduced });
