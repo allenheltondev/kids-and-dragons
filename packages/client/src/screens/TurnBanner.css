@@ -13,7 +13,7 @@
   padding: 0.35em 1.1em 0.35em 0.4em;
   border: 0.12em solid var(--color-accent, #ffc95c);
   border-radius: var(--radius-pill, 999em);
-  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 86%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 86%);
   box-shadow: 0 0.4em 1.4em rgba(0, 0, 0, 0.45);
   color: var(--color-text, #f4f0ff);
   font-size: var(--font-size-2xl, 2em);

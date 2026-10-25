@@ -376,6 +376,9 @@ export async function playOn(h: GemfallHousehold, t: Table, runId: string, conte
     },
     beats,
     settled: summary(await h.attempt()),
+    // Story XP only: what a hero earns for rolling well (`rollXp`) is paid to
+    // each hero on her own (`heroRollXp`), arrived after the pre-epic build,
+    // and is not part of the gameplay this digest pins.
     xpEarned: (await t.state()).xpEarned,
   };
 }
@@ -407,3 +410,4 @@ export async function goldens(content: ContentStore) {
     resumed,
   };
 }
+

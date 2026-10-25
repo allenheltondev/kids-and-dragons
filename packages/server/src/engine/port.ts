@@ -32,6 +32,8 @@ import type {
   RunBuff,
   RunState,
   FactValue,
+  MatchupRules,
+  Bestiary,
 } from "@kad/shared";
 
 /** `ctx` as handed to `applyIntent`. */
@@ -89,6 +91,14 @@ export interface EngineContext {
    * what an environment's variants test when a fight begins.
    */
   campaignFacts?: Readonly<Record<string, FactValue>>;
+  /**
+   * Matchups (docs/matchups.md): `rules.matchups` when `matchupsOn` holds for
+   * the run's campaign, absent otherwise (Gemfall is exempt). Absent, fights
+   * and checks compute exactly what they did before matchups.
+   */
+  matchups?: MatchupRules;
+  /** The bestiary, for a check scene's creatures' opinions. Only with `matchups`. */
+  bestiary?: Bestiary | null;
 }
 
 export interface IntentInput {

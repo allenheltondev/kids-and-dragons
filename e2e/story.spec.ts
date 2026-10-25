@@ -13,9 +13,9 @@
 import { test, expect, type Browser, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
 import { roomState } from "./room-state";
+import { API } from "./api";
 
 const TAP = { timeout: 20_000 } as const;
-const API = "http://localhost:8787";
 const SHOTS = process.env.KAD_STORY_SHOTS;
 const GOAL = "Follow the humming in the wood all the way to where it comes from.";
 const PIB = "\"I'm Pib,\" says the sprite";

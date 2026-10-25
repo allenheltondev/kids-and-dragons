@@ -173,7 +173,7 @@ describe("the sheets each rift stacks", () => {
     for (const id of ids) {
       const declared = effects.get(id);
       expect(declared, id).toBeDefined();
-      expect({ frames: declared!.frames, fps: declared!.fps, size: declared!.size }, id).toEqual(RIFT_SHEET);
+      expect({ frames: declared!.frames, fps: declared!.fps, size: declared!.size, columns: declared!.columns }, id).toEqual(RIFT_SHEET);
       const file = fileURLToPath(new URL(`../../../..${riftSheetUrl(id)}`, import.meta.url));
       expect(existsSync(file), file).toBe(true);
     }

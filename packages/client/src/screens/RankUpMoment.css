@@ -85,6 +85,8 @@
   padding: var(--kad-space-2) var(--kad-space-3);
   border-radius: var(--kad-radius-md);
   border: 0.1em solid var(--kad-gold);
+  /* Flat first, for a TV browser with no `color-mix()` (Chromium 111). */
+  background: #302936;
   background: color-mix(in srgb, var(--kad-gold) 10%, var(--kad-bg-raised));
   min-inline-size: 0;
 }

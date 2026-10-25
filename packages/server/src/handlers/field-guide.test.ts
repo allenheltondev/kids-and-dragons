@@ -28,6 +28,8 @@ const BIOME = "biome.enchanted_woods";
 const SHRINE = "location.old_shrine";
 const WISP = "creature.wisp";
 const CLEARING = "location.bramble_clearing";
+/** The two heroes at the table wear these (see `table`), and wearing a class finds its entry. */
+const WORN = ["class.songkeeper", "class.thornguard"];
 
 const world = { places: { enchanted_woods: { id: BIOME } } } as unknown as WorldMap;
 const bestiary = { creatures: { wisp: { canon_id: WISP } } } as unknown as Bestiary;
@@ -128,10 +130,10 @@ describe("recording discoveries during play", () => {
 
     expect(record).toHaveBeenCalledTimes(1);
     const book = await harness.repo.getFieldGuide(t.householdId);
-    expect(Object.keys(book.entries)).toEqual([BIOME, CLEARING]);
+    expect(Object.keys(book.entries)).toEqual([BIOME, CLEARING, ...WORN]);
     expect(book.entries[BIOME]).toMatchObject({ firstFoundBy: "p_2", runId: t.runId });
     // The room hears it on the same patch as the scene, and is told it is new.
-    expect(message.discovered).toEqual([BIOME, CLEARING]);
+    expect(message.discovered).toEqual([BIOME, CLEARING, ...WORN]);
     expect(book.entries[CLEARING]?.firstFoundBy).toBe("p_2");
     expect((await t.state()).fieldGuide).toEqual(book.entries);
   });
@@ -149,14 +151,45 @@ describe("recording discoveries during play", () => {
     expect(fight.message.discovered).toEqual([WISP]);
 
     const book = (await harness.repo.getFieldGuide(t.householdId)).entries;
-    expect(Object.keys(book).sort()).toEqual([BIOME, CLEARING, SHRINE, WISP].sort());
+    expect(Object.keys(book).sort()).toEqual([BIOME, CLEARING, SHRINE, WISP, ...WORN].sort());
     expect(book[SHRINE]?.firstFoundBy).toBe(shrine.by);
     expect(book[WISP]?.firstFoundBy).toBe(fight.by);
 
     // One write per find, and no announcement anywhere else on the way.
     expect(record.mock.calls.map(([, finds]) => finds.map((f) => f.canonId))).toEqual([[SHRINE], [WISP]]);
     const announced = t.received.flatMap((m) => (m.kind === "patch" ? (m.discovered ?? []) : []));
-    expect(announced).toEqual([BIOME, CLEARING, SHRINE, WISP]);
+    expect(announced).toEqual([BIOME, CLEARING, ...WORN, SHRINE, WISP]);
+  });
+
+  it("walking into a class place finds the room and the class it teaches, whatever the party wears", async () => {
+    const chapter = taggedChapter();
+    const shrine = chapter.scenes["scene_shrine"]!;
+    if (shrine.type !== "story" && shrine.type !== "choice_point") throw new Error("fixture changed: the shrine is not a story scene");
+    shrine.classPlace = "starweaver"; // nobody at this table wears one
+    shrine.discovers = undefined;
+    const harness = makeHarness({ engine: realEngine, content: makeContent({ chapters: [chapter], world, bestiary }) });
+    const t = await table(harness);
+    await t.send("p_1", { type: "START_CHAPTER", chapterId: "bramblewood-01" });
+    const book = () => harness.repo.getFieldGuide(t.householdId).then((b) => Object.keys(b.entries));
+    expect(await book()).not.toContain("class.starweaver");
+
+    const room = await walkTo(t, "scene_shrine");
+
+    expect(room.message.discovered).toEqual(["location.academy", "class.starweaver"]);
+    expect(await book()).toEqual(expect.arrayContaining(["location.academy", "class.starweaver"]));
+    expect((await harness.repo.getFieldGuide(t.householdId)).entries["class.starweaver"]?.firstFoundBy).toBe(room.by);
+  });
+
+  it("an ordinary step reads the household's book no more than it did before classes had entries", async () => {
+    const chapter = taggedChapter();
+    const harness = makeHarness({ engine: realEngine, content: makeContent({ chapters: [chapter], world, bestiary }) });
+    const t = await table(harness);
+    await t.send("p_1", { type: "START_CHAPTER", chapterId: "bramblewood-01" });
+    const read = vi.spyOn(harness.repo, "getFieldGuide");
+    const record = vi.spyOn(harness.repo, "recordDiscoveries");
+    await walkTo(t, "scene_shrine");
+    expect(read).not.toHaveBeenCalled(); // only a chapter start re-reads the whole book
+    expect(record.mock.calls.map(([, finds]) => finds.map((f) => f.canonId))).toEqual([[SHRINE]]);
   });
 
   it("finding something again records and announces nothing, and the first finder stands", async () => {
@@ -301,6 +334,41 @@ describe("the rules, without a server", () => {
     expect(stepDiscoveries(before, after, chapter, false, deps)).toEqual([WISP]);
     const started = { ...after, sceneId: chapter.entry, visited: [chapter.entry] } as RunState;
     expect(stepDiscoveries(base, started, chapter, true, deps)).toEqual([BIOME, CLEARING]);
+  });
+
+  describe("classes (docs/class-mastery.md §2)", () => {
+    const hero = (cls: string) => ({ character: { class: cls } });
+    const classChapter = (): Chapter => {
+      const chapter = taggedChapter();
+      chapter.scenes["scene_shrine"] = { ...chapter.scenes["scene_shrine"]!, classPlace: "thornguard" } as never;
+      return chapter;
+    };
+
+    it("a chapter start finds every class at the table, once each, in seat order", () => {
+      const chapter = classChapter();
+      const deps = { content: makeContent({ chapters: [chapter], world, bestiary }) };
+      const party = [hero("songkeeper"), hero("thornguard"), hero("songkeeper")] as never;
+      const started = { ...base, party, chapterId: chapter.id, sceneId: chapter.entry, visited: [chapter.entry] } as RunState;
+      expect(stepDiscoveries(base, started, chapter, true, deps)).toEqual([BIOME, CLEARING, "class.songkeeper", "class.thornguard"]);
+    });
+
+    it("a step finds a class only when it is new to the party since the step before", () => {
+      const chapter = classChapter();
+      const deps = { content: makeContent({ chapters: [chapter], world, bestiary }) };
+      const before = { ...base, chapterId: chapter.id, party: [hero("thornguard")] } as unknown as RunState;
+      const same = { ...before, sceneId: "scene_camp", visited: ["a", "scene_camp"] } as RunState;
+      expect(stepDiscoveries(before, same, chapter, false, deps)).toEqual([]);
+      const switched = { ...same, party: [hero("starweaver")] } as unknown as RunState;
+      expect(stepDiscoveries(same, switched, chapter, false, deps)).toEqual(["class.starweaver"]);
+    });
+
+    it("entering a class place finds the room and its class, for a party that wears something else", () => {
+      const chapter = classChapter();
+      const deps = { content: makeContent({ chapters: [chapter], world, bestiary }) };
+      const before = { ...base, chapterId: chapter.id, party: [hero("songkeeper")] } as unknown as RunState;
+      const after = { ...before, sceneId: "scene_shrine", visited: ["a", "scene_shrine"] } as RunState;
+      expect(stepDiscoveries(before, after, chapter, false, deps)).toEqual([SHRINE, "location.dojo", "class.thornguard"]);
+    });
   });
 
   it("credit goes to the actor at the table, else the story-turn holder, else the first seat", () => {

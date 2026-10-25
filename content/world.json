@@ -7,6 +7,16 @@
     "height": 909
   },
   "places": {
+    "academy": {
+      "id": "location.academy",
+      "title": "The Academy",
+      "kind": "location",
+      "anchor": {
+        "x": 225,
+        "y": 608
+      },
+      "parent": "whispering_marsh"
+    },
     "bone_yard": {
       "id": "location.bone_yard",
       "title": "The Bone Yard",
@@ -16,6 +26,26 @@
         "y": 805
       },
       "parent": "sallow_wastelands"
+    },
+    "conservatory": {
+      "id": "location.conservatory",
+      "title": "The Conservatory",
+      "kind": "location",
+      "anchor": {
+        "x": 805,
+        "y": 73
+      },
+      "parent": "glacier_of_origins"
+    },
+    "dojo": {
+      "id": "location.dojo",
+      "title": "The Dojo",
+      "kind": "location",
+      "anchor": {
+        "x": 165,
+        "y": 223
+      },
+      "parent": "sky_islands"
     },
     "eastern_plains": {
       "id": "biome.eastern_plains",
@@ -126,6 +156,16 @@
         "y": 410
       },
       "parent": null
+    },
+    "rookery": {
+      "id": "location.rookery",
+      "title": "The Rookery",
+      "kind": "location",
+      "anchor": {
+        "x": 350,
+        "y": 843
+      },
+      "parent": "sunward_fields"
     },
     "sallow_wastelands": {
       "id": "biome.sallow_wastelands",

@@ -201,3 +201,23 @@
   .kad-host__offer-bar > span { animation-name: none; }
 }
 html[data-motion="reduced"] .kad-host__offer-bar > span { animation-name: none; }
+
+.kad-host__invite {
+  display: grid;
+  gap: var(--kad-space-2, 0.5rem);
+}
+
+.kad-host__invite-link {
+  width: 100%;
+  box-sizing: border-box;
+  font: inherit;
+  font-size: var(--kad-text-sm);
+  padding: 0.5rem;
+  user-select: all;
+}
+
+/* The Room button in the corner row is a labelled button, taller than the row's 36px icon controls, so on
+   the host's shared screen the strip reserved for the row keeps its old height and nothing starts under it. */
+html:has(.kad-host__room-slot) {
+  --kad-corner-bottom: 52px;
+}

@@ -281,6 +281,8 @@ export function createOrganizerStore(api: Api = defaultApi) {
         if (!householdId) return;
         await run(async (t) => {
           const { households, cleanupPending } = await api.deleteHousehold(t, householdId);
+          // This browser's saved book (IndexedDB since #458) goes with the household.
+          await (await import("./journal-db")).clearSavedJournal();
           set({
             view: null,
             devices: [],

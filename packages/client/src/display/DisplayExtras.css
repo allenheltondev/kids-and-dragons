@@ -89,4 +89,25 @@ body:has(.kad-tap-for-sound) .kad-audio-control__hint { display: none; }
 /* The shared screen has its own ask for sound (Tap for sound, above), so the row's small hint
    never hangs under its corner, over the room's own column (#257). */
 .kad-corner:has(.kad-about--in-corner) .kad-audio-control__hint { display: none; }
-body:has(.kad-tap-for-sound--in-corner) .kad-party--world { --kad-top-reserve: 3.25rem; }
+body:has(.kad-tap-for-sound--in-corner) .kad-party--world { --kad-top-reserve: 2.75rem; }
+
+/*
+ * The report's own ask (fullscreen.ts). It sits on the row that reports full screen rather
+ * than in the corner row: that row is fixed to the right, proven at six controls, and held
+ * still to the pixel while sound loads and asks (layout-fit.spec.ts), so a seventh that came
+ * and went was both too wide and too restless. Spanning from the second column keeps it under
+ * the Yes/No rather than squeezing the row's three columns into four.
+ */
+.kad-about__act {
+  grid-column: 2 / -1;
+  justify-self: start;
+  margin-block-start: 0.4em;
+  padding: 0.3em 0.7em;
+  border: 0;
+  border-radius: 999px;
+  background: var(--kad-accent);
+  color: var(--kad-accent-ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}

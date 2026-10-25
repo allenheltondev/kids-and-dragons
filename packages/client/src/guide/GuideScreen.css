@@ -98,6 +98,13 @@ ul.guide__list {
   background: var(--kad-bg-raised);
 }
 
+.guide__contents .guide__link {
+  display: flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding-block: 0.35em;
+}
+
 .guide__link {
   color: var(--kad-accent-hi);
 }

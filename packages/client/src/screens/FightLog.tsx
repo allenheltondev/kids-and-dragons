@@ -43,16 +43,21 @@
 
 import { useEffect, useLayoutEffect, useRef, useState, type ReactElement } from "react";
 import type { EncounterEvent } from "@kad/shared";
-import { usePresentation, useRunState } from "../store";
+import { speak } from "@kad/shared";
+import { useCampaign, usePresentation, useRules, useRunState } from "../store";
 import { Icon } from "./icons";
 import { setBoardInsetEnd } from "../world/stage-inset";
 import { describeBeats, hurtWords, needsLine, statName, verdictWord, type Beat, type Swing } from "./fight-log";
+import { calloutsOf, fightChips, spokenCallouts } from "./matchup-copy";
 import "./FightLog.css";
 
 /** How many lines the TV shows: the last few beats, never a wall of text. */
 export const FIGHT_LOG_LINES = 4;
 
 
+
+/** How long the opening chips stay up, in ms. Short: they are a reminder, the field guide teaches. */
+export const FIGHT_CHIPS_MS = 20000;
 
 /** What a kid needs to know about Guard, said once under the log. */
 export const GUARD_WORDS = "Guard is how hard someone is to hit. Roll that much or more to hit them.";
@@ -98,6 +103,11 @@ export function FightLog(): ReactElement | null {
 
   const take = (events: readonly EncounterEvent[] | undefined, seq: number): void => {
     if (!events || events.length === 0) return;
+    // A matchup said out loud for read-aloud, once per batch; silent when read-aloud is off.
+    const said = spokenCallouts(
+      calloutsOf(events.flatMap((event) => (event.type === "matchup" ? [event] : []))),
+    );
+    if (said) speak(said, { source: "narration" });
     setBatches((kept) => [...kept, { seq, events }]);
   };
   usePresentation("COMBAT_SEQUENCE", (presentation, event) => take(presentation.events, event.seq));
@@ -154,11 +164,22 @@ export function FightLog(): ReactElement | null {
     };
   }, [shown]);
 
+  const chips = useFightChips(encounter);
   if (!encounter) return null;
   const lines = fightLogLines(batches, encounter);
 
   return (
     <aside className="fight-log" aria-label="The fight so far" ref={box}>
+      {chips.length > 0 ? (
+        <ul className="fight-log__chips" aria-label="Worth knowing in this fight">
+          {chips.map((chip) => (
+            <li key={chip.id} className="fight-log__chip">
+              <Icon name={chip.icon ?? "star"} />
+              <span>{chip.text}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
       <ol className="fight-log__lines" aria-live="polite">
         {lines.length === 0 ? <li className="fight-log__line fight-log__line--quiet">The fight is on!</li> : null}
         {lines.map((line) => (
@@ -173,6 +194,32 @@ export function FightLog(): ReactElement | null {
       </p>
     </aside>
   );
+}
+
+/**
+ * The fight's opening hints (up to three), for a while after it starts, in
+ * the log's own column so they sit beside the board and never over it, and
+ * nothing to tap (docs/tv-read-only-audit.md). They fold away on their own and
+ * never come back mid-fight; no chips at all when matchups are off.
+ */
+function useFightChips(encounter: Parameters<typeof fightChips>[2] | null): ReturnType<typeof fightChips> {
+  const rules = useRules();
+  const campaign = useCampaign();
+  const fightId = encounter?.startedAt ?? null;
+  const [goneFor, setGoneFor] = useState<number | null>(null);
+  useEffect(() => {
+    if (fightId === null) return;
+    const timer = setTimeout(() => setGoneFor(fightId), FIGHT_CHIPS_MS);
+    return () => clearTimeout(timer);
+  }, [fightId]);
+  const [held, setHeld] = useState<{ fight: number; chips: ReturnType<typeof fightChips> } | null>(null);
+  // Worked out once, when the fight arrives: the hints are about the fight's start.
+  useEffect(() => {
+    if (!encounter || fightId === null || held?.fight === fightId) return;
+    setHeld({ fight: fightId, chips: fightChips(rules, campaign?.id, encounter) });
+  }, [encounter, fightId, held, rules, campaign]);
+  if (fightId === null || held?.fight !== fightId || goneFor === fightId) return [];
+  return held.chips;
 }
 
 /**
@@ -201,6 +248,12 @@ function SwingLine({ swing }: { swing: Swing }): ReactElement {
             {stat ? <span className="fight-log__stat"> {stat}</span> : null}
           </span>
         ) : null}
+        {roll.matchup && roll.matchup.amount !== 0 ? (
+          <span>
+            {roll.matchup.amount < 0 ? "-" : "+"} {Math.abs(roll.matchup.amount)}
+            <span className="fight-log__stat"> matchup</span>
+          </span>
+        ) : null}
         <span className="fight-log__total">= {roll.total}</span>
         <span className="fight-log__vs">vs Guard {roll.tn}</span>
         <span className="fight-log__arrow" aria-hidden="true">→</span>
@@ -212,6 +265,12 @@ function SwingLine({ swing }: { swing: Swing }): ReactElement {
       <span className="fight-log__why">
         {needsLine(swing)}.{after}
       </span>
+      {swing.matchups?.map((callout) => (
+        <span key={callout.id} className={`fight-log__matchup fight-log__matchup--${callout.sign}`}>
+          <Icon name={callout.icon} />
+          <span>{callout.line}</span>
+        </span>
+      ))}
     </>
   );
 }

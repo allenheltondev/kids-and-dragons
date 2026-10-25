@@ -430,11 +430,39 @@ export interface ArrivalMessage {
   color: string;
 }
 
+/**
+ * A spectator cheered (#388). Live only, like an arrival: never committed,
+ * never moves `seq`, and a screen that attaches later never sees it. Carries
+ * no name, because the shared screen never says who is watching.
+ */
+export interface CheerMessage {
+  /** The state's seq when it was sent. Ordering only; never applied. */
+  seq: number;
+  runId: string;
+  /** A `CHEERS` id. */
+  cheer: string;
+}
+
+/**
+ * `POST /api/spectate`, with a room session token (#388): this phone's kid chose
+ * "Just watch" (`true`), or to make a hero after all (`false`). Only ever
+ * about the phone that sends it.
+ */
+export interface SpectateRequest {
+  watching: boolean;
+}
+
+/** `POST /api/cheer`, with a room session token: the seat comes from the token. */
+export interface CheerRequest {
+  cheer: string;
+}
+
 export type ChannelMessage =
   | ({ kind: "patch" } & ServerMessage)
   | ({ kind: "snapshot" } & SnapshotMessage)
   | ({ kind: "preview" } & PreviewMessage)
-  | ({ kind: "arrival" } & ArrivalMessage);
+  | ({ kind: "arrival" } & ArrivalMessage)
+  | ({ kind: "cheer" } & CheerMessage);
 
 // ---------------------------------------------------------------------------
 // Transport seam — architecture §4.4
@@ -461,6 +489,12 @@ export interface CreateRoomRequest {
    * Party Mode only — Travel Mode has no screen that is not also a seat.
    */
   display?: boolean;
+  /**
+   * What the family calls its table ("Kitchen table"), sent
+   * by a TV opening a room. Kept on the run, so a saved game can say where it
+   * was saved. Optional: an unnamed table is the common case.
+   */
+  location?: string;
 }
 
 export interface CreateRoomResponse {
@@ -640,6 +674,13 @@ export const RETENTION_CHOICES = [30, 90, 180, 365] as const;
  * and hero in another table's save, and her finds in its Field Guide, which
  * credit `FORGOTTEN_FINDER` in place of her id.
  */
+/**
+ * Longest name a household's table may have ("Grandma's kitchen table"). Here
+ * and not beside `checkLocationName` so the start screen can cap its field
+ * without loading the word list, which only the creation flow's chunk needs.
+ */
+export const LOCATION_NAME_MAX = 40;
+
 export const FORGOTTEN_NAME = "A friend";
 export const FORGOTTEN_FINDER = "forgotten";
 

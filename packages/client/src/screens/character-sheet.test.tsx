@@ -87,8 +87,8 @@ describe("reading a souvenir id", () => {
   it("treats an unknown tier fragment as no tier rather than showing it raw", () => {
     // Souvenir ids are written by a server that may be newer than this bundle,
     // and "was ??? once" is worse than saying nothing.
-    expect(readSouvenir("some-campaign#ascendant").tier).toBeNull();
-    expect(readSouvenir("some-campaign#ascendant").campaignId).toBe("some-campaign");
+    expect(readSouvenir("some-campaign#nonsense").tier).toBeNull();
+    expect(readSouvenir("some-campaign#nonsense").campaignId).toBe("some-campaign");
   });
 
   it("names a campaign from its id, which is all a souvenir carries", () => {
@@ -99,7 +99,7 @@ describe("reading a souvenir id", () => {
 describe("tier history", () => {
   it("counts every tier at or below the current level as reached", () => {
     const ladder = tierHistory(member({ level: 7, tier: "radiant" }));
-    expect(ladder.map((rung) => rung.standing)).toEqual(["reached", "reached", "reached", "ahead"]);
+    expect(ladder.map((rung) => rung.standing)).toEqual(["reached", "reached", "reached", "ahead", "ahead", "ahead", "ahead"]);
   });
 
   it("marks a tier a failed campaign took back", () => {
@@ -143,11 +143,11 @@ describe("tier history", () => {
      * result, so the same derivation is available without the dependency.
      */
     const ladder = tierHistory(member({ level: 7, tier: "radiant" }));
-    expect(ladder.map((rung) => rung.standing)).toEqual(["reached", "reached", "reached", "ahead"]);
+    expect(ladder.map((rung) => rung.standing)).toEqual(["reached", "reached", "reached", "ahead", "ahead", "ahead", "ahead"]);
   });
 
   it("claims nothing for a tier id this bundle does not know", () => {
-    const future = member({ tier: "ascendant" as never });
+    const future = member({ tier: "nonsense" as never });
     expect(tierHistory(future).every((rung) => rung.standing === "ahead")).toBe(true);
   });
 });
@@ -159,7 +159,7 @@ describe("the sheet", () => {
     expect(screen.getByText("Level 4")).toBeTruthy();
     expect(screen.getAllByText("reached").length).toBe(1);
     expect(screen.getAllByText("you are here").length).toBe(1);
-    expect(screen.getAllByText("still to come").length).toBe(2);
+    expect(screen.getAllByText("still to come").length).toBe(5);
   });
 
   it("says which half of a level is still on loan", () => {

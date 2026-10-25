@@ -5,7 +5,11 @@
  * render crash arrives here too. A failed load is swallowed, because a
  * reporter that can throw would report itself forever.
  */
-const hand = (thrown: unknown) =>
+import { listenForWorkerErrors } from "./worker-errors";
+
+const hand =(thrown: unknown) =>
   import("./report").then((m) => m.report(thrown)).catch(() => {});
 addEventListener("error", (e) => hand(e.error ?? e.message));
 addEventListener("unhandledrejection", (e) => hand(e.reason));
+// The service worker's failures (#459) arrive as messages; the reporter loads with the first.
+listenForWorkerErrors(typeof navigator === "undefined" ? undefined : navigator.serviceWorker, hand);

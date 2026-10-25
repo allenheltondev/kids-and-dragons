@@ -375,6 +375,13 @@ export interface CheckScene {
   music?: string;
   stat: StatId;
   tn: number;
+  /**
+   * What kind of doing this is, keys of `rules.matchups.checkTags` ("sneak",
+   * "force", "climb", "charm"): a hero whose species or class has an edge on
+   * the tag rolls with it (docs/matchups.md). Mechanical only; never shown as
+   * story text. Absent on every scene written before matchups.
+   */
+  tags?: string[];
   prompt: string;
   narration?: string;
   /**
@@ -544,6 +551,20 @@ export interface EnemySpec {
    * fights exactly as if it were not written.
    */
   rift?: RiftBehavior;
+  /**
+   * What this creature is like in a fight (docs/matchups.md): keys of
+   * `rules.matchups.traits`. Filled from `content/bestiary.json` when the
+   * enemy names a `creature`, like its stats; authoring them replaces canon's.
+   * Read only where matchups are on (`rules.matchups.exemptCampaigns`).
+   */
+  traits?: string[];
+  /**
+   * The playable species this creature likes and dislikes, from canon's
+   * `lore.likes` / `lore.dislikes` entries that point at a `character.<species>`
+   * (docs/matchups.md). Filled from the bestiary like `traits`.
+   */
+  likes?: SpeciesId[];
+  dislikes?: SpeciesId[];
 }
 
 /**

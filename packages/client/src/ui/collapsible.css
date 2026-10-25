@@ -43,7 +43,7 @@
 }
 
 .kad-fold__toggle:active {
-  background: color-mix(in srgb, var(--color-surface, #191534) 70%, transparent);
+  background: rgb(var(--color-surface-rgb) / 70%);
 }
 
 .kad-fold__title {

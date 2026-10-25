@@ -441,7 +441,13 @@ export function forgetPlayer(state: RunState, kid: Pick<Forgetting, "playerId" |
   const { [playerId]: _gone, ...seats } = state.seats ?? {};
   // A host's handing her the keeper role (#272) is hers too: it goes with her.
   const { keeperPlayerId: handed, ...unhanded } = state;
-  const kept: RunState = handed === playerId ? unhanded : state;
+  const keeping: RunState = handed === playerId ? unhanded : state;
+  // Watching (#388) names her too, if only by id.
+  const { watching, ...unwatched } = keeping;
+  const others = (watching ?? []).filter((id) => id !== playerId);
+  const kept: RunState = watching?.includes(playerId)
+    ? others.length > 0 ? { ...unwatched, watching: others } : unwatched
+    : keeping;
   const party =
     state.phase === "lobby" || state.phase === "creation"
       ? state.party.filter((m) => m.playerId !== playerId)

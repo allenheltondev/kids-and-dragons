@@ -22,6 +22,7 @@ import { captiveName, combatantById } from "@kad/shared";
 import { combatantLabel } from "./combat-grid";
 import { numbedLine, puffedLine } from "./buff-copy";
 import { environmentBeatLine } from "./environment-copy";
+import { calloutsOf, calloutsOfRoll, type Callout } from "./matchup-copy";
 
 /** How hard a hit landed, as the table would shout it. */
 export const TIER_WORD: Readonly<Record<DamageTier, string>> = {
@@ -49,6 +50,12 @@ export interface Swing {
   readonly tier: DamageTier | null;
   /** The hearts it took, from whoever it landed on (Brace can step in), once that beat arrives. */
   readonly hurt: { readonly who: string; readonly amount: number; readonly left: number; readonly down: boolean } | null;
+  /**
+   * What matchups moved this swing (docs/matchups.md), plus or minus from the
+   * hero's side. Absent, not empty, when none did, so a swing in a campaign
+   * without matchups is the object it always was.
+   */
+  readonly matchups?: readonly Callout[];
 }
 
 /**
@@ -70,7 +77,9 @@ export interface Beat {
 export function rollWords(roll: DiceRoll): string {
   const stat = roll.stat ? ` ${STAT_NAMES[roll.stat] ?? roll.stat}` : "";
   const mod = roll.mod === 0 ? "" : ` ${roll.mod < 0 ? "-" : "+"} ${Math.abs(roll.mod)}${stat}`;
-  return `${roll.die}${mod} = ${roll.total} vs Guard ${roll.tn}`;
+  const m = roll.matchup?.amount ?? 0;
+  const matchup = m === 0 ? "" : ` ${m < 0 ? "-" : "+"} ${Math.abs(m)} matchup`;
+  return `${roll.die}${mod}${matchup} = ${roll.total} vs Guard ${roll.tn}`;
 }
 
 /** The stat a roll used, as a word, or null. */
@@ -106,7 +115,8 @@ export function hurtWords(hurt: NonNullable<Swing["hurt"]>): string {
 export function swingText(swing: Swing): string {
   const hit = swing.roll.result === "hit" || swing.roll.result === "success";
   const after = hit && swing.hurt ? ` ${hurtWords(swing.hurt)}` : "";
-  return `${swing.who} rolled ${rollWords(swing.roll)}. ${verdictWord(swing)}${after}`;
+  const matchups = swing.matchups?.length ? ` ${swing.matchups.map((callout) => callout.line).join(" ")}` : "";
+  return `${swing.who} rolled ${rollWords(swing.roll)}.${matchups} ${verdictWord(swing)}${after}`;
 }
 
 /**
@@ -133,6 +143,9 @@ export function describeBeats(
    * thrown jar, a surge) has no roll open, and gets a line of its own.
    */
   let open: { index: number; swing: Swing } | null = null;
+  // `matchup` beats come just before the roll they moved; the roll itself
+  // carries the same notes, which win when it does.
+  let pending: Callout[] = [];
   const setOpen = (swing: Swing): void => {
     if (!open) return;
     open.swing = swing;
@@ -144,12 +157,15 @@ export function describeBeats(
     switch (event.type) {
       case "roll": {
         const hit = event.roll.result === "hit" || event.roll.result === "success";
+        const matchups = event.roll.matchup ? calloutsOfRoll(event.roll) : pending;
+        pending = [];
         const swing: Swing = {
           who: name(event.roll.characterId),
           roll: event.roll,
           target: event.targetId === undefined ? null : name(event.targetId),
           tier: hit ? (event.tier ?? null) : null,
           hurt: null,
+          ...(matchups.length > 0 ? { matchups } : {}),
         };
         out.push({
           key,
@@ -250,6 +266,9 @@ export function describeBeats(
         if (line) out.push({ key, ...line, environment: true });
         return;
       }
+      case "matchup":
+        pending = [...pending, ...calloutsOf([event])];
+        return;
       case "moved":
       case "walled":
         return;

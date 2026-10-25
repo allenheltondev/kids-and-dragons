@@ -306,6 +306,27 @@ export interface SharedDeviceRecord {
   householdId: string;
 }
 
+const LOCATION_KEY = "kad.location";
+
+/** What the family named its table ("Kitchen table"); "" when it never was. */
+export function loadLocationName(storage: KeyValueStorage = defaultStorage()): string {
+  try {
+    return storage.getItem(LOCATION_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+/** Remember the table's name for next time; an empty name forgets it. */
+export function saveLocationName(name: string, storage: KeyValueStorage = defaultStorage()): void {
+  try {
+    if (name === "") storage.removeItem(LOCATION_KEY);
+    else storage.setItem(LOCATION_KEY, name);
+  } catch {
+    /* the name is a convenience; the game opens without it */
+  }
+}
+
 const SHARED_KEY = "kad.shared";
 
 export function loadSharedDevice(storage: KeyValueStorage = defaultStorage()): SharedDeviceRecord | null {
@@ -441,6 +462,17 @@ export interface SavedJournal {
 
 const JOURNAL_KEY = "kad.journal";
 
+/** The saved copy if `parsed` is a well-formed one read with `deviceToken`, else null. */
+export function validSavedJournal(parsed: unknown, deviceToken: string): SavedJournal | null {
+  if (typeof parsed !== "object" || parsed === null) return null;
+  const p = parsed as Partial<SavedJournal>;
+  if (p.deviceToken !== deviceToken || typeof p.savedAt !== "string") return null;
+  const journal = p.journal;
+  if (typeof journal !== "object" || journal === null || !Array.isArray(journal.heroes)) return null;
+  return { deviceToken, savedAt: p.savedAt, journal };
+}
+
+/** The pre-IndexedDB path (#458), kept for the fallback and the migration. */
 export function loadSavedJournal(
   deviceToken: string,
   storage: KeyValueStorage = defaultStorage(),
@@ -448,11 +480,7 @@ export function loadSavedJournal(
   const raw = storage.getItem(JOURNAL_KEY);
   if (!raw) return null;
   try {
-    const parsed = JSON.parse(raw) as Partial<SavedJournal>;
-    if (parsed.deviceToken !== deviceToken || typeof parsed.savedAt !== "string") return null;
-    const journal = parsed.journal;
-    if (typeof journal !== "object" || journal === null || !Array.isArray(journal.heroes)) return null;
-    return { deviceToken, savedAt: parsed.savedAt, journal };
+    return validSavedJournal(JSON.parse(raw), deviceToken);
   } catch {
     return null;
   }

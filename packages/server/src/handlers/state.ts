@@ -72,5 +72,17 @@ export async function getState(
     events.length === gap && events.every((e, i) => e.seq === sinceSeq + i + 1);
   if (!contiguous) return snapshot();
 
-  return ok({ seq: state.seq, events });
+  // A replay is the protocol's messages and nothing more. The log row also
+  // holds who acted, when, and the intent as it was sent, which no client
+  // reads and which would otherwise ride every reconnect to every screen.
+  return ok({
+    seq: state.seq,
+    events: events.map(({ runId, seq, patch, presentation, progression }) => ({
+      runId,
+      seq,
+      patch,
+      ...(presentation ? { presentation } : {}),
+      ...(progression ? { progression } : {}),
+    })),
+  });
 }

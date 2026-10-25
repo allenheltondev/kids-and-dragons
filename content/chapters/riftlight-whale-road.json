@@ -38,7 +38,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -62,7 +62,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -86,7 +86,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -114,7 +114,7 @@
       "type": "rest",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -140,7 +140,7 @@
       "type": "rest",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -159,7 +159,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -189,7 +189,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -219,7 +219,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -243,7 +243,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -268,7 +268,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -292,7 +292,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -316,7 +316,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -340,7 +340,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -365,7 +365,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -389,7 +389,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -413,7 +413,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -447,7 +447,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -475,7 +475,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -503,7 +503,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -544,7 +544,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -572,7 +572,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -601,7 +601,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -635,7 +635,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -669,7 +669,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -697,7 +697,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -726,7 +726,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -760,7 +760,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -794,7 +794,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -824,7 +824,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -848,7 +848,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -872,7 +872,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         }
       ],
@@ -908,7 +908,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -932,7 +932,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -957,7 +957,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -981,7 +981,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1005,7 +1005,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1029,7 +1029,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1054,7 +1054,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1078,7 +1078,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1102,7 +1102,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1132,7 +1132,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1156,7 +1156,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1180,7 +1180,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         }
       ],
@@ -1206,7 +1206,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1230,7 +1230,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1255,7 +1255,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1279,7 +1279,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1303,7 +1303,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1327,7 +1327,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1352,7 +1352,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1376,7 +1376,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1400,7 +1400,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1430,7 +1430,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1454,7 +1454,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1478,7 +1478,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1512,7 +1512,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1540,7 +1540,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1581,7 +1581,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1609,7 +1609,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1637,7 +1637,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1663,9 +1663,10 @@
     },
     "whale_choice_2_check": {
       "type": "check",
+      "tags": ["sneak"],
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1706,7 +1707,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1734,7 +1735,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1762,7 +1763,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1792,7 +1793,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1816,7 +1817,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -1840,11 +1841,11 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -1874,11 +1875,11 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -1902,11 +1903,11 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -1943,11 +1944,11 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -1971,11 +1972,11 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -1999,11 +2000,11 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -2027,11 +2028,11 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -2068,11 +2069,11 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -2096,11 +2097,11 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -2124,11 +2125,11 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -2158,11 +2159,11 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -2186,11 +2187,11 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -2214,11 +2215,11 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -2248,11 +2249,11 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -2283,11 +2284,11 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/new_island_keeper",
           "name": "New keeper"
         },
         {
@@ -2318,7 +2319,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -2346,7 +2347,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -2375,7 +2376,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
@@ -2399,7 +2400,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "cast/kitsune_temple_keeper",
+          "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
