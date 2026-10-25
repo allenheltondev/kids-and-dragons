@@ -914,6 +914,18 @@
         "when": {
           "completed": "bone-yard"
         }
+      },
+      "departure-to-bridge": {
+        "from": "riftseekers-departure",
+        "to": "ashspan-bridge",
+        "kind": "sideways",
+        "label": "Take the long marked bank road to Ashspan Bridge"
+      },
+      "bridge-to-shore": {
+        "from": "ashspan-bridge",
+        "to": "frostfang-shore",
+        "kind": "sideways",
+        "label": "Walk the upper bank road to Frostfang Shore"
       }
     },
     "facts": {
