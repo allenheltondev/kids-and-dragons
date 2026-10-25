@@ -773,6 +773,13 @@
           ],
           "introduces": {}
         },
+        "kid_burrow": {
+          "requires": [
+            "goat",
+            "wet_clothes"
+          ],
+          "introduces": {}
+        },
         "prints": {
           "requires": [
             "footprints",
@@ -964,6 +971,15 @@
         "settle_lull": {
           "requires": [
             "herd",
+            "lead_goat"
+          ],
+          "introduces": {}
+        },
+        "herd_play": {
+          "requires": [
+            "herd",
+            "goat",
+            "herder",
             "lead_goat"
           ],
           "introduces": {}
@@ -1180,6 +1196,13 @@
           ],
           "introduces": {}
         },
+        "shelf_cross": {
+          "requires": [
+            "ledge_stream",
+            "herder"
+          ],
+          "introduces": {}
+        },
         "ledge_done": {
           "requires": [
             "ledge_stream",
@@ -1251,6 +1274,16 @@
           ],
           "introduces": {
             "hollow_found": "Now you can see the hollow"
+          }
+        },
+        "crust_hold": {
+          "requires": [
+            "drift",
+            "goat",
+            "rope"
+          ],
+          "introduces": {
+            "snow_lip": "a lip of snow"
           }
         },
         "cairn": {
