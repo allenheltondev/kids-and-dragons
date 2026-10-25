@@ -6164,20 +6164,6 @@
             "cloud_whales": "cloud whales"
           }
         },
-        "thimble_chart": {
-          "requires": [
-            "thimble",
-            "fenwick"
-          ],
-          "introduces": {}
-        },
-        "fenwick_flags": {
-          "requires": [
-            "thimble",
-            "fenwick"
-          ],
-          "introduces": {}
-        },
         "windbreak_rest": {
           "requires": [
             "temple_keeper",
@@ -6333,6 +6319,31 @@
             "temple_keeper",
             "seren",
             "thimble"
+          ],
+          "introduces": {}
+        },
+        "wisps": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "wisp_fight": {
+          "requires": [],
+          "introduces": {}
+        },
+        "wisps_shooed": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "wisps_rescued": {
+          "requires": [
+            "temple_keeper",
+            "pip"
           ],
           "introduces": {}
         },
