@@ -6,7 +6,7 @@
   "title": "A Way Back Uphill",
   "biome": "frostfang_peaks",
   "music": "riftlight-paths",
-  "estimatedMinutes": 8,
+  "estimatedMinutes": 34,
   "xpAward": 140,
   "entry": "bank",
   "plate": {
@@ -22,6 +22,16 @@
         "flag": "got_the_griffins_ladder"
       },
       {
+        "id": "firm_ladder",
+        "label": "Set the ladder on firm ground",
+        "flag": "anchored_the_ladder"
+      },
+      {
+        "id": "goats",
+        "label": "Bring the stranded goats ashore",
+        "flag": "brought_goats_ashore"
+      },
+      {
         "id": "climb_up",
         "label": "Climb up toward the pass",
         "flag": "climbed_the_griffins_ladder"
@@ -31,11 +41,55 @@
   "scenes": {
     "bank": {
       "type": "story",
-      "narration": "You are on the east bank under Frostfang, close enough to see the broken shelf above. A griffin on a low ridge spots your party. \"The path to the pass starts up here,\" she calls. \"Are all of you here? I can lower a ladder.\"",
+      "narration": "You crawl onto the east bank under Frostfang, wet to the whiskers. High above, the broken shelf hangs like a bitten cracker. Behind you the river is climbing the stones, one pebble at a time. A griffin on a low ridge has been watching. \"I am Tamsin! I keep the river line for the aerie,\" she calls. \"The path to the pass starts up here, but the water is rising. Are all of you here? I can lower a ladder.\" Tonight you need a dry way back uphill, toward the mountain pass called the Cairnstep.",
       "choices": [
         {
           "id": "continue",
           "label": "Show her everyone is safe",
+          "icon": "hand",
+          "goto": "count"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "count": {
+      "type": "choice_point",
+      "narration": "\"Good!\" calls Tamsin. \"Stay right there. My ladder is stuck under a rock, and I need a minute to free it.\" The water licks at your boots. A minute is not long. Your rope is wet and tangled, and your packs are sitting right where the river wants them. What comes first?",
+      "choices": [
+        {
+          "id": "rope",
+          "label": "Wring out the rope and coil it",
+          "icon": "hand",
+          "goto": "count_rope"
+        },
+        {
+          "id": "packs",
+          "label": "Carry the packs above the waterline",
+          "icon": "hand",
+          "goto": "count_packs"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "count_rope": {
+      "type": "story",
+      "narration": "You squeeze the rope and pick the swollen knots loose with your thumbs. A tiny silver fish flips out of a loop and flops back into the river. It looks offended. Soon the rope sits in a neat coil, like a sleeping snake that has decided to be friendly.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look up at Tamsin",
           "icon": "hand",
           "goto": "help"
         }
@@ -45,35 +99,63 @@
           "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rope_coiled"
+        }
       ]
+    },
+    "count_packs": {
+      "type": "story",
+      "narration": "You carry the packs up to a flat rock, one by one, and line them up like sleepy dogs. One pack goes glug when you lift it. You pour out a cupful of river and one very confused pebble. Now nothing can float away if the water climbs another step.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look up at Tamsin",
+          "icon": "hand",
+          "goto": "help"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "help": {
       "type": "choice_point",
-      "narration": "The griffin lowers a rope ladder onto the bank. You can climb straight toward the cairned pass, or first help her move its bottom rung clear of the rising water.",
+      "narration": "Tamsin's ladder pops free. She lowers the rope ladder down the cliff, and its bottom rung swings just above the water. \"I can hold the top, but I cannot fix the bottom,\" she calls. \"If the foot is not on firm ground, the first climber will swing like the clapper in a bell. Can you settle it?\"",
       "choices": [
-        {
-          "id": "climb",
-          "label": "Climb toward the pass",
-          "icon": "hand",
-          "goto": "climb",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "climbed_the_griffins_ladder"
-            }
-          ]
-        },
         {
           "id": "help",
           "label": "Move the ladder to firmer ground",
           "icon": "hand",
           "goto": "ladder"
-        }
-      ],
-      "onEnter": [
+        },
         {
-          "type": "setFlag",
-          "flag": "got_the_griffins_ladder"
+          "id": "lash",
+          "label": "Lash the ladder's foot to a boulder",
+          "icon": "hand",
+          "goto": "lash_foot"
+        },
+        {
+          "id": "brace",
+          "label": "Use brace to hold the ladder steady",
+          "icon": "hand",
+          "goto": "brace_foot",
+          "requiresClass": "thornguard"
+        },
+        {
+          "id": "smash",
+          "label": "Use smash to set the foot on the rock",
+          "icon": "hand",
+          "goto": "smash_foot",
+          "requiresSpecies": "bigfoot"
         }
       ],
       "cast": [
@@ -81,21 +163,1526 @@
           "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_the_griffins_ladder"
+        }
       ]
     },
     "ladder": {
       "type": "story",
-      "narration": "You shift the bottom rung onto a dry rock. The griffin braces the top until the last friend is off the bank. \"Better for the next travelers too,\" she says.",
+      "narration": "You and your friends take hold of the foot of the ladder. It is heavier than it looks, and the wet rope is slippery as a fish. A flat dry rock sits a few steps up the shingle. \"On three,\" Tamsin calls from above. \"One, two, and heave!\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Heave together",
+          "icon": "might",
+          "goto": "haul_foot"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "haul_foot": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Everyone grab the foot of the ladder and heave it onto the flat rock together.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "foot_set",
+        "narration": "The foot slides onto the flat rock with a crunch, and every one of you was pulling.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "foot_firm"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "foot_set",
+        "narration": "The foot slips back and the bottom rung bumps your shins. You settle for a rock that is only mostly dry.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "lash_foot": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Tie the ladder's foot to the boulder with a knot that will hold.",
+      "narration": "You take the free end of your rope and loop it around a boulder. There are a great many knots in the world, and you know a few of them. One of them might even be useful.",
+      "onSuccess": {
+        "goto": "foot_set",
+        "narration": "The knot pulls tight, and the foot of the ladder stops swinging.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "foot_firm"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "foot_set",
+        "narration": "The knot is a clumsy lump, but it holds the foot to the boulder. The ladder will wobble a bit."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "brace_foot": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Use brace to hold the ladder steady while the team sets its foot. The hero with brace helps; choose who leads the lift.",
+      "narration": "A thornguard knows how to stand firm so a friend can lean on them. That is what brace is for. One of you plants both feet on the shingle and holds the foot of the ladder still, while the rest of the party walks it onto the flat rock.",
+      "onSuccess": {
+        "goto": "foot_set",
+        "narration": "The foot settles on the rock like a hen on an egg.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "foot_firm"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "foot_set",
+        "narration": "The foot settles, but with a wobble. It will have to do."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "smash_foot": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Use smash to lift the ladder's foot onto the rock. The hero with smash helps; choose who leads the team.",
+      "narration": "A bigfoot can lift enormous things. That is what smash is for. One of you scoops up the foot of the ladder like a loaf of bread, and the rest of the party guides it to the flat rock.",
+      "onSuccess": {
+        "goto": "foot_set",
+        "narration": "The foot lands on the rock with a thump that shakes the pebbles.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "foot_firm"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "foot_set",
+        "narration": "The foot lands a bit crooked. It will have to do."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "foot_set": {
+      "type": "story",
+      "narration": "The foot of the ladder stands on the flat rock and does not wobble at all. Tamsin tests it with one claw and gives a happy squawk. \"Now it is a real ladder,\" she says. \"Let us test it. Somebody hold it, and somebody climb three rungs.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Test the ladder",
           "icon": "hand",
-          "goto": "climb",
+          "goto": "ladder_hold"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "anchored_the_ladder"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "notFlag": "foot_firm"
+          },
+          "replace": true,
+          "text": "The foot of the ladder stands on the rock, but it wobbles when Tamsin tests it with one claw. \"It will do for careful climbers,\" she says. \"Let us test it. Somebody hold it, and somebody climb three rungs.\""
+        }
+      ]
+    },
+    "ladder_hold": {
+      "type": "interaction",
+      "narration": "The ladder hangs from Tamsin's claws and rests on its rock. It looks fine. Looking fine and being fine are different things, as every griffin knows. One of you will climb a few rungs, and the others will hold the ladder still.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the ladder steady while your friend climbs three rungs.",
+        "supportLabel": "Hold the ladder",
+        "actionLabel": "Climb three rungs"
+      },
+      "onSuccess": {
+        "goto": "driftline",
+        "narration": "Three rungs up, three rungs down, and not a wobble. \"Good ladder,\" says Tamsin. \"Now look along the shore. The river has tipped out its pockets.\""
+      },
+      "onFailure": {
+        "goto": "driftline",
+        "narration": "The ladder gives a small wiggle, and the climber hops down. Tamsin holds the top tight with one claw. \"It will do,\" she says. \"Now look along the shore. The river has tipped out its pockets.\""
+      },
+      "onAssisted": {
+        "goto": "driftline",
+        "narration": "You wedge a stone under the rung and everyone holds on. Three rungs, no wobble. \"Now look along the shore,\" says Tamsin. \"The river has tipped out its pockets."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "driftline": {
+      "type": "choice_point",
+      "narration": "The river really has tipped out its pockets. There is driftwood in heaps, one lonely boot, and a big net of hay tied up in yeti knots. The net bobs at the water's edge, ready to float away again. \"Hay for the herd!\" says Tamsin. \"It came from upstream. If it floats off now, it is gone for good.\"",
+      "choices": [
+        {
+          "id": "hook",
+          "label": "Hook the net with a driftwood pole",
+          "icon": "hand",
+          "goto": "net_hook"
+        },
+        {
+          "id": "drag",
+          "label": "Wade in and drag the net out",
+          "icon": "might",
+          "goto": "net_drag"
+        },
+        {
+          "id": "lasso",
+          "label": "Lasso the net with your coiled rope",
+          "icon": "hand",
+          "goto": "net_lasso",
+          "requiresFlag": "rope_coiled"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "net_hook": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Hook the net with the pole and draw it in.",
+      "narration": "You pick a long driftwood pole with a fork at one end, like a giant finger. The net keeps bobbing just out of reach.",
+      "onSuccess": {
+        "goto": "net_saved",
+        "narration": "The fork catches a knot, and the net glides in like a sleepy seal.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "hay_saved"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "net_saved",
+        "narration": "The pole slips and the net spins away. You snatch a few bundles of hay out of the spray, which is better than none."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "net_drag": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Drag the heavy net out of the river together.",
+      "narration": "You wade in up to your knees and grab the knots. The net is full of water and does not want to leave the river.",
+      "onSuccess": {
+        "goto": "net_saved",
+        "narration": "The net comes out with a great slurp, and you all fall over in the gravel. The hay is safe.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "hay_saved"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "net_saved",
+        "narration": "The river wins the tug of war. You save only one end of the net, with a few bundles of hay inside."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "net_lasso": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Lasso the net and pull it in with the dry coil.",
+      "narration": "Your rope is coiled and ready. You twirl the loop once, twice, and let it fly.",
+      "onSuccess": {
+        "goto": "net_saved",
+        "narration": "The loop drops over the net like a hat on a head. You haul it in, and the hay is safe.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "hay_saved"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "net_saved",
+        "narration": "The loop lands a little short. You reel in only one end of the net, with a few bundles inside."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "net_saved": {
+      "type": "story",
+      "narration": "Whatever hay you have smells of sweet grass and wet wool. As you gather it, you hear a very small bell, and this time you see where it comes from. Out on a gravel bar in the river stand three snowhorn goats, huddled together, with the smallest one in the middle. \"The herd's,\" says Tamsin. \"They came down the grazing route before the water cut it off. They will not swim, and I cannot carry a goat.\" A small pouch has come loose from the net's knots. It holds five coins. Tamsin drops a supper bundle down to you. \"For the goats, or for you,\" she says.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the gravel bar",
+          "icon": "eye",
+          "goto": "bar"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "onEnter": [
+        {
+          "type": "grantCoins",
+          "amount": 5
+        },
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
+        }
+      ]
+    },
+    "bar": {
+      "type": "choice_point",
+      "narration": "The gravel bar sits in the middle of a brown stream that was not there this morning. It is knee deep and quick. The goats stare at you. The smallest one sneezes. How will you reach them?",
+      "choices": [
+        {
+          "id": "wade",
+          "label": "Wade across on a rope line, all together",
+          "icon": "hand",
+          "goto": "bar_wade"
+        },
+        {
+          "id": "stones",
+          "label": "Lay flat stones as stepping stones",
+          "icon": "hand",
+          "goto": "bar_stones"
+        },
+        {
+          "id": "fly",
+          "label": "Use skyward or glide to carry a rope across",
+          "icon": "wing",
+          "goto": "bar_fly",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        },
+        {
+          "id": "leap",
+          "label": "Use leap to jump the stream with a rope",
+          "icon": "arrow",
+          "goto": "bar_leap",
+          "requiresSpecies": "manticore"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "bar_wade": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Everyone grip the rope and wade across the stream together.",
+      "narration": "You tie one end of the rope around the nearest big rock, and everyone takes hold. The water is cold enough to make your teeth sing.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "bar_reached",
+        "narration": "You climb out on the gravel dripping and cheering. Nobody let go."
+      },
+      "onFailure": {
+        "goto": "bar_reached",
+        "narration": "A hidden hole dunks you to the middle. You all come up sputtering, still holding the rope.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "bar_stones": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "The sharpest eyes lay a path of flat stones across the stream, one at a time.",
+      "narration": "Flat stones lie all over the shore, like dropped plates. The sharpest eyes pick the shallow spots, and the others hand over the biggest stones.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "bar_reached",
+        "narration": "Stone by stone, the path grows. The last one lands on the bar with a clack."
+      },
+      "onFailure": {
+        "goto": "bar_reached",
+        "narration": "One stone rocks and tips you in. You finish the path wet to the knees.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "bar_fly": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Use skyward or glide to carry a rope across the stream. The hero with wings helps; choose who leads.",
+      "narration": "A griffin can fly up and read a river from above. A dragonling can glide over water the party cannot walk through. One way or the other, a rope goes over the stream, and the rest of you follow it.",
+      "onSuccess": {
+        "goto": "bar_reached",
+        "narration": "The line sags, then tightens. The rest of you cross it hand over hand."
+      },
+      "onFailure": {
+        "goto": "bar_reached",
+        "narration": "The line sags too low, and everyone gets a wet ride across the middle.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "bar_leap": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Use leap to jump the stream with a rope. The hero with leap helps; choose who leads.",
+      "narration": "A manticore can cross a gap in a single bound, with a rope held in its teeth. One bound is all it takes.",
+      "onSuccess": {
+        "goto": "bar_reached",
+        "narration": "One big bound, and the rope is across. The rest of you cross it hand over hand."
+      },
+      "onFailure": {
+        "goto": "bar_reached",
+        "narration": "The bound lands short in the shallows, but the rope still reaches. You cross it with wet boots.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "bar_reached": {
+      "type": "story",
+      "narration": "You stand on the gravel bar, and the goats lean away from you, all horns and worry. The biggest goat has a cracked horn and a very disapproving face. The smallest wears a tiny bell on a faded ribbon, and the bell jingles every time it shivers. They are cold, wet and cross. And between you and them, a pair of glassback crabs, each the size of a wheelbarrow, rattle their shells. Their backs shine like windows. The flood washed out their burrow, and they have decided this gravel bar is now their house. They clack a warning, and they are very sure about it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Settle things with the crab",
+          "icon": "shield",
+          "goto": "bar_crab"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "discovers": [
+        "creature.snowhorn_goat"
+      ]
+    },
+    "bar_crab": {
+      "type": "encounter",
+      "map": "ford",
+      "narration": "The glassback crabs clack their claws and sidle across the gravel. Their shells are thick, so be patient. They do not want to hurt anyone. They want their house back, and a house needs a doorstep.",
+      "enemies": [
+        {
+          "id": "crab",
+          "creature": "glassback_crab"
+        }
+      ],
+      "onVictory": {
+        "goto": "bar_carry",
+        "narration": "The crabs tuck in their claws and clink into a new burrow under the rocks. One looks out, satisfied. In the gravel they leave behind a smooth, lucky-looking stone, which you pocket.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "luckstone",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "bar_carry",
+        "narration": "Their shells are just too tough. You stumble back, wet and puffing, and Tamsin whistles a loud call from the ridge. The crabs huff and sidle off to sulk. You lose your breath and some of the afternoon.",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "crab_won_the_bar"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "bar_carry": {
+      "type": "interaction",
+      "narration": "The smallest goat cannot wade a stream that deep. You lay it in a sling made of rope, with a friend on each side. The little goat jingles in protest. The big goats watch every step.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Raise or lower your side until the goat rides level.",
+        "objectLabel": "the smallest goat",
+        "actionLabel": "Carry the goat"
+      },
+      "onSuccess": {
+        "goto": "goats",
+        "narration": "The sling stays level all the way along the line. The little goat jingles like a happy doorbell."
+      },
+      "onFailure": {
+        "goto": "goats",
+        "narration": "The sling tips, and the little goat paddles the last bit itself, snorting. It is wet, offended, and fine."
+      },
+      "onAssisted": {
+        "goto": "goats",
+        "narration": "You steady the sling together, a little at a time, until the goat rides level."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "goats": {
+      "type": "choice_point",
+      "narration": "The smallest goat is safe in its sling. The two big goats are not so sure about the water. The biggest goat stamps. How will you bring them over?",
+      "choices": [
+        {
+          "id": "line",
+          "label": "Walk them over, one friend to each goat",
+          "icon": "hand",
+          "goto": "goat_line"
+        },
+        {
+          "id": "lead",
+          "label": "Lead the biggest goat first and let the other follow",
+          "icon": "heart",
+          "goto": "goat_lead"
+        },
+        {
+          "id": "mend",
+          "label": "Use mend on the biggest goat's sore knee",
+          "icon": "heart",
+          "goto": "goat_mend",
+          "requiresSpecies": "unicorn"
+        },
+        {
+          "id": "song",
+          "label": "Use a songkeeper's lullaby to calm them",
+          "icon": "note",
+          "goto": "goat_song",
+          "requiresClass": "songkeeper"
+        },
+        {
+          "id": "bait",
+          "label": "Tempt them across with the supper bundle",
+          "icon": "cake",
+          "goto": "goat_bait",
+          "requiresItem": "supper_bundle",
           "effects": [
             {
+              "type": "takeItem",
+              "itemId": "supper_bundle"
+            },
+            {
               "type": "setFlag",
-              "flag": "climbed_the_griffins_ladder"
+              "flag": "fed_the_goats"
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "goat_line": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Everyone take a goat by the ruff and walk it across, nice and slow.",
+      "narration": "Each big goat gets a friend. You hold a woolly ruff in one hand and the rope in the other. The goats plant their hooves like small, hairy anchors.",
+      "roller": "all",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "goat_back",
+        "narration": "Hoof by hoof, the goats come across. The biggest goat even looks pleased about it."
+      },
+      "onFailure": {
+        "goto": "goat_back",
+        "narration": "The goats balk halfway and splash everybody. They get across in the end, by pushing past you.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "goat_lead": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Coax the biggest goat into the water and let the other one follow its boss.",
+      "narration": "Goats follow their boss. The biggest goat has a cracked horn and an opinion about water. You walk beside it, murmuring, with a hand on its back.",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "goat_back",
+        "narration": "The biggest goat huffs, squares its shoulders, and wades in like a king. The other goat trots after it."
+      },
+      "onFailure": {
+        "goto": "goat_back",
+        "narration": "The biggest goat refuses twice, then charges in all at once and takes everybody with it.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "goat_mend": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Use mend on the smallest goat's sore knee. The hero with mend helps; choose who leads.",
+      "narration": "A unicorn has a gentle touch that makes a scrape stop stinging. It lays a hoof on the big goat's sore knee, and the other goat watches with its ears up.",
+      "onSuccess": {
+        "goto": "goat_back",
+        "narration": "The big goat stands on its mended knee and trots into the water. The other follows, ears forward."
+      },
+      "onFailure": {
+        "goto": "goat_back",
+        "narration": "The knee feels better, but the goats still hate the water. They cross with a lot of complaining.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "goat_song": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Use a lullaby to calm the goats. The songkeeper helps; choose who leads.",
+      "narration": "A songkeeper hums a slow tune that sounds like a blanket. The biggest goat sits down to listen.",
+      "onSuccess": {
+        "goto": "goat_back",
+        "narration": "The song rolls over the water. The goats stop stamping and follow the tune across."
+      },
+      "onFailure": {
+        "goto": "goat_back",
+        "narration": "The song is lovely, but the stream is loud. The goats cross anyway, slowly, with their eyes shut.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "goat_bait": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Hold out the supper and lead the goats across, one sniff at a time.",
+      "narration": "Goats will go anywhere for bread and cheese. You unwrap the supper bundle, and three heads turn at once. Three noses begin to twitch.",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "goat_back",
+        "narration": "The goats follow the smell across the stream like a very hairy parade. The biggest one gets the crust."
+      },
+      "onFailure": {
+        "goto": "goat_back",
+        "narration": "The goats lunge for the bundle, splash everyone, and eat it on the shore. They get across, which was the point.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "goat_back": {
+      "type": "story",
+      "narration": "The goats scramble up the shingle and shake themselves like dogs, spraying everybody. The smallest goat sneezes on the ladder. The biggest goat stamps twice, which seems to mean thank you. \"There,\" says Tamsin. \"Now the herd has all its horns again.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Rub your cold hands together",
+          "icon": "flame",
+          "goto": "fire"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "brought_goats_ashore"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "hay_saved"
+          },
+          "text": "Then the biggest goat spots the hay and goes straight for it, which is a very goat thing to do."
+        }
+      ]
+    },
+    "fire": {
+      "type": "choice_point",
+      "narration": "The goats are shivering, and so are you. Tamsin points to the lee of a big rock, out of the wind. \"Nobody climbs my ladder with stiff fingers,\" she says. \"Cold rungs are slippery rungs.\" Driftwood lies all around, but it is as wet as everything else. How will you warm up?",
+      "choices": [
+        {
+          "id": "build",
+          "label": "Build a fire in the lee of the big rock",
+          "icon": "flame",
+          "goto": "fire_build"
+        },
+        {
+          "id": "huddle",
+          "label": "Huddle with the goats and rub everyone dry",
+          "icon": "heart",
+          "goto": "fire_huddle"
+        },
+        {
+          "id": "smash",
+          "label": "Use smash to split a log into dry kindling",
+          "icon": "fist",
+          "goto": "fire_smash",
+          "requiresSpecies": "bigfoot"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "fire_build": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Find dry wood, shelter the spark, and light a fire.",
+      "narration": "Wet wood will not light, but the inside of a log is often dry. You break the thickest pieces open. Out come little curls of dry wood, like shavings.",
+      "onSuccess": {
+        "goto": "rest_fire",
+        "narration": "A tiny flame catches, grows, and crackles. Every face turns toward it."
+      },
+      "onFailure": {
+        "goto": "rest_fire",
+        "narration": "The first spark fizzles, and so does the second. In the end you get a smoky, grumpy fire that warms you a little."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "fire_huddle": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Rub the goats and each other dry, and share the warmth.",
+      "narration": "You do not need a fire to get warm. You press in close and rub everybody down with a handful of hay and your own sleeves.",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "rest_fire",
+        "narration": "Goats are surprisingly hot. Soon everyone is toasty, and the smallest goat is asleep on a boot."
+      },
+      "onFailure": {
+        "goto": "rest_fire",
+        "narration": "Everyone gets rubbed a bit dry and stays a bit damp. It is the thought that warms you."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "fire_smash": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Use smash to split a log into dry kindling. The hero with smash helps; choose who leads.",
+      "narration": "A bigfoot can break a barrier or lift something enormous. One whack on a log, and out spill dry splinters from the middle.",
+      "onSuccess": {
+        "goto": "rest_fire",
+        "narration": "The log cracks open like a nut, and the dry heart of it lights at the first spark."
+      },
+      "onFailure": {
+        "goto": "rest_fire",
+        "narration": "The log splits into big, damp lumps. You get a smoky fire that warms you a little."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "rest_fire": {
+      "type": "rest",
+      "narration": "For a few minutes, the shore is cozy. Steam rises from the goats. Steam rises from your socks too, and one sock smells like river pudding. Tamsin watches from her perch with her head on one side. The next thing to do is climb, but nobody has to hurry yet.",
+      "heal": 3,
+      "choices": [
+        {
+          "id": "socks",
+          "label": "Dry your socks by the warm",
+          "icon": "rest",
+          "goto": "rest_socks"
+        },
+        {
+          "id": "aerie",
+          "label": "Ask Tamsin about the aerie",
+          "icon": "ear",
+          "goto": "rest_story"
+        },
+        {
+          "id": "share",
+          "label": "Share a bite of supper with Tamsin and the goats",
+          "icon": "cake",
+          "goto": "rest_share",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "rest_socks": {
+      "type": "story",
+      "narration": "You hang your socks on a stick, and they steam like little flags. The smallest goat eats the corner of one, thoughtfully, and then spits it out. The biggest goat leans on you, warm and damp, and you feel like a very large pillow. It is nice for a minute.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get ready to climb",
+          "icon": "boot",
+          "goto": "surge"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "rest_share": {
+      "type": "story",
+      "narration": "You break the supper into five fair bits, for goats do not like to be left out. Tamsin takes hers with great dignity and then gets cheese in her feathers. Pleased, she digs in her saddle bag and pulls out a bright singing-day ribbon. \"The aerie wears these on feast days,\" she says. \"Wear it for luck.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get ready to climb",
+          "icon": "boot",
+          "goto": "surge"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "songbird_ribbon",
+          "to": "party"
+        }
+      ]
+    },
+    "rest_story": {
+      "type": "story",
+      "narration": "\"Our aerie is above the ridge,\" says Tamsin. \"We keep a pass ledger, a big book of every road through the peaks. Our keeper writes down each new path and each path that closes. This season there is a path in the ledger that was not there before, and he cannot decide whether to believe it.\" She ruffles her wings. \"He needs someone to walk it. You are walking the right way.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get ready to climb",
+          "icon": "boot",
+          "goto": "surge"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "surge": {
+      "type": "choice_point",
+      "narration": "A crack like a giant's knuckle splits the air upriver. A slab of broken shelf has dropped into the water. A brown wave rolls down the shore, fast, with foam on top like a bad hat. \"Ladder! Now!\" shouts Tamsin. The goats see the narrow goat track that zigzags up the scree beside the cliff before you do, and they are already running for it.",
+      "choices": [
+        {
+          "id": "run",
+          "label": "Run for the ladder, all together",
+          "icon": "quick",
+          "goto": "surge_run"
+        },
+        {
+          "id": "chain",
+          "label": "Boost the goats onto their track, then follow",
+          "icon": "might",
+          "goto": "surge_chain"
+        },
+        {
+          "id": "roar",
+          "label": "Use roar to keep everyone moving",
+          "icon": "arrow",
+          "goto": "surge_roar",
+          "requiresSpecies": "manticore"
+        },
+        {
+          "id": "brace",
+          "label": "Use brace to hold the line against the wave",
+          "icon": "shield",
+          "goto": "surge_brace",
+          "requiresClass": "thornguard"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "surge_run": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Everyone run for the ladder before the wave arrives.",
+      "narration": "You run for the foot of the ladder with the wave behind you. The wet shingle slides under your boots like marbles.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "surge_after",
+        "narration": "You reach the ladder as the wave slaps the rocks behind you. Nobody is swept off."
+      },
+      "onFailure": {
+        "goto": "surge_after",
+        "narration": "The wave catches your heels and sloshes you against the cliff. You grab the rungs and hold on."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "surge_chain": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Everyone lift a goat onto the goat track, then jump after it.",
+      "narration": "Goats are quick on scree, but the first step is steep. You boost them onto the track one rump at a time.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "surge_after",
+        "narration": "The last hoof leaves the shingle just as the wave arrives. The goats bound up the track like they own it."
+      },
+      "onFailure": {
+        "goto": "surge_after",
+        "narration": "The wave soaks your boots as you shove the last goat up. It looks back at you with deep reproach."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "surge_roar": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Use roar to keep everyone moving. The hero with roar helps; choose who leads.",
+      "narration": "A manticore can make a very loud noise at exactly the right moment. The roar rolls along the shore, and every goat and friend begins to run.",
+      "onSuccess": {
+        "goto": "surge_after",
+        "narration": "Everybody hears the roar, and nobody argues with it. You are at the ladder before the wave is."
+      },
+      "onFailure": {
+        "goto": "surge_after",
+        "narration": "The roar is loud, but the wave is louder. You get wet to the knees before the rungs."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "surge_brace": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Use brace to hold the line against the wave. The hero with brace helps; choose who leads.",
+      "narration": "A thornguard knows how to stand in front so friends can run behind. One digs in at the foot of the ladder and takes the first slap of the wave.",
+      "onSuccess": {
+        "goto": "surge_after",
+        "narration": "The wave hits the braced line and splits around it. Everyone gets to the ladder with dry elbows."
+      },
+      "onFailure": {
+        "goto": "surge_after",
+        "narration": "The wave is bigger than it looked. The line holds, but everyone gets a shove and a splash."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "surge_after": {
+      "type": "story",
+      "narration": "The wave breaks around the foot of the ladder, which does not move at all. Tamsin lets out a long breath. The goats trot up the track and out of sight. The water settles into a steady, bossy flow a full body length higher, right over the stones where you stood a minute ago.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch for the next wave",
+          "icon": "eye",
+          "goto": "wave_gap"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "variants": [
+        {
+          "when": {
+            "notFlag": "foot_firm"
+          },
+          "replace": true,
+          "text": "The wave slams the foot of the ladder and swings it hard. Tamsin hangs on to the top with both claws, feathers flying. The ladder wobbles back into place. The goats trot up the track and out of sight. The water settles into a steady, bossy flow a full body length higher, right over the stones where you stood a minute ago."
+        }
+      ]
+    },
+    "wave_gap": {
+      "type": "interaction",
+      "narration": "A second, smaller wave sweeps the shore and then draws back with a long hiss. For a moment the stones at the foot of the ladder are bare. \"Wait for it,\" calls Tamsin. \"Wait... wait...\"",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the water to pull back, then tap to run to the ladder.",
+        "actionLabel": "Run!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "ascend",
+        "narration": "You splash across the bare stones and grab the bottom rung with dry feet."
+      },
+      "onFailure": {
+        "goto": "ascend",
+        "narration": "You go a little early and get wet to the knees. Tamsin hauls you in by the collar."
+      },
+      "onAssisted": {
+        "goto": "ascend",
+        "narration": "Tamsin calls the moment, and everyone runs together with dry feet."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "ascend": {
+      "type": "choice_point",
+      "narration": "The ladder is long and the rungs are wet. Above you, Tamsin leans over the edge, and above her is the ridge. The goats are already up there, looking down, as goats do. How will you climb?",
+      "choices": [
+        {
+          "id": "line",
+          "label": "Climb in a line, each friend steadying the next",
+          "icon": "quick",
+          "goto": "climb_line"
+        },
+        {
+          "id": "sling",
+          "label": "Haul the packs up on the rope first, then climb light",
+          "icon": "might",
+          "goto": "climb_sling"
+        },
+        {
+          "id": "wings",
+          "label": "Use skyward or glide to carry the packs up",
+          "icon": "wing",
+          "goto": "climb_wings",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        },
+        {
+          "id": "rally",
+          "label": "Use rally to cheer on tired climbers",
+          "icon": "note",
+          "goto": "climb_rally",
+          "requiresClass": "songkeeper"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "climb_line": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Climb the swaying ladder in a line, each friend steadying the next.",
+      "narration": "You put the lightest climber in front and the strongest at the bottom. Everyone holds the rung ahead and the rope beside it.",
+      "onSuccess": {
+        "goto": "top",
+        "narration": "Hand over hand, rung by rung, the line climbs. The ladder sways, and so do your stomachs, but nobody lets go."
+      },
+      "onFailure": {
+        "goto": "top",
+        "narration": "A rung slips under a boot, and the line swings like a conga line. Everyone hangs on and climbs the rest with shaky knees."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "climb_sling": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Haul the packs up on the rope, then climb with free hands.",
+      "narration": "Packs are heavy on a ladder, and wet packs are heavier. You tie them to the rope in a big bundle for Tamsin to haul.",
+      "onSuccess": {
+        "goto": "top",
+        "narration": "The packs go up in a swinging bundle, and Tamsin catches them one by one. Then you climb with nothing but yourselves."
+      },
+      "onFailure": {
+        "goto": "top",
+        "narration": "The bundle swings into the cliff with a bonk, and a pack opens. You catch your things as you climb."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "climb_wings": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Use skyward or glide to carry the packs up. The hero with wings helps; choose who leads.",
+      "narration": "Wings are good for more than flying yourself. A griffin or a dragonling carries the packs up in short hops, and the rest of the party climbs with free hands.",
+      "onSuccess": {
+        "goto": "top",
+        "narration": "The packs float up in a few quick flights, and then you climb with free hands."
+      },
+      "onFailure": {
+        "goto": "top",
+        "narration": "A pack slips and falls with a splash, and then you fish it out. It is a bit wetter than before."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "climb_rally": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Use rally to cheer on tired climbers. The songkeeper helps; choose who leads.",
+      "narration": "A songkeeper can lift a friend who is down. A quick climbing song, and tired arms find some spring in them.",
+      "onSuccess": {
+        "goto": "top",
+        "narration": "A bright rally goes up the ladder, and every climber finds an extra rung of energy."
+      },
+      "onFailure": {
+        "goto": "top",
+        "narration": "The rally is cheerful, but the rungs are still wet. You get to the top with sore arms."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "top": {
+      "type": "story",
+      "narration": "You haul yourself over the edge and lie on the rock, panting. The ridge is dry. Really dry! Tamsin sits beside you, grinning with her whole beak. Along the ridge, a narrow dry path winds toward a notch in the peaks, with stacked stones lining it like stairs. \"The Cairnstep,\" she says. \"The keeper at the pass is a griffin called Brask. He keeps the ledger, and he has more ink on his feathers than on the page.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Pull up the rope and look at the ladder",
+          "icon": "hand",
+          "goto": "safety"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "climbed_the_griffins_ladder"
+        }
+      ]
+    },
+    "safety": {
+      "type": "choice_point",
+      "narration": "Tamsin peers over the edge at the ladder. \"One more thing, and then I will let you go. The river will be up again tomorrow, and the next travelers will be wetter and more tired than you. A ladder is good. A ladder with a handrail is better.\" She drops the end of a long rope beside you. \"Where should it be tied?\"",
+      "choices": [
+        {
+          "id": "boulder",
+          "label": "Tie the handrail to the old boulder",
+          "icon": "hand",
+          "goto": "safety_boulder"
+        },
+        {
+          "id": "peg",
+          "label": "Wedge a driftwood peg into the crack and tie to that",
+          "icon": "might",
+          "goto": "safety_peg"
+        },
+        {
+          "id": "buy",
+          "label": "Buy an iron peg from Tamsin for 3 coins",
+          "icon": "key",
+          "goto": "safety_buy",
+          "when": {
+            "coins": {
+              "min": 3
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 3
             }
           ]
         }
@@ -105,12 +1692,216 @@
           "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
+      ],
+      "art": "scenes/riftlight/cairnstep"
+    },
+    "safety_boulder": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Tie the handrail to the boulder with a knot that will hold a tired traveler.",
+      "narration": "The old boulder at the top of the ladder is as wide as a table and as steady as a hill. It has been waiting a very long time for someone to tie a rope to it.",
+      "onSuccess": {
+        "goto": "safety_done",
+        "narration": "The knot is round, fat and neat. Tamsin tugs it with all her weight and it does not budge."
+      },
+      "onFailure": {
+        "goto": "safety_done",
+        "narration": "The knot slips on the first tug. You tie it again, a bigger one this time, and it holds well enough for careful hands."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
+    },
+    "safety_peg": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Everyone pull on the peg to make sure it will not slip.",
+      "narration": "You find a thick stick of driftwood and hammer it into a crack with a rock. Thunk, thunk, thunk. Then you tie the rope around it.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "safety_done",
+        "narration": "The peg bites the crack and stays put, even when all of you hang off the rope. Tamsin looks impressed."
+      },
+      "onFailure": {
+        "goto": "safety_done",
+        "narration": "The peg creaks and shifts. You wedge in a second one beside it, and then it holds."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
+    },
+    "safety_buy": {
+      "type": "story",
+      "narration": "Tamsin keeps a sack of iron pegs for just this, and the aerie sells them for a few coins to buy ink. You pay, and she drops the best peg into your hand. It is cold and heavy and rings like a bell. You hammer it deep into the rock, and the rope on it feels as steady as a hill.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Tie off the rope",
+          "icon": "hand",
+          "goto": "safety_done"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
+    },
+    "safety_done": {
+      "type": "story",
+      "narration": "The rope hangs beside the ladder, tight and straight. Tamsin tests it with one claw, then leans on it with her whole chest, which is a lot of griffin. \"Better for the next travelers too,\" she says. \"Somebody will thank you in the dark, and they will not even know your names.\" She hands you a smooth river charm on a cord. \"The aerie gives one to anyone who ties a rail.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Help with the hay",
+          "icon": "hand",
+          "goto": "hay_relay"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep",
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "river_charm",
+          "to": "party"
+        }
+      ]
+    },
+    "hay_relay": {
+      "type": "interaction",
+      "narration": "Tamsin lowers a basket on a rope beside the rail. \"The herd's hay should go up where it is safe,\" she says. \"Pass the bundles along, hand to hand, to the basket.\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the hay bundle and pass it to the next friend.",
+        "objectLabel": "a bundle of hay",
+        "actionLabel": "Pass the hay"
+      },
+      "onSuccess": {
+        "goto": "word",
+        "narration": "The last bundle thumps into the basket, and Tamsin hauls it up with a cheer."
+      },
+      "onFailure": {
+        "goto": "word",
+        "narration": "One bundle splashes into the shallows, but the rest make it. \"Hay is hay,\" says Tamsin."
+      },
+      "onAssisted": {
+        "goto": "word",
+        "narration": "You pass the bundles one at a time, slowly and carefully, until the basket is full."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep",
+      "variants": [
+        {
+          "when": {
+            "notFlag": "hay_saved"
+          },
+          "replace": true,
+          "text": "Tamsin lowers a basket on a rope beside the rail. \"Even a few bundles of hay are worth keeping dry,\" she says. \"Pass them along, hand to hand, to the basket.\""
+        }
+      ]
+    },
+    "word": {
+      "type": "choice_point",
+      "narration": "Tamsin shakes the water off her wings. \"I must stay by the ladder, because more people may come out of that river. But Brask should hear about it from someone who was there. Which news should reach him first?\"",
+      "choices": [
+        {
+          "id": "river",
+          "label": "The river is still climbing",
+          "icon": "drop",
+          "goto": "word_river"
+        },
+        {
+          "id": "goats",
+          "label": "The herd's route is cut, and its goats were stranded",
+          "icon": "map",
+          "goto": "word_goats"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
+    },
+    "word_river": {
+      "type": "story",
+      "narration": "Tamsin nods slowly. \"The river line, yes. If it climbs again tonight, the whole east bank goes under, and so does the old path along it.\" She scratches a small mark on her wing feather. \"I will send the news up on the wind, and Brask will have it before you do.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Take the dry path",
+          "icon": "forward",
+          "goto": "climb"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "told_the_river"
+        }
+      ]
+    },
+    "word_goats": {
+      "type": "story",
+      "narration": "Tamsin nods slowly. \"The herd's route, yes. The ledger has a line for it. It is a short line, but it matters.\" She scratches a small mark on her wing feather. \"I will send the news up on the wind, and Brask will have it before you do.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Take the dry path",
+          "icon": "forward",
+          "goto": "climb"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "told_the_herd"
+        }
       ]
     },
     "climb": {
       "type": "rest",
-      "narration": "At the top of the ladder, the path turns toward the Cairnstep. You can reach the griffins without attempting the shelf again. Your rope and packs are still with you.",
-      "heal": 0,
+      "narration": "The dry path leads away along the ridge, under the peaks of Frostfang. At the end of it, a line of stacked stones climbs toward a notch. Behind you the river mutters, and the ladder sways. You are dry, you are together, and the goats are on their way home. Your rope and packs are still with you. The Cairnstep is next.",
+      "heal": 2,
       "choices": [],
       "outcome": "success",
       "cast": [
@@ -118,7 +1909,8 @@
           "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/cairnstep"
     }
   },
   "voiceGuide": {

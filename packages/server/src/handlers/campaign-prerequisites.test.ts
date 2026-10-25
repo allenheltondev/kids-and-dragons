@@ -160,11 +160,11 @@ describe("a locked campaign", () => {
     const { response, state } = await tryBegin(h, (id) =>
       h.repo.putCampaignProgress(attempt(id, "gems", "active")),
     );
-    // Gems, part-way through, is the only campaign the room can start, so it
-    // is no vote: Begin picks it up, and Rift stays locked beside it.
+    // Gems, part-way through, is the only campaign the lobby offers (continuing
+    // is not choosing), so it is no vote: Begin picks it up.
     expect(response.ok).toBe(true);
     expect((await state()).campaignId).toBe("gems");
-    expect((await state()).campaignOptions?.find((o) => o.id === "rift")?.locked?.reason).toBe("Finish Gems first");
+    expect((await state()).campaignOptions?.map((o) => o.id)).toEqual(["gems"]);
   });
 
   it("stays locked when only some other household finished the prerequisite", async () => {
@@ -178,19 +178,14 @@ describe("a locked campaign", () => {
   it("cannot be voted for, so a vote cannot win a Begin the server would refuse", async () => {
     const h = harness();
     const { householdId } = await seedHousehold(h, 1);
-    // Something else is under way, so the lobby offers two campaigns.
+    // Something else is under way, so the lobby offers that alone.
     await h.repo.putCampaignProgress(attempt(householdId, "gems", "active"));
     const { state, send, ok } = await lobby(h, "rift");
-    expect((await state()).campaignOptions?.map((o) => [o.id, o.locked !== undefined])).toEqual([
-      ["rift", true],
-      ["gems", false],
-    ]);
+    expect((await state()).campaignOptions?.map((o) => [o.id, o.locked !== undefined])).toEqual([["gems", false]]);
 
     const vote = await send("p_1", { type: "VOTE_CAMPAIGN", campaignId: "rift" });
     expect(vote).toMatchObject({ ok: false, error: { code: "ILLEGAL" } });
-    expect(vote.ok ? "" : vote.error?.message).toContain("Finish Gems first");
 
-    await ok("p_1", { type: "VOTE_CAMPAIGN", campaignId: "gems" });
     await ok("p_1", { type: "CONTINUE_CAMPAIGN" });
     expect((await state()).chapterId).toBe("gems-02");
   });
@@ -253,11 +248,13 @@ describe("an unlocked campaign", () => {
     const h = harness();
     const { householdId } = await seedHousehold(h, 1);
     await h.repo.putCampaignProgress(attempt(householdId, "gems", "active", { lastIndex: 0 }));
-    await h.repo.putCampaignProgress(attempt(householdId, "rift", "active", { attemptId: "r_a", lastIndex: 1 }));
+    await h.repo.putCampaignProgress(
+      attempt(householdId, "rift", "active", { attemptId: "r_a", lastIndex: 1, updatedAt: "2026-07-05T18:00:00.000Z" }),
+    );
     const room = await lobby(h, "rift");
+    // The one played most recently is the one offered, and it is not locked.
+    expect((await room.state()).campaignOptions?.map((o) => o.id)).toEqual(["rift"]);
     expect((await room.state()).campaignOptions?.[0]).not.toHaveProperty("locked");
-    // Two campaigns under way, so the table votes for the one it wants.
-    await room.ok("p_1", { type: "VOTE_CAMPAIGN", campaignId: "rift" });
     await room.ok("p_1", { type: "CONTINUE_CAMPAIGN" });
     expect((await room.state()).chapterId).toBe("rift-02");
   });
@@ -277,16 +274,11 @@ describe("replaying the prerequisite (#221, `everCompleted`)", () => {
     const row = await h.repo.getCampaignProgress(householdId, "gems");
     expect(row).toMatchObject({ status: "active", lastIndex: 0, everCompleted: true });
 
-    // A Rift room: Gems is under way, so the table votes, and Rift starts.
+    // A Rift room: Gems is under way and is what the lobby offers; Rift is not
+    // locked, it is just not what the table is continuing.
     const rift = await lobby(h, "rift");
     const options = (await rift.state()).campaignOptions ?? [];
-    expect(options.map((o) => [o.id, o.locked !== undefined])).toEqual([
-      ["rift", false],
-      ["gems", false],
-    ]);
-    await rift.ok("p_1", { type: "VOTE_CAMPAIGN", campaignId: "rift" });
-    await rift.ok("p_1", { type: "CONTINUE_CAMPAIGN" });
-    expect((await rift.state()).chapterId).toBe("rift-01");
+    expect(options.map((o) => [o.id, o.locked !== undefined])).toEqual([["gems", false]]);
   });
 
   it("is kept through a replay that then fails, and by the attempt after it", async () => {
@@ -366,12 +358,11 @@ describe("the lobby's default pick skips a locked campaign (#221)", () => {
     await h.repo.putCampaignProgress(attempt(householdId, "gems", "active"));
     const { state } = await lobby(h, "rift");
     const s = await state();
-    // Rift is the room's campaign, and locked: listed first, but not the pick.
-    expect(s.campaignOptions?.[0]).toMatchObject({ id: "rift", locked: { reason: "Finish Gems first" } });
+    // Rift is the room's campaign, and locked, but Gems is under way: it is the
+    // only one offered, and the pick.
+    expect(s.campaignOptions?.map((o) => o.id)).toEqual(["gems"]);
     expect(s.campaign?.id).toBe("gems");
     expect(lobbyCampaign(s).leader?.id).toBe("gems");
-    // Even with the screens pointed at the locked one, the pick is not it.
-    expect(lobbyCampaign({ ...s, campaign: s.campaignOptions![0]! }).leader?.id).toBe("gems");
   });
 
   it("keeps the old behaviour when every option is locked", () => {
@@ -434,7 +425,7 @@ describe("a listed sequel", () => {
     await h.repo.putCampaignProgress(attempt(householdId, "gems", "complete"));
     await h.repo.putCampaignProgress(attempt(householdId, "rift", "active"));
     const { state } = await lobby(h, "gems");
-    expect((await state()).campaignOptions?.map((o) => o.id)).toEqual(["gems", "rift"]);
+    expect((await state()).campaignOptions?.map((o) => o.id)).toEqual(["rift"]);
   });
 
   it("is not offered without `listed`, as before", async () => {

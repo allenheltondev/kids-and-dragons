@@ -663,6 +663,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
   // here: held upright, one pane shows at a time and the choices are meant to be in reach of the
   // thumb, as they were.
   const promptBox = useRef<HTMLDivElement>(null);
+  const growBox = useRef<HTMLDivElement>(null);
   const sceneId = state?.sceneId ?? null;
   const sideBySide = useSideBySide();
   useEffect(() => {
@@ -823,6 +824,17 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       : (sceneArt ? sceneBackdropUrl(sceneArt) : null) ?? biomeBackdropUrl(chapter.biome);
   const banked = practicing ? 0 : me.character.unspentPoints;
   /*
+   * A point waiting at a Rest stop: opening its page lands on the picker. On a
+   * short phone the picker sat under the identity strip, the room bar and the
+   * notices, a long scroll below the fold, and a kid tapping "Spend your stat
+   * point" saw none of it. Only when the page opens, never on each point spent.
+   */
+  const pointsWaiting = atRest && banked > 0;
+  useEffect(() => {
+    if (!pointsWaiting || showSheet) return;
+    growBox.current?.scrollIntoView?.({ block: "start" });
+  }, [pointsWaiting, showSheet]);
+  /*
    * A party snapshot persisted before `spendableStats` existed has no list at
    * all — `getState` returns the stored JSON verbatim and a member is only
    * re-resolved when something touches it — so a run in flight across a deploy
@@ -955,7 +967,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       <IdentityStrip me={me} />
       {/* The chapter's goal (#356), on every phone with nothing to tap. Not in a fight: a playtest
           wanted the room for the cards, and the fight is the goal's step for now. */}
-      {inChapter && !inEncounter ? <ChapterGoalCard place="phone" /> : null}
+      {/* Not while a point is waiting to be spent: the grow list needs the room, and on a short phone
+          the goal card above it left too little pane to scroll in. */}
+      {inChapter && !inEncounter && !(atRest && banked > 0) ? <ChapterGoalCard place="phone" /> : null}
 
       {/*
         What the world is asking, echoed here.
@@ -1031,7 +1045,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
             leaves the scene, and the point would then wait until the next Rest
             — which may be a different evening. The reward beat goes first. */}
         {atRest && banked > 0 ? (
-          <div className="prompt grow">
+          <div className="prompt grow" ref={growBox}>
             <h3 className="prompt__title">
               <Icon name="levelup" />
               <span>

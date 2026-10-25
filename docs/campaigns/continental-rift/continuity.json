@@ -9,8 +9,67 @@
           "introduces": {
             "exchange": "The Exchange",
             "noodle_stall": "A noodle seller",
-            "snow": "a snowflake"
+            "snow": "a snowflake",
+            "awning": "her awning"
           }
+        },
+        "awning_plan": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "awning_lift": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "awning_tie": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "awning_brace": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "awning_up": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "awning_flap": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "noodle_counter": {
+          "requires": [
+            "noodle_stall"
+          ],
+          "introduces": {
+            "fish_stall": "the fish stall",
+            "gull": "the gull on the post",
+            "early_ship": "that ship"
+          }
+        },
+        "noodle_buy": {
+          "requires": [
+            "noodle_stall"
+          ],
+          "introduces": {}
         },
         "morning": {
           "requires": [
@@ -29,32 +88,43 @@
             "fish_stall",
             "snow"
           ],
-          "introduces": {
-            "white_grass": "stiff white grass"
-          }
+          "introduces": {}
+        },
+        "fish_buckets": {
+          "requires": [
+            "fish_stall"
+          ],
+          "introduces": {}
         },
         "fish_help": {
           "requires": [
             "fish_stall",
-            "noodle_stall",
-            "white_grass"
+            "noodle_stall"
           ],
-          "introduces": {
-            "hoofprints": "wet hoofprints"
-          }
+          "introduces": {}
+        },
+        "fish_slosh": {
+          "requires": [
+            "fish_stall",
+            "noodle_stall"
+          ],
+          "introduces": {}
         },
         "gull": {
           "requires": [
             "gull"
           ],
-          "introduces": {
-            "hoofprints": "A small white hoofprint"
-          }
+          "introduces": {}
         },
         "gull_help": {
           "requires": [
-            "gull",
-            "hoofprints"
+            "gull"
+          ],
+          "introduces": {}
+        },
+        "gull_fed": {
+          "requires": [
+            "gull"
           ],
           "introduces": {}
         },
@@ -63,15 +133,25 @@
             "captain",
             "early_ship"
           ],
-          "introduces": {
-            "chart": "a route chart",
-            "thimble": "Captain Thimble"
-          }
+          "introduces": {}
+        },
+        "chart_pin": {
+          "requires": [
+            "captain"
+          ],
+          "introduces": {}
         },
         "ship_help": {
           "requires": [
-            "chart",
-            "thimble"
+            "captain"
+          ],
+          "introduces": {
+            "brave_whistle": "brave whistle"
+          }
+        },
+        "ship_flap": {
+          "requires": [
+            "captain"
           ],
           "introduces": {}
         },
@@ -80,8 +160,191 @@
             "captain",
             "noodle_stall"
           ],
+          "introduces": {}
+        },
+        "trail_check": {
+          "requires": [
+            "snow"
+          ],
           "introduces": {
-            "moving_rope": "A coil of rope"
+            "hoofprints": "small hoofprints"
+          }
+        },
+        "trail_found": {
+          "requires": [
+            "hoofprints"
+          ],
+          "introduces": {
+            "horn": "a deep horn blows"
+          }
+        },
+        "trail_lost": {
+          "requires": [
+            "hoofprints"
+          ],
+          "introduces": {
+            "horn": "a deep horn blows"
+          }
+        },
+        "delivery": {
+          "requires": [
+            "pilot",
+            "supply_barge"
+          ],
+          "introduces": {
+            "lost_landing": "landing steps hanging crooked",
+            "supper_sacks": "Sacks of potatoes"
+          }
+        },
+        "sack_line": {
+          "requires": [
+            "pilot",
+            "supper_sacks"
+          ],
+          "introduces": {}
+        },
+        "sack_rally": {
+          "requires": [
+            "pilot",
+            "supper_sacks"
+          ],
+          "introduces": {}
+        },
+        "moor_ring": {
+          "requires": [
+            "pilot",
+            "supply_barge"
+          ],
+          "introduces": {}
+        },
+        "moor_wings": {
+          "requires": [
+            "pilot",
+            "supply_barge"
+          ],
+          "introduces": {}
+        },
+        "delivery_sacks": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "saved_supper": "Six crews eating tonight",
+            "moss_jar": "jar of glowing moss"
+          }
+        },
+        "sacks_dropped": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "saved_supper": "Six crews eating tonight"
+          }
+        },
+        "delivery_moor": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "safe_mooring": "a low mooring ring"
+          }
+        },
+        "moor_drift": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "safe_mooring": "the next mooring ring"
+          }
+        },
+        "landing_steps": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_climb": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_prop": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_smash": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_clue": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_slip": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "quay_rest": {
+          "requires": [
+            "pilot",
+            "supper_sacks",
+            "noodle_stall"
+          ],
+          "introduces": {
+            "potato_skins": "warm potato skins",
+            "ladder": "a ladder climbs",
+            "rooftops": "to the rooftops"
+          }
+        },
+        "rookery": {
+          "requires": [
+            "ladder",
+            "rooftops"
+          ],
+          "introduces": {
+            "crows": "crows",
+            "rookery": "Rookery",
+            "crow_sign": "NO MESSING. (WITH US.)",
+            "dusk_hood": "dusk hood",
+            "doormat": "doormat"
+          }
+        },
+        "rookery_lesson": {
+          "requires": [
+            "crows",
+            "rooftops",
+            "ladder",
+            "noodle_stall"
+          ],
+          "introduces": {
+            "crow_note": "Don't mess with us."
           }
         },
         "quay": {
@@ -102,6 +365,24 @@
           ],
           "introduces": {}
         },
+        "quay_slip": {
+          "requires": [
+            "crates",
+            "fold"
+          ],
+          "introduces": {}
+        },
+        "quay_lit": {
+          "requires": [
+            "crates",
+            "fold",
+            "moss_jar"
+          ],
+          "introduces": {
+            "wedge": "a wedge",
+            "bleat": "something small bleats"
+          }
+        },
         "pattern_seen": {
           "requires": [
             "crates",
@@ -118,20 +399,118 @@
             "fold"
           ],
           "introduces": {
-            "barrel_lid": "A barrel lid",
             "bleat": "something small bleats"
           }
         },
+        "clear_check": {
+          "requires": [
+            "crates",
+            "noodle_stall"
+          ],
+          "introduces": {}
+        },
         "clear_quay": {
           "requires": [
-            "fish_stall",
             "noodle_stall",
             "crates"
           ],
           "introduces": {
-            "dock_workers": "The dock workers",
             "bleat": "something small bleats"
           }
+        },
+        "clear_crowd": {
+          "requires": [
+            "noodle_stall",
+            "crates"
+          ],
+          "introduces": {
+            "bleat": "something small bleats"
+          }
+        },
+        "crate_plan": {
+          "requires": [
+            "crates",
+            "fold",
+            "bleat"
+          ],
+          "introduces": {
+            "dock_workers": "Two dock workers"
+          }
+        },
+        "crate_haul": {
+          "requires": [
+            "crates",
+            "dock_workers"
+          ],
+          "introduces": {}
+        },
+        "crate_wedge": {
+          "requires": [
+            "crates",
+            "dock_workers"
+          ],
+          "introduces": {}
+        },
+        "whistle_call": {
+          "requires": [
+            "crates",
+            "dock_workers",
+            "brave_whistle"
+          ],
+          "introduces": {}
+        },
+        "crates_back": {
+          "requires": [
+            "crates",
+            "dock_workers",
+            "bleat"
+          ],
+          "introduces": {}
+        },
+        "crates_slid": {
+          "requires": [
+            "crates",
+            "dock_workers",
+            "bleat",
+            "fold"
+          ],
+          "introduces": {}
+        },
+        "gap": {
+          "requires": [
+            "crates",
+            "bleat",
+            "fold"
+          ],
+          "introduces": {}
+        },
+        "gap_squeeze": {
+          "requires": [
+            "crates",
+            "bleat"
+          ],
+          "introduces": {}
+        },
+        "gap_climb": {
+          "requires": [
+            "crates",
+            "bleat"
+          ],
+          "introduces": {}
+        },
+        "gap_through": {
+          "requires": [
+            "bleat",
+            "fold"
+          ],
+          "introduces": {}
+        },
+        "gap_scrape": {
+          "requires": [
+            "bleat",
+            "fold"
+          ],
+          "introduces": {}
         },
         "shimmer": {
           "requires": [
@@ -141,6 +520,13 @@
           "introduces": {
             "goat": "a snowhorn goat kid"
           }
+        },
+        "kid_food": {
+          "requires": [
+            "goat",
+            "fold"
+          ],
+          "introduces": {}
         },
         "read_light": {
           "requires": [
@@ -256,6 +642,39 @@
             "coat": "inside your coat"
           }
         },
+        "ridge_walk": {
+          "requires": [
+            "goat",
+            "coat"
+          ],
+          "introduces": {
+            "ridge": "low ridge"
+          }
+        },
+        "ridge_ok": {
+          "requires": [
+            "goat",
+            "coat",
+            "ridge"
+          ],
+          "introduces": {}
+        },
+        "ridge_drift": {
+          "requires": [
+            "goat",
+            "coat",
+            "ridge"
+          ],
+          "introduces": {}
+        },
+        "ridge_lee": {
+          "requires": [
+            "goat",
+            "coat",
+            "ridge"
+          ],
+          "introduces": {}
+        },
         "white": {
           "requires": [
             "goat",
@@ -265,74 +684,21 @@
             "bell": "a bell rings"
           }
         },
-        "delivery": {
+        "barge_toss": {
           "requires": [
-            "exchange"
+            "horn"
           ],
           "introduces": {
-            "supply_barge": "A supply barge",
-            "pilot": "frogfolk pilot",
-            "lost_landing": "landing steps hanging crooked",
-            "supper_sacks": "Sacks of potatoes"
+            "supply_barge": "supply barge",
+            "pilot": "frogfolk pilot"
           }
         },
-        "delivery_sacks": {
+        "sack_chain": {
           "requires": [
             "pilot",
-            "supply_barge",
-            "lost_landing",
             "supper_sacks"
           ],
-          "introduces": {
-            "saved_supper": "Six crews eating tonight"
-          }
-        },
-        "delivery_moor": {
-          "requires": [
-            "pilot",
-            "supply_barge",
-            "lost_landing",
-            "supper_sacks"
-          ],
-          "introduces": {
-            "safe_mooring": "a low mooring ring"
-          }
-        },
-        "quay_rest": {
-          "requires": [
-            "pilot",
-            "supper_sacks",
-            "noodle_stall"
-          ],
-          "introduces": {
-            "potato_skins": "warm potato skins",
-            "ladder": "a ladder climbs",
-            "rooftops": "to the rooftops"
-          }
-        },
-        "rookery": {
-          "requires": [
-            "ladder",
-            "rooftops"
-          ],
-          "introduces": {
-            "crows": "crows",
-            "rookery": "Rookery",
-            "crow_sign": "NO MESSING. (WITH US.)",
-            "dusk_hood": "dusk hood",
-            "doormat": "doormat"
-          }
-        },
-        "rookery_lesson": {
-          "requires": [
-            "crows",
-            "rooftops",
-            "ladder",
-            "noodle_stall"
-          ],
-          "introduces": {
-            "crow_note": "Don't mess with us."
-          }
+          "introduces": {}
         }
       }
     },
@@ -400,6 +766,45 @@
             "footprints": "broad footprints"
           }
         },
+        "wind_warm": {
+          "requires": [
+            "wet_clothes",
+            "goat"
+          ],
+          "introduces": {}
+        },
+        "kid_burrow": {
+          "requires": [
+            "goat",
+            "wet_clothes"
+          ],
+          "introduces": {}
+        },
+        "prints": {
+          "requires": [
+            "footprints",
+            "bell"
+          ],
+          "introduces": {}
+        },
+        "prints_read": {
+          "requires": [
+            "footprints"
+          ],
+          "introduces": {}
+        },
+        "prints_march": {
+          "requires": [
+            "footprints"
+          ],
+          "introduces": {}
+        },
+        "prints_air": {
+          "requires": [
+            "footprints"
+          ],
+          "introduces": {}
+        },
         "tracks": {
           "requires": [
             "goat",
@@ -452,6 +857,25 @@
           "introduces": {
             "blanket": "a folded blanket"
           }
+        },
+        "herder_gift": {
+          "requires": [
+            "herder",
+            "tin_cache",
+            "melt_channel",
+            "sledge"
+          ],
+          "introduces": {
+            "supper_gift": "a bundle wrapped in a cloth"
+          }
+        },
+        "read_water": {
+          "requires": [
+            "herder",
+            "melt_channel",
+            "supper_gift"
+          ],
+          "introduces": {}
         },
         "channel": {
           "requires": [
@@ -513,6 +937,53 @@
           ],
           "introduces": {}
         },
+        "settle": {
+          "requires": [
+            "goat",
+            "herd",
+            "herder"
+          ],
+          "introduces": {
+            "lead_goat": "one chipped horn"
+          }
+        },
+        "settle_count": {
+          "requires": [
+            "herd",
+            "lead_goat"
+          ],
+          "introduces": {}
+        },
+        "settle_brush": {
+          "requires": [
+            "herd",
+            "lead_goat"
+          ],
+          "introduces": {}
+        },
+        "settle_feed": {
+          "requires": [
+            "herder",
+            "lead_goat"
+          ],
+          "introduces": {}
+        },
+        "settle_lull": {
+          "requires": [
+            "herd",
+            "lead_goat"
+          ],
+          "introduces": {}
+        },
+        "herd_play": {
+          "requires": [
+            "herd",
+            "goat",
+            "herder",
+            "lead_goat"
+          ],
+          "introduces": {}
+        },
         "herd": {
           "requires": [
             "herder",
@@ -566,6 +1037,35 @@
             "glass_door": "a glass door"
           }
         },
+        "hall_table": {
+          "requires": [
+            "hall",
+            "herder",
+            "warm_stones"
+          ],
+          "introduces": {
+            "knitter": "yeti knitter"
+          }
+        },
+        "hall_dry": {
+          "requires": [
+            "knitter",
+            "warm_stones"
+          ],
+          "introduces": {}
+        },
+        "hall_buy": {
+          "requires": [
+            "knitter"
+          ],
+          "introduces": {}
+        },
+        "hall_share": {
+          "requires": [
+            "knitter"
+          ],
+          "introduces": {}
+        },
         "conservatory": {
           "requires": [
             "hall",
@@ -599,6 +1099,14 @@
           "requires": [
             "herder",
             "hall",
+            "low_note"
+          ],
+          "introduces": {}
+        },
+        "note_try": {
+          "requires": [
+            "hall",
+            "herder",
             "low_note"
           ],
           "introduces": {}
@@ -650,6 +1158,56 @@
             "goat",
             "herd",
             "travelers"
+          ],
+          "introduces": {}
+        },
+        "ledge_look": {
+          "requires": [
+            "grazing_route",
+            "travelers",
+            "herder",
+            "hall"
+          ],
+          "introduces": {
+            "ledge_stream": "meltwater nibbles the snow shelf"
+          }
+        },
+        "ledge_poles": {
+          "requires": [
+            "ledge_stream"
+          ],
+          "introduces": {}
+        },
+        "ledge_hay": {
+          "requires": [
+            "ledge_stream"
+          ],
+          "introduces": {}
+        },
+        "ledge_brace": {
+          "requires": [
+            "ledge_stream"
+          ],
+          "introduces": {}
+        },
+        "ledge_whistle": {
+          "requires": [
+            "ledge_stream"
+          ],
+          "introduces": {}
+        },
+        "shelf_cross": {
+          "requires": [
+            "ledge_stream",
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "ledge_done": {
+          "requires": [
+            "ledge_stream",
+            "travelers",
+            "herder"
           ],
           "introduces": {}
         },
@@ -717,6 +1275,51 @@
           "introduces": {
             "hollow_found": "Now you can see the hollow"
           }
+        },
+        "crust_hold": {
+          "requires": [
+            "drift",
+            "goat",
+            "rope"
+          ],
+          "introduces": {
+            "snow_lip": "a lip of snow"
+          }
+        },
+        "cairn": {
+          "requires": [
+            "drift",
+            "rope"
+          ],
+          "introduces": {
+            "cairn": "a tall pile of stones",
+            "tin_cache": "A flat tin lid"
+          }
+        },
+        "cairn_dig": {
+          "requires": [
+            "tin_cache"
+          ],
+          "introduces": {}
+        },
+        "cairn_pry": {
+          "requires": [
+            "tin_cache",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "cairn_smash": {
+          "requires": [
+            "tin_cache"
+          ],
+          "introduces": {}
+        },
+        "cairn_open": {
+          "requires": [
+            "tin_cache"
+          ],
+          "introduces": {}
         },
         "seam_response": {
           "requires": [
@@ -820,8 +1423,40 @@
           ],
           "introduces": {
             "riftseekers": "Riftseekers",
-            "rifts": "these openings rifts"
+            "rifts": "these openings rifts",
+            "trav_sledge": "travelers' sledge"
           }
+        },
+        "sledge_lift": {
+          "requires": [
+            "trav_sledge",
+            "orin",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "sledge_brace": {
+          "requires": [
+            "trav_sledge",
+            "orin",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "sledge_smash": {
+          "requires": [
+            "trav_sledge",
+            "orin",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "ring_sort": {
+          "requires": [
+            "seren",
+            "ring_case"
+          ],
+          "introduces": {}
         },
         "seren": {
           "requires": [
@@ -844,6 +1479,21 @@
               ]
             }
           ]
+        },
+        "instruments": {
+          "requires": [
+            "orin",
+            "olivia",
+            "instruments"
+          ],
+          "introduces": {}
+        },
+        "corner_hunt": {
+          "requires": [
+            "orin",
+            "map"
+          ],
+          "introduces": {}
         },
         "lead": {
           "requires": [
@@ -869,6 +1519,47 @@
           ],
           "introduces": {}
         },
+        "help_now": {
+          "requires": [
+            "olivia",
+            "orin",
+            "seren",
+            "herder",
+            "sledge"
+          ],
+          "introduces": {
+            "supper_gift": "a supper bundle from her pack"
+          }
+        },
+        "safe_routes": {
+          "requires": [
+            "orin",
+            "olivia",
+            "seren",
+            "herder",
+            "cairnstep"
+          ],
+          "introduces": {
+            "supper_gift": "a supper bundle for the herder"
+          }
+        },
+        "haul_supper": {
+          "requires": [
+            "herder",
+            "trav_sledge",
+            "supper_gift",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "chalk_route": {
+          "requires": [
+            "herder",
+            "orin",
+            "cairnstep"
+          ],
+          "introduces": {}
+        },
         "route": {
           "requires": [
             "orin",
@@ -883,6 +1574,147 @@
             "ice_shelf": "the ice shelf",
             "ashspan": "Ashspan Bridge"
           }
+        },
+        "lookout": {
+          "requires": [
+            "orin",
+            "great_river",
+            "ice_shelf"
+          ],
+          "introduces": {
+            "spyglass": "spyglass"
+          }
+        },
+        "lookout_climb": {
+          "requires": [
+            "ice_shelf",
+            "spyglass"
+          ],
+          "introduces": {}
+        },
+        "lookout_sky": {
+          "requires": [
+            "ice_shelf"
+          ],
+          "introduces": {}
+        },
+        "lookout_fly": {
+          "requires": [
+            "ice_shelf",
+            "great_river"
+          ],
+          "introduces": {}
+        },
+        "sketch": {
+          "requires": [
+            "orin",
+            "seren",
+            "map",
+            "spyglass"
+          ],
+          "introduces": {}
+        },
+        "sketch_shelf": {
+          "requires": [
+            "orin",
+            "olivia",
+            "ice_shelf",
+            "map"
+          ],
+          "introduces": {}
+        },
+        "sketch_bend": {
+          "requires": [
+            "seren",
+            "olivia",
+            "great_river",
+            "map"
+          ],
+          "introduces": {}
+        },
+        "sketch_hall": {
+          "requires": [
+            "orin",
+            "olivia",
+            "seam",
+            "hall",
+            "map"
+          ],
+          "introduces": {}
+        },
+        "tarp": {
+          "requires": [
+            "trav_sledge",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "tea": {
+          "requires": [
+            "seren",
+            "orin",
+            "trav_sledge"
+          ],
+          "introduces": {
+            "stove": "small stove"
+          }
+        },
+        "tea_seren": {
+          "requires": [
+            "seren",
+            "stove"
+          ],
+          "introduces": {}
+        },
+        "tea_olivia": {
+          "requires": [
+            "olivia",
+            "orin",
+            "stove",
+            "rifts"
+          ],
+          "introduces": {}
+        },
+        "supplies": {
+          "requires": [
+            "seren",
+            "herd",
+            "trav_sledge",
+            "stove"
+          ],
+          "introduces": {
+            "spares_tin": "battered tin",
+            "whistle_offer": "brave whistle"
+          }
+        },
+        "supplies_buy": {
+          "requires": [
+            "seren",
+            "spares_tin",
+            "whistle_offer"
+          ],
+          "introduces": {}
+        },
+        "supplies_feed": {
+          "requires": [
+            "herder",
+            "herd"
+          ],
+          "introduces": {}
+        },
+        "supplies_tight": {
+          "requires": [
+            "seren",
+            "trav_sledge"
+          ],
+          "introduces": {}
+        },
+        "supplies_oil": {
+          "requires": [
+            "olivia",
+            "trav_sledge"
+          ],
+          "introduces": {}
         },
         "chime": {
           "requires": [
@@ -919,6 +1751,138 @@
           ],
           "introduces": {}
         },
+        "chime_jar": {
+          "requires": [
+            "listening_chime",
+            "orin",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "chime_whistle": {
+          "requires": [
+            "listening_chime",
+            "orin",
+            "whistle_offer"
+          ],
+          "introduces": {}
+        },
+        "trial_intro": {
+          "requires": [
+            "seren",
+            "olivia",
+            "orin",
+            "instruments",
+            "listening_chime",
+            "chime_rules"
+          ],
+          "introduces": {
+            "practice_rings": "three rings on a flat stone"
+          }
+        },
+        "trial_read": {
+          "requires": [
+            "practice_rings",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "trial_ear": {
+          "requires": [
+            "practice_rings",
+            "olivia",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "trial_chime": {
+          "requires": [
+            "practice_rings",
+            "listening_chime",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "trial_hum": {
+          "requires": [
+            "practice_rings"
+          ],
+          "introduces": {}
+        },
+        "trial_report": {
+          "requires": [
+            "seren",
+            "orin",
+            "practice_rings",
+            "rifts"
+          ],
+          "introduces": {}
+        },
+        "trial_echo": {
+          "requires": [
+            "practice_rings",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "trial_all": {
+          "requires": [
+            "practice_rings",
+            "seren",
+            "olivia",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "prep": {
+          "requires": [
+            "orin",
+            "seren",
+            "map",
+            "hall",
+            "ice_shelf",
+            "cairnstep",
+            "ashspan",
+            "herd"
+          ],
+          "introduces": {}
+        },
+        "prep_ice": {
+          "requires": [
+            "orin",
+            "ice_shelf"
+          ],
+          "introduces": {}
+        },
+        "prep_seam": {
+          "requires": [
+            "seren",
+            "hall",
+            "seam"
+          ],
+          "introduces": {}
+        },
+        "prep_jar": {
+          "requires": [
+            "seren",
+            "seam",
+            "hall"
+          ],
+          "introduces": {}
+        },
+        "prep_bank": {
+          "requires": [
+            "orin",
+            "ashspan"
+          ],
+          "introduces": {}
+        },
+        "prep_dash": {
+          "requires": [
+            "ashspan"
+          ],
+          "introduces": {}
+        },
         "parting": {
           "requires": [
             "olivia",
@@ -928,6 +1892,15 @@
             "cairnstep",
             "ring_case",
             "instruments"
+          ],
+          "introduces": {}
+        },
+        "camp_play": {
+          "requires": [
+            "herder",
+            "herd",
+            "hall",
+            "learned_note"
           ],
           "introduces": {}
         },
@@ -945,35 +1918,24 @@
           ],
           "introduces": {}
         },
+        "camp_supper": {
+          "requires": [
+            "listening_chime"
+          ],
+          "introduces": {}
+        },
+        "camp_hall": {
+          "requires": [
+            "hall",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
         "set_out": {
           "requires": [
             "hall"
           ],
           "introduces": {}
-        },
-        "help_now": {
-          "requires": [
-            "olivia",
-            "orin",
-            "seren",
-            "herder",
-            "sledge"
-          ],
-          "introduces": {
-            "supper_gift": "a supper bundle from her pack"
-          }
-        },
-        "safe_routes": {
-          "requires": [
-            "orin",
-            "olivia",
-            "seren",
-            "herder",
-            "cairnstep"
-          ],
-          "introduces": {
-            "supper_gift": "a supper bundle for the herder"
-          }
         }
       },
       "entryByFlag": {
@@ -988,43 +1950,355 @@
         "great_river",
         "frostfang",
         "cairnstep",
-        "rope"
+        "rope",
+        "orin",
+        "herder",
+        "herd"
       ],
       "scenes": {
         "shelf": {
           "requires": [
             "hall",
             "great_river",
-            "frostfang"
+            "frostfang",
+            "orin",
+            "herder",
+            "herd"
           ],
           "introduces": {
             "shelf": "a narrow shelf of ice",
-            "gap": "part of the shelf has fallen away"
+            "gap": "part of the shelf has fallen away",
+            "boot_marks": "Old boot marks"
           }
         },
-        "inspect": {
+        "lineup": {
+          "requires": [
+            "shelf",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "knots": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "coil": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "beat": {
+          "requires": [
+            "shelf"
+          ],
+          "introduces": {}
+        },
+        "ring_thud": {
+          "requires": [
+            "shelf",
+            "orin",
+            "boot_marks"
+          ],
+          "introduces": {
+            "ringing": "Thick ice rings",
+            "rock_wall": "dark rock wall"
+          }
+        },
+        "tap": {
+          "requires": [
+            "ringing"
+          ],
+          "introduces": {}
+        },
+        "slide": {
+          "requires": [
+            "ringing"
+          ],
+          "introduces": {}
+        },
+        "scout": {
+          "requires": [
+            "ringing"
+          ],
+          "introduces": {}
+        },
+        "starlight": {
+          "requires": [
+            "ringing"
+          ],
+          "introduces": {}
+        },
+        "boot_marks": {
+          "requires": [
+            "boot_marks",
+            "shelf"
+          ],
+          "introduces": {
+            "ring": "a rusty iron ring"
+          }
+        },
+        "ring_pull": {
+          "requires": [
+            "ring",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "ring_look": {
+          "requires": [
+            "ring",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "squeeze": {
+          "requires": [
+            "rock_wall",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "inch": {
+          "requires": [
+            "rock_wall"
+          ],
+          "introduces": {}
+        },
+        "packs": {
+          "requires": [
+            "rock_wall"
+          ],
+          "introduces": {}
+        },
+        "chop": {
+          "requires": [
+            "rock_wall"
+          ],
+          "introduces": {}
+        },
+        "wide_spot": {
+          "requires": [
+            "shelf"
+          ],
+          "introduces": {}
+        },
+        "wide_snack": {
+          "requires": [
+            "shelf"
+          ],
+          "introduces": {}
+        },
+        "wide_eat": {
+          "requires": [
+            "shelf"
+          ],
+          "introduces": {}
+        },
+        "wide_look": {
+          "requires": [
+            "shelf"
+          ],
+          "introduces": {}
+        },
+        "crack": {
+          "requires": [
+            "shelf",
+            "boot_marks"
+          ],
+          "introduces": {
+            "crack": "A stream of meltwater cuts across the shelf"
+          }
+        },
+        "hop": {
+          "requires": [
+            "crack"
+          ],
+          "introduces": {}
+        },
+        "slab": {
+          "requires": [
+            "crack",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "leap": {
+          "requires": [
+            "crack",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "icicles": {
+          "requires": [
+            "rock_wall"
+          ],
+          "introduces": {
+            "icicles": "a curtain of icicles"
+          }
+        },
+        "dash": {
+          "requires": [
+            "icicles"
+          ],
+          "introduces": {}
+        },
+        "knock": {
+          "requires": [
+            "icicles"
+          ],
+          "introduces": {}
+        },
+        "gust": {
+          "requires": [
+            "shelf"
+          ],
+          "introduces": {}
+        },
+        "huddle": {
+          "requires": [
+            "shelf"
+          ],
+          "introduces": {}
+        },
+        "lull": {
+          "requires": [
+            "shelf"
+          ],
+          "introduces": {}
+        },
+        "sing": {
+          "requires": [
+            "shelf"
+          ],
+          "introduces": {}
+        },
+        "slope": {
+          "requires": [
+            "shelf",
+            "rock_wall"
+          ],
+          "introduces": {
+            "slope": "a sheet of ice pours down"
+          }
+        },
+        "slope_steps": {
+          "requires": [
+            "slope"
+          ],
+          "introduces": {}
+        },
+        "slope_rope": {
+          "requires": [
+            "slope",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "slope_slide": {
+          "requires": [
+            "slope"
+          ],
+          "introduces": {}
+        },
+        "gap": {
           "requires": [
             "shelf",
             "gap",
-            "rope"
+            "rope",
+            "boot_marks"
           ],
           "introduces": {
             "rocks": "dark rocks",
-            "low_lip": "a lip of ice"
+            "low_lip": "a lip of ice",
+            "goat": "snowhorn goat"
+          },
+          "conditional": [
+            {
+              "flag": "found_ring",
+              "requires": [
+                "ring"
+              ]
+            }
+          ]
+        },
+        "inspect": {
+          "requires": [
+            "gap",
+            "rocks",
+            "low_lip",
+            "goat",
+            "rope"
+          ],
+          "introduces": {
+            "goat_track": "goat track"
           }
         },
         "high": {
+          "requires": [
+            "rocks",
+            "goat",
+            "goat_track",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "high_climb": {
+          "requires": [
+            "goat_track",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "high_own": {
           "requires": [
             "rocks",
             "rope"
           ],
           "introduces": {}
         },
+        "high_charm": {
+          "requires": [
+            "goat_track",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "high_lower": {
+          "requires": [
+            "rope",
+            "goat"
+          ],
+          "introduces": {}
+        },
         "low": {
           "requires": [
             "low_lip",
-            "rocks",
             "rope"
+          ],
+          "introduces": {}
+        },
+        "low_probe": {
+          "requires": [
+            "low_lip",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "low_chip": {
+          "requires": [
+            "low_lip"
+          ],
+          "introduces": {}
+        },
+        "low_mark": {
+          "requires": [
+            "low_lip",
+            "rocks",
+            "goat"
           ],
           "introduces": {}
         },
@@ -1035,6 +2309,20 @@
           ],
           "introduces": {}
         },
+        "brace_post": {
+          "requires": [
+            "rocks",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "brace_rail": {
+          "requires": [
+            "rope",
+            "goat"
+          ],
+          "introduces": {}
+        },
         "wing": {
           "requires": [
             "gap",
@@ -1042,16 +2330,95 @@
           ],
           "introduces": {}
         },
+        "wing_tie": {
+          "requires": [
+            "gap",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "wing_rail": {
+          "requires": [
+            "rope",
+            "goat"
+          ],
+          "introduces": {}
+        },
+        "who_first": {
+          "requires": [
+            "rope",
+            "gap"
+          ],
+          "introduces": {}
+        },
+        "first_light": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "first_strong": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "first_dart": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "gear": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "gear_slide": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "gear_carry": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "ready": {
+          "requires": [
+            "rope",
+            "gap"
+          ],
+          "introduces": {}
+        },
         "cross": {
           "requires": [
-            "shelf"
+            "rope",
+            "gap"
+          ],
+          "introduces": {}
+        },
+        "cross_turns": {
+          "requires": [
+            "rope",
+            "gap"
           ],
           "introduces": {}
         },
         "assisted": {
           "requires": [
             "rope",
-            "shelf"
+            "gap"
+          ],
+          "introduces": {}
+        },
+        "cross_whistle": {
+          "requires": [
+            "rope",
+            "gap"
           ],
           "introduces": {}
         },
@@ -1060,8 +2427,42 @@
             "rope"
           ],
           "introduces": {
-            "cairns": "cairns climb"
+            "cairns": "cairns climb",
+            "pass_box": "HONEYCAKE, 2 COINS"
           }
+        },
+        "tally": {
+          "requires": [
+            "rope",
+            "cairns"
+          ],
+          "introduces": {}
+        },
+        "tally_warm": {
+          "requires": [
+            "cairns"
+          ],
+          "introduces": {}
+        },
+        "tally_buy": {
+          "requires": [
+            "cairns",
+            "pass_box"
+          ],
+          "introduces": {}
+        },
+        "tally_rope": {
+          "requires": [
+            "rope",
+            "cairns"
+          ],
+          "introduces": {}
+        },
+        "tally_mend": {
+          "requires": [
+            "cairns"
+          ],
+          "introduces": {}
         },
         "rest_safe": {
           "requires": [
@@ -1077,14 +2478,58 @@
             "rope",
             "great_river"
           ],
-          "introduces": {
-            "river_ledge": "A low ledge"
-          }
+          "introduces": {}
+        },
+        "fall_vote": {
+          "requires": [
+            "rope",
+            "great_river"
+          ],
+          "introduces": {}
+        },
+        "fall_hold": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "fall_look": {
+          "requires": [
+            "great_river"
+          ],
+          "introduces": {}
         },
         "rest_river": {
           "requires": [
             "rope",
-            "river_ledge"
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "ring_throw": {
+          "requires": [
+            "ring",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "drip_run": {
+          "requires": [
+            "icicles"
+          ],
+          "introduces": {}
+        },
+        "hold_line": {
+          "requires": [
+            "rope",
+            "gap"
+          ],
+          "introduces": {}
+        },
+        "level_line": {
+          "requires": [
+            "rope",
+            "gap"
           ],
           "introduces": {}
         }
@@ -1095,16 +2540,349 @@
         "hall",
         "seam",
         "learned_note",
-        "listening_chime"
+        "listening_chime",
+        "chime_rules",
+        "orin",
+        "herder",
+        "goat",
+        "sledge"
       ],
       "scenes": {
         "search": {
           "requires": [
             "hall",
-            "seam"
+            "seam",
+            "herder",
+            "goat"
+          ],
+          "introduces": {}
+        },
+        "back_at_fold": {
+          "requires": [],
+          "introduces": {}
+        },
+        "plan": {
+          "requires": [
+            "herder",
+            "sledge",
+            "goat"
           ],
           "introduces": {
-            "passage": "A narrow passage"
+            "lantern": "a lantern tied on"
+          }
+        },
+        "plan_a": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "plan_b": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "climb_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "climb_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "climb_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "climb_slip": {
+          "requires": [],
+          "introduces": {}
+        },
+        "ridge": {
+          "requires": [],
+          "introduces": {
+            "wind_hole": "A dark hole the size of a bucket"
+          }
+        },
+        "ridge_a": {
+          "requires": [
+            "wind_hole"
+          ],
+          "introduces": {}
+        },
+        "ridge_b": {
+          "requires": [
+            "wind_hole"
+          ],
+          "introduces": {}
+        },
+        "ridge_chime": {
+          "requires": [
+            "wind_hole",
+            "listening_chime",
+            "chime_rules",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "ridge_done": {
+          "requires": [
+            "wind_hole"
+          ],
+          "introduces": {}
+        },
+        "ridge_off": {
+          "requires": [
+            "wind_hole"
+          ],
+          "introduces": {}
+        },
+        "holes": {
+          "requires": [],
+          "introduces": {}
+        },
+        "kid": {
+          "requires": [],
+          "introduces": {}
+        },
+        "kid_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "kid_b": {
+          "requires": [
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "kid_wing": {
+          "requires": [],
+          "introduces": {}
+        },
+        "kid_wing_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "kid_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "kid_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_wing": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_wing_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_slip": {
+          "requires": [],
+          "introduces": {}
+        },
+        "post": {
+          "requires": [],
+          "introduces": {
+            "post": "an old yeti listening post"
+          }
+        },
+        "post_a": {
+          "requires": [
+            "post",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "post_b": {
+          "requires": [
+            "post"
+          ],
+          "introduces": {}
+        },
+        "post_a_check": {
+          "requires": [
+            "post"
+          ],
+          "introduces": {}
+        },
+        "post_b_check": {
+          "requires": [
+            "post"
+          ],
+          "introduces": {}
+        },
+        "post_done": {
+          "requires": [
+            "post",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "post_off": {
+          "requires": [
+            "post",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "warm": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "tunnel": {
+          "requires": [
+            "lantern",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "tunnel_a": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "tunnel_b": {
+          "requires": [
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "tunnel_star": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "tunnel_moss": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "tunnel_moss_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tunnel_a_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tunnel_b_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tunnel_star_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tunnel_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tunnel_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_brace": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_slip": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_brace_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_slip_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_hold": {
+          "requires": [],
+          "introduces": {}
+        },
+        "seam_back": {
+          "requires": [
+            "seam",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "seam_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "seam_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "seam_done": {
+          "requires": [
+            "seam"
+          ],
+          "introduces": {}
+        },
+        "seam_off": {
+          "requires": [
+            "seam"
+          ],
+          "introduces": {}
+        },
+        "seam_echo": {
+          "requires": [
+            "seam"
+          ],
+          "introduces": {}
+        },
+        "behind": {
+          "requires": [],
+          "introduces": {
+            "passage": "into a narrow passage"
           }
         },
         "passage": {
@@ -1136,10 +2914,114 @@
           ],
           "introduces": {}
         },
+        "look": {
+          "requires": [
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "beat": {
+          "requires": [
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "beat_done": {
+          "requires": [
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "beat_off": {
+          "requires": [
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "cairn": {
+          "requires": [
+            "glacier_opening",
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "cairn_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "cairn_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "cairn_smash": {
+          "requires": [],
+          "introduces": {}
+        },
+        "cairn_smash_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "cairn_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "cairn_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "herder_say": {
+          "requires": [],
+          "introduces": {}
+        },
+        "herder_share": {
+          "requires": [],
+          "introduces": {}
+        },
+        "footing": {
+          "requires": [
+            "glacier_opening",
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "footing_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "footing_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "footing_buy": {
+          "requires": [],
+          "introduces": {}
+        },
+        "footing_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "footing_off": {
+          "requires": [],
+          "introduces": {}
+        },
         "decide": {
           "requires": [
             "hall",
             "seam",
+            "learned_note",
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "hold": {
+          "requires": [
+            "learned_note",
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "sing_wobble": {
+          "requires": [
             "learned_note",
             "glacier_opening"
           ],
@@ -1174,6 +3056,13 @@
           ],
           "introduces": {}
         }
+      },
+      "entryByFlag": {
+        "glacier_rift_woken": [
+          "glacier_opening",
+          "coast_glimpse",
+          "passage"
+        ]
       }
     },
     "riftlight-headwaters-washout": {
@@ -1181,21 +3070,304 @@
         "great_river",
         "frostfang",
         "rope",
-        "listening_chime"
+        "listening_chime",
+        "orin"
       ],
       "scenes": {
         "current": {
           "requires": [
             "rope",
-            "frostfang"
+            "frostfang",
+            "great_river",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "stock": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "count": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "pack_grab": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "rally_breath": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "ride": {
+          "requires": [
+            "orin",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "feet_first": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "kick_bank": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "floes": {
+          "requires": [
+            "great_river",
+            "rope"
           ],
           "introduces": {
-            "river_ledge": "A ledge of dark ice"
+            "floes": "Pieces of the broken shelf"
           }
+        },
+        "push_floes": {
+          "requires": [
+            "floes"
+          ],
+          "introduces": {}
+        },
+        "climb_floe": {
+          "requires": [
+            "floes"
+          ],
+          "introduces": {}
+        },
+        "smash_floe": {
+          "requires": [
+            "floes"
+          ],
+          "introduces": {}
+        },
+        "floe_rest": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "floe_warm": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "floe_look": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "snag": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "unhook": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "loop_tie": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "arch": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {
+            "arch": "an arch of white ice"
+          }
+        },
+        "arch_flat": {
+          "requires": [
+            "arch"
+          ],
+          "introduces": {}
+        },
+        "arch_look": {
+          "requires": [
+            "arch"
+          ],
+          "introduces": {}
+        },
+        "arch_light": {
+          "requires": [
+            "arch"
+          ],
+          "introduces": {}
+        },
+        "jam": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {
+            "jam": "a jam of tree trunks"
+          }
+        },
+        "jam_gap": {
+          "requires": [
+            "jam",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "jam_push": {
+          "requires": [
+            "jam",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "chute": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {
+            "chute": "walls of ice"
+          }
+        },
+        "chute_ride": {
+          "requires": [
+            "chute",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "chute_steer": {
+          "requires": [
+            "chute",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "chute_brace": {
+          "requires": [
+            "chute",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "slip": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "slip_haul": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "slip_swing": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "shiver": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "shiver_eat": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "shiver_sing": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "shiver_paddle": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "goats": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {
+            "goats": "snowhorn goats"
+          }
+        },
+        "goats_watch": {
+          "requires": [
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "goats_follow": {
+          "requires": [
+            "goats",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "ledge_ahead": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {
+            "river_ledge": "ledge of dark ice",
+            "knob": "knob of ice"
+          }
+        },
+        "aim": {
+          "requires": [
+            "river_ledge",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "aim_kick": {
+          "requires": [
+            "river_ledge"
+          ],
+          "introduces": {}
+        },
+        "aim_swing": {
+          "requires": [
+            "river_ledge",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "aim_sky": {
+          "requires": [
+            "river_ledge"
+          ],
+          "introduces": {}
         },
         "ledge": {
           "requires": [
             "river_ledge",
+            "knob",
             "rope"
           ],
           "introduces": {}
@@ -1203,6 +3375,13 @@
         "grab": {
           "requires": [
             "river_ledge",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "hook": {
+          "requires": [
+            "knob",
             "rope"
           ],
           "introduces": {}
@@ -1217,6 +3396,38 @@
         "lift": {
           "requires": [
             "river_ledge",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "throw_loop": {
+          "requires": [
+            "knob",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "ashore": {
+          "requires": [
+            "frostfang",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "tend": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "tend_warm": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "tend_dry": {
+          "requires": [
             "rope"
           ],
           "introduces": {}
@@ -1245,6 +3456,20 @@
           "introduces": {}
         },
         "climb": {
+          "requires": [
+            "tree",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "lasso": {
+          "requires": [
+            "tree",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "lane": {
           "requires": [
             "tree",
             "rope"
@@ -1376,6 +3601,63 @@
             "ashspan": "Ashspan Bridge",
             "supper_bundle": "a supper bundle"
           }
+        },
+        "floe_hop": {
+          "requires": [
+            "floes",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "jam_hold": {
+          "requires": [
+            "jam",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "scarf_pass": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "knob_toss": {
+          "requires": [
+            "river_ledge",
+            "knob",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "haul_loop": {
+          "requires": [
+            "knob",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "drake_shallows": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {
+            "drake": "two young river drakes"
+          }
+        },
+        "drake_fight": {
+          "requires": [
+            "drake",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "drake_rescued": {
+          "requires": [
+            "drake",
+            "rope"
+          ],
+          "introduces": {}
         }
       }
     },
@@ -1383,37 +3665,395 @@
       "entryFacts": [
         "rope",
         "frostfang",
-        "cairnstep"
+        "cairnstep",
+        "herd"
       ],
       "scenes": {
         "bank": {
           "requires": [
-            "frostfang"
+            "frostfang",
+            "cairnstep"
           ],
           "introduces": {
-            "shore_griffin": "A griffin"
+            "tamsin": "I am Tamsin",
+            "river_line": "I keep the river line"
           }
+        },
+        "count": {
+          "requires": [
+            "tamsin",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "count_rope": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "count_packs": {
+          "requires": [],
+          "introduces": {}
         },
         "help": {
           "requires": [
-            "shore_griffin"
+            "tamsin"
           ],
           "introduces": {
-            "ladder": "a rope ladder"
+            "ladder": "rope ladder"
           }
         },
         "ladder": {
           "requires": [
             "ladder",
-            "shore_griffin"
+            "tamsin"
+          ],
+          "introduces": {}
+        },
+        "haul_foot": {
+          "requires": [
+            "ladder"
+          ],
+          "introduces": {}
+        },
+        "lash_foot": {
+          "requires": [
+            "ladder"
+          ],
+          "introduces": {}
+        },
+        "brace_foot": {
+          "requires": [
+            "ladder"
+          ],
+          "introduces": {}
+        },
+        "smash_foot": {
+          "requires": [
+            "ladder"
+          ],
+          "introduces": {}
+        },
+        "foot_set": {
+          "requires": [
+            "ladder",
+            "tamsin"
+          ],
+          "introduces": {}
+        },
+        "ladder_hold": {
+          "requires": [
+            "ladder",
+            "tamsin"
+          ],
+          "introduces": {}
+        },
+        "driftline": {
+          "requires": [
+            "tamsin",
+            "herd"
+          ],
+          "introduces": {
+            "hay_net": "net of hay"
+          }
+        },
+        "net_hook": {
+          "requires": [
+            "hay_net"
+          ],
+          "introduces": {}
+        },
+        "net_drag": {
+          "requires": [
+            "hay_net"
+          ],
+          "introduces": {}
+        },
+        "net_lasso": {
+          "requires": [
+            "hay_net",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "net_saved": {
+          "requires": [
+            "hay_net",
+            "tamsin"
+          ],
+          "introduces": {
+            "stranded_goats": "three snowhorn goats"
+          }
+        },
+        "bar": {
+          "requires": [
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "bar_wade": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "bar_stones": {
+          "requires": [],
+          "introduces": {}
+        },
+        "bar_fly": {
+          "requires": [],
+          "introduces": {}
+        },
+        "bar_leap": {
+          "requires": [],
+          "introduces": {}
+        },
+        "bar_reached": {
+          "requires": [
+            "stranded_goats"
+          ],
+          "introduces": {
+            "crab": "glassback crabs"
+          }
+        },
+        "bar_crab": {
+          "requires": [
+            "crab"
+          ],
+          "introduces": {}
+        },
+        "bar_carry": {
+          "requires": [
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "goats": {
+          "requires": [
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "goat_line": {
+          "requires": [
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "goat_lead": {
+          "requires": [
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "goat_mend": {
+          "requires": [
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "goat_song": {
+          "requires": [
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "goat_bait": {
+          "requires": [
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "goat_back": {
+          "requires": [
+            "stranded_goats",
+            "tamsin"
+          ],
+          "introduces": {}
+        },
+        "fire": {
+          "requires": [
+            "tamsin",
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "fire_build": {
+          "requires": [],
+          "introduces": {}
+        },
+        "fire_huddle": {
+          "requires": [],
+          "introduces": {}
+        },
+        "fire_smash": {
+          "requires": [],
+          "introduces": {}
+        },
+        "rest_fire": {
+          "requires": [
+            "tamsin",
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "rest_socks": {
+          "requires": [
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "rest_share": {
+          "requires": [
+            "tamsin",
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
+        "rest_story": {
+          "requires": [
+            "tamsin",
+            "cairnstep"
+          ],
+          "introduces": {
+            "pass_ledger": "pass ledger"
+          }
+        },
+        "surge": {
+          "requires": [
+            "tamsin",
+            "ladder"
+          ],
+          "introduces": {
+            "goat_track": "goat track"
+          }
+        },
+        "surge_run": {
+          "requires": [],
+          "introduces": {}
+        },
+        "surge_chain": {
+          "requires": [],
+          "introduces": {}
+        },
+        "surge_roar": {
+          "requires": [],
+          "introduces": {}
+        },
+        "surge_brace": {
+          "requires": [],
+          "introduces": {}
+        },
+        "surge_after": {
+          "requires": [
+            "ladder",
+            "tamsin"
+          ],
+          "introduces": {}
+        },
+        "wave_gap": {
+          "requires": [
+            "ladder",
+            "tamsin"
+          ],
+          "introduces": {}
+        },
+        "ascend": {
+          "requires": [
+            "ladder",
+            "tamsin"
+          ],
+          "introduces": {}
+        },
+        "climb_line": {
+          "requires": [],
+          "introduces": {}
+        },
+        "climb_sling": {
+          "requires": [],
+          "introduces": {}
+        },
+        "climb_wings": {
+          "requires": [],
+          "introduces": {}
+        },
+        "climb_rally": {
+          "requires": [],
+          "introduces": {}
+        },
+        "top": {
+          "requires": [
+            "tamsin",
+            "cairnstep",
+            "ladder"
+          ],
+          "introduces": {
+            "brask": "called Brask"
+          }
+        },
+        "safety": {
+          "requires": [
+            "tamsin",
+            "ladder"
+          ],
+          "introduces": {}
+        },
+        "safety_boulder": {
+          "requires": [],
+          "introduces": {}
+        },
+        "safety_peg": {
+          "requires": [],
+          "introduces": {}
+        },
+        "safety_buy": {
+          "requires": [
+            "tamsin",
+            "ladder"
+          ],
+          "introduces": {}
+        },
+        "safety_done": {
+          "requires": [
+            "tamsin",
+            "ladder"
+          ],
+          "introduces": {}
+        },
+        "hay_relay": {
+          "requires": [
+            "tamsin",
+            "ladder"
+          ],
+          "introduces": {}
+        },
+        "word": {
+          "requires": [
+            "tamsin",
+            "brask",
+            "river_line"
+          ],
+          "introduces": {}
+        },
+        "word_river": {
+          "requires": [
+            "tamsin",
+            "brask"
+          ],
+          "introduces": {}
+        },
+        "word_goats": {
+          "requires": [
+            "tamsin",
+            "brask"
           ],
           "introduces": {}
         },
         "climb": {
           "requires": [
-            "ladder",
-            "cairnstep",
-            "rope"
+            "brask"
           ],
           "introduces": {}
         }
@@ -1431,13 +4071,53 @@
             "cairnstep"
           ],
           "introduces": {
-            "keeper": "a griffin keeper",
-            "ledger": "a heavy pass ledger"
+            "keeper": "a griffin keeper called Brask",
+            "ledger": "a heavy pass ledger",
+            "brask": "called Brask"
+          }
+        },
+        "steps": {
+          "requires": [
+            "brask"
+          ],
+          "introduces": {}
+        },
+        "climb_line": {
+          "requires": [
+            "brask"
+          ],
+          "introduces": {}
+        },
+        "climb_scout": {
+          "requires": [
+            "brask"
+          ],
+          "introduces": {}
+        },
+        "climb_leap": {
+          "requires": [
+            "brask"
+          ],
+          "introduces": {}
+        },
+        "climb_rally": {
+          "requires": [
+            "brask"
+          ],
+          "introduces": {}
+        },
+        "notch": {
+          "requires": [
+            "brask",
+            "keeper"
+          ],
+          "introduces": {
+            "signal_island": "a distant island"
           }
         },
         "ledger": {
           "requires": [
-            "keeper",
+            "brask",
             "ledger",
             "herder",
             "grazing_route"
@@ -1446,26 +4126,338 @@
         },
         "ridge": {
           "requires": [
-            "keeper",
+            "brask",
+            "ledger"
+          ],
+          "introduces": {}
+        },
+        "ridge_spot": {
+          "requires": [
+            "brask",
             "ledger"
           ],
           "introduces": {}
         },
         "supplies": {
           "requires": [
-            "keeper",
+            "brask",
             "ledger",
             "grazing_route"
           ],
           "introduces": {}
         },
-        "message": {
+        "supplies_trace": {
           "requires": [
-            "keeper"
+            "brask",
+            "ledger"
+          ],
+          "introduces": {}
+        },
+        "ledger_sky": {
+          "requires": [
+            "brask",
+            "ledger"
+          ],
+          "introduces": {}
+        },
+        "compared": {
+          "requires": [
+            "brask",
+            "ledger"
+          ],
+          "introduces": {}
+        },
+        "cairn_order": {
+          "requires": [
+            "brask",
+            "ledger"
+          ],
+          "introduces": {}
+        },
+        "pebble": {
+          "requires": [
+            "brask",
+            "ledger"
           ],
           "introduces": {
-            "signal_island": "a distant island"
+            "pebble": "This is Pebble"
           }
+        },
+        "pebble_help": {
+          "requires": [
+            "pebble"
+          ],
+          "introduces": {}
+        },
+        "pebble_walk": {
+          "requires": [
+            "pebble"
+          ],
+          "introduces": {}
+        },
+        "pebble_page": {
+          "requires": [
+            "pebble"
+          ],
+          "introduces": {}
+        },
+        "pebble_mend": {
+          "requires": [
+            "pebble"
+          ],
+          "introduces": {}
+        },
+        "pebble_done": {
+          "requires": [
+            "pebble",
+            "brask"
+          ],
+          "introduces": {}
+        },
+        "drawing_memory": {
+          "requires": [
+            "pebble",
+            "brask"
+          ],
+          "introduces": {}
+        },
+        "moved": {
+          "requires": [
+            "brask"
+          ],
+          "introduces": {}
+        },
+        "test_roll": {
+          "requires": [],
+          "introduces": {}
+        },
+        "test_lean": {
+          "requires": [],
+          "introduces": {}
+        },
+        "test_brace": {
+          "requires": [],
+          "introduces": {}
+        },
+        "test_smash": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tested": {
+          "requires": [
+            "brask"
+          ],
+          "introduces": {
+            "neck": "The neck"
+          }
+        },
+        "survey": {
+          "requires": [
+            "brask",
+            "neck"
+          ],
+          "introduces": {}
+        },
+        "survey_shelf": {
+          "requires": [],
+          "introduces": {}
+        },
+        "survey_pace": {
+          "requires": [],
+          "introduces": {}
+        },
+        "survey_sky": {
+          "requires": [],
+          "introduces": {}
+        },
+        "survey_done": {
+          "requires": [
+            "brask",
+            "pebble",
+            "neck"
+          ],
+          "introduces": {}
+        },
+        "rest_tea": {
+          "requires": [
+            "brask",
+            "pebble",
+            "ledger"
+          ],
+          "introduces": {}
+        },
+        "tea_share": {
+          "requires": [
+            "brask",
+            "pebble",
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "tea_x": {
+          "requires": [
+            "brask",
+            "pebble",
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "pages_x": {
+          "requires": [
+            "brask",
+            "ledger"
+          ],
+          "introduces": {}
+        },
+        "shelter": {
+          "requires": [
+            "brask",
+            "grazing_route"
+          ],
+          "introduces": {}
+        },
+        "shelter_drip": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shelter_dig": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shelter_leap": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shelter_cover": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shelter_found": {
+          "requires": [
+            "brask",
+            "pebble"
+          ],
+          "introduces": {
+            "wolves": "A cinder wolf",
+            "supply_cairn": "the little cairn where the aerie keeps its hay and bread"
+          }
+        },
+        "cache_fight": {
+          "requires": [
+            "brask",
+            "pebble",
+            "wolves",
+            "neck"
+          ],
+          "introduces": {}
+        },
+        "neck": {
+          "requires": [
+            "brask",
+            "neck"
+          ],
+          "introduces": {}
+        },
+        "neck_rope": {
+          "requires": [],
+          "introduces": {}
+        },
+        "neck_tap": {
+          "requires": [],
+          "introduces": {}
+        },
+        "neck_done": {
+          "requires": [
+            "brask",
+            "neck",
+            "ledger"
+          ],
+          "introduces": {}
+        },
+        "mark": {
+          "requires": [
+            "brask",
+            "pebble",
+            "ledger"
+          ],
+          "introduces": {}
+        },
+        "mark_open": {
+          "requires": [
+            "brask",
+            "pebble"
+          ],
+          "introduces": {}
+        },
+        "mark_warn": {
+          "requires": [
+            "brask",
+            "pebble"
+          ],
+          "introduces": {}
+        },
+        "mark_closed": {
+          "requires": [
+            "brask",
+            "pebble"
+          ],
+          "introduces": {}
+        },
+        "capstone": {
+          "requires": [
+            "brask"
+          ],
+          "introduces": {}
+        },
+        "capstone_done": {
+          "requires": [
+            "brask",
+            "pebble"
+          ],
+          "introduces": {}
+        },
+        "last_stone": {
+          "requires": [
+            "brask",
+            "pebble"
+          ],
+          "introduces": {}
+        },
+        "signal": {
+          "requires": [
+            "brask",
+            "signal_island"
+          ],
+          "introduces": {}
+        },
+        "signal_wave": {
+          "requires": [
+            "brask",
+            "signal_island"
+          ],
+          "introduces": {}
+        },
+        "signal_whistle": {
+          "requires": [
+            "brask",
+            "signal_island"
+          ],
+          "introduces": {}
+        },
+        "signal_back": {
+          "requires": [
+            "brask",
+            "signal_island"
+          ],
+          "introduces": {}
+        },
+        "message": {
+          "requires": [
+            "brask",
+            "ledger",
+            "signal_island"
+          ],
+          "introduces": {}
         }
       }
     },
@@ -1475,9 +4467,9 @@
         "stones": {
           "requires": [],
           "introduces": {
-            "boundary_stones": "old boundary stones",
-            "stone_keeper": "A dragonling",
-            "cloth": "a dry cloth"
+            "boundary_stones": "Old boundary stones",
+            "stone_keeper": "dragonling keeper",
+            "cloth": "dry cloth"
           }
         },
         "markings": {
@@ -1487,12 +4479,32 @@
           ],
           "introduces": {
             "carving": "carved with a mountain",
-            "record_board": "her record board"
+            "record_board": "record board",
+            "river_marker": "wet river marker"
           }
         },
         "carving": {
           "requires": [
             "carving",
+            "stone_keeper",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "rub_check": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "rubbed": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "rub_torn": {
+          "requires": [
             "stone_keeper"
           ],
           "introduces": {}
@@ -1500,7 +4512,488 @@
         "marker": {
           "requires": [
             "stone_keeper",
+            "river_marker",
             "record_board"
+          ],
+          "introduces": {}
+        },
+        "marker_haul": {
+          "requires": [
+            "river_marker"
+          ],
+          "introduces": {}
+        },
+        "marker_set": {
+          "requires": [
+            "stone_keeper",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "marker_slid": {
+          "requires": [
+            "stone_keeper",
+            "cloth"
+          ],
+          "introduces": {}
+        },
+        "row": {
+          "requires": [
+            "stone_keeper",
+            "boundary_stones"
+          ],
+          "introduces": {
+            "river_row": "Nine stones",
+            "count_cord": "count cord",
+            "splash": "Splash"
+          }
+        },
+        "plan": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "lever_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "trench_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "smash_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "splash_slip": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "splash_up": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "surge_check": {
+          "requires": [
+            "stone_keeper",
+            "count_cord",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "surge_safe": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "notch_plan": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "chisel_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "chalk_check": {
+          "requires": [
+            "splash",
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "moss_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "beat_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "notch_cut": {
+          "requires": [
+            "stone_keeper",
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "notch_crooked": {
+          "requires": [
+            "stone_keeper",
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "chalk_snap": {
+          "requires": [
+            "stone_keeper",
+            "count_cord",
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "cord_plan": {
+          "requires": [
+            "count_cord",
+            "river_row"
+          ],
+          "introduces": {}
+        },
+        "climb_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "throw_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "wing_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "cord_tangle": {
+          "requires": [
+            "count_cord",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "cord_run": {
+          "requires": [
+            "count_cord",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "tighten": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "tight": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "tie_plan": {
+          "requires": [
+            "count_cord",
+            "river_row",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "loop_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "hitch_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "flick_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "tie_good": {
+          "requires": [
+            "stone_keeper",
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "tie_loose": {
+          "requires": [
+            "stone_keeper",
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "sight_plan": {
+          "requires": [
+            "count_cord",
+            "river_row"
+          ],
+          "introduces": {}
+        },
+        "sight_check": {
+          "requires": [
+            "river_row"
+          ],
+          "introduces": {}
+        },
+        "pebble_check": {
+          "requires": [
+            "river_row"
+          ],
+          "introduces": {}
+        },
+        "star_check": {
+          "requires": [
+            "river_row"
+          ],
+          "introduces": {}
+        },
+        "sight_found": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {
+            "fourth_stone": "fourth stone from the bottom"
+          }
+        },
+        "sight_wobble": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {
+            "fourth_stone": "fourth stone from the bottom"
+          }
+        },
+        "nudge_plan": {
+          "requires": [
+            "fourth_stone"
+          ],
+          "introduces": {}
+        },
+        "push_check": {
+          "requires": [
+            "fourth_stone"
+          ],
+          "introduces": {}
+        },
+        "wedge_check": {
+          "requires": [
+            "fourth_stone"
+          ],
+          "introduces": {}
+        },
+        "brace_check": {
+          "requires": [
+            "fourth_stone"
+          ],
+          "introduces": {}
+        },
+        "fourth_ok": {
+          "requires": [
+            "fourth_stone",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "fourth_shift": {
+          "requires": [
+            "fourth_stone",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "top_stone": {
+          "requires": [
+            "stone_keeper",
+            "carving",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "stone_order": {
+          "requires": [
+            "stone_keeper",
+            "carving",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "compare": {
+          "requires": [
+            "stone_keeper",
+            "river_row",
+            "record_board",
+            "carving"
+          ],
+          "introduces": {}
+        },
+        "notch_count_check": {
+          "requires": [
+            "river_row",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "peak_check": {
+          "requires": [
+            "carving"
+          ],
+          "introduces": {}
+        },
+        "muddle": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "clue": {
+          "requires": [
+            "stone_keeper",
+            "carving",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "record_plan": {
+          "requires": [
+            "stone_keeper",
+            "record_board",
+            "carving"
+          ],
+          "introduces": {}
+        },
+        "wrote_plain": {
+          "requires": [
+            "stone_keeper",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "drew_both": {
+          "requires": [
+            "stone_keeper",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "runner": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {
+            "runner": "young dragonling runner",
+            "moved_stone": "big stone at the counting circle moved"
+          }
+        },
+        "runner_check": {
+          "requires": [
+            "runner",
+            "moved_stone"
+          ],
+          "introduces": {}
+        },
+        "runner_told": {
+          "requires": [
+            "runner",
+            "moved_stone",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "runner_short": {
+          "requires": [
+            "runner",
+            "moved_stone",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "go_plan": {
+          "requires": [
+            "stone_keeper",
+            "record_board",
+            "count_cord",
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "runner_cake": {
+          "requires": [
+            "runner",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "carry_board": {
+          "requires": [
+            "record_board",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "tie_off": {
+          "requires": [
+            "splash",
+            "count_cord",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "rest_row": {
+          "requires": [
+            "stone_keeper",
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "honey_buy": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "share_supper": {
+          "requires": [
+            "stone_keeper",
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "supper": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "watch": {
+          "requires": [
+            "stone_keeper",
+            "splash"
           ],
           "introduces": {}
         },
@@ -1524,9 +5017,7 @@
           "introduces": {
             "ashspan": "Ashspan Bridge",
             "ossley": "Old Ossley",
-            "boat": "his flat boat",
-            "marsh": "Whispering Marsh",
-            "posted_path": "raised footpath"
+            "boat": "flat boat"
           }
         },
         "landing": {
@@ -1535,10 +5026,33 @@
             "boat"
           ],
           "introduces": {
-            "plank": "a landing plank",
-            "mooring_rope": "A mooring rope",
+            "plank": "landing plank",
+            "mooring_rope": "mooring rope",
             "travelers": "two travelers"
           }
+        },
+        "plank_check": {
+          "requires": [
+            "plank",
+            "travelers",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "rope_check": {
+          "requires": [
+            "plank",
+            "mooring_rope",
+            "travelers"
+          ],
+          "introduces": {}
+        },
+        "brace_check": {
+          "requires": [
+            "plank",
+            "travelers"
+          ],
+          "introduces": {}
         },
         "plank": {
           "requires": [
@@ -1557,7 +5071,522 @@
           ],
           "introduces": {}
         },
-        "routes": {
+        "brace_done": {
+          "requires": [
+            "plank",
+            "travelers",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "board_wet": {
+          "requires": [
+            "plank",
+            "travelers",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ferry_ask": {
+          "requires": [
+            "ossley",
+            "boat",
+            "travelers"
+          ],
+          "introduces": {
+            "tilly": "Tilly",
+            "eggs": "Duck eggs"
+          }
+        },
+        "ferry_plan": {
+          "requires": [
+            "ossley",
+            "boat",
+            "eggs"
+          ],
+          "introduces": {}
+        },
+        "pole_check": {
+          "requires": [
+            "boat",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "watch_check": {
+          "requires": [
+            "boat",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ferry_hold": {
+          "requires": [
+            "boat",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "crossing": {
+          "requires": [
+            "boat",
+            "ossley",
+            "eggs"
+          ],
+          "introduces": {}
+        },
+        "ferry_spin": {
+          "requires": [
+            "boat",
+            "ossley",
+            "eggs"
+          ],
+          "introduces": {}
+        },
+        "ferry_dock": {
+          "requires": [
+            "boat",
+            "ossley",
+            "eggs"
+          ],
+          "introduces": {}
+        },
+        "far_bank": {
+          "requires": [
+            "ashspan",
+            "ossley",
+            "eggs"
+          ],
+          "introduces": {
+            "bryn": "Bryn",
+            "mender_planks": "Planks, I have"
+          }
+        },
+        "plank_pile": {
+          "requires": [
+            "bryn",
+            "mender_planks",
+            "ossley",
+            "eggs"
+          ],
+          "introduces": {}
+        },
+        "poke_reveal": {
+          "requires": [
+            "bryn",
+            "eggs"
+          ],
+          "introduces": {
+            "mimic": "mire mimic"
+          }
+        },
+        "stamp_reveal": {
+          "requires": [
+            "bryn",
+            "eggs"
+          ],
+          "introduces": {
+            "mimic": "mire mimic"
+          }
+        },
+        "mimic_fight": {
+          "requires": [
+            "mimic",
+            "ossley",
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "mimic_won": {
+          "requires": [
+            "bryn",
+            "ossley",
+            "mimic"
+          ],
+          "introduces": {}
+        },
+        "mimic_shooed": {
+          "requires": [
+            "bryn",
+            "ossley",
+            "mimic"
+          ],
+          "introduces": {}
+        },
+        "cart_plan": {
+          "requires": [
+            "bryn",
+            "mender_planks"
+          ],
+          "introduces": {
+            "goats": "pack goats"
+          }
+        },
+        "dig_check": {
+          "requires": [
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "track_check": {
+          "requires": [
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "roar_check": {
+          "requires": [
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "cart_free": {
+          "requires": [
+            "bryn",
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "cart_stuck": {
+          "requires": [
+            "bryn",
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "unload_relay": {
+          "requires": [
+            "bryn",
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "bridge_head": {
+          "requires": [
+            "bryn",
+            "ashspan"
+          ],
+          "introduces": {
+            "jam": "logs and branches have jammed"
+          }
+        },
+        "jam_plan": {
+          "requires": [
+            "jam",
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "hook_check": {
+          "requires": [
+            "jam"
+          ],
+          "introduces": {}
+        },
+        "haul_check": {
+          "requires": [
+            "jam"
+          ],
+          "introduces": {}
+        },
+        "slip_check": {
+          "requires": [
+            "jam"
+          ],
+          "introduces": {}
+        },
+        "jam_shift": {
+          "requires": [
+            "jam",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "jam_clear": {
+          "requires": [
+            "ossley",
+            "bryn"
+          ],
+          "introduces": {
+            "cracked_beam": "cracked middle beam"
+          }
+        },
+        "carry_beam": {
+          "requires": [
+            "bryn",
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "beam_plan": {
+          "requires": [
+            "bryn",
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "lift_check": {
+          "requires": [
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "roll_check": {
+          "requires": [
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "smash_check": {
+          "requires": [
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "hum_check": {
+          "requires": [
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "beam_up": {
+          "requires": [
+            "bryn",
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "beam_slip": {
+          "requires": [
+            "bryn",
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "hatch": {
+          "requires": [
+            "eggs",
+            "tilly"
+          ],
+          "introduces": {
+            "ducklings": "duckling"
+          }
+        },
+        "duck_play": {
+          "requires": [
+            "ducklings",
+            "tilly"
+          ],
+          "introduces": {}
+        },
+        "duck_plan": {
+          "requires": [
+            "ducklings",
+            "tilly"
+          ],
+          "introduces": {}
+        },
+        "scoop_check": {
+          "requires": [
+            "ducklings"
+          ],
+          "introduces": {}
+        },
+        "coax_check": {
+          "requires": [
+            "ducklings"
+          ],
+          "introduces": {}
+        },
+        "trail_check": {
+          "requires": [
+            "ducklings"
+          ],
+          "introduces": {}
+        },
+        "ducks_safe": {
+          "requires": [
+            "ducklings",
+            "tilly",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ducks_loose": {
+          "requires": [
+            "ducklings",
+            "tilly",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "planks_plan": {
+          "requires": [
+            "bryn",
+            "mender_planks"
+          ],
+          "introduces": {}
+        },
+        "rope2_check": {
+          "requires": [
+            "mender_planks"
+          ],
+          "introduces": {}
+        },
+        "pass_check": {
+          "requires": [
+            "mender_planks"
+          ],
+          "introduces": {}
+        },
+        "pwing_check": {
+          "requires": [
+            "mender_planks"
+          ],
+          "introduces": {}
+        },
+        "planks_dropped": {
+          "requires": [
+            "mender_planks",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "planks_laid": {
+          "requires": [
+            "bryn",
+            "mender_planks"
+          ],
+          "introduces": {}
+        },
+        "lash_plan": {
+          "requires": [
+            "bryn",
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "knots_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "pegs_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "whistle_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "straps_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "lashed": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "lashed_loose": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "test_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "bridge_open": {
+          "requires": [
+            "bryn",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "bridge_creak": {
+          "requires": [
+            "bryn",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "folk_cross": {
+          "requires": [
+            "tilly",
+            "ossley",
+            "ducklings"
+          ],
+          "introduces": {}
+        },
+        "gift_plan": {
+          "requires": [
+            "tilly",
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "buy_cakes": {
+          "requires": [
+            "tilly"
+          ],
+          "introduces": {}
+        },
+        "cakes": {
+          "requires": [
+            "tilly"
+          ],
+          "introduces": {}
+        },
+        "goose": {
+          "requires": [
+            "tilly",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "rest_hut": {
+          "requires": [
+            "bryn",
+            "ossley"
+          ],
+          "introduces": {
+            "marsh": "Whispering Marsh",
+            "posted_path": "raised footpath"
+          }
+        },
+        "share_bryn": {
+          "requires": [
+            "bryn",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "dangle": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "tie_boat": {
+          "requires": [
+            "ossley",
+            "boat"
+          ],
+          "introduces": {}
+        },
+        "ossley_routes": {
           "requires": [
             "ossley"
           ],
@@ -1565,21 +5594,23 @@
             "saltrot_lead": "Saltrot"
           }
         },
-        "academy": {
+        "coast_talk": {
           "requires": [
-            "tower"
+            "ossley",
+            "saltrot_lead"
           ],
-          "introduces": {
-            "academy": "Academy",
-            "professor_nettle": "Professor Nettle",
-            "telescope": "telescope",
-            "star_circlet": "star circlet"
-          }
+          "introduces": {}
         },
-        "academy_stars": {
+        "inland_talk": {
           "requires": [
-            "professor_nettle",
-            "telescope"
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "routes": {
+          "requires": [
+            "ossley",
+            "saltrot_lead"
           ],
           "introduces": {}
         },
@@ -1623,6 +5654,24 @@
             "ossley"
           ],
           "introduces": {}
+        },
+        "academy": {
+          "requires": [
+            "tower"
+          ],
+          "introduces": {
+            "academy": "Academy",
+            "professor_nettle": "Professor Nettle",
+            "telescope": "telescope",
+            "star_circlet": "star circlet"
+          }
+        },
+        "academy_stars": {
+          "requires": [
+            "professor_nettle",
+            "telescope"
+          ],
+          "introduces": {}
         }
       }
     },
@@ -1638,14 +5687,68 @@
             "temple_keeper": "kitsune temple keeper"
           }
         },
+        "landing": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "landing_held": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "landing_slid": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
         "lesson": {
           "requires": [
-            "learned_note"
+            "learned_note",
+            "temple_keeper"
           ],
           "introduces": {
             "seren": "Seren Wisp",
             "pip": "Pip Thistledown"
           }
+        },
+        "pip_notes": {
+          "requires": [
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "hum": {
+          "requires": [
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "hum_attuned": {
+          "requires": [
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "hum_heard": {
+          "requires": [
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "hum_fuzzy": {
+          "requires": [
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
         },
         "local": {
           "requires": [
@@ -1658,22 +5761,555 @@
         },
         "markers": {
           "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "markers_check": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "markers_set": {
+          "requires": [
             "temple_keeper",
-            "marker_posts"
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "markers_dropped": {
+          "requires": [
+            "temple_keeper"
           ],
           "introduces": {}
         },
         "song": {
           "requires": [
-            "distant_song",
+            "temple_keeper",
+            "distant_song"
+          ],
+          "introduces": {}
+        },
+        "song_check": {
+          "requires": [
             "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "song_bearing": {
+          "requires": [
+            "temple_keeper",
+            "marker_posts"
+          ],
+          "introduces": {}
+        },
+        "song_muddled": {
+          "requires": [
+            "temple_keeper",
+            "marker_posts"
+          ],
+          "introduces": {}
+        },
+        "edge_scout": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "edge_scouted": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "edge_gusted": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "walker": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {
+            "dob": "Dob",
+            "kite_seller": "kite seller"
+          }
+        },
+        "walker_catch": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "walker_call": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "walker_leap": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "walker_safe": {
+          "requires": [
+            "temple_keeper",
+            "dob"
+          ],
+          "introduces": {}
+        },
+        "walker_dragged": {
+          "requires": [
+            "temple_keeper",
+            "dob"
+          ],
+          "introduces": {}
+        },
+        "edge_merge": {
+          "requires": [
+            "temple_keeper",
+            "dob"
+          ],
+          "introduces": {
+            "signal_basket": "signal basket",
+            "thimble": "named Thimble"
+          }
+        },
+        "basket_plan": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_ropes": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_wedge": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_smash": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_brace": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_up": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_leaning": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "fuel": {
+          "requires": [
+            "temple_keeper",
+            "dob"
+          ],
+          "introduces": {}
+        },
+        "fuel_logs": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "fuel_twigs": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "fuel_lace": {
+          "requires": [
+            "temple_keeper",
+            "dob"
+          ],
+          "introduces": {}
+        },
+        "fuel_dash": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "fuel_dry": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "fuel_soggy": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "light": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "light_flint": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "light_coals": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "light_fox": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "basket_lit": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "basket_smoky": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "dusk_ferry": {
+          "requires": [
+            "temple_keeper",
+            "dob",
+            "thimble"
+          ],
+          "introduces": {
+            "fenwick": "Fenwick, courier"
+          }
+        },
+        "ferry_lines": {
+          "requires": [
+            "temple_keeper",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "ferry_flags": {
+          "requires": [
+            "temple_keeper",
+            "dob",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "ferry_tow": {
+          "requires": [
+            "temple_keeper",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "ferry_whistle": {
+          "requires": [
+            "temple_keeper",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "ferry_post": {
+          "requires": [
+            "temple_keeper",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "ferry_in": {
+          "requires": [
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {
+            "hens": "Hens flap out"
+          }
+        },
+        "ferry_bumped": {
+          "requires": [
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {
+            "hens": "Hens flap out"
+          }
+        },
+        "passengers": {
+          "requires": [
+            "thimble"
+          ],
+          "introduces": {}
+        },
+        "passengers_fed": {
+          "requires": [
+            "temple_keeper",
+            "thimble",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "passengers_calm": {
+          "requires": [
+            "temple_keeper",
+            "thimble",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "passengers_stuck": {
+          "requires": [
+            "temple_keeper",
+            "thimble",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "thimble": {
+          "requires": [
+            "thimble",
+            "fenwick",
+            "hens"
+          ],
+          "introduces": {
+            "cloud_whales": "cloud whales"
+          }
+        },
+        "windbreak_rest": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "pip",
+            "dob",
+            "hens",
+            "distant_song"
+          ],
+          "introduces": {}
+        },
+        "pip_night": {
+          "requires": [
+            "temple_keeper",
+            "pip",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "night_song": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "pip",
+            "distant_song"
+          ],
+          "introduces": {}
+        },
+        "bearing_vote": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "pip",
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "bearing_notes": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "bearing_air": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "bearing_chime": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "bearing_sing": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "bearing_found": {
+          "requires": [
+            "temple_keeper",
+            "thimble",
+            "fenwick",
+            "cloud_whales"
+          ],
+          "introduces": {}
+        },
+        "bearing_blurred": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "route_vote": {
+          "requires": [
+            "temple_keeper",
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "route_ferry": {
+          "requires": [
+            "temple_keeper",
+            "dob",
+            "thimble",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "route_flags": {
+          "requires": [
+            "temple_keeper",
+            "dob",
+            "fenwick",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "island_done": {
+          "requires": [
+            "temple_keeper",
+            "cloud_whales",
+            "signal_basket",
+            "distant_song"
+          ],
+          "introduces": {}
+        },
+        "gust_lull": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "fuel_chain": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "camp_play": {
+          "requires": [
+            "temple_keeper",
+            "pip",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "song_track": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "distant_song"
+          ],
+          "introduces": {}
+        },
+        "song_echo": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "thimble"
+          ],
+          "introduces": {}
+        },
+        "wisps": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "wisp_fight": {
+          "requires": [],
+          "introduces": {}
+        },
+        "wisps_shooed": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "wisps_rescued": {
+          "requires": [
+            "temple_keeper",
+            "pip"
           ],
           "introduces": {}
         },
         "island_rest": {
           "requires": [
             "temple_keeper",
-            "distant_song"
+            "thimble",
+            "fenwick",
+            "cloud_whales"
           ],
           "introduces": {
             "stone_hut": "a stone hut"
@@ -1696,16 +6332,13 @@
             "pillows"
           ],
           "introduces": {}
-        },
-        "island_done": {
-          "requires": [],
-          "introduces": {}
         }
       }
     },
     "riftlight-saltrot-arrival": {
       "entryFacts": [
-        "learned_note"
+        "learned_note",
+        "orin"
       ],
       "scenes": {
         "flats": {
@@ -1714,21 +6347,118 @@
             "saltrot": "Welcome to the Saltrot",
             "skupper": "The guide is a Skupper",
             "shell_bank": "a shell-bank"
-          }
+          },
+          "conditional": [
+            {
+              "flag": "saltrot_arrival_ferry",
+              "requires": [
+                "ossley"
+              ]
+            }
+          ]
         },
-        "lesson": {
+        "shells": {
           "requires": [
-            "learned_note"
+            "skupper",
+            "shell_bank"
+          ],
+          "introduces": {}
+        },
+        "shells_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shells_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shells_a_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shells_b_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shells_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shells_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shell_path": {
+          "requires": [
+            "skupper",
+            "shell_bank"
+          ],
+          "introduces": {}
+        },
+        "town": {
+          "requires": [
+            "skupper"
           ],
           "introduces": {
-            "seren": "Seren Wisp",
-            "pip": "Pip Thistledown"
+            "tidepocket": "Tidepocket, the guide's burrow town"
+          }
+        },
+        "town_a_check": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "town_b_check": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "town_brace": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "town_brace_check": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "town_done": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "town_off": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "hatch_party": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "silt": {
+          "requires": [
+            "tidepocket",
+            "skupper"
+          ],
+          "introduces": {
+            "pale_silt": "pale and gray and cold"
           }
         },
         "local": {
           "requires": [
             "skupper",
-            "shell_bank"
+            "shell_bank",
+            "pale_silt"
           ],
           "introduces": {
             "silt": "New silt",
@@ -1751,13 +6481,376 @@
           ],
           "introduces": {}
         },
+        "bag_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "path_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "traveler_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "traveler_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "puff": {
+          "requires": [
+            "skupper"
+          ],
+          "introduces": {
+            "cousin": "My cousin"
+          }
+        },
+        "puff_a": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "puff_b": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "puff_song": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "puff_song_check": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "puff_done": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "puff_off": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "ossley": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {
+            "ossley": "Old Ossley"
+          }
+        },
+        "ossley_a": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ossley_b": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ossley_done": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ossley_off": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "lamp_line": {
+          "requires": [
+            "tidepocket",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "camp": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "camp_story": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "camp_gift": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "camp_boots": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "lesson": {
+          "requires": [
+            "learned_note"
+          ],
+          "introduces": {
+            "seren": "Seren Wisp",
+            "pip": "Pip Thistledown"
+          }
+        },
+        "hum": {
+          "requires": [
+            "seren",
+            "pip",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "hum_chime": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "hum_chime_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "hum_a_check": {
+          "requires": [
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "hum_b_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "hum_star": {
+          "requires": [
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "hum_star_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "hum_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "hum_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles": {
+          "requires": [
+            "skupper"
+          ],
+          "introduces": {}
+        },
+        "poles_a_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles_b_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles_buy": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail": {
+          "requires": [
+            "pip",
+            "pale_silt"
+          ],
+          "introduces": {}
+        },
+        "trail_charm": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_charm_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_wing": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_a_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_b_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_wing_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs": {
+          "requires": [
+            "skupper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "crabs_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs_leap": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs_leap_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crab_warn": {
+          "requires": [
+            "skupper",
+            "shell_bank",
+            "pip"
+          ],
+          "introduces": {
+            "glassback": "Glassback crabs"
+          }
+        },
+        "crab_fight": {
+          "requires": [
+            "glassback"
+          ],
+          "introduces": {}
+        },
+        "crab_done": {
+          "requires": [
+            "glassback"
+          ],
+          "introduces": {}
+        },
+        "crab_rescued": {
+          "requires": [
+            "glassback"
+          ],
+          "introduces": {}
+        },
+        "tide": {
+          "requires": [
+            "skupper",
+            "shell_bank"
+          ],
+          "introduces": {}
+        },
+        "tide_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tide_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tide_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tide_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tide_dash": {
+          "requires": [],
+          "introduces": {}
+        },
+        "lead": {
+          "requires": [
+            "pale_silt",
+            "seren"
+          ],
+          "introduces": {
+            "buried_bridge": "The buried bridge"
+          }
+        },
+        "bridge_ask": {
+          "requires": [
+            "buried_bridge",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "bridge_go": {
+          "requires": [
+            "buried_bridge"
+          ],
+          "introduces": {}
+        },
+        "bridge_plan": {
+          "requires": [
+            "buried_bridge"
+          ],
+          "introduces": {}
+        },
         "flats_rest": {
           "requires": [
             "skupper",
-            "silt"
+            "pale_silt",
+            "buried_bridge"
           ],
           "introduces": {}
         }
+      },
+      "entryByFlag": {
+        "saltrot_arrival_ferry": [
+          "ossley"
+        ]
       }
     },
     "riftlight-stone-counters": {

@@ -155,6 +155,24 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
           pending.push({ state: result.state, known, introduced });
         }
       }
+    } else if (state.prompt?.kind === "interaction") {
+      // Synthetic branch walking: the prompt is put straight into its result phase with
+      // each authored outcome and only the engine's own `continue` is sent. That proves the
+      // story continues from every branch, not that the scene can be completed. The mechanics
+      // are exercised in packages/shared/src/interactions.test.ts, and the chapters' own
+      // scenes are played with real start, stop, answer, support, assist and continue
+      // actions in riftlight-interactions.test.ts.
+      const scene = chapter.scenes[state.sceneId!]!;
+      if (scene.type !== "interaction") throw new Error("Expected interaction");
+      for (const outcome of ["success", "failure", "assisted"] as const) {
+        if (outcome === "assisted" && !scene.onAssisted) continue;
+        const resolved = structuredClone(state);
+        if (resolved.prompt?.kind !== "interaction") throw new Error("Expected interaction");
+        resolved.prompt.phase = "result";
+        resolved.prompt.outcome = outcome;
+        const { openedSeq, attempt } = resolved.prompt;
+        pending.push({ state: send(resolved, { type: "INTERACT", action: "continue", openedSeq, attempt }, chapter), known, introduced });
+      }
     } else if (state.prompt?.kind === "choice") {
       expect(state.prompt.options.length).toBeGreaterThan(0);
       for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known, introduced });

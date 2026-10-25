@@ -2874,9 +2874,38 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
       if (objective.effects && done[i]) applyEffectsDraft(draft, objective.effects, ctx);
     });
   }
-  const branched = takeBranch(draft, outcomeBranch(scene, outcome), ctx);
+  const spoils = lootFrom(draft, encounter, outcome, ctx);
+  const branched = takeBranch(draft, outcomeBranch(scene, outcome), ctx, undefined, spoils);
   announceRankUps(draft, ups);
   return branched;
+}
+
+/**
+ * The coins a won fight drops (`rules.loot`): one for every `hpPerCoin` of a
+ * beaten foe's max hit points, at least one each, up to `maxPerFight`, straight
+ * into the party's purse. Only in the campaigns the rules name, so every other
+ * fight pays what it always did. Returns the line the scene opens with, or
+ * undefined when nothing dropped. A foe that slipped away through a rift exit
+ * is not beaten and drops nothing.
+ */
+function lootFrom(
+  draft: RunState,
+  encounter: EncounterState,
+  outcome: Exclude<EncounterOutcome, "ongoing">,
+  ctx: EngineContext,
+): string | undefined {
+  const loot = ctx.rules.loot;
+  if (outcome !== "victory" || !loot || draft.campaignId === null || !loot.campaigns.includes(draft.campaignId)) {
+    return undefined;
+  }
+  const beaten = encounter.combatants.filter((c) => c.side === "enemy" && c.down && !c.escaped);
+  const coins = Math.min(
+    loot.maxPerFight,
+    beaten.reduce((sum, c) => sum + Math.max(1, Math.round(c.maxHp / loot.hpPerCoin)), 0),
+  );
+  if (coins <= 0) return undefined;
+  draft.coins = (draft.coins ?? 0) + coins;
+  return coins === 1 ? "You find 1 coin in the mess they leave behind." : `You find ${String(coins)} coins in the mess they leave behind.`;
 }
 
 /**

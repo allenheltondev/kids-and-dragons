@@ -174,9 +174,10 @@ Chapters are written by people, working with a coding agent, straight into
   out on Gemfall
 - [docs/campaigns/graph-campaigns-authoring.md](docs/campaigns/graph-campaigns-authoring.md): for a
   nonlinear campaign like Riftlight
-- [.claude/skills/chapter-cohesion/SKILL.md](.claude/skills/chapter-cohesion/SKILL.md): a six-check
-  review (nothing unannounced, the opening states the goal, doing over talking, and more) with the
-  commands that verify each
+- [.claude/skills/chapter-cohesion/SKILL.md](.claude/skills/chapter-cohesion/SKILL.md): an eight-check
+  review (nothing unannounced, the opening states the goal, doing over talking, group actions and
+  interactions, items and gold, and more) with the commands that verify each, plus how to lengthen
+  a short chapter and how to author chapters in parallel
 
 Then run `content:validate`, `content:continuity`, `content:pacing` and `content:graph`, and the
 read-only helpers in `node tools/content/cohesion.mjs` (`opening`, `merges`, `setbacks`, `idioms`,

@@ -98,7 +98,7 @@ describe("the lobby's campaigns", () => {
     expect((await state()).chapterId).toBe("gems-01");
   });
 
-  it("offers a campaign the household started on another evening, where it left off", async () => {
+  it("offers only the campaign the household started on another evening, where it left off", async () => {
     const h = harness();
     // One evening of Crown...
     const first = await lobby(h, "crown", 2);
@@ -106,60 +106,52 @@ describe("the lobby's campaigns", () => {
     await first.ok("p_1", { type: "PLAYTEST_GOTO", sceneId: "scene_ending" });
 
     // ...and the next room is opened for Gems, as the launch campaign always is.
-    const second = await lobby(h, "gems", 2);
-    const options = (await second.state()).campaignOptions ?? [];
-    expect(options.map((o) => [o.id, o.next?.index])).toEqual([
-      ["gems", 1],
-      ["crown", 2],
-    ]);
-  });
-
-  it("rests the picker on the campaign in progress, not the room's own", async () => {
-    const h = harness();
-    const first = await lobby(h, "crown", 2);
-    await first.ok("p_1", { type: "CONTINUE_CAMPAIGN" });
-    await first.ok("p_1", { type: "PLAYTEST_GOTO", sceneId: "scene_ending" });
-
+    // Continuing is not choosing: Crown is the only card, and Begin needs no vote.
     const second = await lobby(h, "gems", 2);
     const state = await second.state();
-    expect(state.campaignOptions?.map((o) => o.id)).toEqual(["gems", "crown"]);
+    expect(state.campaignOptions?.map((o) => [o.id, o.next?.index])).toEqual([["crown", 2]]);
     expect(state.campaign?.id).toBe("crown");
     expect(lobbyCampaign(state).leader?.id).toBe("crown");
+    expect(lobbyCampaign(state).contested).toBe(false);
+
+    await second.ok("p_1", { type: "CONTINUE_CAMPAIGN" });
+    expect((await second.state()).chapterId).toBe("crown-02");
   });
 
-  it("waits for every seat to vote, then plays the vote's pick", async () => {
-    const h = harness();
-    const first = await lobby(h, "crown", 2);
-    await first.ok("p_1", { type: "CONTINUE_CAMPAIGN" });
-    await first.ok("p_1", { type: "PLAYTEST_GOTO", sceneId: "scene_ending" });
+  describe("with two campaigns to start and none under way", () => {
+    // Crown is listed beside the room's Gems, so a fresh household chooses.
+    function choosing(): TestHarness {
+      return makeHarness({
+        engine: realEngine,
+        playtest: true,
+        content: makeContent({ chapters: CHAPTERS, campaigns: [GEMS, { ...CROWN, listed: true }] }),
+      });
+    }
 
-    const { state, send, ok } = await lobby(h, "gems", 2);
-    const early = await send("p_1", { type: "CONTINUE_CAMPAIGN" });
-    expect(early.ok).toBe(false);
+    it("waits for every seat to vote, then plays the vote's pick", async () => {
+      const { state, send, ok } = await lobby(choosing(), "gems", 2);
+      const early = await send("p_1", { type: "CONTINUE_CAMPAIGN" });
+      expect(early.ok).toBe(false);
 
-    await ok("p_1", { type: "VOTE_CAMPAIGN", campaignId: "crown" });
-    // The screens follow the leader.
-    expect((await state()).campaign?.id).toBe("crown");
-    expect((await send("p_2", { type: "CONTINUE_CAMPAIGN" })).ok).toBe(false);
+      await ok("p_1", { type: "VOTE_CAMPAIGN", campaignId: "crown" });
+      // The screens follow the leader.
+      expect((await state()).campaign?.id).toBe("crown");
+      expect((await send("p_2", { type: "CONTINUE_CAMPAIGN" })).ok).toBe(false);
 
-    await ok("p_2", { type: "VOTE_CAMPAIGN", campaignId: "crown" });
-    // The tapper's campaignId is not the decision; the vote is.
-    await ok("p_2", { type: "CONTINUE_CAMPAIGN", campaignId: "gems" });
-    expect((await state()).chapterId).toBe("crown-02");
-    expect((await state()).campaignVotes).toEqual({});
-  });
+      await ok("p_2", { type: "VOTE_CAMPAIGN", campaignId: "crown" });
+      // The tapper's campaignId is not the decision; the vote is.
+      await ok("p_2", { type: "CONTINUE_CAMPAIGN", campaignId: "gems" });
+      expect((await state()).chapterId).toBe("crown-01");
+      expect((await state()).campaignVotes).toEqual({});
+    });
 
-  it("breaks a tie toward the story turn marker", async () => {
-    const h = harness();
-    const first = await lobby(h, "crown", 2);
-    await first.ok("p_1", { type: "CONTINUE_CAMPAIGN" });
-    await first.ok("p_1", { type: "PLAYTEST_GOTO", sceneId: "scene_ending" });
-
-    const { state, ok } = await lobby(h, "gems", 2);
-    await ok("p_1", { type: "VOTE_CAMPAIGN", campaignId: "gems" });
-    await ok("p_2", { type: "VOTE_CAMPAIGN", campaignId: "crown" });
-    await ok("p_2", { type: "CONTINUE_CAMPAIGN" });
-    expect((await state()).chapterId).toBe("gems-01");
+    it("breaks a tie toward the story turn marker", async () => {
+      const { state, ok } = await lobby(choosing(), "gems", 2);
+      await ok("p_1", { type: "VOTE_CAMPAIGN", campaignId: "gems" });
+      await ok("p_2", { type: "VOTE_CAMPAIGN", campaignId: "crown" });
+      await ok("p_2", { type: "CONTINUE_CAMPAIGN" });
+      expect((await state()).chapterId).toBe("gems-01");
+    });
   });
 
   it("leads, before anybody votes, with the campaign the screens already show", () => {
@@ -256,10 +248,7 @@ describe("a TV's room belongs to the first phone that joins", () => {
     lookup.mockRestore();
     expect((await joinRoom({ code, principal: players[1]!.principal }, h.deps)).ok).toBe(true);
     const state = await h.repo.getState(runId);
-    expect(state?.campaignOptions?.map((o) => [o.id, o.next?.index])).toEqual([
-      ["gems", 1],
-      ["crown", 2],
-    ]);
+    expect(state?.campaignOptions?.map((o) => [o.id, o.next?.index])).toEqual([["crown", 2]]);
     expect((await h.repo.getRun(runId))?.lobbyFor).toBe(householdId);
     // The household id stays off the wire: every screen, the TV included, reads this.
     expect(JSON.stringify(state)).not.toContain(householdId);
