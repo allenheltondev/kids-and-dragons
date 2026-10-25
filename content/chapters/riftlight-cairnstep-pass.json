@@ -384,13 +384,13 @@
     },
     "compared": {
       "type": "story",
-      "narration": "The two pages agree on everything but one thing: a step in the ridge, where the stone has slid sideways since the first snow. \"The drawing was right when it was drawn,\" says Brask slowly. \"The mountain changed after.\" He closes the ledger on his pencil. \"That is the first half. Now I must know if the new stone will hold a foot.\"",
+      "narration": "The two pages agree on everything but one thing: a step in the ridge, where the stone has slid sideways since the first snow. \"The drawing was right when it was drawn,\" says Brask slowly. \"The mountain changed after.\" He closes the ledger on his pencil. \"That is the first half. Now the cairns. The new page draws three of them in a line, and I need to know that my cairns stand in the same order.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "pebble"
+          "label": "Look at the cairns",
+          "icon": "map",
+          "goto": "cairn_order"
         }
       ],
       "cast": [
@@ -406,6 +406,61 @@
           "flag": "compared_the_pass_drawings"
         }
       ]
+    },
+    "cairn_order": {
+      "type": "interaction",
+      "narration": "Brask points at three cairns on the slope, and then at three marks on the page. One cairn leans. One has a flat top. One has two stones side by side, like a pair of shoes. Brask hands each of you a scrap of paper. \"The scraps hold clues,\" he says. \"Share them out loud.\"",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share your clues, then put the cairns in the order of the drawing.",
+        "actionLabel": "Check the order",
+        "options": [
+          {
+            "id": "lean",
+            "label": "Leaning cairn",
+            "icon": "arrow"
+          },
+          {
+            "id": "flat",
+            "label": "Flat-topped cairn",
+            "icon": "map"
+          },
+          {
+            "id": "twin",
+            "label": "Twin-stone cairn",
+            "icon": "boot"
+          }
+        ],
+        "answer": [
+          "lean",
+          "flat",
+          "twin"
+        ],
+        "clues": [
+          "The leaning cairn is at the start of the line.",
+          "The twin-stone cairn is at the end.",
+          "The flat-topped cairn stands between the other two."
+        ]
+      },
+      "onSuccess": {
+        "goto": "pebble",
+        "narration": "Lean, flat, twin! Brask taps each cairn and nods. \"The drawing and the mountain agree,\" he says."
+      },
+      "onFailure": {
+        "goto": "pebble",
+        "narration": "You swap two cairns, and Brask gently swaps them back. \"The drawing keeps its order,\" he says kindly. \"Cairns are patient.\""
+      },
+      "onAssisted": {
+        "goto": "pebble",
+        "narration": "You lay the scraps side by side. Lean, flat, twin. The order falls out of them like a ribbon."
+      },
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Pass keeper"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
     },
     "pebble": {
       "type": "story",
@@ -563,9 +618,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the moved stone",
+          "label": "Learn the page by heart",
           "icon": "eye",
-          "goto": "moved"
+          "goto": "drawing_memory"
         }
       ],
       "cast": [
@@ -587,6 +642,63 @@
           "to": "party"
         }
       ]
+    },
+    "drawing_memory": {
+      "type": "interaction",
+      "narration": "Pebble taps the marks of her new page on a flat rock, one after another, the way griffins learn a drawing by heart. \"Watch it twice,\" she says, \"and then tap it back. If we all remember the page, we can check it against the mountain without the book.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch Pebble's pattern, then tap it back.",
+        "actionLabel": "Tap it back",
+        "options": [
+          {
+            "id": "cairn",
+            "label": "Cairn",
+            "icon": "map"
+          },
+          {
+            "id": "step",
+            "label": "Step",
+            "icon": "boot"
+          },
+          {
+            "id": "notch",
+            "label": "Notch",
+            "icon": "arrow"
+          }
+        ],
+        "answer": [
+          "cairn",
+          "step",
+          "cairn",
+          "notch"
+        ],
+        "stepMs": 1200
+      },
+      "onSuccess": {
+        "goto": "moved",
+        "narration": "Cairn, step, cairn, notch. Pebble beams. \"That is the page,\" she says, \"and now it lives in all our heads.\""
+      },
+      "onFailure": {
+        "goto": "moved",
+        "narration": "One tap comes out in the wrong place. Pebble taps it again, slowly, and you follow along until it sticks."
+      },
+      "onAssisted": {
+        "goto": "moved",
+        "narration": "Pebble taps it slowly, one mark at a time, and you tap along with her until you have it."
+      },
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Pass keeper"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
     },
     "moved": {
       "type": "choice_point",
@@ -1681,19 +1793,25 @@
       ]
     },
     "capstone": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Everyone lift the capstone onto the last cairn together.",
-      "narration": "The last cairn goes up at the neck. Its capstone is a heavy flat rock, wide as a table. Everybody takes an edge and Brask counts to three, then four, because he counted wrong.",
-      "roller": "all",
+      "type": "interaction",
+      "narration": "The last cairn goes up at the neck. Its capstone is a heavy flat rock, wide as a table. A cairn this tall wobbles when it is climbed, so it needs one set of hands to hold it and one set to lift. Brask counts to three, then four, because he counted wrong.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the cairn steady while your friend lifts the capstone.",
+        "supportLabel": "Hold the cairn",
+        "actionLabel": "Lift the capstone"
+      },
       "onSuccess": {
         "goto": "capstone_done",
         "narration": "The capstone settles with a click, and its flat top points down the safe line."
       },
       "onFailure": {
         "goto": "capstone_done",
-        "narration": "The capstone lands crooked. You turn it with a great deal of grunting until it points the right way."
+        "narration": "The capstone lands crooked. Brask taps it straight with his pencil, and it points the right way."
+      },
+      "onAssisted": {
+        "goto": "capstone_done",
+        "narration": "You wedge a stone under the cairn, and the capstone slides on easily."
       },
       "cast": [
         {
@@ -1710,13 +1828,13 @@
     },
     "capstone_done": {
       "type": "story",
-      "narration": "The last cairn stands at the neck, tall and neat, and the wind goes around it with a respectful whistle. Pebble sets a little stone on top, because the top is where a little stone belongs. \"There,\" says Brask. \"Anyone who sees it will know someone cared.\" Pebble hands you a brass whistle from her satchel. \"A griffin signal whistle,\" she says. \"One loud note. Keep it for a moment that needs one.\"",
+      "narration": "The last cairn stands at the neck, tall and neat, and the wind goes around it with a respectful whistle. Pebble holds up one small stone. \"The top is where a little stone belongs,\" she says. \"You do it. Brask says anyone who sees it will know someone cared.\" She also hands you a brass whistle from her satchel. \"A griffin signal whistle,\" she says. \"One loud note. Keep it for a moment that needs one.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Brask looks toward the island",
-          "icon": "eye",
-          "goto": "signal"
+          "label": "Take the little stone",
+          "icon": "hand",
+          "goto": "last_stone"
         }
       ],
       "cast": [
@@ -1752,6 +1870,42 @@
           "text": "Brask ties a plain white ribbon to it, to say that the road is resting."
         }
       ]
+    },
+    "last_stone": {
+      "type": "interaction",
+      "narration": "The little stone sits in your palm. The top of the capstone has a scratch in the middle, made by Brask's claw. The wind is making the stone want to wander.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap when the stone is over the middle scratch.",
+        "actionLabel": "Drop the stone",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 3500
+      },
+      "onSuccess": {
+        "goto": "signal",
+        "narration": "Click! The little stone lands right in the middle. Brask tips his head the way griffins do when they are moved."
+      },
+      "onFailure": {
+        "goto": "signal",
+        "narration": "The stone rolls off the edge. Pebble catches it and sets it on top herself. \"Practice,\" she says, kindly."
+      },
+      "onAssisted": {
+        "goto": "signal",
+        "narration": "Pebble steadies your hand, and the little stone settles on top with a click."
+      },
+      "cast": [
+        {
+          "figure": "cast/pass_keeper",
+          "name": "Pass keeper"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Pebble",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
     },
     "signal": {
       "type": "choice_point",
