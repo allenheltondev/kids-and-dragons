@@ -1,9 +1,10 @@
 // @vitest-environment jsdom
+import { rollCardMs } from "../world/presentation";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type { FieldGuide as FieldGuideData, Prompt, RunState } from "@kad/shared";
-import { FieldGuideBanner, FieldGuideToast, NEWS_SHOW_MS, bannerWords, describeNews } from "./FieldGuideNews";
+import { FieldGuideBanner, FieldGuideToast, NEWS_SHOW_MS, NEWS_QUIET_GAP_MS, bannerWords, describeNews } from "./FieldGuideNews";
 import { noticeMs } from "../ui/notice-timing";
 import { resetFieldGuideCache } from "./content";
 import { useGameStore } from "../store";
@@ -150,6 +151,7 @@ describe("TV banner", () => {
   });
 
   it("waits out a dice roll before showing", async () => {
+    vi.useFakeTimers();
     render(<FieldGuideBanner />);
     act(() => {
       useGameStore.setState({
@@ -160,8 +162,11 @@ describe("TV banner", () => {
     await act(async () => { await Promise.resolve(); await Promise.resolve(); });
     expect(screen.queryByRole("status")).toBeNull();
     expect(getFieldGuideNews()).toHaveLength(1);
-    // The whole dice card (rollCardMs) + the gap
-    expect((await screen.findByRole("status", {}, { timeout: 5000 })).textContent).toContain("Embermoth");
+    // Wait for the card AND its quiet gap without a wall-clock timeout.
+    await act(async () => { await vi.advanceTimersByTimeAsync(rollCardMs({}) - 1); });
+    expect(screen.queryByRole("status")).toBeNull();
+    await act(async () => { await vi.advanceTimersByTimeAsync(NEWS_QUIET_GAP_MS + 2); });
+    expect(screen.getByRole("status").textContent).toContain("Embermoth");
   });
 
   it("stands in the shared screen's column when there is one, with nothing to tap", async () => {
