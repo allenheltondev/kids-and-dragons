@@ -100,8 +100,15 @@ const FIRST_PAINT_BUDGET_KB = 315;
  * A ceiling on the whole payload, because "it is lazy" stops being an answer
  * somewhere — the renderer still has to arrive before the first fight, over
  * the same wifi.
+ *
+ * 1400 -> 1425 on 2026-10-24, deliberately (#479). Pixi 8.20 to 8.22 added
+ * about 41KB of WebGPU machinery (render bundles, depth-stencil targets, shader
+ * overrides), all of it in the lazy stage chunks: the first paint did not move
+ * (315KB). 1415KB measured with the bump, 10KB of slack. React 19.3 was not
+ * taken for the opposite reason: it grew the first paint, which this budget
+ * cannot give back (see .github/dependabot.yml).
  */
-const TOTAL_BUDGET_KB = 1400;
+const TOTAL_BUDGET_KB = 1425;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
