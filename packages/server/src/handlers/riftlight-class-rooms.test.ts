@@ -133,6 +133,7 @@ describe("the four class rooms in Riftlight (#315)", () => {
     expect((await state()).sceneId).toBe("village_rest");
     await must({ type: "CHOOSE", choiceId: "return" });
     await must({ type: "CHOOSE", choiceId: "continue" });
+    await must({ type: "PLAYTEST_GOTO", sceneId: "routes" });
 
     // The upper bank road and the griffins' flight reach the Sky Islands Dojo.
     await travel("bridge-to-shore", "riftlight-frostfang-shore");
