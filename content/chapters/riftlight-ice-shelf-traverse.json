@@ -6,7 +6,7 @@
   "title": "The Path Beside the River",
   "biome": "glacier_of_origins",
   "music": "riftlight-paths",
-  "estimatedMinutes": 15,
+  "estimatedMinutes": 32,
   "xpAward": 140,
   "entry": "shelf",
   "plate": {
@@ -14,8 +14,13 @@
     "narration": "The Great River runs beneath a narrow shelf of blue ice. Dark rock rises on one side; cold water slides along the other. Ahead, the path bends out of sight."
   },
   "goal": {
-    "text": "Follow the icy path along the river.",
+    "text": "Get everyone along the icy shelf to the cairns.",
     "steps": [
+      {
+        "id": "wide_spot",
+        "label": "Reach the wide spot",
+        "flag": "reached_the_wide_spot"
+      },
       {
         "id": "find_way",
         "label": "Find a way past the broken ice",
@@ -31,20 +36,838 @@
   "scenes": {
     "shelf": {
       "type": "story",
-      "narration": "The singing hall falls behind you. Ahead, a narrow shelf of ice follows the Great River toward Frostfang. Water slides under its outer edge. A line of old boot marks stops where part of the shelf has fallen away.",
+      "narration": "The singing hall falls behind you. Ahead, a narrow shelf of ice runs beside the Great River toward Frostfang. Water slides under its outer edge. Orin told you to test the ice, and the herder's goats are waiting for a road. Your job is to get all of you along this shelf, together, to the cairns. Old boot marks lead out, then stop where part of the shelf has fallen away.",
       "choices": [
         {
           "id": "continue",
-          "label": "Examine the missing path",
+          "label": "Step onto the shelf",
+          "icon": "hand",
+          "goto": "lineup"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "lineup": {
+      "type": "choice_point",
+      "narration": "The shelf is only a few steps wide, and the river hisses just past its edge. The rope is still coiled on your shoulder, and it still smells a little like fish. Before the first step, how will you carry it? Orin would say to do it carefully. Orin would also have drawn a diagram.",
+      "choices": [
+        {
+          "id": "knots",
+          "label": "Tie everyone onto one long line",
+          "icon": "hand",
+          "goto": "knots"
+        },
+        {
+          "id": "coil",
+          "label": "Keep the rope coiled and ready to throw",
+          "icon": "hand",
+          "goto": "coil"
+        },
+        {
+          "id": "beat",
+          "label": "Use rally to set a steady walking beat",
+          "icon": "song",
+          "goto": "beat",
+          "requiresClass": "songkeeper"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "knots": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "narration": "The rope is long enough for all of you, with a little left over for luck. You pass it around, and everyone ties on. Knots are serious business on ice. A knot that is almost right is the same as a knot that is wrong.",
+      "prompt": "Everyone ties their own knot, then tugs the knot beside theirs.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "ring_thud",
+        "narration": "Every knot holds. The rope hums between you like a long, careful guitar string.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "line_ready"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "ring_thud",
+        "narration": "One knot slides loose and flaps like a tiny flag. You retie it, and the wind finds your ears while you work."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "coil": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "A coil that runs out free is worth more than a coil that tangles. You shake the rope out and start again.",
+      "prompt": "Coil the rope in wide loops that will run out without a snag.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ring_thud",
+        "narration": "The loops sit in your hand like a sleeping snake. Any of you could throw them in a blink.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "line_ready"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "ring_thud",
+        "narration": "The rope tangles into a knot the size of a cabbage. You pick it loose one loop at a time."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "beat": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "narration": "Rally is not only for the hurt. It is for the nervous, too. You take a breath and hum a low, slow tune.",
+      "prompt": "Hum a beat that keeps every boot landing at the same moment.",
+      "roller": "party",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "ring_thud",
+        "narration": "Step, step, hum. Soon even the Listening Chime swings in time. The line stays loose and easy.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "line_ready"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "ring_thud",
+        "narration": "Your beat is perfect. Everyone else's boots have ideas of their own. You settle for a gentler tune."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "ring_thud": {
+      "type": "choice_point",
+      "narration": "A line of old boot marks follows the dark rock wall. The ice underfoot looks the same everywhere, white and shiny as a plate. Orin said to test it. Thick ice rings when you tap it. Thin ice thuds, like a drum with nobody inside. Somebody gives the ice one tiny tap, just to see. It goes ping, and then everybody has to try. How will you listen to it?",
+      "choices": [
+        {
+          "id": "tap",
+          "label": "Tap the ice with a boot heel and listen",
+          "icon": "hand",
+          "goto": "tap"
+        },
+        {
+          "id": "slide",
+          "label": "Slide a small stone ahead and watch it",
+          "icon": "hand",
+          "goto": "slide"
+        },
+        {
+          "id": "scout",
+          "label": "Use skyward to fly up and read the ice from above",
+          "icon": "eye",
+          "goto": "scout",
+          "requiresSpecies": "griffin"
+        },
+        {
+          "id": "starlight",
+          "label": "Use starlight to show the thin patches",
+          "icon": "star",
+          "goto": "starlight",
+          "requiresClass": "starweaver"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "tap": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "narration": "Tap, tap, tap. You walk the first stretch bent over like someone looking for a lost button. Your knees will remember this later.",
+      "prompt": "Tap along the shelf and tell the ringing ice from the thudding ice.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "boot_marks",
+        "narration": "Ring, ring, ring, thud. You learn the shelf's voice, and you keep to the ringing parts. The thuds you walk around, giving each one a respectful nod.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "read_the_ice"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "boot_marks",
+        "narration": "Everything sounds a little bit like a thud, and a little bit like a ring. You step lightly and trust the old boot marks."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "slide": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "You find a flat stone the size of a cookie and crouch at the front of the line.",
+      "prompt": "Slide the stone ahead and watch where it skids, sticks or sinks.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "boot_marks",
+        "narration": "The stone skates, stops, then skates again. You can see where the ice is sound, and where it is only pretty.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "read_the_ice"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "boot_marks",
+        "narration": "The stone skids off the edge. Plop. You will do the rest of your testing with your boots."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "scout": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "narration": "Your wings catch the cold air, and the shelf drops away beneath you like a long white ribbon.",
+      "prompt": "Read the pale and dark patches below, then land and tell the others.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "boot_marks",
+        "narration": "From up here, thin ice shows pale as old milk. You mark a safe line along the rock and land on it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "read_the_ice"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "boot_marks",
+        "narration": "From up here, everything is white. You land with a plan to trust the old boot marks."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "starlight": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "narration": "You hold up your hand, and a little starlight gathers there. Thin ice drinks the light. Thick ice bounces it back.",
+      "prompt": "Sweep the light along the shelf and find where the glow goes dim.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "boot_marks",
+        "narration": "The glow dims over three pale patches and bounces back from the rest. You lead the others around the dim ones.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "read_the_ice"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "boot_marks",
+        "narration": "The light flickers in the wind. You can't tell dim from bright, so you settle for the old boot marks."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "boot_marks": {
+      "type": "choice_point",
+      "narration": "The boot marks bend toward the wall, where a rusty iron ring is hammered into the rock. A scrap of frayed rope still hangs from it. Someone once tied a line here. It is red with rust and looks as old as the shelf. Can you trust it?",
+      "choices": [
+        {
+          "id": "pull",
+          "label": "Hang your weight on the ring",
+          "icon": "hand",
+          "goto": "ring_pull"
+        },
+        {
+          "id": "look",
+          "label": "Look for who left it",
+          "icon": "hand",
+          "goto": "ring_look"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "ring_pull": {
+      "type": "story",
+      "narration": "You take turns hanging on the ring. It does not budge. As the last of you lets go, a frozen glove drops out of the crack beside it, with a good bootlace tucked inside. A rusty ring that holds is better than a shiny one that does not. You thread your rope through it, tug twice, and pocket the lace. Then you start toward a place where the wall squeezes in.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the wall",
+          "icon": "hand",
+          "goto": "squeeze"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_ring"
+        },
+        {
+          "type": "grantItem",
+          "itemId": "quickfoot_lace",
+          "to": "party"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "ring_look": {
+      "type": "story",
+      "narration": "Scratched into the rust is a tiny feather. Griffin keepers hung their lines along this shelf long ago, when it was the road to Frostfang. If they trusted this ring, you can too. Tied through it is a tiny tin that rattles. A note inside says: For the next traveler. Three coins lie beneath it. You take them, and promise to leave something behind someday. Then you tug the rope twice, just to be sure, and start toward a place where the wall squeezes in.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the wall",
+          "icon": "hand",
+          "goto": "squeeze"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_ring"
+        },
+        {
+          "type": "grantCoins",
+          "amount": 3
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "squeeze": {
+      "type": "choice_point",
+      "narration": "Past the ring, the shelf pinches to one boot wide beneath the rock wall. Spray from the river flicks your ankles. The packs are heavy, and the ice is slick as a soap dish. Somebody says, very calmly, that they are not scared. Their knees disagree. How will you get through?",
+      "choices": [
+        {
+          "id": "inch",
+          "label": "Inch along with your backs to the rock",
+          "icon": "hand",
+          "goto": "inch"
+        },
+        {
+          "id": "packs",
+          "label": "Pass the heavy packs along first, hand to hand",
+          "icon": "hand",
+          "goto": "packs"
+        },
+        {
+          "id": "chop",
+          "label": "Use smash to chop a wider step into the ice",
+          "icon": "fist",
+          "goto": "chop",
+          "requiresSpecies": "bigfoot"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "inch": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The wall is cold and bumpy, and it smells of old stone. You shuffle sideways, one boot at a time. The river is very close to your left ear, and it is muttering.",
+      "prompt": "Slide along the wall, one careful foot after the other.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "wide_spot",
+        "narration": "Slide, slide, rest. Every boot finds the ice, and the wall holds your backs like a big cold hand. Nobody looks down. Looking down is bad manners here."
+      },
+      "onFailure": {
+        "goto": "wide_spot",
+        "narration": "One boot slips, and an elbow scrapes the rock. It stings, but the line holds, and you keep sliding.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "packs": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Every pack feels twice as heavy when the ice is slick. You make a line and pass them from hand to hand.",
+      "prompt": "Pass every pack along the line without dropping one.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "wide_spot",
+        "narration": "The packs travel along the line like buckets at a well, and not a single one splashes. At the bottom of the last pack, you find a supper bundle you had forgotten.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "wide_spot",
+        "narration": "A pack drops with a thump and slides toward the edge. Somebody's boot stops it just in time, and everyone breathes out."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "chop": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "narration": "Smash is good for more than doors. You crouch in front of the narrowest spot and swing.",
+      "prompt": "Chop a rough, wide step into the ice, and haul everyone over it.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "wide_spot",
+        "narration": "Crunch, crunch, crunch. A staircase of chunky steps appears, and everyone walks it."
+      },
+      "onFailure": {
+        "goto": "wide_spot",
+        "narration": "The chips fly everywhere, but the step comes out crooked. You lean into the wall and shuffle along it anyway."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "wide_spot": {
+      "type": "rest",
+      "narration": "The shelf widens into a flat spot, wide enough to sit on. You rest your legs and shake out your wet cuffs. An icicle drips onto somebody's hat again and again, as if it has a message to deliver. Ahead, you hear water chattering across the ice. How will you use this rest?",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "snack",
+          "label": "Share a snack and rest your legs",
+          "icon": "hand",
+          "goto": "wide_snack"
+        },
+        {
+          "id": "look",
+          "label": "Study the way ahead from here",
+          "icon": "hand",
+          "goto": "wide_look"
+        },
+        {
+          "id": "eat",
+          "label": "Eat a proper supper together",
+          "icon": "hand",
+          "goto": "wide_eat",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "reached_the_wide_spot"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "wide_snack": {
+      "type": "story",
+      "narration": "You share what is left: half a flatbread, a cube of hard cheese, and an apple that has seen better weeks. It is cut into extremely fair pieces. Everything tastes better on a shelf of ice. By the time the last crumb is gone, your legs have stopped shaking, and the chattering water sounds almost friendly.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get up and see what is chattering",
+          "icon": "hand",
+          "goto": "crack"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "heal",
+          "amount": 1,
+          "to": "party"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "wide_eat": {
+      "type": "story",
+      "narration": "You unwrap a proper supper: bread, cheese, and a sausage that somebody swears is still warm. It is not, but it feels as if it is. Everyone eats slowly, with the river muttering below. By the last bite, your legs have stopped shaking, and your cheeks have come back.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get up and see what is chattering",
+          "icon": "hand",
+          "goto": "crack"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "heal",
+          "amount": 2,
+          "to": "party"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "wide_look": {
+      "type": "story",
+      "narration": "From the flat spot, you can see a long way along the shelf. Boot marks run on a little farther. Then comes a sparkle of water across the ice, and beyond that, a dark wall of hanging icicles. Past all of it, the shelf seems to end in thin air. You do not know how, yet, but you know where the trouble will be.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get up and go to the sparkle",
+          "icon": "hand",
+          "goto": "crack"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "saw_ahead"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "crack": {
+      "type": "choice_point",
+      "narration": "A stream of meltwater cuts across the shelf, in a crack as wide as a long stride. The water below is black, fast and loud. The old boot marks go right up to the edge, and then they jump. Somebody peeks in and reports that it is deep, and also very wet.",
+      "choices": [
+        {
+          "id": "hop",
+          "label": "Jump it, all of you on the same count",
+          "icon": "hand",
+          "goto": "hop"
+        },
+        {
+          "id": "slab",
+          "label": "Haul a slab of ice across to make a bridge",
+          "icon": "hand",
+          "goto": "slab"
+        },
+        {
+          "id": "leap",
+          "label": "Use leap to jump over and tie off the rope",
+          "icon": "arrow",
+          "goto": "leap",
+          "requiresSpecies": "manticore"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "hop": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "You line up at the edge, toes to the crack. Nobody looks down. Looking down is for later. Your knees agree to the plan, mostly.",
+      "prompt": "Everyone jumps the crack on the same count: one, two, jump!",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "icicles",
+        "narration": "One, two, jump! Boots land in a row, and the crack gurgles behind you as if it had been about to say something."
+      },
+      "onFailure": {
+        "goto": "icicles",
+        "narration": "Somebody lands short and catches the edge with both elbows. Everyone else grabs a sleeve and pulls them up, soggy and sputtering."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "slab": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "A flat slab of ice lies loose beside the wall, as big as a door. It would make a fine bridge, if it would move.",
+      "prompt": "The strongest of you drags the slab over the crack while the others hold the rope steady.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "icicles",
+        "narration": "The slab slides across with a grinding sigh. It's a wobbly, bumpy, wonderful bridge, and everyone crosses it."
+      },
+      "onFailure": {
+        "goto": "icicles",
+        "narration": "The slab cracks in two and sinks. The bigger half stays put just long enough for a hop onto it, and then a hop over."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "leap": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "The crack looks wide to everyone else. To you, it looks like a puddle with ambitions.",
+      "prompt": "Leap over and tie the rope to the rock on the far side.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "icicles",
+        "narration": "You land with a thump and tie off the rope. The others follow it across, hand over hand."
+      },
+      "onFailure": {
+        "goto": "icicles",
+        "narration": "You land long and slide into the wall with a bonk. The rope reaches the rock anyway, and you tie it with a wobbly knot."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "icicles": {
+      "type": "choice_point",
+      "narration": "Beyond the crack, a curtain of icicles hangs from the rock wall like a row of upside-down candles. Some are longer than your arm. They drip and plink, and now and then one lets go. You decide, as a group, not to sneeze.",
+      "choices": [
+        {
+          "id": "dash",
+          "label": "Dash through between the drips",
+          "icon": "hand",
+          "goto": "dash"
+        },
+        {
+          "id": "knock",
+          "label": "Knock the long ones down first with snowballs",
+          "icon": "hand",
+          "goto": "knock"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "dash": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Plink. Plink. Plink-plink. There is a rhythm to the drips, if you listen.",
+      "prompt": "Find the gap in the rhythm, then dart through the curtain.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "gust",
+        "narration": "Plink, plink, dart! Everyone is through, and the icicles seem a little disappointed. One of them gives a long, sad plink."
+      },
+      "onFailure": {
+        "goto": "gust",
+        "narration": "An icicle snaps off and bonks the nearest hat. It stings, but everyone scrambles through.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "knock": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "A snowball is just a small, round plan. You pack a few and look for the weak spot where each icicle meets the rock.",
+      "prompt": "Aim a snowball at the root of each long icicle, high on the wall.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "gust",
+        "narration": "Thwack. Crash. Tinkle. The long icicles fall in a glittering heap, and the way is clear."
+      },
+      "onFailure": {
+        "goto": "gust",
+        "narration": "Your snowballs miss, and your arm tires. You pick a path between the longest icicles anyway, slowly."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "gust": {
+      "type": "choice_point",
+      "narration": "The shelf bends around a corner, and the wind finds you. It shoves. It whistles. It takes the snow off the rocks and puts it on your hat. Out on the open ice, the gusts are the strongest. How will you get through the wind?",
+      "choices": [
+        {
+          "id": "huddle",
+          "label": "Link arms and shuffle through together",
+          "icon": "hand",
+          "goto": "huddle"
+        },
+        {
+          "id": "lull",
+          "label": "Count the gaps between gusts and move in the lulls",
+          "icon": "hand",
+          "goto": "lull"
+        },
+        {
+          "id": "sing",
+          "label": "Sing into the wind to keep everyone going",
+          "icon": "song",
+          "goto": "sing"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "huddle": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "narration": "Linked arms make a very good wall, even if it is a wall made of slightly nervous people.",
+      "prompt": "Everyone leans in with linked arms and shuffles forward together.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "slope",
+        "narration": "The wind pushes. You push back. Nobody blows away, though one hat has to be chased."
+      },
+      "onFailure": {
+        "goto": "slope",
+        "narration": "A big gust makes the line stagger. Everyone grabs somebody, and you wobble through in a messy, laughing clump."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "lull": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "The wind comes in waves, like the river. If you can find the beat, you can walk between the waves.",
+      "prompt": "Count the gaps between gusts, then call out when to move.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "slope",
+        "narration": "One, two, three, gust. One, two, three, go! You move in the lulls, and the wind never catches you."
+      },
+      "onFailure": {
+        "goto": "slope",
+        "narration": "You lose count in the middle, and the wind catches you twice. It only takes a hat and a bit of dignity."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "sing": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "narration": "The wind is loud, so you sing louder. It does not have to be a good song. It has to be a long one.",
+      "prompt": "Lead a song that keeps everyone's feet going, whatever the weather.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "slope",
+        "narration": "Everyone joins the chorus, and the wind seems to lose interest. You sing all the way to the corner."
+      },
+      "onFailure": {
+        "goto": "slope",
+        "narration": "The wind steals the tune and gives it to a passing snow flurry. You hum the rest of the way, with chattering teeth."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "slope": {
+      "type": "choice_point",
+      "narration": "Past the corner, a sheet of ice pours down from the rocks above and across the shelf. It is shiny and steep as a playground slide, and only a few steps wide. It ends at the river. The old boot marks cross it with big, brave steps. How will you do it?",
+      "choices": [
+        {
+          "id": "steps",
+          "label": "Cut steps across it with the heel of a boot",
+          "icon": "hand",
+          "goto": "slope_steps"
+        },
+        {
+          "id": "rope",
+          "label": "Hitch the rope across and walk along it",
+          "icon": "hand",
+          "goto": "slope_rope"
+        },
+        {
+          "id": "slide",
+          "label": "Slide across on purpose, one at a time, feet first",
+          "icon": "hand",
+          "goto": "slope_slide"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "slope_steps": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "A boot heel is a very small hammer. But with a lot of patience, it will cut a very small stair.",
+      "prompt": "Chop a row of little steps across the slope, one for every boot.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "gap",
+        "narration": "Chop, chop, chop. A row of little steps shows across the slope, each one as neat as a stamp. Everyone crosses with a hand on the wall."
+      },
+      "onFailure": {
+        "goto": "gap",
+        "narration": "The steps come out shallow and uneven. You cross anyway, on hands and toes, like a family of nervous crabs."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "slope_rope": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "narration": "The rope knows how to hold on to things, if you give it somewhere to hold. You look for a lump of rock at each end.",
+      "prompt": "Hitch the rope to a rock at each end, and use it as a handrail.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "gap",
+        "narration": "A loop over a lump here, a loop over a lump there. The rope draws tight, and everyone walks across hand over hand."
+      },
+      "onFailure": {
+        "goto": "gap",
+        "narration": "The first lump of rock is not as solid as it looks, and the rope slips off. You find a better lump, a little farther on, and the handrail goes up crooked."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "slope_slide": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "Sliding is the only thing that ice is truly good at. You decide to let it be good at it.",
+      "prompt": "Slide across feet first, and steer for the snowdrift on the far side.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "gap",
+        "narration": "Whoosh! One by one you shoot across and land in a soft drift on the far side. There is a short pause. Then everyone wants a second go."
+      },
+      "onFailure": {
+        "goto": "gap",
+        "narration": "You slide a little too fast and hit the drift with a thump. It is a soft drift, but there is a rock in it.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "gap": {
+      "type": "story",
+      "narration": "At last the boot marks stop. Part of the shelf has fallen away, leaving a gap too wide to step across. Above it, dark rocks climb in steps. Below it, a lip of ice still touches both sides. On a ledge among the rocks, a snowhorn goat chews slowly and watches you, unimpressed.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Make a plan",
           "icon": "hand",
           "goto": "inspect"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "found_ring"
+          },
+          "text": "On the far rock, something rusty glints: another iron ring, like the one you trusted."
+        },
+        {
+          "when": {
+            "flag": "saw_ahead"
+          },
+          "text": "You saw this coming from the wide spot. It looks no better up close, but at least it is no surprise."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "inspect": {
       "type": "choice_point",
-      "narration": "The gap is too wide for a step. Above it, dark rocks make a steep detour. Below it, a lip of ice still touches both sides. Your rope reaches a rock on the far side. How will you make a route for everyone?",
+      "narration": "The gap is too wide for a step. High on the rocks, a goat track zigzags toward the far side. Down low, a lip of ice still touches both sides, though its outer edge is thin. Your rope can reach a sound rock on the far side, if someone gets it there. How will you make a route for everyone?",
       "choices": [
         {
           "id": "high",
@@ -60,15 +883,15 @@
         },
         {
           "id": "brace",
-          "label": "Use Brace to steady a rope handrail",
-          "icon": "hand",
+          "label": "Use brace to steady a rope handrail",
+          "icon": "shield",
           "goto": "brace",
           "requiresClass": "thornguard"
         },
         {
           "id": "wing",
           "label": "Carry a rope across on wings",
-          "icon": "hand",
+          "icon": "wing",
           "goto": "wing",
           "requiresSpecies": [
             "griffin",
@@ -76,60 +899,223 @@
           ]
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "high": {
-      "type": "story",
-      "narration": "You climb onto the dark rocks. One loose stone rattles into the water. You choose another foothold, loop the rope around a sound rock, and lower its free end toward the shelf.",
+      "type": "choice_point",
+      "narration": "You climb onto the dark rocks. One loose stone rattles into the water. You choose another foothold. The goat watches you come, jaw going around and around like a slow millstone, then turns and picks its way along a narrow track toward a sound rock above the far side. Will you follow it?",
       "choices": [
         {
-          "id": "continue",
-          "label": "Bring the party across",
+          "id": "climb",
+          "label": "Follow the goat's track with the rope",
           "icon": "hand",
-          "goto": "cross"
+          "goto": "high_climb"
+        },
+        {
+          "id": "own",
+          "label": "Pick your own way over the rocks",
+          "icon": "hand",
+          "goto": "high_own"
+        },
+        {
+          "id": "charm",
+          "label": "Use beguile to ask the goat to lead",
+          "icon": "spark",
+          "goto": "high_charm",
+          "requiresSpecies": "kitsune"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "shelf_high_route",
-          "value": true
+          "flag": "shelf_high_route"
         },
         {
           "type": "setFlag",
           "flag": "found_a_way_past_the_gap"
         }
       ],
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
-    "low": {
+    "high_climb": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "narration": "The goat does not hurry. Each step, it stops and looks back, as if to say: it is easy, really.",
+      "prompt": "The best climber of you follows the goat's track and loops the rope around the sound rock.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "high_lower",
+        "narration": "Up goes the climber, light as a cat, with the goat leading. The loop drops over the rock and snugs tight."
+      },
+      "onFailure": {
+        "goto": "high_lower",
+        "narration": "The track crumbles under the climber, who slides down onto a lower rock. The loop catches on a stubby rock instead. It leans, but it holds."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "high_own": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "The goat sniffs at your plan. The rocks are steep, and the handholds are small, but they are there.",
+      "prompt": "Study the rocks, pick a handhold route and carry the rope over it.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "high_lower",
+        "narration": "You find a staircase of handholds that nobody else would have seen. The rope follows you up and over."
+      },
+      "onFailure": {
+        "goto": "high_lower",
+        "narration": "Your route turns out to be a dead end. You go back down and use the goat's route for the last steps. The goat says nothing, loudly."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "high_charm": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "narration": "Beguile is a polite sort of magic. You hold out a hand, and let the goat decide.",
+      "prompt": "Charm the goat into leading the way, while the others keep the rope from tangling.",
+      "roller": "party",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "high_lower",
+        "narration": "The goat sighs, shrugs, and picks its way up. It stops at exactly the right rock and stares at it until you understand."
+      },
+      "onFailure": {
+        "goto": "high_lower",
+        "narration": "The goat nods, and then wanders off to chew something. Luckily it goes the right way, and you follow its tail."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "high_lower": {
       "type": "story",
-      "narration": "You test the lip with the rope loop and a loose stone. The thin outer edge breaks away at once. The ice close to the rock holds. You mark that narrow strip with chips of dark stone.",
+      "narration": "The line hangs from the high rock, straight down toward the shelf on the far side. You check the knot, then check it again. The goat chews and watches, as if checking the knot is a thing people do. Wedged in the crack beside the knot hangs a little tin whistle on a cord, the kind a keeper carries. You pocket it for a brave moment.",
       "choices": [
         {
           "id": "continue",
-          "label": "Follow the marked strip",
+          "label": "Decide who tests the line",
           "icon": "hand",
-          "goto": "cross"
+          "goto": "who_first"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "brave_whistle",
+          "to": "party"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "low": {
+      "type": "choice_point",
+      "narration": "You kneel at the edge of the gap. The outer lip looks tempting, but it creaks like a door that wants oil. The ice close to the rock looks narrow but steady. How will you find the safe strip?",
+      "choices": [
+        {
+          "id": "probe",
+          "label": "Probe it with the rope loop and a stone",
+          "icon": "hand",
+          "goto": "low_probe"
+        },
+        {
+          "id": "chip",
+          "label": "Chip a mark at every step you test",
+          "icon": "hand",
+          "goto": "low_chip"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
           "flag": "found_a_way_past_the_gap"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "low_probe": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "A loop of rope is lighter than a boot, and a stone is lighter than a friend.",
+      "prompt": "Lay the rope loop on the ice and test it with the stone. Where they agree, the ice is sound.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "low_mark",
+        "narration": "The thin outer edge breaks away at once. Plop. The ice close to the rock holds, and you have your strip."
+      },
+      "onFailure": {
+        "goto": "low_mark",
+        "narration": "The loop snags and the stone skates off. You find the strip with your boot instead, very slowly."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "low_chip": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "You tap a chip into the ice with your heel at every step, and listen for the ring.",
+      "prompt": "Chip a mark at every step and trust only the ones that ring.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "low_mark",
+        "narration": "Ring, ring, ring. A trail of little chips leads along the rock, and every one rings true."
+      },
+      "onFailure": {
+        "goto": "low_mark",
+        "narration": "Two chips thud. You skip them and carry on along the ones that ring."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "low_mark": {
+      "type": "story",
+      "narration": "You mark the narrow strip with chips of dark stone, one at every step: a trail of crumbs through the white. It is as wide as one boot, but it is there. Halfway along, a small coin lies half hidden by the chips. Somebody dropped it long ago and kept going. You pocket it, and the goat looks down and seems to approve.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Decide who tests the strip",
+          "icon": "hand",
+          "goto": "who_first"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantCoins",
+          "amount": 2
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "brace": {
       "type": "story",
-      "narration": "Brace steadies the handrail against the rock. The rest of the party keeps the loose rope out of the water. Everyone will still have to cross carefully.",
+      "narration": "The thornguard plants both feet against the rock and takes hold of the rope. Now the thornguard is a post, and the rope is a handrail. The rest of you keep the loose rope out of the water.",
       "choices": [
         {
           "id": "continue",
-          "label": "Cross using the handrail",
+          "label": "Set the handrail",
           "icon": "hand",
-          "goto": "assisted"
+          "goto": "brace_post"
         }
       ],
       "onEnter": [
@@ -140,21 +1126,298 @@
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
-    "wing": {
+    "brace_post": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "narration": "A handrail is only as good as the thing it is tied to. The thornguard leans back to test it.",
+      "prompt": "Haul the rope tight along the gap, while the thornguard holds the post steady.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "brace_rail",
+        "narration": "The rope sings like a harp string. The post does not move, even when you all tug at once.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "set_rail"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "brace_rail",
+        "narration": "The rope sags in the middle. You retie it shorter, and it is a lower rail but a steady one.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "set_rail"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "brace_rail": {
       "type": "story",
-      "narration": "Wings carry one end of the rope across the gap. With it tied around a sound rock, you can guide the whole party along the shelf. The rope helps; it cannot stop the ice shifting underneath you.",
+      "narration": "The handrail runs along the rock, taut and low. It will not stop the ice from shifting, but it will give every hand something to hold. The goat on the ledge gives it a long look, and then looks away.",
       "choices": [
         {
           "id": "continue",
-          "label": "Guide everyone along the line",
+          "label": "Decide who tests the rail",
           "icon": "hand",
-          "goto": "assisted"
+          "goto": "who_first"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "wing": {
+      "type": "story",
+      "narration": "Wings carry one end of the rope across the gap. With it tied around a sound rock, you can guide the whole party along the shelf. The rope helps. It cannot stop the ice shifting underneath you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Tie off the line",
+          "icon": "hand",
+          "goto": "wing_tie"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
           "flag": "found_a_way_past_the_gap"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "wing_tie": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "A good flight is half the job. The other half is a knot that does not let go.",
+      "prompt": "Carry the rope end over the gap, and tie it fast around the far rock.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "wing_rail",
+        "narration": "The wings beat once, twice, and land on the far rock. The knot is tied before the goat can blink.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "set_rail"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "wing_rail",
+        "narration": "A gust pushes you sideways, and the rope end swings. You land short, scramble up, and tie the knot with cold fingers.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "set_rail"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "wing_rail": {
+      "type": "story",
+      "narration": "The line stretches across the gap, humming in the wind. The goat on the ledge watches it with polite interest, as if it were a new kind of weather.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Decide who tests the line",
+          "icon": "hand",
+          "goto": "who_first"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "who_first": {
+      "type": "choice_point",
+      "narration": "The line is set. Before anyone puts a whole boot over the gap, someone has to try it. Who goes first? Everyone looks at everyone else. Nobody looks at the river.",
+      "choices": [
+        {
+          "id": "light",
+          "label": "The lightest, quickest one goes first",
+          "icon": "hand",
+          "goto": "first_light"
+        },
+        {
+          "id": "strong",
+          "label": "The strongest goes first, to hold the far end",
+          "icon": "hand",
+          "goto": "first_strong"
+        },
+        {
+          "id": "dart",
+          "label": "Use first strike to dart across before the ice can think",
+          "icon": "arrow",
+          "goto": "first_dart",
+          "requiresClass": "duskrunner"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "first_light": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "The quickest of you steps out onto the line. The river looks very busy down below.",
+      "prompt": "Slip across the line to test it, light on your toes.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "gear",
+        "narration": "Tip, tap, tip. The quick one reaches the far rock and waves both arms. The line has not even wobbled."
+      },
+      "onFailure": {
+        "goto": "gear",
+        "narration": "Halfway over, the line wobbles and squeaks. The quick one hugs it, shuffles the rest of the way and says a very small word that nobody will repeat."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "first_strong": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "The strongest of you takes the line in both hands. It is not far. It only feels far.",
+      "prompt": "Cross hand over hand, then tie the far end tight.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "gear",
+        "narration": "Hand over hand, hand over hand. The far end is tied with a knot like a fist."
+      },
+      "onFailure": {
+        "goto": "gear",
+        "narration": "The far end slips twice before it takes the knot. It is tied with extra loops and a lot of grumbling, but it holds."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "first_dart": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "You are always gone before the trouble arrives. You take a breath, and you go.",
+      "prompt": "Dash across the line before the ice notices, then tie the far end.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "gear",
+        "narration": "Whoosh! The dash is over before the ice notices. The far end is tied, and the others hear a faint cheer."
+      },
+      "onFailure": {
+        "goto": "gear",
+        "narration": "The dash wobbles in the middle, but your speed carries you over. The far end is tied, a little crooked."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "gear": {
+      "type": "choice_point",
+      "narration": "One of you waits on the far rock, with the line tied tight. The packs are still here, heavy and full of wet-weather things. How will you get them over?",
+      "choices": [
+        {
+          "id": "slide",
+          "label": "Clip the packs to the line and slide them across",
+          "icon": "hand",
+          "goto": "gear_slide"
+        },
+        {
+          "id": "carry",
+          "label": "Carry the packs over, one at a time",
+          "icon": "hand",
+          "goto": "gear_carry"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "gear_slide": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "narration": "A pack on a line is a bit like a sled on a hill, if you think of it the right way.",
+      "prompt": "Clip each pack to the line with a loop, so it slides to the far rock.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ready",
+        "narration": "The packs zoom along the line like little sleds. The last one arrives with a bump and a small, soggy clank."
+      },
+      "onFailure": {
+        "goto": "ready",
+        "narration": "A loop jams halfway. Someone pulls it free with a hook of rope, and the pack arrives a little later, and a little damper."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "gear_carry": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "narration": "Every pack has its own weight, and its own opinion about it. You lift the first one onto your shoulders.",
+      "prompt": "Carry each pack over the line, one careful trip at a time.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ready",
+        "narration": "Step by wobbly step, every pack goes over. Somebody sings to a pack to keep it calm, and it works."
+      },
+      "onFailure": {
+        "goto": "ready",
+        "narration": "A strap snaps, and a pack slides toward the edge. A quick hand snags it by the loop. It is knotted back together, and it goes over."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "ready": {
+      "type": "choice_point",
+      "narration": "Your packs are over, and your first crosser waits on the far rock. The line is tight, the river chuckles underneath, and the ice is still. This is the crossing. How will you do it?",
+      "choices": [
+        {
+          "id": "together",
+          "label": "Cross together, stepping on the same count",
+          "icon": "hand",
+          "goto": "cross"
+        },
+        {
+          "id": "turns",
+          "label": "Cross one at a time, each holding the line for the next",
+          "icon": "hand",
+          "goto": "cross_turns"
+        },
+        {
+          "id": "rail",
+          "label": "Cross along the rail you built",
+          "icon": "hand",
+          "goto": "assisted",
+          "requiresFlag": "set_rail"
+        },
+        {
+          "id": "clipped",
+          "label": "Clip onto your steady line and cross as one",
+          "icon": "hand",
+          "goto": "assisted",
+          "requiresFlag": "line_ready"
+        },
+        {
+          "id": "ring",
+          "label": "Tie off to the far iron ring, then cross",
+          "icon": "hand",
+          "goto": "assisted",
+          "requiresFlag": "found_ring"
+        },
+        {
+          "id": "whistle",
+          "label": "Blow the brave whistle and cross on the note",
+          "icon": "bell",
+          "goto": "cross_whistle",
+          "requiresItem": "brave_whistle",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "brave_whistle"
+            }
+          ]
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -163,16 +1426,16 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Keep the party moving along the narrow shelf.",
-      "roller": "party",
+      "narration": "The first step is the hardest. The second is only the second hardest. Under the line, the river chuckles, as if it knew a joke you did not.",
+      "prompt": "Everyone crosses on the same count, one hand on the line.",
+      "roller": "all",
       "onSuccess": {
         "goto": "across",
         "narration": "You reach the far rock and hold the line for the last friend.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "traverse_made",
-            "value": true
+            "flag": "traverse_made"
           }
         ]
       },
@@ -182,8 +1445,36 @@
         "effects": [
           {
             "type": "setFlag",
-            "flag": "traverse_failed",
-            "value": true
+            "flag": "traverse_failed"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "cross_turns": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "narration": "One at a time is slower, but it gives each of you a chance to catch your breath.",
+      "prompt": "Cross one at a time, each holding the line for the next.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "across",
+        "narration": "One by one you cross, each friend holding the line for the next. The last friend arrives on dry rock with a grin.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "traverse_made"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "fall",
+        "narration": "A crack runs beneath the shelf. You keep hold of the rope as the ice tips.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "traverse_failed"
           }
         ]
       },
@@ -193,27 +1484,55 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
+      "narration": "The rope will help. All it needs is for you to keep it clear of the broken edge.",
       "prompt": "Keep the loose rope clear while the party crosses.",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "across",
         "narration": "You guide the rope past the broken edge. Every friend reaches the far rock.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "traverse_made",
-            "value": true
+            "flag": "traverse_made"
           }
         ]
       },
       "onFailure": {
         "goto": "fall",
-        "narration": "The handrail holds, but the shelf beneath you breaks away.",
+        "narration": "The line holds, but the shelf beneath you breaks away.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "traverse_failed",
-            "value": true
+            "flag": "traverse_failed"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "cross_whistle": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "narration": "One loud note, and everyone knows exactly when to step. The goat on the ledge leaps up and stares.",
+      "prompt": "Everyone steps out on the whistle's note, one hand on the line.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "across",
+        "narration": "Toot! Every boot lands on the note. You cross as one long, careful sentence, and the whistle is finished with a happy squeak.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "traverse_made"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "fall",
+        "narration": "The whistle's note startles the ice. A crack runs beneath the shelf, and you keep hold of the rope as it tips.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "traverse_failed"
           }
         ]
       },
@@ -221,47 +1540,160 @@
     },
     "across": {
       "type": "story",
-      "narration": "You haul the rope onto dry stone. Ahead, cairns climb toward a notch in the peaks. A griffin on the ridge lifts a wing in greeting. You can go and ask where the path leads.",
+      "narration": "You haul the rope onto dry stone. Ahead, cairns climb toward a notch in the peaks. A griffin on the ridge lifts a wing in greeting. On the first cairn, a chalked sign hangs over a small iron box: HONEYCAKE, 2 COINS. PAY IN THE TIN. First, you look back at the gap. It seems much smaller from this side.",
       "choices": [
         {
           "id": "continue",
           "label": "Check everyone before climbing",
+          "icon": "hand",
+          "goto": "tally"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "kept_everyone_on_the_rope"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep"
+    },
+    "tally": {
+      "type": "choice_point",
+      "narration": "Everybody is here. Everybody is also wet, cold and a bit wobbly in the knees. What does the party need before climbing? The big thing you just did is only now reaching your knees.",
+      "choices": [
+        {
+          "id": "warm",
+          "label": "Rub warm hands and share a snack",
+          "icon": "hand",
+          "goto": "tally_warm"
+        },
+        {
+          "id": "coil",
+          "label": "Coil the rope properly and check the knots",
+          "icon": "hand",
+          "goto": "tally_rope"
+        },
+        {
+          "id": "mend",
+          "label": "Use mend on scrapes and cold fingers",
+          "icon": "hand",
+          "goto": "tally_mend",
+          "requiresSpecies": "unicorn"
+        },
+        {
+          "id": "buy",
+          "label": "Buy a honeycake from the pass box (2 coins)",
+          "icon": "hand",
+          "goto": "tally_buy",
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          }
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "tally_warm": {
+      "type": "story",
+      "narration": "You rub each other's hands until they tingle. Someone finds a squashed sticky bun at the bottom of a pack and splits it into very small, very fair pieces. Warm toes feel like a miracle.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Climb toward the cairns",
           "icon": "hand",
           "goto": "rest_safe"
         }
       ],
       "onEnter": [
         {
-          "type": "setFlag",
-          "flag": "kept_everyone_on_the_rope"
+          "type": "heal",
+          "amount": 1,
+          "to": "party"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "tally_buy": {
+      "type": "story",
+      "narration": "You drop two coins into the tin. The ridge griffin reaches down with one talon, lifts out a honeycake wrapped in a leaf, and sets it in your hands. It is still warm. Nobody knows how. Nobody asks.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Climb toward the cairns",
+          "icon": "hand",
+          "goto": "rest_safe"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "spendCoins",
+          "amount": 2
+        },
+        {
+          "type": "grantItem",
+          "itemId": "honeycake",
+          "to": "party"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "tally_rope": {
+      "type": "story",
+      "narration": "You coil the rope in neat, wide loops, the way you started. It still smells of fish. Somehow, that makes it feel like an old friend. Every knot is checked and rechecked, and none of them minds.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Climb toward the cairns",
+          "icon": "hand",
+          "goto": "rest_safe"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "tally_mend": {
+      "type": "story",
+      "narration": "Mend hums warm through your hands. Scrapes close, fingers tingle, and cold goes out of shoulders like water out of a sponge. The others stare at their knuckles and then at you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Climb toward the cairns",
+          "icon": "hand",
+          "goto": "rest_safe"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "heal",
+          "amount": 2,
+          "to": "party"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "rest_safe": {
       "type": "rest",
-      "narration": "You sit above the water and retie your packs. The river stays on your right as the path rises toward the cairns. The Cairnstep is ahead.",
+      "narration": "You sit above the water and retie your packs. The river stays on your right as the path rises toward the cairns. The Cairnstep is ahead. Back on the rocks, the goat gives up on you and goes back to chewing.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "traverse_made",
-          "value": true
+          "flag": "traverse_made"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/cairnstep"
     },
     "fall": {
       "type": "story",
-      "narration": "The shelf slides into the river with your party still holding the line. Nobody lets go. Cold water lifts you off the ice, carrying you along the east bank. A low ledge passes within reach.",
+      "narration": "The shelf slides into the river with your party still holding the line. Nobody lets go. Cold water lifts you off the ice and carries you away around the bend, rope and all.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look for a way onto the bank",
+          "label": "Hold on",
           "icon": "hand",
-          "goto": "rest_river"
+          "goto": "fall_vote"
         }
       ],
       "onEnter": [
@@ -272,17 +1704,61 @@
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
+    "fall_vote": {
+      "type": "choice_point",
+      "narration": "You are in the Great River, and it is very cold. The rope is still in your hands, and it still has all of you on it. What matters most in the next breath?",
+      "choices": [
+        {
+          "id": "hold",
+          "label": "Hold the line and keep everyone together",
+          "icon": "hand",
+          "goto": "fall_hold"
+        },
+        {
+          "id": "breath",
+          "label": "Take a big breath and look for the bank",
+          "icon": "hand",
+          "goto": "fall_look"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "fall_hold": {
+      "type": "story",
+      "narration": "You hold the line, and the line holds you. Hands count themselves along it, one squeeze after another. Everyone is here. The river does not seem to care, but it has stopped being the only thing in the world.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Let the river carry you",
+          "icon": "hand",
+          "goto": "rest_river"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "fall_look": {
+      "type": "story",
+      "narration": "You gulp air and lift your head. The east bank slides past, too far to reach for now. Dark rock rises above it, and you see where the river might let you out, if you keep your head.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Let the river carry you",
+          "icon": "hand",
+          "goto": "rest_river"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
     "rest_river": {
       "type": "rest",
-      "narration": "You keep your heads above the current and hold the line between you. The ledge is coming closer. There is time for one strong pull. No supplies have been lost.",
+      "narration": "You keep your heads above the current and hold the line between you. Orin's words come back: do not fight the river under the shelf. Let it carry you, and watch for a place to get out. No supplies have been lost.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "traverse_failed",
-          "value": true
+          "flag": "traverse_failed"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
