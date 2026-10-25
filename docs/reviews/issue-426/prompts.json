@@ -1,0 +1,92 @@
+[
+  {
+    "id": "finished",
+    "subject": "A round bronze medal with a broad cream parchment scroll and large teal check-shaped winding trail ending in a gold star; two terracotta ribbon tails.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a16a33-37d1-7982-990e-a5c111791f72\\exec-1a7239a6-5160-4681-9336-a1c3349b41fe.png",
+    "prompt": "Use case: illustration-story. Asset: one decorative achievement medal for a children's fantasy adventure game, readable at 120px. Subject: A round bronze medal with a broad cream parchment scroll and large teal check-shaped winding trail ending in a gold star; two terracotta ribbon tails. Style: hand painted storybook gouache, warm old gold highlights, rich plum shadows, gently irregular brush edges, chunky tactile forms, charming and polished. Front view, centered whole medal including ribbon tails within square canvas with generous transparent padding on every side. One medal only, bold emblem dominates center. Real transparent background, no floor, no scene, no text, no letters, no numbers, no watermark.",
+    "sourceSha256": "7a9ba986402bb5ddb3999b05445baf96c94212ba8ce38a7c76c4dc7a683c1922",
+    "outputSha256": "dc2179b7db01299992e228d8faf81b21c79c5549f1de4ade2589e7de8769e0e7",
+    "runtime": "packages/client/src/assets/badges/finished.webp",
+    "export": "Full source canvas resized within 232x232 and centered on transparent 256x256; WebP quality 90, generated alpha preserved."
+  },
+  {
+    "id": "finished-3",
+    "subject": "A scalloped golden medal bearing three chunky closed storybooks stacked with offset spines; plum ribbon tails.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a16a33-37d1-7982-990e-a5c111791f72\\exec-ddd047e9-324b-46d2-94e5-7326ce87c338.png",
+    "prompt": "Use case: illustration-story. Asset: one decorative achievement medal for a children's fantasy adventure game, readable at 120px. Subject: A scalloped golden medal bearing three chunky closed storybooks stacked with offset spines; plum ribbon tails. Style: hand painted storybook gouache, warm old gold highlights, rich plum shadows, gently irregular brush edges, chunky tactile forms, charming and polished. Front view, centered whole medal including ribbon tails within square canvas with generous transparent padding on every side. One medal only, bold emblem dominates center. Real transparent background, no floor, no scene, no text, no letters, no numbers, no watermark.",
+    "sourceSha256": "e5e1dd62df49d8d4ce101a7588c5fe12a5cad36599ccb5d82d7b624c927d7a23",
+    "outputSha256": "20897abd9ba8fa23010e900f8b5635fb7aa2810511fd6f4730e9deb5f37551ea",
+    "runtime": "packages/client/src/assets/badges/finished-3.webp",
+    "export": "Full source canvas resized within 232x232 and centered on transparent 256x256; WebP quality 90, generated alpha preserved."
+  },
+  {
+    "id": "guest-star",
+    "subject": "A five-point rounded golden star medal with two friendly clasped mitten-like hands in the center, teal and coral cuffs; teal ribbon tails.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a16a33-37d1-7982-990e-a5c111791f72\\exec-0f54b0d7-8e41-4078-9f39-81370bec9eb4.png",
+    "prompt": "Use case: illustration-story. Asset: one decorative achievement medal for a children's fantasy adventure game, readable at 120px. Subject: A five-point rounded golden star medal with two friendly clasped mitten-like hands in the center, teal and coral cuffs; teal ribbon tails. Style: hand painted storybook gouache, warm old gold highlights, rich plum shadows, gently irregular brush edges, chunky tactile forms, charming and polished. Front view, centered whole medal including ribbon tails within square canvas with generous transparent padding on every side. One medal only, bold emblem dominates center. Real transparent background, no floor, no scene, no text, no letters, no numbers, no watermark.",
+    "sourceSha256": "6f22b6f554079f834158e9b13016b2e02bc0ebabd253cb40ad64ff422fddf60a",
+    "outputSha256": "72a4573762b85899a4991c0c790e2a6d114c8f0d7183aaa4a967aa6a12c09138",
+    "runtime": "packages/client/src/assets/badges/guest-star.webp",
+    "export": "Full source canvas resized within 232x232 and centered on transparent 256x256; WebP quality 90, generated alpha preserved."
+  },
+  {
+    "id": "kept-going",
+    "subject": "A heart-shaped copper medal with a sturdy little green sprout growing through a cracked stone, plum ribbon tails.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a16a33-37d1-7982-990e-a5c111791f72\\exec-8b9e0916-9c3f-4429-ac8f-a88d495bdd22.png",
+    "prompt": "Use case: illustration-story. Asset: one decorative achievement medal for a children's fantasy adventure game, readable at 120px. Subject: A heart-shaped copper medal with a sturdy little green sprout growing through a cracked stone, plum ribbon tails. Style: hand painted storybook gouache, warm old gold highlights, rich plum shadows, gently irregular brush edges, chunky tactile forms, charming and polished. Front view, centered whole medal including ribbon tails within square canvas with generous transparent padding on every side. One medal only, bold emblem dominates center. Real transparent background, no floor, no scene, no text, no letters, no numbers, no watermark.",
+    "sourceSha256": "65214cd75b1b6f95301f33227cb6fe0346eeba74809bc72b51ee101c6b318a60",
+    "outputSha256": "d1661795c625df843d6fb494afab445e6ff190d1226aa61ca795c04d2586ee7e",
+    "runtime": "packages/client/src/assets/badges/kept-going.webp",
+    "export": "Full source canvas resized within 232x232 and centered on transparent 256x256; WebP quality 90, generated alpha preserved."
+  },
+  {
+    "id": "level-3",
+    "subject": "A leaf-shaped bronze medal with a young oak sapling and three broad leaves, teal ribbon tails.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a16a33-37d1-7982-990e-a5c111791f72\\exec-3cd2ef62-d440-4151-89f3-a8d21fe05879.png",
+    "prompt": "Use case: illustration-story. Asset: one decorative achievement medal for a children's fantasy adventure game, readable at 120px. Subject: A leaf-shaped bronze medal with a young oak sapling and three broad leaves, teal ribbon tails. Style: hand painted storybook gouache, warm old gold highlights, rich plum shadows, gently irregular brush edges, chunky tactile forms, charming and polished. Front view, centered whole medal including ribbon tails within square canvas with generous transparent padding on every side. One medal only, bold emblem dominates center. Real transparent background, no floor, no scene, no text, no letters, no numbers, no watermark.",
+    "sourceSha256": "582012ac8b986c21fcecc748b8818e830b9c5f24e965803d0a4a073853778479",
+    "outputSha256": "d3f13c8488b9eb25dbc9a1523fcbf8d51e8abd26fff275be9ecf8556cf8c27e3",
+    "runtime": "packages/client/src/assets/badges/level-3.webp",
+    "export": "Full source canvas resized within 232x232 and centered on transparent 256x256; WebP quality 90, generated alpha preserved."
+  },
+  {
+    "id": "level-5",
+    "subject": "A shield-shaped golden medal bearing a bold three-point crown with a lavender jewel, coral ribbon tails.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a16a33-37d1-7982-990e-a5c111791f72\\exec-77dcb144-aadb-4f0a-98eb-160449fa6c9a.png",
+    "prompt": "Use case: illustration-story. Asset: one decorative achievement medal for a children's fantasy adventure game, readable at 120px. Subject: A shield-shaped golden medal bearing a bold three-point crown with a lavender jewel, coral ribbon tails. Style: hand painted storybook gouache, warm old gold highlights, rich plum shadows, gently irregular brush edges, chunky tactile forms, charming and polished. Front view, centered whole medal including ribbon tails within square canvas with generous transparent padding on every side. One medal only, bold emblem dominates center. Real transparent background, no floor, no scene, no text, no letters, no numbers, no watermark.",
+    "sourceSha256": "d0d5787d62b83bbbd137523f68d9c9b5a9f03e14e13eeb40e954bf44ebb26d34",
+    "outputSha256": "4f2dcc5160bc9df9d4deca472198b1fd1bd73eb9e298f64ce568368e688643fc",
+    "runtime": "packages/client/src/assets/badges/level-5.webp",
+    "export": "Full source canvas resized within 232x232 and centered on transparent 256x256; WebP quality 90, generated alpha preserved."
+  },
+  {
+    "id": "finds-1",
+    "subject": "An oval golden medal with a large open friendly eye enclosing a teal gemstone pupil, plum ribbon tails.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a16a33-37d1-7982-990e-a5c111791f72\\exec-dcdd6c2c-1539-4411-bee5-313cc9f6cb07.png",
+    "prompt": "Use case: illustration-story. Asset: one decorative achievement medal for a children's fantasy adventure game, readable at 120px. Subject: An oval golden medal with a large open friendly eye enclosing a teal gemstone pupil, plum ribbon tails. Style: hand painted storybook gouache, warm old gold highlights, rich plum shadows, gently irregular brush edges, chunky tactile forms, charming and polished. Front view, centered whole medal including ribbon tails within square canvas with generous transparent padding on every side. One medal only, bold emblem dominates center. Real transparent background, no floor, no scene, no text, no letters, no numbers, no watermark.",
+    "sourceSha256": "bc276ca6d71af31af3c5acc1a3e8505319b7c053b5853d974752229501117801",
+    "outputSha256": "a7ec4d5f77fff8e081dbe4c8cae7eea030e2d2d0df8f4b3aeac8162cdc6d284e",
+    "runtime": "packages/client/src/assets/badges/finds-1.webp",
+    "export": "Full source canvas resized within 232x232 and centered on transparent 256x256; WebP quality 90, generated alpha preserved."
+  },
+  {
+    "id": "finds-5",
+    "subject": "A hexagonal bronze medal with two clear bootprints following a winding trail, teal ribbon tails.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a16a33-37d1-7982-990e-a5c111791f72\\exec-23611b20-a2e6-4d94-80cf-4df82ee2e9f8.png",
+    "prompt": "Use case: illustration-story. Asset: one decorative achievement medal for a children's fantasy adventure game, readable at 120px. Subject: A hexagonal bronze medal with two clear bootprints following a winding trail, teal ribbon tails. Style: hand painted storybook gouache, warm old gold highlights, rich plum shadows, gently irregular brush edges, chunky tactile forms, charming and polished. Front view, centered whole medal including ribbon tails within square canvas with generous transparent padding on every side. One medal only, bold emblem dominates center. Real transparent background, no floor, no scene, no text, no letters, no numbers, no watermark.",
+    "sourceSha256": "95b1d2fc9880b410025d327deabe2e6f226e37abfd1ca279863a93a54c7d0f75",
+    "outputSha256": "68d24c7b4f2869792db3bb08754c20a886daf204bc7af452490b056179553ee0",
+    "runtime": "packages/client/src/assets/badges/finds-5.webp",
+    "export": "Full source canvas resized within 232x232 and centered on transparent 256x256; WebP quality 90, generated alpha preserved."
+  },
+  {
+    "id": "finds-15",
+    "subject": "An open-book-shaped golden medal with a bold compass rose across its cream pages, plum ribbon tails.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a16a33-37d1-7982-990e-a5c111791f72\\exec-4cd291df-7e25-4488-81e8-1637cdfdb38f.png",
+    "prompt": "Use case: illustration-story. Asset: one decorative achievement medal for a children's fantasy adventure game, readable at 120px. Subject: An open-book-shaped golden medal with a bold compass rose across its cream pages, plum ribbon tails. Style: hand painted storybook gouache, warm old gold highlights, rich plum shadows, gently irregular brush edges, chunky tactile forms, charming and polished. Front view, centered whole medal including ribbon tails within square canvas with generous transparent padding on every side. One medal only, bold emblem dominates center. Real transparent background, no floor, no scene, no text, no letters, no numbers, no watermark.",
+    "sourceSha256": "68dd703aee903657dd09e08ec3af0ac92a66e168473ca0e59a503f4c9a324319",
+    "outputSha256": "00c128c97478b6c7ec2c7f7ee3f4019b8de9d203666225061e57f75710948706",
+    "runtime": "packages/client/src/assets/badges/finds-15.webp",
+    "export": "Full source canvas resized within 232x232 and centered on transparent 256x256; WebP quality 90, generated alpha preserved."
+  }
+]

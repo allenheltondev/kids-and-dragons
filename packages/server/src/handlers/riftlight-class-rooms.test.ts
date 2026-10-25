@@ -6,11 +6,11 @@
  *
  * The rooms are side rooms of Riftlight places, each entered from that
  * place's rest scene (docs/class-mastery.md §2): the Rookery on the Exchange's
- * rooftops, the Conservatory off the singing hall, the Dojo up the slope from
- * the Riftseekers' camp, and the Academy in a roofless tower above it. One hero
+ * rooftops, the Conservatory off the singing hall, the Dojo in the Sky Islands,
+ * and the Academy in the marsh village reached from Ashspan Bridge. One hero
  * walks the graph to all four: a Thornguard Expert who once earned Starweaver
- * Apprentice puts on the dusk hood, the song bell, the thorn bracer again
- * (still Expert) and the star circlet (still Apprentice).
+ * Apprentice puts on the dusk hood, the song bell, the star circlet (still
+ * Apprentice) and the thorn bracer again (still Expert).
  *
  * The shipped content is staged into a scratch root the way the local preview
  * stages it, with Riftlight's Gemfall prerequisite dropped, so one hero can
@@ -50,7 +50,7 @@ const riftlight: Promise<ContentStore> = (async () => {
 })();
 
 describe("the four class rooms in Riftlight (#315)", () => {
-  it("a hero switches at the Rookery, the Conservatory, the Dojo and the Academy, and back, with every rank intact", { timeout: 60_000 }, async () => {
+  it("a hero switches at the Rookery, the Conservatory, the Academy and the Dojo, and back, with every rank intact", { timeout: 60_000 }, async () => {
     const harness = makeHarness({ engine: realEngine, playtest: true, content: await riftlight });
     harness.deps.rng = (key) => makeRng(`riftlight-rooms:${String(key).split(":").pop()}`);
     const { householdId, players } = await seedHousehold(harness, 1);
@@ -122,29 +122,38 @@ describe("the four class rooms in Riftlight (#315)", () => {
     expect((await state()).sceneId).toBe("hall");
     await must({ type: "PLAYTEST_GOTO", sceneId: "departure" });
 
-    // The Riftseekers' camp: the stone hut up the slope. Back to Thornguard, still Expert.
+    // The long bank road reaches the marsh village without a roll or a rift.
     await travel("glacier-to-riftseekers", "riftlight-riftseekers-departure");
-    await walkIn("camp", "hut", "dojo", "thornguard");
-    await must({ type: "SWITCH_CLASS", classId: "thornguard" });
-    expect(await worn()).toMatchObject({ class: "thornguard", rank: "expert" });
-    // Expert's moves come straight back: the signature, Apprentice's and Expert's.
-    expect((await worn()).actions).toEqual(expect.arrayContaining(["brace", "shove", "bramble_wall"]));
-    expect((await worn()).actions).not.toContain("unbreakable");
-    await must({ type: "CHOOSE", choiceId: "back" });
-    expect((await state()).sceneId).toBe("camp");
-
-    // The same camp: the tower with no roof. Starweaver, still Apprentice.
-    await walkIn("camp", "tower", "academy", "starweaver");
+    await must({ type: "PLAYTEST_GOTO", sceneId: "set_out" });
+    await travel("departure-to-bridge", "riftlight-ashspan-bridge");
+    await walkIn("village_rest", "tower", "academy", "starweaver");
     await must({ type: "SWITCH_CLASS", classId: "starweaver" });
     expect(await worn()).toMatchObject({ class: "starweaver", rank: "apprentice" });
     await must({ type: "CHOOSE", choiceId: "back" });
-    expect((await state()).sceneId).toBe("camp");
+    expect((await state()).sceneId).toBe("village_rest");
+    await must({ type: "CHOOSE", choiceId: "return" });
+    await must({ type: "CHOOSE", choiceId: "continue" });
+    await must({ type: "PLAYTEST_GOTO", sceneId: "routes" });
+
+    // The upper bank road and the griffins' flight reach the Sky Islands Dojo.
+    await travel("bridge-to-shore", "riftlight-frostfang-shore");
+    await must({ type: "PLAYTEST_GOTO", sceneId: "climb" });
+    await travel("shore-to-pass", "riftlight-cairnstep-pass");
+    await must({ type: "PLAYTEST_GOTO", sceneId: "message" });
+    await travel("pass-to-sky", "riftlight-sky-islands-arrival");
+    await walkIn("island_rest", "hut", "dojo", "thornguard");
+    await must({ type: "SWITCH_CLASS", classId: "thornguard" });
+    expect(await worn()).toMatchObject({ class: "thornguard", rank: "expert" });
+    expect((await worn()).actions).toEqual(expect.arrayContaining(["brace", "shove", "bramble_wall"]));
+    expect((await worn()).actions).not.toContain("unbreakable");
+    await must({ type: "CHOOSE", choiceId: "back" });
+    expect((await state()).sceneId).toBe("island_rest");
     await must({ type: "CHOOSE", choiceId: "set_out" });
 
     // Four switches, and nothing earned was lost on the way.
     const stored = await row();
     const progress = stored.provisional ?? stored.committed;
-    expect(progress.class).toBe("starweaver");
+    expect(progress.class).toBe("thornguard");
     expect(progress.mastery.thornguard).toMatchObject({ rank: "expert", deeds: { shove: 2 } });
     expect(progress.mastery.starweaver).toMatchObject({ rank: "apprentice", deeds: { burst: 1 } });
     expect(progress.mastery.duskrunner?.rank ?? "none").toBe("none");

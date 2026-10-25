@@ -59,6 +59,16 @@ afterEach(() => {
 });
 
 describe("the worn token", () => {
+  it.each(["thornguard", "duskrunner", "starweaver", "songkeeper"] as const)("paints the %s gear while keeping the rank readable", (classId) => {
+    const { container } = render(<ClassToken classId={classId} rank="expert" />);
+    const art = container.querySelector(".token-glyph");
+    expect(art?.tagName).toBe("IMG");
+    expect(art?.getAttribute("src")).toContain(`/token_${classId}.webp`);
+    expect(art?.getAttribute("aria-hidden")).toBe("true");
+    expect(screen.getByRole("img").getAttribute("aria-label")).toContain("2 notches");
+    expect(container.querySelectorAll(".token-notch--cut")).toHaveLength(2);
+  });
+
   it("is named as the gear it is, with its notches in words", () => {
     render(<ClassToken classId="starweaver" rank="expert" owner="your" />);
     expect(screen.getByRole("img", { name: "your star circlet, 2 notches" })).toBeTruthy();

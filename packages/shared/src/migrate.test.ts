@@ -1,8 +1,15 @@
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { CHARACTER_VERSION, StoredCharacterError, V4_CLASS_LADDER, migrateCharacter } from "./migrate.js";
-import { newCharacter, resolveCharacter } from "./character.js";
+import {
+  CHARACTER_VERSION,
+  StoredCharacterError,
+  V4_CLASS_LADDER,
+  V7_LEVEL_XP,
+  V8_LEVEL_XP,
+  migrateCharacter,
+} from "./migrate.js";
+import { awardXp, newCharacter, resolveCharacter, startCampaign } from "./character.js";
 import { assertRulesContent, levelForXp } from "./rules.js";
 import { makeRules } from "./test-fixtures.js";
 import type { CharacterProgress, ClassId, SpeciesId } from "./types/domain.js";
@@ -437,7 +444,7 @@ describe("migrateCharacter — tolerances", () => {
     // `resolveCharacter()` recomputes tier from level and never trusts the
     // stored value, so a bad one here is cosmetic — refusing would turn a
     // harmless field into a character nobody can play.
-    const row = { ...current(), committed: { ...current().committed, tier: "legendary" } };
+    const row = { ...current(), committed: { ...current().committed, tier: "nonsense" } };
     expect(migrateCharacter(row, CHARACTER_VERSION).committed.tier).toBe("fledgling");
   });
 });
@@ -575,5 +582,89 @@ describe("migrateCharacter — the paid-chapter ledger (v7, #408)", () => {
         /committed\.paidChapters/,
       );
     }
+  });
+});
+
+/*
+ * v7 → v8: the ladder grows to level 30. A hero at v7 with XP above 6,300 was
+ * capped at level 10 but kept the XP; under the new curve that XP is levels she
+ * was never paid the stat points for.
+ */
+describe("migrateCharacter — v7 to v8, overflow XP past the old cap", () => {
+  const rules = SHIPPED;
+
+  /** A hero as v7 stored her: a level-10 cap, her XP in both halves. */
+  function v7Hero(xp: number, provisionalXp?: number): Record<string, unknown> {
+    const base = current();
+    const cap = { xp, level: 10, tier: "mythic", unspentPoints: 2 };
+    return {
+      ...base,
+      committed: { ...base.committed, ...cap },
+      ...(provisionalXp === undefined
+        ? {}
+        : { provisional: { ...base.committed, ...cap, xp: provisionalXp, runId: "run_1" } }),
+    };
+  }
+  const migrate = (row: Record<string, unknown>) => migrateCharacter(JSON.parse(JSON.stringify(row)), 7);
+
+  it("pins the frozen curves to the shipped rules", () => {
+    expect(V7_LEVEL_XP).toEqual(SHIPPED.levelXp.slice(0, 9));
+    expect(V8_LEVEL_XP).toEqual(SHIPPED.levelXp);
+  });
+
+  it("leaves a hero at or under the old cap exactly as stored", () => {
+    for (const xp of [0, 5000, 6300]) {
+      const row = v7Hero(xp);
+      expect(migrate(row).committed).toEqual(migrateCharacter(JSON.parse(JSON.stringify(row)), 8).committed);
+      expect(migrate(row).committed.unspentPoints).toBe(2);
+      expect(migrate(row).committed.level).toBe(10);
+    }
+  });
+
+  it.each([
+    [8100, 11, "mythic", 1],
+    [17300, 15, "ascendant", 5],
+    [33300, 20, "starborn", 10],
+    [80300, 30, "legendary", 20],
+    [999999, 30, "legendary", 20],
+  ])("counts %i XP: level %i, %s, %i owed points banked", (xp, level, tier, owed) => {
+    const { committed } = migrate(v7Hero(xp));
+    expect(committed.level).toBe(level);
+    expect(committed.tier).toBe(tier);
+    expect(committed.xp).toBe(xp); // nothing earned is erased
+    expect(committed.unspentPoints).toBe(2 + owed);
+    // The level the sheet will show is the level she was paid for.
+    expect(levelForXp(rules, committed.xp)).toBe(committed.level);
+  });
+
+  it("pays the provisional half on its own XP, and a failed campaign keeps the committed account", () => {
+    const { committed, provisional } = migrate(v7Hero(6500, 17300));
+    expect(committed.level).toBe(10);
+    expect(committed.unspentPoints).toBe(2);
+    expect(provisional?.level).toBe(15);
+    expect(provisional?.unspentPoints).toBe(2 + 5);
+  });
+
+  it("is idempotent: replaying the migration changes nothing, and pays nothing twice", () => {
+    const once = migrate(v7Hero(17300, 20100));
+    const again = migrateCharacter(JSON.parse(JSON.stringify(once)), CHARACTER_VERSION);
+    expect(again).toEqual(once);
+    expect(again.committed.unspentPoints).toBe(2 + 5);
+    expect(again.provisional?.unspentPoints).toBe(2 + 6);
+  });
+
+  it("pays only the levels the next award earns, not the ones already paid", () => {
+    const migrated = migrate(v7Hero(8100)); // level 11, one point owed and paid
+    const next = awardXp(startCampaign(migrated, "run_1"), rules, 2000); // 10,100: level 12
+    expect(next.leveledTo).toBe(12);
+    expect(next.character.provisional?.unspentPoints).toBe(2 + 1 + 1);
+    expect(next.newTier).toBeUndefined();
+  });
+
+  it("still cuts a cutscene for a tier the next award crosses", () => {
+    const migrated = migrate(v7Hero(14700)); // level 14, mythic, one short of Ascendant
+    const next = awardXp(startCampaign(migrated, "run_1"), rules, 2600); // 17,300: level 15
+    expect(next.leveledTo).toBe(15);
+    expect(next.newTier).toBe("ascendant");
   });
 });

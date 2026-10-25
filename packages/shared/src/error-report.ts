@@ -48,6 +48,11 @@ const ERROR_NAMES = [
 
 /** Failure kinds, each a fixed phrase. The patterns read the message; none of it is kept. */
 const KINDS: ReadonlyArray<readonly [RegExp, string]> = [
+  // The service worker's own failures (#459), named by the page from a worker's message.
+  [/^service worker install/i, "service worker install failed"],
+  [/^service worker activate/i, "service worker activate failed"],
+  [/^service worker fingerprint/i, "service worker file mismatch"],
+  [/^service worker quota/i, "service worker out of space"],
   [/cannot read propert(?:y|ies) of (?:undefined|null)|undefined is not an object|null is not an object/i, "read a property of nothing"],
   [/is not a function/i, "not a function"],
   [/is not defined/i, "not defined"],

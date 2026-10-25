@@ -13,6 +13,7 @@
  * the hit). One table, two readers, no drift.
  */
 
+import { DICE_TUMBLE_MS } from "../dice-timing";
 import type { DiceRoll, Presentation } from "@kad/shared";
 
 /*
@@ -23,7 +24,7 @@ import type { DiceRoll, Presentation } from "@kad/shared";
  * each lands on its own beat, then the sum and the outcome stay up long enough
  * for an eight-year-old to read the maths out loud, not just see a flash.
  */
-export const ROLL_TUMBLE_MS = 1000;
+export const ROLL_TUMBLE_MS = DICE_TUMBLE_MS;
 export const ROLL_HELP_TUMBLE_MS = 800;
 export const ROLL_READ_MS = 2600;
 

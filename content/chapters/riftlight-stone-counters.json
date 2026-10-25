@@ -282,6 +282,7 @@
     },
     "footprint_1_check": {
       "type": "check",
+      "tags": ["search"],
       "stat": "clever",
       "tn": 12,
       "roller": "party",
@@ -622,7 +623,7 @@
       "narration": "A small handcart waits on the road above the stone. Its dragonling owner has brought water jars for the counting circle, but the familiar turn now points toward the empty hollow. One wheel is resting against a loose pebble. The owner asks for a route wide enough to use again tomorrow, not just a push through today. The keepers have cord and a pair of short boards beside their bag. Which approach will you prepare?",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -662,7 +663,7 @@
       "narration": "You ask the owner to keep the cart still while your party sets the boards on firm ground. Pip checks both wheel tracks with the cord. You will move the jars only after someone has tested the boards without the cart on them.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -692,7 +693,7 @@
       "prompt": "Build a board ramp around the loose turn. Choose who leads; everyone can help.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -717,7 +718,7 @@
       "narration": "The cart rolls through without tipping. You stop it on level ground and help replace the jars. The owner takes a second look at the route, then points out the turn she will use tomorrow. Your work has made a repeatable path.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -744,7 +745,7 @@
       "narration": "One board shifts or a wheel catches before the cart reaches the turn. You stop while everyone is still on firm ground. The owner carries the jars with you along the upper bank instead. Pip marks the blocked turn so tomorrow's delivery will not repeat the attempt. You take the empty cart around by the longer bank route and leave the shifted turn closed.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -771,7 +772,7 @@
       "narration": "You make a safe place for the jars on the upper bank. The owner hands them down one at a time. With the weight removed, your party can turn the cart through the new route and learn which part needs a warning marker.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -801,7 +802,7 @@
       "prompt": "Unload the jars and guide the empty cart first. Choose who leads; everyone can help.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -826,7 +827,7 @@
       "narration": "The cart rolls through without tipping. You stop it on level ground and help replace the jars. The owner takes a second look at the route, then points out the turn she will use tomorrow. Your work has made a repeatable path.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -853,7 +854,7 @@
       "narration": "One board shifts or a wheel catches before the cart reaches the turn. You stop while everyone is still on firm ground. The owner carries the jars with you along the upper bank instead. Pip marks the blocked turn so tomorrow's delivery will not repeat the attempt. You take the empty cart around by the longer bank route and leave the shifted turn closed.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -880,7 +881,7 @@
       "narration": "The water reaches the counting circle. The owner offers one of the short boards as a warning sign, but the road has two approaches. From below, travelers see the hollow late. From above, they see the stone and may assume the old turn still works. The keepers can maintain only one large sign until they bring more wood. You have loose stones for a smaller marker as well. Where will the clearest warning go?",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -919,7 +920,7 @@
       "narration": "You set the board before the blind rise and arrange loose stones along the upper turn. The owner walks up from below to test whether the board appears early enough. She stops before the hollow without needing anyone to call out.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -946,7 +947,7 @@
       "narration": "You leave enough road between the board and the new turn for a cart to stop. Below the rise, the keepers build a small stone arrow pointing onto firm ground. Pip tests both approaches on foot before anybody moves the sign again.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -1188,7 +1189,7 @@
       "narration": "Two more dragonling neighbors arrive and stop at your warning. One wants to move the boundary stone back immediately. The other wants to leave it untouched until someone understands the change. The keepers will not hand that decision to visitors, but they do ask you to explain what you found without starting another argument. Pip offers the cord or the slates. Which demonstration would let the neighbors check your work for themselves?",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Dragonling neighbors",
           "count": 2
         },
@@ -1222,7 +1223,7 @@
       "narration": "You invite a neighbor to hold each end while Pip shows the matching corners. You point to the standing grass without telling anyone what moved the stone. The neighbors can disagree about what to do next while agreeing that the empty place fits.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Dragonling neighbors",
           "count": 2
         },
@@ -1250,7 +1251,7 @@
       "narration": "You give each neighbor a slate and stand back. They find the ridge and road marks Pip drew, then compare the forked rock from both. When they exchange places, both drawings still work. The argument shifts from whose picture is wrong to what should happen tomorrow.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Dragonling neighbors",
           "count": 2
         },
@@ -1420,6 +1421,7 @@
     },
     "supply_2_check": {
       "type": "check",
+      "tags": ["climb"],
       "stat": "quick",
       "tn": 12,
       "roller": "party",
@@ -1493,7 +1495,7 @@
       "narration": "The keepers have enough observations to plan another count. They need someone to watch the road and someone to compare the hollow after rain, but each task takes time away from counting the old marks. The cart owner offers one morning, not every morning. Pip cannot promise the Riftseekers will stay. You can help them divide the work without making promises for absent people. Which plan will you suggest for the first day?",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -1526,7 +1528,7 @@
       "narration": "You suggest one keeper takes the first road watch while another checks the hollow. They exchange jobs at the next count, so both learn the work. The cart owner chooses the morning delivery as the moment to test the warning signs again.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -1553,7 +1555,7 @@
       "narration": "You suggest the cart owner calls the keepers before turning off the road. They compare the route, hollow and signs together once, then return to counting. If the road changes before that visit, the signs tell travelers to wait on firm ground.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -1921,7 +1923,7 @@
       "type": "choice_point",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Neighbor"
         },
         {
@@ -1955,7 +1957,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Neighbor"
         },
         {
@@ -1983,7 +1985,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Neighbor"
         },
         {
@@ -2024,7 +2026,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Neighbor"
         },
         {
@@ -2052,7 +2054,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Neighbor"
         },
         {
@@ -2080,7 +2082,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Neighbor"
         },
         {
@@ -2108,7 +2110,7 @@
       "type": "check",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Neighbor"
         },
         {
@@ -2149,7 +2151,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Neighbor"
         },
         {
@@ -2177,7 +2179,7 @@
       "type": "story",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Neighbor"
         },
         {
@@ -2295,7 +2297,7 @@
       "narration": "A thornguard steadies the ramp with brace while the party checks the wheel tracks and keeps the jars on firm ground. The strongest helper can lead the careful push; nobody needs to pretend they supplied another hero's ability.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {
@@ -2325,7 +2327,7 @@
       "prompt": "Use brace to steady the cart ramp. The qualified hero assists; choose who leads the team check.",
       "cast": [
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/adult_dragonling",
           "name": "Cart owner"
         },
         {

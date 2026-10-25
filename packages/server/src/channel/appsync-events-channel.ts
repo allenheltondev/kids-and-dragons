@@ -31,6 +31,9 @@ export interface AppSyncEventsChannelOptions {
   fetch?: typeof globalThis.fetch;
 }
 
+/** A publish is one small POST; past this, the connection is not coming back. */
+export const PUBLISH_TIMEOUT_MS = 2_000;
+
 /** The channel namespace the API is configured with. Rooms live under it. */
 export const ROOM_NAMESPACE = "room";
 
@@ -80,6 +83,10 @@ export class AppSyncEventsChannel implements RoomChannel {
       method: "POST",
       headers: signed.headers,
       body,
+      // The caller retries once. Without a deadline a stalled connection held
+      // the request, already committed, until the Lambda timed out, and the
+      // phone retried into STALE_SEQ while the TV waited on the broadcast.
+      signal: AbortSignal.timeout(PUBLISH_TIMEOUT_MS),
     });
 
     if (!response.ok) {

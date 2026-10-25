@@ -457,3 +457,45 @@ describe("bonus objectives on a replay (#408)", () => {
     expect(screen.queryByText("Already claimed")).toBeNull();
   });
 });
+
+describe("each hero's own roll XP (spec §8.2)", () => {
+  const PIP: PartyMember = {
+    ...MEMBER,
+    playerId: "p_2",
+    character: character({ id: "c_2", name: "Pip" }),
+  };
+
+  it("lists what each hero earned for her own good rolls, under the party's line", () => {
+    mount({ party: [MEMBER, PIP], xpEarned: 100, heroRollXp: { c_1: 4, c_2: 2 } });
+    expect(screen.getByText(/XP for everyone/)).toBeTruthy();
+    expect(screen.getByText("From their own good rolls: Sparklehoof +4, Pip +2")).toBeTruthy();
+  });
+
+  it("leaves a hero the chapter already paid off the line", () => {
+    mount({ party: [MEMBER, PIP], xpEarned: 100, heroRollXp: { c_1: 4, c_2: 2 }, xpAlreadyPaid: ["c_2"] });
+    expect(screen.getByText("From their own good rolls: Sparklehoof +4")).toBeTruthy();
+  });
+
+  it("reads each hero's own roll XP aloud with the summary", () => {
+    vi.useFakeTimers();
+    const spoken: string[] = [];
+    setSpeaker((text) => spoken.push(text));
+    try {
+      mount({ party: [MEMBER, PIP], xpEarned: 100, heroRollXp: { c_1: 4, c_2: 2 } });
+      act(() => {
+        vi.advanceTimersByTime(2000);
+      });
+      expect(spoken).toHaveLength(1);
+      expect(spoken[0]).toContain("Sparklehoof earned 4 experience from their own good rolls.");
+      expect(spoken[0]).toContain("Pip earned 2 experience from their own good rolls.");
+    } finally {
+      setSpeaker(null);
+      vi.useRealTimers();
+    }
+  });
+
+  it("shows no line when nobody's rolls paid anything", () => {
+    mount({ party: [MEMBER, PIP], xpEarned: 100 });
+    expect(screen.queryByText(/own good rolls/)).toBeNull();
+  });
+});

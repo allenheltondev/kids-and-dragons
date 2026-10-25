@@ -129,6 +129,7 @@
     },
     "check_hum": {
       "type": "check",
+      "tags": ["charm"],
       "stat": "heart",
       "tn": 8,
       "prompt": "Hum the little tune back through the hedge",
@@ -334,6 +335,7 @@
     },
     "check_gate": {
       "type": "check",
+      "tags": ["force"],
       "stat": "might",
       "tn": 12,
       "prompt": "Heave the root-knotted gate open",
@@ -401,6 +403,7 @@
     },
     "check_wisps": {
       "type": "check",
+      "tags": ["charm"],
       "stat": "heart",
       "tn": 8,
       "prompt": "Talk three excited wisps into handing it over",
@@ -447,7 +450,8 @@
       "narration": "The wisps tie all your bootlaces together, eat the snacks, and then, feeling a bit guilty, tow you gently downstream to where you were going anyway. Lantern moths settle on your scratches, which turns out to be surprisingly nice.",
       "cast": [
         {
-          "figure": "entities/will_o_wisp"
+          "figure": "entities/will_o_wisp",
+          "count": 3
         }
       ],
       "onEnter": [

@@ -12,6 +12,7 @@ contract; where a schema disagrees with them, the schema is wrong.
 - `npm run content:proofs` — after changing a graph campaign's graph or the flags its chapters set: re-walks it and writes `content/graph-proofs/`, which the server trusts at start
 - `npm run content:continuity` — names a scene uses that some way in never showed, across every campaign in `content/campaigns`
 - `npm run content:graph` — a chapter's scene graph, with its gates labeled
+- `npm run content:cast` — scenes whose words name someone the chapter casts elsewhere but whose own `cast` leaves them off (reports, never gates)
 - `npm run content:pacing` — shortest and typical path through each chapter, and its predicted minutes (reports, never gates)
 
 ## Writing for the game

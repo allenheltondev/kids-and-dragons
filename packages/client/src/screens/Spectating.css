@@ -1,0 +1,113 @@
+/*
+ * Watching a full table (Spectating.tsx, #388): the table-full line, the
+ * goal, what the party is doing, and a row of big cheer buttons. In the flow
+ * of the player pane, and container-relative units only.
+ */
+.spectating {
+  display: grid;
+  align-content: start;
+  gap: var(--space-3, 0.75em);
+  padding: var(--space-3, 0.75em);
+  color: var(--kad-ink);
+}
+
+/* `display: grid` above would otherwise outrank `hidden`: the Guide stands over this screen. */
+.spectating[hidden] {
+  display: none;
+}
+
+.spectating__head {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2, 0.5em);
+  text-align: center;
+}
+
+.spectating__full,
+.spectating__watch,
+.spectating__doing,
+.spectating__hint {
+  margin: 0;
+  line-height: 1.3;
+}
+
+.spectating__full {
+  font-size: var(--kad-text-lg);
+  font-weight: 600;
+}
+
+.spectating__watch,
+.spectating__doing {
+  color: var(--kad-ink-dim);
+}
+
+.spectating__doing {
+  text-align: center;
+  font-weight: 600;
+}
+
+.spectating__hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 0.5em);
+  color: var(--kad-ink-dim);
+}
+
+.spectating__cheers {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-2, 0.5em);
+}
+
+/* Touch targets never shrink (spec §11). */
+.spectating__cheer {
+  display: grid;
+  place-items: center;
+  min-inline-size: calc(var(--kad-touch-min) * 1.4);
+  min-block-size: calc(var(--kad-touch-min) * 1.4);
+  padding: var(--space-2, 0.5em);
+  border: 0.1em solid var(--kad-ink-faint);
+  border-radius: 50%;
+  background: var(--kad-accent-soft);
+  color: var(--kad-ink);
+  cursor: pointer;
+  transition: transform 160ms ease-out, opacity 160ms ease-out;
+}
+
+.spectating__cheer:active {
+  transform: scale(0.92);
+}
+
+/* Resting after a cheer: the one sent stays lit, the rest wait. */
+.spectating__cheer:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+.spectating__cheer--sent:disabled {
+  opacity: 1;
+  border-color: var(--kad-accent);
+  transform: scale(1.08);
+}
+
+/* "Just watch" (JustWatch): one row above the creation flow, taking its own height. */
+.just-watch {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-1, 0.25em) var(--space-3, 0.75em);
+  color: var(--kad-ink-dim);
+}
+
+.just-watch[hidden] {
+  display: none;
+}
+
+.just-watch__line {
+  margin: 0;
+  min-inline-size: 0;
+}

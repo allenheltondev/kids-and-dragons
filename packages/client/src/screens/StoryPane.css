@@ -170,6 +170,8 @@
   padding: 0.65em 0.8em;
   border-inline-start: 0.25em solid #e1bd7f;
   border-radius: 0.3em 0.8em 0.8em 0.3em;
+  /* Flat first, for a TV browser with no `color-mix()` (Chromium 111). */
+  background: #362c32;
   background: color-mix(in srgb, var(--kad-gold, #ffc95c) 13%, #191529);
   font-style: italic;
 }

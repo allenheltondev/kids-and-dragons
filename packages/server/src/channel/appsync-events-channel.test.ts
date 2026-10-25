@@ -67,6 +67,22 @@ describe("AppSyncEventsChannel", () => {
     expect(JSON.parse(body.events[0] ?? "")).toEqual(patch);
   });
 
+  it("gives every publish a deadline, so a stalled connection cannot hold the request", async () => {
+    let signal: AbortSignal | null | undefined;
+    const channel = new AppSyncEventsChannel({
+      httpDomain: "abc123.appsync-api.us-east-1.amazonaws.com",
+      region: "us-east-1",
+      credentials: async () => ({ accessKeyId: "AKIATEST", secretAccessKey: "secret" }),
+      fetch: (async (_url: string, init: RequestInit) => {
+        signal = init.signal;
+        return ok();
+      }) as unknown as typeof globalThis.fetch,
+    });
+    await channel.publish("ABCD", patch);
+    expect(signal).toBeInstanceOf(AbortSignal);
+    expect(signal?.aborted).toBe(false);
+  });
+
   it("throws on a transport failure", async () => {
     const { channel } = makeChannel(() => new Response("nope", { status: 403 }));
     await expect(channel.publish("ABCD", patch)).rejects.toThrow(/403/);

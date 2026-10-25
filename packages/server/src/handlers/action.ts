@@ -41,6 +41,7 @@ import {
   decisionContext,
   isPracticeCampaign,
   lobbyCampaign,
+  matchupsOn,
   resolveCharacter,
   withRunDeeds,
   resumeJourney,
@@ -53,13 +54,14 @@ import {
   worldFacts,
 } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
-import type { ApplyIntentResult } from "../engine/port.ts";
+import type { ApplyIntentResult, EngineContext } from "../engine/port.ts";
 import type { CampaignProgressRecord, CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { keepGuestHousehold } from "./account.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
 import { closedIfIdle } from "./host.ts";
 import { prepareStepFinds, recordStepFinds } from "./field-guide.ts";
+import { dispatchTurnPush } from "./push.ts";
 import { practiceChapterId, practiceRefusal, settlePractice } from "./practice.ts";
 import {
   attemptJourney,
@@ -81,7 +83,23 @@ import {
   type StartedAttempt,
 } from "./progression.ts";
 
+/** Far above any intent a client builds (a hero's creation is the largest). */
+const MAX_LOGGED_INTENT_CHARS = 4096;
+
 /** The part of an identity that authorises an action. */
+/**
+ * The matchup half of the engine context: `rules.matchups` and the bestiary
+ * when `matchupsOn` holds for this campaign, nothing otherwise.
+ */
+function matchupsContext(
+  rules: ReturnType<HandlerDeps["content"]["rules"]>,
+  campaignId: string | null,
+  deps: HandlerDeps,
+): Pick<EngineContext, "matchups" | "bestiary"> {
+  if (!rules.matchups || !matchupsOn(rules, campaignId)) return {};
+  return { matchups: rules.matchups, bestiary: deps.content.bestiary() };
+}
+
 export type ActingPrincipal = Pick<DeviceIdentity, "householdId" | "playerId">;
 
 export interface ActionInput extends ActionRequest {
@@ -102,14 +120,22 @@ export async function applyAction(
   deps: HandlerDeps,
 ): Promise<ActionResponse> {
   let input = received;
-  const stored = await deps.repo.getState(input.runId);
+  // The three reads every tap needs, side by side rather than one after
+  // another: none depends on another's answer once the principal names the
+  // household (always, in prod). `authorize` still checks them in order.
+  const principalHome = input.principal?.householdId;
+  const [stored, run, principalPlayer] = await Promise.all([
+    deps.repo.getState(input.runId),
+    deps.repo.getRun(input.runId),
+    principalHome ? deps.repo.getPlayer(principalHome, input.playerId) : Promise.resolve(undefined),
+  ]);
   if (!stored) {
     return { ok: false, seq: input.seq, error: { code: "NOT_FOUND", message: `no run ${input.runId}` } };
   }
   // An open room idle too long closes now (#249), and `authorize` refuses.
   const state = await closedIfIdle(stored, deps);
 
-  const auth = await authorize(input, state, deps);
+  const auth = await authorize(input, state, deps, { run, principalPlayer });
   if ("error" in auth) return auth.error;
 
   // --- 1. seq gate (§4.2) --------------------------------------------------
@@ -368,6 +394,11 @@ export async function applyAction(
         ...(campaignBuffs === undefined ? {} : { campaignBuffs }),
         // World facts (#220): a graph campaign with declared facts only.
         ...(campaignFacts === undefined ? {} : { campaignFacts }),
+        // Matchups (docs/matchups.md): on unless the run's campaign is exempt
+        // (Gemfall is pinned and plays without them, byte for byte). The
+        // chapter's own campaign first, so a one-off Gemfall chapter is exempt
+        // too. The bestiary rides along for a check scene's creatures.
+        ...matchupsContext(deps.content.rules(), chapter?.campaignId ?? state.campaignId, deps),
         // Seeded per event, never per wall clock — see the header. The run's
         // secret keeps the next roll unguessable from the public run id.
         rng: deps.rng(diceSeed(auth.run, input.runId, nextSeq)),
@@ -581,7 +612,10 @@ export async function applyAction(
     ...(progression ? { progression } : {}),
     at: iso(nowMs),
     playerId: input.playerId,
-    intent: input.intent,
+    // Kept for the log's own sake, while it is the size of a real intent.
+    // The engine ignores fields it does not know, so a padded one would
+    // otherwise be accepted and stored as sent.
+    intent: JSON.stringify(input.intent).length <= MAX_LOGGED_INTENT_CHARS ? input.intent : ({ type: input.intent.type } as ClientIntent),
   };
 
   // State and event land together or not at all — the log can never disagree
@@ -678,6 +712,12 @@ export async function applyAction(
   }
 
   if (renewal) await renewal;
+
+  // A question this step opened for somebody (#466): the job is decided here,
+  // from the two states already in hand, and handed to the push sender, off
+  // the request path. Only the hand-over is awaited, and never for long
+  // (`DISPATCH_WAIT_MS`); nothing about presence, phones or push services is.
+  await dispatchTurnPush({ before: state, after: next, actorId: input.playerId }, deps);
 
   return { ok: true, seq: nextSeq };
 }
@@ -1072,6 +1112,11 @@ async function authorize(
   input: ActionInput,
   state: RunState,
   deps: HandlerDeps,
+  read: {
+    run: RunRecord | null;
+    /** Read from the principal's household; undefined when there is no principal. */
+    principalPlayer: Awaited<ReturnType<HandlerDeps["repo"]["getPlayer"]>> | undefined;
+  },
 ): Promise<{ run: RunRecord; home: string } | { error: ActionResponse }> {
   if (input.principal && input.principal.playerId !== input.playerId) {
     return errorResult({
@@ -1100,7 +1145,7 @@ async function authorize(
     });
   }
 
-  const run = await deps.repo.getRun(input.runId);
+  const run = read.run;
   if (!run) {
     return errorResult({
       ok: false,
@@ -1119,7 +1164,8 @@ async function authorize(
     });
   }
 
-  const player = await deps.repo.getPlayer(home, input.playerId);
+  const player =
+    read.principalPlayer !== undefined ? read.principalPlayer : await deps.repo.getPlayer(home, input.playerId);
   if (!player) {
     return errorResult({
       ok: false,

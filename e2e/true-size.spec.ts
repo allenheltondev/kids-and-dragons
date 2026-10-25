@@ -20,9 +20,9 @@
  */
 
 import { test, expect, type Browser, type Page } from "@playwright/test";
-import type { CastMember, Chapter } from "../packages/shared/src/index";
+import type { CastMember, Chapter, SpeciesId } from "../packages/shared/src/index";
 import { nameplatesCollide } from "../packages/client/src/world/nameplate";
-import { createCharacter } from "./characters";
+import { phoneStorage, seedTable, toTheLobby, tvStorage } from "./seed";
 
 const TAP = { timeout: 20_000 } as const;
 
@@ -83,7 +83,10 @@ test.describe("true size and stance on the story stage", () => {
     await Promise.all(open.splice(0).map((c) => c.close().catch(() => undefined)));
   });
 
-  /** A TV showing the chapter's opening scene with `cast` standing in it. */
+  /**
+   * A TV showing the chapter's opening scene with `cast` standing in it. The
+   * party is seeded (seed.ts), heroes made and ready, and its first phone taps Begin.
+   */
   async function stage(
     browser: Browser,
     width: number,
@@ -91,7 +94,13 @@ test.describe("true size and stance on the story stage", () => {
     cast: CastMember[],
     party: readonly (readonly [string, string])[] = PARTY,
   ): Promise<Page> {
-    const tvContext = await browser.newContext({ viewport: { width, height } });
+    const table = await seedTable({
+      mode: "party",
+      tv: true,
+      heroes: party.map(([species, name]) => ({ name, species: species as SpeciesId })),
+    });
+    const code = table.code;
+    const tvContext = await browser.newContext({ viewport: { width, height }, storageState: tvStorage(table) });
     open.push(tvContext);
     await tvContext.route("**/content/chapters/*.json", async (route) => {
       const response = await route.fetch();
@@ -101,23 +110,15 @@ test.describe("true size and stance on the story stage", () => {
       await route.fulfill({ response, json: chapter });
     });
     const tv = await tvContext.newPage();
-    await tv.goto("/");
-    await tv.getByRole("button", { name: /host a game/i }).click();
-    await tv.getByText("Party Mode").click();
-    await tv.getByRole("button", { name: /open the lobby here/i }).click();
-    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/);
-    const code = new URL(tv.url()).pathname.split("/").pop()!;
+    await tv.goto(`/tv/${code}`);
 
     const phones: Page[] = [];
-    for (const [species, name] of party) {
-      const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    for (const seated of table.phones) {
+      const context = await browser.newContext({ viewport: { width: 390, height: 844 }, storageState: phoneStorage(seated) });
       open.push(context);
       const phone = await context.newPage();
-      await phone.goto("/");
-      await phone.getByLabel(/room code/i).fill(code);
-      await phone.getByRole("button", { name: /join a game/i }).click();
-      await expect(phone).toHaveURL(new RegExp(`/p/${code}$`), TAP);
-      await createCharacter(phone, species, name);
+      await phone.goto(`/p/${code}`);
+      await toTheLobby(phone);
       phones.push(phone);
     }
     await phones[0]!.getByRole("button", { name: /begin the adventure/i }).click(TAP);

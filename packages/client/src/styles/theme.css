@@ -31,6 +31,8 @@
  *   --kad-warn            caution
  *   --kad-down            knocked-down state (spec §7.3 — never "dead")
  *   --kad-stat-might / -quick / -clever / -heart   the four stats (spec §4.1)
+ *   --kad-…-rgb           the same color as channels, for a tint: `rgb(var(--kad-bg-rgb) / 78%)`
+ *                         rather than `color-mix()`, which a smart TV's browser does not have
  *
  * Space (a 4px-derived ramp, expressed in em so it scales with the surface)
  *   --kad-space-1 … --kad-space-7
@@ -73,7 +75,7 @@
 
   --kad-ink: #f4f0ff;
   --kad-ink-dim: #b9b0d8;
-  --kad-ink-faint: #7d7599;
+  --kad-ink-faint: #a39bc4;
 
   --kad-accent: #8b6cf5;
   --kad-accent-ink: #0d0b1a;
@@ -97,6 +99,31 @@
   --kad-success: #5fd6a0;
   --kad-warn: #f5a86c;
   --kad-down: #6c7ab0;
+
+  /*
+   * The same colors as channel triplets, for `rgb(var(--…-rgb) / NN%)`.
+   *
+   * A tint of a token used to be written `color-mix(in srgb, var(--kad-bg) 78%,
+   * transparent)`, which needs Chromium 111. The shared screen's most likely
+   * home is a smart TV, whose browser runs years behind the panel (a 2024
+   * Samsung is Tizen 8, Chromium 108), and an unsupported `color-mix()` does
+   * not degrade: the whole declaration is dropped, so a scrim behind narration
+   * simply vanishes and the words sit on the painted art. Mixing a color with
+   * `transparent` is only that color at an alpha, so these say it in a form
+   * every TV browser has had for years. Each triplet is the hex above it, and
+   * the contrast theme below redefines both together.
+   */
+  --kad-bg-rgb: 13 11 26;
+  --kad-bg-sunken-rgb: 8 7 17;
+  --kad-bg-raised-rgb: 26 23 48;
+  --kad-ink-rgb: 244 240 255;
+  --kad-ink-dim-rgb: 185 176 216;
+  --kad-accent-rgb: 139 108 245;
+  --kad-gold-rgb: 245 200 108;
+  --kad-gold-hi-rgb: 255 230 168;
+  --kad-gold-lo-rgb: 201 150 47;
+  --kad-danger-rgb: 255 107 129;
+  --kad-success-rgb: 95 214 160;
 
   /* Stat colors are paired with icons everywhere; color alone never carries
      meaning (spec §11 — colorblind-safe). */
@@ -171,10 +198,10 @@
 
   /* --- accessibility, set by a11y/prefs.ts (#262) ------------------------ */
   --kad-text-scale: 1;
-  /* The corner row (App.tsx) is up to four 44px controls (help, settings, read-aloud, sound). The strip a phone leaves it, at
+  /* The corner row (App.tsx) is up to four 36px controls (help, settings, read-aloud, sound). The strip a phone leaves it, at
      the top or (one-handed) the bottom, is the row's height and a little air. Pixels, not em: the row does not grow with the
      text, so what clears it never has to guess. */
-  --kad-corner-bottom: 52px;
+  --kad-corner-bottom: 44px;
 
   color-scheme: dark;
 }
@@ -204,6 +231,15 @@ html[data-contrast="high"] {
   --kad-success: #86efbd;
   --kad-warn: #ffc08f;
   --kad-raised-rim: rgba(255, 255, 255, 0.6);
+  --kad-bg-rgb: 0 0 0;
+  --kad-bg-sunken-rgb: 0 0 0;
+  --kad-bg-raised-rgb: 20 16 43;
+  --kad-ink-rgb: 255 255 255;
+  --kad-ink-dim-rgb: 236 232 255;
+  --kad-accent-rgb: 185 165 255;
+  --kad-gold-rgb: 255 216 122;
+  --kad-danger-rgb: 255 154 169;
+  --kad-success-rgb: 134 239 189;
 }
 html[data-contrast="high"] :focus-visible {
   outline: 0.2em solid #ffffff;
@@ -235,6 +271,13 @@ html[data-contrast="high"] :focus-visible {
   --color-danger: var(--kad-danger);
   --color-success: var(--kad-success);
   --color-warn: var(--kad-warn);
+
+  --color-surface-rgb: var(--kad-bg-raised-rgb);
+  --color-text-muted-rgb: var(--kad-ink-dim-rgb);
+  --color-primary-rgb: var(--kad-accent-rgb);
+  --color-accent-rgb: var(--kad-gold-rgb);
+  --color-danger-rgb: var(--kad-danger-rgb);
+  --color-success-rgb: var(--kad-success-rgb);
 
   --space-1: var(--kad-space-1);
   --space-2: var(--kad-space-2);
@@ -520,11 +563,15 @@ html[data-quiet] .rift-status__clock--urgent {
   font-size: 16px;
   /* Exactly the minimum, whatever each control's own icon size: the row's height is what the
      one-handed layout reserves. */
-  --kad-touch-min: 44px;
+  --kad-touch-min: 36px;
   /* The row is not a surface; only the controls in it take taps. */
   pointer-events: none;
 }
 .kad-corner > * { pointer-events: auto; }
+/* The compact 36px row is for ordinary text. At the largest text the full 44px touch floor returns, and the strips
+   reserved for the row grow with it so nothing overlaps. */
+html[data-text="largest"] .kad-corner { --kad-touch-min: 44px; }
+html[data-text="largest"] { --kad-corner-bottom: 52px; --kad-corner-column: 52px; }
 /* Sound's place in the row while its engine loads (App.tsx): the size of its button, and nothing to tap. */
 .kad-corner__slot { inline-size: var(--kad-touch-min); block-size: var(--kad-touch-min); flex: none; pointer-events: none; }
 

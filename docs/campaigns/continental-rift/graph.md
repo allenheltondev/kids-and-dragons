@@ -10,6 +10,10 @@ flowchart TD
   G --> R[riftseekers-departure]
   R --> T[ice-shelf-traverse]
   R --> H[hidden-glacier-rift]
+  R -->|long marked bank road| D[ashspan-bridge]
+  D -->|upper bank road| F[frostfang-shore]
+  F --> C
+  C -->|griffin flight| S[sky-islands-arrival]
   H -->|return, rift unsolved| R
   T -->|flag: traverse_made| C[cairnstep-pass]
   T -->|flag: traverse_failed| W[headwaters-washout]
@@ -166,3 +170,22 @@ The full preview graph is linted and replayed, with all story routes leading onw
 See [the finale review](finale-review.md) for the completed search and the remaining
 family-timing and XP-budget production gates. The original size table above is a design
 estimate, not a measured count of paying nodes on every optional route.
+
+## Canon class hubs (#483)
+
+The Rookery stays at the Exchange and the Conservatory stays on the Glacier of Origins.
+The Dojo and its pillow lesson now sit off the sheltered rest path in `sky-islands-arrival`,
+in the Sky Islands. Its keeper's welcome and edge-marking beat still finish that chapter.
+
+`ashspan-bridge` spans the bridge and a village in the Whispering Marsh. After helping
+travelers board, the party can stay at the ferry and discuss its onward route, or choose
+"Visit the Academy in the marsh" and follow a posted raised footpath to fetch a dry reed
+mat for the ferry deck. The village bench is a rest with a side door to the Academy
+and its telescope lesson. Parties that visit carry the mat back to Ossley before the ferry-route
+ending; parties that stay go straight to that ending, with both chapter goals complete. No hub remains at the glacier camp. The campaign keeps 24 nodes and its XP budget;
+these visits are inside their host chapters. The singing hall still heals for free.
+
+The ungated long bank road runs from the departure camp to Ashspan Bridge. An upper bank
+road connects the bridge to Frostfang Shore and its Cairnstep path, where the griffins offer
+a flight to the Sky Islands. These routes keep both relocated hubs reachable for every party,
+including parties that decline a rift or lose the shelf crossing.
