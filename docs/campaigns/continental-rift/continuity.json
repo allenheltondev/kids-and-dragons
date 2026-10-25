@@ -400,6 +400,38 @@
             "footprints": "broad footprints"
           }
         },
+        "wind_warm": {
+          "requires": [
+            "wet_clothes",
+            "goat"
+          ],
+          "introduces": {}
+        },
+        "prints": {
+          "requires": [
+            "footprints",
+            "bell"
+          ],
+          "introduces": {}
+        },
+        "prints_read": {
+          "requires": [
+            "footprints"
+          ],
+          "introduces": {}
+        },
+        "prints_march": {
+          "requires": [
+            "footprints"
+          ],
+          "introduces": {}
+        },
+        "prints_air": {
+          "requires": [
+            "footprints"
+          ],
+          "introduces": {}
+        },
         "tracks": {
           "requires": [
             "goat",
@@ -452,6 +484,25 @@
           "introduces": {
             "blanket": "a folded blanket"
           }
+        },
+        "herder_gift": {
+          "requires": [
+            "herder",
+            "tin_cache",
+            "melt_channel",
+            "sledge"
+          ],
+          "introduces": {
+            "supper_gift": "a bundle wrapped in a cloth"
+          }
+        },
+        "read_water": {
+          "requires": [
+            "herder",
+            "melt_channel",
+            "supper_gift"
+          ],
+          "introduces": {}
         },
         "channel": {
           "requires": [
@@ -513,6 +564,44 @@
           ],
           "introduces": {}
         },
+        "settle": {
+          "requires": [
+            "goat",
+            "herd",
+            "herder"
+          ],
+          "introduces": {
+            "lead_goat": "one chipped horn"
+          }
+        },
+        "settle_count": {
+          "requires": [
+            "herd",
+            "lead_goat"
+          ],
+          "introduces": {}
+        },
+        "settle_brush": {
+          "requires": [
+            "herd",
+            "lead_goat"
+          ],
+          "introduces": {}
+        },
+        "settle_feed": {
+          "requires": [
+            "herder",
+            "lead_goat"
+          ],
+          "introduces": {}
+        },
+        "settle_lull": {
+          "requires": [
+            "herd",
+            "lead_goat"
+          ],
+          "introduces": {}
+        },
         "herd": {
           "requires": [
             "herder",
@@ -566,6 +655,35 @@
             "glass_door": "a glass door"
           }
         },
+        "hall_table": {
+          "requires": [
+            "hall",
+            "herder",
+            "warm_stones"
+          ],
+          "introduces": {
+            "knitter": "yeti knitter"
+          }
+        },
+        "hall_dry": {
+          "requires": [
+            "knitter",
+            "warm_stones"
+          ],
+          "introduces": {}
+        },
+        "hall_buy": {
+          "requires": [
+            "knitter"
+          ],
+          "introduces": {}
+        },
+        "hall_share": {
+          "requires": [
+            "knitter"
+          ],
+          "introduces": {}
+        },
         "conservatory": {
           "requires": [
             "hall",
@@ -599,6 +717,14 @@
           "requires": [
             "herder",
             "hall",
+            "low_note"
+          ],
+          "introduces": {}
+        },
+        "note_try": {
+          "requires": [
+            "hall",
+            "herder",
             "low_note"
           ],
           "introduces": {}
@@ -650,6 +776,49 @@
             "goat",
             "herd",
             "travelers"
+          ],
+          "introduces": {}
+        },
+        "ledge_look": {
+          "requires": [
+            "grazing_route",
+            "travelers",
+            "herder",
+            "hall"
+          ],
+          "introduces": {
+            "ledge_stream": "meltwater nibbles the snow shelf"
+          }
+        },
+        "ledge_poles": {
+          "requires": [
+            "ledge_stream"
+          ],
+          "introduces": {}
+        },
+        "ledge_hay": {
+          "requires": [
+            "ledge_stream"
+          ],
+          "introduces": {}
+        },
+        "ledge_brace": {
+          "requires": [
+            "ledge_stream"
+          ],
+          "introduces": {}
+        },
+        "ledge_whistle": {
+          "requires": [
+            "ledge_stream"
+          ],
+          "introduces": {}
+        },
+        "ledge_done": {
+          "requires": [
+            "ledge_stream",
+            "travelers",
+            "herder"
           ],
           "introduces": {}
         },
@@ -717,6 +886,41 @@
           "introduces": {
             "hollow_found": "Now you can see the hollow"
           }
+        },
+        "cairn": {
+          "requires": [
+            "drift",
+            "rope"
+          ],
+          "introduces": {
+            "cairn": "a tall pile of stones",
+            "tin_cache": "A flat tin lid"
+          }
+        },
+        "cairn_dig": {
+          "requires": [
+            "tin_cache"
+          ],
+          "introduces": {}
+        },
+        "cairn_pry": {
+          "requires": [
+            "tin_cache",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "cairn_smash": {
+          "requires": [
+            "tin_cache"
+          ],
+          "introduces": {}
+        },
+        "cairn_open": {
+          "requires": [
+            "tin_cache"
+          ],
+          "introduces": {}
         },
         "seam_response": {
           "requires": [
