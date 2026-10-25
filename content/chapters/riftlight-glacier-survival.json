@@ -165,11 +165,11 @@
       "narration": "The wind finds every wet seam in your clothes. Your sleeves have started to crackle. The kid sneezes a tiny cloud. Nobody climbs a glacier with stiff fingers.",
       "roller": "all",
       "onSuccess": {
-        "goto": "prints",
+        "goto": "kid_burrow",
         "narration": "The ice cracks off in crumbs. You are damp, not frozen, and the kid sneezes in triumph. The wind has less to bite now."
       },
       "onFailure": {
-        "goto": "prints",
+        "goto": "kid_burrow",
         "narration": "One sleeve freezes into a stiff tube, and it takes three tries to bend it. You get going, but your fingers ache.",
         "effects": [
           {
@@ -179,6 +179,55 @@
             "nonlethal": true
           }
         ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
+    },
+    "kid_burrow": {
+      "type": "interaction",
+      "narration": "The kid wriggles out of your coat, warm enough now to be cheeky. It dives under a snow mound and vanishes. Three mounds sit in a row, all exactly the same shape. Then the snow starts to move.",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the mound the kid hides under, then pick where it is.",
+        "actionLabel": "Look under",
+        "covers": [
+          "Left mound",
+          "Middle mound",
+          "Right mound"
+        ],
+        "start": 1,
+        "swaps": [
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "prints",
+        "narration": "There it is! The kid pops up wearing a snow hat and lets out an enormous bleat. You tuck it back into your coat."
+      },
+      "onFailure": {
+        "goto": "prints",
+        "narration": "You lift an empty mound. A snowy nose pokes out of another one and sneezes. You scoop the kid back into your coat."
+      },
+      "onAssisted": {
+        "goto": "prints",
+        "narration": "You line up the mounds and listen. A tiny bleat gives it away, and the kid goes back in your coat."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
@@ -747,11 +796,11 @@
       "narration": "Every goat has a different bell: a clank, a tink, a cowbell, a spoon on a pot. The herd keeps moving, and counting moving goats is like counting raindrops.",
       "roller": "best",
       "onSuccess": {
-        "goto": "herd",
+        "goto": "herd_play",
         "narration": "Every bell is here, even the spoon one. The herder checks your count against hers and smiles. The goats calm down, because someone finally knows who they are."
       },
       "onFailure": {
-        "goto": "herd",
+        "goto": "herd_play",
         "narration": "You count one goat twice and one goat not at all, and the herder has to start over. The goats grumble, but the count comes out right in the end."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters",
@@ -778,11 +827,11 @@
       "roller": "all",
       "checkKind": "doing",
       "onSuccess": {
-        "goto": "herd",
+        "goto": "herd_play",
         "narration": "The beads come off in handfuls, and the goats lean into your hands. Soon the herd sounds like a rattle full of calm."
       },
       "onFailure": {
-        "goto": "herd",
+        "goto": "herd_play",
         "narration": "Some goats like the brush and some goats bite the brush. A mouthful of mitten later, everyone is mostly brushed."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters",
@@ -808,7 +857,7 @@
           "id": "continue",
           "label": "Go with the herd",
           "icon": "hand",
-          "goto": "herd"
+          "goto": "herd_play"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters",
@@ -833,12 +882,68 @@
       "prompt": "Use a lullaby to calm the herd. The songkeeper helps; choose who leads.",
       "narration": "A songkeeper hums a slow tune that sounds like a blanket. The lead goat's ears droop. The spoon bell goes quiet.",
       "onSuccess": {
-        "goto": "herd",
+        "goto": "herd_play",
         "narration": "The song rolls over the herd. One by one the goats stop stamping and follow the tune toward the herder."
       },
       "onFailure": {
-        "goto": "herd",
+        "goto": "herd_play",
         "narration": "The song is lovely, but the wind is loud. The goats settle anyway, slowly, with their eyes shut."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        },
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ]
+    },
+    "herd_play": {
+      "type": "interaction",
+      "narration": "The goats are calmer, and the herder is counting hay. The kid stands in the middle of the herd with its ears up, and every goat wants a turn at fussing over it. The lead goat sniffs the air. She is waiting to see what you will do.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Give the herd something nice.",
+        "actionLabel": "Settle in with the herd",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "brush",
+            "label": "Brush a goat's wool",
+            "icon": "hand",
+            "reaction": "A goat leans into the brush until it nearly tips over."
+          },
+          {
+            "id": "scratch",
+            "label": "Scratch the kid behind the ears",
+            "icon": "heart",
+            "reaction": "The kid shuts its eyes and makes a happy, wobbly bleat."
+          },
+          {
+            "id": "hay",
+            "label": "Offer a handful of hay",
+            "icon": "leaf",
+            "reaction": "The lead goat takes the hay politely and chews with great dignity."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "herd",
+        "narration": "The whole herd settles around you with a clank of bells. The lead goat gives you one slow, approving blink."
+      },
+      "onFailure": {
+        "goto": "herd",
+        "narration": "The goats settle a little at a time, and the herder waits patiently for the last stragglers."
+      },
+      "onAssisted": {
+        "goto": "herd",
+        "narration": "The herder shows you a good scratching spot, and the herd settles around it."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
@@ -1267,13 +1372,37 @@
       ]
     },
     "note_try": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "Everyone hum the low note and hold it steady, boots first.",
+      "type": "interaction",
       "narration": "The low note is lower than your voice wants to go. The young yeti singer taps a spot on the floor. \"Stand here. Hum from your boots.\"",
-      "roller": "all",
-      "checkKind": "doing",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Listen to the young singer, then hum the pattern back.",
+        "actionLabel": "Hum it back",
+        "options": [
+          {
+            "id": "low",
+            "label": "Low",
+            "icon": "boot"
+          },
+          {
+            "id": "rise",
+            "label": "Rise",
+            "icon": "star"
+          },
+          {
+            "id": "hold",
+            "label": "Hold",
+            "icon": "heart"
+          }
+        ],
+        "answer": [
+          "low",
+          "low",
+          "rise",
+          "hold"
+        ],
+        "stepMs": 1100
+      },
       "onSuccess": {
         "goto": "learn_note",
         "narration": "Your voices lock together like the teeth of a comb. The whole bench rumbles, and the young singer grins."
@@ -1281,6 +1410,10 @@
       "onFailure": {
         "goto": "learn_note",
         "narration": "Your note slides up and down like a goat on ice. The young singer shows you where to put your tongue, and the second try wobbles into place."
+      },
+      "onAssisted": {
+        "goto": "learn_note",
+        "narration": "The young singer hums it slowly beside you, one step at a time, until your voices settle."
       },
       "art": "scenes/riftlight/singing-hall",
       "cast": [
@@ -1458,11 +1591,11 @@
       "narration": "The poles are long and the wind is nosy. Each one has to go in straight, or the goats will follow it straight into the stream.",
       "roller": "all",
       "onSuccess": {
-        "goto": "ledge_done",
+        "goto": "shelf_cross",
         "narration": "A row of poles marches down the bank, crooked as skinny dancers. The herd can see where to walk."
       },
       "onFailure": {
-        "goto": "ledge_done",
+        "goto": "shelf_cross",
         "narration": "One pole goes in soft and leans like a tired flag. Your fingers freeze, but you straighten it, and then you straighten all the others too.",
         "effects": [
           {
@@ -1492,11 +1625,11 @@
       "narration": "The hay sledge is heavy as a sleeping bear and slides like a happy one.",
       "roller": "best",
       "onSuccess": {
-        "goto": "ledge_done",
+        "goto": "shelf_cross",
         "narration": "The sledge glides down the slope with a hiss. The pile at the lower pen grows by a whole sledge's worth."
       },
       "onFailure": {
-        "goto": "ledge_done",
+        "goto": "shelf_cross",
         "narration": "The sledge gets away from you and slides to the bottom on its own, scattering hay. You collect most of it. The goats help, which means they eat some."
       },
       "art": "scenes/riftlight/singing-hall-camp",
@@ -1517,11 +1650,11 @@
       "prompt": "Use brace to hold the snow shelf steady while the poles go in. The hero with brace helps; choose who leads.",
       "narration": "A thornguard can plant both feet and hold. The snow shelf creaks, and the thornguard does not.",
       "onSuccess": {
-        "goto": "ledge_done",
+        "goto": "shelf_cross",
         "narration": "The shelf stops creaking, and the poles go in, one by one, in a straight row."
       },
       "onFailure": {
-        "goto": "ledge_done",
+        "goto": "shelf_cross",
         "narration": "The shelf shifts under the brace, but the poles still go in. Everyone works fast and nobody breathes."
       },
       "art": "scenes/riftlight/singing-hall-camp",
@@ -1543,9 +1676,43 @@
           "id": "continue",
           "label": "See what is left to do",
           "icon": "hand",
-          "goto": "ledge_done"
+          "goto": "shelf_cross"
         }
       ],
+      "art": "scenes/riftlight/singing-hall-camp",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ]
+    },
+    "shelf_cross": {
+      "type": "interaction",
+      "narration": "One last pole waits on the far side of the snow shelf, where the stream keeps nibbling. The herder points at the water. \"It pauses between gulps. Step across when it goes quiet.\" The stream gulps. The stream goes quiet.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Step across when the water goes quiet.",
+        "actionLabel": "Step!",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "ledge_done",
+        "narration": "You step across in the quiet, plant the pole, and hop back before the next gulp. The herd watches without a single bell."
+      },
+      "onFailure": {
+        "goto": "ledge_done",
+        "narration": "The stream gulps early and takes a bite out of the snow shelf, but you skip aside. The herder plants the pole herself."
+      },
+      "onAssisted": {
+        "goto": "ledge_done",
+        "narration": "The herder counts the gulps aloud, and you cross on the count. The pole goes in."
+      },
       "art": "scenes/riftlight/singing-hall-camp",
       "cast": [
         {
@@ -1644,7 +1811,7 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "cairn"
+          "goto": "crust_hold"
         }
       ],
       "onEnter": [
@@ -1674,7 +1841,7 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "cairn"
+          "goto": "crust_hold"
         }
       ],
       "onEnter": [
@@ -1704,7 +1871,7 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "cairn"
+          "goto": "crust_hold"
         }
       ],
       "onEnter": [
@@ -1718,6 +1885,35 @@
           "flag": "got_past_the_drift"
         }
       ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
+    },
+    "crust_hold": {
+      "type": "interaction",
+      "narration": "At the foot of the next ridge, the path squeezes under a lip of snow that sags over the stones like a heavy white eyebrow. The kid is small enough to pass. The rest of you are not, unless somebody holds the snow up.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the snow up while your friend carries the kid under.",
+        "supportLabel": "Hold up the snow",
+        "actionLabel": "Carry the kid through"
+      },
+      "onSuccess": {
+        "goto": "cairn",
+        "narration": "The snow lip stays up, and the kid trots under it. Then it trots back under it, just to check."
+      },
+      "onFailure": {
+        "goto": "cairn",
+        "narration": "The lip sags and sheds a heap of snow. You dig a gap with your hands, and the kid squeezes through with a snort."
+      },
+      "onAssisted": {
+        "goto": "cairn",
+        "narration": "You wedge your rope and some stones under the lip. It holds, and everyone gets through."
+      },
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
