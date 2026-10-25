@@ -15,7 +15,7 @@ agent_instructions:
   - Locations controlled by non-canon factions inherit the faction's intentionally_undefined status.
   - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
   - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
-  - "Class places (the Dojo, the Academy, the Rookery, the Conservatory) are side rooms of the places that hold them, never places on the travel graph (docs/class-mastery.md §2). They carry no `map_anchor` on purpose: the docs name the place that holds each room, not a spot on the painted map, and an invented anchor would put a school in the sea. Each teaches only its own class, and `class.*` in classes.yaml points back at it."
+  - "Class places (the Dojo, the Academy, the Rookery, the Conservatory) are side rooms of the places that hold them, never places on the travel graph (docs/class-mastery.md §2). Each teaches only its own class, and `class.*` in classes.yaml points back at it. One sits in each of four corners of the realm: the Rookery on the Exchange's rooftops, the Conservatory in the Glacier of Origins, the Dojo in the Sky Islands, the Academy in the Whispering Marsh. Each takes its host's `map_anchor` with a small label offset (a label's height above it), an offset for reading and not a survey; the Sky Islands drift, so theirs is the normal map area, as that biome's anchor already is."
   - "`lore` is the storyteller's half of a place: its accepted origin, its recorded past, and its reputation. `origin`, `recorded_history`, and `cultural_significance` are in-world common knowledge. `common_beliefs` and `disputed_beliefs` are what people *say*, and are allowed to be wrong - a superstition is canon about the believers, not the place. `hidden_truths` are creator canon: a story may build toward one, but no NPC recites one, and on an `intentionally_undefined` entry the list stays empty so the protected mystery stays protected. `regional_relationships.place` is a validated reference; the `relationship` prose is the story hook."
 
 controlled_values:
@@ -906,31 +906,33 @@ locations:
 
   # -------------------------------------------------------------------------
   # The four class places (docs/class-mastery.md §2). Each teaches only its own
-  # class, and each is a side room of a larger place. Nothing here goes beyond
-  # that doc: no `lore` block (so no `hidden_truths` to leak), and no
-  # `map_anchor`, because the docs say which place holds each room and never a
-  # spot on the painted map.
+  # class, and each is a side room of a larger place, one per corner of the
+  # realm. Nothing here goes beyond that doc: no `lore` block (so no
+  # `hidden_truths` to leak). Each anchor is its host's anchor, a label's height
+  # up, so the pin reads next to the host's name.
   # -------------------------------------------------------------------------
 
   - id: location.dojo
     title: "The Dojo"
     canon_status: newly_defined
     location_type: class_place
-    parent_biome: biome.glacier_of_origins
+    parent_biome: biome.sky_islands
     featured: false
+    map_provenance: map_implied
+    map_anchor: { x: 165, y: 223 }
+    access_from: [biome.sky_islands]
     tags: [class_place, school, thornguard]
     short_description: >-
       The school for Thornguards. The teacher has held the same door shut against
       the wind for forty years. Students practice Brace by catching falling
       pillows.
     canon_constraints: >-
-      Teaches only the Thornguard. Where it stands is decided campaign by campaign
-      (Riftlight puts it up the slope from the Riftseekers' camp), so no fixed
-      spot on the map is canon yet.
+      Teaches only the Thornguard.
     canon_note: >-
-      Held in Riftlight's draft up the slope from the Riftseekers' camp.
+      Stands in the Sky Islands. Its pin is the biome's anchor, a label's height up;
+      the islands drift, so that is their normal map area and not a fixed spot.
     relationships:
-      biome: [biome.glacier_of_origins]
+      biome: [biome.sky_islands]
       locations: []
       creatures: []
       factions: []
@@ -942,8 +944,11 @@ locations:
     title: "The Academy"
     canon_status: newly_defined
     location_type: class_place
-    parent_biome: biome.glacier_of_origins
+    parent_biome: biome.whispering_marsh
     featured: false
+    map_provenance: map_implied
+    map_anchor: { x: 225, y: 608 }
+    access_from: [biome.whispering_marsh]
     tags: [class_place, school, starweaver]
     short_description: >-
       The school for Starweavers. The roof is open to the sky, so the homework
@@ -951,12 +956,10 @@ locations:
     canon_constraints: >-
       Teaches only the Starweaver.
     canon_note: >-
-      Provisional placement. The design puts the Academy in the marsh village, and
-      Riftlight's story does not have that village yet, so its draft stands in a
-      roofless tower above the Riftseekers' camp. When the marsh village is
-      written, this entry moves there and its `parent_biome` changes with it.
+      Stands in the marsh village, in the Whispering Marsh. Its pin is the
+      biome's anchor, a label's height up.
     relationships:
-      biome: [biome.glacier_of_origins]
+      biome: [biome.whispering_marsh]
       locations: []
       creatures: []
       factions: []
@@ -970,6 +973,10 @@ locations:
     location_type: class_place
     parent_biome: biome.sunward_fields
     featured: false
+    map_provenance: map_implied
+    # The Exchange's own anchor is (350, 855). The Rookery is on its rooftops, so
+    # it sits a label's height above it: an offset for reading, not a survey.
+    map_anchor: { x: 350, y: 843 }
     tags: [class_place, school, duskrunner, crows]
     short_description: >-
       The school for Duskrunners, on the Exchange's rooftops. It is run by the
@@ -996,6 +1003,9 @@ locations:
     location_type: class_place
     parent_biome: biome.glacier_of_origins
     featured: false
+    map_provenance: map_implied
+    map_anchor: { x: 805, y: 73 }
+    access_from: [biome.glacier_of_origins]
     tags: [class_place, school, songkeeper]
     short_description: >-
       The school for Songkeepers. It is a music school that is also a greenhouse.
@@ -1003,8 +1013,9 @@ locations:
     canon_constraints: >-
       Teaches only the Songkeeper.
     canon_note: >-
-      Held in Riftlight's draft off the yetis' singing hall, whose rest heals the
-      party for free on every arrival.
+      Stands in the Glacier of Origins, off the yetis' singing hall, whose rest
+      heals the party for free on every arrival. Its pin is the biome's anchor, a
+      label's height up.
     relationships:
       biome: [biome.glacier_of_origins]
       locations: []

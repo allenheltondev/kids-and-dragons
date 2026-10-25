@@ -1,12 +1,13 @@
+import { useEffect } from "react";
 import type { ReactNode } from "react";
-import type { FieldGuide as FieldGuideData, FieldGuideEntry } from "@kad/shared";
+import type { FieldGuide as FieldGuideData, FieldGuideEntry, WorldMap } from "@kad/shared";
 import { FORGOTTEN_FINDER, FORGOTTEN_NAME } from "@kad/shared";
 import { hear } from "../speech/read-aloud";
 import { selectGuideEntry } from "../store/player-navigation";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import type { FieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { markFieldGuideSeen } from "../store/field-guide-seen";
-import { useParty } from "../store";
+import { useGameStore, useParty, useWorld } from "../store";
 import { useJournalFinders } from "../store/journal-finders";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
@@ -92,6 +93,11 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }
 }) {
   const discoveries = useFieldGuideDiscoveries();
   const party = useParty();
+  const world = useWorld();
+  const loadWorld = useGameStore((store) => store.loadWorld);
+  // A class that has been found at its place needs the map's key; fetched once, kept.
+  const wantsMap = guide.entries[entryId]?.class !== undefined && !!discoveries[guide.entries[entryId]!.class!.home];
+  useEffect(() => { if (wantsMap) void loadWorld(); }, [wantsMap, loadWorld]);
   // Between games there is no party; the journal names the household instead.
   const finders = useJournalFinders();
   const entry = guide.entries[entryId];
@@ -187,6 +193,7 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }
               {/* "???" until the party has found the place: EntryLink never renders an undiscovered title. */}
               <p>Taught at <strong>{link(cls.home, cls.homeTitle)}</strong>.</p>
             </Section>
+            <HubMap show={!!discoveries[cls.home]} world={world} home={cls.home} title={cls.homeTitle} />
             <Section title="Distinctions" show={cls.distinctions.length > 0}>
               <ul className="fgd__list">
                 {cls.distinctions.map((d) => (
@@ -210,6 +217,26 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }
         </p>
       </div>
     </>
+  );
+}
+
+/**
+ * Where a class is taught, on the painted map. Drawn only once the party has
+ * found the place (the same find that turns "???" into a link), and only when
+ * canon has put the place on the map at all: a side room with no anchor shows
+ * nothing, as it does on the world map.
+ */
+function HubMap({ show, world, home, title }: { show: boolean; world: WorldMap | null; home: string; title: string }) {
+  if (!show || !world) return null;
+  const place = world.places[home.slice(home.indexOf(".") + 1)];
+  if (!place || place.id !== home) return null;
+  return (
+    <Section title="On the map" show>
+      <div className="fgd__map" role="img" aria-label={`${title} on the map of the realm`}
+        style={{ backgroundImage: `url("${world.image.src}")`, aspectRatio: `${world.image.width} / ${world.image.height}` }}>
+        <span className="fgd__map-pin" aria-hidden="true" style={{ left: `${place.anchor.x / 10}%`, top: `${place.anchor.y / 10}%` }} />
+      </div>
+    </Section>
   );
 }
 

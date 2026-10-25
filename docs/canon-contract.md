@@ -107,7 +107,7 @@ came with the class places.
 
 The four class places (the Dojo, the Academy, the Rookery, the Conservatory) are
 `location`s of `location_type: class_place`: side rooms of larger places
-(docs/class-mastery.md §2), so they carry no `map_anchor`. The Field Guide finds
+(docs/class-mastery.md §2). Each carries a `map_anchor`: its host's own anchor, a label's height up (Exchange, Glacier of Origins, Sky Islands, Whispering Marsh). The Field Guide finds
 a class when a hero wears it or the party enters its place (`discoveries.ts`), and
 its entry shows the place as "???" until the party has been there.
 

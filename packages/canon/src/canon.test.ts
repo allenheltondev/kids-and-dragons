@@ -595,10 +595,25 @@ describe("classes and their class places — docs/class-mastery.md §2", () => {
     }
   });
 
-  it("keeps the class places unplaced: no anchor is invented, and no lore beyond the doc", () => {
+  it("puts one class place in each of four hosts, with a pin a label's height above the host's own", () => {
+    const HOSTS: Record<string, { host: string; parent: string }> = {
+      "location.rookery": { host: "location.exchange", parent: "biome.sunward_fields" },
+      "location.conservatory": { host: "biome.glacier_of_origins", parent: "biome.glacier_of_origins" },
+      "location.dojo": { host: "biome.sky_islands", parent: "biome.sky_islands" },
+      "location.academy": { host: "biome.whispering_marsh", parent: "biome.whispering_marsh" },
+    };
+    for (const [id, { host, parent }] of Object.entries(HOSTS)) {
+      const place = registry.byId.get(id) as LocationEntity;
+      const hostAnchor = (registry.byId.get(host) as { map_anchor?: { x: number; y: number } }).map_anchor!;
+      expect(place.parent_biome, id).toBe(parent);
+      expect(place.map_anchor, id).toBeDefined();
+      expect(place.map_anchor!.x, id).toBe(hostAnchor.x);
+      expect(hostAnchor.y - place.map_anchor!.y, id).toBeGreaterThan(0);
+      expect(hostAnchor.y - place.map_anchor!.y, id).toBeLessThanOrEqual(25);
+      expect(place.access_from, id).toEqual([host]);
+    }
     for (const home of Object.values(HOMES)) {
       const place = registry.byId.get(home) as LocationEntity;
-      expect(place.map_anchor, home).toBeUndefined();
       expect(place.canon_status).toBe("newly_defined");
       // No lore block means no hidden_truths to protect, and nothing to leak.
       expect(place.lore, home).toBeUndefined();

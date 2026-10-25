@@ -1,4 +1,6 @@
 // @vitest-environment jsdom
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -14,6 +16,7 @@ import { openGuide, setPlayerSection, usePlayerNavigation } from "../store/playe
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { FIELD_GUIDE_SEEN_KEY, resetFieldGuideSeen } from "../store/field-guide-seen";
 import { useGameStore } from "../store";
+import type { WorldMap } from "@kad/shared";
 
 const guide = real as unknown as FieldGuideData;
 const find = (by = "p_1") => ({ firstFoundBy: by, foundAt: "2026-01-01T00:00:00Z" });
@@ -33,7 +36,7 @@ afterEach(() => {
   cleanup();
   setFieldGuideDiscoveries(null);
   resetFieldGuideSeen();
-  useGameStore.setState({ state: null });
+  useGameStore.setState({ state: null, world: null } as never);
   setSpeaker(null);
 });
 
@@ -193,6 +196,69 @@ describe("classes", () => {
     expect(screen.queryByText("???")).toBeNull();
     await user.click(screen.getByRole("button", { name: place.title }));
     expect(usePlayerNavigation.getState().guideEntry).toBe(place.id);
+  });
+
+  describe("the place on the map", () => {
+    const WORLD: WorldMap = {
+      title: "Realm", image: { src: "/assets/world/realm.webp", width: 1000, height: 800 },
+      places: {
+        rookery: { id: "location.rookery", title: "The Rookery", kind: "location", anchor: { x: 350, y: 843 }, parent: null },
+      },
+    } as never;
+    const mapOf = (container: HTMLElement) => container.querySelector(".fgd__map");
+
+    it("shows no map before the party has been to the place, though canon placed it", () => {
+      const e = guide.entries["class.duskrunner"]!;
+      useGameStore.setState({ world: WORLD } as never);
+      setFieldGuideDiscoveries({ [e.id]: find() });
+      const { container } = render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+      expect(mapOf(container)).toBeNull();
+      expect(screen.queryByRole("heading", { name: "On the map" })).toBeNull();
+      expect(container.innerHTML).not.toContain("realm.webp");
+    });
+
+    it("shows the pin once the place is found for the first time", () => {
+      const e = guide.entries["class.duskrunner"]!;
+      useGameStore.setState({ world: WORLD } as never);
+      setFieldGuideDiscoveries({ [e.id]: find(), "location.rookery": find() });
+      const { container } = render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+      expect(screen.getByRole("heading", { name: "On the map" })).toBeTruthy();
+      expect(screen.getByRole("img", { name: "The Rookery on the map of the realm" })).toBeTruthy();
+      const pin = container.querySelector<HTMLElement>(".fgd__map-pin")!;
+      expect(pin.style.left).toBe("35%");
+      expect(pin.style.top).toBe("84.3%");
+    });
+
+    it("shows no map for a place the map does not carry, even once found", () => {
+      const e = guide.entries["class.thornguard"]!; // WORLD above has only the Rookery
+      useGameStore.setState({ world: WORLD } as never);
+      setFieldGuideDiscoveries({ [e.id]: find(), [e.class!.home]: find() });
+      const { container } = render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+      expect(mapOf(container)).toBeNull();
+    });
+
+    it.each(["thornguard", "starweaver", "duskrunner", "songkeeper"] as const)("pins the %s's place on the real map once found, and not before", (cls) => {
+      const e = guide.entries[`class.${cls}`]!;
+      const slug = e.class!.home.split(".")[1]!;
+      const real = JSON.parse(readFileSync(resolve(__dirname, "../../../../content/world.json"), "utf8")) as WorldMap;
+      expect(real.places[slug]?.id).toBe(e.class!.home);
+      useGameStore.setState({ world: real } as never);
+      setFieldGuideDiscoveries({ [e.id]: find() });
+      const before = render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+      expect(mapOf(before.container)).toBeNull();
+      before.unmount();
+      setFieldGuideDiscoveries({ [e.id]: find(), [e.class!.home]: find() });
+      const after = render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+      expect(mapOf(after.container)).not.toBeNull();
+    });
+
+    it("shows no map while the map has not loaded", () => {
+      const e = guide.entries["class.duskrunner"]!;
+      useGameStore.setState({ world: null } as never);
+      setFieldGuideDiscoveries({ [e.id]: find(), "location.rookery": find() });
+      const { container } = render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+      expect(mapOf(container)).toBeNull();
+    });
   });
 
   it("reads aloud the place only once it is found", () => {

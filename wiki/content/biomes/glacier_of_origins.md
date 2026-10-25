@@ -60,15 +60,12 @@ related:
   - id: feature.great_river
     type: feature
     relationship: reaches
-  - id: location.dojo
-    type: location
-    relationship: biome
-  - id: location.academy
+  - id: location.conservatory
     type: location
     relationship: biome
   - id: location.conservatory
     type: location
-    relationship: biome
+    relationship: access_from
   - id: npc.yeti
     type: npc
     relationship: primary_locations
@@ -84,7 +81,7 @@ ai_context:
   visual_style: "Blue-white ice fields, sharp glacial ridges, dark crevasses, meltwater channels, wind-carved snow, frozen shapes, and the young river cutting south."
   common_encounters: "River-source mysteries, rescues, preserved history, dangerous crossings, changing melt, ancient discoveries, and signs connecting the frozen north to events downstream."
   lore_highlights: "The name is the accepted account: the Great River begins here, and by yeti reckoning so does everything else worth remembering."
-  related_entities: "feature.great_river, biome.frostfang_peaks, biome.expanse, biome.frostfang_peaks, feature.great_river_source, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, campaign.riftlight, character.griffin, creature.snowhorn_goat, creature.frost_wyrm, feature.great_river_source, feature.great_river, location.dojo, location.academy, location.conservatory, npc.yeti"
+  related_entities: "feature.great_river, biome.frostfang_peaks, biome.expanse, biome.frostfang_peaks, feature.great_river_source, npc.yeti, creature.snowhorn_goat, creature.frost_wyrm, campaign.riftlight, character.griffin, creature.snowhorn_goat, creature.frost_wyrm, feature.great_river_source, feature.great_river, location.conservatory, location.conservatory, npc.yeti"
   writing_guidance: "The glacier may preserve memories, but it should not casually provide complete historical answers. Survival conditions matter."
   generation_hints: "Ice shifts, melt channels move, storms erase paths, and changes at the source eventually affect every downstream region."
 layout: biomes
@@ -161,9 +158,7 @@ The realm's source and its attic. Scholars, witches, and the occasionally desper
 - [The Great River](/features/great_river/) `Locations` `Reaches`
 
 ### Locations
-- [The Academy](/locations/academy/) `Biome`
-- [The Conservatory](/locations/conservatory/) `Biome`
-- [The Dojo](/locations/dojo/) `Biome`
+- [The Conservatory](/locations/conservatory/) `Biome` `Access From`
 
 ### Npcs
 - [Yeti](/npcs/yeti/) `Supporting Peoples` `Primary Locations`
