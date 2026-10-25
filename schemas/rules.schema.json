@@ -369,9 +369,98 @@
         "keeper": { "description": "The tailor's name, for the phone. The narration introduces her first.", "type": "string", "minLength": 1 },
         "narration": { "description": "What the shared screen says while the stall is open.", "type": "string", "minLength": 1 }
       }
+    },
+    "matchups": {
+      "description": "Who is good and bad against what (docs/matchups.md). Mirrors packages/shared/src/types/matchups.ts MatchupRules. Optional: rules without it play with no matchups. content:validate checks the ids edges name.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["traits", "checkTags", "edges", "opinion", "exemptCampaigns"],
+      "properties": {
+        "$comment": { "type": "string" },
+        "traits": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[a-z][a-z0-9_-]*$" },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "icon", "text", "hint"],
+            "properties": {
+              "$comment": { "type": "string" },
+              "name": { "type": "string", "minLength": 1 },
+              "icon": { "type": "string", "minLength": 1 },
+              "text": { "type": "string", "minLength": 1 },
+              "hint": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "checkTags": {
+          "type": "object",
+          "propertyNames": { "pattern": "^[a-z][a-z0-9_-]*$" },
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["name", "text"],
+            "properties": {
+              "$comment": { "type": "string" },
+              "name": { "type": "string", "minLength": 1 },
+              "text": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "edges": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "hero", "on", "text"],
+            "properties": {
+              "$comment": { "type": "string" },
+              "id": { "type": "string", "minLength": 1 },
+              "hero": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "species": { "$ref": "#/$defs/matchupIdOrIds" },
+                  "class": { "$ref": "#/$defs/matchupIdOrIds" }
+                }
+              },
+              "on": { "enum": ["attack", "defend", "check"] },
+              "foe": { "$ref": "#/$defs/matchupIdOrIds" },
+              "ability": { "$ref": "#/$defs/matchupIdOrIds" },
+              "tag": { "$ref": "#/$defs/matchupIdOrIds" },
+              "roll": { "type": "integer", "minimum": -2, "maximum": 2 },
+              "damage": { "type": "integer", "minimum": -2, "maximum": 2 },
+              "text": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "opinion": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["likedFoeRoll", "dislikedFoeRoll", "likedCheckRoll", "dislikedCheckRoll"],
+          "properties": {
+            "likedFoeRoll": { "type": "integer", "minimum": -2, "maximum": 2 },
+            "dislikedFoeRoll": { "type": "integer", "minimum": -2, "maximum": 2 },
+            "likedCheckRoll": { "type": "integer", "minimum": -2, "maximum": 2 },
+            "dislikedCheckRoll": { "type": "integer", "minimum": -2, "maximum": 2 }
+          }
+        },
+        "exemptCampaigns": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        }
+      }
     }
   },
   "$defs": {
+    "matchupIdOrIds": {
+      "description": "One id, or a non-empty list of ids.",
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        { "type": "array", "minItems": 1, "items": { "type": "string", "minLength": 1 } }
+      ]
+    },
     "statId": {
       "description": "The four stats and nothing else. spec \u00a74.1.",
       "enum": [
