@@ -205,6 +205,8 @@ function promptKey(state: RunState): string {
   const prompt = state.prompt;
   if (!prompt) return "";
   switch (prompt.kind) {
+    case "interaction":
+      return `interaction ${prompt.openedSeq}`;
     case "choice":
       return `choice ${prompt.sceneId}`;
     case "roll":

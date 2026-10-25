@@ -35,6 +35,7 @@ import "./NarrationPanel.css";
 
 /** The rank-up moment (#314), fetched the first time a rank lands, never at first paint. */
 const RankUpMoment = lazyChunk(() => import("./RankUpMoment"), (module) => module.RankUpMoment);
+const StoryInteractionWorld = lazyChunk(() => import("./StoryInteraction"), (module) => module.StoryInteractionWorld);
 
 /** "bramblewood-01" → "Bramblewood 01". The fallback for a run persisted
  *  before `chapterInfo` carried the real title. */
@@ -503,6 +504,7 @@ export function NarrationPanel(): ReactElement | null {
           <p className="narration__body" key={narration}>
             {narration}
           </p>
+          {prompt?.kind === "interaction" ? <Suspense fallback={null}><StoryInteractionWorld /></Suspense> : null}
           {hint === null ? null : (
             <p className="narration__hint" key={`hint:${hint}`} data-testid="scene-hint">
               <Icon name="star" />

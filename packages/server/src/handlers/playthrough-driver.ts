@@ -31,6 +31,7 @@ import {
   legalActions,
   legalMoves,
   keepClassIntent,
+  interactionActor,
   makeRng,
   positionOf,
   sceneChoices,
@@ -107,6 +108,10 @@ function armsOf(scene: Scene): { arms: Arm[]; decided: boolean } {
     case "choice_point":
     case "rest":
       return { arms: scene.choices.map((c) => ({ to: c.goto, gain: facetGain(c.effects) })), decided: true };
+    case "interaction":
+      return { arms: [scene.onSuccess, scene.onFailure, scene.onAssisted]
+        .filter((branch): branch is NonNullable<typeof branch> => branch !== undefined)
+        .map((branch) => ({ to: branch.goto, gain: facetGain(branch.effects) })), decided: false };
     case "check":
       return {
         arms: [scene.onSuccess, scene.onFailure].map((b) => ({ to: b.goto, gain: facetGain(b.effects) })),
@@ -450,6 +455,12 @@ export async function playCampaign(
       if (s.phase === "chapter_complete") break;
 
       const prompt = s.prompt;
+      if (prompt?.kind === "interaction") {
+        const actor = interactionActor(prompt, s.party.filter((member) => member.connected).map((member) => member.playerId)) ?? playerIds[0]!;
+        await must(actor, { type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt,
+          ...(prompt.phase === "result" ? { action: "continue" as const } : { action: "assist" as const }) });
+        continue;
+      }
       if (prompt?.kind === "item_swap") {
         await must(ownerOf(s, prompt.characterId), { type: "RESOLVE_ITEM_SWAP", dropItemId: null });
         continue;

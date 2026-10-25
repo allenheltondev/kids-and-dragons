@@ -755,6 +755,8 @@ function gotoTargets(scene: Scene): SceneId[] {
     case "choice_point":
     case "rest":
       return scene.choices.map((c) => c.goto);
+    case "interaction":
+      return [scene.onSuccess.goto, scene.onFailure.goto, ...(scene.onAssisted ? [scene.onAssisted.goto] : [])];
     case "check":
       return [scene.onSuccess.goto, scene.onFailure.goto];
     case "encounter":
@@ -775,7 +777,7 @@ function gotoTargets(scene: Scene): SceneId[] {
   }
 }
 
-const SCENE_TYPES: readonly string[] = ["story", "choice_point", "rest", "check", "encounter"];
+const SCENE_TYPES: readonly string[] = ["story", "choice_point", "rest", "check", "encounter", "interaction"];
 
 /**
  * Fills every enemy in a chapter from the bestiary, in place.

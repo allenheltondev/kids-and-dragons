@@ -7,6 +7,7 @@
 
 import type { CampaignGraph, FactId, FactTest } from "./campaign-graph.js";
 import type { SlowEffect } from "./buffs.js";
+import type { InteractionSpec } from "../interactions.js";
 import type { ClassId, ItemDef, SpeciesId, StatId } from "./domain.js";
 
 export type SceneId = string;
@@ -898,7 +899,17 @@ export interface EncounterScene {
   autoResolve?: "victory";
 }
 
+/** Reusable controls; story, art, cast, and consequences belong to the scene. */
+export interface InteractionScene extends Omit<StoryScene, "type" | "choices" | "classPlace" | "outcome" | "endsCampaign"> {
+  type: "interaction";
+  interaction: InteractionSpec;
+  onSuccess: Branch;
+  onFailure: Branch;
+  onAssisted?: Branch;
+}
+
 export type Scene =
+  | InteractionScene
   | StoryScene
   | CheckScene
   | ChoicePointScene
