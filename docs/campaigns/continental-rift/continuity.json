@@ -2582,6 +2582,10 @@
           ],
           "introduces": {}
         },
+        "holes": {
+          "requires": [],
+          "introduces": {}
+        },
         "kid": {
           "requires": [],
           "introduces": {}
@@ -2782,6 +2786,10 @@
           "requires": [],
           "introduces": {}
         },
+        "squeeze_hold": {
+          "requires": [],
+          "introduces": {}
+        },
         "seam_back": {
           "requires": [
             "seam",
@@ -2804,6 +2812,12 @@
           "introduces": {}
         },
         "seam_off": {
+          "requires": [
+            "seam"
+          ],
+          "introduces": {}
+        },
+        "seam_echo": {
           "requires": [
             "seam"
           ],
@@ -6197,6 +6211,13 @@
           "requires": [],
           "introduces": {}
         },
+        "shell_path": {
+          "requires": [
+            "skupper",
+            "shell_bank"
+          ],
+          "introduces": {}
+        },
         "town": {
           "requires": [
             "skupper"
@@ -6236,6 +6257,12 @@
           "introduces": {}
         },
         "town_off": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "hatch_party": {
           "requires": [
             "tidepocket"
           ],
@@ -6365,6 +6392,13 @@
         },
         "ossley_off": {
           "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "lamp_line": {
+          "requires": [
+            "tidepocket",
             "ossley"
           ],
           "introduces": {}
@@ -6580,6 +6614,10 @@
           "introduces": {}
         },
         "tide_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tide_dash": {
           "requires": [],
           "introduces": {}
         },

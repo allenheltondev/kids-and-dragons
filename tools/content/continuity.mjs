@@ -308,6 +308,9 @@ export function sceneExits(scene) {
   switch (scene.type) {
     case "check":
       return [branch(scene.onSuccess), branch(scene.onFailure)];
+    case "interaction":
+      // Success, a gentle failure and the optional assisted result all continue the story.
+      return [scene.onSuccess, scene.onFailure, scene.onAssisted].filter(Boolean).map(branch);
     case "encounter":
       // An environmental fight's other endings (#201) are branches like these.
       return [scene.onVictory, scene.onDefeat, scene.onEscape, scene.onTimeout].filter(Boolean).map(branch);
@@ -700,7 +703,7 @@ function chapterTexts(chapter) {
   const out = [];
   for (const [id, scene] of Object.entries(chapter.scenes ?? {})) {
     const texts = [scene.narration, scene.prompt, ...(scene.choices ?? []).map((c) => c.label)];
-    for (const k of ["onSuccess", "onFailure", "onVictory", "onDefeat", "onEscape", "onTimeout"]) texts.push(scene[k]?.narration);
+    for (const k of ["onSuccess", "onFailure", "onAssisted", "onVictory", "onDefeat", "onEscape", "onTimeout"]) texts.push(scene[k]?.narration);
     out.push({ scene: id, texts: texts.filter(Boolean), cast: [...(scene.cast ?? []), ...(scene.enemies ?? [])].map((c) => c.name) });
   }
   return out;
