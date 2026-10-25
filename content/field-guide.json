@@ -57,6 +57,10 @@
           "kind": "escape",
           "text": "It hides from anything large, so standing tall and leaving loudly usually works."
         }
+      ],
+      "traits": [
+        "armored",
+        "swarming"
       ]
     },
     "creature.cinder_wolf": {
@@ -127,6 +131,10 @@
           "kind": "escape",
           "text": "They are faster than you and they hunt together, so leaving is harder than it looks."
         }
+      ],
+      "traits": [
+        "fiery",
+        "swarming"
       ]
     },
     "creature.cloud_whale": {
@@ -238,6 +246,9 @@
           "kind": "escape",
           "text": "Leaving in silence, which is harder than leaving."
         }
+      ],
+      "traits": [
+        "hulking"
       ]
     },
     "creature.embermoth": {
@@ -364,6 +375,10 @@
           "kind": "observation",
           "text": "Telling a nesting tunnel from an ordinary one, before you are standing in it."
         }
+      ],
+      "traits": [
+        "frozen",
+        "hulking"
       ]
     },
     "creature.glassback_crab": {
@@ -422,6 +437,9 @@
           "kind": "escape",
           "text": "It stops pursuing once you are off its patch of warm ground."
         }
+      ],
+      "traits": [
+        "armored"
       ]
     },
     "creature.jackalope": {
@@ -603,6 +621,10 @@
           "kind": "conversation",
           "text": "It is guarding a purpose. Working out which one is most of the conversation."
         }
+      ],
+      "traits": [
+        "hulking",
+        "fiery"
       ]
     },
     "creature.loftmire": {
@@ -767,6 +789,9 @@
           "kind": "distraction",
           "text": "Strong vibration moves it off a hunting site, and stamping works as well as anything."
         }
+      ],
+      "traits": [
+        "slippery"
       ]
     },
     "creature.mosshorn": {
@@ -930,6 +955,10 @@
           "kind": "conversation",
           "text": "There is enough of a person left to answer, if you are gentle about asking."
         }
+      ],
+      "traits": [
+        "ghostly",
+        "hulking"
       ]
     },
     "creature.river_drake": {
@@ -1000,6 +1029,10 @@
           "kind": "conversation",
           "text": "It learns routines, so it can be talked into a different one."
         }
+      ],
+      "traits": [
+        "slippery",
+        "hulking"
       ]
     },
     "creature.silver_otter": {
@@ -1238,6 +1271,10 @@
           "kind": "observation",
           "text": "Noticing that the route it is offering is not a route."
         }
+      ],
+      "traits": [
+        "ghostly",
+        "flier"
       ]
     },
     "character.bigfoot": {

@@ -41,6 +41,7 @@ import {
   decisionContext,
   isPracticeCampaign,
   lobbyCampaign,
+  matchupsOn,
   resolveCharacter,
   withRunDeeds,
   resumeJourney,
@@ -53,7 +54,7 @@ import {
   worldFacts,
 } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
-import type { ApplyIntentResult } from "../engine/port.ts";
+import type { ApplyIntentResult, EngineContext } from "../engine/port.ts";
 import type { CampaignProgressRecord, CharacterWrite, EventRecord, RunRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { keepGuestHousehold } from "./account.ts";
@@ -86,6 +87,19 @@ import {
 const MAX_LOGGED_INTENT_CHARS = 4096;
 
 /** The part of an identity that authorises an action. */
+/**
+ * The matchup half of the engine context: `rules.matchups` and the bestiary
+ * when `matchupsOn` holds for this campaign, nothing otherwise.
+ */
+function matchupsContext(
+  rules: ReturnType<HandlerDeps["content"]["rules"]>,
+  campaignId: string | null,
+  deps: HandlerDeps,
+): Pick<EngineContext, "matchups" | "bestiary"> {
+  if (!rules.matchups || !matchupsOn(rules, campaignId)) return {};
+  return { matchups: rules.matchups, bestiary: deps.content.bestiary() };
+}
+
 export type ActingPrincipal = Pick<DeviceIdentity, "householdId" | "playerId">;
 
 export interface ActionInput extends ActionRequest {
@@ -380,6 +394,11 @@ export async function applyAction(
         ...(campaignBuffs === undefined ? {} : { campaignBuffs }),
         // World facts (#220): a graph campaign with declared facts only.
         ...(campaignFacts === undefined ? {} : { campaignFacts }),
+        // Matchups (docs/matchups.md): on unless the run's campaign is exempt
+        // (Gemfall is pinned and plays without them, byte for byte). The
+        // chapter's own campaign first, so a one-off Gemfall chapter is exempt
+        // too. The bestiary rides along for a check scene's creatures.
+        ...matchupsContext(deps.content.rules(), chapter?.campaignId ?? state.campaignId, deps),
         // Seeded per event, never per wall clock — see the header. The run's
         // secret keeps the next roll unguessable from the public run id.
         rng: deps.rng(diceSeed(auth.run, input.runId, nextSeq)),

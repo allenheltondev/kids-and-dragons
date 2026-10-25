@@ -821,6 +821,7 @@
     },
     "lift_check": {
       "type": "check",
+      "tags": ["force"],
       "cast": [
         {
           "figure": "cast/saltrot_guide",

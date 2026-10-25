@@ -36,6 +36,7 @@ import {
   swStaleVersions,
   swStrategyFor,
   swVersionedKey,
+  SW_PRECACHE_CONTENT,
 } from "./policy";
 import { offlineArtFor } from "./warm";
 
@@ -220,6 +221,13 @@ describe("fingerprinted files", () => {
       "/assets/world/realm.webp": fingerprint(new TextEncoder().encode("painting")),
       "/content/rules.json": fingerprint(new TextEncoder().encode("{}")),
     });
+  });
+});
+
+describe("the precached content", () => {
+  it("includes the bestiary beside the rules", () => {
+    expect(SW_PRECACHE_CONTENT).toContain("/content/bestiary.json");
+    expect(SW_PRECACHE_CONTENT).toContain("/content/rules.json");
   });
 });
 

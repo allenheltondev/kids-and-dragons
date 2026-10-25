@@ -33,6 +33,7 @@ async function harness() {
     loadCampaign: vi.fn(async () => ({ id: "c", title: "C", blurb: "", chapters: ["bramblewood-01"] })),
     loadChapter: vi.fn(async () => ({ id: "bramblewood-01", biome: "enchanted_woods", scenes: {} })),
     loadAbilities: vi.fn(async () => ({ version: 1, abilities: {} })),
+    loadBestiary: vi.fn(async () => ({ version: 1, creatures: {} })),
     loadWorld: vi.fn(async () => ({ title: "W", image: { src: "", width: 1, height: 1 }, places: {} })),
   };
   const deps = {

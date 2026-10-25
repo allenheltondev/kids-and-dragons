@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import type { ReactNode } from "react";
 import type { FieldGuide as FieldGuideData, FieldGuideEntry, WorldMap } from "@kad/shared";
-import { FORGOTTEN_FINDER, FORGOTTEN_NAME } from "@kad/shared";
+import type { RulesContent } from "@kad/shared";
+import { FORGOTTEN_FINDER, FORGOTTEN_NAME, matchupSentences } from "@kad/shared";
 import { hear } from "../speech/read-aloud";
 import { selectGuideEntry } from "../store/player-navigation";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
@@ -11,6 +12,7 @@ import { useGameStore, useParty, useWorld } from "../store";
 import { useJournalFinders } from "../store/journal-finders";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
+import { FieldGuideMatchups, useMatchupRules } from "./FieldGuideMatchups";
 import { motionProps } from "./guide-motion";
 
 /** Canon `scale` values in kid words (canon/creatures.yaml controlled_values). */
@@ -75,7 +77,7 @@ const prettify = (kind: string) => {
  * What "Read aloud" says for an entry. A class names its place only once the
  * party has found it, aloud as on screen.
  */
-export function spokenText(entry: FieldGuideEntry, discoveries: FieldGuideDiscoveries): string {
+export function spokenText(entry: FieldGuideEntry, discoveries: FieldGuideDiscoveries, matchupRules: RulesContent | null = null): string {
   const { lore, place, class: cls } = entry;
   const homeFound = cls !== undefined && !!discoveries[cls.home];
   return [
@@ -84,6 +86,7 @@ export function spokenText(entry: FieldGuideEntry, discoveries: FieldGuideDiscov
     cls && `${prettify(cls.role)}. Their gear is ${cls.gear}`,
     cls && homeFound ? `Taught at ${cls.homeTitle}` : undefined,
     ...(cls?.distinctions.map((d) => `${prettyRank(d.rank)}: ${d.move}`) ?? []),
+    ...matchupSentences(matchupRules, entry),
   ].filter((s): s is string => !!s).join(". ");
 }
 
@@ -93,6 +96,7 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }
 }) {
   const discoveries = useFieldGuideDiscoveries();
   const party = useParty();
+  const matchupRules = useMatchupRules();
   const world = useWorld();
   const loadWorld = useGameStore((store) => store.loadWorld);
   // A class that has been found at its place needs the map's key; fetched once, kept.
@@ -118,7 +122,7 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }
     <EntryLink guide={guide} discoveries={discoveries} id={id} title={title} onSelect={onSelect} />
   );
 
-  const spoken = spokenText(entry, discoveries);
+  const spoken = spokenText(entry, discoveries, matchupRules);
 
   return (
     <>
@@ -203,6 +207,8 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }
             </Section>
           </>
         )}
+
+        <FieldGuideMatchups entry={entry} />
 
         <Section title="Tips" show={!!entry.tips && entry.tips.length > 0}>
           <ul className="fgd__list">
