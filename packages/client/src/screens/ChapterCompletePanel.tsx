@@ -2,8 +2,9 @@
  * ChapterCompletePanel — WorldView when `phase === "chapter_complete"`.
  *
  * The end-of-sitting beat (spec §3, roadmap ch.3): XP for finishing the
- * chapter — not for killing things (spec §8.1) — what everyone is carrying,
- * and who grew.
+ * chapter, which the party shares, plus each hero's own XP for her rolls that
+ * went well (spec §8.2). Not XP for killing things (spec §8.1). Also what
+ * everyone is carrying, and who grew.
  *
  * Level and tier *changes* come from the **progression** channel rather than
  * from state: `RunState` carries the party's current level, not its previous
@@ -214,7 +215,7 @@ export function ChapterCompletePanel(): ReactElement {
         <p className="complete__xp">
           <Icon name="star" />
           <span>
-            {/* Per chapter, never per player (spec §8.1) — "for everyone" is
+            {/* Story XP is per chapter and shared (spec §8.2) — "for everyone" is
                 the line that keeps the youngest player from counting hers
                 against the adults'. Only a hero the chapter paid before is
                 left out of it (#408), and her card says why. */}

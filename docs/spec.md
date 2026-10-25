@@ -258,7 +258,7 @@ If the **whole party** is knocked down, the encounter is **lost, not fatal** —
 
 ### 8.1 Leveling
 
-XP is awarded per chapter, not per enemy defeated — so exploring and talking are worth as much as fighting. Levels 1–10.
+Story XP is awarded per chapter, not per enemy defeated — so exploring and talking are worth as much as fighting. Each hero also earns XP for her own rolls that go well (§8.2). Levels 1–10.
 
 **A chapter pays each hero once, ever** (#408). Replaying a campaign is for the story: a chapter a hero has already been paid for, in an earlier attempt or at another table, pays her nothing more, bonuses included, while a chapter she has never finished (another road through Gemfall) pays in full. Each hero is judged on her own record, so a new hero at the table is paid while a veteran is not. A payment made during a campaign that then fails goes back with the XP, so she can earn it again (`CharacterProgress.paidChapters`).
 

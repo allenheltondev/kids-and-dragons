@@ -298,7 +298,7 @@ export interface RunState {
   flags: Record<string, boolean>;
   /**
    * The party's shared purse. One purse, not one per character, for the same
-   * reason XP is never individual: what the party can afford is a table
+   * reason story XP is shared: what the party can afford is a table
    * decision. Unlike `flags` it outlives the chapter, through
    * `EngineContext.campaignCoins` and `CampaignProgressRecord.coins`.
    *

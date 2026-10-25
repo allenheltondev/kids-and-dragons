@@ -166,7 +166,7 @@ export async function awardChapterXpDetails(
       progression.syncRunInventory(target, member.character.inventory, member.character.questItems),
       input.state.deeds?.heroes[member.character.id],
     );
-    // The party's XP plus whatever this hero alone earned for her natural 20s.
+    // The party's story XP plus whatever this hero earned for her own rolls.
     const amount = partyAmount + (input.state.heroRollXp?.[member.character.id] ?? 0);
     const awarded = progression.payChapterXp(carried, input.rules, input.chapter.id, amount);
     if (awarded.alreadyPaid) alreadyPaid.push(awarded.character.id);

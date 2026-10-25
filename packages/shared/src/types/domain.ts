@@ -658,10 +658,10 @@ export interface RulesContent {
    */
   levelRewards?: LevelReward[];
   /**
-   * XP the whole party earns for dice that go well, added to the chapter's
-   * `xpEarned` as the dice are rolled. Uniform and party-wide like every other
-   * XP (spec §8.2), and capped per chapter so rolling cannot outgrow the
-   * chapter's own award. Optional: rules without it pay nothing for rolls.
+   * XP each hero earns for her own dice that go well, paid into her own total
+   * (`RunState.heroRollXp`) rather than the party's `xpEarned` (spec §8.2). Each
+   * hero's total is capped per chapter, so rolling cannot outgrow the chapter's
+   * own award. Optional: rules without it pay nothing for rolls.
    */
   rollXp?: RollXp;
   /**
