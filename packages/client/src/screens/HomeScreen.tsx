@@ -22,7 +22,7 @@ import { randomName } from "./creationContent";
 import { Suspense, useCallback, useEffect, useId, useMemo, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ChangeEvent, ReactElement } from "react";
-import { LOCATION_NAME_MAX, type RoomMode } from "@kad/shared";
+import type { RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
 import { takeMoveLink } from "./move-link";
@@ -39,6 +39,7 @@ import { Spinner } from "../ui/Spinner";
 import { useBusy } from "../sw/busy";
 import { Icon } from "./icons";
 import { EntryScene } from "./EntryScene";
+import { TableNameField } from "./TableNameField";
 import "./shared.css";
 import "./HomeScreen.css";
 
@@ -122,9 +123,7 @@ function PersonalHome(): ReactElement {
   const [hosting, setHosting] = useState(false);
   // What the family calls its table, kept on the device so the TV remembers it.
   const [location, setLocation] = useState(() => loadLocationName());
-  const locationFieldId = useId();
-  // Naming the table is optional, so the field stays folded away until asked for.
-  const [namingTable, setNamingTable] = useState(false);
+
   const [mode, setMode] = useState<RoomMode>("party");
   const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
   const [busy, setBusy] = useState<null | "create" | "join">(null);
@@ -395,37 +394,7 @@ function PersonalHome(): ReactElement {
               ))}
             </div>
 
-            {mode === "party" ? (
-              namingTable ? (
-                <div className="home__field">
-                  <label className="home__label" htmlFor={locationFieldId}>
-                    <Icon name="name" />
-                    <span>Name your table (optional)</span>
-                  </label>
-                  <input
-                    id={locationFieldId}
-                    className="home__text-input kad-focusable"
-                    type="text"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Kitchen table"
-                    enterKeyHint="done"
-                    maxLength={LOCATION_NAME_MAX}
-                    autoFocus
-                  />
-                  <p className="home__hint kad-muted">
-                    Where your family plays, like the kitchen table or Grandma&rsquo;s house. Games you stop say where they were saved.
-                  </p>
-                </div>
-              ) : (
-                <p className="home__hint kad-muted">
-                  {location.trim() !== "" ? <>{location.trim()} &middot; </> : null}
-                  <button type="button" className="home__link kad-focusable" onClick={() => setNamingTable(true)}>
-                    {location.trim() !== "" ? "change" : "Name your table (optional)"}
-                  </button>
-                </p>
-              )
-            ) : null}
+            {mode === "party" ? <TableNameField value={location} onChange={setLocation} /> : null}
 
             {mode === "travel" ? (
               <div className="home__field">
