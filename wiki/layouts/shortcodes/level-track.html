@@ -1,10 +1,10 @@
-{{/* Levels 1–10 with the total XP each needs (rules.json levelXp: index n
+{{/* Levels 1 to the top of the curve (30) with the total XP each needs (rules.json levelXp: index n
      is the XP to reach level n+2) and the tier each one opens. */}}
 {{ $r := site.Data.game.rules }}
 {{ $tierAt := dict }}
 {{ range $t, $lvl := $r.tierLevels }}{{ $tierAt = merge $tierAt (dict (string $lvl) $t) }}{{ end }}
 <div class="wiki-level-track" role="list">
-  {{ range $i := seq 1 10 }}
+  {{ range $i := seq 1 (add (len $r.levelXp) 1) }}
   {{ $tier := index $tierAt (string $i) }}
   <div class="wiki-level-track__step{{ if $tier }} wiki-level-track__step--tier{{ end }}" role="listitem">
     <strong>{{ $i }}</strong>

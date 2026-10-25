@@ -39,7 +39,7 @@ describe("BuffList in a fight", () => {
     ]);
     expect(within(items[0]!).queryByText("Cost")).toBeNull();
     expect(within(items[0]!).getByText("Wears off")).toBeTruthy();
-    expect(container.querySelector("li")?.querySelector("svg")).toBeTruthy();
+    expect(container.querySelector("li > img")?.getAttribute("src")).toContain("/numbed.webp");
   });
 
   it("is only on the hero it stung, and a fight with no sting draws the rows it always did", () => {

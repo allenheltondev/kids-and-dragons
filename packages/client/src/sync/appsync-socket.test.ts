@@ -14,7 +14,7 @@
  */
 
 import { describe, expect, it, vi } from "vitest";
-import { appSyncEventSource, channelPath, type WebSocketLike } from "./appsync-socket";
+import { SILENCE_MS, appSyncEventSource, channelPath, watchdogMs, type WebSocketLike } from "./appsync-socket";
 import type { EventSourceLike } from "./channel";
 
 const OPTIONS = {
@@ -209,7 +209,30 @@ describe("failures", () => {
   });
 });
 
+describe("watchdogMs", () => {
+  it("arms at the server's timeout, capped at two minutes", () => {
+    expect(watchdogMs(300_000)).toBe(SILENCE_MS);
+    expect(watchdogMs(60_000)).toBe(60_000);
+    expect(watchdogMs(SILENCE_MS)).toBe(SILENCE_MS);
+  });
+});
+
 describe("the silence watchdog", () => {
+  it("caps a five-minute server timeout at two minutes", () => {
+    vi.useFakeTimers();
+    try {
+      const { fake, errors } = setup();
+      fake.socket.onopen?.({});
+      deliver(fake, { type: "connection_ack", connectionTimeoutMs: 300_000 });
+      vi.advanceTimersByTime(SILENCE_MS - 1);
+      expect(errors).toEqual([]);
+      vi.advanceTimersByTime(1);
+      expect(errors).toHaveLength(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
   it("fails the socket when nothing at all arrives within the ack's timeout", () => {
     vi.useFakeTimers();
     try {

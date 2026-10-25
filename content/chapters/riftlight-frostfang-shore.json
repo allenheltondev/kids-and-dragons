@@ -31,7 +31,7 @@
   "scenes": {
     "bank": {
       "type": "story",
-      "narration": "You are on the east bank under Frostfang, close enough to see the broken shelf above. A griffin on a low ridge has watched your party climb out. \"The river is not the usual path,\" she calls. \"Are all of you here?\"",
+      "narration": "You are on the east bank under Frostfang, close enough to see the broken shelf above. A griffin on a low ridge spots your party. \"The path to the pass starts up here,\" she calls. \"Are all of you here? I can lower a ladder.\"",
       "choices": [
         {
           "id": "continue",
@@ -42,7 +42,7 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
       ]
@@ -78,7 +78,7 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
       ]
@@ -102,7 +102,7 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
       ]
@@ -115,7 +115,7 @@
       "outcome": "success",
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/ridge_griffin",
           "name": "Ridge griffin"
         }
       ]

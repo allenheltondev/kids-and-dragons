@@ -125,6 +125,15 @@ export const STORED: readonly StoredThing[] = [
     entities: ["device", "moved-device"],
   },
   {
+    title: "A phone that buzzes on its kid's turn",
+    what:
+      "Only if a grown-up turned it on, in the installed app: the address the phone's own push service (Apple's, Google's or Mozilla's) gave for it, and the keys that lock each message so only that phone can read it. A message only ever says \"It's your turn in Kids & Dragons\": no name, no hero, nothing about the game.",
+    kept: "Until the switch goes off, the phone stops taking messages, or the kid is deleted.",
+    owner: "device",
+    rows: ["Push subscription"],
+    entities: ["push-subscription"],
+  },
+  {
     title: "The grown-ups",
     what:
       "The household's name, which signed-in grown-ups run it, the email each signed in with, and how long it keeps a kid who stops playing. The sign-in itself is handled by a separate sign-in service, which holds the email.",
@@ -168,6 +177,10 @@ export const ELSEWHERE: readonly { title: string; what: string }[] = [
   {
     title: "Crash reports",
     what: "When the game breaks on a phone or the TV, it tells us in one log line: what kind of failure it was, which version, which page, and whether it was a phone, a tablet or a TV. What the error itself said is never sent, so nothing a kid typed can be in it, and no names, emails, room codes or sign-in tokens either. The server checks every field again before it logs. Logged, not stored: no report is kept in the game's table.",
+  },
+  {
+    title: "Turn notices",
+    what: "If a grown-up turns them on in the installed app, each notice travels through the phone's own push service (Apple's, Google's or Mozilla's), locked so that only that phone can read it. It says only \"It's your turn in Kids & Dragons\", and the push service cannot read even that.",
   },
   {
     title: "No AI at the table",

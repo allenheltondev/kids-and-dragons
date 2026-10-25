@@ -47,8 +47,8 @@
 .sheet__portrait {
   display: grid;
   place-items: center;
-  width: 2.4em;
-  height: 2.9em;
+  width: 3.6em;
+  height: 4.4em;
   flex: 0 0 auto;
   border-radius: var(--radius-md, 0.75em);
   background: var(--color-surface-sunken, #120f26);
@@ -105,7 +105,7 @@
   block-size: 1.1em;
   background: linear-gradient(
     to bottom,
-    color-mix(in srgb, var(--kad-gold, #f5c86c) 75%, transparent),
+    rgb(var(--kad-gold-rgb) / 75%),
     transparent
   );
   pointer-events: none;
@@ -133,11 +133,6 @@
   box-shadow: 0 0 0 0.14em var(--sheet-ink);
 }
 
-/* The bar's well stays dark, so the green fill keeps its contrast on gold. */
-.sheet--turn .sheet__hp-track {
-  box-shadow: 0 0 0 0.08em var(--sheet-ink);
-}
-
 /* The waiting point's gold chip would vanish on gold: it turns to ink. */
 .sheet--turn .sheet__points {
   background: var(--sheet-ink);
@@ -162,8 +157,11 @@
 
 .sheet__meta {
   display: flex;
+  /* Wraps as whole items ("Level 2", the tier) when the portrait leaves too little room, as on the
+     smallest phone at the largest text, rather than running off the edge. */
+  flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2, 0.5em);
+  gap: 0 var(--space-2, 0.5em);
   min-inline-size: 0;
   font-size: var(--font-size-sm, 0.875em);
   white-space: nowrap;
@@ -198,11 +196,14 @@
   margin-block-start: var(--space-1, 0.25em);
   padding: 0.1em var(--space-2, 0.5em);
   border-radius: var(--radius-pill, 999em);
-  background: color-mix(in srgb, var(--color-accent, #ffc95c) 18%, transparent);
+  background: rgb(var(--color-accent-rgb) / 18%);
   color: var(--color-accent, #ffc95c);
   font-size: var(--font-size-sm, 0.875em);
   font-weight: 700;
   align-self: flex-start;
+  /* One line, always: the words are short on purpose. */
+  white-space: nowrap;
+  max-inline-size: 100%;
 }
 
 .sheet__hp {
@@ -210,7 +211,7 @@
   flex-direction: column;
   gap: var(--space-1, 0.25em);
   align-items: flex-end;
-  min-width: 6em;
+  min-width: 3em;
 }
 
 .sheet__hp-label {
@@ -218,22 +219,6 @@
   align-items: center;
   gap: var(--space-1, 0.25em);
   font-weight: 700;
-}
-
-/* HP reads as a number first and a bar second — never a bare colour. */
-.sheet__hp-track {
-  display: block;
-  width: 6em;
-  height: 0.6em;
-  border-radius: var(--radius-pill, 999em);
-  background: var(--color-surface-sunken, #120f26);
-  overflow: hidden;
-}
-
-.sheet__hp-fill {
-  display: block;
-  block-size: 100%;
-  background: var(--color-success, #4ad991);
 }
 
 /* --- Prompt ------------------------------------------------------------ */
@@ -747,6 +732,7 @@
 }
 
 /* The party purse sits at the far end of the bag's heading, before its chevron. */
+.inv__count,
 .inv__purse {
   font-size: var(--font-size-sm, 0.875em);
 }
@@ -811,7 +797,7 @@
 }
 
 .inv__slot-name {
-  font-size: 0.72em;
+  font-size: 0.85em;
   line-height: 1.15;
   /* break-word, not `anywhere`: `anywhere` also collapses the element's
      min-content width to a single character, so a flex column holding a
@@ -823,7 +809,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.2em;
-  font-size: 0.62em;
+  font-size: 0.8em;
 }
 
 .inv__quest {
@@ -1146,7 +1132,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3, 0.75em);
-  min-block-size: 2.75em;
+  min-block-size: max(44px, 2.75em);
   padding: var(--space-1, 0.25em) var(--space-3, 0.75em);
   border: 0;
   border-top: 0.08em solid var(--color-border, #3a3468);
@@ -1174,6 +1160,11 @@
  */
 .player:not(.player--deciding) .player__prompt {
   padding-block: var(--space-2, 0.5em);
+  /* A floor, so the strip and the dock above and below cannot squeeze the
+     list (the stat points, a rest scene's choices) to a sliver on a short
+     phone. Past the floor the pane itself scrolls, rather than hiding the
+     "Grow!" button. */
+  min-block-size: 14em;
 }
 
 .player:not(.player--deciding) .prompt {
@@ -1228,7 +1219,6 @@
 }
 
 .player__inventory-story { margin: 0 0 0.5em; flex: 0 0 auto; line-height: 1.4; color: var(--kad-ink); }
-.player .player__inventory-back { flex: 0 0 auto; margin: 0.5em 0.75em 0.75em; inline-size: calc(100% - 1.5em); }
 .player__room-settings { margin-block-start: auto; border-block-start: 1px solid var(--kad-border); padding-block-start: 0.25em; }
 .player__room-settings > .kad-fold__head { color: var(--kad-ink-dim); font-size: 0.85em; font-weight: 400; }
 .player__room-settings > .kad-fold__body:not([hidden]) { display: flex; flex-direction: column; gap: 0.5em; padding-block-end: 0.5em; }
@@ -1423,7 +1413,6 @@ html[data-hand="left"] .confirm__actions > .kad-button--primary { order: -1; }
 html[data-text] .sheet { flex-wrap: wrap; row-gap: var(--space-1, 0.25em); }
 html[data-text] .sheet__id { flex: 1 1 8em; }
 html[data-text] .sheet__hp { flex: 1 1 100%; flex-direction: row; align-items: center; justify-content: space-between; min-width: 0; }
-html[data-text] .sheet__hp-track { flex: 1 1 4em; width: auto; }
 /* One-handed, the corner row is down under the tray, so the strip has no corner to clear. */
 html[data-hand] body:has(.kad-party--player, .kad-travel) .sheet,
 html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { padding-inline-end: var(--space-3, 0.75em); }
@@ -1454,4 +1443,11 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 
 .player__hint > span {
   flex: 1 1 auto;
+}
+
+/* The dev-only playtest toggle (PlaytestPanel) floats over the foot of the phone's panel. The sticky
+   confirm bar sits at that same foot, so while the toggle is there the bar keeps clear of it: its
+   own height again, below the buttons. Absent in production, where the toggle is not built. */
+.kad-surface--player:has(.playtest--shut) .confirm {
+  padding-block-end: calc(var(--space-3, 0.75em) + 3.5em);
 }

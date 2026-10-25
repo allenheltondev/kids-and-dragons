@@ -18,9 +18,9 @@ import { test, expect, type Browser, type BrowserContext, type Page } from "@pla
 import { createCharacter } from "./characters";
 import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
+import { API } from "./api";
 
 const TAP = { timeout: 20_000 } as const;
-const API = "http://localhost:8787";
 const SHOTS = process.env.KAD_GOAL_SHOTS;
 
 /** Bramblewood's goal, as authored in content/chapters/bramblewood-01.json. */

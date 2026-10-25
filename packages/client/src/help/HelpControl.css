@@ -72,3 +72,14 @@ html[data-hand="left"] .kad-help__actions { flex-direction: row-reverse; }
 @media (prefers-reduced-motion: reduce) {
   .kad-help__button { transition: none; }
 }
+
+/* For the grown-up: a quiet text button that opens the Diagnostics list (#459). */
+.kad-help__diagnostics-toggle {
+  font: inherit;
+  padding: 0.2em 0;
+  border: 0;
+  background: transparent;
+  color: var(--kad-ink-dim);
+  text-decoration: underline;
+  cursor: pointer;
+}

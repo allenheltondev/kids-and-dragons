@@ -29,15 +29,17 @@ import { takeMoveLink } from "./move-link";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
 import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch, useRoute } from "../router";
-import { loadPlayerDeviceToken, loadSharedDevice } from "../store/persistence";
+import { loadLocationName, loadPlayerDeviceToken, loadSharedDevice } from "../store/persistence";
 import { browserEnv, browserName, needsFirstLaunchChoice } from "../install/detect";
 import { firstLaunch as firstLaunchRecord } from "../install/remember";
 import { InstallCard } from "../install/InstallCard";
 import { FirstLaunchChoice } from "../install/FirstLaunch";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
+import { useBusy } from "../sw/busy";
 import { Icon } from "./icons";
 import { EntryScene } from "./EntryScene";
+import { TableNameField } from "./TableNameField";
 import "./shared.css";
 import "./HomeScreen.css";
 
@@ -119,9 +121,14 @@ function PersonalHome(): ReactElement {
 
   const [displayName, setDisplayName] = useState(() => randomName());
   const [hosting, setHosting] = useState(false);
+  // What the family calls its table, kept on the device so the TV remembers it.
+  const [location, setLocation] = useState(() => loadLocationName());
+
   const [mode, setMode] = useState<RoomMode>("party");
   const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
   const [busy, setBusy] = useState<null | "create" | "join">(null);
+  // A code half typed or the host form open is unsaved work: no update reload meanwhile.
+  useBusy("home-form", hosting || code.length > 0);
   const [error, setError] = useState<string | null>(null);
 
   const nameFieldId = useId();
@@ -206,14 +213,14 @@ function PersonalHome(): ReactElement {
     setError(null);
     setBusy("create");
     try {
-      if (mode === "party") await openOnThisScreen();
+      if (mode === "party") await openOnThisScreen(location);
       else await createRoom(mode, trimmedName);
     } catch (err) {
       setError(err instanceof Error ? err.message : "We could not start the game.");
     } finally {
       setBusy(null);
     }
-  }, [createRoom, openOnThisScreen, mode, trimmedName]);
+  }, [createRoom, openOnThisScreen, mode, trimmedName, location]);
 
   const join = useCallback(async () => {
     setError(null);
@@ -256,7 +263,7 @@ function PersonalHome(): ReactElement {
               <Icon name="qr" />
               <span>Join a game</span>
             </h2>
-            <p className="home__hint home__join-hint">Type the four letters on the big screen.</p>
+            <p className="home__hint home__join-hint">Ask your grown-up for the room code, then type it here.</p>
 
             {/*
               One real input behind four big boxes: on-screen keyboards, paste and
@@ -386,6 +393,8 @@ function PersonalHome(): ReactElement {
                 </label>
               ))}
             </div>
+
+            {mode === "party" ? <TableNameField value={location} onChange={setLocation} /> : null}
 
             {mode === "travel" ? (
               <div className="home__field">

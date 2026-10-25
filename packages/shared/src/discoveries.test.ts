@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { chapterDiscoveries, chapterStartDiscoveries, sceneDiscoveries } from "./discoveries.js";
+import {
+  CLASS_GUIDE_ID,
+  CLASS_PLACE_GUIDE_ID,
+  chapterDiscoveries,
+  chapterStartDiscoveries,
+  partyClassDiscoveries,
+  sceneDiscoveries,
+} from "./discoveries.js";
 
 const bestiary = {
   creatures: {
@@ -45,5 +52,41 @@ describe("discoveries", () => {
       "creature.embermoth",
       "npc.x",
     ]);
+  });
+
+  describe("classes", () => {
+    it("a class place finds its room, then the class it teaches, after the scene's own tags", () => {
+      const room = { type: "story", classPlace: "duskrunner", discovers: ["npc.x"] } as never;
+      expect(sceneDiscoveries(room, bestiary)).toEqual(["npc.x", "location.rookery", "class.duskrunner"]);
+      for (const cls of ["thornguard", "starweaver", "duskrunner", "songkeeper"] as const) {
+        expect(sceneDiscoveries({ type: "choice_point", classPlace: cls } as never, bestiary)).toEqual([
+          CLASS_PLACE_GUIDE_ID[cls],
+          CLASS_GUIDE_ID[cls],
+        ]);
+      }
+    });
+
+    it("the four classes have four distinct entries and four distinct rooms", () => {
+      expect(new Set(Object.values(CLASS_GUIDE_ID)).size).toBe(4);
+      expect(new Set(Object.values(CLASS_PLACE_GUIDE_ID)).size).toBe(4);
+      expect(CLASS_PLACE_GUIDE_ID).toEqual({
+        thornguard: "location.dojo",
+        starweaver: "location.academy",
+        duskrunner: "location.rookery",
+        songkeeper: "location.conservatory",
+      });
+    });
+
+    it("a scene that is not a class place finds no class", () => {
+      expect(sceneDiscoveries({ type: "story" } as never, bestiary)).toEqual([]);
+      expect(sceneDiscoveries({ type: "story", classPlace: undefined } as never, bestiary)).toEqual([]);
+    });
+
+    it("heroes find the classes they wear, once each, in seat order", () => {
+      const heroes = ["songkeeper", "thornguard", "songkeeper"].map((c) => ({ character: { class: c } })) as never;
+      expect(partyClassDiscoveries(heroes)).toEqual(["class.songkeeper", "class.thornguard"]);
+      expect(partyClassDiscoveries([])).toEqual([]);
+      expect(partyClassDiscoveries(null)).toEqual([]);
+    });
   });
 });

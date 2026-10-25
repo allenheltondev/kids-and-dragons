@@ -515,6 +515,7 @@ creatures:
 
     encounter:
       band: brute
+      traits: [armored]
       resolutions:
         - kind: observation
           stat: clever
@@ -581,6 +582,7 @@ creatures:
 
     encounter:
       band: skirmisher
+      traits: [fiery, swarming]
       resolutions:
         - kind: distraction
           stat: clever
@@ -655,6 +657,7 @@ creatures:
 
     encounter:
       band: lurker
+      traits: [slippery]
       resolutions:
         - kind: observation
           stat: clever
@@ -723,6 +726,7 @@ creatures:
 
     encounter:
       band: sentinel
+      traits: [frozen, hulking]
       behavior: holds_ground
       resolutions:
         - kind: escape
@@ -795,6 +799,7 @@ creatures:
 
     encounter:
       band: brute
+      traits: [slippery, hulking]
       resolutions:
         - kind: bargaining
           stat: heart
@@ -862,6 +867,7 @@ creatures:
 
     encounter:
       band: skirmisher
+      traits: [armored, swarming]
       resolutions:
         - kind: distraction
           stat: clever
@@ -933,6 +939,7 @@ creatures:
 
     encounter:
       band: sentinel
+      traits: [hulking]
       resolutions:
         - kind: distraction
           stat: clever
@@ -1007,6 +1014,7 @@ creatures:
 
     encounter:
       band: skirmisher
+      traits: [ghostly, flier]
       resolutions:
         - kind: conversation
           stat: heart
@@ -1077,6 +1085,7 @@ creatures:
 
     encounter:
       band: brute
+      traits: [ghostly, hulking]
       behavior: guards_its_cause
       resolutions:
         - kind: restoring_habitat
@@ -1278,6 +1287,7 @@ creatures:
       items: []
     encounter:
       band: legend
+      traits: [hulking, fiery]
       stats: { hp: 36, guard: 16, quick: 2, steps: 4, attack: 5 }
       xp: 50
       footprint: 4

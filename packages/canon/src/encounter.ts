@@ -188,6 +188,12 @@ export const Encounter = z.strictObject({
    * reviewed sentence in that module, so the set stays small on purpose.
    */
   behavior: Slug.optional(),
+  /**
+   * Up to two traits (docs/matchups.md), keys of `content/rules.json`
+   * `matchups.traits`. Like `band`, only the shape is checked here; that each id
+   * exists is `tools/canon/bands.ts`, which can read both files.
+   */
+  traits: z.array(Slug).max(2).refine((t) => new Set(t).size === t.length, "a trait is named once").optional(),
   /** D10. Required for a dangerous creature; the whole point of the block. */
   resolutions: z.array(Resolution).default([]),
 }).superRefine((encounter, ctx) => {
@@ -197,7 +203,7 @@ export const Encounter = z.strictObject({
   // without a band is authoring a fight for something that has none. Rejected
   // here rather than ignored downstream, because a stat line nothing reads is
   // indistinguishable from a stat line something reads wrongly.
-  for (const field of ["stats", "xp", "behavior"] as const) {
+  for (const field of ["stats", "xp", "behavior", "traits"] as const) {
     if (encounter[field] === undefined) continue;
     ctx.addIssue({
       code: "custom",

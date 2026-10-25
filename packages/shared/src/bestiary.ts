@@ -27,7 +27,9 @@
  * silently mean something else once the band moves.
  */
 
-import type { EnemySpec } from "./types/chapter.js";
+import type { CastMember, EnemySpec } from "./types/chapter.js";
+import type { SpeciesId } from "./types/domain.js";
+import type { CheckCreature } from "./matchups.js";
 
 /** One entry of `content/bestiary.json`, as `tools/canon/bestiary.ts` writes it. */
 export interface BestiaryEntry {
@@ -45,6 +47,11 @@ export interface BestiaryEntry {
   footprint?: number;
   behavior?: string;
   resolutions?: unknown[];
+  /** Keys of `rules.matchups.traits` (docs/matchups.md). Absent: none. */
+  traits?: string[];
+  /** Playable species it likes and dislikes, from canon's lore. Absent: none. */
+  likes?: SpeciesId[];
+  dislikes?: SpeciesId[];
 }
 
 /** The file, keyed by `asset_id` — the same name `EnemySpec.creature` holds. */
@@ -112,10 +119,57 @@ export function resolveEnemy(
   if (filled["count"] === undefined) filled["count"] = entry?.usualCount ?? 1;
   if (filled["name"] === undefined && entry) filled["name"] = entry.name;
   if (filled["art"] === undefined && entry) filled["art"] = entry.art;
+  // Matchups (docs/matchups.md): canon's, unless the chapter authored its own.
+  // Copied only when the entry has a non-empty list, so an enemy whose
+  // creature has none resolves to exactly the spec it always did.
+  for (const key of ["traits", "likes", "dislikes"] as const) {
+    const fromCanon = entry ? stringList(entry[key]) : [];
+    if (filled[key] === undefined && fromCanon.length > 0) filled[key] = fromCanon;
+  }
 
   return problems.length > 0
     ? { problems }
     : { spec: filled as unknown as EnemySpec, problems };
+}
+
+/** A list of strings from a field that may be missing or malformed: never throws. */
+function stringList(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((v): v is string => typeof v === "string") : [];
+}
+
+/**
+ * The creatures a scene shows the party, with their opinions, for a check's
+ * matchups (docs/matchups.md): every `discovers` canon id that names a
+ * bestiary creature (by its `canon_id`), and every `cast` figure
+ * `entities/<key>` whose key is a bestiary creature. Each creature once.
+ * Anyone not in the bestiary has no opinion that moves dice. Missing
+ * `likes` / `dislikes` read as none.
+ */
+export function sceneCreatures(
+  scene: { discovers?: readonly string[]; cast?: readonly Pick<CastMember, "figure">[] },
+  bestiary: Bestiary | null | undefined,
+): CheckCreature[] {
+  const creatures = bestiary?.creatures;
+  if (!creatures) return [];
+  const keys: string[] = [];
+  const add = (key: string | undefined) => {
+    if (key !== undefined && creatures[key] && !keys.includes(key)) keys.push(key);
+  };
+  for (const canonId of scene.discovers ?? []) {
+    add(Object.keys(creatures).find((key) => creatures[key]?.canon_id === canonId));
+  }
+  for (const member of scene.cast ?? []) {
+    const figure = member.figure;
+    if (typeof figure === "string" && figure.startsWith("entities/")) add(figure.slice("entities/".length));
+  }
+  return keys.map((key) => {
+    const entry = creatures[key]!;
+    return {
+      name: entry.name,
+      likes: stringList(entry.likes) as SpeciesId[],
+      dislikes: stringList(entry.dislikes) as SpeciesId[],
+    };
+  });
 }
 
 /**

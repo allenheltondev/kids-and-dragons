@@ -46,7 +46,7 @@ import type {
  * commit — a bump without a step is a silent no-op migration, which is the one
  * failure this whole mechanism cannot detect.
  */
-export const CHARACTER_VERSION = 7;
+export const CHARACTER_VERSION = 8;
 
 /** Thrown for a stored row that cannot be repaired into a playable character. */
 export class StoredCharacterError extends Error {
@@ -162,7 +162,72 @@ const STEPS: Record<number, Step> = {
    * let every chapter pay her again.
    */
   6: (raw) => raw,
+  /*
+   * v7 → v8. The ladder grows from level 10 to level 30 (spec §8.1, "Beyond
+   * level 10"). XP past 6,300 kept accruing at v7 with nothing to spend it on,
+   * and `resolveCharacter` derives level from XP, so without this step a hero
+   * holding 8,100 XP would load as level 11 having been paid the stat points
+   * of level 10, and `awardXp` (which measures levels gained from XP) would
+   * never make up the difference.
+   *
+   * The decision: that XP counts. It was earned, and erasing or capping it
+   * would take something from a hero. So each half is brought to the level
+   * its XP now reaches, once, and the points the extra levels owed are banked
+   * as unspent. Both halves are paid on their own XP: the provisional half
+   * has earned more than the committed one, and a failed campaign reverts to
+   * the committed half's own account. Tier follows level. A hero whose XP
+   * crosses 15, 20 or 30 changes body on her next load with no cutscene,
+   * because nothing is being awarded; the cutscene is for XP earned at the
+   * table.
+   *
+   * Idempotent because the version stamp is: a v8 row never runs this again,
+   * and a hero already paid for her level has nothing owed. The curves are
+   * frozen below, as at v4, rather than read from today's rules.
+   */
+  7: (raw) => {
+    const toV8 = (half: unknown): unknown => {
+      if (half === null || typeof half !== "object") return half;
+      const p = half as Record<string, unknown>;
+      if (typeof p["xp"] !== "number") return half;
+      const was = levelAt(V7_LEVEL_XP, p["xp"]);
+      const now = levelAt(V8_LEVEL_XP, p["xp"]);
+      if (now <= was) return half;
+      return {
+        ...p,
+        level: now,
+        tier: V8_TIER_LEVELS.reduce<string>((tier, [id, at]) => (now >= at ? id : tier), "fledgling"),
+        unspentPoints: (typeof p["unspentPoints"] === "number" ? p["unspentPoints"] : 0) + (now - was),
+      };
+    };
+    return { ...raw, committed: toV8(raw["committed"]), provisional: toV8(raw["provisional"]) };
+  },
 };
+
+/**
+ * The level curves either side of the v7 → v8 step: `[n]` is the total XP to
+ * reach level `n + 2`. v7 stopped at level 10 and v8 runs to 30. Frozen here
+ * on purpose; migrate.test.ts holds the v7 curve against the first ten levels
+ * of content/rules.json, which a retune must never move.
+ */
+export const V7_LEVEL_XP: readonly number[] = [100, 300, 700, 1100, 1700, 2600, 3500, 4700, 6300];
+export const V8_LEVEL_XP: readonly number[] = [
+  ...V7_LEVEL_XP,
+  8100, 10100, 12300, 14700, 17300, 20100, 23100, 26300, 29700, 33300, 37100, 41100, 45300, 49700, 54300, 59100,
+  64100, 69300, 74700, 80300,
+];
+const V8_TIER_LEVELS: readonly (readonly [string, number])[] = [
+  ["fledgling", 1],
+  ["sworn", 4],
+  ["radiant", 7],
+  ["mythic", 10],
+  ["ascendant", 15],
+  ["starborn", 20],
+  ["legendary", 30],
+];
+
+function levelAt(curve: readonly number[], xp: number): number {
+  return 1 + curve.filter((at) => xp >= at).length;
+}
 
 /**
  * The class ladder as v4 shipped it (content/rules.json then): each class's

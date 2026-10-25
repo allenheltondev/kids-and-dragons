@@ -12,6 +12,7 @@
 
 import type { Difficulty, StatId, TierId } from "./types/domain.js";
 import type { DiceRoll } from "./types/state.js";
+import type { MatchupNote } from "./types/matchups.js";
 
 export interface Rng {
   /** Uniform float in [0, 1). */
@@ -75,6 +76,9 @@ export const DEFAULT_HELP_DIE: Readonly<Record<TierId, number>> = {
   sworn: 6,
   radiant: 8,
   mythic: 10,
+  ascendant: 10,
+  starborn: 12,
+  legendary: 12,
 };
 
 export interface HelpInput {
@@ -98,6 +102,17 @@ export interface RollInput {
    * never a die, so a roll with one draws exactly what it would without.
    */
   buff?: BuffInput;
+  /**
+   * Matchups on this roll (docs/matchups.md): a flat, already capped amount
+   * on the total, like a buff, so a roll with one draws exactly what it would
+   * without. Absent where matchups are off.
+   */
+  matchup?: MatchupInput;
+}
+
+export interface MatchupInput {
+  amount: number;
+  notes: MatchupNote[];
 }
 
 export interface BuffInput {
@@ -128,7 +143,7 @@ export function roll(rng: Rng, input: RollInput): DiceRoll {
     input.help === undefined
       ? undefined
       : { ...input.help, value: rollDie(rng, input.help.sides) };
-  const total = die + input.mod + (help?.value ?? 0) + (input.buff?.amount ?? 0);
+  const total = die + input.mod + (help?.value ?? 0) + (input.buff?.amount ?? 0) + (input.matchup?.amount ?? 0);
   return {
     die,
     mod: input.mod,
@@ -139,6 +154,7 @@ export function roll(rng: Rng, input: RollInput): DiceRoll {
     ...(input.stat === undefined ? {} : { stat: input.stat }),
     ...(help === undefined ? {} : { help }),
     ...(input.buff === undefined ? {} : { buff: { id: input.buff.id, label: input.buff.label, amount: input.buff.amount } }),
+    ...(input.matchup === undefined ? {} : { matchup: { amount: input.matchup.amount, notes: input.matchup.notes.map((n) => ({ ...n })) } }),
   };
 }
 
@@ -150,6 +166,8 @@ export interface CheckInput {
   help?: HelpInput;
   /** A story-check buff the roller spends on it (#222). */
   buff?: BuffInput;
+  /** Matchups on this check (docs/matchups.md). */
+  matchup?: MatchupInput;
 }
 
 /** A check scene roll: d20 + stat vs. TN. Both outcomes continue the story. */
@@ -161,6 +179,7 @@ export function resolveCheck(rng: Rng, input: CheckInput): DiceRoll {
     stat: input.stat,
     ...(input.help === undefined ? {} : { help: input.help }),
     ...(input.buff === undefined ? {} : { buff: input.buff }),
+    ...(input.matchup === undefined ? {} : { matchup: input.matchup }),
   });
 }
 
@@ -169,6 +188,8 @@ export interface AttackInput {
   mod: number;
   guard: number;
   stat?: StatId;
+  /** Matchups on this swing (docs/matchups.md). */
+  matchup?: MatchupInput;
 }
 
 /** An attack: d20 + class stat vs. the target's Guard. spec §7.2. */
@@ -178,6 +199,7 @@ export function resolveAttack(rng: Rng, input: AttackInput): DiceRoll {
     tn: input.guard,
     characterId: input.characterId,
     ...(input.stat === undefined ? {} : { stat: input.stat }),
+    ...(input.matchup === undefined ? {} : { matchup: input.matchup }),
   });
   return { ...base, result: base.result === "success" ? "hit" : "miss" };
 }

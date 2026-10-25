@@ -22,7 +22,7 @@ import { Suspense, useEffect } from "react";
 // still be fetched before the join screen could paint.
 import { HomeScreen } from "./screens/HomeScreen";
 import { ArrivalNotices } from "./screens/ArrivalNotices";
-import { routeCode, useRoute } from "./router";
+import { navigate, routeCode, useRoute } from "./router";
 import { useGameStore, useLayoutMode, useRunState, useChapter, useMe } from "./store";
 import { Button, ConnectionBanner, ErrorToast, Spinner } from "./ui";
 import { BackButton } from "./ui/BackButton";
@@ -62,6 +62,10 @@ const A11yControl = lazyChunk(loadA11y, (module) => module.A11yControl);
 // Help (#256): the "?" and the press-and-hold sheet load after first paint too, for the same reason.
 const loadHelp = () => import("./help");
 const HelpControl = lazyChunk(loadHelp, (module) => module.HelpControl);
+
+// The update reload (#456): asks the worker for updates on wake and moves the page onto a new
+// build at a calm moment. Nothing to draw, so it loads after first paint like the controls.
+const ConvergeOnUpdate = lazyChunk(() => import("./sw/ConvergeOnUpdate"), (module) => module.ConvergeOnUpdate);
 
 // Sound (#318): the engine, its synth and the sample table load after first paint. The
 // control sits in a corner, nobody can hear anything before a first tap, and the
@@ -182,6 +186,14 @@ export function App(): React.JSX.Element {
    * localStorage, and the TV needs neither.
    */
   useEffect(() => {
+    // The manifest's share target (#461): on to the room it names, or home.
+    if (route.name === "share") {
+      // Loaded on demand: the parser is only ever needed on this one route.
+      void import("./install/share-target").then(({ shareDestination }) => {
+        navigate(shareDestination(window.location.search), { replace: true });
+      });
+      return;
+    }
     const code = routeCode(route);
     if (!code) return;
     prefetchRoom(route.name === "tv");
@@ -226,6 +238,11 @@ export function App(): React.JSX.Element {
       {/* Shell-level like the toast, and for the same reason: a dropped
           connection is true on every surface in every mode at once. */}
       {tv ? null : <ConnectionBanner />}
+      <ChunkBoundary quiet>
+        <Suspense fallback={null}>
+          <ConvergeOnUpdate />
+        </Suspense>
+      </ChunkBoundary>
       {/* The shared display's right-hand column (#257): the host's stop offer and room
           panel (#263), who just joined (#267), a rejection, a dropped connection and the
           Field Guide's news (portalled in from WorldView), one under the other so none

@@ -192,7 +192,7 @@ pull request, and skips jobs a change cannot affect. Its build job runs:
 - `infra:lint` and `infra:build`
 - `canon:check`, and a diff that fails if a generated projection is stale
 - `content:validate`, `art:verify` and `audio:verify`
-- the client build and `perf:bundle`: 315 KB uncompressed for first paint, 1400 KB in total
+- the client build and `perf:bundle`: 315 KB uncompressed for first paint, 1425 KB in total
 
 `content:continuity` gates through its vitest suite: a finding not in
 `tools/content/continuity-allow.json` fails. `content:pacing` and `cohesion.mjs` report and never

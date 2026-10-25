@@ -671,6 +671,10 @@ export async function relockLobby(
  * recently played first — so a party that started something on another evening
  * can pick it back up rather than only ever being offered the launch campaign.
  *
+ * But a household with a campaign under way is offered only that one (the most
+ * recently played): continuing is not choosing. With nothing under way the
+ * rest of the above stands.
+ *
  * Only *active* attempts are offered beyond the featured and listed ones. A
  * finished or failed campaign is history; starting it again is the featured
  * campaign's "again", not a resume. And a campaign the content no longer ships
@@ -707,7 +711,15 @@ export async function lobbyCampaigns(
     const campaign = deps.content.campaign(attempt.campaignId);
     if (campaign) options.push(campaignView(campaign, attempt, deps));
   }
-  return options;
+  // A household with a campaign under way is continuing it: the lobby offers
+  // that one alone, the most recently played, rather than a picker that invites
+  // the table to wander off to something else mid-story.
+  const underWay = attempts
+    .filter((a) => a.status === "active")
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    .map((a) => options.find((o) => o.id === a.campaignId))
+    .find((o) => o !== undefined);
+  return underWay ? [underWay] : options;
 }
 
 /** The highest beat a campaign's chapters reach. */
@@ -1023,8 +1035,13 @@ async function settleVisit(input: {
 
   const replay = !step.firstCompletion;
   // A shallow copy shares the party, so the fold still re-resolves the room's
-  // characters in place; only the amount it reads is withheld on a replay.
-  const award = await foldChapterXpDetails(replay ? { ...state, xpEarned: 0 } : state, deps, householdId, chapter);
+  // characters in place; only the amounts it reads are withheld on a replay.
+  const award = await foldChapterXpDetails(
+    replay ? { ...state, xpEarned: 0, heroRollXp: {} } : state,
+    deps,
+    householdId,
+    chapter,
+  );
   // The copy's deeds were folded, but the room's run still holds them (#310).
   delete state.deeds;
   const characters = award.writes;

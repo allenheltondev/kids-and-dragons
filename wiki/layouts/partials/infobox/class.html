@@ -1,0 +1,39 @@
+{{/* A class: its job, what it wears, the school that teaches it, and the
+     three distinctions it awards. Read from the page's `class` block, which
+     tools/wiki/page-generator.ts writes from canon/classes.yaml. */}}
+{{ $c := .Params.class }}
+<aside class="wiki-infobox wiki-infobox--class" role="complementary" aria-label="Class information">
+  {{ partial "infobox/portrait.html" . }}
+
+  <h2 class="wiki-infobox__title">{{ .Title }}</h2>
+  {{ with .Params.lore_hook }}<p class="wiki-infobox__hook">{{ . }}</p>{{ end }}
+
+  {{ with $c }}
+  <dl class="wiki-infobox__fields">
+    {{ with .role }}
+    <div class="wiki-infobox__field">
+      <dt>Job</dt>
+      <dd>{{ partial "title-case.html" . }}</dd>
+    </div>
+    {{ end }}
+    {{ with .gear }}
+    <div class="wiki-infobox__field">
+      <dt>Gear</dt>
+      <dd>{{ . }}</dd>
+    </div>
+    {{ end }}
+    {{ with .home }}
+    <div class="wiki-infobox__field">
+      <dt>Taught at</dt>
+      <dd><a href="{{ strings.TrimPrefix "/" .url | relURL }}">{{ .title }}</a></dd>
+    </div>
+    {{ end }}
+    {{ range .distinctions }}
+    <div class="wiki-infobox__field">
+      <dt>{{ partial "title-case.html" .rank }}</dt>
+      <dd>New move: {{ .move }}</dd>
+    </div>
+    {{ end }}
+  </dl>
+  {{ end }}
+</aside>

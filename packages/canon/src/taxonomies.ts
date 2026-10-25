@@ -1,5 +1,5 @@
 /**
- * The twelve canon taxonomies — docs/canon-contract.md §3 and §4.
+ * The thirteen canon taxonomies — docs/canon-contract.md §3 and §4.
  *
  * Each is `Envelope.extend({...})`, so everything generic (the registry, the
  * DynamoDB row, `canon_get`) works against any of them without knowing which.
@@ -471,6 +471,56 @@ export const Route = Mapped.extend({
 });
 
 // ---------------------------------------------------------------------------
+// class — a playable class and the place that teaches it.
+// ---------------------------------------------------------------------------
+
+/** The three distinctions a class awards, in the order they are earned. */
+export const DISTINCTION_RANKS = ["apprentice", "expert", "master"] as const;
+
+/**
+ * A playable class (docs/class-mastery.md). What a hero is besides a species:
+ * the thing they wear, the job they do, and the three distinctions they earn
+ * by doing it. The numbers live in `content/rules.json`; canon holds the
+ * identity, so a retune never touches it.
+ *
+ * **`home` is required**, like an individual's: a class is taught somewhere,
+ * and that place (the Dojo, the Academy, the Rookery, the Conservatory) is a
+ * location. The class entry links to it; the field guide hides that link until
+ * the party has been there.
+ */
+export const PlayerClass = Envelope.extend({
+  /** The class place that teaches it. */
+  home: canonRef("location"),
+  /** What the class does for a party: `front_line`, `caster`. Defined in classes.yaml. */
+  role: Slug,
+  /** What a hero wears to be this class (docs/class-mastery.md §4). */
+  gear: z.string().min(1),
+  /** Apprentice, Expert, Master: each with the move it unlocks. Exactly three, in order. */
+  distinctions: z.array(z.strictObject({ rank: z.enum(DISTINCTION_RANKS), move: z.string().min(1) })).length(3),
+  relationships: z.strictObject({
+    /** Places this class belongs to. Must include `home`. */
+    locations: edge("location"),
+  }),
+}).superRefine((cls, ctx) => {
+  cls.distinctions.forEach((d, i) => {
+    if (d.rank !== DISTINCTION_RANKS[i]) {
+      ctx.addIssue({
+        code: "custom",
+        path: ["distinctions", i, "rank"],
+        message: `distinction ${i + 1} must be ${DISTINCTION_RANKS[i]}, found ${d.rank}`,
+      });
+    }
+  });
+  if (!cls.relationships.locations.includes(cls.home)) {
+    ctx.addIssue({
+      code: "custom",
+      path: ["relationships", "locations"],
+      message: `must include its home, ${cls.home}`,
+    });
+  }
+});
+
+// ---------------------------------------------------------------------------
 // The table every generic consumer reads.
 // ---------------------------------------------------------------------------
 
@@ -487,6 +537,7 @@ export const SCHEMAS = {
   campaign: Campaign,
   feature: Feature,
   route: Route,
+  class: PlayerClass,
 } as const;
 
 export type CanonEntity =
@@ -501,7 +552,8 @@ export type CanonEntity =
   | z.infer<typeof Quest>
   | z.infer<typeof Campaign>
   | z.infer<typeof Feature>
-  | z.infer<typeof Route>;
+  | z.infer<typeof Route>
+  | z.infer<typeof PlayerClass>;
 
 export type Biome = z.infer<typeof Biome>;
 export type Species = z.infer<typeof Species>;
@@ -515,3 +567,4 @@ export type Quest = z.infer<typeof Quest>;
 export type Campaign = z.infer<typeof Campaign>;
 export type Feature = z.infer<typeof Feature>;
 export type Route = z.infer<typeof Route>;
+export type PlayerClass = z.infer<typeof PlayerClass>;

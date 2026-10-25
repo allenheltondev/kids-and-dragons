@@ -20,7 +20,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import yaml from "js-yaml";
+import * as yaml from "js-yaml";
 import { z } from "zod";
 import { SCHEMAS } from "./taxonomies.js";
 import type { CanonEntity } from "./taxonomies.js";
@@ -46,6 +46,7 @@ export const FILES: Record<string, Record<string, Taxonomy>> = {
   "quests.yaml": { quests: "quest" },
   "campaigns.yaml": { campaigns: "campaign" },
   "geography.yaml": { features: "feature", routes: "route" },
+  "classes.yaml": { classes: "class" },
 };
 
 export interface CanonIssue {

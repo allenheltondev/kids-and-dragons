@@ -10,6 +10,11 @@ export function savedHeading(saved: Pick<SavedGameView, "chapter">): string {
   return `You stopped partway through ${saved.chapter.title}.`;
 }
 
+/** Where the game is saved, when the family named its table: "Saved at Kitchen table." */
+export function savedWhere(saved: Pick<SavedGameView, "location">): string {
+  return saved.location ? `Saved at ${saved.location}.` : "";
+}
+
 /** Who was playing, as "Pip and Bo" or "Pip, Bo and Dot". */
 export function savedHeroes(saved: Pick<SavedGameView, "heroes">): string {
   const names = saved.heroes;

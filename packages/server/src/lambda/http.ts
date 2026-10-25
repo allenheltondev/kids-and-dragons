@@ -31,10 +31,12 @@ import {
 } from "../handlers/code-guard.ts";
 import { reportClientError } from "../handlers/client-error.ts";
 import { relayPreview } from "../handlers/preview.ts";
+import { relayCheer } from "../handlers/cheer.ts";
+import { chooseWatching } from "../handlers/watch.ts";
 import { beatPresence } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
-import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
+import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, vetTableName, watchRoom } from "../handlers/room.ts";
 import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
 import { handKeeper } from "../handlers/keeper.ts";
@@ -55,6 +57,7 @@ import {
 } from "../handlers/shared-device.ts";
 import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
 import type { RoomMode } from "@kad/shared";
+import { pushKey, subscribePush, unsubscribePush } from "../handlers/push.ts";
 import { requiredEnv, runtime, verifyAccountToken, type VerifiedAccount } from "./runtime.ts";
 
 /** A request, already parsed into the few things the routes actually read. */
@@ -103,11 +106,22 @@ export async function handler(
   return respond(event, AWS_RUNTIME);
 }
 
+/**
+ * The dev server's `express.json({ limit: "256kb" })`, held here too. Without
+ * it the Lambda took anything up to API Gateway's 6MB, and a seated phone
+ * could pad an intent that the event log then stores and replays verbatim on
+ * every reconnect.
+ */
+export const MAX_BODY_BYTES = 256 * 1024;
+
 /** `handler()` with the AWS wiring passed in rather than imported. */
 export async function respond(
   event: APIGatewayProxyEventV2,
   rt: HttpRuntime,
 ): Promise<APIGatewayProxyStructuredResultV2> {
+  if (event.body && Buffer.byteLength(event.body, event.isBase64Encoded ? "base64" : "utf8") > MAX_BODY_BYTES) {
+    return error(413, "ILLEGAL", "that request is too large");
+  }
   const req = parse(event, rt);
   try {
     return await route(req, rt);
@@ -146,6 +160,8 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (req.path === "/api/action") return (deps) => postAction(req, deps);
     if (req.path === "/api/preview") return (deps) => postPreview(req, deps);
     if (req.path === "/api/presence") return (deps) => postPresence(req, deps);
+    if (req.path === "/api/cheer") return (deps) => postCheer(req, deps);
+    if (req.path === "/api/spectate") return (deps) => postSpectate(req, deps);
     if (req.path === "/api/progression/spend") return (deps) => postProgressionSpend(req, deps);
     if (req.path === "/api/resume") return (deps) => postResume(req, deps);
     if (req.path === "/api/save/release") return (deps) => postReleaseHero(req, deps);
@@ -208,6 +224,10 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "GET" && req.path === "/api/journal") return (deps) => getJournalRoute(req, deps);
   if (req.method === "POST" && req.path === "/api/profile/flair") return (deps) => postFlairRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/household/players") return (deps) => getSharedPlayers(req, deps);
+  // "It's your turn" while the app is in the background (#466).
+  if (req.method === "GET" && req.path === "/api/push/key") return async (deps) => json(200, pushKey(deps));
+  if (req.method === "POST" && req.path === "/api/push/subscribe") return (deps) => postPushSubscription(req, deps, true);
+  if (req.method === "POST" && req.path === "/api/push/unsubscribe") return (deps) => postPushSubscription(req, deps, false);
 
   // A grown-up running a household or a group (#248). Signed in, always.
   const organizer = organizerRoute(req);
@@ -242,10 +262,14 @@ async function postRoom(req: Req, deps: HandlerDeps) {
   if (!mode) return error(400, "ILLEGAL", 'mode must be "party" or "travel"');
   const display = req.body.display === true;
   if (display && mode !== "party") return error(400, "ILLEGAL", "only a Party Mode room has a TV");
+  // Only a TV has a place to name; a phone host's request never carries one.
+  const place = display ? vetTableName(req.body.location) : ok(undefined);
+  if (!place.ok) return fromError(place.error);
+  const location = place.value;
 
   // A shared tablet opens a room for whichever kid was picked on it (#250).
   const shared = await resolveShared(req, deps);
-  if (shared !== undefined) return postRoomShared(req, deps, mode, display, shared);
+  if (shared !== undefined) return postRoomShared(req, deps, mode, display, shared, location);
 
   // Anonymous play (§4.5): a device nobody has seen before gets a household on
   // the spot. Nobody signs up to start a game.
@@ -267,6 +291,7 @@ async function postRoom(req: Req, deps: HandlerDeps) {
       // The TV's household is a placeholder until a phone joins (RoomRecord.claimable).
       claimable: display,
       hostDeviceId: host.principal.deviceId,
+      ...(location ? { location } : {}),
     },
     deps,
   );
@@ -317,6 +342,7 @@ async function postRoomShared(
   mode: RoomMode,
   display: boolean,
   shared: SharedDeviceIdentity | null,
+  location?: string,
 ) {
   if (!shared) return forgottenDevice();
   if (display) {
@@ -327,6 +353,7 @@ async function postRoomShared(
         campaignId: (req.body.campaignId as string | null | undefined) ?? null,
         hostDeviceId: shared.deviceId,
         display: true,
+        ...(location ? { location } : {}),
       },
       deps,
     );
@@ -673,6 +700,46 @@ async function postPreview(req: Req, deps: HandlerDeps) {
 }
 
 /**
+ * A spectator's cheer (handlers/cheer.ts, #388). Session token only, like a
+ * preview: the seat comes from the token, never the body.
+ */
+async function postCheer(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "a cheer needs a room session token");
+  const result = await relayCheer(
+    {
+      runId: session.runId,
+      playerId: session.playerId,
+      householdId: session.householdId,
+      cheer: req.body.cheer,
+    },
+    deps,
+  );
+  if (!result.ok) return error(result.status, result.code, result.message);
+  return json(200, { ok: true });
+}
+
+/**
+ * "Just watch", or back to making a hero (handlers/watch.ts, #388). Session
+ * token only: a phone chooses for its own kid and nobody else.
+ */
+async function postSpectate(req: Req, deps: HandlerDeps) {
+  const session = await resolveSession(req, deps);
+  if (!session) return error(401, "FORBIDDEN", "watching needs a room session token");
+  const result = await chooseWatching(
+    {
+      runId: session.runId,
+      roomCode: session.roomCode,
+      playerId: session.playerId,
+      householdId: session.householdId,
+      watching: req.body.watching,
+    },
+    deps,
+  );
+  return result.ok ? json(200, { ok: true, seq: result.value.seq }) : fromError(result.error);
+}
+
+/**
  * A seated phone saying it is still here, or that it is leaving
  * (handlers/presence.ts). The only presence production has: AppSync Events
  * tells this Lambda nothing when a socket closes (#258). Session token only,
@@ -702,13 +769,19 @@ async function postProgressionSpend(req: Req, deps: HandlerDeps) {
   if (!Object.prototype.hasOwnProperty.call(req.body, "stat")) {
     return error(400, "ILLEGAL", "expected { stat }");
   }
+  // The seq the spend was built on, as for every intent. Defaulting it to the
+  // run's current seq waved every request through the stale check, so a
+  // double tap spent two points. No client sends here any more (a spend
+  // rides /api/action); the route is kept for one that might.
+  if (typeof req.body.seq !== "number" || !Number.isFinite(req.body.seq)) {
+    return error(400, "ILLEGAL", "expected { stat, seq }");
+  }
 
-  const state = await deps.repo.getState(session.runId);
   const response = await applyAction(
     {
       runId: session.runId,
       playerId: session.playerId,
-      seq: Number(req.body.seq ?? state?.seq ?? 0),
+      seq: req.body.seq,
       intent: { type: "SPEND_STAT_POINT", stat: req.body.stat as never },
       principal: {
         householdId: session.householdId,
@@ -766,6 +839,18 @@ async function postFlairRoute(req: Req, deps: HandlerDeps) {
   if (!kid) return error(401, "FORBIDDEN", "your page needs this device's token");
   const result = await saveFlair({ householdId: kid.householdId, playerId: kid.playerId, body: req.body }, deps);
   return result.ok ? json(200, result.value, kid.principal) : fromError(result.error);
+}
+
+/**
+ * This phone takes "It's your turn" pushes, or stops (#466). The device token
+ * names the phone and its kid; the body is only the browser's subscription.
+ */
+async function postPushSubscription(req: Req, deps: HandlerDeps, on: boolean) {
+  const found = await resolvePrincipal(req, deps);
+  const result = on
+    ? await subscribePush({ principal: found?.principal ?? null, body: req.body }, deps)
+    : await unsubscribePush({ principal: found?.principal ?? null }, deps);
+  return result.ok ? json(200, { ok: true }, found?.principal) : error(result.status, result.code, result.message);
 }
 
 async function getStateRoute(req: Req, deps: HandlerDeps) {
