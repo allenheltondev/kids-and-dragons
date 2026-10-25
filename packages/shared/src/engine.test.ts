@@ -1440,6 +1440,35 @@ describe("a full walk of a chapter", () => {
     expect(theirTurn.state.flags["took_high"]).toBeUndefined();
   });
 
+  it("records what the party voted for, on the scene the vote led to (RunState.decision)", () => {
+    const chapter = chapterWithForkedShrine();
+    const context = ctx({ rng: fixedRng(20), chapter });
+    const atRidge = walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } },
+        { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "low" } },
+      ],
+      context,
+    ).state;
+    const ridge = chapter.scenes["scene_ridge"] as { choices: { id: string; label: string }[] };
+    const high = ridge.choices.find((c) => c.id === "high");
+
+    const settled = applyIntent(atRidge, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } }, context).state;
+    expect(settled.decision).toEqual({
+      sceneId: settled.sceneId,
+      label: high?.label,
+      byPlayerId: "p_1",
+      vote: true,
+    });
+  });
+
   it("waits for the whole party before putting the board up", () => {
     /*
      * One phone readying is not the fight starting. This used to be the test
