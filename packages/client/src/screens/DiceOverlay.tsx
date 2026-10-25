@@ -6,7 +6,7 @@
  * blocks game logic (architecture §4.2), and a client that reconnects mid-roll
  * must not replay an animation for a roll that already happened.
  *
- * Timing: the d20 tumbles for a second, a helper's die (if a friend helped)
+ * Timing: the d20 tumbles for 2.2 seconds, a helper's die (if a friend helped)
  * tumbles for another beat after it, and then the sum and the outcome stay up
  * for ~2.6s: long enough to read "14 + 3 + 2 = 19" out loud, not just glimpse
  * it. One roll type, one big animation (spec §4.1).
@@ -18,7 +18,7 @@
  * screen for as long as the card is up (layout/TravelLayout.tsx).
  *
  * The face the die *shows* is never the source of the number. The server rolls
- * (architecture §4.2); the scramble below is theatre played toward a result
+ * (architecture §4.2); the controlled 3D throw is theatre played toward a result
  * that was decided before this component heard about it, which is also why a
  * client reconnecting mid-roll replays nothing.
  */
@@ -29,36 +29,24 @@ import { difficultyFor, speak } from "@kad/shared";
 import type { DiceRoll, Difficulty } from "@kad/shared";
 import { reducedMotion } from "../a11y/prefs";
 import { useParty, usePresentation } from "../store";
-import { ROLL_TUMBLE_MS, rollCardMs, rollRevealMs } from "../world/presentation";
+import {
+  ROLL_HELP_TUMBLE_MS,
+  ROLL_TUMBLE_MS,
+  rollCardMs,
+  rollRevealMs,
+} from "../world/presentation";
 import { ScreenReaderOnly } from "../ui/ScreenReaderOnly";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { DiceCelebration } from "./DiceCelebration";
+import { AnimatedDie } from "./AnimatedDie";
 import { cue } from "../audio/cue";
 import type { Celebration } from "./DiceCelebration";
 import { Icon } from "./icons";
 import "./shared.css";
 import "./DiceOverlay.css";
 
-/** How fast the face changes while it is in the air. ~12 faces per tumble. */
-const SCRAMBLE_MS = 80;
-/** spec §4.1 — one die. */
-const SIDES = 20;
-
 /**
- * The next face of a scramble: uniform over every face *except* the one
- * showing, so the die never appears to stick for two frames in a row. Pure, so
- * the one interesting property ("never repeats, always legal") is testable
- * without a timer.
- */
-export function nextFace(previous: number, random: number, sides: number = SIDES): number {
-  const face = Math.floor(random * (sides - 1)) + 1; // 1…sides-1
-  return face >= previous ? face + 1 : face;
-}
-
-/**
- * A tumbling number is exactly the kind of motion `prefers-reduced-motion`
- * exists to switch off, and CSS cannot switch off a `setInterval` — so this is
- * asked in JS as well. theme.css flattens the tumble itself.
+ * The mesh and celebration both honour device and app reduced-motion settings.
  */
 function prefersReducedMotion(): boolean {
   return reducedMotion();
@@ -102,7 +90,12 @@ export function checkTarget(tn: number): string {
 }
 
 /** Stat ids as a kid reads them off the sheet. */
-const STAT_WORD: Record<string, string> = { might: "Might", quick: "Quick", clever: "Clever", heart: "Heart" };
+const STAT_WORD: Record<string, string> = {
+  might: "Might",
+  quick: "Quick",
+  clever: "Clever",
+  heart: "Heart",
+};
 
 /** What the shared screen needs to know about a check that is waiting on its roll. */
 export interface CheckPlanPrompt {
@@ -123,7 +116,9 @@ export interface CheckPlanPrompt {
  */
 export function checkPlan(
   prompt: CheckPlanPrompt,
-  party: readonly { character: { id: string; name: string; stats: Record<string, number> } }[],
+  party: readonly {
+    character: { id: string; name: string; stats: Record<string, number> };
+  }[],
 ): { roll: string; target: string } {
   const stat = STAT_WORD[prompt.stat] ?? prompt.stat;
   const word = DIFFICULTY_WORD[difficultyFor(prompt.tn)];
@@ -133,12 +128,19 @@ export function checkPlan(
       target: `${word}: ${String(prompt.tn)} or more makes it. Half of you or more need to.`,
     };
   }
-  const roller = party.find((m) => m.character.id === prompt.characterId)?.character;
+  const roller = party.find(
+    (m) => m.character.id === prompt.characterId,
+  )?.character;
   const mod = roller?.stats[prompt.stat] ?? 0;
   // "+ 0 Quick" rather than nothing: the stat is what the roller adds, even at nothing.
   const sum = ` ${mod < 0 ? "−" : "+"} ${String(Math.abs(mod))}`;
-  const helper = prompt.helper ? party.find((m) => m.character.id === prompt.helper?.characterId)?.character.name : undefined;
-  const help = prompt.helper ? `, plus ${helper ?? "a friend"}'s d${String(prompt.helper.sides)}` : "";
+  const helper = prompt.helper
+    ? party.find((m) => m.character.id === prompt.helper?.characterId)
+        ?.character.name
+    : undefined;
+  const help = prompt.helper
+    ? `, plus ${helper ?? "a friend"}'s d${String(prompt.helper.sides)}`
+    : "";
   return {
     roll: `${roller?.name ?? "Someone"} rolls d20${sum} ${stat}${help}`,
     target: `${word}: ${String(prompt.tn)} or more makes it.`,
@@ -152,7 +154,9 @@ export function neededLabel(roll: Pick<DiceRoll, "tn" | "result">): string {
 }
 
 /** Which celebration the die throws when it lands. */
-export function celebrationFor(roll: Pick<DiceRoll, "die" | "result">): Celebration {
+export function celebrationFor(
+  roll: Pick<DiceRoll, "die" | "result">,
+): Celebration {
   if (roll.die === 20) return "crit";
   if (roll.die === 1) return "fumble";
   return GOOD.has(roll.result) ? "success" : "miss";
@@ -160,14 +164,23 @@ export function celebrationFor(roll: Pick<DiceRoll, "die" | "result">): Celebrat
 
 /** "The party: 2 of 3 made it. Success!" */
 export function groupLine(group: NonNullable<DiceRoll["group"]>): string {
-  const verdict = group.result === "success" ? "The party makes it!" : "Not this time for the party.";
+  const verdict =
+    group.result === "success"
+      ? "The party makes it!"
+      : "Not this time for the party.";
   return `${String(group.made)} of ${String(group.of)} made it. ${verdict}`;
 }
 
 /** The roll as a sentence, for speech and screen readers. */
-export function spokenRoll(roll: DiceRoll, who: string, helperName: string | null): string {
+export function spokenRoll(
+  roll: DiceRoll,
+  who: string,
+  helperName: string | null,
+): string {
   const help =
-    roll.help === undefined ? "" : ` plus ${String(roll.help.value)} from ${helperName ?? "a friend"}`;
+    roll.help === undefined
+      ? ""
+      : ` plus ${String(roll.help.value)} from ${helperName ?? "a friend"}`;
   const group = roll.group === undefined ? "" : ` ${groupLine(roll.group)}`;
   const buff =
     roll.buff === undefined
@@ -201,8 +214,14 @@ export function DiceOverlay(): ReactElement | null {
   useEffect(() => {
     if (shownId === null || shownRoll === null) return;
     const land = window.setTimeout(() => setLanded(true), ROLL_TUMBLE_MS);
-    const settle = window.setTimeout(() => setSettled(true), rollRevealMs(shownRoll));
-    const clear = window.setTimeout(() => setShown(null), rollCardMs(shownRoll));
+    const settle = window.setTimeout(
+      () => setSettled(true),
+      rollRevealMs(shownRoll),
+    );
+    const clear = window.setTimeout(
+      () => setShown(null),
+      rollCardMs(shownRoll),
+    );
     return () => {
       window.clearTimeout(land);
       window.clearTimeout(settle);
@@ -210,41 +229,36 @@ export function DiceOverlay(): ReactElement | null {
     };
   }, [shownId, shownRoll]);
 
-  /*
-   * The faces that go past on the way. A die that is blank until it lands
-   * looks like a loading spinner; a die with numbers flicking over it looks
-   * like a die. It stops the instant `settled` flips, and the last thing it is
-   * asked to draw is the real number, never a scrambled one.
-   */
-  const [face, setFace] = useState(1);
-  const [helpFace, setHelpFace] = useState(1);
-  const helpSides = shownRoll?.help?.sides ?? null;
-  useEffect(() => {
-    // Keyed on `settled` too: without it the interval re-rendered the card,
-    // portrait and all, every 80ms for as long as it stayed up.
-    if (shownId === null || settled || prefersReducedMotion()) return;
-    const timer = window.setInterval(() => {
-      setFace((previous) => nextFace(previous, Math.random()));
-      if (helpSides !== null) setHelpFace((previous) => nextFace(previous, Math.random(), helpSides));
-    }, SCRAMBLE_MS);
-    return () => {
-      window.clearInterval(timer);
-    };
-  }, [shownId, helpSides, settled]);
-
   const roll = shown?.roll ?? null;
   const good = roll === null ? false : GOOD.has(roll.result);
-  const roller = roll === null ? null : party.find((m) => m.character.id === roll.characterId) ?? null;
+  const roller =
+    roll === null
+      ? null
+      : (party.find((m) => m.character.id === roll.characterId) ?? null);
   const helper =
-    roll?.help === undefined ? null : party.find((m) => m.character.id === roll.help?.characterId) ?? null;
+    roll?.help === undefined
+      ? null
+      : (party.find((m) => m.character.id === roll.help?.characterId) ?? null);
 
   // Spoken once, when the number is readable — same moment the table reacts.
   const spokenFor = useRef<number | null>(null);
   useEffect(() => {
-    if (roll === null || !settled || shownId === null || spokenFor.current === shownId) return;
+    if (
+      roll === null ||
+      !settled ||
+      shownId === null ||
+      spokenFor.current === shownId
+    )
+      return;
     spokenFor.current = shownId;
-    speak(spokenRoll(roll, roller?.character.name ?? "", helper?.character.name ?? null));
-    // A natural 1 gets its bonk, on the beat the die topples over.
+    speak(
+      spokenRoll(
+        roll,
+        roller?.character.name ?? "",
+        helper?.character.name ?? null,
+      ),
+    );
+    // A natural 1 keeps its friendly bonk when the result is revealed.
     if (roll.die === 1) cue("bonk");
   }, [roll, settled, shownId, roller, helper]);
 
@@ -254,7 +268,11 @@ export function DiceOverlay(): ReactElement | null {
   const celebration = celebrationFor(roll);
 
   return (
-    <div className={`dice${settled ? " dice--settled" : ""}`} role="status" aria-live="assertive">
+    <div
+      className={`dice${settled ? " dice--settled" : ""}`}
+      role="status"
+      aria-live="assertive"
+    >
       <div className={`dice__card${settled ? " dice__card--settled" : ""}`}>
         <p className="dice__who">
           {/* Whose roll it is, in the middle of the room, at a glance — the
@@ -292,31 +310,52 @@ export function DiceOverlay(): ReactElement | null {
           aria-hidden="true"
         >
           <div
-            className={`dice__die${settled ? ` dice__die--settled dice__die--${celebration}` : ""}`}
+            className={`dice__die dice__die--3d${landed && roll.die === 20 ? " dice__die--enchanted" : ""}`}
           >
-            <Icon name="d20_solid" size="100%" className="dice__die-art" />
-            <span
-              className={`dice__die-number${settled ? "" : " dice__die-number--rolling"}`}
-            >
-              {landed ? roll.die : face}
-            </span>
+            <AnimatedDie
+              key={shownId}
+              value={roll.die}
+              duration={ROLL_TUMBLE_MS}
+              seed={shownId ?? 0}
+              landed={landed}
+            />
           </div>
-          <span className="dice__shadow" />
+          {landed && roll.die === 20 ? (
+            <span className="dice__painted-sparks">
+              <Icon name="spark" />
+              <Icon name="star" />
+              <Icon name="spark" />
+            </span>
+          ) : null}
           {settled && !prefersReducedMotion() ? (
-            <DiceCelebration key={shownId} kind={celebration} seed={shownId ?? 0} />
+            <DiceCelebration
+              key={shownId}
+              kind={celebration}
+              seed={shownId ?? 0}
+            />
           ) : null}
         </div>
 
         {/* A friend's die, thrown once the d20 is down so each lands on its own beat. */}
         {roll.help === undefined ? null : (
-          <div className={`dice__help${landed ? " dice__help--thrown" : ""}`} aria-hidden="true">
+          <div
+            className={`dice__help${landed ? " dice__help--thrown" : ""}`}
+            aria-hidden="true"
+          >
             <span className="dice__help-who">
               {helper?.character.name ?? "A friend"} helps: d{roll.help.sides}
             </span>
-            <span className={`dice__help-die${settled ? " dice__help-die--settled" : ""}`}>
-              <span className={settled ? undefined : "dice__die-number--rolling"}>
-                {settled ? roll.help.value : helpFace}
-              </span>
+            <span className="dice__helper-model">
+              {landed ? (
+                <AnimatedDie
+                  key={`${shownId}-helper`}
+                  sides={roll.help.sides}
+                  value={roll.help.value}
+                  duration={ROLL_HELP_TUMBLE_MS}
+                  seed={(shownId ?? 0) + 31}
+                  landed={settled}
+                />
+              ) : null}
             </span>
           </div>
         )}
@@ -354,7 +393,10 @@ export function DiceOverlay(): ReactElement | null {
         {/* Outcome is a word plus a shape, never a colour on its own (spec §11). */}
         <div className={`dice__verdict dice__verdict--${celebration}`}>
           <p className="dice__headline">
-            <Icon name={good ? "check" : "close"} className="dice__headline-icon" />
+            <Icon
+              name={good ? "check" : "close"}
+              className="dice__headline-icon"
+            />
             <span>{outcomeWord(roll)}</span>
           </p>
         </div>
