@@ -57,6 +57,20 @@ describe("matchup table", () => {
     }
   });
 
+  it("names only moves that roll an attack on an attack edge", () => {
+    const rollsAttack = (id: string): boolean =>
+      id === "attack" ||
+      (abilities.abilities[id]?.effects ?? []).some((e: { effect?: { type?: string } }) => e.effect?.type === "attack");
+    // Shove pushes, Bramble Wall makes terrain, Tanglelight roots, Vanish dodges:
+    // an attack edge on any of them would promise a boost nothing ever pays.
+    for (const never of ["shove", "bramble_wall", "tanglelight", "vanish", "glimmer", "starfall"]) {
+      expect(rollsAttack(never), never).toBe(false);
+    }
+    for (const e of edges.filter((x) => x.on === "attack")) {
+      for (const id of list(e.ability)) expect(rollsAttack(id), `${e.id} names ${id}`).toBe(true);
+    }
+  });
+
   it("references only real traits, tags, abilities, species and classes", () => {
     const abilityIds = new Set([
       "attack",

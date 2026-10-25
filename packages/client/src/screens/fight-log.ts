@@ -77,7 +77,9 @@ export interface Beat {
 export function rollWords(roll: DiceRoll): string {
   const stat = roll.stat ? ` ${STAT_NAMES[roll.stat] ?? roll.stat}` : "";
   const mod = roll.mod === 0 ? "" : ` ${roll.mod < 0 ? "-" : "+"} ${Math.abs(roll.mod)}${stat}`;
-  return `${roll.die}${mod} = ${roll.total} vs Guard ${roll.tn}`;
+  const m = roll.matchup?.amount ?? 0;
+  const matchup = m === 0 ? "" : ` ${m < 0 ? "-" : "+"} ${Math.abs(m)} matchup`;
+  return `${roll.die}${mod}${matchup} = ${roll.total} vs Guard ${roll.tn}`;
 }
 
 /** The stat a roll used, as a word, or null. */

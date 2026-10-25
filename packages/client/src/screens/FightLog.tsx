@@ -248,6 +248,12 @@ function SwingLine({ swing }: { swing: Swing }): ReactElement {
             {stat ? <span className="fight-log__stat"> {stat}</span> : null}
           </span>
         ) : null}
+        {roll.matchup && roll.matchup.amount !== 0 ? (
+          <span>
+            {roll.matchup.amount < 0 ? "-" : "+"} {Math.abs(roll.matchup.amount)}
+            <span className="fight-log__stat"> matchup</span>
+          </span>
+        ) : null}
         <span className="fight-log__total">= {roll.total}</span>
         <span className="fight-log__vs">vs Guard {roll.tn}</span>
         <span className="fight-log__arrow" aria-hidden="true">→</span>

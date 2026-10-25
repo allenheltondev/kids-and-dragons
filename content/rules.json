@@ -57,8 +57,8 @@
       { "id": "manticore_dislikes_swim", "hero": { "species": "manticore" }, "on": "check", "tag": "swim", "roll": -1, "text": "Manticores do not like getting wet, so swimming is harder." },
 
       { "id": "thornguard_armor_smash", "hero": { "class": "thornguard" }, "on": "attack", "foe": "armored", "damage": 1, "text": "A Thornguard swings heavy, so armored things take more of a dent." },
-      { "id": "thornguard_shove_hulking", "hero": { "class": "thornguard" }, "on": "attack", "foe": "hulking", "ability": "shove", "roll": 1, "text": "Shove is made for pushing back big things." },
-      { "id": "thornguard_wall_swarm", "hero": { "class": "thornguard" }, "on": "attack", "foe": "swarming", "ability": "bramble_wall", "damage": 1, "text": "Bramble Wall makes a swarm think twice." },
+      { "id": "thornguard_stance_hulking", "hero": { "class": "thornguard" }, "on": "defend", "foe": "hulking", "roll": -1, "text": "A Thornguard plants their feet, so big things swing wide." },
+      { "id": "thornguard_line_swarm", "hero": { "class": "thornguard" }, "on": "defend", "foe": "swarming", "roll": -1, "text": "A Thornguard holds the line, so a swarm cannot surround them." },
       { "id": "thornguard_brambles_thorny", "hero": { "class": "thornguard" }, "on": "defend", "foe": "thorny", "roll": -1, "text": "A Thornguard knows brambles, so thorny things have a hard time hitting." },
       { "id": "thornguard_firm_fiery", "hero": { "class": "thornguard" }, "on": "defend", "foe": "fiery", "roll": -1, "text": "A Thornguard stands firm against hot, fiery things." },
       { "id": "thornguard_smash_frozen", "hero": { "class": "thornguard" }, "on": "attack", "foe": "frozen", "damage": 1, "text": "A big swing cracks frozen things." },
@@ -68,7 +68,7 @@
       { "id": "thornguard_ghost_through", "hero": { "class": "thornguard" }, "on": "attack", "foe": "ghostly", "roll": -1, "text": "Swings pass right through ghostly things." },
 
       { "id": "duskrunner_blades_armored", "hero": { "class": "duskrunner" }, "on": "attack", "foe": "armored", "ability": "storm_of_blades", "roll": 1, "text": "Storm of Blades finds the gaps in armor." },
-      { "id": "duskrunner_vanish_hulking", "hero": { "class": "duskrunner" }, "on": "attack", "foe": "hulking", "ability": ["vanish", "twin_step"], "roll": 1, "text": "Vanish and Twin Step dance around big, slow things." },
+      { "id": "duskrunner_dance_hulking", "hero": { "class": "duskrunner" }, "on": "attack", "foe": "hulking", "ability": "twin_step", "roll": 1, "text": "Twin Step dances around big, slow things." },
       { "id": "duskrunner_quick_skittish", "hero": { "class": "duskrunner" }, "on": "attack", "foe": "skittish", "roll": 1, "text": "A Duskrunner is quicker than skittish things." },
       { "id": "duskrunner_quick_slippery", "hero": { "class": "duskrunner" }, "on": "attack", "foe": "slippery", "roll": 1, "text": "A Duskrunner can catch slippery things before they wriggle away." },
       { "id": "duskrunner_leap_flier", "hero": { "class": "duskrunner" }, "on": "attack", "foe": "flier", "ability": "twin_step", "roll": 1, "text": "Twin Step lets a Duskrunner hop up after fliers." },
@@ -78,9 +78,9 @@
 
       { "id": "starweaver_burst_swarm", "hero": { "class": "starweaver" }, "on": "attack", "foe": "swarming", "ability": "burst", "damage": 1, "text": "Burst hits a whole swarm at once." },
       { "id": "starweaver_burst_thorny", "hero": { "class": "starweaver" }, "on": "attack", "foe": "thorny", "ability": "burst", "roll": 1, "text": "Burst lands from a safe distance, so thorns cannot touch it." },
-      { "id": "starweaver_starlight_ghost", "hero": { "class": "starweaver" }, "on": "attack", "foe": "ghostly", "ability": ["burst", "starfall", "glimmer"], "roll": 1, "text": "Starlight shows ghostly things where to aim." },
-      { "id": "starweaver_tangle_flier", "hero": { "class": "starweaver" }, "on": "attack", "foe": "flier", "ability": "tanglelight", "roll": 2, "text": "Tanglelight wraps fliers right out of the sky." },
-      { "id": "starweaver_tangle_slippery", "hero": { "class": "starweaver" }, "on": "attack", "foe": "slippery", "ability": "tanglelight", "roll": 1, "text": "Tanglelight holds slippery things still." },
+      { "id": "starweaver_starlight_ghost", "hero": { "class": "starweaver" }, "on": "attack", "foe": "ghostly", "ability": "burst", "roll": 1, "text": "Burst's starlight shows ghostly things where to aim." },
+      { "id": "starweaver_burst_flier", "hero": { "class": "starweaver" }, "on": "attack", "foe": "flier", "ability": "burst", "roll": 1, "text": "Burst lights up the whole sky, so fliers have nowhere to hide." },
+      { "id": "starweaver_light_slippery", "hero": { "class": "starweaver" }, "on": "defend", "foe": "slippery", "roll": -1, "text": "Slippery things lose their grip in a Starweaver's bright light." },
       { "id": "starweaver_warm_frozen", "hero": { "class": "starweaver" }, "on": "attack", "foe": "frozen", "damage": 1, "text": "Warm starlight melts frozen things." },
       { "id": "starweaver_spark_fiery", "hero": { "class": "starweaver" }, "on": "attack", "foe": "fiery", "roll": -1, "text": "Sparks only feed fiery things." },
       { "id": "starweaver_frail_hulking", "hero": { "class": "starweaver" }, "on": "defend", "foe": "hulking", "roll": 1, "text": "Big things single out a Starweaver, who is not built to take a hit." },
