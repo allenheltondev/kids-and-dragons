@@ -16,7 +16,7 @@ import { Text } from "pixi.js";
  * both failure modes: too small to read from the couch, or big enough that the
  * lineup reads as text with animals behind it.
  */
-export const NAMEPLATE_FONT = 0.095;
+export const NAMEPLATE_FONT = 0.085;
 /** A name that would shrink below this fraction of its full size is wrapped onto lines first instead. */
 export const NAMEPLATE_MIN_SCALE = 0.75;
 /** Gap between the feet and the top of the name, as a fraction of the figure's
