@@ -38,7 +38,7 @@ import type {
 } from "./types/domain.js";
 import type { HeroDeeds, RunState } from "./types/state.js";
 import { addDeed, rankUp, runCounted } from "./deeds.js";
-import { getClass, getSpecies, levelForXp, maxLevel, tierForLevel } from "./rules.js";
+import { getClass, getSpecies, levelBonuses, levelForXp, maxLevel, tierForLevel } from "./rules.js";
 
 /** Thrown for creation payloads that break the rules. Callers map it to ILLEGAL. */
 export class CharacterRuleError extends Error {
@@ -414,7 +414,8 @@ export function resolveCharacter(
   const level = levelForXp(rules, progress.xp);
 
   const stats = { ...progress.stats } as Stats;
-  let maxHp = rules.baseMaxHp;
+  const earned = levelBonuses(rules, level);
+  let maxHp = rules.baseMaxHp + earned.maxHp;
   let steps = classDef?.baseSteps ?? rules.baseSteps;
 
   // Species passive: either a stat bump or extra max HP (spec §4.2). A stale
@@ -488,7 +489,7 @@ export function resolveCharacter(
     maxHp,
     steps,
     // Quick governs dodging (spec §4.1), so it is what an attacker rolls against.
-    guard: rules.baseGuard + stats.quick,
+    guard: rules.baseGuard + earned.guard + stats.quick,
     // Missing content has no class stat or world action to resolve. Keep the
     // snapshot structurally complete with neutral sentinels for those fields.
     attackStat: classDef?.stat ?? STAT_IDS[0] ?? "might",
@@ -779,7 +780,7 @@ export function withInventory(
     stats,
     steps,
     maxHp,
-    guard: rules.baseGuard + stats.quick,
+    guard: rules.baseGuard + levelBonuses(rules, resolved.level).guard + stats.quick,
   };
 }
 

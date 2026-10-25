@@ -603,6 +603,28 @@ export interface ClassDef {
   deeds?: Partial<Record<Exclude<ClassRank, "none">, RankDeeds>>;
 }
 
+/** One level's permanent bonuses (`RulesContent.levelRewards`). */
+export interface LevelReward {
+  /** The level that earns it, 2 or more. */
+  level: number;
+  /** Added to max HP from this level on. */
+  maxHp?: number;
+  /** Added to Guard from this level on. */
+  guard?: number;
+}
+
+/** XP for successful rolls (`RulesContent.rollXp`). */
+export interface RollXp {
+  /** For each story check a hero makes (a group check counts each hero's own success). */
+  check: number;
+  /** For each attack a hero lands in a fight. */
+  attack: number;
+  /** For each foe a hero's action knocks out. Optional: absent pays nothing. */
+  defeat?: number;
+  /** The most roll XP one chapter can pay. */
+  chapterCap: number;
+}
+
 export interface RulesContent {
   version: number;
   /** Every character starts here before species bonus and creation points. */
@@ -622,6 +644,20 @@ export interface RulesContent {
   levelXp: number[];
   /** Level at which each tier is reached. */
   tierLevels: Record<TierId, number>;
+  /**
+   * Permanent gains for reaching a level, each worth its `maxHp` and/or `guard`
+   * from that level on (they add up: a level-4 hero holds the rewards of
+   * levels 2, 3 and 4). Optional: rules without it give nothing, and a hero's
+   * HP and Guard come only from species, Quick and trinkets.
+   */
+  levelRewards?: LevelReward[];
+  /**
+   * XP the whole party earns for dice that go well, added to the chapter's
+   * `xpEarned` as the dice are rolled. Uniform and party-wide like every other
+   * XP (spec §8.2), and capped per chapter so rolling cannot outgrow the
+   * chapter's own award. Optional: rules without it pay nothing for rolls.
+   */
+  rollXp?: RollXp;
   /**
    * Sides on the die a helper adds to a check, by the helper's tier: the d20
    * never changes, but the help you give grows as you do. Optional so rules

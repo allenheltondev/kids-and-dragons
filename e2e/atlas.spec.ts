@@ -79,7 +79,7 @@ for (const mode of ["travel", "party"] as const) {
       while (await further.isEnabled()) await further.click();
       await page.getByRole("button", { name: "Read about The Sunward Fields" }).click();
       await expect(page.getByRole("heading", { name: "The Sunward Fields", exact: true })).toBeVisible();
-      await page.getByRole("button", { name: "Back to map", exact: true }).click();
+      await page.getByRole("button", { name: "Go back" }).click();
       await page.waitForFunction(() => {
         const view = document.querySelector(".atlas__viewport")!.getBoundingClientRect();
         return [...document.querySelectorAll<HTMLImageElement>(".atlas__tile")].filter((tile) => {

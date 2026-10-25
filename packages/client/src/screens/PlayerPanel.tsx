@@ -81,6 +81,7 @@ import { speak } from "@kad/shared";
 import { CampaignArt } from "./CampaignArt";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
+import { XpMeter } from "./XpMeter";
 import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
 import { ChapterGoalCard } from "./ChapterGoal";
@@ -258,7 +259,6 @@ function ConfirmBar({
 
 function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
   const { character } = me;
-  const hpPct = character.maxHp === 0 ? 0 : Math.max(0, Math.min(1, me.hp / character.maxHp));
   /*
    * Whenever the game is waiting on you (a fight turn, a roll, a choice, a
    * vote not yet cast), the whole strip turns gold. That is the "your turn"
@@ -318,12 +318,13 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
             <Icon name="levelup" />
             <span>
               {character.unspentPoints === 1
-                ? "1 point to spend at the next rest stop"
-                : `${String(character.unspentPoints)} points to spend at the next rest stop`}
+                ? "1 point to spend at rest"
+                : `${String(character.unspentPoints)} points to spend at rest`}
             </span>
             <Icon name="rest" />
           </span>
         ) : null}
+        <XpMeter character={character} />
       </span>
       <span className="sheet__hp">
         <span className="sheet__hp-label">
@@ -331,9 +332,6 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
           <span>
             {me.hp}/{character.maxHp}
           </span>
-        </span>
-        <span className="sheet__hp-track" aria-hidden="true">
-          <span className="sheet__hp-fill" style={{ inlineSize: `${String(hpPct * 100)}%` }} />
         </span>
       </span>
     </header>
@@ -346,18 +344,18 @@ function StatRow({ me }: { me: PartyMember }): ReactElement {
     <ul className="stat-row">
       {STAT_IDS.map((stat) => (
         <li className="stat-row__item" key={stat}>
-          <Icon name={stat} />
+          <Icon name={stat} size="2em" />
           <span className="stat-row__name">{stat}</span>
           <b className="stat-row__value">{character.stats[stat]}</b>
         </li>
       ))}
       <li className="stat-row__item">
-        <Icon name="guard" />
+        <Icon name="guard" size="2em" />
         <span className="stat-row__name">guard</span>
         <b className="stat-row__value">{character.guard}</b>
       </li>
       <li className="stat-row__item">
-        <Icon name="steps" />
+        <Icon name="steps" size="2em" />
         <span className="stat-row__name">steps</span>
         <b className="stat-row__value">{character.steps}</b>
       </li>
@@ -389,16 +387,27 @@ function InventoryGrid({
   onSelect: (index: number | null) => void;
 }): ReactElement {
   const slots = Array.from({ length: INVENTORY_SLOTS }, (_, i) => entries[i] ?? null);
+  const carried = entries.length + questItems.length;
   return (
     <Collapsible
       id="bag"
       className="inv"
       title={<><Icon name="bag" /><span>Your things</span></>}
       trail={
-        <span className="inv__purse kad-chip" aria-label={`The party's purse: ${String(coins)} ${coins === 1 ? "coin" : "coins"}`}>
-          <Icon name="coin" />
-          <span aria-hidden="true">{coins}</span>
-        </span>
+        <>
+          {/* What you carry (the six slots and the story things), counted from the
+              hero's own bag. The number beside the coin is the party's purse, a
+              different thing that used to be the only number here and read 0
+              over a bag with something in it. */}
+          <span className="inv__count kad-chip" data-testid="bag-count" aria-label={`You are carrying ${String(carried)} ${carried === 1 ? "thing" : "things"}`}>
+            <Icon name="bag" />
+            <span aria-hidden="true">{carried}</span>
+          </span>
+          <span className="inv__purse kad-chip" aria-label={`The party's purse: ${String(coins)} ${coins === 1 ? "coin" : "coins"}`}>
+            <Icon name="coin" />
+            <span aria-hidden="true">{coins}</span>
+          </span>
+        </>
       }
     >
       <ul className="inv__grid">
@@ -2207,18 +2216,6 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </Button>
         ) : null}
       </div>
-        {!showSheet ? (
-          <Button
-            className="player__inventory-back"
-            variant="secondary"
-            size="md"
-            block
-            icon={<Icon name="back" />}
-            onClick={() => setPlayerSection("bag")}
-          >
-            Back to your bag
-          </Button>
-        ) : null}
     </section>
     </>
   );

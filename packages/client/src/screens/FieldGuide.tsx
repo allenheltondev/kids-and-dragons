@@ -11,10 +11,9 @@ import {
 import { DETAIL_STEP, useBackStep } from "../store/back-steps";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { markFieldGuideSeen, useFieldGuideSeen } from "../store/field-guide-seen";
-import { Button } from "../ui/Button";
 import { Icon } from "./icons";
 import { motionProps } from "./guide-motion";
-import { FieldGuideDetail } from "./FieldGuideDetail";
+import { FieldGuideDetail, entryIcon } from "./FieldGuideDetail";
 import { loadFieldGuide } from "./content";
 import "./FieldGuide.css";
 
@@ -22,6 +21,7 @@ import "./FieldGuide.css";
 const SECTIONS: ReadonlyArray<{ id: FieldGuideCategory; label: string; one: string; icon: string }> = [
   { id: "creatures", label: "Creatures", one: "creature", icon: "flame" },
   { id: "peoples", label: "Peoples", one: "people", icon: "party" },
+  { id: "classes", label: "Classes", one: "class", icon: "star" },
   { id: "folk", label: "Folk", one: "folk", icon: "heart" },
   { id: "places", label: "Places", one: "place", icon: "leaf" },
   { id: "factions", label: "Factions", one: "faction", icon: "shield" },
@@ -59,15 +59,7 @@ export function FieldGuide({ backToBag = true }: {
       {open ? (
         <FieldGuideDetail guide={guide as FieldGuideData} entryId={open.id} />
       ) : (
-        <>
-          <FieldGuideIndex guide={guide} />
-          {backToBag ? (
-            <Button className="field-guide__back" variant="secondary" size="md" block
-              icon={<Icon name="back" />} onClick={() => setPlayerSection("bag")}>
-              Back to your bag
-            </Button>
-          ) : null}
-        </>
+        <FieldGuideIndex guide={guide} />
       )}
     </section>
   );
@@ -145,8 +137,8 @@ function FoundCard({ entry, icon, isNew }: { entry: FieldGuideEntry; icon: strin
   return (
     <button type="button" className="field-guide__card"
       onClick={() => { markFieldGuideSeen(entry.id); selectGuideEntry(entry.id); }}>
-      <span className={`field-guide__art${entry.category === "places" ? " field-guide__art--place" : ""}`} aria-hidden="true" {...motionProps(entry.art, entry.id)}>
-        {entry.art ? <img src={entry.art} alt="" loading="lazy" /> : <Icon name={icon} />}
+      <span className={`field-guide__art${entry.category === "places" ? " field-guide__art--place" : ""}`} aria-hidden="true" {...(entry.category === "places" ? {} : motionProps(entry.art, entry.id))}>
+        {entry.art ? <img src={entry.art} alt="" loading="lazy" /> : <Icon name={entryIcon(entry, icon)} />}
       </span>
       <span className="field-guide__name">{entry.title}</span>
       {isNew && <span className="field-guide__new" data-testid="guide-new">New</span>}

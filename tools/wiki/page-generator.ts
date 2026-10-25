@@ -33,6 +33,25 @@ interface RelatedEntry {
  */
 const PLURAL_OVERRIDES: Record<string, string> = {
   geography: 'geography',
+  class: 'classes',
+};
+
+/**
+ * The four class places' paintings (assets/scenes/classes), by class place
+ * slug, and the class that each place teaches. A class page wears its place's
+ * painting: the wiki is the reference, so it can show the room.
+ */
+const CLASS_PLACE_ART: Record<string, string> = {
+  dojo: 'assets/scenes/classes/dojo.webp',
+  academy: 'assets/scenes/classes/academy.webp',
+  rookery: 'assets/scenes/classes/rookery.webp',
+  conservatory: 'assets/scenes/classes/conservatory.webp',
+};
+const CLASS_ART: Record<string, string> = {
+  thornguard: CLASS_PLACE_ART['dojo']!,
+  starweaver: CLASS_PLACE_ART['academy']!,
+  duskrunner: CLASS_PLACE_ART['rookery']!,
+  songkeeper: CLASS_PLACE_ART['conservatory']!,
 };
 
 /**
@@ -71,6 +90,7 @@ function extractType(id: string): string {
  * Items       → assets/items/{name}/assembled.png
  * Factions    → assets/entities/{name}/assembled.png
  * Locations/routes → assets/biomes/{name}/bg.webp (when delivered)
+ * Class places, and the class each teaches → assets/scenes/classes/{place}.webp
  * Biomes      → assets/biomes/{name}/bg.webp
  */
 export function getConventionAssetPath(entityType: string, name: string): string | null {
@@ -88,7 +108,11 @@ export function getConventionAssetPath(entityType: string, name: string): string
     case 'location':
       // The Gate already has a chapter illustration; do not commission a duplicate.
       if (name === 'hollow_gate') return 'assets/scenes/gemfall/hollow-gate.webp';
+      // The class places have a painting of the room, not a biome backdrop.
+      if (CLASS_PLACE_ART[name]) return CLASS_PLACE_ART[name]!;
       return `assets/biomes/${name}/bg.webp`;
+    case 'class':
+      return CLASS_ART[name] ?? null;
     case 'route':
     case 'biome':
       return `assets/biomes/${name}/bg.webp`;
@@ -623,6 +647,38 @@ function loreFrontMatterLines(
 }
 
 /**
+ * A class's own fields for the infobox: role, gear, the place that teaches it
+ * (resolved to a title and URL) and the three distinctions. Empty for anything
+ * that is not a class.
+ */
+function classFrontMatterLines(
+  entity: CanonEntity,
+  allEntities: Map<string, CanonEntity>,
+): string[] {
+  if (entity.type !== 'class') return [];
+  const meta = entity.metadata;
+  const lines: string[] = ['class:'];
+  if (typeof meta['role'] === 'string') lines.push(`  role: "${escapeYamlString(meta['role'])}"`);
+  if (typeof meta['gear'] === 'string') lines.push(`  gear: "${escapeYamlString(meta['gear'])}"`);
+  if (typeof meta['home'] === 'string') {
+    lines.push('  home:');
+    lines.push(`    id: ${meta['home']}`);
+    lines.push(`    title: "${escapeYamlString(getTitleForEntity(meta['home'], allEntities))}"`);
+    lines.push(`    url: "${entityUrl(meta['home'])}"`);
+  }
+  const distinctions = Array.isArray(meta['distinctions']) ? meta['distinctions'] : [];
+  if (distinctions.length > 0) {
+    lines.push('  distinctions:');
+    for (const d of distinctions as { rank?: unknown; move?: unknown }[]) {
+      if (typeof d?.rank !== 'string' || typeof d?.move !== 'string') continue;
+      lines.push(`    - rank: ${d.rank}`);
+      lines.push(`      move: "${escapeYamlString(d.move)}"`);
+    }
+  }
+  return lines;
+}
+
+/**
  * The one-line summary ai_context leads with: the hook, else the first
  * sentence of the prose that leads the lore section — `story` for a
  * personality, `origin` for a place.
@@ -766,6 +822,16 @@ function generateFrontMatter(
   // Lore: the hook for cards and list pages, and resolved opinion chips for
   // the infobox partials.
   lines.push(...loreFrontMatterLines(entity, allEntities));
+
+  // A class and its class place have a short description and no lore block:
+  // that line is their hook, so the page opens with something to read.
+  if (!getLore(entity) && (entity.type === 'class' || meta['location_type'] === 'class_place')) {
+    const blurb = meta['short_description'];
+    if (typeof blurb === 'string' && blurb.trim().length > 0) {
+      lines.push(`lore_hook: "${escapeYamlString(blurb.trim().replace(/\s+/g, ' '))}"`);
+    }
+  }
+  lines.push(...classFrontMatterLines(entity, allEntities));
 
   // Related entities
   if (relatedEntries.length > 0) {

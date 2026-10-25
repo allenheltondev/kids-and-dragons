@@ -308,6 +308,12 @@ export interface RunState {
   coins?: number;
   xpEarned: number;
   /**
+   * The part of `xpEarned` that successful rolls paid this chapter
+   * (`RulesContent.rollXp`), kept so the per-chapter cap can be enforced. Absent
+   * until a roll pays; cleared when a chapter starts.
+   */
+  rollXp?: number;
+  /**
    * How the chapter now in `chapterId` ended, once it has (spec §8.2). Null
    * while one is still being played.
    *

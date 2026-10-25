@@ -38,8 +38,12 @@ import { navigate } from "../router";
 import { Spinner } from "./Spinner";
 import { useOnline } from "./useOnline";
 
-/** How long a drop must last before it is worth a banner. */
-export const RECONNECT_GRACE_MS = 1500;
+/**
+ * How long a drop must last before it is worth a banner. The clock covers the
+ * whole drop, retries and catch-up included (`dropped` stays true across them),
+ * so a rejoin that lands inside it never shows the banner at all.
+ */
+export const RECONNECT_GRACE_MS = 3000;
 
 /**
  * What the banner says. Offline, the device itself has no network, so waiting
