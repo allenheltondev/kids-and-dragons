@@ -510,6 +510,18 @@
         }
       }
     },
+    "loot": {
+      "description": "Coins from a won fight (packages/shared/src/types/domain.ts LootRules). Optional: rules without it pay nothing. Only the named campaigns drop loot, so Gemfall's pinned numbers never move.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["campaigns", "hpPerCoin", "maxPerFight"],
+      "properties": {
+        "$comment": { "type": "string" },
+        "campaigns": { "type": "array", "items": { "type": "string", "minLength": 1 } },
+        "hpPerCoin": { "type": "integer", "minimum": 1 },
+        "maxPerFight": { "type": "integer", "minimum": 1 }
+      }
+    },
     "matchups": {
       "description": "Who is good and bad against what (docs/matchups.md). Mirrors packages/shared/src/types/matchups.ts MatchupRules. Optional: rules without it play with no matchups. content:validate checks the ids edges name.",
       "type": "object",

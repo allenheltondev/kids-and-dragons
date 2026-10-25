@@ -692,6 +692,22 @@ export interface RulesContent {
    * without it play with no matchups at all.
    */
   matchups?: MatchupRules;
+  /**
+   * Coins from a won fight. Optional: rules without it pay nothing, and a
+   * campaign not named in `campaigns` plays exactly as it always did (Gemfall's
+   * numbers are pinned).
+   */
+  loot?: LootRules;
+}
+
+/** What a won fight pays the party's purse (`RunState.coins`). */
+export interface LootRules {
+  /** The campaigns whose fights drop coins. */
+  campaigns: string[];
+  /** One coin for every this many of a beaten foe's max hit points, at least one each. */
+  hpPerCoin: number;
+  /** The most one fight can pay, so a crowd of small things is not a bank. */
+  maxPerFight: number;
 }
 
 /**
