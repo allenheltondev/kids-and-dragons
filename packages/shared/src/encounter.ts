@@ -78,7 +78,9 @@ import {
 } from "./grid.js";
 import type { Rng } from "./dice.js";
 import { resolveAttack, rollD20 } from "./dice.js";
-import type { ItemEffect, ResolvedCharacter, RulesContent, StatId } from "./types/domain.js";
+import type { ClassId, ItemEffect, ResolvedCharacter, RulesContent, SpeciesId, StatId } from "./types/domain.js";
+import type { MatchupNote, MatchupRules, TraitId } from "./types/matchups.js";
+import { attackNotes, defendNotes, matchupTotal } from "./matchups.js";
 import type { EncounterEnvironment, EnemySpec, RiftBehavior } from "./types/chapter.js";
 import type { DiceRoll } from "./types/state.js";
 import type { CombatBuff, SlowEffect } from "./types/buffs.js";
@@ -554,6 +556,21 @@ export interface Combatant {
    * fight's combatants carry no such key.
    */
   readonly rift?: RiftBehavior;
+  /*
+   * Matchups (docs/matchups.md). Copied from the setup only when
+   * `EncounterContext.matchups` is set, so a fight in a campaign that plays
+   * without them (Gemfall) and every fight persisted before them carries none
+   * of these keys.
+   */
+  /** A hero's species. */
+  readonly species?: SpeciesId;
+  /** A hero's worn class. */
+  readonly class?: ClassId;
+  /** An enemy's traits, from `EnemySpec.traits`. */
+  readonly traits?: readonly TraitId[];
+  /** The species an enemy likes and dislikes, from `EnemySpec.likes` / `dislikes`. */
+  readonly likes?: readonly SpeciesId[];
+  readonly dislikes?: readonly SpeciesId[];
 }
 
 export interface EncounterState {
@@ -696,7 +713,24 @@ export type EncounterEvent =
   /** The clock ran out: `"collapse"` ends the fight, `"surge"` hurts every hero still here. */
   | { readonly type: "riftClock"; readonly onExpire: "collapse" | "surge" }
   /** A surge round began; its `damage` events follow. */
-  | { readonly type: "surge"; readonly amount: number };
+  | { readonly type: "surge"; readonly amount: number }
+  /**
+   * A matchup moved the swing that follows (docs/matchups.md): one per note,
+   * just before that swing's `roll`. `actorId` swung, `targetId` was swung
+   * at. `roll` and `damage` are the note's own numbers from the hero's side
+   * (positive helps the hero, whichever of them is swinging); what the roll
+   * actually moved by, capped, is on the roll's `matchup`. Only in a fight
+   * whose context carried matchups.
+   */
+  | {
+      readonly type: "matchup";
+      readonly actorId: ActorId;
+      readonly targetId: ActorId;
+      readonly id: string;
+      readonly text: string;
+      readonly roll: number;
+      readonly damage: number;
+    };
 
 /**
  * How the encounter stands *right now*. A query, never a phase.
@@ -712,6 +746,12 @@ export interface EncounterContext {
   readonly rules: RulesContent;
   readonly abilities: AbilityCatalog;
   readonly rng: Rng;
+  /**
+   * Matchups (docs/matchups.md): set by the server when `matchupsOn` holds
+   * for the run's campaign, absent otherwise. Absent, a fight computes, draws
+   * and reports exactly what it did before matchups existed.
+   */
+  readonly matchups?: MatchupRules;
 }
 
 /** Illegal requests come back as a refusal; only setup bugs throw. */
@@ -884,6 +924,7 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
       rooted: false,
       initiative: 0,
       ...(placement.rerollOnes ? { rerollOnes: placement.rerollOnes } : {}),
+      ...(ctx.matchups ? { species: character.species, class: character.class } : {}),
     });
     actors.push({ id: character.id, side: "party", x: placement.at.x, y: placement.at.y });
     seats.push({ id: character.id, side: "party", quick: character.stats.quick });
@@ -927,6 +968,13 @@ export function beginEncounter(setup: EncounterSetup, ctx: EncounterContext): En
         : {}),
       // A creature's way with the place (#220): only where there is a place.
       ...(spec.rift && setup.environment ? { rift: structuredClone(spec.rift) } : {}),
+      ...(ctx.matchups
+        ? {
+            traits: [...(spec.traits ?? [])],
+            likes: [...(spec.likes ?? [])],
+            dislikes: [...(spec.dislikes ?? [])],
+          }
+        : {}),
     });
     actors.push({ id, side: "enemy", x: placement.at.x, y: placement.at.y });
     seats.push({ id, side: "enemy", quick: enemyQuick(spec) });
@@ -1673,6 +1721,7 @@ export function performAction(
         actorId: actor.id,
         recipientId,
         effect: spec.effect,
+        abilityId: request.abilityId,
         point,
         points,
         bonus,
@@ -1755,6 +1804,8 @@ interface EffectApplication {
   readonly actorId: ActorId;
   readonly recipientId: ActorId;
   readonly effect: AbilityEffect;
+  /** The ability in use, as the action list names it: which edges apply (docs/matchups.md). */
+  readonly abilityId: string;
   readonly point: Position | null;
   /** Every chosen tile, for the multi-tile verbs. `point` is the first of them. */
   readonly points: readonly Position[];
@@ -1790,12 +1841,22 @@ function applyEffect(
       // untouched then, so the arithmetic below is exactly what it was.
       const rollBuff = buffBonus(state.buffs, actor.id, "roll");
       const guard = buffed(recipient.guard, buffBonus(state.buffs, recipient.id, "guard"), 1);
+      // Matchups (docs/matchups.md): worked out before any die is thrown and
+      // added flat, so the draws are the same with or without them. Without
+      // `ctx.matchups` there are none and nothing below changes.
+      const matchup = ctx.matchups ? swingMatchup(ctx.matchups, actor, recipient, input.abilityId) : undefined;
+      if (matchup) {
+        for (const note of matchup.notes) {
+          events.push({ type: "matchup", actorId, targetId: recipientId, id: note.id, text: note.text, roll: note.roll, damage: note.damage });
+        }
+      }
       const swing = () =>
         resolveAttack(ctx.rng, {
           characterId: actor.id,
           mod: actor.attackMod + input.bonus + rollBuff,
           guard,
           ...(actor.attackStat === undefined ? {} : { stat: actor.attackStat }),
+          ...(matchup ? { matchup: { amount: matchup.roll, notes: matchup.notes } } : {}),
         });
       let roll = swing();
       let working = state;
@@ -1818,7 +1879,9 @@ function applyEffect(
       const tier = damageTier(roll);
       events.push({ type: "roll", roll, targetId: recipientId, tier });
       // A hit always hurts: a burden takes a damage buff down to 1, not 0.
-      const damage = buffed(tieredDamage(effect.damage, tier), buffBonus(state.buffs, actor.id, "damage"), 1);
+      const base = buffed(tieredDamage(effect.damage, tier), buffBonus(state.buffs, actor.id, "damage"), 1);
+      // A matchup's damage is the hero's: at least 1 still lands.
+      const damage = matchup && matchup.damage !== 0 ? Math.max(1, base + matchup.damage) : base;
       working = dealDamage(working, recipientId, damage, events);
       // A numbing sting (#227): the hit just landed leaves its mark. Neither
       // exists on a figure that was not given one, so this is a no-op then.
@@ -1982,6 +2045,46 @@ function applyEffect(
        */
       return { state, rolled: false };
   }
+}
+
+/**
+ * The matchups on one swing (docs/matchups.md), as this swinger's roll and
+ * damage change: a hero at a foe takes `attackNotes` as they are; a foe at a
+ * hero takes `defendNotes` flipped, since those are written from the hero's
+ * side. Undefined when nothing applies, so the roll carries no `matchup`.
+ * Party-on-party and foe-on-foe swings have none.
+ */
+function swingMatchup(
+  table: MatchupRules,
+  actor: Combatant,
+  recipient: Combatant,
+  abilityId: string,
+): { roll: number; damage: number; notes: MatchupNote[] } | undefined {
+  const foeOf = (c: Combatant) => ({
+    ...(c.traits ? { traits: c.traits } : {}),
+    ...(c.likes ? { likes: c.likes } : {}),
+    ...(c.dislikes ? { dislikes: c.dislikes } : {}),
+    name: c.name,
+  });
+  if (actor.side === "party" && recipient.side === "enemy" && actor.species && actor.class) {
+    const notes = attackNotes(table, { species: actor.species, class: actor.class }, foeOf(recipient), abilityId);
+    if (notes.length === 0) return undefined;
+    const total = matchupTotal(notes);
+    return { roll: total.roll, damage: total.damage, notes };
+  }
+  if (actor.side === "enemy" && recipient.side === "party" && recipient.species && recipient.class) {
+    const notes = defendNotes(
+      table,
+      { species: recipient.species, class: recipient.class, abilities: recipient.actions },
+      foeOf(actor),
+    );
+    if (notes.length === 0) return undefined;
+    const total = matchupTotal(notes);
+    // The foe is rolling: what helps the hero lowers its roll. Foes take no
+    // damage notes; a defend edge moves the swing only.
+    return { roll: -total.roll, damage: 0, notes };
+  }
+  return undefined;
 }
 
 /**

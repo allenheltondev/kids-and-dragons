@@ -120,9 +120,20 @@ export function prefaceUtterances(preface: Extract<StartPreface, { status: "read
  * then "So far" altogether; never the goal, its steps, or the last "Last time…" line. Read
  * aloud, every line is still said.
  */
+/**
+ * Fit the card to the room it has: the type steps down (`fitPlate`), then, if it is still
+ * clipped, the least important parts go, one at a time: the recap's lines but the last, then
+ * whatever carries `data-trim`, lowest number first. On the "Where you left off" card that is
+ * the "So far" trail (1) before the goal's steps (2), so what stays longest is the heading
+ * and the goal in one line: the sentence the whole chapter is about, never cut off by the
+ * card's own bottom edge on a short phone.
+ */
 function fitCard(card: HTMLElement): void {
+  card.hidden = false;
   const lines = [...card.querySelectorAll<HTMLElement>(".preface__lines > li")];
-  const extras = [...card.querySelectorAll<HTMLElement>("[data-trim]")];
+  const extras = [...card.querySelectorAll<HTMLElement>("[data-trim]")].sort(
+    (a, b) => Number(a.dataset["trim"] || 1) - Number(b.dataset["trim"] || 1),
+  );
   for (const element of [...lines, ...extras]) element.hidden = false;
   fitPlate(card);
   for (const element of [...lines.slice(0, -1), ...extras]) {
@@ -130,6 +141,11 @@ function fitCard(card: HTMLElement): void {
     element.hidden = true;
     fitPlate(card);
   }
+  // Still clipped with nothing left to trim: a phone held sideways, where the
+  // story plate leaves the world pane a strip too short for even the heading
+  // and the goal. A sliver of a card cut off mid-word says nothing a kid can
+  // read, so the card stays away and the catch-up line, which fits, speaks.
+  if (card.hasAttribute("data-clipped")) card.hidden = true;
 }
 
 type Shown = { kind: "start" | "back"; key: string; scene: string };
@@ -250,7 +266,7 @@ export function ChapterPreface(): ReactElement | null {
                     {current.goal.text}
                   </span>
                 </p>
-                <ul className="preface__steps">
+                <ul className="preface__steps" data-trim="2">
                   {current.goal.steps.map((step, i) => (
                     <li
                       key={step.id}
@@ -268,8 +284,8 @@ export function ChapterPreface(): ReactElement | null {
             )}
             {trail.length === 0 ? null : (
               <>
-                <h3 className="preface__sub" data-trim="">So far</h3>
-                <ul className="preface__lines preface__lines--trail" data-trim="">
+                <h3 className="preface__sub" data-trim="1">So far</h3>
+                <ul className="preface__lines preface__lines--trail" data-trim="1">
                   {trail.map((line) => (
                     <li key={line}>{line}</li>
                   ))}

@@ -109,6 +109,13 @@ export interface RunRecord {
    * `releaseSavedHero`). Written and cleared with `stoppedAt`.
    */
   stoppedBy?: string;
+  /**
+   * What the family called the table the room was opened at, if they named
+   * it (`CreateRoomRequest.location`). It rides on the run, so it stays with
+   * a save when a phone claims the TV's room into its own household, and the
+   * lobby can say where the game was saved.
+   */
+  location?: string;
 }
 
 /**
@@ -492,6 +499,25 @@ export interface MoveProfileInput {
  */
 export type MoveOutcome = "moved" | "spent" | "changed" | "too-big";
 
+/**
+ * A kid's own phone's Web Push subscription (#466): where the push service
+ * delivers "It's your turn" while the app is in the background. What the
+ * browser's `PushSubscription.toJSON()` gives, and whose phone it is.
+ *
+ * Nothing about the kid but her id: the endpoint is the push service's
+ * address for this browser, and the keys encrypt a payload that only ever
+ * says the one fixed sentence (#320).
+ */
+export interface PushSubscriptionRecord {
+  playerId: string;
+  /** Her household when she subscribed. The send reads her device binding, not this. */
+  householdId: string;
+  deviceId: string;
+  endpoint: string;
+  keys: { p256dh: string; auth: string };
+  createdAt: string;
+}
+
 export interface GameRepository {
   // --- household, players, devices -----------------------------------------
   putHousehold(household: Household): Promise<void>;
@@ -632,7 +658,8 @@ export interface GameRepository {
 
   /**
    * Deletes a household and everything under it — players, devices, characters,
-   * runs, and each run's state and event log. Only the sweeper calls this, and
+   * runs, and each run's state and event log, and each kid's visits and push
+   * subscriptions (#466), which are keyed by her. Only the sweeper calls this, and
    * only for expired guests; a claimed household is deleted only by its owner
    * (`deleteHousehold`), which shares every step below but the gate.
    *
@@ -669,7 +696,8 @@ export interface GameRepository {
 
   /**
    * Delete one kid (#252): her profile, every hero she owns, her own phones'
-   * bindings and her visits, all from her home `householdId`. The profile is
+   * bindings, their push subscriptions (#466) and her visits, all from her
+   * home `householdId`. The profile is
    * marked first (`sweeping`, as a household is), and a marked profile reads
    * as gone from then on (`getPlayer`, `listPlayers`), so every room door
    * treats her as out while the rest goes; the profile row goes last, so an
@@ -758,6 +786,14 @@ export interface GameRepository {
    * A missing device is a no-op, not an error.
    */
   touchDevice(householdId: string, deviceId: string, lastSeen: string): Promise<void>;
+  /**
+   * A rotated token's hash and `lastSeen`, and nothing else, onto a binding
+   * that is still there and not revoked; false, and no write, otherwise. The
+   * sliding expiry's re-issue, for the reason `touchDevice` gives: a full
+   * `putDevice` of the copy read at resolve time could land after a
+   * revocation and hand the lost phone a fresh 30-day token.
+   */
+  rotateDevice(householdId: string, deviceId: string, tokenHash: string, lastSeen: string): Promise<boolean>;
 
   // --- characters (household-scoped, never run-scoped — §3) ----------------
   /**
@@ -864,6 +900,9 @@ export interface GameRepository {
    * One conditional write rather than a read then a write, so a burst of
    * parallel requests cannot all read "below the limit" before any of them
    * is counted.
+   *
+   * The same counter, under keys of their own, budgets crash reports (#317)
+   * and a spectator's cheers (#388).
    */
   reserveCodeLookup(clientKey: string, window: number, limit: number, ttl: number): Promise<boolean>;
   /**
@@ -881,4 +920,21 @@ export interface GameRepository {
    * one another's times.
    */
   touchPresence(runId: string, playerId: string, at: string, ttl: number): Promise<Record<string, string>>;
+  /**
+   * Every seated phone's last word in this run, as `touchPresence` returns it,
+   * without beating for anybody. Empty when nobody has beaten (or the row has
+   * expired). For the push that tells a quiet phone it is its turn (#466).
+   */
+  getPresence(runId: string): Promise<Record<string, string>>;
+
+  // --- push subscriptions (#466) ---------------------------------------------
+  /**
+   * Write (or replace) the subscription for one of a kid's own phones. One per
+   * phone: a phone that subscribes again replaces what it had.
+   */
+  putPushSubscription(subscription: PushSubscriptionRecord): Promise<void>;
+  /** Every phone of hers that takes pushes. Empty when none does. */
+  listPushSubscriptions(playerId: string): Promise<PushSubscriptionRecord[]>;
+  /** The phone stops taking pushes. A missing one is a no-op. */
+  deletePushSubscription(playerId: string, deviceId: string): Promise<void>;
 }

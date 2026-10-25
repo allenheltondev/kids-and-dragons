@@ -42,7 +42,7 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pass_keeper",
           "name": "Pass keeper"
         }
       ],
@@ -73,7 +73,7 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pass_keeper",
           "name": "Pass keeper"
         }
       ],
@@ -98,7 +98,7 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pass_keeper",
           "name": "Pass keeper"
         }
       ],
@@ -123,7 +123,7 @@
       ],
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pass_keeper",
           "name": "Pass keeper"
         }
       ],
@@ -137,7 +137,7 @@
       "outcome": "success",
       "cast": [
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pass_keeper",
           "name": "Pass keeper"
         }
       ],

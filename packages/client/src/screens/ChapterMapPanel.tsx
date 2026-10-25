@@ -129,8 +129,23 @@ const MIN_COLUMNS = 3;
  * in flight across a deploy has no trail yet, and that gives a map with one
  * named stop — the current one — rather than a crash.
  */
+/**
+ * The layout is a fact about the chapter alone, and the panel re-renders on
+ * every patch while it is open; only which stops are seen changes with play.
+ * Chapters are loaded once and never mutated, so the object is the key.
+ */
+const layouts = new WeakMap<Chapter, ReturnType<typeof chapterMap>>();
+function layoutOf(chapter: Chapter): ReturnType<typeof chapterMap> {
+  let map = layouts.get(chapter);
+  if (!map) {
+    map = chapterMap(chapter);
+    layouts.set(chapter, map);
+  }
+  return map;
+}
+
 export function mapTrail(chapter: Chapter, state: Pick<RunState, "sceneId" | "visited">): Trail {
-  const map = chapterMap(chapter);
+  const map = layoutOf(chapter);
   const seen = new Set<SceneId>(state.visited ?? []);
   if (state.sceneId !== null) seen.add(state.sceneId);
 

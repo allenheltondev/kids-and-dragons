@@ -8,3 +8,46 @@ updates:
     directory: /
     schedule:
       interval: weekly
+
+  # npm: the advisories the 2026-10 pass found (vite, vitest, concurrently,
+  # express) had in-range fixes for weeks before anyone ran `npm audit`.
+  # Grouped so a week's patch and minor bumps arrive as one PR the full CI
+  # checks, instead of a dozen; majors come one at a time, since each is a
+  # real migration (typescript, vitest, jsdom).
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      # vitest and its @vitest/* packages (coverage-v8) are one release train:
+      # each package's peer dependency is the matching vitest major. Split into
+      # two PRs, the vitest bump leaves coverage-v8 on the old major and the
+      # coverage-v8 bump cannot install against the old vitest, so neither is
+      # ever mergeable alone. First in this list, so it claims them before the
+      # minor-and-patch group does, and it takes majors too.
+      vitest:
+        patterns: ["vitest", "@vitest/*"]
+      minor-and-patch:
+        update-types: [minor, patch]
+    ignore:
+      # The types follow the Node the code runs on (22: ci.yml node-version and
+      # package.json engines), not the newest Node. Types ahead of the runtime
+      # let code call APIs that do not exist where it runs, and nothing would
+      # fail until it did. Minor and patch bumps still arrive; raise the major
+      # together with the runtime.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # React stays on 19.2 for now: react-dom 19.3 grew 17%, which took the
+      # first paint from 315 KB to 343 KB (8.6 KB gzipped) against the budget
+      # in tools/perf/bundle-budget.ts, for additions nothing here uses yet
+      # (#450). Patches still arrive. Lift this together with the budget when a
+      # feature needs 19.3; the types move with the runtime.
+      - dependency-name: "react"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "react-dom"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "@types/react"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
+      - dependency-name: "@types/react-dom"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]

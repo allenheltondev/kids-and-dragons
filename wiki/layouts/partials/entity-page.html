@@ -11,7 +11,7 @@
 {{ $p := . }}
 {{ $type := .Params.type | default "page" }}
 {{ $art := partial "art-for.html" . }}
-{{ $kinds := dict "creature" "Creature" "biome" "Region" "location" "Place" "npc" "People" "individual" "Named Folk" "character" "Playable Hero" "item" "Item" "faction" "Faction" "quest" "Quest" "campaign" "Campaign" "route" "Road & Route" "feature" "River & Landmark" }}
+{{ $kinds := dict "creature" "Creature" "biome" "Region" "location" "Place" "npc" "People" "class" "Class" "individual" "Named Folk" "character" "Playable Hero" "item" "Item" "faction" "Faction" "quest" "Quest" "campaign" "Campaign" "route" "Road & Route" "feature" "River & Landmark" }}
 
 <article class="entity-page entity-type-{{ $type }}">
   {{ if and $art.path $art.wide }}

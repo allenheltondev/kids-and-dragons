@@ -23,7 +23,7 @@ export const SLUG_RE = /^[a-z0-9]+(?:_[a-z0-9]+)*$/;
 export const Slug = z.string().regex(SLUG_RE, "must be lower snake_case");
 
 /**
- * The twelve taxonomies, and the id prefix each one owns.
+ * The thirteen taxonomies, and the id prefix each one owns.
  *
  * Was thirteen. D6 found that `biomes.yaml` and `geography.yaml` were describing
  * the same seventeen places twice — every biome had a `geography_id`, and every
@@ -35,6 +35,10 @@ export const Slug = z.string().regex(SLUG_RE, "must be lower snake_case");
  * `character.*` is the playable species from `characters.yaml`, distinct from
  * `npc.*` peoples — the one remaining place where the prefix and the file name
  * disagree.
+ *
+ * `class.*` is a playable class (Thornguard, Starweaver, Duskrunner,
+ * Songkeeper): what a hero is besides a species. Its `home` is the class place
+ * that teaches it (docs/class-mastery.md §2).
  *
  * `npc.*` is a *kind* of person (centaur, faun); `individual.*` is one named
  * person (D8). They are separate taxonomies because they answer different
@@ -54,6 +58,7 @@ export const TAXONOMY_PREFIX = {
   campaign: "campaign",
   feature: "feature",
   route: "route",
+  class: "class",
 } as const satisfies Record<string, string>;
 
 export type Taxonomy = keyof typeof TAXONOMY_PREFIX;

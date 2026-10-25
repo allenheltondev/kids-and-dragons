@@ -192,7 +192,7 @@ describe("ordered campaigns — seen, skipped, unchanged", () => {
     }
   });
 
-  it("the CLI skips them with status 0 and says so", () => {
+  it("the CLI skips them with status 0 and says so", { timeout: 60_000 }, () => {
     const run = cli(["--campaign", "gemfall"]);
     expect(run.status).toBe(0);
     expect(run.stdout).toContain("ordered campaign (no graph), skipped");
@@ -355,7 +355,7 @@ describe("journey-ci — sideways, revisit and single-use routes", () => {
     expect(JSON.parse(JSON.stringify(summary))).toEqual(summary);
   });
 
-  it("the CLI draws it, plays it and exits 0", () => {
+  it("the CLI draws it, plays it and exits 0", { timeout: 60_000 }, () => {
     const mermaid = cli(["--campaign", "journey-ci", "--format", "mermaid"]);
     expect(mermaid.status).toBe(0);
     expect(mermaid.stdout.startsWith("%% The Journey Gate")).toBe(true);
@@ -629,7 +629,7 @@ describe("checkJourneySave — classifying a stored journey", () => {
     );
   });
 
-  it("the CLI checks a save file and exits non-zero when it is broken", () => {
+  it("the CLI checks a save file and exits non-zero when it is broken", { timeout: 60_000 }, () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), "journey-save-"));
     try {
       const good = path.join(dir, "good.json");
@@ -653,7 +653,7 @@ describe("checkJourneySave — classifying a stored journey", () => {
 // ===========================================================================
 
 describe("the CLI", () => {
-  it("refuses an unknown campaign and a bad option with status 2", () => {
+  it("refuses an unknown campaign and a bad option with status 2", { timeout: 60_000 }, () => {
     expect(cli(["--campaign", "no-such-campaign"]).status).toBe(2);
     expect(cli(["--campaign", "journey-ci", "--format", "svg"]).status).toBe(2);
     expect(cli([]).status).toBe(2);

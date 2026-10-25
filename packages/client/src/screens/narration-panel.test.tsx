@@ -299,18 +299,26 @@ describe("what somebody has picked but not confirmed", () => {
 
   afterEach(() => useGameStore.setState({ previews: {} }));
 
-  it("lights up the option someone is leaning toward, without naming them", () => {
+  it("does not light the option a group vote is leaning toward: the room sees ticks, not a pick", () => {
     // Stamped with the decision on screen: no chapter or trail in this
     // fixture, the fork scene, story turn 0.
     useGameStore.setState({
       previews: { p_2: { preview: { kind: "choice", choiceId: "west" }, context: "choice:bramblewood-01:0:s:0" } },
     });
     const { container } = mount(vote);
+    expect(container.querySelector(".narration__choice--picked")).toBeNull();
+    expect(container.querySelector(".kad-vote-tick--on")).toBeNull();
+  });
+
+  it("still lights the option one kid is leaning toward on their own decision, without naming them", () => {
+    useGameStore.setState({
+      previews: { p_2: { preview: { kind: "choice", choiceId: "west" }, context: "choice:bramblewood-01:0:s:0" } },
+    });
+    const { container } = mount({ prompt: { ...vote.prompt, vote: false, forPlayerIds: ["p_2"] } });
     const picked = container.querySelectorAll(".narration__choice--picked");
     expect(picked).toHaveLength(1);
     expect(picked[0]?.textContent).toContain("Go west");
     expect(picked[0]?.textContent).not.toContain("Thistle");
-    expect(container.querySelector(".kad-vote-tick--on")).toBeNull();
   });
 
   it("ticks who has locked in a vote, on the option they chose, as the phones do", () => {
@@ -349,6 +357,41 @@ describe("what somebody has picked but not confirmed", () => {
     useGameStore.setState({ previews: {} });
     const { container } = mount(vote);
     expect(container.querySelector(".narration__choice--picked")).toBeNull();
+  });
+});
+
+describe("what the table picked (RunState.decision)", () => {
+  const DECIDED = { sceneId: "camp", label: "Open the gate.", byPlayerId: "p_2", vote: true };
+
+  it("says what the party voted, in one line over the story, and says it aloud", () => {
+    mount({ sceneId: "camp", narration: "The gate swings open.", decision: DECIDED });
+    expect(screen.getByTestId("decision").textContent).toBe("The party voted: Open the gate.");
+    expect(spoken).toContain("The party voted: Open the gate. The gate swings open.");
+  });
+
+  it("names the kid who picked, when one kid chose for everyone", () => {
+    mount({ sceneId: "camp", decision: { ...DECIDED, label: "Go west", vote: false } });
+    expect(screen.getByTestId("decision").textContent).toBe("Thistle chose: Go west.");
+  });
+
+  it("does not add a full stop to a label that already has one", () => {
+    mount({ sceneId: "camp", decision: DECIDED });
+    expect(screen.getByTestId("decision").textContent).not.toMatch(/\.\.$/);
+  });
+
+  it("is gone once the table has moved on to another scene", () => {
+    mount({ sceneId: "road", decision: DECIDED });
+    expect(screen.queryByTestId("decision")).toBeNull();
+  });
+
+  it("is not shown in a fight, which has no story choice to report", () => {
+    mount({
+      sceneId: "camp",
+      sceneType: "encounter",
+      encounter: { round: 1, turnOrder: [], combatants: [] } as never,
+      decision: DECIDED,
+    });
+    expect(screen.queryByTestId("decision")).toBeNull();
   });
 });
 

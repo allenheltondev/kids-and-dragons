@@ -13,6 +13,7 @@
  */
 
 import { randomName } from "./creationContent";
+import { loadLocationName } from "../store/persistence";
 import { useCallback, useEffect, useId, useState } from "react";
 import type { ChangeEvent, ReactElement } from "react";
 import type { SharedDevicePlayer, SharedSeatRequest } from "@kad/shared";
@@ -23,6 +24,7 @@ import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { Icon } from "./icons";
 import { LazySignInFlow } from "./HomeScreen";
+import { TableNameField } from "./TableNameField";
 import { EntryScene } from "./EntryScene";
 import "./shared.css";
 import "./HomeScreen.css";
@@ -54,6 +56,8 @@ export function SharedHome(): ReactElement {
   const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
   const [busy, setBusy] = useState<null | "join" | "create" | "screen">(null);
   const [error, setError] = useState<string | null>(null);
+  // What the family calls its table, kept on the tablet so the TV remembers it.
+  const [tableName, setTableName] = useState(() => loadLocationName());
   const nameFieldId = useId();
 
   /*
@@ -130,7 +134,7 @@ export function SharedHome(): ReactElement {
     setError(null);
     setBusy("screen");
     try {
-      await openOnThisScreen();
+      await openOnThisScreen(tableName);
     } catch (err) {
       setError(err instanceof Error ? err.message : "That didn’t work. Try again?");
       // A forgotten tablet is told so by the server, and stops being one.
@@ -138,7 +142,7 @@ export function SharedHome(): ReactElement {
     } finally {
       setBusy(null);
     }
-  }, [openOnThisScreen, refreshShared]);
+  }, [openOnThisScreen, tableName, refreshShared]);
 
   return (
     <main className="home entry-scene-host">
@@ -247,6 +251,8 @@ export function SharedHome(): ReactElement {
                 </form>
               ) : null}
 
+              <TableNameField value={tableName} onChange={setTableName} />
+
               <div className="home__host-toggle">
                 <button
                   type="button"
@@ -264,7 +270,7 @@ export function SharedHome(): ReactElement {
                 <Icon name="qr" />
                 <span>Hi, {name}!</span>
               </h1>
-              <p className="home__hint home__join-hint">Type the four letters on the big screen.</p>
+              <p className="home__hint home__join-hint">Ask your grown-up for the room code, then type it here.</p>
 
               <label className="home__code">
                 <input

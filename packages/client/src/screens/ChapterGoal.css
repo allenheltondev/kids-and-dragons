@@ -11,6 +11,7 @@
 
 .goal {
   --goal-gold: var(--kad-gold, #ffc95c);
+  --goal-gold-rgb: var(--kad-gold-rgb);
   display: flex;
   flex-direction: column;
   gap: var(--space-1, 0.25em);
@@ -18,9 +19,9 @@
   max-inline-size: min(46em, 100%);
   margin: 0;
   padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
-  border: 0.08em solid color-mix(in srgb, var(--goal-gold) 55%, transparent);
+  border: 0.08em solid rgb(var(--goal-gold-rgb) / 55%);
   border-radius: var(--radius-md, 0.75em);
-  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 72%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 72%);
   color: var(--color-text, #f4f0ff);
   text-shadow: none;
   pointer-events: none;
@@ -36,7 +37,7 @@
   line-height: 1.25;
 }
 
-.goal__text > svg {
+.goal__text > .kad-icon {
   flex: 0 0 auto;
   color: var(--goal-gold);
 }
@@ -71,7 +72,7 @@
   opacity: 0.85;
 }
 
-.goal__box > svg {
+.goal__box > .kad-icon {
   inline-size: 0.95em;
   block-size: 0.95em;
 }
@@ -386,9 +387,9 @@ html:not([data-contrast="high"]) .goal.goal--badge::before {
   min-inline-size: 44px;
   min-block-size: 44px;
   padding: 0 0.7rem;
-  border: 2px solid color-mix(in srgb, var(--goal-gold) 60%, transparent);
+  border: 2px solid rgb(var(--goal-gold-rgb) / 60%);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 82%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 82%);
   color: var(--color-text, #f4f0ff);
   font: inherit;
   font-weight: 800;
@@ -398,7 +399,7 @@ html:not([data-contrast="high"]) .goal.goal--badge::before {
   -webkit-tap-highlight-color: transparent;
 }
 
-.goal__badge > svg {
+.goal__badge > .kad-icon {
   color: var(--goal-gold);
 }
 
@@ -432,7 +433,7 @@ html:not([data-contrast="high"]) .goal.goal--badge::before {
   max-block-size: calc(100cqh - 3.5rem);
   overflow-y: auto;
   padding: 0.75rem 0.9rem;
-  border: 2px solid color-mix(in srgb, var(--goal-gold) 60%, transparent);
+  border: 2px solid rgb(var(--goal-gold-rgb) / 60%);
   border-radius: 0.75rem;
   /* Parchment, like the painted goal card the steps' boxes are drawn for (chrome.css). */
   background: #f3e6c8;

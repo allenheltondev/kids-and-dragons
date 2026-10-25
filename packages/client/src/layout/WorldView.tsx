@@ -37,6 +37,7 @@ import { FieldGuideBanner } from "../screens/FieldGuideNews";
 import { RiftStatus } from "../screens/RiftStatus";
 import { ChapterGoalCard } from "../screens/ChapterGoal";
 import { ChapterPreface } from "../screens/ChapterPreface";
+import { RoomCheers } from "../screens/RoomCheers";
 import { StoryPlates } from "../screens/StoryPlates";
 import { useChapter, useGameStore, useMe, useRunState, useSession } from "../store";
 import type { PresentationEvent } from "../store/contract";
@@ -53,7 +54,7 @@ import { riftCueFor } from "../world/scene-rift";
 import { perfRequested } from "../world/frame-stats";
 import { RendererBoundary } from "../world/RendererFallback";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
-import { usePrefetchUpcoming } from "../sw/prefetch";
+import { usePrefetchUpcoming, useWarmChapter } from "../sw/prefetch";
 
 // Loaded on demand: PixiStage pulls in all of pixi.js, which is most of the
 // bundle and pure decoration (the stage is aria-hidden). Nothing waits on it —
@@ -94,6 +95,7 @@ export function WorldView({
   // A display client has no player (spec §2.1), so it never has a character and
   // must never be parked on the creation preview waiting for one.
   const isDisplay = (useSession()?.playerId ?? "") === "";
+  useWarmChapter(isDisplay && prefetch);
 
   // Same trigger PlayerView uses: "I have no character yet", not the run phase.
   const creating = (phase === "lobby" || phase === "creation") && me === null && !isDisplay;
@@ -185,6 +187,10 @@ export function WorldView({
           nothing outside a fight. */}
       {isSceneLike(phase) && <FightLog />}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
+      {/* Spectators' cheers and how many are watching (#388). Only on the room's
+          own screen: a party phone's world pane, mounted behind its controls,
+          does not gate presentations, and the heroes' phones never show cheers. */}
+      {gatesPresentations ? <RoomCheers /> : null}
 
       {/* The roll is the centrepiece of whatever pane it lands in. On a TV that
           is the room; on a phone the shell hands the world the whole screen for

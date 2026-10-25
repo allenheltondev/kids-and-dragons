@@ -1,0 +1,106 @@
+schema_version: "2.0"
+document_type: red_sky_class_canon
+title: "The Realm of Red Sky Classes"
+updated: "2026-10-25"
+
+purpose: >-
+  Canonical, agent-readable reference for the four playable classes and the class
+  place that teaches each. Use this file when writing a class place, a teacher, a
+  class-only choice, or anything that says what a Thornguard, Starweaver,
+  Duskrunner or Songkeeper is. The numbers (stats, move text, how many deeds a
+  distinction takes) live in content/rules.json and docs/class-mastery.md, not
+  here.
+
+agent_instructions:
+  - "Everything here comes from docs/class-mastery.md and content/rules.json. Do not invent lore beyond them: no class history, no founders, no named teachers."
+  - "Each class has exactly one home, the class place that teaches it, and that place teaches only its own class. `home` is required and always a location."
+  - "A hero has one class at a time. Gear for two classes worn together argues and works for neither, which is why: the song bell will not ring near the thorn bracer, and the star circlet makes the dusk hood itch."
+  - "The three distinctions (Apprentice, Expert, Master) are earned only by doing that class's deeds. They are never lost by switching, and only the worn class counts."
+  - "The Rookery is taught by the crows, all of them. No crow is named or singled out."
+  - "Empty relationship lists are deliberate; they do not authorize an agent to fill the gap."
+
+controlled_values:
+  canon_status:
+    confirmed: "Directly established by worldbuilding decisions and prior canon."
+    newly_defined: "Added as canon in this inventory."
+    intentionally_undefined: "A protected mystery or open design slot."
+  role:
+    front_line: "Stands in front and keeps friends safe."
+    skirmisher: "Quick and hard to pin down; hits where the trouble is not."
+    caster: "Pulls light from the sky and puts it where it is needed."
+    support: "Keeps everybody standing."
+
+class_ids:
+  - thornguard
+  - starweaver
+  - duskrunner
+  - songkeeper
+
+classes:
+  - id: class.thornguard
+    title: "Thornguard"
+    canon_status: newly_defined
+    featured: false
+    tags: [class, front_line, might]
+    short_description: >-
+      You stand in front. That is the whole job, and it is a big one.
+    role: front_line
+    home: location.dojo
+    gear: a thorn bracer
+    distinctions:
+      - { rank: apprentice, move: Shove }
+      - { rank: expert, move: Bramble Wall }
+      - { rank: master, move: Unbreakable }
+    relationships:
+      locations: [location.dojo]
+
+  - id: class.starweaver
+    title: "Starweaver"
+    canon_status: newly_defined
+    featured: false
+    tags: [class, caster, clever]
+    short_description: >-
+      You pull little pieces of the sky down and put them where they are needed.
+    role: caster
+    home: location.academy
+    gear: a star circlet
+    distinctions:
+      - { rank: apprentice, move: Glimmer }
+      - { rank: expert, move: Tanglelight }
+      - { rank: master, move: Starfall }
+    relationships:
+      locations: [location.academy]
+
+  - id: class.duskrunner
+    title: "Duskrunner"
+    canon_status: newly_defined
+    featured: false
+    tags: [class, skirmisher, quick]
+    short_description: >-
+      Everywhere at once, never where the trouble lands.
+    role: skirmisher
+    home: location.rookery
+    gear: a dusk hood
+    distinctions:
+      - { rank: apprentice, move: Vanish }
+      - { rank: expert, move: Twin Step }
+      - { rank: master, move: Storm of Blades }
+    relationships:
+      locations: [location.rookery]
+
+  - id: class.songkeeper
+    title: "Songkeeper"
+    canon_status: newly_defined
+    featured: false
+    tags: [class, support, heart]
+    short_description: >-
+      You keep everybody standing, and you make it look like a hero move. Because it is.
+    role: support
+    home: location.conservatory
+    gear: a song bell on a cord
+    distinctions:
+      - { rank: apprentice, move: Soothe }
+      - { rank: expert, move: Chorus }
+      - { rank: master, move: Encore }
+    relationships:
+      locations: [location.conservatory]

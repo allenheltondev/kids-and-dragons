@@ -8,6 +8,7 @@ import { createRoot } from "react-dom/client";
 import "./report/listen";
 import { startA11y } from "./a11y/prefs";
 import { App } from "./App";
+import { BootMark } from "./boot/BootMark";
 import { listenForInstallPrompt } from "./install/prompt";
 import { browserEnv } from "./install/detect";
 import { recordFirstLaunch } from "./install/remember";
@@ -36,6 +37,7 @@ createRoot(host).render(
   // sync/channel.ts get exercised on every save instead of on a TV at bedtime.
   <StrictMode>
     <App />
+    <BootMark />
   </StrictMode>,
 );
 

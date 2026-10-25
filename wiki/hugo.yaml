@@ -89,6 +89,7 @@ params:
       sections:
         - { id: guide, icon: "painted/scroll.webp" }
         - { id: characters, icon: "painted/party.webp", label: "Heroes" }
+        - { id: classes, icon: "painted/star.webp", label: "Classes" }
         - { id: items, icon: "painted/satchel.webp" }
         - { id: campaigns, icon: "painted/quest.webp" }
     - name: "The Realm of Red Sky"

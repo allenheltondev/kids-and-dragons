@@ -8,6 +8,7 @@
 import { itemCatalog } from "@kad/shared";
 import { withItemIcons } from "../assets/item-icons";
 import type {
+  Bestiary,
   ResolvedCharacter,
   ActionRequest,
   ActionResponse,
@@ -209,6 +210,10 @@ export interface Api {
    * survives the page that sends it closing.
    */
   postPresence(leaving: boolean, token: string): Promise<void>;
+  /** A spectator's cheer, relayed to the room's screens (#388). */
+  postCheer(cheer: string, token: string): Promise<void>;
+  /** "Just watch", or back to making a hero (#388). The patch arrives on the channel. */
+  postSpectate(watching: boolean, token: string): Promise<void>;
   /**
    * Take the household's stopped chapter into this room (#259, server
    * handlers/save.ts). The answer is the run's patch like any other change;
@@ -267,6 +272,12 @@ export interface Api {
    * step so the shape-tolerance is testable without a fetch.
    */
   loadAbilities(): Promise<unknown>;
+  /**
+   * Canon's creatures (`content/bestiary.json`), for what a check badge says
+   * about a creature's likes and dislikes. Optional to the game: a caller that
+   * cannot get it carries on without.
+   */
+  loadBestiary(): Promise<Bestiary>;
 
   /** `null` when the deployment has no user pool, i.e. local dev. */
   fetchConfig(): Promise<ClientConfig | null>;
@@ -520,6 +531,24 @@ export const api: Api = {
     });
   },
 
+  async postCheer(cheer, token) {
+    await request<{ ok: boolean }>("/api/cheer", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token,
+      body: JSON.stringify({ cheer }),
+    });
+  },
+
+  async postSpectate(watching, token) {
+    await request<{ ok: true; seq: number }>("/api/spectate", {
+      method: "POST",
+      headers: JSON_HEADERS,
+      token,
+      body: JSON.stringify({ watching }),
+    });
+  },
+
   async postResume(token) {
     await request<{ ok: true }>("/api/resume", {
       method: "POST",
@@ -595,6 +624,10 @@ export const api: Api = {
 
   loadAbilities() {
     return request<unknown>("/content/abilities.json");
+  },
+
+  loadBestiary() {
+    return request<Bestiary>("/content/bestiary.json");
   },
 
   loadWorld() {

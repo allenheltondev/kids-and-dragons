@@ -1,3 +1,27 @@
+import earArt from "./painted/ear.webp";
+import d20Art from "./painted/d20.webp";
+import diceArt from "./painted/dice.webp";
+import phoneArt from "./painted/phone.webp";
+import tvArt from "./painted/tv.webp";
+import storybookArt from "./painted/storybook.webp";
+import waitingArt from "./painted/waiting.webp";
+import numbedArt from "./painted/numbed.webp";
+import puffedArt from "./painted/puffed.webp";
+import levelupArt from "./painted/levelup.webp";
+import downArt from "./painted/down.webp";
+import readyArt from "./painted/ready.webp";
+import voteArt from "./painted/vote.webp";
+import restArt from "./painted/rest.webp";
+import leafArt from "./painted/leaf.webp";
+import coinArt from "./painted/coin.webp";
+import envelopeArt from "./painted/envelope.webp";
+import passkeyArt from "./painted/passkey.webp";
+import riftlight_indicatorArt from "./painted/riftlight_indicator.webp";
+import crowArt from "./painted/crow.webp";
+import token_thornguardArt from "./painted/token_thornguard.webp";
+import token_duskrunnerArt from "./painted/token_duskrunner.webp";
+import token_starweaverArt from "./painted/token_starweaver.webp";
+import token_songkeeperArt from "./painted/token_songkeeper.webp";
 import handArt from "./painted/hand.webp";
 import arrowArt from "./painted/arrow.webp";
 import nameArt from "./painted/name.webp";
@@ -29,6 +53,8 @@ import fieldGuideArt from "./painted/field-guide.webp";
 import globeArt from "./painted/globe.webp";
 import mapArt from "./painted/map.webp";
 import satchelArt from "./painted/satchel.webp";
+import bagArt from "./painted/bag.webp";
+import statsArt from "./painted/stats.webp";
 import consumableArt from "./painted/consumable.webp";
 import questArt from "./painted/quest.webp";
 import trinketArt from "./painted/trinket.webp";
@@ -69,6 +95,32 @@ import sparkArt from "./painted/spark.webp";
 import thornArt from "./painted/thorn.webp";
 import wingArt from "./painted/wing.webp";
 export const PAINTED_ART: Record<string, string> = {
+  ear: earArt,
+  d20: d20Art,
+  dice: diceArt,
+  phone: phoneArt,
+  tv: tvArt,
+  storybook: storybookArt,
+  waiting: waitingArt,
+  numbed: numbedArt,
+  puffed: puffedArt,
+  levelup: levelupArt,
+  down: downArt,
+  ready: readyArt,
+  vote: voteArt,
+  rest: restArt,
+  leaf: leafArt,
+  coin: coinArt,
+  envelope: envelopeArt,
+  passkey: passkeyArt,
+  riftlight_indicator: riftlight_indicatorArt,
+  crow: crowArt,
+
+  token_thornguard: token_thornguardArt,
+  token_duskrunner: token_duskrunnerArt,
+  token_starweaver: token_starweaverArt,
+  token_songkeeper: token_songkeeperArt,
+
   eye: eyeArt,
   facet_barge: facetBargeArt,
   facet_caravan: facetCaravanArt,
@@ -138,7 +190,8 @@ export const PAINTED_ART: Record<string, string> = {
   duskrunner: duskrunnerArt,
   starweaver: starweaverArt,
   songkeeper: songkeeperArt,
-  bag: satchelArt,
+  bag: bagArt,
+  stats: statsArt,
   guard: thornguardArt,
   steps: bootArt,
 };

@@ -16,7 +16,7 @@
      camera frames the board to its left (world/stage-inset.ts). */
   --fight-log-beside: 1;
   position: absolute;
-  inset-block-start: calc(var(--kad-corner-bottom, 52px) + 0.4em);
+  inset-block-start: calc(var(--kad-corner-bottom, 44px) + 0.4em);
   inset-inline-end: 0.75em;
   z-index: 2;
   display: flex;
@@ -25,12 +25,12 @@
   inline-size: min(34%, 26em);
   /* Never past the bottom of the pane: on a short screen the oldest lines
      give way at the top (below), and the Guard note keeps its place. */
-  max-block-size: calc(100% - var(--kad-corner-bottom, 52px) - 1.2em);
+  max-block-size: calc(100% - var(--kad-corner-bottom, 44px) - 1.2em);
   padding: 0.5em 0.75em;
   border: 0.08em solid var(--color-border, #3a3468);
   border-inline-start: 0.3em solid var(--color-accent, #ffc95c);
   border-radius: var(--radius-md, 0.75em);
-  background: color-mix(in srgb, var(--kad-bg, #0d0b1a) 84%, transparent);
+  background: rgb(var(--kad-bg-rgb) / 84%);
   box-shadow: 0 0.3em 1em rgba(0, 0, 0, 0.45);
   color: var(--color-text, #f4f0ff);
   pointer-events: none;
@@ -119,25 +119,25 @@
 
 .fight-log__verdict--graze,
 .fight-log__verdict--solid {
-  background: color-mix(in srgb, var(--color-success, #4ad991) 25%, transparent);
+  background: rgb(var(--color-success-rgb) / 25%);
   color: var(--color-success, #4ad991);
 }
 
 .fight-log__verdict--critical {
-  background: color-mix(in srgb, var(--color-accent, #ffc95c) 30%, transparent);
+  background: rgb(var(--color-accent-rgb) / 30%);
   color: var(--color-accent, #ffc95c);
   box-shadow: 0 0 0 0.12em var(--color-accent, #ffc95c);
 }
 
 .fight-log__verdict--miss {
-  background: color-mix(in srgb, var(--color-text-muted, #b7b0d8) 20%, transparent);
+  background: rgb(var(--color-text-muted-rgb) / 20%);
   color: var(--color-text-muted, #b7b0d8);
 }
 
 /* A monster's hit lands on the party: the hearts it took read as bad news. */
 .fight-log__line--bad .fight-log__verdict--graze,
 .fight-log__line--bad .fight-log__verdict--solid {
-  background: color-mix(in srgb, var(--color-danger, #ff6b6b) 25%, transparent);
+  background: rgb(var(--color-danger-rgb) / 25%);
   color: var(--color-danger, #ff6b6b);
 }
 
@@ -197,4 +197,63 @@
   .fight-log__guard {
     display: none;
   }
+}
+
+/*
+ * Matchups (docs/matchups.md). A plus and a minus differ in icon (plus /
+ * minus glyph), in their lead words ("Strong here!" / "Careful:") and in the
+ * edge (solid / dashed), so colour is never the only thing telling them apart
+ * (spec §11). Plain text on the log's own background, nothing to tap.
+ */
+.fight-log__chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fight-log__chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.15em 0.6em;
+  border: 0.08em solid var(--color-accent, #ffc95c);
+  border-radius: var(--radius-pill, 999em);
+  background: var(--color-surface, #191534);
+  font-size: 0.9em;
+  font-weight: 700;
+  line-height: 1.25;
+  animation: fight-log-arrive 320ms ease-out both;
+}
+
+.fight-log__matchup {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  padding-inline-start: 0.5em;
+  border-inline-start: 0.18em solid currentColor;
+  font-size: 0.9em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.fight-log__matchup--plus {
+  color: var(--color-success, #4ad991);
+}
+
+.fight-log__matchup--minus {
+  color: var(--color-warning, #ffc95c);
+  border-inline-start-style: dashed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fight-log__chip {
+    animation: none;
+  }
+}
+
+:root[data-motion="reduced"] .fight-log__chip {
+  animation: none;
 }

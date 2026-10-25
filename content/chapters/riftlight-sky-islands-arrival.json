@@ -43,7 +43,7 @@
         }
       ],
       "rift": "collapse",
-      "narration": "The fold opens onto cold stone high above the realm. Your party stumbles through together. Behind you the fold shuts with a pop, and wind rushes in to fill the gap. A kitsune temple keeper hooks one arm through a rope ring and waves you over. \"Hold on to something! These are called the Sky Islands, and this one is not where it belongs.\" Your goal is to find your feet up here, and to learn what is wrong with the sky roads.",
+      "narration": "The fold opens onto cold stone high above the realm. Your party stumbles through together. Behind you the fold shuts with a pop, and wind rushes in to fill the gap. A kitsune temple keeper hooks one arm through a rope ring and waves you over. \"Hold on to something! These are called the Sky Islands, and this one is not where it belongs.\" Your goal is to find your feet up here. Find shelter, listen for the opening, and help her mark the unsafe path.",
       "choices": [
         {
           "id": "continue",
@@ -58,7 +58,7 @@
             "flag": "sky_arrival_flight"
           },
           "replace": true,
-          "text": "The Cairnstep griffins swoop low and set your whole party down on a stone pad high above the realm. They are gone again in three flaps. A kitsune temple keeper hooks one arm through a rope ring and waves you over. \"Hold on to something! These are called the Sky Islands. Our old landing route points into empty sky now.\" Your goal is to find your feet up here, and to learn what is wrong with the sky roads."
+          "text": "The Cairnstep griffins swoop low and set your whole party down on a stone pad high above the realm. They are gone again in three flaps. A kitsune temple keeper hooks one arm through a rope ring and waves you over. \"Hold on to something! These are called the Sky Islands. Our old landing route points into empty sky now.\" Your goal is to find your feet up here. Find shelter, listen for the opening, and help her mark the unsafe path."
         }
       ]
     },
@@ -2031,7 +2031,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Cast off",
+          "label": "Go to the landing pad",
           "icon": "hand",
           "goto": "island_rest"
         }
@@ -2059,7 +2059,7 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Set out",
+          "label": "Go to the landing pad",
           "icon": "hand",
           "goto": "island_rest"
         }
@@ -2071,7 +2071,7 @@
         }
       ]
     },
-    "island_rest": {
+    "island_done": {
       "type": "rest",
       "cast": [
         {
@@ -2103,6 +2103,110 @@
       ],
       "heal": 0,
       "outcome": "success"
+    },
+    "island_rest": {
+      "type": "rest",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        }
+      ],
+      "narration": "The ferry creaks at the landing pad, and Fenwick stretches his wings in the first light. Beside the pad stands a stone hut. Its door rattles in the wind. Thump. Something soft hits the wall inside. Far off, a huge shape moves through the mist, singing. You can knock, or you can set out for the cloud whales.",
+      "choices": [
+        {
+          "id": "hut",
+          "label": "Knock on the stone hut's door",
+          "icon": "hand",
+          "goto": "dojo"
+        },
+        {
+          "id": "set_out",
+          "label": "Say your goodbyes and set out",
+          "icon": "travel",
+          "goto": "island_done"
+        }
+      ],
+      "heal": 0
+    },
+    "dojo": {
+      "type": "story",
+      "narration": "A bigfoot named Master Dunnick opens the door a crack and pulls you in out of the wind. Then he leans his back against it. The wind pushes. He pushes back. He has held this door shut for forty years. \"This school is called the Dojo,\" he says. \"Here we train the Thornguard, a hero who holds the line.\" A thorn bracer hangs on a hook by the fire. A Thornguard's strength lives in that bracer, and a song bell worn beside it will not ring. Thump. In the corner, students are catching pillows as they drop from the rafters. \"Anyone who wants the bracer,\" says Master Dunnick, \"may try it on.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "met_master_dunnick"
+          },
+          "text": "Master Dunnick is still leaning on the door of the Dojo. \"Back already? Good. The wind never stops, so neither do we.\" The thorn bracer waits on its hook for anyone who wants to try it on. Thump. Another pillow drops.",
+          "replace": true
+        }
+      ],
+      "classPlace": "thornguard",
+      "cast": [
+        {
+          "figure": "cast/master_dunnick",
+          "name": "Master Dunnick"
+        }
+      ],
+      "choices": [
+        {
+          "id": "pillows",
+          "label": "Catch the falling pillows",
+          "icon": "shield",
+          "goto": "dojo_pillows",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_master_dunnick",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "back",
+          "label": "Back to the sheltered path",
+          "icon": "back",
+          "goto": "island_rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_master_dunnick",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/dojo"
+    },
+    "dojo_pillows": {
+      "type": "story",
+      "narration": "A student unties a rope. Pillows tumble from the rafters. You plant your feet and catch one, then another, then another. The next one lands on your head. Master Dunnick nods without leaving the door. \"That is how you brace. Stand still, and let it come to you.\"",
+      "cast": [
+        {
+          "figure": "cast/master_dunnick",
+          "name": "Master Dunnick"
+        }
+      ],
+      "choices": [
+        {
+          "id": "back",
+          "label": "Back to the sheltered path",
+          "icon": "back",
+          "goto": "island_rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_master_dunnick",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/dojo"
     }
   },
   "voiceGuide": {

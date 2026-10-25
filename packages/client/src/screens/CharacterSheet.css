@@ -68,8 +68,11 @@
   align-items: center;
   gap: 0.6em;
   padding: 0.45em 0.7em 0.45em 0.5em;
+  /* Flat first, for a TV browser with no `color-mix()` (Chromium 111). */
+  border: 1px solid var(--talent);
   border: 1px solid color-mix(in srgb, var(--talent) 45%, #28213e);
   border-radius: 1.2em 0.65em 1.2em 0.65em;
+  background: linear-gradient(145deg, #28213e, #191529 85%);
   background: linear-gradient(145deg, color-mix(in srgb, var(--talent) 18%, #28213e), #191529 85%);
   box-shadow: inset 0 0.16em #ffffff0a, 0 0.3em 0.9em #0003;
 }
@@ -97,7 +100,7 @@
 .sheetview__rung--now .sheetview__rung-note { color: #ffe4a1; font-weight: 700; }
 .sheetview__rung--reached { border-color: #dfbd7a; background: linear-gradient(140deg, #62472b66, #30243c); }
 .sheetview__rung--lost { border-style: dashed; border-color: #dfbd7a; }
-.sheetview__rung--ahead { opacity: 0.65; }
+.sheetview__rung--ahead { opacity: 0.8; }
 .sheetview__souvenirs { display: flex; flex-direction: column; gap: 0.65em; }
 .sheetview__souvenir { display: flex; align-items: center; gap: 0.8em; padding: 1em; border: 1px dashed #ba925b; border-radius: 1em 0.5em; background: #2c213b; font-size: 0.9em; }
 .sheetview__souvenir > .kad-icon { font-size: 1.7em; color: #e5c281; }
@@ -115,7 +118,7 @@
   .sheetview__head { padding-block-end: 0.6em; gap: 0.7em; }
   .sheetview__name { font-size: 1.2em; }
   .sheetview__block { gap: 0.45em; }
-  .sheetview__vital { gap: 0.2em; font-size: 0.72em; }
+  .sheetview__vital { gap: 0.2em; font-size: 0.85em; }
   .sheetview__slot { min-block-size: 3.4em; }
 }
 @container (min-width: 40em) {
@@ -132,7 +135,7 @@
 }
 .sheetview__item > .kad-icon { font-size: 2em; color: #e5c281; }
 .sheetview__slot:has(.sheetview__item--on) { border-color: #f3ddb3; box-shadow: 0 0 0 0.15em #f3ddb366, inset 0 -0.25em #0003; }
-.sheetview__quest-item { display: inline-flex; align-items: center; gap: 0.4em; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+.sheetview__quest-item { min-block-size: 44px; display: inline-flex; align-items: center; gap: 0.4em; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
 .sheetview__quest-item[aria-pressed="true"] { text-decoration: underline; }
 .sheetview__reading {
   display: flex; gap: 0.8em; align-items: flex-start; padding: 0.8em; border: 1px solid #a9835088;

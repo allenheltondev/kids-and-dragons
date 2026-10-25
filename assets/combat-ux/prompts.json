@@ -1,0 +1,46 @@
+{
+  "tool": "built-in image_gen",
+  "prompts": [
+    {
+      "id": "rescue-bun",
+      "reference": "assets/entities/snowhorn_goat/portrait.webp",
+      "prompt": "Use case: illustration-story. Asset type: transparent combat rescue character for a children's fantasy game ages 8+. Reference image is a style and species reference, not an edit target. Draw Bun, a small fluffy white snowhorn goat kid with short icy-blue curved horns and blue eyes, gently tipped on her back in a small patch of mud, four little hooves in the air, looking hopefully toward the player. She is safe, adorable, mildly sheepish, no injury or fear. Match the reference's polished hand-painted storybook rendering, dark crisp silhouette and soft dimensional shading. Center one full creature, all limbs visible, compact square composition with 10% clear margin; readable at 48px. Actual transparent background. No text, frame, UI, ground plane beyond the tiny mud patch, or other figures."
+    },
+    {
+      "id": "hazard-fire",
+      "prompt": "Use case: stylized-concept. Asset type: individual transparent illustrated combat map marker for Kids & Dragons, a fantasy game for children 8+. Subject: A low compact cluster of three golden-orange flames licking around two dark coals. Recognizable friendly fantasy fire hazard, no face. Style: premium hand-painted storybook fantasy game art, clean dark silhouette, softly shaded dimensional paint, restrained gold highlights, no heavy black sticker border. View: three-quarter overhead map-token view. Composition: exactly ONE centered object filling 80% of a square with generous transparent margins, very simple shapes readable at 32 to 48px, no landscape, no backdrop, no frame, no text, letters, numbers, watermark or UI. Actual transparent background. Match a cozy enchanted woodland board game, not photorealistic."
+    },
+    {
+      "id": "hazard-thorns",
+      "prompt": "Use case: stylized-concept. Asset type: individual transparent illustrated combat map marker for Kids & Dragons, a fantasy game for children 8+. Subject: A low compact tangled patch of curved deep-green brambles with clearly visible large ivory thorns and a few leaves. No flowers or character. Style: premium hand-painted storybook fantasy game art, clean dark silhouette, softly shaded dimensional paint, restrained gold highlights, no heavy black sticker border. View: three-quarter overhead map-token view. Composition: exactly ONE centered object filling 80% of a square with generous transparent margins, very simple shapes readable at 32 to 48px, no landscape, no backdrop, no frame, no text, letters, numbers, watermark or UI. Actual transparent background. Match a cozy enchanted woodland board game, not photorealistic."
+    },
+    {
+      "id": "hazard-rift",
+      "prompt": "Use case: stylized-concept. Asset type: individual transparent illustrated combat map marker for Kids & Dragons, a fantasy game for children 8+. Subject: A jagged violet magical crack in a small floating charcoal stone patch, bright cyan light visible through the fissure. Clear broken-ground silhouette. Style: premium hand-painted storybook fantasy game art, clean dark silhouette, softly shaded dimensional paint, restrained gold highlights, no heavy black sticker border. View: three-quarter overhead map-token view. Composition: exactly ONE centered object filling 80% of a square with generous transparent margins, very simple shapes readable at 32 to 48px, no landscape, no backdrop, no frame, no text, letters, numbers, watermark or UI. Actual transparent background. Match a cozy enchanted woodland board game, not photorealistic."
+    },
+    {
+      "id": "exit-gate",
+      "prompt": "Use case: stylized-concept. Asset type: individual transparent illustrated combat map marker for Kids & Dragons, a fantasy game for children 8+. Subject: A tiny freestanding rounded stone arch with an inviting turquoise opening, warm gold rim and one clear arrow-shaped stepping stone pointing through it. No writing. Style: premium hand-painted storybook fantasy game art, clean dark silhouette, softly shaded dimensional paint, restrained gold highlights, no heavy black sticker border. View: three-quarter overhead map-token view. Composition: exactly ONE centered object filling 80% of a square with generous transparent margins, very simple shapes readable at 32 to 48px, no landscape, no backdrop, no frame, no text, letters, numbers, watermark or UI. Actual transparent background. Match a cozy enchanted woodland board game, not photorealistic."
+    },
+    {
+      "id": "objective-hold",
+      "prompt": "Use case: stylized-concept. Asset type: individual transparent illustrated combat map marker for Kids & Dragons, a fantasy game for children 8+. Subject: A small round stone platform with a prominent upright friendly blue-and-gold shield planted at its center. Clear defend-this-place visual. Style: premium hand-painted storybook fantasy game art, clean dark silhouette, softly shaded dimensional paint, restrained gold highlights, no heavy black sticker border. View: three-quarter overhead map-token view. Composition: exactly ONE centered object filling 80% of a square with generous transparent margins, very simple shapes readable at 32 to 48px, no landscape, no backdrop, no frame, no text, letters, numbers, watermark or UI. Actual transparent background. Match a cozy enchanted woodland board game, not photorealistic."
+    },
+    {
+      "id": "objective-seal",
+      "prompt": "Use case: stylized-concept. Asset type: individual transparent illustrated combat map marker for Kids & Dragons, a fantasy game for children 8+. Subject: Two little stone halves of a violet magical tear, being bound together by one clearly visible golden clasp and crossing golden light threads. Distinct from the open hazard crack; reads as repair/close this opening. Style: premium hand-painted storybook fantasy game art, clean dark silhouette, softly shaded dimensional paint, restrained gold highlights, no heavy black sticker border. View: three-quarter overhead map-token view. Composition: exactly ONE centered object filling 80% of a square with generous transparent margins, very simple shapes readable at 32 to 48px, no landscape, no backdrop, no frame, no text, letters, numbers, watermark or UI. Actual transparent background. Match a cozy enchanted woodland board game, not photorealistic."
+    },
+    {
+      "id": "reaction-hurt",
+      "prompt": "Use case: stylized-concept. Asset type: transparent reaction overlay for a children's fantasy game character portrait. Draw A gentle curved cluster of three rounded amber impact stars and a small soft coral swoosh, like a friendly comic-book 'oof', no blood or sharp aggressive spikes. Premium painted storybook fantasy style with softly dimensional highlights and clear silhouettes, very few large readable shapes, generous negative space, recognizable at 48px. Single centered square illustration, transparent background, no character, face, body, frame, landscape, words or watermark. Keep content inside the central 85% of the canvas."
+    },
+    {
+      "id": "reaction-ready",
+      "prompt": "Use case: stylized-concept. Asset type: transparent reaction overlay for a children's fantasy game character portrait. Draw A curved protective half-ring of tiny blue and gold shield-like glints, leaving its entire center empty for a character portrait. A feeling of courage and readiness. Premium painted storybook fantasy style with softly dimensional highlights and clear silhouettes, very few large readable shapes, generous negative space, recognizable at 48px. Single centered square illustration, transparent background, no character, face, body, frame, landscape, words or watermark. Keep content inside the central 85% of the canvas."
+    },
+    {
+      "id": "reaction-celebrate",
+      "prompt": "Use case: stylized-concept. Asset type: transparent reaction overlay for a children's fantasy game character portrait. Draw A loose upward fountain of five warm gold stars, two teal curls and three tiny rose confetti pieces, with the middle and bottom half mostly empty for a character portrait. Joyful and restrained, no trophy or text. Premium painted storybook fantasy style with softly dimensional highlights and clear silhouettes, very few large readable shapes, generous negative space, recognizable at 48px. Single centered square illustration, transparent background, no character, face, body, frame, landscape, words or watermark. Keep content inside the central 85% of the canvas."
+    }
+  ]
+}

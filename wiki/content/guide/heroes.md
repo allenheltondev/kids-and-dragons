@@ -38,5 +38,8 @@ new move at levels **3**, **6** and **9**.
 
 {{< class-roster >}}
 
+Every class has its own page, with the school that teaches it and the three distinctions it
+awards: see [Classes](../../classes/).
+
 The class you pick also dresses your hero: the art above is each class's gear at Mythic tier,
-the highest a hero can reach. See [Leveling Up](../leveling-up/) for how tiers work.
+the highest tier painted so far; heroes can now grow past it. See [Leveling Up](../leveling-up/) for how tiers work.
