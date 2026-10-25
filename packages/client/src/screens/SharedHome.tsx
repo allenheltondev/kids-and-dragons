@@ -251,8 +251,9 @@ export function SharedHome(): ReactElement {
                 </form>
               ) : null}
 
+              <TableNameField value={tableName} onChange={setTableName} />
+
               <div className="home__host-toggle">
-                <TableNameField value={tableName} onChange={setTableName} />
                 <button
                   type="button"
                   className="home__link kad-focusable"
