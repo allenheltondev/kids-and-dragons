@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import type { FieldGuideEntry, GuideMatchupLine } from "@kad/shared";
-import { creatureMatchups, speciesMatchups, classMatchups } from "@kad/shared";
-import { useRules } from "../store";
+import type { RulesContent } from "@kad/shared";
+import { creatureMatchups, speciesMatchups, classMatchups, matchupsOn } from "@kad/shared";
+import { useGameStore, useRules } from "../store";
 import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
 import "./FieldGuideMatchups.css";
@@ -18,6 +19,18 @@ function Lines({ title, icon, items }: { title: string; icon: string; items: Gui
   );
 }
 
+/**
+ * The rules, only when the run being played has matchups. A campaign that is
+ * exempt (Gemfall) never applies them, so its guide must not advise them; ordinary
+ * canon lore is not touched by this. Outside a run there is no campaign, so the
+ * guide shows them: it describes the world, and most campaigns have them on.
+ */
+export function useMatchupRules(): RulesContent | null {
+  const rules = useRules();
+  const campaignId = useGameStore((s) => s.state?.campaignId ?? null);
+  return rules && matchupsOn(rules, campaignId) ? rules : null;
+}
+
 const joinNames = (names: string[]) =>
   names.length < 3 ? names.join(" and ") : `${names.slice(0, -1).join(", ")}, and ${names.at(-1)!}`;
 
@@ -29,7 +42,7 @@ const joinNames = (names: string[]) =>
  */
 export function FieldGuideMatchups({ entry }: { entry: FieldGuideEntry }): ReactNode {
   useEnsureContent();
-  const rules = useRules();
+  const rules = useMatchupRules();
   const fight = creatureMatchups(rules, entry);
   if (fight) {
     return (
