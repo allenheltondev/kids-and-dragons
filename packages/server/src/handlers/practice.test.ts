@@ -135,6 +135,14 @@ async function followHints(t: Table, pick: (ids: string[]) => string) {
     if (s.phase === "chapter_complete") return { ...s, said: said.join("\n"), helpedUp };
     const ownerOf = (characterId: string) => s.party.find((m) => m.character.id === characterId)!.playerId;
     const prompt = s.prompt;
+    // Optional meadow games are real interactions, rather than ordinary
+    // scenes that ADVANCE can skip. The hint walk takes their untimed route.
+    if (prompt?.kind === "interaction") {
+      const playerId = s.party.find((member) => member.connected)?.playerId ?? t.playerIds[0]!;
+      await t.must(playerId, { type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt,
+        ...(prompt.phase === "result" ? { action: "continue" as const } : { action: "assist" as const }) });
+      continue;
+    }
     if (prompt?.kind === "ready") {
       for (const playerId of prompt.forPlayerIds) await t.send(playerId, { type: "READY", ready: true });
       continue;

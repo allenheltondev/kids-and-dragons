@@ -142,6 +142,7 @@ export function previewContext(state: RunState | null): string | null {
  */
 export const DECISION_INTENTS: ReadonlySet<ClientIntent["type"]> = new Set<ClientIntent["type"]>([
   "CHOOSE",
+  "INTERACT",
   "ROLL",
   "HELP",
   "ADVANCE",

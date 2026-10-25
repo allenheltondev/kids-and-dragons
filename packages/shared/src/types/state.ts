@@ -6,6 +6,7 @@
  */
 
 import type { EncounterState } from "../encounter.js";
+import type { InteractionPrompt } from "../interactions.js";
 import type { ClassId, ClassMastery, ClassRank, ResolvedCharacter, StatId } from "./domain.js";
 import type { ChapterOutcome, SceneId, ScenePriority, SceneType } from "./chapter.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
@@ -145,6 +146,7 @@ export interface CampaignView {
 
 /** A decision the game is waiting on. Only one is ever open at a time. */
 export type Prompt =
+  | InteractionPrompt
   | {
       kind: "choice";
       sceneId: SceneId;

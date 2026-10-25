@@ -992,7 +992,8 @@
             "check",
             "choice_point",
             "rest",
-            "encounter"
+            "encounter",
+            "interaction"
           ]
         }
       },
@@ -1070,6 +1071,21 @@
           },
           "then": {
             "$ref": "#/$defs/encounterScene"
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "interaction"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "$ref": "#/$defs/interactionScene"
           }
         }
       ]
@@ -2398,6 +2414,500 @@
       "type": "string",
       "minLength": 1,
       "maxLength": 240
+    },
+    "interactionScene": {
+      "description": "A reusable story interaction. Performance selects authored branches; no dice or decision deadline.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "narration",
+        "interaction",
+        "onSuccess",
+        "onFailure"
+      ],
+      "properties": {
+        "type": {
+          "const": "interaction"
+        },
+        "art": {
+          "type": "string",
+          "minLength": 1
+        },
+        "music": {
+          "$ref": "#/$defs/musicTrack"
+        },
+        "narration": {
+          "type": "string",
+          "minLength": 1
+        },
+        "hint": {
+          "$ref": "#/$defs/hint"
+        },
+        "priority": {
+          "$ref": "#/$defs/priority"
+        },
+        "rift": {
+          "$ref": "#/$defs/sceneRift"
+        },
+        "onEnter": {
+          "$ref": "#/$defs/effects"
+        },
+        "discovers": {
+          "$ref": "#/$defs/discovers"
+        },
+        "cast": {
+          "$ref": "#/$defs/cast"
+        },
+        "onSuccess": {
+          "$ref": "#/$defs/branch"
+        },
+        "onFailure": {
+          "$ref": "#/$defs/branch"
+        },
+        "variants": {
+          "$ref": "#/$defs/variants"
+        },
+        "onAssisted": {
+          "$ref": "#/$defs/branch"
+        },
+        "interaction": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "cue",
+                "actionLabel",
+                "target",
+                "width",
+                "periodMs"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "precision"
+                },
+                "cue": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "actionLabel": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "target": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 1
+                },
+                "periodMs": {
+                  "type": "integer",
+                  "minimum": 2000,
+                  "maximum": 20000
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "cue",
+                "actionLabel",
+                "supportLabel"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "cooperate"
+                },
+                "cue": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "actionLabel": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "supportLabel": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "cue",
+                "actionLabel",
+                "options",
+                "answer",
+                "clues"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "sequence"
+                },
+                "cue": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "actionLabel": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "options": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "label",
+                      "icon"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "label": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "icon": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                },
+                "answer": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "clues": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 12,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "cue",
+                "actionLabel",
+                "target",
+                "width",
+                "periodMs"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "timing"
+                },
+                "cue": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "actionLabel": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "target": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "width": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 1
+                },
+                "periodMs": {
+                  "type": "integer",
+                  "minimum": 2000,
+                  "maximum": 20000
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "cue",
+                "actionLabel",
+                "covers",
+                "start",
+                "swaps",
+                "stepMs"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "tracking"
+                },
+                "cue": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "actionLabel": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "covers": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 4,
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "start": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3
+                },
+                "swaps": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 2,
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 3
+                    }
+                  }
+                },
+                "stepMs": {
+                  "type": "integer",
+                  "minimum": 800,
+                  "maximum": 5000
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "cue",
+                "actionLabel",
+                "options",
+                "answer",
+                "stepMs"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "memory"
+                },
+                "cue": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "actionLabel": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "options": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "label",
+                      "icon"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "label": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "icon": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                },
+                "answer": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "stepMs": {
+                  "type": "integer",
+                  "minimum": 600,
+                  "maximum": 5000
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "cue",
+                "actionLabel",
+                "objectLabel"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "balance"
+                },
+                "cue": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "actionLabel": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "objectLabel": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "cue",
+                "actionLabel",
+                "objectLabel"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "relay"
+                },
+                "cue": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "actionLabel": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "objectLabel": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "cue",
+                "actionLabel",
+                "options",
+                "participation"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "play"
+                },
+                "cue": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "actionLabel": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "options": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 8,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "label",
+                      "icon",
+                      "reaction"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "label": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "icon": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "reaction": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    }
+                  }
+                },
+                "participation": {
+                  "enum": [
+                    "any",
+                    "everyone"
+                  ]
+                },
+                "stages": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 12,
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
     }
   }
 }
