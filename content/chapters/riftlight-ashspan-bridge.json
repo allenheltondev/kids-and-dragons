@@ -31,7 +31,7 @@
   "scenes": {
     "bridge": {
       "type": "story",
-      "narration": "The bridge over the Great River is called Ashspan Bridge. Old Ossley, a frogfolk boatman, rests a pole across his flat boat. \"Changed melt,\" he says, watching a branch turn in the current. \"Busy year.\" You can help the waiting travelers board, then fetch a dry reed mat from a village in the Whispering Marsh for his slippery deck. A raised footpath runs from the bridge to the village. \"Follow the posts,\" he says. \"The ducks take shortcuts. You should not.\"",
+      "narration": "The bridge over the Great River is called Ashspan Bridge. Old Ossley, a frogfolk boatman, rests a pole across his flat boat. \"Changed melt,\" he says, watching a branch turn in the current. \"Busy year.\" You can help the waiting travelers board. A raised footpath leads to a village in the Whispering Marsh. \"There is a school called the Academy there,\" he says. \"They teach a class called Starweaver. Those heroes read the stars. If you visit, could you bring back the dry reed mat they made for my deck? Follow the posts. The ducks take shortcuts. You should not.\"",
       "choices": [
         {
           "id": "continue",
@@ -97,10 +97,16 @@
       "narration": "You hold the plank flat until both travelers are aboard. Ossley tests it once with his pole and nods. \"That will do.\"",
       "choices": [
         {
-          "id": "continue",
-          "label": "Follow the posts into the marsh",
-          "icon": "travel",
+          "id": "marsh",
+          "label": "Visit the Academy in the marsh",
+          "icon": "star",
           "goto": "marsh_path"
+        },
+        {
+          "id": "continue",
+          "label": "Stay at the ferry and discuss the roads",
+          "icon": "travel",
+          "goto": "routes"
         }
       ],
       "onEnter": [
@@ -127,10 +133,16 @@
       "narration": "You lift the rope clear and seat the plank on its supports. The travelers board without wetting their bags. Ossley gives you a brief nod.",
       "choices": [
         {
-          "id": "continue",
-          "label": "Follow the posts into the marsh",
-          "icon": "travel",
+          "id": "marsh",
+          "label": "Visit the Academy in the marsh",
+          "icon": "star",
           "goto": "marsh_path"
+        },
+        {
+          "id": "continue",
+          "label": "Stay at the ferry and discuss the roads",
+          "icon": "travel",
+          "goto": "routes"
         }
       ],
       "onEnter": [

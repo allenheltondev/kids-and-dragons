@@ -81,9 +81,10 @@ earns a distinction anywhere in the world, a crow lands on a nearby fence, says 
 - **Gemfall gets none.** It is pinned, and its only class change is the Exchange stall.
 - **Riftlight (#483).** The Rookery is on the Exchange's rooftops, the Conservatory off the
   glacier's singing hall, and the Dojo off the sheltered path in the Sky Islands arrival chapter.
-  The Ashspan Bridge chapter visits a village in the Whispering Marsh to fetch a dry ferry mat;
-  the Academy is a side room off that village's rest bench. The party walks back to the bridge
-  before the chapter ends. Class locations appear in the field guide only after a first visit.
+  The Ashspan Bridge chapter offers an optional visit to a village in the Whispering Marsh
+  to fetch a dry ferry mat. The Academy is a side room off that village's rest bench. Parties that
+  visit walk back to the bridge before the chapter ends; parties that stay at the ferry can finish
+  without the errand. Class locations appear in the field guide only after a first visit.
 - **A free heal is deliberate.** The game always keeps somewhere to heal for free. In Riftlight it is
   the singing hall: its rest heals on every arrival, so walking into the Conservatory and back heals
   again, as often as a table likes. That is intended, not a loophole.

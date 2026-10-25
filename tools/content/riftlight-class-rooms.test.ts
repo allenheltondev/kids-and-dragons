@@ -29,9 +29,29 @@ describe("Riftlight's class rooms", () => {
     expect(bridge.scenes.marsh_path!.narration).toContain("Whispering Marsh");
     expect(bridge.scenes.academy!.narration).toContain("marsh village");
     for (const id of ["plank", "rope"]) {
-      expect((bridge.scenes[id] as { choices: { goto: string }[] }).choices[0]!.goto).toBe("marsh_path");
+      expect((bridge.scenes[id] as { choices: { goto: string }[] }).choices).toEqual(expect.arrayContaining([
+        expect.objectContaining({ id: "marsh", goto: "marsh_path" }),
+        expect.objectContaining({ id: "continue", goto: "routes" }),
+      ]));
     }
     expect((bridge.scenes.mat_return as { choices: { goto: string }[] }).choices[0]!.goto).toBe("routes");
+  });
+  it.each(["plank", "rope"])("can finish after helping with %s without visiting the marsh", (help) => {
+    const chapter = chapters.get("riftlight-ashspan-bridge")!;
+    let state = start(chapter, "manticore", "duskrunner");
+    state = send(state, { type: "CHOOSE", choiceId: "continue" }, chapter);
+    state = send(state, { type: "CHOOSE", choiceId: help }, chapter);
+    expect(state.flags.helped_travelers_board).toBe(true);
+    expect(state.prompt).toMatchObject({ kind: "choice", options: expect.arrayContaining([
+      expect.objectContaining({ id: "marsh", label: "Visit the Academy in the marsh" }),
+      expect.objectContaining({ id: "continue" }),
+    ]) });
+    state = send(state, { type: "CHOOSE", choiceId: "continue" }, chapter);
+    expect(state.sceneId).toBe("routes");
+    expect(state.phase).toBe("chapter_complete");
+    expect(state.flags.reached_the_ferry_landing).toBe(true);
+    expect(state.classPlace).toBeUndefined();
+    expect(state.narration).not.toContain("mat");
   });
   it.each(ROOMS)("$room is a side room off $rest, and every way out of it leads back there", (r) => {
     const chapter = chapters.get(r.chapter)!;

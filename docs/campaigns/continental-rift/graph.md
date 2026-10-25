@@ -178,10 +178,11 @@ The Dojo and its pillow lesson now sit off the sheltered rest path in `sky-islan
 in the Sky Islands. Its keeper's welcome and edge-marking beat still finish that chapter.
 
 `ashspan-bridge` spans the bridge and a village in the Whispering Marsh. After helping
-travelers board, the party follows a posted raised footpath into the marsh to fetch a dry
-reed mat for the ferry deck. The village bench is a rest with a side door to the Academy
-and its telescope lesson. Every path carries the mat back to Ossley before the ferry-route
-ending. No hub remains at the glacier camp. The campaign keeps 24 nodes and its XP budget;
+travelers board, the party can stay at the ferry and discuss its onward route, or choose
+"Visit the Academy in the marsh" and follow a posted raised footpath to fetch a dry reed
+mat for the ferry deck. The village bench is a rest with a side door to the Academy
+and its telescope lesson. Parties that visit carry the mat back to Ossley before the ferry-route
+ending; parties that stay go straight to that ending, with both chapter goals complete. No hub remains at the glacier camp. The campaign keeps 24 nodes and its XP budget;
 these visits are inside their host chapters. The singing hall still heals for free.
 
 The ungated long bank road runs from the departure camp to Ashspan Bridge. An upper bank
