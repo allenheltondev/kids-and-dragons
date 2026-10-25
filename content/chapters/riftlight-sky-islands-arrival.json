@@ -6,7 +6,7 @@
   "title": "Land Under an Unfamiliar Sky",
   "biome": "sky_islands",
   "music": "riftlight-paths",
-  "estimatedMinutes": 33,
+  "estimatedMinutes": 36,
   "xpAward": 140,
   "entry": "island",
   "goal": {
@@ -722,9 +722,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the pole",
+          "label": "Cross the pad to the pole",
           "icon": "hand",
-          "goto": "basket_plan"
+          "goto": "gust_lull"
         }
       ]
     },
@@ -1032,7 +1032,7 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "light"
+          "goto": "fuel_chain"
         }
       ]
     },
@@ -1054,7 +1054,7 @@
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "light"
+          "goto": "fuel_chain"
         }
       ]
     },
@@ -1687,7 +1687,7 @@
           "id": "rest",
           "label": "Sit by the fire and rest",
           "icon": "hand",
-          "goto": "night_song"
+          "goto": "camp_play"
         },
         {
           "id": "pip",
@@ -1699,7 +1699,7 @@
           "id": "buy",
           "label": "Buy a songbird ribbon from Dob's cart (3 coins)",
           "icon": "heart",
-          "goto": "night_song",
+          "goto": "camp_play",
           "when": {
             "coins": {
               "min": 3
@@ -1721,7 +1721,7 @@
           "id": "mend",
           "label": "Mend the day's scrapes first",
           "icon": "heart",
-          "goto": "night_song",
+          "goto": "camp_play",
           "requiresSpecies": "unicorn",
           "effects": [
             {
@@ -1752,7 +1752,7 @@
           "id": "continue",
           "label": "Settle down for the night",
           "icon": "hand",
-          "goto": "night_song"
+          "goto": "camp_play"
         }
       ]
     },
@@ -1772,9 +1772,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Lay out what you know",
+          "label": "Follow the song",
           "icon": "hand",
-          "goto": "bearing_vote"
+          "goto": "song_track"
         }
       ]
     },
@@ -1939,9 +1939,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Plan the way",
+          "label": "Listen as the song comes closer",
           "icon": "hand",
-          "goto": "route_vote"
+          "goto": "song_echo"
         }
       ],
       "onEnter": [
@@ -1971,9 +1971,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Plan the way",
+          "label": "Listen as the song comes closer",
           "icon": "hand",
-          "goto": "route_vote"
+          "goto": "song_echo"
         }
       ],
       "onEnter": [
@@ -2103,6 +2103,237 @@
       ],
       "heal": 0,
       "outcome": "success"
+    },
+    "gust_lull": {
+      "type": "interaction",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "Between you and the pole lies the open pad, and the wind comes in gusts. When a gust is done, every wind banner droops at once. Pip counts the gusts out loud and loses count. The keeper points. \"Wait for the lull, then cross.\"",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait until the banners droop, then run to the pole.",
+        "actionLabel": "Run!",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "basket_plan",
+        "narration": "The banners droop, and you cross in one long stride. The wind holds its breath until you arrive."
+      },
+      "onFailure": {
+        "goto": "basket_plan",
+        "narration": "A gust spins you twice and sits you down. The keeper reels you in on her rope, and you reach the pole dizzy and cheerful."
+      },
+      "onAssisted": {
+        "goto": "basket_plan",
+        "narration": "The keeper calls the lull for you. \"Now!\" You cross together without a single stumble."
+      }
+    },
+    "fuel_chain": {
+      "type": "interaction",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "The fuel must reach the basket at the top of the pole, and the ladder only fits one at a time. The keeper stands at the bottom and Pip waits at the top, holding his arms out like a very small harbor. Pass each log hand to hand, and do not drop one on the keeper.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the logs and pass them up the line.",
+        "actionLabel": "Pass the logs",
+        "objectLabel": "the logs"
+      },
+      "onSuccess": {
+        "goto": "light",
+        "narration": "Pip drops the last log into the basket with a clunk and a cheer. Nobody is hit. The keeper counts this as a miracle."
+      },
+      "onFailure": {
+        "goto": "light",
+        "narration": "One log escapes and rolls under the shrine. The keeper fetches it, grumbling nicely, and the basket is full anyway."
+      },
+      "onAssisted": {
+        "goto": "light",
+        "narration": "The keeper hauls the last logs up on a rope and ties them off with a bow. \"A little help is still help,\" she says."
+      }
+    },
+    "camp_play": {
+      "type": "interaction",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "Everyone settles in behind the wind wall. The keeper asks what would make this a good camp tonight. Pip suggests more hens. The hens, listening, suggest more barley. Add something to the camp, one at a time.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Add something to your cozy camp.",
+        "actionLabel": "Settle into camp",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "kite",
+            "label": "Hang a kite as a lantern shade",
+            "icon": "star",
+            "reaction": "The kite glows like a paper moon, and the wind banners all lean in to look."
+          },
+          {
+            "id": "tea",
+            "label": "Pour hot barley tea",
+            "icon": "heart",
+            "reaction": "Steam curls up in the lantern light. A hen leans in for the smell."
+          },
+          {
+            "id": "blanket",
+            "label": "Spread a thick blanket",
+            "icon": "hand",
+            "reaction": "The blanket fills with wind for a moment, then settles like a sleepy cat."
+          },
+          {
+            "id": "story",
+            "label": "Tell a short, funny story",
+            "icon": "spark",
+            "reaction": "Pip laughs so hard he knocks his own pencil into the fire pit. It is rescued, slightly toasted."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "night_song",
+        "narration": "The camp glows. For one quiet minute the island does not feel lost at all."
+      },
+      "onFailure": {
+        "goto": "night_song",
+        "narration": "The camp is a little lopsided and the hens are in the middle of it. It is perfect anyway."
+      },
+      "onAssisted": {
+        "goto": "night_song",
+        "narration": "The keeper adds the last touches herself, humming. The camp is cozy before you know it."
+      }
+    },
+    "song_track": {
+      "type": "interaction",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "narration": "The low song makes a faint glow in one of three wind-bells on the shrine's edge. The glow hops from bell to bell like a flea. Seren holds a hand up for quiet. \"Watch it. Wherever it ends is the way the song leads.\"",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the glow hop between the bells, then pick where it ends.",
+        "actionLabel": "Listen there",
+        "covers": [
+          "North bell",
+          "South bell",
+          "East bell"
+        ],
+        "start": 0,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "stepMs": 1200
+      },
+      "onSuccess": {
+        "goto": "bearing_vote",
+        "narration": "The glow settles in the east bell and stays there, humming. East, the bells agree."
+      },
+      "onFailure": {
+        "goto": "bearing_vote",
+        "narration": "You pick the wrong bell, and the east bell rings out cheerfully all by itself. East, then."
+      },
+      "onAssisted": {
+        "goto": "bearing_vote",
+        "narration": "Seren points at the east bell, steady as a signpost. \"There. Now you know what to prove.\""
+      }
+    },
+    "song_echo": {
+      "type": "interaction",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "narration": "The song comes again, closer than ever, in a pattern: low, high, low, middle. Thimble says it is how the whales say here we are. Seren says to answer in the same pattern, so they know a friend is listening. The shrine bell hangs ready, with three notes.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the pattern, then ring it back on the bell.",
+        "actionLabel": "Ring it back",
+        "options": [
+          {
+            "id": "low",
+            "label": "Low note",
+            "icon": "moon"
+          },
+          {
+            "id": "mid",
+            "label": "Middle note",
+            "icon": "heart"
+          },
+          {
+            "id": "high",
+            "label": "High note",
+            "icon": "star"
+          }
+        ],
+        "answer": [
+          "low",
+          "high",
+          "low",
+          "mid"
+        ],
+        "stepMs": 1000
+      },
+      "onSuccess": {
+        "goto": "route_vote",
+        "narration": "The song stops. Then it answers with one long, warm note from the east. Seren grins. \"They heard us.\""
+      },
+      "onFailure": {
+        "goto": "route_vote",
+        "narration": "Your pattern wobbles, but the song answers anyway, patient as a grown-up answering a very small question."
+      },
+      "onAssisted": {
+        "goto": "route_vote",
+        "narration": "Seren rings along and steadies each note. The song answers, long and warm, from the east."
+      }
     },
     "island_rest": {
       "type": "rest",
