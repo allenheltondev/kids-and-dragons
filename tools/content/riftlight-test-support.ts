@@ -155,6 +155,15 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
           pending.push({ state: result.state, known, introduced });
         }
       }
+    } else if (state.prompt?.kind === "interaction") {
+      // A story interaction (PR #495) ends in success, a gentle failure or an
+      // assisted result; walk all three through the real "continue" intent.
+      for (const outcome of ["success", "failure", "assisted"] as const) {
+        const done = structuredClone(state);
+        done.prompt = { ...done.prompt, phase: "result", outcome, resolvedActorId: done.prompt.actorId || "p1" } as typeof done.prompt;
+        const prompt = done.prompt as { openedSeq: number; attempt: number };
+        pending.push({ state: send(done, { type: "INTERACT", action: "continue", openedSeq: prompt.openedSeq, attempt: prompt.attempt } as never, chapter), known, introduced });
+      }
     } else if (state.prompt?.kind === "choice") {
       expect(state.prompt.options.length).toBeGreaterThan(0);
       for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known, introduced });
