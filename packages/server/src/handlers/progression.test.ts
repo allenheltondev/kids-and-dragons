@@ -770,6 +770,29 @@ describe("settleChapterCompletion — the campaign boundary", () => {
     expect(afterReplay?.committed.xp).toBe(130);
   });
 
+  it("adds a hero's own natural-20 XP to her settlement, once, and not on a replay", async () => {
+    const harness = campaignHarness({ chapters: ["bramblewood-01"] });
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const { state, character } = setup(harness, householdId, players[0]!.principal.playerId);
+    await harness.repo.putCharacter(character);
+    await nextAttempt(harness, householdId, state);
+    completing(state);
+    // The party's 100, and 3 more for her own natural 20: 103 for her.
+    state.xpEarned = 100;
+    state.heroRollXp = { [character.id]: 3 };
+    await settleAndKeep(harness, state, householdId);
+    const afterFirst = await harness.repo.getCharacter(householdId, character.id);
+    expect(afterFirst?.committed.xp).toBe(103);
+
+    await nextAttempt(harness, householdId, state);
+    completing(state);
+    state.xpEarned = 100;
+    state.heroRollXp = { [character.id]: 3 };
+    await settleAndKeep(harness, state, householdId);
+    const afterReplay = await harness.repo.getCharacter(householdId, character.id);
+    expect(afterReplay?.committed.xp).toBe(103);
+  });
+
   it("pays an unseen chapter in full to the hero an earlier one already paid (#408)", async () => {
     const harness = campaignHarness();
     const { householdId, players } = await seedHousehold(harness, 1);

@@ -622,8 +622,8 @@ export interface RollXp {
   /** For each foe a hero's action knocks out. Optional: absent pays nothing. */
   defeat?: number;
   /**
-   * On top of the check or attack it came from, for each natural 20 a hero
-   * rolls (a check or an attack). Optional: absent pays nothing.
+   * For each natural 20 a hero rolls (a check or an attack), paid to that hero
+   * alone on top of the party's XP for it. Optional: absent pays nothing.
    */
   natural20?: number;
   /** The most roll XP one chapter can pay. */

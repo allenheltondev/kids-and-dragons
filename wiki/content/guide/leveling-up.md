@@ -6,7 +6,8 @@ weight: 60
 ---
 
 XP is earned by the chapter, and **the whole party gets the same amount**. Nobody falls behind
-because they rolled worse or sat out a fight.
+because they rolled worse or sat out a fight. The one exception is a **natural 20**: the hero who
+rolled it also earns a little XP of her own.
 
 ## Levels
 

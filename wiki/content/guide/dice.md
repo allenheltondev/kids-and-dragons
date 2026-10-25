@@ -13,7 +13,7 @@ The phone tells you which stat and how hard it is, in words. The numbers behind 
 
 {{< difficulty >}}
 
-A **natural 20** always works, no matter the target, and it earns the party some extra XP on top. A **natural 1** always misses.
+A **natural 20** always works, no matter the target, and the hero who rolled it earns some extra XP of her own. A **natural 1** always misses.
 
 The dice are rolled by the game, not by the phone, and the roll takes over the whole screen for a
 moment: the d20 tumbles, any helper's die lands a beat later, and the sum ("14 + 3 + 2 = 19")

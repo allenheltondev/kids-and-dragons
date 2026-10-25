@@ -336,6 +336,8 @@ The reward for a level is *visible* — a new body, and a cutscene where the who
 
 Uniform party XP is what keeps everybody transforming on the same evening. It is also what makes the pacing above a promise rather than an average.
 
+The one individual award is a **natural 20**. The hero who rolls it earns a small amount of XP of her own, on top of the party's, paid into her own total when the chapter settles. It is capped per hero by the chapter's roll-XP cap, and it never changes what anyone else earns. Nobody is shown a smaller creature for a roll that went badly, and a hero's bonus only ever adds to her own tally. Objective bonuses stay party-wide: they are never individual.
+
 ### 8.3 Carryover — the commitment rule
 
 A character's level, stats, inventory, class and distinctions are stored as a **committed snapshot** plus a set of **provisional gains** earned during the current campaign.

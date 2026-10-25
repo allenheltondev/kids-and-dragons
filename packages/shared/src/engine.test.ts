@@ -3597,12 +3597,23 @@ describe("XP for rolls that go well", () => {
     expect(rolled.rollXp).toBeUndefined();
   });
 
-  it("pays a natural 20 on top of the check it succeeds", () => {
+  it("pays a natural 20 to the hero who rolled it, on top of the party's check XP", () => {
     const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, natural20: 3, chapterCap: 100 } }), rng: fixedRng(20) });
     const state = atCheck(context);
     const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
-    expect(rolled.xpEarned).toBe(state.xpEarned + 5);
-    expect(rolled.rollXp).toBe(5);
+    const roller = rolled.lastRoll?.characterId ?? "";
+    expect(rolled.xpEarned).toBe(state.xpEarned + 2);
+    expect(rolled.rollXp).toBe(2);
+    expect(rolled.heroRollXp).toEqual({ [roller]: 3 });
+  });
+
+  it("pays nobody else a natural 20's bonus", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, natural20: 3, chapterCap: 100 } }), rng: fixedRng(20) });
+    const state = atCheck(context);
+    const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    const others = rolled.party.filter((m) => m.character.id !== rolled.lastRoll?.characterId);
+    expect(others.length).toBeGreaterThan(0);
+    for (const m of others) expect(rolled.heroRollXp?.[m.character.id] ?? 0).toBe(0);
   });
 
   it("pays no natural 20 bonus for a roll that is not one", () => {
@@ -3642,8 +3653,8 @@ describe("XP for rolls that go well", () => {
     expect(state.xpEarned).toBeGreaterThanOrEqual(state.rollXp ?? 0);
   });
 
-  it("pays more for a natural 20 an attack rolls", () => {
-    const play = (natural20: number): number => {
+  it("pays the hero who lands a natural 20 an attack, and the party's XP is unchanged", () => {
+    const play = (natural20: number): { heroes: number; party: number } => {
       const context = ctx({ rules: makeRules({ rollXp: { check: 0, attack: 1, natural20, chapterCap: 1000 } }), rng: fixedRng(20) });
       const state = walk(
         seatedParty(context),
@@ -3657,9 +3668,14 @@ describe("XP for rolls that go well", () => {
         context,
       ).state;
       const begun = applyIntent(state, { playerId: "p_2", intent: { type: "READY", ready: true } }, context);
-      return fightToTheEnd(begun.state, context).rollXp ?? 0;
+      const done = fightToTheEnd(begun.state, context);
+      const heroes = Object.values(done.heroRollXp ?? {}).reduce((sum, xp) => sum + xp, 0);
+      return { heroes, party: done.xpEarned };
     };
-    expect(play(3)).toBeGreaterThan(play(0));
+    const bonus = play(3);
+    expect(bonus.heroes).toBeGreaterThan(0);
+    expect(play(0).heroes).toBe(0);
+    expect(bonus.party).toBe(play(0).party);
   });
 
   it("pays more when foes are knocked out", () => {

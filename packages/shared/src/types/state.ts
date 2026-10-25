@@ -314,6 +314,13 @@ export interface RunState {
    */
   rollXp?: number;
   /**
+   * The individual XP each hero earned this chapter for her own natural 20s
+   * (`RulesContent.rollXp.natural20`), by character id. Paid to that hero alone
+   * when the chapter settles, on top of the party's `xpEarned`, and never part
+   * of it. Absent until one pays; cleared when a chapter starts.
+   */
+  heroRollXp?: Record<string, number>;
+  /**
    * How the chapter now in `chapterId` ended, once it has (spec §8.2). Null
    * while one is still being played.
    *

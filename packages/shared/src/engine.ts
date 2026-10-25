@@ -442,12 +442,7 @@ function reconcileRunDeeds(draft: RunState, ctx: EngineContext): void {
  * the chapter's cap. Only a seated hero's own roll counts: a monster's hit on
  * the party is not a success to pay for.
  */
-function creditRollXp(
-  draft: RunState,
-  ctx: EngineContext,
-  kind: "check" | "attack" | "defeat" | "natural20",
-  times = 1,
-): void {
+function creditRollXp(draft: RunState, ctx: EngineContext, kind: "check" | "attack" | "defeat", times = 1): void {
   const pay = ctx.rules.rollXp;
   // The practice pays no XP at all.
   if (!pay || times <= 0 || isPracticeCampaign(draft.campaignId)) return;
@@ -459,12 +454,27 @@ function creditRollXp(
 }
 
 /**
- * Pays for a check the way its roll went: a success pays `check`, and a natural
- * 20 pays `natural20` on top, success or not (it always succeeds anyway).
+ * Pays the hero who rolled a natural 20 (`RulesContent.rollXp.natural20`).
+ * Individual, not party XP: it goes to `heroRollXp` for her alone and never
+ * touches `xpEarned`. It stops at the chapter's cap, counted per hero.
+ */
+function creditNatural20(draft: RunState, ctx: EngineContext, characterId: string, times = 1): void {
+  const pay = ctx.rules.rollXp;
+  if (!pay || times <= 0 || isPracticeCampaign(draft.campaignId)) return;
+  const paid = draft.heroRollXp?.[characterId] ?? 0;
+  const room = Math.max(0, pay.chapterCap - paid);
+  const amount = Math.min(room, (pay.natural20 ?? 0) * times);
+  if (amount <= 0) return;
+  draft.heroRollXp = { ...draft.heroRollXp, [characterId]: paid + amount };
+}
+
+/**
+ * Pays for a check the way its roll went: a success pays the party `check`, and
+ * a natural 20 pays the hero who rolled it, success or not (it always succeeds).
  */
 function creditCheckXp(draft: RunState, ctx: EngineContext, roll: DiceRoll): void {
   if (roll.result === "success") creditRollXp(draft, ctx, "check");
-  if (roll.die === 20) creditRollXp(draft, ctx, "natural20");
+  if (roll.die === 20) creditNatural20(draft, ctx, roll.characterId);
 }
 
 /** Pays for each of the heroes' hits among a stretch of fight events. */
@@ -472,7 +482,9 @@ function creditAttackXp(draft: RunState, events: readonly EncounterEvent[], ctx:
   const heroes = new Set(draft.party.map((m) => m.character.id));
   const hits = events.filter((e) => e.type === "roll" && e.roll.result === "hit" && heroes.has(e.roll.characterId));
   creditRollXp(draft, ctx, "attack", hits.length);
-  creditRollXp(draft, ctx, "natural20", hits.filter((e) => e.type === "roll" && e.roll.die === 20).length);
+  for (const e of hits) {
+    if (e.type === "roll" && e.roll.die === 20) creditNatural20(draft, ctx, e.roll.characterId);
+  }
   // A foe knocked out by a hero's action. The downs in a hero's own action are
   // the foe's or, rarely, a friend's, so a party member going down never pays.
   const foes = events.filter((e) => e.type === "down" && !heroes.has(e.actorId));
@@ -1622,6 +1634,7 @@ function doStartChapter(
   draft.chapterInfo = { index: chapter.index, title: chapter.title };
   draft.xpEarned = 0;
   delete draft.rollXp;
+  delete draft.heroRollXp;
   // Cleared with the XP they belong to. Left behind, the previous chapter's
   // setback and its bonus list would still be on the state the moment this one
   // starts, so a phone that renders from `chapterOutcome` would open the
