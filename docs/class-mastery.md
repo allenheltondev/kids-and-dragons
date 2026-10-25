@@ -51,10 +51,10 @@ One per class, and each teaches only its own class.
 
 | Class | Place | Who teaches, and the detail |
 |---|---|---|
-| Thornguard | **The Dojo** | The teacher has held the same door shut against the wind for forty years. Students practice Brace by catching falling pillows. |
-| Starweaver | **The Academy** | The roof is open to the sky, so the homework floats away. The big telescope sneezes. |
-| Duskrunner | **The Rookery** | A rooftop school run by the crows, as a flock. |
-| Songkeeper | **The Conservatory** | A music school that is also a greenhouse. The plants lean toward whoever is singing best. |
+| Thornguard | **The Dojo** (Sky Islands) | The teacher has held the same door shut against the wind for forty years. Students practice Brace by catching falling pillows. |
+| Starweaver | **The Academy** (Marshland) | The roof is open to the sky, so the homework floats away. The big telescope sneezes. |
+| Duskrunner | **The Rookery** (The Exchange) | A rooftop school run by the crows, as a flock. |
+| Songkeeper | **The Conservatory** (Glacier of Origins) | A music school that is also a greenhouse. The plants lean toward whoever is singing best. |
 
 ### The crows
 
@@ -79,10 +79,12 @@ earns a distinction anywhere in the world, a crow lands on a nearby fence, says 
   room introduces its teacher (and the crows) whenever a party walks in. A second visit can read
   shorter ("The crows eye you. 'Back again.'").
 - **Gemfall gets none.** It is pinned, and its only class change is the Exchange stall.
-- **Riftlight (draft, #315).** The Rookery is on the Exchange's rooftops, the Conservatory off the
-  singing hall, and the Dojo up the slope from the Riftseekers' camp. The Academy belongs in the
-  marsh village, which Riftlight's story does not have yet; until that place is written, it stands in
-  a roofless tower above the Riftseekers' camp, and moves when the village exists.
+- **Riftlight (#483).** The Rookery is on the Exchange's rooftops, the Conservatory off the
+  glacier's singing hall, and the Dojo off the sheltered path in the Sky Islands arrival chapter.
+  The Ashspan Bridge chapter offers an optional visit to a village in the Whispering Marsh
+  to fetch a dry ferry mat. The Academy is a side room off that village's rest bench. Parties that
+  visit walk back to the bridge before the chapter ends; parties that stay at the ferry can finish
+  without the errand. Class locations appear in the field guide only after a first visit.
 - **A free heal is deliberate.** The game always keeps somewhere to heal for free. In Riftlight it is
   the singing hall: its rest heals on every arrival, so walking into the Conservatory and back heals
   again, as often as a table likes. That is intended, not a loophole.
