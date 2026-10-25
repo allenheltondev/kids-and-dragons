@@ -29,6 +29,8 @@ function exits(scene) {
         [scene.onSuccess.goto, scene.onSuccess.effects ?? []],
         [scene.onFailure.goto, scene.onFailure.effects ?? []],
       ];
+    case "interaction":
+      return [scene.onSuccess, scene.onFailure, scene.onAssisted].filter(Boolean).map((b) => [b.goto, b.effects ?? []]);
     case "encounter":
       return [
         [scene.onVictory.goto, scene.onVictory.effects ?? []],

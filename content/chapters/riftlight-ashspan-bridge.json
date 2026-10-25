@@ -450,9 +450,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Step ashore",
+          "label": "Steer for the landing",
           "icon": "hand",
-          "goto": "far_bank"
+          "goto": "ferry_dock"
         }
       ],
       "cast": [
@@ -473,9 +473,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Step ashore",
+          "label": "Steer for the landing",
           "icon": "hand",
-          "goto": "far_bank"
+          "goto": "ferry_dock"
         }
       ],
       "onEnter": [
@@ -497,6 +497,41 @@
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "ferry_dock": {
+      "type": "interaction",
+      "narration": "The far landing is coming up fast. Ossley sets his pole like a brake. \"Easy,\" he says. \"Bump, do not crash. Tell me when.\" Tilly covers her bag with both hands.",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        }
+      ],
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap when the boat swings level with the landing.",
+        "actionLabel": "Bump the dock!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "onSuccess": {
+        "goto": "far_bank",
+        "narration": "A gentle bump. The flat boat stops like a sleepy cat, and the eggs do not even quack."
+      },
+      "onFailure": {
+        "goto": "far_bank",
+        "narration": "The boat kisses the dock a little hard. The eggs quack, and Ossley's throat puffs. \"Landed,\" he says. \"Technically.\""
+      },
+      "onAssisted": {
+        "goto": "far_bank",
+        "narration": "Ossley eases the pole and the boat slides in all by itself, and he pretends it was you."
+      }
     },
     "far_bank": {
       "type": "story",
@@ -655,9 +690,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Roll on to the bridge",
+          "label": "Carry the planks to the bridge",
           "icon": "hand",
-          "goto": "bridge_head"
+          "goto": "unload_relay"
         }
       ],
       "onEnter": [
@@ -693,9 +728,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Roll on to the bridge",
+          "label": "Carry the planks to the bridge",
           "icon": "hand",
-          "goto": "bridge_head"
+          "goto": "unload_relay"
         }
       ],
       "onEnter": [
@@ -735,9 +770,52 @@
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
     },
+    "unload_relay": {
+      "type": "interaction",
+      "narration": "The cart cannot cross the broken bridge end, so the planks must go by hand. Bryn stands at the bridge. The rest of you make a line, and one goat watches the whole thing, unhelpfully.",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch a plank, then pass it down the line.",
+        "actionLabel": "Pass it on",
+        "objectLabel": "Bryn's planks"
+      },
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "onSuccess": {
+        "goto": "bridge_head",
+        "narration": "Plank after plank goes hand to hand, tap, tap, tap, until the stack stands at the bridge end."
+      },
+      "onFailure": {
+        "goto": "bridge_head",
+        "narration": "A plank slips from the line and lands in the mud with a flat splat. Bryn scrapes it clean, but it is cracked.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "lost_a_plank"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "bridge_head",
+        "narration": "Bryn takes the middle of the line herself, and the planks fly down it like loaves at a bakery."
+      }
+    },
     "bridge_head": {
       "type": "story",
-      "narration": "You roll the planks to the bridge. At the first stone pier, logs and branches have jammed into a heap. The river is pushing the whole heap against the stone. \"Debris,\" says Bryn. \"The river has thrown its furniture at us.\" If the heap shifts, it will shove the bridge crooked. Ossley sniffs. \"I have seen it do worse. Not often. But I have.\"",
+      "narration": "The planks are stacked at the bridge end. At the first stone pier, logs and branches have jammed into a heap. The river is pushing the whole heap against the stone. \"Debris,\" says Bryn. \"The river has thrown its furniture at us.\" If the heap shifts, it will shove the bridge crooked. Ossley sniffs. \"I have seen it do worse. Not often. But I have.\"",
       "choices": [
         {
           "id": "continue",
@@ -955,9 +1033,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Plan the lift",
+          "label": "Pick up the new beam",
           "icon": "hand",
-          "goto": "beam_plan"
+          "goto": "carry_beam"
         }
       ],
       "cast": [
@@ -975,6 +1053,43 @@
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "carry_beam": {
+      "type": "interaction",
+      "narration": "The new beam is long and heavy, and it has to travel from the bank to the pier. Everyone takes a place along it. Bryn walks backward in front, calling, \"Level! Level! Mostly level!\"",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "interaction": {
+        "kind": "balance",
+        "cue": "Lift or lower your end until the beam rides level in the middle.",
+        "actionLabel": "Carry it to the pier",
+        "objectLabel": "The new beam"
+      },
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "onSuccess": {
+        "goto": "beam_plan",
+        "narration": "The beam rides level all the way to the pier, like a very long and serious tray."
+      },
+      "onFailure": {
+        "goto": "beam_plan",
+        "narration": "The beam tips and bonks a goat on the rump. The goat is more surprised than hurt. You set it down and carry it again, slower."
+      },
+      "onAssisted": {
+        "goto": "beam_plan",
+        "narration": "Bryn takes the middle of the beam, and it rides level the whole way."
+      }
     },
     "beam_plan": {
       "type": "choice_point",
@@ -1224,9 +1339,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the gap",
+          "label": "Kneel by the ducklings",
           "icon": "hand",
-          "goto": "duck_plan"
+          "goto": "duck_play"
         }
       ],
       "cast": [
@@ -1245,9 +1360,66 @@
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
     },
+    "duck_play": {
+      "type": "interaction",
+      "narration": "Tilly's bag is mostly feathers now. The ducklings peep in a circle round everyone's boots, too excited to listen to anybody.",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "interaction": {
+        "kind": "play",
+        "cue": "Everyone, settle the ducklings with something gentle.",
+        "actionLabel": "Settle them down",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "crumbs",
+            "label": "Scatter oat crumbs",
+            "icon": "leaf",
+            "reaction": "The ducklings tumble after the crumbs in a fluffy rush."
+          },
+          {
+            "id": "pet",
+            "label": "Pet a soft little head",
+            "icon": "hand",
+            "reaction": "A duckling leans into your hand and closes its eyes."
+          },
+          {
+            "id": "hum",
+            "label": "Hum a slow tune",
+            "icon": "song",
+            "reaction": "The peeping slows down to match your humming."
+          }
+        ]
+      },
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "onSuccess": {
+        "goto": "duck_plan",
+        "narration": "The ducklings settle into one warm heap, every one of them yawning."
+      },
+      "onFailure": {
+        "goto": "duck_plan",
+        "narration": "A few ducklings keep peeping, but they stay close to your boots."
+      },
+      "onAssisted": {
+        "goto": "duck_plan",
+        "narration": "Tilly tucks the ducklings into her hat, and they quiet down at once."
+      }
+    },
     "duck_plan": {
       "type": "choice_point",
-      "narration": "The ducklings fan out across the bridge head. The nearest is already at the edge, looking down at the water with great interest. \"Eggs,\" says Tilly faintly, \"are supposed to wait until market.\" How will you get them to safety?",
+      "narration": "The ducklings are calmer now, but very curious. The nearest wanders to the edge of the bridge head and looks down at the water with great interest. \"Eggs,\" says Tilly faintly, \"are supposed to wait until market.\" How will you get them to safety?",
       "choices": [
         {
           "id": "scoop",
