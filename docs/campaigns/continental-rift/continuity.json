@@ -3748,26 +3748,6 @@
           ],
           "introduces": {}
         },
-        "scout": {
-          "requires": [
-            "tamsin"
-          ],
-          "introduces": {}
-        },
-        "scout_cliff": {
-          "requires": [],
-          "introduces": {}
-        },
-        "scout_prints": {
-          "requires": [],
-          "introduces": {}
-        },
-        "scout_done": {
-          "requires": [],
-          "introduces": {
-            "goat_track": "goat track"
-          }
-        },
         "driftline": {
           "requires": [
             "tamsin",
@@ -3833,6 +3813,14 @@
           "requires": [
             "stranded_goats"
           ],
+          "introduces": {
+            "crab": "glassback crabs"
+          }
+        },
+        "bar_crab": {
+          "requires": [
+            "crab"
+          ],
           "introduces": {}
         },
         "bar_carry": {
@@ -3880,27 +3868,6 @@
         "goat_back": {
           "requires": [
             "stranded_goats",
-            "tamsin"
-          ],
-          "introduces": {}
-        },
-        "waterline": {
-          "requires": [
-            "tamsin",
-            "river_line"
-          ],
-          "introduces": {}
-        },
-        "stack_cairn": {
-          "requires": [],
-          "introduces": {}
-        },
-        "scratch_line": {
-          "requires": [],
-          "introduces": {}
-        },
-        "waterline_done": {
-          "requires": [
             "tamsin"
           ],
           "introduces": {}
@@ -3956,10 +3923,11 @@
         "surge": {
           "requires": [
             "tamsin",
-            "goat_track",
             "ladder"
           ],
-          "introduces": {}
+          "introduces": {
+            "goat_track": "goat track"
+          }
         },
         "surge_run": {
           "requires": [],
@@ -3980,8 +3948,7 @@
         "surge_after": {
           "requires": [
             "ladder",
-            "tamsin",
-            "goat_track"
+            "tamsin"
           ],
           "introduces": {}
         },
@@ -4341,34 +4308,6 @@
           ],
           "introduces": {}
         },
-        "gust": {
-          "requires": [
-            "brask",
-            "pebble",
-            "ledger"
-          ],
-          "introduces": {}
-        },
-        "gust_grab": {
-          "requires": [],
-          "introduces": {}
-        },
-        "gust_cover": {
-          "requires": [],
-          "introduces": {}
-        },
-        "gust_leap": {
-          "requires": [],
-          "introduces": {}
-        },
-        "pages_back": {
-          "requires": [
-            "brask",
-            "pebble",
-            "ledger"
-          ],
-          "introduces": {}
-        },
         "shelter": {
           "requires": [
             "brask",
@@ -4395,7 +4334,18 @@
         "shelter_found": {
           "requires": [
             "brask",
+            "pebble"
+          ],
+          "introduces": {
+            "wolves": "A cinder wolf",
+            "supply_cairn": "the little cairn where the aerie keeps its hay and bread"
+          }
+        },
+        "cache_fight": {
+          "requires": [
+            "brask",
             "pebble",
+            "wolves",
             "neck"
           ],
           "introduces": {}

@@ -6,7 +6,7 @@
   "title": "A Pass Not in the Ledger",
   "biome": "frostfang_peaks",
   "music": "riftlight-paths",
-  "estimatedMinutes": 34,
+  "estimatedMinutes": 36,
   "xpAward": 140,
   "entry": "cairns",
   "goal": {
@@ -1103,7 +1103,7 @@
           "id": "continue",
           "label": "Finish the job",
           "icon": "forward",
-          "goto": "gust"
+          "goto": "shelter"
         }
       ],
       "cast": [
@@ -1134,7 +1134,7 @@
           "id": "continue",
           "label": "Finish the job",
           "icon": "forward",
-          "goto": "gust"
+          "goto": "shelter"
         }
       ],
       "cast": [
@@ -1158,167 +1158,6 @@
           "id": "continue",
           "label": "Finish the job",
           "icon": "forward",
-          "goto": "gust"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep"
-    },
-    "gust": {
-      "type": "choice_point",
-      "narration": "A gust screams over the notch and rips at the ledger. Loose pages leap into the air, flapping like startled birds. \"My pages!\" cries Pebble. \"The new page!\" Paper tumbles toward the edge. What do you do?",
-      "choices": [
-        {
-          "id": "grab",
-          "label": "Everyone grab for the flying pages",
-          "icon": "hand",
-          "goto": "gust_grab"
-        },
-        {
-          "id": "cover",
-          "label": "Throw yourselves on the ledger and hold it shut",
-          "icon": "shield",
-          "goto": "gust_cover"
-        },
-        {
-          "id": "leap",
-          "label": "Use leap to catch pages in mid-air",
-          "icon": "arrow",
-          "goto": "gust_leap",
-          "requiresSpecies": "manticore"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep"
-    },
-    "gust_grab": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "Everyone grab at the flying pages before they reach the edge.",
-      "narration": "Pages fly everywhere. You snatch at them with both hands, and everybody becomes a very bad flock of birds.",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "pages_back",
-        "narration": "A lot of grabbing and a lot of laughing. When it is over, every page is back in the ledger, a little crumpled."
-      },
-      "onFailure": {
-        "goto": "pages_back",
-        "narration": "You catch most of them. One page sails over the edge, fluttering down the valley like a lazy gull.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "page_lost"
-          }
-        ]
-      },
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep"
-    },
-    "gust_cover": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "prompt": "Hold the ledger shut against the wind.",
-      "narration": "You fling yourselves on the ledger and hold it shut with your arms. The wind tugs at your sleeves and tries to steal a hat.",
-      "onSuccess": {
-        "goto": "pages_back",
-        "narration": "The wind gives up and goes to bother someone else. Every page is safe."
-      },
-      "onFailure": {
-        "goto": "pages_back",
-        "narration": "The wind finds a corner and tugs. One page escapes and flaps away over the valley.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "page_lost"
-          }
-        ]
-      },
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep"
-    },
-    "gust_leap": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "Use leap to catch pages in mid-air. The hero with leap helps; choose who leads.",
-      "narration": "A manticore can bound very high and land very softly. The pages are flying, and a bound is a fine way to meet them.",
-      "onSuccess": {
-        "goto": "pages_back",
-        "narration": "A bound, a twist, a snatch! The pages come down into your arms like tired birds."
-      },
-      "onFailure": {
-        "goto": "pages_back",
-        "narration": "You catch most of the pages in one bound. One slips away over the valley.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "page_lost"
-          }
-        ]
-      },
-      "cast": [
-        {
-          "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Pebble",
-          "size": "small"
-        }
-      ],
-      "art": "scenes/riftlight/cairnstep"
-    },
-    "pages_back": {
-      "type": "story",
-      "narration": "Every page is back in the ledger. Pebble hugs the new one and says, \"Safe, safe, safe.\" Brask smooths the corners with his claw. \"Now. The herd's supplies,\" he says, tapping the margin. \"If the herders come this way, where can sacks wait out the weather?\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look for a dry place",
-          "icon": "eye",
           "goto": "shelter"
         }
       ],
@@ -1333,20 +1172,11 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
-      "variants": [
-        {
-          "when": {
-            "flag": "page_lost"
-          },
-          "replace": true,
-          "text": "One page is gone, sailing down the valley. It was an old one, a pass long closed, and Brask only sighs. \"Perhaps it will teach someone something,\" he says. Pebble hugs the new page tight. \"Now. The herd's supplies,\" he says, tapping the margin. \"If the herders come this way, where can sacks wait out the weather?\""
-        }
-      ]
+      "art": "scenes/riftlight/cairnstep"
     },
     "shelter": {
       "type": "choice_point",
-      "narration": "Along the dry shelf above the flooded route, the cliff leans out in overhangs, and the snow piles into deep banks. A sack of grain wants somewhere dry, out of the wind, and away from nibbling mouths. Where will you look?",
+      "narration": "Brask taps the margin of the ledger. \"The herd's supplies. If the herders come this way, where can sacks wait out the weather?\" Along the dry shelf above the flooded route, the cliff leans out in overhangs, and the snow piles into deep banks. A sack of grain wants somewhere dry, out of the wind, and away from nibbling mouths. Where will you look?",
       "choices": [
         {
           "id": "drip",
@@ -1516,13 +1346,13 @@
     },
     "shelter_found": {
       "type": "story",
-      "narration": "Brask draws a little roof on the ledger map and writes \"supplies\" under it. \"Herders come from the glacier side,\" he says. \"A sack left here is a sack saved.\" Pebble draws a tiny goat under the roof, for luck. \"Only one place left to settle,\" says Brask, and he looks up the pass toward the neck.",
+      "narration": "Brask draws a little roof on the ledger map and writes \"supplies\" under it. \"Herders come from the glacier side,\" he says. \"A sack left here is a sack saved.\" Pebble draws a tiny goat under the roof, for luck. A thin yip floats over the rocks. A cinder wolf, gray as ash and glowing at the edges like a coal, is nosing at the little cairn where the aerie keeps its hay and bread. A second wolf trots up beside it. \"Hungry,\" says Brask. \"Not wicked. But that is my winter hay.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Go to the neck",
-          "icon": "boot",
-          "goto": "neck"
+          "label": "Shoo the wolves from the cairn",
+          "icon": "shield",
+          "goto": "cache_fight"
         }
       ],
       "cast": [
@@ -1536,6 +1366,45 @@
           "size": "small"
         }
       ],
+      "art": "scenes/riftlight/cairnstep"
+    },
+    "cache_fight": {
+      "type": "encounter",
+      "map": "switchback",
+      "narration": "The wolves wag their glowing tails and creep toward the cairn. They are hungry and cheeky, and they are not very big. A good shout and a firm stand should do it. Pebble hides behind Brask and cheers.",
+      "enemies": [
+        {
+          "id": "wolf",
+          "creature": "cinder_wolf",
+          "count": 2
+        }
+      ],
+      "onVictory": {
+        "goto": "neck",
+        "narration": "The wolves yelp, spin and bolt down the slope in two puffs of ash. Pebble tosses them a heel of bread for the road, which seems fair. In the ashy paw prints, Brask finds a warm bead and presses it into your hand. \"The hearth keeps its own,\" he says. Then he looks up the pass toward the neck.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "hearthstone_bead",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "neck",
+        "narration": "The wolves dodge and dart, and in the end they trot off with a loaf and a good bit of hay. Brask bangs a pot lid until they are gone. You are scuffed but fine. \"Hay can be bought,\" says Brask. \"Friends are harder.\" Then he looks up the pass toward the neck.",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "wolves_took_hay"
+          }
+        ]
+      },
       "art": "scenes/riftlight/cairnstep"
     },
     "neck": {
