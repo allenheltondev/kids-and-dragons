@@ -1,0 +1,26 @@
+:root { font-family: Georgia, serif; color: #f4ebdc; background: #151c28; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 1180px; padding: 28px 20px 60px; margin: auto; }
+h1 { font-size: clamp(2rem, 5vw, 3.5rem); margin: 12px 0; }
+h2 { font-size: 2rem; margin: 10px 0; }
+p { line-height: 1.6; }
+.eyebrow, footer { font: 0.8rem/1.5 system-ui, sans-serif; letter-spacing: 0.08em; color: #c7cbbf; }
+nav, .settings { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 22px 0; }
+button, select { font: 1rem system-ui, sans-serif; min-height: 48px; border: 1px solid #889799; border-radius: 12px; background: #293f48; color: #fff8eb; padding: 12px 18px; cursor: pointer; }
+button[aria-pressed="true"] { background: #765919; border-color: #ffce69; }
+button:disabled { opacity: 0.45; cursor: default; }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 3px solid #ffcf72; outline-offset: 4px; }
+label { display: flex; align-items: center; gap: 10px; font-family: system-ui, sans-serif; }
+input { width: 22px; height: 22px; }
+.world { background: #22352e; border: 1px solid #82947b; border-radius: 24px; padding: 28px; min-height: 300px; }
+.track { position: relative; height: 56px; background: #101c23; border-radius: 20px; margin: 36px 12px; }
+.target { position: absolute; top: 0; bottom: 0; background: #b98b2c; border: 2px solid #ffe0a0; }
+.marker { position: absolute; top: -10px; bottom: -10px; width: 8px; border-radius: 8px; background: white; transform: translateX(-50%); }
+.result { font-size: 1.25rem; color: #ffe2a2; }
+.phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 18px; margin: 24px 0; }
+.phone { border: 2px solid #566170; border-radius: 24px; background: #202936; padding: 20px; }
+.phone button { display: block; width: 100%; margin: 12px 0; }
+.hold { touch-action: none; user-select: none; -webkit-user-select: none; }
+.gate-picture, .stones { text-align: center; font-size: 1.7rem; padding: 18px 0; }
+.gate-picture p { font-size: 1rem; }

@@ -50,6 +50,7 @@ export type IssueCode =
   | "BAD_CONDITION"
   | "UNBACKED_COST"
   | "BAD_ENVIRONMENT"
+  | "BAD_INTERACTION"
   | "NO_SCENES";
 
 export interface ChapterIssue {
@@ -71,6 +72,12 @@ export function sceneEdges(scene: Scene): Edge[] {
     case "choice_point":
     case "rest":
       return scene.choices.map((c) => ({ to: c.goto, via: `choice "${c.id}"` }));
+    case "interaction":
+      return [
+        ...(scene.onSuccess ? [{ to: scene.onSuccess.goto, via: "onSuccess" }] : []),
+        ...(scene.onFailure ? [{ to: scene.onFailure.goto, via: "onFailure" }] : []),
+        ...(scene.onAssisted ? [{ to: scene.onAssisted.goto, via: "onAssisted" }] : []),
+      ];
     case "check":
       return [
         ...(scene.onSuccess ? [{ to: scene.onSuccess.goto, via: "onSuccess" }] : []),
@@ -101,6 +108,10 @@ function sceneEffects(scene: Scene): Effect[] {
     case "choice_point":
     case "rest":
       for (const choice of scene.choices) effects.push(...(choice.effects ?? []));
+      break;
+    case "interaction":
+      effects.push(...(scene.onAssisted?.effects ?? []));
+      effects.push(...(scene.onSuccess?.effects ?? []), ...(scene.onFailure?.effects ?? []));
       break;
     case "check":
       effects.push(...(scene.onSuccess?.effects ?? []), ...(scene.onFailure?.effects ?? []));
@@ -194,7 +205,7 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
     // Branch completeness. A check with one arm strands the other outcome; an
     // encounter without onDefeat would need a game over, which never exists
     // (spec §7.3).
-    if (scene.type === "check") {
+    if (scene.type === "check" || scene.type === "interaction") {
       if (!scene.onSuccess?.goto) {
         issues.push({
           severity: "error",
@@ -210,6 +221,21 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
           message: `check scene "${sceneId}" has no onFailure branch — failure must continue the story`,
           sceneId,
         });
+      }
+    }
+    if (scene.type === "interaction" && (scene.interaction.kind === "sequence" || scene.interaction.kind === "memory" || scene.interaction.kind === "play")) {
+      const spec = scene.interaction;
+      const ids = spec.options.map((option) => option.id);
+      if (new Set(ids).size !== ids.length || (spec.kind !== "play" && spec.answer.some((id) => !ids.includes(id)))) {
+        issues.push({ severity: "error", code: "BAD_INTERACTION", sceneId,
+          message: `interaction "${sceneId}" needs unique option ids and an answer using those ids` });
+      }
+    }
+    if (scene.type === "interaction" && scene.interaction.kind === "tracking") {
+      const spec = scene.interaction;
+      if (spec.start >= spec.covers.length || spec.swaps.some(([a, b]) => a >= spec.covers.length || b >= spec.covers.length || a === b)) {
+        issues.push({ severity: "error", code: "BAD_INTERACTION", sceneId,
+          message: `interaction "${sceneId}" needs distinct swaps using existing cover positions` });
       }
     }
     if (scene.type === "encounter") {

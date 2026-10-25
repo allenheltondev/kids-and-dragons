@@ -32,6 +32,7 @@
  */
 
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
+import { balanceReady, interactionActor, playbackMs, playReady, precisionSuccess, relayHolder, supportsReady, trackedCover, SUPPORT_LEASE_MS } from "./interactions.js";
 import type {
   Character,
   ClassDef,
@@ -942,6 +943,17 @@ function openScenePrompt(
       return undefined;
     }
 
+    case "interaction": {
+      const members = draft.party.filter((member) => member.connected);
+      const players = (members.length ? members : draft.party).map((member) => member.playerId);
+      draft.prompt = {
+        kind: "interaction", sceneId, openedSeq: draft.seq + 1, attempt: 0,
+        spec: structuredClone(scene.interaction), playerIds: players,
+        actorId: players[(draft.storyTurn ?? 0) % players.length] ?? "",
+        phase: "ready", relaxed: false, supports: {},
+      };
+      return undefined;
+    }
     case "check": {
       if (scene.roller === "all") {
         const everyone = rollerPool(draft).map((m) => m.character.id);
@@ -1215,6 +1227,109 @@ const isTile = (value: unknown): value is { x: number; y: number } =>
  * check, and `mode` or `ready` stored whatever was sent and broadcast it to
  * every screen (`ready: "yes"` counted as ready; `accept: "no"` accepted).
  */
+function doInteract(draft: RunState, playerId: string, intent: Extract<ClientIntent, { type: "INTERACT" }>, ctx: EngineContext): Presentation | undefined {
+  const prompt = draft.prompt;
+  if (!prompt || prompt.kind !== "interaction" || prompt.openedSeq !== intent.openedSeq || prompt.attempt !== intent.attempt) {
+    throw new Illegal("ILLEGAL", "This interaction has moved on.");
+  }
+  const scene = ctx.chapter?.scenes[prompt.sceneId];
+  if (!scene || scene.type !== "interaction") throw new Illegal("ILLEGAL", "No interaction scene.");
+  const connected = draft.party.filter((member) => member.connected).map((member) => member.playerId);
+  if (!connected.includes(playerId)) throw new Illegal("FORBIDDEN", "Only a connected hero may act.");
+  const actor = interactionActor(prompt, connected);
+  const result = (outcome: "success" | "failure" | "assisted") => {
+    prompt.phase = "result";
+    prompt.outcome = outcome;
+    prompt.supports = {};
+  };
+  if (intent.action === "continue") {
+    if (prompt.phase !== "result" || !prompt.outcome) throw new Illegal("ILLEGAL", "Finish the interaction first.");
+    const branch = prompt.outcome === "failure" ? scene.onFailure : prompt.outcome === "assisted" ? (scene.onAssisted ?? scene.onSuccess) : scene.onSuccess;
+    draft.storyTurn = (draft.storyTurn ?? 0) + 1;
+    return takeBranch(draft, branch, ctx, draft.party.find((member) => member.playerId === actor)?.character.id);
+  }
+  if (intent.action === "retry") {
+    if (playerId !== actor || (prompt.phase !== "result" && prompt.phase !== "active")) throw new Illegal("ILLEGAL", "Only the acting hero can start again.");
+    prompt.attempt += 1; prompt.phase = "ready"; prompt.supports = {};
+    delete prompt.outcome; delete prompt.startedAt;
+    delete prompt.levels; delete prompt.passed; delete prompt.caughtBy;
+    delete prompt.contributions; delete prompt.reactions; delete prompt.taps;
+    return undefined;
+  }
+  if (prompt.phase === "result") throw new Illegal("ILLEGAL", "This attempt is complete.");
+  if (intent.action === "assist") { result("assisted"); return undefined; }
+  if (intent.action === "start") {
+    if (playerId !== actor || prompt.phase !== "ready" || typeof intent.relaxed !== "boolean") throw new Illegal("ILLEGAL", "Not ready to start.");
+    prompt.relaxed = intent.relaxed; prompt.startedAt = ctx.now; prompt.phase = "active";
+    return undefined;
+  }
+  if (prompt.phase !== "active") throw new Illegal("ILLEGAL", "Start when everyone is ready.");
+  switch (intent.action) {
+    case "stop":
+      if ((prompt.spec.kind !== "precision" && prompt.spec.kind !== "timing") || playerId !== actor || typeof intent.position !== "number" || !Number.isFinite(intent.position) || intent.position < 0 || intent.position > 1) throw new Illegal("ILLEGAL", "Invalid precision input.");
+      // Score the displayed phone position, not network arrival time. This is
+      // a cooperative family game; a modified client can forge its own timing.
+      result(precisionSuccess(prompt.spec, intent.position, prompt.relaxed) ? "success" : "failure");
+      return undefined;
+    case "support":
+      if (prompt.spec.kind !== "cooperate" || !["hold", "prop", "release"].includes(intent.mode)) throw new Illegal("ILLEGAL", "Invalid support input.");
+      if (intent.mode === "release") delete prompt.supports[playerId];
+      else if (intent.mode === "prop") prompt.supports[playerId] = null;
+      else prompt.supports[playerId] = new Date(Date.parse(ctx.now) + SUPPORT_LEASE_MS).toISOString();
+      return undefined;
+    case "complete":
+      if (playerId !== actor || !(prompt.spec.kind === "cooperate" ? supportsReady(prompt, connected, ctx.now) : prompt.spec.kind === "balance" ? balanceReady(prompt, connected) : prompt.spec.kind === "play" ? playReady(prompt, connected) : prompt.spec.kind === "relay" ? !relayHolder(prompt, connected) : false)) throw new Illegal("ILLEGAL", "Finish working together first.");
+      result("success");
+      return undefined;
+    case "answer":
+      if (prompt.spec.kind === "tracking") {
+        if (playerId !== actor || !Array.isArray(intent.answer) || intent.answer.length !== 1 || !prompt.spec.covers.some((_, index) => String(index) === intent.answer[0]) || (!prompt.relaxed && Date.parse(ctx.now) - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, prompt.relaxed))) throw new Illegal("ILLEGAL", "Watch the trick before choosing a cover.");
+        result(intent.answer[0] === String(trackedCover(prompt.spec)) ? "success" : "failure");
+        return undefined;
+      }
+      if (prompt.spec.kind === "memory") {
+        const spec = prompt.spec;
+        if (playerId !== actor || !Array.isArray(intent.answer) || intent.answer.length !== spec.answer.length || !intent.answer.every((id) => typeof id === "string" && spec.options.some((option) => option.id === id)) || (!prompt.relaxed && Date.parse(ctx.now) - Date.parse(prompt.startedAt ?? "") < playbackMs(spec, prompt.relaxed))) throw new Illegal("ILLEGAL", "Watch the magic before answering.");
+        result(intent.answer.every((id, index) => id === spec.answer[index]) ? "success" : "failure");
+        return undefined;
+      }
+      if (prompt.spec.kind !== "sequence" || playerId !== actor || !Array.isArray(intent.answer) || intent.answer.length !== prompt.spec.answer.length || !intent.answer.every((id) => typeof id === "string" && prompt.spec.kind === "sequence" && prompt.spec.options.some((option) => option.id === id))) throw new Illegal("ILLEGAL", "Choose a complete path.");
+      result(intent.answer.every((id, index) => prompt.spec.kind === "sequence" && id === prompt.spec.answer[index]) ? "success" : "failure");
+      return undefined;
+    case "adjust": {
+      if (prompt.spec.kind !== "balance" || (intent.direction !== "up" && intent.direction !== "down")) throw new Illegal("ILLEGAL", "Invalid balance input.");
+      const levels = prompt.levels ??= {};
+      levels[playerId] = Math.max(0, Math.min(1, (levels[playerId] ?? 0) + (intent.direction === "up" ? 0.25 : -0.25)));
+      return undefined;
+    }
+    case "catch":
+    case "pass": {
+      if (prompt.spec.kind !== "relay" || relayHolder(prompt, connected) !== playerId) throw new Illegal("ILLEGAL", "The spark belongs to another friend.");
+      if (intent.action === "catch") {
+        if (prompt.caughtBy === playerId) throw new Illegal("ILLEGAL", "Already caught.");
+        prompt.caughtBy = playerId;
+      } else {
+        if (prompt.caughtBy !== playerId) throw new Illegal("ILLEGAL", "Catch it first.");
+        (prompt.passed ??= []).push(playerId); delete prompt.caughtBy;
+        if (!relayHolder(prompt, connected)) result("success");
+      }
+      return undefined;
+    }
+    case "play": {
+      if (prompt.spec.kind !== "play") throw new Illegal("ILLEGAL", "Not a playful interaction.");
+      const option = prompt.spec.options.find((option) => option.id === intent.optionId);
+      if (!option) throw new Illegal("ILLEGAL", "Choose an offered action.");
+      (prompt.contributions ??= {})[playerId] = option.id;
+      prompt.taps = Math.min(1000, (prompt.taps ?? 0) + 1);
+      const stage = prompt.spec.stages?.[Math.min(prompt.taps - 1, prompt.spec.stages.length - 1)];
+      prompt.reactions = [...(prompt.reactions ?? []), { playerId, text: stage ?? option.reaction }].slice(-12);
+      return undefined;
+    }
+    default:
+      throw new Illegal("ILLEGAL", "Unknown interaction action.");
+  }
+}
+
 function checkIntentShape(intent: ClientIntent): void {
   const malformed = (field: string): never => {
     throw new Illegal("ILLEGAL", `malformed ${intent.type}: ${field}`);
@@ -1325,6 +1440,9 @@ function dispatch(
 
     case "ROLL":
       return doRoll(draft, playerId, ctx, intent.spendBuff);
+
+    case "INTERACT":
+      return doInteract(draft, playerId, intent, ctx);
 
     case "HELP":
       return doHelp(draft, playerId, ctx);
