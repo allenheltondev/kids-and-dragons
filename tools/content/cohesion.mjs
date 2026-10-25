@@ -59,6 +59,7 @@ const CHAPTERS = join(HERE, "..", "..", "content", "chapters");
 /** The result keys a check or fight leaves by, in `exits` order. */
 function branchKeys(scene) {
   if (scene.type === "check") return ["onSuccess", "onFailure"];
+  if (scene.type === "interaction") return ["onSuccess", "onFailure", ...(scene.onAssisted ? ["onAssisted"] : [])];
   if (scene.type === "encounter") return ["onVictory", "onDefeat", ...["onEscape", "onTimeout"].filter((k) => scene[k])];
   return [];
 }
