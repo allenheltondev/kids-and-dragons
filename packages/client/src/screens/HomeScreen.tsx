@@ -120,7 +120,7 @@ function PersonalHome(): ReactElement {
 
   const [displayName, setDisplayName] = useState(() => randomName());
   const [hosting, setHosting] = useState(false);
-  // What this screen is called, kept on the device so the TV remembers it.
+  // What the family calls its table, kept on the device so the TV remembers it.
   const [location, setLocation] = useState(() => loadLocationName());
   const locationFieldId = useId();
   const [mode, setMode] = useState<RoomMode>("party");
@@ -397,7 +397,7 @@ function PersonalHome(): ReactElement {
               <div className="home__field">
                 <label className="home__label" htmlFor={locationFieldId}>
                   <Icon name="name" />
-                  <span>Name this screen</span>
+                  <span>Name your table</span>
                 </label>
                 <input
                   id={locationFieldId}
@@ -405,12 +405,12 @@ function PersonalHome(): ReactElement {
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Living room TV"
+                  placeholder="Kitchen table"
                   enterKeyHint="done"
                   maxLength={LOCATION_NAME_MAX}
                 />
                 <p className="home__hint kad-muted">
-                  The lobby shows this name, and a game you stop here says it was saved here.
+                  Where your family plays, like the kitchen table or Grandma&rsquo;s house. Games you stop say where they were saved.
                 </p>
               </div>
             ) : null}

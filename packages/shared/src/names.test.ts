@@ -33,9 +33,9 @@ describe("the typed-name filter (#253)", () => {
   });
 });
 
-describe("a screen's place name", () => {
+describe("a table's name", () => {
   it("trims, collapses spaces, and allows none", () => {
-    expect(checkLocationName("  Living   room TV ")).toEqual({ ok: true, name: "Living room TV" });
+    expect(checkLocationName("  Kitchen   table ")).toEqual({ ok: true, name: "Kitchen table" });
     expect(checkLocationName("")).toEqual({ ok: true, name: "" });
     expect(checkLocationName(undefined)).toEqual({ ok: true, name: "" });
   });

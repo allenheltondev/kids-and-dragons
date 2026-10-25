@@ -151,9 +151,9 @@ export function LobbyContent(): ReactElement {
         <Icon name="party" />
         <span>Everyone in?</span>
       </h2>
-      {/* The screen's own name, when the family gave it one: it is where the
-          game is kept, not the phones. */}
-      {state?.location ? <p className="lobby__place kad-muted">Playing at {state.location}</p> : null}
+      {/* The household's table, when the family named it: where the game is
+          kept, not the phones. */}
+      {state?.location ? <p className="lobby__place kad-muted">{state.location}</p> : null}
       {/* A chapter this household stopped partway (#259): said to the room, and
           taken up from any phone. */}
       {state?.saved ? (

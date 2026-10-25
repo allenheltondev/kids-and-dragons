@@ -562,8 +562,8 @@ export interface RunState {
    */
   saved?: SavedGameView;
   /**
-   * What the family calls the screen hosting this room ("Living room TV"),
-   * from the TV that opened it. Absent when the screen was never named.
+   * What the family calls its table, the household's place at the game ("Kitchen table"),
+   * from the TV that opened it. Absent when the table was never named.
    */
   location?: string;
   /**
@@ -611,7 +611,7 @@ export interface SavedGameView {
   /** The heroes who were playing, by name. */
   heroes: string[];
   savedAt: string;
-  /** What the family called the screen it was stopped on, when they named it. */
+  /** What the family called its table, when they named it. */
   location?: string;
 }
 
