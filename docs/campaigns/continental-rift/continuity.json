@@ -4588,13 +4588,6 @@
           ],
           "introduces": {}
         },
-        "surge_wet": {
-          "requires": [
-            "splash",
-            "stone_keeper"
-          ],
-          "introduces": {}
-        },
         "notch_plan": {
           "requires": [
             "splash",
@@ -4638,6 +4631,14 @@
           "requires": [
             "stone_keeper",
             "count_cord"
+          ],
+          "introduces": {}
+        },
+        "chalk_snap": {
+          "requires": [
+            "stone_keeper",
+            "count_cord",
+            "splash"
           ],
           "introduces": {}
         },
@@ -4687,12 +4688,6 @@
           "introduces": {}
         },
         "tight": {
-          "requires": [
-            "stone_keeper"
-          ],
-          "introduces": {}
-        },
-        "tight_slack": {
           "requires": [
             "stone_keeper"
           ],
@@ -4820,6 +4815,14 @@
           "introduces": {}
         },
         "top_stone": {
+          "requires": [
+            "stone_keeper",
+            "carving",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "stone_order": {
           "requires": [
             "stone_keeper",
             "carving",
@@ -5127,6 +5130,14 @@
           ],
           "introduces": {}
         },
+        "ferry_dock": {
+          "requires": [
+            "boat",
+            "ossley",
+            "eggs"
+          ],
+          "introduces": {}
+        },
         "far_bank": {
           "requires": [
             "ashspan",
@@ -5173,6 +5184,13 @@
           "introduces": {}
         },
         "cart_stuck": {
+          "requires": [
+            "bryn",
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "unload_relay": {
           "requires": [
             "bryn",
             "goats"
@@ -5237,6 +5255,13 @@
           ],
           "introduces": {}
         },
+        "carry_beam": {
+          "requires": [
+            "bryn",
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
         "beam_plan": {
           "requires": [
             "bryn",
@@ -5290,6 +5315,13 @@
           "introduces": {
             "ducklings": "duckling"
           }
+        },
+        "duck_play": {
+          "requires": [
+            "ducklings",
+            "tilly"
+          ],
+          "introduces": {}
         },
         "duck_plan": {
           "requires": [
