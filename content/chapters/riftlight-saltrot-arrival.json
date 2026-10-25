@@ -182,19 +182,13 @@
     },
     "shells_done": {
       "type": "story",
-      "narration": "You reach the humped island with dry-ish boots. \"Good skipping,\" says the guide, which is a very high compliment. Behind you, the fiddler crabs wave, or perhaps they are cheering.",
+      "narration": "You make it across the first stretch with dry-ish boots. \"Good skipping,\" says the guide, which is a very high compliment. Behind you, the fiddler crabs wave, or perhaps they are cheering.",
       "choices": [
         {
           "id": "continue",
           "label": "Look at the island",
           "icon": "hand",
-          "goto": "town"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "crossed_the_shells"
+          "goto": "shell_path"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
@@ -213,15 +207,82 @@
           "id": "continue",
           "label": "Look at the island",
           "icon": "hand",
-          "goto": "town"
+          "goto": "shell_path"
         }
       ],
-      "onEnter": [
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
         {
-          "type": "setFlag",
-          "flag": "crossed_the_shells"
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
         }
-      ],
+      ]
+    },
+    "shell_path": {
+      "type": "interaction",
+      "narration": "The last steps up the island are three kinds of shell: whelk, cockle and oyster. \"Wrong order and they roll,\" says the guide. She tells you the right order in bits, and each of you hears a different bit. \"Put it together. I am a guide, not a parrot.\"",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share your clues, then step on the shells in order.",
+        "actionLabel": "Climb the shells",
+        "options": [
+          {
+            "id": "whelk",
+            "label": "Whelk",
+            "icon": "leaf"
+          },
+          {
+            "id": "cockle",
+            "label": "Cockle",
+            "icon": "boot"
+          },
+          {
+            "id": "oyster",
+            "label": "Oyster",
+            "icon": "star"
+          }
+        ],
+        "answer": [
+          "whelk",
+          "cockle",
+          "oyster"
+        ],
+        "clues": [
+          "The guide says: start on the whelk.",
+          "The oyster comes last, because it is the biggest.",
+          "The cockle is somewhere in the middle."
+        ]
+      },
+      "onSuccess": {
+        "goto": "town",
+        "narration": "Whelk, cockle, oyster. Each shell holds, and the island seems to rise to meet your boots. \"Good listening,\" says the guide.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossed_the_shells"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "town",
+        "narration": "A shell rolls, and the guide catches your sleeve. \"Scenic route,\" she says, and walks you up the safe way, laughing.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossed_the_shells"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "town",
+        "narration": "You lay the clues side by side, and the order is clear. The guide nods, impressed in a small way.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossed_the_shells"
+          }
+        ]
+      },
       "art": "scenes/riftlight/stuttering-flats",
       "cast": [
         {
@@ -341,13 +402,13 @@
     },
     "town_done": {
       "type": "story",
-      "narration": "The hatch swings up with a pop and a puff of warm air. Skuppers pour out in a cheerful line, rubbing their eyes. The guide's grandmother steps out last and says, \"About time.\" Then she hugs you, which is damp. A very small Skupper child holds up a very large shell like a trophy.",
+      "narration": "The hatch swings up with a pop and a puff of warm air. Skuppers pour out in a cheerful line, rubbing their eyes.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the silt",
+          "label": "Help the families out",
           "icon": "hand",
-          "goto": "silt"
+          "goto": "hatch_party"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
@@ -360,15 +421,65 @@
     },
     "town_off": {
       "type": "story",
-      "narration": "The silt slumps back over half the hatch, and a Skupper child pops out through the gap anyway, like a cork. It takes longer, and everyone is muddier than you hoped, but the hatch stays open. The guide's grandmother steps out last and says, \"About time.\"",
+      "narration": "The silt slumps back over half the hatch, and a Skupper child pops out through the gap anyway, like a cork. It takes longer, and everyone is muddier than you hoped, but the hatch stays open. Skuppers pour out in a cheerful line, rubbing their eyes.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look at the silt",
+          "label": "Help the families out",
           "icon": "hand",
-          "goto": "silt"
+          "goto": "hatch_party"
         }
       ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "hatch_party": {
+      "type": "interaction",
+      "narration": "The whole town is out in the thin sunlight, blinking, and everybody wants something at once. The families need many hands. Pick a job and do it, and do it loudly. The guide's grandmother is last through the hatch, and she is not patient.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Everyone pick a job and help the families out.",
+        "actionLabel": "Help out",
+        "options": [
+          {
+            "id": "cakes",
+            "label": "Hand out kelp cakes",
+            "icon": "heart",
+            "reaction": "A small Skupper takes a cake in each fin and another in her mouth."
+          },
+          {
+            "id": "sweep",
+            "label": "Sweep silt off the steps",
+            "icon": "hand",
+            "reaction": "The steps shine. A crab inspects them and approves."
+          },
+          {
+            "id": "cheer",
+            "label": "Cheer for the grandmother",
+            "icon": "star",
+            "reaction": "The grandmother says, \"About time,\" again, but she smiles."
+          }
+        ],
+        "stages": [
+          "The families blink and stretch.",
+          "The steps are clear and the cakes are going round.",
+          "The whole town is cheering."
+        ]
+      },
+      "onSuccess": {
+        "goto": "silt",
+        "narration": "The grandmother steps out last, hugs you, which is damp, and says, \"About time.\" A very small Skupper child holds up a very large shell like a trophy."
+      },
+      "onFailure": {
+        "goto": "silt",
+        "narration": "The grandmother steps out last, hugs you, which is damp, and says, \"About time.\" A very small Skupper child holds up a very large shell like a trophy."
+      },
       "art": "scenes/riftlight/stuttering-flats",
       "cast": [
         {
@@ -863,9 +974,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Sit down at last",
+          "label": "Carry the lamp oil down",
           "icon": "hand",
-          "goto": "camp"
+          "goto": "lamp_line"
         }
       ],
       "onEnter": [
@@ -892,9 +1003,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Sit down at last",
+          "label": "Carry the lamp oil down",
           "icon": "hand",
-          "goto": "camp"
+          "goto": "lamp_line"
         }
       ],
       "onEnter": [
@@ -912,6 +1023,35 @@
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
+        }
+      ]
+    },
+    "lamp_line": {
+      "type": "interaction",
+      "narration": "Tidepocket's lamps need their oil before dark, and the hatch ladder is steep and slippery. The families line up along the rungs. \"One jar at a time,\" says the guide. \"Catch it, pass it, do not drop it. Lamp oil is slippery, and so is the ladder.\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the jar, then pass it down the line.",
+        "actionLabel": "Pass the jar",
+        "objectLabel": "A jar of lamp oil"
+      },
+      "onSuccess": {
+        "goto": "camp",
+        "narration": "The last jar reaches the bottom without a drop. Somewhere below, a lamp pops alight, and then another. Tidepocket glows up through the hatch like a pot of warm honey."
+      },
+      "onFailure": {
+        "goto": "camp",
+        "narration": "One jar slips, and a Skupper child catches it with her tail. \"I meant to do that,\" she says. Below, the lamps pop alight, one by one."
+      },
+      "onAssisted": {
+        "goto": "camp",
+        "narration": "You and the guide pass the jars in a steady line. Below, the lamps pop alight, one by one."
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
         }
       ]
     },
@@ -2064,13 +2204,13 @@
     },
     "tide_done": {
       "type": "story",
-      "narration": "You reach the high shells with dry knees. The water swirls past below, cold as a river from the north. Pip is counting heads. \"That is the right number,\" he says, and sits down hard. A fiddler crab climbs onto his head and waves, unbothered.",
+      "narration": "Everyone is across the long stretch, and Pip is counting heads. \"That is the right number,\" he says. A fiddler crab climbs onto his head and waves, unbothered. One last channel lies between you and the high shells, and the water is sliding into it.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look upriver",
+          "label": "Watch the water",
           "icon": "hand",
-          "goto": "lead"
+          "goto": "tide_dash"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
@@ -2087,13 +2227,13 @@
     },
     "tide_off": {
       "type": "story",
-      "narration": "Water fills your boots, cold as a river from the north, which it is. Everyone gets to the high shells, soggy and grumpy and entirely safe. Pip wrings out his map. The guide wrings out Pip.",
+      "narration": "Water fills your boots, cold as a river from the north, which it is. Everyone stays together, soggy and grumpy and safe. Pip wrings out his map. The guide wrings out Pip. One last channel lies between you and the high shells, and the water is sliding into it.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look upriver",
+          "label": "Watch the water",
           "icon": "hand",
-          "goto": "lead"
+          "goto": "tide_dash"
         }
       ],
       "onEnter": [
@@ -2104,6 +2244,41 @@
           "nonlethal": true
         }
       ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "tide_dash": {
+      "type": "interaction",
+      "narration": "The water pulls back from the last channel, then rushes in again, back and forth, like a very large and very rude breath. \"Wait for the pull,\" says the guide, crouching. \"Then go.\"",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Go when the water pulls back.",
+        "actionLabel": "Splash across!",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "lead",
+        "narration": "You hop across on dry shells. The water slides in behind you, quiet as a cat, and you are on the high shells at last."
+      },
+      "onFailure": {
+        "goto": "lead",
+        "narration": "The water gets your boots, but the guide hauls you onto the high shells by the collar, gurgling with laughter."
+      },
+      "onAssisted": {
+        "goto": "lead",
+        "narration": "The guide counts out the pulls for you, one by one, and you cross on the last of them."
+      },
       "art": "scenes/riftlight/stuttering-flats",
       "cast": [
         {
