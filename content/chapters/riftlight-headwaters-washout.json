@@ -6,7 +6,7 @@
   "title": "The River Chooses a Road",
   "biome": "glacier_of_origins",
   "music": "riftlight-paths",
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 36,
   "xpAward": 140,
   "entry": "current",
   "plate": {
@@ -481,11 +481,11 @@
       "prompt": "Lie flat, pull your elbows in, and slide under the low part.",
       "roller": "party",
       "onSuccess": {
-        "goto": "eddy",
+        "goto": "jam",
         "narration": "Whoosh. The roof brushes your noses, and then the sky is back, wide and bright."
       },
       "onFailure": {
-        "goto": "eddy",
+        "goto": "jam",
         "narration": "A hanging icicle bonks the top of a head. You come out the other side with a hat missing and a lump growing.",
         "effects": [
           {
@@ -506,11 +506,11 @@
       "prompt": "Read the ripples to find where the roof is highest, then steer the line there.",
       "roller": "party",
       "onSuccess": {
-        "goto": "eddy",
+        "goto": "jam",
         "narration": "The ripples curl left. You steer left, and the roof lifts like a lid, and you float through almost sitting up."
       },
       "onFailure": {
-        "goto": "eddy",
+        "goto": "jam",
         "narration": "You steer for a high spot that turns out to be a low spot with good manners. Everyone ducks, hats bump the roof, and you squeeze through."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -523,68 +523,12 @@
       "prompt": "Hold the jar high and read the roof, to steer where it lifts.",
       "roller": "party",
       "onSuccess": {
-        "goto": "eddy",
+        "goto": "jam",
         "narration": "The glow slides over the ice, and the roof shows its high spot like a smile. You float through almost sitting up, and the jar fades to a polite glimmer."
       },
       "onFailure": {
-        "goto": "eddy",
+        "goto": "jam",
         "narration": "The jar swings wildly, and the roof flickers. You duck early and slide under, with the jar spent and your hats a little squashed."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "eddy": {
-      "type": "choice_point",
-      "narration": "Beyond the arch, the river spreads wide and slow, and begins to turn in a great lazy circle. It is an eddy. The floes go aaround and around like crumbs in a soup bowl. Stay in it, and you will circle all day. The outer current waits to carry you on.",
-      "choices": [
-        {
-          "id": "kick",
-          "label": "Everyone kicks for the outer edge together",
-          "icon": "hand",
-          "goto": "eddy_kick"
-        },
-        {
-          "id": "hook",
-          "label": "Hook the rope on an ice spur and pull out",
-          "icon": "hand",
-          "goto": "eddy_hook"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "eddy_kick": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "tags": [
-        "swim"
-      ],
-      "narration": "The trick with an eddy is that everyone has to kick the same way. Otherwise, you only go around faster.",
-      "prompt": "Everyone kicks for the outer current on the same count.",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "jam",
-        "narration": "One, two, kick! The circle loosens, and the outer current takes you like a hand on your back."
-      },
-      "onFailure": {
-        "goto": "jam",
-        "narration": "Half of you kick left, and half kick right, and you go around twice more. The third time, the outer current finally grabs you."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "eddy_hook": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "narration": "An icy spur sticks out of the bank like a coat hook. The end of the rope could catch on it.",
-      "prompt": "Throw the rope end to snag the ice spur, and pull yourselves out of the circle.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "jam",
-        "narration": "The rope end flies, catches the spur, and tugs the whole line out of the circle in one long swoop."
-      },
-      "onFailure": {
-        "goto": "jam",
-        "narration": "The rope misses the spur and plops in the water. You reel it in, soggy, and kick out of the eddy the long way."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
@@ -950,11 +894,11 @@
         }
       ],
       "onSuccess": {
-        "goto": "ledge_ahead",
+        "goto": "drake_shallows",
         "narration": "Tap, tap, skip. The goats stay on the dark, hard ice and skip the pale patches. Far ahead, a dark ledge sticks out into the river, and you know to look for it."
       },
       "onFailure": {
-        "goto": "ledge_ahead",
+        "goto": "drake_shallows",
         "narration": "The goats are quicker than your eyes. You catch only a hoof or two, and the rest is a blur of fluff."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -972,11 +916,11 @@
         }
       ],
       "onSuccess": {
-        "goto": "ledge_ahead",
+        "goto": "drake_shallows",
         "narration": "You drift beside the goats, step for step, until they stop at a dark ledge that sticks out into the river. They stay and watch you go."
       },
       "onFailure": {
-        "goto": "ledge_ahead",
+        "goto": "drake_shallows",
         "narration": "The current is quicker than the goats, and you drift ahead of them. They watch you go, and one bleats a good-bye."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -2194,6 +2138,79 @@
           }
         ]
       },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "drake_shallows": {
+      "type": "story",
+      "narration": "Your floe scrapes onto a gravel ford, and the rope goes slack. In the shallows ahead sit two young river drakes, gray and bumpy as wet stones, each with a long grumpy chin. River drakes guard the water and like to be paid in dropped food. These two are hungry and cross, and they have decided that you are the toll. They puff up and splash their tails.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Stand up and shoo it off the ford",
+          "icon": "hand",
+          "goto": "drake_fight"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/river_drake",
+          "name": "Young river drakes"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "drake_fight": {
+      "type": "encounter",
+      "map": "ford",
+      "narration": "The drakes slap the water and rush at the nearest boots. They are big, but they are also a bit unsure. Shoo them off the ford, and the way on is clear.",
+      "enemies": [
+        {
+          "id": "drake",
+          "creature": "river_drake",
+          "name": "Young river drake"
+        }
+      ],
+      "onVictory": {
+        "goto": "ledge_ahead",
+        "narration": "The drakes give huge, offended hiccups and slide away down the river, tails first. In the gravel where they sat, a smooth charm of river glass is left behind. You keep it, and keep an eye on the water.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "river_charm",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "drake_rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "drake_rescued": {
+      "type": "story",
+      "narration": "The drakes win the ford, and win it loudly. One flicks its tail, and the current sweeps your floe back into the stream. Wet and bumped, you lie flat while the river carries you around a bend. Behind you, the drakes sit on their gravel and look very pleased. Nobody is hurt, only humbled.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Pick yourselves up",
+          "icon": "hand",
+          "goto": "ledge_ahead"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "heal",
+          "amount": 1,
+          "to": "party"
+        }
+      ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
     }
   },
