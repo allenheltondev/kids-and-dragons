@@ -301,7 +301,7 @@ Two things fall out of the escalation, both wanted: replaying an early campaign 
 
 Levels 11 to 30 extend the ladder without touching the first ten: the thresholds, rewards and tiers above are byte-for-byte what they were, so no existing hero moves.
 
-- **The curve.** Each step costs 200 more than the one before it (level 11 costs 1800, level 30 costs 5600), reaching 80,300 total XP at level 30. Level 20 is at 30,300. No chapter yet pays enough to make this a quick climb; it is a long game for a hero who keeps coming back.
+- **The curve.** Each step costs 200 more than the one before it (level 11 costs 1800, level 30 costs 5600), reaching 80,300 total XP at level 30. Level 20 is at 33,300. No chapter yet pays enough to make this a quick climb; it is a long game for a hero who keeps coming back.
 - **Three more tiers.** **Ascendant** at 15, **Starborn** at 20 and **Legendary** at 30, each with the same transformation cutscene as the first three. Their art is not painted yet: until it is, `artTierOf` draws them as Mythic, so the rules ship ahead of the pictures. Add a tier to `ART_TIER_IDS` when its art lands.
 - **Rewards.** Every level still grants a stat point. Each adds 1 max HP, and each new tier adds 2 max HP and 1 Guard, as the first three do.
 - **The stat ceiling rises slowly.** Bonus points in one stat cap at 9 through level 10, then one higher at 15, 20, 25 and 30 (13 at the top), `maxStatGainAt`. A push past about +12 is what lets the d20 stop deciding anything, so the ceiling creeps rather than tracks the level.
