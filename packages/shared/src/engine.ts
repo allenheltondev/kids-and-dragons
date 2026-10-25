@@ -90,7 +90,12 @@ import type {
 } from "./types/state.js";
 import type { ClientIntent, Presentation } from "./types/protocol.js";
 import type { Rng } from "./dice.js";
+import { isPracticeCampaign } from "./practice.js";
 import { DEFAULT_HELP_DIE, resolveCheck } from "./dice.js";
+import type { MatchupInput } from "./dice.js";
+import type { MatchupRules } from "./types/matchups.js";
+import { checkNotes, matchupTotal } from "./matchups.js";
+import { sceneCreatures, type Bestiary } from "./bestiary.js";
 import { newCharacter, resolveCharacter, withInventory, withMastery } from "./character.js";
 import {
   actionCredits,
@@ -223,6 +228,18 @@ export interface EngineContext {
    * Absent for every run without declared facts.
    */
   campaignFacts?: Readonly<Record<FactId, FactValue>>;
+  /**
+   * Matchups (docs/matchups.md): `rules.matchups`, handed in by the server
+   * only when `matchupsOn(rules, campaignId)` holds for the run's campaign.
+   * Absent, fights and checks compute exactly what they did before matchups
+   * (Gemfall is exempt and never gets it).
+   */
+  matchups?: MatchupRules;
+  /**
+   * `content/bestiary.json`, for the likes and dislikes of the creatures a
+   * check scene shows (matchups' opinions). Read only with `matchups`.
+   */
+  bestiary?: Bestiary | null;
 }
 
 export type EngineErrorCode = "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN";
@@ -420,6 +437,22 @@ function announceRankUps(draft: RunState, ups: readonly RankUp[]): void {
 }
 
 /**
+ * Says what the table picked, on the scene it led to (`RunState.decision`), so
+ * a room that voted can see its conclusion on the shared screen. A choice with
+ * one way on is nothing decided, and is not said.
+ */
+function announceDecision(
+  draft: RunState,
+  prompt: Prompt & { kind: "choice" },
+  choice: { label: string },
+  playerId: string,
+): void {
+  if (prompt.options.length > 1) {
+    draft.decision = { sceneId: draft.sceneId, label: choice.label, byPlayerId: playerId, vote: prompt.vote };
+  }
+}
+
+/**
  * Keeps every hero's snapshot in step with what the run has counted. A hero
  * re-resolved from her stored row mid-chapter (seated again, say) would
  * otherwise lose a rank she earned an hour ago until the chapter is folded.
@@ -433,6 +466,72 @@ function reconcileRunDeeds(draft: RunState, ctx: EngineContext): void {
     if (now.rank === counted.rank && JSON.stringify(now.deeds) === JSON.stringify(counted.deeds)) continue;
     member.character = withMastery(member.character, counted, ctx.rules);
   }
+}
+
+/**
+ * Pays one hero for her own roll that went well (`RulesContent.rollXp`). Every
+ * roll XP is individual: it goes to `heroRollXp` for her alone, not to the
+ * party, and it stops at the chapter's cap for her. The practice pays nothing.
+ */
+function creditRollXp(
+  draft: RunState,
+  ctx: EngineContext,
+  characterId: string,
+  kind: "check" | "attack" | "defeat" | "natural20",
+  times = 1,
+): void {
+  const pay = ctx.rules.rollXp;
+  if (!pay || times <= 0 || isPracticeCampaign(draft.campaignId)) return;
+  // A chapter begun before roll XP was individual keeps its one shared pot
+  // until it ends (`RunState.rollXp`), so no hero gets a fresh allowance on
+  // top of what the party already earned this chapter.
+  if (draft.rollXp !== undefined) {
+    const room = Math.max(0, pay.chapterCap - draft.rollXp);
+    const amount = Math.min(room, (pay[kind] ?? 0) * times);
+    if (amount <= 0) return;
+    draft.rollXp += amount;
+    draft.xpEarned += amount;
+    return;
+  }
+  const paid = draft.heroRollXp?.[characterId] ?? 0;
+  const room = Math.max(0, pay.chapterCap - paid);
+  const amount = Math.min(room, (pay[kind] ?? 0) * times);
+  if (amount <= 0) return;
+  draft.heroRollXp = { ...draft.heroRollXp, [characterId]: paid + amount };
+}
+
+/**
+ * Pays the hero whose check it was: a success pays `check`, and a natural 20
+ * pays `natural20` on top, success or not (it always succeeds anyway). Only a
+ * seated hero's roll counts, and a group check pays each roller for her own die.
+ */
+function creditCheckXp(draft: RunState, ctx: EngineContext, roll: DiceRoll): void {
+  if (roll.result === "success") creditRollXp(draft, ctx, roll.characterId, "check");
+  if (roll.die === 20) creditRollXp(draft, ctx, roll.characterId, "natural20");
+}
+
+/**
+ * Pays for a stretch of fight events, each hero for her own hits and her own
+ * natural 20s. A foe the acting hero knocks out pays that hero. A party
+ * member going down never pays, and nor does a monster's hit.
+ */
+function creditAttackXp(
+  draft: RunState,
+  events: readonly EncounterEvent[],
+  ctx: EngineContext,
+  actorId: string | null,
+): void {
+  const heroes = new Set(draft.party.map((m) => m.character.id));
+  const hits = events.filter((e) => e.type === "roll" && e.roll.result === "hit" && heroes.has(e.roll.characterId));
+  for (const e of hits) {
+    if (e.type !== "roll") continue;
+    creditRollXp(draft, ctx, e.roll.characterId, "attack");
+    if (e.roll.die === 20) creditRollXp(draft, ctx, e.roll.characterId, "natural20");
+  }
+  // The downs in a hero's own action are the foe's or, rarely, a friend's, so
+  // a party member going down never pays. The rest are the acting hero's.
+  const foes = events.filter((e) => e.type === "down" && !heroes.has(e.actorId));
+  if (actorId && heroes.has(actorId)) creditRollXp(draft, ctx, actorId, "defeat", foes.length);
 }
 
 /** Counts what a stretch of the fight did with nobody's action behind it. */
@@ -936,6 +1035,8 @@ function enterSceneDraft(
   const scene = requireScene(chapter, sceneId);
   // A rank-up line belongs to the scene it landed on, and goes with it.
   if (draft.rankUps && draft.rankUps.sceneId !== sceneId) delete draft.rankUps;
+  // So does the line saying what was picked to get here.
+  if (draft.decision && draft.decision.sceneId !== sceneId) delete draft.decision;
 
   // A swap prompt raised by the *departing* choice's effects survives the
   // transition. It is a decision the player still owes, and dropping it would
@@ -1100,6 +1201,53 @@ export function applyIntent(
   }
 }
 
+const isTile = (value: unknown): value is { x: number; y: number } =>
+  typeof value === "object" &&
+  value !== null &&
+  Number.isInteger((value as { x?: unknown }).x) &&
+  Number.isInteger((value as { y?: unknown }).y);
+
+/**
+ * The intent's fields that are stored, or walked, before any handler checks
+ * them. An intent arrives as JSON from a phone, typed only by the server's
+ * cast, so without this a `MOVE` with no `to` threw a TypeError deep in the
+ * encounter (a 500 every retry), `targetIds: "a"` slipped past the length
+ * check, and `mode` or `ready` stored whatever was sent and broadcast it to
+ * every screen (`ready: "yes"` counted as ready; `accept: "no"` accepted).
+ */
+function checkIntentShape(intent: ClientIntent): void {
+  const malformed = (field: string): never => {
+    throw new Illegal("ILLEGAL", `malformed ${intent.type}: ${field}`);
+  };
+  switch (intent.type) {
+    case "MOVE":
+      if (!isTile(intent.to)) malformed("to");
+      return;
+    case "COMBAT_ACTION":
+      if (typeof intent.abilityId !== "string") malformed("abilityId");
+      if (intent.targetId !== undefined && typeof intent.targetId !== "string") malformed("targetId");
+      if (intent.targetTile !== undefined && !isTile(intent.targetTile)) malformed("targetTile");
+      if (
+        intent.targetIds !== undefined &&
+        !(Array.isArray(intent.targetIds) && intent.targetIds.every((id) => typeof id === "string"))
+      ) malformed("targetIds");
+      if (
+        intent.targetTiles !== undefined &&
+        !(Array.isArray(intent.targetTiles) && intent.targetTiles.every(isTile))
+      ) malformed("targetTiles");
+      return;
+    case "SET_MODE":
+      if (intent.mode !== "party" && intent.mode !== "travel") malformed("mode");
+      return;
+    case "READY":
+      if (typeof intent.ready !== "boolean") malformed("ready");
+      return;
+    case "RESOLVE_TRADE":
+      if (typeof intent.accept !== "boolean") malformed("accept");
+      return;
+  }
+}
+
 function dispatch(
   draft: RunState,
   envelope: IntentEnvelope,
@@ -1107,6 +1255,7 @@ function dispatch(
   effects: EngineEffects,
 ): Presentation | undefined {
   const { playerId, intent } = envelope;
+  checkIntentShape(intent);
 
   /*
    * The playtest gate, in one place rather than in each handler. A second
@@ -1210,6 +1359,13 @@ function dispatch(
     case "PLAYTEST_SET_DIE":
       draft.playtestDie = readDie(intent.die);
       return undefined;
+
+    default: {
+      // Exhaustive at compile time; at run time, a type no client sends. It
+      // was accepted as a no-op before, and still moved the run's seq.
+      const unknown: never = intent;
+      throw new Illegal("ILLEGAL", `no such intent: ${String((unknown as { type?: unknown }).type)}`);
+    }
   }
 }
 
@@ -1522,6 +1678,8 @@ function doStartChapter(
   draft.chapterId = chapter.id;
   draft.chapterInfo = { index: chapter.index, title: chapter.title };
   draft.xpEarned = 0;
+  delete draft.heroRollXp;
+  delete draft.rollXp;
   // Cleared with the XP they belong to. Left behind, the previous chapter's
   // setback and its bonus list would still be on the state the moment this one
   // starts, so a phone that renders from `chapterOutcome` would open the
@@ -1533,6 +1691,7 @@ function doStartChapter(
   // Deeds counted last chapter were folded into the heroes when it ended.
   delete draft.deeds;
   delete draft.rankUps;
+  delete draft.decision;
   // Not `{}` — see `EngineContext.campaignFlags`. Everything a chapter said
   // about itself dies here; the road the party is on does not.
   draft.flags = { ...(ctx.campaignFlags ?? {}) };
@@ -1655,6 +1814,7 @@ function doChoose(
   const ups = landRanks(draft, ctx);
   const entered = enterSceneDraft(draft, choice.goto, ctx);
   announceRankUps(draft, ups);
+  announceDecision(draft, prompt, choice, playerId);
   // Only one presentation rides on a transition. Finishing the chapter is a
   // bigger beat than the tap that got you there, so it wins.
   if (entered?.kind === "CHAPTER_COMPLETE") return entered;
@@ -1922,15 +2082,18 @@ function doGroupRoll(
   // One story-check buff is one die's worth (#222): whoever spends it, it is
   // on their roll alone, and the next roller is offered whatever is left.
   const spent = checkBuffSpent(prompt, spendBuff);
+  const matchup = checkMatchup(ctx, me.character, scene);
   const result = resolveCheck(ctx.rng, {
     characterId: me.character.id,
     stat: scene.stat,
     mod: me.character.stats[scene.stat],
     tn: scene.tn,
     ...(spent === undefined ? {} : { buff: spent }),
+    ...(matchup === undefined ? {} : { matchup }),
   });
   spendOnRoll(draft, spent);
   group.rolls.push(result);
+  creditCheckXp(draft, ctx, result);
   group.pending = group.pending.filter((id) => id !== slot);
   // A die rolled in a group check is a turn rolled like any other: it counts
   // toward the "fewest checks" rotation for whoever actually threw it, a
@@ -1985,6 +2148,26 @@ function doHelp(draft: RunState, playerId: string, ctx: EngineContext): Presenta
   return undefined;
 }
 
+/**
+ * The matchups on a hero's check (docs/matchups.md): edges on the scene's
+ * `tags`, and the opinions of the creatures it `discovers` or `cast`s.
+ * Undefined without `ctx.matchups` or when nothing applies, so the roll
+ * carries no `matchup` key and totals what it always did.
+ */
+function checkMatchup(
+  ctx: EngineContext,
+  character: ResolvedCharacter,
+  scene: { tags?: string[]; discovers?: string[]; cast?: { figure: string }[] },
+): MatchupInput | undefined {
+  if (!ctx.matchups) return undefined;
+  const notes = checkNotes(ctx.matchups, { species: character.species, class: character.class }, {
+    ...(scene.tags ? { tags: scene.tags } : {}),
+    creatures: sceneCreatures(scene, ctx.bestiary),
+  });
+  if (notes.length === 0) return undefined;
+  return { amount: matchupTotal(notes).roll, notes };
+}
+
 function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff?: unknown): Presentation | undefined {
   const prompt = draft.prompt;
   if (!prompt || prompt.kind !== "roll") {
@@ -2020,6 +2203,7 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
   if (prompt.helper && !helper) {
     draft.helpSpent = (draft.helpSpent ?? []).filter((id) => id !== roller.character.id);
   }
+  const matchup = checkMatchup(ctx, roller.character, scene);
   const result: DiceRoll = resolveCheck(ctx.rng, {
     characterId: roller.character.id,
     stat: scene.stat,
@@ -2027,6 +2211,7 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
     tn: scene.tn,
     ...(helper === undefined ? {} : { help: helper }),
     ...(spent === undefined ? {} : { buff: spent }),
+    ...(matchup === undefined ? {} : { matchup }),
   });
   spendOnRoll(draft, spent);
   draft.lastRoll = result;
@@ -2036,6 +2221,7 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
     [roller.character.id]: (draft.checkRolls?.[roller.character.id] ?? 0) + 1,
   };
 
+  creditCheckXp(draft, ctx, result);
   // Both outcomes continue the story down different paths (spec §6.1).
   const branch = result.result === "success" ? scene.onSuccess : scene.onFailure;
   takeBranch(draft, branch, ctx, roller.character.id);
@@ -2279,6 +2465,7 @@ function doCombatAction(
   const result = performAction(encounter, combatCtx(ctx), request);
   if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
   draft.encounter = result.state;
+  creditAttackXp(draft, result.events, ctx, currentActorId(encounter));
   // Deeds (#310): who did it, with what, to a fight as it stood before.
   const memo = draft.deeds?.fight;
   const actorId = currentActorId(encounter);
@@ -2318,7 +2505,12 @@ function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Prese
 
 /** The slice of `EngineContext` a combat call needs. */
 function combatCtx(ctx: EngineContext) {
-  return { rules: ctx.rules, abilities: ctx.abilities ?? {}, rng: ctx.rng };
+  return {
+    rules: ctx.rules,
+    abilities: ctx.abilities ?? {},
+    rng: ctx.rng,
+    ...(ctx.matchups ? { matchups: ctx.matchups } : {}),
+  };
 }
 
 /**
@@ -2562,9 +2754,38 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
       if (objective.effects && done[i]) applyEffectsDraft(draft, objective.effects, ctx);
     });
   }
-  const branched = takeBranch(draft, outcomeBranch(scene, outcome), ctx);
+  const spoils = lootFrom(draft, encounter, outcome, ctx);
+  const branched = takeBranch(draft, outcomeBranch(scene, outcome), ctx, undefined, spoils);
   announceRankUps(draft, ups);
   return branched;
+}
+
+/**
+ * The coins a won fight drops (`rules.loot`): one for every `hpPerCoin` of a
+ * beaten foe's max hit points, at least one each, up to `maxPerFight`, straight
+ * into the party's purse. Only in the campaigns the rules name, so every other
+ * fight pays what it always did. Returns the line the scene opens with, or
+ * undefined when nothing dropped. A foe that slipped away through a rift exit
+ * is not beaten and drops nothing.
+ */
+function lootFrom(
+  draft: RunState,
+  encounter: EncounterState,
+  outcome: Exclude<EncounterOutcome, "ongoing">,
+  ctx: EngineContext,
+): string | undefined {
+  const loot = ctx.rules.loot;
+  if (outcome !== "victory" || !loot || draft.campaignId === null || !loot.campaigns.includes(draft.campaignId)) {
+    return undefined;
+  }
+  const beaten = encounter.combatants.filter((c) => c.side === "enemy" && c.down && !c.escaped);
+  const coins = Math.min(
+    loot.maxPerFight,
+    beaten.reduce((sum, c) => sum + Math.max(1, Math.round(c.maxHp / loot.hpPerCoin)), 0),
+  );
+  if (coins <= 0) return undefined;
+  draft.coins = (draft.coins ?? 0) + coins;
+  return coins === 1 ? "You find 1 coin in the mess they leave behind." : `You find ${String(coins)} coins in the mess they leave behind.`;
 }
 
 /**

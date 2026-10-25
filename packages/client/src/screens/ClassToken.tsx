@@ -5,10 +5,9 @@
  * worn, and the ones taken off ride in the pack without a slot. Each rank is a
  * notch cut into the token, and the next rank's deed fills a row of pips.
  *
- * Simple SVG, no raster art: below Sworn the token is an icon on the phone
- * (docs/class-mastery.md §4), and a finished Sworn class figure is a separate art
- * asset. Notches and pips are shapes, never colour alone (spec §11): a notch cut
- * is a filled diamond and one still to come is a short dash; a pip done is a
+ * Dedicated paintings show each class's gear on the phone. Sworn class
+ * figures remain separate art assets. Notches and pips stay distinct by
+ * shape: a cut notch is a filled diamond and one still to come is a short dash; a pip done is a
  * filled dot and one to go is an empty ring. On screen the token is always its
  * own name ("your thorn bracer"), never "class token".
  */
@@ -17,46 +16,8 @@ import type { ReactElement } from "react";
 import { CLASS_TOKENS, TOKEN_NOTCHES, deedTrack, notchesFor, rankTitle } from "@kad/shared";
 import type { ClassDef, ClassId, ClassRank, DeedStep, ResolvedCharacter, RulesContent } from "@kad/shared";
 import { helpAttrs } from "../help/longpress";
+import { Icon } from "./icons";
 import "./ClassToken.css";
-
-const S = { fill: "none", stroke: "currentColor", strokeWidth: 1.9, strokeLinecap: "round", strokeLinejoin: "round" } as const;
-
-/* eslint-disable react/jsx-key -- static glyph table, never mapped */
-const GLYPHS: Record<ClassId, ReactElement> = {
-  // A cuff with thorns along its top edge.
-  thornguard: (
-    <g {...S}>
-      <rect x="4" y="10" width="16" height="9" rx="3" />
-      <path d="M6 10l1.5-4 1.5 4M10.5 10l1.5-5 1.5 5M15 10l1.5-4 1.5 4" />
-      <path d="M8 14.5h8" />
-    </g>
-  ),
-  // A hood, its face a dark opening.
-  duskrunner: (
-    <g {...S}>
-      <path d="M12 3c-5 0-8 4.5-8 10v6.5c2.5 1 5.2 1.5 8 1.5s5.5-.5 8-1.5V13c0-5.5-3-10-8-10Z" />
-      <path d="M8 18c0-4 1.8-8 4-8s4 4 4 8" fill="currentColor" fillOpacity="0.45" />
-    </g>
-  ),
-  // A thin circlet with a star at its front.
-  starweaver: (
-    <g {...S}>
-      <path d="M3 15c2.5 3 5.5 4.5 9 4.5s6.5-1.5 9-4.5" />
-      <path d="M12 4l1.6 3.4 3.7.4-2.8 2.5.8 3.7-3.3-1.9-3.3 1.9.8-3.7-2.8-2.5 3.7-.4Z" fill="currentColor" fillOpacity="0.35" />
-    </g>
-  ),
-  // A bell hung on a looped cord.
-  songkeeper: (
-    <g {...S}>
-      <path d="M9 3.5c1 1.5 5 1.5 6 0" />
-      <path d="M12 5v2.5" />
-      <path d="M7 17c1-1.2 1-3.5 1-5.5a4 4 0 0 1 8 0c0 2 0 4.3 1 5.5Z" />
-      <path d="M6 17h12" />
-      <circle cx="12" cy="19.5" r="1.3" fill="currentColor" />
-    </g>
-  ),
-};
-/* eslint-enable react/jsx-key */
 
 /** The token's own name: "thorn bracer". */
 export function tokenName(classId: ClassId): string {
@@ -71,11 +32,7 @@ export function notchWords(rank: ClassRank | undefined): string {
 
 /** The token's picture, sized by the text around it. */
 export function TokenGlyph({ classId, size = "1em" }: { classId: ClassId; size?: string }): ReactElement {
-  return (
-    <svg className="token-glyph" viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" focusable="false">
-      {GLYPHS[classId] ?? GLYPHS.thornguard}
-    </svg>
-  );
+  return <Icon name={`token_${classId}`} className="token-glyph" size={size} />;
 }
 
 /**

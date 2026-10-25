@@ -31,6 +31,10 @@ const manifest = JSON.parse(readFileSync(`${publicDir}/manifest.webmanifest`, "u
   background_color: string;
   description: string;
   icons: ManifestIcon[];
+  shortcuts: { name: string; url: string; icons: ManifestIcon[] }[];
+  launch_handler: { client_mode: string };
+  share_target: { action: string; method: string; params: Record<string, string> };
+  screenshots: { src: string; sizes: string; type: string; form_factor: string; label: string }[];
 };
 
 /** A PNG's width and height, from its header. */
@@ -76,6 +80,43 @@ describe("the install manifest", () => {
     const sizes = (purpose: string) => manifest.icons.filter((icon) => icon.purpose === purpose).map((icon) => icon.sizes);
     expect(sizes("any")).toEqual(expect.arrayContaining(["192x192", "512x512"]));
     expect(sizes("maskable")).toEqual(expect.arrayContaining(["192x192", "512x512"]));
+  });
+
+  it("offers the book and the join screen as shortcuts, with 96px icons", () => {
+    const byUrl = Object.fromEntries(manifest.shortcuts.map((shortcut) => [shortcut.url, shortcut]));
+    expect(byUrl["/journal"]?.name).toBe("Open my book");
+    expect(byUrl["/"]?.name).toBe("Join a game");
+    for (const shortcut of manifest.shortcuts) {
+      expect(shortcut.icons.length, shortcut.name).toBeGreaterThan(0);
+      for (const icon of shortcut.icons) {
+        expect(icon.sizes).toBe("96x96");
+        expect(icon.type).toBe("image/png");
+        expect(existsSync(`${publicDir}${icon.src}`), icon.src).toBe(true);
+        expect(pngSize(`${publicDir}${icon.src}`), icon.src).toEqual([96, 96]);
+      }
+    }
+  });
+
+  it("focuses the running app on a link, and takes shares by GET at /share", () => {
+    expect(manifest.launch_handler).toEqual({ client_mode: "navigate-existing" });
+    expect(manifest.share_target.action).toBe("/share");
+    expect(manifest.share_target.method).toBe("GET");
+    expect(manifest.share_target.params).toEqual({ title: "title", text: "text", url: "url" });
+  });
+
+  it("shows a narrow and a wide screenshot at the sizes it claims", () => {
+    const factors = manifest.screenshots.map((shot) => shot.form_factor);
+    expect(factors).toEqual(expect.arrayContaining(["narrow", "wide"]));
+    for (const shot of manifest.screenshots) {
+      expect(shot.label.length, shot.src).toBeGreaterThan(0);
+      expect(shot.type).toBe("image/png");
+      expect(existsSync(`${publicDir}${shot.src}`), shot.src).toBe(true);
+      const [width, height] = pngSize(`${publicDir}${shot.src}`);
+      expect(`${width}x${height}`, shot.src).toBe(shot.sizes);
+    }
+    const sizeOf = (factor: string) => manifest.screenshots.find((shot) => shot.form_factor === factor)?.sizes;
+    expect(sizeOf("narrow")).toBe("390x844");
+    expect(sizeOf("wide")).toBe("1920x1080");
   });
 
   it("keeps every maskable icon's dragon inside the circle every launcher mask leaves", () => {

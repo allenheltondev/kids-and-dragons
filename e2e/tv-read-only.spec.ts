@@ -17,6 +17,7 @@
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
 import { createCharacter } from "./characters";
 import { roomState } from "./room-state";
+import { API } from "./api";
 
 const TAP = { timeout: 20_000 } as const;
 const SHOTS = process.env.KAD_TV_SHOTS;
@@ -31,6 +32,10 @@ const SIZES = [
  * row's device controls (display settings, read-aloud, sound), the shared screen's own (About
  * this screen, Tap for sound while a TV holds sound back) and the host's Room button. Nothing
  * else, and all of it in the corner row.
+ *
+ * This list is the executable half of docs/tv-read-only-audit.md. Adding to it is a decision
+ * about what a remote has to drive, so a new entry belongs in that table too — and the row is
+ * proven at these six: `layout-fit.spec.ts` fails on a seventh, and on any that comes and goes.
  */
 const KEEP = [/^Display settings$/, /^Turn read-aloud (on|off)$/, /^Turn sound (on|off)$/, /^About this screen$/, /^Tap for sound$/, /^Room( \(locked\))?$/];
 
@@ -133,7 +138,7 @@ async function jumpTo(page: Page, code: string, sceneId: string): Promise<void> 
   }, code);
   for (let attempt = 0; attempt < 5; attempt++) {
     const state = await roomState<{ runId: string; seq: number }>(page, code);
-    const response = await fetch("http://localhost:8787/api/action", {
+    const response = await fetch(`${API}/api/action`, {
       method: "POST",
       headers: { "content-type": "application/json", authorization: `Bearer ${session.sessionToken}` },
       body: JSON.stringify({ runId: state.runId, playerId: session.playerId, seq: state.seq, intent: { type: "PLAYTEST_GOTO", sceneId } }),

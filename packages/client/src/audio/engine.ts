@@ -1,3 +1,4 @@
+import { DICE_PLAYBACK_RATE } from "../dice-timing";
 /**
  * The Web Audio sink — the thing `setAudioSink()` installs on a world surface.
  *
@@ -416,6 +417,7 @@ export function createAudioEngine(options: AudioEngineOptions = {}): AudioEngine
       if (sample) {
         const source = ctx.createBufferSource();
         source.buffer = sample;
+        if (id === "dice") source.playbackRate.setValueAtTime(DICE_PLAYBACK_RATE, ctx.currentTime);
         if (locationCueIds.has(id)) {
           const gain = ctx.createGain();
           gain.gain.setValueAtTime(1, ctx.currentTime);

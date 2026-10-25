@@ -127,10 +127,13 @@ test.describe("a display that is not a laptop", () => {
     // Nothing needed a thing the screen does not have, and nothing said otherwise.
     await tv.getByRole("button", { name: "About this screen" }).click();
     const rows = tv.locator("[data-capability]");
-    await expect(rows).toHaveCount(4, TAP);
+    await expect(rows).toHaveCount(5, TAP);
     for (const id of ["webgl", "wakeLock", "audio"]) {
       await expect(tv.locator(`[data-capability="${id}"]`)).toHaveAttribute("data-ok", "false");
     }
+    // Full screen is reported too, and is not in the list above: a TV browser that has none of
+    // the rest usually still has the Fullscreen API, and `withoutModernApis` does not take it.
+    await expect(tv.locator('[data-capability="fullscreen"]')).toHaveCount(1);
     // No sound is no prompt: a tap cannot mend a browser with no audio.
     await expect(tv.getByRole("button", { name: "Tap for sound" })).toHaveCount(0);
     expect(tvErrors).toEqual([]);

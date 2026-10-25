@@ -61,10 +61,14 @@
   justify-content: space-between;
   gap: 0.6em 0.9em;
   padding: 0.8em 0.9em;
+  /* Flat first, for a TV browser with no `color-mix()` (Chromium 111). */
+  border: 0.14em solid var(--profile-accent);
   border: 0.14em solid color-mix(in srgb, var(--profile-accent) 55%, #1b1631);
   border-radius: 1.2em 0.7em 1.2em 0.7em;
   background:
     radial-gradient(circle at 12% 0%, #ffffff55, transparent 9em),
+    var(--profile-accent);
+  background:
     linear-gradient(135deg, var(--profile-accent), color-mix(in srgb, var(--profile-accent) 70%, #ffffff));
   color: var(--profile-ink);
   box-shadow: inset 0 0.15em #ffffff66, 0 0.4em 1em #0004;

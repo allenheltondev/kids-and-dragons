@@ -62,6 +62,9 @@ const TIER_WORD: Record<TierId, string> = {
   sworn: "Sworn",
   radiant: "Radiant",
   mythic: "Mythic",
+  ascendant: "Ascendant",
+  starborn: "Starborn",
+  legendary: "Legendary",
 };
 
 /**
@@ -73,7 +76,7 @@ const TIER_WORD: Record<TierId, string> = {
  * character without producing one — so the step below is the honest answer.
  *
  * Exported so the derivation is testable without a DOM, the same way
- * `nextFace` is in DiceOverlay.
+ * `checkPlan` is in DiceOverlay.
  */
 export function previousTier(tier: TierId): TierId | null {
   const index = TIER_IDS.indexOf(tier);

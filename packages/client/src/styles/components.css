@@ -144,7 +144,7 @@
 }
 
 .kad-tray__label {
-  font-size: 0.72rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -701,6 +701,16 @@
   animation: kad-toast-in var(--kad-dur-base) var(--kad-ease-out);
 }
 
+/* A room that is gone: same calm panel, but it holds a sentence and two
+   buttons, so it wraps instead of staying a single-line pill. */
+.kad-connection--lost {
+  flex-wrap: wrap;
+  justify-content: center;
+  max-inline-size: min(32rem, calc(100vw - 2rem));
+  border-radius: 1.25rem;
+  padding-block: 0.6rem;
+}
+
 .kad-connection__retry {
   min-block-size: 2.75rem;
   margin-block: -0.45rem;
@@ -986,8 +996,8 @@ html[data-text] .kad-tray__label {
 
 @media (orientation: landscape) and (min-width: 600px) and (max-height: 559px) {
   :root {
-    /* The column's 44px controls and a little air, pixels like --kad-corner-bottom. */
-    --kad-corner-column: 52px;
+    /* The column's 36px controls and a little air, pixels like --kad-corner-bottom. */
+    --kad-corner-column: 44px;
   }
 
   /* No strip at the top or the bottom; one down the column's edge instead. */

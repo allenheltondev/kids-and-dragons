@@ -28,6 +28,7 @@ import { notchesFor, rankTitle } from "@kad/shared";
 import type { ClassDef, ClassId, PartyMember, RankUp, RulesContent } from "@kad/shared";
 import { useGameStore } from "../store";
 import { ClassToken } from "./ClassToken";
+import { Icon } from "./icons";
 import "./RankUpMoment.css";
 
 /** How long the shared screen holds the moment up: long enough to cheer, short enough not to stall. */
@@ -43,15 +44,7 @@ function titleOf(up: RankUp, rules: RulesContent | null): string {
 }
 
 function Crow(): ReactElement {
-  return (
-    <svg className="rankup__crow-bird" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path
-        d="M3 14c3-1 5-4 9-4 2 0 3.5 1 4.5 2.2L21 11l-3 3c0 3-3 5-6 5-2 0-3.5-.6-4.6-1.6L4 19l2-3.5C4.8 15.3 3.8 14.8 3 14Z"
-        fill="currentColor"
-      />
-      <circle cx="15.2" cy="12.6" r="0.8" fill="var(--kad-bg)" />
-    </svg>
-  );
+  return <Icon name="crow" className="rankup__crow-bird" />;
 }
 
 /**

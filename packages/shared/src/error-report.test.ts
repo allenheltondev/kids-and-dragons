@@ -14,6 +14,18 @@ describe("diagnose: the message is replaced by a kind, never kept", () => {
     );
   });
 
+  it("names the service worker's failures by stage (#459), and the server accepts them", () => {
+    for (const [stage, phrase] of [
+      ["install", "service worker install failed"],
+      ["activate", "service worker activate failed"],
+      ["fingerprint", "service worker file mismatch"],
+      ["quota", "service worker out of space"],
+    ] as const) {
+      expect(diagnose("Error", `service worker ${stage}`)).toBe(`Error: ${phrase}`);
+      expect(safeMessage(`Error: ${phrase}`)).toBe(`Error: ${phrase}`);
+    }
+  });
+
   it("keeps nothing of a message that matches no kind", () => {
     for (const message of [
       "Validation failed for my best friend Nora",

@@ -6,9 +6,9 @@
  */
 
 import { describe, expect, it } from "vitest";
-import type { EncounterContext, EnemySpec, RulesContent } from "@kad/shared";
+import type { Chapter, EncounterContext, EnemySpec, RulesContent } from "@kad/shared";
 import { beginEncounter, currentActorId, legalMoves, makeRng, moveTo, parseBoard } from "@kad/shared";
-import { combatantLabel, gridCells, turnKey } from "./combat-grid";
+import { combatantLabel, enemyPortraitUrl, gridCells, turnKey } from "./combat-grid";
 import { makeCharacter, makeMember } from "../testing/fixtures";
 
 const WISP: EnemySpec = {
@@ -127,4 +127,10 @@ describe("the environment's marks (#201)", () => {
     expect(cells.filter((c) => c.feature)).toHaveLength(3);
     expect(gridCells(fight(), [makeMember()], [], []).some((c) => "feature" in c)).toBe(false);
   });
+});
+
+
+it("resolves a cast opponent's shipped figure instead of an entities/cast placeholder", () => {
+  const chapter = { scenes: { finale: { type: "encounter", enemies: [{ id: "corvane", art: "cast/deep-ice-figure" }] } } } as unknown as Chapter;
+  expect(enemyPortraitUrl(chapter, "finale", "corvane#1")).toBe("/assets/cast/deep-ice-figure/assembled.png");
 });

@@ -337,7 +337,7 @@ export function Atlas({ world, place, party, scope, here }: AtlasProps): ReactEl
         // however far down the last one had been read.
         <aside key={entryId} className="atlas__entry" aria-label="Map discovery">
           {guide?.entries[entryId] ? <FieldGuideDetail guide={guide} entryId={entryId}
-            onSelect={selectEntry} backLabel="Back to map" /> : <>
+            onSelect={selectEntry} /> : <>
             <Button size="md" variant="secondary" onClick={() => setEntryId(null)}>Back to map</Button>
             <p>{guideFailed ? "The Field Guide could not load. Close this entry and try again." : guide ? "This discovery has no Field Guide entry yet." : "Opening your Field Guide…"}</p>
           </>}

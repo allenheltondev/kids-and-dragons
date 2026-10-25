@@ -37,6 +37,26 @@ async function household(players = 1) {
 
 type Household = Awaited<ReturnType<typeof household>>;
 
+/**
+ * The household has the Hollow Crown under way too (other heroes, other
+ * evenings), played more recently than Gemfall. The lobby offers only the
+ * campaign under way, most recent first, so this is how a table comes to be
+ * playing it while Pip is still in Gemfall.
+ */
+async function hollowUnderWay(h: Household) {
+  h.harness.clock.advance(DAY);
+  await h.harness.repo.putCampaignProgress({
+    householdId: h.householdId,
+    campaignId: HOLLOW,
+    status: "active",
+    setbacks: 0,
+    lastIndex: 0,
+    attemptId: "a_hollow",
+    version: 1,
+    updatedAt: new Date(h.harness.clock.now()).toISOString(),
+  });
+}
+
 /** A new room for `campaignId`, with player `seat` (0-based) joined. */
 async function table(h: Household, campaignId: string, seat = 0) {
   h.harness.clock.advance(DAY);
@@ -97,24 +117,25 @@ describe("one game at a time per hero (#282)", () => {
     expect(pip.provisional?.runId).toBe(GEMFALL);
     expect(pip.provisional!.xp).toBeGreaterThan(0);
 
-    // Same household, another campaign: the lobby seats her (which of this
-    // table's campaigns is next is not decided yet), the start refuses her.
+    // Same household, another campaign under way: the lobby seats her, the
+    // start refuses her.
+    await hollowUnderWay(h);
     const hollow = await table(h, HOLLOW);
     await hollow.must({ type: "SEAT_CHARACTER", characterId: pip.id });
     await hollow.must({ type: "READY", ready: true });
-    // Two campaigns on offer (Gemfall is part-way), so the table votes first.
-    await hollow.must({ type: "VOTE_CAMPAIGN", campaignId: HOLLOW });
     const before = (await hollow.state()).seq;
     const refused = await hollow.send({ type: "CONTINUE_CAMPAIGN", campaignId: HOLLOW });
     expect(refused.ok).toBe(false);
     expect(refused.error).toEqual({ code: "HERO_BUSY", message: "Pip is in the middle of another adventure" });
-    // Nothing written: no seq burned, no attempt begun, and Pip as she was.
+    // Nothing written: no seq burned, no chapter begun, and Pip as she was.
     expect((await hollow.state()).seq).toBe(before);
     expect((await hollow.state()).chapterId).toBeNull();
-    expect(await h.harness.repo.getCampaignProgress(h.householdId, HOLLOW)).toBeNull();
+    expect(await h.harness.repo.getCampaignProgress(h.householdId, HOLLOW)).toMatchObject({ lastIndex: 0, version: 1 });
     expect(await h.harness.repo.getCharacter(h.householdId, pip.id)).toEqual(pip);
 
-    // The next Gemfall evening picks her up where she was, and adds to it.
+    // The other table's Hollow Crown finishes; the next Gemfall evening picks her up where she was, and adds to it.
+    const crown = (await h.harness.repo.getCampaignProgress(h.householdId, HOLLOW))!;
+    await h.harness.repo.putCampaignProgress({ ...crown, status: "complete", version: (crown.version ?? 0) + 1 });
     const next = await table(h, GEMFALL);
     await next.must({ type: "SEAT_CHARACTER", characterId: pip.id });
     await next.must({ type: "READY", ready: true });
@@ -209,10 +230,10 @@ describe("one game at a time per hero (#282)", () => {
     expect(free.provisional).toBeNull();
     expect(free.committed).toEqual(pip.committed);
 
+    await hollowUnderWay(h);
     const hollow = await table(h, HOLLOW);
     await hollow.must({ type: "SEAT_CHARACTER", characterId: pip.id });
     await hollow.must({ type: "READY", ready: true });
-    await hollow.must({ type: "VOTE_CAMPAIGN", campaignId: HOLLOW });
     await hollow.must({ type: "CONTINUE_CAMPAIGN", campaignId: HOLLOW });
     expect((await h.harness.repo.getCharacter(h.householdId, pip.id))!.provisional?.runId).toBe(HOLLOW);
 

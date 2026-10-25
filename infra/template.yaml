@@ -78,7 +78,29 @@ Parameters:
     Default: ""
     Description: Route 53 hosted zone that holds AppDomainName's parent domain.
 
+  PushNotifications:
+    Type: String
+    Default: "off"
+    AllowedValues: ["off", "on"]
+    Description: >-
+      "It's your turn" Web Push notifications to an installed app in the
+      background (#466). Off by default: nothing is sent and the Account
+      screen's switch does not appear. On, the API mints a VAPID key pair into
+      the SecureString /kad/<stage>/push-vapid-keys on first use (as it does
+      the token signing key) and needs PushContact.
+
+  PushContact:
+    Type: String
+    Default: ""
+    Description: >-
+      The VAPID subject the push services can reach the operator at: a
+      mailto: or https: address. Required when PushNotifications is on;
+      without it the API logs a warning and pushes stay off.
+
 Conditions:
+  # The stage that holds families' heroes. Staging and dev hold test rows and
+  # are torn down by hand (docs/deploy.md), so they skip the guards below.
+  IsProd: !Equals [!Ref StageName, prod]
   # Passkeys need a relying-party domain. Without one, email OTP alone.
   Passkeys: !Not [!Equals [!Ref WebAuthnRelyingPartyId, ""]]
   # Both halves are needed: the certificate validates, and the alias records
@@ -162,12 +184,26 @@ Resources:
         # sweeper — see the long note in store/keys.ts.
         AttributeName: ttl
         Enabled: true
-      # No point-in-time recovery, deliberately. The only restore it offers is
-      # the whole table at a moment in time, which for a shared family table
-      # means trading everyone else's evening for one recovered character — a
-      # trade nobody would make. `DeletionPolicy: Retain` above is the guard
-      # that actually matters, and it guards the accident that could plausibly
-      # happen: `sam delete` pointed at the wrong stack.
+      # `DeletionPolicy: Retain` above guards `sam delete` pointed at the wrong
+      # stack. It does nothing for a DeleteTable call, or for a sweeper bug that
+      # deletes households it should have kept — and the sweeper holds CRUD on
+      # this table. On prod, deletion protection refuses the first.
+      #
+      # No point-in-time recovery, by the owner's decision: #440 turned it on
+      # and this turns it off again. It also could not be turned on. Enabling
+      # it makes CloudFormation call `dynamodb:UpdateContinuousBackups`, and
+      # the GithubDeploy role is not allowed that action, so from #440 merging
+      # until this line went every production deploy failed on the table and
+      # rolled the whole stack back — three releases' worth, with nothing but
+      # a red workflow to say so. Staging never saw it: `IsProd` made the value
+      # false there, and false asks for no call at all.
+      #
+      # If PITR is ever wanted back, the role's policy is the thing to change
+      # first, and the question to settle is what the restore is for. It hands
+      # back the whole table at a moment in time, into a *new* table, so one
+      # family's rows can be copied out of it — a drill somebody has to be
+      # willing to run on a Saturday evening for it to be worth its permission.
+      DeletionProtectionEnabled: !If [IsProd, true, false]
 
   # ---------------------------------------------------------------------------
   # Token signing — architecture §4.5
@@ -211,6 +247,8 @@ Resources:
     UpdateReplacePolicy: Retain
     Properties:
       UserPoolName: !Sub "kad-${StageName}"
+      # Grown-ups' sign-ins are not recreatable either; see the table above.
+      DeletionProtection: !If [IsProd, ACTIVE, INACTIVE]
       # Passwordless first-factor sign-in (email OTP, passkeys) needs the
       # Essentials tier. Its free tier is far above a household.
       UserPoolTier: ESSENTIALS
@@ -436,6 +474,15 @@ Resources:
           # (lambda/http.ts, clientOf). scripts/deploy.sh creates the parameter
           # before the first deploy that needs it.
           KAD_ORIGIN_SECRET: !Sub "{{resolve:ssm:/kad/${StageName}/origin-secret}}"
+          # "It's your turn" pushes (#466): off unless the stack says on. The
+          # key pair is minted into PUSH_KEY_PARAMETER on first use, like the
+          # signing key, so turning this on needs no secret typed in by hand.
+          KAD_PUSH: !Ref PushNotifications
+          KAD_PUSH_SUBJECT: !Ref PushContact
+          PUSH_KEY_PARAMETER: !Sub "/kad/${StageName}/push-vapid-keys"
+          # Where each step's push job goes, by an asynchronous invoke: the API
+          # never sends a push itself (lambda/push-dispatch.ts).
+          PUSH_SENDER_FUNCTION: !Ref PushSenderFunction
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
@@ -450,6 +497,19 @@ Resources:
                 - ssm:GetParameter
                 - ssm:PutParameter
               Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kad/${StageName}/token-signing-key"
+            - Effect: Allow
+              # The push key pair (#466), read and minted the same way. Only
+              # ever touched while PushNotifications is on.
+              Action:
+                - ssm:GetParameter
+                - ssm:PutParameter
+              Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kad/${StageName}/push-vapid-keys"
+            - Effect: Allow
+              # Handing a turn's push job to the sender (#466). Its own
+              # function, so this grant names another resource rather than
+              # this function's own ARN, which would be a cycle.
+              Action: lambda:InvokeFunction
+              Resource: !GetAtt PushSenderFunction.Arn
             - Effect: Allow
               # See the note on the authorizer's copy of this.
               Action:
@@ -476,6 +536,51 @@ Resources:
             # take this path, and CloudFront's /api/* behavior forwards POST.
             Path: /{proxy+}
             Method: ANY
+
+  # ---------------------------------------------------------------------------
+  # "It's your turn" pushes (#466) — off the request path
+  # ---------------------------------------------------------------------------
+
+  # The API decides who a step opened a question for and invokes this with
+  # that job, InvocationType Event, so a tap never waits on presence reads,
+  # phones or a push vendor. This reads the room, picks the quiet phones, sends
+  # and forgets dead subscriptions (lambda/push-sender.ts). It swallows every
+  # push failure and succeeds, so Lambda's default async retries (two) only
+  # follow a crash. A turn older than a quarter of an hour is not worth sending.
+  PushSenderFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .build/push-sender
+      Description: Sends "It's your turn" Web Pushes for the API, asynchronously
+      MemorySize: 256
+      # No reserved concurrency: a reservation is refused in an account at the
+      # new-account limit, and only when pushes are turned on, which is the
+      # wrong moment to learn it. Async invocations queue, and a family game
+      # is a handful of pushes a minute.
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 900
+        MaximumRetryAttempts: 2
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Table
+          KAD_PUSH: !Ref PushNotifications
+          KAD_PUSH_SUBJECT: !Ref PushContact
+          PUSH_KEY_PARAMETER: !Sub "/kad/${StageName}/push-vapid-keys"
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref Table
+        - Statement:
+            - Effect: Allow
+              # Read only: the API mints the pair before any job can exist.
+              Action: ssm:GetParameter
+              Resource: !Sub "arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter/kad/${StageName}/push-vapid-keys"
+            - Effect: Allow
+              # See the note on the authorizer's copy of this.
+              Action: kms:Decrypt
+              Resource: "*"
+              Condition:
+                StringEquals:
+                  kms:ViaService: !Sub "ssm.${AWS::Region}.amazonaws.com"
 
   # ---------------------------------------------------------------------------
   # Anonymous play expiry — the sweeper

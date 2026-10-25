@@ -50,44 +50,43 @@ jobs:
       build: ${{ steps.classify.outputs.build }}
       e2e: ${{ steps.classify.outputs.e2e }}
     steps:
+      # Every other job waits on this one, so it fetches only what it reads:
+      # commits and trees (no file contents, `filter: blob:none`) and the one
+      # directory it runs, tools/ci. A tree diff needs no blobs. The whole
+      # checkout was 36 of this job's 42 seconds, because the repo is 1.2 GB
+      # of mostly source art; this one is a few hundred kilobytes.
       - uses: actions/checkout@v7
+        with:
+          filter: blob:none
+          sparse-checkout: tools/ci
 
-      # The PR's own changes: the base tip fetched shallow, and a tree diff
-      # from it to the merge commit checkout@v7 gives us.
+      # The PR's own changes: the base tip fetched shallow (trees only, as
+      # above), and a tree diff from it to the merge commit checkout@v7 gives us.
       - name: Classify the change
         id: classify
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            git fetch --no-tags --depth=1 origin "$BASE"
+            git fetch --no-tags --depth=1 --filter=blob:none origin "$BASE"
             node tools/ci/changes.mjs "$BASE" HEAD
           else
             node tools/ci/changes.mjs --all
           fi
 
-  build:
+  # What used to be one job, `build (run)`, in three that run side by side: the
+  # cheap gates (typecheck, the stack, canon, content, art, audio: under two
+  # minutes), the unit suite (five minutes with coverage, the long pole), and
+  # the build with its payload budget and the artifact a deploy ships. Serial,
+  # a budget overrun surfaced at minute seven, after the tests; now it surfaces
+  # at two, and the suite no longer waits on the art gate or the reverse.
+  # build-result below is still the one required check.
+  checks:
     needs: changes
     if: needs.changes.outputs.build == 'true'
-    name: typecheck, test, content, art, build
+    name: checks (typecheck, stack, canon, content, art)
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-
-    # The prod store gets tested against a real DynamoDB, not a mock. The whole
-    # justification for the in-memory store is that swapping in DynamoRepository
-    # is a wiring change rather than a re-modelling exercise
-    # (packages/server/src/store/contract.test.ts), and that claim is worth
-    # nothing unless one suite runs against both.
-    services:
-      dynamodb:
-        image: amazon/dynamodb-local:latest
-        ports:
-          - 8000:8000
-
-    # dynamodb-local ships no HEALTHCHECK, and GitHub only waits on containers
-    # that define one — so without the wait step below, `npm test` can race a
-    # port that is not listening yet and fail intermittently.
-
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v7
 
@@ -96,6 +95,9 @@ jobs:
         with:
           node-version: 22
           cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
 
       # Python 3.11 for the art tooling and cfn-lint. The set lives in
       # requirements-dev.txt so every workflow and scripts/setup.sh install the
@@ -106,9 +108,6 @@ jobs:
           cache: pip
           cache-dependency-path: requirements-dev.txt
 
-      - name: Install Node dependencies
-        run: npm ci
-
       - name: Install Python dependencies
         run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
 
@@ -118,45 +117,6 @@ jobs:
       # KAD_DDB_ENDPOINT switches the repository contract suite from "memory
       # only" to "memory and DynamoDB". Without it those cases skip, which is
       # what keeps `npm test` a two-second command on a laptop.
-      - name: Wait for DynamoDB Local
-        run: |
-          for i in $(seq 1 30); do
-            curl -s -o /dev/null http://localhost:8000 && exit 0
-            sleep 1
-          done
-          echo "::error::DynamoDB Local never came up on :8000"
-          exit 1
-
-      # Coverage rather than a bare `npm test`: the thresholds in
-      # vitest.config.ts are a ratchet, and a ratchet nothing turns is a
-      # comment. `--coverage` runs the identical suite, so this is the same
-      # gate plus a floor.
-      - name: Test
-        run: npm run test:coverage
-        env:
-          KAD_DDB_ENDPOINT: http://localhost:8000
-          AWS_REGION: us-east-1
-
-      # The summary lands in the run's front page rather than 400 lines up the
-      # log, because a number nobody sees is a number nobody defends.
-      - name: Report coverage
-        if: always()
-        run: |
-          {
-            echo "### Coverage"
-            echo
-            echo '```'
-            node -e '
-              const s = require("./coverage/coverage-summary.json").total;
-              const row = (k) => `${k.padEnd(12)} ${String(s[k].pct).padStart(6)}%  (${s[k].covered}/${s[k].total})`;
-              for (const k of ["statements", "branches", "functions", "lines"]) console.log(row(k));
-            '
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      # The stack is code too. cfn-lint applies the SAM transform, so this
-      # catches a bad property on a Serverless resource — the class of mistake
-      # you would otherwise find eight minutes into a deploy.
       - name: Lint the stack
         run: npm run infra:lint
 
@@ -236,6 +196,134 @@ jobs:
       - name: Verify audio assets
         run: npm run audio:verify
 
+
+  test:
+    needs: changes
+    if: needs.changes.outputs.build == 'true'
+    name: unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # The prod store gets tested against a real DynamoDB, not a mock. The whole
+    # justification for the in-memory store is that swapping in DynamoRepository
+    # is a wiring change rather than a re-modelling exercise
+    # (packages/server/src/store/contract.test.ts), and that claim is worth
+    # nothing unless one suite runs against both.
+    services:
+      dynamodb:
+        image: amazon/dynamodb-local:latest
+        ports:
+          - 8000:8000
+
+    # dynamodb-local ships no HEALTHCHECK, and GitHub only waits on containers
+    # that define one — so without the wait step below, `npm test` can race a
+    # port that is not listening yet and fail intermittently.
+
+    steps:
+      - uses: actions/checkout@v7
+
+      # Node 22 — the same runtime the Lambdas use (architecture §1).
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      # The suite shells out to Python for the art checks it covers
+      # (tools/art/verify_entity_states.test.ts, the manifest's maskable
+      # icons in packages/client/src/sw/manifest.test.ts): Pillow and numpy,
+      # from the same requirements-dev.txt as checks and build.
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
+
+      - name: Wait for DynamoDB Local
+        run: |
+          for i in $(seq 1 30); do
+            curl -s -o /dev/null http://localhost:8000 && exit 0
+            sleep 1
+          done
+          echo "::error::DynamoDB Local never came up on :8000"
+          exit 1
+
+      # Coverage rather than a bare `npm test` on main: the thresholds in
+      # vitest.config.ts are a ratchet, and a ratchet nothing turns is a
+      # comment. `--coverage` runs the identical suite, so this is the same
+      # gate plus a floor. A pull request runs the suite bare: instrumenting
+      # 5,500 tests was two of the five minutes this step took, and the floor
+      # is checked on the merge that moves it.
+      - name: Test
+        run: ${{ github.event_name == 'pull_request' && 'npm test' || 'npm run test:coverage' }}
+        env:
+          KAD_DDB_ENDPOINT: http://localhost:8000
+          AWS_REGION: us-east-1
+
+      # The summary lands in the run's front page rather than 400 lines up the
+      # log, because a number nobody sees is a number nobody defends.
+      - name: Report coverage
+        if: always() && github.event_name != 'pull_request'
+        run: |
+          {
+            echo "### Coverage"
+            echo
+            echo '```'
+            node -e '
+              const s = require("./coverage/coverage-summary.json").total;
+              const row = (k) => `${k.padEnd(12)} ${String(s[k].pct).padStart(6)}%  (${s[k].covered}/${s[k].total})`;
+              for (const k of ["statements", "branches", "functions", "lines"]) console.log(row(k));
+            '
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      # The stack is code too. cfn-lint applies the SAM transform, so this
+      # catches a bad property on a Serverless resource — the class of mistake
+      # you would otherwise find eight minutes into a deploy.
+
+  build:
+    needs: changes
+    if: needs.changes.outputs.build == 'true'
+    # Not the required check; build-result below is, under the name this job
+    # used to carry.
+    name: build (run)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      # Node 22 — the same runtime the Lambdas use (architecture §1).
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      # Python 3.11 for the art tooling and cfn-lint. The set lives in
+      # requirements-dev.txt so every workflow and scripts/setup.sh install the
+      # same thing, and `cache: pip` stops each run re-downloading the wheels.
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Install Python dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-dev.txt
+
+      # The Lambda bundle rides in the artifact beside the client, so it is
+      # built here too (checks lints the stack and builds it as a gate; this
+      # is the copy a deploy ships). Seconds.
+      - name: Bundle Lambdas
+        run: npm run infra:build
+
       - name: Build
         run: npm run build
 
@@ -282,6 +370,7 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+
   e2e:
     # The roadmap's dev loop says a change isn't done until it has been seen on
     # a TV *and* in three-phone Travel Mode. CI can't hold three phones, so it
@@ -294,10 +383,19 @@ jobs:
     # `e2e` plus 3 of `e2e:prod`, back to back, while every other job was done
     # inside 8. Each shard is its own runner with its own dev server, so the
     # suite's one-worker rule (shared server state) still holds inside a shard.
-    # `--fully-parallel` lets a shard boundary fall inside a file: Playwright
-    # splits by test count, not time, and by file it always put drop-in and
-    # first-playable (~8 minutes together) in one shard. Every test builds its
-    # own rooms and browser contexts, so none leans on a sibling having run.
+    # Every test builds its own rooms and browser contexts, so none leans on a
+    # sibling having run.
+    #
+    # The shards are dealt by measured time, not by Playwright's `--shard`,
+    # which deals by count in file order and so put all eight layout-fit walks
+    # (8 minutes) in one shard and two-second install cards in another: nine
+    # minutes against two. tools/ci/e2e-shard.mjs weighs every test by its
+    # last duration in e2e/timings.json and deals longest-first onto the
+    # lightest shard: the suite is about 55 minutes of tests, so each of ten
+    # carries about five and a half. A shard's floor is still its slowest
+    # test (drop-in's walk, under four minutes), so a new test past that is
+    # worth splitting first. Each shard uploads its report so the timings can
+    # be refreshed (`--timings`, see the script) when they drift.
     # The production suite is not sharded: offline.spec is `serial`.
     name: end to end (${{ matrix.name }})
     needs: changes
@@ -309,12 +407,16 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { name: "1/6", id: "1", run: "npm run e2e -- --fully-parallel --shard=1/6" }
-          - { name: "2/6", id: "2", run: "npm run e2e -- --fully-parallel --shard=2/6" }
-          - { name: "3/6", id: "3", run: "npm run e2e -- --fully-parallel --shard=3/6" }
-          - { name: "4/6", id: "4", run: "npm run e2e -- --fully-parallel --shard=4/6" }
-          - { name: "5/6", id: "5", run: "npm run e2e -- --fully-parallel --shard=5/6" }
-          - { name: "6/6", id: "6", run: "npm run e2e -- --fully-parallel --shard=6/6" }
+          - { name: "1/10", id: "1", run: "node tools/ci/e2e-shard.mjs 1/10" }
+          - { name: "2/10", id: "2", run: "node tools/ci/e2e-shard.mjs 2/10" }
+          - { name: "3/10", id: "3", run: "node tools/ci/e2e-shard.mjs 3/10" }
+          - { name: "4/10", id: "4", run: "node tools/ci/e2e-shard.mjs 4/10" }
+          - { name: "5/10", id: "5", run: "node tools/ci/e2e-shard.mjs 5/10" }
+          - { name: "6/10", id: "6", run: "node tools/ci/e2e-shard.mjs 6/10" }
+          - { name: "7/10", id: "7", run: "node tools/ci/e2e-shard.mjs 7/10" }
+          - { name: "8/10", id: "8", run: "node tools/ci/e2e-shard.mjs 8/10" }
+          - { name: "9/10", id: "9", run: "node tools/ci/e2e-shard.mjs 9/10" }
+          - { name: "10/10", id: "10", run: "node tools/ci/e2e-shard.mjs 10/10" }
           # The adventure book with no signal, and what a phone downloads on a
           # repeat visit. Against a production build and `vite preview`,
           # because the service worker exists nowhere else
@@ -322,7 +424,21 @@ jobs:
           - { name: "production build", id: "prod", run: "npm run e2e:prod" }
 
     steps:
+      # Everything but what no shard reads: the source art (art/, 677 MB of
+      # the repo's 1.2 GB), the docs and the wiki. The game the suite plays is
+      # packages/, content/ and assets/ (which the dev server serves, and
+      # runtime-art.spec decodes), all of which stay. Blobless, so the fetch
+      # brings only the files the sparse checkout writes: the full checkout
+      # was 36 seconds of every shard's first minute.
       - uses: actions/checkout@v7
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/art/
+            !/docs/
+            !/wiki/
 
       - uses: actions/setup-node@v7
         with:
@@ -346,10 +462,19 @@ jobs:
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps chromium
 
-      # OS-level deps are not cached with the browser; install them either way.
+      # OS-level deps are not cached with the browser. The runner image
+      # already has every library Chromium links against (install-deps found
+      # them all "already the newest version" and added only CJK, Thai and
+      # unifont fallback fonts the game never draws), so they are installed
+      # only when the browser cannot start without them: ten seconds a shard.
       - name: Install Chromium system dependencies
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: npx playwright install-deps chromium
+        run: |
+          if node -e "require('@playwright/test').chromium.launch().then((b) => b.close())"; then
+            echo "Chromium starts on this image; nothing to install."
+          else
+            npx playwright install-deps chromium
+          fi
 
       # Each Playwright config starts its own servers and waits for them.
       - name: Play
@@ -362,6 +487,50 @@ jobs:
           name: playwright-traces-${{ matrix.id }}
           path: test-results/
           retention-days: 7
+
+      # How long each test took, for `node tools/ci/e2e-shard.mjs --timings`.
+      - name: Upload timings
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: e2e-timings-${{ matrix.id }}
+          path: test-results/report.json
+          retention-days: 14
+          if-no-files-found: ignore
+
+  build-result:
+    # The check named "typecheck, test, content, art, build", as before this
+    # gate existed, so a required check on that name keeps its meaning. A job
+    # whose `needs` failed reports as skipped, and skipped satisfies a
+    # required check — so without this, a broken `changes` job would wave
+    # every pull request through untested. Passes when build passed or when
+    # `changes` deliberately skipped it, never when `changes` itself failed.
+    name: typecheck, test, content, art, build
+    needs: [changes, checks, test, build]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Every job passed, or was not needed
+        env:
+          CHANGES: ${{ needs.changes.result }}
+          CHECKS: ${{ needs.checks.result }}
+          TESTS: ${{ needs.test.result }}
+          BUILD: ${{ needs.build.result }}
+        run: |
+          if [ "$CHANGES" != "success" ]; then
+            echo "::error::build: the changes job finished with '$CHANGES', so nothing ran"
+            exit 1
+          fi
+          ok=0
+          for pair in "checks:$CHECKS" "unit tests:$TESTS" "build:$BUILD"; do
+            name="${pair%%:*}"; result="${pair##*:}"
+            if [ "$result" != "success" ] && [ "$result" != "skipped" ]; then
+              echo "::error::$name: finished with '$result'"
+              ok=1
+            fi
+          done
+          exit $ok
 
   e2e-result:
     # The one check named "end to end", as before the suite was sharded, so a
@@ -403,7 +572,16 @@ jobs:
     timeout-minutes: 8
 
     steps:
+      # The same checkout as the e2e shards, and for their reason.
       - uses: actions/checkout@v7
+        with:
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/art/
+            !/docs/
+            !/wiki/
 
       - uses: actions/setup-node@v7
         with:
