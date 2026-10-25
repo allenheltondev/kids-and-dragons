@@ -1389,8 +1389,61 @@
           ],
           "introduces": {
             "riftseekers": "Riftseekers",
-            "rifts": "these openings rifts"
+            "rifts": "these openings rifts",
+            "trav_sledge": "travelers' sledge"
           }
+        },
+        "sledge_lift": {
+          "requires": [
+            "trav_sledge",
+            "orin",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "sledge_brace": {
+          "requires": [
+            "trav_sledge",
+            "orin",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "sledge_smash": {
+          "requires": [
+            "trav_sledge",
+            "orin",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "ring_sort": {
+          "requires": [
+            "seren",
+            "ring_case"
+          ],
+          "introduces": {}
+        },
+        "sort_size": {
+          "requires": [
+            "seren",
+            "ring_case"
+          ],
+          "introduces": {}
+        },
+        "sort_ear": {
+          "requires": [
+            "seren",
+            "ring_case"
+          ],
+          "introduces": {}
+        },
+        "sort_hum": {
+          "requires": [
+            "seren",
+            "ring_case"
+          ],
+          "introduces": {}
         },
         "seren": {
           "requires": [
@@ -1413,6 +1466,21 @@
               ]
             }
           ]
+        },
+        "instruments": {
+          "requires": [
+            "orin",
+            "olivia",
+            "instruments"
+          ],
+          "introduces": {}
+        },
+        "corner_hunt": {
+          "requires": [
+            "orin",
+            "map"
+          ],
+          "introduces": {}
         },
         "lead": {
           "requires": [
@@ -1438,6 +1506,47 @@
           ],
           "introduces": {}
         },
+        "help_now": {
+          "requires": [
+            "olivia",
+            "orin",
+            "seren",
+            "herder",
+            "sledge"
+          ],
+          "introduces": {
+            "supper_gift": "a supper bundle from her pack"
+          }
+        },
+        "safe_routes": {
+          "requires": [
+            "orin",
+            "olivia",
+            "seren",
+            "herder",
+            "cairnstep"
+          ],
+          "introduces": {
+            "supper_gift": "a supper bundle for the herder"
+          }
+        },
+        "haul_supper": {
+          "requires": [
+            "herder",
+            "trav_sledge",
+            "supper_gift",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "chalk_route": {
+          "requires": [
+            "herder",
+            "orin",
+            "cairnstep"
+          ],
+          "introduces": {}
+        },
         "route": {
           "requires": [
             "orin",
@@ -1452,6 +1561,147 @@
             "ice_shelf": "the ice shelf",
             "ashspan": "Ashspan Bridge"
           }
+        },
+        "lookout": {
+          "requires": [
+            "orin",
+            "great_river",
+            "ice_shelf"
+          ],
+          "introduces": {
+            "spyglass": "spyglass"
+          }
+        },
+        "lookout_climb": {
+          "requires": [
+            "ice_shelf",
+            "spyglass"
+          ],
+          "introduces": {}
+        },
+        "lookout_sky": {
+          "requires": [
+            "ice_shelf"
+          ],
+          "introduces": {}
+        },
+        "lookout_fly": {
+          "requires": [
+            "ice_shelf",
+            "great_river"
+          ],
+          "introduces": {}
+        },
+        "sketch": {
+          "requires": [
+            "orin",
+            "seren",
+            "map",
+            "spyglass"
+          ],
+          "introduces": {}
+        },
+        "sketch_shelf": {
+          "requires": [
+            "orin",
+            "olivia",
+            "ice_shelf",
+            "map"
+          ],
+          "introduces": {}
+        },
+        "sketch_bend": {
+          "requires": [
+            "seren",
+            "olivia",
+            "great_river",
+            "map"
+          ],
+          "introduces": {}
+        },
+        "sketch_hall": {
+          "requires": [
+            "orin",
+            "olivia",
+            "seam",
+            "hall",
+            "map"
+          ],
+          "introduces": {}
+        },
+        "tarp": {
+          "requires": [
+            "trav_sledge",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "tea": {
+          "requires": [
+            "seren",
+            "orin",
+            "trav_sledge"
+          ],
+          "introduces": {
+            "stove": "small stove"
+          }
+        },
+        "tea_seren": {
+          "requires": [
+            "seren",
+            "stove"
+          ],
+          "introduces": {}
+        },
+        "tea_olivia": {
+          "requires": [
+            "olivia",
+            "orin",
+            "stove",
+            "rifts"
+          ],
+          "introduces": {}
+        },
+        "supplies": {
+          "requires": [
+            "seren",
+            "herd",
+            "trav_sledge",
+            "stove"
+          ],
+          "introduces": {
+            "spares_tin": "battered tin",
+            "whistle_offer": "brave whistle"
+          }
+        },
+        "supplies_buy": {
+          "requires": [
+            "seren",
+            "spares_tin",
+            "whistle_offer"
+          ],
+          "introduces": {}
+        },
+        "supplies_feed": {
+          "requires": [
+            "herder",
+            "herd"
+          ],
+          "introduces": {}
+        },
+        "supplies_tight": {
+          "requires": [
+            "seren",
+            "trav_sledge"
+          ],
+          "introduces": {}
+        },
+        "supplies_oil": {
+          "requires": [
+            "olivia",
+            "trav_sledge"
+          ],
+          "introduces": {}
         },
         "chime": {
           "requires": [
@@ -1488,6 +1738,131 @@
           ],
           "introduces": {}
         },
+        "chime_jar": {
+          "requires": [
+            "listening_chime",
+            "orin",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "chime_whistle": {
+          "requires": [
+            "listening_chime",
+            "orin",
+            "whistle_offer"
+          ],
+          "introduces": {}
+        },
+        "trial_intro": {
+          "requires": [
+            "seren",
+            "olivia",
+            "orin",
+            "instruments",
+            "listening_chime",
+            "chime_rules"
+          ],
+          "introduces": {
+            "practice_rings": "three rings on a flat stone"
+          }
+        },
+        "trial_read": {
+          "requires": [
+            "practice_rings",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "trial_ear": {
+          "requires": [
+            "practice_rings",
+            "olivia",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "trial_chime": {
+          "requires": [
+            "practice_rings",
+            "listening_chime",
+            "olivia"
+          ],
+          "introduces": {}
+        },
+        "trial_hum": {
+          "requires": [
+            "practice_rings"
+          ],
+          "introduces": {}
+        },
+        "trial_report": {
+          "requires": [
+            "seren",
+            "orin",
+            "practice_rings",
+            "rifts"
+          ],
+          "introduces": {}
+        },
+        "trial_all": {
+          "requires": [
+            "practice_rings",
+            "seren",
+            "olivia",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "prep": {
+          "requires": [
+            "orin",
+            "seren",
+            "map",
+            "hall",
+            "ice_shelf",
+            "cairnstep",
+            "ashspan",
+            "herd"
+          ],
+          "introduces": {}
+        },
+        "prep_ice": {
+          "requires": [
+            "orin",
+            "ice_shelf"
+          ],
+          "introduces": {}
+        },
+        "prep_seam": {
+          "requires": [
+            "seren",
+            "hall",
+            "seam"
+          ],
+          "introduces": {}
+        },
+        "prep_jar": {
+          "requires": [
+            "seren",
+            "seam",
+            "hall"
+          ],
+          "introduces": {}
+        },
+        "prep_bank": {
+          "requires": [
+            "orin",
+            "ashspan"
+          ],
+          "introduces": {}
+        },
+        "prep_dash": {
+          "requires": [
+            "ashspan"
+          ],
+          "introduces": {}
+        },
         "parting": {
           "requires": [
             "olivia",
@@ -1514,35 +1889,24 @@
           ],
           "introduces": {}
         },
+        "camp_supper": {
+          "requires": [
+            "listening_chime"
+          ],
+          "introduces": {}
+        },
+        "camp_hall": {
+          "requires": [
+            "hall",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
         "set_out": {
           "requires": [
             "hall"
           ],
           "introduces": {}
-        },
-        "help_now": {
-          "requires": [
-            "olivia",
-            "orin",
-            "seren",
-            "herder",
-            "sledge"
-          ],
-          "introduces": {
-            "supper_gift": "a supper bundle from her pack"
-          }
-        },
-        "safe_routes": {
-          "requires": [
-            "orin",
-            "olivia",
-            "seren",
-            "herder",
-            "cairnstep"
-          ],
-          "introduces": {
-            "supper_gift": "a supper bundle for the herder"
-          }
         }
       },
       "entryByFlag": {
