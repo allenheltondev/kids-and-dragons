@@ -193,7 +193,15 @@ async function offerCampaigns(
   const saved = await savedGameView(householdId, deps);
   if (saved) state.saved = saved;
   else delete state.saved;
-  const shown = options.find((option) => option.locked === undefined) ?? options[0];
+  // A campaign the household has under way is what the picker rests on, the most
+  // recently played first; with none, the first startable one.
+  const attempts = await deps.repo.listCampaignProgress(householdId);
+  const underWay = attempts
+    .filter((a) => a.status === "active")
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    .map((a) => options.find((option) => option.id === a.campaignId && option.locked === undefined))
+    .find((option) => option !== undefined);
+  const shown = underWay ?? options.find((option) => option.locked === undefined) ?? options[0];
   if (shown) state.campaign = shown;
 }
 

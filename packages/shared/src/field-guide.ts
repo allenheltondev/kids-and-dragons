@@ -23,11 +23,13 @@ import { edgesAgainst, edgesForHero } from "./matchups.js";
  *
  *   creatures — every `creature.*`, fightable or bandless
  *   peoples   — playable species (`character.*`) and sapient peoples (`npc.*`)
+ *   classes   — the four playable classes (`class.*`); an entry shows once a hero
+ *               wears the class or the party has been to its class place
  *   folk      — named individuals (`individual.*`), the people you meet by name
  *   places    — biomes and locations
  *   factions  — orders and groups, only those with lore to tell
  */
-export type FieldGuideCategory = "creatures" | "peoples" | "folk" | "places" | "factions";
+export type FieldGuideCategory = "creatures" | "peoples" | "classes" | "folk" | "places" | "factions";
 
 /** The canon taxonomy an entry came from, for a client that wants to filter finer. */
 export type FieldGuideKind =
@@ -37,7 +39,8 @@ export type FieldGuideKind =
   | "individual"
   | "biome"
   | "location"
-  | "faction";
+  | "faction"
+  | "class";
 
 /** An opinion a creature or people holds, with the target's name resolved. */
 export interface FieldGuideOpinion {
@@ -88,6 +91,29 @@ export interface FieldGuideTip {
   text: string;
 }
 
+/** One distinction a class awards, with the move it unlocks. */
+export interface FieldGuideDistinction {
+  rank: "apprentice" | "expert" | "master";
+  move: string;
+}
+
+/**
+ * What a class entry adds to the guide (`class.*`). `home` is the class place
+ * that teaches it, as a canon id. The title is carried so the detail screen can
+ * link it, but the screen draws it only once the party has found that place:
+ * until then the link reads "???" (FieldGuideDetail's EntryLink).
+ */
+export interface FieldGuideClass {
+  /** Canon `role` slug, e.g. `front_line`. */
+  role: string;
+  /** What a hero wears to be this class, e.g. "a thorn bracer". */
+  gear: string;
+  /** Canon id of the class place. */
+  home: string;
+  homeTitle: string;
+  distinctions: FieldGuideDistinction[];
+}
+
 export interface FieldGuideEntry {
   /** Canon id, repeated from the key so an entry stands on its own. */
   id: string;
@@ -105,6 +131,8 @@ export interface FieldGuideEntry {
   lore?: FieldGuideLore;
   /** Biomes and locations. Absent when canon has not written any yet. */
   place?: FieldGuidePlaceLore;
+  /** Classes only: the role, the gear, the three distinctions and the place that teaches it. */
+  class?: FieldGuideClass;
   /** Who in canon likes this entry. Present only when non-empty. */
   likedBy?: FieldGuideReverseOpinion[];
   dislikedBy?: FieldGuideReverseOpinion[];
@@ -200,6 +228,20 @@ export function speciesMatchups(rules: RulesContent | null | undefined, entryId:
     }
   }
   const edges = [...seen.values()];
+  const line = (edge: MatchupEdge): GuideMatchupLine => ({ id: edge.id, text: edge.text });
+  const good = edges.filter((e) => edgeHelps(e) > 0).map(line);
+  const watch = edges.filter((e) => edgeHelps(e) < 0).map(line);
+  return good.length === 0 && watch.length === 0 ? null : { good, watch };
+}
+
+/**
+ * "Good at" and "Watch out" for a class page (`class.<id>`), pairings with a
+ * species included (they always help); null for any other entry or no edges.
+ */
+export function classMatchups(rules: RulesContent | null | undefined, entryId: string): SpeciesMatchups | null {
+  const klass = entryId.startsWith("class.") ? entryId.slice("class.".length) : undefined;
+  if (!rules?.matchups || klass === undefined || !(rules.classes as Record<string, unknown>)[klass]) return null;
+  const edges = rules.matchups.edges.filter((edge) => [edge.hero.class ?? []].flat().includes(klass as ClassId));
   const line = (edge: MatchupEdge): GuideMatchupLine => ({ id: edge.id, text: edge.text });
   const good = edges.filter((e) => edgeHelps(e) > 0).map(line);
   const watch = edges.filter((e) => edgeHelps(e) < 0).map(line);

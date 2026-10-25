@@ -64,6 +64,26 @@ Rookery scene says it in some form, from a sign on the chimney ("NO MESSING. (WI
 note in your pocket after a fight ("Saw that. Nice. Don't mess with us."). Whenever a Duskrunner
 earns a distinction anywhere in the world, a crow lands on a nearby fence, says it, and flies off.
 
+### In canon and the Field Guide
+
+The four classes are `class.*` entries in [`canon/classes.yaml`](../canon/classes.yaml), each with
+its role, its gear, its three distinctions and a `home`, and the four places are `location.dojo`,
+`location.academy`, `location.rookery` and `location.conservatory` in
+[`canon/locations.yaml`](../canon/locations.yaml) (`location_type: class_place`). A class place is a
+side room, never a stop on the travel graph, and canon puts one in each of four hosts: the Rookery on
+the Exchange's rooftops, the Conservatory in the Glacier of Origins, the Dojo in the Sky Islands and
+the Academy in the Whispering Marsh (the marsh village). Each takes its host's `map_anchor` with a
+small offset (a label's height up), an offset for reading and not a survey; the Sky Islands drift,
+so the Dojo's pin is that biome's normal map area, as the biome's own anchor is.
+
+The Field Guide has a **Classes** shelf. A class entry is found when a hero at the table wears that
+class (at a chapter's start, or when a hero's class changes), or when the party walks into its class
+place scene (`classPlace`), which also finds the place's own entry. Until the party has been to the
+place, the class entry shows it as "???", with no name, no picture of the room and no map. Once the
+place is found for the first time, the entry links to it and shows it on the painted map (and the
+world map pins it, as it does any found location). See
+[`discoveries.ts`](../packages/shared/src/discoveries.ts).
+
 ### How a party gets there
 
 - **A class place is a side room of an existing place**, never a place on the graph of its own: the

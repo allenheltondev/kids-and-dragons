@@ -2472,6 +2472,114 @@
         }
       ]
     },
+    "class.duskrunner": {
+      "id": "class.duskrunner",
+      "category": "classes",
+      "kind": "class",
+      "title": "Duskrunner",
+      "short_description": "Everywhere at once, never where the trouble lands.",
+      "class": {
+        "role": "skirmisher",
+        "gear": "a dusk hood",
+        "home": "location.rookery",
+        "homeTitle": "The Rookery",
+        "distinctions": [
+          {
+            "rank": "apprentice",
+            "move": "Vanish"
+          },
+          {
+            "rank": "expert",
+            "move": "Twin Step"
+          },
+          {
+            "rank": "master",
+            "move": "Storm of Blades"
+          }
+        ]
+      }
+    },
+    "class.songkeeper": {
+      "id": "class.songkeeper",
+      "category": "classes",
+      "kind": "class",
+      "title": "Songkeeper",
+      "short_description": "You keep everybody standing, and you make it look like a hero move. Because it is.",
+      "class": {
+        "role": "support",
+        "gear": "a song bell on a cord",
+        "home": "location.conservatory",
+        "homeTitle": "The Conservatory",
+        "distinctions": [
+          {
+            "rank": "apprentice",
+            "move": "Soothe"
+          },
+          {
+            "rank": "expert",
+            "move": "Chorus"
+          },
+          {
+            "rank": "master",
+            "move": "Encore"
+          }
+        ]
+      }
+    },
+    "class.starweaver": {
+      "id": "class.starweaver",
+      "category": "classes",
+      "kind": "class",
+      "title": "Starweaver",
+      "short_description": "You pull little pieces of the sky down and put them where they are needed.",
+      "class": {
+        "role": "caster",
+        "gear": "a star circlet",
+        "home": "location.academy",
+        "homeTitle": "The Academy",
+        "distinctions": [
+          {
+            "rank": "apprentice",
+            "move": "Glimmer"
+          },
+          {
+            "rank": "expert",
+            "move": "Tanglelight"
+          },
+          {
+            "rank": "master",
+            "move": "Starfall"
+          }
+        ]
+      }
+    },
+    "class.thornguard": {
+      "id": "class.thornguard",
+      "category": "classes",
+      "kind": "class",
+      "title": "Thornguard",
+      "short_description": "You stand in front. That is the whole job, and it is a big one.",
+      "class": {
+        "role": "front_line",
+        "gear": "a thorn bracer",
+        "home": "location.dojo",
+        "homeTitle": "The Dojo",
+        "distinctions": [
+          {
+            "rank": "apprentice",
+            "move": "Shove"
+          },
+          {
+            "rank": "expert",
+            "move": "Bramble Wall"
+          },
+          {
+            "rank": "master",
+            "move": "Unbreakable"
+          }
+        ]
+      }
+    },
     "individual.marda_thorn": {
       "id": "individual.marda_thorn",
       "category": "folk",
@@ -3006,6 +3114,14 @@
         "cultural_significance": "People come to the marsh to consult witches, to leave things behind, and to hear voices they miss. The frogfolk maintain a strict etiquette for all three, and the marsh maintains its own etiquette, which is stricter and unposted."
       }
     },
+    "location.academy": {
+      "id": "location.academy",
+      "category": "places",
+      "kind": "location",
+      "title": "The Academy",
+      "short_description": "The school for Starweavers. The roof is open to the sky, so the homework floats away. The big telescope sneezes.",
+      "art": "/assets/scenes/classes/academy.webp"
+    },
     "location.bone_yard": {
       "id": "location.bone_yard",
       "category": "places",
@@ -3083,6 +3199,22 @@
         "recorded_history": "Town history is hedge history: plantings, graftings, the season the paths first changed on their own, and the long friendly record of keepers learning that tending the hedges and commanding them are different jobs.",
         "cultural_significance": "The Sunward Fields' far waystop and its filter: the first roof after the bridge road or the last one before it, depending on your direction, and a town that decides - or whose hedges decide - who gets through."
       }
+    },
+    "location.conservatory": {
+      "id": "location.conservatory",
+      "category": "places",
+      "kind": "location",
+      "title": "The Conservatory",
+      "short_description": "The school for Songkeepers. It is a music school that is also a greenhouse. The plants lean toward whoever is singing best.",
+      "art": "/assets/scenes/classes/conservatory.webp"
+    },
+    "location.dojo": {
+      "id": "location.dojo",
+      "category": "places",
+      "kind": "location",
+      "title": "The Dojo",
+      "short_description": "The school for Thornguards. The teacher has held the same door shut against the wind for forty years. Students practice Brace by catching falling pillows.",
+      "art": "/assets/scenes/classes/dojo.webp"
     },
     "location.exchange": {
       "id": "location.exchange",
@@ -3259,6 +3391,14 @@
         "recorded_history": "Four centuries of watch rotations, forge-nights, and ledgers - above all the ledgers. The citadel's history is deliberately uneventful, and the order maintains that this is the finest record any fortress has ever compiled.",
         "cultural_significance": "The foothills' fixed point: caravans navigate by its silhouette, locals set their clocks by the watch-horns, and the whole region sleeps a little easier for the violet windows burning overnight - without, if pressed, being able to say precisely what the wardens are watching for. Neither, precisely, can the wardens."
       }
+    },
+    "location.rookery": {
+      "id": "location.rookery",
+      "category": "places",
+      "kind": "location",
+      "title": "The Rookery",
+      "short_description": "The school for Duskrunners, on the Exchange's rooftops. It is run by the crows, all of them together. A sign on the chimney says NO MESSING. (WITH US.)",
+      "art": "/assets/scenes/classes/rookery.webp"
     },
     "location.skullwater_cave": {
       "id": "location.skullwater_cave",

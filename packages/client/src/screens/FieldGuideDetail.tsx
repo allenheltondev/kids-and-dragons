@@ -1,12 +1,13 @@
+import { useEffect } from "react";
 import type { ReactNode } from "react";
-import type { FieldGuide as FieldGuideData, FieldGuideEntry } from "@kad/shared";
+import type { FieldGuide as FieldGuideData, FieldGuideEntry, WorldMap } from "@kad/shared";
 import { FORGOTTEN_FINDER, FORGOTTEN_NAME } from "@kad/shared";
 import { hear } from "../speech/read-aloud";
 import { selectGuideEntry } from "../store/player-navigation";
 import { useFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import type { FieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { markFieldGuideSeen } from "../store/field-guide-seen";
-import { useParty } from "../store";
+import { useGameStore, useParty, useWorld } from "../store";
 import { useJournalFinders } from "../store/journal-finders";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
@@ -50,20 +51,54 @@ export const TIP_LABELS: Readonly<Record<string, string>> = {
 };
 
 const CATEGORY_ICON: Readonly<Record<string, string>> = {
-  creatures: "flame", peoples: "party", folk: "heart", places: "leaf", factions: "shield",
+  creatures: "flame", peoples: "party", classes: "star", folk: "heart", places: "leaf", factions: "shield",
 };
+
+/**
+ * The glyph for an entry with no picture. A class has no painting in the guide
+ * (the room's painting would give the room away), so it wears its own painted
+ * badge, named by its slug: `class.thornguard` is the "thornguard" icon.
+ */
+export function entryIcon(entry: Pick<FieldGuideEntry, "id" | "kind" | "category">, fallback?: string): string {
+  if (entry.kind === "class") return entry.id.slice(entry.id.indexOf(".") + 1);
+  return fallback ?? CATEGORY_ICON[entry.category] ?? "leaf";
+}
+
+/** Canon `role` slugs and distinction ranks in kid words. */
+const prettyRank = (rank: string) => prettify(rank);
 
 const prettify = (kind: string) => {
   const s = kind.replace(/[_-]+/g, " ").trim();
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
 
+/**
+ * What "Read aloud" says for an entry. A class names its place only once the
+ * party has found it, aloud as on screen.
+ */
+export function spokenText(entry: FieldGuideEntry, discoveries: FieldGuideDiscoveries): string {
+  const { lore, place, class: cls } = entry;
+  const homeFound = cls !== undefined && !!discoveries[cls.home];
+  return [
+    entry.title, lore?.hook, entry.short_description, lore?.story, place?.origin, place?.recorded_history,
+    place?.cultural_significance,
+    cls && `${prettify(cls.role)}. Their gear is ${cls.gear}`,
+    cls && homeFound ? `Taught at ${cls.homeTitle}` : undefined,
+    ...(cls?.distinctions.map((d) => `${prettyRank(d.rank)}: ${d.move}`) ?? []),
+  ].filter((s): s is string => !!s).join(". ");
+}
+
 /** The detail screen for one discovered entry. Renders nothing about an undiscovered one. */
-export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, backLabel = "Back to the guide" }: {
-  guide: FieldGuideData; entryId: string; onSelect?: (id: string | null) => void; backLabel?: string;
+export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }: {
+  guide: FieldGuideData; entryId: string; onSelect?: (id: string | null) => void;
 }) {
   const discoveries = useFieldGuideDiscoveries();
   const party = useParty();
+  const world = useWorld();
+  const loadWorld = useGameStore((store) => store.loadWorld);
+  // A class that has been found at its place needs the map's key; fetched once, kept.
+  const wantsMap = guide.entries[entryId]?.class !== undefined && !!discoveries[guide.entries[entryId]!.class!.home];
+  useEffect(() => { if (wantsMap) void loadWorld(); }, [wantsMap, loadWorld]);
   // Between games there is no party; the journal names the household instead.
   const finders = useJournalFinders();
   const entry = guide.entries[entryId];
@@ -77,16 +112,14 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
       : (party.find((m) => m.playerId === find.firstFoundBy)?.character.name ?? finders[find.firstFoundBy]);
   const lore = entry.lore;
   const place = entry.place;
+  const cls = entry.class;
   const danger = entry.danger_level ? (DANGER_LABELS[entry.danger_level] ?? prettify(entry.danger_level)) : undefined;
   const size = entry.scale ? (SCALE_LABELS[entry.scale] ?? prettify(entry.scale)) : undefined;
   const link = (id: string, title: string): ReactNode => (
     <EntryLink guide={guide} discoveries={discoveries} id={id} title={title} onSelect={onSelect} />
   );
 
-  const spoken = [
-    entry.title, lore?.hook, entry.short_description, lore?.story, place?.origin, place?.recorded_history,
-    place?.cultural_significance,
-  ].filter((s): s is string => !!s).join(". ");
+  const spoken = spokenText(entry, discoveries);
 
   return (
     <>
@@ -94,14 +127,9 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
           same scroller would open the new one wherever you had read down to
           in the old. A fresh one starts at the top. */}
       <div key={entryId} className="field-guide__body kad-scroll field-guide__detail" data-testid="guide-detail">
-        {/* The way back at the top as well as the foot, floating over the page as it scrolls. */}
-        <Button className="fgd__return" variant="secondary" size="md" icon={<Icon name="back" />}
-          onClick={() => onSelect(null)}>
-          {backLabel.replace(/^Back to/, "Return to")}
-        </Button>
         <header className="fgd__header">
-          <span className={`fgd__art${entry.category === "places" ? " fgd__art--place" : ""}`} aria-hidden="true" {...motionProps(entry.art, entry.id)}>
-            {entry.art ? <img src={entry.art} alt="" /> : <Icon name={CATEGORY_ICON[entry.category] ?? "leaf"} />}
+          <span className={`fgd__art${entry.category === "places" ? " fgd__art--place" : ""}`} aria-hidden="true" {...(entry.category === "places" ? {} : motionProps(entry.art, entry.id))}>
+            {entry.art ? <img src={entry.art} alt="" /> : <Icon name={entryIcon(entry)} />}
           </span>
           <h3 className="field-guide__detail-title">{entry.title}</h3>
           {lore?.hook && <p className="fgd__hook">{lore.hook}</p>}
@@ -157,6 +185,26 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
           </>
         )}
 
+        {cls && (
+          <>
+            <Section title="What they do" show>
+              <p>{prettify(cls.role)}. Their gear is {cls.gear}.</p>
+            </Section>
+            <Section title="Where they learn" show>
+              {/* "???" until the party has found the place: EntryLink never renders an undiscovered title. */}
+              <p>Taught at <strong>{link(cls.home, cls.homeTitle)}</strong>.</p>
+            </Section>
+            <HubMap show={!!discoveries[cls.home]} world={world} home={cls.home} title={cls.homeTitle} />
+            <Section title="Distinctions" show={cls.distinctions.length > 0}>
+              <ul className="fgd__list">
+                {cls.distinctions.map((d) => (
+                  <li key={d.rank}><strong>{prettyRank(d.rank)}.</strong> New move: {d.move}.</li>
+                ))}
+              </ul>
+            </Section>
+          </>
+        )}
+
         <FieldGuideMatchups entry={entry} />
 
         <Section title="Tips" show={!!entry.tips && entry.tips.length > 0}>
@@ -171,11 +219,27 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
           {finder ? `First found by ${finder}` : "First found by someone in your household"}
         </p>
       </div>
-      <Button className="field-guide__back" variant="secondary" size="md" block
-        icon={<Icon name="back" />} onClick={() => onSelect(null)}>
-        {backLabel}
-      </Button>
     </>
+  );
+}
+
+/**
+ * Where a class is taught, on the painted map. Drawn only once the party has
+ * found the place (the same find that turns "???" into a link), and only when
+ * canon has put the place on the map at all: a side room with no anchor shows
+ * nothing, as it does on the world map.
+ */
+function HubMap({ show, world, home, title }: { show: boolean; world: WorldMap | null; home: string; title: string }) {
+  if (!show || !world) return null;
+  const place = world.places[home.slice(home.indexOf(".") + 1)];
+  if (!place || place.id !== home) return null;
+  return (
+    <Section title="On the map" show>
+      <div className="fgd__map" role="img" aria-label={`${title} on the map of the realm`}
+        style={{ backgroundImage: `url("${world.image.src}")`, aspectRatio: `${world.image.width} / ${world.image.height}` }}>
+        <span className="fgd__map-pin" aria-hidden="true" style={{ left: `${place.anchor.x / 10}%`, top: `${place.anchor.y / 10}%` }} />
+      </div>
+    </Section>
   );
 }
 

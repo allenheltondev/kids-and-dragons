@@ -15,7 +15,6 @@
   block-size: 0.5em; margin: 0.35em 0.75em 0; overflow: hidden; border: 1px solid #ad885777; border-radius: 999px; background: #0d0a1e88;
 }
 .field-guide__meter > span { display: block; block-size: 100%; border-radius: inherit; background: linear-gradient(90deg, #d9a24a, #ffe9a8); }
-.field-guide .field-guide__back { flex: 0 0 auto; margin: 0.5em 0.75em 0.75em; inline-size: calc(100% - 1.5em); }
 /* PlayerView keeps the creation flow mounted (not unmounted) under the guide. */
 .player-view__creation:not([hidden]) { display: contents; }
 
@@ -77,10 +76,6 @@
 .field-guide__detail-title { margin: 0 0 0.5em; }
 @media (prefers-reduced-motion: reduce) { .field-guide__card { transition: none; } }
 
-.fgd__return {
-  position: sticky; inset-block-start: 0.25em; z-index: 1; align-self: flex-start;
-  margin-block-end: 0.5em; box-shadow: 0 0.2em 0.6em #0008;
-}
 .fgd__header { display: flex; flex-direction: column; align-items: flex-start; gap: 0.6em; margin-block-end: 1em; }
 /* The entry's painting in a gold arch, standing in its own light, like a hero on the sheet. */
 .fgd__art {
@@ -119,12 +114,21 @@
   font: inherit; font-weight: 700; color: var(--kad-gold); background: none; border: 0; padding: 0.35em 0;
   min-block-size: max(44px, 2.75em); text-decoration: underline; cursor: pointer;
 }
+.fgd__map { position: relative; inline-size: 100%; background-size: cover; background-position: center; border-radius: 0.5em; border: 1px solid #ad885777; }
+.fgd__map-pin {
+  position: absolute; inline-size: 0.9em; block-size: 0.9em; translate: -50% -50%; border-radius: 999px;
+  background: #ffe9a8; border: 0.2em solid #b3402f; box-shadow: 0 0 0 0.25em #0008;
+}
 .fgd__unknown { font-weight: 700; color: var(--kad-ink-faint); }
 .fgd__found { margin: 1em 0 0; color: var(--kad-ink-dim); }
 
 /* Places are paintings, rather than cutout figures: fill their frame so the
    scenery stays readable instead of becoming a narrow strip in a large well. */
 .fgd__art--place img { inline-size: 100%; block-size: 100%; object-fit: cover; }
+.fgd__art--place {
+  inline-size: calc(100% + 1.5em); block-size: auto; aspect-ratio: 16 / 9; align-self: stretch;
+  margin-inline: -0.75em; border-inline: 0; border-radius: 0;
+}
 .field-guide__art--place { border-radius: 0.4em; }
 .field-guide__art--place img { object-fit: cover; }
 /*

@@ -782,11 +782,10 @@
 /* Hint-only rows need no button-sized empty seat. The aiming row still has
    its full-size Change/Go controls, and the board retains its own floor. */
 .combat__seat:has(> .combat__hint) { min-block-size: 1.6em; }
-.player--fighting .player__inventory-back { min-block-size: 48px; padding-block: 0.2em; font-size: var(--font-size-md); }
 
 /* The hero remains named and lit, but the fight gets the header's spare trim. */
 .player--fighting .sheet { padding-block: 0.4em; }
-.player--fighting .sheet__portrait { inline-size: 2em; block-size: 2.3em; }
+.player--fighting .sheet__portrait { inline-size: 2.8em; block-size: 3.4em; }
 
 /* Combat choices use a compact painted socket, keeping their descriptions and
    a real touch target while leaving room for a first choice at large text. */

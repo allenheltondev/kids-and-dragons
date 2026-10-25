@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import type { FieldGuideEntry, GuideMatchupLine } from "@kad/shared";
-import { creatureMatchups, speciesMatchups } from "@kad/shared";
+import { creatureMatchups, speciesMatchups, classMatchups } from "@kad/shared";
 import { useRules } from "../store";
 import { Icon } from "./icons";
 import { useEnsureContent } from "./content";
@@ -57,7 +57,7 @@ export function FieldGuideMatchups({ entry }: { entry: FieldGuideEntry }): React
       </section>
     );
   }
-  const hero = speciesMatchups(rules, entry.id);
+  const hero = speciesMatchups(rules, entry.id) ?? classMatchups(rules, entry.id);
   if (!hero) return null;
   return (
     <section className="fgd__section fgm" aria-labelledby="fgm-hero">

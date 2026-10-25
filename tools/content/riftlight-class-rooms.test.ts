@@ -6,7 +6,9 @@
  * packages/server/src/handlers/riftlight-class-rooms.test.ts.
  */
 import { describe, expect, it } from "vitest";
-import { enterScene } from "@kad/shared";
+import fs from "node:fs";
+import path from "node:path";
+import { CLASS_GUIDE_ID, CLASS_PLACE_GUIDE_ID, enterScene, sceneDiscoveries } from "@kad/shared";
 import type { ClassId, RunState } from "@kad/shared";
 import { answerClassPlace, allPaths, chapters, context, send, start } from "./riftlight-test-support.ts";
 
@@ -138,6 +140,20 @@ describe("Riftlight's class rooms", () => {
     for (const text of [scene.narration, ...scene.variants.map((v) => v.text)]) {
       expect(text).toMatch(/leaves? the Exchange/);
     }
+  });
+
+  it.each(ROOMS)("walking into the $room finds the room and the $class entry in the Field Guide", (r) => {
+    const guide = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, "../../content/field-guide.json"), "utf8")) as {
+      entries: Record<string, { category: string; class?: { home: string } }>;
+    };
+    const scene = chapters.get(r.chapter)!.scenes[r.room]!;
+    const found = sceneDiscoveries(scene as never, null);
+    expect(found).toEqual([CLASS_PLACE_GUIDE_ID[r.class], CLASS_GUIDE_ID[r.class]]);
+    for (const id of found) expect(guide.entries[id], id).toBeDefined();
+    // The class entry names exactly the room that finds it.
+    expect(guide.entries[CLASS_GUIDE_ID[r.class]]!.class!.home).toBe(CLASS_PLACE_GUIDE_ID[r.class]);
+    // The lesson and the rest scene are not the room: they find nothing of their own.
+    expect(sceneDiscoveries(chapters.get(r.chapter)!.scenes[r.lesson] as never, null)).toEqual([]);
   });
 
   it("the rooms never count the party and keep the house style", () => {

@@ -6,8 +6,8 @@ import manifest from '../../assets/manifest.json';
 import { environmentCoverage } from './environment-coverage.ts';
 
 describe('canon environment coverage', () => {
-  it('covers all 23 canon places without declaring story backgrounds as tactical kits', () => {
-    expect(environmentCoverage(process.cwd(), manifest)).toEqual({ need: 23, missing: [] });
+  it('covers all 27 canon places without declaring story backgrounds as tactical kits', () => {
+    expect(environmentCoverage(process.cwd(), manifest)).toEqual({ need: 27, missing: [] });
     expect(manifest.backgroundOnlyBiomes.filter(id => manifest.biomes.includes(id))).toEqual([]);
   });
 

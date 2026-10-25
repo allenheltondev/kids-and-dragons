@@ -85,8 +85,9 @@ single most load-bearing field for generated content and today is prose (§9 D9)
 
 ## 3. Taxonomies
 
-Twelve, across eleven files. Was thirteen, then eleven after D6 merged `region`
-into `biome` and `site` into `location`; D8 added `individual`.
+Thirteen, across twelve files. Was thirteen, then eleven after D6 merged `region`
+into `biome` and `site` into `location`; D8 added `individual`; `class` (classes.yaml)
+came with the class places.
 
 | Taxonomy | File | Id prefix | Count | Adds to the envelope |
 |---|---|---|---|---|
@@ -100,8 +101,15 @@ into `biome` and `site` into `location`; D8 added `individual`.
 | `location` | locations.yaml | `location.` | 10 | `location_type`, `parent_biome`, optional `inhabitants`, and the map fields absorbed from `site` |
 | `quest` | quests.yaml | `quest.` | 2 | `quest_type`, `difficulty`, `objectives`, `rewards` |
 | `campaign` | campaigns.yaml | `campaign.` | 2 | `campaign_type`, `chapter_count` |
+| `class` | classes.yaml | `class.` | 4 | **`home`** (required — the class place that teaches it), `role`, `gear`, exactly three `distinctions` (Apprentice, Expert, Master, each with the move it unlocks) |
 | `feature` | geography.yaml | `feature.` | 4 | `kind`, `map_anchor`, `flow_direction`, `mouth` |
 | `route` | geography.yaml | `route.` | 4 | `kind`, `map_anchor`, optional `map_path`, `travel_modes`, `constraints` |
+
+The four class places (the Dojo, the Academy, the Rookery, the Conservatory) are
+`location`s of `location_type: class_place`: side rooms of larger places
+(docs/class-mastery.md §2). Each carries a `map_anchor`: its host's own anchor, a label's height up (Exchange, Glacier of Origins, Sky Islands, Whispering Marsh). The Field Guide finds
+a class when a hero wears it or the party enters its place (`discoveries.ts`), and
+its entry shows the place as "???" until the party has been there.
 
 `biome` and `location` share a `Place` base (map provenance, anchor, access).
 `geography.yaml` now owns only what is neither an ecological region nor a place

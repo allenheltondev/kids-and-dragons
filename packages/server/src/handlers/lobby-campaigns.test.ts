@@ -114,6 +114,19 @@ describe("the lobby's campaigns", () => {
     ]);
   });
 
+  it("rests the picker on the campaign in progress, not the room's own", async () => {
+    const h = harness();
+    const first = await lobby(h, "crown", 2);
+    await first.ok("p_1", { type: "CONTINUE_CAMPAIGN" });
+    await first.ok("p_1", { type: "PLAYTEST_GOTO", sceneId: "scene_ending" });
+
+    const second = await lobby(h, "gems", 2);
+    const state = await second.state();
+    expect(state.campaignOptions?.map((o) => o.id)).toEqual(["gems", "crown"]);
+    expect(state.campaign?.id).toBe("crown");
+    expect(lobbyCampaign(state).leader?.id).toBe("crown");
+  });
+
   it("waits for every seat to vote, then plays the vote's pick", async () => {
     const h = harness();
     const first = await lobby(h, "crown", 2);
