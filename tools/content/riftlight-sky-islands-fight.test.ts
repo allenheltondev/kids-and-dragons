@@ -17,7 +17,11 @@ function resolved(): Chapter {
   const copy = structuredClone(chapter);
   const fight = copy.scenes.wisp_fight;
   if (fight?.type !== "encounter") throw new Error("Expected the wisp fight");
-  fight.enemies = fight.enemies.map((enemy) => ({ ...resolveEnemy(enemy, bestiary).spec, count: enemy.count ?? 1 }));
+  fight.enemies = fight.enemies.map((enemy) => {
+    const { spec, problems } = resolveEnemy(enemy, bestiary);
+    if (!spec) throw new Error(`the ${enemy.creature ?? "enemy"} does not resolve: ${problems.join("; ")}`);
+    return { ...spec, count: enemy.count ?? spec.count };
+  });
   return copy;
 }
 
