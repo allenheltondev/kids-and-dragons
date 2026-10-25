@@ -184,11 +184,16 @@
    red icon alone did not read as "the enemy is here". The legend under the
    board uses the same fills. */
 .combat__cell--enemy {
+  /* The flat blend first: `color-mix()` is Chromium 111 and the shared screen may be a
+     smart TV years behind that, where a dropped declaration would leave the enemy's
+     square untinted and the board unreadable. */
+  background: #98455d;
   background: color-mix(in srgb, var(--color-danger, #ff6b6b) 55%, var(--color-surface, #191534));
   color: #fff;
 }
 
 .combat__cell--party {
+  background: #7d674b;
   background: color-mix(in srgb, var(--color-accent, #ffc95c) 45%, var(--color-surface, #191534));
   color: var(--kad-accent-ink, #0d0b1a);
 }
@@ -201,6 +206,7 @@
 
 .combat__cell--tap {
   border: 0.12em solid var(--color-accent, #ffc95c);
+  background: #393038;
   background: color-mix(in srgb, var(--color-accent, #ffc95c) 14%, var(--color-surface, #191534));
   color: var(--color-accent, #ffc95c);
   cursor: pointer;
@@ -256,7 +262,7 @@
   block-size: calc(20% + 30% * var(--nearness, 1));
   border-radius: 50%;
   background: var(--color-accent, #ffc95c);
-  box-shadow: 0 0 0.35em color-mix(in srgb, var(--color-accent, #ffc95c) 70%, transparent);
+  box-shadow: 0 0 0.35em rgb(var(--color-accent-rgb) / 70%);
 }
 
 .combat__cell--selected {
@@ -374,6 +380,7 @@
 }
 
 .combat__key--friend {
+  background: #7d674b;
   background: color-mix(in srgb, var(--color-accent, #ffc95c) 45%, var(--color-surface, #191534));
 }
 
@@ -383,6 +390,9 @@
 
 .combat__key--walk {
   border: 0.12em solid var(--color-accent, #ffc95c);
+  background:
+    radial-gradient(circle, var(--color-accent, #ffc95c) 0 28%, transparent 32%),
+    #393038;
   background:
     radial-gradient(circle, var(--color-accent, #ffc95c) 0 28%, transparent 32%),
     color-mix(in srgb, var(--color-accent, #ffc95c) 14%, var(--color-surface, #191534));
@@ -742,3 +752,99 @@
   inline-size: auto;
   block-size: auto;
 }
+
+/* Keep decision information readable without permanently expanding every fighter. */
+.combat__overview { display: flex; flex: none; align-items: center; flex-wrap: wrap; gap: 0.25em 0.6em; }
+.combat__roster { position: relative; flex: 1 1 7em; min-inline-size: 0; }
+.combat__roster summary { display: flex; align-items: center; gap: 0.4em; min-block-size: 44px; padding: 0.35em 0.5em; border: 1px solid var(--kad-border); border-radius: 0.6em; background: var(--kad-bg-raised); cursor: pointer; font-weight: 700; font-size: 0.9em; }
+.combat__roster summary::after { content: "▾"; margin-inline-start: auto; }
+.combat__roster[open] summary::after { content: "▴"; }
+.combat__roster-panel { position: absolute; inset-block-start: 100%; inset-inline-start: 0; inline-size: min(26em, 100cqw - 1.5em); max-block-size: min(25em, 55cqh); overflow-y: auto; z-index: 4; padding: 0.75em; background: var(--kad-bg-raised); border: 1px solid var(--kad-gold); border-radius: 0.6em; box-shadow: var(--kad-shadow-lg); }
+.combat__roster-help { margin: 0 0 0.5em; color: var(--kad-ink-dim); line-height: 1.4; }
+.combat__roster-panel li { display: flex; align-items: center; gap: 0.6em; padding: 0.5em; border-block-start: 1px solid var(--kad-border); }
+.combat__roster-panel li > div { display: flex; flex-direction: column; min-inline-size: 0; overflow-wrap: anywhere; }
+.combat__roster-panel li[data-active] { background: var(--kad-accent-soft); }
+.combat__roster-turn { color: var(--kad-gold); font-weight: 700; }
+.combat__budget { display: flex; flex-wrap: wrap; gap: 0.25em 0.7em; margin: 0; font-size: 0.85em; }
+.combat__budget span { display: inline-flex; align-items: center; gap: 0.25em; }
+.combat__friend-art { flex: none; }
+.combat__cell-hp { font-size: max(11px, 0.7em); }
+.combat__board { flex-shrink: 0; min-block-size: 192px; }
+.player--deciding .combat__answers { min-block-size: max(48px, 4.3em); }
+.combat__seat { block-size: auto; min-block-size: max(44px, 3em); flex: none; }
+.combat__hint .combat__line, .combat__ask .combat__line { white-space: normal; overflow: visible; text-overflow: clip; }
+.combat__more { margin: 0; font-size: 0.8em; line-height: 1.3; color: var(--kad-gold); text-align: center; visibility: hidden; }
+.combat__answers[data-more] + .combat__more { visibility: visible; }
+@container prompt (max-width: 30em) {
+  .combat .combat__targets[data-columns="2"] { grid-template-columns: 1fr; }
+}
+
+/* Hint-only rows need no button-sized empty seat. The aiming row still has
+   its full-size Change/Go controls, and the board retains its own floor. */
+.combat__seat:has(> .combat__hint) { min-block-size: 1.6em; }
+
+/* The hero remains named and lit, but the fight gets the header's spare trim. */
+.player--fighting .sheet { padding-block: 0.4em; }
+.player--fighting .sheet__portrait { inline-size: 2.8em; block-size: 3.4em; }
+
+/* Combat choices use a compact painted socket, keeping their descriptions and
+   a real touch target while leaving room for a first choice at large text. */
+html:not([data-contrast="high"]) .combat .combat__actions .choice:has(> .choice__icon) { min-block-size: max(48px, 3.4em); }
+html:not([data-contrast="high"]) .combat .combat__actions .choice:has(> .choice__icon)::after { inline-size: 2.97em; block-size: 3.4em; }
+html:not([data-contrast="high"]) .combat .combat__actions .choice__icon { inline-size: 2.15em; block-size: 2.15em; }
+html[data-text] .player--fighting .sheet__meta { display: none; }
+.kad-surface--player:has(.player--fighting) .kad-host--inline .kad-fold__toggle { min-block-size: 44px; padding-block: 0.2em; }
+
+.combat .prompt__options.combat__targets .choice__sub { display: block; font-size: max(12px, 0.8em); }
+
+.combat__result { position: relative; min-inline-size: 0; inline-size: 100%; }
+.combat__result summary { min-block-size: 44px; padding-block: 0.6em; cursor: pointer; }
+.combat__result-text { position: absolute; inset-block-start: 100%; inset-inline: 0; z-index: 4; max-block-size: 12em; overflow-y: auto; margin: 0; padding: 0.75em; border: 1px solid var(--kad-gold); border-radius: 0.5em; background: var(--kad-bg-raised); color: var(--kad-ink); line-height: 1.5; box-shadow: var(--kad-shadow-lg); }
+
+/* Precision is optional: opening the map never spends a step or an action. */
+.combat__enlarge { min-block-size: 44px; padding: 0.35em 0.5em; font-size: 0.8em; }
+.combat__map-dialog { max-inline-size: calc(100% - 1em); max-block-size: calc(100% - 1em); inline-size: 48em; padding: 0.75em; color: var(--kad-ink); background: var(--kad-bg-raised); border: 2px solid var(--kad-gold); border-radius: 0.75em; }
+.combat__map-dialog::backdrop { background: #080611cc; }
+.combat__map-header { display: flex; align-items: center; gap: 0.75em; margin-block-end: 0.5em; }
+.combat__map-header p { flex: 1; margin: 0; }
+.combat__map-header button { flex: none; min-block-size: 48px; }
+.combat__map-scroll { overflow: auto; max-block-size: 65dvh; overscroll-behavior: contain; }
+.combat .combat__map-scroll .combat__grid { inline-size: max(100%, calc(var(--cols) * 48px)); block-size: auto; max-inline-size: none; max-block-size: none; font-size: 16px; }
+
+.combat__roster { flex-basis: 3em; }
+.combat__enlarge { min-inline-size: 44px; font-size: 1em; }
+
+.combat__enlarge { flex: none; inline-size: 44px; padding: 0; border: 1px solid var(--kad-gold); border-radius: 0.5em; background: var(--kad-bg-raised); color: var(--kad-ink); cursor: pointer; }
+.combat__budget { font-size: 0.75em; }
+
+/* Paint adds identity; existing distinct outlines and text retain the rules. */
+.combat__feature { inline-size: 62%; block-size: 62%; inset-block-start: 0; inset-inline-end: 0; z-index: 1; }
+.combat__feature--captive { inset: 0; inline-size: 100%; block-size: 100%; }
+.combat__feature img { inline-size: 100%; block-size: 100%; object-fit: contain; pointer-events: none; }
+.combat__cell-face, .combat__cell-art { position: relative; z-index: 2; }
+.combat__cell-hp, .combat__down-badge, .combat__cell-status { z-index: 5; }
+.combat__feedback { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
+.combat__effect { position: absolute; inset: 0; background-size: calc(var(--effect-frames) * 100%) 100%; background-repeat: no-repeat; animation: combat-effect var(--effect-ms) steps(var(--effect-steps), end) both; }
+.combat__reaction-art { position: absolute; inset: -12%; inline-size: 124%; block-size: 124%; object-fit: contain; animation: combat-reaction 0.65s ease-out both; }
+.combat__feedback-number { position: absolute; inset-block-end: 100%; inset-inline-start: 50%; translate: -50% 0; white-space: nowrap; padding: 0.1em 0.3em; border-radius: 0.3em; background: var(--kad-bg-raised); border: 1px solid var(--kad-gold); color: var(--kad-ink); font-size: max(12px, 0.7em); font-weight: 800; }
+.combat__cell[data-reaction="hurt"] > .combat__cell-face, .combat__cell[data-reaction="hurt"] > .combat__cell-art { animation: combat-oof 0.3s ease-out; }
+.combat__cell[data-reaction="celebrate"] > .combat__cell-face { animation: combat-cheer 0.55s ease-out; }
+.combat__cell[data-reaction="ready"] { box-shadow: inset 0 0 0 2px #8ce2f4; }
+@keyframes combat-effect { from { background-position: 0 0; } to { background-position: 100% 0; } }
+@keyframes combat-reaction { from { opacity: 0; transform: scale(0.8); } 25%, 80% { opacity: 1; } to { opacity: 0; transform: scale(1.08); } }
+@keyframes combat-oof { 25% { transform: translateX(-6%); } 65% { transform: translateX(5%); } }
+@keyframes combat-cheer { 40% { transform: translateY(-8%) rotate(-3deg); } 70% { transform: translateY(-3%) rotate(2deg); } }
+html[data-motion="reduced"] .combat__effect { animation: none; background-position: var(--effect-still) 0; }
+html[data-motion="reduced"] .combat__reaction-art { animation: none; }
+html[data-motion="reduced"] .combat__cell > .combat__cell-face, html[data-motion="reduced"] .combat__cell > .combat__cell-art { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .combat__effect { animation: none; background-position: var(--effect-still) 0; }
+  .combat__reaction-art, .combat__cell > .combat__cell-face, .combat__cell > .combat__cell-art { animation: none; }
+}
+
+.combat__dot { position: relative; z-index: 3; }
+
+/* Empty feature squares show the painting, with the legal-move dot tucked
+   below it. Occupied squares keep a corner mark so the fighter stays readable. */
+.combat__cell:not(:has(> .combat__cell-face, > .combat__cell-art)) > .combat__feature { inset: 0; inline-size: 100%; block-size: 100%; }
+.combat__cell:has(> .combat__feature) > .combat__dot { position: absolute; inset-block-end: 6%; inset-inline-start: 6%; inline-size: 25%; block-size: 25%; }

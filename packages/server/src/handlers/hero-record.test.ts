@@ -177,9 +177,11 @@ describe("a visiting hero finishes a campaign at another household's table (#283
     expect(table[GATE]).toMatchObject({ firstFoundBy: wren.playerId });
     expect(table[CAMP]).toMatchObject({ firstFoundBy: host.playerId });
 
-    // Her start revealed the woods and the gate: hers. The camp was the host's tap: not hers.
+    // Her start revealed the woods and the gate, and the class each hero at the
+    // table wears: hers. The camp was the host's tap: not hers.
     const home = (await harness.repo.getFieldGuide("h_visit")).entries;
-    expect(Object.keys(home).sort()).toEqual([BIOME, GATE].sort());
+    expect(Object.keys(home).sort()).toEqual([BIOME, GATE, "class.songkeeper"].sort());
+    expect(home["class.songkeeper"]).toMatchObject({ firstFoundBy: wren.playerId });
     expect(home[GATE]).toMatchObject({ firstFoundBy: wren.playerId });
     expect(home[BIOME]).toMatchObject({ firstFoundBy: wren.playerId });
   });

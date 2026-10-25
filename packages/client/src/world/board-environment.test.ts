@@ -8,8 +8,8 @@
  */
 
 import { createHash } from "node:crypto";
-import { beforeAll, describe, expect, it } from "vitest";
-import { Container, Graphics, Text } from "pixi.js";
+import { beforeAll, describe, expect, it, vi } from "vitest";
+import { Assets, Container, Graphics, Sprite, Text, Texture } from "pixi.js";
 import { beginEncounter, parseBoard, resolveEnemy } from "@kad/shared";
 import type {
   AuthoredEnemySpec,
@@ -120,8 +120,14 @@ describe("a fight without an environment", () => {
    * before the environment overlay existed (taken on the #201 merge, before
    * any of this file's subject was written). A change here means an ordinary
    * fight now draws something it did not.
+   *
+   * Re-taken once since, for a change of structure and not of picture: the
+   * turn ring went from an ellipse redrawn at the figure's feet every frame,
+   * pulsing in the stroke's alpha, to one ellipse drawn at its own origin,
+   * moved there and pulsed in the node's alpha. Its line in the signature
+   * was the only one that moved, to the same world box, color and width.
    */
-  const GOLDEN = "ae0fe5a40d98238a0ddf3aac18dddc230835c3ca2a9a9252f379a73669dfff1d";
+  const GOLDEN = "77a2d6bc5b5edfb64cee00500027bf8b23d8fe34f907ed1a1b5b77ee884bda1b";
 
   it("draws exactly what it drew before the overlay existed (Gemfall's wolves)", () => {
     const layer = drawn(gemfallFight());
@@ -283,5 +289,20 @@ describe("the place's beats on the board", () => {
     expect(routes[0]).toBeUndefined();
     expect(routes[1]).toBeUndefined();
     expect(routes[2]).toEqual([{ x: 1, y: 1 }, { x: 0, y: 0 }]);
+  });
+});
+
+
+describe("painted environment markers", () => {
+  it("loads Bun on the shared board, switches to her upright art when freed", async () => {
+    const load = vi.spyOn(Assets, "load").mockResolvedValue(Texture.WHITE as unknown as Record<string, unknown>);
+    const encounter = riftFight({ rescue: { name: "Bun", at: { x: 1, y: 7 } } });
+    const layer = drawn(encounter);
+    try {
+      await vi.waitFor(() => expect(nodes(layer).some(n => n instanceof Sprite && n.label === "combat-marker:Bun")).toBe(true));
+      expect(load).toHaveBeenCalledWith("/assets/combat-ux/rescue-bun.webp");
+      layer.update(viewOf({ ...encounter, environment: { ...encounter.environment!, rescue: "freed" } }));
+      await vi.waitFor(() => expect(load).toHaveBeenCalledWith("/assets/entities/snowhorn_goat/portrait.webp"));
+    } finally { layer.destroy(); load.mockRestore(); }
   });
 });

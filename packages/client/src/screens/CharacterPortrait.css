@@ -22,6 +22,10 @@
 
 .portrait--backdrop {
   border-radius: inherit;
+  /* `--portrait-accent` is whatever colour the player picked (a prop, not a token), so
+     this tint cannot be written as channels. The flat gradient first, for a TV browser
+     with no `color-mix()` (Chromium 111). */
+  background: linear-gradient(145deg, var(--portrait-accent) 0%, #191534 55%, #120f26 100%);
   background: linear-gradient(
     145deg,
     color-mix(in srgb, var(--portrait-accent) 45%, #191534) 0%,
@@ -44,6 +48,14 @@
   inset: auto 0 0;
   block-size: 62%;
   border-radius: 50%;
+  /* As above: no channels for a prop. Without `color-mix()` the pool keeps its
+     strength and falls back to the brand violet rather than the player's colour. */
+  background: radial-gradient(
+    ellipse at 50% 78%,
+    rgb(var(--kad-accent-rgb) / 55%) 0%,
+    rgb(var(--kad-accent-rgb) / 18%) 45%,
+    transparent 72%
+  );
   background: radial-gradient(
     ellipse at 50% 78%,
     color-mix(in srgb, var(--portrait-accent) 55%, transparent) 0%,

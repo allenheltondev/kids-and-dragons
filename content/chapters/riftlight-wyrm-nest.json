@@ -1195,6 +1195,7 @@
     },
     "tools_check": {
       "type": "check",
+      "tags": ["search"],
       "stat": "clever",
       "tn": 12,
       "roller": "party",
@@ -1408,6 +1409,11 @@
         {
           "figure": "entities/yeti",
           "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
@@ -1435,6 +1441,11 @@
         {
           "figure": "entities/yeti",
           "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -1454,6 +1465,11 @@
         {
           "figure": "entities/yeti",
           "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -1477,6 +1493,11 @@
         {
           "figure": "entities/yeti",
           "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
@@ -1502,6 +1523,11 @@
         {
           "figure": "entities/yeti",
           "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
@@ -1535,6 +1561,11 @@
         {
           "figure": "entities/yeti",
           "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",

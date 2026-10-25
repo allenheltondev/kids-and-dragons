@@ -116,7 +116,14 @@ test("photograph a cast on the story stage", async ({ browser }) => {
   ];
   for (const [page, species, name] of party) await createCharacter(page, species, name);
 
-  const tvCtx = await browser.newContext({ viewport: { width: 1920, height: 1080 } });
+  // Only the device that opened the room may watch it (#267). Give this
+  // second surface the host's device binding, but no player session: it is
+  // a display of the same device, not an unannounced stranger with the code.
+  const identity = await host.context().storageState();
+  identity.origins = identity.origins.map((origin) => ({
+    ...origin, localStorage: origin.localStorage.filter((entry) => entry.name === "kad.device"),
+  }));
+  const tvCtx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, storageState: identity });
   await previewCast(tvCtx);
   contexts.push(tvCtx);
   const tv = await tvCtx.newPage();

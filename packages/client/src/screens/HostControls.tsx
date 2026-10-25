@@ -31,6 +31,7 @@ import type { RunState } from "@kad/shared";
 import { useGameStore, useRunState, useSession } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
 import { Button } from "../ui";
+import { inviteData, joinUrl, shareInvite, type ShareOutcome } from "../ui/share-invite";
 import { Icon } from "./icons";
 import { SignInFlow } from "./SignInFlow";
 import { LET_GO_NOTE, STOP_CONFIRM, STOP_OFFER } from "./save-copy";
@@ -267,7 +268,7 @@ export function HostControls({ placement, button = true }: { placement: "inline"
   }, [placement]);
   if (!session?.host || !state || state.closed) return null;
 
-  const panel = <HostPanel state={state} me={session.playerId} code={session.roomCode} />;
+  const panel = <HostPanel state={state} me={session.playerId} code={session.roomCode} invite={placement === "inline"} />;
   if (placement === "inline") {
     return (
       <>
@@ -299,7 +300,44 @@ export function HostControls({ placement, button = true }: { placement: "inline"
   );
 }
 
-function HostPanel({ state, me, code }: { state: RunState; me: string; code: string }): React.JSX.Element {
+/**
+ * Share the join link from the host's own phone or tablet (#462). Only the
+ * inline placement draws it: the TV and the shared display show the QR instead.
+ */
+function ShareInvite({ code }: { code: string }): React.JSX.Element {
+  const [outcome, setOutcome] = useState<ShareOutcome | null>(null);
+  const url = joinUrl(code);
+  useEffect(() => {
+    if (outcome !== "copied") return;
+    const timer = setTimeout(() => setOutcome(null), 2500);
+    return () => clearTimeout(timer);
+  }, [outcome]);
+  const onShare = (): void => {
+    const env = typeof navigator === "undefined" ? {} : navigator;
+    void shareInvite(env, inviteData(url)).then(setOutcome);
+  };
+  return (
+    <div className="kad-host__invite">
+      <p className="kad-host__hint">
+        Room code <strong>{code}</strong>
+      </p>
+      <Button variant="secondary" size="md" block icon={<Icon name="envelope" />} onClick={onShare}>
+        {outcome === "copied" ? "Copied" : "Share invite"}
+      </Button>
+      {outcome === "shown" ? (
+        <input
+          className="kad-host__invite-link"
+          readOnly
+          aria-label="Invite link"
+          value={url}
+          onFocus={(event) => event.currentTarget.select()}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function HostPanel({ state, me, code, invite = false }: { state: RunState; me: string; code: string; invite?: boolean }): React.JSX.Element {
   const removePlayer = useGameStore((store) => store.removePlayer);
   const handKeeper = useGameStore((store) => store.handKeeper);
   const lockRoom = useGameStore((store) => store.lockRoom);
@@ -370,6 +408,7 @@ function HostPanel({ state, me, code }: { state: RunState; me: string; code: str
       )}
 
       <div className="kad-host__actions">
+        {invite ? <ShareInvite code={code} /> : null}
         <VisitorSwitch state={state} code={code} busy={busy} />
 
         <Button

@@ -1,6 +1,7 @@
 import { guidePicture } from "./guide-pictures";
 import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
+import { phoneStorage, seedTable, toTheLobby, type SeededPhone } from "./seed";
 /**
  * The end-to-end check the roadmap's cross-cutting table is really asking for:
  * "a change hasn't been seen on a TV *and* in three-phone Travel Mode, it isn't
@@ -265,8 +266,9 @@ async function answerPrompt(page: Page, heroes: readonly string[]): Promise<bool
 test.describe("first playable", () => {
   const openContexts: { close(): Promise<void> }[] = [];
 
-  async function phone(browser: Browser, width = 390, height = 844): Promise<Page> {
-    const context = await browser.newContext({ viewport: { width, height } });
+  /** A phone; `seated`, one a seeded table sat down at its room (seed.ts). */
+  async function phone(browser: Browser, width = 390, height = 844, seated?: SeededPhone): Promise<Page> {
+    const context = await browser.newContext({ viewport: { width, height }, ...(seated ? { storageState: phoneStorage(seated) } : {}) });
     openContexts.push(context);
     return context.newPage();
   }
@@ -479,28 +481,26 @@ test.describe("first playable", () => {
     // every round costs ~30s of genuine presentation holds across three
     // phones. The default 300s budget fits the median run, not the tail.
     test.setTimeout(540_000);
-    const phones = [await phone(browser), await phone(browser), await phone(browser)];
-    const [host] = phones as [Page, ...Page[]];
-
-    await host.goto("/");
-    await host.getByRole("button", { name: /host a game/i }).click();
-    await host.getByText("Phone Mode").click();
-    await host.fill('input[placeholder="Type your name"]', NAMES[0]);
-    await host.getByRole("button", { name: /start a game/i }).click();
-    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/);
-    const code = new URL(host.url()).pathname.split("/").pop()!;
-
-    for (const [i, page] of phones.slice(1).entries()) {
-      await page.goto("/");
-      await page.getByLabel(/room code/i).fill(code);
-      await page.getByRole("button", { name: /join a game/i }).click();
-    }
 
     // A bigfoot, so "Push the thorns aside" is on the menu and the route to
-    // the fight needs no dice at all.
-    const species = ["unicorn", "griffin", "bigfoot"];
+    // the fight needs no dice at all. Seeded (seed.ts): the three heroes made
+    // and ready in a Phone Mode room, since joining and the creation flow are
+    // the first test's here; this one is about the fight.
+    const species = ["unicorn", "griffin", "bigfoot"] as const;
     const heroes = ["Sparklehoof", "Skyclaw", "Bramble"];
-    for (const [i, page] of phones.entries()) await createCharacter(page, species[i]!, heroes[i]!);
+    const table = await seedTable({
+      mode: "travel",
+      heroes: heroes.map((name, i) => ({ name, species: species[i]!, ...(i === 0 ? { player: NAMES[0] } : {}) })),
+    });
+    const code = table.code;
+    const phones: Page[] = [];
+    for (const seated of table.phones) {
+      const page = await phone(browser, 390, 844, seated);
+      await page.goto(`/p/${code}`);
+      await toTheLobby(page);
+      phones.push(page);
+    }
+    const [host] = phones as [Page, ...Page[]];
 
     // "Ready to play" at the end of creation already said ready.
     for (const page of phones) {

@@ -13,7 +13,7 @@
  * which at a real table means "we can't carry on because Rosie's phone died".
  */
 
-import { settleChapterEndVote, type RunState } from "@kad/shared";
+import { isSpectator, settleChapterEndVote, type RunState } from "@kad/shared";
 import type { EventRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { iso, type HandlerDeps } from "./deps.ts";
@@ -63,26 +63,67 @@ async function trySetPresence(
   if (!state) return null;
 
   const member = state.party.find((m) => m.playerId === input.playerId);
-  if (!member || member.connected === input.connected) return null;
+  if (!member) return trySetWatching(state, input, deps);
+  if (member.connected === input.connected) return null;
   // Taken out by the host (#267), or retired (#248): their stream opening
   // again is not them coming back.
   if (input.connected && (await isOut(state, input.playerId, null, deps.repo))) return null;
   // Closed by its host (#263): nothing more is written to it.
   if (state.closed) return null;
 
-  const nowMs = deps.now();
-  const nextSeq = state.seq + 1;
   // The phone that drops off can be the last one still reading the chapter's
   // end; everyone left has said they're done, so the table goes back now
   // rather than waiting on a tap nobody is there to make.
   const next: RunState = settleChapterEndVote({
-    ...state,
-    seq: nextSeq,
-    updatedAt: iso(nowMs),
+    ...withoutWatcher(state, input.playerId),
     party: state.party.map((m) =>
       m.playerId === input.playerId ? { ...m, connected: input.connected } : m,
     ),
   });
+  return commitPresence(state, next, input, deps);
+}
+
+/**
+ * Presence for a spectator (#388), who is not in `party` and so has no
+ * `connected` flag: their id in `RunState.watching`, or not. Only a phone that
+ * is a spectator now is added, so a kid still making a hero at a table with
+ * room writes nothing, and a lobby filling up costs no extra patches. Leaving
+ * always takes the id out, whatever they are now.
+ */
+async function trySetWatching(
+  state: RunState,
+  input: PresenceInput,
+  deps: PresenceDeps,
+): Promise<number | null | "lost-race"> {
+  if (state.closed) return null;
+  const listed = state.watching?.includes(input.playerId) === true;
+  if (input.connected) {
+    if (listed || !isSpectator(state, input.playerId)) return null;
+    if (await isOut(state, input.playerId, null, deps.repo)) return null;
+    return commitPresence(state, { ...state, watching: [...(state.watching ?? []), input.playerId] }, input, deps);
+  }
+  if (!listed) return null;
+  return commitPresence(state, withoutWatcher(state, input.playerId), input, deps);
+}
+
+/** The state without `playerId` among the watchers, and without an empty list. */
+function withoutWatcher(state: RunState, playerId: string): RunState {
+  if (!state.watching?.includes(playerId)) return state;
+  const { watching, ...rest } = state;
+  const left = watching.filter((id) => id !== playerId);
+  return left.length > 0 ? { ...rest, watching: left } : rest;
+}
+
+/** Commit a presence change on top of `state` and tell the room. */
+async function commitPresence(
+  state: RunState,
+  changed: RunState,
+  input: PresenceInput,
+  deps: PresenceDeps,
+): Promise<number | "lost-race"> {
+  const nowMs = deps.now();
+  const nextSeq = state.seq + 1;
+  const next: RunState = { ...changed, seq: nextSeq, updatedAt: iso(nowMs) };
 
   const event: EventRecord = {
     seq: nextSeq,
@@ -192,14 +233,23 @@ export async function beatPresence(input: PresenceBeatInput, deps: PresenceDeps)
     Math.floor((nowMs + ROOM_TTL_MS) / 1000),
   );
   const me = state.party.find((m) => m.playerId === input.playerId);
-  if (me && !me.connected) {
+  // A spectator (#388) is here when they beat, as a hero is.
+  const watcher = !me && isSpectator(state, input.playerId) && !state.watching?.includes(input.playerId);
+  if ((me && !me.connected) || watcher) {
     await setPresence({ runId: input.runId, playerId: input.playerId, connected: true }, deps);
   }
+  const quiet = (playerId: string): boolean => {
+    const seen = beats[playerId];
+    return seen !== undefined && nowMs - Date.parse(seen) > (input.awayAfterMs ?? AWAY_AFTER_MS);
+  };
   for (const member of state.party) {
-    if (member.playerId === input.playerId || !member.connected) continue;
-    const seen = beats[member.playerId];
-    if (seen === undefined || nowMs - Date.parse(seen) <= (input.awayAfterMs ?? AWAY_AFTER_MS)) continue;
+    if (member.playerId === input.playerId || !member.connected || !quiet(member.playerId)) continue;
     await setPresence({ runId: input.runId, playerId: member.playerId, connected: false }, deps);
+  }
+  // A spectator who has gone quiet stops being counted as watching, the same way.
+  for (const playerId of state.watching ?? []) {
+    if (playerId === input.playerId || !quiet(playerId)) continue;
+    await setPresence({ runId: input.runId, playerId, connected: false }, deps);
   }
   return { ok: true, connected: true };
 }

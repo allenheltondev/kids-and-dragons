@@ -51,10 +51,10 @@ One per class, and each teaches only its own class.
 
 | Class | Place | Who teaches, and the detail |
 |---|---|---|
-| Thornguard | **The Dojo** | The teacher has held the same door shut against the wind for forty years. Students practice Brace by catching falling pillows. |
-| Starweaver | **The Academy** | The roof is open to the sky, so the homework floats away. The big telescope sneezes. |
-| Duskrunner | **The Rookery** | A rooftop school run by the crows, as a flock. |
-| Songkeeper | **The Conservatory** | A music school that is also a greenhouse. The plants lean toward whoever is singing best. |
+| Thornguard | **The Dojo** (Sky Islands) | The teacher has held the same door shut against the wind for forty years. Students practice Brace by catching falling pillows. |
+| Starweaver | **The Academy** (Marshland) | The roof is open to the sky, so the homework floats away. The big telescope sneezes. |
+| Duskrunner | **The Rookery** (The Exchange) | A rooftop school run by the crows, as a flock. |
+| Songkeeper | **The Conservatory** (Glacier of Origins) | A music school that is also a greenhouse. The plants lean toward whoever is singing best. |
 
 ### The crows
 
@@ -63,6 +63,26 @@ no single teacher. The crows always tell people, at least subtly, **"don't mess 
 Rookery scene says it in some form, from a sign on the chimney ("NO MESSING. (WITH US.)") to a
 note in your pocket after a fight ("Saw that. Nice. Don't mess with us."). Whenever a Duskrunner
 earns a distinction anywhere in the world, a crow lands on a nearby fence, says it, and flies off.
+
+### In canon and the Field Guide
+
+The four classes are `class.*` entries in [`canon/classes.yaml`](../canon/classes.yaml), each with
+its role, its gear, its three distinctions and a `home`, and the four places are `location.dojo`,
+`location.academy`, `location.rookery` and `location.conservatory` in
+[`canon/locations.yaml`](../canon/locations.yaml) (`location_type: class_place`). A class place is a
+side room, never a stop on the travel graph, and canon puts one in each of four hosts: the Rookery on
+the Exchange's rooftops, the Conservatory in the Glacier of Origins, the Dojo in the Sky Islands and
+the Academy in the Whispering Marsh (the marsh village). Each takes its host's `map_anchor` with a
+small offset (a label's height up), an offset for reading and not a survey; the Sky Islands drift,
+so the Dojo's pin is that biome's normal map area, as the biome's own anchor is.
+
+The Field Guide has a **Classes** shelf. A class entry is found when a hero at the table wears that
+class (at a chapter's start, or when a hero's class changes), or when the party walks into its class
+place scene (`classPlace`), which also finds the place's own entry. Until the party has been to the
+place, the class entry shows it as "???", with no name, no picture of the room and no map. Once the
+place is found for the first time, the entry links to it and shows it on the painted map (and the
+world map pins it, as it does any found location). See
+[`discoveries.ts`](../packages/shared/src/discoveries.ts).
 
 ### How a party gets there
 
@@ -79,10 +99,12 @@ earns a distinction anywhere in the world, a crow lands on a nearby fence, says 
   room introduces its teacher (and the crows) whenever a party walks in. A second visit can read
   shorter ("The crows eye you. 'Back again.'").
 - **Gemfall gets none.** It is pinned, and its only class change is the Exchange stall.
-- **Riftlight (draft, #315).** The Rookery is on the Exchange's rooftops, the Conservatory off the
-  singing hall, and the Dojo up the slope from the Riftseekers' camp. The Academy belongs in the
-  marsh village, which Riftlight's story does not have yet; until that place is written, it stands in
-  a roofless tower above the Riftseekers' camp, and moves when the village exists.
+- **Riftlight (#483).** The Rookery is on the Exchange's rooftops, the Conservatory off the
+  glacier's singing hall, and the Dojo off the sheltered path in the Sky Islands arrival chapter.
+  The Ashspan Bridge chapter offers an optional visit to a village in the Whispering Marsh
+  to fetch a dry ferry mat. The Academy is a side room off that village's rest bench. Parties that
+  visit walk back to the bridge before the chapter ends; parties that stay at the ferry can finish
+  without the errand. Class locations appear in the field guide only after a first visit.
 - **A free heal is deliberate.** The game always keeps somewhere to heal for free. In Riftlight it is
   the singing hall: its rest heals on every arrival, so walking into the Conservatory and back heals
   again, as often as a table likes. That is intended, not a loophole.
@@ -135,8 +157,8 @@ In the lore, a class's power comes from a piece of gear the hero wears.
 - **Names** are `CLASS_TOKENS` in [`tokens.ts`](../packages/shared/src/tokens.ts), beside
   `deedTrack`, which picks the one track a hero sees (rule 6, §6): the further along of a rank's
   two, or with neither started, the alone track for a hero alone and the friends track at a table.
-- **The token** (`ClassToken.tsx`) is simple SVG for now, every tier: the rigs' Sworn gear layer is
-  a later art pass. Its notches are three seats, always drawn: a cut notch is a filled chevron and
+- **The token** (`ClassToken.tsx`) uses dedicated painted bracer, hood, circlet and bell icons through
+  `Icon`, at every tier. Its notches are three seats, always drawn: a cut notch is a filled chevron and
   one to come a dash; a pip done is a filled dot and one to go a ring. Shape, never colour alone.
 - **Where it shows:** the phone's own view and every sheet (the token, "Thornguard Apprentice",
   the next notch's deeds as pips, or a bar with its count past ten, as a Songkeeper's hearts are),

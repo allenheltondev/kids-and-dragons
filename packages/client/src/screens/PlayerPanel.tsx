@@ -81,9 +81,11 @@ import { speak } from "@kad/shared";
 import { CampaignArt } from "./CampaignArt";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { CharacterSheet } from "./CharacterSheet";
+import { XpMeter } from "./XpMeter";
 import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
 import { ChapterGoalCard } from "./ChapterGoal";
+import { CheckMatchupBadges } from "./MatchupHints";
 import { useSideBySide } from "../layout/landscape";
 import { PrologueReplay } from "./StoryPlates";
 import { useRunCampaign } from "./run-campaign";
@@ -258,7 +260,6 @@ function ConfirmBar({
 
 function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
   const { character } = me;
-  const hpPct = character.maxHp === 0 ? 0 : Math.max(0, Math.min(1, me.hp / character.maxHp));
   /*
    * Whenever the game is waiting on you (a fight turn, a roll, a choice, a
    * vote not yet cast), the whole strip turns gold. That is the "your turn"
@@ -318,12 +319,13 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
             <Icon name="levelup" />
             <span>
               {character.unspentPoints === 1
-                ? "1 point to spend at the next rest stop"
-                : `${String(character.unspentPoints)} points to spend at the next rest stop`}
+                ? "1 point to spend at rest"
+                : `${String(character.unspentPoints)} points to spend at rest`}
             </span>
             <Icon name="rest" />
           </span>
         ) : null}
+        <XpMeter character={character} />
       </span>
       <span className="sheet__hp">
         <span className="sheet__hp-label">
@@ -331,9 +333,6 @@ function IdentityStrip({ me }: { me: PartyMember }): ReactElement {
           <span>
             {me.hp}/{character.maxHp}
           </span>
-        </span>
-        <span className="sheet__hp-track" aria-hidden="true">
-          <span className="sheet__hp-fill" style={{ inlineSize: `${String(hpPct * 100)}%` }} />
         </span>
       </span>
     </header>
@@ -346,18 +345,18 @@ function StatRow({ me }: { me: PartyMember }): ReactElement {
     <ul className="stat-row">
       {STAT_IDS.map((stat) => (
         <li className="stat-row__item" key={stat}>
-          <Icon name={stat} />
+          <Icon name={stat} size="2em" />
           <span className="stat-row__name">{stat}</span>
           <b className="stat-row__value">{character.stats[stat]}</b>
         </li>
       ))}
       <li className="stat-row__item">
-        <Icon name="guard" />
+        <Icon name="guard" size="2em" />
         <span className="stat-row__name">guard</span>
         <b className="stat-row__value">{character.guard}</b>
       </li>
       <li className="stat-row__item">
-        <Icon name="steps" />
+        <Icon name="steps" size="2em" />
         <span className="stat-row__name">steps</span>
         <b className="stat-row__value">{character.steps}</b>
       </li>
@@ -389,16 +388,27 @@ function InventoryGrid({
   onSelect: (index: number | null) => void;
 }): ReactElement {
   const slots = Array.from({ length: INVENTORY_SLOTS }, (_, i) => entries[i] ?? null);
+  const carried = entries.length + questItems.length;
   return (
     <Collapsible
       id="bag"
       className="inv"
       title={<><Icon name="bag" /><span>Your things</span></>}
       trail={
-        <span className="inv__purse kad-chip" aria-label={`The party's purse: ${String(coins)} ${coins === 1 ? "coin" : "coins"}`}>
-          <Icon name="coin" />
-          <span aria-hidden="true">{coins}</span>
-        </span>
+        <>
+          {/* What you carry (the six slots and the story things), counted from the
+              hero's own bag. The number beside the coin is the party's purse, a
+              different thing that used to be the only number here and read 0
+              over a bag with something in it. */}
+          <span className="inv__count kad-chip" data-testid="bag-count" aria-label={`You are carrying ${String(carried)} ${carried === 1 ? "thing" : "things"}`}>
+            <Icon name="bag" />
+            <span aria-hidden="true">{carried}</span>
+          </span>
+          <span className="inv__purse kad-chip" aria-label={`The party's purse: ${String(coins)} ${coins === 1 ? "coin" : "coins"}`}>
+            <Icon name="coin" />
+            <span aria-hidden="true">{coins}</span>
+          </span>
+        </>
       }
     >
       <ul className="inv__grid">
@@ -940,7 +950,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       <IdentityStrip me={me} />
       {/* The chapter's goal (#356), on every phone with nothing to tap. Not in a fight: a playtest
           wanted the room for the cards, and the fight is the goal's step for now. */}
-      {inChapter && !inEncounter ? <ChapterGoalCard place="phone" /> : null}
+      {/* Not while a point is waiting to be spent: the grow list needs the room, and on a short phone
+          the goal card above it left too little pane to scroll in. */}
+      {inChapter && !inEncounter && !(atRest && banked > 0) ? <ChapterGoalCard place="phone" /> : null}
 
       {/*
         What the world is asking, echoed here.
@@ -1236,6 +1248,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               <span aria-hidden="true">·</span>
               <span>{checkTarget(myPrompt.tn)}</span>
             </p>
+            <CheckMatchupBadges chapter={chapter} sceneId={myPrompt.sceneId} hero={me.character} />
             {myPrompt.group ? (
               <p className="prompt__sub" role="status">
                 <Icon name="players" />
@@ -1955,7 +1968,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           party and the bag start open; the token card, the longest thing a kid
           rarely needs mid-scene, starts folded to its name.
         */}
-        <Collapsible id="stats" className="player__stats" title={<><Icon name="levelup" /><span>Your stats</span></>}>
+        <Collapsible id="stats" className="player__stats" title={<><Icon name="stats" /><span>Your stats</span></>}>
           <StatRow me={me} />
         </Collapsible>
         {/* The worn token, its notches and the deed toward the next (#314). */}
@@ -2207,18 +2220,6 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           </Button>
         ) : null}
       </div>
-        {!showSheet ? (
-          <Button
-            className="player__inventory-back"
-            variant="secondary"
-            size="md"
-            block
-            icon={<Icon name="back" />}
-            onClick={() => setPlayerSection("bag")}
-          >
-            Back to your bag
-          </Button>
-        ) : null}
     </section>
     </>
   );

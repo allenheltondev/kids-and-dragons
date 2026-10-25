@@ -38,11 +38,13 @@ import {
   SLOW_DOWN,
 } from "./handlers/code-guard.ts";
 import { relayPreview } from "./handlers/preview.ts";
+import { relayCheer } from "./handlers/cheer.ts";
+import { chooseWatching } from "./handlers/watch.ts";
 import { beatPresence, setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
-import { iso } from "./handlers/deps.ts";
-import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
+import { iso, ok } from "./handlers/deps.ts";
+import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, vetTableName, watchRoom } from "./handlers/room.ts";
 import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
 import { handKeeper } from "./handlers/keeper.ts";
@@ -70,7 +72,11 @@ import {
 } from "./identity.ts";
 import { assetsDir, contentDir, dataDir } from "./paths.ts";
 import { verifyDevToken } from "./dev-auth.ts";
+import { readSeedRequest, seedRoom } from "./dev-seed.ts";
 import { MemoryRepository } from "./store/memory-repository.ts";
+import { pushKey, subscribePush, unsubscribePush, type PushConfig, type PushSender } from "./handlers/push.ts";
+import { devVapidKeys, inProcessDispatch, pushConfig, pushMode, recordingSender, webPushSender, type RecordedPush } from "./web-push.ts";
+import type { GameRepository } from "./store/repository.ts";
 
 const PORT = Number(process.env.PORT ?? 8787);
 const HOST = process.env.HOST ?? "0.0.0.0";
@@ -78,6 +84,40 @@ const HOST = process.env.HOST ?? "0.0.0.0";
 const STREAM_PRESENCE = process.env.KAD_STREAM_PRESENCE !== "off";
 /** How long a quiet phone stays here; the handler's two minutes when unset. */
 const PRESENCE_AWAY_MS = Number(process.env.KAD_PRESENCE_AWAY_MS) || undefined;
+
+/**
+ * "It's your turn" pushes (#466). Off unless `KAD_PUSH` says otherwise:
+ *
+ * - `on` sends real pushes, with `KAD_VAPID_PUBLIC_KEY`, `KAD_VAPID_PRIVATE_KEY`
+ *   and `KAD_PUSH_SUBJECT` (`npx web-push generate-vapid-keys` makes a pair).
+ *   A phone on the LAN needs https for a service worker, so this is for a
+ *   tunnel or a staging-like setup, not the usual `npm run dev`.
+ * - `record` sends nothing anywhere: every push is kept for `GET /api/dev/push`,
+ *   with a key pair minted at boot. The prod e2e suite runs this way.
+ *
+ * Either way the send is off the request path, as in production: the action
+ * hands its job to `inProcessDispatch`, which runs the push-sender's own job
+ * (`deliverTurnPush`) after the response has gone.
+ */
+function devPush(repo: GameRepository): { config: PushConfig; recorded: RecordedPush[] | null } | undefined {
+  const run = (sender: PushSender) =>
+    inProcessDispatch({ repo, now: () => Date.now(), delivery: { sender, awayAfterMs: PRESENCE_AWAY_MS } });
+  const mode = pushMode(process.env.KAD_PUSH);
+  if (mode === "off") return undefined;
+  if (mode === "record") {
+    const sender = recordingSender();
+    return { config: pushConfig(devVapidKeys(), run(sender)), recorded: sender.sent };
+  }
+  const publicKey = process.env.KAD_VAPID_PUBLIC_KEY ?? "";
+  const privateKey = process.env.KAD_VAPID_PRIVATE_KEY ?? "";
+  const subject = process.env.KAD_PUSH_SUBJECT ?? "";
+  if (!publicKey || !privateKey || !/^(mailto:|https:\/\/)/.test(subject)) {
+    console.warn("push: KAD_PUSH=on needs KAD_VAPID_PUBLIC_KEY, KAD_VAPID_PRIVATE_KEY and KAD_PUSH_SUBJECT; pushes stay off");
+    return undefined;
+  }
+  const keys = { publicKey, privateKey };
+  return { config: pushConfig(keys, run(webPushSender(keys, subject))), recorded: null };
+}
 
 /** Everything that does not come out of `@kad/shared`; see `withRuntime()`. */
 type BaseDeps = Omit<HandlerDeps, "engine" | "rng">;
@@ -102,6 +142,7 @@ async function main(): Promise<void> {
   const channel = new LocalSseChannel();
   const presence = new PresenceTracker();
   const identity = new DevIdentity(repo);
+  const push = devPush(repo);
 
   const base: BaseDeps = {
     repo,
@@ -119,6 +160,7 @@ async function main(): Promise<void> {
      * a literal `false`, so there is nothing to misconfigure in prod.
      */
     playtest: true,
+    ...(push ? { push: push.config } : {}),
   };
 
   const app = express();
@@ -139,6 +181,10 @@ async function main(): Promise<void> {
     if (!mode) return sendError(res, 400, "ILLEGAL", "mode must be \"party\" or \"travel\"");
     const display = req.body?.display === true;
     if (display && mode !== "party") return sendError(res, 400, "ILLEGAL", "only a Party Mode room has a TV");
+    // The name a TV gave its table, vetted as lambda/http.ts does.
+    const place = display ? vetTableName(req.body?.location) : ok(undefined);
+    if (!place.ok) return sendError(res, statusFor(place.error), place.error.code, place.error.message);
+    const location = place.value;
 
     // A shared tablet opens a room for the kid picked on it (#250), as in
     // lambda/http.ts: a session token back, never a device token.
@@ -149,7 +195,7 @@ async function main(): Promise<void> {
         // The tablet as the TV (#274): its own household, nobody seated, no
         // device token or session handed back.
         const tv = await createRoom(
-          { householdId: shared.householdId, mode, campaignId: req.body?.campaignId ?? null, hostDeviceId: shared.deviceId, display: true },
+          { householdId: shared.householdId, mode, campaignId: req.body?.campaignId ?? null, hostDeviceId: shared.deviceId, display: true, ...(location ? { location } : {}) },
           deps,
         );
         if (!tv.ok) return sendError(res, statusFor(tv.error), tv.error.code, tv.error.message);
@@ -199,6 +245,7 @@ async function main(): Promise<void> {
         campaignId: req.body?.campaignId ?? null,
         claimable: display,
         hostDeviceId: host.principal.deviceId,
+        ...(location ? { location } : {}),
       },
       deps,
     );
@@ -329,6 +376,22 @@ async function main(): Promise<void> {
       return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     }
     res.json(result.value);
+  });
+
+  /*
+   * A table already sitting down, for the end-to-end suite (dev-seed.ts):
+   * a room, its heroes made and ready, and optionally begun at a scene, in
+   * one call. Here and only here, as the playtest cheats are: nothing under
+   * lambda/ mounts it, so a deployed build has no such route.
+   */
+  app.post("/api/dev/seed", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const input = readSeedRequest(req.body);
+    if (typeof input === "string") return sendError(res, 400, "ILLEGAL", input);
+    const seeded = await seedRoom(input, deps);
+    if (!seeded.ok) return sendError(res, statusFor(seeded.error), seeded.error.code, seeded.error.message);
+    res.json(seeded.value);
   });
 
   /*
@@ -488,6 +551,45 @@ async function main(): Promise<void> {
     res.json({ ok: true });
   });
 
+  // A spectator's cheer (handlers/cheer.ts, #388): relayed, never committed.
+  app.post("/api/cheer", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "a cheer needs a room session token");
+    const result = await relayCheer(
+      {
+        runId: session.runId,
+        playerId: session.playerId,
+        householdId: session.householdId,
+        cheer: (req.body ?? {}).cheer,
+      },
+      deps,
+    );
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true });
+  });
+
+  // "Just watch", or back to making a hero (handlers/watch.ts, #388).
+  app.post("/api/spectate", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const session = await resolveSession(req, base);
+    if (!session) return sendError(res, 401, "FORBIDDEN", "watching needs a room session token");
+    const result = await chooseWatching(
+      {
+        runId: session.runId,
+        roomCode: session.roomCode,
+        playerId: session.playerId,
+        householdId: session.householdId,
+        watching: (req.body ?? {}).watching,
+      },
+      deps,
+    );
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    res.json({ ok: true, seq: result.value.seq });
+  });
+
   // "Still here", or "leaving" (handlers/presence.ts): production's only
   // presence, and alongside the stream's here, so both paths are exercised.
   app.post("/api/presence", async (req: Request, res: Response) => {
@@ -560,13 +662,16 @@ async function main(): Promise<void> {
     if (!Object.prototype.hasOwnProperty.call(req.body ?? {}, "stat")) {
       return sendError(res, 400, "ILLEGAL", "expected { stat }");
     }
+    // Held to its seq like every intent; see lambda/http.ts.
+    if (typeof req.body.seq !== "number" || !Number.isFinite(req.body.seq)) {
+      return sendError(res, 400, "ILLEGAL", "expected { stat, seq }");
+    }
 
-    const state = await deps.repo.getState(session.runId);
     const response = await applyAction(
       {
         runId: session.runId,
         playerId: session.playerId,
-        seq: Number(req.body.seq ?? state?.seq ?? 0),
+        seq: req.body.seq,
         intent: { type: "SPEND_STAT_POINT", stat: req.body.stat as never },
         principal: {
           householdId: session.householdId,
@@ -630,6 +735,41 @@ async function main(): Promise<void> {
     const result = await listSharedPlayers(shared, base);
     if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
     res.json(result.value);
+  });
+
+  // "It's your turn" while the app is in the background (#466, handlers/push.ts).
+  app.get("/api/push/key", (_req: Request, res: Response) => {
+    res.json(pushKey(base));
+  });
+
+  app.post("/api/push/subscribe", async (req: Request, res: Response) => {
+    const found = await resolvePrincipal(req, base);
+    const result = await subscribePush({ principal: found?.principal ?? null, body: req.body }, base);
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true });
+  });
+
+  app.post("/api/push/unsubscribe", async (req: Request, res: Response) => {
+    const found = await resolvePrincipal(req, base);
+    const result = await unsubscribePush({ principal: found?.principal ?? null }, base);
+    if (!result.ok) return sendError(res, result.status, result.code, result.message);
+    res.json({ ok: true });
+  });
+
+  /*
+   * What the stand-in push service holds for this phone's kid (`KAD_PUSH=record`):
+   * her subscriptions, and every push it was handed for her. For the prod e2e
+   * suite; production keeps no record of a push.
+   */
+  app.get("/api/dev/push", async (req: Request, res: Response) => {
+    if (!push?.recorded) return sendError(res, 404, "NOT_FOUND", "the dev server is not recording pushes (KAD_PUSH=record)");
+    const found = await resolvePrincipal(req, base);
+    if (!found) return sendError(res, 401, "FORBIDDEN", "this needs the phone's device token");
+    const playerId = found.principal.playerId;
+    res.json({
+      subscriptions: await repo.listPushSubscriptions(playerId),
+      sent: push.recorded.filter((p) => p.playerId === playerId),
+    });
   });
 
   app.get("/api/state", async (req: Request, res: Response) => {

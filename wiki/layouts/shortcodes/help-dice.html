@@ -1,7 +1,7 @@
 {{/* The die a helper adds, by their tier (rules.json helpDie). */}}
 {{ $die := site.Data.game.rules.helpDie }}
 <div class="wiki-rule-grid">
-  {{ range $t := slice "fledgling" "sworn" "radiant" "mythic" }}
+  {{ range $t := slice "fledgling" "sworn" "radiant" "mythic" "ascendant" "starborn" "legendary" }}
   <div class="wiki-rule-card">
     <span class="wiki-big-number">d{{ index $die $t }}</span>
     <h4>{{ title $t }}</h4>

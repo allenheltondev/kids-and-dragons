@@ -14,6 +14,7 @@ import { create } from "zustand";
 import type { StateCreator } from "zustand";
 import type {
   AbilityCatalog,
+  Bestiary,
   ActionResponse,
   Campaign,
   Chapter,
@@ -34,15 +35,15 @@ import {
   DECISION_INTENTS,
   decisionContext,
   owesClassAnswer,
+  isPromptForPlayer,
   previewContext,
-  rollerAway,
-  turnHolderAway,
 } from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
 import type {
   ClientSession,
   ConnectionStatus,
   GameStore,
+  HeardCheer,
   HeldPreview,
   PresentationEvent,
   ProgressionEvent,
@@ -55,12 +56,11 @@ import {
   saveSharedDevice,
   tabStorage,
   asPlayerIdentity,
-  clearSavedJournal,
   loadIdentity,
+  loadLocationName,
+  saveLocationName,
   loadPlayerDeviceToken,
-  loadSavedJournal,
   loadSession,
-  saveJournal,
   saveIdentity,
   saveSession,
   type KeyValueStorage,
@@ -87,6 +87,7 @@ import { appSyncEventSource } from "../sync/appsync-socket";
 import { setFieldGuideDiscoveries } from "./field-guide-discoveries";
 import { announceFieldGuideNews, clearFieldGuideNews } from "./field-guide-news";
 import { navigate } from "../router";
+import { nudgeReconnect } from "../sync/wake-reconnect";
 
 /**
  * The campaign a new room is opened for. Gemfall is the authored arc; the
@@ -137,6 +138,31 @@ export interface GameStoreDeps {
   eventsUrl: typeof defaultEventsUrl;
   /** Injected so tests can assert routing without a DOM. */
   navigate: typeof navigate;
+  /**
+   * Called when a beat or a send fails at the network (#469): the stream is
+   * probably dead too. The real one is coalesced with the wake reconnects
+   * (`sync/wake-reconnect.ts`); absent, nothing happens.
+   */
+  nudgeReconnect?: () => void;
+}
+
+/** A fetch that never reached the server rejects with a TypeError, not an HTTP status. */
+/**
+ * The saved book's store (IndexedDB, #458), loaded when the book is first
+ * saved, read or cleared: not at first paint, which the payload budget
+ * (tools/perf/bundle-budget.ts) keeps for the join screen.
+ */
+function journalDb(): Promise<typeof import("./journal-db")> {
+  return import("./journal-db");
+}
+
+/**
+ * A request that never got an answer: fetch rejected (a TypeError), or the
+ * client gave up waiting (`ApiError` status 0). An HTTP status is an answer,
+ * and says nothing about the stream.
+ */
+function isNetworkFailure(error: unknown): boolean {
+  return error instanceof TypeError || (error instanceof ApiError && error.status === 0);
 }
 
 export function defaultDeps(): GameStoreDeps {
@@ -147,6 +173,7 @@ export function defaultDeps(): GameStoreDeps {
     openChannel: defaultOpenChannel,
     eventsUrl: defaultEventsUrl,
     navigate,
+    nudgeReconnect: () => nudgeReconnect(),
   };
 }
 
@@ -159,45 +186,8 @@ export function selectMe(state: RunState | null, playerId: string): PartyMember 
   return state.party.find((member) => member.playerId === playerId) ?? null;
 }
 
-/**
- * "Is this prompt mine?" A display client (`playerId === ""`) is never the
- * answerer — the TV has no authority (spec §2.1).
- */
-export function isPromptForPlayer(
-  prompt: Prompt | null,
-  playerId: string,
-  party: readonly PartyMember[],
-): boolean {
-  if (!prompt || !playerId) return false;
-
-  switch (prompt.kind) {
-    case "choice":
-      // A turn holder whose phone dropped leaves the story beat to anyone
-      // (spec §6.1) — the engine takes the answer, so the button has to show.
-      return (
-        prompt.forPlayerIds.length === 0 ||
-        prompt.forPlayerIds.includes(playerId) ||
-        turnHolderAway(party, prompt)
-      );
-    case "ready":
-      return prompt.forPlayerIds.length === 0 || prompt.forPlayerIds.includes(playerId);
-    case "roll": {
-      // The nominee's phone dropped: anyone at the table can roll instead.
-      if (rollerAway(party, prompt)) return party.some((m) => m.playerId === playerId);
-      // A whole-party check is yours until you have rolled your own die.
-      if (prompt.group) {
-        const mine = party.find((member) => member.playerId === playerId);
-        return mine !== undefined && prompt.group.pending.includes(mine.character.id);
-      }
-      const owner = party.find((member) => member.character.id === prompt.characterId);
-      return owner?.playerId === playerId;
-    }
-    case "item_swap": {
-      const owner = party.find((member) => member.character.id === prompt.characterId);
-      return owner?.playerId === playerId;
-    }
-  }
-}
+/** "Is this prompt mine?" Shared with the server, which pushes "It's your turn" by it (#466). */
+export { isPromptForPlayer };
 
 // ---------------------------------------------------------------------------
 // Store
@@ -210,6 +200,8 @@ interface Runtime {
   content: Promise<void> | null;
   resyncing: Promise<void> | null;
   resyncAgain: boolean;
+  /** The next catch-up must be a full snapshot: the mirror desynced. */
+  resyncSnapshot: boolean;
   resyncRetry: ReturnType<typeof setTimeout> | null;
   resyncAttempt: number;
   connectRetry: ReturnType<typeof setTimeout> | null;
@@ -286,6 +278,16 @@ const MAX_ARRIVALS = 6;
  */
 const MAX_HOST_ARRIVALS = 50;
 
+/**
+ * Cheers a screen holds at once (#388). Each floats for a few seconds, and a
+ * phone may send only a few a window, so this is only ever reached by a room
+ * full of cousins; past it, the oldest goes.
+ */
+const MAX_CHEERS = 12;
+
+/** Tells two of the same cheer apart, for as long as the page lives. */
+let cheerKey = 0;
+
 export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGameStore> {
   return (set, get) => {
     const runtime: Runtime = {
@@ -295,6 +297,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       content: null,
       resyncing: null,
       resyncAgain: false,
+      resyncSnapshot: false,
       resyncRetry: null,
       resyncAttempt: 0,
       connectRetry: null,
@@ -383,13 +386,31 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
               ...(dropped > 0 && get().session?.host ? { arrivalsDropped: get().arrivalsDropped + dropped } : {}),
             });
           },
+          onCheer: ({ runId, cheer }) => {
+            if (runtime.sequencer !== sequencer || get().state?.runId !== runId) return;
+            set({ cheers: [...get().cheers, { key: ++cheerKey, cheer }].slice(-MAX_CHEERS) });
+          },
           onGap: (sinceSeq) => {
             // Repeated hole notifications must respect a failed fetch's backoff.
             if (runtime.resyncRetry === null) void resync(sinceSeq).catch(() => undefined);
           },
+          onDesync: (seq) => {
+            if (runtime.sequencer !== sequencer) return;
+            // Events from `seq` would replay the patch that just failed, so
+            // the catch-up asks for the whole state. Decisions wait for it:
+            // what is on screen is no longer what the server holds.
+            runtime.resyncSnapshot = true;
+            set({ synced: false });
+            if (runtime.resyncRetry === null) void resync(seq).catch(() => undefined);
+          },
         },
       });
       return sequencer;
+    }
+
+    /** A catch-up answer that means the room is gone, not that the network is. */
+    function isGoneError(error: unknown): boolean {
+      return error instanceof ApiError && [401, 403, 404, 410].includes(error.status);
     }
 
     async function resync(sinceSeq: number): Promise<void> {
@@ -406,10 +427,17 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       const task = (async () => {
         do {
           runtime.resyncAgain = false;
+          // Cleared before the fetch, so a desync during this one's replay
+          // asks for another, and restored if it fails, so the retry does too.
+          const snapshot = runtime.resyncSnapshot;
+          runtime.resyncSnapshot = false;
           const response = await deps.api.fetchState(
-            { runId: session.runId, code: session.roomCode, sinceSeq },
+            { runId: session.runId, code: session.roomCode, ...(snapshot ? {} : { sinceSeq }) },
             session.sessionToken || undefined,
-          );
+          ).catch((error: unknown) => {
+            if (snapshot && runtime.sequencer === sequencer) runtime.resyncSnapshot = true;
+            throw error;
+          });
           if (runtime.sequencer !== sequencer) return;
           if (response.state) sequencer.reset(response.state, response.seq);
           else if (response.events) sequencer.ingestAll(response.events);
@@ -424,7 +452,19 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           set({ synced: true });
         }
       })().catch((error: unknown) => {
-        if (runtime.sequencer === sequencer) {
+        if (runtime.sequencer === sequencer && isGoneError(error)) {
+          // The room is gone or this phone is signed out: no retry can help.
+          // Close first (closing reports "idle"), then say so.
+          runtime.resyncAgain = false;
+          if (runtime.resyncRetry !== null) clearTimeout(runtime.resyncRetry);
+          runtime.resyncRetry = null;
+          runtime.channel?.close();
+          runtime.channel = null;
+          if (runtime.connectRetry !== null) clearTimeout(runtime.connectRetry);
+          runtime.connectRetry = null;
+          runtime.retryTransport = null;
+          set({ connection: "lost", synced: false });
+        } else if (runtime.sequencer === sequencer) {
           runtime.resyncRetry = setTimeout(() => {
             runtime.resyncRetry = null;
             void resync(sequencer.seq).catch(() => undefined);
@@ -494,9 +534,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
     }
 
     function disconnect(): void {
-      // Previews and arrivals are live-only: a fresh channel starts from nobody
-      // picking and nobody new.
-      set({ previews: {}, arrivals: [], arrivalsDropped: 0 });
+      // Previews, arrivals and cheers are live-only: a fresh channel starts
+      // from nobody picking, nobody new and nobody cheering.
+      set({ previews: {}, myPreview: null, arrivals: [], arrivalsDropped: 0, cheers: [] });
       runtime.previewSent = "[null,null]";
       runtime.previewNext = null;
       runtime.channel?.close();
@@ -505,6 +545,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       runtime.sequencer = null;
       runtime.resyncing = null;
       runtime.resyncAgain = false;
+      runtime.resyncSnapshot = false;
       runtime.resyncAttempt = 0;
       if (runtime.resyncRetry !== null) clearTimeout(runtime.resyncRetry);
       runtime.resyncRetry = null;
@@ -759,14 +800,17 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       presentation: null,
       progression: null,
       previews: {},
+      myPreview: null,
       arrivals: [],
       arrivalsDropped: 0,
+      cheers: [],
       savedHeroes: {},
       error: null,
       rules: null,
       items: null,
       campaign: null,
       abilities: null,
+      bestiary: null,
       chapter: null,
       world: null,
       pendingCode: null,
@@ -783,13 +827,17 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           // Chapter 5's problem. The ability catalog rides the same batch: it
           // is what `legalActions` needs to draw the combat action cards
           // (store/combat.ts), served exactly like rules and items.
-          const [rules, items, campaign, rawAbilities] = await Promise.all([
+          const [rules, items, campaign, rawAbilities, bestiary] = await Promise.all([
             deps.api.loadRules(),
             deps.api.loadItems(),
             deps.api.loadCampaign(LAUNCH_CAMPAIGN),
             deps.api.loadAbilities(),
+            // Dressing only: a failed fetch leaves it null, never the content.
+            Promise.resolve()
+              .then(() => deps.api.loadBestiary())
+              .catch(() => null),
           ]);
-          set({ rules, items, campaign, abilities: parseAbilityCatalog(rawAbilities) });
+          set({ rules, items, campaign, abilities: parseAbilityCatalog(rawAbilities), bestiary });
         })()
           .catch((error: unknown) => {
             set({
@@ -906,14 +954,17 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
        * until the first phone joins and claims it), then go to `/tv/:code` and let `attach`
        * watch the room exactly as it would after a refresh.
        */
-      async openOnThisScreen() {
+      async openOnThisScreen(typedLocation) {
         set({ connection: "connecting", error: null });
+        if (typedLocation !== undefined) saveLocationName(typedLocation.trim(), deps.storage);
+        const location = loadLocationName(deps.storage);
+        const where = location !== "" ? { location } : {};
         // A family tablet (#250, #274) shows the game under its own household:
         // no kid is seated, and it keeps no device token and no session.
         const shared = loadSharedDevice(deps.storage);
         if (shared) {
           try {
-            const room = await deps.api.openDisplayRoom({ campaignId: LAUNCH_CAMPAIGN }, shared.token);
+            const room = await deps.api.openDisplayRoom({ campaignId: LAUNCH_CAMPAIGN, ...where }, shared.token);
             deps.navigate({ name: "tv", code: room.code }, { replace: true });
           } catch (error) {
             forgottenIf(error);
@@ -926,6 +977,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           const room = await deps.api.openDisplayRoom({
             householdId: identity.householdId,
             campaignId: LAUNCH_CAMPAIGN,
+            ...where,
             ...(identity.deviceToken ? { deviceToken: identity.deviceToken } : {}),
           });
           // A binding minted here is the room's placeholder household, held by
@@ -966,7 +1018,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         }
         try {
           const journal = await deps.api.loadJournal(deviceToken);
-          saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
+          await (await journalDb()).saveJournal({ deviceToken, savedAt: new Date().toISOString(), journal }, deps.storage);
           return { journal, savedAt: null };
         } catch (error) {
           /*
@@ -976,10 +1028,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
            * a 5xx — is the car, and last time's book is the right answer.
            */
           if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
-            clearSavedJournal(deps.storage);
+            await (await journalDb()).clearSavedJournal(deps.storage);
             throw error;
           }
-          const saved = loadSavedJournal(deviceToken, deps.storage);
+          const saved = await (await journalDb()).loadSavedJournal(deviceToken, deps.storage);
           if (!saved) throw error;
           return { journal: saved.journal, savedAt: saved.savedAt };
         }
@@ -993,8 +1045,9 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           return deps.api.saveFlairAsSeat(choice, seat);
         }
         const profile = await deps.api.saveFlair(choice, deviceToken);
-        const saved = loadSavedJournal(deviceToken, deps.storage);
-        if (saved) saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);
+        const db = await journalDb();
+        const saved = await db.loadSavedJournal(deviceToken, deps.storage);
+        if (saved) await db.saveJournal({ ...saved, journal: { ...saved.journal, profile } }, deps.storage);
         return profile;
       },
 
@@ -1257,6 +1310,10 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           set({ error: response.error?.message ?? "That isn't allowed right now." });
           return false;
         } catch (error) {
+          // The request never reached the server: the stream is likely dead
+          // too, so replace it now rather than wait for the watchdog (#469).
+          // An HTTP error status is the server answering and does not.
+          if (isNetworkFailure(error)) deps.nudgeReconnect?.();
           set({
             error: error instanceof Error ? error.message : "Could not reach the game.",
           });
@@ -1269,6 +1326,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         if (!session?.playerId || !session.sessionToken) return;
         // A pick with no decision to belong to is not worth sending.
         if (preview !== null && context === null) preview = null;
+        if (get().myPreview !== preview) set({ myPreview: preview });
         const key = JSON.stringify([preview, preview === null ? null : context]);
         runtime.previewNext = { key, preview, context: preview === null ? null : context };
         if (runtime.previewInFlight) return;
@@ -1300,12 +1358,38 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       beat(leaving = false) {
         const session = get().session;
         if (!session?.playerId || !session.sessionToken) return;
-        void deps.api.postPresence(leaving, session.sessionToken).catch(() => undefined);
+        void deps.api.postPresence(leaving, session.sessionToken).catch((error: unknown) => {
+          // Fire-and-forget, but a beat that cannot get out says the stream
+          // probably cannot either (#469). Not when leaving: the page is going.
+          if (!leaving && isNetworkFailure(error)) deps.nudgeReconnect?.();
+        });
       },
 
       reconnect() {
-        if (!get().session) return;
-        if (runtime.channel?.reconnect) runtime.channel.reconnect();
+        const session = get().session;
+        if (!session) return;
+        // Lost: the channel was closed. Start over by attaching again from the
+        // mirror we hold; the reopened stream's catch-up brings it forward, or
+        // says "lost" again.
+        if (get().connection === "lost" && !runtime.channel && runtime.sequencer?.state) {
+          const sequencer = runtime.sequencer;
+          const snapshot = sequencer.state!;
+          const seq = sequencer.seq;
+          set({ connection: "connecting", synced: false });
+          void connect(session, snapshot, seq).then(() => {
+            if (runtime.sequencer && get().connection !== "open") set({ synced: false });
+            if (runtime.sequencer) void resync(runtime.sequencer.seq).catch(() => undefined);
+          });
+          return;
+        }
+        if (runtime.channel?.reconnect) {
+          runtime.channel.reconnect();
+          // And the catch-up now, not only once the fresh stream opens: a
+          // stream a gone room refuses never opens, and the fetch is what says
+          // the room is gone (`isGoneError`). Serialized with the one the
+          // stream's open asks for, so at most one is in flight.
+          if (runtime.sequencer) void resync(runtime.sequencer.seq).catch(() => undefined);
+        }
         // Transport setup failed and is waiting out its backoff: retry it now.
         else if (runtime.retryTransport) runtime.retryTransport();
         // No stream yet (still resolving the transport): the fetch alone still
@@ -1341,6 +1425,34 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 
       dismissArrival(playerId: string) {
         set({ arrivals: get().arrivals.filter((a) => a.playerId !== playerId) });
+      },
+
+      async cheer(cheer: string) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return false;
+        try {
+          await deps.api.postCheer(cheer, session.sessionToken);
+          return true;
+        } catch {
+          // A sparkle, not a turn: the next tap can try again.
+          return false;
+        }
+      },
+
+      async spectate(watching: boolean) {
+        const session = get().session;
+        if (!session?.playerId || !session.sessionToken) return false;
+        try {
+          await deps.api.postSpectate(watching, session.sessionToken);
+          return true;
+        } catch (error) {
+          set({ error: error instanceof Error ? error.message : "Could not reach the game." });
+          return false;
+        }
+      },
+
+      dropCheer(key: number) {
+        set({ cheers: get().cheers.filter((heard) => heard.key !== key) });
       },
 
       async removePlayer(playerId: string) {
@@ -1475,6 +1587,11 @@ export function useSend(): (intent: ClientIntent) => Promise<boolean> {
   return useGameStore((store) => store.send);
 }
 
+/** Spectators' cheers, live (`GameStore.cheers`, #388). */
+export function useCheers(): readonly HeardCheer[] {
+  return useGameStore((store) => store.cheers);
+}
+
 /** Every player's unconfirmed tap, by playerId (`GameStore.previews`). */
 export function usePreviews(): Readonly<Record<string, HeldPreview>> {
   return useGameStore((store) => store.previews);
@@ -1513,6 +1630,10 @@ export function useCampaign(): Campaign | null {
 
 export function useAbilities(): AbilityCatalog | null {
   return useGameStore((store) => store.abilities);
+}
+
+export function useBestiary(): Bestiary | null {
+  return useGameStore((store) => store.bestiary);
 }
 
 export function useChapter(): Chapter | null {

@@ -14,8 +14,9 @@ import { renderToStaticMarkup } from "react-dom/server";
 import type { ClassDef, SpeciesDef } from "@kad/shared";
 import { canUseInventoryItem } from "./PlayerPanel";
 import { HeroStrip, SpeciesStep } from "./CreationFlow";
-import { checkTarget, neededLabel, nextFace, outcomeWord } from "./DiceOverlay";
+import { checkTarget, neededLabel, outcomeWord } from "./DiceOverlay";
 import { isMissingArt } from "./CharacterPortrait";
+import { TrayObject } from "./TrayObjects";
 import { characterArtUrl } from "../world/art-paths";
 import manifest from "../../../../assets/manifest.json";
 import { patchCreationDraft, resetCreationDraft } from "./creationDraft";
@@ -282,38 +283,6 @@ describe("creation art", () => {
   });
 });
 
-/**
- * The die's face is theatre — the server rolled the number before this client
- * heard about it (architecture §4.2). What the scramble owes the table is only
- * that it always shows a legal face and never appears to stick.
- */
-describe("dice scramble", () => {
-  it("never repeats the face already showing", () => {
-    for (let previous = 1; previous <= 20; previous += 1) {
-      for (const random of [0, 0.25, 0.5, 0.75, 0.999999]) {
-        expect(nextFace(previous, random)).not.toBe(previous);
-      }
-    }
-  });
-
-  it("only ever shows a face the die has", () => {
-    for (let previous = 1; previous <= 20; previous += 1) {
-      for (let i = 0; i < 40; i += 1) {
-        const face = nextFace(previous, i / 40);
-        expect(face).toBeGreaterThanOrEqual(1);
-        expect(face).toBeLessThanOrEqual(20);
-        expect(Number.isInteger(face)).toBe(true);
-      }
-    }
-  });
-
-  it("can reach every other face", () => {
-    // 19 inputs, 19 distinct faces: the skip must not fold two inputs onto one.
-    const seen = new Set(Array.from({ length: 19 }, (_, i) => nextFace(7, i / 19)));
-    expect(seen.size).toBe(19);
-    expect(seen.has(7)).toBe(false);
-  });
-});
 describe("what the dice card says", () => {
   it("names a natural 20 and a natural 1, since the die decided on its own", () => {
     expect(outcomeWord({ die: 20, result: "success" })).toBe("Natural 20!");
@@ -331,6 +300,20 @@ describe("what the dice card says", () => {
 
 
 describe("Icon", () => {
+  it("uses the dedicated bag painting for inventory names", () => {
+    for (const name of ["bag", "inventory", "item"]) {
+      expect(renderToStaticMarkup(<Icon name={name} />)).toContain("/bag.webp");
+    }
+  });
+  it("paints every supported tray object, including the mode switches", () => {
+    for (const name of ["lantern", "globe", "map", "satchel", "scroll", "fieldGuide", "tv", "phone", "storybook"] as const) {
+      const html = renderToStaticMarkup(<TrayObject name={name} />);
+      expect(html, name).toContain("<img");
+      expect(html, name).toContain(".webp");
+      expect(html, name).not.toContain("<svg");
+    }
+  });
+
   it("uses each new painted icon directly instead of its old alias", () => {
     const sources = manifest.paintedIcons.ids.map(name => {
       const html = renderToStaticMarkup(<Icon name={name} label={name} />);

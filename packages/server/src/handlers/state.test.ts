@@ -55,6 +55,38 @@ describe("getState — reconnect (architecture §4.3)", () => {
     expect(mirror).toEqual(await harness.repo.getState(runId));
   });
 
+  it("replays only the protocol's fields, never who acted or what they sent", async () => {
+    const harness = makeHarness();
+    const { runId } = await runWithHistory(harness, 2);
+    const logged = await harness.repo.listEvents(runId, 0);
+    expect(logged[0]).toHaveProperty("intent");
+
+    const result = await getState({ runId, sinceSeq: 0 }, harness.deps);
+    if (!result.ok) throw new Error("expected a replay");
+    for (const event of result.value.events ?? []) {
+      expect(Object.keys(event).sort()).toEqual(
+        expect.arrayContaining(["patch", "runId", "seq"]),
+      );
+      expect(event).not.toHaveProperty("intent");
+      expect(event).not.toHaveProperty("playerId");
+      expect(event).not.toHaveProperty("at");
+    }
+  });
+
+  it("logs a padded intent as its type alone", async () => {
+    const harness = makeHarness();
+    const { householdId, players } = await seedHousehold(harness, 1);
+    const created = await createRoom({ householdId, mode: "party" }, harness.deps);
+    if (!created.ok || !players[0]) throw new Error("setup failed");
+    const intent = { type: "CHOOSE", choiceId: "c0", pad: "x".repeat(100_000) } as never;
+    await applyAction(
+      { runId: created.value.runId, playerId: players[0].principal.playerId, seq: 0, intent },
+      harness.deps,
+    );
+    const [logged] = await harness.repo.listEvents(created.value.runId, 0);
+    expect(logged?.intent).toEqual({ type: "CHOOSE" });
+  });
+
   it("sends a full snapshot when the gap is too large", async () => {
     const harness = makeHarness();
     const { runId } = await runWithHistory(harness, MAX_REPLAY_EVENTS + 2);

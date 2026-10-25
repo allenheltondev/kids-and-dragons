@@ -45,6 +45,13 @@
 .kad-lantern__glow {
   position: absolute;
   inset: 0;
+  /* The mote's colour is a prop (KeepsakeLantern.tsx), so it has no channel form.
+     A gold pool first, for a TV browser with no `color-mix()` (Chromium 111). */
+  background: radial-gradient(
+    circle at var(--glow-x, 50%) 58%,
+    rgb(var(--kad-gold-rgb) / 70%) 0%,
+    transparent 38%
+  );
   background: radial-gradient(
     circle at var(--glow-x, 50%) 58%,
     color-mix(in srgb, var(--glow) 70%, transparent) 0%,

@@ -39,9 +39,27 @@ export function checkBands(creatures: readonly Creature[], rules: unknown): Cano
     }
   }
 
+  // The trait table is filled by the matchups work; while it is empty there is
+  // nothing to check an id against, so the check waits rather than fails.
+  const traitIds = Object.keys(
+    (rules as { matchups?: { traits?: Record<string, unknown> } })?.matchups?.traits ?? {},
+  ).filter((id) => !id.startsWith("$"));
+
   for (const creature of creatures) {
     const encounter = creature.encounter;
     if (!encounter) continue;
+    if (traitIds.length > 0) {
+      for (const trait of encounter.traits ?? []) {
+        if (traitIds.includes(trait)) continue;
+        issues.push({
+          level: "error",
+          file: "creatures.yaml",
+          id: creature.id,
+          field: "encounter.traits",
+          message: `"${trait}" is not in content/rules.json matchups.traits (${traitIds.join(", ")})`,
+        });
+      }
+    }
     // D18. No band, no fight, nothing here to check — the schema has already
     // held it to the rules that *do* apply (no stats, no xp, no behavior, and
     // at least one way past). A band table has nothing to say about weather.

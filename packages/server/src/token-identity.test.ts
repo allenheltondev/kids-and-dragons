@@ -351,6 +351,58 @@ describe("TokenIdentity — device tokens", () => {
   });
 });
 
+describe("TokenIdentity — a rotation racing a revocation", () => {
+  /**
+   * The rotation's write used to be a full `putDevice` of the binding read at
+   * resolve time. A revocation landing between that read and that write was
+   * flattened back to the copy in hand, and the lost phone walked away with a
+   * fresh 30-day token. Here the revocation lands exactly there.
+   */
+  function revokedAfterRead(repo: MemoryRepository) {
+    const read = repo.getDevice.bind(repo);
+    vi.spyOn(repo, "getDevice").mockImplementation(async (householdId, deviceId) => {
+      const binding = await read(householdId, deviceId);
+      await repo.revokeDevice(householdId, deviceId);
+      return binding;
+    });
+  }
+
+  it("refuses the phone and leaves it revoked", async () => {
+    const { identity, repo, clock } = setup();
+    const { token, deviceId } = await identity.issueDeviceToken(device);
+    clock.advance(DEVICE_TOKEN_TTL_MS / 2 + 1000);
+    revokedAfterRead(repo);
+
+    expect(await identity.resolveDevice(token)).toBeNull();
+    vi.restoreAllMocks();
+    const binding = await repo.getDeviceById(deviceId);
+    expect(binding?.revoked).toBe(true);
+    expect(binding?.tokenHash).toBe(hashToken(token));
+  });
+
+  it("does the same for a shared device", async () => {
+    const { identity, repo, clock } = setup();
+    const { token, deviceId } = await identity.issueSharedDeviceToken({ householdId: "h_1" });
+    clock.advance(DEVICE_TOKEN_TTL_MS / 2 + 1000);
+    revokedAfterRead(repo);
+
+    expect(await identity.resolveSharedDevice(token)).toBeNull();
+    vi.restoreAllMocks();
+    expect((await repo.getDeviceById(deviceId))?.revoked).toBe(true);
+  });
+
+  it("keeps everything else on the binding when it rotates", async () => {
+    const { identity, repo, clock } = setup();
+    const { token, deviceId } = await identity.issueDeviceToken({ ...device, userAgent: "Pixel" });
+    clock.advance(DEVICE_TOKEN_TTL_MS / 2 + 1000);
+
+    const resolved = await identity.resolveDevice(token);
+    expect(resolved?.rotatedToken).toBeTypeOf("string");
+    const binding = await repo.getDeviceById(deviceId);
+    expect(binding).toMatchObject({ userAgent: "Pixel", tokenHash: hashToken(resolved?.rotatedToken ?? "") });
+  });
+});
+
 describe("TokenIdentity — shared device tokens (#250)", () => {
   it("names a household and no player, and is never mistaken for a device token", async () => {
     const { identity } = setup();
