@@ -99,7 +99,9 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * feature added (the matchup engine, the hints, the field guide sections) is in
  * lazy chunks; `matchups` is its own 3KB chunk.
  */
-const FIRST_PAINT_BUDGET_KB = 318;
+// 318 -> 320 for story interactions (#493): 319KB measured. The store needs
+// stable interaction/relay turn identity; the controls and visuals stay lazy.
+const FIRST_PAINT_BUDGET_KB = 320;
 
 /**
  * Everything, including what is lazily fetched.
@@ -119,7 +121,9 @@ const FIRST_PAINT_BUDGET_KB = 318;
  * The matchup hints, the field guide's "Fighting it" and "Good at" sections and
  * the creation cards, all in lazy chunks; the first paint grew 1KB (see above).
  */
-const TOTAL_BUDGET_KB = 1440;
+// 1440 -> 1460 for nine reusable story mechanics (#493): 1452KB measured,
+// mostly the lazy StoryInteraction and InteractionExtras controls and views.
+const TOTAL_BUDGET_KB = 1460;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

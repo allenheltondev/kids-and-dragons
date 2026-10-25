@@ -221,8 +221,8 @@ export function variantsReaching(chapter: Chapter): Map<string, NarrationVariant
   for (const [id, scene] of Object.entries(chapter.scenes)) {
     if ("variants" in scene) push(id, scene.variants);
     const branches =
-      scene.type === "check"
-        ? [scene.onSuccess, scene.onFailure]
+      scene.type === "check" || scene.type === "interaction"
+        ? [scene.onSuccess, scene.onFailure, ...(scene.type === "interaction" ? [scene.onAssisted] : [])]
         : scene.type === "encounter"
           ? [scene.onVictory, scene.onDefeat, scene.onEscape, scene.onTimeout]
           : [];

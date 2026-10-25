@@ -62,7 +62,7 @@ of them the whole screen, and the toggle costs a tap.
 
 Design consequences, all of which we accept:
 
-- **No private information channel.** Every phone shows the same world. That's fine — this game has no hidden information by design. It does mean **hidden-role or secret-objective mechanics are permanently off the table**, and that's a deliberate trade. *One owner-approved exception:* in Riftlight, a Starweaver's phone alone shows a rift's Riftlight colors (`docs/campaigns/continental-rift/mechanics.md`). It is a class's perception, not a secret objective, and the player shares it by talking.
+- **Cooperative information.** Every phone shows the same world. Hidden-role and secret-objective mechanics remain off the table. A Starweaver may perceive rift colors on their own phone (`docs/campaigns/continental-rift/mechanics.md`). Shared-clue interactions (#493) may also distribute different clues to different phones: players share them by talking, and every phone can reveal all clues for assistance or Travel Mode. These are cooperative observations, never secrets players must keep from one another.
 - **The grid needs a focus camera.** A 10×8 board on a phone has unreadable tiles at full extent. Combat gets an auto-framing camera that follows the active actor, with pinch-zoom and pan to override. This is good for the TV too — Party Mode gets it for free.
 - **The dice take over.** On the TV the roll is the centerpiece; on a phone it takes the world for the few seconds the card is up (long enough to read the sum out loud), wherever you were, then returns you.
 - **The map is on request.** "Where are we?" is the question a phone in the back of a car gets asked every three minutes, and the world pane answers only "what is happening now". The Map tab answers it twice, with a flip at the top. **World** is the realm painting with the party's own faces standing on the chapter's country, fitted to the phone and zoomable in steps, so "we are *here*" lands against the whole shape of the realm. **Route** draws tonight's chapter as a trail — the scenes the party has played, named; the party on the one it is in; everything ahead as fog, dots without names, so the shape of the road shows and nothing is spoiled. In Party Mode the map rides on the phone, never the TV: a Map button swaps your controls for it and back.
@@ -449,6 +449,14 @@ words.
 - **Every interactive element has an icon.** Text labels supplement icons, never replace them.
 - **TTS-ready from day one.** All narration and choice text flows through a `speak()` seam that is a no-op in v1 and can be wired to a TTS engine later without touching game code.
 - **No timers on decisions.** Nothing is lost by thinking about it.
+- **Story interactions (#493).** Authored scenes may use precision aiming,
+  cooperative supports, shared clue sequences, tracking, memory, wait/now timing,
+  balancing, relays, or playful contributions. A player explicitly starts
+  the skill phase; there is no countdown or automatic failure. Aiming repeats
+  until the player acts. Every interaction offers an untimed helping hand,
+  solo play, and authored continuation after a miss. Reduced-motion players
+  can complete aiming through assistance. Performance chooses a story branch
+  directly, without an additional die roll cancelling the result.
 - **Colorblind-safe status indicators** — status effects and item rarity use shape + icon, never color alone.
 - **A tap does the thing, and the surface makes it safe.** No confirm step in a fight: a gold square walks you there (a step is cheap), a card that needs aiming asks who or where, and only legal answers are ever on screen. The one tap worth protecting, giving a turn away, has no button: once the action is spent the turn ends on its own, and Get Ready is how you pass. The only exception is a friend who has stepped away, whose turn anyone may pass (§8.5).
 - **Big touch targets.** Phone UI assumes a small hand and imprecise taps — and stays that way in Travel Mode's compressed layout.

@@ -669,6 +669,18 @@
           "label": "Ask Tansy for one more tip",
           "icon": "scroll",
           "goto": "scene_last_tip"
+        },
+        {
+          "id": "try_team_tricks",
+          "label": "Try Tansy\u2019s team tricks",
+          "icon": "star",
+          "goto": "interaction_bell"
+        },
+        {
+          "id": "more_meadow_games",
+          "label": "Try more meadow games",
+          "icon": "star",
+          "goto": "scene_more_meadow_games"
         }
       ],
       "onEnter": [
@@ -740,6 +752,721 @@
         }
       ],
       "choices": []
+    },
+    "interaction_bell": {
+      "type": "interaction",
+      "narration": "Tansy hangs a little bell from the gate. \u201cSend this soft seed into the bell,\u201d she says. Flick floats beside it. \u201cI will provide encouragement. DING. Like that.\u201d",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        }
+      ],
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap when the seed reaches the gold.",
+        "actionLabel": "Toss the seed!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "interaction_roots",
+        "narration": "Ding! Flick glows bright enough to light Tansy\u2019s clipboard."
+      },
+      "onFailure": {
+        "goto": "interaction_roots",
+        "narration": "The seed lands in Tansy\u2019s pocket. \u201cExcellent pocket aim,\u201d she says, and rings the bell herself."
+      },
+      "onAssisted": {
+        "goto": "interaction_roots",
+        "narration": "Tansy steadies your hand. The bell gives a little ding, and Flick gives a very big one."
+      }
+    },
+    "interaction_roots": {
+      "type": "interaction",
+      "narration": "Bun has tucked her ribbon beneath a springy branch. \u201cSomebody hold the branch while somebody fetches it,\u201d says Tansy. \u201cA sturdy prop works too.\u201d Bun nods. She seems very pleased with this lesson.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the branch while your friend fetches the ribbon.",
+        "supportLabel": "Hold the branch",
+        "actionLabel": "Fetch the ribbon"
+      },
+      "onSuccess": {
+        "goto": "interaction_stones",
+        "narration": "The ribbon slides free. Bun wears it on her head, where it is much harder to lose."
+      },
+      "onFailure": {
+        "goto": "interaction_stones",
+        "narration": "Tansy props the branch with her clipboard. Bun retrieves her ribbon herself."
+      },
+      "onAssisted": {
+        "goto": "interaction_stones",
+        "narration": "Together you tuck a prop beneath the branch. Out comes Bun\u2019s ribbon."
+      }
+    },
+    "interaction_stones": {
+      "type": "interaction",
+      "narration": "Three painted stepping stones lead back to the picnic. Tansy hands out scraps from her clipboard. \u201cThe scraps hold clues. Share what you find!\u201d Flick peers at his empty hands. \u201cI know I would like more picnic.\u201d",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        }
+      ],
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share your clues, then choose the stones in order.",
+        "actionLabel": "Try our path",
+        "options": [
+          {
+            "id": "frog",
+            "label": "Frog",
+            "icon": "leaf"
+          },
+          {
+            "id": "owl",
+            "label": "Owl",
+            "icon": "eye"
+          },
+          {
+            "id": "fox",
+            "label": "Fox",
+            "icon": "boot"
+          }
+        ],
+        "answer": [
+          "frog",
+          "owl",
+          "fox"
+        ],
+        "clues": [
+          "Start with the frog.",
+          "The owl comes just before the fox.",
+          "Use each animal once."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Frog, owl, fox! The last stone makes a squeak. Flick insists that was the stone."
+      },
+      "onFailure": {
+        "goto": "scene_team_tricks_done",
+        "narration": "The stones wiggle and carry you gently back to Tansy. \u201cA very scenic route,\u201d she says."
+      },
+      "onAssisted": {
+        "goto": "scene_team_tricks_done",
+        "narration": "You lay every clue side by side. Frog, owl, fox. Together you find the way."
+      }
+    },
+    "scene_team_tricks_done": {
+      "type": "story",
+      "narration": "\u201cGood aiming, good helping, good listening,\u201d says Tansy. \u201cThose are all ways to be a hero.\u201d Flick adds a very small star to her clipboard.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        }
+      ],
+      "choices": [
+        {
+          "id": "get_star",
+          "label": "Get your star",
+          "icon": "star",
+          "goto": "rest_ready"
+        }
+      ]
+    },
+    "scene_more_meadow_games": {
+      "type": "story",
+      "narration": "Tansy opens a box marked SMALL ADVENTURES. Flick is already inside it. \"I am the surprise,\" he says. Bun eats the corner of the label.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "cups",
+          "label": "Follow the hidden light",
+          "icon": "star",
+          "goto": "interaction_cups"
+        },
+        {
+          "id": "echo",
+          "label": "Echo Flick\u2019s magic",
+          "icon": "star",
+          "goto": "interaction_echo"
+        },
+        {
+          "id": "sneak",
+          "label": "Sneak past Tansy",
+          "icon": "star",
+          "goto": "interaction_sneak"
+        },
+        {
+          "id": "balance",
+          "label": "Carry the picnic basket",
+          "icon": "star",
+          "goto": "interaction_balance"
+        },
+        {
+          "id": "spark",
+          "label": "Pass a little starlight",
+          "icon": "star",
+          "goto": "interaction_spark"
+        },
+        {
+          "id": "play",
+          "label": "Make a little mischief",
+          "icon": "star",
+          "goto": "scene_playful_meadow"
+        }
+      ]
+    },
+    "interaction_cups": {
+      "type": "interaction",
+      "narration": "Flick hides his glow beneath a little cup. Tansy slides the cups around the picnic cloth. \"Follow the light,\" she says. \"Flick, no peeking out.\"",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the glow, then choose its cup.",
+        "actionLabel": "Look under",
+        "covers": [
+          "Left cup",
+          "Middle cup",
+          "Right cup"
+        ],
+        "start": 0,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "stepMs": 1200
+      },
+      "onSuccess": {
+        "goto": "scene_team_tricks_done",
+        "narration": "There is Flick! \"An excellent hiding place,\" he says, as if this was his success."
+      },
+      "onFailure": {
+        "goto": "scene_team_tricks_done",
+        "narration": "The cup is empty. Flick pops out of another one and applauds your excellent cup lifting."
+      },
+      "onAssisted": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
+      }
+    },
+    "interaction_echo": {
+      "type": "interaction",
+      "narration": "Flick makes little shapes of light above the picnic. \"Say it back with your buttons,\" he says. \"This is a very important wisp greeting.\"",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the magic, then echo its pattern.",
+        "actionLabel": "Send our greeting",
+        "options": [
+          {
+            "id": "star",
+            "label": "Star",
+            "icon": "star"
+          },
+          {
+            "id": "leaf",
+            "label": "Leaf",
+            "icon": "leaf"
+          },
+          {
+            "id": "bell",
+            "label": "Bell",
+            "icon": "heart"
+          }
+        ],
+        "answer": [
+          "star",
+          "leaf",
+          "star",
+          "bell"
+        ],
+        "stepMs": 1000
+      },
+      "onSuccess": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Flick bows so deeply that his glow touches the grass. \"A very polite greeting!\""
+      },
+      "onFailure": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Flick listens to your new pattern. \"That means extra picnic,\" he decides."
+      },
+      "onAssisted": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
+      }
+    },
+    "interaction_sneak": {
+      "type": "interaction",
+      "narration": "Tansy covers her eyes and pretends to be a very sleepy gatekeeper. \"I shall never notice anybody going past,\" she says. Bun walks straight past her.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "interaction": {
+        "kind": "timing",
+        "cue": "Step when the gatekeeper looks away.",
+        "actionLabel": "Tiptoe!",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "scene_team_tricks_done",
+        "narration": "You tiptoe past. Tansy snores with great determination."
+      },
+      "onFailure": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy opens one eye. \"Aha! Visitors! Would you like some picnic?\""
+      },
+      "onAssisted": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
+      }
+    },
+    "interaction_balance": {
+      "type": "interaction",
+      "narration": "A basket of soft rolls rests on a wide carrying tray. \"Lift your side a little at a time,\" says Tansy. \"We want the rolls to travel, not roll.\" Bun looks disappointed.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "interaction": {
+        "kind": "balance",
+        "cue": "Lift your sides until the basket is steady in the middle.",
+        "actionLabel": "Carry it through",
+        "objectLabel": "The picnic basket"
+      },
+      "onSuccess": {
+        "goto": "scene_team_tricks_done",
+        "narration": "The basket arrives without losing a roll. Bun gets one anyway."
+      },
+      "onFailure": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy catches the rolls in her apron. \"Delivery accepted!\""
+      },
+      "onAssisted": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
+      }
+    },
+    "interaction_spark": {
+      "type": "interaction",
+      "narration": "Flick makes a tiny star and sends it floating toward your hands. \"Catch it, then pass it along,\" he says. \"It tickles a little.\"",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the starlight, then send it to your friend.",
+        "actionLabel": "Pass it on",
+        "objectLabel": "the starlight"
+      },
+      "onSuccess": {
+        "goto": "scene_team_tricks_done",
+        "narration": "The little star reaches the picnic lantern. It shines with everybody\u2019s help."
+      },
+      "onFailure": {
+        "goto": "scene_team_tricks_done",
+        "narration": "The little star lands in Tansy\u2019s pocket. Her clipboard glows."
+      },
+      "onAssisted": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
+      }
+    },
+    "scene_playful_meadow": {
+      "type": "story",
+      "narration": "\"We can just enjoy being here, too,\" says Tansy. Flick has several suggestions. Bun has already chosen hers.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "choices": [
+        {
+          "id": "feed",
+          "label": "Offer Bun a treat",
+          "icon": "heart",
+          "goto": "interaction_feed"
+        },
+        {
+          "id": "camp",
+          "label": "Make a cozy camp",
+          "icon": "leaf",
+          "goto": "interaction_camp"
+        },
+        {
+          "id": "cheer",
+          "label": "Celebrate together",
+          "icon": "star",
+          "goto": "interaction_cheer"
+        },
+        {
+          "id": "wake",
+          "label": "Wake the sleepy stump",
+          "icon": "eye",
+          "goto": "interaction_wake"
+        }
+      ]
+    },
+    "interaction_feed": {
+      "type": "interaction",
+      "narration": "Bun noses at the picnic bag. Tansy holds out a few little treats. \"Let her decide what she likes,\" she says.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "interaction": {
+        "kind": "play",
+        "cue": "Offer Bun something nice.",
+        "actionLabel": "Give Bun a wave",
+        "participation": "any",
+        "options": [
+          {
+            "id": "apple",
+            "label": "Offer an apple slice",
+            "icon": "heart",
+            "reaction": "Bun sniffs, crunches, and leans against your knee."
+          },
+          {
+            "id": "leaf",
+            "label": "Offer a crunchy leaf",
+            "icon": "leaf",
+            "reaction": "Bun eats the leaf and looks hopefully at your sleeve."
+          },
+          {
+            "id": "scratch",
+            "label": "Scratch behind her ears",
+            "icon": "hand",
+            "reaction": "Bun closes her eyes and makes a very happy little bleat."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Bun follows you back to the picnic. Apparently you are friends now."
+      },
+      "onFailure": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Bun is happy to sit beside you."
+      },
+      "onAssisted": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
+      }
+    },
+    "interaction_camp": {
+      "type": "interaction",
+      "narration": "Tansy spreads a blanket beneath the trees. \"What would make this a good camp?\" she asks. Flick votes for more glow.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "interaction": {
+        "kind": "play",
+        "cue": "Add something to your cozy camp.",
+        "actionLabel": "Settle into camp",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "lantern",
+            "label": "Hang a lantern",
+            "icon": "star",
+            "reaction": "A warm light appears above the blanket."
+          },
+          {
+            "id": "cushion",
+            "label": "Set out a cushion",
+            "icon": "heart",
+            "reaction": "A soft cushion lands beside the picnic bag."
+          },
+          {
+            "id": "flowers",
+            "label": "Bring some flowers",
+            "icon": "leaf",
+            "reaction": "A little bunch of meadow flowers brightens the camp."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Your camp is cozy because everybody brought something."
+      },
+      "onFailure": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy finds a comfortable spot for everyone."
+      },
+      "onAssisted": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
+      }
+    },
+    "interaction_cheer": {
+      "type": "interaction",
+      "narration": "\"A celebration is a perfectly good use of a meadow,\" says Tansy. Flick is already spinning.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "interaction": {
+        "kind": "play",
+        "cue": "Show everyone your hero\u2019s celebration.",
+        "actionLabel": "Take a happy bow",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "cheer",
+            "label": "Give a mighty cheer",
+            "icon": "star",
+            "reaction": "Your cheer sends Flick into a delighted spin."
+          },
+          {
+            "id": "pose",
+            "label": "Strike a heroic pose",
+            "icon": "boot",
+            "reaction": "Tansy sketches your magnificent pose on her clipboard."
+          },
+          {
+            "id": "sparkle",
+            "label": "Make a little sparkle",
+            "icon": "star",
+            "reaction": "A little shimmer dances over the picnic."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy draws a star beside the words VERY GOOD CELEBRATING."
+      },
+      "onFailure": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Flick cheers for you anyway."
+      },
+      "onAssisted": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
+      }
+    },
+    "interaction_wake": {
+      "type": "interaction",
+      "narration": "The old stump beside the picnic has a face, and its face is asleep. \"He enjoys a gentle hello,\" whispers Tansy.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Tansy"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "name": "Flick",
+          "size": "tiny"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Bun",
+          "size": "small"
+        }
+      ],
+      "interaction": {
+        "kind": "play",
+        "cue": "Give the sleepy stump a gentle hello.",
+        "actionLabel": "Welcome him to the picnic",
+        "participation": "any",
+        "options": [
+          {
+            "id": "hello",
+            "label": "Knock gently",
+            "icon": "hand",
+            "reaction": "The stump gives a sleepy rustle."
+          }
+        ],
+        "stages": [
+          "A twig twitches.",
+          "One mossy eyebrow rises.",
+          "A wooden eye peeks open.",
+          "The stump yawns. \"Did somebody say picnic?\""
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_team_tricks_done",
+        "narration": "The stump settles into a comfortable grumble beside your camp."
+      },
+      "onFailure": {
+        "goto": "scene_team_tricks_done",
+        "narration": "The stump enjoys your company with his eyes closed."
+      },
+      "onAssisted": {
+        "goto": "scene_team_tricks_done",
+        "narration": "Tansy lends a hand. Flick provides encouragement, at a very impressive volume."
+      }
     }
   },
   "voiceGuide": {

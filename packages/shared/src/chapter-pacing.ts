@@ -261,6 +261,8 @@ export function pacingEdges(scene: Scene, scenario: PacingScenario = CALIBRATION
     case "choice_point":
     case "rest":
       return scene.choices.filter((c) => !isGatedFor(c, scenario)).map((c) => ({ to: c.goto }));
+    case "interaction":
+      return [...branchEdge(scene.onSuccess), ...branchEdge(scene.onFailure), ...branchEdge(scene.onAssisted)];
     case "check":
       return [...branchEdge(scene.onSuccess), ...branchEdge(scene.onFailure)];
     case "encounter":
@@ -279,7 +281,7 @@ function isDecision(scene: Scene, scenario: PacingScenario): boolean {
 
 /** Does this scene give the table something to do: a vote, a roll or a fight? */
 function asksSomething(scene: Scene, scenario: PacingScenario): boolean {
-  return scene.type === "check" || scene.type === "encounter" || isDecision(scene, scenario);
+  return scene.type === "interaction" || scene.type === "check" || scene.type === "encounter" || isDecision(scene, scenario);
 }
 
 /** One stretch of scenes in a row that ask the table nothing. */

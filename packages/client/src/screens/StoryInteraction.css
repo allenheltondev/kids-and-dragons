@@ -1,0 +1,18 @@
+.story-interaction { padding: 1rem; margin-block: 1rem; border: 1px solid currentColor; border-radius: 1rem; font-size: var(--font-size-md, 1em); }
+.narration__plate .story-interaction { font-size: var(--font-size-lg, 1.25em); }
+.story-interaction__button { display: block; width: 100%; min-height: 3.5rem; padding: .8rem; margin-block: .7rem; border: 2px solid currentColor; border-radius: .8rem; font: inherit; color: inherit; background: var(--kad-bg-raised, #22352e); cursor: pointer; }
+.story-interaction__button:disabled { opacity: .5; cursor: default; }
+.story-interaction__hold { touch-action: none; user-select: none; -webkit-user-select: none; }
+.story-interaction__track { position: relative; height: 3rem; margin: 1.5rem .5rem; background: #172128; border-radius: .5rem; }
+.story-interaction__target { position: absolute; inset-block: 0; background: #b98b2c; border: 2px solid #ffe0a0; }
+.story-interaction__marker { position: absolute; inset-block: -.5rem; width: .4rem; background: white; transform: translateX(-50%); }
+.story-interaction__covers { position: relative; height: 6em; margin-block: 1em; }
+.story-interaction__cover { position: absolute; top: 1em; transform: translateX(-50%); text-align: center; width: 25%; }
+.story-interaction__cover > span { display: block; font-size: 2em; color: var(--kad-gold, #ffe0a0); }
+.story-interaction__cover small { display: block; font-size: .7em; overflow-wrap: anywhere; }
+.story-interaction__cover-label { top: 4em; }
+.story-interaction__tracking-help { display: block; padding-top: 6em; font-size: .7em; }
+.story-interaction__memory, .story-interaction__signal, .story-interaction__spark { padding: 1em; text-align: center; background: var(--kad-bg-raised, #1a1730); border-radius: 1em; }
+.story-interaction__signal[data-safe="true"] { border: 3px solid var(--kad-gold, #ffe0a0); }
+.story-interaction__balance { text-align: center; padding: 1em; border-bottom: .4em solid var(--kad-gold, #ffe0a0); transform-origin: center; }
+.story-interaction__reactions { min-height: 3em; }

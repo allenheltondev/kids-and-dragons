@@ -101,6 +101,8 @@ export function sceneLabel(id: SceneId, type: string): string {
 /** The icon for a kind of stop, drawn beside its name once it has been seen. */
 export function stopIcon(type: string): string {
   switch (type) {
+    case "interaction":
+      return "star";
     case "check":
       return "dice";
     case "choice_point":
