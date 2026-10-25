@@ -364,6 +364,9 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
+      "tags": [
+        "climb"
+      ],
       "narration": "The wall is cold and bumpy, and it smells of old stone. You shuffle sideways, one boot at a time. The river is very close to your left ear, and it is muttering.",
       "prompt": "Slide along the wall, one careful foot after the other.",
       "roller": "party",
@@ -389,6 +392,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "Every pack feels twice as heavy when the ice is slick. You make a line and pass them from hand to hand.",
       "prompt": "Pass every pack along the line without dropping one.",
       "roller": "all",
@@ -413,6 +419,9 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
+      "tags": [
+        "force"
+      ],
       "narration": "Smash is good for more than doors. You crouch in front of the narrowest spot and swing.",
       "prompt": "Chop a rough, wide step into the ice, and haul everyone over it.",
       "roller": "party",
@@ -565,6 +574,9 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
+      "tags": [
+        "climb"
+      ],
       "narration": "You line up at the edge, toes to the crack. Nobody looks down. Looking down is for later. Your knees agree to the plan, mostly.",
       "prompt": "Everyone jumps the crack on the same count: one, two, jump!",
       "roller": "all",
@@ -582,6 +594,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "A flat slab of ice lies loose beside the wall, as big as a door. It would make a fine bridge, if it would move.",
       "prompt": "The strongest of you drags the slab over the crack while the others hold the rope steady.",
       "roller": "best",
@@ -599,6 +614,9 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
+      "tags": [
+        "climb"
+      ],
       "narration": "The crack looks wide to everyone else. To you, it looks like a puddle with ambitions.",
       "prompt": "Leap over and tie the rope to the rock on the far side.",
       "roller": "party",
@@ -702,6 +720,9 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
+      "tags": [
+        "force"
+      ],
       "narration": "Linked arms make a very good wall, even if it is a wall made of slightly nervous people.",
       "prompt": "Everyone leans in with linked arms and shuffles forward together.",
       "roller": "all",
@@ -778,6 +799,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "A boot heel is a very small hammer. But with a lot of patience, it will cut a very small stair.",
       "prompt": "Chop a row of little steps across the slope, one for every boot.",
       "roller": "party",
@@ -812,6 +836,9 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
+      "tags": [
+        "climb"
+      ],
       "narration": "Sliding is the only thing that ice is truly good at. You decide to let it be good at it.",
       "prompt": "Slide across feet first, and steer for the snowdrift on the far side.",
       "roller": "party",
@@ -951,6 +978,9 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
+      "tags": [
+        "climb"
+      ],
       "narration": "The goat does not hurry. Each step, it stops and looks back, as if to say: it is easy, really.",
       "prompt": "The best climber of you follows the goat's track and loops the rope around the sound rock.",
       "roller": "best",
@@ -968,6 +998,9 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
+      "tags": [
+        "climb"
+      ],
       "narration": "The goat sniffs at your plan. The rocks are steep, and the handholds are small, but they are there.",
       "prompt": "Study the rocks, pick a handhold route and carry the rope over it.",
       "roller": "party",
@@ -985,6 +1018,9 @@
       "type": "check",
       "stat": "heart",
       "tn": 8,
+      "tags": [
+        "charm"
+      ],
       "narration": "Beguile is a polite sort of magic. You hold out a hand, and let the goat decide.",
       "prompt": "Charm the goat into leading the way, while the others keep the rope from tangling.",
       "roller": "party",
@@ -1130,6 +1166,9 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
+      "tags": [
+        "force"
+      ],
       "narration": "A handrail is only as good as the thing it is tied to. The thornguard leans back to test it.",
       "prompt": "Haul the rope tight along the gap, while the thornguard holds the post steady.",
       "roller": "party",
@@ -1286,6 +1325,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "The strongest of you takes the line in both hands. It is not far. It only feels far.",
       "prompt": "Cross hand over hand, then tie the far end tight.",
       "roller": "best",
@@ -1356,6 +1398,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "Every pack has its own weight, and its own opinion about it. You lift the first one onto your shoulders.",
       "prompt": "Carry each pack over the line, one careful trip at a time.",
       "roller": "party",
