@@ -9,8 +9,67 @@
           "introduces": {
             "exchange": "The Exchange",
             "noodle_stall": "A noodle seller",
-            "snow": "a snowflake"
+            "snow": "a snowflake",
+            "awning": "her awning"
           }
+        },
+        "awning_plan": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "awning_lift": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "awning_tie": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "awning_brace": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "awning_up": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "awning_flap": {
+          "requires": [
+            "noodle_stall",
+            "awning"
+          ],
+          "introduces": {}
+        },
+        "noodle_counter": {
+          "requires": [
+            "noodle_stall"
+          ],
+          "introduces": {
+            "fish_stall": "the fish stall",
+            "gull": "the gull on the post",
+            "early_ship": "that ship"
+          }
+        },
+        "noodle_buy": {
+          "requires": [
+            "noodle_stall"
+          ],
+          "introduces": {}
         },
         "morning": {
           "requires": [
@@ -29,32 +88,43 @@
             "fish_stall",
             "snow"
           ],
-          "introduces": {
-            "white_grass": "stiff white grass"
-          }
+          "introduces": {}
+        },
+        "fish_buckets": {
+          "requires": [
+            "fish_stall"
+          ],
+          "introduces": {}
         },
         "fish_help": {
           "requires": [
             "fish_stall",
-            "noodle_stall",
-            "white_grass"
+            "noodle_stall"
           ],
-          "introduces": {
-            "hoofprints": "wet hoofprints"
-          }
+          "introduces": {}
+        },
+        "fish_slosh": {
+          "requires": [
+            "fish_stall",
+            "noodle_stall"
+          ],
+          "introduces": {}
         },
         "gull": {
           "requires": [
             "gull"
           ],
-          "introduces": {
-            "hoofprints": "A small white hoofprint"
-          }
+          "introduces": {}
         },
         "gull_help": {
           "requires": [
-            "gull",
-            "hoofprints"
+            "gull"
+          ],
+          "introduces": {}
+        },
+        "gull_fed": {
+          "requires": [
+            "gull"
           ],
           "introduces": {}
         },
@@ -63,15 +133,25 @@
             "captain",
             "early_ship"
           ],
-          "introduces": {
-            "chart": "a route chart",
-            "thimble": "Captain Thimble"
-          }
+          "introduces": {}
+        },
+        "chart_pin": {
+          "requires": [
+            "captain"
+          ],
+          "introduces": {}
         },
         "ship_help": {
           "requires": [
-            "chart",
-            "thimble"
+            "captain"
+          ],
+          "introduces": {
+            "brave_whistle": "brave whistle"
+          }
+        },
+        "ship_flap": {
+          "requires": [
+            "captain"
           ],
           "introduces": {}
         },
@@ -80,8 +160,192 @@
             "captain",
             "noodle_stall"
           ],
+          "introduces": {}
+        },
+        "trail_check": {
+          "requires": [
+            "snow"
+          ],
           "introduces": {
-            "moving_rope": "A coil of rope"
+            "hoofprints": "small hoofprints"
+          }
+        },
+        "trail_found": {
+          "requires": [
+            "hoofprints"
+          ],
+          "introduces": {
+            "horn": "a deep horn blows"
+          }
+        },
+        "trail_lost": {
+          "requires": [
+            "hoofprints"
+          ],
+          "introduces": {
+            "horn": "a deep horn blows"
+          }
+        },
+        "delivery": {
+          "requires": [
+            "horn"
+          ],
+          "introduces": {
+            "supply_barge": "supply barge",
+            "pilot": "frogfolk pilot",
+            "lost_landing": "landing steps hanging crooked",
+            "supper_sacks": "Sacks of potatoes"
+          }
+        },
+        "sack_line": {
+          "requires": [
+            "pilot",
+            "supper_sacks"
+          ],
+          "introduces": {}
+        },
+        "sack_rally": {
+          "requires": [
+            "pilot",
+            "supper_sacks"
+          ],
+          "introduces": {}
+        },
+        "moor_ring": {
+          "requires": [
+            "pilot",
+            "supply_barge"
+          ],
+          "introduces": {}
+        },
+        "moor_wings": {
+          "requires": [
+            "pilot",
+            "supply_barge"
+          ],
+          "introduces": {}
+        },
+        "delivery_sacks": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "saved_supper": "Six crews eating tonight",
+            "moss_jar": "jar of glowing moss"
+          }
+        },
+        "sacks_dropped": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "saved_supper": "Six crews eating tonight"
+          }
+        },
+        "delivery_moor": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "safe_mooring": "a low mooring ring"
+          }
+        },
+        "moor_drift": {
+          "requires": [
+            "pilot",
+            "supply_barge",
+            "lost_landing",
+            "supper_sacks"
+          ],
+          "introduces": {
+            "safe_mooring": "the next mooring ring"
+          }
+        },
+        "landing_steps": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_climb": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_prop": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_smash": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_clue": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "landing_slip": {
+          "requires": [
+            "pilot",
+            "lost_landing"
+          ],
+          "introduces": {}
+        },
+        "quay_rest": {
+          "requires": [
+            "pilot",
+            "supper_sacks",
+            "noodle_stall"
+          ],
+          "introduces": {
+            "potato_skins": "warm potato skins",
+            "ladder": "a ladder climbs",
+            "rooftops": "to the rooftops"
+          }
+        },
+        "rookery": {
+          "requires": [
+            "ladder",
+            "rooftops"
+          ],
+          "introduces": {
+            "crows": "crows",
+            "rookery": "Rookery",
+            "crow_sign": "NO MESSING. (WITH US.)",
+            "dusk_hood": "dusk hood",
+            "doormat": "doormat"
+          }
+        },
+        "rookery_lesson": {
+          "requires": [
+            "crows",
+            "rooftops",
+            "ladder",
+            "noodle_stall"
+          ],
+          "introduces": {
+            "crow_note": "Don't mess with us."
           }
         },
         "quay": {
@@ -102,6 +366,24 @@
           ],
           "introduces": {}
         },
+        "quay_slip": {
+          "requires": [
+            "crates",
+            "fold"
+          ],
+          "introduces": {}
+        },
+        "quay_lit": {
+          "requires": [
+            "crates",
+            "fold",
+            "moss_jar"
+          ],
+          "introduces": {
+            "wedge": "a wedge",
+            "bleat": "something small bleats"
+          }
+        },
         "pattern_seen": {
           "requires": [
             "crates",
@@ -118,20 +400,118 @@
             "fold"
           ],
           "introduces": {
-            "barrel_lid": "A barrel lid",
             "bleat": "something small bleats"
           }
         },
+        "clear_check": {
+          "requires": [
+            "crates",
+            "noodle_stall"
+          ],
+          "introduces": {}
+        },
         "clear_quay": {
           "requires": [
-            "fish_stall",
             "noodle_stall",
             "crates"
           ],
           "introduces": {
-            "dock_workers": "The dock workers",
             "bleat": "something small bleats"
           }
+        },
+        "clear_crowd": {
+          "requires": [
+            "noodle_stall",
+            "crates"
+          ],
+          "introduces": {
+            "bleat": "something small bleats"
+          }
+        },
+        "crate_plan": {
+          "requires": [
+            "crates",
+            "fold",
+            "bleat"
+          ],
+          "introduces": {
+            "dock_workers": "Two dock workers"
+          }
+        },
+        "crate_haul": {
+          "requires": [
+            "crates",
+            "dock_workers"
+          ],
+          "introduces": {}
+        },
+        "crate_wedge": {
+          "requires": [
+            "crates",
+            "dock_workers"
+          ],
+          "introduces": {}
+        },
+        "whistle_call": {
+          "requires": [
+            "crates",
+            "dock_workers",
+            "brave_whistle"
+          ],
+          "introduces": {}
+        },
+        "crates_back": {
+          "requires": [
+            "crates",
+            "dock_workers",
+            "bleat"
+          ],
+          "introduces": {}
+        },
+        "crates_slid": {
+          "requires": [
+            "crates",
+            "dock_workers",
+            "bleat",
+            "fold"
+          ],
+          "introduces": {}
+        },
+        "gap": {
+          "requires": [
+            "crates",
+            "bleat",
+            "fold"
+          ],
+          "introduces": {}
+        },
+        "gap_squeeze": {
+          "requires": [
+            "crates",
+            "bleat"
+          ],
+          "introduces": {}
+        },
+        "gap_climb": {
+          "requires": [
+            "crates",
+            "bleat"
+          ],
+          "introduces": {}
+        },
+        "gap_through": {
+          "requires": [
+            "bleat",
+            "fold"
+          ],
+          "introduces": {}
+        },
+        "gap_scrape": {
+          "requires": [
+            "bleat",
+            "fold"
+          ],
+          "introduces": {}
         },
         "shimmer": {
           "requires": [
@@ -141,6 +521,13 @@
           "introduces": {
             "goat": "a snowhorn goat kid"
           }
+        },
+        "kid_food": {
+          "requires": [
+            "goat",
+            "fold"
+          ],
+          "introduces": {}
         },
         "read_light": {
           "requires": [
@@ -256,6 +643,53 @@
             "coat": "inside your coat"
           }
         },
+        "ridge_walk": {
+          "requires": [
+            "goat",
+            "coat"
+          ],
+          "introduces": {
+            "ridge": "low ridge"
+          }
+        },
+        "ridge_ok": {
+          "requires": [
+            "goat",
+            "coat",
+            "ridge"
+          ],
+          "introduces": {}
+        },
+        "ridge_drift": {
+          "requires": [
+            "goat",
+            "coat",
+            "ridge"
+          ],
+          "introduces": {}
+        },
+        "ridge_lee": {
+          "requires": [
+            "goat",
+            "coat",
+            "ridge"
+          ],
+          "introduces": {}
+        },
+        "ridge_tuck": {
+          "requires": [
+            "goat",
+            "coat"
+          ],
+          "introduces": {}
+        },
+        "ridge_rub": {
+          "requires": [
+            "goat",
+            "coat"
+          ],
+          "introduces": {}
+        },
         "white": {
           "requires": [
             "goat",
@@ -263,75 +697,6 @@
           ],
           "introduces": {
             "bell": "a bell rings"
-          }
-        },
-        "delivery": {
-          "requires": [
-            "exchange"
-          ],
-          "introduces": {
-            "supply_barge": "A supply barge",
-            "pilot": "frogfolk pilot",
-            "lost_landing": "landing steps hanging crooked",
-            "supper_sacks": "Sacks of potatoes"
-          }
-        },
-        "delivery_sacks": {
-          "requires": [
-            "pilot",
-            "supply_barge",
-            "lost_landing",
-            "supper_sacks"
-          ],
-          "introduces": {
-            "saved_supper": "Six crews eating tonight"
-          }
-        },
-        "delivery_moor": {
-          "requires": [
-            "pilot",
-            "supply_barge",
-            "lost_landing",
-            "supper_sacks"
-          ],
-          "introduces": {
-            "safe_mooring": "a low mooring ring"
-          }
-        },
-        "quay_rest": {
-          "requires": [
-            "pilot",
-            "supper_sacks",
-            "noodle_stall"
-          ],
-          "introduces": {
-            "potato_skins": "warm potato skins",
-            "ladder": "a ladder climbs",
-            "rooftops": "to the rooftops"
-          }
-        },
-        "rookery": {
-          "requires": [
-            "ladder",
-            "rooftops"
-          ],
-          "introduces": {
-            "crows": "crows",
-            "rookery": "Rookery",
-            "crow_sign": "NO MESSING. (WITH US.)",
-            "dusk_hood": "dusk hood",
-            "doormat": "doormat"
-          }
-        },
-        "rookery_lesson": {
-          "requires": [
-            "crows",
-            "rooftops",
-            "ladder",
-            "noodle_stall"
-          ],
-          "introduces": {
-            "crow_note": "Don't mess with us."
           }
         }
       }
