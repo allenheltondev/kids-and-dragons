@@ -16,7 +16,9 @@ import {
   checkNotes,
   fightHints,
   matchupsOn,
+  sceneCreatures,
   type DiceRoll,
+  type Bestiary,
   type ClassId,
   type EncounterState,
   type FightHint,
@@ -136,12 +138,15 @@ export function checkBadges(
   rules: RulesContent | null,
   campaignId: string | null | undefined,
   hero: { species: SpeciesId; class: ClassId },
-  scene: { tags?: readonly string[] } | null | undefined,
+  scene: { tags?: readonly string[]; discovers?: readonly string[]; cast?: readonly { figure: string }[] } | null | undefined,
   limit = 2,
+  bestiary: Bestiary | null = null,
 ): CheckBadge[] {
-  if (!rules?.matchups || !matchupsOn(rules, campaignId) || !scene?.tags?.length) return [];
+  if (!rules?.matchups || !matchupsOn(rules, campaignId) || !scene) return [];
   const table = rules.matchups;
-  const notes = checkNotes(table, hero, { tags: scene.tags });
+  const creatures = sceneCreatures(scene, bestiary);
+  if (!scene.tags?.length && creatures.length === 0) return [];
+  const notes = checkNotes(table, hero, { tags: scene.tags, creatures });
   const badges: CheckBadge[] = [];
   for (const note of notes) {
     const sign = signOf(note);

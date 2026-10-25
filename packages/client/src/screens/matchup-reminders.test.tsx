@@ -12,6 +12,7 @@ import {
   beginEncounter,
   parseBoard,
   setSpeaker,
+  type Bestiary,
   type Chapter,
   type DiceRoll,
   type EncounterEvent,
@@ -233,6 +234,25 @@ describe("the check prompt's badge", () => {
     const view = mount(<CheckMatchupBadges chapter={chapter} sceneId="s_sneak" hero={hero()} />);
     expect(screen.getByText("Sneak: Griffins are loud.")).toBeTruthy();
     expect(view.container.querySelectorAll("svg").length).toBe(1);
+  });
+
+  it("adds a creature's opinion of this hero's species, from the bestiary", () => {
+    const bestiary = {
+      creatures: {
+        glass_crab: { canon_id: "creature.glass_crab", name: "Glass Crab", likes: ["griffin"], dislikes: [] },
+        sour_wolf: { canon_id: "creature.sour_wolf", name: "Sour Wolf", dislikes: ["griffin"] },
+      },
+    } as unknown as Bestiary;
+    expect(checkBadges(ON, "riftlight", hero(), { discovers: ["creature.glass_crab"] }, 2, bestiary)).toEqual([
+      { id: "opinion:liked", sign: "plus", text: "The Glass Crab likes you." },
+    ]);
+    const wary = makeRules({ matchups: { ...TABLE, opinion: { ...TABLE.opinion, dislikedCheckRoll: -1 } } });
+    expect(checkBadges(wary, "riftlight", hero(), { cast: [{ figure: "entities/sour_wolf" }] }, 2, bestiary)).toEqual([
+      { id: "opinion:disliked", sign: "minus", text: "The Sour Wolf does not trust you." },
+    ]);
+    // No bestiary, or an exempt campaign: nothing, as before.
+    expect(checkBadges(ON, "riftlight", hero(), { discovers: ["creature.glass_crab"] })).toEqual([]);
+    expect(checkBadges(ON, "gemfall", hero(), { discovers: ["creature.glass_crab"] }, 2, bestiary)).toEqual([]);
   });
 
   it("is absent for an untagged scene, matchups off, or an exempt campaign", () => {

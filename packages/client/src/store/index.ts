@@ -14,6 +14,7 @@ import { create } from "zustand";
 import type { StateCreator } from "zustand";
 import type {
   AbilityCatalog,
+  Bestiary,
   ActionResponse,
   Campaign,
   Chapter,
@@ -807,6 +808,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
       items: null,
       campaign: null,
       abilities: null,
+      bestiary: null,
       chapter: null,
       world: null,
       pendingCode: null,
@@ -823,13 +825,17 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           // Chapter 5's problem. The ability catalog rides the same batch: it
           // is what `legalActions` needs to draw the combat action cards
           // (store/combat.ts), served exactly like rules and items.
-          const [rules, items, campaign, rawAbilities] = await Promise.all([
+          const [rules, items, campaign, rawAbilities, bestiary] = await Promise.all([
             deps.api.loadRules(),
             deps.api.loadItems(),
             deps.api.loadCampaign(LAUNCH_CAMPAIGN),
             deps.api.loadAbilities(),
+            // Dressing only: a failed fetch leaves it null, never the content.
+            Promise.resolve()
+              .then(() => deps.api.loadBestiary())
+              .catch(() => null),
           ]);
-          set({ rules, items, campaign, abilities: parseAbilityCatalog(rawAbilities) });
+          set({ rules, items, campaign, abilities: parseAbilityCatalog(rawAbilities), bestiary });
         })()
           .catch((error: unknown) => {
             set({
@@ -1618,6 +1624,10 @@ export function useCampaign(): Campaign | null {
 
 export function useAbilities(): AbilityCatalog | null {
   return useGameStore((store) => store.abilities);
+}
+
+export function useBestiary(): Bestiary | null {
+  return useGameStore((store) => store.bestiary);
 }
 
 export function useChapter(): Chapter | null {
