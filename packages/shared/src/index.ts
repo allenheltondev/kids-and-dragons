@@ -30,6 +30,7 @@ export * from "./kid-profile.js";
 export * from "./dice.js";
 export * from "./inventory.js";
 export * from "./bestiary.js";
+export * from "./matchups.js";
 export * from "./field-guide.js";
 export * from "./discoveries.js";
 export * from "./chapter-graph.js";
