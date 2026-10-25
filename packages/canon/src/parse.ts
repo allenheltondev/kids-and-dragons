@@ -46,6 +46,7 @@ export const FILES: Record<string, Record<string, Taxonomy>> = {
   "quests.yaml": { quests: "quest" },
   "campaigns.yaml": { campaigns: "campaign" },
   "geography.yaml": { features: "feature", routes: "route" },
+  "classes.yaml": { classes: "class" },
 };
 
 export interface CanonIssue {

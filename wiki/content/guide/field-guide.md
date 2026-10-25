@@ -10,6 +10,10 @@ page starts as a **?** card and fills in when the party first meets what's on it
 chapter fills in the place, starting a fight fills in the creatures in it, and some scenes reveal
 things along the way.
 
+A class gets its page when a hero at the table wears it, or when the party walks into the school
+that teaches it. Every school is a room inside a bigger place (the Dojo, the Academy, the Rookery,
+the Conservatory), and a class page keeps its school as a **???** until the party has been there.
+
 Each page remembers **who found it first**. New pages pop up as a note on the phone and a banner
 on the TV ("New in your Field Guide"), and keep a **New** badge until somebody opens them.
 

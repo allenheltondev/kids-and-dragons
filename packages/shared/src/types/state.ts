@@ -317,6 +317,12 @@ export interface RunState {
   coins?: number;
   xpEarned: number;
   /**
+   * The part of `xpEarned` that successful rolls paid this chapter
+   * (`RulesContent.rollXp`), kept so the per-chapter cap can be enforced. Absent
+   * until a roll pays; cleared when a chapter starts.
+   */
+  rollXp?: number;
+  /**
    * How the chapter now in `chapterId` ended, once it has (spec §8.2). Null
    * while one is still being played.
    *
@@ -370,6 +376,16 @@ export interface RunState {
    * open. Absent otherwise. The rank-up moment itself is #314's.
    */
   rankUps?: { sceneId: SceneId | null; ups: RankUp[] };
+  /**
+   * The story choice the table just made, and the scene it led to: the shared
+   * screen says what was picked in one line while that scene is open, so a
+   * room that voted can see its conclusion. `vote` says whether the party
+   * decided it together or one kid picked for everyone; `byPlayerId` is the
+   * kid who had the final say (for a vote, the last to tip it). Absent when
+   * there was nothing to decide (a "Go on" with one way on), and on a run
+   * saved before this existed.
+   */
+  decision?: { sceneId: SceneId | null; label: string; byPlayerId: string; vote: boolean };
   /**
    * Every scene this run has entered, in order — the spine of the story, for
    * the end-of-chapter recap of its priority-1 scenes (chapter.ts

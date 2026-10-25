@@ -1440,6 +1440,35 @@ describe("a full walk of a chapter", () => {
     expect(theirTurn.state.flags["took_high"]).toBeUndefined();
   });
 
+  it("records what the party voted for, on the scene the vote led to (RunState.decision)", () => {
+    const chapter = chapterWithForkedShrine();
+    const context = ctx({ rng: fixedRng(20), chapter });
+    const atRidge = walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+        { playerId: "p_2", intent: { type: "READY", ready: true } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "sleep" } },
+        { playerId: "p_2", intent: { type: "CHOOSE", choiceId: "low" } },
+      ],
+      context,
+    ).state;
+    const ridge = chapter.scenes["scene_ridge"] as { choices: { id: string; label: string }[] };
+    const high = ridge.choices.find((c) => c.id === "high");
+
+    const settled = applyIntent(atRidge, { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "high" } }, context).state;
+    expect(settled.decision).toEqual({
+      sceneId: settled.sceneId,
+      label: high?.label,
+      byPlayerId: "p_1",
+      vote: true,
+    });
+  });
+
   it("waits for the whole party before putting the board up", () => {
     /*
      * One phone readying is not the fight starting. This used to be the test
@@ -3553,5 +3582,104 @@ describe("a player who steps away (#258)", () => {
     const ready = seatedParty(context);
     expect(readyWithoutAway(ready.party)).toBe(true);
     expect(readyWithoutAway(away(away(ready, "p_1"), "p_2").party)).toBe(false);
+  });
+});
+
+describe("XP for rolls that go well", () => {
+  const paying = makeRules({ rollXp: { check: 2, attack: 1, chapterCap: 5 } });
+
+  function atCheck(context: EngineContext): RunState {
+    return walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+      ],
+      context,
+    ).state;
+  }
+
+  it("pays the party for a check that succeeds", () => {
+    const context = ctx({ rules: paying, rng: fixedRng(20) });
+    const state = atCheck(context);
+    const before = state.xpEarned;
+    const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    expect(rolled.lastRoll?.result).toBe("success");
+    expect(rolled.xpEarned).toBe(before + 2);
+    expect(rolled.rollXp).toBe(2);
+  });
+
+  it("pays nothing for a check that fails", () => {
+    const context = ctx({ rules: paying, rng: fixedRng(1) });
+    const state = atCheck(context);
+    const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    expect(rolled.lastRoll?.result).toBe("failure");
+    expect(rolled.xpEarned).toBe(state.xpEarned);
+    expect(rolled.rollXp).toBeUndefined();
+  });
+
+  it("pays nothing when the rules have no roll XP", () => {
+    const context = ctx({ rng: fixedRng(20) });
+    const state = atCheck(context);
+    const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    expect(rolled.xpEarned).toBe(state.xpEarned);
+    expect(rolled.rollXp).toBeUndefined();
+  });
+
+  it("stops at the chapter's cap", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, chapterCap: 3 } }), rng: fixedRng(20) });
+    const state = { ...atCheck(context), rollXp: 2 };
+    const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    expect(rolled.rollXp).toBe(3);
+    expect(rolled.xpEarned).toBe(state.xpEarned + 1);
+  });
+
+  it("pays for each hit the heroes land in a fight, and not for the monsters'", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, chapterCap: 100 } }), rng: fixedRng(20) });
+    let state = walk(
+      seatedParty(context),
+      [
+        { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+        { playerId: "p_1", intent: { type: "READY", ready: true } },
+      ],
+      context,
+    ).state;
+    const checkXp = state.rollXp ?? 0;
+    const begun = applyIntent(state, { playerId: "p_2", intent: { type: "READY", ready: true } }, context);
+    if (!begun.state.encounter) throw new Error("expected a fight in progress");
+    state = fightToTheEnd(begun.state, context);
+    expect(state.rollXp ?? 0).toBeGreaterThan(checkXp);
+    expect(state.xpEarned).toBeGreaterThanOrEqual(state.rollXp ?? 0);
+  });
+
+  it("pays more when foes are knocked out", () => {
+    const play = (defeat: number): number => {
+      const context = ctx({ rules: makeRules({ rollXp: { check: 0, attack: 1, defeat, chapterCap: 1000 } }), rng: fixedRng(20) });
+      const state = walk(
+        seatedParty(context),
+        [
+          { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+          { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+          { playerId: "p_2", intent: { type: "ROLL" } },
+          { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+          { playerId: "p_1", intent: { type: "READY", ready: true } },
+        ],
+        context,
+      ).state;
+      const begun = applyIntent(state, { playerId: "p_2", intent: { type: "READY", ready: true } }, context);
+      // Every foe one hit from down, so the fight does not hinge on the helper's aim.
+      const fragile = {
+        ...begun.state,
+        encounter: {
+          ...begun.state.encounter!,
+          combatants: begun.state.encounter!.combatants.map((c) => (c.side === "enemy" ? { ...c, hp: 1 } : c)),
+        },
+      };
+      return fightToTheEnd(fragile, context).rollXp ?? 0;
+    };
+    expect(play(5)).toBeGreaterThan(play(0));
   });
 });

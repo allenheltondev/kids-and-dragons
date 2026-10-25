@@ -486,11 +486,13 @@ Whoever writes the first authored chapter should give it an ending that declares
 Any scene (story, check, choice point, rest, encounter) may carry `"discovers": ["creature.embermoth", "npc.pib"]` —
 canon ids that the Field Guide fills in when the party enters that scene. Valid ids are exactly the keys of
 `entries` in `content/field-guide.json` (`creature.*`, `biome.*`, `location.*`, `character.*`, `npc.*`,
-`individual.*`, `faction.*`; features and routes are not in the guide). `npm run content:validate` fails with the
+`individual.*`, `faction.*`, `class.*`; features and routes are not in the guide). `npm run content:validate` fails with the
 chapter and scene named if an id is unknown or repeated within a scene.
 
-Two things are discovered **without** a tag, by `packages/shared/src/discoveries.ts`: the chapter's `biome`
-(when the chapter starts) and every `creature` in an encounter's `enemies` (when the fight's scene is entered).
+Four things are discovered **without** a tag, by `packages/shared/src/discoveries.ts`: the chapter's `biome`
+(when the chapter starts), every `creature` in an encounter's `enemies` (when the fight's scene is entered),
+a class place's own `location.*` entry and the `class.*` it teaches (when a scene marked `classPlace` is
+entered), and the `class.*` of every hero at the table (when a chapter starts, or a hero's class changes).
 Tag only what those rules miss.
 
 Guidance:

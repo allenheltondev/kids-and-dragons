@@ -183,3 +183,30 @@ describe("assertRulesContent", () => {
     });
   });
 });
+
+describe("levelRewards and rollXp", () => {
+  it("sums the rewards of every level reached", async () => {
+    const { levelBonuses } = await import("./rules.js");
+    const rules = makeRules({
+      levelRewards: [
+        { level: 2, maxHp: 1 },
+        { level: 4, maxHp: 2, guard: 1 },
+        { level: 7, guard: 1 },
+      ],
+    });
+    expect(levelBonuses(rules, 1)).toEqual({ maxHp: 0, guard: 0 });
+    expect(levelBonuses(rules, 3)).toEqual({ maxHp: 1, guard: 0 });
+    expect(levelBonuses(rules, 7)).toEqual({ maxHp: 3, guard: 2 });
+    expect(levelBonuses(makeRules(), 10)).toEqual({ maxHp: 0, guard: 0 });
+  });
+
+  it("is kept by assertRulesContent and refuses a bad level", async () => {
+    const { assertRulesContent } = await import("./rules.js");
+    const base = JSON.parse(JSON.stringify(makeRules()));
+    const ok = assertRulesContent({ ...base, levelRewards: [{ level: 2, maxHp: 1 }], rollXp: { check: 2, attack: 1, chapterCap: 30 } });
+    expect(ok.levelRewards).toEqual([{ level: 2, maxHp: 1 }]);
+    expect(ok.rollXp).toEqual({ check: 2, attack: 1, chapterCap: 30 });
+    expect(() => assertRulesContent({ ...base, levelRewards: [{ level: 1, maxHp: 1 }] })).toThrow(/levelRewards/);
+    expect(() => assertRulesContent({ ...base, rollXp: { check: -1, attack: 1, chapterCap: 3 } })).toThrow(/rollXp/);
+  });
+});

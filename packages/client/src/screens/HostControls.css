@@ -215,3 +215,9 @@ html[data-motion="reduced"] .kad-host__offer-bar > span { animation-name: none; 
   padding: 0.5rem;
   user-select: all;
 }
+
+/* The Room button in the corner row is a labelled button, taller than the row's 36px icon controls, so on
+   the host's shared screen the strip reserved for the row keeps its old height and nothing starts under it. */
+html:has(.kad-host__room-slot) {
+  --kad-corner-bottom: 52px;
+}

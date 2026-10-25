@@ -192,7 +192,7 @@ html:not([data-contrast="high"]) .goal :is(.goal__sentence, .goal__label, .goal_
   color: #2a1f45;
 }
 html:not([data-contrast="high"]) .goal .goal__step--done .goal__label {
-  color: #7a6a58;
+  color: #5f5040;
 }
 html:not([data-contrast="high"]) .goal__box {
   border: 0;
