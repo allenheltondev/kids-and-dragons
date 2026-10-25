@@ -8,6 +8,7 @@
     />
     <meta name="theme-color" content="#0d0b1a" />
     <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Kids &amp; Dragons" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48" />
@@ -17,6 +18,119 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function () {
+        var ATTEMPTS_KEY = "kad.boot.attempts";
+        var HEALS_KEY = "kad.boot.heals";
+        var GLOBAL_NAME = "__kadBoot";
+        var TIMEOUT_MS = 15000;
+        var HEAL_AT = 2;
+        var GIVE_UP_AT = 3;
+        var MESSAGE = "Kids & Dragons could not start. Check the Wi-Fi and open it again.";
+        var HOLD_MESSAGE = "No Wi-Fi right now. Check the connection and open Kids & Dragons again.";
+        var CACHE_PREFIX = "kad-";
+        // Boot watchdog (#455). Counts this load; if the app never marks itself
+        // booted, retries once, then clears this app's caches and workers and
+        // reloads (only once fresh bytes are reachable: offline, the saved
+        // copies stay), then stops. Never the saved hero or the book.
+        var store = null;
+        var attempt = GIVE_UP_AT;
+        try {
+          store = window.sessionStorage;
+          attempt = (parseInt(store.getItem(ATTEMPTS_KEY), 10) || 0) + 1;
+          store.setItem(ATTEMPTS_KEY, String(attempt));
+        } catch (e) {
+          // No way to count, so no way to promise a reload ends: never reload.
+          attempt = GIVE_UP_AT;
+        }
+        var finished = false;
+        var timer = 0;
+        function stop() {
+          finished = true;
+          clearTimeout(timer);
+          removeEventListener("error", fail);
+          removeEventListener("unhandledrejection", fail);
+        }
+        function reload() {
+          location.reload();
+        }
+        function say(text) {
+          var root = document.getElementById("root");
+          if (!root) return;
+          root.textContent = "";
+          var p = document.createElement("p");
+          p.textContent = text;
+          p.style.cssText = "margin:0;padding:32px 24px;color:#f4efe6;font:600 20px/1.4 system-ui,sans-serif;text-align:center";
+          root.appendChild(p);
+        }
+        function giveUp() {
+          say(MESSAGE);
+        }
+        // Whether replacement bytes can be had right now: a HEAD of the page,
+        // past the worker (not a GET, so it passes through) and the HTTP cache.
+        function reachable() {
+          if (navigator.onLine === false) return Promise.resolve(false);
+          var cap = new Promise(function (resolve) { setTimeout(function () { resolve(false); }, 4000); });
+          var probe;
+          try {
+            probe = fetch(location.pathname + "?boot=" + Date.now(), { method: "HEAD", cache: "no-store" })
+              .then(function (res) { return res.ok; }, function () { return false; });
+          } catch (e) {
+            probe = Promise.resolve(false);
+          }
+          return Promise.race([probe, cap]);
+        }
+        // Clear this app's caches and workers, then reload onto fresh bytes.
+        function wipe() {
+          var work = [];
+          try {
+            if (window.caches) {
+              work.push(
+                caches.keys().then(function (keys) {
+                  return Promise.all(keys.filter(function (k) { return k.indexOf(CACHE_PREFIX) === 0; }).map(function (k) { return caches.delete(k); }));
+                })
+              );
+            }
+            if (navigator.serviceWorker) {
+              work.push(
+                navigator.serviceWorker.getRegistrations().then(function (regs) {
+                  return Promise.all(regs.map(function (r) { return r.unregister(); }));
+                })
+              );
+            }
+            store.setItem(HEALS_KEY, String((parseInt(store.getItem(HEALS_KEY), 10) || 0) + 1));
+          } catch (e) {}
+          var cap = new Promise(function (resolve) { setTimeout(resolve, 4000); });
+          Promise.race([Promise.all(work), cap]).then(reload, reload);
+        }
+        // No signal: the saved copies are the only way the app opens at all,
+        // so they stay. Say so, and let the next open start its tries afresh.
+        function hold() {
+          try { store.removeItem(ATTEMPTS_KEY); } catch (e) {}
+          say(HOLD_MESSAGE);
+        }
+        function heal() {
+          reachable().then(function (ok) { if (ok) wipe(); else hold(); }, hold);
+        }
+        function fail() {
+          if (finished) return;
+          stop();
+          if (attempt >= GIVE_UP_AT) giveUp();
+          else if (attempt >= HEAL_AT) heal();
+          else reload();
+        }
+        window[GLOBAL_NAME] = {
+          booted: function () {
+            if (finished) return;
+            stop();
+            try { store.removeItem(ATTEMPTS_KEY); } catch (e) {}
+          },
+        };
+        addEventListener("error", fail);
+        addEventListener("unhandledrejection", fail);
+        timer = setTimeout(fail, TIMEOUT_MS);
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

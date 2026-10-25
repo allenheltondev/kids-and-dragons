@@ -130,6 +130,7 @@ describe("art paths", () => {
   it("treats a chapter's `enemies/` prefix as convention, not a directory", () => {
     expect(enemyArtUrl("enemies/will_o_wisp")).toBe("/assets/entities/will_o_wisp/assembled.png");
     expect(enemyArtUrl("will_o_wisp")).toBe("/assets/entities/will_o_wisp/assembled.png");
+    expect(enemyArtUrl("cast/deep-ice-figure")).toBe("/assets/cast/deep-ice-figure/assembled.png");
   });
 
   it("addresses a biome's backdrop and tile sheet", () => {
@@ -165,4 +166,13 @@ it("addresses every delivered static class figure and keeps undeclared figures o
       }
     }
   }
+});
+
+describe("art for tiers past Mythic", () => {
+  it("draws ascendant, starborn and legendary as Mythic, and leaves painted tiers alone", async () => {
+    const { artTierOf } = await import("./art-paths");
+    expect(artTierOf("sworn")).toBe("sworn");
+    expect(artTierOf("mythic")).toBe("mythic");
+    for (const tier of ["ascendant", "starborn", "legendary"] as const) expect(artTierOf(tier)).toBe("mythic");
+  });
 });

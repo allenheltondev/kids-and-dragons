@@ -16,9 +16,9 @@ import { createCharacter } from "./characters";
 import { guidePicture } from "./guide-pictures";
 import { openPlayerTask } from "./player-navigation";
 import { roomState } from "./room-state";
+import { API } from "./api";
 
 const TAP = { timeout: 20_000 } as const;
-const API = "http://localhost:8787";
 const REST_SCENE = "rest_mossbank";
 
 interface Member {

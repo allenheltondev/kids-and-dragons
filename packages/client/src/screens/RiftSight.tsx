@@ -41,6 +41,7 @@ import {
   RIFT_NEUTRAL_EFFECT,
   RIFT_OPEN_EFFECT,
   RIFT_SHEET_MS,
+  RIFT_SHEET,
   RIFTLIGHT_INDICATOR_LABEL,
   riftLayers,
   riftMoments,
@@ -134,7 +135,9 @@ function SheetLayer({ effect, once = false }: { effect: string; once?: boolean }
     backgroundImage: `url("${riftSheetUrl(effect)}")`,
     animationDuration: `${RIFT_SHEET_MS}ms`,
     ...(once ? {} : { animationDelay: `-${phase}ms` }),
-  };
+    "--rift-columns": RIFT_SHEET.columns,
+    "--rift-rows": Math.ceil(RIFT_SHEET.frames / RIFT_SHEET.columns),
+  } as CSSProperties;
   return (
     <span
       className={`rift-glyph__layer${once ? " rift-glyph__layer--once" : ""}`}
@@ -157,8 +160,16 @@ export function RiftGlyph({
 }): ReactElement {
   const light = riftlight ? riftlightOf(rift) : null;
   const layers = light === null ? [RIFT_NEUTRAL_EFFECT] : riftLayers(light);
+  const motion = light?.motions.includes("stutter")
+    ? " rift-glyph--unstable"
+    : light?.motions.includes("shrink") ? " rift-glyph--shrinking" : "";
+  const [phase] = useState(() => Math.round(performance.now() % RIFT_SHEET_MS));
   return (
-    <span className={`rift-glyph${opening ? " rift-glyph--opening" : ""}`} aria-hidden="true">
+    <span
+      className={`rift-glyph${opening ? " rift-glyph--opening" : motion}`}
+      style={{ "--rift-duration": `${RIFT_SHEET_MS}ms`, "--rift-delay": `-${phase}ms` } as CSSProperties}
+      aria-hidden="true"
+    >
       {layers.map((effect) => (
         <SheetLayer key={effect} effect={effect} />
       ))}

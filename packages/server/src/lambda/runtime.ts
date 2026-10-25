@@ -19,6 +19,9 @@ import { loadSharedRuntime } from "../engine/shared-engine.ts";
 import type { HandlerDeps } from "../handlers/deps.ts";
 import { DynamoRepository } from "../store/dynamo-repository.ts";
 import { ssmParameterSource, TokenIdentity } from "../token-identity.ts";
+import { mintVapidKeys, parseVapidKeys, pushConfig, pushMode, webPushSender, type VapidKeys } from "../web-push.ts";
+import type { PushConfig, PushDelivery, PushDispatch } from "../handlers/push.ts";
+import { lambdaPushDispatch } from "./push-dispatch.ts";
 
 /**
  * Read at module load so a missing variable fails the **first** invocation
@@ -48,6 +51,7 @@ async function build(): Promise<HandlerDeps> {
   const repo = new DynamoRepository({ tableName: requiredEnv("TABLE_NAME") });
   const shared = await loadSharedRuntime();
   const loaded = await content();
+  const push = await pushFromEnv();
 
   return {
     repo,
@@ -72,7 +76,84 @@ async function build(): Promise<HandlerDeps> {
      * zero (playtest.ts).
      */
     playtest: false,
+    ...(push ? { push } : {}),
   };
+}
+
+/** Reads a SecureString parameter, minting it when `mint` says so. */
+type KeySource = (name: string) => () => Promise<string>;
+
+/** The API's source: it may mint the pair, as it mints the signing key. */
+const mintingSource: KeySource = (name) =>
+  ssmParameterSource(name, {
+    createIfMissing: true,
+    mint: mintVapidKeys,
+    description: "Kids & Dragons Web Push VAPID key pair (#466)",
+  });
+
+/** The sender's: read only. The API has always minted it before any job exists. */
+const readingSource: KeySource = (name) => ssmParameterSource(name);
+
+/**
+ * "It's your turn" pushes (#466), as both functions read the stack: on only
+ * when it says `KAD_PUSH=on` and names a subject (`KAD_PUSH_SUBJECT`, a
+ * `mailto:` or `https:` contact the push services can reach). The VAPID key
+ * pair lives in one SecureString, `PUSH_KEY_PARAMETER`. A subject missing
+ * while pushes are on, or a key pair that cannot be read, is a stack mistake:
+ * logged, and pushes stay off for this container rather than the function
+ * failing.
+ */
+async function pushKeysFromEnv(
+  env: NodeJS.ProcessEnv,
+  source: KeySource,
+): Promise<{ keys: VapidKeys; subject: string } | undefined> {
+  if (pushMode(env.KAD_PUSH) !== "on") return undefined;
+  const subject = env.KAD_PUSH_SUBJECT ?? "";
+  if (!/^(mailto:|https:\/\/)/.test(subject)) {
+    console.warn("push: KAD_PUSH is on but KAD_PUSH_SUBJECT is not a mailto: or https: address; pushes stay off");
+    return undefined;
+  }
+  const parameter = env.PUSH_KEY_PARAMETER;
+  if (!parameter) {
+    console.error("push: KAD_PUSH is on but PUSH_KEY_PARAMETER is not set; pushes stay off");
+    return undefined;
+  }
+  try {
+    return { keys: parseVapidKeys(await source(parameter)()), subject };
+  } catch (err) {
+    // A push key that cannot be read must never take the game down with it.
+    console.error(`push: the key pair in ${parameter} could not be read; pushes stay off:`, err);
+    return undefined;
+  }
+}
+
+/**
+ * The API function's half: the public key for the client, and a dispatcher
+ * that hands each job to the push-sender function (`PUSH_SENDER_FUNCTION`)
+ * by an asynchronous invoke. It never sends a push itself.
+ */
+export async function pushFromEnv(
+  env: NodeJS.ProcessEnv = process.env,
+  source: KeySource = mintingSource,
+  dispatchTo: (functionName: string) => PushDispatch = (name) => lambdaPushDispatch(name),
+): Promise<PushConfig | undefined> {
+  const found = await pushKeysFromEnv(env, source);
+  if (!found) return undefined;
+  const sender = env.PUSH_SENDER_FUNCTION;
+  if (!sender) {
+    console.error("push: KAD_PUSH is on but PUSH_SENDER_FUNCTION is not set; pushes stay off");
+    return undefined;
+  }
+  return pushConfig(found.keys, dispatchTo(sender));
+}
+
+/** The push-sender function's half: the transport, signed with the same pair. */
+export async function pushDeliveryFromEnv(
+  env: NodeJS.ProcessEnv = process.env,
+  source: KeySource = readingSource,
+): Promise<PushDelivery | undefined> {
+  const found = await pushKeysFromEnv(env, source);
+  return found ? { sender: webPushSender(found.keys, found.subject) } : undefined;
 }
 
 let contentCache: ContentStore | null = null;

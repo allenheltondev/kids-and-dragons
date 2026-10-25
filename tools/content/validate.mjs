@@ -225,8 +225,8 @@ function checkRules(rep, file, rules) {
     }
   }
 
-  // spec §8.1 - the four appearance tiers, in level order.
-  const tiers = ["fledgling", "sworn", "radiant", "mythic"];
+  // spec §8.1 - the seven appearance tiers, in level order.
+  const tiers = ["fledgling", "sworn", "radiant", "mythic", "ascendant", "starborn", "legendary"];
   for (let i = 1; i < tiers.length; i += 1) {
     if (rules.tierLevels[tiers[i]] <= rules.tierLevels[tiers[i - 1]]) {
       rep.fail(
@@ -243,9 +243,11 @@ function checkRules(rep, file, rules) {
     rep.fail(f, "/tierLevels/fledgling", `every character starts at fledgling, so it must be level 1, got ${rules.tierLevels.fledgling}`);
     ok = false;
   }
-  if (rules.tierLevels.mythic > maxLevel) {
-    rep.fail(f, "/tierLevels/mythic", `mythic is at level ${rules.tierLevels.mythic}, but levelXp only reaches level ${maxLevel}`);
-    ok = false;
+  for (const tier of tiers) {
+    if (rules.tierLevels[tier] > maxLevel) {
+      rep.fail(f, `/tierLevels/${tier}`, `${tier} is at level ${rules.tierLevels[tier]}, but levelXp only reaches level ${maxLevel}`);
+      ok = false;
+    }
   }
 
   // spec §4.3 - four classes, one per stat. Two classes on one stat leaves a stat
@@ -1773,6 +1775,7 @@ function main() {
   }
 
   checkFittingStall(rep, rules, chaptersById, brokenChapterIds);
+  checkMatchups(rep, rules, abilities, bestiary, chaptersById);
 
   // --- campaigns
   console.log(`\n${BOLD}campaigns${RESET}`);
@@ -1878,6 +1881,133 @@ function checkFittingStall(rep, rules, chaptersById, brokenChapterIds) {
   // included, so it keeps Gemfall's house rules (gemfall-authoring.md).
   if (/\u2014/.test(stall.narration)) bad("/fittingStall/narration", "has an em dash", "Gemfall text uses none.");
   if (ok) rep.ok(`${f}  fitting stall (${stall.stands.length} stand${stall.stands.length === 1 ? "" : "s"})`);
+}
+
+/**
+ * Matchups (docs/matchups.md): every id an edge, a bestiary creature or a
+ * chapter names is one the table defines, every edge does something, and no
+ * number is bigger than the design's 2. The schema checks shapes; this checks
+ * that the words point somewhere.
+ *
+ * A trait or check-tag id is checked only once that vocabulary has entries:
+ * an empty `traits` or `checkTags` table is a table still being written, and
+ * failing every creature against it would say nothing useful.
+ */
+const MATCHUP_CAP = 2;
+const UNIVERSAL_ABILITY_IDS = ["attack", "help_up", "ready"];
+
+function checkMatchups(rep, rules, abilities, bestiary, chaptersById) {
+  const m = rules?.matchups;
+  if (!m) return;
+  const f = "content/rules.json";
+  let ok = true;
+  const bad = (file, path, problem, hint) => {
+    ok = false;
+    rep.fail(file, path, problem, hint);
+  };
+  const asList = (v) => (v === undefined ? [] : Array.isArray(v) ? v : [v]);
+  const traitIds = new Set(Object.keys(m.traits ?? {}));
+  const tagIds = new Set(Object.keys(m.checkTags ?? {}));
+  const speciesIds = new Set(Object.keys(rules.species ?? {}));
+  const classIds = new Set(Object.keys(rules.classes ?? {}));
+  const abilityIds = new Set([...UNIVERSAL_ABILITY_IDS, ...Object.keys(abilities?.abilities ?? {})]);
+  // The moves that roll an attack: the plain swing, and every catalog ability with an `attack` effect.
+  const attackAbilityIds = new Set([
+    "attack",
+    ...Object.entries(abilities?.abilities ?? {})
+      .filter(([, def]) => (def?.effects ?? []).some((e) => e?.effect?.type === "attack"))
+      .map(([id]) => id),
+  ]);
+  const checkTrait = (file, path, id) => {
+    if (traitIds.size > 0 && !traitIds.has(id)) bad(file, path, `"${id}" is not a trait in rules.matchups.traits`, `known traits: ${[...traitIds].join(", ")}`);
+  };
+  const checkTag = (file, path, id) => {
+    if (tagIds.size > 0 && !tagIds.has(id)) bad(file, path, `"${id}" is not a check tag in rules.matchups.checkTags`, `known tags: ${[...tagIds].join(", ")}`);
+  };
+  const checkSpecies = (file, path, id) => {
+    if (!speciesIds.has(id)) bad(file, path, `"${id}" is not a species in content/rules.json`, `known species: ${[...speciesIds].join(", ")}`);
+  };
+  const tooBig = (n) => typeof n === "number" && Math.abs(n) > MATCHUP_CAP;
+
+  for (const [key, n] of Object.entries(m.opinion ?? {})) {
+    if (tooBig(n)) bad(f, `/matchups/opinion/${key}`, `${n} is bigger than ${MATCHUP_CAP}`, "A matchup is a roll change of 1 or 2 (docs/matchups.md).");
+  }
+
+  const edgeIds = new Set();
+  (m.edges ?? []).forEach((edge, i) => {
+    const at = `/matchups/edges/${i}`;
+    if (edgeIds.has(edge.id)) bad(f, `${at}/id`, `duplicate edge id "${edge.id}"`);
+    edgeIds.add(edge.id);
+    asList(edge.hero?.species).forEach((id, j) => checkSpecies(f, `${at}/hero/species${Array.isArray(edge.hero.species) ? `/${j}` : ""}`, id));
+    asList(edge.hero?.class).forEach((id) => {
+      if (!classIds.has(id)) bad(f, `${at}/hero/class`, `"${id}" is not a class in content/rules.json`, `known classes: ${[...classIds].join(", ")}`);
+    });
+    for (const key of ["roll", "damage"]) {
+      if (tooBig(edge[key])) bad(f, `${at}/${key}`, `${edge[key]} is bigger than ${MATCHUP_CAP}`, "A matchup is a roll change of 1 or 2 (docs/matchups.md).");
+    }
+    const roll = edge.roll ?? 0;
+    const damage = edge.damage ?? 0;
+    if (roll === 0 && damage === 0) bad(f, at, `edge "${edge.id}" has no effect`, "Give it a roll (or, on an attack, a damage) of 1 or 2 either way.");
+    if (damage !== 0 && edge.on !== "attack") bad(f, `${at}/damage`, `edge "${edge.id}" is on ${edge.on} and has damage`, "Only an attack edge moves damage.");
+    if (edge.on === "check") {
+      if (edge.foe !== undefined) bad(f, `${at}/foe`, `check edge "${edge.id}" names a foe trait`, "A check edge names check tags in `tag`.");
+      if (edge.ability !== undefined) bad(f, `${at}/ability`, `check edge "${edge.id}" names an ability`);
+      if (asList(edge.tag).length === 0) bad(f, `${at}/tag`, `check edge "${edge.id}" names no check tag`, "Without one it applies to no check.");
+    } else if (edge.tag !== undefined) {
+      bad(f, `${at}/tag`, `${edge.on} edge "${edge.id}" names a check tag`, "Tags are for check edges; a fight edge names foe traits.");
+    }
+    asList(edge.foe).forEach((id) => checkTrait(f, `${at}/foe`, id));
+    asList(edge.tag).forEach((id) => checkTag(f, `${at}/tag`, id));
+    asList(edge.ability).forEach((id) => {
+      if (!abilityIds.has(id)) {
+        bad(f, `${at}/ability`, `"${id}" is not an ability in content/abilities.json`);
+      } else if (edge.on === "attack" && !attackAbilityIds.has(id)) {
+        // An attack edge is read where a swing is rolled (encounter.ts,
+        // `applyEffect` -> `swingMatchup`). A move with no `attack` effect never
+        // gets there, so the edge would promise a boost that nothing ever pays.
+        bad(
+          f,
+          `${at}/ability`,
+          `attack edge "${edge.id}" names "${id}", which never rolls an attack`,
+          `Attack edges may name only a move with an attack effect (${[...attackAbilityIds].join(", ")}); say a class's other moves with an edge that names no ability.`,
+        );
+      }
+    });
+  });
+
+  for (const [key, entry] of Object.entries(bestiary?.creatures ?? {})) {
+    const bf = "content/bestiary.json";
+    const at = `/creatures/${key}`;
+    const traits = entry.traits ?? [];
+    if (!Array.isArray(traits)) bad(bf, `${at}/traits`, "traits is not a list");
+    else {
+      if (traits.length > 2) bad(bf, `${at}/traits`, `${traits.length} traits`, "A creature has up to two (docs/matchups.md).");
+      traits.forEach((id, i) => checkTrait(bf, `${at}/traits/${i}`, id));
+    }
+    for (const opinion of ["likes", "dislikes"]) {
+      const list = entry[opinion] ?? [];
+      if (!Array.isArray(list)) bad(bf, `${at}/${opinion}`, `${opinion} is not a list`);
+      else list.forEach((id, i) => checkSpecies(bf, `${at}/${opinion}/${i}`, id));
+    }
+  }
+
+  for (const chapter of chaptersById.values()) {
+    const cf = `content/chapters/${chapter.id}.json`;
+    for (const [sceneId, scene] of Object.entries(chapter.scenes ?? {})) {
+      if (scene.type === "check") (scene.tags ?? []).forEach((id, i) => checkTag(cf, `/scenes/${sceneId}/tags/${i}`, id));
+      if (scene.type === "encounter") {
+        for (const enemy of scene.enemies ?? []) {
+          const at = `/scenes/${sceneId}/enemies/${enemy.id}`;
+          (enemy.traits ?? []).forEach((id, i) => checkTrait(cf, `${at}/traits/${i}`, id));
+        }
+      }
+    }
+  }
+
+  if (ok) {
+    const vocab = [traitIds.size ? `${traitIds.size} traits` : "no traits yet", tagIds.size ? `${tagIds.size} check tags` : "no check tags yet"].join(", ");
+    rep.ok(`${f}  matchups (${(m.edges ?? []).length} edge(s), ${vocab}; every id named is defined, every edge does something, nothing above ${MATCHUP_CAP})`);
+  }
 }
 
 function finish(rep) {

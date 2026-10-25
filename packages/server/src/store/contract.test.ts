@@ -22,7 +22,7 @@ import { FIELD_GUIDE_VERSION, FORGOTTEN_FINDER } from "@kad/shared";
 import type { Character, Household, JourneyState, PlayerProfile, RunState } from "@kad/shared";
 import { DynamoRepository, GSI1_NAME } from "./dynamo-repository.ts";
 import { MemoryRepository } from "./memory-repository.ts";
-import type { CharacterWrite, EventRecord, GameRepository, RoomRecord } from "./repository.ts";
+import type { CharacterWrite, EventRecord, GameRepository, PushSubscriptionRecord, RoomRecord } from "./repository.ts";
 
 const HOUR = 3600_000;
 const DAY = 24 * HOUR;
@@ -103,6 +103,17 @@ function event(runId: string, seq: number): EventRecord {
     patch: [{ op: "replace", path: "/seq", value: seq }],
     at: "2026-07-04T18:00:00.000Z",
     playerId: "p_1",
+  };
+}
+
+function pushSubscription(playerId: string, deviceId: string): PushSubscriptionRecord {
+  return {
+    playerId,
+    householdId: "h_1",
+    deviceId,
+    endpoint: `https://push.example/${deviceId}`,
+    keys: { p256dh: "BPub", auth: "secret" },
+    createdAt: "2026-10-24T12:00:00.000Z",
   };
 }
 
@@ -228,6 +239,29 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
 
         // A device that is not there is a no-op, never a throw.
         await repo.touchDevice("h_1", "d_ghost", "2026-07-05T09:00:00.000Z");
+      });
+
+      it("rotates a token onto a live binding, and never re-arms a revoked one", async () => {
+        await repo.putDevice({
+          deviceId: "d_1",
+          householdId: "h_1",
+          playerId: "p_1",
+          tokenHash: "old",
+          lastSeen: "2026-07-04T18:00:00.000Z",
+          userAgent: "Pixel",
+        });
+        expect(await repo.rotateDevice("h_1", "d_1", "new", "2026-07-05T09:00:00.000Z")).toBe(true);
+        expect(await repo.getDevice("h_1", "d_1")).toMatchObject({
+          tokenHash: "new",
+          lastSeen: "2026-07-05T09:00:00.000Z",
+          userAgent: "Pixel",
+        });
+
+        await repo.revokeDevice("h_1", "d_1");
+        expect(await repo.rotateDevice("h_1", "d_1", "newer", "2026-07-06T09:00:00.000Z")).toBe(false);
+        expect(await repo.getDevice("h_1", "d_1")).toMatchObject({ revoked: true, tokenHash: "new" });
+
+        expect(await repo.rotateDevice("h_1", "d_ghost", "x", "2026-07-06T09:00:00.000Z")).toBe(false);
       });
 
       it("maps an account to its households", async () => {
@@ -978,6 +1012,7 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         await repo.touchPresence("r_1", "p_1", at, Math.floor(Date.now() / 1000) + 3600);
         await repo.putRoomIfAbsent(room());
         await repo.putVisit("p_1", "h_other", at);
+        await repo.putPushSubscription(pushSubscription("p_1", "d_1"));
       }
 
       /** Somebody else's household, which no delete of h_1 may touch. */
@@ -1003,6 +1038,7 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.listHouseholdsForAccount("sub_a")).toEqual([]);
         expect(await repo.listHouseholdsForAccount("sub_b")).toEqual([]);
         expect(await repo.listVisits("p_1")).toEqual([]);
+        expect(await repo.listPushSubscriptions("p_1")).toEqual([]);
         expect(await repo.getRun("r_1")).toBeNull();
         expect(await repo.getDeviceById("d_tab")).toBeNull();
         // A visitor's hero lives at her own home, which is not touched.
@@ -1043,6 +1079,7 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         expect(await repo.getCharacter("h_1", "c_1")).toBeNull();
         expect(await repo.getDevice("h_1", "d_1")).toBeNull();
         expect(await repo.listVisits("p_1")).toEqual([]);
+        expect(await repo.listPushSubscriptions("p_1")).toEqual([]);
         expect(await repo.listIdlePlayers(new Date(Date.now() + 2 * DAY).toISOString())).toEqual([]);
         // Hers only: her sister, the family tablet and the table's save stay.
         expect(await repo.getCharacter("h_1", "c_2")).not.toBeNull();
@@ -2160,6 +2197,54 @@ function contract(name: string, open: () => Promise<GameRepository>, rows: Rows)
         await Promise.all(ids.map((id) => repo.touchPresence("r_9", id, "2026-10-18T12:00:00.000Z", later())));
         const beats = await repo.touchPresence("r_9", "p_1", "2026-10-18T12:00:01.000Z", later());
         expect(Object.keys(beats).sort()).toEqual(ids);
+      });
+
+      it("reads every phone's last word without beating for anybody (#466)", async () => {
+        expect(await repo.getPresence("r_1")).toEqual({});
+        await repo.touchPresence("r_1", "p_1", "2026-10-18T12:00:00.000Z", later());
+        await repo.touchPresence("r_1", "p_2", "2026-10-18T12:00:05.000Z", later());
+        expect(await repo.getPresence("r_1")).toEqual({
+          p_1: "2026-10-18T12:00:00.000Z",
+          p_2: "2026-10-18T12:00:05.000Z",
+        });
+        // Reading is not a beat: the times are unchanged.
+        expect(await repo.getPresence("r_1")).toEqual({
+          p_1: "2026-10-18T12:00:00.000Z",
+          p_2: "2026-10-18T12:00:05.000Z",
+        });
+        expect(await repo.getPresence("r_2")).toEqual({});
+      });
+
+      it("reads an expired row as nobody's word", async () => {
+        await repo.touchPresence("r_1", "p_1", "2026-10-18T12:00:00.000Z", Math.floor(Date.now() / 1000) - 1);
+        expect(await repo.getPresence("r_1")).toEqual({});
+      });
+    });
+
+    describe("push subscriptions (#466)", () => {
+      it("keeps one per phone, lists a kid's own, and replaces on a second subscribe", async () => {
+        expect(await repo.listPushSubscriptions("p_1")).toEqual([]);
+        await repo.putPushSubscription(pushSubscription("p_1", "d_1"));
+        await repo.putPushSubscription(pushSubscription("p_1", "d_2"));
+        await repo.putPushSubscription(pushSubscription("p_2", "d_3"));
+        expect((await repo.listPushSubscriptions("p_1")).map((s) => s.deviceId).sort()).toEqual(["d_1", "d_2"]);
+        expect((await repo.listPushSubscriptions("p_2")).map((s) => s.deviceId)).toEqual(["d_3"]);
+
+        const renewed = { ...pushSubscription("p_1", "d_1"), endpoint: "https://push.example/new" };
+        await repo.putPushSubscription(renewed);
+        const mine = await repo.listPushSubscriptions("p_1");
+        expect(mine).toHaveLength(2);
+        expect(mine.find((s) => s.deviceId === "d_1")).toEqual(renewed);
+      });
+
+      it("deletes one phone's and leaves the rest; a missing one is a no-op", async () => {
+        await repo.putPushSubscription(pushSubscription("p_1", "d_1"));
+        await repo.putPushSubscription(pushSubscription("p_1", "d_2"));
+        await repo.deletePushSubscription("p_1", "d_1");
+        expect((await repo.listPushSubscriptions("p_1")).map((s) => s.deviceId)).toEqual(["d_2"]);
+        await repo.deletePushSubscription("p_1", "d_nope");
+        await repo.deletePushSubscription("p_9", "d_2");
+        expect((await repo.listPushSubscriptions("p_1")).map((s) => s.deviceId)).toEqual(["d_2"]);
       });
     });
   });

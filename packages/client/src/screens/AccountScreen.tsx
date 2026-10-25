@@ -16,8 +16,8 @@ import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ReactElement } from "react";
 import { useKeepsakeStore } from "../store/keepsake";
 import { BRING_PARAM, bringHeroFromSearch, navigate, PAIR_PARAM, pairingFromSearch } from "../router";
-import { browserEnv, browserName } from "../install/detect";
-import { loadPlayerDeviceToken } from "../store/persistence";
+import { browserEnv, browserName, isStandalone } from "../install/detect";
+import { loadPlayerDeviceToken, loadSharedDevice } from "../store/persistence";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
 import { LazySignInFlow } from "./HomeScreen";
@@ -26,6 +26,12 @@ import "./HomeScreen.css";
 
 const PairHere = lazyChunk(() => import("./PairDevice"), (module) => module.PairHere);
 const PlayAsMe = lazyChunk(() => import("./PairDevice"), (module) => module.PlayAsMe);
+/*
+ * "It's your turn" while the app is in the background (#466). Its own chunk,
+ * loaded only where it could show: the installed app, on a browser with push,
+ * on a phone that has a player. Everywhere else the switch is never drawn.
+ */
+const PushSwitch = lazyChunk(() => import("../push/PushSwitch"), (module) => module.PushSwitch);
 
 export function AccountScreen(): ReactElement {
   const checkKeepsake = useKeepsakeStore((s) => s.check);
@@ -69,6 +75,17 @@ export function AccountScreen(): ReactElement {
 
   // Read again as sign-in moves on: signing in can bind this device to a hero.
   const hasPlayed = useMemo(() => loadPlayerDeviceToken() !== null, [keepsakeStep, account]);
+  // Cheap checks first, so the switch's chunk is fetched only where it could show.
+  const pushHere = useMemo(
+    () =>
+      hasPlayed &&
+      loadSharedDevice() === null &&
+      isStandalone(browserEnv()) &&
+      typeof window !== "undefined" &&
+      "PushManager" in window &&
+      "Notification" in window,
+    [hasPlayed],
+  );
 
   return (
     <main className="home account" aria-labelledby="account-title">
@@ -159,6 +176,14 @@ export function AccountScreen(): ReactElement {
               </Button>
             ) : null}
           </section>
+
+          {pushHere && pairing === "none" ? (
+            <ChunkBoundary inline className="kad-chunk-float" message="The turn switch couldn’t open.">
+              <Suspense fallback={null}>
+                <PushSwitch />
+              </Suspense>
+            </ChunkBoundary>
+          ) : null}
 
           {signInAvailable ? (
             <section className="home__card home__account" aria-labelledby="account-more" hidden={pairing !== "none"}>

@@ -18,6 +18,11 @@ describe("CI change classification", () => {
   it("checks art tooling without deploying it", () => {
     expect(classify(["tools/art/verify.py"])).toEqual({ build: true, e2e: false, deploy: false });
   });
+  it("runs the end-to-end suite for the tool that deals its shards, not for the rest of the CI tooling", () => {
+    expect(classify(["tools/ci/changes.mjs"])).toEqual({ build: true, e2e: false, deploy: false });
+    expect(classify(["tools/ci/e2e-shard.mjs"])).toEqual({ build: true, e2e: true, deploy: false });
+    expect(classify(["e2e/timings.json"])).toEqual({ build: true, e2e: true, deploy: false });
+  });
   it("does not deploy tests or the CI workflow", () => {
     expect(classify(["e2e/first-playable.spec.ts"]).deploy).toBe(false);
     expect(classify([".github/workflows/ci.yml"])).toEqual({ build: true, e2e: true, deploy: false });

@@ -258,7 +258,7 @@ If the **whole party** is knocked down, the encounter is **lost, not fatal** —
 
 ### 8.1 Leveling
 
-XP is awarded per chapter, not per enemy defeated — so exploring and talking are worth as much as fighting. Levels 1–10.
+Story XP is awarded per chapter, not per enemy defeated — so exploring and talking are worth as much as fighting. Each hero also earns XP for her own rolls that go well (§8.2). Levels 1–30 (§8.1, "Beyond level 10").
 
 **A chapter pays each hero once, ever** (#408). Replaying a campaign is for the story: a chapter a hero has already been paid for, in an earlier attempt or at another table, pays her nothing more, bonuses included, while a chapter she has never finished (another road through Gemfall) pays in full. Each hero is judged on her own record, so a new hero at the table is paid while a veteran is not. A payment made during a campaign that then fails goes back with the XP, so she can earn it again (`CharacterProgress.paidChapters`).
 
@@ -297,21 +297,20 @@ Chapter awards escalate to match, roughly **100–150 → 300 → 600** per chap
 
 Two things fall out of the escalation, both wanted: replaying an early campaign with a late-game character earns almost nothing, so there is no grinding a easy arc to Mythic; and the numbers themselves getting bigger signals "we are playing at a higher level now" without anyone explaining it.
 
-#### Why it stops at 10
+#### Beyond level 10
 
-Resolution is `d20 + stat` against a target number (§4.1). Push a modifier past about 12 and the die stops deciding anything — hard checks succeed on a 2, and the game quietly stops being about rolling. **The d20 is the real cap, not the number 10.** More levels could only be spent on stats that break it, or on nothing at all.
+Levels 11 to 30 extend the ladder without touching the first ten: the thresholds, rewards and tiers above are byte-for-byte what they were, so no existing hero moves.
 
-Games that go to 50 or 100 do it because level is their *only* progression currency, and they pay for it with levels you cannot feel. This game has five — the stat point, the class distinctions, the tier, the six inventory slots, and souvenirs — so every one of its ten levels can do something visible. At one 30-minute sitting a week, that is a level roughly every fortnight, each of which changes something.
+- **The curve.** Each step costs 200 more than the one before it (level 11 costs 1800, level 30 costs 5600), reaching 80,300 total XP at level 30. Level 20 is at 33,300. No chapter yet pays enough to make this a quick climb; it is a long game for a hero who keeps coming back.
+- **Three more tiers.** **Ascendant** at 15, **Starborn** at 20 and **Legendary** at 30, each with the same transformation cutscene as the first three. Their art is not painted yet: until it is, `artTierOf` draws them as Mythic, so the rules ship ahead of the pictures. Add a tier to `ART_TIER_IDS` when its art lands.
+- **Rewards.** Every level still grants a stat point. Each adds 1 max HP, and each new tier adds 2 max HP and 1 Guard, as the first three do.
+- **The stat ceiling rises slowly.** Bonus points in one stat cap at 9 through level 10, then one higher at 15, 20, 25 and 30 (13 at the top), `maxStatGainAt`. A push past about +12 is what lets the d20 stop deciding anything, so the ceiling creeps rather than tracks the level.
+- **Helping.** The helper's die is a d10 at Ascendant and a d12 at Starborn and Legendary.
+- **Heroes who banked XP past 6,300.** XP kept accruing at level 10, so some heroes already hold enough for level 11 or more. That XP is theirs and counts: it is never capped or erased. A one-time migration (character v7 to v8, `migrate.ts`) brings each saved hero, committed and provisional halves separately, to the level her XP now reaches and banks the stat points those levels owe, so she is paid exactly as if she had earned the levels at the table. It cannot run twice. Her tier follows her level, so a hero past 15, 20 or 30 XP changes body on her next load with no cutscene (nothing is being awarded then); every tier she crosses after that plays the cutscene as normal.
+- **Joining a party** still offers only 1, 4, 7 and 10. A newcomer never skips straight to the legend tiers.
+- **Class moves** still come from distinctions, with no level cap (§4.3).
 
-The tier count is also an art budget, not a rules number: four tiers across six species with per-class overlays is already the largest art line in the project.
-
-#### After level 10
-
-Progression continues sideways, never upward.
-
-- **XP keeps counting.** Past 6300 it accrues forever and shows on the sheet as a plain number with nothing mechanical attached. An ever-climbing number is real, and it costs nothing.
-- **A new hero.** The data model already holds several characters per player. A Mythic character can retire into the world as a standing legend in the lobby while its owner rolls something new and runs the whole arc again with a different toy.
-- **Breadth.** More items, more biomes, more class actions past Master — as sidegrades, never upgrades.
+Why a ceiling at all: games that go to 50 or 100 pay for it with levels you cannot feel. These levels are meant to be felt, which is why they carry tiers and HP rather than bigger numbers on the die. Past 30, XP keeps counting as a plain number.
 
 ### 8.2 Chapter outcomes
 
@@ -330,11 +329,11 @@ Halving rather than zeroing matters. A family that hits two setbacks should fall
 
 Both caps exist to protect the pacing above: with setbacks at half and bonuses at a quarter, a campaign lands within about 25% of its intended total, which moves a tier by at most a chapter. Uncapped, "Sworn ends campaign 1" stops being true.
 
-#### Why XP is never individual
+#### Why the story's XP is shared, and roll XP is not
 
-The reward for a level is *visible* — a new body, and a cutscene where the whole party stops to watch. Award XP per player and the eight-year-old who rolls badly for a few weeks is a visibly smaller creature standing between two Sworn adults, on the television, every session. That is not a difficulty setting; that is a child being shown she is the worst one at the table.
+The reward for a level is *visible* — a new body, and a cutscene where the whole party stops to watch. Uniform party XP for the story is what keeps everybody transforming on the same evening, and it is also what makes the pacing above a promise rather than an average.
 
-Uniform party XP is what keeps everybody transforming on the same evening. It is also what makes the pacing above a promise rather than an average.
+Roll XP is individual. Each hero earns XP for her own rolls that go well: a check she succeeds, an attack she lands, a foe her action knocks out, and a natural 20 on top. It is paid into her own total when the chapter settles, and capped per hero by the chapter's roll-XP cap. Heroes therefore level at their own pace, and a hero who rolls well is a little further on. This is a deliberate choice, and it is why the pacing above is a rough average for each hero rather than a promise for all of them. The story's XP stays uniform: a chapter's base XP, its setback halving and its grantXp effects go to the whole party. Objective bonuses stay party-wide as well: they are never individual.
 
 ### 8.3 Carryover — the commitment rule
 

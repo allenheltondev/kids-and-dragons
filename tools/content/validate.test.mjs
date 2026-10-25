@@ -1473,3 +1473,97 @@ describe("story plates (docs/story-plates.md)", () => {
     expect(result.code).not.toBe(0);
   });
 });
+
+describe("matchups (docs/matchups.md)", () => {
+  const RULES = ["content", "rules.json"];
+  function withRules(mutate, mutateChapter) {
+    const dir = copyTree();
+    const rules = readJson(dir, ...RULES);
+    mutate(rules.matchups, rules);
+    writeJson(dir, RULES, rules);
+    if (mutateChapter) {
+      const chapter = readJson(dir, ...CHAPTER);
+      mutateChapter(chapter);
+      writeJson(dir, CHAPTER, chapter);
+    }
+    return validate(dir);
+  }
+  const firstOf = (chapter, type) => Object.values(chapter.scenes).find((s) => s.type === type);
+
+  it("catches an edge naming an unknown trait, tag or ability, and an edge that does nothing", () => {
+    const result = withRules((m) => {
+      m.traits.thorny ??= { name: "Thorny", icon: "thorn", text: "Spiky.", hint: "Thorny: hit hard" };
+      m.checkTags.sneak ??= { name: "Sneak", text: "Quiet." };
+      m.edges.push(
+        { id: "t_bad_trait", hero: {}, on: "attack", foe: "made_up_trait", roll: 1, text: "x" },
+        { id: "t_bad_tag", hero: {}, on: "check", tag: "made_up_tag", roll: 1, text: "x" },
+        { id: "t_bad_ability", hero: {}, on: "attack", foe: "thorny", ability: "made_up_ability", roll: 1, text: "x" },
+        { id: "t_nothing", hero: {}, on: "attack", foe: "thorny", text: "x" },
+      );
+    });
+    expect(result.out).toContain('"made_up_trait" is not a trait in rules.matchups.traits');
+    expect(result.out).toContain('"made_up_tag" is not a check tag in rules.matchups.checkTags');
+    expect(result.out).toContain('"made_up_ability" is not an ability in content/abilities.json');
+    expect(result.out).toContain('edge "t_nothing" has no effect');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches an attack edge on a move that never rolls an attack", () => {
+    const result = withRules((m) => {
+      m.traits.hulking ??= { name: "Hulking", icon: "fist", text: "Big.", hint: "Hulking: stand firm" };
+      m.edges.push(
+        // Shove pushes and Tanglelight roots: neither has an attack effect.
+        { id: "t_shove", hero: {}, on: "attack", foe: "hulking", ability: "shove", roll: 1, text: "x" },
+        { id: "t_tangle", hero: {}, on: "attack", foe: "hulking", ability: ["burst", "tanglelight"], roll: 1, text: "x" },
+        // Burst does roll one, so this is fine.
+        { id: "t_burst", hero: {}, on: "attack", foe: "hulking", ability: "burst", roll: 1, text: "x" },
+      );
+    });
+    expect(result.out).toContain('attack edge "t_shove" names "shove", which never rolls an attack');
+    expect(result.out).toContain('attack edge "t_tangle" names "tanglelight", which never rolls an attack');
+    expect(result.out).not.toContain('attack edge "t_burst"');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a number above the design's 2", () => {
+    const result = withRules((m) => {
+      m.edges.push({ id: "t_big", hero: {}, on: "check", tag: Object.keys(m.checkTags)[0] ?? "sneak", roll: 3, text: "x" });
+    });
+    expect(result.out).toContain("/matchups/edges/");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("catches a chapter naming an unknown trait or check tag", () => {
+    const result = withRules(
+      (m) => {
+        m.traits.thorny ??= { name: "Thorny", icon: "thorn", text: "Spiky.", hint: "Thorny: hit hard" };
+        m.checkTags.sneak ??= { name: "Sneak", text: "Quiet." };
+      },
+      (chapter) => {
+        const check = firstOf(chapter, "check");
+        const fight = firstOf(chapter, "encounter");
+        if (!check || !fight) throw new Error("fixture: bramblewood-01 needs a check and a fight");
+        check.tags = ["made_up_tag"];
+        fight.enemies[0].traits = ["made_up_trait"];
+      },
+    );
+    expect(result.out).toContain('"made_up_tag" is not a check tag');
+    expect(result.out).toContain('"made_up_trait" is not a trait');
+    expect(result.code).not.toBe(0);
+  });
+
+  it("skips the vocabulary checks while the tables are empty", () => {
+    const result = withRules(
+      (m) => {
+        m.traits = {};
+        m.checkTags = {};
+      },
+      (chapter) => {
+        const check = firstOf(chapter, "check");
+        if (check) check.tags = ["anything"];
+      },
+    );
+    expect(result.out).toContain("no traits yet");
+    expect(result.code).toBe(0);
+  });
+});

@@ -950,7 +950,8 @@ html:not(.dark) .wiki-logo--footer .wiki-logo__amp {
 .wiki-badge--location   { --b: #e8743c; }
 .wiki-badge--npc,
 .wiki-badge--individual { --b: #3f9fd6; }
-.wiki-badge--character  { --b: #c9962f; }
+.wiki-badge--character,
+.wiki-badge--class      { --b: #c9962f; }
 .wiki-badge--item       { --b: #c9962f; }
 .wiki-badge--quest,
 .wiki-badge--campaign   { --b: #8b6cf5; }
@@ -2038,12 +2039,15 @@ a.wiki-roster__card:hover {
 
 .wiki-level-track {
   display: grid;
-  grid-template-columns: repeat(10, minmax(0, 1fr));
+  /* Thirty levels now, so it wraps onto rows; cells stay wide enough for
+     "80300 XP" and a tier name. */
+  grid-template-columns: repeat(auto-fill, minmax(5.2rem, 1fr));
   gap: 4px;
   margin: var(--wiki-space-lg) 0;
 }
 
 .wiki-level-track__step {
+  overflow-wrap: anywhere;
   position: relative;
   padding: 0.6rem 0.2rem;
   text-align: center;
@@ -3166,10 +3170,6 @@ a.wiki-stats__item:hover {
 
   .wiki-featured {
     grid-template-columns: 96px 1fr;
-  }
-
-  .wiki-level-track {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .wiki-tier-strip {

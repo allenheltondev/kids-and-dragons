@@ -55,30 +55,34 @@ test.describe("a tablet held sideways", () => {
       await expect(choices.first()).toBeVisible(TAP);
       await expect(page.locator("[data-pane='world'] .kad-surface--world")).toBeVisible();
 
-      const sizes = await page.evaluate(() => {
-        const px = (el: Element | null) => (el ? parseFloat(getComputedStyle(el).fontSize) : NaN);
-        const pane = document.querySelector("[data-pane='player']")!.getBoundingClientRect();
-        return {
-          player: px(document.querySelector(".kad-surface--player")),
-          world: px(document.querySelector(".kad-surface--world")),
-          choices: [...document.querySelectorAll("[data-pane='player'] .choice")].map((el) => {
-            const box = el.getBoundingClientRect();
-            return {
-              height: box.height,
-              // Whole, inside the pane and the screen.
-              seen: box.top >= pane.top - 1 && box.bottom <= Math.min(pane.bottom, innerHeight) + 1 &&
-                box.left >= pane.left - 1 && box.right <= pane.right + 1,
-            };
-          }),
-        };
-      });
-      expect(sizes.player, "the controls' type, sized for their pane").toBeCloseTo(font, 1);
-      expect(sizes.world, "the world's type, sized for its pane").toBeCloseTo(font, 1);
-      expect(sizes.choices.length).toBeGreaterThan(0);
-      for (const [i, choice] of sizes.choices.entries()) {
-        expect(choice.height, `choice ${String(i + 1)} is a pane's height, not a screen's`).toBeLessThanOrEqual(tallest);
-        expect(choice.seen, `choice ${String(i + 1)} is whole on screen in its pane`).toBe(true);
-      }
+      // Allow responsive layout and lazy artwork to settle after the scene arrives.
+      // Keep every size and visibility constraint; retry the rendered measurement.
+      await expect(async () => {
+        const sizes = await page.evaluate(() => {
+          const px = (el: Element | null) => (el ? parseFloat(getComputedStyle(el).fontSize) : NaN);
+          const pane = document.querySelector("[data-pane='player']")!.getBoundingClientRect();
+          return {
+            player: px(document.querySelector(".kad-surface--player")),
+            world: px(document.querySelector(".kad-surface--world")),
+            choices: [...document.querySelectorAll("[data-pane='player'] .choice")].map((el) => {
+              const box = el.getBoundingClientRect();
+              return {
+                height: box.height,
+                // Whole, inside the pane and the screen.
+                seen: box.top >= pane.top - 1 && box.bottom <= Math.min(pane.bottom, innerHeight) + 1 &&
+                  box.left >= pane.left - 1 && box.right <= pane.right + 1,
+              };
+            }),
+          };
+        });
+        expect(sizes.player, "the controls' type, sized for their pane").toBeCloseTo(font, 1);
+        expect(sizes.world, "the world's type, sized for its pane").toBeCloseTo(font, 1);
+        expect(sizes.choices.length).toBeGreaterThan(0);
+        for (const [i, choice] of sizes.choices.entries()) {
+          expect(choice.height, `choice ${String(i + 1)} is a pane's height, not a screen's`).toBeLessThanOrEqual(tallest);
+          expect(choice.seen, `choice ${String(i + 1)} is whole on screen in its pane`).toBe(true);
+        }
+      }).toPass({ timeout: 10_000 });
     });
   }
 });
