@@ -3593,14 +3593,68 @@
             "temple_keeper": "kitsune temple keeper"
           }
         },
+        "landing": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "landing_held": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "landing_slid": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
         "lesson": {
           "requires": [
-            "learned_note"
+            "learned_note",
+            "temple_keeper"
           ],
           "introduces": {
             "seren": "Seren Wisp",
             "pip": "Pip Thistledown"
           }
+        },
+        "pip_notes": {
+          "requires": [
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "hum": {
+          "requires": [
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "hum_attuned": {
+          "requires": [
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "hum_heard": {
+          "requires": [
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "hum_fuzzy": {
+          "requires": [
+            "seren",
+            "pip"
+          ],
+          "introduces": {}
         },
         "local": {
           "requires": [
@@ -3613,22 +3667,506 @@
         },
         "markers": {
           "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "markers_check": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "markers_set": {
+          "requires": [
             "temple_keeper",
-            "marker_posts"
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "markers_dropped": {
+          "requires": [
+            "temple_keeper"
           ],
           "introduces": {}
         },
         "song": {
           "requires": [
-            "distant_song",
+            "temple_keeper",
+            "distant_song"
+          ],
+          "introduces": {}
+        },
+        "song_check": {
+          "requires": [
             "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "song_bearing": {
+          "requires": [
+            "temple_keeper",
+            "marker_posts"
+          ],
+          "introduces": {}
+        },
+        "song_muddled": {
+          "requires": [
+            "temple_keeper",
+            "marker_posts"
+          ],
+          "introduces": {}
+        },
+        "edge_scout": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "edge_scouted": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "edge_gusted": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "walker": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {
+            "dob": "Dob",
+            "kite_seller": "kite seller"
+          }
+        },
+        "walker_catch": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "walker_call": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "walker_leap": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "walker_safe": {
+          "requires": [
+            "temple_keeper",
+            "dob"
+          ],
+          "introduces": {}
+        },
+        "walker_dragged": {
+          "requires": [
+            "temple_keeper",
+            "dob"
+          ],
+          "introduces": {}
+        },
+        "edge_merge": {
+          "requires": [
+            "temple_keeper",
+            "dob"
+          ],
+          "introduces": {
+            "signal_basket": "signal basket",
+            "thimble": "named Thimble"
+          }
+        },
+        "basket_plan": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_ropes": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_wedge": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_smash": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_brace": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_up": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "pole_leaning": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "fuel": {
+          "requires": [
+            "temple_keeper",
+            "dob"
+          ],
+          "introduces": {}
+        },
+        "fuel_logs": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "fuel_twigs": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "fuel_lace": {
+          "requires": [
+            "temple_keeper",
+            "dob"
+          ],
+          "introduces": {}
+        },
+        "fuel_dash": {
+          "requires": [
+            "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "fuel_dry": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "fuel_soggy": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "light": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "light_flint": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "light_coals": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "light_fox": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "basket_lit": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "basket_smoky": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "dusk_ferry": {
+          "requires": [
+            "temple_keeper",
+            "dob",
+            "thimble"
+          ],
+          "introduces": {
+            "fenwick": "Fenwick, courier"
+          }
+        },
+        "ferry_lines": {
+          "requires": [
+            "temple_keeper",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "ferry_flags": {
+          "requires": [
+            "temple_keeper",
+            "dob",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "ferry_tow": {
+          "requires": [
+            "temple_keeper",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "ferry_whistle": {
+          "requires": [
+            "temple_keeper",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "ferry_post": {
+          "requires": [
+            "temple_keeper",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "ferry_in": {
+          "requires": [
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {
+            "hens": "Hens flap out"
+          }
+        },
+        "ferry_bumped": {
+          "requires": [
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {
+            "hens": "Hens flap out"
+          }
+        },
+        "passengers": {
+          "requires": [
+            "thimble"
+          ],
+          "introduces": {}
+        },
+        "passengers_fed": {
+          "requires": [
+            "temple_keeper",
+            "thimble",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "passengers_calm": {
+          "requires": [
+            "temple_keeper",
+            "thimble",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "passengers_stuck": {
+          "requires": [
+            "temple_keeper",
+            "thimble",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "thimble": {
+          "requires": [
+            "thimble",
+            "fenwick",
+            "hens"
+          ],
+          "introduces": {
+            "cloud_whales": "cloud whales"
+          }
+        },
+        "thimble_chart": {
+          "requires": [
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "fenwick_flags": {
+          "requires": [
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "windbreak_rest": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "pip",
+            "dob",
+            "hens",
+            "distant_song"
+          ],
+          "introduces": {}
+        },
+        "pip_night": {
+          "requires": [
+            "temple_keeper",
+            "pip",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "night_song": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "pip",
+            "distant_song"
+          ],
+          "introduces": {}
+        },
+        "bearing_vote": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "pip",
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "bearing_notes": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "bearing_air": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "bearing_chime": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "bearing_sing": {
+          "requires": [
+            "temple_keeper",
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "bearing_found": {
+          "requires": [
+            "temple_keeper",
+            "thimble",
+            "fenwick",
+            "cloud_whales"
+          ],
+          "introduces": {}
+        },
+        "bearing_blurred": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "route_vote": {
+          "requires": [
+            "temple_keeper",
+            "thimble",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
+        "route_ferry": {
+          "requires": [
+            "temple_keeper",
+            "dob",
+            "thimble",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "route_flags": {
+          "requires": [
+            "temple_keeper",
+            "dob",
+            "fenwick",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "island_done": {
+          "requires": [
+            "temple_keeper",
+            "cloud_whales",
+            "signal_basket",
+            "distant_song"
           ],
           "introduces": {}
         },
         "island_rest": {
           "requires": [
             "temple_keeper",
-            "distant_song"
+            "thimble",
+            "fenwick",
+            "cloud_whales"
           ],
           "introduces": {
             "stone_hut": "a stone hut"
@@ -3650,10 +4188,6 @@
             "master_dunnick",
             "pillows"
           ],
-          "introduces": {}
-        },
-        "island_done": {
-          "requires": [],
           "introduces": {}
         }
       }
