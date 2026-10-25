@@ -6,7 +6,7 @@
   "title": "When the Ferry Goes Your Way",
   "biome": "eastern_plains",
   "music": "riftlight-paths",
-  "estimatedMinutes": 8,
+  "estimatedMinutes": 33,
   "xpAward": 140,
   "entry": "bridge",
   "plate": {
@@ -14,28 +14,38 @@
     "narration": "At Ashspan Bridge, river water taps the ferry landing. A flat boat waits beside its long pole. The road crosses overhead, while the current carries on toward the coast."
   },
   "goal": {
-    "text": "Lend a hand at the river ferry before you go on.",
+    "text": "Get the travelers across the river, then help mend Ashspan Bridge.",
     "steps": [
-      {
-        "id": "reach_landing",
-        "label": "Reach the ferry landing",
-        "flag": "reached_the_ferry_landing"
-      },
       {
         "id": "help_board",
         "label": "Help the travelers board",
         "flag": "helped_travelers_board"
+      },
+      {
+        "id": "planks",
+        "label": "Get the new planks to the bridge",
+        "flag": "got_the_planks_to_the_bridge"
+      },
+      {
+        "id": "beam",
+        "label": "Raise the middle beam",
+        "flag": "raised_the_middle_beam"
+      },
+      {
+        "id": "deck",
+        "label": "Lay and lash the deck",
+        "flag": "mended_the_bridge_deck"
       }
     ]
   },
   "scenes": {
     "bridge": {
       "type": "story",
-      "narration": "The bridge over the Great River is called Ashspan Bridge. Old Ossley, a frogfolk boatman, rests a pole across his flat boat. \"Changed melt,\" he says, watching a branch turn in the current. \"Busy year.\"",
+      "narration": "A stone bridge called Ashspan Bridge crosses the Great River here, but the melt has taken half the planks from its middle. Old Ossley, a frogfolk boatman, leans on a long pole beside his flat boat. \"Changed melt,\" he says, watching a branch turn in the current. \"Busy year. Folk cannot walk over, so they ride with me. Help me get them across, and then the bridge wants mending.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Go down to the landing",
           "icon": "hand",
           "goto": "landing"
         }
@@ -58,19 +68,26 @@
     },
     "landing": {
       "type": "choice_point",
-      "narration": "A mooring rope has dragged a landing plank loose. Ossley is holding the boat steady while two travelers wait with their bags. What will you do?",
+      "narration": "A mooring rope has dragged the landing plank loose, and the plank is wobbling like a loose tooth. Ossley is holding the boat steady with his pole while two travelers wait with their bags. One bag quacks, loudly. The other traveler pretends not to hear it. What will you do?",
       "choices": [
         {
           "id": "plank",
           "label": "Hold the plank while the travelers board",
           "icon": "hand",
-          "goto": "plank"
+          "goto": "plank_check"
         },
         {
           "id": "rope",
           "label": "Help move the rope off the plank",
           "icon": "hand",
-          "goto": "rope"
+          "goto": "rope_check"
+        },
+        {
+          "id": "brace",
+          "label": "Use brace to hold the plank end like a post",
+          "icon": "shield",
+          "goto": "brace_check",
+          "requiresClass": "thornguard"
         }
       ],
       "onEnter": [
@@ -83,19 +100,95 @@
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Traveler"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "plank_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Hold the plank flat and steady while the travelers step aboard. Choose who leads; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "plank"
+      },
+      "onFailure": {
+        "goto": "board_wet"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Traveler"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "rope_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Flip the mooring rope off the plank before the boat drifts away. Choose who leads; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rope"
+      },
+      "onFailure": {
+        "goto": "board_wet"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Traveler"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "brace_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "A thornguard's brace holds the plank end like a post. Can you walk the heavy bags across it without a wobble?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "brace_done"
+      },
+      "onFailure": {
+        "goto": "board_wet"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Traveler"
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
     },
     "plank": {
       "type": "story",
-      "narration": "You hold the plank flat until both travelers are aboard. Ossley tests it once with his pole and nods. \"That will do.\"",
+      "narration": "You hold the plank flat until both travelers are aboard. Ossley tests it once with his pole and nods. \"That will do.\" One traveler pats the plank as she passes, the way you would pat a good horse.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Step aboard",
           "icon": "hand",
-          "goto": "routes"
+          "goto": "ferry_ask"
         }
       ],
       "onEnter": [
@@ -108,25 +201,2313 @@
         {
           "figure": "cast/old_ossley",
           "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Traveler"
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
     },
     "rope": {
       "type": "story",
-      "narration": "You lift the rope clear and seat the plank on its supports. The travelers board without wetting their bags. Ossley gives you a brief nod.",
+      "narration": "You lift the rope clear and seat the plank on its supports. The travelers board without wetting their bags. Ossley gives you a brief nod, which from a frogfolk boatman is a parade. The loose rope coils itself on the deck like a sleeping snake.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Step aboard",
           "icon": "hand",
-          "goto": "routes"
+          "goto": "ferry_ask"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
           "flag": "helped_travelers_board"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Traveler"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "brace_done": {
+      "type": "story",
+      "narration": "The plank end does not move, not even when the heaviest bag thumps across. Both travelers board with dry shoes. Ossley gives the plank an admiring tap. \"Like a post,\" he says. \"A post that gets out of the way afterward. Hard to find.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Step aboard",
+          "icon": "hand",
+          "goto": "ferry_ask"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_travelers_board"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Traveler"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "board_wet": {
+      "type": "story",
+      "narration": "The plank tips and one bag drops into the shallows, quacking. Everyone fishes it out together. The travelers board soaked and cheerful. \"It floats,\" says one. \"It is a very good bag.\" Ossley wrings out his hat and says nothing at all, which is how frogfolk laugh.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Step aboard",
+          "icon": "hand",
+          "goto": "ferry_ask"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_travelers_board"
+        },
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Traveler"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "ferry_ask": {
+      "type": "story",
+      "narration": "The nearer traveler hugs her bag. \"Tilly,\" she says. \"Duck eggs, for market across the water. They are not due for days.\" The bag quacks. \"They disagree.\" Ossley pushes off, and the bridge slides slowly past overhead, full of holes like cheese. \"The river is strong this year, and a flat boat spins when the weight sits wrong,\" he says. The current tugs at the boat like a dog at a sleeve.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Hear Ossley's plan",
+          "icon": "hand",
+          "goto": "ferry_plan"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "ferry_plan": {
+      "type": "choice_point",
+      "narration": "Ossley hands out jobs. \"The boat needs steadying, and the river needs watching,\" he says. \"I only have the two eyes, and one of them is on my hat.\" The far landing looks very small from here. How will you help get across?",
+      "choices": [
+        {
+          "id": "lean",
+          "label": "Lean together on Ossley's call",
+          "icon": "hand",
+          "goto": "ferry_hold"
+        },
+        {
+          "id": "pole",
+          "label": "Take the pole with Ossley and push against the current",
+          "icon": "hand",
+          "goto": "pole_check"
+        },
+        {
+          "id": "watch",
+          "label": "Fly ahead and watch for snags in the water",
+          "icon": "wing",
+          "goto": "watch_check",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "pole_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Take the pole beside Ossley and push against the current, stroke after stroke. Choose who leads; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "crossing"
+      },
+      "onFailure": {
+        "goto": "ferry_spin"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "watch_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Wings lift you above the water to watch for snags. Can you call a safe line back to Ossley?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "crossing"
+      },
+      "onFailure": {
+        "goto": "ferry_spin"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "ferry_hold": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Ossley calls the lean! Everyone shift your weight the same way, then back, and keep the flat boat from spinning!",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "crossing"
+      },
+      "onFailure": {
+        "goto": "ferry_spin"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "crossing": {
+      "type": "story",
+      "narration": "You lean left, then right, then left again. The flat boat wobbles like a duck and slides across, straight as a plank. \"Good,\" says Ossley. \"Frogfolk dislike spinning.\" He bumps the far landing as gently as a sleepy cat. Tilly counts her eggs, which takes no time, since they are all in one bag. The bag quacks the total.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Step ashore",
+          "icon": "hand",
+          "goto": "far_bank"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "ferry_spin": {
+      "type": "story",
+      "narration": "The boat does one slow circle. The bridge goes by twice. Ossley says nothing, but his throat puffs out like a drum. Then he drives the pole into the mud and the boat stops, a little dizzy, a little late. Tilly checks her eggs. \"Still quacking,\" she says, and everyone breathes again.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Step ashore",
+          "icon": "hand",
+          "goto": "far_bank"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "far_bank": {
+      "type": "story",
+      "narration": "The far landing has a muddy ramp and a cart tipped up on one wheel. A dragonling bridge-mender named Bryn stands with her hands on her hips, glaring at the broken deck. \"Planks, I have,\" she says. \"Hands, I do not. Help me fix this, and the market folk can cross, and Ossley can rest his pole.\" Tilly nods hard. \"And my eggs can get to market,\" she says. Ossley says nothing, but his pole sags with relief.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the stuck cart",
+          "icon": "hand",
+          "goto": "cart_plan"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "cart_plan": {
+      "type": "choice_point",
+      "narration": "The cart that carries the new planks sits in mud up to its axle. Bryn's two pack goats strain at the front, but they only slip. One of them sits down, as if to say, call me when it's over. How will you get the cart out?",
+      "choices": [
+        {
+          "id": "dig",
+          "label": "Dig out the wheel",
+          "icon": "hand",
+          "goto": "dig_check"
+        },
+        {
+          "id": "track",
+          "label": "Lay old planks under the wheel as a track",
+          "icon": "hand",
+          "goto": "track_check"
+        },
+        {
+          "id": "roar",
+          "label": "Use roar to start the goats pulling together",
+          "icon": "spark",
+          "goto": "roar_check",
+          "requiresSpecies": "manticore"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "dig_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Dig the mud from around the wheel and push the cart out. Choose who leads; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "cart_free"
+      },
+      "onFailure": {
+        "goto": "cart_stuck"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "track_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Work out where the old planks must lie so the wheel can climb out of the mud. Choose who leads; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "cart_free"
+      },
+      "onFailure": {
+        "goto": "cart_stuck"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "roar_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "A manticore's roar startles the goats into pulling together. Can you steer the cart straight out of the mud?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "cart_free"
+      },
+      "onFailure": {
+        "goto": "cart_stuck"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "cart_free": {
+      "type": "story",
+      "narration": "The wheel pops out of the mud with a slurp. The goats trot up the bank as if it had been their idea all along, and the cart rolls toward the bridge with a creak. Bryn counts the planks twice. \"All there,\" she says, and kisses the nearest goat on the nose. The goat looks away, deeply embarrassed, and eats her sleeve.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Roll on to the bridge",
+          "icon": "hand",
+          "goto": "bridge_head"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_the_planks_to_the_bridge"
+        },
+        {
+          "type": "grantItem",
+          "itemId": "brave_whistle",
+          "to": "party"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "cart_stuck": {
+      "type": "story",
+      "narration": "You push, the cart sinks, and the mud wins. In the end Ossley's mooring rope and everyone's backs haul it out together, but one plank snaps on the way. Bryn holds up the two halves. \"Kindling,\" she says. \"I will make do.\" She hands you a brave whistle from her belt. \"For calling goats. They ignore it, but it is very loud.\" The goats stand a long way off, pretending to be somebody else's goats.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Roll on to the bridge",
+          "icon": "hand",
+          "goto": "bridge_head"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "got_the_planks_to_the_bridge"
+        },
+        {
+          "type": "setFlag",
+          "flag": "lost_a_plank"
+        },
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        },
+        {
+          "type": "grantItem",
+          "itemId": "brave_whistle",
+          "to": "party"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "bridge_head": {
+      "type": "story",
+      "narration": "You roll the planks to the bridge. At the first stone pier, logs and branches have jammed into a heap. The river is pushing the whole heap against the stone. \"Debris,\" says Bryn. \"The river has thrown its furniture at us.\" If the heap shifts, it will shove the bridge crooked. Ossley sniffs. \"I have seen it do worse. Not often. But I have.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the jam",
+          "icon": "hand",
+          "goto": "jam_plan"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "jam_plan": {
+      "type": "choice_point",
+      "narration": "The jam is a heap of logs, roots and one entire fence. Pull the wrong log and the rest may roll. What will you do about the jam?",
+      "choices": [
+        {
+          "id": "hook",
+          "label": "Hook the logs out one at a time",
+          "icon": "hand",
+          "goto": "hook_check"
+        },
+        {
+          "id": "haul",
+          "label": "Tie a rope round the heap and everyone pulls",
+          "icon": "hand",
+          "goto": "haul_check"
+        },
+        {
+          "id": "slip",
+          "label": "Have a duskrunner slip along the pier and free the key log",
+          "icon": "spark",
+          "goto": "slip_check",
+          "requiresClass": "duskrunner"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "hook_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Hook each log with the long pole and draw it clear of the pier. Choose who leads; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "jam_clear"
+      },
+      "onFailure": {
+        "goto": "jam_shift"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "haul_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everyone take the rope. Pull the whole heap loose together, on Ossley's call!",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "jam_clear"
+      },
+      "onFailure": {
+        "goto": "jam_shift"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "slip_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "A duskrunner slips along the pier and spots the key log. Can you pull it out cleanly?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "jam_clear"
+      },
+      "onFailure": {
+        "goto": "jam_shift"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "jam_shift": {
+      "type": "story",
+      "narration": "The heap lurches and the pier shudders. A plank slides off the cart and splashes in. Ossley hooks it back with his pole before the river can take it, and the pier is still straight. \"Rude,\" he tells the river, quite loudly. The river, being a river, does not apologize.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch the water",
+          "icon": "hand",
+          "goto": "jam_clear"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "jam_clear": {
+      "type": "story",
+      "narration": "The last log slides free and bobs away. One log floats upriver for a few lengths, as if it changed its mind, then turns round and follows the rest. Ossley watches it go. \"Changed melt,\" he says again, more quietly this time. The pier stands straight, and the deck waits above it with a cracked middle beam. Even the goats look thoughtful.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look under the deck",
+          "icon": "hand",
+          "goto": "beam_intro"
+        }
+      ],
+      "priority": 2,
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "beam_intro": {
+      "type": "story",
+      "narration": "Bryn climbs down to the pier and points under the deck. The middle beam is cracked right through. A new beam lies on the bank, thick as a sleeping cow. \"It has to be lifted into the notches,\" she says, \"and it will not lift itself. I have asked. Many times.\" Ossley coils his rope to be useful. Tilly sits on a stump and holds her eggs.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Plan the lift",
+          "icon": "hand",
+          "goto": "beam_plan"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "beam_plan": {
+      "type": "choice_point",
+      "narration": "The new beam must go up and into its notches, level, with nobody underneath. How will you raise it?",
+      "choices": [
+        {
+          "id": "lift",
+          "label": "Everyone lifts it together on Ossley's count",
+          "icon": "hand",
+          "goto": "lift_check"
+        },
+        {
+          "id": "roll",
+          "label": "Roll it up on log rollers",
+          "icon": "hand",
+          "goto": "roll_check"
+        },
+        {
+          "id": "smash",
+          "label": "Have a bigfoot smash the old beam out of its notches",
+          "icon": "fist",
+          "goto": "smash_check",
+          "requiresSpecies": "bigfoot"
+        },
+        {
+          "id": "hum",
+          "label": "Have a songkeeper hum a count everyone can lift to",
+          "icon": "song",
+          "goto": "hum_check",
+          "requiresClass": "songkeeper"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "lift_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everyone take hold of the beam. Lift together when Ossley counts three!",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "beam_up"
+      },
+      "onFailure": {
+        "goto": "beam_slip"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "roll_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Set the rollers and the slope so the beam rolls up instead of sticking. Choose who leads; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "beam_up"
+      },
+      "onFailure": {
+        "goto": "beam_slip"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "smash_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "A bigfoot's smash knocks the cracked beam loose. Can you slide the new one into the empty notches?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "beam_up"
+      },
+      "onFailure": {
+        "goto": "beam_slip"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "hum_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "A songkeeper's hum keeps the count. Can you keep the beam level while everyone lifts?",
+      "roller": "best",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "beam_up"
+      },
+      "onFailure": {
+        "goto": "beam_slip"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "beam_up": {
+      "type": "story",
+      "narration": "The beam slides into its notches with a deep thunk. Bryn pats it like a pony. \"Good beam,\" she says. \"Do not tell the old one it was replaced.\" Ossley taps it with his pole. It rings, deep and clear. Somewhere in the stone, the whole bridge seems to relax, like a cat settling on a warm step.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look around",
+          "icon": "hand",
+          "goto": "hatch"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "raised_the_middle_beam"
+        },
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "beam_slip": {
+      "type": "story",
+      "narration": "The beam sags and thumps into the notches off by a finger, scraping everyone's hands. Bryn taps it with a mallet until it sits straight. \"It was shy,\" she says. \"Now it is brave.\" Ossley taps it with his pole. It rings, a bit flat, but it rings. Bryn passes round her lunch pail: a supper bundle, still warm.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look around",
+          "icon": "hand",
+          "goto": "hatch"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "raised_the_middle_beam"
+        },
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        },
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "hatch": {
+      "type": "story",
+      "narration": "Tilly's bag cracks. A tiny beak pokes out. \"Oh no,\" says Tilly. \"Oh yes,\" says Ossley. A duckling the size of a teacup tumbles out, then another, then a whole fluffy handful. They waddle straight toward the gap in the deck, singing one word, which is \"peep.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the gap",
+          "icon": "hand",
+          "goto": "duck_plan"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "duck_plan": {
+      "type": "choice_point",
+      "narration": "The ducklings fan out across the bridge head. The nearest is already at the edge, looking down at the water with great interest. \"Eggs,\" says Tilly faintly, \"are supposed to wait until market.\" How will you get them to safety?",
+      "choices": [
+        {
+          "id": "scoop",
+          "label": "Scoop them up in Tilly's basket",
+          "icon": "hand",
+          "goto": "scoop_check"
+        },
+        {
+          "id": "coax",
+          "label": "Coax them with a low, calm voice",
+          "icon": "hand",
+          "goto": "coax_check"
+        },
+        {
+          "id": "trail",
+          "label": "Use beguile to draw a bright trail they will follow",
+          "icon": "spark",
+          "goto": "trail_check",
+          "requiresSpecies": "kitsune"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "scoop_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Sweep the ducklings into the basket before they reach the gap. Choose who leads; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ducks_safe"
+      },
+      "onFailure": {
+        "goto": "ducks_loose"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "coax_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Crouch low and call to the ducklings softly until they follow you. Choose who speaks; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ducks_safe"
+      },
+      "onFailure": {
+        "goto": "ducks_loose"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "trail_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "A kitsune's beguile draws a bright trail through the air. Can you lead the ducklings along it and into the basket?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "ducks_safe"
+      },
+      "onFailure": {
+        "goto": "ducks_loose"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "ducks_safe": {
+      "type": "story",
+      "narration": "The ducklings tumble into the basket in a fluffy heap and go quiet at once. Tilly counts, loses count, and counts again. \"All of them,\" she says. \"My heroes.\" One duckling climbs onto Ossley's hat and falls asleep. He does not move for a long time, for fear of the peeping. Tilly ties a songbird ribbon round your wrist. \"For the heroes,\" she says.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get back to the planks",
+          "icon": "hand",
+          "goto": "planks_plan"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_egg_farmer"
+        },
+        {
+          "type": "grantItem",
+          "itemId": "songbird_ribbon",
+          "to": "party"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "ducks_loose": {
+      "type": "story",
+      "narration": "Three ducklings dart through to the edge of the gap and cling to a plank end, peeping furiously. Ossley fishes them out with his pole and net, dripping and unimpressed. One pecks your ankle. Tilly gathers all of them into her hat. \"They'll learn,\" she says. \"Eventually. Possibly in about a year.\" She ties a songbird ribbon round your wrist. \"For the heroes,\" she says.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get back to the planks",
+          "icon": "hand",
+          "goto": "planks_plan"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_egg_farmer"
+        },
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        },
+        {
+          "type": "grantItem",
+          "itemId": "songbird_ribbon",
+          "to": "party"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "planks_plan": {
+      "type": "choice_point",
+      "narration": "Now the deck. Bryn's planks wait on the bank, and the gap yawns between the two ends of the bridge. How will you get the planks across?",
+      "choices": [
+        {
+          "id": "rope2",
+          "label": "Slide the planks across on a rope line",
+          "icon": "hand",
+          "goto": "rope2_check"
+        },
+        {
+          "id": "pass",
+          "label": "Pass them hand to hand along the bridge",
+          "icon": "hand",
+          "goto": "pass_check"
+        },
+        {
+          "id": "pwings",
+          "label": "Carry the plank line across on wings",
+          "icon": "wing",
+          "goto": "pwing_check",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "rope2_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Slide each plank along the rope line, tap it into place, and send the next. Choose who leads; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "planks_laid"
+      },
+      "onFailure": {
+        "goto": "planks_dropped"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "pass_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Pass each plank hand to hand with a steady rhythm. Choose who sets the beat; everyone can help.",
+      "roller": "party",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "planks_laid"
+      },
+      "onFailure": {
+        "goto": "planks_dropped"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "pwing_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Wings carry the line across the gap. Can you land every plank square?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "planks_laid"
+      },
+      "onFailure": {
+        "goto": "planks_dropped"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "planks_dropped": {
+      "type": "story",
+      "narration": "A plank slips off the line and slaps into the river. Ossley hooks it with his pole and drags it dripping to the landing, grumbling about wet wood. It takes two trips and a very damp plank, but the deck gets laid. Bryn wrings out the plank like laundry.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the deck",
+          "icon": "hand",
+          "goto": "planks_laid"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "planks_laid": {
+      "type": "story",
+      "narration": "The planks go down one by one, tap tap tap, until the deck has only one small hole left, about the size of a goat. Bryn fits the last plank with a mallet. \"Now,\" she says, \"it needs tying down, so it stays put when the river sulks.\" One of the goats looks at the last hole, then at Bryn, then very slowly walks away.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Plan the lashings",
+          "icon": "hand",
+          "goto": "lash_plan"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "lost_a_plank"
+          },
+          "text": "One plank went to the mud, so Ossley gives up a spare board from his boat. He does not say a word, but he is sniffing."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "lash_plan": {
+      "type": "choice_point",
+      "narration": "A deck stays only if it is tied down. The long ropes wait in a coil, the pegs in a bucket. How will you lash the planks?",
+      "choices": [
+        {
+          "id": "knots",
+          "label": "Tie every plank to the beams with careful knots",
+          "icon": "hand",
+          "goto": "knots_check"
+        },
+        {
+          "id": "pegs",
+          "label": "Hammer in wooden pegs",
+          "icon": "hand",
+          "goto": "pegs_check"
+        },
+        {
+          "id": "straps",
+          "label": "Have a duskrunner secure the loose straps",
+          "icon": "spark",
+          "goto": "straps_check",
+          "requiresClass": "duskrunner"
+        },
+        {
+          "id": "whistle",
+          "label": "Blow the brave whistle to bring the goats to pull",
+          "icon": "hand",
+          "goto": "whistle_check",
+          "requiresItem": "brave_whistle"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "knots_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Whoever ties the best knots lashes the planks to the beams while everyone else holds the ends.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "lashed"
+      },
+      "onFailure": {
+        "goto": "lashed_loose"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "pegs_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Hammer a peg through each plank end, nice and straight, one after another. Choose who leads; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "lashed"
+      },
+      "onFailure": {
+        "goto": "lashed_loose"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "whistle_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "The brave whistle brings the goats at a trot. Can you hitch them to the lashing line and walk it tight?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "lashed"
+      },
+      "onFailure": {
+        "goto": "lashed_loose"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "straps_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "A duskrunner secures each strap with a quick hitch. Can you pull them all tight?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "lashed"
+      },
+      "onFailure": {
+        "goto": "lashed_loose"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "lashed": {
+      "type": "story",
+      "narration": "The last knot snaps tight, and the deck stops creaking. Bryn walks its whole length like a cat that owns the place. \"One more thing,\" she says. \"A bridge has to carry everyone at once. Not one at a time, like a polite bridge. Everyone, on the deck, now. Ossley too.\" Ossley sighs and hops up.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Step onto the deck",
+          "icon": "hand",
+          "goto": "test_check"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "lashed_loose": {
+      "type": "story",
+      "narration": "Some of the knots slip, and one rope bites your palm. You redo them with Bryn watching, her tongue between her teeth. \"Better a slow knot than a quick swim,\" she says. At last the deck stops creaking. \"One more thing. A bridge has to carry everyone at once. Everyone, on the deck, now.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Step onto the deck",
+          "icon": "hand",
+          "goto": "test_check"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "test_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Everyone step onto the new deck together. Tap each plank with a toe, and shout if anything moves!",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "bridge_open"
+      },
+      "onFailure": {
+        "goto": "bridge_creak"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "bridge_open": {
+      "type": "story",
+      "narration": "Every plank holds. Bryn does a small dance, then pretends she did not. At the far end, the market folk, who have been waiting all afternoon with baskets on their heads, start across in a long, chattering line. Bryn pays you six coins from the toll box, since a bridge should pay its menders. For one beautiful moment, everything is exactly as it should be.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch them cross",
+          "icon": "hand",
+          "goto": "goat_plan"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "mended_the_bridge_deck"
+        },
+        {
+          "type": "grantCoins",
+          "amount": 6
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "bridge_creak": {
+      "type": "story",
+      "narration": "Two planks creak and one squeaks like a mouse. You hammer them again, bruising a thumb, until nobody can find a squeak. \"Now it holds,\" says Bryn. \"Now it truly holds.\" At the far end, the market folk, who have been waiting all afternoon with baskets on their heads, start across in a long, chattering line. Bryn pays you six coins from the toll box, since a bridge should pay its menders.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch them cross",
+          "icon": "hand",
+          "goto": "goat_plan"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "mended_the_bridge_deck"
+        },
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        },
+        {
+          "type": "grantCoins",
+          "amount": 6
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "goat_plan": {
+      "type": "choice_point",
+      "narration": "The first goat of the market line stops dead in the exact middle of the new deck, with its legs locked and its chin up. Behind it the whole line stops: baskets, boots and a very patient aunt. The goat's eyes say that it has seen decks before and did not like them. How will you move it?",
+      "choices": [
+        {
+          "id": "oats",
+          "label": "Coax it with a handful of oats",
+          "icon": "hand",
+          "goto": "oats_check"
+        },
+        {
+          "id": "carry",
+          "label": "Lift it and carry it across",
+          "icon": "hand",
+          "goto": "carry_check"
+        },
+        {
+          "id": "ribbon",
+          "label": "Tie the songbird ribbon on a pole as a lure",
+          "icon": "hand",
+          "goto": "ribbon_check",
+          "requiresItem": "songbird_ribbon"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "oats_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Hold the oats out and walk backward, nice and slow, so the goat follows one step at a time. Choose who leads; everyone can help.",
+      "roller": "party",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "goat_over"
+      },
+      "onFailure": {
+        "goto": "goat_bolt"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "ribbon_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "The songbird ribbon flutters on the pole. Can you walk it ahead of the goat, just out of reach?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "goat_over"
+      },
+      "onFailure": {
+        "goto": "goat_bolt"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "carry_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everyone get a hand under the goat and lift on three. Keep your toes out of its way. Choose who leads; everyone can help.",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "goat_over"
+      },
+      "onFailure": {
+        "goto": "goat_bolt"
+      },
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "goat_over": {
+      "type": "story",
+      "narration": "The goat crosses with great dignity, as if the whole bridge were its own idea. The line starts moving again, with a rustle of baskets and a long relieved sigh from the aunt. On the far side the goat turns, looks at the bridge, and bleats once. Bryn takes it as a compliment.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch them cross",
+          "icon": "hand",
+          "goto": "folk_cross"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "goat_bolt": {
+      "type": "story",
+      "narration": "The goat leaps the rail and lands on a sandbank, where it stands looking proud. Ossley poles over, loads it on his flat boat, and ferries it across for nothing, saying only, \"I was going this way.\" The goat steps off like a visiting duke. Your arm is sore where it kicked, but the line is moving.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch them cross",
+          "icon": "hand",
+          "goto": "folk_cross"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "folk_cross": {
+      "type": "story",
+      "narration": "The market folk file across the mended deck. Tilly follows, with her basket of peeping ducklings. She stops by Ossley. \"I would have missed market,\" she says. \"Thank you.\" Ossley takes off his hat. \"The river brought you my way,\" he says. \"I only had to be going it.\" He puts the hat back on, then, very carefully, checks it for ducks.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what Tilly wants to give",
+          "icon": "hand",
+          "goto": "gift_plan"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "gift_plan": {
+      "type": "choice_point",
+      "narration": "Tilly rummages in her bag, which is now mostly feathers. \"I have to give you something,\" she says. \"I have oat cakes, and I have a story about a goose. The oat cakes are better. The story is longer.\" Bryn leans on her mallet and waits, too.",
+      "choices": [
+        {
+          "id": "cakes",
+          "label": "Take Tilly's warm oat cakes",
+          "icon": "hand",
+          "goto": "cakes"
+        },
+        {
+          "id": "story",
+          "label": "Ask for the story about the goose",
+          "icon": "hand",
+          "goto": "goose"
+        },
+        {
+          "id": "buy",
+          "label": "Buy a bag of Tilly's oat cakes (3 coins)",
+          "icon": "hand",
+          "goto": "buy_cakes",
+          "when": {
+            "coins": {
+              "min": 3
+            }
+          }
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "buy_cakes": {
+      "type": "story",
+      "narration": "Tilly counts out a bag of oat cakes and takes your three coins with great seriousness, then gives one coin back for luck. Then she takes it back. \"No,\" she says. \"Business is business.\" The cakes are still warm and have a faint smell of duckling.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Take a seat",
+          "icon": "hand",
+          "goto": "rest_hut"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "spendCoins",
+          "amount": 3
+        },
+        {
+          "type": "grantItem",
+          "itemId": "honeycake",
+          "to": "party"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "cakes": {
+      "type": "story",
+      "narration": "Tilly presses a warm bundle of oat cakes into your hands. They smell of butter and the inside of a good oven. \"Do not share them with ducks,\" she says. \"They will take advantage.\" A duckling peeps from the basket, exactly as if it were being accused.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Take a seat",
+          "icon": "hand",
+          "goto": "rest_hut"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
+        }
+      ]
+    },
+    "goose": {
+      "type": "story",
+      "narration": "Tilly tells the story of the goose who tried to marry a weathervane. It takes a long time and has three endings. Ossley falls asleep halfway through, standing up, and Bryn pretends not to notice. You find that you like the goose very much, and the weathervane a little less.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Take a seat",
+          "icon": "hand",
+          "goto": "rest_hut"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "rest_hut": {
+      "type": "rest",
+      "narration": "Bryn lights a small stove in the bridge-house. It smells of hot oats and slightly of goat. The sun slides low over the river, and the new deck glows like a table after supper. You have earned a sit, a warm bowl, and a long look at the water. Your knees would like to apply for a vacation.",
+      "heal": 3,
+      "choices": [
+        {
+          "id": "dangle",
+          "label": "Sit on the new deck and dangle your feet",
+          "icon": "hand",
+          "goto": "dangle"
+        },
+        {
+          "id": "tie",
+          "label": "Help Ossley tie up his boat for the night",
+          "icon": "hand",
+          "goto": "tie_boat"
+        },
+        {
+          "id": "share",
+          "label": "Share your supper with Bryn and Ossley",
+          "icon": "hand",
+          "goto": "share_bryn",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          }
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "share_bryn": {
+      "type": "story",
+      "narration": "You set out your supper, and Bryn adds her oats, and Ossley adds a fish that nobody asked about. It is a very odd meal and a very good one. Afterward Bryn hangs a river charm round your neck. \"A bridge-mender's thanks,\" she says. \"It keeps the wet out of your boots. Mostly.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Listen to Ossley",
+          "icon": "hand",
+          "goto": "ossley_routes"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "takeItem",
+          "itemId": [
+            "supper_bundle",
+            "honeycake"
+          ]
+        },
+        {
+          "type": "grantItem",
+          "itemId": "river_charm",
+          "to": "party"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "dangle": {
+      "type": "story",
+      "narration": "The deck is warm from the sun. Below your feet the river goes by, busy and brown. Ossley sits beside you and tells you the names of seven fish he has argued with. The worst, he says, is called Gerald. Gerald, apparently, always wins. He says it with great respect, and a little with his hat.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Listen to Ossley",
+          "icon": "hand",
+          "goto": "ossley_routes"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "tie_boat": {
+      "type": "story",
+      "narration": "Ossley shows you his favorite knot, the one that comes undone when he whistles. You practice until it only comes undone when you whistle. He looks at it for a long time. \"You are a natural,\" he says, \"or a menace.\" He has not decided which.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Listen to Ossley",
+          "icon": "hand",
+          "goto": "ossley_routes"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "ossley_routes": {
+      "type": "choice_point",
+      "narration": "Ossley coils his rope. \"Tomorrow's tide takes me downriver,\" he says. \"The coast down there is called the Saltrot, and it is not like here.\" He points the other way, up the road. \"Or there are the old boundary stones, where the keepers count things. Ask me one, and I will tell you what I know.\"",
+      "choices": [
+        {
+          "id": "coast",
+          "label": "Ask about the coast downriver",
+          "icon": "hand",
+          "goto": "coast_talk"
+        },
+        {
+          "id": "inland",
+          "label": "Ask about the stone keepers up the road",
+          "icon": "hand",
+          "goto": "inland_talk"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "coast_talk": {
+      "type": "story",
+      "narration": "\"Salt flats and silt,\" says Ossley. \"This year the silt came from nowhere I know. A flood year, the kind where a boat can go places it should not.\" He pats his pole. \"I will be going that way again, and I will take whoever wants to come. I am generally going your way.\" Then he looks at his hat. \"Sometimes the river even agrees.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Thank him",
+          "icon": "hand",
+          "goto": "routes"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "inland_talk": {
+      "type": "story",
+      "narration": "\"The keepers up the road count old stones,\" says Ossley. \"They have been asking the river questions for years, and the river never answers in the same order. Ask them nicely. Bring a cheese, if you have one.\" He blinks both eyelids at once, which means a joke.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Thank him",
+          "icon": "hand",
+          "goto": "routes"
         }
       ],
       "cast": [
@@ -139,7 +2520,7 @@
     },
     "routes": {
       "type": "rest",
-      "narration": "Ossley points downriver. \"The coast is called the Saltrot. When I go.\" Then he points to the road beside the boundary stones. You can ask about the coast or follow the stone-keepers' questions inland. For now, you have a safe landing and a route to discuss.",
+      "narration": "Ossley points downriver, toward the coast called the Saltrot, and then up the road toward the boundary stones. The bridge behind you is whole, and the landing is safe. Whichever way you go, you have a boatman who is generally going the same way. The river goes on, busy as ever, carrying its furniture.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
