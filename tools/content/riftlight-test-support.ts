@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
+import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, interactionActor, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DESIGN } from "./riftlight-preview.ts";
@@ -98,6 +98,24 @@ export function answerClassPlace(state: RunState, chapter: Chapter, answer: Clas
     seat.character = { ...worn, id, ownerPlayerId, name, inventory, questItems, souvenirs };
     next.classPlace!.answers = { ...next.classPlace!.answers, [member.playerId]: { switched: true, from: member.character.class } };
     current = next;
+  }
+  return current;
+}
+
+/**
+ * An interaction scene takes the untimed helping hand (`assist`, the `onAssisted` branch) and then
+ * continues, as the playthrough driver does. The engine's own tests cover the mechanics and the
+ * success and failure branches; the walker only needs the story to move on.
+ */
+function finishInteraction(state: RunState, chapter: Chapter): RunState {
+  let current = state;
+  for (const action of ["assist", "continue"] as const) {
+    const prompt = current.prompt;
+    if (prompt?.kind !== "interaction") break;
+    const actor = interactionActor(prompt, current.party.filter((member) => member.connected).map((member) => member.playerId)) ?? "p1";
+    const result = applyIntent(current, { playerId: actor, intent: { type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, action } }, context(chapter));
+    expect(result.error, `${chapter.id}/${current.sceneId}: INTERACT ${action}`).toBeUndefined();
+    current = result.state;
   }
   return current;
 }
