@@ -562,6 +562,11 @@ export interface RunState {
    */
   saved?: SavedGameView;
   /**
+   * What the family calls its table, the household's place at the game ("Kitchen table"),
+   * from the TV that opened it. Absent when the table was never named.
+   */
+  location?: string;
+  /**
    * The host closed the room (#263). Every screen leaves, nothing more is
    * accepted, and the code is free again. Terminal: a closed room never
    * reopens.
@@ -606,6 +611,8 @@ export interface SavedGameView {
   /** The heroes who were playing, by name. */
   heroes: string[];
   savedAt: string;
+  /** What the family called its table, when they named it. */
+  location?: string;
 }
 
 /** One entry on the host's roster (`RunState.seats`, #263). */

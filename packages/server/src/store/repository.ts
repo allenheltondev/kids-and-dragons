@@ -109,6 +109,13 @@ export interface RunRecord {
    * `releaseSavedHero`). Written and cleared with `stoppedAt`.
    */
   stoppedBy?: string;
+  /**
+   * What the family called the table the room was opened at, if they named
+   * it (`CreateRoomRequest.location`). It rides on the run, so it stays with
+   * a save when a phone claims the TV's room into its own household, and the
+   * lobby can say where the game was saved.
+   */
+  location?: string;
 }
 
 /**

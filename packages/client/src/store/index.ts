@@ -57,6 +57,8 @@ import {
   tabStorage,
   asPlayerIdentity,
   loadIdentity,
+  loadLocationName,
+  saveLocationName,
   loadPlayerDeviceToken,
   loadSession,
   saveIdentity,
@@ -952,14 +954,17 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
        * until the first phone joins and claims it), then go to `/tv/:code` and let `attach`
        * watch the room exactly as it would after a refresh.
        */
-      async openOnThisScreen() {
+      async openOnThisScreen(typedLocation) {
         set({ connection: "connecting", error: null });
+        if (typedLocation !== undefined) saveLocationName(typedLocation.trim(), deps.storage);
+        const location = loadLocationName(deps.storage);
+        const where = location !== "" ? { location } : {};
         // A family tablet (#250, #274) shows the game under its own household:
         // no kid is seated, and it keeps no device token and no session.
         const shared = loadSharedDevice(deps.storage);
         if (shared) {
           try {
-            const room = await deps.api.openDisplayRoom({ campaignId: LAUNCH_CAMPAIGN }, shared.token);
+            const room = await deps.api.openDisplayRoom({ campaignId: LAUNCH_CAMPAIGN, ...where }, shared.token);
             deps.navigate({ name: "tv", code: room.code }, { replace: true });
           } catch (error) {
             forgottenIf(error);
@@ -972,6 +977,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
           const room = await deps.api.openDisplayRoom({
             householdId: identity.householdId,
             campaignId: LAUNCH_CAMPAIGN,
+            ...where,
             ...(identity.deviceToken ? { deviceToken: identity.deviceToken } : {}),
           });
           // A binding minted here is the room's placeholder household, held by

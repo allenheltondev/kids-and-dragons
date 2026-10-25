@@ -367,6 +367,37 @@ describe("POST /api/room", () => {
     expect(bodyOf(watched)).toMatchObject({ state: { party: [] } });
   });
 
+  it("keeps the name a TV gave its table, trimmed, and refuses one the word filter turns away", async () => {
+    const rt = runtimeFor(makeHarness());
+    const opened = await respond(
+      event("POST", "/api/room", { body: { mode: "party", display: true, location: "  Kitchen   table " } }),
+      rt,
+    );
+    expect(opened.statusCode).toBe(200);
+    const payload = bodyOf(opened) as Record<string, unknown>;
+    const watched = await respond(
+      event("POST", `/api/room/${String(payload.code)}/watch`, {
+        body: {},
+        headers: { "x-kad-device-token": String(payload.deviceToken) },
+      }),
+      rt,
+    );
+    expect(bodyOf(watched)).toMatchObject({ state: { location: "Kitchen table" } });
+
+    // Blank is an unnamed table, not an error; a refused name is turned away.
+    const blank = await respond(event("POST", "/api/room", { body: { mode: "party", display: true, location: "   " } }), rt);
+    expect(blank.statusCode).toBe(200);
+    const refused = await respond(event("POST", "/api/room", { body: { mode: "party", display: true, location: "F U C K" } }), rt);
+    // The same status a refused player name gets (`fromError`).
+    expect(refused.statusCode).toBe(409);
+    // Only a TV has a table to name: a phone host's request carries none.
+    const phone = await respond(
+      event("POST", "/api/room", { body: { mode: "travel", displayName: "Ada", location: "Kitchen table" } }),
+      rt,
+    );
+    expect((bodyOf(phone) as { state?: { location?: string } }).state?.location).toBeUndefined();
+  });
+
   it("hands the TV's room to the family whose phone joins first", async () => {
     // A new TV, or one whose storage was cleared, opens under a household of
     // its own. A phone that already belongs to a family takes the room into
