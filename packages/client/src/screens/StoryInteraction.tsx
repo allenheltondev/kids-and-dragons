@@ -7,16 +7,27 @@ import { Icon } from "./icons";
 import { ExtraControls, InteractionShow } from "./InteractionExtras";
 import "./StoryInteraction.css";
 
-function useClock(active: boolean): number {
+/** Frame-rate only where a marker moves; untimed play needs a slow tick for playback and lease expiry. */
+function useClock(active: boolean, everyMs?: number): number {
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
     if (!active) return;
+    if (everyMs !== undefined) {
+      const timer = setInterval(() => setNow(Date.now()), everyMs);
+      return () => clearInterval(timer);
+    }
     let frame = 0;
     const tick = () => { setNow(Date.now()); frame = requestAnimationFrame(tick); };
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [active]);
+  }, [active, everyMs]);
   return now;
+}
+
+const SLOW_CLOCK_MS = 250;
+/** Only these kinds show a moving marker that the phone's stop position is read from. */
+function clockFor(kind: InteractionPrompt["spec"]["kind"]): number | undefined {
+  return kind === "precision" || kind === "timing" ? undefined : SLOW_CLOCK_MS;
 }
 
 function Meter({ prompt, now }: { prompt: InteractionPrompt; now: number }) {
@@ -40,7 +51,7 @@ export function StoryInteractionWorld() {
   const state = useRunState();
   const prompt = state?.prompt?.kind === "interaction" ? state.prompt : null;
   const still = reducedMotion();
-  const now = useClock(prompt?.phase === "active" && !still);
+  const now = useClock(prompt?.phase === "active" && !still, prompt ? clockFor(prompt.spec.kind) : undefined);
   if (!prompt || !state) return null;
   const connected = state.party.filter((member) => member.connected).map((member) => member.playerId);
   return <section className="story-interaction" aria-label="Story interaction">
@@ -82,7 +93,7 @@ function Controls({ prompt, party, playerId, dispatch, busy }: {
   const [relaxed, setRelaxed] = useState(reducedMotion);
   const [answer, setAnswer] = useState<string[]>([]);
   const [holding, setHolding] = useState(false);
-  const now = useClock(prompt.phase === "active");
+  const now = useClock(prompt.phase === "active", clockFor(prompt.spec.kind));
   const latest = useRef({ prompt, busy, dispatch });
   latest.current = { prompt, busy, dispatch };
   const send = (action: InteractionAction) => void dispatch({ type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, ...action });
