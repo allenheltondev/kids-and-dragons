@@ -322,7 +322,7 @@
   text-overflow: ellipsis;
 }
 
-.narration__trade > svg {
+.narration__trade > .kad-icon {
   flex: 0 0 auto;
 }
 
@@ -404,7 +404,7 @@
   text-overflow: ellipsis;
 }
 
-.narration__aim > svg {
+.narration__aim > .kad-icon {
   flex: 0 0 auto;
 }
 
@@ -509,7 +509,7 @@
   animation: narration-arrive 320ms ease-out;
 }
 
-.narration__ribbon > svg {
+.narration__ribbon > .kad-icon {
   flex: 0 0 auto;
 }
 

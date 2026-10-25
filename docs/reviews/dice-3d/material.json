@@ -1,0 +1,6 @@
+{
+  "tool": "built-in imagegen",
+  "prompt": "Use case: stylized-concept. Asset type: seamless flat albedo texture for faces of a 3D storybook d20 die in a children's fantasy game. Fill the entire square edge to edge with softly hand-painted rich royal plum and lavender enamel, subtle brush strokes and fine organic mottling. Medium dark lavender overall with restrained warm rosy undertones. Absolutely flat even lighting, no directional highlights, no gradients across the whole image, no geometry, no die, no faces, no facets, no border, no gold, no writing, no numbers, no symbols, no transparency, no scenery. This is a material swatch, not an illustration of an object. Fine painterly texture should still read when shrunk to 256 pixels.",
+  "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-fa630c97-1017-4476-92e7-9a5bdf7bfe2f.png",
+  "runtime": "packages/client/src/assets/dice/enamel.webp"
+}
