@@ -880,7 +880,8 @@
           ],
           "introduces": {
             "great_river": "The Great River starts here",
-            "ice_shelf": "the ice shelf"
+            "ice_shelf": "the ice shelf",
+            "ashspan": "Ashspan Bridge"
           }
         },
         "chime": {
@@ -942,50 +943,11 @@
             "seam",
             "learned_note"
           ],
-          "introduces": {
-            "stone_hut": "a stone hut",
-            "tower": "a round tower with no roof"
-          }
+          "introduces": {}
         },
         "set_out": {
           "requires": [
             "hall"
-          ],
-          "introduces": {}
-        },
-        "dojo": {
-          "requires": [
-            "stone_hut"
-          ],
-          "introduces": {
-            "master_dunnick": "Master Dunnick",
-            "dojo": "Dojo",
-            "thorn_bracer": "thorn bracer",
-            "pillows": "pillow"
-          }
-        },
-        "dojo_pillows": {
-          "requires": [
-            "master_dunnick",
-            "pillows"
-          ],
-          "introduces": {}
-        },
-        "academy": {
-          "requires": [
-            "tower"
-          ],
-          "introduces": {
-            "academy": "Academy",
-            "professor_nettle": "Professor Nettle",
-            "telescope": "telescope",
-            "star_circlet": "star circlet"
-          }
-        },
-        "academy_stars": {
-          "requires": [
-            "professor_nettle",
-            "telescope"
           ],
           "introduces": {}
         },
@@ -2569,7 +2531,10 @@
             "bryn",
             "ossley"
           ],
-          "introduces": {}
+          "introduces": {
+            "marsh": "Whispering Marsh",
+            "posted_path": "raised footpath"
+          }
         },
         "share_bryn": {
           "requires": [
@@ -2616,6 +2581,65 @@
           "requires": [
             "ossley",
             "saltrot_lead"
+          ],
+          "introduces": {}
+        },
+        "marsh_path": {
+          "requires": [
+            "marsh",
+            "posted_path"
+          ],
+          "introduces": {
+            "village": "a village",
+            "reed_mat": "reed mat"
+          }
+        },
+        "mat_high": {
+          "requires": [
+            "reed_mat",
+            "village"
+          ],
+          "introduces": {}
+        },
+        "mat_wrap": {
+          "requires": [
+            "reed_mat",
+            "village"
+          ],
+          "introduces": {}
+        },
+        "village_rest": {
+          "requires": [
+            "village",
+            "reed_mat"
+          ],
+          "introduces": {
+            "tower": "A round tower"
+          }
+        },
+        "mat_return": {
+          "requires": [
+            "posted_path",
+            "reed_mat",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "academy": {
+          "requires": [
+            "tower"
+          ],
+          "introduces": {
+            "academy": "Academy",
+            "professor_nettle": "Professor Nettle",
+            "telescope": "telescope",
+            "star_circlet": "star circlet"
+          }
+        },
+        "academy_stars": {
+          "requires": [
+            "professor_nettle",
+            "telescope"
           ],
           "introduces": {}
         }
@@ -2670,6 +2694,30 @@
             "temple_keeper",
             "distant_song"
           ],
+          "introduces": {
+            "stone_hut": "a stone hut"
+          }
+        },
+        "dojo": {
+          "requires": [
+            "stone_hut"
+          ],
+          "introduces": {
+            "master_dunnick": "Master Dunnick",
+            "dojo": "Dojo",
+            "thorn_bracer": "thorn bracer",
+            "pillows": "pillow"
+          }
+        },
+        "dojo_pillows": {
+          "requires": [
+            "master_dunnick",
+            "pillows"
+          ],
+          "introduces": {}
+        },
+        "island_done": {
+          "requires": [],
           "introduces": {}
         }
       }

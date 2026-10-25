@@ -7,6 +7,7 @@
  */
 
 import type { ProfileFlair } from "../kid-profile.js";
+import type { MatchupRules } from "./matchups.js";
 
 export type StatId = "might" | "quick" | "clever" | "heart";
 
@@ -101,9 +102,17 @@ export interface RankDeeds {
 }
 
 /** Appearance tiers, in level order. See spec §8.1. */
-export type TierId = "fledgling" | "sworn" | "radiant" | "mythic";
+export type TierId = "fledgling" | "sworn" | "radiant" | "mythic" | "ascendant" | "starborn" | "legendary";
 
-export const TIER_IDS: readonly TierId[] = ["fledgling", "sworn", "radiant", "mythic"] as const;
+export const TIER_IDS: readonly TierId[] = [
+  "fledgling",
+  "sworn",
+  "radiant",
+  "mythic",
+  "ascendant",
+  "starborn",
+  "legendary",
+] as const;
 
 export type Stats = Record<StatId, number>;
 
@@ -603,6 +612,34 @@ export interface ClassDef {
   deeds?: Partial<Record<Exclude<ClassRank, "none">, RankDeeds>>;
 }
 
+/** One level's permanent bonuses (`RulesContent.levelRewards`). */
+export interface LevelReward {
+  /** The level that earns it, 2 or more. */
+  level: number;
+  /** Added to max HP from this level on. */
+  maxHp?: number;
+  /** Added to Guard from this level on. */
+  guard?: number;
+}
+
+/**
+ * XP for rolls that go well (`RulesContent.rollXp`). Every amount is paid to the
+ * hero who made the roll, alone: it is individual, so heroes level at their own
+ * pace.
+ */
+export interface RollXp {
+  /** For each story check a hero makes that she succeeds (a group check counts each hero's own success). */
+  check: number;
+  /** For each attack a hero lands in a fight. */
+  attack: number;
+  /** For each foe a hero's action knocks out. Optional: absent pays nothing. */
+  defeat?: number;
+  /** For each natural 20 a hero rolls (a check or an attack), on top of the above. Optional: absent pays nothing. */
+  natural20?: number;
+  /** The most roll XP one hero can earn in one chapter. */
+  chapterCap: number;
+}
+
 export interface RulesContent {
   version: number;
   /** Every character starts here before species bonus and creation points. */
@@ -616,12 +653,26 @@ export interface RulesContent {
   difficultyTn: Record<Difficulty, number>;
   /**
    * The thresholds *above* level 1: `levelXp[n]` is the total XP needed to
-   * reach level `n + 2`, so nine entries cap the game at level 10 (spec §8.1)
+   * reach level `n + 2`, so twenty-nine entries cap the game at level 30 (spec §8.1)
    * and a character with 0 XP is level 1 rather than level 2.
    */
   levelXp: number[];
   /** Level at which each tier is reached. */
   tierLevels: Record<TierId, number>;
+  /**
+   * Permanent gains for reaching a level, each worth its `maxHp` and/or `guard`
+   * from that level on (they add up: a level-4 hero holds the rewards of
+   * levels 2, 3 and 4). Optional: rules without it give nothing, and a hero's
+   * HP and Guard come only from species, Quick and trinkets.
+   */
+  levelRewards?: LevelReward[];
+  /**
+   * XP each hero earns for her own dice that go well, paid into her own total
+   * (`RunState.heroRollXp`) rather than the party's `xpEarned` (spec §8.2). Each
+   * hero's total is capped per chapter, so rolling cannot outgrow the chapter's
+   * own award. Optional: rules without it pay nothing for rolls.
+   */
+  rollXp?: RollXp;
   /**
    * Sides on the die a helper adds to a check, by the helper's tier: the d20
    * never changes, but the help you give grows as you do. Optional so rules
@@ -636,6 +687,27 @@ export interface RulesContent {
    * without it have no stall, and nobody is offered a fitting.
    */
   fittingStall?: FittingStall;
+  /**
+   * Who is good and bad against what (docs/matchups.md). Optional: rules
+   * without it play with no matchups at all.
+   */
+  matchups?: MatchupRules;
+  /**
+   * Coins from a won fight. Optional: rules without it pay nothing, and a
+   * campaign not named in `campaigns` plays exactly as it always did (Gemfall's
+   * numbers are pinned).
+   */
+  loot?: LootRules;
+}
+
+/** What a won fight pays the party's purse (`RunState.coins`). */
+export interface LootRules {
+  /** The campaigns whose fights drop coins. */
+  campaigns: string[];
+  /** One coin for every this many of a beaten foe's max hit points, at least one each. */
+  hpPerCoin: number;
+  /** The most one fight can pay, so a crowd of small things is not a bank. */
+  maxPerFight: number;
 }
 
 /**

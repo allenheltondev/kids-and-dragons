@@ -1,0 +1,7 @@
+/* The grown-up's list under Help (#459). Same look as the TV's "About this screen" rows. */
+.kad-diagnostics { margin-block-start: var(--kad-space-2); font-size: 0.85em; }
+.kad-diagnostics__rows { margin: 0 0 0.6em; padding: 0; list-style: none; display: grid; gap: 0.4em; }
+.kad-diagnostics__rows li { display: grid; grid-template-columns: minmax(7em, 10em) 1fr; gap: 0 0.6em; align-items: baseline; }
+.kad-diagnostics__rows span { color: var(--kad-ink-dim); word-break: break-word; }
+.kad-diagnostics__copy { font: inherit; padding: 0.3em 0.9em; }
+.kad-diagnostics__status { margin-inline-start: 0.6em; color: var(--kad-ink-dim); }

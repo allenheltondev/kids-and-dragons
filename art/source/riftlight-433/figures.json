@@ -1,0 +1,164 @@
+[
+  {
+    "id": "goat_kid",
+    "name": "Goat kid",
+    "basis": "snowhorn_goat",
+    "scale": "tiny_to_small",
+    "heightCm": 45,
+    "stance": "standing",
+    "key": "goat"
+  },
+  {
+    "id": "adult_dragonling",
+    "name": "Adult dragonling",
+    "basis": "dragonling",
+    "scale": "medium",
+    "heightCm": 150,
+    "stance": "standing",
+    "key": "adult_dragonling"
+  },
+  {
+    "id": "island_keeper",
+    "name": "Island keeper",
+    "basis": "kitsune",
+    "scale": "medium",
+    "heightCm": 145,
+    "stance": "standing",
+    "key": "island_keeper"
+  },
+  {
+    "id": "new_island_keeper",
+    "name": "New island keeper",
+    "basis": "kitsune",
+    "scale": "medium",
+    "heightCm": 130,
+    "stance": "standing",
+    "key": "new_island_keeper"
+  },
+  {
+    "id": "younger_keeper",
+    "name": "Younger keeper",
+    "basis": "yeti",
+    "scale": "large",
+    "heightCm": 220,
+    "stance": "standing",
+    "key": "younger_keeper"
+  },
+  {
+    "id": "newcomer_yeti",
+    "name": "Newcomer",
+    "basis": "yeti",
+    "scale": "large",
+    "heightCm": 235,
+    "stance": "standing",
+    "key": "newcomer_yeti"
+  },
+  {
+    "id": "route_worker_yeti",
+    "name": "Route worker",
+    "basis": "yeti",
+    "scale": "large",
+    "heightCm": 250,
+    "stance": "standing",
+    "key": "route_worker_yeti"
+  },
+  {
+    "id": "yeti_watcher",
+    "name": "Yeti watcher",
+    "basis": "yeti",
+    "scale": "large",
+    "heightCm": 255,
+    "stance": "standing",
+    "key": "yeti_watcher"
+  },
+  {
+    "id": "pass_keeper",
+    "name": "Pass keeper",
+    "basis": "griffin",
+    "scale": "medium_to_large",
+    "heightCm": 210,
+    "stance": "standing",
+    "key": "pass_keeper"
+  },
+  {
+    "id": "ridge_griffin",
+    "name": "Ridge griffin",
+    "basis": "griffin",
+    "scale": "medium_to_large",
+    "heightCm": 205,
+    "stance": "standing",
+    "key": "ridge_griffin"
+  },
+  {
+    "id": "allied_wyrm",
+    "name": "Allied frost wyrm",
+    "basis": "frost_wyrm",
+    "scale": "very_large",
+    "heightCm": 260,
+    "stance": "standing",
+    "key": "allied_wyrm"
+  },
+  {
+    "id": "memory_reader",
+    "name": "Memory reader",
+    "basis": "yeti",
+    "scale": "large",
+    "heightCm": 230,
+    "stance": "standing",
+    "key": "memory_reader"
+  },
+  {
+    "id": "frogfolk_student",
+    "name": "Frogfolk student",
+    "basis": "frogfolk",
+    "scale": "small",
+    "heightCm": 60,
+    "stance": "standing",
+    "key": "frogfolk_student"
+  },
+  {
+    "id": "young_yeti_singer",
+    "name": "Young yeti singer",
+    "basis": "yeti",
+    "scale": "large",
+    "heightCm": 155,
+    "stance": "standing",
+    "key": "young_yeti_singer"
+  },
+  {
+    "id": "dock_worker",
+    "name": "Dock worker",
+    "basis": "frogfolk",
+    "scale": "small_to_medium",
+    "heightCm": 115,
+    "stance": "standing",
+    "key": "dock_worker"
+  },
+  {
+    "id": "passing_fisher",
+    "name": "Passing fisher",
+    "basis": "frogfolk",
+    "scale": "small_to_medium",
+    "heightCm": 110,
+    "stance": "standing",
+    "key": "passing_fisher"
+  },
+  {
+    "id": "boarding_traveler",
+    "name": "Boarding traveler",
+    "basis": "burrowfolk",
+    "scale": "small_to_medium",
+    "heightCm": 95,
+    "stance": "standing",
+    "key": "boarding_traveler"
+  },
+  {
+    "id": "quay_gull",
+    "name": "Quay gull",
+    "basis": null,
+    "scale": "small",
+    "heightCm": 35,
+    "stance": "standing",
+    "key": "quay_gull"
+  }
+]

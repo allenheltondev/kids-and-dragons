@@ -21,7 +21,12 @@
  *   - every scene the step entered discovers what `sceneDiscoveries` says —
  *     an encounter's creatures and the scene's explicit `discovers`. A fight's
  *     start *is* its scene's entry, so the creatures land the moment the
- *     board goes up.
+ *     board goes up. A class place's scene (`classPlace`) finds the room and
+ *     the class it teaches;
+ *   - the classes the party wears (`partyClassDiscoveries`): all of them at a
+ *     chapter's start, and any class that is new to the party since the step
+ *     before, so a switch at a class place or a hero who sits down mid-chapter
+ *     finds their class without paying for a read on every step.
  *
  * "Entered" is the run's `visited` trail (the recap's spine), so a step that
  * passes through several scenes discovers all of them, not just where it
@@ -57,7 +62,7 @@
  */
 
 import type { Chapter, FieldGuideDiscovery, FieldGuideFind, RunState, SceneId } from "@kad/shared";
-import { chapterStartDiscoveries, sceneDiscoveries } from "@kad/shared";
+import { chapterStartDiscoveries, partyClassDiscoveries, sceneDiscoveries } from "@kad/shared";
 import type { RunRecord } from "../store/repository.ts";
 import type { HandlerDeps } from "./deps.ts";
 
@@ -98,6 +103,13 @@ export function stepDiscoveries(
   for (const sceneId of enteredScenes(before, after, chapterStarted)) {
     const scene = chapter.scenes[sceneId];
     if (scene) ids.push(...sceneDiscoveries(scene, bestiary));
+  }
+  // A class is found by wearing it. Everyone's at a chapter's start; after
+  // that only what is new to the party, so a plain step reads the book as little
+  // as it did before classes had entries.
+  const had = new Set(partyClassDiscoveries(before.party));
+  for (const id of partyClassDiscoveries(after.party)) {
+    if (chapterStarted || !had.has(id)) ids.push(id);
   }
   return [...new Set(ids)];
 }

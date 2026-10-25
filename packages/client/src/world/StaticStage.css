@@ -17,7 +17,9 @@
   opacity: 0.85;
 }
 .kad-static-stage__row {
-  position: relative;
+  position: absolute;
+  inset-block-end: 48%;
+  inline-size: 44%;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -27,11 +29,13 @@
   list-style: none;
   min-block-size: 0;
 }
+.kad-static-stage__row--party { inset-inline-start: 2%; }
+.kad-static-stage__row--enemies { inset-inline-end: 2%; }
 .kad-static-stage__figure {
   display: grid;
   justify-items: center;
   gap: 0.2em;
-  max-inline-size: 18%;
+  max-inline-size: 45%;
   color: #fff;
   text-shadow: 0 0 0.4em #000;
   font-size: 0.9rem;
@@ -43,3 +47,15 @@
 }
 .kad-static-stage__figure.is-down img { transform: rotate(80deg); opacity: 0.6; }
 .kad-static-stage__figure meter { inline-size: 100%; }
+
+/* A still frame of the neutral tear, keeping the scene's visible doorway on
+   devices without WebGL. Its rules/colours remain in the separate RiftSight UI. */
+.kad-static-stage__rift {
+  position: absolute;
+  inline-size: 20cqh;
+  block-size: 20cqh;
+  inset-inline-start: calc(50% - 10cqh);
+  inset-block-start: 30%;
+  background-repeat: no-repeat;
+  pointer-events: none;
+}

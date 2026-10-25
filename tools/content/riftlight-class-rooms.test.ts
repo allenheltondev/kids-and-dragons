@@ -6,21 +6,55 @@
  * packages/server/src/handlers/riftlight-class-rooms.test.ts.
  */
 import { describe, expect, it } from "vitest";
-import { enterScene } from "@kad/shared";
+import fs from "node:fs";
+import path from "node:path";
+import { CLASS_GUIDE_ID, CLASS_PLACE_GUIDE_ID, enterScene, sceneDiscoveries } from "@kad/shared";
 import type { ClassId, RunState } from "@kad/shared";
 import { answerClassPlace, allPaths, chapters, context, send, start } from "./riftlight-test-support.ts";
 
 const ROOMS = [
   { chapter: "riftlight-exchange-rift", rest: "quay_rest", door: "roof", room: "rookery", back: "down", lesson: "rookery_lesson", class: "duskrunner", met: "met_the_crows", teacher: "crows" },
   { chapter: "riftlight-glacier-survival", rest: "hall", door: "glass_door", room: "conservatory", back: "back", lesson: "conservatory_sing", class: "songkeeper", met: "met_aunt_bellow", teacher: "Aunt Bellow" },
-  { chapter: "riftlight-riftseekers-departure", rest: "camp", door: "hut", room: "dojo", back: "back", lesson: "dojo_pillows", class: "thornguard", met: "met_master_dunnick", teacher: "Master Dunnick" },
-  { chapter: "riftlight-riftseekers-departure", rest: "camp", door: "tower", room: "academy", back: "back", lesson: "academy_stars", class: "starweaver", met: "met_professor_nettle", teacher: "Professor Nettle" },
+  { chapter: "riftlight-sky-islands-arrival", rest: "island_rest", door: "hut", room: "dojo", back: "back", lesson: "dojo_pillows", class: "thornguard", met: "met_master_dunnick", teacher: "Master Dunnick" },
+  { chapter: "riftlight-ashspan-bridge", rest: "village_rest", door: "tower", room: "academy", back: "back", lesson: "academy_stars", class: "starweaver", met: "met_professor_nettle", teacher: "Professor Nettle" },
 ] as const;
 
 /** A class that is not the room's, so the walker's hero has something to decide. */
 const other = (cls: ClassId): ClassId => (cls === "duskrunner" ? "thornguard" : "duskrunner");
 
 describe("Riftlight's class rooms", () => {
+  it("keeps the hubs in their canon regions and the glacier camp free of other class schools", () => {
+    const departure = chapters.get("riftlight-riftseekers-departure")!;
+    expect(Object.values(departure.scenes).some((scene) => "classPlace" in scene)).toBe(false);
+    expect(chapters.get("riftlight-sky-islands-arrival")!.biome).toBe("sky_islands");
+    const bridge = chapters.get("riftlight-ashspan-bridge")!;
+    expect(bridge.scenes.marsh_path!.narration).toContain("Whispering Marsh");
+    expect(bridge.scenes.academy!.narration).toContain("marsh village");
+    // The marsh is a detour off the rest at the end of the mending, never on the spine.
+    expect((bridge.scenes.rest_hut as { choices: { id: string; goto: string }[] }).choices).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: "marsh", goto: "marsh_path" }),
+      expect.objectContaining({ id: "dangle" }),
+    ]));
+    expect((bridge.scenes.mat_return as { choices: { goto: string }[] }).choices[0]!.goto).toBe("ossley_routes");
+  });
+  it("can finish the whole mending without visiting the marsh", () => {
+    const chapter = chapters.get("riftlight-ashspan-bridge")!;
+    let state = start(chapter, "manticore", "duskrunner");
+    for (let step = 0; step < 200 && state.phase !== "chapter_complete"; step++) {
+      const prompt = state.prompt;
+      if (prompt?.kind === "choice") {
+        const pick = prompt.options.find((o) => o.id !== "marsh") ?? prompt.options[0]!;
+        state = send(state, { type: "CHOOSE", choiceId: pick.id }, chapter);
+      } else if (prompt?.kind === "roll") state = send(state, { type: "ROLL" }, chapter);
+      else state = send(state, { type: "ADVANCE" }, chapter);
+      expect(state.sceneId).not.toBe("marsh_path");
+    }
+    expect(state.sceneId).toBe("routes");
+    expect(state.phase).toBe("chapter_complete");
+    expect(state.flags.reached_the_ferry_landing).toBe(true);
+    expect(state.flags.mended_the_bridge_deck).toBe(true);
+    expect(state.classPlace).toBeUndefined();
+  });
   it.each(ROOMS)("$room is a side room off $rest, and every way out of it leads back there", (r) => {
     const chapter = chapters.get(r.chapter)!;
     const scenes = chapter.scenes;
@@ -106,6 +140,20 @@ describe("Riftlight's class rooms", () => {
     for (const text of [scene.narration, ...scene.variants.map((v) => v.text)]) {
       expect(text).toMatch(/leaves? the Exchange/);
     }
+  });
+
+  it.each(ROOMS)("walking into the $room finds the room and the $class entry in the Field Guide", (r) => {
+    const guide = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, "../../content/field-guide.json"), "utf8")) as {
+      entries: Record<string, { category: string; class?: { home: string } }>;
+    };
+    const scene = chapters.get(r.chapter)!.scenes[r.room]!;
+    const found = sceneDiscoveries(scene as never, null);
+    expect(found).toEqual([CLASS_PLACE_GUIDE_ID[r.class], CLASS_GUIDE_ID[r.class]]);
+    for (const id of found) expect(guide.entries[id], id).toBeDefined();
+    // The class entry names exactly the room that finds it.
+    expect(guide.entries[CLASS_GUIDE_ID[r.class]]!.class!.home).toBe(CLASS_PLACE_GUIDE_ID[r.class]);
+    // The lesson and the rest scene are not the room: they find nothing of their own.
+    expect(sceneDiscoveries(chapters.get(r.chapter)!.scenes[r.lesson] as never, null)).toEqual([]);
   });
 
   it("the rooms never count the party and keep the house style", () => {

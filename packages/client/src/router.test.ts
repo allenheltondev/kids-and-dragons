@@ -39,6 +39,12 @@ describe("parseRoute", () => {
     expect(routeCode({ name: "account" })).toBeNull();
   });
 
+  it("maps /share, the manifest's share target", () => {
+    expect(parseRoute("/share?text=hi")).toEqual({ name: "share" });
+    expect(formatRoute({ name: "share" })).toBe("/share");
+    expect(routeCode({ name: "share" })).toBeNull();
+  });
+
   it("treats an empty path as home", () => {
     expect(parseRoute("")).toEqual({ name: "home" });
     expect(parseRoute("//")).toEqual({ name: "home" });

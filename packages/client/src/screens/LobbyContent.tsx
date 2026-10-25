@@ -20,19 +20,14 @@ import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { ClassToken } from "./ClassToken";
 import { Icon } from "./icons";
-import { savedHeading, savedHeroes } from "./save-copy";
+import { savedHeading, savedHeroes, savedWhere } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { useHelp } from "../help/content";
+import { joinUrl } from "../ui/share-invite";
 import "./shared.css";
 import "./LobbyContent.css";
 import { EntryScene, lobbySceneFor } from "./EntryScene";
 import { RiftSightings } from "./RiftSight";
-
-/** Where a scanning phone lands (architecture §4.6 routes). */
-function joinUrl(code: string): string {
-  const origin = typeof window === "undefined" ? "" : window.location.origin;
-  return `${origin}/p/${code}`;
-}
 
 /**
  * The QR is a convenience, never a requirement — the code is always readable
@@ -156,6 +151,9 @@ export function LobbyContent(): ReactElement {
         <Icon name="party" />
         <span>Everyone in?</span>
       </h2>
+      {/* The household's table, when the family named it: where the game is
+          kept, not the phones. */}
+      {state?.location ? <p className="lobby__place kad-muted">{state.location}</p> : null}
       {/* A chapter this household stopped partway (#259): said to the room, and
           taken up from any phone. */}
       {state?.saved ? (
@@ -165,7 +163,7 @@ export function LobbyContent(): ReactElement {
             <span>{savedHeading(state.saved)}</span>
           </p>
           <p className="lobby__premise-text">
-            {state.saved.recap} {savedHeroes(state.saved)} can tap Keep going on a phone.
+            {savedWhere(state.saved)} {state.saved.recap} {savedHeroes(state.saved)} can tap Keep going on a phone.
           </p>
         </div>
       ) : null}

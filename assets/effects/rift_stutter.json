@@ -1,5 +1,6 @@
 {
-  "frames": 12,
+  "frames": 24,
   "fps": 12,
-  "size": 256
+  "size": 320,
+  "columns": 12
 }

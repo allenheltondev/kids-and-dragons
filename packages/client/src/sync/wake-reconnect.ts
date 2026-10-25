@@ -20,13 +20,21 @@ import { WAKE_COALESCE_MS, onWake } from "./wake";
 let lastReconnect = -Infinity;
 let lastDrop = -Infinity;
 
+/**
+ * A page-side failure that says the stream is probably dead too (#469): a
+ * presence beat or an action that failed at the network. One reconnect,
+ * coalesced with wakes so a burst of failures replaces the stream once.
+ * `reconnect` is injectable for tests.
+ */
+export function nudgeReconnect(reconnect: () => void = () => useGameStore.getState().reconnect()): void {
+  const at = Date.now();
+  if (at - lastReconnect < WAKE_COALESCE_MS) return;
+  lastReconnect = at;
+  reconnect();
+}
+
 export function useReconnectOnWake(): void {
-  useEffect(() => onWake(() => {
-    const at = Date.now();
-    if (at - lastReconnect < WAKE_COALESCE_MS) return;
-    lastReconnect = at;
-    useGameStore.getState().reconnect();
-  }), []);
+  useEffect(() => onWake(() => nudgeReconnect()), []);
 
   /*
    * The other end of it (#413): the browser saying the signal is gone. A

@@ -13,6 +13,7 @@ import type {
   JournalResponse,
   KidProfileView,
   AbilityCatalog,
+  Bestiary,
   Campaign,
   Chapter,
   ClientIntent,
@@ -34,7 +35,9 @@ export type ConnectionStatus =
   | "connecting"
   | "open"
   | "reconnecting"
-  | "error";
+  | "error"
+  /** The room is gone (ended, or this phone was signed out); retrying cannot help. */
+  | "lost";
 
 export interface ClientSession {
   runId: string;
@@ -74,6 +77,13 @@ export interface ProgressionEvent {
 }
 
 /** A player's live pick and the decision it was made for (`previewContext`). */
+/** A spectator's cheer, heard live (#388). `key` tells two of the same cheer apart. */
+export interface HeardCheer {
+  key: number;
+  /** A `CHEERS` id. */
+  cheer: string;
+}
+
 export interface HeldPreview {
   preview: IntentPreview;
   context: string;
@@ -111,6 +121,11 @@ export interface GameStore {
    */
   previews: Readonly<Record<string, HeldPreview>>;
   /**
+   * What this phone has picked but not confirmed, or null: the half-made
+   * answer a reload would lose (sw/calm.ts, #456). Set by `preview`.
+   */
+  myPreview: IntentPreview | null;
+  /**
    * Who has joined since this screen attached, newest last (#267). Live only,
    * like `previews`: an arrival is news, never part of the mirror, so a screen
    * that attaches later starts with none.
@@ -121,6 +136,12 @@ export interface GameStore {
    * the newest). Non-zero only in a flood, which is the screen's cue to say so.
    */
   arrivalsDropped: number;
+  /**
+   * Spectators' cheers since this screen attached, oldest first (#388). Live
+   * only, like `arrivals`; the shared screen floats each one up and lets it
+   * go (`dropCheer`).
+   */
+  cheers: readonly HeardCheer[];
   /** Set when an intent was rejected. Cleared by `dismissError()`. */
   error: string | null;
   rules: RulesContent | null;
@@ -137,6 +158,12 @@ export interface GameStore {
    * same catalog the server validates against, loaded the same way as rules.
    */
   abilities: AbilityCatalog | null;
+  /**
+   * Canon's creatures (content/bestiary.json), for creature likes and dislikes
+   * on a check badge. `null` until loaded, and stays `null` if the fetch fails:
+   * the game works without it.
+   */
+  bestiary: Bestiary | null;
   /**
    * The chapter in play, for rendering only: its biome picks the combat tile
    * sheet, its encounter scenes carry the enemy art ids. Never consulted for
@@ -166,7 +193,12 @@ export interface GameStore {
    * Party Mode from the TV: open a room with this device as its screen, seat
    * nobody, and land on `/tv/:code` — the lobby the phones join (spec §2.1).
    */
-  openOnThisScreen(): Promise<void>;
+  /**
+   * Open the lobby on this screen. `location` is what the family calls its table
+   * ("Kitchen table"): given, it is remembered on this device; left out, the
+   * remembered name is used.
+   */
+  openOnThisScreen(location?: string): Promise<void>;
   joinRoom(code: string, displayName: string, seat?: SharedSeatRequest): Promise<ClientSession>;
   /**
    * The "who's playing?" picker on a shared tablet (#250). `null` when this
@@ -227,6 +259,20 @@ export interface GameStore {
   reconnect(): void;
   /** Stops showing an arrival. */
   dismissArrival(playerId: string): void;
+  /**
+   * A spectator's cheer for the shared screen (#388, server handlers/cheer.ts).
+   * Resolves `false` when it was not sent (too many too fast, or no longer
+   * watching); nothing else depends on it, so nothing lands in `error`.
+   */
+  cheer(cheer: string): Promise<boolean>;
+  /** The shared screen has finished floating a cheer up. */
+  dropCheer(key: number): void;
+  /**
+   * "Just watch" on this phone (`true`), or back to making a hero (`false`)
+   * (#388, server handlers/watch.ts). Resolves `true` once the server has it;
+   * a refusal lands in `error` and resolves `false`.
+   */
+  spectate(watching: boolean): Promise<boolean>;
   /**
    * The host takes a player out of the room (#267). Resolves `true` once the
    * server has done it; a refusal lands in `error` and resolves `false`.

@@ -14,6 +14,12 @@
       "attack": 4,
       "xp": 12,
       "usualCount": 2,
+      "traits": [
+        "armored"
+      ],
+      "likes": [
+        "dragonling"
+      ],
       "resolutions": [
         {
           "kind": "observation",
@@ -41,6 +47,10 @@
       "attack": 3,
       "xp": 5,
       "usualCount": 3,
+      "traits": [
+        "fiery",
+        "swarming"
+      ],
       "resolutions": [
         {
           "kind": "distraction",
@@ -68,6 +78,9 @@
       "attack": 3,
       "xp": 8,
       "usualCount": 2,
+      "traits": [
+        "slippery"
+      ],
       "resolutions": [
         {
           "kind": "observation",
@@ -96,6 +109,13 @@
       "xp": 20,
       "usualCount": 1,
       "behavior": "holds_ground",
+      "traits": [
+        "frozen",
+        "hulking"
+      ],
+      "dislikes": [
+        "griffin"
+      ],
       "resolutions": [
         {
           "kind": "escape",
@@ -123,6 +143,10 @@
       "attack": 4,
       "xp": 12,
       "usualCount": 2,
+      "traits": [
+        "slippery",
+        "hulking"
+      ],
       "resolutions": [
         {
           "kind": "bargaining",
@@ -150,6 +174,10 @@
       "attack": 3,
       "xp": 5,
       "usualCount": 3,
+      "traits": [
+        "armored",
+        "swarming"
+      ],
       "resolutions": [
         {
           "kind": "distraction",
@@ -177,6 +205,9 @@
       "attack": 4,
       "xp": 20,
       "usualCount": 1,
+      "traits": [
+        "hulking"
+      ],
       "resolutions": [
         {
           "kind": "distraction",
@@ -204,6 +235,10 @@
       "attack": 3,
       "xp": 5,
       "usualCount": 3,
+      "traits": [
+        "ghostly",
+        "flier"
+      ],
       "resolutions": [
         {
           "kind": "conversation",
@@ -232,6 +267,10 @@
       "xp": 12,
       "usualCount": 2,
       "behavior": "guards_its_cause",
+      "traits": [
+        "ghostly",
+        "hulking"
+      ],
       "resolutions": [
         {
           "kind": "restoring_habitat",
@@ -261,6 +300,10 @@
       "usualCount": 1,
       "footprint": 4,
       "behavior": "holds_ground",
+      "traits": [
+        "hulking",
+        "fiery"
+      ],
       "resolutions": [
         {
           "kind": "bargaining",

@@ -88,4 +88,61 @@ test.describe("running the room", () => {
     await join(newcomer, code);
     await expect(newcomer.getByText(new RegExp(`no open room ${code}`, "i")).first()).toBeVisible(TAP);
   });
+
+  test("the host shares the invite where the browser can", async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    openContexts.push(context);
+    await context.addInitScript(() => {
+      const w = window as unknown as { __shared: unknown[] };
+      w.__shared = [];
+      Object.defineProperty(navigator, "share", {
+        configurable: true,
+        value: (data: unknown) => {
+          w.__shared.push(data);
+          return Promise.resolve();
+        },
+      });
+    });
+    const host = await context.newPage();
+    await host.goto("/");
+    await host.getByRole("button", { name: /host a game/i }).click();
+    await host.getByText("Phone Mode").click();
+    await host.getByLabel(/adventurer name/i).fill("Grown-up");
+    await host.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    const code = new URL(host.url()).pathname.split("/").pop() ?? "";
+    await host.getByText("Running this room").click();
+    await host.getByRole("button", { name: "Share invite" }).click();
+    const url = new URL(`/p/${code}`, host.url()).toString();
+    await expect
+      .poll(() => host.evaluate(() => (window as unknown as { __shared: unknown[] }).__shared))
+      .toEqual([{ title: "Kids & Dragons", text: `Join our Kids & Dragons game: ${url}`, url }]);
+  });
+
+  test("the host copies the invite when the browser cannot share", async ({ browser }) => {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    openContexts.push(context);
+    await context.addInitScript(() => {
+      Object.defineProperty(navigator, "share", { configurable: true, value: undefined });
+      const w = window as unknown as { __copied: string[] };
+      w.__copied = [];
+      Object.defineProperty(navigator, "clipboard", {
+        configurable: true,
+        value: { writeText: (text: string) => (w.__copied.push(text), Promise.resolve()) },
+      });
+    });
+    const host = await context.newPage();
+    await host.goto("/");
+    await host.getByRole("button", { name: /host a game/i }).click();
+    await host.getByText("Phone Mode").click();
+    await host.getByLabel(/adventurer name/i).fill("Grown-up");
+    await host.getByRole("button", { name: /^start a game$/i }).click();
+    await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
+    const code = new URL(host.url()).pathname.split("/").pop() ?? "";
+    await host.getByText("Running this room").click();
+    await host.getByRole("button", { name: "Share invite" }).click();
+    await expect(host.getByRole("button", { name: "Copied" })).toBeVisible(TAP);
+    const url = new URL(`/p/${code}`, host.url()).toString();
+    expect(await host.evaluate(() => (window as unknown as { __copied: string[] }).__copied)).toEqual([url]);
+  });
 });

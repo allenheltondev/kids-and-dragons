@@ -132,6 +132,8 @@ function harness(state: RunState = makeState()): Harness {
     hostControl: vi.fn(async (): Promise<void> => undefined),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     postPreview: vi.fn(async (): Promise<void> => undefined),
+    postCheer: vi.fn(async (): Promise<void> => undefined),
+    postSpectate: vi.fn(async (): Promise<void> => undefined),
     postPresence: vi.fn(async (): Promise<void> => undefined),
     postResume: vi.fn(async (): Promise<void> => undefined),
     releaseSavedHero: vi.fn(async (): Promise<void> => undefined),
@@ -146,6 +148,7 @@ function harness(state: RunState = makeState()): Harness {
     })),
     loadChapter: vi.fn(async () => ({ id: "bramblewood-01", biome: "enchanted_woods", scenes: {} })),
     loadAbilities: vi.fn(async () => ({ version: 1, abilities: {} })),
+    loadBestiary: vi.fn(async () => ({ version: 1, creatures: {} })),
     loadWorld: vi.fn(async () => ({
       title: "The Realm of Red Sky",
       image: { src: "/assets/world/realm_of_red_sky.webp", width: 10, height: 10 },
@@ -307,6 +310,17 @@ describe("joining", () => {
       "ABCD",
       expect.objectContaining({ deviceToken: "dev_host" }),
     );
+  });
+
+  it("names the table it opens, remembers the name, and sends it next time too", async () => {
+    const h = harness();
+    await h.store.getState().openOnThisScreen("  Kitchen table ");
+    expect(h.api.openDisplayRoom).toHaveBeenLastCalledWith(expect.objectContaining({ location: "Kitchen table" }));
+    await h.store.getState().openOnThisScreen();
+    expect(h.api.openDisplayRoom).toHaveBeenLastCalledWith(expect.objectContaining({ location: "Kitchen table" }));
+    // Clearing the name forgets it.
+    await h.store.getState().openOnThisScreen("");
+    expect(h.api.openDisplayRoom.mock.calls.at(-1)![0]).not.toHaveProperty("location");
   });
 
   it("opens a room from the TV without seating it, and goes to the TV route", async () => {
@@ -567,6 +581,34 @@ describe("the mirror", () => {
   });
 });
 
+describe("a replayed patch that does not fit", () => {
+  it("fetches a full snapshot, holds decisions until it lands, and repairs the mirror", async () => {
+    const h = harness(makeState({ seq: 1, narration: "one" }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.api.fetchState.mockClear();
+    h.api.fetchState
+      .mockResolvedValueOnce({
+        seq: 2,
+        events: [{ seq: 2, runId: "r_1", patch: [{ op: "remove", path: "/no/such/thing" }] }],
+      } as never)
+      .mockImplementationOnce(async () => {
+        syncedDuringSnapshot = h.store.getState().synced;
+        return { seq: 2, state: makeState({ seq: 2, narration: "two" }) } as never;
+      });
+    let syncedDuringSnapshot: boolean | undefined;
+
+    await h.channelOptions().resync(1);
+
+    expect(syncedDuringSnapshot).toBe(false);
+
+    expect(h.api.fetchState).toHaveBeenCalledTimes(2);
+    expect(h.api.fetchState).toHaveBeenNthCalledWith(1, { runId: "r_1", code: "ABCD", sinceSeq: 1 }, "tok_1");
+    expect(h.api.fetchState).toHaveBeenNthCalledWith(2, { runId: "r_1", code: "ABCD" }, "tok_1");
+    expect(h.store.getState().state?.narration).toBe("two");
+    expect(h.store.getState().state?.seq).toBe(2);
+  });
+});
+
 describe("beat (#258)", () => {
   it("says still here, or leaving, with this phone's session, and shrugs off a failure", async () => {
     const h = harness(makeState({ seq: 7 }));
@@ -616,6 +658,34 @@ describe("preview", () => {
     h.publish({ kind: "preview", seq: 7, runId: "r_1", playerId: "p_2", preview: null, context: null });
     expect(h.store.getState().previews).toEqual({});
     expect(h.store.getState().state?.seq).toBe(7);
+  });
+});
+
+describe("cheers (#388)", () => {
+  it("holds each cheer heard until the screen lets it go, without touching the mirror", async () => {
+    const h = harness(makeState({ seq: 7 }));
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    h.publish({ kind: "cheer", seq: 7, runId: "r_1", cheer: "star" });
+    h.publish({ kind: "cheer", seq: 7, runId: "r_1", cheer: "star" });
+    h.publish({ kind: "cheer", seq: 7, runId: "r_other", cheer: "heart" });
+    const cheers = h.store.getState().cheers;
+    expect(cheers.map((c) => c.cheer)).toEqual(["star", "star"]);
+    expect(new Set(cheers.map((c) => c.key)).size).toBe(2);
+    expect(h.store.getState().state?.seq).toBe(7);
+
+    h.store.getState().dropCheer(cheers[0]!.key);
+    expect(h.store.getState().cheers).toEqual([cheers[1]]);
+  });
+
+  it("sends a cheer with the session token, and says when it did not go", async () => {
+    const h = harness();
+    await h.store.getState().joinRoom("ABCD", "Allen");
+    expect(await h.store.getState().cheer("heart")).toBe(true);
+    expect(h.api.postCheer).toHaveBeenCalledWith("heart", "tok_1");
+
+    h.api.postCheer.mockRejectedValueOnce(new Error("Wait a moment, then cheer again!"));
+    expect(await h.store.getState().cheer("heart")).toBe(false);
+    expect(h.store.getState().error).toBeNull();
   });
 });
 
@@ -1228,6 +1298,18 @@ describe("content", () => {
 
     expect(h.api.loadRules).toHaveBeenCalledTimes(1);
     expect(h.store.getState().rules).toEqual({ version: 1 });
+    expect(h.store.getState().bestiary).toEqual({ version: 1, creatures: {} });
+  });
+
+  it("carries on without the bestiary when its fetch fails", async () => {
+    const h = harness();
+    h.api.loadBestiary.mockRejectedValueOnce(new Error("offline"));
+    await h.store.getState().loadContent();
+
+    expect(h.store.getState().rules).toEqual({ version: 1 });
+    expect(h.store.getState().abilities).not.toBeNull();
+    expect(h.store.getState().bestiary).toBeNull();
+    expect(h.store.getState().error).toBeNull();
   });
 });
 

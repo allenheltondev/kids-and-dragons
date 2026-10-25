@@ -1,3 +1,7 @@
+import type { ClassId, RulesContent, SpeciesId } from "./types/domain.js";
+import type { MatchupEdge } from "./types/matchups.js";
+import { edgesAgainst, edgesForHero } from "./matchups.js";
+
 /**
  * `content/field-guide.json` — what a player may read about the world.
  *
@@ -19,11 +23,13 @@
  *
  *   creatures — every `creature.*`, fightable or bandless
  *   peoples   — playable species (`character.*`) and sapient peoples (`npc.*`)
+ *   classes   — the four playable classes (`class.*`); an entry shows once a hero
+ *               wears the class or the party has been to its class place
  *   folk      — named individuals (`individual.*`), the people you meet by name
  *   places    — biomes and locations
  *   factions  — orders and groups, only those with lore to tell
  */
-export type FieldGuideCategory = "creatures" | "peoples" | "folk" | "places" | "factions";
+export type FieldGuideCategory = "creatures" | "peoples" | "classes" | "folk" | "places" | "factions";
 
 /** The canon taxonomy an entry came from, for a client that wants to filter finer. */
 export type FieldGuideKind =
@@ -33,7 +39,8 @@ export type FieldGuideKind =
   | "individual"
   | "biome"
   | "location"
-  | "faction";
+  | "faction"
+  | "class";
 
 /** An opinion a creature or people holds, with the target's name resolved. */
 export interface FieldGuideOpinion {
@@ -84,6 +91,29 @@ export interface FieldGuideTip {
   text: string;
 }
 
+/** One distinction a class awards, with the move it unlocks. */
+export interface FieldGuideDistinction {
+  rank: "apprentice" | "expert" | "master";
+  move: string;
+}
+
+/**
+ * What a class entry adds to the guide (`class.*`). `home` is the class place
+ * that teaches it, as a canon id. The title is carried so the detail screen can
+ * link it, but the screen draws it only once the party has found that place:
+ * until then the link reads "???" (FieldGuideDetail's EntryLink).
+ */
+export interface FieldGuideClass {
+  /** Canon `role` slug, e.g. `front_line`. */
+  role: string;
+  /** What a hero wears to be this class, e.g. "a thorn bracer". */
+  gear: string;
+  /** Canon id of the class place. */
+  home: string;
+  homeTitle: string;
+  distinctions: FieldGuideDistinction[];
+}
+
 export interface FieldGuideEntry {
   /** Canon id, repeated from the key so an entry stands on its own. */
   id: string;
@@ -101,15 +131,147 @@ export interface FieldGuideEntry {
   lore?: FieldGuideLore;
   /** Biomes and locations. Absent when canon has not written any yet. */
   place?: FieldGuidePlaceLore;
+  /** Classes only: the role, the gear, the three distinctions and the place that teaches it. */
+  class?: FieldGuideClass;
   /** Who in canon likes this entry. Present only when non-empty. */
   likedBy?: FieldGuideReverseOpinion[];
   dislikedBy?: FieldGuideReverseOpinion[];
   /** Creatures with an encounter block: ways past that are not a fight. */
   tips?: FieldGuideTip[];
+  /**
+   * Creatures with a stat line: up to two trait ids, keys of `rules.matchups.traits`
+   * (docs/matchups.md). The client draws them only once the entry is discovered.
+   */
+  traits?: string[];
 }
 
 export interface FieldGuide {
   version: number;
   /** Keyed by canon id, in a stable order: category, then id. */
   entries: Record<string, FieldGuideEntry>;
+}
+
+/** One line of "good against it" or "careful", in the words of the rule. */
+export interface GuideMatchupLine {
+  id: string;
+  text: string;
+}
+
+export interface GuideTrait {
+  id: string;
+  name: string;
+  icon: string;
+  text: string;
+}
+
+export interface CreatureMatchups {
+  traits: GuideTrait[];
+  /** Playable species names this creature likes / dislikes (canon `lore`). */
+  likes: string[];
+  dislikes: string[];
+  good: GuideMatchupLine[];
+  careful: GuideMatchupLine[];
+}
+
+/** Which way an edge pushes from the hero's side: above 0 helps, below hurts. Pairings always help. */
+export function edgeHelps(edge: MatchupEdge): number {
+  const roll = edge.on === "defend" ? -(edge.roll ?? 0) : (edge.roll ?? 0);
+  return roll + (edge.damage ?? 0);
+}
+
+const speciesOf = (ref: { of: string }): string | undefined =>
+  ref.of.startsWith("character.") ? ref.of.slice("character.".length) : undefined;
+
+/**
+ * What the "Fighting it" section of a creature page shows, or null when the
+ * creature has no traits and no opinion of a playable species (or the rules
+ * have no matchups). Pure; the client only decides whether the page is unlocked.
+ */
+export function creatureMatchups(rules: RulesContent | null | undefined, entry: FieldGuideEntry): CreatureMatchups | null {
+  const table = rules?.matchups;
+  if (!rules || !table || entry.kind !== "creature") return null;
+  const traitIds = (entry.traits ?? []).filter((id) => table.traits[id] !== undefined);
+  const names = (refs: { of: string }[] | undefined): string[] =>
+    (refs ?? []).flatMap((ref) => {
+      const id = speciesOf(ref);
+      const name = id === undefined ? undefined : (rules.species as Record<string, { name: string } | undefined>)[id]?.name;
+      return name === undefined ? [] : [name];
+    });
+  const likes = names(entry.lore?.likes);
+  const dislikes = names(entry.lore?.dislikes);
+  if (traitIds.length === 0 && likes.length === 0 && dislikes.length === 0) return null;
+  const edges = edgesAgainst(rules, traitIds);
+  const line = (edge: MatchupEdge): GuideMatchupLine => ({ id: edge.id, text: edge.text });
+  return {
+    traits: traitIds.map((id) => ({ id, name: table.traits[id]!.name, icon: table.traits[id]!.icon, text: table.traits[id]!.text })),
+    likes,
+    dislikes,
+    good: edges.filter((e) => edgeHelps(e) > 0).map(line),
+    careful: edges.filter((e) => edgeHelps(e) < 0).map(line),
+  };
+}
+
+export interface SpeciesMatchups {
+  good: GuideMatchupLine[];
+  watch: GuideMatchupLine[];
+}
+
+/** "Good at" and "Watch out" for a playable species page (`character.<id>`); null for any other entry or no edges. */
+export function speciesMatchups(rules: RulesContent | null | undefined, entryId: string): SpeciesMatchups | null {
+  const species = entryId.startsWith("character.") ? entryId.slice("character.".length) : undefined;
+  if (!rules?.matchups || species === undefined || !(rules.species as Record<string, unknown>)[species]) return null;
+  const seen = new Map<string, MatchupEdge>();
+  for (const klass of Object.keys(rules.classes)) {
+    for (const edge of edgesForHero(rules, { species: species as SpeciesId, class: klass as ClassId })) {
+      const own = [edge.hero.species].flat().includes(species as SpeciesId);
+      if (own && !seen.has(edge.id)) seen.set(edge.id, edge);
+    }
+  }
+  const edges = [...seen.values()];
+  const line = (edge: MatchupEdge): GuideMatchupLine => ({ id: edge.id, text: edge.text });
+  const good = edges.filter((e) => edgeHelps(e) > 0).map(line);
+  const watch = edges.filter((e) => edgeHelps(e) < 0).map(line);
+  return good.length === 0 && watch.length === 0 ? null : { good, watch };
+}
+
+/**
+ * "Good at" and "Watch out" for a class page (`class.<id>`), pairings with a
+ * species included (they always help); null for any other entry or no edges.
+ */
+export function classMatchups(rules: RulesContent | null | undefined, entryId: string): SpeciesMatchups | null {
+  const klass = entryId.startsWith("class.") ? entryId.slice("class.".length) : undefined;
+  if (!rules?.matchups || klass === undefined || !(rules.classes as Record<string, unknown>)[klass]) return null;
+  const edges = rules.matchups.edges.filter((edge) => [edge.hero.class ?? []].flat().includes(klass as ClassId));
+  const line = (edge: MatchupEdge): GuideMatchupLine => ({ id: edge.id, text: edge.text });
+  const good = edges.filter((e) => edgeHelps(e) > 0).map(line);
+  const watch = edges.filter((e) => edgeHelps(e) < 0).map(line);
+  return good.length === 0 && watch.length === 0 ? null : { good, watch };
+}
+
+/**
+ * The matchup advice on an entry's page as sentences to read aloud, in the
+ * order the page shows it. Empty when the page shows none (the caller passes
+ * null rules when matchups are off for the run, as the page does).
+ */
+export function matchupSentences(rules: RulesContent | null | undefined, entry: FieldGuideEntry): string[] {
+  const join = (names: string[]): string =>
+    names.length < 3 ? names.join(" and ") : `${names.slice(0, -1).join(", ")}, and ${names.at(-1)!}`;
+  const fight = creatureMatchups(rules, entry);
+  if (fight) {
+    return [
+      "Fighting it",
+      ...fight.traits.map((t) => `${t.name}. ${t.text}`),
+      ...(fight.likes.length > 0 ? [`Goes easy on ${join(fight.likes)}. It holds back around them`] : []),
+      ...(fight.dislikes.length > 0 ? [`Picks on ${join(fight.dislikes)}. It singles them out`] : []),
+      ...(fight.good.length > 0 ? ["Good against it", ...fight.good.map((l) => l.text)] : []),
+      ...(fight.careful.length > 0 ? ["Careful", ...fight.careful.map((l) => l.text)] : []),
+      "Not every fight has to be a fight",
+    ];
+  }
+  const hero = speciesMatchups(rules, entry.id) ?? classMatchups(rules, entry.id);
+  if (!hero) return [];
+  return [
+    ...(hero.good.length > 0 ? ["Good at", ...hero.good.map((l) => l.text)] : []),
+    ...(hero.watch.length > 0 ? ["Watch out", ...hero.watch.map((l) => l.text)] : []),
+  ];
 }

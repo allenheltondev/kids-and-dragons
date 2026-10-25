@@ -11,6 +11,7 @@ import type { ChapterOutcome, SceneId, ScenePriority, SceneType } from "./chapte
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
+import type { MatchupNote } from "./matchups.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -30,6 +31,14 @@ export interface DiceRoll {
    * Checks only; absent on every roll no buff touched.
    */
   buff?: { id: BuffId; label: string; amount: number };
+  /**
+   * Matchups that moved this roll (docs/matchups.md): `amount` is what they
+   * added to `total`, already capped (on a monster's swing at a hero a note
+   * that helps the hero makes it negative), and `notes` name each one for the
+   * screens, each `roll` from the hero's side. Absent on every roll no matchup touched,
+   * which is every roll in a campaign that plays without them (Gemfall).
+   */
+  matchup?: { amount: number; notes: MatchupNote[] };
   /**
    * On the last roll of a whole-party check (`roller: "all"`): how many made
    * it, out of how many, and so how the party did. Half or more is a success.
@@ -298,7 +307,7 @@ export interface RunState {
   flags: Record<string, boolean>;
   /**
    * The party's shared purse. One purse, not one per character, for the same
-   * reason XP is never individual: what the party can afford is a table
+   * reason story XP is shared: what the party can afford is a table
    * decision. Unlike `flags` it outlives the chapter, through
    * `EngineContext.campaignCoins` and `CampaignProgressRecord.coins`.
    *
@@ -307,6 +316,22 @@ export interface RunState {
    */
   coins?: number;
   xpEarned: number;
+  /**
+   * The individual XP each hero earned this chapter for her own rolls that went
+   * well (`RulesContent.rollXp`: checks, attacks, defeats and natural 20s), by
+   * character id. Paid to that hero alone when the chapter settles, on top of
+   * the party's `xpEarned`, and never part of it. Each hero's total is capped at
+   * the chapter's cap. Absent until one pays; cleared when a chapter starts.
+   */
+  heroRollXp?: Record<string, number>;
+  /**
+   * Legacy. The party's shared roll XP, from a run begun before roll XP became
+   * individual. It is already in `xpEarned`. A chapter that carries it keeps
+   * that one shared pot, capped by the chapter's cap, until it ends, so no
+   * hero gets a fresh allowance on top. Absent on every new chapter, and
+   * cleared when one starts.
+   */
+  rollXp?: number;
   /**
    * How the chapter now in `chapterId` ended, once it has (spec §8.2). Null
    * while one is still being played.
@@ -361,6 +386,16 @@ export interface RunState {
    * open. Absent otherwise. The rank-up moment itself is #314's.
    */
   rankUps?: { sceneId: SceneId | null; ups: RankUp[] };
+  /**
+   * The story choice the table just made, and the scene it led to: the shared
+   * screen says what was picked in one line while that scene is open, so a
+   * room that voted can see its conclusion. `vote` says whether the party
+   * decided it together or one kid picked for everyone; `byPlayerId` is the
+   * kid who had the final say (for a vote, the last to tip it). Absent when
+   * there was nothing to decide (a "Go on" with one way on), and on a run
+   * saved before this existed.
+   */
+  decision?: { sceneId: SceneId | null; label: string; byPlayerId: string; vote: boolean };
   /**
    * Every scene this run has entered, in order — the spine of the story, for
    * the end-of-chapter recap of its priority-1 scenes (chapter.ts
@@ -496,6 +531,16 @@ export interface RunState {
    */
   seats?: Record<string, RoomSeat>;
   /**
+   * Spectators whose phones are still here (#388): players on the roster with
+   * no hero who chose to watch or found the table full (`isSpectator`), and
+   * have said "still here" recently.
+   * Written by presence alone, so the shared screen can say how many are
+   * watching. Read it through `watchers()`, which drops anybody who has since
+   * sat down or been taken out. Never counted by anything that counts the
+   * party. Absent when nobody is watching.
+   */
+  watching?: string[];
+  /**
    * The host locked the room (#263): nobody new may join. Everybody already
    * seated (`seats`) can still come back to it, from any device. Absent when
    * open.
@@ -516,6 +561,11 @@ export interface RunState {
    * saved, which is nearly every room.
    */
   saved?: SavedGameView;
+  /**
+   * What the family calls its table, the household's place at the game ("Kitchen table"),
+   * from the TV that opened it. Absent when the table was never named.
+   */
+  location?: string;
   /**
    * The host closed the room (#263). Every screen leaves, nothing more is
    * accepted, and the code is free again. Terminal: a closed room never
@@ -561,6 +611,8 @@ export interface SavedGameView {
   /** The heroes who were playing, by name. */
   heroes: string[];
   savedAt: string;
+  /** What the family called its table, when they named it. */
+  location?: string;
 }
 
 /** One entry on the host's roster (`RunState.seats`, #263). */
@@ -576,6 +628,12 @@ export interface RoomSeat {
    * the roster can.
    */
   homeHouseholdId?: string;
+  /**
+   * They chose "Just watch" on their own phone (#388): a spectator even at a
+   * table with a seat open, until they choose to make a hero. Absent for
+   * everybody else, which is nearly everybody.
+   */
+  watching?: true;
 }
 
 /**

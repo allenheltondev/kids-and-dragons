@@ -243,6 +243,7 @@ export function enemyPortraitUrl(
   const spec = scene.enemies.find((e) => e.id === specId);
   const art = spec ? enemyArtId(spec) : null;
   if (!art) return null;
+  if (art.startsWith("cast/")) return `/assets/${art}/assembled.png`;
   const id = art.startsWith("enemies/") ? art.slice("enemies/".length) : art;
   return `/assets/entities/${id}/portrait.webp`;
 }

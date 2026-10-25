@@ -38,7 +38,7 @@
         }
       ],
       "rift": "collapse",
-      "narration": "The fold opens onto dry ground high above the realm. Your party crosses together. Behind you it closes, leaving only cold air. A kitsune temple keeper leads you away from the island's edge. \"These are called the Sky Islands,\" she says. \"And this one is not where it belongs.\"",
+      "narration": "The fold opens onto dry ground high above the realm. Your party crosses together. Behind you it closes, leaving only cold air. A kitsune temple keeper leads you away from the island's edge. \"These are called the Sky Islands,\" she says. \"And this one is not where it belongs.\" Find shelter, listen for the opening, and help her mark the unsafe path.",
       "choices": [
         {
           "id": "continue",
@@ -53,7 +53,7 @@
             "flag": "sky_arrival_flight"
           },
           "replace": true,
-          "text": "The Cairnstep griffins bring your whole party across to an island high above the realm. A kitsune temple keeper welcomes you away from the edge. \"These are called the Sky Islands,\" she says. \"Our old landing route points into empty sky now.\""
+          "text": "The Cairnstep griffins bring your whole party across to an island high above the realm. A kitsune temple keeper welcomes you away from the edge. \"These are called the Sky Islands,\" she says. \"Our old landing route points into empty sky now.\" Find shelter, listen for the opening, and help her mark the unsafe path."
         }
       ]
     },
@@ -177,6 +177,31 @@
     },
     "island_rest": {
       "type": "rest",
+      "narration": "The keeper leads you to a sheltered path on the Sky Islands. Beside it stands a stone hut. Its door rattles in the wind. Thump. Something soft hits the wall inside. Far off, a huge shape moves through the mist, singing. You can rest here before following the song.",
+      "heal": 0,
+      "choices": [
+        {
+          "id": "hut",
+          "label": "Knock on the stone hut's door",
+          "icon": "hand",
+          "goto": "dojo"
+        },
+        {
+          "id": "set_out",
+          "label": "Return to the keeper and set out",
+          "icon": "travel",
+          "goto": "island_done"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ]
+    },
+    "island_done": {
+      "type": "rest",
       "narration": "The keeper offers shelter. Far off, a huge shape moves gently through the mist, singing. The party has found new neighbors and a displaced route to investigate.",
       "heal": 0,
       "choices": [],
@@ -195,6 +220,81 @@
           "name": "Temple keeper"
         }
       ]
+    },
+    "dojo": {
+      "type": "story",
+      "narration": "A bigfoot named Master Dunnick opens the door a crack and pulls you in out of the wind. Then he leans his back against it. The wind pushes. He pushes back. He has held this door shut for forty years. \"This school is called the Dojo,\" he says. \"Here we train the Thornguard, a hero who holds the line.\" A thorn bracer hangs on a hook by the fire. A Thornguard's strength lives in that bracer, and a song bell worn beside it will not ring. Thump. In the corner, students are catching pillows as they drop from the rafters. \"Anyone who wants the bracer,\" says Master Dunnick, \"may try it on.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "met_master_dunnick"
+          },
+          "text": "Master Dunnick is still leaning on the door of the Dojo. \"Back already? Good. The wind never stops, so neither do we.\" The thorn bracer waits on its hook for anyone who wants to try it on. Thump. Another pillow drops.",
+          "replace": true
+        }
+      ],
+      "classPlace": "thornguard",
+      "cast": [
+        {
+          "figure": "cast/master_dunnick",
+          "name": "Master Dunnick"
+        }
+      ],
+      "choices": [
+        {
+          "id": "pillows",
+          "label": "Catch the falling pillows",
+          "icon": "shield",
+          "goto": "dojo_pillows",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_master_dunnick",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "back",
+          "label": "Back to the sheltered path",
+          "icon": "back",
+          "goto": "island_rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_master_dunnick",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/dojo"
+    },
+    "dojo_pillows": {
+      "type": "story",
+      "narration": "A student unties a rope. Pillows tumble from the rafters. You plant your feet and catch one, then another, then another. The next one lands on your head. Master Dunnick nods without leaving the door. \"That is how you brace. Stand still, and let it come to you.\"",
+      "cast": [
+        {
+          "figure": "cast/master_dunnick",
+          "name": "Master Dunnick"
+        }
+      ],
+      "choices": [
+        {
+          "id": "back",
+          "label": "Back to the sheltered path",
+          "icon": "back",
+          "goto": "island_rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_master_dunnick",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/dojo"
     }
   },
   "voiceGuide": {

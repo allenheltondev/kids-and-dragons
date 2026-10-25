@@ -12,12 +12,13 @@
  * a production build at all) is e2e/production-locks.spec.ts.
  */
 
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { applyIntent, createRunState } from "@kad/shared";
 import { applyAction } from "../handlers/action.ts";
 import { createRoom, joinRoom } from "../handlers/room.ts";
 import { makeHarness, seedHousehold } from "../test-support.ts";
-import { runtime } from "./runtime.ts";
+import { pushDeliveryFromEnv, pushFromEnv, runtime } from "./runtime.ts";
+import { mintVapidKeys } from "../web-push.ts";
 
 const ENV = {
   AWS_REGION: "us-east-1",
@@ -67,5 +68,70 @@ describe("production's playtest switch", () => {
       harness.deps,
     );
     expect(result.ok).toBe(false);
+  });
+});
+
+describe("production's push switch (#466)", () => {
+  const keys = mintVapidKeys();
+  const source = (name: string) => async () => {
+    expect(name).toBe("/kad/test/push-vapid-keys");
+    return keys;
+  };
+  const on = {
+    KAD_PUSH: "on",
+    KAD_PUSH_SUBJECT: "mailto:grown-ups@example.com",
+    PUSH_KEY_PARAMETER: "/kad/test/push-vapid-keys",
+    PUSH_SENDER_FUNCTION: "kad-test-push-sender",
+  };
+
+  it("is off unless the stack says on, and reads no key while off", async () => {
+    const never = () => async () => {
+      throw new Error("read a key while off");
+    };
+    expect(await pushFromEnv({}, never)).toBeUndefined();
+    expect(await pushFromEnv({ ...on, KAD_PUSH: "off" }, never)).toBeUndefined();
+    // The dev server's stand-in is never production's.
+    expect(await pushFromEnv({ ...on, KAD_PUSH: "record" }, never)).toBeUndefined();
+  });
+
+  it("stays off, and says so, with no subject to send as", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    expect(await pushFromEnv({ ...on, KAD_PUSH_SUBJECT: "" }, source)).toBeUndefined();
+    expect(warn).toHaveBeenCalled();
+    warn.mockRestore();
+  });
+
+  it("stays off, rather than failing the API, when the key pair cannot be read", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const denied = () => async () => {
+      throw Object.assign(new Error("not allowed"), { name: "AccessDeniedException" });
+    };
+    expect(await pushFromEnv(on, denied)).toBeUndefined();
+    expect(await pushFromEnv(on, () => async () => "{}")).toBeUndefined();
+    expect(await pushFromEnv({ ...on, PUSH_KEY_PARAMETER: "" }, source)).toBeUndefined();
+    expect(error).toHaveBeenCalledTimes(3);
+    error.mockRestore();
+  });
+
+  it("hands the handlers the stored public key, and a dispatcher to the sender function, when on", async () => {
+    const named: string[] = [];
+    const config = await pushFromEnv(on, source, (name) => {
+      named.push(name);
+      return async () => undefined;
+    });
+    expect(config?.publicKey).toBe((JSON.parse(keys) as { publicKey: string }).publicKey);
+    expect(named).toEqual(["kad-test-push-sender"]);
+  });
+
+  it("stays off with no sender function to hand jobs to", async () => {
+    const error = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    expect(await pushFromEnv({ ...on, PUSH_SENDER_FUNCTION: "" }, source)).toBeUndefined();
+    expect(error).toHaveBeenCalled();
+    error.mockRestore();
+  });
+
+  it("gives the sender function a transport when on, and nothing when off", async () => {
+    expect((await pushDeliveryFromEnv(on, source))?.sender).toBeDefined();
+    expect(await pushDeliveryFromEnv({ ...on, KAD_PUSH: "off" }, source)).toBeUndefined();
   });
 });
