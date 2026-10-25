@@ -1,4 +1,4 @@
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useLayoutEffect, useRef, useSyncExternalStore } from "react";
 
 /**
  * The steps back inside a page: a Field Guide entry open over the guide, a map
@@ -71,7 +71,9 @@ export function useBackStep(step: Step | null, priority = 0): void {
   const active = step !== null;
   const latest = useRef(step);
   latest.current = step;
-  useEffect(() => {
+  // A visible detail must have its back action before paint. A passive effect
+  // leaves a gap after an asynchronous screen load where Back has no step.
+  useLayoutEffect(() => {
     if (!active) return;
     return pushBackStep(() => latest.current?.() ?? false, priority);
   }, [active, priority]);

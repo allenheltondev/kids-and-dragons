@@ -1,9 +1,20 @@
 // @vitest-environment jsdom
 import { describe, expect, it, vi } from "vitest";
 import { act, renderHook } from "@testing-library/react";
+import { useLayoutEffect } from "react";
 import { DETAIL_STEP, pushBackStep, runBackStep, useBackStep, useHasBackStep } from "./back-steps";
 
 describe("steps back inside a page", () => {
+  it("registers a visible screen's back action before its layout is ready", () => {
+    let handled = false;
+    const screen = renderHook(() => {
+      useBackStep(() => true, DETAIL_STEP);
+      useLayoutEffect(() => { handled = runBackStep(); }, []);
+    });
+    expect(handled).toBe(true);
+    screen.unmount();
+    expect(runBackStep()).toBe(false);
+  });
   it("has nothing to do when nothing is open", () => {
     expect(runBackStep()).toBe(false);
   });

@@ -949,7 +949,7 @@ function openScenePrompt(
       draft.prompt = {
         kind: "interaction", sceneId, openedSeq: draft.seq + 1, attempt: 0,
         spec: structuredClone(scene.interaction), playerIds: players,
-        actorId: players[(draft.storyTurn ?? 0) % players.length] ?? "",
+        actorId: storyTurnHolder(draft)?.playerId ?? "",
         phase: "ready", relaxed: false, supports: {},
       };
       return undefined;
@@ -1245,7 +1245,7 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
   if (intent.action === "continue") {
     if (prompt.phase !== "result" || !prompt.outcome) throw new Illegal("ILLEGAL", "Finish the interaction first.");
     const branch = prompt.outcome === "failure" ? scene.onFailure : prompt.outcome === "assisted" ? (scene.onAssisted ?? scene.onSuccess) : scene.onSuccess;
-    draft.storyTurn = (draft.storyTurn ?? 0) + 1;
+    if (actor) passStoryTurn(draft, actor);
     return takeBranch(draft, branch, ctx, draft.party.find((member) => member.playerId === actor)?.character.id);
   }
   if (intent.action === "retry") {
