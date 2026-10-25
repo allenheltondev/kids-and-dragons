@@ -100,7 +100,7 @@ it("the linked glacier rift grants only one Riftspark and preserves a way back",
 it("a background-only story biome needs explicit scene art rather than tactical tiles", { timeout: 20_000 }, () => {
   const root = stageRiftlightOpening();
   try {
-    const file = path.join(root, "content/chapters/riftlight-saltrot-arrival.json");
+    const file = path.join(root, "content/chapters/riftlight-buried-bridge.json");
     const chapter = JSON.parse(fs.readFileSync(file, "utf8"));
     // This assertion concerns chapter art, not every route in the campaign.
     // Keep the shipping validator and assets, but give it a small valid route.
@@ -119,7 +119,7 @@ it("a background-only story biome needs explicit scene art rather than tactical 
     // A new graph, so a new proof, written as an author would (content:proofs).
     const baseline = runValidator(root, ["--write-proofs"]);
     expect(baseline.ok, baseline.output).toBe(true);
-    delete chapter.scenes.flats.art;
+    delete chapter.scenes[chapter.entry].art;
     fs.writeFileSync(file, JSON.stringify(chapter));
     const result = runValidator(root);
     expect(result.ok).toBe(false);

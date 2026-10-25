@@ -4,7 +4,7 @@
   "campaignId": "riftlight",
   "index": 4,
   "title": "Mud Where Ice Should Be",
-  "biome": "sallow_wastelands",
+  "biome": "whispering_marsh",
   "music": "riftlight-paths",
   "estimatedMinutes": 33,
   "xpAward": 140,
@@ -1476,13 +1476,13 @@
           "id": "drive",
           "label": "Drive poles deep along the firm shells",
           "icon": "hand",
-          "goto": "poles_a"
+          "goto": "poles_a_check"
         },
         {
           "id": "flags",
           "label": "Tie reed flags so every pole shows from far away",
           "icon": "hand",
-          "goto": "poles_b"
+          "goto": "poles_b_check"
         },
         {
           "id": "buy",
@@ -1500,52 +1500,6 @@
               "amount": 3
             }
           ]
-        }
-      ],
-      "art": "scenes/riftlight/stuttering-flats",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Saltrot guide"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ]
-    },
-    "poles_a": {
-      "type": "story",
-      "narration": "You test each spot with your own weight before it gets a pole. Pip holds the string line straight and calls out every time you drift. The guide hums a planting song, which has only one note.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Drive the poles",
-          "icon": "hand",
-          "goto": "poles_a_check"
-        }
-      ],
-      "art": "scenes/riftlight/stuttering-flats",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Saltrot guide"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ]
-    },
-    "poles_b": {
-      "type": "story",
-      "narration": "You tie a strip of reed to the top of each pole, so each one looks like a tiny flag. Pip tries to tie his in a bow. The guide unties it. The flags flutter, and the crabs wave back.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Plant the flags",
-          "icon": "hand",
-          "goto": "poles_b_check"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
@@ -1683,13 +1637,13 @@
           "id": "walk",
           "label": "Follow the pale stripe along the bank",
           "icon": "hand",
-          "goto": "trail_a"
+          "goto": "trail_a_check"
         },
         {
           "id": "test",
           "label": "Test the pale silt with poles as you go",
           "icon": "hand",
-          "goto": "trail_b"
+          "goto": "trail_b_check"
         },
         {
           "id": "charm",
@@ -1707,52 +1661,6 @@
             "griffin",
             "dragonling"
           ]
-        }
-      ],
-      "art": "scenes/riftlight/stuttering-flats",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Saltrot guide"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ]
-    },
-    "trail_a": {
-      "type": "story",
-      "narration": "You walk the edge of the pale stripe, one foot on brown mud and one on gray. The gray part squeaks. The brown part squelches. The guide hums a walking song, badly.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Keep walking",
-          "icon": "hand",
-          "goto": "trail_a_check"
-        }
-      ],
-      "art": "scenes/riftlight/stuttering-flats",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Saltrot guide"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ]
-    },
-    "trail_b": {
-      "type": "story",
-      "narration": "You push a pole into the pale silt. It goes in easily, then stops hard, as if there were something solid below. You try again a few steps on. Same stop. Pip scribbles it down. The guide frowns at the ground.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Keep testing",
-          "icon": "hand",
-          "goto": "trail_b_check"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
@@ -2081,7 +1989,109 @@
     },
     "crabs_done": {
       "type": "story",
-      "narration": "Upriver, the water is piling up behind a long gray bar of silt, higher and higher, like a bath with a plug in it. \"It will come back all at once,\" you tell the guide. She nods once, quickly. \"Early tide. Run when I say.\" Far off, you hear it begin to slide.",
+      "narration": "Upriver, the water is piling up behind a long gray bar of silt, higher and higher, like a bath with a plug in it. \"It will come back all at once,\" you tell the guide. She nods once, quickly. \"Early tide. But that is not what they are waving about.\" The silt beside you gives a long, slow heave.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the silt",
+          "icon": "hand",
+          "goto": "crab_warn"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crabs_off": {
+      "type": "story",
+      "narration": "You work it out a little late. The crabs have already stopped waving and are running sideways for the high shells, which is also an answer. Upriver, the water is piling up behind a long gray bar of silt. \"Early tide,\" says the guide. \"But that is not why they ran.\" The silt beside you gives a long, slow heave.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the silt",
+          "icon": "hand",
+          "goto": "crab_warn"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crab_warn": {
+      "type": "story",
+      "narration": "Two big crabs push up out of the silt, shells clear and shiny as windows, claws clacking. \"Glassback crabs,\" whispers the guide. \"They sleep in the warm mud, and the cold silt froze their patch. They are cranky and cold and hungry, and they want the warm shell-bank you are standing on.\" One crab clacks at Pip's map. Pip holds it very high. \"Gently,\" says the guide. \"They are only cold.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Hold the shell-bank",
+          "icon": "hand",
+          "goto": "crab_fight"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crab_fight": {
+      "type": "encounter",
+      "map": "reedbank",
+      "narration": "The crabs scuttle sideways at you, claws up, shells flashing in the gray light. They are not evil. They are cold and cross, and they want you off their warm ground. Hold the shell-bank until they settle.",
+      "enemies": [
+        {
+          "id": "crab",
+          "name": "Glassback Crab",
+          "creature": "glassback_crab"
+        }
+      ],
+      "onVictory": {
+        "goto": "crab_done",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "luckstone",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "crab_rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "crab_done": {
+      "type": "story",
+      "narration": "The crabs back off, clacking, and settle into a warm hollow by the hatch roof, glaring at the sky. One of them leaves a glassy pebble at your feet, which seems to be its way of saying sorry. \"Luckstone,\" says the guide. \"They keep one in their shells. That is a very good manners crab.\" Behind you, the water begins to slide.",
       "choices": [
         {
           "id": "continue",
@@ -2102,9 +2112,9 @@
         }
       ]
     },
-    "crabs_off": {
+    "crab_rescued": {
       "type": "story",
-      "narration": "You work it out a little late. The crabs have already stopped waving and are running sideways for the high shells, which is also an answer. Upriver, the water is piling up behind a long gray bar of silt, and it is sliding toward you. \"Early tide,\" says the guide. \"Run!\"",
+      "narration": "A crab shoves you off the shell-bank, and you sit down in the silt with a squelch. Then the guide whistles, and the families of Tidepocket bang their cooking pots from the hatch. The crabs flinch and scuttle into a warm hollow, grumbling. Nobody is hurt. You miss the lucky pebble they were keeping, and the guide gives you a hand up. Behind you, the water begins to slide.",
       "choices": [
         {
           "id": "continue",
