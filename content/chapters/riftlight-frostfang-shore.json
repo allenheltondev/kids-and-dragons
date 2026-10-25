@@ -6,7 +6,7 @@
   "title": "A Way Back Uphill",
   "biome": "frostfang_peaks",
   "music": "riftlight-paths",
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 34,
   "xpAward": 140,
   "entry": "bank",
   "plate": {
@@ -355,105 +355,17 @@
         "actionLabel": "Climb three rungs"
       },
       "onSuccess": {
-        "goto": "scout",
-        "narration": "Three rungs up, three rungs down, and not a wobble. \"Good ladder,\" says Tamsin. \"Now let us find its friend, the driest way up. Dry feet should find dry ground.\""
+        "goto": "driftline",
+        "narration": "Three rungs up, three rungs down, and not a wobble. \"Good ladder,\" says Tamsin. \"Now look along the shore. The river has tipped out its pockets.\""
       },
       "onFailure": {
-        "goto": "scout",
-        "narration": "The ladder gives a small wiggle, and the climber hops down. Tamsin holds the top tight with one claw. \"It will do,\" she says. \"Now let us find the driest way up. Dry feet should find dry ground.\""
+        "goto": "driftline",
+        "narration": "The ladder gives a small wiggle, and the climber hops down. Tamsin holds the top tight with one claw. \"It will do,\" she says. \"Now look along the shore. The river has tipped out its pockets.\""
       },
       "onAssisted": {
-        "goto": "scout",
-        "narration": "You wedge a stone under the rung and everyone holds on. Three rungs, no wobble. \"Now let us find the driest way up,\" says Tamsin."
+        "goto": "driftline",
+        "narration": "You wedge a stone under the rung and everyone holds on. Three rungs, no wobble. \"Now look along the shore,\" says Tamsin. \"The river has tipped out its pockets."
       },
-      "cast": [
-        {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "scout": {
-      "type": "choice_point",
-      "narration": "The cliff above the shore is a puzzle. Some rock is dry. Some rock drips. A few cracks look like paths, then stop at nothing. \"The aerie knows one easy line and one hard line that looks easy,\" says Tamsin. \"Find me the easy one.\"",
-      "choices": [
-        {
-          "id": "cliff",
-          "label": "Study the cliff for the driest line",
-          "icon": "eye",
-          "goto": "scout_cliff"
-        },
-        {
-          "id": "prints",
-          "label": "Follow the small hoof prints in the mud",
-          "icon": "boot",
-          "goto": "scout_prints"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "scout_cliff": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Read the cliff and find the line with the fewest wet rocks.",
-      "narration": "You look at the cliff one crack at a time. Some cracks are dry and some are drippy. One has a pebble stuck in it that looks like a nose.",
-      "onSuccess": {
-        "goto": "scout_done",
-        "narration": "You find it: a ledge, a crack, and a narrow track that zigzags up the scree. It is not for climbers, but somebody has used it a lot."
-      },
-      "onFailure": {
-        "goto": "scout_done",
-        "narration": "You pick a wet line by mistake and slide down a body length. A narrow track beside it is the one you wanted. You find it on the way down."
-      },
-      "cast": [
-        {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "scout_prints": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Follow the hoof prints through the mud without slipping.",
-      "narration": "The mud is covered with little prints, shaped like two-toed hearts. They come down the shore in a hurry. Some of them are very small.",
-      "onSuccess": {
-        "goto": "scout_done",
-        "narration": "You hop from firm patch to firm patch, and the prints lead you to the foot of a narrow track."
-      },
-      "onFailure": {
-        "goto": "scout_done",
-        "narration": "The mud grabs your boot, and you sit down hard. From down there, you see the prints much better."
-      },
-      "cast": [
-        {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "scout_done": {
-      "type": "story",
-      "narration": "A narrow goat track zigzags up the scree beside the cliff. At the bottom, the hoof prints leave it and run straight to the river's edge. They do not come back. Somewhere out on the water, you hear a very small bell.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what the river left on the shore",
-          "icon": "ear",
-          "goto": "driftline"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/ridge_griffin",
@@ -580,7 +492,7 @@
     },
     "net_saved": {
       "type": "story",
-      "narration": "Whatever hay you have smells of sweet grass and wet wool. As you gather it, you hear the little bell again, and this time you see where it is. Out on a gravel bar in the river stand three snowhorn goats, huddled together, with the smallest one in the middle. \"The herd's,\" says Tamsin. \"They came down the grazing route before the water cut it off. They will not swim, and I cannot carry a goat.\" A small pouch has come loose from the net's knots. It holds five coins. Tamsin drops a supper bundle down to you. \"For the goats, or for you,\" she says.",
+      "narration": "Whatever hay you have smells of sweet grass and wet wool. As you gather it, you hear a very small bell, and this time you see where it comes from. Out on a gravel bar in the river stand three snowhorn goats, huddled together, with the smallest one in the middle. \"The herd's,\" says Tamsin. \"They came down the grazing route before the water cut it off. They will not swim, and I cannot carry a goat.\" A small pouch has come loose from the net's knots. It holds five coins. Tamsin drops a supper bundle down to you. \"For the goats, or for you,\" she says.",
       "choices": [
         {
           "id": "continue",
@@ -691,8 +603,9 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Lay a path of flat stones across the stream, one at a time.",
-      "narration": "Flat stones lie all over the shore, like dropped plates. You pick the biggest ones and look for the shallow spots.",
+      "prompt": "The sharpest eyes lay a path of flat stones across the stream, one at a time.",
+      "narration": "Flat stones lie all over the shore, like dropped plates. The sharpest eyes pick the shallow spots, and the others hand over the biggest stones.",
+      "roller": "best",
       "onSuccess": {
         "goto": "bar_reached",
         "narration": "Stone by stone, the path grows. The last one lands on the bar with a clack."
@@ -788,13 +701,13 @@
     },
     "bar_reached": {
       "type": "story",
-      "narration": "You stand on the gravel bar, and the goats lean away from you, all horns and worry. The biggest goat has a cracked horn and a very disapproving face. The smallest wears a tiny bell on a faded ribbon, and the bell jingles every time it shivers. They are cold, wet and cross. They will not take one step into that water for strangers.",
+      "narration": "You stand on the gravel bar, and the goats lean away from you, all horns and worry. The biggest goat has a cracked horn and a very disapproving face. The smallest wears a tiny bell on a faded ribbon, and the bell jingles every time it shivers. They are cold, wet and cross. And between you and them, a pair of glassback crabs, each the size of a wheelbarrow, rattle their shells. Their backs shine like windows. The flood washed out their burrow, and they have decided this gravel bar is now their house. They clack a warning, and they are very sure about it.",
       "choices": [
         {
           "id": "continue",
-          "label": "Carry the smallest goat first",
-          "icon": "might",
-          "goto": "bar_carry"
+          "label": "Settle things with the crab",
+          "icon": "shield",
+          "goto": "bar_crab"
         }
       ],
       "cast": [
@@ -810,6 +723,44 @@
       "discovers": [
         "creature.snowhorn_goat"
       ]
+    },
+    "bar_crab": {
+      "type": "encounter",
+      "map": "ford",
+      "narration": "The glassback crabs clack their claws and sidle across the gravel. Their shells are thick, so be patient. They do not want to hurt anyone. They want their house back, and a house needs a doorstep.",
+      "enemies": [
+        {
+          "id": "crab",
+          "creature": "glassback_crab"
+        }
+      ],
+      "onVictory": {
+        "goto": "bar_carry",
+        "narration": "The crabs tuck in their claws and clink into a new burrow under the rocks. One looks out, satisfied. In the gravel they leave behind a smooth, lucky-looking stone, which you pocket.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "luckstone",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "bar_carry",
+        "narration": "Their shells are just too tough. You stumble back, wet and puffing, and Tamsin whistles a loud call from the ridge. The crabs huff and sidle off to sulk. You lose your breath and some of the afternoon.",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "crab_won_the_bar"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "bar_carry": {
       "type": "interaction",
@@ -1077,9 +1028,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Hear what Tamsin needs next",
-          "icon": "ear",
-          "goto": "waterline"
+          "label": "Rub your cold hands together",
+          "icon": "flame",
+          "goto": "fire"
         }
       ],
       "cast": [
@@ -1106,98 +1057,6 @@
           "text": "Then the biggest goat spots the hay and goes straight for it, which is a very goat thing to do."
         }
       ]
-    },
-    "waterline": {
-      "type": "choice_point",
-      "narration": "Tamsin hops from rock to rock. \"One more favor, while the goats chew. The aerie keeps a record of the river line, the place the water reaches. I need a marker at today's edge, so the keepers can tell how fast it climbs.\" She flaps toward a tall flat rock. \"Stones, please, and a steady paw.\"",
-      "choices": [
-        {
-          "id": "stack",
-          "label": "Stack a cairn of stones at the water's edge",
-          "icon": "hand",
-          "goto": "stack_cairn"
-        },
-        {
-          "id": "scratch",
-          "label": "Scratch a line into the cliff with a sharp stone",
-          "icon": "hand",
-          "goto": "scratch_line"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
-        },
-        {
-          "figure": "entities/snowhorn_goat"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "stack_cairn": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Whoever has the steadiest hands stacks the stones, and the others pass them up.",
-      "narration": "You choose the flattest stones and build from the bottom. Big stones go first and small ones go last. A pebble goes on top, because the top is where a pebble belongs.",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "waterline_done",
-        "narration": "The cairn rises, stone on stone, taller than your knee. It does not tip."
-      },
-      "onFailure": {
-        "goto": "waterline_done",
-        "narration": "The cairn leans, wobbles, and falls with a clatter. You stack a shorter, fatter one that stays."
-      },
-      "cast": [
-        {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "scratch_line": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Find the water's edge and scratch a clear line above it.",
-      "narration": "You pick a sharp stone and look at the cliff. The wet stripe on the rock shows where the river has been. A line goes right above that.",
-      "onSuccess": {
-        "goto": "waterline_done",
-        "narration": "The line comes out clean and straight, with a small arrow under it. Tamsin reads it from the ridge."
-      },
-      "onFailure": {
-        "goto": "waterline_done",
-        "narration": "The first line comes out crooked. You scratch another beside it, and Tamsin reads both."
-      },
-      "cast": [
-        {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
-    },
-    "waterline_done": {
-      "type": "story",
-      "narration": "Tamsin squints at your mark and nods slowly, the way griffins nod when they are pleased and trying not to show it. \"Tomorrow the water will be higher,\" she says. \"Then the keepers will know how fast the river climbs. A river with a number on it is half tamed.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Rub your cold hands together",
-          "icon": "flame",
-          "goto": "fire"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "fire": {
       "type": "choice_point",
@@ -1242,13 +1101,7 @@
       "narration": "Wet wood will not light, but the inside of a log is often dry. You break the thickest pieces open. Out come little curls of dry wood, like shavings.",
       "onSuccess": {
         "goto": "rest_fire",
-        "narration": "A tiny flame catches, grows, and crackles. Every face turns toward it.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "fire_good"
-          }
-        ]
+        "narration": "A tiny flame catches, grows, and crackles. Every face turns toward it."
       },
       "onFailure": {
         "goto": "rest_fire",
@@ -1274,13 +1127,7 @@
       "checkKind": "doing",
       "onSuccess": {
         "goto": "rest_fire",
-        "narration": "Goats are surprisingly hot. Soon everyone is toasty, and the smallest goat is asleep on a boot.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "fire_good"
-          }
-        ]
+        "narration": "Goats are surprisingly hot. Soon everyone is toasty, and the smallest goat is asleep on a boot."
       },
       "onFailure": {
         "goto": "rest_fire",
@@ -1305,13 +1152,7 @@
       "narration": "A bigfoot can break a barrier or lift something enormous. One whack on a log, and out spill dry splinters from the middle.",
       "onSuccess": {
         "goto": "rest_fire",
-        "narration": "The log cracks open like a nut, and the dry heart of it lights at the first spark.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "fire_good"
-          }
-        ]
+        "narration": "The log cracks open like a nut, and the dry heart of it lights at the first spark."
       },
       "onFailure": {
         "goto": "rest_fire",
@@ -1456,7 +1297,7 @@
     },
     "surge": {
       "type": "choice_point",
-      "narration": "A crack like a giant's knuckle splits the air upriver. A slab of broken shelf has dropped into the water. A brown wave rolls down the shore, fast, with foam on top like a bad hat. \"Ladder! Now!\" shouts Tamsin. The goats see the goat track before you do, and they are already running for it.",
+      "narration": "A crack like a giant's knuckle splits the air upriver. A slab of broken shelf has dropped into the water. A brown wave rolls down the shore, fast, with foam on top like a bad hat. \"Ladder! Now!\" shouts Tamsin. The goats see the narrow goat track that zigzags up the scree beside the cliff before you do, and they are already running for it.",
       "choices": [
         {
           "id": "run",
@@ -1509,15 +1350,7 @@
       },
       "onFailure": {
         "goto": "surge_after",
-        "narration": "The wave catches your heels and sloshes you against the cliff. You grab the rungs and hold on.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
+        "narration": "The wave catches your heels and sloshes you against the cliff. You grab the rungs and hold on."
       },
       "cast": [
         {
@@ -1543,15 +1376,7 @@
       },
       "onFailure": {
         "goto": "surge_after",
-        "narration": "The wave soaks your boots as you shove the last goat up. It looks back at you with deep reproach.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
+        "narration": "The wave soaks your boots as you shove the last goat up. It looks back at you with deep reproach."
       },
       "cast": [
         {
@@ -1576,15 +1401,7 @@
       },
       "onFailure": {
         "goto": "surge_after",
-        "narration": "The roar is loud, but the wave is louder. You get wet to the knees before the rungs.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
+        "narration": "The roar is loud, but the wave is louder. You get wet to the knees before the rungs."
       },
       "cast": [
         {
@@ -1609,15 +1426,7 @@
       },
       "onFailure": {
         "goto": "surge_after",
-        "narration": "The wave is bigger than it looked. The line holds, but everyone gets a shove and a splash.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
+        "narration": "The wave is bigger than it looked. The line holds, but everyone gets a shove and a splash."
       },
       "cast": [
         {
@@ -1743,15 +1552,7 @@
       },
       "onFailure": {
         "goto": "top",
-        "narration": "A rung slips under a boot, and the line swings like a conga line. Everyone hangs on and climbs the rest with shaky knees.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
+        "narration": "A rung slips under a boot, and the line swings like a conga line. Everyone hangs on and climbs the rest with shaky knees."
       },
       "cast": [
         {
@@ -1773,15 +1574,7 @@
       },
       "onFailure": {
         "goto": "top",
-        "narration": "The bundle swings into the cliff with a bonk, and a pack opens. You catch your things as you climb.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
+        "narration": "The bundle swings into the cliff with a bonk, and a pack opens. You catch your things as you climb."
       },
       "cast": [
         {
@@ -1803,15 +1596,7 @@
       },
       "onFailure": {
         "goto": "top",
-        "narration": "A pack slips and falls with a splash, and then you fish it out. It is a bit wetter than before.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
+        "narration": "A pack slips and falls with a splash, and then you fish it out. It is a bit wetter than before."
       },
       "cast": [
         {
@@ -1833,15 +1618,7 @@
       },
       "onFailure": {
         "goto": "top",
-        "narration": "The rally is cheerful, but the rungs are still wet. You get to the top with sore arms.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
+        "narration": "The rally is cheerful, but the rungs are still wet. You get to the top with sore arms."
       },
       "cast": [
         {
