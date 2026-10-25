@@ -10,6 +10,7 @@ import { useParty } from "../store";
 import { useJournalFinders } from "../store/journal-finders";
 import { Button } from "../ui/Button";
 import { Icon } from "./icons";
+import { FieldGuideMatchups } from "./FieldGuideMatchups";
 import { motionProps } from "./guide-motion";
 
 /** Canon `scale` values in kid words (canon/creatures.yaml controlled_values). */
@@ -155,6 +156,8 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry, 
             </Section>
           </>
         )}
+
+        <FieldGuideMatchups entry={entry} />
 
         <Section title="Tips" show={!!entry.tips && entry.tips.length > 0}>
           <ul className="fgd__list">

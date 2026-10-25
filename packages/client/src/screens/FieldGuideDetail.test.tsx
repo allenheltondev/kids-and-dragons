@@ -12,6 +12,8 @@ import { openGuide, setPlayerSection, usePlayerNavigation } from "../store/playe
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { FIELD_GUIDE_SEEN_KEY, resetFieldGuideSeen } from "../store/field-guide-seen";
 import { useGameStore } from "../store";
+import rulesJson from "../../../../content/rules.json";
+import type { RulesContent } from "@kad/shared";
 
 const guide = real as unknown as FieldGuideData;
 const find = (by = "p_1") => ({ firstFoundBy: by, foundAt: "2026-01-01T00:00:00Z" });
@@ -228,5 +230,54 @@ describe("FieldGuide shell guard", () => {
     expect(await screen.findByTestId("guide-detail")).toBeTruthy();
     await userEvent.setup().click(screen.getByRole("button", { name: "Back to the guide" }));
     expect(usePlayerNavigation.getState().guideEntry).toBeNull();
+  });
+});
+
+describe("FieldGuideDetail matchups", () => {
+  const rules = rulesJson as unknown as RulesContent;
+  beforeEach(() => useGameStore.setState({ rules }));
+  afterEach(() => useGameStore.setState({ rules: null }));
+
+  it("creature: Fighting it shows traits, who is good, careful and the gentle line", () => {
+    const e = guide.entries["creature.bone_crawler"]!;
+    expect(e.traits).toEqual(["armored", "swarming"]);
+    setFieldGuideDiscoveries({ [e.id]: find() });
+    render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+    expect(screen.getByRole("heading", { name: "Fighting it" })).toBeTruthy();
+    expect(screen.getByText("Shell-hided")).toBeTruthy();
+    expect(screen.getByText(rules.matchups!.traits.armored!.text)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Good against it" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Careful" })).toBeTruthy();
+    expect(screen.getByText(/Not every fight has to be a fight/)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Likes" })).toBeTruthy();
+  });
+
+  it("names the playable species a creature likes", () => {
+    const e = guide.entries["creature.glassback_crab"]!;
+    setFieldGuideDiscoveries({ [e.id]: find() });
+    render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+    expect(screen.getByText(/Goes easy on:/).parentElement!.textContent).toMatch(/Dragonling/);
+  });
+
+  it("is hidden for a creature with no traits and no species opinions", () => {
+    const e = { ...guide.entries["creature.bone_crawler"]!, traits: undefined, lore: { ...guide.entries["creature.bone_crawler"]!.lore!, likes: [], dislikes: [] } };
+    setFieldGuideDiscoveries({ [e.id]: find() });
+    render(<FieldGuideDetail guide={{ ...guide, entries: { [e.id]: e } }} entryId={e.id} />);
+    expect(screen.queryByRole("heading", { name: "Fighting it" })).toBeNull();
+  });
+
+  it("leaks nothing for an undiscovered creature", () => {
+    const e = guide.entries["creature.bone_crawler"]!;
+    setFieldGuideDiscoveries({});
+    const { container } = render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+    expect(container.textContent).toBe("");
+  });
+
+  it("species: Good at and Watch out, in words", () => {
+    setFieldGuideDiscoveries({ "character.unicorn": find() });
+    render(<FieldGuideDetail guide={guide} entryId="character.unicorn" />);
+    expect(screen.getByRole("heading", { name: "Good at" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Watch out" })).toBeTruthy();
+    expect(screen.getByText(/horn glances off armor/)).toBeTruthy();
   });
 });
