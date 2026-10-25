@@ -17,8 +17,6 @@ import { Text } from "pixi.js";
  * lineup reads as text with animals behind it.
  */
 export const NAMEPLATE_FONT = 0.085;
-/** A name that would shrink below this fraction of its full size is wrapped onto lines first instead. */
-export const NAMEPLATE_MIN_SCALE = 0.75;
 /** Gap between the feet and the top of the name, as a fraction of the figure's
     drawn height. Tight, so the label reads as attached to the figure rather
     than floating on the floor. */
@@ -126,17 +124,7 @@ export function fitNameplate(text: Text, maxWidth: number, wrap = false): void {
   text.style.breakWords = wrap;
   text.style.wordWrapWidth = maxWidth;
   text.scale.set(1);
-  let scale = nameplateScale(text.width, maxWidth);
-  if (scale < NAMEPLATE_MIN_SCALE && !wrap) {
-    // A small figure's narrow slot used to shrink its name to a speck. Break the name onto
-    // lines instead; whatever still will not fit is scaled to the slot, so a label is never
-    // wider than the room it was given (a wider one runs into its neighbour's).
-    text.style.wordWrap = true;
-    text.style.breakWords = true;
-    text.scale.set(1);
-    scale = nameplateScale(text.width, maxWidth);
-  }
-  text.scale.set(scale);
+  text.scale.set(nameplateScale(text.width, maxWidth));
 }
 
 /**
