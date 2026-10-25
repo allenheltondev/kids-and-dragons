@@ -84,6 +84,7 @@ import { CharacterSheet } from "./CharacterSheet";
 import { ClassToken, SpareTokens, TokenCard, TokenGlyph, tokenName } from "./ClassToken";
 import { Icon } from "./icons";
 import { ChapterGoalCard } from "./ChapterGoal";
+import { CheckMatchupBadges } from "./MatchupHints";
 import { useSideBySide } from "../layout/landscape";
 import { PrologueReplay } from "./StoryPlates";
 import { useRunCampaign } from "./run-campaign";
@@ -1236,6 +1237,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
               <span aria-hidden="true">·</span>
               <span>{checkTarget(myPrompt.tn)}</span>
             </p>
+            <CheckMatchupBadges chapter={chapter} sceneId={myPrompt.sceneId} hero={me.character} />
             {myPrompt.group ? (
               <p className="prompt__sub" role="status">
                 <Icon name="players" />

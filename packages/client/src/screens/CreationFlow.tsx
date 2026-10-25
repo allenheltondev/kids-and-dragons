@@ -277,7 +277,7 @@ export function HeroStrip({
 // Step 2 — class (spec §5.2)
 // ---------------------------------------------------------------------------
 
-function ClassStep({
+export function ClassStep({
   classes,
   chosen,
   onChoose,

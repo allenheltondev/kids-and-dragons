@@ -96,6 +96,7 @@ import { Icon } from "./icons";
 import { BuffList, combatBuffRows } from "./BuffList";
 import { PUFFED_HINT, PUFFED_WORDS } from "./buff-copy";
 import { describeBeats, type Beat } from "./fight-log";
+import { HeroFightHints } from "./MatchupHints";
 import { isNumbedHero } from "./combat-grid";
 import {
   combatantIcon,
@@ -640,6 +641,9 @@ export function CombatControls(): ReactElement | null {
           single line, so a phone gives its rows to the board, and nothing
           until the first beat lands. */}
       <LastBeat beats={beats} turn={turnOf(encounter)} />
+
+      {/* What the fight means for this hero (matchups), the opening round only. */}
+      <HeroFightHints encounter={encounter} heroId={me.character.id} />
 
       {/*
         The board. Tappable cells are real <button>s; everything else is an
