@@ -9,6 +9,7 @@
  * The word list is data (`data/blocked-names.json`), not code.
  */
 
+import { LOCATION_NAME_MAX } from "./types/protocol.js";
 import blocked from "./data/blocked-names.json" with { type: "json" };
 
 /** What a kid sees when a name is turned away. Says nothing about why. */
@@ -47,6 +48,16 @@ export function isBlockedName(raw: string): boolean {
   // Spaces and punctuation stripped out, so "f u c k" and "f.u.c.k" are caught.
   const run = squeeze(folded.replace(/[^\p{L}]/gu, ""));
   return INSIDE.some((bad) => run.includes(bad));
+}
+
+/**
+ * A name a family gave its table: trimmed, spaces collapsed, run through
+ * the same word filter as any typed name. Empty is fine (an unnamed table).
+ */
+export function checkLocationName(raw: unknown): NameCheck {
+  const text = typeof raw === "string" ? raw.replace(/\s+/g, " ").trim() : "";
+  const checked = checkTypedName(text.slice(0, LOCATION_NAME_MAX).trim());
+  return checked;
 }
 
 export type NameCheck = { ok: true; name: string } | { ok: false; message: string };

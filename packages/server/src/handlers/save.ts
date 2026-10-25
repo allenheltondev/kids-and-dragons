@@ -161,6 +161,7 @@ async function readSaved(
       recap: recapOf(state),
       heroes: state.party.map((member) => member.character.name),
       savedAt: record.stoppedAt ?? state.updatedAt,
+      ...(record.location ? { location: record.location } : {}),
     },
   };
 }
