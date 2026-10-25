@@ -950,7 +950,9 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       <IdentityStrip me={me} />
       {/* The chapter's goal (#356), on every phone with nothing to tap. Not in a fight: a playtest
           wanted the room for the cards, and the fight is the goal's step for now. */}
-      {inChapter && !inEncounter ? <ChapterGoalCard place="phone" /> : null}
+      {/* Not while a point is waiting to be spent: the grow list needs the room, and on a short phone
+          the goal card above it left too little pane to scroll in. */}
+      {inChapter && !inEncounter && !(atRest && banked > 0) ? <ChapterGoalCard place="phone" /> : null}
 
       {/*
         What the world is asking, echoed here.

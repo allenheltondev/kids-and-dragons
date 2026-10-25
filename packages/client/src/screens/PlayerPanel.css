@@ -1160,6 +1160,11 @@
  */
 .player:not(.player--deciding) .player__prompt {
   padding-block: var(--space-2, 0.5em);
+  /* A floor, so the strip and the dock above and below cannot squeeze the
+     list (the stat points, a rest scene's choices) to a sliver on a short
+     phone. Past the floor the pane itself scrolls, rather than hiding the
+     "Grow!" button. */
+  min-block-size: 14em;
 }
 
 .player:not(.player--deciding) .prompt {
