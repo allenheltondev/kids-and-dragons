@@ -15,6 +15,7 @@ export * from "./types/buffs.js";
 export * from "./types/state.js";
 export * from "./types/protocol.js";
 export * from "./types/world.js";
+export * from "./types/matchups.js";
 
 export * from "./rules.js";
 export * from "./character.js";
