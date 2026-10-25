@@ -3215,27 +3215,6 @@
           ],
           "introduces": {}
         },
-        "eddy": {
-          "requires": [
-            "rope"
-          ],
-          "introduces": {
-            "eddy": "It is an eddy"
-          }
-        },
-        "eddy_kick": {
-          "requires": [
-            "eddy"
-          ],
-          "introduces": {}
-        },
-        "eddy_hook": {
-          "requires": [
-            "eddy",
-            "rope"
-          ],
-          "introduces": {}
-        },
         "jam": {
           "requires": [
             "rope"
@@ -3654,6 +3633,28 @@
         "haul_loop": {
           "requires": [
             "knob",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "drake_shallows": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {
+            "drake": "two young river drakes"
+          }
+        },
+        "drake_fight": {
+          "requires": [
+            "drake",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "drake_rescued": {
+          "requires": [
+            "drake",
             "rope"
           ],
           "introduces": {}
