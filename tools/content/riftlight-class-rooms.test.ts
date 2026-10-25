@@ -40,11 +40,13 @@ describe("Riftlight's class rooms", () => {
   it("can finish the whole mending without visiting the marsh", () => {
     const chapter = chapters.get("riftlight-ashspan-bridge")!;
     let state = start(chapter, "manticore", "duskrunner");
-    for (let step = 0; step < 200 && state.phase !== "chapter_complete"; step++) {
+    for (let step = 0; step < 500 && state.phase !== "chapter_complete"; step++) {
       const prompt = state.prompt;
       if (prompt?.kind === "choice") {
         const pick = prompt.options.find((o) => o.id !== "marsh") ?? prompt.options[0]!;
         state = send(state, { type: "CHOOSE", choiceId: pick.id }, chapter);
+      } else if (prompt?.kind === "interaction") {
+        state = send(state, { type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, action: prompt.phase === "result" ? "continue" : "assist" }, chapter);
       } else if (prompt?.kind === "roll") state = send(state, { type: "ROLL" }, chapter);
       else state = send(state, { type: "ADVANCE" }, chapter);
       expect(state.sceneId).not.toBe("marsh_path");
