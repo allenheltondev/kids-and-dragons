@@ -3637,6 +3637,13 @@
           ],
           "introduces": {}
         },
+        "ladder_hold": {
+          "requires": [
+            "ladder",
+            "tamsin"
+          ],
+          "introduces": {}
+        },
         "scout": {
           "requires": [
             "tamsin"
@@ -3724,6 +3731,12 @@
           ],
           "introduces": {}
         },
+        "bar_carry": {
+          "requires": [
+            "stranded_goats"
+          ],
+          "introduces": {}
+        },
         "goats": {
           "requires": [
             "stranded_goats"
@@ -3736,7 +3749,7 @@
           ],
           "introduces": {}
         },
-        "goat_carry": {
+        "goat_lead": {
           "requires": [
             "stranded_goats"
           ],
@@ -3868,6 +3881,13 @@
           ],
           "introduces": {}
         },
+        "wave_gap": {
+          "requires": [
+            "ladder",
+            "tamsin"
+          ],
+          "introduces": {}
+        },
         "ascend": {
           "requires": [
             "ladder",
@@ -3924,6 +3944,13 @@
           "introduces": {}
         },
         "safety_done": {
+          "requires": [
+            "tamsin",
+            "ladder"
+          ],
+          "introduces": {}
+        },
+        "hay_relay": {
           "requires": [
             "tamsin",
             "ladder"
@@ -4068,6 +4095,13 @@
           ],
           "introduces": {}
         },
+        "cairn_order": {
+          "requires": [
+            "brask",
+            "ledger"
+          ],
+          "introduces": {}
+        },
         "pebble": {
           "requires": [
             "brask",
@@ -4102,6 +4136,13 @@
           "introduces": {}
         },
         "pebble_done": {
+          "requires": [
+            "pebble",
+            "brask"
+          ],
+          "introduces": {}
+        },
+        "drawing_memory": {
           "requires": [
             "pebble",
             "brask"
@@ -4314,6 +4355,13 @@
           "introduces": {}
         },
         "capstone_done": {
+          "requires": [
+            "brask",
+            "pebble"
+          ],
+          "introduces": {}
+        },
+        "last_stone": {
           "requires": [
             "brask",
             "pebble"

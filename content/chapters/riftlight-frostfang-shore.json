@@ -6,7 +6,7 @@
   "title": "A Way Back Uphill",
   "biome": "frostfang_peaks",
   "music": "riftlight-paths",
-  "estimatedMinutes": 34,
+  "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "bank",
   "plate": {
@@ -313,13 +313,13 @@
     },
     "foot_set": {
       "type": "story",
-      "narration": "The foot of the ladder stands on the flat rock and does not wobble at all. Tamsin tests it with one claw and gives a happy squawk. \"Now it is a real ladder,\" she says. \"Before anyone climbs, let us find the driest way up. Dry feet should find dry ground.\"",
+      "narration": "The foot of the ladder stands on the flat rock and does not wobble at all. Tamsin tests it with one claw and gives a happy squawk. \"Now it is a real ladder,\" she says. \"Let us test it. Somebody hold it, and somebody climb three rungs.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Look for the driest way",
+          "label": "Test the ladder",
           "icon": "hand",
-          "goto": "scout"
+          "goto": "ladder_hold"
         }
       ],
       "cast": [
@@ -341,9 +341,38 @@
             "notFlag": "foot_firm"
           },
           "replace": true,
-          "text": "The foot of the ladder stands on the rock, but it wobbles when Tamsin tests it with one claw. \"It will do for careful climbers,\" she says. \"Before anyone climbs, let us find the driest way up. Dry feet should find dry ground.\""
+          "text": "The foot of the ladder stands on the rock, but it wobbles when Tamsin tests it with one claw. \"It will do for careful climbers,\" she says. \"Let us test it. Somebody hold it, and somebody climb three rungs.\""
         }
       ]
+    },
+    "ladder_hold": {
+      "type": "interaction",
+      "narration": "The ladder hangs from Tamsin's claws and rests on its rock. It looks fine. Looking fine and being fine are different things, as every griffin knows. One of you will climb a few rungs, and the others will hold the ladder still.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the ladder steady while your friend climbs three rungs.",
+        "supportLabel": "Hold the ladder",
+        "actionLabel": "Climb three rungs"
+      },
+      "onSuccess": {
+        "goto": "scout",
+        "narration": "Three rungs up, three rungs down, and not a wobble. \"Good ladder,\" says Tamsin. \"Now let us find its friend, the driest way up. Dry feet should find dry ground.\""
+      },
+      "onFailure": {
+        "goto": "scout",
+        "narration": "The ladder gives a small wiggle, and the climber hops down. Tamsin holds the top tight with one claw. \"It will do,\" she says. \"Now let us find the driest way up. Dry feet should find dry ground.\""
+      },
+      "onAssisted": {
+        "goto": "scout",
+        "narration": "You wedge a stone under the rung and everyone holds on. Three rungs, no wobble. \"Now let us find the driest way up,\" says Tamsin."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "scout": {
       "type": "choice_point",
@@ -763,9 +792,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Think how to bring them over",
-          "icon": "heart",
-          "goto": "goats"
+          "label": "Carry the smallest goat first",
+          "icon": "might",
+          "goto": "bar_carry"
         }
       ],
       "cast": [
@@ -782,9 +811,41 @@
         "creature.snowhorn_goat"
       ]
     },
+    "bar_carry": {
+      "type": "interaction",
+      "narration": "The smallest goat cannot wade a stream that deep. You lay it in a sling made of rope, with a friend on each side. The little goat jingles in protest. The big goats watch every step.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Raise or lower your side until the goat rides level.",
+        "objectLabel": "the smallest goat",
+        "actionLabel": "Carry the goat"
+      },
+      "onSuccess": {
+        "goto": "goats",
+        "narration": "The sling stays level all the way along the line. The little goat jingles like a happy doorbell."
+      },
+      "onFailure": {
+        "goto": "goats",
+        "narration": "The sling tips, and the little goat paddles the last bit itself, snorting. It is wet, offended, and fine."
+      },
+      "onAssisted": {
+        "goto": "goats",
+        "narration": "You steady the sling together, a little at a time, until the goat rides level."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
     "goats": {
       "type": "choice_point",
-      "narration": "Three cold goats, one quick stream, and a rope line you built yourselves. The biggest goat stamps. The smallest goat jingles. How will you bring them over?",
+      "narration": "The smallest goat is safe in its sling. The two big goats are not so sure about the water. The biggest goat stamps. How will you bring them over?",
       "choices": [
         {
           "id": "line",
@@ -793,14 +854,14 @@
           "goto": "goat_line"
         },
         {
-          "id": "carry",
-          "label": "Carry the smallest goat first",
-          "icon": "might",
-          "goto": "goat_carry"
+          "id": "lead",
+          "label": "Lead the biggest goat first and let the other follow",
+          "icon": "heart",
+          "goto": "goat_lead"
         },
         {
           "id": "mend",
-          "label": "Use mend on the smallest goat's sore knee",
+          "label": "Use mend on the biggest goat's sore knee",
           "icon": "heart",
           "goto": "goat_mend",
           "requiresSpecies": "unicorn"
@@ -846,7 +907,7 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Everyone take a goat by the ruff and walk it across, nice and slow.",
-      "narration": "Each goat gets a friend. You hold a woolly ruff in one hand and the rope in the other. The goats plant their hooves like small, hairy anchors.",
+      "narration": "Each big goat gets a friend. You hold a woolly ruff in one hand and the rope in the other. The goats plant their hooves like small, hairy anchors.",
       "roller": "all",
       "checkKind": "doing",
       "onSuccess": {
@@ -876,20 +937,20 @@
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
-    "goat_carry": {
+    "goat_lead": {
       "type": "check",
-      "stat": "might",
+      "stat": "heart",
       "tn": 12,
-      "prompt": "The strongest of you carries the smallest goat over the rope line.",
-      "narration": "The smallest goat weighs about as much as a wet sack of potatoes, and it wriggles. The strongest of you hoists it onto a shoulder. The other goats watch very closely.",
-      "roller": "best",
+      "prompt": "Coax the biggest goat into the water and let the other one follow its boss.",
+      "narration": "Goats follow their boss. The biggest goat has a cracked horn and an opinion about water. You walk beside it, murmuring, with a hand on its back.",
+      "checkKind": "doing",
       "onSuccess": {
         "goto": "goat_back",
-        "narration": "The little goat jingles all the way across. The big goats follow their baby into the water, grumbling."
+        "narration": "The biggest goat huffs, squares its shoulders, and wades in like a king. The other goat trots after it."
       },
       "onFailure": {
         "goto": "goat_back",
-        "narration": "The little goat squirms and the carrier slips. A splash, a squawk, and two wet heads pop up. The big goats come anyway, to rescue their baby.",
+        "narration": "The biggest goat refuses twice, then charges in all at once and takes everybody with it.",
         "effects": [
           {
             "type": "damage",
@@ -915,10 +976,10 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Use mend on the smallest goat's sore knee. The hero with mend helps; choose who leads.",
-      "narration": "A unicorn has a gentle touch that makes a scrape stop stinging. It lays a hoof on the little goat's sore knee, and the big goats watch with their ears up.",
+      "narration": "A unicorn has a gentle touch that makes a scrape stop stinging. It lays a hoof on the big goat's sore knee, and the other goat watches with its ears up.",
       "onSuccess": {
         "goto": "goat_back",
-        "narration": "The little goat stands on its mended knee and trots into the water. The big goats follow, ears forward."
+        "narration": "The big goat stands on its mended knee and trots into the water. The other follows, ears forward."
       },
       "onFailure": {
         "goto": "goat_back",
@@ -948,10 +1009,10 @@
       "stat": "heart",
       "tn": 8,
       "prompt": "Use a lullaby to calm the goats. The songkeeper helps; choose who leads.",
-      "narration": "A songkeeper hums a slow tune that sounds like a blanket. The smallest goat stops jingling. The biggest goat sits down to listen.",
+      "narration": "A songkeeper hums a slow tune that sounds like a blanket. The biggest goat sits down to listen.",
       "onSuccess": {
         "goto": "goat_back",
-        "narration": "The song rolls over the water. One by one the goats stop stamping and follow the tune across."
+        "narration": "The song rolls over the water. The goats stop stamping and follow the tune across."
       },
       "onFailure": {
         "goto": "goat_back",
@@ -1575,9 +1636,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Look up the long ladder",
+          "label": "Watch for the next wave",
           "icon": "eye",
-          "goto": "ascend"
+          "goto": "wave_gap"
         }
       ],
       "cast": [
@@ -1596,6 +1657,37 @@
           "text": "The wave slams the foot of the ladder and swings it hard. Tamsin hangs on to the top with both claws, feathers flying. The ladder wobbles back into place. The goats trot up the track and out of sight. The water settles into a steady, bossy flow a full body length higher, right over the stones where you stood a minute ago."
         }
       ]
+    },
+    "wave_gap": {
+      "type": "interaction",
+      "narration": "A second, smaller wave sweeps the shore and then draws back with a long hiss. For a moment the stones at the foot of the ladder are bare. \"Wait for it,\" calls Tamsin. \"Wait... wait...\"",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the water to pull back, then tap to run to the ladder.",
+        "actionLabel": "Run!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "ascend",
+        "narration": "You splash across the bare stones and grab the bottom rung with dry feet."
+      },
+      "onFailure": {
+        "goto": "ascend",
+        "narration": "You go a little early and get wet to the knees. Tamsin hauls you in by the collar."
+      },
+      "onAssisted": {
+        "goto": "ascend",
+        "narration": "Tamsin calls the moment, and everyone runs together with dry feet."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "ascend": {
       "type": "choice_point",
@@ -1896,9 +1988,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Ask what Tamsin will tell the keeper",
-          "icon": "ear",
-          "goto": "word"
+          "label": "Help with the hay",
+          "icon": "hand",
+          "goto": "hay_relay"
         }
       ],
       "cast": [
@@ -1913,6 +2005,44 @@
           "type": "grantItem",
           "itemId": "river_charm",
           "to": "party"
+        }
+      ]
+    },
+    "hay_relay": {
+      "type": "interaction",
+      "narration": "Tamsin lowers a basket on a rope beside the rail. \"The herd's hay should go up where it is safe,\" she says. \"Pass the bundles along, hand to hand, to the basket.\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the hay bundle and pass it to the next friend.",
+        "objectLabel": "a bundle of hay",
+        "actionLabel": "Pass the hay"
+      },
+      "onSuccess": {
+        "goto": "word",
+        "narration": "The last bundle thumps into the basket, and Tamsin hauls it up with a cheer."
+      },
+      "onFailure": {
+        "goto": "word",
+        "narration": "One bundle splashes into the shallows, but the rest make it. \"Hay is hay,\" says Tamsin."
+      },
+      "onAssisted": {
+        "goto": "word",
+        "narration": "You pass the bundles one at a time, slowly and carefully, until the basket is full."
+      },
+      "cast": [
+        {
+          "figure": "cast/ridge_griffin",
+          "name": "Ridge griffin"
+        }
+      ],
+      "art": "scenes/riftlight/cairnstep",
+      "variants": [
+        {
+          "when": {
+            "notFlag": "hay_saved"
+          },
+          "replace": true,
+          "text": "Tamsin lowers a basket on a rope beside the rail. \"Even a few bundles of hay are worth keeping dry,\" she says. \"Pass them along, hand to hand, to the basket.\""
         }
       ]
     },
