@@ -9,6 +9,7 @@
  * The word list is data (`data/blocked-names.json`), not code.
  */
 
+import { LOCATION_NAME_MAX } from "./types/protocol.js";
 import blocked from "./data/blocked-names.json" with { type: "json" };
 
 /** What a kid sees when a name is turned away. Says nothing about why. */
@@ -48,9 +49,6 @@ export function isBlockedName(raw: string): boolean {
   const run = squeeze(folded.replace(/[^\p{L}]/gu, ""));
   return INSIDE.some((bad) => run.includes(bad));
 }
-
-/** Longest name a household's table may have ("Grandma's kitchen table"). */
-export const LOCATION_NAME_MAX = 40;
 
 /**
  * A name a family gave its table: trimmed, spaces collapsed, run through

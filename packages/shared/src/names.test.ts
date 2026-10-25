@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { checkLocationName, LOCATION_NAME_MAX, checkTypedName, isBlockedName, NAME_REFUSED_MESSAGE } from "./names.js";
+import { checkLocationName, checkTypedName, isBlockedName, NAME_REFUSED_MESSAGE } from "./names.js";
+import { LOCATION_NAME_MAX } from "./types/protocol.js";
 import { randomNames } from "../../client/src/screens/creationContent.js";
 
 describe("the typed-name filter (#253)", () => {

@@ -674,6 +674,13 @@ export const RETENTION_CHOICES = [30, 90, 180, 365] as const;
  * and hero in another table's save, and her finds in its Field Guide, which
  * credit `FORGOTTEN_FINDER` in place of her id.
  */
+/**
+ * Longest name a household's table may have ("Grandma's kitchen table"). Here
+ * and not beside `checkLocationName` so the start screen can cap its field
+ * without loading the word list, which only the creation flow's chunk needs.
+ */
+export const LOCATION_NAME_MAX = 40;
+
 export const FORGOTTEN_NAME = "A friend";
 export const FORGOTTEN_FINDER = "forgotten";
 
