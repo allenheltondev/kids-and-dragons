@@ -45,7 +45,7 @@
   min-inline-size: 0;
   /* The card is about 27em tall; at the largest text on a TV that is taller than the screen,
      so its em never goes past what fits the pane. Unchanged wherever 1em already fits. */
-  font-size: min(1em, 3.4cqh);
+  font-size: min(1em, 3.1cqh);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -90,8 +90,8 @@
   position: relative;
   display: grid;
   place-items: center;
-  inline-size: 9em;
-  block-size: 10.4em;
+  inline-size: 12em;
+  block-size: 12.4em;
 }
 
 /* The one-frame flash on a success. Colour is the third signal here, after the
@@ -103,7 +103,7 @@
   border-radius: 50%;
   background: radial-gradient(
     circle,
-    color-mix(in srgb, var(--color-success, #5fd6a0) 45%, transparent) 0%,
+    rgb(var(--color-success-rgb) / 45%) 0%,
     transparent 62%
   );
   animation: dice-flash 520ms ease-out 1 forwards;
@@ -116,66 +116,11 @@
   place-items: center;
   /* The centrepiece: ~135px on a phone that has handed the roll the whole
      screen, ~300px on a TV. */
-  inline-size: 9em;
-  block-size: 9em;
+  inline-size: 12em;
+  block-size: 12.4em;
   align-self: start;
   color: var(--color-primary, #8b6cf5);
-  animation: dice-tumble 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) 1 forwards;
-}
-
-/*
- * What the die lands on: wide and faint while it is in the air, tight and
- * bright under it the moment it hits. Drawn as a *pool of light* rather than a
- * cast shadow — this overlay is nearly black, and black-on-black is not a
- * shadow, it is nothing. Same trick as the portraits' floor (CharacterPortrait
- * .css), so the two read as one world.
- */
-.dice__shadow {
-  position: absolute;
-  inset-block-end: 0.2em;
-  inline-size: 5.4em;
-  block-size: 0.9em;
-  border-radius: 50%;
-  background: radial-gradient(
-    ellipse,
-    color-mix(in srgb, var(--color-primary, #8b6cf5) 55%, transparent),
-    transparent 70%
-  );
-  filter: blur(0.08em);
-  animation: dice-shadow-air 1000ms cubic-bezier(0.2, 0.7, 0.2, 1) 1 forwards;
-}
-
-.dice__stage--settled .dice__shadow {
-  animation: dice-shadow-land 320ms cubic-bezier(0.2, 1.4, 0.4, 1) 1;
-}
-
-.dice__die-art {
-  position: absolute;
-  inset: 0;
-  inline-size: 100%;
-  block-size: 100%;
-}
-
-.dice__die-number {
-  position: relative;
-  font-size: 3.6em;
-  font-weight: 800;
-  line-height: 1;
-  /* Tabular, so a scrambling face does not jiggle its own width. */
-  font-variant-numeric: tabular-nums;
-  color: var(--color-text, #f4f0ff);
-}
-
-/* Mid-air faces are dimmer and a shade smaller: they are what the die is
-   passing through, not what it says. */
-.dice__die-number--rolling {
-  font-size: 2.6em;
-  color: var(--color-text-muted, #b9b0d8);
-  opacity: 0.75;
-}
-
-.dice__die--settled {
-  animation: dice-land 340ms cubic-bezier(0.2, 1.4, 0.4, 1) 1;
+  animation: none;
 }
 
 /* --- A friend's die ------------------------------------------------------ */
@@ -201,26 +146,6 @@
   font-size: var(--font-size-md, 1em);
   font-weight: 600;
   color: var(--color-text-muted, #b9b0d8);
-}
-
-.dice__help-die {
-  display: grid;
-  place-items: center;
-  inline-size: 2.6em;
-  block-size: 2.6em;
-  border: 0.12em solid var(--color-accent, #f5c86c);
-  border-radius: 0.5em;
-  font-size: var(--font-size-xl, 1.5em);
-  font-weight: 800;
-  color: var(--color-accent, #f5c86c);
-}
-
-.dice__help-die .dice__die-number--rolling {
-  font-size: 1em;
-}
-
-.dice__help-die--settled {
-  animation: dice-land 340ms cubic-bezier(0.2, 1.4, 0.4, 1) 1;
 }
 
 .dice__maths {
@@ -345,31 +270,6 @@
   animation: dice-droop 560ms ease-out 1 both;
 }
 
-/* The die itself reacts: a hop and a glow on a 20, a sulk on a miss, a
-   topple on a 1. */
-.dice__die--crit {
-  animation:
-    dice-land 340ms cubic-bezier(0.2, 1.4, 0.4, 1) 1,
-    dice-hop 520ms cubic-bezier(0.3, 1.6, 0.5, 1) 340ms 1;
-  filter: drop-shadow(0 0 0.5em rgba(245, 200, 108, 0.75));
-  color: var(--kad-gold, #f5c86c);
-}
-
-.dice__die--miss {
-  animation:
-    dice-land 340ms cubic-bezier(0.2, 1.4, 0.4, 1) 1,
-    dice-shake 420ms ease-in-out 340ms 1;
-  opacity: 0.75;
-  transition: opacity 400ms ease-out 300ms;
-}
-
-.dice__die--fumble {
-  animation:
-    dice-land 340ms cubic-bezier(0.2, 1.4, 0.4, 1) 1,
-    dice-topple 900ms cubic-bezier(0.3, 1.4, 0.5, 1) 340ms 1 forwards;
-  opacity: 0.75;
-}
-
 /* --- Motion ------------------------------------------------------------ */
 
 @keyframes dice-stamp {
@@ -402,44 +302,6 @@
   }
 }
 
-@keyframes dice-hop {
-  0%,
-  100% {
-    transform: none;
-  }
-  45% {
-    transform: translateY(-14%) scale(1.08);
-  }
-}
-
-@keyframes dice-shake {
-  0%,
-  100% {
-    transform: none;
-  }
-  25% {
-    transform: translateX(-5%) rotate(-4deg);
-  }
-  75% {
-    transform: translateX(5%) rotate(4deg);
-  }
-}
-
-@keyframes dice-topple {
-  0% {
-    transform: none;
-  }
-  60% {
-    transform: rotate(28deg) translateY(4%);
-  }
-  80% {
-    transform: rotate(18deg) translateY(3%);
-  }
-  100% {
-    transform: rotate(22deg) translateY(3%);
-  }
-}
-
 @keyframes dice-fade {
   from {
     opacity: 0;
@@ -450,69 +312,16 @@
  * Thrown, not spun in place: it arrives small and high, overshoots, and comes
  * down. The vertical travel is what the shadow below is timed against.
  */
-@keyframes dice-tumble {
-  0% {
-    transform: translateY(-14%) scale(0.5) rotate(-140deg);
-  }
-  60% {
-    transform: translateY(-9%) scale(1.08) rotate(200deg);
-  }
-  100% {
-    transform: translateY(0) scale(1) rotate(360deg);
-  }
-}
 
 /*
  * Squash and stretch. A die that lands by fading from 1.16 to 1 reads as a
  * pop-up; one that flattens on impact and springs back reads as an object with
  * weight in it, which is the whole job of this second.
  */
-@keyframes dice-land {
-  0% {
-    transform: scale(1.18, 0.82);
-  }
-  45% {
-    transform: scale(0.95, 1.07);
-  }
-  75% {
-    transform: scale(1.02, 0.98);
-  }
-  100% {
-    transform: scale(1, 1);
-  }
-}
 
 /* In the air: a wide, faint pool that tightens as the die comes down. */
-@keyframes dice-shadow-air {
-  0% {
-    transform: scale(1.5, 0.7);
-    opacity: 0.25;
-  }
-  60% {
-    transform: scale(1.35, 0.8);
-    opacity: 0.35;
-  }
-  100% {
-    transform: scale(1, 1);
-    opacity: 0.75;
-  }
-}
 
 /* Impact: the shadow spreads under the squash, then settles with it. */
-@keyframes dice-shadow-land {
-  0% {
-    transform: scale(1.3, 1);
-    opacity: 0.9;
-  }
-  45% {
-    transform: scale(0.92, 1);
-    opacity: 0.6;
-  }
-  100% {
-    transform: scale(1, 1);
-    opacity: 0.75;
-  }
-}
 
 @keyframes dice-flash {
   0% {
@@ -528,34 +337,109 @@
   }
 }
 
-/*
- * theme.css already neutralises animation globally under reduced motion; this
- * makes the intent explicit at the one place it matters most. The scrambling
- * face is switched off in the component, because no stylesheet can stop a
- * `setInterval` (DiceOverlay.tsx, prefersReducedMotion).
- */
+/* Canvas motion is stopped in JS; the result flourish follows the same policy. */
 @media (prefers-reduced-motion: reduce) {
   .dice,
-  .dice__die,
-  .dice__die--settled,
-  .dice__die--crit,
-  .dice__die--miss,
-  .dice__die--fumble,
   .dice__card--settled .dice__headline,
-  .dice__help-die--settled,
-  .dice__shadow,
-  .dice__stage--settled .dice__shadow,
   .dice__stage--good::before {
     animation: none;
   }
-
-  /* Without the tumble there is nothing for a shadow to be cast by mid-flight;
-     it just sits under the die at rest. */
-  .dice__shadow {
-    opacity: 0.75;
-  }
-
   .dice__stage--good::before {
     opacity: 0;
+  }
+}
+
+/* The mesh supplies all tumble, bounce and contact-shadow motion. */
+
+.polyhedral-die {
+  display: block;
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+}
+.polyhedral-die__canvas {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  opacity: 0;
+}
+.polyhedral-die--ready .polyhedral-die__canvas {
+  opacity: 1;
+}
+.polyhedral-die--ready .polyhedral-die__fallback {
+  visibility: hidden;
+}
+.polyhedral-die__fallback {
+  position: absolute;
+  inset: 12%;
+  display: grid;
+  place-items: center;
+}
+.polyhedral-die__fallback > .kad-icon {
+  position: absolute;
+  inset: 0;
+}
+.polyhedral-die__fallback > b {
+  position: relative;
+  font-size: 3em;
+  color: #fff0c6;
+  text-shadow: 0 2px 3px #24182e;
+}
+.dice__helper-model {
+  display: inline-block;
+  inline-size: 4em;
+  block-size: 4.2em;
+}
+.dice__helper-model .polyhedral-die__fallback > b {
+  font-size: 1.4em;
+}
+.dice__die--enchanted {
+  filter: drop-shadow(0 0 0.55em #e9bf6b88);
+}
+.dice__painted-sparks {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.dice__painted-sparks .kad-icon {
+  position: absolute;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+  animation: dice-painted-spark 700ms ease-out both;
+}
+.dice__painted-sparks .kad-icon:nth-child(1) {
+  left: 5%;
+  top: 35%;
+}
+.dice__painted-sparks .kad-icon:nth-child(2) {
+  right: 10%;
+  top: 15%;
+  animation-delay: 80ms;
+}
+.dice__painted-sparks .kad-icon:nth-child(3) {
+  right: 0;
+  bottom: 20%;
+  animation-delay: 140ms;
+}
+@keyframes dice-painted-spark {
+  0% {
+    opacity: 0;
+    transform: scale(0.2) rotate(-25deg);
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-1.5em) scale(1.15) rotate(15deg);
+  }
+}
+html[data-motion="reduced"] .dice__painted-sparks {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dice__painted-sparks {
+    display: none;
   }
 }

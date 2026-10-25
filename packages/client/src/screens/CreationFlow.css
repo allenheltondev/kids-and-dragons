@@ -337,6 +337,61 @@
   margin-block-start: 0.1em;
 }
 
+/*
+ * Matchup notes on a species or class card: "Good at:", "Watch out:" and
+ * "Together:". A + or a minus sign leads each line, so the direction is never
+ * color alone. Plain text color for the words keeps them readable on the card.
+ */
+.creation-notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+  margin-block-start: var(--space-1, 0.25em);
+  font-size: var(--font-size-sm, 0.875em);
+  line-height: 1.3;
+}
+
+.creation-notes__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25em);
+  min-width: 0;
+}
+
+.creation-notes__label {
+  margin: 0;
+  font-weight: 700;
+}
+
+.creation-notes__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25em);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.creation-notes__item {
+  display: grid;
+  grid-template-columns: 1.1em minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-1, 0.25em);
+}
+
+.creation-notes__sign {
+  font-weight: 800;
+  text-align: center;
+}
+
+.creation-notes__item--plus .creation-notes__sign {
+  color: var(--color-success, #4ad991);
+}
+
+.creation-notes__item--minus .creation-notes__sign {
+  color: var(--color-warn, #ffb454);
+}
+
 /* --- Stats ------------------------------------------------------------- */
 
 .creation-stats {

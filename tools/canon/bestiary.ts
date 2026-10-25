@@ -22,6 +22,7 @@ import path from "node:path";
 import process from "node:process";
 import { bandTable, loadCanon, resolveStats, resolveXp, slugOf } from "@kad/canon";
 import type { Creature } from "@kad/canon";
+import { speciesOpinions } from "./opinions.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..");
 const OUT = path.join(ROOT, "content", "bestiary.json");
@@ -45,6 +46,9 @@ for (const creature of creatures) {
   const stats = resolveStats(creature.encounter, bands);
   if (!stats) continue;
 
+  const likes = speciesOpinions(creature.lore?.likes);
+  const dislikes = speciesOpinions(creature.lore?.dislikes);
+
   bestiary[id] = {
     /** Where this came from. The projection should never be the only record. */
     canon_id: creature.id,
@@ -60,6 +64,9 @@ for (const creature of creatures) {
     ...(creature.encounter.behavior === undefined
       ? {}
       : { behavior: creature.encounter.behavior }),
+    ...(creature.encounter.traits?.length ? { traits: creature.encounter.traits } : {}),
+    ...(likes.length ? { likes } : {}),
+    ...(dislikes.length ? { dislikes } : {}),
     resolutions: creature.encounter.resolutions,
   };
 }

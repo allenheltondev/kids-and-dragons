@@ -821,6 +821,7 @@
     },
     "lift_check": {
       "type": "check",
+      "tags": ["force"],
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1741,6 +1742,10 @@
         {
           "figure": "cast/saltrot_guide",
           "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/passing_fisher",
+          "name": "Passing fisher"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
@@ -1774,6 +1779,10 @@
         {
           "figure": "cast/saltrot_guide",
           "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/passing_fisher",
+          "name": "Passing fisher"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats"
@@ -1793,6 +1802,10 @@
         {
           "figure": "cast/saltrot_guide",
           "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/passing_fisher",
+          "name": "Passing fisher"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats"

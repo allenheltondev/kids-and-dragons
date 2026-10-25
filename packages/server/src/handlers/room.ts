@@ -10,7 +10,7 @@
  * and its character is already on the board.
  */
 
-import { tableFull, VISITOR_CODE_EXTRA } from "@kad/shared";
+import { checkLocationName, tableFull, VISITOR_CODE_EXTRA } from "@kad/shared";
 import type {
   CreateRoomResponse,
   JoinRoomResponse,
@@ -59,6 +59,18 @@ export function generateRoomCode(random: () => number): string {
   return code;
 }
 
+/**
+ * The name a TV sent for its table (`CreateRoomRequest.location`), vetted: the
+ * word filter's refusal, or the trimmed name, or nothing when it was left
+ * blank. One function for the Lambda route and the dev server, so a name
+ * typed against either is held to the same rule.
+ */
+export function vetTableName(raw: unknown): HandlerResult<string | undefined> {
+  const checked = checkLocationName(raw);
+  if (!checked.ok) return fail("ILLEGAL", checked.message);
+  return ok(checked.name === "" ? undefined : checked.name);
+}
+
 export interface CreateRoomInput {
   householdId: string;
   mode: RoomMode;
@@ -72,6 +84,8 @@ export interface CreateRoomInput {
   hostDeviceId?: string;
   /** A family tablet is the TV (`RoomRecord.display`): nobody seated, not claimable. */
   display?: boolean;
+  /** The name the family gave its table (`RunRecord.location`), already vetted. */
+  location?: string;
 }
 
 export async function createRoom(
@@ -136,6 +150,7 @@ export async function createRoom(
     createdAt: iso(nowMs),
     lobbyFor: input.householdId,
     diceSecret: newSecret(),
+    ...(input.location ? { location: input.location } : {}),
   });
 
   // The engine owns the initial state's shape; the room owns its identity.
@@ -146,6 +161,7 @@ export async function createRoom(
     campaignId,
     now: iso(nowMs),
   });
+  if (input.location) state.location = input.location;
   // Where the household stands in this room's campaign — and in any other it
   // has part-way through — so the lobby can say which chapter is next, and
   // offer the choice, before anybody taps anything.
@@ -193,7 +209,15 @@ async function offerCampaigns(
   const saved = await savedGameView(householdId, deps);
   if (saved) state.saved = saved;
   else delete state.saved;
-  const shown = options.find((option) => option.locked === undefined) ?? options[0];
+  // A campaign the household has under way is what the picker rests on, the most
+  // recently played first; with none, the first startable one.
+  const attempts = await deps.repo.listCampaignProgress(householdId);
+  const underWay = attempts
+    .filter((a) => a.status === "active")
+    .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    .map((a) => options.find((option) => option.id === a.campaignId && option.locked === undefined))
+    .find((option) => option !== undefined);
+  const shown = underWay ?? options.find((option) => option.locked === undefined) ?? options[0];
   if (shown) state.campaign = shown;
 }
 
@@ -658,7 +682,8 @@ async function seatAndConnect(
       current,
       {
         ...current,
-        seats: { ...current.seats, [playerId]: seat },
+        // A kid who chose to watch (#388) still is, whatever else changed.
+        seats: { ...current.seats, [playerId]: was?.watching ? { ...seat, watching: true } : seat },
         party: reconnecting
           ? current.party.map((m) => (m.playerId === playerId ? { ...m, connected: true } : m))
           : current.party,

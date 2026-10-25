@@ -6,6 +6,7 @@
 
 .class-token {
   --token-ink: var(--kad-gold);
+  --token-ink-rgb: var(--kad-gold-rgb);
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -15,10 +16,12 @@
   line-height: 1;
   vertical-align: middle;
 }
-.class-token--thornguard { --token-ink: #8fdc8a; }
-.class-token--duskrunner { --token-ink: #a9b4ff; }
-.class-token--starweaver { --token-ink: var(--kad-gold); }
-.class-token--songkeeper { --token-ink: #ff9cc8; }
+/* Each class keeps its ink and the same ink as channels, since a tint of it is written
+   `rgb(var(--token-ink-rgb) / NN%)`: `color-mix()` is Chromium 111, and the TV is older. */
+.class-token--thornguard { --token-ink: #8fdc8a; --token-ink-rgb: 143 220 138; }
+.class-token--duskrunner { --token-ink: #a9b4ff; --token-ink-rgb: 169 180 255; }
+.class-token--starweaver { --token-ink: var(--kad-gold); --token-ink-rgb: var(--kad-gold-rgb); }
+.class-token--songkeeper { --token-ink: #ff9cc8; --token-ink-rgb: 255 156 200; }
 
 .class-token__face {
   display: grid;
@@ -26,8 +29,10 @@
   inline-size: 1.6em;
   block-size: 1.6em;
   border-radius: 50%;
+  /* The flat blend first, for a TV browser with no `color-mix()` (Chromium 111). */
+  background: #3d333a;
   background: color-mix(in srgb, var(--token-ink) 16%, var(--kad-bg-raised));
-  border: 0.08em solid color-mix(in srgb, var(--token-ink) 55%, transparent);
+  border: 0.08em solid rgb(var(--token-ink-rgb) / 55%);
 }
 .class-token__face .token-glyph {
   inline-size: 1.15em;
@@ -65,7 +70,7 @@
    lit token with its notch cut. */
 .class-token--glow .class-token__face {
   animation: token-glow 1.6s var(--kad-ease-out, ease-out) both;
-  box-shadow: 0 0 0.5em color-mix(in srgb, var(--token-ink) 70%, transparent);
+  box-shadow: 0 0 0.5em rgb(var(--token-ink-rgb) / 70%);
 }
 .token-notch--fresh {
   animation: token-notch-in 0.7s 0.5s var(--kad-ease-out, ease-out) both;
@@ -73,7 +78,7 @@
 @keyframes token-glow {
   0% { transform: scale(0.6); box-shadow: 0 0 0 transparent; }
   45% { transform: scale(1.15); box-shadow: 0 0 1.2em var(--token-ink); }
-  100% { transform: scale(1); box-shadow: 0 0 0.5em color-mix(in srgb, var(--token-ink) 70%, transparent); }
+  100% { transform: scale(1); box-shadow: 0 0 0.5em rgb(var(--token-ink-rgb) / 70%); }
 }
 @keyframes token-notch-in {
   0% { transform: translateY(-1.2em) scale(2); opacity: 0; }

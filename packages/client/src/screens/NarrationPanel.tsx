@@ -88,6 +88,16 @@ export function NarrationPanel(): ReactElement | null {
   // encounter cannot carry a priority anyway.
   const priority = state?.encounter != null ? null : state?.scenePriority ?? null;
   const ribbon = priority === null ? null : PRIORITY_RIBBON[priority];
+  // What the table picked to get here (`decision`), in one line over the story. Never in a fight:
+  // the caption strip has no room for it, and a fight is not a story choice.
+  const decided = state?.encounter == null && state?.decision?.sceneId === sceneId ? state.decision : null;
+  const picked = decided === null ? null : /[.!?]$/.test(decided.label) ? decided.label : `${decided.label}.`;
+  const decisionLine =
+    decided === null || picked === null
+      ? null
+      : decided.vote
+        ? `The party voted: ${picked}`
+        : `${party.find((m) => m.playerId === decided.byPlayerId)?.character.name ?? "Someone"} chose: ${picked}`;
   // The practice's line of what to tap (#255): shown under the words, in a
   // fight too, because that is where the board's lesson is.
   const hint = state?.hint ?? null;
@@ -101,6 +111,9 @@ export function NarrationPanel(): ReactElement | null {
   const rankUpText = rankUps.map((up) => (up.crow ? `${up.line} ${up.crow}` : up.line)).join(" ");
   const prompt = state?.prompt ?? null;
   const choices = prompt !== null && prompt.kind === "choice" ? prompt.options : null;
+  // A group vote is the party's to make together, so the room sees who has locked in (the ticks)
+  // and nothing more: a light on the option it is leaning toward says only that a vote is on.
+  const voting = prompt !== null && prompt.kind === "choice" && prompt.vote;
   /*
    * Whose story turn it is (spec §6.1), said on the shared screen because
    * that is where the table looks to find out. Named only while the holder is
@@ -156,7 +169,9 @@ export function NarrationPanel(): ReactElement | null {
     const key = `${sceneId ?? "-"}:${narration}`;
     if (narration.trim() === "" || spokenNarration.current === key || prefacePending) return;
     spokenNarration.current = key;
-    const story = ribbon === null ? narration : `${ribbon.label} ${narration}`;
+    const ribbonned = ribbon === null ? narration : `${ribbon.label} ${narration}`;
+    // What was picked comes first, as it is on the screen: the story follows from it.
+    const story = decisionLine === null ? ribbonned : `${decisionLine} ${ribbonned}`;
     if (preface.status === "ready" && prefaceSaid.current !== preface.key) {
       prefaceSaid.current = preface.key;
       if (preface.goal !== null) goalSaidIn.current = state?.chapterId ?? null;
@@ -313,6 +328,7 @@ export function NarrationPanel(): ReactElement | null {
    */
   const fitKey = [
     narration,
+    decisionLine ?? "",
     hint ?? "",
     rankUps.length,
     choices === null ? "" : choices.map((choice) => `${choice.id}:${choice.label}`).join("|"),
@@ -472,6 +488,12 @@ export function NarrationPanel(): ReactElement | null {
               {turnName === null ? "\u00a0" : <>{turnName}&rsquo;s turn to choose</>}
             </p>
           ) : null}
+          {decisionLine === null || decided === null ? null : (
+            <p className="narration__hint" key={`decision:${sceneId ?? "-"}`} data-testid="decision">
+              <Icon name={decided.vote ? "vote" : "hand"} />
+              <span>{decisionLine}</span>
+            </p>
+          )}
           {ribbon === null ? null : (
             <p className="narration__ribbon" key={`ribbon:${narration}`}>
               <Icon name={ribbon.icon} />
@@ -518,8 +540,9 @@ export function NarrationPanel(): ReactElement | null {
           <ul className="narration__choices" data-count={choices.length > 6 ? "many" : choices.length}>
             {choices.map((choice) => {
               // A hover is a light, not a name: it only lights the option, so a
-              // name appearing and disappearing cannot rewrap the label.
-              const leaningNow = (leaning.choices[choice.id] ?? []).length > 0;
+              // name appearing and disappearing cannot rewrap the label. A group
+              // vote never lights (see `voting`); a single kid's pick does.
+              const leaningNow = !voting && (leaning.choices[choice.id] ?? []).length > 0;
               // A locked vote is a tick in the voter's color, the same as on
               // the phones (PlayerPanel): a seat per voter, drawn from the
               // start, so a vote landing cannot grow the pill and rewrap the row.

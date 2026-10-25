@@ -1,7 +1,7 @@
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import { serviceWorker } from "./sw-build";
+import { buildId, serviceWorker } from "./sw-build";
 
 const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
 const apiTarget = process.env.KAD_DEV_API_TARGET ?? "http://localhost:8787";
@@ -14,9 +14,7 @@ const apiTarget = process.env.KAD_DEV_API_TARGET ?? "http://localhost:8787";
 export default defineConfig({
   // Which build a crash report came from (#317): the commit CI built, else "dev".
   define: {
-    "import.meta.env.VITE_KAD_BUILD": JSON.stringify(
-      (process.env.KAD_BUILD ?? process.env.GITHUB_SHA ?? "dev").slice(0, 12),
-    ),
+    "import.meta.env.VITE_KAD_BUILD": JSON.stringify(buildId()),
   },
   // The service worker (src/sw/) is emitted as `/sw.js` by its own plugin:
   // a fixed URL and a single classic script, which a Vite entry is not.
@@ -35,6 +33,18 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: true,
+    /*
+     * The shared screen's most likely home is a smart TV's own browser, which runs years
+     * behind the panel it is in: a 2024 Samsung is Tizen 8, Chromium 108 (docs/hardware.md).
+     * Vite's default here is `baseline-widely-available`, which at the time of writing is
+     * Chromium 111 — newer than any TV in a living room, and nothing in the build says so.
+     *
+     * This only lowers JavaScript syntax. CSS functions are emitted exactly as written, so a
+     * value newer than this needs a fallback declaration before it; `styles/baseline.test.ts`
+     * holds the same number and fails when one is missing. Raise both together, once
+     * docs/hardware.md has a device row that proves the newer floor.
+     */
+    target: ["chrome108", "edge108", "firefox114", "safari16.4"],
     /*
      * Not Vite's default of `assets`. In production the SPA, the commissioned
      * art, and the chapter JSON all sit in one S3 bucket behind one

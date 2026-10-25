@@ -113,6 +113,7 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Pairing code | `PAIR#<code>` | `META` | A single-use code that makes whoever redeems it a device bound to one kid (§4.5, "Pairing a new device"). Spent by a conditional delete. **TTL 10 minutes.** |
 | Visit | `VISIT#<playerId>` | `HH#<tableHhId>` | A table that is not her home that a kid sat down at (#249), written by the join. Keyed by the kid, so a move (#251) never carries it. Only so that deleting her can find the saves that name her (§4.5, "Deleting and keeping"). Deleted with her or her home. |
 | Forget job | `FORGET#<playerId>` | `META` | A kid being deleted (#252): her nicknames, her heroes' names, the tables still to clean, and how to finish the delete that wrote it. Written before any of her rows go, rewritten with the tables a scrub could not clean, removed when none are left. In GSI1's `FORGET` partition, so the sweeper finishes what is owed. |
+| Push subscription | `PUSH#<playerId>` | `DEVICE#<deviceId>` | One of a kid's own phones that takes "It's your turn" pushes (#466, §4.6 "Push"): the push service's endpoint for that browser and the two keys that encrypt for it. One per phone, keyed by the kid like a visit, so a move carries nothing. Forgotten when the push service says it is gone, when the phone is no longer hers, when the switch goes off, and with her or her home. |
 
 GSI1 does five jobs, all of them lookups that would otherwise be scans:
 
@@ -411,11 +412,35 @@ the TV draws one only while its own state names the same decision (`client/src/w
 A late pick, or one whose clearing `null` was lost with a dropped phone, therefore never surfaces on
 a later turn or a later question — a lost or stale preview costs a highlight, never a turn.
 
+**Cheers** (`POST /api/cheer`, `{ "cheer": string }`, #388) ride the channel the same way. A
+**spectator** is a phone on the roster (`RunState.seats`) with no hero, at a table that is full or
+whose kid chose "Just watch" on that phone (`POST /api/spectate`, `RoomSeat.watching`; only the
+session's own player, so the host cannot set it) (`isSpectator`, shared/src/spectators.ts). It is never in `party`, so no vote, roll, turn, ready
+gate, encounter or spawn can count it. Its phone shows the goal, a line on what the party is doing
+and a row of fixed cheers; the server relays one as `{ "kind": "cheer", cheer }`, with no name,
+after checking the id is in `CHEERS`, the sender is a spectator, and its per-phone budget
+(`CHEER_LIMIT` per `CHEER_WINDOW_MS`, the wrong-code counter under a key of its own) has room.
+Presence keeps `RunState.watching`, the spectators whose phones are still beating, so the shared
+screen can show how many are watching; `watchers(state)` reads it through `isSpectator`, since
+presence does not hear a spectator sit down when a seat opens. Only the room's own screen draws
+cheers (`client/src/screens/RoomCheers.tsx`), never a hero's phone.
+
 ### 4.3 Reconnect
 
 Every client tracks the last `seq` it applied. On reconnect it calls `GET /state?runId&sinceSeq=N`,
 which returns either the missed events or a full snapshot if the gap is too large. The TV can be
 hard-refreshed mid-encounter and recover in under a second.
+
+A room that is gone must not look like a reconnect (#470), and a bad network must not look like a
+room that is gone. Only the catch-up `GET /state` may say so: answered 401, 403, 404 or 410, the
+store treats it as terminal, clears the resync retry, closes the channel and sets the connection
+status `"lost"`. A stream that keeps failing proves nothing by itself (lost Wi-Fi, an unreachable
+endpoint and a stalled handshake all look the same from the socket), so the channel keeps retrying
+with backoff however many times it fails; on the third consecutive failure it asks for the catch-up
+once (`RESYNC_AFTER_FAILURES`), which is how a gone room is found out on either transport without
+waiting for a stream to open. 5xx and network errors stay transient. The banner then shows at once,
+without the grace period: "This game has ended or the phone was signed out." with "Try again"
+(re-attaches from the mirror held) and "Back to the start" (leaves and goes home).
 
 #### Stepping away: absence is `connected: false`
 
@@ -452,6 +477,15 @@ header and fades their figure on the board and in the lineup (never the
 knocked-down pose), and a phone that opens on a chapter in progress, or whose
 channel came back after the story moved, shows a one-line catch-up
 (`screens/CatchUp.tsx`).
+
+**How a screen learns its own stream has died: silence and failed requests (#469).** The
+browser socket (`sync/appsync-socket.ts`) arms a silence watchdog at the lesser of the
+`connection_ack`'s `connectionTimeoutMs` (five minutes) and `SILENCE_MS` (two minutes). AppSync
+sends a `ka` about every minute, so two minutes is two missed; any inbound frame resets it. A
+phone also has a faster signal: a presence beat or an action whose fetch fails at the network (a
+`TypeError`, not an HTTP status, which is the server answering) calls `nudgeReconnect()`
+(`sync/wake-reconnect.ts`), one `reconnect()` coalesced with wake reconnects by `WAKE_COALESCE_MS`.
+The TV sends no beat and relies on the shortened watchdog alone.
 
 **How the server learns a phone has gone: heartbeats.** AppSync Events tells
 the Lambda nothing when a socket opens or closes, so every seated phone says
@@ -1672,7 +1706,7 @@ surface at a time.
 the **device token** (`x-kad-device-token`) rather than a room session, which between games does
 not exist: the player's own heroes, the household's Field Guide, a player-id → name map for "found
 by", and the biome of the household's most recent run that left the lobby. It is read-only. The
-client keeps the last answer in `localStorage`, keyed by the device token, and shows it (marked as
+client keeps the last answer in IndexedDB (`store/journal-db.ts`; a pre-existing `kad.journal` in `localStorage` is moved over on first read, and `localStorage` then memory stand in where IndexedDB is blocked), keyed by the device token, and shows it (marked as
 last time's) when the request fails for want of a network; a 4xx means the binding is gone and
 discards it. A browser whose binding came from opening a Party Mode room on itself is marked
 `screenOnly` and is never offered the book, until it is seated or adopted as a player.
@@ -1730,12 +1764,15 @@ A service worker (`packages/client/src/sw/`, served as `/sw.js`) does two jobs. 
 adventure book open with no signal, on a reload too: the saved journal is only half of that, since
 the page, its code, the content and the map painting also have to be on the phone. And it makes
 sure nothing a phone already has is downloaded twice. It is registered only by a production build,
-after `load`, and touches nothing the game needs live:
+after `load`, and touches nothing the game needs live. A failed install or activate, a full disk and
+a file that is not the one fingerprinted are reported to the crash reporter (a message to the open
+pages, else a direct post; `report/worker-errors.ts`), and Help has a Diagnostics panel showing
+the worker's state and what is saved (#459):
 
 | Request | Answered by |
 |---|---|
 | `/api/*`, `/events/*`, anything cross-origin, non-GET or ranged | the browser, as if there were no worker |
-| a page load (any route) | the network (started by navigation preload); the saved app when there is none |
+| a page load (any route) | the network (started by navigation preload), else the saved app after a short wait: when the network fails, or has not answered in 3 seconds (a captive portal, one bar of signal). A late answer is still kept for the next load. With no saved app, the network however long it takes |
 | `/bundle/*` (hashed) | the saved copy; the network the first time |
 | `/assets/*`, `/content/*.json`, `public/` files | the saved copy **if its fingerprint matches this build's**; else the network, kept if the bytes match |
 | anything else not fingerprinted | content: network first; pictures: saved copy, refreshed behind; otherwise untouched |
@@ -1749,8 +1786,15 @@ file changes its fingerprint, so that file alone is fetched again, past the HTTP
 worker drops replaced copies when it takes over. Every download is checked against its
 fingerprint before it is kept, so a CDN edge still serving the old bytes is served but never saved.
 
-**Budget.** Fingerprinted art and audio are capped at 200 MB, least recently used first.
-Content is never evicted: it is small, and it is what the offline book reads. Lookups ignore
+**Budget.** Fingerprinted art and audio are capped at a fifth of the origin's quota
+(`navigator.storage.estimate()`, read in the worker), at most 200 MB and at least 50 MB, and 200 MB
+where the browser does not say (`swBudgetFor`), least recently used first. An install that hits a
+full disk (`QuotaExceededError`) trims the saved art to about half once and tries again, and only
+then fails as before (`swAfterInstallError`); a content file whose bytes are not this build's still
+fails it outright. Content is never evicted: it is small, and it is what the offline book reads.
+Phones ask the browser to keep their storage (`navigator.storage.persist()`, `src/storage/persist.ts`)
+once, after a scene has been played or the book opens, never at first paint and never on the TV;
+the answer is recorded so it is not asked again. Lookups ignore
 `Vary`: servers send `Vary: Origin`, module scripts send an `Origin` header, and without
 `ignoreVary` every saved script quietly missed and went back to the network.
 
@@ -1768,17 +1812,77 @@ Content is never evicted: it is small, and it is what the offline book reads. Lo
   pane mounted behind its controls and map, and the layout tells `WorldView` when it is hidden, so a
   Party Mode phone (whose world is the TV's job) spends nothing on it. Prefetching is skipped when the phone asks to save data;
   the book's offline art is not, since it is what makes the book open in the car at all.
+- **When a chapter starts, on the TV only:** all of that chapter's art (every scene's backdrop, every
+  enemy with art, the biome's tiles, the party's figures; a few MB) is fetched at idle priority in two
+  lanes (`chapterAssets`, `useWarmChapter` in `sw/prefetch.ts`), so the TV never waits on a picture
+  mid-story. Phones never do this, and it too is skipped when Data Saver is on.
+- **Overnight, on the installed app (Chromium on Android, #467):** content that changed and the art
+  of the household's next chapter, so the next evening opens with no late backdrops (below).
+
+**Overnight refresh.** Once a worker already controls the page (never on the very first launch),
+the installed app registers a Periodic Background Sync, tag `kad-refresh`, at most once a day
+(`sw/periodic.ts`, loaded lazily by `register.ts` only where the registration has `periodicSync`),
+and only where `navigator.permissions.query({ name: "periodic-background-sync" })` grants it. The
+browser grants it only to an installed app it has seen used recently, and stretches the interval
+for one that is seldom opened; Safari and Firefox have no such API and do nothing. On
+`periodicsync` the worker (`sw.ts`) first asks for a newer `sw.js` (`registration.update()`); a
+new build's install re-reads its own file index and fetches the content that changed, so when one
+is installing or waiting this worker writes a hand-off marker (`/__kad/periodic-pending` in the files
+cache: the time and the tag), records "handed-over" and stops. The new worker's own `activate`,
+after its usual work and `clients.claim()`, takes a marker under a day old, deletes it and runs the
+same refresh under that `waitUntil`; a stale one is dropped. It does so only with no page open,
+because until activate finishes the browser holds every request a page makes; with a page open,
+or when the new worker never takes over, the next `periodicsync` of whichever worker is active
+clears the marker first and does the run itself, so a hand-off is never dropped and never runs
+twice. Otherwise it fetches again every
+`/content/*` file it keeps or wants (the book's content, the campaigns, the next chapter) whose
+copy at this index's fingerprint is missing, which is what a deploy changed, read off the saved
+keys (`swContentToRefresh`). Then, unless Data Saver is on, it decides the next chapter **on the
+phone, with no new endpoint**: the saved journal in IndexedDB (read only; refreshed from the
+existing `/api/journal` with the device token the page saved, when that answers) gives the newest
+campaign still `active` and the chapters played, and the campaign's own content gives what follows
+(`sw/next-chapter.ts`). An ordered campaign takes the beat after the last one played, narrowed to
+the road the party holds where a "Last time…" line or the chapter just played says which, else
+every road of that beat; a graph campaign takes where the ways out of the last place played lead.
+At most three chapters. Their story plates and everything `chapterAssets` names (now
+`sw/chapter-art.ts`, which `sw-build.ts` concatenates into the worker with `world/art-paths.ts`)
+are saved by fingerprint, at most a quarter of the files budget a night (`swPeriodicByteCap`), with
+the usual budget eviction after. The run stops starting downloads after two minutes, lets nothing
+escape its `waitUntil`, and records how it ended in the files cache (`/__kad/periodic-sync`), which
+Diagnostics shows as "Overnight refresh" with whether it is registered. The guess can be wrong
+(the server picks the real chapter from route flags the phone does not hold); a wrong guess costs
+one night's download of art that LRU eviction later drops.
 
 **Updates.** Each build's `sw.js` names its own files, so every deploy is a new worker. It takes
 over at once, including pages that are already open. Those pages were built against the previous
 build and import its chunks the first time they open the book or a room, and the deploy has deleted
 those chunks from the bucket. So the worker keeps the previous build's code as well as its own
 (`/__kad/bundle-list` records which), and drops only what neither uses. A tab left open across two
-deploys gets the "Try again" a missing chunk always gets, which reloads it. Pictures an earlier
+deploys gets the "Try again" a missing chunk always gets, which reloads it. An open page also moves itself onto
+the new build (#456): on every wake it asks the worker for updates (`registration.update()`, at most
+once per five minutes, failures swallowed), and when a new worker takes control of a page that
+already had one (`controllerchange`) it reloads once, at a calm moment decided by the pure
+`sw/calm.ts`: page visible, `synced`, no prompt open for this player, no fight, no keepsake or
+pairing flow. Otherwise the update stays pending until the next calm moment (a scene ends, back to
+the lobby, the journal). A sessionStorage stamp keeps it to one reload per change, and a reload
+loses nothing: the room code is in the URL and the session in storage. Pictures an earlier
 worker kept under an old cache name (#224's `kad-image-v1`) are moved into the fingerprinted cache,
 verified, before that cache is dropped. **To turn it off**, ship
 a `sw.js` whose `activate` deletes every cache and calls `self.registration.unregister()`. Phones
 pick it up on their next page load.
+
+**Broken cache recovers.** A worker or cache that serves a page which cannot start would trap a
+phone on a blank screen. An inline script in `index.html`, ahead of the bundle (`src/boot/`, #455),
+counts each load in `sessionStorage` and expects the app to mark itself booted (`BootMark`, on the
+first commit) within 15 seconds; a window `error` or `unhandledrejection` before that fails the boot
+at once. The first failure reloads. The second heals, but only once fresh bytes are reachable (the
+phone says it is online and a `HEAD` of the page, past the worker, answers): it deletes this app's
+caches (`kad-*`), unregisters every worker and reloads once. With no signal the saved copies are the
+only way the app opens at all, so nothing is deleted; it writes "No Wi-Fi right now. Check the
+connection and open Kids & Dragons again." into `#root` and resets the count for the next open. The
+third failure writes "Kids & Dragons could not start. Check the Wi-Fi and open it again." and stops,
+so it never loops. It touches nothing in `localStorage` or IndexedDB, so the hero and the journal are
+safe. `e2e/boot-heal.spec.ts` proves both the heal and the hold.
 
 **Proof.** Both specs below run against a real production build (`playwright.prod.config.ts`,
 `npm run e2e:prod`, also run by CI).
@@ -1794,12 +1898,74 @@ pick it up on their next page load.
     still sends the old bytes never takes over, and the book still opens offline with its guide.
   - **From #224:** pictures in `kad-image-v1` survive the upgrade, and the offline map shows.
   - **Data Saver:** the book still saves its painting.
+  - **Hung network:** with every page load held by the proxy for 20 seconds, the book opens from
+    the saved app well inside ten, and the page throws nothing.
 - `e2e/perf.spec.ts` counts every byte through a proxy, the worker's own fetches included. Before
   the fingerprinted cache, the next evening re-downloaded about 3.8 MB in 41 round trips; now
   13 KB in 10 (the page, live game traffic and the favicon, which browsers fetch outside any
   worker). It also checks that:
   - mismatched bytes are never saved;
   - a scene's art is saved before the party reaches it.
+
+#### Push: "It's your turn" in the background (#466)
+
+The one thing an installed app has that a tab never will. A kid's phone set down while the TV
+reads goes quiet: a hidden page does not beat (#258) and nothing on it can say a question is
+waiting. The badge (`ui/app-badge.ts`) marks the icon while the page is alive; a push wakes a
+phone whose page is not. On an iPhone a push reaches only a Home Screen app, which is the install
+we ask for anyway.
+
+- **When.** After an action lands and is broadcast, the action handler works out, from the two
+  states it already holds, which kids the step just opened a question for (`turnPushJob`,
+  `handlers/push.ts`: `isPromptForPlayer`, the same answer her buttons and badge read, now in
+  `@kad/shared`; the actor never; a question that only moved on, a vote cast or somebody else's die,
+  opens nothing new). If anybody, it hands that job over and is done.
+- **Never in the way.** The request path reads nothing and sends nothing for a push. In Lambda the
+  job goes to a second function, `PushSenderFunction` (`lambda/push-sender.ts`), by an asynchronous
+  invoke (`InvocationType: "Event"`, `lambda/push-dispatch.ts`): Lambda queues it and answers 202,
+  and the API waits only for that, never more than `DISPATCH_WAIT_MS` (500 ms) even when the invoke
+  hangs, after which it logs and moves on. Not awaiting at all would not do: a Lambda's container
+  is frozen once it returns, and an invoke still in flight may never leave. The sender, in its own
+  invocation, reads the room as it is then (a question already answered tells nobody), keeps the
+  kids whose phone is quiet in that room (marked away, or last beat older than `AWAY_AFTER_MS`; a
+  phone with no beat on record and still marked here is left alone, as the presence sweep leaves
+  it), and sends one push per subscribed phone, all at once, three seconds each at most. A 404 or
+  410 from the push service, or a phone revoked, moved to another kid or deleted since it
+  subscribed, forgets that subscription. It swallows every push failure and succeeds, so Lambda's
+  default async retries (two, and only within 15 minutes) follow only a crash of the sender itself.
+  Its reserved concurrency is 5 while pushes are on. The dev server runs the same job in-process
+  after the response is written (`inProcessDispatch`, `setImmediate`).
+- **Nothing but the sentence (#320).** The notification is "Kids & Dragons" / "It's your turn in
+  Kids & Dragons", one tag so a second turn replaces the first. The payload, encrypted for the
+  browser (RFC 8291, so the push service carries bytes it cannot read), is those words and the
+  room's `/p/CODE` path. The worker shows its own copy of the words, never the payload's
+  (`swPushNotice`), and opens only a same-site room path; a tap focuses a window on that room, or
+  any of the app's, or opens one.
+- **Asked in one place.** The Account screen's switch (`push/PushSwitch.tsx`, its own chunk),
+  drawn only in the installed app, on a browser with Web Push, on a kid's own phone (a player's
+  device token, not a family tablet or a TV), with a server that sends pushes. Never on first
+  launch: the browser's permission prompt appears only when a grown-up flips the switch on.
+  `pushManager.subscribe({ userVisibleOnly: true })` with the server's key, then
+  `POST /api/push/subscribe` by the device token; off unsubscribes and posts
+  `/api/push/unsubscribe`. `GET /api/push/key` says whether the server sends any.
+- **Stored** as `PUSH#<playerId> / DEVICE#<deviceId>` (§3), deleted with her or her home.
+- **Off unless configured.** `HandlerDeps.push` (the public key and the dispatcher) is absent
+  unless the entry point was given `KAD_PUSH=on` and keys. Lambda: the stack's `PushNotifications`
+  and `PushContact` parameters, a VAPID key pair in `/kad/<stage>/push-vapid-keys`, minted by the
+  API on first use like the signing key and only read by the sender, and the sender's name in the
+  API's `PUSH_SENDER_FUNCTION` ([deploy.md](./deploy.md#turning-on-its-your-turn-pushes-466)). The dev server:
+  `KAD_VAPID_PUBLIC_KEY`, `KAD_VAPID_PRIVATE_KEY` and `KAD_PUSH_SUBJECT`, or `KAD_PUSH=record`,
+  which mints a pair and keeps every push for `GET /api/dev/push` rather than sending it (the prod
+  e2e suite's stand-in push service).
+- **Proof.** The decision, the send and the routes: `handlers/push.test.ts`, `web-push.test.ts`,
+  `lambda/http.test.ts`; that a tap is answered when the hand-over hangs or fails, and before a
+  slow push service answers: `handlers/push.test.ts`; the sender function and the async invoke:
+  `lambda/push-sender.test.ts`; the store: the contract suite. The worker, built and run in a vm:
+  `sw/sw.test.ts`. The switch: `push/push.test.tsx`. In a production build, `e2e/push.spec.ts`
+  grants the notifications permission, stubs `PushManager.subscribe`, flips the switch, sees the
+  server hold the subscription, delivers a push to the worker through DevTools and reads back the
+  notice. A real phone buzzing with its screen locked is device QA
+  ([pwa-device-qa.md](./pwa-device-qa.md)).
 
 #### The display beyond a laptop (#264)
 

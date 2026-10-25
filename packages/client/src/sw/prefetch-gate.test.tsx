@@ -14,7 +14,7 @@ import { useGameStore } from "../store";
 const warm = vi.fn(async () => undefined);
 vi.mock("./warm", () => ({ warm: (...args: unknown[]) => warm(...(args as [])) }));
 
-const { usePrefetchUpcoming, resetPrefetched } = await import("./prefetch");
+const { usePrefetchUpcoming, useWarmChapter, resetPrefetched } = await import("./prefetch");
 
 function World({ enabled }: { enabled: boolean }) {
   usePrefetchUpcoming(enabled);
@@ -51,5 +51,25 @@ describe("prefetching the scenes ahead", () => {
     act(() => void vi.advanceTimersByTime(10_000));
     expect(warm).toHaveBeenCalledTimes(1);
     expect((warm.mock.calls[0] as unknown[])[0]).toEqual(expect.arrayContaining([expect.stringMatching(/assembled\.png$/)]));
+  });
+});
+
+describe("warming the whole chapter", () => {
+  function Tv({ display }: { display: boolean }) {
+    useWarmChapter(display);
+    return null;
+  }
+
+  it("warms every scene's art on the display, in two lanes", () => {
+    render(<Tv display />);
+    act(() => void vi.advanceTimersByTime(10_000));
+    expect(warm).toHaveBeenCalledTimes(1);
+    expect((warm.mock.calls[0] as unknown[])[1]).toEqual({ lanes: 2 });
+  });
+
+  it("does nothing on a phone", () => {
+    render(<Tv display={false} />);
+    act(() => void vi.advanceTimersByTime(10_000));
+    expect(warm).not.toHaveBeenCalled();
   });
 });

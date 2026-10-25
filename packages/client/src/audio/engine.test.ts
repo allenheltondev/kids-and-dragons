@@ -56,6 +56,7 @@ class FakeOscillator extends FakeNode {
 }
 
 class FakeBufferSource extends FakeNode {
+  playbackRate = new FakeParam();
   loop = false;
   buffer: unknown = null;
   start(): void {}
@@ -337,6 +338,7 @@ describe("real audio, when there is any", () => {
     // A buffer source, and *not* the synth's oscillators — otherwise both
     // would play and the dice would rattle twice.
     expect(ctx.sources.length).toBe(1);
+    expect(ctx.sources[0]!.playbackRate.value).toBeCloseTo(1400 / 2200);
     expect(ctx.oscillators.length).toBe(oscillatorsBefore);
   });
 

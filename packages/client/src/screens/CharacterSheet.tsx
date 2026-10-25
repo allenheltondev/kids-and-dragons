@@ -42,6 +42,9 @@ const TIER_WORD: Record<TierId, string> = {
   sworn: "Sworn",
   radiant: "Radiant",
   mythic: "Mythic",
+  ascendant: "Ascendant",
+  starborn: "Starborn",
+  legendary: "Legendary",
 };
 
 /**
@@ -350,7 +353,7 @@ export function CharacterSheet({ member, isMe, items, explore = false, partySize
           <span>Hero tiers</span>
         </h4>
         <p className="sheetview__hint kad-muted">
-          Heroes grow through four tiers as they level up. {isMe ? "You are" : `${character.name} is`} a{" "}
+          Heroes grow through seven tiers as they level up. {isMe ? "You are" : `${character.name} is`} a{" "}
           <b className="sheetview__word">{character.tier}</b> now.
         </p>
         <ol className="sheetview__ladder">

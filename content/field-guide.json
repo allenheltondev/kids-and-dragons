@@ -57,6 +57,10 @@
           "kind": "escape",
           "text": "It hides from anything large, so standing tall and leaving loudly usually works."
         }
+      ],
+      "traits": [
+        "armored",
+        "swarming"
       ]
     },
     "creature.cinder_wolf": {
@@ -127,6 +131,10 @@
           "kind": "escape",
           "text": "They are faster than you and they hunt together, so leaving is harder than it looks."
         }
+      ],
+      "traits": [
+        "fiery",
+        "swarming"
       ]
     },
     "creature.cloud_whale": {
@@ -238,6 +246,9 @@
           "kind": "escape",
           "text": "Leaving in silence, which is harder than leaving."
         }
+      ],
+      "traits": [
+        "hulking"
       ]
     },
     "creature.embermoth": {
@@ -364,6 +375,10 @@
           "kind": "observation",
           "text": "Telling a nesting tunnel from an ordinary one, before you are standing in it."
         }
+      ],
+      "traits": [
+        "frozen",
+        "hulking"
       ]
     },
     "creature.glassback_crab": {
@@ -422,6 +437,9 @@
           "kind": "escape",
           "text": "It stops pursuing once you are off its patch of warm ground."
         }
+      ],
+      "traits": [
+        "armored"
       ]
     },
     "creature.jackalope": {
@@ -603,6 +621,10 @@
           "kind": "conversation",
           "text": "It is guarding a purpose. Working out which one is most of the conversation."
         }
+      ],
+      "traits": [
+        "hulking",
+        "fiery"
       ]
     },
     "creature.loftmire": {
@@ -614,6 +636,7 @@
       "danger_level": "moderate",
       "scale": "variable",
       "classification": "supernatural_manifestation",
+      "art": "/assets/entities/loftmire/portrait.webp",
       "lore": {
         "story": "Nobody agrees what a loftmire is, which is why nobody agrees what to call one. The witches say loftmire and have a theory. The frogfolk say the low sky, because that is what fits on a chart. Boggarts say the shelf, and something taken by one has been shelved. The Exchange writes lifter on the paperwork and marks the cargo gone up. Everybody else, including every child in the marsh, says upfall. What is agreed is the sand. It comes out of the cloud and it is trying to get home, and a grain on its own manages it in a minute and nobody notices. A grain stuck to a sleeve is a very small thing pulling on a very large one, and losing. Enough grains stop losing. The cloud is never where the danger is; its dust is, and the cloud is only where the dust is going.",
         "pastimes": [
@@ -766,6 +789,9 @@
           "kind": "distraction",
           "text": "Strong vibration moves it off a hunting site, and stamping works as well as anything."
         }
+      ],
+      "traits": [
+        "slippery"
       ]
     },
     "creature.mosshorn": {
@@ -929,6 +955,10 @@
           "kind": "conversation",
           "text": "There is enough of a person left to answer, if you are gentle about asking."
         }
+      ],
+      "traits": [
+        "ghostly",
+        "hulking"
       ]
     },
     "creature.river_drake": {
@@ -999,6 +1029,10 @@
           "kind": "conversation",
           "text": "It learns routines, so it can be talked into a different one."
         }
+      ],
+      "traits": [
+        "slippery",
+        "hulking"
       ]
     },
     "creature.silver_otter": {
@@ -1237,6 +1271,10 @@
           "kind": "observation",
           "text": "Noticing that the route it is offering is not a route."
         }
+      ],
+      "traits": [
+        "ghostly",
+        "flier"
       ]
     },
     "character.bigfoot": {
@@ -2154,6 +2192,7 @@
       "short_description": "Friendly, skittish sheep-folk of the Plains who live, think, and do everything as a flock, are never fewer than three, and never have names.",
       "scale": "medium",
       "classification": "supporting_people",
+      "art": "/assets/entities/sheeple/portrait.webp",
       "lore": {
         "story": "Sheeple graze the low ridges of the Plains in flocks of anywhere from three to three hundred, and nothing a sheeple does was its own idea. One starts to walk, and the rest walk. One sits down to watch the sunset, and the hillside sits down. Ask a sheeple who decided and it will point, sincerely, at the sheeple next to it, who will point at the next. None of them has a name to give you; a sheeple is \"the one in the tall hat\" or \"the one by the stream\" for exactly as long as that is true, and the flock has never needed more. The flock still gets somewhere. Things get decided, songs get sung, and outfits get invented. Where the first idea comes from is the oldest question on the Plains, and the sheeple are the least bothered by it. When a flock comes apart it splits into threes, never ones or twos, and each trio lifts its head and lets out the Gather: a single enormous call that carries across three valleys and means one thing only, come here. No ear but a sheeple's can hear it. A traveler sees three sheeple throw back their heads in perfect silence, and a few minutes later the hillside fills with sheeple.",
         "pastimes": [
@@ -2433,12 +2472,121 @@
         }
       ]
     },
+    "class.duskrunner": {
+      "id": "class.duskrunner",
+      "category": "classes",
+      "kind": "class",
+      "title": "Duskrunner",
+      "short_description": "Everywhere at once, never where the trouble lands.",
+      "class": {
+        "role": "skirmisher",
+        "gear": "a dusk hood",
+        "home": "location.rookery",
+        "homeTitle": "The Rookery",
+        "distinctions": [
+          {
+            "rank": "apprentice",
+            "move": "Vanish"
+          },
+          {
+            "rank": "expert",
+            "move": "Twin Step"
+          },
+          {
+            "rank": "master",
+            "move": "Storm of Blades"
+          }
+        ]
+      }
+    },
+    "class.songkeeper": {
+      "id": "class.songkeeper",
+      "category": "classes",
+      "kind": "class",
+      "title": "Songkeeper",
+      "short_description": "You keep everybody standing, and you make it look like a hero move. Because it is.",
+      "class": {
+        "role": "support",
+        "gear": "a song bell on a cord",
+        "home": "location.conservatory",
+        "homeTitle": "The Conservatory",
+        "distinctions": [
+          {
+            "rank": "apprentice",
+            "move": "Soothe"
+          },
+          {
+            "rank": "expert",
+            "move": "Chorus"
+          },
+          {
+            "rank": "master",
+            "move": "Encore"
+          }
+        ]
+      }
+    },
+    "class.starweaver": {
+      "id": "class.starweaver",
+      "category": "classes",
+      "kind": "class",
+      "title": "Starweaver",
+      "short_description": "You pull little pieces of the sky down and put them where they are needed.",
+      "class": {
+        "role": "caster",
+        "gear": "a star circlet",
+        "home": "location.academy",
+        "homeTitle": "The Academy",
+        "distinctions": [
+          {
+            "rank": "apprentice",
+            "move": "Glimmer"
+          },
+          {
+            "rank": "expert",
+            "move": "Tanglelight"
+          },
+          {
+            "rank": "master",
+            "move": "Starfall"
+          }
+        ]
+      }
+    },
+    "class.thornguard": {
+      "id": "class.thornguard",
+      "category": "classes",
+      "kind": "class",
+      "title": "Thornguard",
+      "short_description": "You stand in front. That is the whole job, and it is a big one.",
+      "class": {
+        "role": "front_line",
+        "gear": "a thorn bracer",
+        "home": "location.dojo",
+        "homeTitle": "The Dojo",
+        "distinctions": [
+          {
+            "rank": "apprentice",
+            "move": "Shove"
+          },
+          {
+            "rank": "expert",
+            "move": "Bramble Wall"
+          },
+          {
+            "rank": "master",
+            "move": "Unbreakable"
+          }
+        ]
+      }
+    },
     "individual.marda_thorn": {
       "id": "individual.marda_thorn",
       "category": "folk",
       "kind": "individual",
       "title": "Marda Thorn",
-      "short_description": "Runs the wide-doored inn at the middle of Bramblewood and knows who has come through the hedges in the last month."
+      "short_description": "Runs the wide-doored inn at the middle of Bramblewood and knows who has come through the hedges in the last month.",
+      "art": "/assets/cast/marda_thorn/portrait.webp"
     },
     "individual.old_ossley": {
       "id": "individual.old_ossley",
@@ -2446,6 +2594,7 @@
       "kind": "individual",
       "title": "Old Ossley",
       "short_description": "Takes people over the water at Stone Crossing when the stones are under, and has never once named a price in coin.",
+      "art": "/assets/cast/old_ossley/portrait.webp",
       "likedBy": [
         {
           "of": "creature.river_drake",
@@ -2459,7 +2608,8 @@
       "category": "folk",
       "kind": "individual",
       "title": "Pib",
-      "short_description": "A bramble sprite about the size of a teapot who keeps the Bramblewood hedges and takes the job extremely seriously."
+      "short_description": "A bramble sprite about the size of a teapot who keeps the Bramblewood hedges and takes the job extremely seriously.",
+      "art": "/assets/cast/pib/portrait.webp"
     },
     "biome.eastern_plains": {
       "id": "biome.eastern_plains",
@@ -2691,6 +2841,7 @@
       "title": "The Open Sea",
       "short_description": "The wide water surrounding the realm, reached from every coast and owned by none of them.",
       "danger_level": "moderate",
+      "art": "/assets/biomes/open_sea/portrait.webp",
       "place": {
         "origin": "The accepted account, on every coast, is that the sea was here first and is not finished. The peoples argue about everything else; on this they have never needed to.",
         "common_beliefs": [
@@ -2804,6 +2955,7 @@
       "title": "The Sallow Wastelands",
       "short_description": "The humid, brackish coastal lowland where the Glacierflow loses its strength before the sea - mudflats, shallow shifting channels, stunted vegetation, and ground that cannot be trusted twice. Travelers commonly call the region the Saltrot.",
       "danger_level": "high",
+      "art": "/assets/biomes/sallow_wastelands/portrait.webp",
       "place": {
         "origin": "The accepted account is exactly what it looks like: the Glacierflow slows, spreads, and lays down everything it carried across the continent. The flats are what could not be carried any further, delivered by current and arranged by flood.",
         "common_beliefs": [
@@ -2962,6 +3114,14 @@
         "cultural_significance": "People come to the marsh to consult witches, to leave things behind, and to hear voices they miss. The frogfolk maintain a strict etiquette for all three, and the marsh maintains its own etiquette, which is stricter and unposted."
       }
     },
+    "location.academy": {
+      "id": "location.academy",
+      "category": "places",
+      "kind": "location",
+      "title": "The Academy",
+      "short_description": "The school for Starweavers. The roof is open to the sky, so the homework floats away. The big telescope sneezes.",
+      "art": "/assets/scenes/classes/academy.webp"
+    },
     "location.bone_yard": {
       "id": "location.bone_yard",
       "category": "places",
@@ -2970,6 +3130,7 @@
       "short_description": "The place at the mouth of the Glacierflow where the current finally loses its strength and lays down everything it carried across the continent - sediment, uprooted trees, animal remains, wreckage, and ruins - and where the bones of enormous ancient creatures collect, settle, and sometimes refuse to remain entirely still.",
       "danger_level": "high",
       "asset_id": "bone_yard",
+      "art": "/assets/biomes/bone_yard/portrait.webp",
       "place": {
         "origin": "The accepted account is the visible one: the Glacierflow ends here and lays down everything it carried, and among the silt and driftwood, the bones of enormous creatures no bestiary can name have been collecting since long before anyone was watching.",
         "common_beliefs": [
@@ -3007,6 +3168,7 @@
       "kind": "location",
       "title": "Bramblewood",
       "short_description": "A hedged town about two thirds of the way through the Sunward Fields, furthest from the Exchange.",
+      "art": "/assets/biomes/bramblewood/portrait.webp",
       "place": {
         "origin": "The accepted account is that the founders wanted neighbors, but with notice, and planted accordingly. The hedges came first and the town grew inside them - grown thick, grown tall, and, the founders' one indulgence, grown opinionated.",
         "common_beliefs": [
@@ -3038,6 +3200,22 @@
         "cultural_significance": "The Sunward Fields' far waystop and its filter: the first roof after the bridge road or the last one before it, depending on your direction, and a town that decides - or whose hedges decide - who gets through."
       }
     },
+    "location.conservatory": {
+      "id": "location.conservatory",
+      "category": "places",
+      "kind": "location",
+      "title": "The Conservatory",
+      "short_description": "The school for Songkeepers. It is a music school that is also a greenhouse. The plants lean toward whoever is singing best.",
+      "art": "/assets/scenes/classes/conservatory.webp"
+    },
+    "location.dojo": {
+      "id": "location.dojo",
+      "category": "places",
+      "kind": "location",
+      "title": "The Dojo",
+      "short_description": "The school for Thornguards. The teacher has held the same door shut against the wind for forty years. Students practice Brace by catching falling pillows.",
+      "art": "/assets/scenes/classes/dojo.webp"
+    },
     "location.exchange": {
       "id": "location.exchange",
       "category": "places",
@@ -3046,6 +3224,7 @@
       "short_description": "A neutral coastal city where roads, ships, peoples, trade, news, and opportunities from across the realm converge.",
       "danger_level": "low",
       "asset_id": "exchange",
+      "art": "/assets/biomes/exchange/portrait.webp",
       "place": {
         "origin": "The accepted account is that the Exchange began as a seasonal market that failed to disperse. The stalls wintered over, the docks grew to meet the stalls, and by the time anyone thought to ask whose city it was, the honest answer was everyone's - which the city has kept as policy ever since.",
         "common_beliefs": [
@@ -3084,6 +3263,7 @@
       "title": "The Hollow Gate",
       "short_description": "A crumbling stone archway in the heart of the Whispering Marsh, said to be a sealed portal to the world before the red sky.",
       "asset_id": "hollow_gate",
+      "art": "/assets/scenes/gemfall/hollow-gate.webp",
       "place": {
         "origin": "Not established, and carefully so. The arch was already ancient when the marsh first had visitors to notice it, and every attempt to date it has concluded, in more careful words, \"before us.\" The whispers pile up near the arch, which is how it was found and why it is avoided.",
         "common_beliefs": [
@@ -3112,6 +3292,7 @@
       "short_description": "The principal Bigfoot settlement, built into and alongside ancient living trees without severing the forest systems that support it.",
       "danger_level": "low",
       "asset_id": "mosshome",
+      "art": "/assets/biomes/mosshome/portrait.webp",
       "place": {
         "origin": "The accepted account, preserved in the settlement's own archive, is that the first bigfoot families asked the trees, and the asking took forty years. The founding agreement survives in full, and visitors are sometimes disappointed to learn that its clauses are mostly about compost.",
         "common_beliefs": [
@@ -3151,6 +3332,7 @@
       "short_description": "The active volcano at the center of the realm, source of the Gemfalls and territory of rare solitary legendary beasts.",
       "danger_level": "legendary",
       "asset_id": "mount_red_sky",
+      "art": "/assets/biomes/mount_red_sky/portrait.webp",
       "place": {
         "origin": "The accepted account is that the mountain is where the realm keeps its fire, and that it was burning before there was anyone to name it. It named the realm rather than the other way around, and everything else about its origin is told in stories that begin with \"they say\" and end a safe distance away.",
         "common_beliefs": [
@@ -3184,6 +3366,7 @@
       "title": "Redspire Citadel",
       "short_description": "A towering obsidian fortress perched on the highest peak of the foothills, headquarters of the Skywardens.",
       "asset_id": "redspire_citadel",
+      "art": "/assets/biomes/redspire_citadel/portrait.webp",
       "place": {
         "origin": "As the wardens tell it, the citadel was raised on the highest peak of the foothills for one purpose - to watch the red sky - and every stone of it faces upward. Records of the construction itself are sparse, which the order attributes to the builders having been busy.",
         "common_beliefs": [
@@ -3209,6 +3392,14 @@
         "cultural_significance": "The foothills' fixed point: caravans navigate by its silhouette, locals set their clocks by the watch-horns, and the whole region sleeps a little easier for the violet windows burning overnight - without, if pressed, being able to say precisely what the wardens are watching for. Neither, precisely, can the wardens."
       }
     },
+    "location.rookery": {
+      "id": "location.rookery",
+      "category": "places",
+      "kind": "location",
+      "title": "The Rookery",
+      "short_description": "The school for Duskrunners, on the Exchange's rooftops. It is run by the crows, all of them together. A sign on the chimney says NO MESSING. (WITH US.)",
+      "art": "/assets/scenes/classes/rookery.webp"
+    },
     "location.skullwater_cave": {
       "id": "location.skullwater_cave",
       "category": "places",
@@ -3217,6 +3408,7 @@
       "short_description": "A skull-shaped offshore opening that leads into a much larger underground world whose full extent has not yet been canonized.",
       "danger_level": "high",
       "asset_id": "skullwater_cave",
+      "art": "/assets/biomes/skullwater_cave/portrait.webp",
       "place": {
         "origin": "No accepted account survives contact with the rock itself: sailors say the sea carved a lucky likeness, cave-divers say no current carves eye sockets level, and the stone trolls, who keep the outer galleries, say only that it was already old when their oldest stories were young.",
         "common_beliefs": [
@@ -3256,6 +3448,7 @@
       "short_description": "A narrow, strategically important crossing where the Great River compresses travel between the Sunward Fields and Eastern Plains into a single route.",
       "danger_level": "moderate",
       "asset_id": "stone_crossing",
+      "art": "/assets/biomes/stone_crossing/portrait.webp",
       "place": {
         "origin": "The accepted account is that the trolls built the bridge because the river was being unreasonable, and that the settlement is, at bottom, a queue that put down roots.",
         "common_beliefs": [
@@ -3292,7 +3485,8 @@
       "category": "places",
       "kind": "location",
       "title": "The Whirlpool",
-      "short_description": "A standing spiral of water offshore, visible from the Bone Yard and Mermaid Cove coasts."
+      "short_description": "A standing spiral of water offshore, visible from the Bone Yard and Mermaid Cove coasts.",
+      "art": "/assets/biomes/the_whirlpool/portrait.webp"
     },
     "faction.deep_hollow_cult": {
       "id": "faction.deep_hollow_cult",
@@ -3301,6 +3495,7 @@
       "title": "The Deep Hollow Cult",
       "short_description": "A secretive group of scholars and mystics who believe the Crystal Heart holds the key to rewriting the world's broken laws.",
       "asset_id": "deep_hollow_cult",
+      "art": "/assets/cast/cult_bigfoot/assembled.png",
       "lore": {
         "story": "The Deep Hollow Cult began as scholars who concluded, from evidence they will happily show you, that the world's laws are broken (the sky is the wrong color, memories walk the marsh, the dead do not always rest) and that somewhere beneath the realm is the power to set them right. In their own telling they are not villains but the only people brave enough to fix what everyone else has agreed to merely survive. The methods are where the telling and the truth part company.",
         "pastimes": [
@@ -3365,6 +3560,7 @@
       "title": "The Skywardens",
       "short_description": "An ancient order of knights sworn to watch the red sky and protect the realm from what lies beyond it.",
       "asset_id": "skywardens",
+      "art": "/assets/entities/skywardens/portrait.webp",
       "lore": {
         "story": "The Skywardens were founded to watch the red sky and answer whatever finally comes out of it, and the order's deepest doctrine is that the watch being boring is the watch working. Recruits arrive dreaming of battle and are handed a ledger; the ones who come to love the ledger stay. Every warden knows the founding oath by heart and no warden knows what, precisely, it was first sworn against, which the order regards not as a gap in the records but as the records doing their job.",
         "pastimes": [

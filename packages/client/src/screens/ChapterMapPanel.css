@@ -191,7 +191,7 @@
   border-radius: var(--kad-radius-sm);
   /* A name sits on top of the road that runs on under it; a soft backdrop
      keeps the letters readable where a dashed line crosses them. */
-  background: color-mix(in srgb, var(--kad-bg-raised) 85%, transparent);
+  background: rgb(var(--kad-bg-raised-rgb) / 85%);
   font-size: var(--kad-text-sm);
   font-weight: var(--kad-weight-bold);
   line-height: 1.15;

@@ -17,15 +17,18 @@
  * Every time, the card sits on screen, under the corner row and above the story plate, with
  * nothing clipped. Nothing here taps the card: it is never in the way.
  *
+ * The tables are seeded (seed.ts): a TV's room with a kid's hero made and ready, so each test
+ * starts at the lobby's Begin. Making a hero is the creation flow's spec, not this one.
+ *
  * `KAD_PREFACE_SHOTS=<dir>` saves the screens for review (the PR's pictures).
  */
 
 import { test, expect, type Browser, type BrowserContext, type Page } from "@playwright/test";
-import { createCharacter } from "./characters";
 import { roomState } from "./room-state";
+import { API } from "./api";
+import { phoneStorage, seedTable, toTheLobby, tvStorage } from "./seed";
 
 const TAP = { timeout: 20_000 } as const;
-const API = "http://localhost:8787";
 const SHOTS = process.env.KAD_PREFACE_SHOTS;
 
 /** The reference campaign's opener and its chapter's goal, as authored. */
@@ -129,27 +132,21 @@ test.describe("the words around a chapter (#357)", () => {
 
     test(`chapter start and drop-in on the TV at ${at}`, async ({ browser }) => {
       test.setTimeout(300_000);
+      const table = await seedTable({ mode: "party", tv: true, heroes: [{ name: "Sparklehoof", species: "unicorn" }] });
+      const code = table.code;
       // Workers off, so every chapter file comes over the wire this test can slow down.
-      const tv = await device(browser, { viewport: size, serviceWorkers: "block" });
+      const tv = await device(browser, { viewport: size, serviceWorkers: "block", storageState: tvStorage(table) });
       // The chapter's file is slow, but inside PREFACE_WAIT_MS: the preface still comes first.
       await tv.route("**/content/chapters/**", async (route) => {
         await new Promise((done) => setTimeout(done, 1500));
         await route.continue();
       });
-      await tv.goto("/");
-      await tv.getByRole("button", { name: /host a game/i }).click();
-      await tv.getByText("Party Mode").click();
-      await tv.getByRole("button", { name: /open the lobby here/i }).click();
-      await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
-      const code = new URL(tv.url()).pathname.split("/").pop() ?? "";
+      await tv.goto(`/tv/${code}`);
       await tv.getByRole("button", { name: "Turn read-aloud on" }).click();
 
-      const kid = await device(browser, { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
-      await kid.goto("/");
-      await kid.getByLabel(/room code/i).fill(code);
-      await kid.getByRole("button", { name: /join a game/i }).click();
-      await expect(kid).toHaveURL(new RegExp(`/p/${code}$`), TAP);
-      await createCharacter(kid, "unicorn", "Sparklehoof");
+      const kid = await device(browser, { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, storageState: phoneStorage(table.phones[0]!) });
+      await kid.goto(`/p/${code}`);
+      await toTheLobby(kid);
       const token = await sessionOf(kid, code);
       await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
 
@@ -221,25 +218,10 @@ test.describe("the words around a chapter (#357)", () => {
       // --- A late joiner sits down partway: the TV says where the party is ---
       await jumpTo(token, kid, code, "scene_scouted");
       await expect(card).toHaveCount(0, TAP);
-      const late = await device(browser, { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
-      await late.goto("/");
-      await late.getByLabel(/room code/i).fill(code);
-      await late.getByRole("button", { name: /join a game/i }).click();
-      await expect(late).toHaveURL(new RegExp(`/p/${code}$`), TAP);
-      // Mid-chapter, the dev playtest toggle sits over the creation flow's Next (drop-in.spec).
-      await late.addStyleTag({ content: ".playtest { display: none !important; }" });
-      await late.getByRole("button", { name: /bigfoot/i }).first().click(TAP);
-      await late.getByRole("button", { name: /^next$/i }).click(TAP);
-      await late.locator("button").filter({ hasText: /thornguard|duskrunner|starweaver|songkeeper/i }).first().click(TAP);
-      await late.getByRole("button", { name: /^next$/i }).click(TAP);
-      for (let i = 0; i < 12; i++) {
-        const adds = late.getByRole("button", { name: /add a point to/i });
-        if ((await adds.count()) === 0) break;
-        await adds.first().click(TAP);
-      }
-      await late.getByRole("button", { name: /^next$/i }).click(TAP);
-      await late.getByPlaceholder("Tap to type").fill("Pip", TAP);
-      await late.getByRole("button", { name: /that's me/i }).click(TAP);
+      // Seated with a hero made mid-chapter, as the creation flow leaves a late joiner (no ready-up).
+      const [pip] = (await seedTable({ mode: "party", code, heroes: [{ name: "Pip", species: "bigfoot" }], ready: false })).phones;
+      const late = await device(browser, { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, storageState: phoneStorage(pip!) });
+      await late.goto(`/p/${code}`);
       await expect.poll(async () => (await party(code, token.sessionToken)).some((m) => m.character.name === "Pip" && m.connected), TAP).toBe(true);
       await expect(card).toBeVisible(TAP);
       await expect(card).toHaveAttribute("data-kind", "back");
@@ -251,15 +233,11 @@ test.describe("the words around a chapter (#357)", () => {
     test(`a stopped game resumed with Keep going shows where they left off, at ${at}`, async ({ browser }) => {
       test.setTimeout(300_000);
       // Phone Mode on a tablet: the one screen is the table's.
-      const host = await device(browser, { viewport: size });
-      await host.goto("/");
-      await host.getByRole("button", { name: /host a game/i }).click();
-      await host.getByText("Phone Mode").click();
-      await host.getByLabel(/adventurer name/i).fill("Allen");
-      await host.getByRole("button", { name: /^start a game$/i }).click();
-      await expect(host).toHaveURL(/\/p\/[A-Z]{4}$/, TAP);
-      const first = new URL(host.url()).pathname.split("/").pop() ?? "";
-      await createCharacter(host, "unicorn", "Pip");
+      const table = await seedTable({ mode: "travel", heroes: [{ name: "Pip", species: "unicorn", player: "Allen" }] });
+      const first = table.code;
+      const host = await device(browser, { viewport: size, storageState: phoneStorage(table.phones[0]!) });
+      await host.goto(`/p/${first}`);
+      await toTheLobby(host);
       const token = await sessionOf(host, first);
       await host.getByRole("button", { name: /begin the adventure/i }).click(TAP);
       await expect.poll(async () => (await roomState<{ phase: string }>(host, first)).phase, TAP).toBe("scene");
@@ -313,13 +291,10 @@ test.describe("the words around a chapter (#357)", () => {
 
   test("chapter files slower than the wait: the story is read alone, then the goal, once, and no recap is shown", async ({ browser }) => {
     test.setTimeout(240_000);
-    const tv = await device(browser, { viewport: { width: 1280, height: 720 }, serviceWorkers: "block" });
-    await tv.goto("/");
-    await tv.getByRole("button", { name: /host a game/i }).click();
-    await tv.getByText("Party Mode").click();
-    await tv.getByRole("button", { name: /open the lobby here/i }).click();
-    await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
-    const code = new URL(tv.url()).pathname.split("/").pop() ?? "";
+    const table = await seedTable({ mode: "party", tv: true, heroes: [{ name: "Sparklehoof", species: "unicorn" }] });
+    const code = table.code;
+    const tv = await device(browser, { viewport: { width: 1280, height: 720 }, serviceWorkers: "block", storageState: tvStorage(table) });
+    await tv.goto(`/tv/${code}`);
     await tv.getByRole("button", { name: "Turn read-aloud on" }).click();
     // Slower than PREFACE_WAIT_MS (2.5s): the table is never kept waiting for a recap.
     await tv.route("**/content/chapters/**", async (route) => {
@@ -327,12 +302,9 @@ test.describe("the words around a chapter (#357)", () => {
       await route.continue();
     });
 
-    const kid = await device(browser, { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
-    await kid.goto("/");
-    await kid.getByLabel(/room code/i).fill(code);
-    await kid.getByRole("button", { name: /join a game/i }).click();
-    await expect(kid).toHaveURL(new RegExp(`/p/${code}$`), TAP);
-    await createCharacter(kid, "unicorn", "Sparklehoof");
+    const kid = await device(browser, { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, storageState: phoneStorage(table.phones[0]!) });
+    await kid.goto(`/p/${code}`);
+    await toTheLobby(kid);
     await kid.getByRole("button", { name: /begin the adventure/i }).click(TAP);
 
     // #356's order: the story, then the goal once the chapter file lands, and nothing twice.

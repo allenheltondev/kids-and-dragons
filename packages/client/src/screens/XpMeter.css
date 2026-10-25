@@ -1,0 +1,33 @@
+.xp-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15em;
+  margin-block-start: var(--space-1, 0.25em);
+  align-self: stretch;
+  max-inline-size: 14em;
+}
+
+.xp-meter__bar {
+  display: block;
+  block-size: 0.45em;
+  border-radius: 999em;
+  background: rgb(var(--kad-ink-rgb) / 18%);
+  overflow: hidden;
+}
+
+.xp-meter__fill {
+  display: block;
+  block-size: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--kad-gold-lo), var(--kad-gold-hi));
+}
+
+.xp-meter__label {
+  font-size: var(--font-size-sm, 0.8em);
+  font-weight: 600;
+  color: var(--kad-ink-dim);
+}
+
+.xp-meter__pending {
+  color: var(--kad-gold);
+}

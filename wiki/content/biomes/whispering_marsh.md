@@ -3,7 +3,7 @@ title: Whispering Marsh
 id: biome.whispering_marsh
 type: biome
 status: draft
-lastReviewed: "2026-10-21"
+lastReviewed: "2026-10-25"
 canon_status: confirmed
 played_in: ["gemfall-01", "gemfall-02", "gemfall-03b", "gemfall-03c"]
 tags: ["wetland", "mist", "spirits", "memory", "waterways", "secrets"]
@@ -91,6 +91,12 @@ related:
   - id: location.hollow_gate
     type: location
     relationship: biome
+  - id: location.academy
+    type: location
+    relationship: biome
+  - id: location.academy
+    type: location
+    relationship: access_from
   - id: npc.frogfolk
     type: npc
     relationship: primary_locations
@@ -112,7 +118,7 @@ ai_context:
   visual_style: "Layered fog, twisted wetland trees, dark reflective water, reed islands, half-submerged paths, hanging moss, dim lanterns, and distant lights with uncertain depth."
   common_encounters: "Spirit encounters, missing memories, hidden communities, navigation by sound, environmental restoration, bargains, warnings, and mysteries that should not always be solved by fighting."
   lore_highlights: "The marsh is where the river's western branch slows down and starts keeping things."
-  related_entities: "feature.great_river, biome.enchanted_woods, biome.plains, biome.sunward_fields, npc.frogfolk, npc.boggart, npc.witch_order, creature.mire_mimic, creature.will_o_wisp, creature.loftmire, campaign.gemfall, character.bigfoot, creature.mire_mimic, creature.will_o_wisp, creature.loftmire, feature.great_river_west_branch, route.exchange_to_whispering_marsh, item.marsh_lantern, item.hollow_crown_shard, location.mosshome, location.exchange, location.exchange, location.hollow_gate, npc.frogfolk, npc.boggart, npc.witch_order"
+  related_entities: "feature.great_river, biome.enchanted_woods, biome.plains, biome.sunward_fields, npc.frogfolk, npc.boggart, npc.witch_order, creature.mire_mimic, creature.will_o_wisp, creature.loftmire, campaign.gemfall, character.bigfoot, creature.mire_mimic, creature.will_o_wisp, creature.loftmire, feature.great_river_west_branch, route.exchange_to_whispering_marsh, item.marsh_lantern, item.hollow_crown_shard, location.mosshome, location.exchange, location.exchange, location.hollow_gate, location.academy, location.academy, npc.frogfolk, npc.boggart, npc.witch_order"
   writing_guidance: "The marsh is eerie but not inherently evil. Frogfolk, boggarts, and witches have moral agency. Do not make every whisper a ghost or every light a trap."
   generation_hints: "Mist changes visibility, water routes shift with weather and river flow, and whispers sometimes repeat memories or warnings without explaining their source."
 layout: biomes
@@ -201,6 +207,7 @@ People come to the marsh to consult witches, to leave things behind, and to hear
 
 ### Locations
 - [MossHome](/locations/mosshome/) `Adjacent To`
+- [The Academy](/locations/academy/) `Biome` `Access From`
 - [The Exchange](/locations/exchange/) `Locations` `Adjacent To`
 - [The Hollow Gate](/locations/hollow_gate/) `Biome`
 
