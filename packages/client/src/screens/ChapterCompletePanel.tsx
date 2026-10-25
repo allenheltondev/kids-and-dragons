@@ -106,6 +106,19 @@ export function ChapterCompletePanel(): ReactElement {
       ? `${String(xp)} XP for each hero new to this chapter.`
       : null;
   /*
+   * Each hero's own XP for her rolls that went well (`heroRollXp`), under the
+   * party's line. The party line is what everyone earned; this is what each
+   * hero earned on top, for her own rolls. Only a hero this chapter has not
+   * paid before gets one, and nothing shows when nobody earned the XP again.
+   */
+  const heroRollXp = state?.heroRollXp ?? {};
+  const ownXp = nobodyPaid
+    ? []
+    : party.flatMap((m) => {
+        const own = heroRollXp[m.character.id] ?? 0;
+        return own > 0 && !alreadyPaid.has(m.character.id) ? [`${m.character.name} +${String(own)}`] : [];
+      });
+  /*
    * Absent means success, the same default `completeChapter` applies — a run
    * persisted before the field existed, or a chapter authored before setbacks
    * did, must not read as a setback on the strength of a missing key.
@@ -214,6 +227,12 @@ export function ChapterCompletePanel(): ReactElement {
             )}
           </span>
         </p>
+        {ownXp.length === 0 ? null : (
+          <p className="complete__xp">
+            <Icon name="star" />
+            <span>From their own good rolls: {ownXp.join(", ")}</span>
+          </p>
+        )}
         {setback && ended === undefined ? (
           <p className="complete__setback">
             <Icon name="forward" />
