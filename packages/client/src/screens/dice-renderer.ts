@@ -11,11 +11,13 @@ const SIZE = 256;
 function paintFaces(
   faces: DieFace[],
   material?: HTMLImageElement,
-): FacePaint[] {
-  return faces.map((face) => {
+): FacePaint[] | null {
+  const painted: FacePaint[] = [];
+  for (const face of faces) {
     const image = document.createElement("canvas");
     image.width = image.height = SIZE;
-    const c = image.getContext("2d")!;
+    const c = image.getContext("2d");
+    if (!c) return null;
     const radius = Math.max(
       ...face.vertices.map((p) => Math.hypot(...add(p, mul(face.center, -1)))),
     );
@@ -59,8 +61,9 @@ function paintFaces(
     if (face.value === 6 || face.value === 9) {
       c.fillRect(112, 168, 32, 4);
     }
-    return { face, image, uv };
-  });
+    painted.push({ face, image, uv });
+  }
+  return painted;
 }
 
 /** Map a triangle of the painted face into its projected plane, digits included. */
@@ -112,10 +115,13 @@ export function createDieRenderer(
   if (!c) return null;
   const target = faces.find((f) => f.value === value);
   if (!target) return null;
-  let painted = paintFaces(faces);
+  const initial = paintFaces(faces);
+  if (!initial) return null;
+  let painted = initial;
   return {
     material(image: HTMLImageElement) {
-      painted = paintFaces(faces, image);
+      const replacement = paintFaces(faces, image);
+      if (replacement) painted = replacement;
     },
     draw(pose: DiePose, pixelRatio = 1) {
       const w = canvas.width / pixelRatio,

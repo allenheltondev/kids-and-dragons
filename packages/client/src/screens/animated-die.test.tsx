@@ -2,13 +2,17 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AnimatedDie } from "./AnimatedDie";
-const { draw } = vi.hoisted(() => ({ draw: vi.fn() }));
+const { draw, material } = vi.hoisted(() => ({
+  draw: vi.fn(),
+  material: vi.fn(),
+}));
 vi.mock("./dice-renderer", () => ({
-  createDieRenderer: () => ({ draw, material: vi.fn() }),
+  createDieRenderer: () => ({ draw, material }),
 }));
 beforeEach(() => {
   vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout", "performance"] });
   draw.mockClear();
+  material.mockReset();
   vi.stubGlobal("CanvasRenderingContext2D", class {});
   vi.stubGlobal("requestAnimationFrame", (cb: FrameRequestCallback) =>
     window.setTimeout(() => cb(performance.now()), 16),
@@ -23,6 +27,37 @@ afterEach(() => {
   vi.useRealTimers();
 });
 describe("the dice animation lifecycle", () => {
+  it("contains an asynchronous material-painting failure and keeps rendering", async () => {
+    let finishLoading: () => void = () => {
+      throw new Error("Image not requested");
+    };
+    vi.stubGlobal(
+      "Image",
+      class {
+        onload: (() => void) | null = null;
+        onerror: (() => void) | null = null;
+        set src(_url: string) {
+          finishLoading = () => this.onload?.();
+        }
+      },
+    );
+    material.mockImplementationOnce(() => {
+      throw new Error("Canvas allocation failed");
+    });
+    const { container } = render(
+      <AnimatedDie value={20} duration={1400} seed={1} landed={false} />,
+    );
+    await act(async () => {
+      finishLoading();
+      await Promise.resolve();
+    });
+    expect(material).toHaveBeenCalledOnce();
+    expect(container.querySelector(".polyhedral-die--ready")).not.toBeNull();
+    const before = draw.mock.calls.length;
+    act(() => vi.advanceTimersByTime(80));
+    expect(draw.mock.calls.length).toBeGreaterThan(before);
+  });
+
   it("stops spending frames after landing, and can replay an identical roll", () => {
     const { rerender } = render(
       <AnimatedDie value={20} duration={1400} seed={1} landed={false} />,
