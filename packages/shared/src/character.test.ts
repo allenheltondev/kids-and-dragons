@@ -158,7 +158,8 @@ describe("joining a party already underway (spec §8.4)", () => {
 
   it("reads the legal floors out of content instead of hardcoding 1/4/7/10", () => {
     // Retuning the tiers is a content change; it must not need a code deploy.
-    const retuned = makeRules({ tierLevels: { fledgling: 1, sworn: 3, radiant: 6, mythic: 9 } });
+    const retuned = makeRules({ tierLevels: { fledgling: 1, sworn: 3, radiant: 6, mythic: 9, ascendant: 15, starborn: 20, legendary: 30 },
+    });
     const atSix = newCharacter({ ...creation(), rules: retuned, startingLevel: 6 });
     expect(atSix.committed.level).toBe(6);
     expect(() => newCharacter({ ...creation(), rules: retuned, startingLevel: 4 })).toThrow(

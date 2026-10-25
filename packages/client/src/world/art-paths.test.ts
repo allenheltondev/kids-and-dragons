@@ -167,3 +167,12 @@ it("addresses every delivered static class figure and keeps undeclared figures o
     }
   }
 });
+
+describe("art for tiers past Mythic", () => {
+  it("draws ascendant, starborn and legendary as Mythic, and leaves painted tiers alone", async () => {
+    const { artTierOf } = await import("./art-paths");
+    expect(artTierOf("sworn")).toBe("sworn");
+    expect(artTierOf("mythic")).toBe("mythic");
+    for (const tier of ["ascendant", "starborn", "legendary"] as const) expect(artTierOf(tier)).toBe("mythic");
+  });
+});
