@@ -113,33 +113,36 @@ function pairLines(edges: readonly MatchupEdge[]): MatchupLine[] {
 }
 
 /**
- * The lines for one card. `species` alone (no `klass`) gives the species card's
- * own edges; `klass` alone gives the class card's. With both, `together` holds
- * every pairing edge for that species and class. Missing `matchups`, or none
- * that apply, gives empty lists, and the card renders as it did before.
+ * The lines for one card. A species card reads the edges on its species alone
+ * (no class key), a class card the edges on its class alone (no species key).
+ * With both picked, `together` holds every pairing edge for that species and
+ * class. Missing `matchups`, or none that apply, gives empty lists, and the
+ * card renders as it did before.
  */
 function cardMatchups(
   matchups: MatchupRules | null | undefined,
+  side: "species" | "class",
   hero: { species?: SpeciesId; klass?: ClassId },
 ): CardMatchups {
   const empty: CardMatchups = { good: [], watch: [], together: [] };
   if (!matchups) return empty;
-  // edgesForHero takes a whole hero; the half not picked yet is passed as
+  // edgesForHero takes a whole hero; a half not picked yet is passed as
   // undefined, which no edge with that key matches.
   const edges = edgesForHero(matchups, {
     species: hero.species as SpeciesId,
     class: hero.klass as ClassId,
   });
-  const hasSpecies = hero.species !== undefined;
-  const hasClass = hero.klass !== undefined;
-  const alone = edges.filter((edge) => {
-    const species = listOf(edge.hero.species).length > 0;
-    const klass = listOf(edge.hero.class).length > 0;
-    return species !== klass && (hasSpecies ? species : klass);
-  });
-  const together = hasSpecies && hasClass
-    ? edges.filter((edge) => listOf(edge.hero.species).length > 0 && listOf(edge.hero.class).length > 0)
-    : [];
+  const hasSpeciesKey = (edge: MatchupEdge): boolean => listOf(edge.hero.species).length > 0;
+  const hasClassKey = (edge: MatchupEdge): boolean => listOf(edge.hero.class).length > 0;
+  const alone = edges.filter((edge) =>
+    side === "species"
+      ? hasSpeciesKey(edge) && !hasClassKey(edge)
+      : hasClassKey(edge) && !hasSpeciesKey(edge),
+  );
+  const together =
+    hero.species !== undefined && hero.klass !== undefined
+      ? edges.filter((edge) => hasSpeciesKey(edge) && hasClassKey(edge))
+      : [];
   return {
     good: toLines(alone, "+", GOOD_LIMIT),
     watch: toLines(alone, "-", WATCH_LIMIT),
@@ -153,7 +156,7 @@ export function speciesMatchups(
   species: SpeciesId,
   klass?: ClassId | null,
 ): CardMatchups {
-  return cardMatchups(matchups, { species, klass: klass ?? undefined });
+  return cardMatchups(matchups, "species", { species, klass: klass ?? undefined });
 }
 
 /** A class card's lines. `species` is the species already picked, when there is one. */
@@ -162,5 +165,5 @@ export function classMatchups(
   klass: ClassId,
   species?: SpeciesId | null,
 ): CardMatchups {
-  return cardMatchups(matchups, { species: species ?? undefined, klass });
+  return cardMatchups(matchups, "class", { species: species ?? undefined, klass });
 }
