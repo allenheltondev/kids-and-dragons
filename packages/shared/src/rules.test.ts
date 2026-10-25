@@ -206,6 +206,8 @@ describe("levelRewards and rollXp", () => {
     const ok = assertRulesContent({ ...base, levelRewards: [{ level: 2, maxHp: 1 }], rollXp: { check: 2, attack: 1, chapterCap: 30 } });
     expect(ok.levelRewards).toEqual([{ level: 2, maxHp: 1 }]);
     expect(ok.rollXp).toEqual({ check: 2, attack: 1, chapterCap: 30 });
+    const withNatural = assertRulesContent({ ...base, rollXp: { check: 2, attack: 1, natural20: 3, chapterCap: 30 } });
+    expect(withNatural.rollXp).toEqual({ check: 2, attack: 1, natural20: 3, chapterCap: 30 });
     expect(() => assertRulesContent({ ...base, levelRewards: [{ level: 1, maxHp: 1 }] })).toThrow(/levelRewards/);
     expect(() => assertRulesContent({ ...base, rollXp: { check: -1, attack: 1, chapterCap: 3 } })).toThrow(/rollXp/);
   });

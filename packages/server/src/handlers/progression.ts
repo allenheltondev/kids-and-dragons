@@ -1023,8 +1023,13 @@ async function settleVisit(input: {
 
   const replay = !step.firstCompletion;
   // A shallow copy shares the party, so the fold still re-resolves the room's
-  // characters in place; only the amount it reads is withheld on a replay.
-  const award = await foldChapterXpDetails(replay ? { ...state, xpEarned: 0 } : state, deps, householdId, chapter);
+  // characters in place; only the amounts it reads are withheld on a replay.
+  const award = await foldChapterXpDetails(
+    replay ? { ...state, xpEarned: 0, heroRollXp: {} } : state,
+    deps,
+    householdId,
+    chapter,
+  );
   // The copy's deeds were folded, but the room's run still holds them (#310).
   delete state.deeds;
   const characters = award.writes;

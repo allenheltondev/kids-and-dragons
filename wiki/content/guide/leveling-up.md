@@ -1,12 +1,14 @@
 ---
 title: "Leveling Up"
-description: "Shared XP, ten levels, four tiers, and a transformation every time a hero grows."
+description: "Shared story XP and each hero's own roll XP, ten levels, four tiers, and a transformation every time a hero grows."
 icon: "painted/trophy.webp"
 weight: 60
 ---
 
-XP is earned by the chapter, and **the whole party gets the same amount**. Nobody falls behind
-because they rolled worse or sat out a fight.
+XP is earned by the chapter, and **the whole party gets the same amount** for the story. On top
+of that, every hero earns XP of her own for the rolls she makes that go well: a check she
+succeeds, an attack that lands, a foe she knocks out, and a **natural 20** most of all. So heroes
+level at their own pace.
 
 ## Levels
 

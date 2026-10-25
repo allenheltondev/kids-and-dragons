@@ -614,15 +614,21 @@ export interface LevelReward {
   guard?: number;
 }
 
-/** XP for successful rolls (`RulesContent.rollXp`). */
+/**
+ * XP for rolls that go well (`RulesContent.rollXp`). Every amount is paid to the
+ * hero who made the roll, alone: it is individual, so heroes level at their own
+ * pace.
+ */
 export interface RollXp {
-  /** For each story check a hero makes (a group check counts each hero's own success). */
+  /** For each story check a hero makes that she succeeds (a group check counts each hero's own success). */
   check: number;
   /** For each attack a hero lands in a fight. */
   attack: number;
   /** For each foe a hero's action knocks out. Optional: absent pays nothing. */
   defeat?: number;
-  /** The most roll XP one chapter can pay. */
+  /** For each natural 20 a hero rolls (a check or an attack), on top of the above. Optional: absent pays nothing. */
+  natural20?: number;
+  /** The most roll XP one hero can earn in one chapter. */
   chapterCap: number;
 }
 
@@ -653,10 +659,10 @@ export interface RulesContent {
    */
   levelRewards?: LevelReward[];
   /**
-   * XP the whole party earns for dice that go well, added to the chapter's
-   * `xpEarned` as the dice are rolled. Uniform and party-wide like every other
-   * XP (spec §8.2), and capped per chapter so rolling cannot outgrow the
-   * chapter's own award. Optional: rules without it pay nothing for rolls.
+   * XP each hero earns for her own dice that go well, paid into her own total
+   * (`RunState.heroRollXp`) rather than the party's `xpEarned` (spec §8.2). Each
+   * hero's total is capped per chapter, so rolling cannot outgrow the chapter's
+   * own award. Optional: rules without it pay nothing for rolls.
    */
   rollXp?: RollXp;
   /**

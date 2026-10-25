@@ -2,8 +2,9 @@
  * ChapterCompletePanel — WorldView when `phase === "chapter_complete"`.
  *
  * The end-of-sitting beat (spec §3, roadmap ch.3): XP for finishing the
- * chapter — not for killing things (spec §8.1) — what everyone is carrying,
- * and who grew.
+ * chapter, which the party shares, plus each hero's own XP for her rolls that
+ * went well (spec §8.2). Not XP for killing things (spec §8.1). Also what
+ * everyone is carrying, and who grew.
  *
  * Level and tier *changes* come from the **progression** channel rather than
  * from state: `RunState` carries the party's current level, not its previous
@@ -106,6 +107,23 @@ export function ChapterCompletePanel(): ReactElement {
       ? `${String(xp)} XP for each hero new to this chapter.`
       : null;
   /*
+   * Each hero's own XP for her rolls that went well (`heroRollXp`), under the
+   * party's line. The party line is what everyone earned; this is what each
+   * hero earned on top, for her own rolls. Only a hero this chapter has not
+   * paid before gets one, and nothing shows when nobody earned the XP again.
+   */
+  const heroRollXp = state?.heroRollXp;
+  const ownRolls = useMemo(
+    () =>
+      nobodyPaid
+        ? []
+        : party.flatMap((m) => {
+            const own = heroRollXp?.[m.character.id] ?? 0;
+            return own > 0 && !alreadyPaid.has(m.character.id) ? [{ name: m.character.name, xp: own }] : [];
+          }),
+    [nobodyPaid, party, heroRollXp, alreadyPaid],
+  );
+  /*
    * Absent means success, the same default `completeChapter` applies — a run
    * persisted before the field existed, or a chapter authored before setbacks
    * did, must not read as a setback on the strength of a missing key.
@@ -172,11 +190,12 @@ export function ChapterCompletePanel(): ReactElement {
         // a recap nobody hears — the §11 seam is where every line of narration
         // goes and this is narration. Appended to the same utterance rather
         // than spoken separately so it cannot interrupt or be interrupted.
+        ...ownRolls.map((r) => `${r.name} earned ${String(r.xp)} experience from their own good rolls.`),
         ...fightEndings.map(fightEndingLine),
         ...recap,
       ].join(" "),
     );
-  }, [xp, xpLine, setback, recap, heading, endLine, fightEndings, chapterReady, waited]);
+  }, [xp, xpLine, ownRolls, setback, recap, heading, endLine, fightEndings, chapterReady, waited]);
 
   const questItems = party.flatMap((m) =>
     m.character.questItems.map((itemId) => ({ itemId, owner: m.character.name })),
@@ -201,7 +220,7 @@ export function ChapterCompletePanel(): ReactElement {
         <p className="complete__xp">
           <Icon name="star" />
           <span>
-            {/* Per chapter, never per player (spec §8.1) — "for everyone" is
+            {/* Story XP is per chapter and shared (spec §8.2) — "for everyone" is
                 the line that keeps the youngest player from counting hers
                 against the adults'. Only a hero the chapter paid before is
                 left out of it (#408), and her card says why. */}
@@ -214,6 +233,12 @@ export function ChapterCompletePanel(): ReactElement {
             )}
           </span>
         </p>
+        {ownRolls.length === 0 ? null : (
+          <p className="complete__xp">
+            <Icon name="star" />
+            <span>From their own good rolls: {ownRolls.map((r) => `${r.name} +${String(r.xp)}`).join(", ")}</span>
+          </p>
+        )}
         {setback && ended === undefined ? (
           <p className="complete__setback">
             <Icon name="forward" />

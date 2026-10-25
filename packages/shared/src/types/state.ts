@@ -307,7 +307,7 @@ export interface RunState {
   flags: Record<string, boolean>;
   /**
    * The party's shared purse. One purse, not one per character, for the same
-   * reason XP is never individual: what the party can afford is a table
+   * reason story XP is shared: what the party can afford is a table
    * decision. Unlike `flags` it outlives the chapter, through
    * `EngineContext.campaignCoins` and `CampaignProgressRecord.coins`.
    *
@@ -317,9 +317,19 @@ export interface RunState {
   coins?: number;
   xpEarned: number;
   /**
-   * The part of `xpEarned` that successful rolls paid this chapter
-   * (`RulesContent.rollXp`), kept so the per-chapter cap can be enforced. Absent
-   * until a roll pays; cleared when a chapter starts.
+   * The individual XP each hero earned this chapter for her own rolls that went
+   * well (`RulesContent.rollXp`: checks, attacks, defeats and natural 20s), by
+   * character id. Paid to that hero alone when the chapter settles, on top of
+   * the party's `xpEarned`, and never part of it. Each hero's total is capped at
+   * the chapter's cap. Absent until one pays; cleared when a chapter starts.
+   */
+  heroRollXp?: Record<string, number>;
+  /**
+   * Legacy. The party's shared roll XP, from a run begun before roll XP became
+   * individual. It is already in `xpEarned`. A chapter that carries it keeps
+   * that one shared pot, capped by the chapter's cap, until it ends, so no
+   * hero gets a fresh allowance on top. Absent on every new chapter, and
+   * cleared when one starts.
    */
   rollXp?: number;
   /**
