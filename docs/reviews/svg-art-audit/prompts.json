@@ -1,0 +1,170 @@
+[
+  {
+    "id": "token_thornguard",
+    "prompt": "Use case: stylized-concept. Dedicated token_thornguard class gear icon for Kids & Dragons. One sturdy moss-teal leather wrist bracer, broad old-gold cuff edges, one large rounded branching thorn sprig on its face. Hollow cuff opening visible. A bracer worn on a wrist, no arm, no shield. Chunky friendly hand-painted storybook object, warm cream highlights, deep plum shadows, textured painterly finish matching existing teal/gold/terracotta game icons. Centered isolated square true transparent background, generous 10% clear edge margin. Readable silhouette at 24px and 48px. No lettering, numbers, scenery, particles, badge border or extra objects.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-6aff42db-bf42-4b9b-866d-150054133ae5.png",
+    "runtime": "packages/client/src/assets/painted/token_thornguard.webp",
+    "sha256": "21fcc1c8450f0ccfdd248bc7594caa22ae11ad8ab62f12e11aa96840e56170d6"
+  },
+  {
+    "id": "token_duskrunner",
+    "prompt": "Use case: stylized-concept. Dedicated token_duskrunner class gear icon for Kids & Dragons. One soft deep plum-purple adventurer's hood, broad draped lavender edge and deep empty shadowed face opening, a single old-gold leaf clasp. No head, face or person. Hood only. Chunky friendly hand-painted storybook object, warm cream highlights, deep plum shadows, textured painterly finish matching existing teal/gold/terracotta game icons. Centered isolated square true transparent background, generous 10% clear edge margin. Readable silhouette at 24px and 48px. No lettering, numbers, scenery, particles, badge border or extra objects.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-9819f6ed-f81d-49e9-81ba-3f11c57d2379.png",
+    "runtime": "packages/client/src/assets/painted/token_duskrunner.webp",
+    "sha256": "24f91e43f1132228ad786a6a870321d3a88bd31272b870ee9779c0b5117efafd"
+  },
+  {
+    "id": "token_starweaver",
+    "prompt": "Use case: stylized-concept. Dedicated token_starweaver class gear icon for Kids & Dragons. One elegant old-gold circlet, curved thin band seen in three-quarter view, one oversized lavender four-point crystal star mounted at the front, teal inset accent. A circlet, no hat or wearer. Chunky friendly hand-painted storybook object, warm cream highlights, deep plum shadows, textured painterly finish matching existing teal/gold/terracotta game icons. Centered isolated square true transparent background, generous 10% clear edge margin. Readable silhouette at 24px and 48px. No lettering, numbers, scenery, particles, badge border or extra objects.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-a9976137-8823-4724-a7ab-537a6daa631b.png",
+    "runtime": "packages/client/src/assets/painted/token_starweaver.webp",
+    "sha256": "eb318efd81c2340dc112a3a5c1aeff0144cc0b0e6416ea263dfda07e6047a530"
+  },
+  {
+    "id": "token_songkeeper",
+    "prompt": "Use case: stylized-concept. Dedicated token_songkeeper class gear icon for Kids & Dragons. One small rounded old-gold bell suspended from a short looping plum cord, broad teal band and visible rounded clapper. Bell and cord only. Strong bell silhouette. Chunky friendly hand-painted storybook object, warm cream highlights, deep plum shadows, textured painterly finish matching existing teal/gold/terracotta game icons. Centered isolated square true transparent background, generous 10% clear edge margin. Readable silhouette at 24px and 48px. No lettering, numbers, scenery, particles, badge border or extra objects.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-205e32fc-e69f-4769-8a99-9bfc300ed1ad.png",
+    "runtime": "packages/client/src/assets/painted/token_songkeeper.webp",
+    "sha256": "0440fc8e17f3cdca489eb694b86d0fc984fc9c95cb94f5a43c887bfe3fe52f3b"
+  },
+  {
+    "id": "ear",
+    "prompt": "Use case: stylized-concept. Dedicated ear icon for Kids & Dragons. One rounded friendly golden ear-shaped listening charm with teal inset, clean recognizable ear silhouette. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-0a124fa0-41ac-49cf-b2a9-dfdbf7adfb70.png",
+    "runtime": "packages/client/src/assets/painted/ear.webp",
+    "sha256": "c8823b656e76d53b99573c25a11cfa1b5ea830e92f33a389ec6fb2a29b193bdb"
+  },
+  {
+    "id": "d20",
+    "prompt": "Use case: stylized-concept. Dedicated d20 icon for Kids & Dragons. One large regular twenty-sided fantasy die, lavender facets with broad old-gold edges. Front view with an especially large blank centered triangular front facet reserved for an overlaid game number. Symmetric clear geometric silhouette. Absolutely no numbers, pips or symbols on any facet. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-afe71794-6740-4652-be7f-2c0bbeb2e4c6.png",
+    "runtime": "packages/client/src/assets/painted/d20.webp",
+    "sha256": "8e2f159d220cb79e3c4bda417c68cd1a3e24d835698353709add0cd9854f0cba"
+  },
+  {
+    "id": "dice",
+    "prompt": "Use case: stylized-concept. Dedicated dice icon for Kids & Dragons. One chunky softly rounded ivory six-sided die in three-quarter view, three large plum inset pips on the front and one teal pip on top. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. Only the specified die pips.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-185bedf1-2757-49a2-b2aa-05d2abb055d5.png",
+    "runtime": "packages/client/src/assets/painted/dice.webp",
+    "sha256": "a3e385c61f625ae3c432ea90e465bf66866cb7de8ffbc56f91397c81a371f1cd"
+  },
+  {
+    "id": "phone",
+    "prompt": "Use case: stylized-concept. Dedicated phone icon for Kids & Dragons. One pocket enchanted looking glass shaped like a rounded upright plum-purple phone, old-gold frame, dark glass screen containing a single large teal diamond crystal, small gold button below. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-1d840cc2-5b24-4ab2-b75d-3c321fbb6834.png",
+    "runtime": "packages/client/src/assets/painted/phone.webp",
+    "sha256": "29505dbea61147005116dab900122b9288b105c2b5cfd763ad68cfc1dbfd6bf6"
+  },
+  {
+    "id": "tv",
+    "prompt": "Use case: stylized-concept. Dedicated tv icon for Kids & Dragons. One friendly enchanted television on a short brass pedestal, broad horizontal plum-purple frame, two little dragon-ear points on top, dark screen with one large luminous teal star. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-bfff72f0-9ad0-495f-b57b-e6c117851e8f.png",
+    "runtime": "packages/client/src/assets/painted/tv.webp",
+    "sha256": "2212aa018343638bbff05bc6fd3f094d4fa9b2ba7629b836daab9512200b4dd0"
+  },
+  {
+    "id": "storybook",
+    "prompt": "Use case: stylized-concept. Dedicated storybook icon for Kids & Dragons. One open thick cream parchment storybook, plum leather covers, old-gold page edges, broad terracotta ribbon bookmark over the right page. Blank pages, no writing. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-9f78fa37-2c1e-4f05-8c5c-aee099d210ba.png",
+    "runtime": "packages/client/src/assets/painted/storybook.webp",
+    "sha256": "9eb67e1f231df850eb2c71ce0adc1c44b0798ce266ad69802058e508dffc5285"
+  },
+  {
+    "id": "waiting",
+    "prompt": "Use case: stylized-concept. Dedicated waiting icon for Kids & Dragons. One squat old-gold hourglass with clear lavender glass and visible teal sand in the lower bulb, broad chunky cap and base. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-1a05c66d-9eb4-462f-a69f-8c4b6230183b.png",
+    "runtime": "packages/client/src/assets/painted/waiting.webp",
+    "sha256": "a551f028153c129c98c572333b1f4dcaf322cc79a8bf7ed0738715165b8b79aa"
+  },
+  {
+    "id": "numbed",
+    "prompt": "Use case: stylized-concept. Dedicated numbed icon for Kids & Dragons. One large drooping teal poison droplet with a broad downward-pointing plum arrow inset. Friendly fantasy status charm, no skull, gore or scary imagery. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-13694664-f95f-405c-aad3-e8bd1afc5df3.png",
+    "runtime": "packages/client/src/assets/painted/numbed.webp",
+    "sha256": "b69465c6744d770d7df88e6b7925471dc2bd2ae71dd69a08cfa8b426b37fd711"
+  },
+  {
+    "id": "puffed",
+    "prompt": "Use case: stylized-concept. Dedicated puffed icon for Kids & Dragons. One small round plum-purple puffer creature puffed into a ball, broad rounded golden spines, two cream eyes, friendly determined expression. Strong spiny circular silhouette. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-22027855-2737-422a-87a3-78bf09544b96.png",
+    "runtime": "packages/client/src/assets/painted/puffed.webp",
+    "sha256": "3c06a1bd73eeaa5e3fb70c8301330533468217aba1ccc8204d8482b4ca7fed14"
+  },
+  {
+    "id": "levelup",
+    "prompt": "Use case: stylized-concept. Dedicated levelup icon for Kids & Dragons. One celebratory old-gold crown with three rounded points and a large teal upward arrow raised in its center, lavender inset band. Broad simple silhouette. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-0f76e355-2377-4ff9-8924-50bb6872fe8b.png",
+    "runtime": "packages/client/src/assets/painted/levelup.webp",
+    "sha256": "1f9dc2b3d39185a667424d2faf2ec67eec844bd246630ebe68e7eec67f4070c2"
+  },
+  {
+    "id": "down",
+    "prompt": "Use case: stylized-concept. Dedicated down icon for Kids & Dragons. One small friendly terracotta adventurer's boot tipped sideways beside a large curved downward lavender arrow. Clear knocked-down/recoverable status symbol, no wearer or injury. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-d3d084be-c505-47df-8de3-6ae0f6290ac0.png",
+    "runtime": "packages/client/src/assets/painted/down.webp",
+    "sha256": "778a80a8d20e3f999db8d17c63643c735311f51ca61250f8d31798236c5d7163"
+  },
+  {
+    "id": "ready",
+    "prompt": "Use case: stylized-concept. Dedicated ready icon for Kids & Dragons. One sturdy rounded moss-teal shield with a single large raised old-gold checkmark across its face. No thorn decoration. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-f2019c28-d99f-469e-8e1d-009fc82afffc.png",
+    "runtime": "packages/client/src/assets/painted/ready.webp",
+    "sha256": "bfc3db2392de847bfc8956dbefdbe5b2cb698c58bdab26cc5737a08113708a07"
+  },
+  {
+    "id": "vote",
+    "prompt": "Use case: stylized-concept. Dedicated vote icon for Kids & Dragons. One squat plum-purple ballot box with a broad top slot and a single cream parchment card entering the slot, large teal checkmark on the card. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-b7bac216-d528-4800-a5b0-fa369ea429eb.png",
+    "runtime": "packages/client/src/assets/painted/vote.webp",
+    "sha256": "5f2c87718ad82f9b07a4838e212cd190445e9a87495883cde028de088dc2e087"
+  },
+  {
+    "id": "rest",
+    "prompt": "Use case: stylized-concept. Dedicated rest icon for Kids & Dragons. One peaceful little campfire with two chunky crossed terracotta logs and a single warm golden flame shaped as a gentle crescent. Simple resting campsite symbol. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-99d8cfdd-2e62-4f25-a8aa-a44241d32580.png",
+    "runtime": "packages/client/src/assets/painted/rest.webp",
+    "sha256": "5cd06523f18a1fb4381a833d30054e2c69164b76b97498a573db1eeeaee0d9c5"
+  },
+  {
+    "id": "leaf",
+    "prompt": "Use case: stylized-concept. Dedicated leaf icon for Kids & Dragons. One broad curved moss-teal leaf with a thick old-gold central vein and three broad lobes, gently curled stem. Leaf only, no pin or jewelry. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-6cffb8f2-8e8e-4f16-927c-f38431867c33.png",
+    "runtime": "packages/client/src/assets/painted/leaf.webp",
+    "sha256": "166dc5745f842550a4d8429cb7b6769a498449102b44e2b014cbeec9e96d0297"
+  },
+  {
+    "id": "coin",
+    "prompt": "Use case: stylized-concept. Dedicated coin icon for Kids & Dragons. One thick round old-gold coin at a slight three-quarter angle, broad raised rim and one large embossed four-point teal star in its center. No writing or numbers. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-de1241af-0590-4440-8dbf-6e9bc3b8c2cb.png",
+    "runtime": "packages/client/src/assets/painted/coin.webp",
+    "sha256": "35560f2bfb441bcbf6446f08ed8e931e985c3ef07eca046daa4b330492936e3d"
+  },
+  {
+    "id": "envelope",
+    "prompt": "Use case: stylized-concept. Dedicated envelope icon for Kids & Dragons. One plump cream parchment envelope, triangular folded flap and a large lavender wax seal with a simple teal star. Warm gold edge highlights. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-3715e359-dd53-45d3-8fa4-40abf4536560.png",
+    "runtime": "packages/client/src/assets/painted/envelope.webp",
+    "sha256": "337e461bc48e748986f79bd720d9bdc7c7ea9c942521936cf1d239853a004a5d"
+  },
+  {
+    "id": "passkey",
+    "prompt": "Use case: stylized-concept. Dedicated passkey icon for Kids & Dragons. One keepsake key with rounded lavender crystal bow, old-gold short shaft and two broad teeth, short loop of teal cord through the bow. Friendly family keepsake, no lock or security shield. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-b127182c-65b7-49af-ac6f-e5ed73835ba0.png",
+    "runtime": "packages/client/src/assets/painted/passkey.webp",
+    "sha256": "fd0b6af24833922ffe195b36f554e6851409098a78d1befcb33b94c39403e2bd"
+  },
+  {
+    "id": "riftlight_indicator",
+    "prompt": "Use case: stylized-concept. Dedicated riftlight_indicator icon for Kids & Dragons. One narrow upright double-convex lens of pale lavender crystal, a soft cream central glint, three short old-gold light rays on either side. Neutral magical seeing-light emblem; no colored rule markers or extra objects. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-674cc998-1288-4638-9fda-91b8a7157540.png",
+    "runtime": "packages/client/src/assets/painted/riftlight_indicator.webp",
+    "sha256": "87f876240b6025c2e69cbcbe062ce3811f601af729a299024b665bf9d5ce30ab"
+  },
+  {
+    "id": "crow",
+    "prompt": "Use case: stylized-concept. Dedicated crow icon for Kids & Dragons. One friendly little perched crow in side view, deep plum feathers with lavender highlights, broad tail, rounded golden beak, one bright cream eye, two small feet. No branch or backdrop. Chunky friendly hand-painted storybook object, cream highlights, plum shadows, subtly textured finish matching existing teal/gold/terracotta icons. Centered isolated square true transparent background, 10% clear edge margin. Bold readable silhouette at 24px and 48px. No letters, scenery, ground shadows, border or extra particles. No numbers.",
+    "source": "C:\\Users\\allen\\.codex\\generated_images\\01a17047-ee77-7270-8e7f-baf6d0ceab37\\exec-d8f18e1e-2b3d-4899-9f93-4968b2804166.png",
+    "runtime": "packages/client/src/assets/painted/crow.webp",
+    "sha256": "ea29114160d282f619303ac0d8709eda17016a73e0656b8600fa7749136ee401"
+  }
+]

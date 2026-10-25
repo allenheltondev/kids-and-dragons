@@ -2526,7 +2526,13 @@
       }
     }
   ],
-  "$paintedIconsComment": "Additional ability and distinct item icons commissioned for #421. Transparent 256px WebP, bundled with the client; inventory and verify check these deliveries. Existing painted icons remain documented in the client painted README.",
+  "$paintedIconsComment": "Painted ability, item, class-token, status, tray and player-sheet icons, including #421 and #481. Transparent 256px WebP, bundled with the client; inventory and verify check these deliveries. Existing painted icons remain documented in the client painted README.",
+  "diceArt": {
+    "material": "packages/client/src/assets/dice/enamel.webp",
+    "width": 256,
+    "height": 256,
+    "description": "Opaque painted enamel for projected 3D dice; gold bevels and numbered faces are rendered by the client."
+  },
   "paintedIcons": {
     "canvas": {
       "width": 256,
@@ -2556,7 +2562,33 @@
       "shield",
       "spark",
       "thorn",
-      "wing"
+      "wing",
+      "stats",
+      "bag",
+      "token_thornguard",
+      "token_duskrunner",
+      "token_starweaver",
+      "token_songkeeper",
+      "ear",
+      "d20",
+      "dice",
+      "phone",
+      "tv",
+      "storybook",
+      "waiting",
+      "numbed",
+      "puffed",
+      "levelup",
+      "down",
+      "ready",
+      "vote",
+      "rest",
+      "leaf",
+      "coin",
+      "envelope",
+      "passkey",
+      "riftlight_indicator",
+      "crow"
     ]
   },
   "badgeArt": {
