@@ -6,12 +6,17 @@
   "title": "Snow on the Quay",
   "biome": "exchange",
   "music": "riftlight-theme",
-  "estimatedMinutes": 15,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "market",
   "goal": {
     "text": "Find out where the snow on the quay is coming from.",
     "steps": [
+      {
+        "id": "help_noodle",
+        "label": "Help the noodle seller",
+        "flag": "helped_noodle_seller"
+      },
       {
         "id": "help_barge",
         "label": "Help the stuck supply barge",
@@ -32,16 +37,240 @@
   "scenes": {
     "market": {
       "type": "story",
-      "narration": "The Exchange has put its market stalls back along the quay. Fish slap in buckets. A noodle seller lifts her awning with a broom. You have come back from the mountain, and three different people wave before you reach the water. Then a snowflake lands in your breakfast.",
+      "narration": "The Exchange has put its market stalls back along the quay. Fish slap in buckets. A noodle seller lifts her awning with a broom. You have come back from the mountain, and three different people wave before you reach the water. Then a snowflake lands in your breakfast. The sky is clear, and snow should not be falling at all. Today's job is simple: find out where this snow is coming from. The noodle seller waves her broom at you. \"Find your snow in a minute! First I need hands. This awning is heavy, and I pay in coins.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Find out where the snow came from",
+          "label": "Lend a hand with the awning",
           "icon": "hand",
-          "goto": "morning"
+          "goto": "awning_plan"
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
+    },
+    "awning_plan": {
+      "type": "choice_point",
+      "narration": "Snow is piling up on the awning. It sags in the middle like a hammock, and the poles wobble. Under it, the noodle pot steams up at the sky. \"Quick!\" says the noodle seller. \"Before it all lands in my broth!\" How will you save the awning? Somebody's hat has blown off, and nobody has gone after it. The hat looks hurt.",
+      "choices": [
+        {
+          "id": "lift",
+          "label": "Everyone lifts a pole together",
+          "icon": "hand",
+          "goto": "awning_lift"
+        },
+        {
+          "id": "tie",
+          "label": "Tie the corners to the stall rail",
+          "icon": "hand",
+          "goto": "awning_tie"
+        },
+        {
+          "id": "brace",
+          "label": "Use brace to plant the middle pole",
+          "icon": "shield",
+          "goto": "awning_brace",
+          "requiresClass": "thornguard"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall",
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
+    },
+    "awning_lift": {
+      "type": "check",
+      "tags": [
+        "force"
+      ],
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everyone takes a pole! Lift the awning together on the noodle seller's count: one, two, UP! The snow on top is heavier than it looks.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "awning_up"
+      },
+      "onFailure": {
+        "goto": "awning_flap"
+      },
+      "art": "scenes/gemfall/exchange-noodle-stall",
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
+    },
+    "awning_tie": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Grab a corner rope and tie it to the stall rail before the next gust. Fast fingers win.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "awning_up"
+      },
+      "onFailure": {
+        "goto": "awning_flap"
+      },
+      "art": "scenes/gemfall/exchange-noodle-stall",
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
+    },
+    "awning_brace": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Brace holds the middle pole steady. Can you haul the sagging cloth tight around it?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "awning_up"
+      },
+      "onFailure": {
+        "goto": "awning_flap"
+      },
+      "art": "scenes/gemfall/exchange-noodle-stall",
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
+    },
+    "awning_up": {
+      "type": "story",
+      "narration": "The awning snaps tight. The snow slides off in one long whoosh and lands on a startled crate. The noodle seller bows with her broom. \"Three coins, as promised,\" she says, and drops them in your hands. Then she wraps up a supper bundle: flatbread, cheese and a sausage. \"For later. Don't tell the pot. The pot thinks everything here is for the pot.\" The sausage looks rather proud of itself. Somewhere up the quay, a tiny cheer goes up for no reason at all.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at her stall",
+          "icon": "hand",
+          "goto": "noodle_counter"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_noodle_seller",
+          "value": true
+        },
+        {
+          "type": "grantCoins",
+          "amount": 3
+        },
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall",
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
+    },
+    "awning_flap": {
+      "type": "story",
+      "narration": "The awning flaps like a huge wet bird. A pole clangs, and a pot of broth tips into the gutter. The noodle seller catches the cloth just in time and ties it down herself, muttering at it. \"That is for trying,\" she says, and presses one coin into your hand. \"The broth is for the gutter. The gutter is very pleased.\" The pot, half empty now, gurgles in a hurt way.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at her stall",
+          "icon": "hand",
+          "goto": "noodle_counter"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_noodle_seller",
+          "value": true
+        },
+        {
+          "type": "grantCoins",
+          "amount": 1
+        }
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall",
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
+    },
+    "noodle_counter": {
+      "type": "story",
+      "narration": "Her stall smells of ginger and warm honey. The honeycakes cool on their rack, steaming a little, as if they were thinking. \"Honeycake is three coins,\" says the noodle seller. \"Questions are free. Go and look at the fish stall, the gull on the post and that ship. They are all wrong this morning, and not one of them is sorry.\" Behind her, the snow keeps falling on nobody in particular. From the next stall, somebody sings about onions, off key and entirely happy.",
+      "choices": [
+        {
+          "id": "buy",
+          "label": "Buy a honeycake (3 coins)",
+          "icon": "cake",
+          "goto": "noodle_buy",
+          "when": {
+            "coins": {
+              "min": 3
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 3
+            },
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "ask",
+          "label": "Go and look at the strange things",
+          "icon": "forward",
+          "goto": "morning"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall",
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        },
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ]
+    },
+    "noodle_buy": {
+      "type": "story",
+      "narration": "She slides a honeycake into a paper twist and counts your coins twice, just to enjoy it. \"Eat it warm,\" she says, \"or save it for somebody who needs it more than you do.\" A snowflake lands on the cake and gives up at once.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go and look at the strange things",
+          "icon": "forward",
+          "goto": "morning"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall",
       "cast": [
         {
           "figure": "cast/soup_woman",
@@ -89,19 +318,19 @@
     },
     "fish": {
       "type": "story",
-      "narration": "The fish seller holds up a scoop of snow. \"I ordered ice. Ice stays where you put it.\" Snow lands in the scoop. Under her table, a patch of pebbles and stiff white grass has pushed up between the boards. It is cold enough to sting your fingers.",
+      "narration": "The fish seller holds up a scoop of snow. \"I ordered ice. Ice stays where you put it.\" Snow lands in the scoop. Under her table, a patch of pebbles and stiff white grass has pushed up between the boards. It is cold enough to sting your fingers. She waves at her buckets. \"Somebody move these, before my fish catch cold!\"",
       "choices": [
         {
           "id": "help",
           "label": "Move the fish out of the snow",
           "icon": "hand",
-          "goto": "fish_help"
+          "goto": "fish_buckets"
         },
         {
           "id": "follow",
           "label": "Follow the trail of white grass",
           "icon": "hand",
-          "goto": "delivery"
+          "goto": "trail_check"
         }
       ],
       "art": "scenes/gemfall/exchange-quay",
@@ -112,15 +341,39 @@
         }
       ]
     },
+    "fish_buckets": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Every bucket needs a pair of hands! Pass them down the line, out of the snow and under the awning, before the fish catch cold.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "fish_help"
+      },
+      "onFailure": {
+        "goto": "fish_slosh"
+      },
+      "art": "scenes/gemfall/exchange-quay",
+      "cast": [
+        {
+          "figure": "cast/fishmonger",
+          "name": "Fish seller"
+        },
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
+    },
     "fish_help": {
       "type": "story",
-      "narration": "You carry the buckets under the noodle awning. The fish seller tucks a dry cloth around your wet fingers. \"Something else stepped off that patch of grass,\" she says. \"Little hooves. Went that way.\" She points along the quay, where wet hoofprints trail between stacks of crates.",
+      "narration": "You pass the buckets down the line and tuck them under the noodle awning. Every fish stays wet and none stay cold. The fish seller wraps a dry cloth around your fingers, then presses two coins into your palm. \"Something else stepped off that patch of grass,\" she says. \"Little hooves. Went that way.\" She points along the quay, where wet hoofprints trail between stacks of crates.",
       "choices": [
         {
           "id": "continue",
           "label": "Follow the hoofprints",
           "icon": "hand",
-          "goto": "delivery"
+          "goto": "trail_check"
         }
       ],
       "onEnter": [
@@ -128,6 +381,44 @@
           "type": "setFlag",
           "flag": "helped_fish_seller",
           "value": true
+        },
+        {
+          "type": "grantCoins",
+          "amount": 2
+        }
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall",
+      "cast": [
+        {
+          "figure": "cast/fishmonger",
+          "name": "Fish seller"
+        },
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
+    },
+    "fish_slosh": {
+      "type": "story",
+      "narration": "The line wobbles. A bucket tips, and fish flop across the boards in a silver wave. Everyone chases them with nets, hats and one noodle ladle. At last every fish is back in water, and everyone is wet. The fish seller counts twice. \"Nobody lost a fish,\" she says, \"but I lost count of twelve.\" She tucks a coin into your hand. \"Something else stepped off that patch of grass. Little hooves. Went that way.\" She points along the quay, where wet hoofprints trail between stacks of crates.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the hoofprints",
+          "icon": "hand",
+          "goto": "trail_check"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_fish_seller",
+          "value": true
+        },
+        {
+          "type": "grantCoins",
+          "amount": 1
         }
       ],
       "art": "scenes/gemfall/exchange-noodle-stall",
@@ -144,7 +435,7 @@
     },
     "gull": {
       "type": "story",
-      "narration": "The gull stands on one foot. \"Cold,\" it says. It changes feet. \"Still cold.\" You ask where it has been. It points its beak toward the far end of the quay. \"Here! I was here the whole time!\" A small white hoofprint marks the boards below it.",
+      "narration": "The gull stands on one foot. \"Cold,\" it says. It changes feet. \"Still cold.\" You ask where it has been. It points its beak toward the far end of the quay. \"Here! I was here the whole time!\" Its stomach growls. \"That is the wind,\" it says. \"Not my stomach.\" A small white hoofprint marks the boards below it.",
       "choices": [
         {
           "id": "warm",
@@ -153,10 +444,34 @@
           "goto": "gull_help"
         },
         {
+          "id": "share",
+          "label": "Share a bite of your supper with the gull",
+          "icon": "supper",
+          "goto": "gull_fed",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
+        },
+        {
           "id": "tracks",
           "label": "Follow the hoofprints",
           "icon": "hand",
-          "goto": "delivery"
+          "goto": "trail_check"
         }
       ],
       "art": "scenes/gemfall/exchange-quay",
@@ -175,7 +490,26 @@
           "id": "continue",
           "label": "Follow the gull's directions",
           "icon": "hand",
-          "goto": "delivery"
+          "goto": "trail_check"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-quay",
+      "cast": [
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ]
+    },
+    "gull_fed": {
+      "type": "story",
+      "narration": "The gull swallows the crumbs and goes very still. \"That,\" it says, \"was the best thing that has happened to me today.\" It fluffs up until it is twice its size. Warm at last, it flaps to the top of a crate and points with its beak. \"Hoofprints! Little ones! That way!\" Then it adds, quieter, \"Thank you. Don't tell the other gulls I said so.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the gull's directions",
+          "icon": "hand",
+          "goto": "trail_check"
         }
       ],
       "art": "scenes/gemfall/exchange-quay",
@@ -194,7 +528,7 @@
           "id": "help",
           "label": "Help her pin the chart down",
           "icon": "hand",
-          "goto": "ship_help"
+          "goto": "chart_pin"
         },
         {
           "id": "quay",
@@ -211,34 +545,80 @@
       ],
       "art": "scenes/gemfall/exchange-docks"
     },
-    "ship_help": {
-      "type": "story",
-      "narration": "You hold the corners while Captain Thimble ties the chart to the barrel. She gives you a quick, grateful nod. \"Look for me if you reach the islands. You will recognize the washing.\" A gust lifts the smell of snow from the far end of the quay.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Find the source of the cold",
-          "icon": "hand",
-          "goto": "delivery"
-        }
-      ],
+    "chart_pin": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "The wind grabs the chart! Pin down the corners before it sails into the harbor.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "ship_help"
+      },
+      "onFailure": {
+        "goto": "ship_flap"
+      },
+      "art": "scenes/gemfall/exchange-docks",
       "cast": [
         {
           "figure": "cast/captain_thimble",
           "name": "Captain Thimble"
         }
+      ]
+    },
+    "ship_help": {
+      "type": "story",
+      "narration": "You hold the corners while Captain Thimble ties the chart to the barrel. She gives you a quick, grateful nod and digs in her coat. \"Spare ship's whistle. It's loud enough to wake a whale. If you ever need a hand in a hurry, blow it.\" She presses the brave whistle into your palm. \"Look for me if you reach the islands. You will recognize the washing.\" A gust lifts the smell of snow from the far end of the quay.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the smell of snow",
+          "icon": "hand",
+          "goto": "trail_check"
+        }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "brave_whistle",
+          "to": "party"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        }
+      ]
+    },
+    "ship_flap": {
+      "type": "story",
+      "narration": "The chart tears loose and flaps across the quay like an enormous pale bird. Captain Thimble chases it past three crates and a bucket, then dives and sits on it. \"Never,\" she says, out of breath, \"trust a map on a windy day.\" She tucks it under her arm. \"Look for me if you reach the islands. You will recognize the washing.\" A gust lifts the smell of snow from the far end of the quay.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the smell of snow",
+          "icon": "hand",
+          "goto": "trail_check"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        }
+      ]
     },
     "ship_cold": {
       "type": "story",
-      "narration": "\"There.\" The captain points past the noodle stall. \"The wind is coming from between those crates. Wind should have more room than that.\" A coil of rope begins sliding across the wet boards toward them.",
+      "narration": "\"There.\" The captain points past the noodle stall. \"The wind is coming from between those crates. Wind should have more room than that.\" A coil of rope begins sliding across the wet boards toward them. Captain Thimble stamps on the end of it. The rope stops, and sulks.",
       "choices": [
         {
           "id": "continue",
           "label": "Go to the crates",
           "icon": "hand",
-          "goto": "delivery"
+          "goto": "trail_check"
         }
       ],
       "cast": [
@@ -249,9 +629,551 @@
       ],
       "art": "scenes/gemfall/exchange-docks"
     },
+    "trail_check": {
+      "type": "check",
+      "tags": [
+        "search"
+      ],
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Snow, frost and small hoofprints all lead the same way along the quay, and fresh flakes are covering them. Can you tell which marks are newest? Small hooves, four to a set.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "trail_found"
+      },
+      "onFailure": {
+        "goto": "trail_lost"
+      },
+      "art": "scenes/gemfall/exchange-quay"
+    },
+    "trail_found": {
+      "type": "story",
+      "narration": "The newest marks are crisp, with a puff of white fuzz stuck in one. They run toward the far end of the quay, then skid sideways, as if their owner had been tugged and had not liked it. You follow them past a row of barrels. Then a deep horn blows from the water. Each print is no bigger than a plum, with a little frost around its edge.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what the horn is for",
+          "icon": "forward",
+          "goto": "delivery"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-quay"
+    },
+    "trail_lost": {
+      "type": "story",
+      "narration": "Snow covers the marks before you can read them. You lose the trail among the barrels and end up with a boot full of slush. Then a deep horn blows from the water. You will have to find those little hooves another way. A barrel rolls a short way by itself, thinks better of it, and stops.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "See what the horn is for",
+          "icon": "forward",
+          "goto": "delivery"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-quay"
+    },
+    "delivery": {
+      "type": "choice_point",
+      "narration": "The horn belongs to a supply barge, and it bumps the quay hard enough to rattle the barrels. Its frogfolk pilot points at a flight of stone landing steps hanging crooked above the water. \"Those were under my feet this morning. Now my regular landing is halfway up a wall.\" Sacks of potatoes slide across his deck. \"That is supper for six boats. Help me get it ashore!\" His webbed hands wave in two directions at once.",
+      "choices": [
+        {
+          "id": "sacks",
+          "label": "Pass the supper sacks ashore",
+          "icon": "hand",
+          "goto": "sack_line"
+        },
+        {
+          "id": "moor",
+          "label": "Find the barge a safe place to tie up",
+          "icon": "hand",
+          "goto": "moor_ring"
+        },
+        {
+          "id": "rally",
+          "label": "Use rally to set a pace for the sack line",
+          "icon": "song",
+          "goto": "sack_rally",
+          "requiresClass": "songkeeper"
+        },
+        {
+          "id": "wings",
+          "label": "Carry the barge's rope up on wings",
+          "icon": "wing",
+          "goto": "moor_wings",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "sack_line": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Make a line along the planks and pass the sacks hand to hand. Everyone has to keep the same pace, or the potatoes will pile up! The pilot counts the sacks in a worried voice: nine, ten, ten, eleven.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "delivery_sacks"
+      },
+      "onFailure": {
+        "goto": "sacks_dropped"
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "sack_rally": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "A songkeeper's rally sets the pace. Can you pass the sacks on the beat without dropping one?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "delivery_sacks"
+      },
+      "onFailure": {
+        "goto": "sacks_dropped"
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "moor_ring": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Find a mooring ring that is low enough to reach and strong enough to hold. Then loop the line the right way.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "delivery_moor"
+      },
+      "onFailure": {
+        "goto": "moor_drift"
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "moor_wings": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Wings carry the rope to a high ring. Can you pull the knot tight before the barge drifts?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "delivery_moor"
+      },
+      "onFailure": {
+        "goto": "moor_drift"
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "delivery_sacks": {
+      "type": "story",
+      "narration": "You form a line and pass the potato sacks onto the quay. The pilot lets his boat drift clear of the crooked steps. \"Six crews eating tonight,\" he says. Then he digs under his seat and hands you a glass jar of glowing moss. \"For the dark of the hold. It lights up when it's happy.\" He looks up at the landing. \"Still need a new way home.\" The jar hums, very quietly, like a kettle with good manners.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the crooked steps",
+          "icon": "eye",
+          "goto": "landing_steps"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "saved_barge_supper",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "helped_the_barge",
+          "value": true
+        },
+        {
+          "type": "grantItem",
+          "itemId": "mosslight_jar",
+          "to": "party"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "sacks_dropped": {
+      "type": "story",
+      "narration": "A sack bursts. Potatoes roll everywhere, bouncing off boots and plopping into the harbor. The whole line scrambles after them, and the pilot dives for the last one with his webbed feet. When the splashing stops, supper for six boats is ashore, though three potatoes have been swimming. \"Six crews eating tonight,\" he says, wringing out his hat. \"Mostly.\" He looks up at the landing. \"Still need a new way home.\" One potato is never seen again. Everyone agrees it has gone somewhere nicer.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the crooked steps",
+          "icon": "eye",
+          "goto": "landing_steps"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "saved_barge_supper",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "helped_the_barge",
+          "value": true
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "delivery_moor": {
+      "type": "story",
+      "narration": "You guide the pilot toward a low mooring ring and help tie his boat beside the quay. He can carry the sacks ashore without jumping. \"This will do for tonight,\" he says. He tosses a little carved charm into your hand. \"For the river. It keeps your feet sure on wet boards.\" He looks up at the landing. \"Tomorrow I have to find where my landing went.\" The charm is smooth and warm, and it smells a little like rain.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the crooked steps",
+          "icon": "eye",
+          "goto": "landing_steps"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_barge_mooring",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "helped_the_barge",
+          "value": true
+        },
+        {
+          "type": "grantItem",
+          "itemId": "river_charm",
+          "to": "party"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "moor_drift": {
+      "type": "story",
+      "narration": "The line slips off the ring, and the barge swings into the quay with a thump. Every potato sack hops. You grab the next mooring ring and tie it again, tighter this time, with everyone's thumbs on the knot. \"This will do for tonight,\" the pilot says, patting his boat. He looks up at the landing. \"Tomorrow I have to find where my landing went.\" Somewhere in the hull, a very small crab complains about the noise.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the crooked steps",
+          "icon": "eye",
+          "goto": "landing_steps"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_barge_mooring",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "helped_the_barge",
+          "value": true
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "landing_steps": {
+      "type": "choice_point",
+      "narration": "The crooked steps hang off the wall above the water, tipped like a stair that fell asleep standing up. A thin, cold breath slips out from underneath them and smells of snow. \"Whatever grabbed my landing, it didn't take it far,\" says the pilot. \"I'd like it back by supper. Could somebody take a look?\" It tickles your ankles like a cat that is not sure it likes you.",
+      "choices": [
+        {
+          "id": "climb",
+          "label": "Climb up and look underneath",
+          "icon": "hand",
+          "goto": "landing_climb"
+        },
+        {
+          "id": "prop",
+          "label": "Stack crates under the steps to hold them",
+          "icon": "hand",
+          "goto": "landing_prop"
+        },
+        {
+          "id": "smash",
+          "label": "Use smash to knock the steps straight",
+          "icon": "fist",
+          "goto": "landing_smash",
+          "requiresSpecies": "bigfoot"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "landing_climb": {
+      "type": "check",
+      "tags": [
+        "climb"
+      ],
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Grab the stone edge and haul yourself up. Can you hold on long enough to look underneath? The stone is wet, and the water below is a long way down and very cold.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "landing_clue"
+      },
+      "onFailure": {
+        "goto": "landing_slip"
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "landing_prop": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Which crates are the right size? Stack them so the steps rest on something solid, and see what is hiding under there.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "landing_clue"
+      },
+      "onFailure": {
+        "goto": "landing_slip"
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "landing_smash": {
+      "type": "check",
+      "tags": [
+        "force"
+      ],
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Smash can knock a stuck step back into place. Can you swing at the right spot without cracking the stone?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "landing_clue"
+      },
+      "onFailure": {
+        "goto": "landing_slip"
+      },
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "landing_clue": {
+      "type": "story",
+      "narration": "Frost crusts the underside of the steps in neat white feathers. All of it points the same way, toward the far end of the quay, as if the stone were listening for something there. The pilot whistles through his teeth. \"Well, I'll be a pond. Thank you.\" He flips you two coins for the trouble. It looks like a fern drawn by a very cold artist.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Sit down and eat something",
+          "icon": "forward",
+          "goto": "quay_rest"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantCoins",
+          "amount": 2
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "landing_slip": {
+      "type": "story",
+      "narration": "Your foot skids on a wet step, and the pilot catches your sleeve. You find nothing under there but a puddle and a very surprised snail. \"Never mind,\" he says. \"The steps lean toward the far end of the quay. Always have, since this morning. I was only hoping somebody could tell me why.\" The snail looks at you for a long moment, then goes back to its business.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Sit down and eat something",
+          "icon": "forward",
+          "goto": "quay_rest"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "quay_rest": {
+      "type": "rest",
+      "narration": "The pilot calls a thank-you from his deck and tosses up a bag of warm potato skins. You sit on an upturned crate by the noodle stall to eat them. Behind the stalls, a ladder climbs the harbor master's house to the rooftops. From up there comes a lot of cawing, all of it on purpose. The skins are salty and perfect, and for a minute nobody mentions snow. The pilot asks whether anybody has ever eaten a potato skin on a day when the weather was going wrong. Nobody has. It is excellent.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "roof",
+          "label": "Climb the ladder to the rooftops",
+          "icon": "feather",
+          "goto": "rookery"
+        },
+        {
+          "id": "on",
+          "label": "Walk on along the quay",
+          "icon": "forward",
+          "goto": "quay"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-noodle-stall",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ]
+    },
+    "rookery": {
+      "type": "story",
+      "narration": "You climb through a trapdoor onto the rooftops. Crows sit on every chimney pot and every gutter, and all of them are looking at you. A sign hangs on the tallest chimney: NO MESSING. (WITH US.) This rooftop school is called the Rookery. Here the crows train each Duskrunner, a hero who runs quick and quiet. They all teach at once. On a peg hangs a dusk hood, soft as a shadow. A Duskrunner's quickness lives in that hood, and a star circlet worn beside it only makes it itch. Someone has put a tiny doormat at the top of the ladder. \"Wipe your feet,\" say the crows. \"We don't get messed with up here. Anyone who wants the hood may try it on.\" Then, quieter: \"Nobody who leaves the Exchange climbs our ladder again. Take the hood off somewhere far away, and you won't find us to put it back. So choose well.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "met_the_crows"
+          },
+          "text": "The crows of the Rookery eye you from every chimney pot. \"Back again,\" they say, all at once. The sign still says NO MESSING. (WITH US.) The dusk hood waits on its peg for anyone who wants to try it on. You wipe your feet on the tiny doormat without being asked. \"Remember,\" the crows say. \"Once you leave the Exchange, our ladder is gone for you.\"",
+          "replace": true
+        }
+      ],
+      "classPlace": "duskrunner",
+      "choices": [
+        {
+          "id": "lesson",
+          "label": "Learn to cross the roof quietly",
+          "icon": "feather",
+          "goto": "rookery_lesson",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_the_crows",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "down",
+          "label": "Climb back down the ladder",
+          "icon": "back",
+          "goto": "quay_rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_the_crows",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/rookery",
+      "cast": [
+        {
+          "figure": "entities/rookery_crows",
+          "name": "The crows"
+        }
+      ]
+    },
+    "rookery_lesson": {
+      "type": "story",
+      "narration": "The crows show you how to cross the roof without a sound. Step where the moss grows. Never on the loose tile. You hold your breath and cross. Nothing clatters, and nobody at the noodle stall looks up. Back at the ladder, you find a folded note in your pocket. Nobody saw it arrive. It says: \"Saw that. Nice. Don't mess with us.\"",
+      "choices": [
+        {
+          "id": "down",
+          "label": "Climb back down the ladder",
+          "icon": "back",
+          "goto": "quay_rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_the_crows",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/rookery",
+      "cast": [
+        {
+          "figure": "entities/rookery_crows",
+          "name": "The crows"
+        }
+      ]
+    },
     "quay": {
       "type": "choice_point",
-      "narration": "At the end of the quay, two stacks of crates lean toward a thin fold in the air. A loose rope slides across the wet boards. You can hear the harbor behind you, but from the fold comes only a deep, slow creak.",
+      "narration": "At the end of the quay, two stacks of crates lean toward a thin fold in the air. A loose rope slides across the wet boards. You can hear the harbor behind you, but from the fold comes only a deep, slow creak. A faint hum rises from the fold, like a held note that nobody is singing.",
       "choices": [
         {
           "id": "study",
@@ -263,7 +1185,27 @@
           "id": "clear",
           "label": "Get people away from the crates",
           "icon": "hand",
-          "goto": "clear_quay"
+          "goto": "clear_check"
+        },
+        {
+          "id": "slip",
+          "label": "Use vanish to slip between the stacks",
+          "icon": "feather",
+          "goto": "quay_slip",
+          "requiresClass": "duskrunner"
+        },
+        {
+          "id": "jar",
+          "label": "Set the mosslight jar down to show which way things lean",
+          "icon": "spark",
+          "goto": "quay_lit",
+          "requiresItem": "mosslight_jar",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "mosslight_jar"
+            }
+          ]
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
@@ -271,7 +1213,9 @@
     },
     "check_pattern": {
       "type": "check",
-      "tags": ["search"],
+      "tags": [
+        "search"
+      ],
       "stat": "clever",
       "tn": 8,
       "prompt": "Can you spot which loose things will slide first?",
@@ -294,47 +1238,50 @@
       "art": "scenes/gemfall/exchange-docks",
       "rift": "steady"
     },
-    "pattern_seen": {
-      "type": "story",
-      "narration": "You kick a wedge under the nearest crate and call a warning. The noodle seller catches her awning before it tears free. Beyond the crates, something small bleats.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look between the crates",
-          "icon": "hand",
-          "goto": "shimmer"
-        }
+    "quay_slip": {
+      "type": "check",
+      "tags": [
+        "sneak"
       ],
-      "art": "scenes/gemfall/exchange-docks",
-      "rift": "steady"
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Vanish lets you melt into the shadows between the stacks. Can you see which loose things lean toward the fold before they start to slide?",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "pattern_seen",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "quay_head_start",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "pattern_missed"
+      },
+      "art": "scenes/gemfall/exchange-docks"
     },
-    "pattern_missed": {
+    "quay_lit": {
       "type": "story",
-      "narration": "The lid rolls upright, circles twice, and drops flat beside the fold. You pull everyone back from its path. Beyond the crates, something small bleats.",
+      "narration": "You set the jar on the boards, and the moss glows up bright and curious. Every long shadow in its light points the same way: the barrel lid, the rope, the crates, all toward the fold. You nudge a wedge under the nearest crate. The jar blinks twice, as if proud of itself, and one of the dock workers carries it off to light the rest of the quay. Beyond the crates, something small bleats.",
       "choices": [
         {
           "id": "continue",
-          "label": "Find what made that sound",
+          "label": "Deal with the leaning stack",
           "icon": "hand",
-          "goto": "shimmer"
+          "goto": "crate_plan"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
-      "rift": "steady"
-    },
-    "clear_quay": {
-      "type": "story",
-      "narration": "You wave the fish seller back and lift the noodle awning clear of a sliding crate. The dock workers start passing buckets out of the way. Beyond the crates, something small bleats.",
-      "choices": [
+      "onEnter": [
         {
-          "id": "continue",
-          "label": "Look for the animal",
-          "icon": "hand",
-          "goto": "shimmer"
+          "type": "setFlag",
+          "flag": "quay_head_start",
+          "value": true
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
       "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
       "cast": [
         {
           "figure": "cast/dock_worker",
@@ -342,6 +1289,346 @@
           "count": 2
         }
       ]
+    },
+    "pattern_seen": {
+      "type": "story",
+      "narration": "You kick a wedge under the nearest crate and call a warning. The noodle seller catches her awning before it tears free. Beyond the crates, something small bleats. The wedge squeaks, proud and a little splintered.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Deal with the leaning stack",
+          "icon": "hand",
+          "goto": "crate_plan"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady",
+      "cast": [
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
+    },
+    "pattern_missed": {
+      "type": "story",
+      "narration": "The lid rolls upright, circles twice, and drops flat beside the fold. You pull everyone back from its path. Beyond the crates, something small bleats. The lid looks very pleased with its performance.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Deal with the leaning stack",
+          "icon": "hand",
+          "goto": "crate_plan"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-docks",
+      "rift": "steady"
+    },
+    "clear_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Everyone spread out along the quay and wave people back from the crates. Shout, whistle, flap your hat, whatever it takes!",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "clear_quay"
+      },
+      "onFailure": {
+        "goto": "clear_crowd"
+      },
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock workers",
+          "count": 2
+        },
+        {
+          "figure": "cast/soup_woman",
+          "name": "Noodle seller"
+        }
+      ]
+    },
+    "clear_quay": {
+      "type": "story",
+      "narration": "You wave the market crowd back and lift the noodle awning clear of a sliding crate. The dock workers start passing buckets out of the way. Beyond the crates, something small bleats. A cat sits on a barrel and supervises.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Deal with the leaning stack",
+          "icon": "hand",
+          "goto": "crate_plan"
+        }
+      ],
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock workers",
+          "count": 2
+        }
+      ]
+    },
+    "clear_crowd": {
+      "type": "story",
+      "narration": "The crowd does the opposite of leaving. Everyone leans in to see what the shouting is about, and a small boy sits on a barrel to watch. The dock workers have to shoo them back one by one, tutting. At last the quay is clear, and everyone is a little embarrassed. Beyond the crates, something small bleats.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Deal with the leaning stack",
+          "icon": "hand",
+          "goto": "crate_plan"
+        }
+      ],
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock workers",
+          "count": 2
+        }
+      ]
+    },
+    "crate_plan": {
+      "type": "choice_point",
+      "narration": "The nearest stack of crates groans and leans a finger's width closer to the fold. Two dock workers hang off its rope with their boots skidding on the wet boards. \"We can't hold it!\" one gasps. \"Something heavy, or something clever, and quick!\" Behind the stack, the small bleat comes again, a little weaker. If the crates slide, they will slide onto whatever is making that noise. Overhead, the gull shrieks that it saw this coming.",
+      "choices": [
+        {
+          "id": "haul",
+          "label": "Everyone grabs the rope and hauls",
+          "icon": "hand",
+          "goto": "crate_haul"
+        },
+        {
+          "id": "wedge",
+          "label": "Wedge a plank under the stack",
+          "icon": "hand",
+          "goto": "crate_wedge"
+        },
+        {
+          "id": "whistle",
+          "label": "Blow the brave whistle to call more dock workers",
+          "icon": "spark",
+          "goto": "whistle_call",
+          "requiresItem": "brave_whistle",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "brave_whistle"
+            }
+          ]
+        }
+      ],
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock workers",
+          "count": 2
+        },
+        {
+          "figure": "entities/quay_gull",
+          "name": "Gull"
+        }
+      ]
+    },
+    "crate_haul": {
+      "type": "check",
+      "tags": [
+        "force"
+      ],
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everyone grab the rope behind the dock workers! Dig in your heels and haul the stack back together on the count of three! The rope is wet and the crates are heavy, and the workers are very glad to see you.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "crates_back"
+      },
+      "onFailure": {
+        "goto": "crates_slid"
+      },
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock workers",
+          "count": 2
+        }
+      ]
+    },
+    "crate_wedge": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Which plank, and where? Wedge it under the stack at just the right spot, before the next groan.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "crates_back"
+      },
+      "onFailure": {
+        "goto": "crates_slid"
+      },
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock workers",
+          "count": 2
+        }
+      ]
+    },
+    "whistle_call": {
+      "type": "story",
+      "narration": "You blow the brave whistle. It is very, very loud. Pigeons leave the quay. Three shutters slam. Then a dozen dock workers come pounding down the boards from every direction, grab the rope and lean. The stack gives a long, sorry creak and stops. The whistle gives one last squeak and goes quiet for good.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Listen for the bleating",
+          "icon": "hand",
+          "goto": "crates_back"
+        }
+      ],
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock workers",
+          "count": 2
+        }
+      ]
+    },
+    "crates_back": {
+      "type": "story",
+      "narration": "The stack stops. The dock workers let go of the rope one finger at a time. One of them pats the top crate. \"Good crate,\" she whispers. The wet boards still creak and the fold still breathes cold, but nothing else is sliding. Behind the stack, the small bleat comes again, closer now, and a little cross. The one who patted it looks as if she might offer it a cookie.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look for the bleating",
+          "icon": "eye",
+          "goto": "gap"
+        }
+      ],
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock workers",
+          "count": 2
+        }
+      ]
+    },
+    "crates_slid": {
+      "type": "story",
+      "narration": "The stack lurches. One crate tips off the top, slides to the edge of the fold and tips in. It does not land anywhere. It just goes, with a soft pop, and a cold puff comes back out. The dock workers stare. \"Right,\" says one. \"Nobody tell the crate's owner.\" The rest of the stack stops leaning, mostly because it has less to lean with. Behind it, the small bleat comes again, closer and a little cross.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look for the bleating",
+          "icon": "eye",
+          "goto": "gap"
+        }
+      ],
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
+      "cast": [
+        {
+          "figure": "cast/dock_worker",
+          "name": "Dock workers",
+          "count": 2
+        }
+      ]
+    },
+    "gap": {
+      "type": "choice_point",
+      "narration": "Between the two stacks there is a narrow gap, and at the far end of it the air looks thin and wrinkled, like a curtain in a draft. The bleat comes from just beyond. You can squeeze through sideways, or climb over the lower stack and drop down. Neither is wide enough for a hurry. The frost on the stacks crackles like sugar.",
+      "choices": [
+        {
+          "id": "squeeze",
+          "label": "Slip sideways through the gap",
+          "icon": "feather",
+          "goto": "gap_squeeze"
+        },
+        {
+          "id": "climb",
+          "label": "Climb over the lower stack",
+          "icon": "hand",
+          "goto": "gap_climb"
+        }
+      ],
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "gap_squeeze": {
+      "type": "check",
+      "tags": [
+        "sneak"
+      ],
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Breathe in and slide through sideways without knocking a single crate. The stacks lean in on both sides to listen.",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "gap_through"
+      },
+      "onFailure": {
+        "goto": "gap_scrape"
+      },
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "gap_climb": {
+      "type": "check",
+      "tags": [
+        "climb"
+      ],
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Find handholds on the lower stack and haul yourself over. Don't wobble it!",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "gap_through"
+      },
+      "onFailure": {
+        "goto": "gap_scrape"
+      },
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "gap_through": {
+      "type": "story",
+      "narration": "You come out the other side without knocking a single crate. The cold is stronger here, and the boards under your boots are wet with frost instead of water. A tuft of white fuzz sits on a nail. The bleat comes again, from right in front of you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look ahead",
+          "icon": "eye",
+          "goto": "shimmer"
+        }
+      ],
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "gap_scrape": {
+      "type": "story",
+      "narration": "You scrape through with a squeak, and the crates grumble but hold. You lose a button and gain a splinter. The cold is stronger here, and the boards under your boots are wet with frost instead of water. A tuft of white fuzz sits on a nail. The bleat comes again, from right in front of you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look ahead",
+          "icon": "eye",
+          "goto": "shimmer"
+        }
+      ],
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks"
     },
     "shimmer": {
       "type": "story",
@@ -358,6 +1645,30 @@
               "type": "setFlag",
               "flag": "starweaver_read_first_rift",
               "value": true
+            }
+          ]
+        },
+        {
+          "id": "food",
+          "label": "Hold out some supper to tempt the kid",
+          "icon": "supper",
+          "goto": "kid_food",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
             }
           ]
         },
@@ -380,6 +1691,26 @@
       ],
       "art": "scenes/gemfall/exchange-docks",
       "rift": "open",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
+    },
+    "kid_food": {
+      "type": "story",
+      "narration": "You hold out a crust. The kid sniffs it, forgets everything else in the world, and trots straight to your boots. It gobbles the crust in three bites and leans against your shin, warm and sticky. Behind it, the fold ripples. Behind you, a mooring rope draws tight.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Reach for the kid",
+          "icon": "hand",
+          "goto": "pull"
+        }
+      ],
+      "rift": "steady",
+      "art": "scenes/gemfall/exchange-docks",
       "cast": [
         {
           "figure": "cast/goat_kid",
@@ -478,6 +1809,10 @@
         {
           "figure": "cast/dock_worker",
           "name": "Dock worker"
+        },
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
         }
       ]
     },
@@ -517,7 +1852,9 @@
     },
     "anchor": {
       "type": "check",
-      "tags": ["force"],
+      "tags": [
+        "force"
+      ],
       "stat": "might",
       "tn": 12,
       "prompt": "Hold the line while everyone grabs on.",
@@ -586,7 +1923,9 @@
     },
     "smash": {
       "type": "check",
-      "tags": ["force"],
+      "tags": [
+        "force"
+      ],
       "stat": "might",
       "tn": 8,
       "prompt": "Smash breaks a crate into a barrier. Can you guide the loose line around it?",
@@ -729,7 +2068,7 @@
           "id": "continue",
           "label": "Find shelter from the wind",
           "icon": "hand",
-          "goto": "white"
+          "goto": "ridge_walk"
         }
       ],
       "priority": 2,
@@ -748,12 +2087,21 @@
         }
       ]
     },
-    "white": {
-      "type": "rest",
-      "narration": "White slopes rise around you. Far below, water runs under a skin of ice. The goat kid wriggles out of your coat, takes one look at the empty snowfield, and climbs straight back in. You gather in the shelter of a low ridge. Somewhere beyond it, a bell rings.",
-      "heal": 0,
-      "choices": [],
-      "outcome": "success",
+    "ridge_walk": {
+      "type": "check",
+      "tags": [
+        "force"
+      ],
+      "stat": "might",
+      "tn": 8,
+      "prompt": "The wind pushes like a giant hand. Everyone link arms around the kid and lean into it together. Small steps to the low ridge! The snow squeaks under every boot.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "ridge_ok"
+      },
+      "onFailure": {
+        "goto": "ridge_drift"
+      },
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
@@ -762,189 +2110,118 @@
         }
       ]
     },
-    "delivery": {
-      "type": "choice_point",
-      "narration": "A supply barge bumps the quay. Its frogfolk pilot points at a flight of stone landing steps hanging crooked above the water. \"Those were under my feet this morning. Now my regular landing is halfway up a wall.\" Sacks of potatoes slide across his deck. \"That is supper for six boats. Help me get it ashore!\"",
-      "choices": [
-        {
-          "id": "sacks",
-          "label": "Pass the supper sacks ashore",
-          "icon": "hand",
-          "goto": "delivery_sacks"
-        },
-        {
-          "id": "moor",
-          "label": "Find the barge a safe place to tie up",
-          "icon": "hand",
-          "goto": "delivery_moor"
-        }
-      ],
-      "art": "scenes/gemfall/exchange-docks",
-      "cast": [
-        {
-          "figure": "entities/frogfolk",
-          "name": "Barge pilot"
-        }
-      ]
-    },
-    "delivery_sacks": {
+    "ridge_ok": {
       "type": "story",
-      "narration": "You form a line and pass the potato sacks onto the quay. The pilot lets his boat drift clear of the crooked steps. \"Six crews eating tonight,\" he says. Then he looks up at the landing. \"Still need a new way home.\"",
+      "narration": "Linked together, you lean into the wind and walk. Each step is small and wobbly, but the wind has nothing to push against except all of you. The ridge grows larger. Behind it, the snow is quiet. The kid peeks out of your coat, sneezes, and looks very proud of itself.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "quay_rest"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "saved_barge_supper",
-          "value": true
-        },
-        {
-          "type": "setFlag",
-          "flag": "helped_the_barge"
-        }
-      ],
-      "art": "scenes/gemfall/exchange-docks",
-      "cast": [
-        {
-          "figure": "entities/frogfolk",
-          "name": "Barge pilot"
-        }
-      ]
-    },
-    "delivery_moor": {
-      "type": "story",
-      "narration": "You guide the pilot toward a low mooring ring and help tie his boat beside the quay. He can carry the sacks ashore without jumping. \"This will do for tonight,\" he says. \"Tomorrow I have to find where my landing went.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "quay_rest"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "found_barge_mooring",
-          "value": true
-        },
-        {
-          "type": "setFlag",
-          "flag": "helped_the_barge"
-        }
-      ],
-      "art": "scenes/gemfall/exchange-docks",
-      "cast": [
-        {
-          "figure": "entities/frogfolk",
-          "name": "Barge pilot"
-        }
-      ]
-    },
-    "quay_rest": {
-      "type": "rest",
-      "narration": "The pilot calls a thank-you from his deck and tosses up a bag of warm potato skins. You sit on an upturned crate by the noodle stall to eat them. Behind the stalls, a ladder climbs the harbor master's house to the rooftops. From up there comes a lot of cawing, all of it on purpose.",
-      "heal": 0,
-      "choices": [
-        {
-          "id": "roof",
-          "label": "Climb the ladder to the rooftops",
-          "icon": "feather",
-          "goto": "rookery"
-        },
-        {
-          "id": "on",
-          "label": "Walk on along the quay",
+          "label": "Duck behind the ridge",
           "icon": "forward",
-          "goto": "quay"
+          "goto": "ridge_lee"
         }
       ],
-      "art": "scenes/gemfall/exchange-noodle-stall",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "entities/frogfolk",
-          "name": "Barge pilot"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
-    "rookery": {
+    "ridge_drift": {
       "type": "story",
-      "narration": "You climb through a trapdoor onto the rooftops. Crows sit on every chimney pot and every gutter, and all of them are looking at you. A sign hangs on the tallest chimney: NO MESSING. (WITH US.) This rooftop school is called the Rookery. Here the crows train each Duskrunner, a hero who runs quick and quiet. They all teach at once. On a peg hangs a dusk hood, soft as a shadow. A Duskrunner's quickness lives in that hood, and a star circlet worn beside it only makes it itch. Someone has put a tiny doormat at the top of the ladder. \"Wipe your feet,\" say the crows. \"We don't get messed with up here. Anyone who wants the hood may try it on.\" Then, quieter: \"Nobody who leaves the Exchange climbs our ladder again. Take the hood off somewhere far away, and you won't find us to put it back. So choose well.\"",
-      "variants": [
-        {
-          "when": {
-            "flag": "met_the_crows"
-          },
-          "text": "The crows of the Rookery eye you from every chimney pot. \"Back again,\" they say, all at once. The sign still says NO MESSING. (WITH US.) The dusk hood waits on its peg for anyone who wants to try it on. You wipe your feet on the tiny doormat without being asked. \"Remember,\" the crows say. \"Once you leave the Exchange, our ladder is gone for you.\"",
-          "replace": true
-        }
-      ],
-      "classPlace": "duskrunner",
+      "narration": "The wind shoves, and you all slide sideways across the snow in a heap, like a toboggan with elbows. You stop against the low ridge, breathing hard and laughing a little. The kid peeks out of your coat, sneezes, and looks proud of you for whatever just happened.",
       "choices": [
         {
-          "id": "lesson",
-          "label": "Learn to cross the roof quietly",
-          "icon": "feather",
-          "goto": "rookery_lesson",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "met_the_crows",
-              "value": true
-            }
-          ]
+          "id": "continue",
+          "label": "Duck behind the ridge",
+          "icon": "forward",
+          "goto": "ridge_lee"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
+    },
+    "ridge_lee": {
+      "type": "choice_point",
+      "narration": "Behind the ridge, the wind drops to a mutter. The snow here is deep and quiet, and the sky is the color of milk. The kid is shaking so hard its ears rattle. Whatever comes next, it needs warming first. How will you do it?",
+      "choices": [
+        {
+          "id": "tuck",
+          "label": "Open your coat and tuck the kid inside",
+          "icon": "shield",
+          "goto": "ridge_tuck"
         },
         {
-          "id": "down",
-          "label": "Climb back down the ladder",
-          "icon": "back",
-          "goto": "quay_rest",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "met_the_crows",
-              "value": true
-            }
-          ]
+          "id": "rub",
+          "label": "Rub the kid's cold hooves between your sleeves",
+          "icon": "hand",
+          "goto": "ridge_rub"
         }
       ],
-      "art": "scenes/classes/rookery",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "entities/rookery_crows",
-          "name": "The crows"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     },
-    "rookery_lesson": {
+    "ridge_tuck": {
       "type": "story",
-      "narration": "The crows show you how to cross the roof without a sound. Step where the moss grows. Never on the loose tile. You hold your breath and cross. Nothing clatters, and nobody at the noodle stall looks up. Back at the ladder, you find a folded note in your pocket. Nobody saw it arrive. It says: \"Saw that. Nice. Don't mess with us.\"",
+      "narration": "You open your coat wide, and the kid wriggles in, turns around three times and goes still. It is warm as toast in there. You can feel its heart ticking against yours, fast at first, then slower. The shaking stops. One small ear pokes out of your collar and listens to the wind.",
       "choices": [
         {
-          "id": "down",
-          "label": "Climb back down the ladder",
-          "icon": "back",
-          "goto": "quay_rest",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "met_the_crows",
-              "value": true
-            }
-          ]
+          "id": "continue",
+          "label": "Look out over the snow",
+          "icon": "eye",
+          "goto": "white"
         }
       ],
-      "art": "scenes/classes/rookery",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "entities/rookery_crows",
-          "name": "The crows"
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
+    },
+    "ridge_rub": {
+      "type": "story",
+      "narration": "You rub the kid's hooves between your sleeves, one by one. It sneezes twice, in rhythm, then bleats a long opinion about the whole business. The cold goes out of its legs, and out of your fingers too. By the last hoof, the kid is butting your elbow for more, and then it dives back into your coat as if it had never left.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look out over the snow",
+          "icon": "eye",
+          "goto": "white"
+        }
+      ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
+      ]
+    },
+    "white": {
+      "type": "rest",
+      "narration": "White slopes rise around you. Far below, water runs under a skin of ice. The goat kid wriggles out of your coat, takes one look at the empty snowfield, and climbs straight back in. You gather in the shelter of the low ridge. Somewhere beyond it, a bell rings.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
         }
       ]
     }
