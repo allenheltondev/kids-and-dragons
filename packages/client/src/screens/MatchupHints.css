@@ -1,0 +1,43 @@
+/*
+ * Matchup reminders on a phone: compact pills, no numbers. A plus is a solid
+ * edge and a plus glyph; a minus is a dashed edge and a minus glyph, so the
+ * two differ by shape and words, never by colour alone (spec §11). Text is
+ * sized in em so it grows with the text-size setting, and wraps.
+ */
+.matchup-hints {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+  gap: 0.25em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--font-size-sm, 0.875em);
+}
+
+.matchup-hints__item {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  min-inline-size: 0;
+  padding: 0.15em 0.6em;
+  border: 0.1em solid currentColor;
+  border-radius: var(--radius-md, 0.75em);
+  background: var(--color-surface-sunken, #120f26);
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.matchup-hints__item--plus {
+  color: var(--color-success, #4ad991);
+}
+
+.matchup-hints__item--minus {
+  color: var(--color-warning, #ffc95c);
+  border-style: dashed;
+}
+
+.matchup-hints__item > span:not(.kad-sr-only) {
+  color: var(--color-text, #f4f0ff);
+}
