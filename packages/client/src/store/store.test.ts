@@ -312,12 +312,12 @@ describe("joining", () => {
     );
   });
 
-  it("names the screen it opens, remembers the name, and sends it next time too", async () => {
+  it("names the table it opens, remembers the name, and sends it next time too", async () => {
     const h = harness();
-    await h.store.getState().openOnThisScreen("  Living room TV ");
-    expect(h.api.openDisplayRoom).toHaveBeenLastCalledWith(expect.objectContaining({ location: "Living room TV" }));
+    await h.store.getState().openOnThisScreen("  Kitchen table ");
+    expect(h.api.openDisplayRoom).toHaveBeenLastCalledWith(expect.objectContaining({ location: "Kitchen table" }));
     await h.store.getState().openOnThisScreen();
-    expect(h.api.openDisplayRoom).toHaveBeenLastCalledWith(expect.objectContaining({ location: "Living room TV" }));
+    expect(h.api.openDisplayRoom).toHaveBeenLastCalledWith(expect.objectContaining({ location: "Kitchen table" }));
     // Clearing the name forgets it.
     await h.store.getState().openOnThisScreen("");
     expect(h.api.openDisplayRoom.mock.calls.at(-1)![0]).not.toHaveProperty("location");

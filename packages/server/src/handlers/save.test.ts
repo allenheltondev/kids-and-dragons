@@ -214,24 +214,24 @@ describe("stopping for today (#259)", () => {
   });
 });
 
-describe("naming the screen a game is saved on", () => {
+describe("naming the table a game is saved at", () => {
   it("keeps the name on the run and says it on the save, in the next room's lobby", async () => {
     const h = await household();
-    const e = await evening(h, "Living room TV");
-    expect((await e.one.state()).location).toBe("Living room TV");
+    const e = await evening(h, "Kitchen table");
+    expect((await e.one.state()).location).toBe("Kitchen table");
     await walkIn([e.one, e.two]);
     await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
-    expect((await h.harness.repo.getRun(e.runId))?.location).toBe("Living room TV");
+    expect((await h.harness.repo.getRun(e.runId))?.location).toBe("Kitchen table");
 
     h.harness.clock.advance(DAY);
     const next = await room(h, GEMFALL, 1);
     const lobby = (await h.harness.repo.getState(next.runId))!;
-    expect(lobby.saved?.location).toBe("Living room TV");
-    // The new room is not on that screen unless it says so.
+    expect(lobby.saved?.location).toBe("Kitchen table");
+    // The new room is not at that table unless it says so.
     expect(lobby.location).toBeUndefined();
   });
 
-  it("leaves a save from an unnamed screen without a place", async () => {
+  it("leaves a save from an unnamed table without a place", async () => {
     const h = await household();
     const e = await evening(h);
     await walkIn([e.one, e.two]);

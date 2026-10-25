@@ -194,8 +194,8 @@ export interface GameStore {
    * nobody, and land on `/tv/:code` — the lobby the phones join (spec §2.1).
    */
   /**
-   * Open the lobby on this screen. `location` is what the family calls it
-   * ("Living room TV"): given, it is remembered on this device; left out, the
+   * Open the lobby on this screen. `location` is what the family calls its table
+   * ("Kitchen table"): given, it is remembered on this device; left out, the
    * remembered name is used.
    */
   openOnThisScreen(location?: string): Promise<void>;

@@ -490,9 +490,9 @@ export interface CreateRoomRequest {
    */
   display?: boolean;
   /**
-   * What the family calls the screen the game is on ("Living room TV"), sent
+   * What the family calls its table ("Kitchen table"), sent
    * by a TV opening a room. Kept on the run, so a saved game can say where it
-   * was saved. Optional: an unnamed screen is the common case.
+   * was saved. Optional: an unnamed table is the common case.
    */
   location?: string;
 }

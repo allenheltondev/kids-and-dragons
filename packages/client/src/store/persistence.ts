@@ -308,7 +308,7 @@ export interface SharedDeviceRecord {
 
 const LOCATION_KEY = "kad.location";
 
-/** What the family named this screen ("Living room TV"); "" when it never was. */
+/** What the family named its table ("Kitchen table"); "" when it never was. */
 export function loadLocationName(storage: KeyValueStorage = defaultStorage()): string {
   try {
     return storage.getItem(LOCATION_KEY) ?? "";
@@ -317,7 +317,7 @@ export function loadLocationName(storage: KeyValueStorage = defaultStorage()): s
   }
 }
 
-/** Remember the screen's name for next time; an empty name forgets it. */
+/** Remember the table's name for next time; an empty name forgets it. */
 export function saveLocationName(name: string, storage: KeyValueStorage = defaultStorage()): void {
   try {
     if (name === "") storage.removeItem(LOCATION_KEY);

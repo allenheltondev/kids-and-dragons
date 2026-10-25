@@ -72,7 +72,7 @@ export interface CreateRoomInput {
   hostDeviceId?: string;
   /** A family tablet is the TV (`RoomRecord.display`): nobody seated, not claimable. */
   display?: boolean;
-  /** The name the family gave the hosting screen (`RunRecord.location`), already vetted. */
+  /** The name the family gave its table (`RunRecord.location`), already vetted. */
   location?: string;
 }
 
