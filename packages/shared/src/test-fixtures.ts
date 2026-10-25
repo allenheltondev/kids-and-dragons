@@ -81,7 +81,7 @@ export function makeRules(overrides: Partial<RulesContent> = {}): RulesContent {
     // without encoding a balance decision. Retuning the real curve is a content
     // change and must not turn thirty assertions red.
     levelXp: [300, 700, 1200, 1800, 2500, 3300, 4200, 5200, 6300],
-    tierLevels: { fledgling: 1, sworn: 4, radiant: 7, mythic: 10, ascendant: 15, eternal: 20, legendary: 30 },
+    tierLevels: { fledgling: 1, sworn: 4, radiant: 7, mythic: 10, ascendant: 15, starborn: 20, legendary: 30 },
     species: {
       unicorn: species("unicorn", { stat: "heart", amount: 1, text: "+1 Heart" }, "mend", "mend_pulse"),
       dragonling: species(

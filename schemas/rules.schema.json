@@ -94,7 +94,7 @@
         "radiant",
         "mythic",
         "ascendant",
-        "eternal",
+        "starborn",
         "legendary"
       ],
       "properties": {
@@ -123,7 +123,7 @@
           "minimum": 2,
           "maximum": 20
         },
-        "eternal": {
+        "starborn": {
           "type": "integer",
           "minimum": 2,
           "maximum": 20
@@ -145,7 +145,7 @@
         "radiant",
         "mythic",
         "ascendant",
-        "eternal",
+        "starborn",
         "legendary"
       ],
       "properties": {
@@ -174,7 +174,7 @@
           "minimum": 1,
           "maximum": 30
         },
-        "eternal": {
+        "starborn": {
           "type": "integer",
           "minimum": 1,
           "maximum": 30

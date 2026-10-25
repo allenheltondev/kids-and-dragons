@@ -35,8 +35,8 @@ describe("levels 11 to 30", () => {
     expect(tierForLevel(SHIPPED, 14)).toBe("mythic");
     expect(tierForLevel(SHIPPED, 15)).toBe("ascendant");
     expect(tierForLevel(SHIPPED, 19)).toBe("ascendant");
-    expect(tierForLevel(SHIPPED, 20)).toBe("eternal");
-    expect(tierForLevel(SHIPPED, 29)).toBe("eternal");
+    expect(tierForLevel(SHIPPED, 20)).toBe("starborn");
+    expect(tierForLevel(SHIPPED, 29)).toBe("starborn");
     expect(tierForLevel(SHIPPED, 30)).toBe("legendary");
   });
 

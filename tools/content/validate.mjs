@@ -226,7 +226,7 @@ function checkRules(rep, file, rules) {
   }
 
   // spec §8.1 - the seven appearance tiers, in level order.
-  const tiers = ["fledgling", "sworn", "radiant", "mythic", "ascendant", "eternal", "legendary"];
+  const tiers = ["fledgling", "sworn", "radiant", "mythic", "ascendant", "starborn", "legendary"];
   for (let i = 1; i < tiers.length; i += 1) {
     if (rules.tierLevels[tiers[i]] <= rules.tierLevels[tiers[i - 1]]) {
       rep.fail(

@@ -77,7 +77,7 @@ export const DEFAULT_HELP_DIE: Readonly<Record<TierId, number>> = {
   radiant: 8,
   mythic: 10,
   ascendant: 10,
-  eternal: 12,
+  starborn: 12,
   legendary: 12,
 };
 

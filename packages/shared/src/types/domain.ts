@@ -102,7 +102,7 @@ export interface RankDeeds {
 }
 
 /** Appearance tiers, in level order. See spec §8.1. */
-export type TierId = "fledgling" | "sworn" | "radiant" | "mythic" | "ascendant" | "eternal" | "legendary";
+export type TierId = "fledgling" | "sworn" | "radiant" | "mythic" | "ascendant" | "starborn" | "legendary";
 
 export const TIER_IDS: readonly TierId[] = [
   "fledgling",
@@ -110,7 +110,7 @@ export const TIER_IDS: readonly TierId[] = [
   "radiant",
   "mythic",
   "ascendant",
-  "eternal",
+  "starborn",
   "legendary",
 ] as const;
 

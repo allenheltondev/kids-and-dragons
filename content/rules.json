@@ -204,7 +204,7 @@
     "radiant": 7,
     "mythic": 10,
     "ascendant": 15,
-    "eternal": 20,
+    "starborn": 20,
     "legendary": 30
   },
   "helpDie": {
@@ -213,7 +213,7 @@
     "radiant": 8,
     "mythic": 10,
     "ascendant": 10,
-    "eternal": 12,
+    "starborn": 12,
     "legendary": 12
   },
   "encounterBands": {

@@ -28,7 +28,7 @@ export const ANCHOR_Y = CANVAS.originY / CANVAS.height;
 export const STARTING_TIER: TierId = "fledgling";
 
 /**
- * The tiers that have painted art, in level order. Ascendant, eternal and
+ * The tiers that have painted art, in level order. Ascendant, starborn and
  * legendary (levels 15, 20 and 30, spec §8.1) are rules before they are
  * pictures, so a hero past Mythic is drawn as Mythic until theirs is
  * commissioned: add a tier here when its art lands. Lives here, not in
