@@ -1,3 +1,7 @@
+import type { ClassId, RulesContent, SpeciesId } from "./types/domain.js";
+import type { MatchupEdge } from "./types/matchups.js";
+import { edgesAgainst, edgesForHero } from "./matchups.js";
+
 /**
  * `content/field-guide.json` — what a player may read about the world.
  *
@@ -106,10 +110,98 @@ export interface FieldGuideEntry {
   dislikedBy?: FieldGuideReverseOpinion[];
   /** Creatures with an encounter block: ways past that are not a fight. */
   tips?: FieldGuideTip[];
+  /**
+   * Creatures with a stat line: up to two trait ids, keys of `rules.matchups.traits`
+   * (docs/matchups.md). The client draws them only once the entry is discovered.
+   */
+  traits?: string[];
 }
 
 export interface FieldGuide {
   version: number;
   /** Keyed by canon id, in a stable order: category, then id. */
   entries: Record<string, FieldGuideEntry>;
+}
+
+/** One line of "good against it" or "careful", in the words of the rule. */
+export interface GuideMatchupLine {
+  id: string;
+  text: string;
+}
+
+export interface GuideTrait {
+  id: string;
+  name: string;
+  icon: string;
+  text: string;
+}
+
+export interface CreatureMatchups {
+  traits: GuideTrait[];
+  /** Playable species names this creature likes / dislikes (canon `lore`). */
+  likes: string[];
+  dislikes: string[];
+  good: GuideMatchupLine[];
+  careful: GuideMatchupLine[];
+}
+
+/** Which way an edge pushes from the hero's side: above 0 helps, below hurts. Pairings always help. */
+export function edgeHelps(edge: MatchupEdge): number {
+  const roll = edge.on === "defend" ? -(edge.roll ?? 0) : (edge.roll ?? 0);
+  return roll + (edge.damage ?? 0);
+}
+
+const speciesOf = (ref: { of: string }): string | undefined =>
+  ref.of.startsWith("character.") ? ref.of.slice("character.".length) : undefined;
+
+/**
+ * What the "Fighting it" section of a creature page shows, or null when the
+ * creature has no traits and no opinion of a playable species (or the rules
+ * have no matchups). Pure; the client only decides whether the page is unlocked.
+ */
+export function creatureMatchups(rules: RulesContent | null | undefined, entry: FieldGuideEntry): CreatureMatchups | null {
+  const table = rules?.matchups;
+  if (!rules || !table || entry.kind !== "creature") return null;
+  const traitIds = (entry.traits ?? []).filter((id) => table.traits[id] !== undefined);
+  const names = (refs: { of: string }[] | undefined): string[] =>
+    (refs ?? []).flatMap((ref) => {
+      const id = speciesOf(ref);
+      const name = id === undefined ? undefined : (rules.species as Record<string, { name: string } | undefined>)[id]?.name;
+      return name === undefined ? [] : [name];
+    });
+  const likes = names(entry.lore?.likes);
+  const dislikes = names(entry.lore?.dislikes);
+  if (traitIds.length === 0 && likes.length === 0 && dislikes.length === 0) return null;
+  const edges = edgesAgainst(rules, traitIds);
+  const line = (edge: MatchupEdge): GuideMatchupLine => ({ id: edge.id, text: edge.text });
+  return {
+    traits: traitIds.map((id) => ({ id, name: table.traits[id]!.name, icon: table.traits[id]!.icon, text: table.traits[id]!.text })),
+    likes,
+    dislikes,
+    good: edges.filter((e) => edgeHelps(e) > 0).map(line),
+    careful: edges.filter((e) => edgeHelps(e) < 0).map(line),
+  };
+}
+
+export interface SpeciesMatchups {
+  good: GuideMatchupLine[];
+  watch: GuideMatchupLine[];
+}
+
+/** "Good at" and "Watch out" for a playable species page (`character.<id>`); null for any other entry or no edges. */
+export function speciesMatchups(rules: RulesContent | null | undefined, entryId: string): SpeciesMatchups | null {
+  const species = entryId.startsWith("character.") ? entryId.slice("character.".length) : undefined;
+  if (!rules?.matchups || species === undefined || !(rules.species as Record<string, unknown>)[species]) return null;
+  const seen = new Map<string, MatchupEdge>();
+  for (const klass of Object.keys(rules.classes)) {
+    for (const edge of edgesForHero(rules, { species: species as SpeciesId, class: klass as ClassId })) {
+      const own = [edge.hero.species].flat().includes(species as SpeciesId);
+      if (own && !seen.has(edge.id)) seen.set(edge.id, edge);
+    }
+  }
+  const edges = [...seen.values()];
+  const line = (edge: MatchupEdge): GuideMatchupLine => ({ id: edge.id, text: edge.text });
+  const good = edges.filter((e) => edgeHelps(e) > 0).map(line);
+  const watch = edges.filter((e) => edgeHelps(e) < 0).map(line);
+  return good.length === 0 && watch.length === 0 ? null : { good, watch };
 }
