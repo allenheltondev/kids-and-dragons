@@ -203,6 +203,11 @@
           "minimum": 0,
           "maximum": 10
         },
+        "natural20": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
         "chapterCap": {
           "type": "integer",
           "minimum": 0,

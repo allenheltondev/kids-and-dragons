@@ -442,7 +442,12 @@ function reconcileRunDeeds(draft: RunState, ctx: EngineContext): void {
  * the chapter's cap. Only a seated hero's own roll counts: a monster's hit on
  * the party is not a success to pay for.
  */
-function creditRollXp(draft: RunState, ctx: EngineContext, kind: "check" | "attack" | "defeat", times = 1): void {
+function creditRollXp(
+  draft: RunState,
+  ctx: EngineContext,
+  kind: "check" | "attack" | "defeat" | "natural20",
+  times = 1,
+): void {
   const pay = ctx.rules.rollXp;
   // The practice pays no XP at all.
   if (!pay || times <= 0 || isPracticeCampaign(draft.campaignId)) return;
@@ -453,11 +458,21 @@ function creditRollXp(draft: RunState, ctx: EngineContext, kind: "check" | "atta
   draft.xpEarned += amount;
 }
 
+/**
+ * Pays for a check the way its roll went: a success pays `check`, and a natural
+ * 20 pays `natural20` on top, success or not (it always succeeds anyway).
+ */
+function creditCheckXp(draft: RunState, ctx: EngineContext, roll: DiceRoll): void {
+  if (roll.result === "success") creditRollXp(draft, ctx, "check");
+  if (roll.die === 20) creditRollXp(draft, ctx, "natural20");
+}
+
 /** Pays for each of the heroes' hits among a stretch of fight events. */
 function creditAttackXp(draft: RunState, events: readonly EncounterEvent[], ctx: EngineContext): void {
   const heroes = new Set(draft.party.map((m) => m.character.id));
   const hits = events.filter((e) => e.type === "roll" && e.roll.result === "hit" && heroes.has(e.roll.characterId));
   creditRollXp(draft, ctx, "attack", hits.length);
+  creditRollXp(draft, ctx, "natural20", hits.filter((e) => e.type === "roll" && e.roll.die === 20).length);
   // A foe knocked out by a hero's action. The downs in a hero's own action are
   // the foe's or, rarely, a friend's, so a party member going down never pays.
   const foes = events.filter((e) => e.type === "down" && !heroes.has(e.actorId));
@@ -2016,7 +2031,7 @@ function doGroupRoll(
   });
   spendOnRoll(draft, spent);
   group.rolls.push(result);
-  if (result.result === "success") creditRollXp(draft, ctx, "check");
+  creditCheckXp(draft, ctx, result);
   group.pending = group.pending.filter((id) => id !== slot);
   // A die rolled in a group check is a turn rolled like any other: it counts
   // toward the "fewest checks" rotation for whoever actually threw it, a
@@ -2122,7 +2137,7 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
     [roller.character.id]: (draft.checkRolls?.[roller.character.id] ?? 0) + 1,
   };
 
-  if (result.result === "success") creditRollXp(draft, ctx, "check");
+  creditCheckXp(draft, ctx, result);
   // Both outcomes continue the story down different paths (spec §6.1).
   const branch = result.result === "success" ? scene.onSuccess : scene.onFailure;
   takeBranch(draft, branch, ctx, roller.character.id);

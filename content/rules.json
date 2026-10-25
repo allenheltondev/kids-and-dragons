@@ -42,6 +42,7 @@
     "check": 2,
     "attack": 1,
     "defeat": 2,
+    "natural20": 3,
     "chapterCap": 30
   },
   "tierLevels": {

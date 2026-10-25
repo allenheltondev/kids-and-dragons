@@ -3597,6 +3597,22 @@ describe("XP for rolls that go well", () => {
     expect(rolled.rollXp).toBeUndefined();
   });
 
+  it("pays a natural 20 on top of the check it succeeds", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, natural20: 3, chapterCap: 100 } }), rng: fixedRng(20) });
+    const state = atCheck(context);
+    const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    expect(rolled.xpEarned).toBe(state.xpEarned + 5);
+    expect(rolled.rollXp).toBe(5);
+  });
+
+  it("pays no natural 20 bonus for a roll that is not one", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, natural20: 3, chapterCap: 100 } }), rng: fixedRng(19) });
+    const state = atCheck(context);
+    const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    expect(rolled.lastRoll?.die).toBe(19);
+    expect(rolled.xpEarned).toBe(state.xpEarned + (rolled.lastRoll?.result === "success" ? 2 : 0));
+  });
+
   it("stops at the chapter's cap", () => {
     const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, chapterCap: 3 } }), rng: fixedRng(20) });
     const state = { ...atCheck(context), rollXp: 2 };
@@ -3624,6 +3640,26 @@ describe("XP for rolls that go well", () => {
     state = fightToTheEnd(begun.state, context);
     expect(state.rollXp ?? 0).toBeGreaterThan(checkXp);
     expect(state.xpEarned).toBeGreaterThanOrEqual(state.rollXp ?? 0);
+  });
+
+  it("pays more for a natural 20 an attack rolls", () => {
+    const play = (natural20: number): number => {
+      const context = ctx({ rules: makeRules({ rollXp: { check: 0, attack: 1, natural20, chapterCap: 1000 } }), rng: fixedRng(20) });
+      const state = walk(
+        seatedParty(context),
+        [
+          { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+          { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+          { playerId: "p_2", intent: { type: "ROLL" } },
+          { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+          { playerId: "p_1", intent: { type: "READY", ready: true } },
+        ],
+        context,
+      ).state;
+      const begun = applyIntent(state, { playerId: "p_2", intent: { type: "READY", ready: true } }, context);
+      return fightToTheEnd(begun.state, context).rollXp ?? 0;
+    };
+    expect(play(3)).toBeGreaterThan(play(0));
   });
 
   it("pays more when foes are knocked out", () => {
