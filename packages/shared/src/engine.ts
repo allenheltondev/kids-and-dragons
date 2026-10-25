@@ -92,6 +92,10 @@ import type { ClientIntent, Presentation } from "./types/protocol.js";
 import type { Rng } from "./dice.js";
 import { isPracticeCampaign } from "./practice.js";
 import { DEFAULT_HELP_DIE, resolveCheck } from "./dice.js";
+import type { MatchupInput } from "./dice.js";
+import type { MatchupRules } from "./types/matchups.js";
+import { checkNotes, matchupTotal } from "./matchups.js";
+import { sceneCreatures, type Bestiary } from "./bestiary.js";
 import { newCharacter, resolveCharacter, withInventory, withMastery } from "./character.js";
 import {
   actionCredits,
@@ -224,6 +228,18 @@ export interface EngineContext {
    * Absent for every run without declared facts.
    */
   campaignFacts?: Readonly<Record<FactId, FactValue>>;
+  /**
+   * Matchups (docs/matchups.md): `rules.matchups`, handed in by the server
+   * only when `matchupsOn(rules, campaignId)` holds for the run's campaign.
+   * Absent, fights and checks compute exactly what they did before matchups
+   * (Gemfall is exempt and never gets it).
+   */
+  matchups?: MatchupRules;
+  /**
+   * `content/bestiary.json`, for the likes and dislikes of the creatures a
+   * check scene shows (matchups' opinions). Read only with `matchups`.
+   */
+  bestiary?: Bestiary | null;
 }
 
 export type EngineErrorCode = "STALE_SEQ" | "ILLEGAL" | "NOT_FOUND" | "FORBIDDEN";
@@ -2027,12 +2043,14 @@ function doGroupRoll(
   // One story-check buff is one die's worth (#222): whoever spends it, it is
   // on their roll alone, and the next roller is offered whatever is left.
   const spent = checkBuffSpent(prompt, spendBuff);
+  const matchup = checkMatchup(ctx, me.character, scene);
   const result = resolveCheck(ctx.rng, {
     characterId: me.character.id,
     stat: scene.stat,
     mod: me.character.stats[scene.stat],
     tn: scene.tn,
     ...(spent === undefined ? {} : { buff: spent }),
+    ...(matchup === undefined ? {} : { matchup }),
   });
   spendOnRoll(draft, spent);
   group.rolls.push(result);
@@ -2091,6 +2109,26 @@ function doHelp(draft: RunState, playerId: string, ctx: EngineContext): Presenta
   return undefined;
 }
 
+/**
+ * The matchups on a hero's check (docs/matchups.md): edges on the scene's
+ * `tags`, and the opinions of the creatures it `discovers` or `cast`s.
+ * Undefined without `ctx.matchups` or when nothing applies, so the roll
+ * carries no `matchup` key and totals what it always did.
+ */
+function checkMatchup(
+  ctx: EngineContext,
+  character: ResolvedCharacter,
+  scene: { tags?: string[]; discovers?: string[]; cast?: { figure: string }[] },
+): MatchupInput | undefined {
+  if (!ctx.matchups) return undefined;
+  const notes = checkNotes(ctx.matchups, { species: character.species, class: character.class }, {
+    ...(scene.tags ? { tags: scene.tags } : {}),
+    creatures: sceneCreatures(scene, ctx.bestiary),
+  });
+  if (notes.length === 0) return undefined;
+  return { amount: matchupTotal(notes).roll, notes };
+}
+
 function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff?: unknown): Presentation | undefined {
   const prompt = draft.prompt;
   if (!prompt || prompt.kind !== "roll") {
@@ -2126,6 +2164,7 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
   if (prompt.helper && !helper) {
     draft.helpSpent = (draft.helpSpent ?? []).filter((id) => id !== roller.character.id);
   }
+  const matchup = checkMatchup(ctx, roller.character, scene);
   const result: DiceRoll = resolveCheck(ctx.rng, {
     characterId: roller.character.id,
     stat: scene.stat,
@@ -2133,6 +2172,7 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
     tn: scene.tn,
     ...(helper === undefined ? {} : { help: helper }),
     ...(spent === undefined ? {} : { buff: spent }),
+    ...(matchup === undefined ? {} : { matchup }),
   });
   spendOnRoll(draft, spent);
   draft.lastRoll = result;
@@ -2426,7 +2466,12 @@ function doEndTurn(draft: RunState, playerId: string, ctx: EngineContext): Prese
 
 /** The slice of `EngineContext` a combat call needs. */
 function combatCtx(ctx: EngineContext) {
-  return { rules: ctx.rules, abilities: ctx.abilities ?? {}, rng: ctx.rng };
+  return {
+    rules: ctx.rules,
+    abilities: ctx.abilities ?? {},
+    rng: ctx.rng,
+    ...(ctx.matchups ? { matchups: ctx.matchups } : {}),
+  };
 }
 
 /**

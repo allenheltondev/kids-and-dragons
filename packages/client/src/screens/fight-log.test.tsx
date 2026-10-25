@@ -18,6 +18,7 @@ import {
 } from "@kad/shared";
 import { makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
+import { rollWords } from "./fight-log";
 import { FIGHT_LOG_LINES, FightLog, GUARD_WORDS, batchesForLines, fightLogLines } from "./FightLog";
 
 const RULES = makeRules();
@@ -141,6 +142,38 @@ describe("the fight log's words", () => {
     const lines = fightLogLines(batches, fight());
     expect(lines).toHaveLength(FIGHT_LOG_LINES);
     expect(lines.map((l) => l.text).at(-1)).toBe("Skyclaw gets 1 back. 8 now.");
+  });
+});
+
+describe("a swing with a matchup", () => {
+  const sum = (text: string) => {
+    const [lhs, rhs] = text.split("=");
+    return [(lhs!.match(/[+-]\s?\d+/g) ?? []).reduce((a, t) => a + Number(t.replace(/\s/g, "")), Number(/^\D*(\d+)/.exec(lhs!)![1])) - 0, Number(/\d+/.exec(rhs!)![0])];
+  };
+  const withM = (amount: number, over: Partial<DiceRoll> = {}) => {
+    const base = roll({ die: 14, mod: 2, ...over });
+    return { ...base, total: 14 + base.mod + amount, matchup: { amount, notes: [] } } as DiceRoll;
+  };
+
+  it.each([
+    [1, "14 + 2 Quick + 1 matchup = 17 vs Guard 13"],
+    [-1, "14 + 2 Quick - 1 matchup = 15 vs Guard 13"],
+    [3, "14 + 2 Quick + 3 matchup = 19 vs Guard 13"],
+    [-3, "14 + 2 Quick - 3 matchup = 13 vs Guard 13"],
+  ])("reads and draws matchup %i so the terms add up", (amount, words) => {
+    const r = withM(amount);
+    expect(rollWords(r)).toBe(words);
+    expect(sum(rollWords(r))).toEqual([r.total, r.total]);
+    mount(fight());
+    play([{ type: "roll", roll: r, targetId: "wisp#1", tier: "graze" }, { type: "damage", actorId: "wisp#1", amount: 2, hp: 4 }]);
+    const text = within(screen.getByRole("complementary", { name: "The fight so far" })).getAllByRole("listitem")[0]!.textContent!;
+    expect(text).toContain(`${amount < 0 ? "-" : "+"} ${Math.abs(amount)} matchup`);
+    expect(text).toContain(`= ${r.total}`);
+  });
+
+  it("is unchanged with no matchup", () => {
+    expect(rollWords(roll())).toBe("14 + 2 Quick = 16 vs Guard 13");
+    expect(rollWords({ ...roll(), matchup: { amount: 0, notes: [] } })).toBe("14 + 2 Quick = 16 vs Guard 13");
   });
 });
 

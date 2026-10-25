@@ -50,7 +50,7 @@ interface Loose {
   gear?: string;
   home?: string;
   distinctions?: { rank: FieldGuideClass["distinctions"][number]["rank"]; move: string }[];
-  encounter?: { resolutions?: { kind: string; text?: string }[] };
+  encounter?: { resolutions?: { kind: string; text?: string }[]; traits?: string[] };
 }
 
 interface LooseOpinion {
@@ -229,6 +229,10 @@ export function buildFieldGuide(
       .filter((r) => r.text !== undefined)
       .map((r) => ({ kind: r.kind, text: r.text as string }));
     if (tips.length > 0) entry.tips = tips;
+
+    // Trait ids only; names and sentences come from rules at render time.
+    const traits = entity.encounter?.traits ?? [];
+    if (traits.length > 0) entry.traits = [...traits];
 
     entries.push(entry);
   }

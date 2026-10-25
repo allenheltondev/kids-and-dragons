@@ -895,6 +895,25 @@
             }
           }
         },
+        "traits": {
+          "$comment": "docs/matchups.md: keys of rules.matchups.traits (content:validate checks them). Filled from content/bestiary.json when the enemy names a creature; authoring them replaces canon's. Read only where matchups are on.",
+          "type": "array",
+          "maxItems": 2,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" }
+        },
+        "likes": {
+          "$comment": "docs/matchups.md: playable species this creature likes (it holds back against them). Filled from the bestiary like traits.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/speciesId" }
+        },
+        "dislikes": {
+          "$comment": "docs/matchups.md: playable species this creature dislikes (it singles them out). Filled from the bestiary like traits.",
+          "type": "array",
+          "uniqueItems": true,
+          "items": { "$ref": "#/$defs/speciesId" }
+        },
         "rift": {
           "$comment": "#220 how this creature fights in a place that fights back. Read only in a fight with an environment.",
           "type": "object",
@@ -1139,6 +1158,13 @@
         },
         "stat": {
           "$ref": "#/$defs/statId"
+        },
+        "tags": {
+          "$comment": "docs/matchups.md: what kind of doing this is, keys of rules.matchups.checkTags (content:validate checks them). Mechanical only, never shown as story text.",
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[a-z][a-z0-9_-]*$" }
         },
         "tn": {
           "$comment": "easy 8 / normal 12 / hard 16, spec \u00a74.1. The range allows authored in-between values; anything outside it is a typo.",

@@ -186,7 +186,12 @@ export function spokenRoll(
     roll.buff === undefined
       ? ""
       : ` ${roll.buff.amount < 0 ? "minus" : "plus"} ${String(Math.abs(roll.buff.amount))} from ${roll.buff.label}`;
-  return `${who} rolled ${String(roll.die)} plus ${String(roll.mod)}${help}${buff}, ${String(roll.total)}. ${outcomeWord(roll)}${group}`;
+  const matchupAmount = roll.matchup?.amount ?? 0;
+  const matchup =
+    matchupAmount === 0
+      ? ""
+      : ` ${matchupAmount < 0 ? "minus" : "plus"} ${String(Math.abs(matchupAmount))} from the matchup`;
+  return `${who} rolled ${String(roll.die)} plus ${String(roll.mod)}${help}${buff}${matchup}, ${String(roll.total)}. ${outcomeWord(roll)}${group}`;
 }
 
 export function DiceOverlay(): ReactElement | null {
@@ -371,6 +376,13 @@ export function DiceOverlay(): ReactElement | null {
             <span className="dice__op">
               {roll.buff.amount < 0 ? "−" : "+"}
               {Math.abs(roll.buff.amount)}
+            </span>
+          )}
+          {/* The matchup (docs/matchups.md): the capped amount that was applied, so the sum adds up. */}
+          {roll.matchup === undefined || roll.matchup.amount === 0 ? null : (
+            <span className="dice__op">
+              {roll.matchup.amount < 0 ? "−" : "+"}
+              {Math.abs(roll.matchup.amount)}
             </span>
           )}
           <span className="dice__op">=</span>

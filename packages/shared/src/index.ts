@@ -15,6 +15,7 @@ export * from "./types/buffs.js";
 export * from "./types/state.js";
 export * from "./types/protocol.js";
 export * from "./types/world.js";
+export * from "./types/matchups.js";
 
 export * from "./rules.js";
 export * from "./character.js";
@@ -29,6 +30,7 @@ export * from "./kid-profile.js";
 export * from "./dice.js";
 export * from "./inventory.js";
 export * from "./bestiary.js";
+export * from "./matchups.js";
 export * from "./field-guide.js";
 export * from "./discoveries.js";
 export * from "./chapter-graph.js";
