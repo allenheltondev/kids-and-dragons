@@ -156,9 +156,12 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
         }
       }
     } else if (state.prompt?.kind === "interaction") {
-      // The mechanic itself is exercised in packages/shared/src/interactions.test.ts;
-      // here every authored outcome (the untimed helping hand too, when the scene
-      // writes one) is walked to its continuation through the engine's own intent.
+      // Synthetic branch walking: the prompt is put straight into its result phase with
+      // each authored outcome and only the engine's own `continue` is sent. That proves the
+      // story continues from every branch, not that the scene can be completed. The mechanics
+      // are exercised in packages/shared/src/interactions.test.ts, and the chapters' own
+      // scenes are played with real start, stop, answer, support, assist and continue
+      // actions in riftlight-interactions.test.ts.
       const scene = chapter.scenes[state.sceneId!]!;
       if (scene.type !== "interaction") throw new Error("Expected interaction");
       for (const outcome of ["success", "failure", "assisted"] as const) {
