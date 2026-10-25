@@ -6,7 +6,7 @@
   "title": "Land Under an Unfamiliar Sky",
   "biome": "sky_islands",
   "music": "riftlight-paths",
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 33,
   "xpAward": 140,
   "entry": "island",
   "goal": {
@@ -21,6 +21,11 @@
         "id": "guard_edge",
         "label": "Help the keeper guard the edge",
         "flag": "guarded_the_island_edge"
+      },
+      {
+        "id": "follow_song",
+        "label": "Find which way the song leads",
+        "flag": "found_the_whale_song"
       }
     ]
   },
@@ -38,13 +43,13 @@
         }
       ],
       "rift": "collapse",
-      "narration": "The fold opens onto dry ground high above the realm. Your party crosses together. Behind you it closes, leaving only cold air. A kitsune temple keeper leads you away from the island's edge. \"These are called the Sky Islands,\" she says. \"And this one is not where it belongs.\" Find shelter, listen for the opening, and help her mark the unsafe path.",
+      "narration": "The fold opens onto cold stone high above the realm. Your party stumbles through together. Behind you the fold shuts with a pop, and wind rushes in to fill the gap. A kitsune temple keeper hooks one arm through a rope ring and waves you over. \"Hold on to something! These are called the Sky Islands, and this one is not where it belongs.\" Your goal is to find your feet up here. Find shelter, listen for the opening, and help her mark the unsafe path.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Grab a ring and hold on",
           "icon": "hand",
-          "goto": "lesson"
+          "goto": "landing"
         }
       ],
       "variants": [
@@ -53,41 +58,87 @@
             "flag": "sky_arrival_flight"
           },
           "replace": true,
-          "text": "The Cairnstep griffins bring your whole party across to an island high above the realm. A kitsune temple keeper welcomes you away from the edge. \"These are called the Sky Islands,\" she says. \"Our old landing route points into empty sky now.\" Find shelter, listen for the opening, and help her mark the unsafe path."
+          "text": "The Cairnstep griffins swoop low and set your whole party down on a stone pad high above the realm. They are gone again in three flaps. A kitsune temple keeper hooks one arm through a rope ring and waves you over. \"Hold on to something! These are called the Sky Islands. Our old landing route points into empty sky now.\" Your goal is to find your feet up here. Find shelter, listen for the opening, and help her mark the unsafe path."
+        }
+      ]
+    },
+    "landing": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "might",
+      "tn": 8,
+      "roller": "all",
+      "prompt": "The wind hits the landing pad like a slammed door. Everyone grab a rope ring and hold on!",
+      "onSuccess": {
+        "goto": "landing_held"
+      },
+      "onFailure": {
+        "goto": "landing_slid"
+      }
+    },
+    "landing_held": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "Every hand finds a ring. The gust howls over your heads and moves on. The keeper counts you with her chin. \"Good grips. Most visitors arrive by sitting down hard.\" She leads you past a gold-roofed shrine with a bronze bell as big as a barrel. Wind banners snap above it, each one pointing a different way. \"Walk where I walk,\" she says. \"Ask questions when both feet are happy.\" She presses a wrapped supper bundle into your hands. \"Eat when the wind lets you.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the keeper",
+          "icon": "hand",
+          "goto": "lesson"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
+        }
+      ]
+    },
+    "landing_slid": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "The wind scoops your whole party off its feet. You slide across the boards like soap. The keeper flings her rope and hooks the last boot an arm's length from the edge. Everyone is safe, if scraped. Your hats keep going. One lands on a passing gull, which now looks very official. \"Welcome,\" says the keeper, dusting off her tails. \"That is how the pad says hello.\" She tosses you a wrapped supper bundle for the scrapes.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get up and follow the keeper",
+          "icon": "hand",
+          "goto": "lesson"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        },
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
         }
       ]
     },
     "lesson": {
       "type": "story",
-      "narration": "A kitsune named Seren Wisp is comparing notes with a young manticore named Pip Thistledown. They wear the Riftseekers' clasps. \"I am finding what has moved,\" says Pip. Seren asks you to hum the hall note, then listen for an answering sound. \"A starweaver can learn to answer a rift's hum. That is called Attune. No one here chooses a rift's rules.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Listen together",
-          "icon": "hand",
-          "goto": "local",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "attune_taught",
-              "value": true
-            },
-            {
-              "type": "setFlag",
-              "flag": "listened_for_the_rift_hum"
-            }
-          ]
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "attune_taught"
-          },
-          "replace": true,
-          "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. Seren asks you to compare the sounds with what she taught you before. Pip adds the new place to his notes."
-        }
-      ],
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -101,11 +152,191 @@
           "figure": "cast/kitsune_temple_keeper",
           "name": "Temple keeper"
         }
+      ],
+      "narration": "A kitsune named Seren Wisp is comparing notes with a young manticore named Pip Thistledown. They wear the Riftseekers' clasps. \"I am counting what has moved,\" says Pip, tapping his notebook. \"The count keeps changing. Help me and you can read it.\" Seren asks you to hum the hall note, then listen for an answering sound. \"A starweaver can learn to answer a rift's hum. That is called Attune. No one here chooses a rift's rules.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Hum the hall note and listen",
+          "icon": "hand",
+          "goto": "hum",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "attune_taught",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "pip",
+          "label": "Ask Pip to show his notebook first",
+          "icon": "hand",
+          "goto": "pip_notes",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "attune_taught",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "attune",
+          "label": "Answer the hum with Attune",
+          "icon": "star",
+          "goto": "hum_attuned",
+          "requiresClass": "starweaver",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "attune_taught",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "attune_taught"
+          },
+          "replace": true,
+          "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. They wear the Riftseekers' clasps. Pip taps his notebook. \"The count keeps changing here too. Help me and you can read it.\" Seren asks you to compare the sounds with what she taught you before."
+        }
+      ]
+    },
+    "pip_notes": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "narration": "Pip opens his notebook with both paws. It is full of tiny islands and arrows that have been crossed out. \"This one was east of here at breakfast. Now it is south, and the arrow is too small to show how rude that is.\" He taps a smudge. \"There is a sound out there, and when it moves, the islands near it move too. I think. I cannot prove it alone. Will you help me listen?\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Listen with Seren",
+          "icon": "hand",
+          "goto": "hum"
+        }
+      ]
+    },
+    "hum": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Hum the hall note, then listen hard. Which way does the answering sound come from?",
+      "onSuccess": {
+        "goto": "hum_heard"
+      },
+      "onFailure": {
+        "goto": "hum_fuzzy"
+      }
+    },
+    "hum_attuned": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "A starweaver leads the Attune answer, humming back to the rift. The qualified hero assists; choose who leads the team check.",
+      "onSuccess": {
+        "goto": "hum_heard"
+      },
+      "onFailure": {
+        "goto": "hum_fuzzy"
+      }
+    },
+    "hum_heard": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "A thin hum answers from far to the east. Then it answers again from the very same spot. You point. Seren's ears swing up. \"That is a rift talking. Its hum stays put while the wind runs around it. Remember the feel of it. A hum is steady. Wind is a liar.\" Pip writes EAST in his notebook and underlines it twice, in case east moves.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the island",
+          "icon": "hand",
+          "goto": "local"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "listened_for_the_rift_hum"
+        }
+      ]
+    },
+    "hum_fuzzy": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "The wind drowns your note, and your answer comes out a jumble. Seren does not sigh. She hums slowly, then has you press a palm flat to the stone. You feel it, low and steady, a hum in your hand instead of your ears. It takes longer, and it sticks. Pip writes EAST with a question mark and gives the question mark a tiny hat.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the island",
+          "icon": "hand",
+          "goto": "local"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "listened_for_the_rift_hum"
+        }
       ]
     },
     "local": {
       "type": "choice_point",
-      "narration": "The keeper shows you a rope stretched between two marker posts. Yesterday it pointed toward a neighboring island; now it points into empty sky. A low song sounds beyond the mist. How will you help her keep travelers clear of the edge?",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "The keeper shows you a rope stretched between two marker posts. Yesterday it pointed toward a neighboring island. Now it points into empty sky, and travelers keep following it. A low song sounds beyond the mist. How will you help her keep travelers clear of the edge?",
       "choices": [
         {
           "id": "markers",
@@ -118,48 +349,875 @@
           "label": "Listen for the song before marking the path",
           "icon": "hand",
           "goto": "song"
-        }
-      ],
-      "cast": [
+        },
         {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
+          "id": "scout",
+          "label": "Scout the edge from the air",
+          "icon": "wing",
+          "goto": "edge_scout",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
         }
       ]
     },
     "markers": {
       "type": "story",
-      "narration": "You move the markers where a traveler will see them before reaching the broken route. The keeper fastens a warning cord between them. \"One less person walking toward an old view.\"",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "The keeper has three cairn stones, each as heavy as a sleeping goat. They belong on the path, where a traveler will see them before the rope road ends. The boards are slick with mist, and the wind keeps trying to help. Each stone rides a wooden sledge. Someone strong must pull, and the rest must keep the sledge straight.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Start dragging",
+          "icon": "hand",
+          "goto": "markers_check"
+        }
+      ]
+    },
+    "markers_check": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "might",
+      "tn": 12,
+      "roller": "best",
+      "prompt": "Drag the cairn stones along the slick path. The strongest of you pulls, and the rest steady the sledge.",
+      "onSuccess": {
+        "goto": "markers_set"
+      },
+      "onFailure": {
+        "goto": "markers_dropped"
+      }
+    },
+    "markers_set": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "Three cairns stand in a line, tall enough to see in fog. The keeper ties a warning cord between them and plucks it. It hums. \"One less traveler walking toward an old view.\" She pats the nearest cairn as if it were a pony, and the cairn, being a rock, says nothing. Pip salutes it anyway, just in case it is somebody important.",
       "choices": [
         {
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "island_rest"
+          "goto": "walker"
         }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "guarded_the_island_edge"
-        }
-      ],
+      ]
+    },
+    "markers_dropped": {
+      "type": "story",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
           "name": "Temple keeper"
+        }
+      ],
+      "narration": "The last stone slides off its sledge, rolls to the edge, and drops out of sight. You wait for a crash. Nothing comes. \"It will arrive somewhere,\" says the keeper. She ties her own washing line between the two cairns you saved and clips a spoon to it. The spoon clatters in the wind, which is more warning than you expected.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "walker"
         }
       ]
     },
     "song": {
       "type": "story",
-      "narration": "You wait until the low song sounds again. It travels through the mist far from the route the keeper expected. You mark that difference on her slate without guessing what it means.",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "You wait until the low song sounds again. It travels through the mist from a spot far from where the keeper expected. She hands you her slate and a stub of chalk. \"Mark where it comes from, every time it sounds. Everyone points at once. If most of you agree, we have a true bearing.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Point together",
+          "icon": "hand",
+          "goto": "song_check"
+        }
+      ]
+    },
+    "song_check": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "roller": "all",
+      "prompt": "Everyone points at the sound each time it comes. If most of you agree, the keeper can chalk a true bearing.",
+      "onSuccess": {
+        "goto": "song_bearing"
+      },
+      "onFailure": {
+        "goto": "song_muddled"
+      }
+    },
+    "song_bearing": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "Most fingers point the same way: east, and a little down. The keeper chalks a bold line on her slate, then a second line to show where the old route pointed. They do not agree at all. \"So the song is not where it was,\" she says. \"Neither are we.\" She moves the marker posts to match your line, and hangs her spare scarf on one to make it feel important. The scarf flaps toward the east, as if it agrees.",
       "choices": [
         {
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
-          "goto": "island_rest"
+          "goto": "walker"
+        }
+      ]
+    },
+    "song_muddled": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "Fingers point east, south, and one straight up at a gull. The slate looks as if a spider fell in the chalk. The keeper rubs it out with her sleeve, kindly. \"The song bounces off the mist. We will catch it again when the sky is calmer.\" She picks one guess, east, and moves the marker posts to it. The gull looks insulted.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "walker"
+        }
+      ]
+    },
+    "edge_scout": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "quick",
+      "tn": 8,
+      "roller": "best",
+      "prompt": "Wings lift you over the edge. Can the best flier hold steady in the gusts long enough to see the whole island?",
+      "onSuccess": {
+        "goto": "edge_scouted"
+      },
+      "onFailure": {
+        "goto": "edge_gusted"
+      }
+    },
+    "edge_scouted": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "From up here the island looks like a dropped cookie: a shrine, a landing pad, a tall pole with an iron basket on top, and a rope road that runs to nothing. Beyond the mist a long shape slides by, far away, singing. You land and draw the keeper a map in the dust. Cairns here, here and here. She nods so hard her ears flap.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "walker"
+        }
+      ]
+    },
+    "edge_gusted": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "A gust spins you like a leaf. You tumble back to the pad with a bump, wings flapping, dignity gone. You saw enough to know the edge is longer than the rope. The keeper drags three cairns to the path herself, muttering, and you help her set them where you remember. They lean a little, like friends telling a secret.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "walker"
+        }
+      ]
+    },
+    "walker": {
+      "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "A rattle comes down the old rope road. A kite seller is pulling a cart of kites toward the edge, his eyes on the sky and his nose in a map. The map is upside down. The road ends in empty air twenty steps ahead of him. \"Dob!\" shouts the keeper. \"Stop!\" The kite seller waves cheerfully and keeps walking. How will you stop him?",
+      "choices": [
+        {
+          "id": "catch",
+          "label": "Sprint down the boards and grab his cart rope",
+          "icon": "hand",
+          "goto": "walker_catch"
+        },
+        {
+          "id": "call",
+          "label": "Wave the warning cord and call him back",
+          "icon": "hand",
+          "goto": "walker_call"
+        },
+        {
+          "id": "leap",
+          "label": "Leap ahead and block the road",
+          "icon": "arrow",
+          "goto": "walker_leap",
+          "requiresSpecies": "manticore"
+        }
+      ]
+    },
+    "walker_catch": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Sprint down the slick boards and catch the cart's rope before the front wheel reaches the last plank.",
+      "onSuccess": {
+        "goto": "walker_safe"
+      },
+      "onFailure": {
+        "goto": "walker_dragged"
+      }
+    },
+    "walker_call": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Wave the warning cord and call his name, loud and kind, until he looks up from his upside-down map.",
+      "onSuccess": {
+        "goto": "walker_safe"
+      },
+      "onFailure": {
+        "goto": "walker_dragged"
+      }
+    },
+    "walker_leap": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "quick",
+      "tn": 8,
+      "roller": "best",
+      "prompt": "Leap carries you over the cart and onto the last plank. Can you land square and turn the cart around?",
+      "onSuccess": {
+        "goto": "walker_safe"
+      },
+      "onFailure": {
+        "goto": "walker_dragged"
+      }
+    },
+    "walker_safe": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "Dob stops, one wheel on the last plank, and looks down. He looks up. He looks at his map, and turns it right side up. \"Ah,\" he says. The keeper does not scold. She makes him tea he forgets to drink. \"I sell kites to the island across,\" says Dob. \"The road went wrong, and I did not. I think.\" He unrolls a bundle of bright kite-flags with long tails. \"You saved my cart. Wave these, and the whole sky will see.\" He ties a springy kite-string lace around your ankle. \"For quick feet.\" Then he counts four coins into your hand, with a bow.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "edge_merge"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "dob_safe"
+        },
+        {
+          "type": "grantItem",
+          "itemId": "quickfoot_lace",
+          "to": "party"
+        },
+        {
+          "type": "grantCoins",
+          "amount": 4
+        }
+      ]
+    },
+    "walker_dragged": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "The cart tips at the last plank, one wheel in the sky. You and the keeper haul on the rope while kites spill off like startled birds. A few escape. Most snag on the posts. Dob dangles from his strap, smiling, his hat gone. \"Ah,\" he says. \"Wrong road.\" Back on stone, he gathers what is left, a bundle of bright kite-flags with long tails. \"I sell kites to the island across. Wave these, and the whole sky will see.\" He presses three coins into your hand, all he can find in his pockets.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "edge_merge"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "dob_rescued"
+        },
+        {
+          "type": "grantCoins",
+          "amount": 3
+        }
+      ]
+    },
+    "edge_merge": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "The keeper leans on a rope ring and studies the sky. Dob sits on his cart with his map the right way up. \"Good. That is the edge told about, and one kite seller safe. Now the hard part.\" She points to a tall pole with an iron basket on top. \"The signal basket. At dusk we light it, so every island and ferry knows where we hang. The pole is crooked from the move, and our fuel is a mess. A ferry captain named Thimble is due tonight with passengers, and without a light she will never find us.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the pole",
+          "icon": "hand",
+          "goto": "basket_plan"
+        }
+      ]
+    },
+    "basket_plan": {
+      "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "The pole leans like a sleepy giraffe. Its stone foot has cracked loose from the rock. Pip circles it twice, chewing his pencil. \"If that tips at dusk, the fire goes over the edge and the basket goes with it.\" The keeper hands you a coil of rope and a pile of wedge stones. Raise it straight and make it firm before dark. How will you do it?",
+      "choices": [
+        {
+          "id": "ropes",
+          "label": "Raise it with ropes, everyone hauling",
+          "icon": "hand",
+          "goto": "pole_ropes"
+        },
+        {
+          "id": "wedge",
+          "label": "Fit wedge stones under the foot, one careful try at a time",
+          "icon": "hand",
+          "goto": "pole_wedge"
+        },
+        {
+          "id": "smash",
+          "label": "Lift it upright with Smash",
+          "icon": "fist",
+          "goto": "pole_smash",
+          "requiresSpecies": "bigfoot"
+        },
+        {
+          "id": "brace",
+          "label": "Brace the foot while friends tie off the ropes",
+          "icon": "shield",
+          "goto": "pole_brace",
+          "requiresClass": "thornguard"
+        }
+      ]
+    },
+    "pole_ropes": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "stat": "might",
+      "tn": 12,
+      "roller": "all",
+      "prompt": "Loop the ropes around the pole and haul. Everyone heaves together on the keeper's count!",
+      "onSuccess": {
+        "goto": "pole_up"
+      },
+      "onFailure": {
+        "goto": "pole_leaning"
+      }
+    },
+    "pole_wedge": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Find the wedge stones that fit the cracked foot. Which stone goes where, and in what order?",
+      "onSuccess": {
+        "goto": "pole_up"
+      },
+      "onFailure": {
+        "goto": "pole_leaning"
+      }
+    },
+    "pole_smash": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "stat": "might",
+      "tn": 8,
+      "roller": "best",
+      "prompt": "Smash lifts the pole upright. Can you seat the stone foot back in its socket without cracking it again?",
+      "onSuccess": {
+        "goto": "pole_up"
+      },
+      "onFailure": {
+        "goto": "pole_leaning"
+      }
+    },
+    "pole_brace": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Brace holds the foot steady. Can the others tie off the guy ropes before the pole shifts?",
+      "onSuccess": {
+        "goto": "pole_up"
+      },
+      "onFailure": {
+        "goto": "pole_leaning"
+      }
+    },
+    "pole_up": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "The pole stands straight as a spoon in porridge. The basket sits level on top. The keeper taps it, and it gives a proud, tinny ring. Pip, who held one rope end a moment too long, is lifted half a step off the ground. He does not mention it. Neither does anyone else, loudly. The wind banners, annoyed, all turn to point at the pole.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "fuel"
+        }
+      ]
+    },
+    "pole_leaning": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "The pole stands, mostly. It leans a thumb's width to the east and creaks at every gust. The keeper ties on two extra guy ropes and gives it a stern look. \"It will hold. It just has opinions.\" Whoever lights the basket will need to keep a steady hand while the pole sways.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "fuel"
+        }
+      ]
+    },
+    "fuel": {
+      "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "There is no fire without fuel. The oil jars cracked in the move, and the keeper's store is a sad shiny puddle. She points two ways. A woodshed under the shrine eaves holds dry logs, if you can carry them across the yard. The orchard has fresh windfall twigs, if you can catch them. The wind wants both. What will you fetch?",
+      "choices": [
+        {
+          "id": "logs",
+          "label": "Haul dry logs from the woodshed",
+          "icon": "hand",
+          "goto": "fuel_logs"
+        },
+        {
+          "id": "twigs",
+          "label": "Chase the windfall twigs in the orchard",
+          "icon": "hand",
+          "goto": "fuel_twigs"
+        },
+        {
+          "id": "dash",
+          "label": "Let a duskrunner dash for the dry logs",
+          "icon": "arrow",
+          "goto": "fuel_dash",
+          "requiresClass": "duskrunner"
+        },
+        {
+          "id": "lace",
+          "label": "Tie on Dob's lace and run for the dry logs",
+          "icon": "arrow",
+          "goto": "fuel_lace",
+          "requiresItem": "quickfoot_lace"
+        }
+      ]
+    },
+    "fuel_logs": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Carry the dry logs across the yard. The wind shoves at every armful, and the logs want to roll away.",
+      "onSuccess": {
+        "goto": "fuel_dry"
+      },
+      "onFailure": {
+        "goto": "fuel_soggy"
+      }
+    },
+    "fuel_twigs": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Dash after the windfall twigs before the wind scatters them over the edge. Grab and stuff them in your sacks!",
+      "onSuccess": {
+        "goto": "fuel_dry"
+      },
+      "onFailure": {
+        "goto": "fuel_soggy"
+      }
+    },
+    "fuel_lace": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Dob's springy lace on your ankle makes your feet light. Race the gusts to the dry logs and bring them back.",
+      "onSuccess": {
+        "goto": "fuel_dry"
+      },
+      "onFailure": {
+        "goto": "fuel_soggy"
+      }
+    },
+    "fuel_dash": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "A duskrunner's speed gets to the dry logs before the next gust. Can the rest of you keep the armfuls from tumbling?",
+      "onSuccess": {
+        "goto": "fuel_dry"
+      },
+      "onFailure": {
+        "goto": "fuel_soggy"
+      }
+    },
+    "fuel_dry": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "You stack the fuel at the foot of the pole. Dry wood smells like a warm kitchen, even in a gale. The keeper counts the logs with one finger, nods, and counts them again for luck. Pip offers to carry the last twig. It is the size of a pencil. He carries it like a sword. The keeper tucks a dry twig behind her ear for later, and promptly forgets it is there.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "light"
+        }
+      ]
+    },
+    "fuel_soggy": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "Half the wood is wet, and the other half is wetter. It will smoke when it should crackle. The keeper holds up a log and sniffs it, unhappy. \"This will burn. It will not like it.\" She trades you a bundle of dry shrine incense to help it along. \"Do not tell the shrine,\" she whispers, glancing at the bronze bell.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "light"
+        }
+      ]
+    },
+    "light": {
+      "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "narration": "The sun slides behind the mist, and the sky turns the color of weak tea. The basket is full. Now someone must light it in a gale. The keeper holds out a flint striker in one paw and a clay pot of shrine coals in the other. Seren checks the wind with a wet finger. \"Fast and bright, or slow and careful,\" she says. \"Both can work, if nobody sneezes.\" Which will you try?",
+      "choices": [
+        {
+          "id": "flint",
+          "label": "Strike sparks while everyone shields the basket",
+          "icon": "hand",
+          "goto": "light_flint"
+        },
+        {
+          "id": "coals",
+          "label": "Pass the pot of coals hand to hand up the ladder",
+          "icon": "hand",
+          "goto": "light_coals"
+        },
+        {
+          "id": "fox",
+          "label": "Call fox fire into the basket",
+          "icon": "spark",
+          "goto": "light_fox",
+          "requiresSpecies": "kitsune"
+        }
+      ]
+    },
+    "light_flint": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "stat": "quick",
+      "tn": 12,
+      "roller": "all",
+      "prompt": "Strike the flint while everyone cups cloaks and hands around the sparks, each of you on a different side of the basket.",
+      "onSuccess": {
+        "goto": "basket_lit"
+      },
+      "onFailure": {
+        "goto": "basket_smoky"
+      }
+    },
+    "light_coals": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "stat": "heart",
+      "tn": 12,
+      "roller": "all",
+      "checkKind": "doing",
+      "prompt": "Pass the pot hand to hand up the ladder, steady and calm. Anyone with shaky hands will spill the coals.",
+      "onSuccess": {
+        "goto": "basket_lit"
+      },
+      "onFailure": {
+        "goto": "basket_smoky"
+      }
+    },
+    "light_fox": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Little fox fire dances into the basket. Can you coax it to sit in the wood and hold, even when the pole sways?",
+      "onSuccess": {
+        "goto": "basket_lit"
+      },
+      "onFailure": {
+        "goto": "basket_smoky"
+      }
+    },
+    "basket_lit": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "The flame catches, flares, and stands up tall and gold. The whole basket glows like a lantern. Far off in the mist, a tiny answering light blinks once, twice. The keeper's face unclenches. \"There. Now the sky can find us.\" The edge is told about, and lit. For the first time the island feels like a place on a map. Pip bows to the basket, and the basket, being on fire, glows politely back. The keeper hands you a brass whistle from the shrine. \"One loud note, for when the sky needs to hear you.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch the sky",
+          "icon": "hand",
+          "goto": "dusk_ferry"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "guarded_the_island_edge"
+        },
+        {
+          "type": "setFlag",
+          "flag": "got_the_whistle"
+        },
+        {
+          "type": "grantItem",
+          "itemId": "brave_whistle",
+          "to": "party"
+        }
+      ]
+    },
+    "basket_smoky": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "The wood sulks, then smokes, then gives a small orange flame that coughs at every gust. It is lit, which is the main thing. The keeper feeds it a handful of shrine incense and it brightens to a wobbly glow that smells faintly of lemon cake. It will be seen. It just will not be seen smoothly.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch the sky",
+          "icon": "hand",
+          "goto": "dusk_ferry"
         }
       ],
       "onEnter": [
@@ -167,18 +1225,898 @@
           "type": "setFlag",
           "flag": "guarded_the_island_edge"
         }
+      ]
+    },
+    "dusk_ferry": {
+      "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
       ],
+      "narration": "Something drops out of the dusk and lands on the pole rail hard enough to rattle the basket. It is a griffin with a satchel and a very ruffled neck. \"Fenwick, courier! Every island in the sky has been hunting for your light.\" He flaps a wing at the mist. \"Captain Thimble's ferry is right behind me. The wind is swinging her sideways, and her passengers are shouting. She needs a landing now.\" How will you bring her in?",
+      "choices": [
+        {
+          "id": "lines",
+          "label": "Catch the ferry's trailing lines and tie them off",
+          "icon": "hand",
+          "goto": "ferry_lines"
+        },
+        {
+          "id": "flags",
+          "label": "Wave her in with Dob's kite-flags",
+          "icon": "hand",
+          "goto": "ferry_flags"
+        },
+        {
+          "id": "tow",
+          "label": "Fly out and tow her line",
+          "icon": "wing",
+          "goto": "ferry_tow",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        },
+        {
+          "id": "post",
+          "label": "Brace the mooring post against the pull",
+          "icon": "shield",
+          "goto": "ferry_post",
+          "requiresClass": "thornguard"
+        },
+        {
+          "id": "whistle",
+          "label": "Blow the brass whistle so she can steer by it",
+          "icon": "spark",
+          "goto": "ferry_whistle",
+          "requiresItem": "brave_whistle",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "brave_whistle"
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "sky_arrival_flight"
+          },
+          "text": "\"The Cairnstep watchers told me where you landed,\" he adds. \"They said to look after you.\""
+        }
+      ]
+    },
+    "ferry_lines": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Snatch the ferry's trailing lines as they whip past the pad, and loop them around the mooring posts.",
+      "onSuccess": {
+        "goto": "ferry_in"
+      },
+      "onFailure": {
+        "goto": "ferry_bumped"
+      }
+    },
+    "ferry_flags": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "roller": "best",
+      "prompt": "The sharpest eyes read the ferry's heading through the mist and call which kite-flags to wave. Left, right, hold.",
+      "onSuccess": {
+        "goto": "ferry_in"
+      },
+      "onFailure": {
+        "goto": "ferry_bumped"
+      }
+    },
+    "ferry_tow": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "stat": "quick",
+      "tn": 8,
+      "roller": "best",
+      "prompt": "Wings take you out over the gap. Can the best flier catch the line and pull the ferry straight?",
+      "onSuccess": {
+        "goto": "ferry_in"
+      },
+      "onFailure": {
+        "goto": "ferry_bumped"
+      }
+    },
+    "ferry_whistle": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "One loud brass note rolls out over the gap. Call the ferry in with it, note by note, so she steers straight to the pad.",
+      "onSuccess": {
+        "goto": "ferry_in"
+      },
+      "onFailure": {
+        "goto": "ferry_bumped"
+      }
+    },
+    "ferry_post": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Brace holds the post steady. Can the others haul the ferry in hand over hand before the wind swings her out?",
+      "onSuccess": {
+        "goto": "ferry_in"
+      },
+      "onFailure": {
+        "goto": "ferry_bumped"
+      }
+    },
+    "ferry_in": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "narration": "The ferry thumps against the pad and stays there. Hens flap out of a basket and walk about with complete confidence. Out steps a kitsune in a windblown coat, a captain's hat held on with string. \"Captain Thimble. Best landing I have had all week, and that includes my own.\" Behind her, passengers cling to the rail, loudly refusing to let go. Thimble looks at you and then at the sky. \"I need a safe lane home for everyone aboard, and a very strong cup of tea.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Help the passengers off",
+          "icon": "hand",
+          "goto": "passengers"
+        },
+        {
+          "id": "share",
+          "label": "Share your supper with the passengers first",
+          "icon": "heart",
+          "goto": "passengers_fed",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "noticed_the_sky_ship"
+          },
+          "text": "Then she stops and stares. \"You! You found us. I told you to look for the washing.\" A line of damp socks flaps from the ferry rail."
+        }
+      ]
+    },
+    "ferry_bumped": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "narration": "The ferry swings, bumps the pad, and bounces off like a ball. A crate of washing hops over the rail and spills socks across the pad. Hens flap out in all directions and walk about with complete confidence. Out steps a kitsune in a windblown coat, a captain's hat held on with string. \"Captain Thimble. I have had worse landings. Not this week.\" Her passengers cling to the rail, loudly refusing to let go. Thimble looks at you and then at the sky. \"I need a safe lane home for everyone aboard, and a very strong cup of tea.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Help the passengers off",
+          "icon": "hand",
+          "goto": "passengers"
+        },
+        {
+          "id": "share",
+          "label": "Share your supper with the passengers first",
+          "icon": "heart",
+          "goto": "passengers_fed",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "noticed_the_sky_ship"
+          },
+          "text": "She stops and stares. \"You! You found us. I told you to look for the washing.\" She waves a sock at you, then at the pad."
+        }
+      ]
+    },
+    "passengers": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        }
+      ],
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "The passengers will not leave the rail, and Thimble cannot think over the noise. Calm them and coax them off the ferry.",
+      "onSuccess": {
+        "goto": "passengers_calm"
+      },
+      "onFailure": {
+        "goto": "passengers_stuck"
+      }
+    },
+    "passengers_fed": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "You pass the wrapped supper around. A hungry passenger sniffs it, then smiles. One by one the passengers let go of the rail, just to hold a piece of bread. The keeper sends them to the shrine for barley tea, and the hens follow, in a line. Thimble drops onto a barrel, finally quiet enough to think.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Sit with Thimble",
+          "icon": "hand",
+          "goto": "thimble"
+        }
+      ]
+    },
+    "passengers_calm": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "You speak softly and offer a steady hand. One by one the passengers let go of the rail and step onto firm stone. The keeper sends them to the shrine for barley tea. The hens follow, in a line, as if they had planned it. Thimble drops onto a barrel, finally quiet enough to think.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Sit with Thimble",
+          "icon": "hand",
+          "goto": "thimble"
+        }
+      ]
+    },
+    "passengers_stuck": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "The passengers cling harder. The keeper has to bring a ladder, then a blanket, then a plate of rice crackers, and finally the passengers climb down, one crunch at a time. It takes ages. Thimble drops onto a barrel, worn out and still slightly shouted at. \"Next time,\" she says, \"I bring only hens.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Sit with Thimble",
+          "icon": "hand",
+          "goto": "thimble"
+        }
+      ]
+    },
+    "thimble": {
+      "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "narration": "Thimble unrolls a chart, held flat by three hens. \"My old lane is gone, and my passengers want to go home. I used to steer by the cloud whales' song. Wherever they sing, the sky stays level and a ferry can cross. Now the song has wandered, and I cannot find the lane.\" Fenwick preens his satchel. \"Flags have no word for 'the sky has moved,'\" he says. They both look at you. What will you ask first?",
+      "choices": [
+        {
+          "id": "chart",
+          "label": "Ask Thimble how the song marks a lane",
+          "icon": "hand",
+          "goto": "thimble_chart"
+        },
+        {
+          "id": "flags",
+          "label": "Ask Fenwick how the islands talk by flag",
+          "icon": "hand",
+          "goto": "fenwick_flags"
+        }
+      ]
+    },
+    "thimble_chart": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "narration": "Thimble's finger runs along a thin gold line. \"The whales do not carry us. They sing, and where they sing the sky is steady, so I steer by that. The song grows louder as you near them, and a ferry can feel it in the rail.\" She lays a paw on the ferry's rail. It hums faintly, and the hum leans east. Fenwick holds a feather beside it, and the feather leans east too. \"There. The song is that way. Find the whales, and you find my lane. Follow it, and I will follow you.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "windbreak_rest"
+        }
+      ]
+    },
+    "fenwick_flags": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "narration": "Fenwick spreads a wing like a map. \"Flags say how, not where. One flag is steady air, two is a gale, three is a long drop. The islands answer the same.\" He plucks a feather and holds it up. It points east and wobbles. Thimble lays a paw on her ferry rail, and it hums the same way. \"You cannot ask a flag for a direction. But you can ask the air. And lately the air is humming from that way.\" Thimble sighs. \"The whales' song, I suppose. Find where it comes from, and I will carry the news to every island in the sky.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "windbreak_rest"
+        }
+      ]
+    },
+    "windbreak_rest": {
+      "type": "rest",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "The keeper builds a wind wall of baskets and blankets behind the shrine. Hot barley tea goes around in chipped cups. The hens roost on Pip, who bears it nobly. Far off, the low song comes again, slower than before. Seren says the next part is the hardest to hear and the easiest to miss. Everyone gets warm. Dob has hung his kites along the wind wall like laundry, and a ribbon cart sits open beside the fire.",
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Sit by the fire and rest",
+          "icon": "hand",
+          "goto": "night_song"
+        },
+        {
+          "id": "pip",
+          "label": "Help Pip dry his notebook",
+          "icon": "heart",
+          "goto": "pip_night"
+        },
+        {
+          "id": "buy",
+          "label": "Buy a songbird ribbon from Dob's cart (3 coins)",
+          "icon": "heart",
+          "goto": "night_song",
+          "when": {
+            "coins": {
+              "min": 3
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 3
+            },
+            {
+              "type": "grantItem",
+              "itemId": "songbird_ribbon",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "mend",
+          "label": "Mend the day's scrapes first",
+          "icon": "heart",
+          "goto": "night_song",
+          "requiresSpecies": "unicorn",
+          "effects": [
+            {
+              "type": "heal",
+              "amount": 1,
+              "to": "party"
+            }
+          ]
+        }
+      ],
+      "heal": 2
+    },
+    "pip_night": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "Pip's notebook is soaked at one corner. You lay the pages by the fire, and Pip reads you his list aloud, with feeling: islands that moved, three socks, a hen named Gravy. \"I do not know why it is all moving,\" he says quietly. \"I only know it is easier to count with friends.\" The hen named Gravy agrees, from his head.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Settle down for the night",
+          "icon": "hand",
+          "goto": "night_song"
+        }
+      ]
+    },
+    "night_song": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "narration": "Night. The sky is huge and full of stars, and one drifting lantern, which is Pip's. The shrine bell shivers all by itself. The keeper brings out her slate, crowded with chalk lines of where things used to be. Then the low song comes, close and slow, rolling over the island like a wave. The keeper sets down her cup. \"That is the nearest it has been. Tonight we find which way it leads. If we can name the singer, we can help the singer, and maybe my island too.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Lay out what you know",
+          "icon": "hand",
+          "goto": "bearing_vote"
+        }
+      ]
+    },
+    "bearing_vote": {
+      "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "Everyone has a piece. There is the hum you listened for this morning, the keeper's chalk slate, Thimble's ferry rail, Fenwick's feather, and Pip's notebook of crossed-out arrows. Laid together, they should show where the song leads. Seren waits with her tail curled around her feet. Where will you start?",
+      "choices": [
+        {
+          "id": "notes",
+          "label": "Lay Pip's notebook over the keeper's slate",
+          "icon": "hand",
+          "goto": "bearing_notes"
+        },
+        {
+          "id": "air",
+          "label": "Ring the edge with feathers and lanterns, and call out",
+          "icon": "hand",
+          "goto": "bearing_air"
+        },
+        {
+          "id": "sing",
+          "label": "Hum back, low and long, and listen for the answer",
+          "icon": "heart",
+          "goto": "bearing_sing",
+          "requiresClass": "songkeeper"
+        },
+        {
+          "id": "chime",
+          "label": "Ring your listening chime and listen for its echo",
+          "icon": "star",
+          "goto": "bearing_chime",
+          "requiresItem": "listening_chime"
+        }
+      ]
+    },
+    "bearing_notes": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "roller": "best",
+      "prompt": "The sharpest mind lines up the crossed-out arrows with the chalk lines until one direction wins.",
+      "onSuccess": {
+        "goto": "bearing_found"
+      },
+      "onFailure": {
+        "goto": "bearing_blurred"
+      }
+    },
+    "bearing_air": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "roller": "all",
+      "prompt": "Each of you takes a place around the edge with a feather or a lantern. Call out when yours leans, and see if most of you agree.",
+      "onSuccess": {
+        "goto": "bearing_found"
+      },
+      "onFailure": {
+        "goto": "bearing_blurred"
+      }
+    },
+    "bearing_chime": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Ring the listening chime beside the song. An echo that leans one way shows where the song leads. Can you read it?",
+      "onSuccess": {
+        "goto": "bearing_found"
+      },
+      "onFailure": {
+        "goto": "bearing_blurred"
+      }
+    },
+    "bearing_sing": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "stat": "heart",
+      "tn": 8,
+      "checkKind": "doing",
+      "prompt": "A songkeeper hums back, low and long, and listens for how the answer returns. The qualified hero assists; choose who leads the team check.",
+      "onSuccess": {
+        "goto": "bearing_found"
+      },
+      "onFailure": {
+        "goto": "bearing_blurred"
+      }
+    },
+    "bearing_found": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "narration": "All the pieces point one way: east, past the dark edge, to a place where the sky is singing. Thimble taps her chart. Fenwick fluffs his feathers. The keeper smiles for the first time since you landed. \"The old keepers said the cloud whales sing where the sky is safe to cross. If they are singing there, then something has changed there, and they will need help before we do. Someone must go and see. It is a long way for a ferry and a short way for a kind heart.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Plan the way",
+          "icon": "hand",
+          "goto": "route_vote"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_the_whale_song"
+        }
+      ]
+    },
+    "bearing_blurred": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "narration": "The pieces almost fit. Seren sets them out again, patient as a cat. Then it clicks: the feather, the rail, the notebook, the chalk. East, past the dark edge, to a place where the sky is singing. It takes most of the night. Fenwick says you were close, and that he would say so either way. \"Cloud whales,\" the keeper says. \"The old keepers said they sing where the sky is safe to cross. If they are singing there, something has changed, and they will need help before we do. Someone must go and see. It is a long way for a ferry and a short way for a kind heart.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Plan the way",
+          "icon": "hand",
+          "goto": "route_vote"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "found_the_whale_song"
+        }
+      ]
+    },
+    "route_vote": {
+      "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "narration": "Dawn is a pale stripe. The ferry creaks at its ropes, and Fenwick stretches one wing, then the other. The keeper folds a flag-cloth stamped with her island's mark and presses it into your hands. \"Someone must go and see what is wrong with the singing. Thimble's ferry can take you part of the way. Fenwick can lead you along the stepping islands.\" How will you go?",
+      "choices": [
+        {
+          "id": "ferry",
+          "label": "Ride the ferry with Captain Thimble",
+          "icon": "hand",
+          "goto": "route_ferry"
+        },
+        {
+          "id": "flags",
+          "label": "Follow Fenwick along the stepping islands",
+          "icon": "hand",
+          "goto": "route_flags"
+        }
+      ]
+    },
+    "route_ferry": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        }
+      ],
+      "narration": "Thimble hands out boarding ropes. \"Hold the rail with both hands, and do not sing back until I say.\" Her passengers have voted to stay with the keeper, hens included, in case there is more barley tea. Dob has loaded his cart of kites aboard, and sits on top of it with his map the right way up. The keeper tucks her island's flag-cloth into your pack and pats it twice, for luck.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go to the landing pad",
+          "icon": "hand",
+          "goto": "island_rest"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "sky_route_ferry"
+        }
+      ]
+    },
+    "route_flags": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "narration": "Fenwick pulls three tiny flags from his satchel and clips them to his wing. \"Steady air, steady air, steady air. I will fly ahead and wave. If I wave two, hold onto something.\" The keeper tucks her island's flag-cloth into your pack and pats it twice, for luck. A hen watches, deeply unimpressed. Dob will wait for the ferry to come back, selling kites to anyone brave enough to look up.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go to the landing pad",
+          "icon": "hand",
+          "goto": "island_rest"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "sky_route_flags"
+        }
+      ]
+    },
+    "island_done": {
+      "type": "rest",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
           "name": "Temple keeper"
         }
-      ]
+      ],
+      "narration": "Dawn. The island falls away behind you, small and gold-roofed, its signal basket still glowing. The low song rolls in from the east, slow and wide. Far off, a huge shape moves gently through the mist, singing. The cloud whales are out there. You have neighbors who trust you, a bearing, and a route to follow.",
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "sky_route_ferry"
+          },
+          "text": "The ferry hums under your feet."
+        },
+        {
+          "when": {
+            "flag": "sky_route_flags"
+          },
+          "text": "Fenwick circles ahead, his flags snapping, already pointing the way."
+        },
+        {
+          "when": {
+            "flag": "noticed_the_sky_ship"
+          },
+          "text": "Captain Thimble waves her string-tied hat from the rail. \"Told you!\" she calls. \"You cannot miss the washing!\""
+        }
+      ],
+      "heal": 0,
+      "outcome": "success"
     },
     "island_rest": {
       "type": "rest",
-      "narration": "The keeper leads you to a sheltered path on the Sky Islands. Beside it stands a stone hut. Its door rattles in the wind. Thump. Something soft hits the wall inside. Far off, a huge shape moves through the mist, singing. You can rest here before following the song.",
-      "heal": 0,
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        }
+      ],
+      "narration": "The ferry creaks at the landing pad, and Fenwick stretches his wings in the first light. Beside the pad stands a stone hut. Its door rattles in the wind. Thump. Something soft hits the wall inside. Far off, a huge shape moves through the mist, singing. You can knock, or you can set out for the cloud whales.",
       "choices": [
         {
           "id": "hut",
@@ -188,38 +2126,12 @@
         },
         {
           "id": "set_out",
-          "label": "Return to the keeper and set out",
+          "label": "Say your goodbyes and set out",
           "icon": "travel",
           "goto": "island_done"
         }
       ],
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ]
-    },
-    "island_done": {
-      "type": "rest",
-      "narration": "The keeper offers shelter. Far off, a huge shape moves gently through the mist, singing. The party has found new neighbors and a displaced route to investigate.",
-      "heal": 0,
-      "choices": [],
-      "outcome": "success",
-      "variants": [
-        {
-          "when": {
-            "flag": "noticed_the_sky_ship"
-          },
-          "text": "A kitsune captain named Thimble waves from a nearby dock. \"Captain Thimble. You found us! The washing is still here.\" She recognizes you from the Exchange."
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        }
-      ]
+      "heal": 0
     },
     "dojo": {
       "type": "story",
