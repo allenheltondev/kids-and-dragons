@@ -950,7 +950,8 @@ html:not(.dark) .wiki-logo--footer .wiki-logo__amp {
 .wiki-badge--location   { --b: #e8743c; }
 .wiki-badge--npc,
 .wiki-badge--individual { --b: #3f9fd6; }
-.wiki-badge--character  { --b: #c9962f; }
+.wiki-badge--character,
+.wiki-badge--class      { --b: #c9962f; }
 .wiki-badge--item       { --b: #c9962f; }
 .wiki-badge--quest,
 .wiki-badge--campaign   { --b: #8b6cf5; }

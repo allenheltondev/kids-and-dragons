@@ -186,7 +186,7 @@ export async function settleEveryEnding(content: ContentStore) {
         started,
         phase: s.phase,
         outcome: s.chapterOutcome ?? null,
-        xpEarned: s.xpEarned,
+        xpEarned: storyXp(s),
         attempt: summary(await h.attempt()),
       });
     }
@@ -376,7 +376,9 @@ export async function playOn(h: GemfallHousehold, t: Table, runId: string, conte
     },
     beats,
     settled: summary(await h.attempt()),
-    xpEarned: (await t.state()).xpEarned,
+    // Story XP only: what a hero earns for rolling well (`rollXp`) arrived after
+    // the pre-epic build and is not part of the gameplay this digest pins.
+    xpEarned: storyXp(await t.state()),
   };
 }
 
@@ -406,4 +408,8 @@ export async function goldens(content: ContentStore) {
     save,
     resumed,
   };
+}
+
+function storyXp(s: { xpEarned: number; rollXp?: number }): number {
+  return s.xpEarned - (s.rollXp ?? 0);
 }

@@ -16,6 +16,8 @@ import type {
   ClassId,
   Difficulty,
   FittingStall,
+  LevelReward,
+  RollXp,
   RulesContent,
   SpeciesDef,
   SpeciesId,
@@ -88,6 +90,21 @@ export function levelForXp(rules: RulesContent, xp: number): number {
     level = i + 2;
   }
   return level;
+}
+
+/**
+ * What reaching `level` has permanently added, summed over every level up to
+ * it (`RulesContent.levelRewards`). Zero for rules without any.
+ */
+export function levelBonuses(rules: RulesContent, level: number): { maxHp: number; guard: number } {
+  let maxHp = 0;
+  let guard = 0;
+  for (const reward of rules.levelRewards ?? []) {
+    if (reward.level > level) continue;
+    maxHp += reward.maxHp ?? 0;
+    guard += reward.guard ?? 0;
+  }
+  return { maxHp, guard };
 }
 
 /** spec §8.1 — four of the ten levels are appearance tiers. */
@@ -275,6 +292,40 @@ export function assertRulesContent(json: unknown): RulesContent {
     }
   }
 
+  let levelRewards: LevelReward[] | undefined;
+  if (raw["levelRewards"] !== undefined) {
+    const rewardsRaw = raw["levelRewards"];
+    if (!Array.isArray(rewardsRaw)) fail("levelRewards", "an array of { level, maxHp?, guard? }", rewardsRaw);
+    const top = levelXp.length + 1;
+    levelRewards = rewardsRaw.map((entry, i) => {
+      const at = obj(entry, `levelRewards[${i}]`);
+      const level = num(at["level"], `levelRewards[${i}].level`);
+      if (!Number.isInteger(level) || level < 2 || level > top) {
+        fail(`levelRewards[${i}].level`, `a whole level from 2 to ${top}`, level);
+      }
+      const reward: LevelReward = { level };
+      for (const key of ["maxHp", "guard"] as const) {
+        if (at[key] === undefined) continue;
+        const amount = num(at[key], `levelRewards[${i}].${key}`);
+        if (!Number.isInteger(amount) || amount < 0) fail(`levelRewards[${i}].${key}`, "a whole number, 0 or more", amount);
+        reward[key] = amount;
+      }
+      return reward;
+    });
+  }
+
+  let rollXp: RollXp | undefined;
+  if (raw["rollXp"] !== undefined) {
+    const rollRaw = obj(raw["rollXp"], "rollXp");
+    rollXp = {} as RollXp;
+    for (const key of ["check", "attack", "defeat", "chapterCap"] as const) {
+      if (key === "defeat" && rollRaw[key] === undefined) continue;
+      const amount = num(rollRaw[key], `rollXp.${key}`);
+      if (!Number.isInteger(amount) || amount < 0) fail(`rollXp.${key}`, "a whole number, 0 or more", amount);
+      rollXp[key] = amount;
+    }
+  }
+
   const speciesRaw = obj(raw["species"], "species");
   const species = {} as Record<SpeciesId, SpeciesDef>;
   for (const id of SPECIES_IDS) {
@@ -316,6 +367,8 @@ export function assertRulesContent(json: unknown): RulesContent {
     difficultyTn,
     levelXp,
     tierLevels,
+    ...(levelRewards === undefined ? {} : { levelRewards }),
+    ...(rollXp === undefined ? {} : { rollXp }),
     ...(helpDie === undefined ? {} : { helpDie }),
     species,
     classes,

@@ -23,6 +23,7 @@ import {
   applyIntent,
   chapterDiscoveries,
   chapterStartDiscoveries,
+  partyClassDiscoveries,
   classPlaceWaitingOn,
   createRunState,
   currentActor,
@@ -547,7 +548,10 @@ export async function playCampaign(
       const scene = played.scenes[sceneId];
       if (scene) for (const id of sceneDiscoveries(scene, content.bestiary())) expectedFinds.add(id);
     }
+    // The classes at the table are found with the chapter they sit down in.
+    for (const id of partyClassDiscoveries(done.party)) expectedFinds.add(id);
     for (const id of chapterDiscoveries(played, content.world(), content.bestiary())) possibleFinds.add(id);
+    for (const id of partyClassDiscoveries(done.party)) possibleFinds.add(id);
     const attempt = await harness.repo.getCampaignProgress(householdId, "gemfall");
     if (attempt && attempt.status !== "active") {
       return {

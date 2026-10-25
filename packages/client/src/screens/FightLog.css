@@ -16,7 +16,7 @@
      camera frames the board to its left (world/stage-inset.ts). */
   --fight-log-beside: 1;
   position: absolute;
-  inset-block-start: calc(var(--kad-corner-bottom, 52px) + 0.4em);
+  inset-block-start: calc(var(--kad-corner-bottom, 44px) + 0.4em);
   inset-inline-end: 0.75em;
   z-index: 2;
   display: flex;
@@ -25,7 +25,7 @@
   inline-size: min(34%, 26em);
   /* Never past the bottom of the pane: on a short screen the oldest lines
      give way at the top (below), and the Guard note keeps its place. */
-  max-block-size: calc(100% - var(--kad-corner-bottom, 52px) - 1.2em);
+  max-block-size: calc(100% - var(--kad-corner-bottom, 44px) - 1.2em);
   padding: 0.5em 0.75em;
   border: 0.08em solid var(--color-border, #3a3468);
   border-inline-start: 0.3em solid var(--color-accent, #ffc95c);

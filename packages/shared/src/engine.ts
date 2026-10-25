@@ -90,6 +90,7 @@ import type {
 } from "./types/state.js";
 import type { ClientIntent, Presentation } from "./types/protocol.js";
 import type { Rng } from "./dice.js";
+import { isPracticeCampaign } from "./practice.js";
 import { DEFAULT_HELP_DIE, resolveCheck } from "./dice.js";
 import { newCharacter, resolveCharacter, withInventory, withMastery } from "./character.js";
 import {
@@ -433,6 +434,34 @@ function reconcileRunDeeds(draft: RunState, ctx: EngineContext): void {
     if (now.rank === counted.rank && JSON.stringify(now.deeds) === JSON.stringify(counted.deeds)) continue;
     member.character = withMastery(member.character, counted, ctx.rules);
   }
+}
+
+/**
+ * Pays the party for a roll that went well (`RulesContent.rollXp`). Uniform
+ * party XP like every other award, so it only grows `xpEarned`, and it stops at
+ * the chapter's cap. Only a seated hero's own roll counts: a monster's hit on
+ * the party is not a success to pay for.
+ */
+function creditRollXp(draft: RunState, ctx: EngineContext, kind: "check" | "attack" | "defeat", times = 1): void {
+  const pay = ctx.rules.rollXp;
+  // The practice pays no XP at all.
+  if (!pay || times <= 0 || isPracticeCampaign(draft.campaignId)) return;
+  const room = Math.max(0, pay.chapterCap - (draft.rollXp ?? 0));
+  const amount = Math.min(room, (pay[kind] ?? 0) * times);
+  if (amount <= 0) return;
+  draft.rollXp = (draft.rollXp ?? 0) + amount;
+  draft.xpEarned += amount;
+}
+
+/** Pays for each of the heroes' hits among a stretch of fight events. */
+function creditAttackXp(draft: RunState, events: readonly EncounterEvent[], ctx: EngineContext): void {
+  const heroes = new Set(draft.party.map((m) => m.character.id));
+  const hits = events.filter((e) => e.type === "roll" && e.roll.result === "hit" && heroes.has(e.roll.characterId));
+  creditRollXp(draft, ctx, "attack", hits.length);
+  // A foe knocked out by a hero's action. The downs in a hero's own action are
+  // the foe's or, rarely, a friend's, so a party member going down never pays.
+  const foes = events.filter((e) => e.type === "down" && !heroes.has(e.actorId));
+  creditRollXp(draft, ctx, "defeat", foes.length);
 }
 
 /** Counts what a stretch of the fight did with nobody's action behind it. */
@@ -1577,6 +1606,7 @@ function doStartChapter(
   draft.chapterId = chapter.id;
   draft.chapterInfo = { index: chapter.index, title: chapter.title };
   draft.xpEarned = 0;
+  delete draft.rollXp;
   // Cleared with the XP they belong to. Left behind, the previous chapter's
   // setback and its bonus list would still be on the state the moment this one
   // starts, so a phone that renders from `chapterOutcome` would open the
@@ -1986,6 +2016,7 @@ function doGroupRoll(
   });
   spendOnRoll(draft, spent);
   group.rolls.push(result);
+  if (result.result === "success") creditRollXp(draft, ctx, "check");
   group.pending = group.pending.filter((id) => id !== slot);
   // A die rolled in a group check is a turn rolled like any other: it counts
   // toward the "fewest checks" rotation for whoever actually threw it, a
@@ -2091,6 +2122,7 @@ function doRoll(draft: RunState, playerId: string, ctx: EngineContext, spendBuff
     [roller.character.id]: (draft.checkRolls?.[roller.character.id] ?? 0) + 1,
   };
 
+  if (result.result === "success") creditRollXp(draft, ctx, "check");
   // Both outcomes continue the story down different paths (spec §6.1).
   const branch = result.result === "success" ? scene.onSuccess : scene.onFailure;
   takeBranch(draft, branch, ctx, roller.character.id);
@@ -2334,6 +2366,7 @@ function doCombatAction(
   const result = performAction(encounter, combatCtx(ctx), request);
   if (!result.ok) throw new Illegal("ILLEGAL", result.reason);
   draft.encounter = result.state;
+  creditAttackXp(draft, result.events, ctx);
   // Deeds (#310): who did it, with what, to a fight as it stood before.
   const memo = draft.deeds?.fight;
   const actorId = currentActorId(encounter);

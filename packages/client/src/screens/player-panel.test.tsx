@@ -1,3 +1,4 @@
+import { runBackStep } from "../store/back-steps";
 import { dismissPlayerSheet, openGuide, setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
 import { resetFieldGuideCache } from "./content";
 // @vitest-environment jsdom
@@ -1147,11 +1148,11 @@ describe("spending a banked stat point", () => {
 
   it("keeps the reminder on the pinned strip, where a whole sitting can pass without scrolling to it", () => {
     mount({ party: [withPoints(1)], sceneType: "story" });
-    expect(screen.getByText("1 point to spend at the next rest stop")).toBeTruthy();
+    expect(screen.getByText("1 point to spend at rest")).toBeTruthy();
 
     cleanup();
     mount({ party: [withPoints(2)], sceneType: "story" });
-    expect(screen.getByText("2 points to spend at the next rest stop")).toBeTruthy();
+    expect(screen.getByText("2 points to spend at rest")).toBeTruthy();
   });
 });
 
@@ -1498,7 +1499,7 @@ describe("the party strip", () => {
     expect(screen.getByText("Your things")).toBeTruthy();
     await user.click(screen.getByRole("button", { name: /^Your turn$/ }));
     await user.click(screen.getByRole("button", { name: /Take the east path/ }));
-    await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
+    act(() => dismissPlayerSheet()); // the tray's You tab
     expect(screen.getByText("Your things")).toBeTruthy();
     await user.click(screen.getByRole("button", { name: /^Your turn$/ }));
     expect(screen.getByRole("button", { name: /Do it/ })).toBeTruthy();
@@ -1536,7 +1537,7 @@ describe("the party strip", () => {
     expect(screen.queryByRole("button", { name: /^Your turn$/ })).toBeNull();
 
     // Going back to the bag on purpose sticks while the question stays the same…
-    await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
+    act(() => dismissPlayerSheet()); // the tray's You tab
     serverSends({ prompt: choicePrompt({ votes: { p_2: "east" } }) });
     expect(screen.getByRole("button", { name: /Thistle's character sheet/ })).toBeTruthy();
 
@@ -1571,7 +1572,7 @@ describe("the party strip", () => {
       mount({ prompt: group, party: [member(), member({ character: WINDSTEP, playerId: "p_2" })] });
       expect(screen.getByRole("button", { name: "Roll!" })).toBeTruthy();
 
-      await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
+      act(() => dismissPlayerSheet()); // the tray's You tab
       expect(screen.getByText("Your things")).toBeTruthy();
 
       // Windstep rolls: the check is the same, only its progress moved.
@@ -1589,7 +1590,7 @@ describe("the party strip", () => {
     it("leaves the roller on their bag when a friend offers help", async () => {
       const user = userEvent.setup();
       mount({ prompt: check, party: [member(), member({ character: WINDSTEP, playerId: "p_2" })] });
-      await user.click(screen.getByRole("button", { name: /Back to your bag/ }));
+      act(() => dismissPlayerSheet()); // the tray's You tab
       expect(screen.getByText("Your things")).toBeTruthy();
 
       serverSends({ prompt: { ...check, helper: { characterId: "c_2", sides: 4 } } });
@@ -1795,7 +1796,7 @@ describe("the Field Guide section", () => {
       expect(await screen.findByText("0 of 1 found")).toBeTruthy();
       expect(fetchSpy).toHaveBeenCalledTimes(1);
 
-      await user.click(screen.getByRole("button", { name: "Back to your bag" }));
+      act(() => { runBackStep(); });
       expect(usePlayerNavigation.getState().section).toBe("bag");
       expect(screen.queryByRole("region", { name: "Field Guide" })).toBeNull();
       expect(sent).toEqual([]);
@@ -2133,7 +2134,10 @@ describe("the You page's sections fold under their headings", () => {
       expect(body!.hidden).toBe(open(name) !== "true");
     }
     // The headings are still headings: the bag's carries its purse, folded or not.
-    expect(screen.getByRole("heading", { name: /Your things/ }).textContent).toContain("0");
+    // The count is what the hero carries (one potion and one story thing), not the purse, which is 0 here.
+    const bagHeading = screen.getByRole("heading", { name: /Your things/ });
+    expect(bagHeading.querySelector("[data-testid=bag-count]")?.textContent).toBe("2");
+    expect(bagHeading.querySelector(".inv__purse")?.textContent).toBe("0");
   });
 
   it("folds the bag on a tap and opens it on the next, keeping a half-made selection", () => {

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://kids-and-dragons.local/schemas/rules.schema.json",
   "title": "RulesContent",
-  "description": "content/rules.json. Mirrors packages/shared/src/types/domain.ts RulesContent; where the two disagree the TypeScript type wins. Values come from spec \u00a74, \u00a75, \u00a77.1 and \u00a78.1.",
+  "description": "content/rules.json. Mirrors packages/shared/src/types/domain.ts RulesContent; where the two disagree the TypeScript type wins. Values come from spec §4, §5, §7.1 and §8.1.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -48,7 +48,7 @@
       "minimum": 1
     },
     "difficultyTn": {
-      "description": "spec \u00a74.1 \u2014 easy 8 / normal 12 / hard 16.",
+      "description": "spec §4.1 — easy 8 / normal 12 / hard 16.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -95,14 +95,30 @@
         "mythic"
       ],
       "properties": {
-        "fledgling": { "type": "integer", "minimum": 2, "maximum": 20 },
-        "sworn": { "type": "integer", "minimum": 2, "maximum": 20 },
-        "radiant": { "type": "integer", "minimum": 2, "maximum": 20 },
-        "mythic": { "type": "integer", "minimum": 2, "maximum": 20 }
+        "fledgling": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        },
+        "sworn": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        },
+        "radiant": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        },
+        "mythic": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        }
       }
     },
     "tierLevels": {
-      "description": "spec \u00a78.1 \u2014 the level at which each appearance tier is reached.",
+      "description": "spec §8.1 — the level at which each appearance tier is reached.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -134,9 +150,69 @@
         }
       }
     },
+    "levelRewards": {
+      "description": "Permanent bonuses for reaching a level, added up over every level reached (levelRewards in packages/shared/src/types/domain.ts). This is how a hero's max HP and Guard grow beyond species, Quick and trinkets. Optional.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "level"
+        ],
+        "properties": {
+          "level": {
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 10
+          },
+          "maxHp": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10
+          },
+          "guard": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 3
+          }
+        }
+      }
+    },
+    "rollXp": {
+      "description": "Party XP for dice that go well, paid as they are rolled and capped per chapter (rollXp in packages/shared/src/types/domain.ts). Optional.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "check",
+        "attack",
+        "chapterCap"
+      ],
+      "properties": {
+        "check": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "attack": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "defeat": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10
+        },
+        "chapterCap": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    },
     "encounterBands": {
       "type": "object",
-      "description": "Enemy stat blocks by band \u2014 the counterpart of baseMaxHp/baseGuard. Canon names the band; this defines it. docs/canon-contract.md D9.",
+      "description": "Enemy stat blocks by band — the counterpart of baseMaxHp/baseGuard. Canon names the band; this defines it. docs/canon-contract.md D9.",
       "additionalProperties": {
         "type": "object",
         "properties": {
@@ -152,7 +228,7 @@
               "object",
               "null"
             ],
-            "description": "null means the band has no default \u2014 the creature must author its own.",
+            "description": "null means the band has no default — the creature must author its own.",
             "properties": {
               "hp": {
                 "type": "integer",
@@ -216,7 +292,7 @@
       }
     },
     "species": {
-      "description": "All six, keyed by SpeciesId. Missing or unknown keys are a build failure \u2014 the creation flow reads this map directly.",
+      "description": "All six, keyed by SpeciesId. Missing or unknown keys are a build failure — the creation flow reads this map directly.",
       "type": "object",
       "additionalProperties": false,
       "required": [
@@ -346,12 +422,18 @@
       }
     },
     "fittingStall": {
-      "description": "The Exchange's fitting stall (docs/class-mastery.md \u00a71, #312): where a new hero may swap class once, for free, to any class. Optional: rules without it have no stall.",
+      "description": "The Exchange's fitting stall (docs/class-mastery.md §1, #312): where a new hero may swap class once, for free, to any class. Optional: rules without it have no stall.",
       "type": "object",
       "additionalProperties": false,
-      "required": ["stands", "keeper", "narration"],
+      "required": [
+        "stands",
+        "keeper",
+        "narration"
+      ],
       "properties": {
-        "$comment": { "type": "string" },
+        "$comment": {
+          "type": "string"
+        },
         "stands": {
           "description": "The scenes it stands in: a Story or Choice Point scene at the Exchange that every party walks through as its campaign opens. content:validate checks each names a real scene that is neither an ending nor a class place.",
           "type": "array",
@@ -359,21 +441,38 @@
           "items": {
             "type": "object",
             "additionalProperties": false,
-            "required": ["chapterId", "sceneId"],
+            "required": [
+              "chapterId",
+              "sceneId"
+            ],
             "properties": {
-              "chapterId": { "type": "string", "minLength": 1 },
-              "sceneId": { "type": "string", "minLength": 1 }
+              "chapterId": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sceneId": {
+                "type": "string",
+                "minLength": 1
+              }
             }
           }
         },
-        "keeper": { "description": "The tailor's name, for the phone. The narration introduces her first.", "type": "string", "minLength": 1 },
-        "narration": { "description": "What the shared screen says while the stall is open.", "type": "string", "minLength": 1 }
+        "keeper": {
+          "description": "The tailor's name, for the phone. The narration introduces her first.",
+          "type": "string",
+          "minLength": 1
+        },
+        "narration": {
+          "description": "What the shared screen says while the stall is open.",
+          "type": "string",
+          "minLength": 1
+        }
       }
     }
   },
   "$defs": {
     "statId": {
-      "description": "The four stats and nothing else. spec \u00a74.1.",
+      "description": "The four stats and nothing else. spec §4.1.",
       "enum": [
         "might",
         "quick",
@@ -406,7 +505,7 @@
       }
     },
     "slug": {
-      "description": "An icon slug, not a path. The client resolves it to inline SVG (spec \u00a711, 'icons before text').",
+      "description": "An icon slug, not a path. The client resolves it to inline SVG (spec §11, 'icons before text').",
       "type": "string",
       "pattern": "^[a-z][a-z0-9_]*$",
       "minLength": 1
@@ -528,7 +627,7 @@
           "$ref": "#/$defs/ability"
         },
         "combatAction": {
-          "description": "The combat-flavored version of the world ability, once per encounter (spec \u00a77.2).",
+          "description": "The combat-flavored version of the world ability, once per encounter (spec §7.2).",
           "$ref": "#/$defs/ability"
         }
       }
@@ -572,7 +671,7 @@
           "minLength": 1
         },
         "baseSteps": {
-          "description": "spec \u00a77.1 \u2014 base 4 steps, Duskrunner 6.",
+          "description": "spec §7.1 — base 4 steps, Duskrunner 6.",
           "type": "integer",
           "minimum": 1,
           "maximum": 10
@@ -591,7 +690,7 @@
           }
         },
         "deeds": {
-          "description": "What earns each distinction (docs/class-mastery.md \u00a76). Either track of a rank completes it. Deed ids are the ones the game counts (packages/shared/src/deeds.ts, DEED_IDS in domain.ts).",
+          "description": "What earns each distinction (docs/class-mastery.md §6). Either track of a rank completes it. Deed ids are the ones the game counts (packages/shared/src/deeds.ts, DEED_IDS in domain.ts).",
           "type": "object",
           "additionalProperties": false,
           "required": [
@@ -635,21 +734,21 @@
       "minProperties": 1,
       "propertyNames": {
         "enum": [
-            "brace_friend",
-            "hold_ground",
-            "shove_off_friend",
-            "shove",
-            "bramble_wall_fight",
-            "new_target",
-            "vanish_miss",
-            "twin_step_finish",
-            "burst_two",
-            "burst_three",
-            "glimmer_made",
-            "tangle_guard",
-            "tanglelight",
-            "song_hearts",
-            "class_story"
+          "brace_friend",
+          "hold_ground",
+          "shove_off_friend",
+          "shove",
+          "bramble_wall_fight",
+          "new_target",
+          "vanish_miss",
+          "twin_step_finish",
+          "burst_two",
+          "burst_three",
+          "glimmer_made",
+          "tangle_guard",
+          "tanglelight",
+          "song_hearts",
+          "class_story"
         ]
       },
       "additionalProperties": {
