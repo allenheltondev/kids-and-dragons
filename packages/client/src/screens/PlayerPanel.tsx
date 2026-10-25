@@ -1964,7 +1964,7 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           party and the bag start open; the token card, the longest thing a kid
           rarely needs mid-scene, starts folded to its name.
         */}
-        <Collapsible id="stats" className="player__stats" title={<><Icon name="fist" /><span>Your stats</span></>}>
+        <Collapsible id="stats" className="player__stats" title={<><Icon name="stats" /><span>Your stats</span></>}>
           <StatRow me={me} />
         </Collapsible>
         {/* The worn token, its notches and the deed toward the next (#314). */}

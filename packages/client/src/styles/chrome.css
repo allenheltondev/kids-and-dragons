@@ -204,7 +204,7 @@ html:not([data-contrast="high"]) .goal__step--done .goal__box {
   background: url("../assets/chrome/goal-box-ticked.webp") center / 100% no-repeat;
 }
 /* The painted tick is the tick. */
-html:not([data-contrast="high"]) .goal__step--done .goal__box > svg {
+html:not([data-contrast="high"]) .goal__step--done .goal__box > .kad-icon {
   visibility: hidden;
 }
 
