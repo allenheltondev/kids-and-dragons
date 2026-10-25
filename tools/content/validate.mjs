@@ -1909,6 +1909,13 @@ function checkMatchups(rep, rules, abilities, bestiary, chaptersById) {
   const speciesIds = new Set(Object.keys(rules.species ?? {}));
   const classIds = new Set(Object.keys(rules.classes ?? {}));
   const abilityIds = new Set([...UNIVERSAL_ABILITY_IDS, ...Object.keys(abilities?.abilities ?? {})]);
+  // The moves that roll an attack: the plain swing, and every catalog ability with an `attack` effect.
+  const attackAbilityIds = new Set([
+    "attack",
+    ...Object.entries(abilities?.abilities ?? {})
+      .filter(([, def]) => (def?.effects ?? []).some((e) => e?.effect?.type === "attack"))
+      .map(([id]) => id),
+  ]);
   const checkTrait = (file, path, id) => {
     if (traitIds.size > 0 && !traitIds.has(id)) bad(file, path, `"${id}" is not a trait in rules.matchups.traits`, `known traits: ${[...traitIds].join(", ")}`);
   };
@@ -1950,7 +1957,19 @@ function checkMatchups(rep, rules, abilities, bestiary, chaptersById) {
     asList(edge.foe).forEach((id) => checkTrait(f, `${at}/foe`, id));
     asList(edge.tag).forEach((id) => checkTag(f, `${at}/tag`, id));
     asList(edge.ability).forEach((id) => {
-      if (!abilityIds.has(id)) bad(f, `${at}/ability`, `"${id}" is not an ability in content/abilities.json`);
+      if (!abilityIds.has(id)) {
+        bad(f, `${at}/ability`, `"${id}" is not an ability in content/abilities.json`);
+      } else if (edge.on === "attack" && !attackAbilityIds.has(id)) {
+        // An attack edge is read where a swing is rolled (encounter.ts,
+        // `applyEffect` -> `swingMatchup`). A move with no `attack` effect never
+        // gets there, so the edge would promise a boost that nothing ever pays.
+        bad(
+          f,
+          `${at}/ability`,
+          `attack edge "${edge.id}" names "${id}", which never rolls an attack`,
+          `Attack edges may name only a move with an attack effect (${[...attackAbilityIds].join(", ")}); say a class's other moves with an edge that names no ability.`,
+        );
+      }
     });
   });
 

@@ -1508,6 +1508,23 @@ describe("matchups (docs/matchups.md)", () => {
     expect(result.code).not.toBe(0);
   });
 
+  it("catches an attack edge on a move that never rolls an attack", () => {
+    const result = withRules((m) => {
+      m.traits.hulking ??= { name: "Hulking", icon: "fist", text: "Big.", hint: "Hulking: stand firm" };
+      m.edges.push(
+        // Shove pushes and Tanglelight roots: neither has an attack effect.
+        { id: "t_shove", hero: {}, on: "attack", foe: "hulking", ability: "shove", roll: 1, text: "x" },
+        { id: "t_tangle", hero: {}, on: "attack", foe: "hulking", ability: ["burst", "tanglelight"], roll: 1, text: "x" },
+        // Burst does roll one, so this is fine.
+        { id: "t_burst", hero: {}, on: "attack", foe: "hulking", ability: "burst", roll: 1, text: "x" },
+      );
+    });
+    expect(result.out).toContain('attack edge "t_shove" names "shove", which never rolls an attack');
+    expect(result.out).toContain('attack edge "t_tangle" names "tanglelight", which never rolls an attack');
+    expect(result.out).not.toContain('attack edge "t_burst"');
+    expect(result.code).not.toBe(0);
+  });
+
   it("catches a number above the design's 2", () => {
     const result = withRules((m) => {
       m.edges.push({ id: "t_big", hero: {}, on: "check", tag: Object.keys(m.checkTags)[0] ?? "sneak", roll: 3, text: "x" });
