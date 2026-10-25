@@ -8,7 +8,7 @@
 import { describe, expect, it } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-import { CLASS_GUIDE_ID, CLASS_PLACE_GUIDE_ID, enterScene, sceneDiscoveries } from "@kad/shared";
+import { CLASS_GUIDE_ID, CLASS_PLACE_GUIDE_ID, applyEffects, enterScene, sceneDiscoveries } from "@kad/shared";
 import type { ClassId, RunState } from "@kad/shared";
 import { answerClassPlace, allPaths, chapters, context, send, start } from "./riftlight-test-support.ts";
 
@@ -42,6 +42,12 @@ describe("Riftlight's class rooms", () => {
     let state = start(chapter, "manticore", "duskrunner");
     for (let step = 0; step < 500 && state.phase !== "chapter_complete"; step++) {
       const prompt = state.prompt;
+      const here = chapter.scenes[state.sceneId!]!;
+      if (here.type === "encounter") {
+        // A won fight, the way the walker settles one (the board is exercised elsewhere).
+        state = enterScene(applyEffects(state, here.onVictory.effects ?? [], context(chapter)), here.onVictory.goto, context(chapter)).state;
+        continue;
+      }
       if (prompt?.kind === "choice") {
         const pick = prompt.options.find((o) => o.id !== "marsh") ?? prompt.options[0]!;
         state = send(state, { type: "CHOOSE", choiceId: pick.id }, chapter);

@@ -6,7 +6,7 @@
   "title": "When the Ferry Goes Your Way",
   "biome": "eastern_plains",
   "music": "riftlight-paths",
-  "estimatedMinutes": 33,
+  "estimatedMinutes": 36,
   "xpAward": 140,
   "entry": "bridge",
   "plate": {
@@ -535,7 +535,181 @@
     },
     "far_bank": {
       "type": "story",
-      "narration": "The far landing has a muddy ramp and a cart tipped up on one wheel. A dragonling bridge-mender named Bryn stands with her hands on her hips, glaring at the broken deck. \"Planks, I have,\" she says. \"Hands, I do not. Help me fix this, and the market folk can cross, and Ossley can rest his pole.\" Tilly nods hard. \"And my eggs can get to market,\" she says. Ossley says nothing, but his pole sags with relief.",
+      "narration": "The far landing has a muddy ramp and a heap of old planks piled at its edge. A dragonling bridge-mender named Bryn stands with her hands on her hips, glaring at the broken deck. \"Planks, I have,\" she says, \"up the bank in my cart. Hands, I do not. Help me fix this, and the market folk can cross, and Ossley can rest his pole.\" Tilly nods hard. \"And my eggs can get to market,\" she says. Ossley says nothing, but his pole sags with relief.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the plank pile",
+          "icon": "hand",
+          "goto": "plank_pile"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "plank_pile": {
+      "type": "choice_point",
+      "narration": "Bryn nods at the heap of old planks lying on the ramp. \"That pile has to move before my cart can come down,\" she says. \"It has been there since dawn. I think it has also been breathing.\" The pile gives a small, damp sigh. Tilly holds her bag tighter.",
+      "choices": [
+        {
+          "id": "poke",
+          "label": "Poke the pile with Ossley's pole",
+          "icon": "hand",
+          "goto": "poke_reveal"
+        },
+        {
+          "id": "stamp",
+          "label": "Stamp on the ramp to see what jumps",
+          "icon": "hand",
+          "goto": "stamp_reveal"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "poke_reveal": {
+      "type": "story",
+      "narration": "You poke the pile with Ossley's pole. The pile blinks. Eyes open under the top plank, then a wide wet mouth, then stubby legs. It is a pair of mire mimics, a big one and a little one, marsh creatures that dress up as whatever lies on the ground and wait for a snack. They have been hungry since dawn, and Tilly's bag smells very like duck.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Shoo the mimic",
+          "icon": "hand",
+          "goto": "mimic_fight"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "stamp_reveal": {
+      "type": "story",
+      "narration": "You stamp the ramp, thump, thump, thump, and the whole pile jumps. Under the top plank a mouth opens, and stubby legs unfold. It is a pair of mire mimics, a big one and a little one, marsh creatures that dress up as whatever lies on the ground and wait for a snack. They have been hungry since dawn, and Tilly's bag smells very like duck.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Shoo the mimic",
+          "icon": "hand",
+          "goto": "mimic_fight"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "mimic_fight": {
+      "type": "encounter",
+      "map": "reedbank",
+      "narration": "The two mire mimics wobble up on their little legs, planks clattering down their backs. They do not want to hurt anybody. They want a snack, a nap and to be left alone, in that order. Shoo them back to the reeds before they eat Tilly's bag!",
+      "enemies": [
+        {
+          "id": "mimic",
+          "name": "Mire Mimic",
+          "creature": "mire_mimic"
+        }
+      ],
+      "onVictory": {
+        "goto": "mimic_won",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "quickfoot_lace",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "mimic_shooed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "mimic_won": {
+      "type": "story",
+      "narration": "The mimics give a surprised hiccup, drop their planks, and waddle off toward the reeds to find nicer ground to pretend to be. They leave behind a bootlace one of them once swallowed. \"Not mine,\" says Bryn. \"Yours.\" Ossley nods. \"Good. It is hard to unload a pile that argues.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the stuck cart",
+          "icon": "hand",
+          "goto": "cart_plan"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "characters/griffin",
+          "name": "Tilly"
+        },
+        {
+          "figure": "characters/dragonling",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "mimic_shooed": {
+      "type": "story",
+      "narration": "The mimics are faster than they look, and you end up sitting in the mud with a plank on your head. Ossley hooks the big mimic's top plank with his pole and tips it, whump, back into the reeds, and the little one follows. \"They like a good fuss,\" he says. He pours you warm tea from a flask. Bryn rubs the mud from your ear. Up the bank, a cart waits in the mud.",
       "choices": [
         {
           "id": "continue",
@@ -1005,9 +1179,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Look under the deck",
+          "label": "Fetch the new beam",
           "icon": "hand",
-          "goto": "beam_intro"
+          "goto": "carry_beam"
         }
       ],
       "priority": 2,
@@ -1027,36 +1201,9 @@
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
     },
-    "beam_intro": {
-      "type": "story",
-      "narration": "Bryn climbs down to the pier and points under the deck. The middle beam is cracked right through. A new beam lies on the bank, thick as a sleeping cow. \"It has to be lifted into the notches,\" she says, \"and it will not lift itself. I have asked. Many times.\" Ossley coils his rope to be useful. Tilly sits on a stump and holds her eggs.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Pick up the new beam",
-          "icon": "hand",
-          "goto": "carry_beam"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Tilly"
-        },
-        {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
-    },
     "carry_beam": {
       "type": "interaction",
-      "narration": "The new beam is long and heavy, and it has to travel from the bank to the pier. Everyone takes a place along it. Bryn walks backward in front, calling, \"Level! Level! Mostly level!\"",
+      "narration": "Bryn climbs down to the pier and points under the deck. The middle beam is cracked right through. A new beam lies on the bank, thick as a sleeping cow, and it has to travel to the pier. Everyone takes a place along it. Bryn walks backward in front, calling, \"Level! Level! Mostly level!\"",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -2072,23 +2219,19 @@
     },
     "bridge_open": {
       "type": "story",
-      "narration": "Every plank holds. Bryn does a small dance, then pretends she did not. At the far end, the market folk, who have been waiting all afternoon with baskets on their heads, start across in a long, chattering line. Bryn pays you six coins from the toll box, since a bridge should pay its menders. For one beautiful moment, everything is exactly as it should be.",
+      "narration": "Every plank holds. Bryn does a small dance, then pretends she did not. At the far end, the market folk, who have been waiting all afternoon with baskets on their heads, start across in a long, chattering line. For one beautiful moment, everything is exactly as it should be.",
       "choices": [
         {
           "id": "continue",
           "label": "Watch them cross",
           "icon": "hand",
-          "goto": "goat_plan"
+          "goto": "folk_cross"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
           "flag": "mended_the_bridge_deck"
-        },
-        {
-          "type": "grantCoins",
-          "amount": 6
         }
       ],
       "cast": [
@@ -2109,13 +2252,13 @@
     },
     "bridge_creak": {
       "type": "story",
-      "narration": "Two planks creak and one squeaks like a mouse. You hammer them again, bruising a thumb, until nobody can find a squeak. \"Now it holds,\" says Bryn. \"Now it truly holds.\" At the far end, the market folk, who have been waiting all afternoon with baskets on their heads, start across in a long, chattering line. Bryn pays you six coins from the toll box, since a bridge should pay its menders.",
+      "narration": "Two planks creak and one squeaks like a mouse. You hammer them again, bruising a thumb, until nobody can find a squeak. \"Now it holds,\" says Bryn. \"Now it truly holds.\" At the far end, the market folk, who have been waiting all afternoon with baskets on their heads, start across in a long, chattering line.",
       "choices": [
         {
           "id": "continue",
           "label": "Watch them cross",
           "icon": "hand",
-          "goto": "goat_plan"
+          "goto": "folk_cross"
         }
       ],
       "onEnter": [
@@ -2123,197 +2266,6 @@
           "type": "setFlag",
           "flag": "mended_the_bridge_deck"
         },
-        {
-          "type": "damage",
-          "amount": 1,
-          "to": "party",
-          "nonlethal": true
-        },
-        {
-          "type": "grantCoins",
-          "amount": 6
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Tilly"
-        },
-        {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
-    },
-    "goat_plan": {
-      "type": "choice_point",
-      "narration": "The first goat of the market line stops dead in the exact middle of the new deck, with its legs locked and its chin up. Behind it the whole line stops: baskets, boots and a very patient aunt. The goat's eyes say that it has seen decks before and did not like them. How will you move it?",
-      "choices": [
-        {
-          "id": "oats",
-          "label": "Coax it with a handful of oats",
-          "icon": "hand",
-          "goto": "oats_check"
-        },
-        {
-          "id": "carry",
-          "label": "Lift it and carry it across",
-          "icon": "hand",
-          "goto": "carry_check"
-        },
-        {
-          "id": "ribbon",
-          "label": "Tie the songbird ribbon on a pole as a lure",
-          "icon": "hand",
-          "goto": "ribbon_check",
-          "requiresItem": "songbird_ribbon"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Tilly"
-        },
-        {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
-    },
-    "oats_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "Hold the oats out and walk backward, nice and slow, so the goat follows one step at a time. Choose who leads; everyone can help.",
-      "roller": "party",
-      "checkKind": "doing",
-      "onSuccess": {
-        "goto": "goat_over"
-      },
-      "onFailure": {
-        "goto": "goat_bolt"
-      },
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Tilly"
-        },
-        {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
-    },
-    "ribbon_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "The songbird ribbon flutters on the pole. Can you walk it ahead of the goat, just out of reach?",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "goat_over"
-      },
-      "onFailure": {
-        "goto": "goat_bolt"
-      },
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Tilly"
-        },
-        {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
-    },
-    "carry_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "prompt": "Everyone get a hand under the goat and lift on three. Keep your toes out of its way. Choose who leads; everyone can help.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "goat_over"
-      },
-      "onFailure": {
-        "goto": "goat_bolt"
-      },
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Tilly"
-        },
-        {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
-    },
-    "goat_over": {
-      "type": "story",
-      "narration": "The goat crosses with great dignity, as if the whole bridge were its own idea. The line starts moving again, with a rustle of baskets and a long relieved sigh from the aunt. On the far side the goat turns, looks at the bridge, and bleats once. Bryn takes it as a compliment.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Watch them cross",
-          "icon": "hand",
-          "goto": "folk_cross"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "characters/griffin",
-          "name": "Tilly"
-        },
-        {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/gemfall/northern-bridge-foot"
-    },
-    "goat_bolt": {
-      "type": "story",
-      "narration": "The goat leaps the rail and lands on a sandbank, where it stands looking proud. Ossley poles over, loads it on his flat boat, and ferries it across for nothing, saying only, \"I was going this way.\" The goat steps off like a visiting duke. Your arm is sore where it kicked, but the line is moving.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Watch them cross",
-          "icon": "hand",
-          "goto": "folk_cross"
-        }
-      ],
-      "onEnter": [
         {
           "type": "damage",
           "amount": 1,
@@ -2339,13 +2291,19 @@
     },
     "folk_cross": {
       "type": "story",
-      "narration": "The market folk file across the mended deck. Tilly follows, with her basket of peeping ducklings. She stops by Ossley. \"I would have missed market,\" she says. \"Thank you.\" Ossley takes off his hat. \"The river brought you my way,\" he says. \"I only had to be going it.\" He puts the hat back on, then, very carefully, checks it for ducks.",
+      "narration": "The market folk file across the mended deck. Tilly follows, with her basket of peeping ducklings. She stops by Ossley. \"I would have missed market,\" she says. \"Thank you.\" Ossley takes off his hat. \"The river brought you my way,\" he says. \"I only had to be going it.\" He puts the hat back on, then, very carefully, checks it for ducks. Bryn pays you six coins from the toll box, since a bridge should pay its menders.",
       "choices": [
         {
           "id": "continue",
           "label": "See what Tilly wants to give",
           "icon": "hand",
           "goto": "gift_plan"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantCoins",
+          "amount": 6
         }
       ],
       "cast": [
