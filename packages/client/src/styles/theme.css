@@ -568,6 +568,10 @@ html[data-quiet] .rift-status__clock--urgent {
   pointer-events: none;
 }
 .kad-corner > * { pointer-events: auto; }
+/* The compact 36px row is for ordinary text. At the largest text the full 44px touch floor returns, and the strips
+   reserved for the row grow with it so nothing overlaps. */
+html[data-text="largest"] .kad-corner { --kad-touch-min: 44px; }
+html[data-text="largest"] { --kad-corner-bottom: 52px; --kad-corner-column: 52px; }
 /* Sound's place in the row while its engine loads (App.tsx): the size of its button, and nothing to tap. */
 .kad-corner__slot { inline-size: var(--kad-touch-min); block-size: var(--kad-touch-min); flex: none; pointer-events: none; }
 

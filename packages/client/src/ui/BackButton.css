@@ -7,6 +7,7 @@
   font-size: 16px;
   --kad-touch-min: 36px;
 }
+html[data-text="largest"] .kad-back { --kad-touch-min: 44px; }
 .kad-back__button {
   display: grid;
   place-items: center;

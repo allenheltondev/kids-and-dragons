@@ -1436,3 +1436,10 @@ html[data-hand] body:has(.kad-party--player, .kad-travel) .kad-map__flip { paddi
 .player__hint > span {
   flex: 1 1 auto;
 }
+
+/* The dev-only playtest toggle (PlaytestPanel) floats over the foot of the phone's panel. The sticky
+   confirm bar sits at that same foot, so while the toggle is there the bar keeps clear of it: its
+   own height again, below the buttons. Absent in production, where the toggle is not built. */
+.kad-surface--player:has(.playtest--shut) .confirm {
+  padding-block-end: calc(var(--space-3, 0.75em) + 3.5em);
+}
