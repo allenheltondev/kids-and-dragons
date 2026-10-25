@@ -654,7 +654,7 @@
           "id": "continue",
           "label": "See what the horn is for",
           "icon": "forward",
-          "goto": "delivery"
+          "goto": "barge_toss"
         }
       ],
       "art": "scenes/gemfall/exchange-quay"
@@ -667,14 +667,14 @@
           "id": "continue",
           "label": "See what the horn is for",
           "icon": "forward",
-          "goto": "delivery"
+          "goto": "barge_toss"
         }
       ],
       "art": "scenes/gemfall/exchange-quay"
     },
     "delivery": {
       "type": "choice_point",
-      "narration": "The horn belongs to a supply barge, and it bumps the quay hard enough to rattle the barrels. Its frogfolk pilot points at a flight of stone landing steps hanging crooked above the water. \"Those were under my feet this morning. Now my regular landing is halfway up a wall.\" Sacks of potatoes slide across his deck. \"That is supper for six boats. Help me get it ashore!\" His webbed hands wave in two directions at once.",
+      "narration": "The barge bumps the quay hard enough to rattle the barrels. The pilot points at a flight of stone landing steps hanging crooked above the water. \"Those were under my feet this morning. Now my regular landing is halfway up a wall.\" Sacks of potatoes slide across his deck. \"That is supper for six boats. Help me get it ashore!\" His webbed hands wave in two directions at once.",
       "choices": [
         {
           "id": "sacks",
@@ -1032,9 +1032,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Sit down and eat something",
+          "label": "Take the supper to the boats",
           "icon": "forward",
-          "goto": "quay_rest"
+          "goto": "sack_chain"
         }
       ],
       "onEnter": [
@@ -1057,9 +1057,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Sit down and eat something",
+          "label": "Take the supper to the boats",
           "icon": "forward",
-          "goto": "quay_rest"
+          "goto": "sack_chain"
         }
       ],
       "art": "scenes/gemfall/exchange-docks",
@@ -2088,27 +2088,27 @@
       ]
     },
     "ridge_walk": {
-      "type": "check",
-      "tags": [
-        "force"
+      "type": "interaction",
+      "narration": "The wind pushes like a giant hand. You knot your coat into a sling around the kid, and everyone takes a corner. The low ridge is a few steps away. Keep the sling level, and the kid will not even notice the wind.",
+      "cast": [
+        {
+          "figure": "cast/goat_kid",
+          "name": "Goat kid"
+        }
       ],
-      "stat": "might",
-      "tn": 8,
-      "prompt": "The wind pushes like a giant hand. Everyone link arms around the kid and lean into it together. Small steps to the low ridge! The snow squeaks under every boot.",
-      "roller": "all",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Raise or lower your corner until the sling is level.",
+        "actionLabel": "Carry the kid!",
+        "objectLabel": "the kid in the coat sling"
+      },
       "onSuccess": {
         "goto": "ridge_ok"
       },
       "onFailure": {
         "goto": "ridge_drift"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
-      "cast": [
-        {
-          "figure": "cast/goat_kid",
-          "name": "Goat kid"
-        }
-      ]
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "ridge_ok": {
       "type": "story",
@@ -2149,67 +2149,49 @@
       ]
     },
     "ridge_lee": {
-      "type": "choice_point",
-      "narration": "Behind the ridge, the wind drops to a mutter. The snow here is deep and quiet, and the sky is the color of milk. The kid is shaking so hard its ears rattle. Whatever comes next, it needs warming first. How will you do it?",
-      "choices": [
-        {
-          "id": "tuck",
-          "label": "Open your coat and tuck the kid inside",
-          "icon": "shield",
-          "goto": "ridge_tuck"
-        },
-        {
-          "id": "rub",
-          "label": "Rub the kid's cold hooves between your sleeves",
-          "icon": "hand",
-          "goto": "ridge_rub"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "type": "interaction",
+      "narration": "Behind the ridge, the wind drops to a mutter. The snow here is deep and quiet, and the sky is the color of milk. The kid is shaking so hard its ears rattle. It needs warming before anything else.",
       "cast": [
         {
           "figure": "cast/goat_kid",
           "name": "Goat kid"
         }
-      ]
-    },
-    "ridge_tuck": {
-      "type": "story",
-      "narration": "You open your coat wide, and the kid wriggles in, turns around three times and goes still. It is warm as toast in there. You can feel its heart ticking against yours, fast at first, then slower. The shaking stops. One small ear pokes out of your collar and listens to the wind.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look out over the snow",
-          "icon": "eye",
-          "goto": "white"
-        }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
-      "cast": [
-        {
-          "figure": "cast/goat_kid",
-          "name": "Goat kid"
-        }
-      ]
-    },
-    "ridge_rub": {
-      "type": "story",
-      "narration": "You rub the kid's hooves between your sleeves, one by one. It sneezes twice, in rhythm, then bleats a long opinion about the whole business. The cold goes out of its legs, and out of your fingers too. By the last hoof, the kid is butting your elbow for more, and then it dives back into your coat as if it had never left.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look out over the snow",
-          "icon": "eye",
-          "goto": "white"
-        }
-      ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
-      "cast": [
-        {
-          "figure": "cast/goat_kid",
-          "name": "Goat kid"
-        }
-      ]
+      "interaction": {
+        "kind": "play",
+        "cue": "Warm up the kid together.",
+        "actionLabel": "Warm the kid",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "tuck",
+            "label": "Tuck it in your coat",
+            "icon": "shield",
+            "reaction": "The kid burrows into the warm wool and sighs."
+          },
+          {
+            "id": "rub",
+            "label": "Rub its cold hooves",
+            "icon": "hand",
+            "reaction": "The kid kicks its warming hooves and bleats happily."
+          },
+          {
+            "id": "hum",
+            "label": "Hum a quiet tune",
+            "icon": "song",
+            "reaction": "The kid's ears twitch in time to the tune."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "white",
+        "narration": "The shaking stops. One small ear pokes out of your collar and listens to the wind."
+      },
+      "onFailure": {
+        "goto": "white",
+        "narration": "The kid wiggles free, sneezes, and burrows back in on its own."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "white": {
       "type": "rest",
@@ -2224,6 +2206,58 @@
           "name": "Goat kid"
         }
       ]
+    },
+    "barge_toss": {
+      "type": "interaction",
+      "narration": "The horn belongs to a supply barge, sliding toward the quay faster than a barge should. Its frogfolk pilot waves a boat hook in one hand. \"Throw me the end of that rope!\" he shouts. \"Right over my hook, if you please!\"",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ],
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap when the rope is over the pilot's hook.",
+        "actionLabel": "Throw the rope!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "delivery",
+        "narration": "The rope drops neatly over his hook. \"Lovely,\" says the pilot, and hauls the barge in."
+      },
+      "onFailure": {
+        "goto": "delivery",
+        "narration": "The rope plops into the harbor. The pilot fishes it out with his hook, unbothered, and hauls the barge in."
+      },
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "sack_chain": {
+      "type": "interaction",
+      "narration": "Six crews are waiting at their boats along the quay, and every one of them is hungry. The pilot sets a sack on the boards. \"Pass them down the line, friend to friend,\" he says. \"And mind the puddles. Potatoes hate puddles.\"",
+      "cast": [
+        {
+          "figure": "entities/frogfolk",
+          "name": "Barge pilot"
+        }
+      ],
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the sack, then pass it to the next friend.",
+        "actionLabel": "Pass the sack!",
+        "objectLabel": "a sack of potatoes"
+      },
+      "onSuccess": {
+        "goto": "quay_rest",
+        "narration": "The sack sails from hand to hand without touching a puddle. Six crews cheer."
+      },
+      "onFailure": {
+        "goto": "quay_rest",
+        "narration": "A sack lands in a puddle. A crew fishes it out, shakes it, and cheers anyway."
+      },
+      "art": "scenes/gemfall/exchange-docks"
     }
   },
   "voiceGuide": {

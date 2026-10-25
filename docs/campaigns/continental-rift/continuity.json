@@ -188,11 +188,10 @@
         },
         "delivery": {
           "requires": [
-            "horn"
+            "pilot",
+            "supply_barge"
           ],
           "introduces": {
-            "supply_barge": "supply barge",
-            "pilot": "frogfolk pilot",
             "lost_landing": "landing steps hanging crooked",
             "supper_sacks": "Sacks of potatoes"
           }
@@ -676,20 +675,6 @@
           ],
           "introduces": {}
         },
-        "ridge_tuck": {
-          "requires": [
-            "goat",
-            "coat"
-          ],
-          "introduces": {}
-        },
-        "ridge_rub": {
-          "requires": [
-            "goat",
-            "coat"
-          ],
-          "introduces": {}
-        },
         "white": {
           "requires": [
             "goat",
@@ -698,6 +683,22 @@
           "introduces": {
             "bell": "a bell rings"
           }
+        },
+        "barge_toss": {
+          "requires": [
+            "horn"
+          ],
+          "introduces": {
+            "supply_barge": "supply barge",
+            "pilot": "frogfolk pilot"
+          }
+        },
+        "sack_chain": {
+          "requires": [
+            "pilot",
+            "supper_sacks"
+          ],
+          "introduces": {}
         }
       }
     },
