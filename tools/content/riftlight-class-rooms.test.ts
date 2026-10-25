@@ -30,30 +30,30 @@ describe("Riftlight's class rooms", () => {
     const bridge = chapters.get("riftlight-ashspan-bridge")!;
     expect(bridge.scenes.marsh_path!.narration).toContain("Whispering Marsh");
     expect(bridge.scenes.academy!.narration).toContain("marsh village");
-    for (const id of ["plank", "rope"]) {
-      expect((bridge.scenes[id] as { choices: { goto: string }[] }).choices).toEqual(expect.arrayContaining([
-        expect.objectContaining({ id: "marsh", goto: "marsh_path" }),
-        expect.objectContaining({ id: "continue", goto: "routes" }),
-      ]));
-    }
-    expect((bridge.scenes.mat_return as { choices: { goto: string }[] }).choices[0]!.goto).toBe("routes");
+    // The marsh is a detour off the rest at the end of the mending, never on the spine.
+    expect((bridge.scenes.rest_hut as { choices: { id: string; goto: string }[] }).choices).toEqual(expect.arrayContaining([
+      expect.objectContaining({ id: "marsh", goto: "marsh_path" }),
+      expect.objectContaining({ id: "dangle" }),
+    ]));
+    expect((bridge.scenes.mat_return as { choices: { goto: string }[] }).choices[0]!.goto).toBe("ossley_routes");
   });
-  it.each(["plank", "rope"])("can finish after helping with %s without visiting the marsh", (help) => {
+  it("can finish the whole mending without visiting the marsh", () => {
     const chapter = chapters.get("riftlight-ashspan-bridge")!;
     let state = start(chapter, "manticore", "duskrunner");
-    state = send(state, { type: "CHOOSE", choiceId: "continue" }, chapter);
-    state = send(state, { type: "CHOOSE", choiceId: help }, chapter);
-    expect(state.flags.helped_travelers_board).toBe(true);
-    expect(state.prompt).toMatchObject({ kind: "choice", options: expect.arrayContaining([
-      expect.objectContaining({ id: "marsh", label: "Visit the Academy in the marsh" }),
-      expect.objectContaining({ id: "continue" }),
-    ]) });
-    state = send(state, { type: "CHOOSE", choiceId: "continue" }, chapter);
+    for (let step = 0; step < 200 && state.phase !== "chapter_complete"; step++) {
+      const prompt = state.prompt;
+      if (prompt?.kind === "choice") {
+        const pick = prompt.options.find((o) => o.id !== "marsh") ?? prompt.options[0]!;
+        state = send(state, { type: "CHOOSE", choiceId: pick.id }, chapter);
+      } else if (prompt?.kind === "roll") state = send(state, { type: "ROLL" }, chapter);
+      else state = send(state, { type: "ADVANCE" }, chapter);
+      expect(state.sceneId).not.toBe("marsh_path");
+    }
     expect(state.sceneId).toBe("routes");
     expect(state.phase).toBe("chapter_complete");
     expect(state.flags.reached_the_ferry_landing).toBe(true);
+    expect(state.flags.mended_the_bridge_deck).toBe(true);
     expect(state.classPlace).toBeUndefined();
-    expect(state.narration).not.toContain("mat");
   });
   it.each(ROOMS)("$room is a side room off $rest, and every way out of it leads back there", (r) => {
     const chapter = chapters.get(r.chapter)!;
