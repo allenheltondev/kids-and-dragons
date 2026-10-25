@@ -50,63 +50,8 @@ const UNKNOWN: ReactElement = (
   </g>
 );
 
+/** Geometric controls; story objects are paintings in PAINTED_ART. */
 const GLYPHS: Record<string, ReactElement> = {
-  // --- Choice icons used by chapter content -----------------------------
-  eye: (
-    <g {...S}>
-      <path d="M2 12c5-8 15-8 20 0-5 8-15 8-20 0Z" />
-      <path d="M12 8c-4 0-4 8 0 8s4-8 0-8Zm-7-3-1-2m8 1V2m7 3 1-2" />
-    </g>
-  ),
-  ear: (
-    <g {...S}>
-      <path d="M8 21c-2-1-3-3-3-7V8c0-5 9-7 13-2 4 5-1 7-4 9-2 2-1 6-6 6Z" />
-      <path d="M9 10c-1-4 6-4 6 0l-4 3" />
-    </g>
-  ),
-  flame: (
-    <g {...S}>
-      <path d="M12 2c5 5 8 8 8 12a8 8 0 0 1-16 0c0-3 2-5 4-6 0 4 5 3 4-6Z" />
-      <path d="M12 12c-5 4-4 7 0 7s5-3 0-7Z" />
-    </g>
-  ),
-
-  // --- Items (spec §9.2) ------------------------------------------------
-
-  // --- Dice (spec §4.1 — one die, one animation) ------------------------
-  d20: (
-    <g {...S}>
-      <path d="M12 2 21 7v10l-9 5-9-5V7Z" />
-      <path d="M12 2 7 10h10Zm-5 8 5 12 5-12M3 7l4 3-4 7m18-10-4 3 4 7" />
-    </g>
-  ),
-  /*
-   * The rolled die (DiceOverlay), as opposed to `d20` the 1em label glyph
-   * beside the word "check". It is the only icon in the set drawn to be seen
-   * at 9em, and the only one with a *face*: the number lands inside the centre
-   * facet, so that facet is filled and centred on the box (its centroid is
-   * exactly 12,12) and everything else is structure around it.
-   */
-  d20_solid: (
-    <g {...S}>
-      <path d="M12 2L21 7v10l-9 5L3 17V7Z" fill="currentColor" opacity="0.18" />
-      <path d="M5.6 8.2h12.8L12 19.6z" fill="currentColor" opacity="0.3" />
-      <path d="M12 2L21 7v10l-9 5L3 17V7Z" strokeWidth="1.4" />
-      <path d="M5.6 8.2h12.8L12 19.6z" strokeWidth="1.4" />
-      <path
-        d="M12 1.8L5.6 8.2M12 1.8l6.4 6.4M3 7l2.6 1.2M21 7l-2.6 1.2M3 17l2.6-8.8M21 17l-2.6-8.8M12 19.6v2.6"
-        opacity="0.8"
-      />
-    </g>
-  ),
-  dice: (
-    <g {...S}>
-      <path d="M7 3 19 4l2 14-3 3-14-2L3 7Z" />
-      <path d="M8 8h.01m4 4h.01m4 4h.01" />
-    </g>
-  ),
-
-  // --- Interface --------------------------------------------------------
   back: (
     <g {...S}>
       <path d="M13 4 4 12l9 8v-5h7V9h-7Z" />
@@ -166,123 +111,10 @@ const GLYPHS: Record<string, ReactElement> = {
       <path d="M14.2 14.2h3v3h-3zM20.6 14.2v3M17.2 20.6h3.4" />
     </g>
   ),
-  travel: (
-    <g {...S}>
-      <path d="M7 2h10l2 3v15l-2 2H7l-2-2V5Z" />
-      <path d="M5 6h14m-8 13h2m-4-8 3-2 3 2-3 4Z" />
-    </g>
-  ),
   play: (
     <g {...S}>
       <path d="M6 3c5 1 10 5 15 9-5 4-10 8-15 9Z" />
       <path d="M10 8v8l6-4Z" />
-    </g>
-  ),
-  waiting: (
-    <g {...S}>
-      <path d="M5 3h14M5 21h14M7 3c-1 4 0 6 5 9-5 3-6 5-5 9m10-18c1 4 0 6-5 9 5 3 6 5 5 9" />
-      <path d="M9 6h6l-3 3Zm0 12 3-3 3 3Z" />
-    </g>
-  ),
-  // Placeholder glyph for Numbed (#227) until the effect sheet lands: a
-  // drooping spine with a drop of poison, distinct by shape from every status.
-  numbed: (
-    <g {...S}>
-      <path d="M12 3c-1 4-4 7-4 11a4 4 0 0 0 8 0c0-4-3-7-4-11Z" />
-      <path d="M12 8v6m-2-2 2 2 2-2" />
-      <path d="M5 21h14" />
-    </g>
-  ),
-  // Placeholder glyph for a puffed-up enemy (#227): a round body ringed with
-  // spines, so it reads by shape and not by colour.
-  puffed: (
-    <g {...S}>
-      <circle cx="12" cy="12" r="5" />
-      <path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2" />
-      <path d="M10 11h.01M14 11h.01" />
-    </g>
-  ),
-  levelup: (
-    <g {...S}>
-      <path d="M4 16 2 9l6 3 4-9 4 9 6-3-2 7-8 5Z" />
-      <path d="M8 16h8m-4-5v5" />
-    </g>
-  ),
-  down: (
-    <g {...S}>
-      <path d="M3 19h18M4 15l4-3 4 2 4-3 4 4" />
-      <path d="M4 8c0-4 6-4 6 0s-6 4-6 0Zm11-5 3 3-3 3m3-3h-5" />
-    </g>
-  ),
-  ready: (
-    <g {...S}>
-      <path d="M12 2 20 6v9l-8 7-8-7V6Z" />
-      <path d="M8 12l3 3 5-6" />
-    </g>
-  ),
-  vote: (
-    <g {...S}>
-      <path d="M7 3h10l-1 8H8ZM4 13l4-3m8 0 4 3v8H4v-8Z" />
-      <path d="M9 6l2 2 3-3m-6 9h8" />
-    </g>
-  ),
-  rest: (
-    <g {...S}>
-      <path d="M16 3C2 0 0 19 12 21c5 1 8-2 9-6C10 19 7 7 16 3Z" />
-      <path d="M18 5v4m-2-2h4" />
-    </g>
-  ),
-
-  // --- Content icons -----------------------------------------------------
-  // Every `icon` string in content/rules.json, content/items.json and the
-  // chapters resolves to something here. A name that does not still renders
-  // (the fallback glyph), which is why a new item can ship before its art does.
-  leaf: (
-    <g {...S}>
-      <path d="M4 20C-1 8 10 3 21 3c0 11-5 20-17 17Z" />
-      <path d="M7 17 17 7m-6 7 4-1" />
-    </g>
-  ),
-  thorn: (
-    <g {...S}>
-      <path d="M3 21c10-2 15-8 17-18" />
-      <path d="M6 19l-3-5 6 2m3-3-2-6 6 2m2-3 4 1" />
-    </g>
-  ),
-  // The party's purse: a coin with a stamped center.
-  coin: (
-    <g {...S}>
-      <circle cx="12" cy="12" r="8.5" />
-      <circle cx="12" cy="12" r="4.5" />
-    </g>
-  ),
-
-  // --- Keeping your characters (architecture §4.5) ----------------------
-  // The one adult-facing corner of the game, so these read as *stationery and
-  // keepsakes* rather than as security furniture. No padlocks and no shields:
-  // this is a memory box, not a login.
-  envelope: (
-    <g {...S}>
-      <path d="M3 6l9-3 9 3v13H3Z" />
-      <path d="M3 6l9 8 9-8m-18 13 6-7m12 7-6-7" />
-    </g>
-  ),
-  passkey: (
-    <g {...S}>
-      <path d="M9 3c8 7 5 11 1 11S2 10 9 3ZM10 14v7h5v-3h-5" />
-      <path d="M9 8v3m8-7v4m-2-2h4" />
-    </g>
-  ),
-
-  // --- Riftlight (#229) --------------------------------------------------
-  // The Starweaver's menu indicator: a lens of light with rays. Placeholder
-  // until the painted icon lands (brief Part A2); like that icon it is drawn
-  // in `currentColor`, never a palette colour, so it hints at no rule.
-  riftlight_indicator: (
-    <g {...S}>
-      <path d="M12 3c3.5 4 3.5 14 0 18-3.5-4-3.5-14 0-18Z" />
-      <path d="M4 7.5l2.5 1.5M20 7.5l-2.5 1.5M4 16.5l2.5-1.5M20 16.5l-2.5-1.5" />
-      <circle cx="12" cy="12" r="1.7" fill="currentColor" stroke="none" />
     </g>
   ),
 };
@@ -292,9 +124,9 @@ const GLYPHS: Record<string, ReactElement> = {
  * uses the word an author reaches for ("fist"), not our internal stat id.
  */
 const ALIASES: Record<string, string> = {
-  // Synonyms without dedicated paintings keep their shared stat glyph.
+  // Synonyms without dedicated paintings keep their shared stat artwork.
   boulder: "might",
-  // Heart's senses are their own glyphs — a flame and a hand read differently
+  // Heart's senses are their own paintings — a flame and a hand read differently
   // as choices, so they stay distinct and only `heart` maps to the heart.
   strength: "might",
   speed: "quick",
@@ -316,7 +148,8 @@ const ALIASES: Record<string, string> = {
   surprise: "shuffle",
   song: "note",
   players: "party",
-  phone: "travel",
+  travel: "phone",
+  d20_solid: "d20",
   hp: "heart",
   xp: "star",
   chapter: "scroll",

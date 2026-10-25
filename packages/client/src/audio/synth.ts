@@ -15,6 +15,7 @@
  * bedtime is the acoustic target (spec §1).
  */
 
+import { DICE_CONTACT_MS } from "../dice-timing";
 import type { CueId } from "./cue";
 
 /** One scheduled voice inside a cue. */
@@ -81,9 +82,11 @@ export const CUE_TONES: Record<CueId, Tone[]> = {
    * that settles, then a landing tick.
    */
   dice: [
-    { type: "noise", freq: [0, 0], at: 0, duration: 0.9, gain: 0.18 },
-    { type: "square", freq: [700, 180], at: 0, duration: 0.7, gain: 0.05 },
-    { type: "triangle", freq: [C5, C5], at: 1.0, duration: 0.12, gain: 0.12 },
+    { type: "noise", freq: [0, 0], at: 0, duration: 0.14, gain: 0.035 },
+    ...DICE_CONTACT_MS.flatMap<Tone>((ms, i) => [
+      { type: "noise", freq: [0, 0], at: ms / 1000, duration: 0.035, gain: 0.17 - i * 0.03 },
+      { type: "triangle", freq: [320, 200], at: ms / 1000, duration: 0.06, gain: 0.09 - i * 0.012 },
+    ]),
   ],
   // A natural 1: a hollow knock, then a little boing. Comic, not a fail buzzer.
   bonk: [
