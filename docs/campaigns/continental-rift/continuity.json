@@ -1513,9 +1513,9 @@
         "stones": {
           "requires": [],
           "introduces": {
-            "boundary_stones": "old boundary stones",
-            "stone_keeper": "A dragonling",
-            "cloth": "a dry cloth"
+            "boundary_stones": "Old boundary stones",
+            "stone_keeper": "dragonling keeper",
+            "cloth": "dry cloth"
           }
         },
         "markings": {
@@ -1525,12 +1525,32 @@
           ],
           "introduces": {
             "carving": "carved with a mountain",
-            "record_board": "her record board"
+            "record_board": "record board",
+            "river_marker": "wet river marker"
           }
         },
         "carving": {
           "requires": [
             "carving",
+            "stone_keeper",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "rub_check": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "rubbed": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "rub_torn": {
+          "requires": [
             "stone_keeper"
           ],
           "introduces": {}
@@ -1538,7 +1558,485 @@
         "marker": {
           "requires": [
             "stone_keeper",
+            "river_marker",
             "record_board"
+          ],
+          "introduces": {}
+        },
+        "marker_haul": {
+          "requires": [
+            "river_marker"
+          ],
+          "introduces": {}
+        },
+        "marker_set": {
+          "requires": [
+            "stone_keeper",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "marker_slid": {
+          "requires": [
+            "stone_keeper",
+            "cloth"
+          ],
+          "introduces": {}
+        },
+        "row": {
+          "requires": [
+            "stone_keeper",
+            "boundary_stones"
+          ],
+          "introduces": {
+            "river_row": "Nine stones",
+            "count_cord": "count cord",
+            "splash": "Splash"
+          }
+        },
+        "plan": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "lever_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "trench_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "smash_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "splash_slip": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "splash_up": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "surge_check": {
+          "requires": [
+            "stone_keeper",
+            "count_cord",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "surge_safe": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "surge_wet": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "notch_plan": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "chisel_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "chalk_check": {
+          "requires": [
+            "splash",
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "moss_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "beat_check": {
+          "requires": [
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "notch_cut": {
+          "requires": [
+            "stone_keeper",
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "notch_crooked": {
+          "requires": [
+            "stone_keeper",
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "cord_plan": {
+          "requires": [
+            "count_cord",
+            "river_row"
+          ],
+          "introduces": {}
+        },
+        "climb_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "throw_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "wing_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "cord_tangle": {
+          "requires": [
+            "count_cord",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "cord_run": {
+          "requires": [
+            "count_cord",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "tighten": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "tight": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "tight_slack": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "tie_plan": {
+          "requires": [
+            "count_cord",
+            "river_row",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "loop_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "hitch_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "flick_check": {
+          "requires": [
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "tie_good": {
+          "requires": [
+            "stone_keeper",
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "tie_loose": {
+          "requires": [
+            "stone_keeper",
+            "count_cord"
+          ],
+          "introduces": {}
+        },
+        "sight_plan": {
+          "requires": [
+            "count_cord",
+            "river_row"
+          ],
+          "introduces": {}
+        },
+        "sight_check": {
+          "requires": [
+            "river_row"
+          ],
+          "introduces": {}
+        },
+        "pebble_check": {
+          "requires": [
+            "river_row"
+          ],
+          "introduces": {}
+        },
+        "star_check": {
+          "requires": [
+            "river_row"
+          ],
+          "introduces": {}
+        },
+        "sight_found": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {
+            "fourth_stone": "fourth stone from the bottom"
+          }
+        },
+        "sight_wobble": {
+          "requires": [
+            "splash",
+            "stone_keeper"
+          ],
+          "introduces": {
+            "fourth_stone": "fourth stone from the bottom"
+          }
+        },
+        "nudge_plan": {
+          "requires": [
+            "fourth_stone"
+          ],
+          "introduces": {}
+        },
+        "push_check": {
+          "requires": [
+            "fourth_stone"
+          ],
+          "introduces": {}
+        },
+        "wedge_check": {
+          "requires": [
+            "fourth_stone"
+          ],
+          "introduces": {}
+        },
+        "brace_check": {
+          "requires": [
+            "fourth_stone"
+          ],
+          "introduces": {}
+        },
+        "fourth_ok": {
+          "requires": [
+            "fourth_stone",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "fourth_shift": {
+          "requires": [
+            "fourth_stone",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "top_stone": {
+          "requires": [
+            "stone_keeper",
+            "carving",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "compare": {
+          "requires": [
+            "stone_keeper",
+            "river_row",
+            "record_board",
+            "carving"
+          ],
+          "introduces": {}
+        },
+        "notch_count_check": {
+          "requires": [
+            "river_row",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "peak_check": {
+          "requires": [
+            "carving"
+          ],
+          "introduces": {}
+        },
+        "muddle": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "clue": {
+          "requires": [
+            "stone_keeper",
+            "carving",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "record_plan": {
+          "requires": [
+            "stone_keeper",
+            "record_board",
+            "carving"
+          ],
+          "introduces": {}
+        },
+        "wrote_plain": {
+          "requires": [
+            "stone_keeper",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "drew_both": {
+          "requires": [
+            "stone_keeper",
+            "record_board"
+          ],
+          "introduces": {}
+        },
+        "runner": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {
+            "runner": "young dragonling runner",
+            "moved_stone": "big stone at the counting circle moved"
+          }
+        },
+        "runner_check": {
+          "requires": [
+            "runner",
+            "moved_stone"
+          ],
+          "introduces": {}
+        },
+        "runner_told": {
+          "requires": [
+            "runner",
+            "moved_stone",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "runner_short": {
+          "requires": [
+            "runner",
+            "moved_stone",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "go_plan": {
+          "requires": [
+            "stone_keeper",
+            "record_board",
+            "count_cord",
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "runner_cake": {
+          "requires": [
+            "runner",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "carry_board": {
+          "requires": [
+            "record_board",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "tie_off": {
+          "requires": [
+            "splash",
+            "count_cord",
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "rest_row": {
+          "requires": [
+            "stone_keeper",
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "honey_buy": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "share_supper": {
+          "requires": [
+            "stone_keeper",
+            "splash"
+          ],
+          "introduces": {}
+        },
+        "supper": {
+          "requires": [
+            "stone_keeper"
+          ],
+          "introduces": {}
+        },
+        "watch": {
+          "requires": [
+            "stone_keeper",
+            "splash"
           ],
           "introduces": {}
         },
@@ -1562,7 +2060,7 @@
           "introduces": {
             "ashspan": "Ashspan Bridge",
             "ossley": "Old Ossley",
-            "boat": "his flat boat"
+            "boat": "flat boat"
           }
         },
         "landing": {
@@ -1571,10 +2069,33 @@
             "boat"
           ],
           "introduces": {
-            "plank": "a landing plank",
-            "mooring_rope": "A mooring rope",
+            "plank": "landing plank",
+            "mooring_rope": "mooring rope",
             "travelers": "two travelers"
           }
+        },
+        "plank_check": {
+          "requires": [
+            "plank",
+            "travelers",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "rope_check": {
+          "requires": [
+            "plank",
+            "mooring_rope",
+            "travelers"
+          ],
+          "introduces": {}
+        },
+        "brace_check": {
+          "requires": [
+            "plank",
+            "travelers"
+          ],
+          "introduces": {}
         },
         "plank": {
           "requires": [
@@ -1593,13 +2114,510 @@
           ],
           "introduces": {}
         },
-        "routes": {
+        "brace_done": {
+          "requires": [
+            "plank",
+            "travelers",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "board_wet": {
+          "requires": [
+            "plank",
+            "travelers",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ferry_ask": {
+          "requires": [
+            "ossley",
+            "boat",
+            "travelers"
+          ],
+          "introduces": {
+            "tilly": "Tilly",
+            "eggs": "Duck eggs"
+          }
+        },
+        "ferry_plan": {
+          "requires": [
+            "ossley",
+            "boat",
+            "eggs"
+          ],
+          "introduces": {}
+        },
+        "pole_check": {
+          "requires": [
+            "boat",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "watch_check": {
+          "requires": [
+            "boat",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ferry_hold": {
+          "requires": [
+            "boat",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "crossing": {
+          "requires": [
+            "boat",
+            "ossley",
+            "eggs"
+          ],
+          "introduces": {}
+        },
+        "ferry_spin": {
+          "requires": [
+            "boat",
+            "ossley",
+            "eggs"
+          ],
+          "introduces": {}
+        },
+        "far_bank": {
+          "requires": [
+            "ashspan",
+            "ossley",
+            "eggs"
+          ],
+          "introduces": {
+            "bryn": "Bryn",
+            "mender_planks": "Planks, I have"
+          }
+        },
+        "cart_plan": {
+          "requires": [
+            "bryn",
+            "mender_planks"
+          ],
+          "introduces": {
+            "goats": "pack goats"
+          }
+        },
+        "dig_check": {
+          "requires": [
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "track_check": {
+          "requires": [
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "roar_check": {
+          "requires": [
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "cart_free": {
+          "requires": [
+            "bryn",
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "cart_stuck": {
+          "requires": [
+            "bryn",
+            "goats"
+          ],
+          "introduces": {}
+        },
+        "bridge_head": {
+          "requires": [
+            "bryn",
+            "ashspan"
+          ],
+          "introduces": {
+            "jam": "logs and branches have jammed"
+          }
+        },
+        "jam_plan": {
+          "requires": [
+            "jam",
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "hook_check": {
+          "requires": [
+            "jam"
+          ],
+          "introduces": {}
+        },
+        "haul_check": {
+          "requires": [
+            "jam"
+          ],
+          "introduces": {}
+        },
+        "slip_check": {
+          "requires": [
+            "jam"
+          ],
+          "introduces": {}
+        },
+        "jam_shift": {
+          "requires": [
+            "jam",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "jam_clear": {
+          "requires": [
+            "ossley",
+            "bryn"
+          ],
+          "introduces": {
+            "cracked_beam": "cracked middle beam"
+          }
+        },
+        "beam_intro": {
+          "requires": [
+            "bryn",
+            "cracked_beam",
+            "eggs"
+          ],
+          "introduces": {}
+        },
+        "beam_plan": {
+          "requires": [
+            "bryn",
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "lift_check": {
+          "requires": [
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "roll_check": {
+          "requires": [
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "smash_check": {
+          "requires": [
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "hum_check": {
+          "requires": [
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "beam_up": {
+          "requires": [
+            "bryn",
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "beam_slip": {
+          "requires": [
+            "bryn",
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "hatch": {
+          "requires": [
+            "eggs",
+            "tilly"
+          ],
+          "introduces": {
+            "ducklings": "duckling"
+          }
+        },
+        "duck_plan": {
+          "requires": [
+            "ducklings",
+            "tilly"
+          ],
+          "introduces": {}
+        },
+        "scoop_check": {
+          "requires": [
+            "ducklings"
+          ],
+          "introduces": {}
+        },
+        "coax_check": {
+          "requires": [
+            "ducklings"
+          ],
+          "introduces": {}
+        },
+        "trail_check": {
+          "requires": [
+            "ducklings"
+          ],
+          "introduces": {}
+        },
+        "ducks_safe": {
+          "requires": [
+            "ducklings",
+            "tilly",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ducks_loose": {
+          "requires": [
+            "ducklings",
+            "tilly",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "planks_plan": {
+          "requires": [
+            "bryn",
+            "mender_planks"
+          ],
+          "introduces": {}
+        },
+        "rope2_check": {
+          "requires": [
+            "mender_planks"
+          ],
+          "introduces": {}
+        },
+        "pass_check": {
+          "requires": [
+            "mender_planks"
+          ],
+          "introduces": {}
+        },
+        "pwing_check": {
+          "requires": [
+            "mender_planks"
+          ],
+          "introduces": {}
+        },
+        "planks_dropped": {
+          "requires": [
+            "mender_planks",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "planks_laid": {
+          "requires": [
+            "bryn",
+            "mender_planks"
+          ],
+          "introduces": {}
+        },
+        "lash_plan": {
+          "requires": [
+            "bryn",
+            "cracked_beam"
+          ],
+          "introduces": {}
+        },
+        "knots_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "pegs_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "whistle_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "straps_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "lashed": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "lashed_loose": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "test_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "bridge_open": {
+          "requires": [
+            "bryn",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "bridge_creak": {
+          "requires": [
+            "bryn",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "goat_plan": {
+          "requires": [
+            "bryn",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "oats_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "ribbon_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "carry_check": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "goat_over": {
+          "requires": [
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "goat_bolt": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "folk_cross": {
+          "requires": [
+            "tilly",
+            "ossley",
+            "ducklings"
+          ],
+          "introduces": {}
+        },
+        "gift_plan": {
+          "requires": [
+            "tilly",
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "buy_cakes": {
+          "requires": [
+            "tilly"
+          ],
+          "introduces": {}
+        },
+        "cakes": {
+          "requires": [
+            "tilly"
+          ],
+          "introduces": {}
+        },
+        "goose": {
+          "requires": [
+            "tilly",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "rest_hut": {
+          "requires": [
+            "bryn",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "share_bryn": {
+          "requires": [
+            "bryn",
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "dangle": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "tie_boat": {
+          "requires": [
+            "ossley",
+            "boat"
+          ],
+          "introduces": {}
+        },
+        "ossley_routes": {
           "requires": [
             "ossley"
           ],
           "introduces": {
             "saltrot_lead": "Saltrot"
           }
+        },
+        "coast_talk": {
+          "requires": [
+            "ossley",
+            "saltrot_lead"
+          ],
+          "introduces": {}
+        },
+        "inland_talk": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "routes": {
+          "requires": [
+            "ossley",
+            "saltrot_lead"
+          ],
+          "introduces": {}
         }
       }
     },
