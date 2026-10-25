@@ -1240,18 +1240,20 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
   const result = (outcome: "success" | "failure" | "assisted") => {
     prompt.phase = "result";
     prompt.outcome = outcome;
+    prompt.resolvedActorId = actor ?? playerId;
     prompt.supports = {};
   };
   if (intent.action === "continue") {
     if (prompt.phase !== "result" || !prompt.outcome) throw new Illegal("ILLEGAL", "Finish the interaction first.");
     const branch = prompt.outcome === "failure" ? scene.onFailure : prompt.outcome === "assisted" ? (scene.onAssisted ?? scene.onSuccess) : scene.onSuccess;
-    if (actor) passStoryTurn(draft, actor);
-    return takeBranch(draft, branch, ctx, draft.party.find((member) => member.playerId === actor)?.character.id);
+    const owner = prompt.resolvedActorId ?? actor;
+    if (owner) passStoryTurn(draft, owner);
+    return takeBranch(draft, branch, ctx, draft.party.find((member) => member.playerId === owner)?.character.id);
   }
   if (intent.action === "retry") {
     if (playerId !== actor || (prompt.phase !== "result" && prompt.phase !== "active")) throw new Illegal("ILLEGAL", "Only the acting hero can start again.");
     prompt.attempt += 1; prompt.phase = "ready"; prompt.supports = {};
-    delete prompt.outcome; delete prompt.startedAt;
+    delete prompt.outcome; delete prompt.resolvedActorId; delete prompt.startedAt;
     delete prompt.levels; delete prompt.passed; delete prompt.caughtBy;
     delete prompt.contributions; delete prompt.reactions; delete prompt.taps;
     return undefined;

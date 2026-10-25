@@ -20,6 +20,8 @@ export interface InteractionPrompt {
   spec: InteractionSpec;
   playerIds: string[];
   actorId: string;
+  /** Who acted when the outcome was set. A phone that drops before "continue" must not move the story turn or the reward. */
+  resolvedActorId?: string;
   phase: "ready" | "active" | "result";
   relaxed: boolean;
   startedAt?: string;

@@ -160,6 +160,16 @@ describe("authoritative story interactions", () => {
     next = step(JSON.parse(JSON.stringify(next)) as RunState, ctx, { action: "continue" }, "p1");
     expect(next.flags["interaction_won"]).toBe(true);
   });
+  it("keeps the resolved actor when their phone drops between the outcome and continue", () => {
+    const { state, ctx } = setup(precision, 3);
+    let next = step(state, ctx, { action: "start", relaxed: false });
+    next = step(next, ctx, { action: "stop", position: 0.5 });
+    expect(prompt(next).resolvedActorId).toBe("p0");
+    next.party[0]!.connected = false;
+    next = step(next, ctx, { action: "continue" }, "p1");
+    expect(next.storyTurn).toBe(1);
+    expect(next.flags["interaction_won"]).toBe(true);
+  });
   it("uses the authored failure and assisted branches", () => {
     const { state, ctx } = setup();
     let next = step(state, ctx, { action: "start", relaxed: false });
