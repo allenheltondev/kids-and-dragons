@@ -58,3 +58,16 @@ for 256px canvas, real alpha and clear edge margin.
 Exact prompts, reference roles, output hashes and light/dark review sheets at
 128px, 48px and 24px are in
 [`docs/reviews/issue-421-remaining`](../../../../../docs/reviews/issue-421-remaining/README.md).
+
+## Player sheet icons (#481)
+
+- **stats**: Three ascending gold-rimmed teal ability bars topped by a lavender star. Dedicated phone stats heading art.
+- **bag**: Open terracotta adventurer backpack with teal cuff, gold buckle and a parchment roll. Dedicated inventory art, separate from the satchel item icon.
+
+Both are transparent 256px lossless WebP, declared in `manifest.paintedIcons` and selected through `Icon`. Prompts, carrot repair details and light/dark size review: [`docs/reviews/issue-481`](../../../../../docs/reviews/issue-481/README.md).
+
+## SVG object art pass
+
+The four named class tokens now have dedicated bracer, hood, circlet and bell paintings. Twenty more paintings replace object SVGs for tray modes, choices, status, keepsakes, coins and the rank-up crow. All are declared in `manifest.paintedIcons`; the shared lookup preserves decorative and labelled accessibility behavior.
+
+[Audit, prompts, runtime paths and light/dark contact sheets](../../../../../docs/reviews/svg-art-audit/README.md).

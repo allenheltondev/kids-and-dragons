@@ -137,8 +137,8 @@ In the lore, a class's power comes from a piece of gear the hero wears.
 - **Names** are `CLASS_TOKENS` in [`tokens.ts`](../packages/shared/src/tokens.ts), beside
   `deedTrack`, which picks the one track a hero sees (rule 6, §6): the further along of a rank's
   two, or with neither started, the alone track for a hero alone and the friends track at a table.
-- **The token** (`ClassToken.tsx`) is simple SVG for now, every tier: the rigs' Sworn gear layer is
-  a later art pass. Its notches are three seats, always drawn: a cut notch is a filled chevron and
+- **The token** (`ClassToken.tsx`) uses dedicated painted bracer, hood, circlet and bell icons through
+  `Icon`, at every tier. Its notches are three seats, always drawn: a cut notch is a filled chevron and
   one to come a dash; a pip done is a filled dot and one to go a ring. Shape, never colour alone.
 - **Where it shows:** the phone's own view and every sheet (the token, "Thornguard Apprentice",
   the next notch's deeds as pips, or a bar with its count past ten, as a Songkeeper's hearts are),

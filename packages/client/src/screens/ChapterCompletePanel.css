@@ -113,7 +113,7 @@
   max-width: 46ch;
 }
 
-.complete__recap svg {
+.complete__recap .kad-icon {
   /* Nudged onto the first line's baseline rather than its box top. */
   margin-top: 0.15em;
   flex: 0 0 auto;

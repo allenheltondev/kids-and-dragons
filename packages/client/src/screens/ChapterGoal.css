@@ -37,7 +37,7 @@
   line-height: 1.25;
 }
 
-.goal__text > svg {
+.goal__text > .kad-icon {
   flex: 0 0 auto;
   color: var(--goal-gold);
 }
@@ -72,7 +72,7 @@
   opacity: 0.85;
 }
 
-.goal__box > svg {
+.goal__box > .kad-icon {
   inline-size: 0.95em;
   block-size: 0.95em;
 }
@@ -399,7 +399,7 @@ html:not([data-contrast="high"]) .goal.goal--badge::before {
   -webkit-tap-highlight-color: transparent;
 }
 
-.goal__badge > svg {
+.goal__badge > .kad-icon {
   color: var(--goal-gold);
 }
 
