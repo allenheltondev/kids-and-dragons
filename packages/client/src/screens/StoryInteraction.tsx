@@ -25,9 +25,15 @@ function useClock(active: boolean, everyMs?: number): number {
 }
 
 const SLOW_CLOCK_MS = 250;
-/** Only these kinds show a moving marker that the phone's stop position is read from. */
-function clockFor(kind: InteractionPrompt["spec"]["kind"]): number | undefined {
-  return kind === "precision" || kind === "timing" ? undefined : SLOW_CLOCK_MS;
+/**
+ * Frame rate while a marker moves: precision and timing read the stop position from it, and
+ * tracking animates its cups during playback. Everything else is static enough for a slow tick.
+ */
+function clockFor(prompt: InteractionPrompt): number | undefined {
+  const { kind } = prompt.spec;
+  if (kind === "precision" || kind === "timing") return undefined;
+  if (kind === "tracking" && !prompt.relaxed && Date.now() - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, false)) return undefined;
+  return SLOW_CLOCK_MS;
 }
 
 function Meter({ prompt, now }: { prompt: InteractionPrompt; now: number }) {
@@ -51,7 +57,7 @@ export function StoryInteractionWorld() {
   const state = useRunState();
   const prompt = state?.prompt?.kind === "interaction" ? state.prompt : null;
   const still = reducedMotion();
-  const now = useClock(prompt?.phase === "active" && !still, prompt ? clockFor(prompt.spec.kind) : undefined);
+  const now = useClock(prompt?.phase === "active" && !still, prompt ? clockFor(prompt) : undefined);
   if (!prompt || !state) return null;
   const connected = state.party.filter((member) => member.connected).map((member) => member.playerId);
   return <section className="story-interaction" aria-label="Story interaction">
@@ -93,7 +99,7 @@ function Controls({ prompt, party, playerId, dispatch, busy }: {
   const [relaxed, setRelaxed] = useState(reducedMotion);
   const [answer, setAnswer] = useState<string[]>([]);
   const [holding, setHolding] = useState(false);
-  const now = useClock(prompt.phase === "active", clockFor(prompt.spec.kind));
+  const now = useClock(prompt.phase === "active", clockFor(prompt));
   const latest = useRef({ prompt, busy, dispatch });
   latest.current = { prompt, busy, dispatch };
   const send = (action: InteractionAction) => void dispatch({ type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, ...action });
