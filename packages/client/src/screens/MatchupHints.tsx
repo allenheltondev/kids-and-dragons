@@ -11,7 +11,7 @@
 
 import type { ReactElement } from "react";
 import type { Chapter, EncounterState, PartyMember } from "@kad/shared";
-import { useCampaign, useRules } from "../store";
+import { useBestiary, useCampaign, useRules } from "../store";
 import { Icon } from "./icons";
 import { checkBadges, chipsForHero } from "./matchup-copy";
 import "./MatchupHints.css";
@@ -48,8 +48,9 @@ export function CheckMatchupBadges({
 }): ReactElement | null {
   const rules = useRules();
   const campaign = useCampaign();
+  const bestiary = useBestiary();
   const scene = chapter?.scenes[sceneId];
-  const badges = checkBadges(rules, campaign?.id, hero, scene?.type === "check" ? scene : null);
+  const badges = checkBadges(rules, campaign?.id, hero, scene?.type === "check" ? scene : null, 2, bestiary);
   if (badges.length === 0) return null;
   return (
     <ul className="matchup-hints matchup-hints--check" aria-label="What helps or hurts this roll">

@@ -8,6 +8,7 @@
 import { itemCatalog } from "@kad/shared";
 import { withItemIcons } from "../assets/item-icons";
 import type {
+  Bestiary,
   ResolvedCharacter,
   ActionRequest,
   ActionResponse,
@@ -271,6 +272,12 @@ export interface Api {
    * step so the shape-tolerance is testable without a fetch.
    */
   loadAbilities(): Promise<unknown>;
+  /**
+   * Canon's creatures (`content/bestiary.json`), for what a check badge says
+   * about a creature's likes and dislikes. Optional to the game: a caller that
+   * cannot get it carries on without.
+   */
+  loadBestiary(): Promise<Bestiary>;
 
   /** `null` when the deployment has no user pool, i.e. local dev. */
   fetchConfig(): Promise<ClientConfig | null>;
@@ -617,6 +624,10 @@ export const api: Api = {
 
   loadAbilities() {
     return request<unknown>("/content/abilities.json");
+  },
+
+  loadBestiary() {
+    return request<Bestiary>("/content/bestiary.json");
   },
 
   loadWorld() {
