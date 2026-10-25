@@ -22,6 +22,8 @@ export function isPromptForPlayer(
   if (!prompt || !playerId) return false;
 
   switch (prompt.kind) {
+    case "interaction":
+      return party.some((member) => member.playerId === playerId);
     case "choice":
       // A turn holder whose phone dropped leaves the story beat to anyone
       // (spec §6.1) — the engine takes the answer, so the button has to show.

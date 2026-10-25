@@ -19,7 +19,7 @@ const campaign = read("content", "campaigns", "first-steps.json");
 /** Every way on out of a scene: choices, a check's two branches, a fight's endings. */
 function exits(scene) {
   if (scene.choices) return scene.choices.map((c) => c.goto);
-  return ["onSuccess", "onFailure", "onVictory", "onDefeat", "onEscape", "onTimeout"]
+  return ["onSuccess", "onFailure", "onAssisted", "onVictory", "onDefeat", "onEscape", "onTimeout"]
     .map((key) => scene[key]?.goto)
     .filter(Boolean);
 }
@@ -72,7 +72,7 @@ describe("the practice (#255)", () => {
       expect(scene.outcome, id).not.toBe("setback");
       expect(scene.endsCampaign, id).toBeUndefined();
       for (const list of [scene.onEnter, ...(scene.choices ?? []).map((c) => c.effects)]) effects.push(...(list ?? []));
-      for (const key of ["onSuccess", "onFailure", "onVictory", "onDefeat", "onEscape"]) effects.push(...(scene[key]?.effects ?? []));
+      for (const key of ["onSuccess", "onFailure", "onAssisted", "onVictory", "onDefeat", "onEscape"]) effects.push(...(scene[key]?.effects ?? []));
       const rescue = scene.environment?.rescue;
       effects.push(...(rescue?.effects ?? []));
       // A captive nobody can drag away and no clock to lose them to.
