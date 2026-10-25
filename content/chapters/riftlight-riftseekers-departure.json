@@ -6,7 +6,7 @@
   "title": "A Map with a Missing Pass",
   "biome": "glacier_of_origins",
   "music": "riftlight-theme",
-  "estimatedMinutes": 33,
+  "estimatedMinutes": 34,
   "xpAward": 140,
   "entry": "map",
   "plate": {
@@ -164,18 +164,17 @@
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "sledge_lift": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "tags": [
-        "force"
-      ],
-      "roller": "all",
-      "narration": "Four trunks, three sacks, a crate of notebooks and a barrel that sloshes. Olivia points with one hoof. \"Heavy things low, light things high.\" Orin has drawn a diagram on his sleeve.",
-      "prompt": "Everyone takes a handle. On Orin's count, lift together!",
+      "type": "interaction",
+      "narration": "Four trunks, three sacks, a crate of notebooks and a barrel that sloshes. Olivia points with one hoof. \"Heavy things low, light things high.\" Orin has drawn a diagram on his sleeve. \"Hand to hand,\" he says. \"Nobody carries the whole pile.\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch each trunk and pass it along to the sledge.",
+        "actionLabel": "Pass the trunk",
+        "objectLabel": "a heavy trunk"
+      },
       "onSuccess": {
         "goto": "ring_sort",
-        "narration": "Up it all goes, at once. The sledge stops leaning and sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
+        "narration": "Up it all goes, hand to hand. The sledge stops leaning and sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
         "effects": [
           {
             "type": "grantItem",
@@ -191,6 +190,17 @@
           {
             "type": "setFlag",
             "flag": "sledge_leans"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "ring_sort",
+        "narration": "Orin steadies the chain with a long pole, and the trunks glide along. The sledge sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "mosslight_jar",
+            "to": "party"
           }
         ]
       },
@@ -282,44 +292,40 @@
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "ring_sort": {
-      "type": "choice_point",
-      "narration": "Seren sets her ring case on a flat stone and lifts the lid. Rings of every size lie inside, each in its own groove, each with its own tiny hum. The rush has jostled them. \"They go back in order,\" she says, \"or the lid will not close, and the lid is all that keeps them from singing in my pack all night.\"",
-      "choices": [
-        {
-          "id": "size",
-          "label": "Match each ring to its groove by size",
-          "icon": "hand",
-          "goto": "sort_size"
-        },
-        {
-          "id": "ear",
-          "label": "Tap each ring and match it by its hum",
-          "icon": "ear",
-          "goto": "sort_ear"
-        },
-        {
-          "id": "rally",
-          "label": "Use rally to hum the rings back into order",
-          "icon": "song",
-          "goto": "sort_hum",
-          "requiresClass": "songkeeper"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/singing-hall-camp"
-    },
-    "sort_size": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "roller": "best",
-      "narration": "Big ring, big groove. Small ring, small groove. Two rings look exactly alike, and one of them is fibbing.",
-      "prompt": "Slide each ring along the grooves until it clicks in.",
+      "type": "interaction",
+      "narration": "Seren sets her ring case on a flat stone and lifts the lid. Rings of every size lie inside, each with its own tiny hum. The rush has jostled them. \"They go back in order,\" she says, \"or the lid will not close, and the lid is all that keeps them from singing in my pack all night.\" She hands out little cards. \"Each card knows something. Share what yours says.\"",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share your clues, then put the rings in order.",
+        "actionLabel": "Close the case",
+        "options": [
+          {
+            "id": "low",
+            "label": "Low ring",
+            "icon": "bell"
+          },
+          {
+            "id": "high",
+            "label": "High ring",
+            "icon": "note"
+          },
+          {
+            "id": "mid",
+            "label": "Middle ring",
+            "icon": "song"
+          }
+        ],
+        "answer": [
+          "low",
+          "high",
+          "mid"
+        ],
+        "clues": [
+          "The low ring goes in first.",
+          "The high ring goes right before the middle ring.",
+          "Use each ring once."
+        ]
+      },
       "onSuccess": {
         "goto": "seren",
         "narration": "Click, click, click. The last ring drops in with a note like a dropped spoon. Seren blinks. \"Hm. You are better at this than Orin.\" The lid closes with a satisfied sigh."
@@ -328,61 +334,9 @@
         "goto": "seren",
         "narration": "Two rings land in the wrong grooves. The lid closes anyway, and the case hums a little crooked. Seren sighs fondly. \"I will fix it by the fire. Rings are patient.\""
       },
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/singing-hall-camp"
-    },
-    "sort_ear": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "checkKind": "doing",
-      "roller": "party",
-      "narration": "Each ring answers a tap with its own hum, low or high, thick or thin. You listen the way you listen for a kettle.",
-      "prompt": "Tap each ring and match its hum to its groove.",
-      "onSuccess": {
+      "onAssisted": {
         "goto": "seren",
-        "narration": "Click, click, click. The last ring drops in with a note like a dropped spoon. Seren blinks. \"Hm. You are better at this than Orin.\" The lid closes with a satisfied sigh."
-      },
-      "onFailure": {
-        "goto": "seren",
-        "narration": "Two rings land in the wrong grooves. The lid closes anyway, and the case hums a little crooked. Seren sighs fondly. \"I will fix it by the fire. Rings are patient.\""
-      },
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/singing-hall-camp"
-    },
-    "sort_hum": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "checkKind": "doing",
-      "roller": "party",
-      "narration": "Rally carries a tune from one heart to the next. You hum a low note, and a ring in the case hums it back.",
-      "prompt": "Hum each ring's note and let the matching ring answer.",
-      "onSuccess": {
-        "goto": "seren",
-        "narration": "Click, click, click. The last ring drops in with a note like a dropped spoon. Seren blinks. \"Hm. You are better at this than Orin.\" The lid closes with a satisfied sigh."
-      },
-      "onFailure": {
-        "goto": "seren",
-        "narration": "Two rings land in the wrong grooves. The lid closes anyway, and the case hums a little crooked. Seren sighs fondly. \"I will fix it by the fire. Rings are patient.\""
+        "narration": "You lay every card side by side. Low, high, middle. The lid closes with a satisfied sigh, and Seren tucks the case under her arm."
       },
       "cast": [
         {
@@ -1526,15 +1480,75 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Try the last test",
+          "label": "Echo her pattern",
           "icon": "hand",
-          "goto": "trial_all"
+          "goto": "trial_echo"
         }
       ],
       "cast": [
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "trial_echo": {
+      "type": "interaction",
+      "narration": "Seren holds up one paw, and the blanket goes still. She taps the three rings in a pattern, slow and clear. Orin leans in. Olivia stops breathing, which for Olivia is a lot.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch Seren tap the rings, then tap the same rings in the same order.",
+        "actionLabel": "Tap it back",
+        "options": [
+          {
+            "id": "low",
+            "label": "Low ring",
+            "icon": "bell"
+          },
+          {
+            "id": "mid",
+            "label": "Middle ring",
+            "icon": "note"
+          },
+          {
+            "id": "high",
+            "label": "High ring",
+            "icon": "song"
+          }
+        ],
+        "answer": [
+          "low",
+          "high",
+          "mid",
+          "low"
+        ],
+        "stepMs": 1500
+      },
+      "onSuccess": {
+        "goto": "trial_all",
+        "narration": "Low, high, middle, low. Seren's ears twitch twice, which means yes. \"An echo is only a pattern that remembers itself,\" she says."
+      },
+      "onFailure": {
+        "goto": "trial_all",
+        "narration": "Your echo comes out a little jumbled. Seren taps it once more, slowly, and you hear where it wandered off."
+      },
+      "onAssisted": {
+        "goto": "trial_all",
+        "narration": "Seren taps the pattern again while Orin hums it under his breath. Low, high, middle, low. This time it sticks."
+      },
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
         },
         {
           "figure": "cast/seren_wisp",
@@ -1821,7 +1835,7 @@
           "id": "continue",
           "label": "Choose your next direction",
           "icon": "hand",
-          "goto": "camp"
+          "goto": "camp_play"
         }
       ],
       "variants": [
@@ -1844,6 +1858,54 @@
         {
           "figure": "cast/seren_wisp",
           "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/singing-hall-camp"
+    },
+    "camp_play": {
+      "type": "interaction",
+      "narration": "The Riftseekers are gone down the path. The herder's goats wander over to the sledge, and the yetis lean out of the hall door. Nobody says goodbye to a road without a proper send-off.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Give the goats and the hall a proper send-off.",
+        "actionLabel": "Send them off",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "hum",
+            "label": "Hum the low note",
+            "icon": "song",
+            "reaction": "The hall hums back, low and warm."
+          },
+          {
+            "id": "pet",
+            "label": "Pet a goat",
+            "icon": "heart",
+            "reaction": "A goat leans its whole weight against your knees."
+          },
+          {
+            "id": "cheer",
+            "label": "Cheer for the road",
+            "icon": "star",
+            "reaction": "Every goat looks up, then goes back to chewing the tow rope."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "camp",
+        "narration": "The low note rolls out of the hall, and the goats hum along in their own way. The herder waves, and her kid goat tries to wave too."
+      },
+      "onFailure": {
+        "goto": "camp",
+        "narration": "The goats are busy with the tow rope, and the yetis are busy with a very long note. You wave anyway."
+      },
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
         }
       ],
       "art": "scenes/riftlight/singing-hall-camp"

@@ -1425,27 +1425,6 @@
           ],
           "introduces": {}
         },
-        "sort_size": {
-          "requires": [
-            "seren",
-            "ring_case"
-          ],
-          "introduces": {}
-        },
-        "sort_ear": {
-          "requires": [
-            "seren",
-            "ring_case"
-          ],
-          "introduces": {}
-        },
-        "sort_hum": {
-          "requires": [
-            "seren",
-            "ring_case"
-          ],
-          "introduces": {}
-        },
         "seren": {
           "requires": [
             "seren",
@@ -1806,6 +1785,13 @@
           ],
           "introduces": {}
         },
+        "trial_echo": {
+          "requires": [
+            "practice_rings",
+            "seren"
+          ],
+          "introduces": {}
+        },
         "trial_all": {
           "requires": [
             "practice_rings",
@@ -1873,6 +1859,15 @@
             "cairnstep",
             "ring_case",
             "instruments"
+          ],
+          "introduces": {}
+        },
+        "camp_play": {
+          "requires": [
+            "herder",
+            "herd",
+            "hall",
+            "learned_note"
           ],
           "introduces": {}
         },

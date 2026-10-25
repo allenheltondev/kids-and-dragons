@@ -173,6 +173,17 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
     } else if (state.prompt?.kind === "choice") {
       expect(state.prompt.options.length).toBeGreaterThan(0);
       for (const option of state.prompt.options) pending.push({ state: send(state, { type: "CHOOSE", choiceId: option.id }, chapter), known, introduced });
+    } else if (state.prompt?.kind === "interaction") {
+      // Story interactions (#495): the untimed helping hand always works, and a
+      // sequence can be answered wrongly, so both branches are walked.
+      const { openedSeq, attempt, spec } = state.prompt;
+      const act = (from: RunState, action: Record<string, unknown>) => send(from, { type: "INTERACT", openedSeq, attempt, ...action } as ClientIntent, chapter);
+      pending.push({ state: act(act(state, { action: "assist" }), { action: "continue" }), known, introduced });
+      if (spec.kind === "sequence") {
+        const wrong = [...spec.answer].reverse();
+        const started = act(state, { action: "start", relaxed: false });
+        pending.push({ state: act(act(started, { action: "answer", answer: wrong.join("") === spec.answer.join("") ? [...spec.answer].sort() : wrong }), { action: "continue" }), known, introduced });
+      }
     } else if (state.prompt?.kind === "roll") {
       for (const face of [1, 20]) pending.push({ state: send(state, { type: "ROLL" }, chapter, face), known, introduced });
     } else {
