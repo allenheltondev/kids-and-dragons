@@ -193,7 +193,12 @@ export interface GameStore {
    * Party Mode from the TV: open a room with this device as its screen, seat
    * nobody, and land on `/tv/:code` — the lobby the phones join (spec §2.1).
    */
-  openOnThisScreen(): Promise<void>;
+  /**
+   * Open the lobby on this screen. `location` is what the family calls it
+   * ("Living room TV"): given, it is remembered on this device; left out, the
+   * remembered name is used.
+   */
+  openOnThisScreen(location?: string): Promise<void>;
   joinRoom(code: string, displayName: string, seat?: SharedSeatRequest): Promise<ClientSession>;
   /**
    * The "who's playing?" picker on a shared tablet (#250). `null` when this

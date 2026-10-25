@@ -49,6 +49,19 @@ export function isBlockedName(raw: string): boolean {
   return INSIDE.some((bad) => run.includes(bad));
 }
 
+/** Longest name a screen's place may have ("Grandma's living room TV"). */
+export const LOCATION_NAME_MAX = 40;
+
+/**
+ * A place a family named its TV for: trimmed, spaces collapsed, run through
+ * the same word filter as any typed name. Empty is fine (an unnamed screen).
+ */
+export function checkLocationName(raw: unknown): NameCheck {
+  const text = typeof raw === "string" ? raw.replace(/\s+/g, " ").trim() : "";
+  const checked = checkTypedName(text.slice(0, LOCATION_NAME_MAX).trim());
+  return checked;
+}
+
 export type NameCheck = { ok: true; name: string } | { ok: false; message: string };
 
 /** Trim a typed name and say whether it may be used. Length is the caller's rule. */

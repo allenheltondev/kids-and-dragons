@@ -306,6 +306,27 @@ export interface SharedDeviceRecord {
   householdId: string;
 }
 
+const LOCATION_KEY = "kad.location";
+
+/** What the family named this screen ("Living room TV"); "" when it never was. */
+export function loadLocationName(storage: KeyValueStorage = defaultStorage()): string {
+  try {
+    return storage.getItem(LOCATION_KEY) ?? "";
+  } catch {
+    return "";
+  }
+}
+
+/** Remember the screen's name for next time; an empty name forgets it. */
+export function saveLocationName(name: string, storage: KeyValueStorage = defaultStorage()): void {
+  try {
+    if (name === "") storage.removeItem(LOCATION_KEY);
+    else storage.setItem(LOCATION_KEY, name);
+  } catch {
+    /* the name is a convenience; the game opens without it */
+  }
+}
+
 const SHARED_KEY = "kad.shared";
 
 export function loadSharedDevice(storage: KeyValueStorage = defaultStorage()): SharedDeviceRecord | null {

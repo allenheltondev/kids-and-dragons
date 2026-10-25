@@ -72,6 +72,8 @@ export interface CreateRoomInput {
   hostDeviceId?: string;
   /** A family tablet is the TV (`RoomRecord.display`): nobody seated, not claimable. */
   display?: boolean;
+  /** The name the family gave the hosting screen (`RunRecord.location`), already vetted. */
+  location?: string;
 }
 
 export async function createRoom(
@@ -136,6 +138,7 @@ export async function createRoom(
     createdAt: iso(nowMs),
     lobbyFor: input.householdId,
     diceSecret: newSecret(),
+    ...(input.location ? { location: input.location } : {}),
   });
 
   // The engine owns the initial state's shape; the room owns its identity.
@@ -146,6 +149,7 @@ export async function createRoom(
     campaignId,
     now: iso(nowMs),
   });
+  if (input.location) state.location = input.location;
   // Where the household stands in this room's campaign — and in any other it
   // has part-way through — so the lobby can say which chapter is next, and
   // offer the choice, before anybody taps anything.

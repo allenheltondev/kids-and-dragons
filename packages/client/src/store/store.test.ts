@@ -312,6 +312,17 @@ describe("joining", () => {
     );
   });
 
+  it("names the screen it opens, remembers the name, and sends it next time too", async () => {
+    const h = harness();
+    await h.store.getState().openOnThisScreen("  Living room TV ");
+    expect(h.api.openDisplayRoom).toHaveBeenLastCalledWith(expect.objectContaining({ location: "Living room TV" }));
+    await h.store.getState().openOnThisScreen();
+    expect(h.api.openDisplayRoom).toHaveBeenLastCalledWith(expect.objectContaining({ location: "Living room TV" }));
+    // Clearing the name forgets it.
+    await h.store.getState().openOnThisScreen("");
+    expect(h.api.openDisplayRoom.mock.calls.at(-1)![0]).not.toHaveProperty("location");
+  });
+
   it("opens a room from the TV without seating it, and goes to the TV route", async () => {
     const h = harness();
     await h.store.getState().openOnThisScreen();

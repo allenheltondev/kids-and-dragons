@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { checkTypedName, isBlockedName, NAME_REFUSED_MESSAGE } from "./names.js";
+import { checkLocationName, LOCATION_NAME_MAX, checkTypedName, isBlockedName, NAME_REFUSED_MESSAGE } from "./names.js";
 import { randomNames } from "../../client/src/screens/creationContent.js";
 
 describe("the typed-name filter (#253)", () => {
@@ -30,5 +30,19 @@ describe("the typed-name filter (#253)", () => {
 
   it("never blocks a name we generate ourselves", () => {
     for (const name of randomNames(300)) expect(isBlockedName(name), name).toBe(false);
+  });
+});
+
+describe("a screen's place name", () => {
+  it("trims, collapses spaces, and allows none", () => {
+    expect(checkLocationName("  Living   room TV ")).toEqual({ ok: true, name: "Living room TV" });
+    expect(checkLocationName("")).toEqual({ ok: true, name: "" });
+    expect(checkLocationName(undefined)).toEqual({ ok: true, name: "" });
+  });
+
+  it("is cut to one line a TV can show, and runs the word filter", () => {
+    const long = checkLocationName("x".repeat(100));
+    expect(long.ok && long.name.length).toBe(LOCATION_NAME_MAX);
+    expect(checkLocationName("F U C K").ok).toBe(false);
   });
 });
