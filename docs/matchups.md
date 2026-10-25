@@ -1,8 +1,10 @@
 # Matchups: who is good at what, and who is bad at what
 
-> **Status.** Design and contract. Types are in
-> [`matchups.ts`](../packages/shared/src/types/matchups.ts); values go in `content/rules.json` under
-> `matchups`. The pieces below are built in parallel; each names the files it owns.
+> **Status.** Built. Engine (`packages/shared/src/matchups.ts`), canon traits and opinions, the
+> edge table in `content/rules.json`, Riftlight check tags, the field guide, TV and phone hints and
+> the creation cards all landed together. Open: no creature carries `thorny` yet (so its edges never
+> fire), classes have no field guide page, and the check badge on the phone ignores creature
+> opinions (the client has no bestiary). Numbers are a first tuning for playtesting.
 
 Before matchups, every class could handle every monster the same way, and species were a flat +1 and a
 once-a-fight trick. Nothing made a table look at a foe and say "we need the Starweaver for this one", and
