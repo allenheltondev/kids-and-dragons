@@ -35,12 +35,16 @@ import type {
   SpeciesId,
   StatId,
   Stats,
+  TierId,
 } from "./types/domain.js";
 import type { HeroDeeds, RunState } from "./types/state.js";
 import { addDeed, rankUp, runCounted } from "./deeds.js";
 import { getClass, getSpecies, levelBonuses, levelForXp, maxLevel, tierForLevel } from "./rules.js";
 
 /** Thrown for creation payloads that break the rules. Callers map it to ILLEGAL. */
+/** The tiers a hero may join a party at: Fledgling to Mythic (spec §8.4). */
+const JOIN_TIERS: readonly TierId[] = ["fledgling", "sworn", "radiant", "mythic"];
+
 export class CharacterRuleError extends Error {
   override name = "CharacterRuleError";
 }
@@ -53,6 +57,16 @@ export class CharacterRuleError extends Error {
  * end of the road rather than a wall in the middle of it.
  */
 export const MAX_STAT_GAIN = 9;
+
+/**
+ * The ceiling at a given level. Nine to level 10, then one more for every five
+ * levels (15, 20, 25, 30), so a level 30 hero tops out at 13 bonus points. Past
+ * Mythic a point still has somewhere to go, but the d20 stays the thing that
+ * decides a roll (spec §8.1, "Beyond level 10").
+ */
+export function maxStatGainAt(level: number): number {
+  return MAX_STAT_GAIN + Math.max(0, Math.floor((level - 10) / 5));
+}
 
 /**
  * Which stats a banked point may still be spent on — the ceiling above, read
@@ -72,11 +86,12 @@ export const MAX_STAT_GAIN = 9;
  * nothing to spend" apart from "there is nowhere left to put it".
  */
 export function spendableStatsOf(progress: CharacterProgress, rules: RulesContent): StatId[] {
+  const ceiling = maxStatGainAt(levelForXp(rules, progress.xp));
   return STAT_IDS.filter((stat) => {
     const base = rules.baseStats[stat];
     // A stat the current rules do not define has no ceiling to measure against;
     // refusing it here matches spendStatPoint, which rejects the same spend.
-    return typeof base === "number" && progress.stats[stat] < base + MAX_STAT_GAIN;
+    return typeof base === "number" && progress.stats[stat] < base + ceiling;
   });
 }
 
@@ -335,7 +350,11 @@ export function newCharacter(input: NewCharacterInput): Character {
  */
 function startingLevel(input: NewCharacterInput): number {
   const level = input.startingLevel ?? 1;
-  const floors = [...new Set([1, ...Object.values(input.rules.tierLevels)])].sort((a, b) => a - b);
+  // Only the first four tiers are join points (spec §8.4). A guest or sibling
+  // arriving at level 15 or 30 would skip the whole climb the tiers exist for.
+  const floors = [...new Set([1, ...JOIN_TIERS.map((tier) => input.rules.tierLevels[tier])])].sort(
+    (a, b) => a - b,
+  );
   if (!Number.isInteger(level) || !floors.includes(level)) {
     throw new CharacterRuleError(
       `character: startingLevel must be 1 or a tier floor (${floors.join(", ")}) — ` +
@@ -842,9 +861,10 @@ export function spendStatPoint(
   }
 
   if (!spendableStatsOf(before, rules).includes(stat)) {
+    const ceiling = maxStatGainAt(levelForXp(rules, before.xp));
     throw new CharacterRuleError(
-      `character: ${stat} cannot exceed ${String(MAX_STAT_GAIN)} bonus points ` +
-        `(maximum ${String(rules.baseStats[stat] + MAX_STAT_GAIN)})`,
+      `character: ${stat} cannot exceed ${String(ceiling)} bonus points ` +
+        `(maximum ${String(rules.baseStats[stat] + ceiling)})`,
     );
   }
 

@@ -76,6 +76,9 @@ export const DEFAULT_HELP_DIE: Readonly<Record<TierId, number>> = {
   sworn: 6,
   radiant: 8,
   mythic: 10,
+  ascendant: 10,
+  starborn: 12,
+  legendary: 12,
 };
 
 export interface HelpInput {

@@ -27,8 +27,23 @@ export const ANCHOR_Y = CANVAS.originY / CANVAS.height;
  */
 export const STARTING_TIER: TierId = "fledgling";
 
+/**
+ * The tiers that have painted art, in level order. Ascendant, starborn and
+ * legendary (levels 15, 20 and 30, spec §8.1) are rules before they are
+ * pictures, so a hero past Mythic is drawn as Mythic until theirs is
+ * commissioned: add a tier here when its art lands. Lives here, not in
+ * @kad/shared, because the service worker concatenates this file and cannot
+ * import at runtime.
+ */
+const ART_TIERS: readonly TierId[] = ["fledgling", "sworn", "radiant", "mythic"];
+
+/** The tier whose art draws a hero of `tier`: itself, or Mythic, the highest painted. */
+export function artTierOf(tier: TierId): TierId {
+  return ART_TIERS.includes(tier) ? tier : "mythic";
+}
+
 export function characterArtUrl(species: SpeciesId, tier: TierId = STARTING_TIER): string {
-  return `/assets/characters/${species}/${tier}/assembled.png`;
+  return `/assets/characters/${species}/${artTierOf(tier)}/assembled.png`;
 }
 
 /**
@@ -112,7 +127,7 @@ const CLASS_FIGURE_VARIANTS = new Set<string>([
 ]);
 
 function classFigureKey(species: SpeciesId, tier: TierId, characterClass: ClassId): string {
-  return `${characterClass}/${tier}/${species}`;
+  return `${characterClass}/${artTierOf(tier)}/${species}`;
 }
 
 function hasClassFigure(species: SpeciesId, tier: TierId, characterClass?: ClassId): boolean {
@@ -129,7 +144,7 @@ export function characterWorldArtUrl(
   characterClass?: ClassId,
 ): string {
   if (hasClassFigure(species, tier, characterClass)) {
-    return `/assets/character-rigs/${characterClass}/${tier}/${species}/assembled.png`;
+    return `/assets/character-rigs/${characterClass}/${artTierOf(tier)}/${species}/assembled.png`;
   }
   return characterArtUrl(species, tier);
 }
@@ -151,7 +166,7 @@ export function gearPortraitUrl(
   tier: TierId,
 ): string | null {
   if (tier === "fledgling") return null;
-  return `/assets/gear-portraits/${characterClass}/${tier}/${species}.png`;
+  return `/assets/gear-portraits/${characterClass}/${artTierOf(tier)}/${species}.png`;
 }
 
 /** The best commissioned still image available for a resolved character. */
