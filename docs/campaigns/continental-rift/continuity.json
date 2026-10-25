@@ -5211,6 +5211,57 @@
             "mender_planks": "Planks, I have"
           }
         },
+        "plank_pile": {
+          "requires": [
+            "bryn",
+            "mender_planks",
+            "ossley",
+            "eggs"
+          ],
+          "introduces": {}
+        },
+        "poke_reveal": {
+          "requires": [
+            "bryn",
+            "eggs"
+          ],
+          "introduces": {
+            "mimic": "mire mimic"
+          }
+        },
+        "stamp_reveal": {
+          "requires": [
+            "bryn",
+            "eggs"
+          ],
+          "introduces": {
+            "mimic": "mire mimic"
+          }
+        },
+        "mimic_fight": {
+          "requires": [
+            "mimic",
+            "ossley",
+            "bryn"
+          ],
+          "introduces": {}
+        },
+        "mimic_won": {
+          "requires": [
+            "bryn",
+            "ossley",
+            "mimic"
+          ],
+          "introduces": {}
+        },
+        "mimic_shooed": {
+          "requires": [
+            "bryn",
+            "ossley",
+            "mimic"
+          ],
+          "introduces": {}
+        },
         "cart_plan": {
           "requires": [
             "bryn",
@@ -5308,14 +5359,6 @@
           "introduces": {
             "cracked_beam": "cracked middle beam"
           }
-        },
-        "beam_intro": {
-          "requires": [
-            "bryn",
-            "cracked_beam",
-            "eggs"
-          ],
-          "introduces": {}
         },
         "carry_beam": {
           "requires": [
@@ -5524,43 +5567,6 @@
         "bridge_creak": {
           "requires": [
             "bryn",
-            "ossley"
-          ],
-          "introduces": {}
-        },
-        "goat_plan": {
-          "requires": [
-            "bryn",
-            "ossley"
-          ],
-          "introduces": {}
-        },
-        "oats_check": {
-          "requires": [
-            "bryn"
-          ],
-          "introduces": {}
-        },
-        "ribbon_check": {
-          "requires": [
-            "bryn"
-          ],
-          "introduces": {}
-        },
-        "carry_check": {
-          "requires": [
-            "bryn"
-          ],
-          "introduces": {}
-        },
-        "goat_over": {
-          "requires": [
-            "bryn"
-          ],
-          "introduces": {}
-        },
-        "goat_bolt": {
-          "requires": [
             "ossley"
           ],
           "introduces": {}
