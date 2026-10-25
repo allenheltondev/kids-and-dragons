@@ -24,9 +24,9 @@ import { useCallback, useMemo, useState } from "react";
 import type { ReactElement, ReactNode } from "react";
 import { cue } from "../audio/cue";
 import { useGameStore } from "../store";
-import { NAME_REFUSED_MESSAGE, STAT_IDS, isBlockedName } from "@kad/shared";
-import type { ClassDef, ClassId, SpeciesDef, SpeciesId, StatId, Stats } from "@kad/shared";
-import { useRules, useSend, useSynced } from "../store";
+import { NAME_REFUSED_MESSAGE, STAT_IDS, isBlockedName, matchupsOn } from "@kad/shared";
+import type { ClassDef, ClassId, MatchupRules, SpeciesDef, SpeciesId, StatId, Stats } from "@kad/shared";
+import { useCampaign, useRules, useSend, useSynced } from "../store";
 import { Button } from "../ui/Button";
 import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
@@ -40,7 +40,14 @@ import {
   useCreationDraft,
 } from "./creationDraft";
 import type { CreationStep } from "./creationDraft";
-import { NAME_MAX_LENGTH, randomNames, sanitizeName } from "./creationContent";
+import {
+  NAME_MAX_LENGTH,
+  classMatchups,
+  randomNames,
+  sanitizeName,
+  speciesMatchups,
+} from "./creationContent";
+import type { CardMatchups, MatchupLine } from "./creationContent";
 import "./shared.css";
 import "./CreationFlow.css";
 import { EntryScene } from "./EntryScene";
@@ -62,6 +69,41 @@ const STEP_ICON: Record<CreationStep, string> = {
 
 function sumStats(stats: Stats): number {
   return STAT_IDS.reduce((total, stat) => total + stats[stat], 0);
+}
+
+/**
+ * What a species or class card says about the fight: "Good at:", "Watch out:"
+ * and "Together:". Each line has a + or - mark as well as the words, so the
+ * meaning never rests on color. Renders nothing when there is nothing to say,
+ * so a card without matchups is the card it was.
+ */
+function MatchupNotes({ notes }: { notes: CardMatchups }): ReactElement | null {
+  if (notes.good.length + notes.watch.length + notes.together.length === 0) return null;
+  return (
+    <div className="creation-notes">
+      <NoteGroup label="Good at:" lines={notes.good} />
+      <NoteGroup label="Watch out:" lines={notes.watch} />
+      <NoteGroup label="Together:" lines={notes.together} />
+    </div>
+  );
+}
+
+function NoteGroup({ label, lines }: { label: string; lines: readonly MatchupLine[] }): ReactElement | null {
+  if (lines.length === 0) return null;
+  return (
+    <div className="creation-notes__group">
+      <p className="creation-notes__label">{label}</p>
+      <ul className="creation-notes__list">
+        {lines.map((line) => (
+          <li key={line.text} className={`creation-notes__item creation-notes__item--${line.sign === "+" ? "plus" : "minus"}`}>
+            <span className="creation-notes__sign" aria-hidden="true">{line.sign === "+" ? "+" : "\u2212"}</span>
+            <span className="kad-sr-only">{line.sign === "+" ? "Good: " : "Watch out: "}</span>
+            <span>{line.text}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }
 
 /** A big tappable card. Selection shows as a check glyph, never color alone. */
@@ -114,10 +156,16 @@ export function SpeciesStep({
   species,
   chosen,
   onChoose,
+  matchups,
+  klass = null,
 }: {
   species: SpeciesDef[];
   chosen: SpeciesId | null;
   onChoose: (id: SpeciesId) => void;
+  /** `rules.matchups`, when matchups are on for this session. */
+  matchups?: MatchupRules | null;
+  /** A class picked before coming back here: its pairings show on each species. */
+  klass?: ClassId | null;
 }): ReactElement {
   return (
     <div className="creation-species-grid">
@@ -157,6 +205,7 @@ export function SpeciesStep({
                 <Icon name={def.passive.stat ?? "heart"} />
                 <span>{def.passive.text}</span>
               </span>
+              <MatchupNotes notes={speciesMatchups(matchups, def.id, klass)} />
             </span>
           </button>
         );
@@ -232,10 +281,15 @@ function ClassStep({
   classes,
   chosen,
   onChoose,
+  matchups,
+  species = null,
 }: {
   classes: ClassDef[];
   chosen: ClassId | null;
   onChoose: (id: ClassId) => void;
+  matchups?: MatchupRules | null;
+  /** The species already picked: its pairings with each class show on the card. */
+  species?: SpeciesId | null;
 }): ReactElement {
   return (
     <div className="creation-grid">
@@ -258,6 +312,7 @@ function ClassStep({
               <b>{def.signature.name}</b> <span className="kad-muted">{def.signature.text}</span>
             </span>
           </span>
+          <MatchupNotes notes={classMatchups(matchups, def.id, species)} />
         </OptionCard>
       ))}
     </div>
@@ -441,6 +496,7 @@ export function CreationFlow(): ReactElement {
   // The draft lives only in this page (creationDraft.ts): no update reload while it is open.
   useBusy("creation");
   const rules = useRules();
+  const campaign = useCampaign();
   const send = useSend();
   // Held while catching up after a drop, like every answer (#413).
   const synced = useSynced();
@@ -449,6 +505,11 @@ export function CreationFlow(): ReactElement {
   const [error, setError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<string[]>(() => randomNames(3));
 
+  // Matchups are read only where they are on (Gemfall is exempt and plays as it did).
+  const matchups = useMemo<MatchupRules | null>(
+    () => (rules !== null && matchupsOn(rules, campaign?.id) ? (rules.matchups ?? null) : null),
+    [rules, campaign?.id],
+  );
   const speciesList = useMemo(() => (rules === null ? [] : Object.values(rules.species)), [rules]);
   const classList = useMemo(() => (rules === null ? [] : Object.values(rules.classes)), [rules]);
 
@@ -598,7 +659,13 @@ export function CreationFlow(): ReactElement {
 
       <div className="creation__body kad-scroll">
         {draft.step === "species" ? (
-          <SpeciesStep species={speciesList} chosen={draft.species} onChoose={chooseSpecies} />
+          <SpeciesStep
+            species={speciesList}
+            chosen={draft.species}
+            onChoose={chooseSpecies}
+            matchups={matchups}
+            klass={draft.klass}
+          />
         ) : null}
 
         {draft.step === "class" ? (
@@ -606,6 +673,8 @@ export function CreationFlow(): ReactElement {
             classes={classList}
             chosen={draft.klass}
             onChoose={(id) => patchCreationDraft({ klass: id })}
+            matchups={matchups}
+            species={draft.species}
           />
         ) : null}
 
