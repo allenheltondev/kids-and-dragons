@@ -102,8 +102,8 @@ it("a background-only story biome needs explicit scene art rather than tactical 
     // Keep the shipping validator and assets, but give it a small valid route.
     const campaignFile = path.join(root, "content/campaigns", `${campaign.id}.json`);
     const fixture = JSON.parse(fs.readFileSync(campaignFile, "utf8"));
-    // Retain the opening's class rooms as well as the chapter under test.
-    const kept = [...chapters.values()].filter(c => c.index <= 3 || c.id === chapter.id).map(c => c.id);
+    // Retain all four class rooms as well as the chapter under test.
+    const kept = [...chapters.values()].filter(c => c.index <= 3 || c.id === chapter.id || Object.values(c.scenes).some(s => "classPlace" in s)).map(c => c.id);
     for (const id of fixture.chapters) {
       if (!kept.includes(id)) fs.rmSync(path.join(root, "content/chapters", `${id}.json`));
     }

@@ -13,14 +13,26 @@ import { answerClassPlace, allPaths, chapters, context, send, start } from "./ri
 const ROOMS = [
   { chapter: "riftlight-exchange-rift", rest: "quay_rest", door: "roof", room: "rookery", back: "down", lesson: "rookery_lesson", class: "duskrunner", met: "met_the_crows", teacher: "crows" },
   { chapter: "riftlight-glacier-survival", rest: "hall", door: "glass_door", room: "conservatory", back: "back", lesson: "conservatory_sing", class: "songkeeper", met: "met_aunt_bellow", teacher: "Aunt Bellow" },
-  { chapter: "riftlight-riftseekers-departure", rest: "camp", door: "hut", room: "dojo", back: "back", lesson: "dojo_pillows", class: "thornguard", met: "met_master_dunnick", teacher: "Master Dunnick" },
-  { chapter: "riftlight-riftseekers-departure", rest: "camp", door: "tower", room: "academy", back: "back", lesson: "academy_stars", class: "starweaver", met: "met_professor_nettle", teacher: "Professor Nettle" },
+  { chapter: "riftlight-sky-islands-arrival", rest: "island_rest", door: "hut", room: "dojo", back: "back", lesson: "dojo_pillows", class: "thornguard", met: "met_master_dunnick", teacher: "Master Dunnick" },
+  { chapter: "riftlight-ashspan-bridge", rest: "village_rest", door: "tower", room: "academy", back: "back", lesson: "academy_stars", class: "starweaver", met: "met_professor_nettle", teacher: "Professor Nettle" },
 ] as const;
 
 /** A class that is not the room's, so the walker's hero has something to decide. */
 const other = (cls: ClassId): ClassId => (cls === "duskrunner" ? "thornguard" : "duskrunner");
 
 describe("Riftlight's class rooms", () => {
+  it("keeps the hubs in their canon regions and the glacier camp free of other class schools", () => {
+    const departure = chapters.get("riftlight-riftseekers-departure")!;
+    expect(Object.values(departure.scenes).some((scene) => "classPlace" in scene)).toBe(false);
+    expect(chapters.get("riftlight-sky-islands-arrival")!.biome).toBe("sky_islands");
+    const bridge = chapters.get("riftlight-ashspan-bridge")!;
+    expect(bridge.scenes.marsh_path!.narration).toContain("Whispering Marsh");
+    expect(bridge.scenes.academy!.narration).toContain("marsh village");
+    for (const id of ["plank", "rope"]) {
+      expect((bridge.scenes[id] as { choices: { goto: string }[] }).choices[0]!.goto).toBe("marsh_path");
+    }
+    expect((bridge.scenes.mat_return as { choices: { goto: string }[] }).choices[0]!.goto).toBe("routes");
+  });
   it.each(ROOMS)("$room is a side room off $rest, and every way out of it leads back there", (r) => {
     const chapter = chapters.get(r.chapter)!;
     const scenes = chapter.scenes;
