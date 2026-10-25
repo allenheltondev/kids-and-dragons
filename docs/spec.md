@@ -330,13 +330,11 @@ Halving rather than zeroing matters. A family that hits two setbacks should fall
 
 Both caps exist to protect the pacing above: with setbacks at half and bonuses at a quarter, a campaign lands within about 25% of its intended total, which moves a tier by at most a chapter. Uncapped, "Sworn ends campaign 1" stops being true.
 
-#### Why XP is never individual
+#### Why the story's XP is shared, and roll XP is not
 
-The reward for a level is *visible* — a new body, and a cutscene where the whole party stops to watch. Award XP per player and the eight-year-old who rolls badly for a few weeks is a visibly smaller creature standing between two Sworn adults, on the television, every session. That is not a difficulty setting; that is a child being shown she is the worst one at the table.
+The reward for a level is *visible* — a new body, and a cutscene where the whole party stops to watch. Uniform party XP for the story is what keeps everybody transforming on the same evening, and it is also what makes the pacing above a promise rather than an average.
 
-Uniform party XP is what keeps everybody transforming on the same evening. It is also what makes the pacing above a promise rather than an average.
-
-The one individual award is a **natural 20**. The hero who rolls it earns a small amount of XP of her own, on top of the party's, paid into her own total when the chapter settles. It is capped per hero by the chapter's roll-XP cap, and it never changes what anyone else earns. Nobody is shown a smaller creature for a roll that went badly, and a hero's bonus only ever adds to her own tally. Objective bonuses stay party-wide: they are never individual.
+Roll XP is individual. Each hero earns XP for her own rolls that go well: a check she succeeds, an attack she lands, a foe her action knocks out, and a natural 20 on top. It is paid into her own total when the chapter settles, and capped per hero by the chapter's roll-XP cap. Heroes therefore level at their own pace, and a hero who rolls well is a little further on. This is a deliberate choice, and it is why the pacing above is a rough average for each hero rather than a promise for all of them. The story's XP stays uniform: a chapter's base XP, its setback halving and its grantXp effects go to the whole party. Objective bonuses stay party-wide as well: they are never individual.
 
 ### 8.3 Carryover — the commitment rule
 

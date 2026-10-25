@@ -308,16 +308,11 @@ export interface RunState {
   coins?: number;
   xpEarned: number;
   /**
-   * The part of `xpEarned` that successful rolls paid this chapter
-   * (`RulesContent.rollXp`), kept so the per-chapter cap can be enforced. Absent
-   * until a roll pays; cleared when a chapter starts.
-   */
-  rollXp?: number;
-  /**
-   * The individual XP each hero earned this chapter for her own natural 20s
-   * (`RulesContent.rollXp.natural20`), by character id. Paid to that hero alone
-   * when the chapter settles, on top of the party's `xpEarned`, and never part
-   * of it. Absent until one pays; cleared when a chapter starts.
+   * The individual XP each hero earned this chapter for her own rolls that went
+   * well (`RulesContent.rollXp`: checks, attacks, defeats and natural 20s), by
+   * character id. Paid to that hero alone when the chapter settles, on top of
+   * the party's `xpEarned`, and never part of it. Each hero's total is capped at
+   * the chapter's cap. Absent until one pays; cleared when a chapter starts.
    */
   heroRollXp?: Record<string, number>;
   /**

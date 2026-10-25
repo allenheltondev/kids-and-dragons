@@ -613,20 +613,21 @@ export interface LevelReward {
   guard?: number;
 }
 
-/** XP for successful rolls (`RulesContent.rollXp`). */
+/**
+ * XP for rolls that go well (`RulesContent.rollXp`). Every amount is paid to the
+ * hero who made the roll, alone: it is individual, so heroes level at their own
+ * pace.
+ */
 export interface RollXp {
-  /** For each story check a hero makes (a group check counts each hero's own success). */
+  /** For each story check a hero makes that she succeeds (a group check counts each hero's own success). */
   check: number;
   /** For each attack a hero lands in a fight. */
   attack: number;
   /** For each foe a hero's action knocks out. Optional: absent pays nothing. */
   defeat?: number;
-  /**
-   * For each natural 20 a hero rolls (a check or an attack), paid to that hero
-   * alone on top of the party's XP for it. Optional: absent pays nothing.
-   */
+  /** For each natural 20 a hero rolls (a check or an attack), on top of the above. Optional: absent pays nothing. */
   natural20?: number;
-  /** The most roll XP one chapter can pay. */
+  /** The most roll XP one hero can earn in one chapter. */
   chapterCap: number;
 }
 

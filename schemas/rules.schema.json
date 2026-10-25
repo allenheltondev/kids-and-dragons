@@ -179,7 +179,7 @@
       }
     },
     "rollXp": {
-      "description": "XP for dice that go well, paid as they are rolled and capped per chapter (rollXp in packages/shared/src/types/domain.ts). Party XP for checks, attacks and defeats; natural20 is paid to the hero who rolled it alone. Optional.",
+      "description": "XP for dice that go well, paid to the hero who rolled them alone and capped per hero per chapter (rollXp in packages/shared/src/types/domain.ts). Optional.",
       "type": "object",
       "additionalProperties": false,
       "required": [
