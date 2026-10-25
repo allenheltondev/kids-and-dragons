@@ -157,8 +157,12 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
       }
     } else if (state.prompt?.kind === "interaction") {
       // The mechanic itself is exercised in packages/shared/src/interactions.test.ts;
-      // here both of its authored outcomes are walked to their continuation.
-      for (const outcome of ["success", "failure"] as const) {
+      // here every authored outcome (the untimed helping hand too, when the scene
+      // writes one) is walked to its continuation through the engine's own intent.
+      const scene = chapter.scenes[state.sceneId!]!;
+      if (scene.type !== "interaction") throw new Error("Expected interaction");
+      for (const outcome of ["success", "failure", "assisted"] as const) {
+        if (outcome === "assisted" && !scene.onAssisted) continue;
         const resolved = structuredClone(state);
         if (resolved.prompt?.kind !== "interaction") throw new Error("Expected interaction");
         resolved.prompt.phase = "result";
