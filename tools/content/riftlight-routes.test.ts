@@ -12,7 +12,7 @@ it.each([
   ["griffin", "duskrunner"], ["dragonling", "duskrunner"], ["manticore", "duskrunner"],
 ] as const)("the route chapters continue on every branch for a %s %s", (species, cls) => {
   for (const chapter of chapters.values()) if (chapter.index >= 4) allPaths(chapter, species, cls);
-});
+}, 60_000); // Every route chapter walked for one party; the opening chapters are now full-length, and CI runs this under load.
 
 it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: every scene is reachable across class and species options", (chapter) => {
   const visited = new Set<string>();
@@ -21,6 +21,10 @@ it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: ev
   }
   if (chapter.id === "riftlight-the-island-due-back") {
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { whales_guided: true }).visited) visited.add(scene);
+  }
+  if (chapter.id === "riftlight-hidden-glacier-rift") {
+    // A returning party, with the opening already awake, may walk straight back to the fold.
+    for (const scene of allPaths(chapter, "manticore", "duskrunner", { glacier_rift_woken: true }).visited) visited.add(scene);
   }
   if (chapter.id === "riftlight-convergence") {
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { orin_chime_shared: true, olivia_trusted: true }).visited) visited.add(scene);
@@ -96,7 +100,7 @@ it("the linked glacier rift grants only one Riftspark and preserves a way back",
 it("a background-only story biome needs explicit scene art rather than tactical tiles", { timeout: 20_000 }, () => {
   const root = stageRiftlightOpening();
   try {
-    const file = path.join(root, "content/chapters/riftlight-saltrot-arrival.json");
+    const file = path.join(root, "content/chapters/riftlight-buried-bridge.json");
     const chapter = JSON.parse(fs.readFileSync(file, "utf8"));
     // This assertion concerns chapter art, not every route in the campaign.
     // Keep the shipping validator and assets, but give it a small valid route.
@@ -115,7 +119,7 @@ it("a background-only story biome needs explicit scene art rather than tactical 
     // A new graph, so a new proof, written as an author would (content:proofs).
     const baseline = runValidator(root, ["--write-proofs"]);
     expect(baseline.ok, baseline.output).toBe(true);
-    delete chapter.scenes.flats.art;
+    delete chapter.scenes[chapter.entry].art;
     fs.writeFileSync(file, JSON.stringify(chapter));
     const result = runValidator(root);
     expect(result.ok).toBe(false);

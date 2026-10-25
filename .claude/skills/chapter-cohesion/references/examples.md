@@ -64,3 +64,32 @@ The audit's model is Marda's rumor board in 02 (`rest_marda_inn` and the scenes 
 callback every party can safely get, with no gate. Pellam's record lines in 07
 (`scene_road_gifts`) do the same with the party's own declaration. Gated callbacks on top of
 those are a bonus.
+
+## The worked lengthening: Riftlight's twelve openers (PR #496)
+
+A playtest said the opening chapters were "maybe 5 total minutes" with few decisions. Pacing
+agreed: Ice Shelf 3.1 predicted minutes and 1 vote, Cairnstep 2.3, Headwaters 1.7 with no decision.
+Each of the twelve was rewritten to a 34 to 47 scene shortest path, 14 or more votes plus checks,
+29 to 37 predicted minutes.
+
+- **A beat-first rewrite.** Ice Shelf is one idea (get a roped party across a broken shelf), built as
+  rope-up, test the ice, the old iron ring, the one-boot squeeze, a rest, the meltwater crack, the
+  icicle curtain, the gap and the plan, who tests the line, packs over, the crossing. Failure only
+  comes at the final crossing, so every earlier check costs or earns something and the route set
+  (`traverse_made` / `traverse_failed`) still decides the next node.
+- **Groups, not votes.** Cairnstep's capstone is a `cooperate` interaction (hold the cairn while a
+  friend lifts); its old whole-party roll kept the scene id. The survey is a `sequence` the phones
+  solve from shared clues. A griffin's flight and a thornguard's brace are choices beside two
+  ungated ways.
+- **A pinned chapter, kept.** Exchange Rift's `pull`, `fly`, `swoop`, `crate`, `smash` and `brace`
+  scenes are read by tests that check who rolls and how much damage lands, so they stayed exactly
+  as they were; the new work was built around them, and the exactly-one-of
+  `saved_barge_supper` / `found_barge_mooring` outcome held on every path, including every failed
+  check.
+- **Items that mean something.** Boundary Stone Bank grants `mosslight_jar` after the melt surge, and
+  a better notch cut is gated on holding it beside an ungated cut. Ashspan's `brave_whistle` and
+  `songbird_ribbon` are earned in the chapter, and sharing supper uses `takeItem`.
+- **What went wrong, so you can avoid it.** Authors started from a stale base and had to merge 92
+  commits of cast-figure swaps; three of them wrote near-identical but different test-walker fixes;
+  and two route walks ran under the 5-second vitest default and timed out on CI. See "Working in
+  parallel".

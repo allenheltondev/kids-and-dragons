@@ -1,6 +1,7 @@
 {
   "$comment": "Rules as data \u2014 roadmap 'Content as data'. Values come from spec.md \u00a74 (stats, species, classes), \u00a75 (creation points), \u00a77.1 (steps), \u00a78.1 (levels and tiers). Shape is packages/shared/src/types/domain.ts RulesContent; where this file and the docs disagree, the TS type wins. levelXp holds the twenty-nine thresholds above level 1 (levels 1-30) \u2014 levelXp[n] is the total XP needed to reach level n+2, per levelForXp()/maxLevel() in packages/shared/src/rules.ts. The curve is superlinear on purpose (spec \u00a78.1): level 2 costs 100 so it lands at the end of the first chapter ever played, and level 10 costs 1600. Past 10 each step costs 200 more than the last (level 11 costs 1800, level 30 costs 5600). The doubled steps at 400/400 and 900/900 sit on the tier boundaries. Icons are short slugs, never file paths: the client resolves them to inline SVG so every element has an icon (spec \u00a711).",
   "version": 1,
+  "loot": { "campaigns": ["riftlight"], "hpPerCoin": 4, "maxPerFight": 15 },
   "matchups": {
     "traits": {
       "armored": { "name": "Shell-hided", "icon": "shield", "text": "Armored things wear a hard shell. Gentle pokes just bounce off, so bring something with a big wallop.", "hint": "Armored: Hit hard" },

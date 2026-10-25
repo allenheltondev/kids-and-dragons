@@ -4,23 +4,33 @@
   "campaignId": "riftlight",
   "index": 4,
   "title": "Mud Where Ice Should Be",
-  "biome": "sallow_wastelands",
+  "biome": "whispering_marsh",
   "music": "riftlight-paths",
-  "estimatedMinutes": 12,
+  "estimatedMinutes": 33,
   "xpAward": 140,
   "entry": "flats",
   "goal": {
-    "text": "Find your footing on the muddy flats.",
+    "text": "Find your footing on the flats, and help the guide before the tide.",
     "steps": [
+      {
+        "id": "cross",
+        "label": "Cross the shell-bank to the burrow town",
+        "flag": "crossed_the_shells"
+      },
+      {
+        "id": "help_traveler",
+        "label": "Help a traveler on the flats",
+        "flag": "helped_the_flats_traveler"
+      },
       {
         "id": "listen",
         "label": "Learn a new way to listen",
         "flag": "listened_for_the_answer"
       },
       {
-        "id": "help_traveler",
-        "label": "Help a traveler on the flats",
-        "flag": "helped_the_flats_traveler"
+        "id": "silt",
+        "label": "Follow the pale silt upriver",
+        "flag": "followed_the_silt"
       }
     ]
   },
@@ -31,13 +41,13 @@
   "scenes": {
     "flats": {
       "type": "story",
-      "narration": "Brackish water curls around ridges of mud. A small figure skips along a shell-bank, then stops before your boots sink. \"Shells, not that patch,\" says the guide. \"Welcome to the Saltrot.\" The guide is a Skupper, with bright eyes and strong front fins.",
+      "narration": "Brackish water curls around ridges of mud. A small figure skips along a shell-bank, then stops before your boots sink. \"Shells, not that patch,\" says the guide. \"Welcome to the Saltrot.\" The guide is a Skupper, with bright eyes and strong front fins. \"Tide turns soon, and silt has buried my town's front door. Help me open it, and I will show you the flats.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Follow the guide along the shells",
           "icon": "hand",
-          "goto": "lesson"
+          "goto": "shells"
         }
       ],
       "variants": [
@@ -60,23 +70,1101 @@
           "text": "Behind you the linked fold carries the cloud whales' distant song. Its echo still answers from the island."
         }
       ],
+      "art": "scenes/riftlight/stuttering-flats",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
           "name": "Saltrot guide"
         }
+      ]
+    },
+    "shells": {
+      "type": "choice_point",
+      "narration": "The guide skips ahead along the shell-bank toward a humped island of mud. \"Mud has opinions,\" says the guide. \"Skip where I skip, or poke before you step.\" All around, fiddler crabs wave their one big claw in rows, like a crowd at a parade.",
+      "choices": [
+        {
+          "id": "skip",
+          "label": "Skip along in the guide's footprints",
+          "icon": "hand",
+          "goto": "shells_a"
+        },
+        {
+          "id": "poke",
+          "label": "Poke each step with a pole before you trust it",
+          "icon": "hand",
+          "goto": "shells_b"
+        }
       ],
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "shells_a": {
+      "type": "story",
+      "narration": "You copy the guide's skips: one big hop, two small ones, one wobble. A fiddler crab waves its huge claw at each of you. The guide says it is counting. You are not sure what it is counting.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Skip in a line",
+          "icon": "hand",
+          "goto": "shells_a_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "shells_b": {
+      "type": "story",
+      "narration": "The guide hands you a long pole. Poke, listen for the squelch, step. Where the pole sinks to your hand, you go around. A fiddler crab holds up its huge claw as if to say, wrong way.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Test each step",
+          "icon": "hand",
+          "goto": "shells_b_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "shells_a_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Everyone skips along in the guide's footprints. Light feet, and no stopping!",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "shells_done"
+      },
+      "onFailure": {
+        "goto": "shells_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "shells_b_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Poke, listen and pick the firmest shells. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "shells_done"
+      },
+      "onFailure": {
+        "goto": "shells_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "shells_done": {
+      "type": "story",
+      "narration": "You make it across the first stretch with dry-ish boots. \"Good skipping,\" says the guide, which is a very high compliment. Behind you, the fiddler crabs wave, or perhaps they are cheering.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the island",
+          "icon": "hand",
+          "goto": "shell_path"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "shells_off": {
+      "type": "story",
+      "narration": "One boot goes in to the ankle with a long, rude squelch. The guide pulls you out by the sleeve, and the mud keeps your sock. \"It does that,\" says the guide. \"Mud likes socks.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the island",
+          "icon": "hand",
+          "goto": "shell_path"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "shell_path": {
+      "type": "interaction",
+      "narration": "The last steps up the island are three kinds of shell: whelk, cockle and oyster. \"Wrong order and they roll,\" says the guide. She tells you the right order in bits, and each of you hears a different bit. \"Put it together. I am a guide, not a parrot.\"",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share your clues, then step on the shells in order.",
+        "actionLabel": "Climb the shells",
+        "options": [
+          {
+            "id": "whelk",
+            "label": "Whelk",
+            "icon": "leaf"
+          },
+          {
+            "id": "cockle",
+            "label": "Cockle",
+            "icon": "boot"
+          },
+          {
+            "id": "oyster",
+            "label": "Oyster",
+            "icon": "star"
+          }
+        ],
+        "answer": [
+          "whelk",
+          "cockle",
+          "oyster"
+        ],
+        "clues": [
+          "The guide says: start on the whelk.",
+          "The oyster comes last, because it is the biggest.",
+          "The cockle is somewhere in the middle."
+        ]
+      },
+      "onSuccess": {
+        "goto": "town",
+        "narration": "Whelk, cockle, oyster. Each shell holds, and the island seems to rise to meet your boots. \"Good listening,\" says the guide.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossed_the_shells"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "town",
+        "narration": "A shell rolls, and the guide catches your sleeve. \"Scenic route,\" she says, and walks you up the safe way, laughing.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossed_the_shells"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "town",
+        "narration": "You lay the clues side by side, and the order is clear. The guide nods, impressed in a small way.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossed_the_shells"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "town": {
+      "type": "choice_point",
+      "narration": "The island is hollow. A round hatch in the mud is the front door of Tidepocket, the guide's burrow town. Cold gray silt has piled over it like icing on a cake. From below comes tapping, and a loud voice. \"That is my grandmother,\" says the guide. \"She is not patient.\" Without the hatch open, nobody can get out, and the air below gets stale. The tide will not wait.",
+      "choices": [
+        {
+          "id": "scoop",
+          "label": "Dig the hatch clear with shell scoops",
+          "icon": "hand",
+          "goto": "town_a_check"
+        },
+        {
+          "id": "trench",
+          "label": "Dig a trench so the silt drains away",
+          "icon": "hand",
+          "goto": "town_b_check"
+        },
+        {
+          "id": "brace",
+          "label": "Hold up the sagging hatch frame with brace",
+          "icon": "shield",
+          "goto": "town_brace",
+          "requiresClass": "thornguard"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "town_a_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Everyone grab a shell scoop and dig! Half of you must keep digging until the hatch pops.",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "town_done"
+      },
+      "onFailure": {
+        "goto": "town_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "town_b_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Plan a trench so the silt slides away, not back onto the hatch. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "town_done"
+      },
+      "onFailure": {
+        "goto": "town_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "town_brace": {
+      "type": "story",
+      "narration": "A thornguard plants both feet beside the hatch and holds the sagging frame up with brace, so the silt cannot slump back. The others dig around the thornguard. The strongest helper can lead the digging; nobody needs to pretend they braced.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work together using that help",
+          "icon": "hand",
+          "goto": "town_brace_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "town_brace_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "A thornguard braces the hatch frame. The qualified hero assists; choose who leads the team check.",
+      "onSuccess": {
+        "goto": "town_done"
+      },
+      "onFailure": {
+        "goto": "town_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "town_done": {
+      "type": "story",
+      "narration": "The hatch swings up with a pop and a puff of warm air. Skuppers pour out in a cheerful line, rubbing their eyes.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Help the families out",
+          "icon": "hand",
+          "goto": "hatch_party"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "town_off": {
+      "type": "story",
+      "narration": "The silt slumps back over half the hatch, and a Skupper child pops out through the gap anyway, like a cork. It takes longer, and everyone is muddier than you hoped, but the hatch stays open. Skuppers pour out in a cheerful line, rubbing their eyes.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Help the families out",
+          "icon": "hand",
+          "goto": "hatch_party"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "hatch_party": {
+      "type": "interaction",
+      "narration": "The whole town is out in the thin sunlight, blinking, and everybody wants something at once. The families need many hands. Pick a job and do it, and do it loudly. The guide's grandmother is last through the hatch, and she is not patient.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Everyone pick a job and help the families out.",
+        "actionLabel": "Help out",
+        "options": [
+          {
+            "id": "cakes",
+            "label": "Hand out kelp cakes",
+            "icon": "heart",
+            "reaction": "A small Skupper takes a cake in each fin and another in her mouth."
+          },
+          {
+            "id": "sweep",
+            "label": "Sweep silt off the steps",
+            "icon": "hand",
+            "reaction": "The steps shine. A crab inspects them and approves."
+          },
+          {
+            "id": "cheer",
+            "label": "Cheer for the grandmother",
+            "icon": "star",
+            "reaction": "The grandmother says, \"About time,\" again, but she smiles."
+          }
+        ],
+        "stages": [
+          "The families blink and stretch.",
+          "The steps are clear and the cakes are going round.",
+          "The whole town is cheering."
+        ]
+      },
+      "onSuccess": {
+        "goto": "silt",
+        "narration": "The grandmother steps out last, hugs you, which is damp, and says, \"About time.\" A very small Skupper child holds up a very large shell like a trophy."
+      },
+      "onFailure": {
+        "goto": "silt",
+        "narration": "The grandmother steps out last, hugs you, which is damp, and says, \"About time.\" A very small Skupper child holds up a very large shell like a trophy."
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "silt": {
+      "type": "story",
+      "narration": "Now that the hatch is open, you can see the silt properly. It is pale and gray and cold. The guide lets a handful run through her fins. \"Saltrot mud is brown and warm. This came down the river from the cold north, and each tide brings more. It buries my paths overnight. I find them again every morning. Today I need hands.\" A small Skupper child pokes the silt with one fin and says it tastes like old pennies. Nobody asks how she knows.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Help with the day's paths",
+          "icon": "hand",
+          "goto": "local"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "local": {
+      "type": "choice_point",
+      "narration": "The Skupper points to a pale stripe in the mud. \"New silt. Covered the path overnight.\" On the far side of it, a traveler waves both arms. She has left a bag on a shell-bank that is slowly flooding. Gulls circle the bag, because it smells of fish. Will you help move the bag or mark a safer path?",
+      "choices": [
+        {
+          "id": "bag",
+          "label": "Pass the bag along the shell-bank",
+          "icon": "hand",
+          "goto": "bag"
+        },
+        {
+          "id": "path",
+          "label": "Mark the firm shells for the traveler",
+          "icon": "hand",
+          "goto": "path"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
+        }
+      ]
+    },
+    "bag": {
+      "type": "story",
+      "narration": "You line up along the shell-bank, each on a firm shell, ready to pass the bag from hand to hand. It smells very strongly of fish. The gulls are extremely interested.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Pass it along",
+          "icon": "hand",
+          "goto": "bag_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
+        }
+      ]
+    },
+    "path": {
+      "type": "story",
+      "narration": "You follow the guide's front fins and lay empty shells along the firm route. The traveler waves from the far end, hopping on one foot to keep her boots dry. \"Trust a path once,\" says the guide. \"Then look again.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Lay the last shells",
+          "icon": "hand",
+          "goto": "path_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
+        }
+      ]
+    },
+    "bag_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Pass the bag hand to hand without stepping off the shells. Half of you must keep your feet on the firm ones!",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "traveler_done"
+      },
+      "onFailure": {
+        "goto": "traveler_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
+        }
+      ]
+    },
+    "path_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Choose the firmest shells and lay the route. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "traveler_done"
+      },
+      "onFailure": {
+        "goto": "traveler_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
+        }
+      ]
+    },
+    "traveler_done": {
+      "type": "story",
+      "narration": "The bag arrives dry. The traveler hugs it and gives you one dried fish, which you will not be eating. She also presses a small river charm into your hand. \"For luck on soft ground,\" she says. She hops away from shell to shell, the gulls following in a hopeful cloud.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "puff"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_flats_traveler"
+        },
+        {
+          "type": "grantItem",
+          "itemId": "river_charm",
+          "to": "party"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
+        }
+      ]
+    },
+    "traveler_off": {
+      "type": "story",
+      "narration": "A wave slaps the shells, and the bag gets a little wet. The traveler squeaks and rescues it herself. \"Still mostly dry,\" she says. \"Mostly.\" The guide scratches a note in the mud with one fin. Look again.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Go on",
+          "icon": "hand",
+          "goto": "puff"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "helped_the_flats_traveler"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/boarding_traveler",
+          "name": "Traveler"
+        }
+      ]
+    },
+    "puff": {
+      "type": "choice_point",
+      "narration": "Something bobs past in the reeds, round as a ball. It is a young Skupper, puffed up to three times her size and drifting on the tide. \"My cousin,\" groans the guide. \"She puffs when she is startled. The hatch startled her.\" The cousin waves one fin. Her spines stick out like a very small, very round hedgehog. She cannot get down.",
+      "choices": [
+        {
+          "id": "rope",
+          "label": "Tow her in with a rope loop",
+          "icon": "hand",
+          "goto": "puff_a"
+        },
+        {
+          "id": "hum",
+          "label": "Hum a slow, calm tune until she settles",
+          "icon": "hand",
+          "goto": "puff_b"
+        },
+        {
+          "id": "song",
+          "label": "Let a songkeeper sing her a slow tide song",
+          "icon": "song",
+          "goto": "puff_song",
+          "requiresClass": "songkeeper"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/skupper",
+          "name": "Skupper cousin"
+        }
+      ]
+    },
+    "puff_a": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Throw the rope loop around her tail fin and tow her in. Careful, spines! The steadiest arm should throw!",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "puff_done"
+      },
+      "onFailure": {
+        "goto": "puff_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/skupper",
+          "name": "Skupper cousin"
+        }
+      ]
+    },
+    "puff_b": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Hum a slow, calm tune until she lets her breath out. The steadiest voice should lead!",
+      "roller": "best",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "puff_done"
+      },
+      "onFailure": {
+        "goto": "puff_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/skupper",
+          "name": "Skupper cousin"
+        }
+      ]
+    },
+    "puff_song": {
+      "type": "story",
+      "narration": "A songkeeper sings a slow song about the tide going out. The cousin's spines droop a little at a time. The others keep the rope ready and stay out of stinging range. The hero with the calmest voice can lead the team.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work together using that help",
+          "icon": "hand",
+          "goto": "puff_song_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/skupper",
+          "name": "Skupper cousin"
+        }
+      ]
+    },
+    "puff_song_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "A songkeeper sings the tide song. The qualified hero assists; choose who leads the team check.",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "puff_done"
+      },
+      "onFailure": {
+        "goto": "puff_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/skupper",
+          "name": "Skupper cousin"
+        }
+      ]
+    },
+    "puff_done": {
+      "type": "story",
+      "narration": "The cousin lets out a long, squeaky sigh and shrinks back to her proper size, like a small round bagpipe. \"Thank you,\" she says. \"I saw something upriver this morning, where the pale silt starts. A line of old posts, standing in dry mud where no water should be dry.\" The guide goes quiet. Her family sends a honeycake after you, still warm.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Ask the guide about the posts",
+          "icon": "hand",
+          "goto": "ossley"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "honeycake",
+          "to": "party"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/skupper",
+          "name": "Skupper cousin"
+        }
+      ]
+    },
+    "puff_off": {
+      "type": "story",
+      "narration": "The cousin bobs into a tuft of reeds, startles at a gull, and puffs even bigger. At last she floats against the shell-bank, and the guide pokes her gently with a pole until she squeaks out a long sigh and shrinks. \"Sorry,\" she says. \"I saw something upriver this morning, where the pale silt starts. A line of old posts, standing in dry mud.\" The guide goes quiet. Her family sends a honeycake after you, still warm.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Ask the guide about the posts",
+          "icon": "hand",
+          "goto": "ossley"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "honeycake",
+          "to": "party"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/skupper",
+          "name": "Skupper cousin"
+        }
+      ]
+    },
+    "ossley": {
+      "type": "choice_point",
+      "narration": "\"Posts,\" says the guide. \"Hmm. Later.\" A flat boat comes poling up the channel and runs aground with a soft thump. A frogfolk boatman peers over the side. \"Old Ossley,\" he says, \"ferry man, at your service, if the tide is.\" His boat is full of crates for Tidepocket: lamp oil, flour and dried kelp. The water is already lapping at his keel. \"Hands?\"",
+      "choices": [
+        {
+          "id": "chain",
+          "label": "Pass the crates ashore hand to hand",
+          "icon": "hand",
+          "goto": "ossley_a"
+        },
+        {
+          "id": "planks",
+          "label": "Slide planks under the keel to float him off",
+          "icon": "hand",
+          "goto": "ossley_b"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "saltrot_arrival_ferry"
+          },
+          "text": "He grins at you. \"Same river, same fare, eh?\""
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ]
+    },
+    "ossley_a": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Form a chain and pass the crates ashore before the tide climbs. Half of you must keep passing!",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "ossley_done"
+      },
+      "onFailure": {
+        "goto": "ossley_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ]
+    },
+    "ossley_b": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Slide planks under the keel so the boat floats free. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "ossley_done"
+      },
+      "onFailure": {
+        "goto": "ossley_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ]
+    },
+    "ossley_done": {
+      "type": "story",
+      "narration": "The last crate lands on the shell-bank just as the water reaches the keel. Old Ossley floats free with a happy croak. \"I am along this river at every tide,\" he says. \"When you want to go upriver, I am your frog.\" A crate of dried kelp slides off the stack, and he catches it with his tongue, without looking. He counts five coins into your hand. \"Freight fee. Honest work gets honest pay.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Carry the lamp oil down",
+          "icon": "hand",
+          "goto": "lamp_line"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantCoins",
+          "amount": 5
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ]
+    },
+    "ossley_off": {
+      "type": "story",
+      "narration": "The tide arrives before you finish. Old Ossley scoops water out of his boat with a bucket while you carry the last crates through knee-deep water. Everything arrives, a little damp. \"I am along this river at every tide,\" he says. \"When you want to go upriver, I am your frog.\" He counts three coins into your hand. \"For the wet ones. Honest work gets honest pay.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Carry the lamp oil down",
+          "icon": "hand",
+          "goto": "lamp_line"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantCoins",
+          "amount": 3
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ]
+    },
+    "lamp_line": {
+      "type": "interaction",
+      "narration": "Tidepocket's lamps need their oil before dark, and the hatch ladder is steep and slippery. The families line up along the rungs. \"One jar at a time,\" says the guide. \"Catch it, pass it, do not drop it. Lamp oil is slippery, and so is the ladder.\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the jar, then pass it down the line.",
+        "actionLabel": "Pass the jar",
+        "objectLabel": "A jar of lamp oil"
+      },
+      "onSuccess": {
+        "goto": "camp",
+        "narration": "The last jar reaches the bottom without a drop. Somewhere below, a lamp pops alight, and then another. Tidepocket glows up through the hatch like a pot of warm honey."
+      },
+      "onFailure": {
+        "goto": "camp",
+        "narration": "One jar slips, and a Skupper child catches it with her tail. \"I meant to do that,\" she says. Below, the lamps pop alight, one by one."
+      },
+      "onAssisted": {
+        "goto": "camp",
+        "narration": "You and the guide pass the jars in a steady line. Below, the lamps pop alight, one by one."
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "camp": {
+      "type": "rest",
+      "narration": "The families of Tidepocket press a hot kelp cake into every hand. You rest on the dry top of the burrow while the tide comes in around you, silver and quiet. The fiddler crabs wave goodnight, or possibly good morning. Across the flats, two travelers wade toward you in Riftseeker clasps, one of them with far too many tails to count.",
+      "heal": 2,
+      "choices": [
+        {
+          "id": "story",
+          "label": "Listen to the grandmother's story",
+          "icon": "hand",
+          "goto": "camp_story"
+        },
+        {
+          "id": "boots",
+          "label": "Wash the mud off your boots in the tide pool",
+          "icon": "hand",
+          "goto": "camp_boots"
+        },
+        {
+          "id": "gift",
+          "label": "Give the grandmother a honeycake",
+          "icon": "hand",
+          "goto": "camp_gift",
+          "when": {
+            "count": {
+              "of": "honeycake",
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "honeycake"
+            }
+          ]
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "camp_story": {
+      "type": "story",
+      "narration": "The guide's grandmother settles on a shell and tells it slowly. \"There is a bridge in the old stories, and a door in the old stories, and a rule. Show the bank. Never the stone.\" She wiggles her fins at the guide. \"Someone should have told you that before you were a guide. Oh, you know it. Good.\" Then she tells it again, shorter.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Meet the two travelers",
+          "icon": "hand",
+          "goto": "lesson"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "camp_gift": {
+      "type": "story",
+      "narration": "The grandmother breaks the honeycake into twelve pieces and hands them down the line. Everyone gets exactly one crumb, and she keeps the smallest. \"Good manners,\" she says, chewing. \"I will tell the others you have them.\" Then she tells the bridge story anyway, with the rule at the end: show the bank, never the stone.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Meet the two travelers",
+          "icon": "hand",
+          "goto": "lesson"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "camp_boots": {
+      "type": "story",
+      "narration": "You rinse your boots in a tide pool. A small crab climbs out of the left one and glares at you. You hold it up for the guide. \"Mine,\" says the guide, and puts it on her head. The families clap. The crab is the best-fed in the Saltrot by sundown. Meanwhile the guide's grandmother is telling a story to anyone who sits still, and you catch the end of it: show the bank, never the stone.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Meet the two travelers",
+          "icon": "hand",
+          "goto": "lesson"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
     },
     "lesson": {
       "type": "story",
-      "narration": "A kitsune named Seren Wisp is comparing notes with a young manticore named Pip Thistledown. They wear the Riftseekers' clasps. \"I am finding what has moved,\" says Pip. Seren asks you to hum the hall note, then listen for an answering sound. \"A starweaver can learn to answer a rift's hum. That is called Attune. No one here chooses a rift's rules.\"",
+      "narration": "A kitsune named Seren Wisp is comparing notes with a young manticore named Pip Thistledown. They wear the Riftseekers' clasps. \"I am finding what has moved,\" says Pip. He unrolls a muddy map. \"The pale silt starts somewhere upriver. I need good ears.\" Seren asks you to hum the hall note, then listen for an answering sound. \"A starweaver can learn to answer a rift's hum. That is called Attune. No one here chooses a rift's rules.\"",
       "choices": [
         {
           "id": "continue",
           "label": "Listen together",
           "icon": "hand",
-          "goto": "local",
+          "goto": "hum",
           "effects": [
             {
               "type": "setFlag",
@@ -96,9 +1184,10 @@
             "flag": "attune_taught"
           },
           "replace": true,
-          "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. Seren asks you to compare the sounds with what she taught you before. Pip adds the new place to his notes."
+          "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. Seren asks you to compare the sounds with what she taught you before. Pip unrolls a muddy map. \"The pale silt starts somewhere upriver,\" he says. \"I need good ears.\""
         }
       ],
+      "art": "scenes/riftlight/stuttering-flats",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -112,102 +1201,1231 @@
           "figure": "cast/saltrot_guide",
           "name": "Saltrot guide"
         }
-      ],
-      "art": "scenes/riftlight/stuttering-flats"
+      ]
     },
-    "local": {
+    "hum": {
       "type": "choice_point",
-      "narration": "The Skupper points to a pale stripe in the mud. \"New silt. Covered the path overnight.\" A traveler has left a bag on a shell-bank that is slowly flooding. Will you help move the bag or mark a safer path?",
+      "narration": "Seren sets a pebble in the mud and asks you to listen to the flats the way you listened to the hall seam. \"Every rift hums,\" she says. \"Some hum back when someone who can answer is near.\" Out across the mud, something is humming very faintly, like a bee in a bucket. Pip chews his pencil. How will you find where it comes from?",
       "choices": [
         {
-          "id": "bag",
-          "label": "Pass the bag along the shell-bank",
+          "id": "hum",
+          "label": "Hum the hall note together and listen",
           "icon": "hand",
-          "goto": "bag"
+          "goto": "hum_a_check"
         },
         {
-          "id": "path",
-          "label": "Mark the firm shells for the traveler",
+          "id": "map",
+          "label": "Mark the quiet spots on Pip's map",
           "icon": "hand",
-          "goto": "path"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Saltrot guide"
+          "goto": "hum_b_check"
         },
         {
-          "figure": "cast/boarding_traveler",
-          "name": "Traveler"
-        }
-      ],
-      "art": "scenes/riftlight/stuttering-flats"
-    },
-    "bag": {
-      "type": "story",
-      "narration": "You pass the bag from hand to hand, keeping your feet on the shells. The guide skips ahead to show the last safe step. The traveler gets their bag back dry.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "flats_rest"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Saltrot guide"
+          "id": "chime",
+          "label": "Ring the Listening Chime beside the humming mud",
+          "icon": "bell",
+          "goto": "hum_chime",
+          "requiresItem": "listening_chime"
         },
         {
-          "figure": "cast/boarding_traveler",
-          "name": "Traveler"
+          "id": "attune",
+          "label": "Answer the hum with attune",
+          "icon": "star",
+          "goto": "hum_star",
+          "requiresClass": "starweaver"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
-      "onEnter": [
+      "cast": [
         {
-          "type": "setFlag",
-          "flag": "helped_the_flats_traveler"
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
         }
       ]
     },
-    "path": {
+    "hum_chime": {
       "type": "story",
-      "narration": "You follow the guide's front fins and lay empty shells along the firm route. The traveler moves the bag without stepping into the soft silt. \"Trust a path once,\" says the Skupper. \"Then look again.\"",
+      "narration": "You hold the Listening Chime near the mud and let it ring once. The note rises, then bends toward the north, as if something far away had answered with a slightly different pitch. Pip sticks out his tongue in concentration and draws an arrow.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Follow the bent note",
           "icon": "hand",
-          "goto": "flats_rest"
+          "goto": "hum_chime_check"
         }
       ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "hum_chime_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Follow the bend in the chime's note across the flats. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "hum_done"
+      },
+      "onFailure": {
+        "goto": "hum_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "hum_a_check": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Everyone hums the hall note, then holds still and listens. Half of you must hear the flats hum back.",
+      "roller": "all",
+      "checkKind": "doing",
+      "onSuccess": {
+        "goto": "hum_done"
+      },
+      "onFailure": {
+        "goto": "hum_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "hum_b_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Walk the flats and mark every spot where the hum goes quiet. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "hum_done"
+      },
+      "onFailure": {
+        "goto": "hum_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "hum_star": {
+      "type": "story",
+      "narration": "A starweaver listens the way Seren taught, and the flats seem to hum a little louder in answer. The others keep still and watch the mud. The hero who hears best can lead the team; nobody needs to pretend they answered.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work together using that help",
+          "icon": "hand",
+          "goto": "hum_star_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "hum_star_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "A starweaver answers the hum with attune. The qualified hero assists; choose who leads the team check.",
+      "onSuccess": {
+        "goto": "hum_done"
+      },
+      "onFailure": {
+        "goto": "hum_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "hum_done": {
+      "type": "story",
+      "narration": "Under the mud, a low note hums back, faint and far away, in the direction of the cold north. Pip writes it down and underlines it twice. \"That is where the pale silt starts,\" says Seren. \"Or near it.\" The guide looks upriver and says nothing at all. Her tall crest folds down flat.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Help the guide with the poles",
+          "icon": "hand",
+          "goto": "poles"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "hum_off": {
+      "type": "story",
+      "narration": "The note hides in the squelch of the mud, but Seren catches it with her long ears: a low hum from the cold north. Pip writes it down and underlines it twice. \"That is where the pale silt starts,\" says Seren. \"Or near it.\" The guide looks upriver and says nothing at all. Her tall crest folds down flat.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Help the guide with the poles",
+          "icon": "hand",
+          "goto": "poles"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "poles": {
+      "type": "choice_point",
+      "narration": "The guide drags over a bundle of reed poles. \"Every morning, I plant poles along the safe route. This morning the route is under silt.\" She points at the long gray stripe between the burrow and the river. \"Anyone crossing here tomorrow should not have to guess.\" A Tidepocket weaver waves a roll of bright cloth at you. \"Three coins, and every pole will shine.\"",
+      "choices": [
+        {
+          "id": "drive",
+          "label": "Drive poles deep along the firm shells",
+          "icon": "hand",
+          "goto": "poles_a_check"
+        },
+        {
+          "id": "flags",
+          "label": "Tie reed flags so every pole shows from far away",
+          "icon": "hand",
+          "goto": "poles_b_check"
+        },
+        {
+          "id": "buy",
+          "label": "Pay the weaver for bright flag cloth (3 coins)",
+          "icon": "hand",
+          "goto": "poles_buy",
+          "when": {
+            "coins": {
+              "min": 3
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
           "name": "Saltrot guide"
         },
         {
-          "figure": "cast/boarding_traveler",
-          "name": "Traveler"
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "poles_a_check": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Drive each pole deep into the firm shells so it stands straight. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "poles_done"
+      },
+      "onFailure": {
+        "goto": "poles_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "poles_b_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Tie the flags fast, before the next wave. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "poles_done"
+      },
+      "onFailure": {
+        "goto": "poles_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "poles_buy": {
+      "type": "story",
+      "narration": "The weaver cuts the cloth into neat strips, and you tie one on every pole. In the low light they shine like a row of tiny lanterns. The weaver looks very pleased with herself. The guide walks the line end to end with her eyes closed, then opens them and nods.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look upriver",
+          "icon": "hand",
+          "goto": "trail"
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "poles_done": {
+      "type": "story",
+      "narration": "The poles stand in a long straight line, like a row of thin sentries. The guide walks it end to end with her eyes closed and not one wobble. \"Tomorrow, silt or no silt, anyone can follow this.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look upriver",
+          "icon": "hand",
+          "goto": "trail"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "poles_off": {
+      "type": "story",
+      "narration": "Two poles lean, and one falls over with a plop. The guide straightens them with her fins, grumbling, but the line holds. \"Look again tomorrow,\" she says. \"Always look again.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look upriver",
+          "icon": "hand",
+          "goto": "trail"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "trail": {
+      "type": "choice_point",
+      "narration": "Pip lays his map over a drum of reeds. The pale stripe runs upriver along the bank, getting wider. \"If we follow it to the end, we find where it starts,\" he says. \"The cousin saw posts. I want to see posts.\" Seren looks at the guide. \"Will you come?\" The guide thinks about it, with her fins folded. \"To the bank,\" she says. \"Not past it.\"",
+      "choices": [
+        {
+          "id": "walk",
+          "label": "Follow the pale stripe along the bank",
+          "icon": "hand",
+          "goto": "trail_a_check"
+        },
+        {
+          "id": "test",
+          "label": "Test the pale silt with poles as you go",
+          "icon": "hand",
+          "goto": "trail_b_check"
+        },
+        {
+          "id": "charm",
+          "label": "Follow the stripe with the river charm in your pocket",
+          "icon": "spark",
+          "goto": "trail_charm",
+          "requiresItem": "river_charm"
+        },
+        {
+          "id": "scout",
+          "label": "Scout the stripe from the air",
+          "icon": "wing",
+          "goto": "trail_wing",
+          "requiresSpecies": [
+            "griffin",
+            "dragonling"
+          ]
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "trail_charm": {
+      "type": "story",
+      "narration": "The traveler's river charm warms in your pocket whenever you step on firm ground, and goes cool over soft. You start walking by temperature. The guide squints at you, then at the charm, and decides not to be offended that a pebble is better at her job.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Follow the warm and cool",
+          "icon": "hand",
+          "goto": "trail_charm_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "trail_charm_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Follow the charm along the stripe, warm for firm and cool for soft. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "trail_done"
+      },
+      "onFailure": {
+        "goto": "trail_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "trail_wing": {
+      "type": "story",
+      "narration": "A winged friend rises over the flats and follows the pale stripe like a gray ribbon. The others walk below, keeping their eyes on the flier. The best tracker can lead; nobody needs to pretend they flew.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work together using that help",
+          "icon": "hand",
+          "goto": "trail_wing_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "trail_a_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Keep one foot on each color of mud and don't lose the stripe. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "trail_done"
+      },
+      "onFailure": {
+        "goto": "trail_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "trail_b_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Work out where the solid ground ends and the soft silt begins. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "trail_done"
+      },
+      "onFailure": {
+        "goto": "trail_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "trail_wing_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "A winged hero scouts from the air. The qualified hero assists; choose who leads the team check.",
+      "onSuccess": {
+        "goto": "trail_done"
+      },
+      "onFailure": {
+        "goto": "trail_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "trail_done": {
+      "type": "story",
+      "narration": "The pale stripe grows wider and colder as you follow it, a gray road through the brown. Far ahead, the line begins to climb a long, low rise, as if the land were holding its breath. Behind you, every fiddler crab on the flats lifts its claw at once.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch the crabs",
+          "icon": "hand",
+          "goto": "crabs"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "trail_off": {
+      "type": "story",
+      "narration": "You lose the stripe twice where fresh brown mud covers it, and find it again by following the squeak. It takes a long way round. Ahead, the pale line climbs a long, low rise, as if the land were holding its breath. Behind you, every fiddler crab on the flats lifts its claw at once.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch the crabs",
+          "icon": "hand",
+          "goto": "crabs"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crabs": {
+      "type": "choice_point",
+      "narration": "The crabs wave together, slowly, all facing the river. \"They do not do that,\" says the guide. \"They wave by the tide, and the tide is hours away.\" Pip has gone pale under his fur. \"What are they counting?\" The guide's crest stands straight up. \"Whatever it is, they know before we do. Find out. Fast.\"",
+      "choices": [
+        {
+          "id": "time",
+          "label": "Time the waves against the water level",
+          "icon": "hand",
+          "goto": "crabs_a"
+        },
+        {
+          "id": "climb",
+          "label": "Climb the nearest rise and look upriver",
+          "icon": "hand",
+          "goto": "crabs_b"
+        },
+        {
+          "id": "leap",
+          "label": "Leap to the high ledge for a look",
+          "icon": "forward",
+          "goto": "crabs_leap",
+          "requiresSpecies": "manticore"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crabs_a": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Count the waves and watch the water mark on a pole. Do they line up? Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "crabs_done"
+      },
+      "onFailure": {
+        "goto": "crabs_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crabs_b": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Scramble up the slippery rise before the next wave of crabs. Choose who leads; everyone can help.",
+      "onSuccess": {
+        "goto": "crabs_done"
+      },
+      "onFailure": {
+        "goto": "crabs_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crabs_leap": {
+      "type": "story",
+      "narration": "A manticore crouches, wiggles their tail, and Leap carries them high onto the ledge in one bound. Pip stares with his mouth open. The others call up questions, and the manticore calls back what they see. The best talker of the team can lead the shouting.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Work together using that help",
+          "icon": "hand",
+          "goto": "crabs_leap_check"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crabs_leap_check": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "A manticore leaps to the ledge for a look. The qualified hero assists; choose who leads the team check.",
+      "onSuccess": {
+        "goto": "crabs_done"
+      },
+      "onFailure": {
+        "goto": "crabs_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crabs_done": {
+      "type": "story",
+      "narration": "Upriver, the water is piling up behind a long gray bar of silt, higher and higher, like a bath with a plug in it. \"It will come back all at once,\" you tell the guide. She nods once, quickly. \"Early tide. But that is not what they are waving about.\" The silt beside you gives a long, slow heave.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the silt",
+          "icon": "hand",
+          "goto": "crab_warn"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crabs_off": {
+      "type": "story",
+      "narration": "You work it out a little late. The crabs have already stopped waving and are running sideways for the high shells, which is also an answer. Upriver, the water is piling up behind a long gray bar of silt. \"Early tide,\" says the guide. \"But that is not why they ran.\" The silt beside you gives a long, slow heave.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Look at the silt",
+          "icon": "hand",
+          "goto": "crab_warn"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crab_warn": {
+      "type": "story",
+      "narration": "Two big crabs push up out of the silt, shells clear and shiny as windows, claws clacking. \"Glassback crabs,\" whispers the guide. \"They sleep in the warm mud, and the cold silt froze their patch. They are cranky and cold and hungry, and they want the warm shell-bank you are standing on.\" One crab clacks at Pip's map. Pip holds it very high. \"Gently,\" says the guide. \"They are only cold.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Hold the shell-bank",
+          "icon": "hand",
+          "goto": "crab_fight"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crab_fight": {
+      "type": "encounter",
+      "map": "reedbank",
+      "narration": "The crabs scuttle sideways at you, claws up, shells flashing in the gray light. They are not evil. They are cold and cross, and they want you off their warm ground. Hold the shell-bank until they settle.",
+      "enemies": [
+        {
+          "id": "crab",
+          "name": "Glassback Crab",
+          "creature": "glassback_crab"
+        }
+      ],
+      "onVictory": {
+        "goto": "crab_done",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "luckstone",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "crab_rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "crab_done": {
+      "type": "story",
+      "narration": "The crabs back off, clacking, and settle into a warm hollow by the hatch roof, glaring at the sky. One of them leaves a glassy pebble at your feet, which seems to be its way of saying sorry. \"Luckstone,\" says the guide. \"They keep one in their shells. That is a very good manners crab.\" Behind you, the water begins to slide.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get ready to run",
+          "icon": "hand",
+          "goto": "tide"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "crab_rescued": {
+      "type": "story",
+      "narration": "A crab shoves you off the shell-bank, and you sit down in the silt with a squelch. Then the guide whistles, and the families of Tidepocket bang their cooking pots from the hatch. The crabs flinch and scuttle into a warm hollow, grumbling. Nobody is hurt. You miss the lucky pebble they were keeping, and the guide gives you a hand up. Behind you, the water begins to slide.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Get ready to run",
+          "icon": "hand",
+          "goto": "tide"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "tide": {
+      "type": "choice_point",
+      "narration": "Up the channel, a gray wall of water slides toward you, quiet as a cat. \"The silt makes the water pile up,\" says the guide, and for the first time she sounds worried. \"High shells! Now!\" Pip clutches his map to his chest.",
+      "choices": [
+        {
+          "id": "run",
+          "label": "Run for the high shells together",
+          "icon": "hand",
+          "goto": "tide_a"
+        },
+        {
+          "id": "rope",
+          "label": "Anchor a rope and wade in a chain",
+          "icon": "hand",
+          "goto": "tide_b"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "tide_a": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Everyone runs for the high shells, light and fast. Half of you must beat the water!",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "tide_done"
+      },
+      "onFailure": {
+        "goto": "tide_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "tide_b": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Anchor the rope on a firm shell and hold it while the others wade along it. The strongest arm should anchor!",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "tide_done"
+      },
+      "onFailure": {
+        "goto": "tide_off"
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "tide_done": {
+      "type": "story",
+      "narration": "Everyone is across the long stretch, and Pip is counting heads. \"That is the right number,\" he says. A fiddler crab climbs onto his head and waves, unbothered. One last channel lies between you and the high shells, and the water is sliding into it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch the water",
+          "icon": "hand",
+          "goto": "tide_dash"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "tide_off": {
+      "type": "story",
+      "narration": "Water fills your boots, cold as a river from the north, which it is. Everyone stays together, soggy and grumpy and safe. Pip wrings out his map. The guide wrings out Pip. One last channel lies between you and the high shells, and the water is sliding into it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch the water",
+          "icon": "hand",
+          "goto": "tide_dash"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "roller",
+          "nonlethal": true
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "tide_dash": {
+      "type": "interaction",
+      "narration": "The water pulls back from the last channel, then rushes in again, back and forth, like a very large and very rude breath. \"Wait for the pull,\" says the guide, crouching. \"Then go.\"",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Go when the water pulls back.",
+        "actionLabel": "Splash across!",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "lead",
+        "narration": "You hop across on dry shells. The water slides in behind you, quiet as a cat, and you are on the high shells at last."
+      },
+      "onFailure": {
+        "goto": "lead",
+        "narration": "The water gets your boots, but the guide hauls you onto the high shells by the collar, gurgling with laughter."
+      },
+      "onAssisted": {
+        "goto": "lead",
+        "narration": "The guide counts out the pulls for you, one by one, and you cross on the last of them."
+      },
+      "art": "scenes/riftlight/stuttering-flats",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ]
+    },
+    "lead": {
+      "type": "story",
+      "narration": "From the high shells, you can see where the pale stripe ends. Beyond the last bend, the mud has pulled back from something large and old, a long line of old gray stone standing in dry ground where no water runs, like the teeth of a comb that a giant dropped. \"The buried bridge,\" says the guide, very quietly. \"My folk have a rule. We show the bank. We do not walk on it.\" Seren folds her map. \"Something moved, and uncovered it.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Think about what to do next",
+          "icon": "hand",
+          "goto": "bridge_ask"
+        }
+      ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "helped_the_flats_traveler"
+          "flag": "followed_the_silt"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "bridge_ask": {
+      "type": "choice_point",
+      "narration": "The tide slides back out, the way it came. Pip is already sketching the stone. \"Master Orin Vale will want to see this,\" Seren says. \"He studies silt.\" The guide watches the bridge, not you. What will you do before you go any closer?",
+      "choices": [
+        {
+          "id": "guide",
+          "label": "Ask the guide to show the buried bridge",
+          "icon": "hand",
+          "goto": "bridge_go"
+        },
+        {
+          "id": "plan",
+          "label": "Rest first, and plan with Seren and Pip",
+          "icon": "hand",
+          "goto": "bridge_plan"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "bridge_go": {
+      "type": "story",
+      "narration": "The guide takes a long breath and puffs a little, just at the edges. \"The bank,\" she says. \"I will show you the bank. Not the stone.\" She hops onto the firmest shell and waits for you to follow.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Rest on the high shells first",
+          "icon": "hand",
+          "goto": "flats_rest"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        }
+      ]
+    },
+    "bridge_plan": {
+      "type": "story",
+      "narration": "Seren draws the route on Pip's map in three quick lines. \"The firm bank first. The silt second. The stone last, and only from the bank.\" Pip writes it down and underlines the word bank. The guide gives a very small nod.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Rest on the high shells first",
+          "icon": "hand",
+          "goto": "flats_rest"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
         }
       ]
     },
     "flats_rest": {
       "type": "rest",
-      "narration": "You rest above the tide line. Farther along the flats, new silt is hiding old routes. Your guide is ready to show you where to look next.",
+      "narration": "You rest on the high shells above the tide line while the water goes back out. The guide scratches the day's lesson in the mud with one fin: look again. Farther along the flats, new silt is hiding old routes. When you are ready, your guide will take you to the bank of the buried bridge.",
       "heal": 0,
       "choices": [],
-      "outcome": "success",
       "variants": [
         {
           "when": {
@@ -216,13 +2434,14 @@
           "text": "The open fold still hums nearby. Its echo offers a return to the glacier."
         }
       ],
+      "outcome": "success",
+      "art": "scenes/riftlight/stuttering-flats",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
           "name": "Saltrot guide"
         }
-      ],
-      "art": "scenes/riftlight/stuttering-flats"
+      ]
     }
   },
   "voiceGuide": {

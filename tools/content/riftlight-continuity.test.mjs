@@ -12,4 +12,4 @@ it("Riftlight's opening introduces names before using them across every route", 
   expect(result.findings).toEqual([]);
   expect(result.stranded).toEqual([]);
   expect(result.unreached).toEqual([]);
-});
+}, 60_000); // The whole campaign's name sweep; the opening chapters are now full-length, and CI runs this under load.
