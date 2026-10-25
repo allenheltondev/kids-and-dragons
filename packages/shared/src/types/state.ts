@@ -368,6 +368,16 @@ export interface RunState {
    */
   rankUps?: { sceneId: SceneId | null; ups: RankUp[] };
   /**
+   * The story choice the table just made, and the scene it led to: the shared
+   * screen says what was picked in one line while that scene is open, so a
+   * room that voted can see its conclusion. `vote` says whether the party
+   * decided it together or one kid picked for everyone; `byPlayerId` is the
+   * kid who had the final say (for a vote, the last to tip it). Absent when
+   * there was nothing to decide (a "Go on" with one way on), and on a run
+   * saved before this existed.
+   */
+  decision?: { sceneId: SceneId | null; label: string; byPlayerId: string; vote: boolean };
+  /**
    * Every scene this run has entered, in order — the spine of the story, for
    * the end-of-chapter recap of its priority-1 scenes (chapter.ts
    * `ScenePriority`).
