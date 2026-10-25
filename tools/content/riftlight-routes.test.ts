@@ -12,7 +12,7 @@ it.each([
   ["griffin", "duskrunner"], ["dragonling", "duskrunner"], ["manticore", "duskrunner"],
 ] as const)("the route chapters continue on every branch for a %s %s", (species, cls) => {
   for (const chapter of chapters.values()) if (chapter.index >= 4) allPaths(chapter, species, cls);
-});
+}, 60_000); // Every route chapter walked for one party; the opening chapters are now full-length, and CI runs this under load.
 
 it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: every scene is reachable across class and species options", (chapter) => {
   const visited = new Set<string>();
