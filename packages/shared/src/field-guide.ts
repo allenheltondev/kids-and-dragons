@@ -247,3 +247,31 @@ export function classMatchups(rules: RulesContent | null | undefined, entryId: s
   const watch = edges.filter((e) => edgeHelps(e) < 0).map(line);
   return good.length === 0 && watch.length === 0 ? null : { good, watch };
 }
+
+/**
+ * The matchup advice on an entry's page as sentences to read aloud, in the
+ * order the page shows it. Empty when the page shows none (the caller passes
+ * null rules when matchups are off for the run, as the page does).
+ */
+export function matchupSentences(rules: RulesContent | null | undefined, entry: FieldGuideEntry): string[] {
+  const join = (names: string[]): string =>
+    names.length < 3 ? names.join(" and ") : `${names.slice(0, -1).join(", ")}, and ${names.at(-1)!}`;
+  const fight = creatureMatchups(rules, entry);
+  if (fight) {
+    return [
+      "Fighting it",
+      ...fight.traits.map((t) => `${t.name}. ${t.text}`),
+      ...(fight.likes.length > 0 ? [`Goes easy on ${join(fight.likes)}. It holds back around them`] : []),
+      ...(fight.dislikes.length > 0 ? [`Picks on ${join(fight.dislikes)}. It singles them out`] : []),
+      ...(fight.good.length > 0 ? ["Good against it", ...fight.good.map((l) => l.text)] : []),
+      ...(fight.careful.length > 0 ? ["Careful", ...fight.careful.map((l) => l.text)] : []),
+      "Not every fight has to be a fight",
+    ];
+  }
+  const hero = speciesMatchups(rules, entry.id) ?? classMatchups(rules, entry.id);
+  if (!hero) return [];
+  return [
+    ...(hero.good.length > 0 ? ["Good at", ...hero.good.map((l) => l.text)] : []),
+    ...(hero.watch.length > 0 ? ["Watch out", ...hero.watch.map((l) => l.text)] : []),
+  ];
+}
