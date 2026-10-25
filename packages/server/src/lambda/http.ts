@@ -36,7 +36,7 @@ import { chooseWatching } from "../handlers/watch.ts";
 import { beatPresence } from "../handlers/presence.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "../handlers/deps.ts";
 import { iso, ok } from "../handlers/deps.ts";
-import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "../handlers/room.ts";
+import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, vetTableName, watchRoom } from "../handlers/room.ts";
 import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
 import { handKeeper } from "../handlers/keeper.ts";
@@ -56,7 +56,7 @@ import {
   tabletHost,
 } from "../handlers/shared-device.ts";
 import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
-import { checkLocationName, type RoomMode } from "@kad/shared";
+import type { RoomMode } from "@kad/shared";
 import { pushKey, subscribePush, unsubscribePush } from "../handlers/push.ts";
 import { requiredEnv, runtime, verifyAccountToken, type VerifiedAccount } from "./runtime.ts";
 
@@ -263,9 +263,9 @@ async function postRoom(req: Req, deps: HandlerDeps) {
   const display = req.body.display === true;
   if (display && mode !== "party") return error(400, "ILLEGAL", "only a Party Mode room has a TV");
   // Only a TV has a place to name; a phone host's request never carries one.
-  const place = display ? checkLocationName(req.body.location) : null;
-  if (place && !place.ok) return error(400, "ILLEGAL", place.message);
-  const location = place?.ok && place.name !== "" ? place.name : undefined;
+  const place = display ? vetTableName(req.body.location) : ok(undefined);
+  if (!place.ok) return fromError(place.error);
+  const location = place.value;
 
   // A shared tablet opens a room for whichever kid was picked on it (#250).
   const shared = await resolveShared(req, deps);

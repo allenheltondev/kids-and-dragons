@@ -43,8 +43,8 @@ import { chooseWatching } from "./handlers/watch.ts";
 import { beatPresence, setPresence } from "./handlers/presence.ts";
 import { PresenceTracker } from "./presence-tracker.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
-import { iso } from "./handlers/deps.ts";
-import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, watchRoom } from "./handlers/room.ts";
+import { iso, ok } from "./handlers/deps.ts";
+import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom, vetTableName, watchRoom } from "./handlers/room.ts";
 import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
 import { handKeeper } from "./handlers/keeper.ts";
@@ -181,6 +181,10 @@ async function main(): Promise<void> {
     if (!mode) return sendError(res, 400, "ILLEGAL", "mode must be \"party\" or \"travel\"");
     const display = req.body?.display === true;
     if (display && mode !== "party") return sendError(res, 400, "ILLEGAL", "only a Party Mode room has a TV");
+    // The name a TV gave its table, vetted as lambda/http.ts does.
+    const place = display ? vetTableName(req.body?.location) : ok(undefined);
+    if (!place.ok) return sendError(res, statusFor(place.error), place.error.code, place.error.message);
+    const location = place.value;
 
     // A shared tablet opens a room for the kid picked on it (#250), as in
     // lambda/http.ts: a session token back, never a device token.
@@ -191,7 +195,7 @@ async function main(): Promise<void> {
         // The tablet as the TV (#274): its own household, nobody seated, no
         // device token or session handed back.
         const tv = await createRoom(
-          { householdId: shared.householdId, mode, campaignId: req.body?.campaignId ?? null, hostDeviceId: shared.deviceId, display: true },
+          { householdId: shared.householdId, mode, campaignId: req.body?.campaignId ?? null, hostDeviceId: shared.deviceId, display: true, ...(location ? { location } : {}) },
           deps,
         );
         if (!tv.ok) return sendError(res, statusFor(tv.error), tv.error.code, tv.error.message);
@@ -241,6 +245,7 @@ async function main(): Promise<void> {
         campaignId: req.body?.campaignId ?? null,
         claimable: display,
         hostDeviceId: host.principal.deviceId,
+        ...(location ? { location } : {}),
       },
       deps,
     );

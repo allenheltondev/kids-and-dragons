@@ -10,7 +10,7 @@
  * and its character is already on the board.
  */
 
-import { tableFull, VISITOR_CODE_EXTRA } from "@kad/shared";
+import { checkLocationName, tableFull, VISITOR_CODE_EXTRA } from "@kad/shared";
 import type {
   CreateRoomResponse,
   JoinRoomResponse,
@@ -57,6 +57,18 @@ export function generateRoomCode(random: () => number): string {
     code += ROOM_CODE_ALPHABET[index] ?? ROOM_CODE_ALPHABET[0];
   }
   return code;
+}
+
+/**
+ * The name a TV sent for its table (`CreateRoomRequest.location`), vetted: the
+ * word filter's refusal, or the trimmed name, or nothing when it was left
+ * blank. One function for the Lambda route and the dev server, so a name
+ * typed against either is held to the same rule.
+ */
+export function vetTableName(raw: unknown): HandlerResult<string | undefined> {
+  const checked = checkLocationName(raw);
+  if (!checked.ok) return fail("ILLEGAL", checked.message);
+  return ok(checked.name === "" ? undefined : checked.name);
 }
 
 export interface CreateRoomInput {
