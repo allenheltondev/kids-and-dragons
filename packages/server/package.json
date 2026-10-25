@@ -10,11 +10,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.1153.0",
+    "@aws-sdk/client-dynamodb": "^3.1155.0",
     "@aws-sdk/client-lambda": "^3.1156.0",
-    "@aws-sdk/client-ssm": "^3.1153.0",
+    "@aws-sdk/client-ssm": "^3.1155.0",
     "@aws-sdk/credential-provider-node": "^3.972.74",
-    "@aws-sdk/lib-dynamodb": "^3.1153.0",
+    "@aws-sdk/lib-dynamodb": "^3.1155.0",
     "@kad/shared": "*",
     "@smithy/hash-node": "^4.5.2",
     "@smithy/protocol-http": "^5.6.2",
