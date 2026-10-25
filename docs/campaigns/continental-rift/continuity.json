@@ -6162,6 +6162,44 @@
           ],
           "introduces": {}
         },
+        "gust_lull": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "fuel_chain": {
+          "requires": [
+            "temple_keeper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "camp_play": {
+          "requires": [
+            "temple_keeper",
+            "pip",
+            "hens"
+          ],
+          "introduces": {}
+        },
+        "song_track": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "distant_song"
+          ],
+          "introduces": {}
+        },
+        "song_echo": {
+          "requires": [
+            "temple_keeper",
+            "seren",
+            "thimble"
+          ],
+          "introduces": {}
+        },
         "island_rest": {
           "requires": [
             "temple_keeper",

@@ -702,7 +702,7 @@ function chapterTexts(chapter) {
   const out = [];
   for (const [id, scene] of Object.entries(chapter.scenes ?? {})) {
     const texts = [scene.narration, scene.prompt, ...(scene.choices ?? []).map((c) => c.label)];
-    for (const k of ["onSuccess", "onFailure", "onVictory", "onDefeat", "onEscape", "onTimeout"]) texts.push(scene[k]?.narration);
+    for (const k of ["onSuccess", "onFailure", "onAssisted", "onVictory", "onDefeat", "onEscape", "onTimeout"]) texts.push(scene[k]?.narration);
     out.push({ scene: id, texts: texts.filter(Boolean), cast: [...(scene.cast ?? []), ...(scene.enemies ?? [])].map((c) => c.name) });
   }
   return out;
