@@ -392,7 +392,7 @@
           "id": "continue",
           "label": "Follow the ticking west",
           "icon": "hand",
-          "goto": "kid"
+          "goto": "holes"
         }
       ],
       "onEnter": [
@@ -421,7 +421,7 @@
           "id": "continue",
           "label": "Follow the ticking west",
           "icon": "hand",
-          "goto": "kid"
+          "goto": "holes"
         }
       ],
       "onEnter": [
@@ -430,6 +430,59 @@
           "flag": "followed_the_goats"
         }
       ],
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "cast": [
+        {
+          "figure": "cast/yeti_herder",
+          "name": "Yeti herder"
+        },
+        {
+          "figure": "entities/snowhorn_goat",
+          "name": "Kid goat"
+        }
+      ]
+    },
+    "holes": {
+      "type": "interaction",
+      "narration": "West of the hole, three snow mounds lie in a row, and the ticking seems to jump between them. The kid is sure it knows. It dives into one mound, wiggles, and pops out of another with a snowy nose, then dives again. The herder squints. \"Watch the tail. Where does it end up?\"",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the kid dive between the mounds, then pick where it ends up.",
+        "actionLabel": "Dig here",
+        "covers": [
+          "Left mound",
+          "Middle mound",
+          "Right mound"
+        ],
+        "start": 0,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "kid",
+        "narration": "You dig out the right mound, and there is the kid with its ear pressed to a patch of ice that ticks. West and low, again. The kid sneezes snow on your boots."
+      },
+      "onFailure": {
+        "goto": "kid",
+        "narration": "You dig out an empty mound. The kid pops out of the next one, delighted, and sits on the loudest patch of ice to help. West and low, it ticks."
+      },
+      "onAssisted": {
+        "goto": "kid",
+        "narration": "The herder holds the kid still long enough for you to see it settle by the loudest patch of ice. West and low, it ticks."
+      },
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
@@ -1312,28 +1365,51 @@
     },
     "squeeze_done": {
       "type": "story",
-      "narration": "One by one, you come through. The packs follow on the rope. The last one through leaves a streak of frost on the crack, and laughs when it stings their ear.",
+      "narration": "The crack is wide enough for a person now. As you edge in, small chips of ice pat down from the roof, and the roof gives a long, low creak.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look around the chamber",
+          "label": "Edge into the crack",
           "icon": "hand",
-          "goto": "seam_back"
+          "goto": "squeeze_hold"
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
     },
     "squeeze_off": {
       "type": "story",
-      "narration": "The loose roof sheds a bucket of ice chips onto your heads. Nobody is hurt, and everyone has frost eyebrows. You pass the packs through slowly, one at a time, and the lantern goes through last, swinging.",
+      "narration": "The crack is only half as wide as you hoped. A bucket of ice chips rains onto your heads, and the roof gives a long, low creak. Everyone has frost eyebrows.",
       "choices": [
         {
           "id": "continue",
-          "label": "Look around the chamber",
+          "label": "Edge into the crack",
           "icon": "hand",
-          "goto": "seam_back"
+          "goto": "squeeze_hold"
         }
       ],
+      "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "squeeze_hold": {
+      "type": "interaction",
+      "narration": "The loose roof will not stay up by itself. Somebody has to hold it while somebody else crawls through with the rope. Little pebbles patter on your helmets, and the ticking on the far side is louder than ever.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the roof while your friend crawls through with the rope.",
+        "supportLabel": "Hold the roof",
+        "actionLabel": "Crawl through"
+      },
+      "onSuccess": {
+        "goto": "seam_back",
+        "narration": "One by one, you come through. The packs follow on the rope. The last one through leaves a streak of frost on the crack, and laughs when it stings their ear."
+      },
+      "onFailure": {
+        "goto": "seam_back",
+        "narration": "The roof sheds one more shower of ice chips, and the lantern goes through last, swinging. Nobody is hurt, and everybody is a little more frosty."
+      },
+      "onAssisted": {
+        "goto": "seam_back",
+        "narration": "You wedge the rope hooks under the roof like two small props. They hold just long enough for everyone to come through."
+      },
       "art": "scenes/riftlight/glacier-deep-ice"
     },
     "seam_back": {
@@ -1385,28 +1461,74 @@
     },
     "seam_done": {
       "type": "story",
-      "narration": "The seam ticks back at you, quicker. Frost sparkles down the wall. Then a thin line of light draws itself along the ice to a crack in the corner, as narrow as a door left open for a cat. The seam itself stays shut. The crack is where the ticking is going.",
+      "narration": "The seam ticks back at you, quicker. Frost sparkles down the wall in a pattern, over and over, as if it wants you to say it back.",
       "choices": [
         {
           "id": "continue",
-          "label": "Squeeze through the corner crack",
+          "label": "Watch the frost",
           "icon": "hand",
-          "goto": "behind"
+          "goto": "seam_echo"
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
     },
     "seam_off": {
       "type": "story",
-      "narration": "The seam goes quiet, as if it is sulking. You wait, and wait. Then a thin line of frost slides down the wall by itself to a crack in the corner, as narrow as a door left open for a cat. The seam itself stays shut. The crack is where the ticking is going.",
+      "narration": "The seam goes quiet, as if it is sulking. You wait, and wait. Then frost sparkles down the wall in a pattern of its own, over and over, as if to show you how.",
       "choices": [
         {
           "id": "continue",
-          "label": "Squeeze through the corner crack",
+          "label": "Watch the frost",
           "icon": "hand",
-          "goto": "behind"
+          "goto": "seam_echo"
         }
       ],
+      "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "seam_echo": {
+      "type": "interaction",
+      "narration": "The frost sparkles in a pattern: tick, tock, tock, tick. The seam wants it said back, and you are sure of it. Everyone watches the wall, because everyone sees the sparkles a little differently.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the frost sparkle, then tap the same pattern.",
+        "actionLabel": "Say it back",
+        "options": [
+          {
+            "id": "tick",
+            "label": "Tick",
+            "icon": "hand"
+          },
+          {
+            "id": "tock",
+            "label": "Tock",
+            "icon": "boot"
+          },
+          {
+            "id": "hush",
+            "label": "Hush",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "tick",
+          "tock",
+          "tock",
+          "tick"
+        ],
+        "stepMs": 1000
+      },
+      "onSuccess": {
+        "goto": "behind",
+        "narration": "The seam hums, pleased. A thin line of light draws itself along the ice to a crack in the corner, as narrow as a door left open for a cat. The seam itself stays shut. The crack is where the ticking is going."
+      },
+      "onFailure": {
+        "goto": "behind",
+        "narration": "The seam sulks, then slides a thin line of frost down the wall all by itself, to a crack in the corner as narrow as a door left open for a cat. The seam itself stays shut. The crack is where the ticking is going."
+      },
+      "onAssisted": {
+        "goto": "behind",
+        "narration": "You trace the pattern together on the wall. A thin line of light draws itself along the ice to a crack in the corner, as narrow as a door left open for a cat. The seam itself stays shut."
+      },
       "art": "scenes/riftlight/glacier-deep-ice"
     },
     "behind": {
@@ -1546,16 +1668,48 @@
       "rift": "steady"
     },
     "beat": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "Everyone taps the ticking rhythm on the rock with a pebble. Slow, slow, quick! Half of you must keep the beat.",
-      "roller": "all",
+      "type": "interaction",
+      "narration": "The fold ticks in front of you, steady as a clock. The ticking has a beat, and the beat has an order. Each of you holds a clue. Which taps, in which order, match it?",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share your clues, then tap the beat in order.",
+        "actionLabel": "Tap it out",
+        "options": [
+          {
+            "id": "slow",
+            "label": "Slow tap",
+            "icon": "hand"
+          },
+          {
+            "id": "quick",
+            "label": "Quick tap",
+            "icon": "boot"
+          },
+          {
+            "id": "rest",
+            "label": "Rest",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "slow",
+          "slow",
+          "quick"
+        ],
+        "clues": [
+          "The beat starts with a slow tap.",
+          "Two slow taps come before anything else.",
+          "A quick tap ends the beat, with no rest."
+        ]
+      },
       "onSuccess": {
         "goto": "beat_done"
       },
       "onFailure": {
         "goto": "beat_off"
+      },
+      "onAssisted": {
+        "goto": "beat_done"
       },
       "art": "scenes/riftlight/singing-hall-camp",
       "rift": "steady"
