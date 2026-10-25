@@ -135,7 +135,7 @@ describe("one game at a time per hero (#282)", () => {
 
     // The other table's Hollow Crown finishes; the next Gemfall evening picks her up where she was, and adds to it.
     const crown = (await h.harness.repo.getCampaignProgress(h.householdId, HOLLOW))!;
-    await h.harness.repo.putCampaignProgress({ ...crown, status: "complete", version: crown.version + 1 });
+    await h.harness.repo.putCampaignProgress({ ...crown, status: "complete", version: (crown.version ?? 0) + 1 });
     const next = await table(h, GEMFALL);
     await next.must({ type: "SEAT_CHARACTER", characterId: pip.id });
     await next.must({ type: "READY", ready: true });
