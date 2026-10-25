@@ -90,11 +90,15 @@ export function AnimatedDie({
     resize();
     setReady(true);
     restart();
-    void loadMaterial().then((image) => {
-      if (disposed || !image) return;
-      painter.material(image);
-      draw();
-    });
+    void loadMaterial()
+      .then((image) => {
+        if (disposed || !image) return;
+        painter.material(image);
+        draw();
+      })
+      .catch(() => {
+        // Enamel is optional: retain the valid procedural faces if painting fails.
+      });
     return () => {
       disposed = true;
       cancelAnimationFrame(frame);
