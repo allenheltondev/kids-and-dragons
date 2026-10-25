@@ -6697,14 +6697,6 @@
           ],
           "introduces": {}
         },
-        "poles_a": {
-          "requires": [],
-          "introduces": {}
-        },
-        "poles_b": {
-          "requires": [],
-          "introduces": {}
-        },
         "poles_a_check": {
           "requires": [],
           "introduces": {}
@@ -6730,14 +6722,6 @@
             "pip",
             "pale_silt"
           ],
-          "introduces": {}
-        },
-        "trail_a": {
-          "requires": [],
-          "introduces": {}
-        },
-        "trail_b": {
-          "requires": [],
           "introduces": {}
         },
         "trail_charm": {
@@ -6801,6 +6785,34 @@
         },
         "crabs_off": {
           "requires": [],
+          "introduces": {}
+        },
+        "crab_warn": {
+          "requires": [
+            "skupper",
+            "shell_bank",
+            "pip"
+          ],
+          "introduces": {
+            "glassback": "Glassback crabs"
+          }
+        },
+        "crab_fight": {
+          "requires": [
+            "glassback"
+          ],
+          "introduces": {}
+        },
+        "crab_done": {
+          "requires": [
+            "glassback"
+          ],
+          "introduces": {}
+        },
+        "crab_rescued": {
+          "requires": [
+            "glassback"
+          ],
           "introduces": {}
         },
         "tide": {
