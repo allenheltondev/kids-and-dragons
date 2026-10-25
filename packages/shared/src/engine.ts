@@ -421,6 +421,22 @@ function announceRankUps(draft: RunState, ups: readonly RankUp[]): void {
 }
 
 /**
+ * Says what the table picked, on the scene it led to (`RunState.decision`), so
+ * a room that voted can see its conclusion on the shared screen. A choice with
+ * one way on is nothing decided, and is not said.
+ */
+function announceDecision(
+  draft: RunState,
+  prompt: Prompt & { kind: "choice" },
+  choice: { label: string },
+  playerId: string,
+): void {
+  if (prompt.options.length > 1) {
+    draft.decision = { sceneId: draft.sceneId, label: choice.label, byPlayerId: playerId, vote: prompt.vote };
+  }
+}
+
+/**
  * Keeps every hero's snapshot in step with what the run has counted. A hero
  * re-resolved from her stored row mid-chapter (seated again, say) would
  * otherwise lose a rank she earned an hour ago until the chapter is folded.
@@ -965,6 +981,8 @@ function enterSceneDraft(
   const scene = requireScene(chapter, sceneId);
   // A rank-up line belongs to the scene it landed on, and goes with it.
   if (draft.rankUps && draft.rankUps.sceneId !== sceneId) delete draft.rankUps;
+  // So does the line saying what was picked to get here.
+  if (draft.decision && draft.decision.sceneId !== sceneId) delete draft.decision;
 
   // A swap prompt raised by the *departing* choice's effects survives the
   // transition. It is a decision the player still owes, and dropping it would
@@ -1618,6 +1636,7 @@ function doStartChapter(
   // Deeds counted last chapter were folded into the heroes when it ended.
   delete draft.deeds;
   delete draft.rankUps;
+  delete draft.decision;
   // Not `{}` — see `EngineContext.campaignFlags`. Everything a chapter said
   // about itself dies here; the road the party is on does not.
   draft.flags = { ...(ctx.campaignFlags ?? {}) };
@@ -1740,6 +1759,7 @@ function doChoose(
   const ups = landRanks(draft, ctx);
   const entered = enterSceneDraft(draft, choice.goto, ctx);
   announceRankUps(draft, ups);
+  announceDecision(draft, prompt, choice, playerId);
   // Only one presentation rides on a transition. Finishing the chapter is a
   // bigger beat than the tap that got you there, so it wins.
   if (entered?.kind === "CHAPTER_COMPLETE") return entered;
