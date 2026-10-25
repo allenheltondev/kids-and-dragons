@@ -102,9 +102,17 @@ export interface RankDeeds {
 }
 
 /** Appearance tiers, in level order. See spec §8.1. */
-export type TierId = "fledgling" | "sworn" | "radiant" | "mythic";
+export type TierId = "fledgling" | "sworn" | "radiant" | "mythic" | "ascendant" | "eternal" | "legendary";
 
-export const TIER_IDS: readonly TierId[] = ["fledgling", "sworn", "radiant", "mythic"] as const;
+export const TIER_IDS: readonly TierId[] = [
+  "fledgling",
+  "sworn",
+  "radiant",
+  "mythic",
+  "ascendant",
+  "eternal",
+  "legendary",
+] as const;
 
 export type Stats = Record<StatId, number>;
 
@@ -645,7 +653,7 @@ export interface RulesContent {
   difficultyTn: Record<Difficulty, number>;
   /**
    * The thresholds *above* level 1: `levelXp[n]` is the total XP needed to
-   * reach level `n + 2`, so nine entries cap the game at level 10 (spec §8.1)
+   * reach level `n + 2`, so twenty-nine entries cap the game at level 30 (spec §8.1)
    * and a character with 0 XP is level 1 rather than level 2.
    */
   levelXp: number[];

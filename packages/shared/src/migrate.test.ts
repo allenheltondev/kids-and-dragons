@@ -437,7 +437,7 @@ describe("migrateCharacter — tolerances", () => {
     // `resolveCharacter()` recomputes tier from level and never trusts the
     // stored value, so a bad one here is cosmetic — refusing would turn a
     // harmless field into a character nobody can play.
-    const row = { ...current(), committed: { ...current().committed, tier: "legendary" } };
+    const row = { ...current(), committed: { ...current().committed, tier: "nonsense" } };
     expect(migrateCharacter(row, CHARACTER_VERSION).committed.tier).toBe("fledgling");
   });
 });

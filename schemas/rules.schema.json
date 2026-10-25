@@ -75,10 +75,10 @@
       }
     },
     "levelXp": {
-      "description": "The thresholds above level 1: levelXp[n] is the total XP needed to reach level n+2, and maxLevel is levelXp.length + 1 (packages/shared/src/rules.ts). Levels 1-10 therefore means exactly 9 entries, none of them 0. Monotonicity is checked by tools/content/validate.mjs.",
+      "description": "The thresholds above level 1: levelXp[n] is the total XP needed to reach level n+2, and maxLevel is levelXp.length + 1 (packages/shared/src/rules.ts). Levels 1-30 therefore means exactly 29 entries, none of them 0. Monotonicity is checked by tools/content/validate.mjs.",
       "type": "array",
-      "minItems": 9,
-      "maxItems": 9,
+      "minItems": 29,
+      "maxItems": 29,
       "items": {
         "type": "integer",
         "minimum": 1
@@ -92,7 +92,10 @@
         "fledgling",
         "sworn",
         "radiant",
-        "mythic"
+        "mythic",
+        "ascendant",
+        "eternal",
+        "legendary"
       ],
       "properties": {
         "fledgling": {
@@ -111,6 +114,21 @@
           "maximum": 20
         },
         "mythic": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        },
+        "ascendant": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        },
+        "eternal": {
+          "type": "integer",
+          "minimum": 2,
+          "maximum": 20
+        },
+        "legendary": {
           "type": "integer",
           "minimum": 2,
           "maximum": 20
@@ -125,28 +143,46 @@
         "fledgling",
         "sworn",
         "radiant",
-        "mythic"
+        "mythic",
+        "ascendant",
+        "eternal",
+        "legendary"
       ],
       "properties": {
         "fledgling": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 10
+          "maximum": 30
         },
         "sworn": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 10
+          "maximum": 30
         },
         "radiant": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 10
+          "maximum": 30
         },
         "mythic": {
           "type": "integer",
           "minimum": 1,
-          "maximum": 10
+          "maximum": 30
+        },
+        "ascendant": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "eternal": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
+        },
+        "legendary": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 30
         }
       }
     },
@@ -163,7 +199,7 @@
           "level": {
             "type": "integer",
             "minimum": 2,
-            "maximum": 10
+            "maximum": 30
           },
           "maxHp": {
             "type": "integer",

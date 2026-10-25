@@ -225,8 +225,8 @@ function checkRules(rep, file, rules) {
     }
   }
 
-  // spec §8.1 - the four appearance tiers, in level order.
-  const tiers = ["fledgling", "sworn", "radiant", "mythic"];
+  // spec §8.1 - the seven appearance tiers, in level order.
+  const tiers = ["fledgling", "sworn", "radiant", "mythic", "ascendant", "eternal", "legendary"];
   for (let i = 1; i < tiers.length; i += 1) {
     if (rules.tierLevels[tiers[i]] <= rules.tierLevels[tiers[i - 1]]) {
       rep.fail(
@@ -243,9 +243,11 @@ function checkRules(rep, file, rules) {
     rep.fail(f, "/tierLevels/fledgling", `every character starts at fledgling, so it must be level 1, got ${rules.tierLevels.fledgling}`);
     ok = false;
   }
-  if (rules.tierLevels.mythic > maxLevel) {
-    rep.fail(f, "/tierLevels/mythic", `mythic is at level ${rules.tierLevels.mythic}, but levelXp only reaches level ${maxLevel}`);
-    ok = false;
+  for (const tier of tiers) {
+    if (rules.tierLevels[tier] > maxLevel) {
+      rep.fail(f, `/tierLevels/${tier}`, `${tier} is at level ${rules.tierLevels[tier]}, but levelXp only reaches level ${maxLevel}`);
+      ok = false;
+    }
   }
 
   // spec §4.3 - four classes, one per stat. Two classes on one stat leaves a stat

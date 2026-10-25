@@ -62,6 +62,9 @@ const TIER_WORD: Record<TierId, string> = {
   sworn: "Sworn",
   radiant: "Radiant",
   mythic: "Mythic",
+  ascendant: "Ascendant",
+  eternal: "Eternal",
+  legendary: "Legendary",
 };
 
 /**
