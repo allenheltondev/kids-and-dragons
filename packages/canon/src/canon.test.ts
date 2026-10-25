@@ -13,11 +13,13 @@ import { describe, expect, it } from "vitest";
 import { loadCanon } from "./index.js";
 import { buildRegistry } from "./registry.js";
 import { parseCanon } from "./parse.js";
-import { Creature, Biome, Individual, Item, Route } from "./taxonomies.js";
+import { Creature, Biome, Individual, Item, Location, PlayerClass, Route } from "./taxonomies.js";
 import type {
   Creature as CreatureEntity,
   Individual as IndividualEntity,
   Item as ItemEntity,
+  Location as LocationEntity,
+  PlayerClass as ClassEntity,
 } from "./taxonomies.js";
 import { bandTable, Encounter, ENCOUNTER_HP_WINDOW, resolveStats } from "./encounter.js";
 import { canonRef, edge, prefixOf, refTargets, slugOf, TAXONOMIES, TAXONOMY_PREFIX } from "./ids.js";
@@ -553,6 +555,79 @@ describe("named individuals — D8", () => {
     const voiced = Object.keys(chapter.voiceGuide?.npcVoices ?? {});
     expect(voiced).toContain("door_voice");
     expect(registry.byId.has("individual.door_voice")).toBe(false);
+  });
+});
+
+describe("classes and their class places — docs/class-mastery.md §2", () => {
+  const classes = [...(registry.byTaxonomy.get("class") ?? [])] as ClassEntity[];
+  const rules = JSON.parse(fs.readFileSync(path.join(process.cwd(), "content", "rules.json"), "utf8")) as {
+    classes: Record<string, { name: string; role: string; unlocks: Record<string, { name: string }> }>;
+  };
+  const HOMES: Record<string, string> = {
+    thornguard: "location.dojo",
+    starweaver: "location.academy",
+    duskrunner: "location.rookery",
+    songkeeper: "location.conservatory",
+  };
+
+  it("has exactly the four playable classes, the ones rules.json defines", () => {
+    expect(classes.map((c) => slugOf(c.id)).sort()).toEqual(Object.keys(rules.classes).sort());
+    for (const cls of classes) expect(cls.title).toBe(rules.classes[slugOf(cls.id)]!.name);
+  });
+
+  it("gives each class one home, a real class place that is its own", () => {
+    for (const cls of classes) {
+      expect(cls.home, cls.id).toBe(HOMES[slugOf(cls.id)]);
+      expect(registry.taxonomyOf.get(cls.home), cls.id).toBe("location");
+      expect((registry.byId.get(cls.home) as LocationEntity).location_type).toBe("class_place");
+      expect(cls.relationships.locations).toContain(cls.home);
+    }
+    expect(new Set(classes.map((c) => c.home)).size).toBe(4);
+  });
+
+  it("gives each class Apprentice, Expert and Master, with the moves rules.json unlocks in that order", () => {
+    for (const cls of classes) {
+      const unlocked = Object.entries(rules.classes[slugOf(cls.id)]!.unlocks)
+        .sort(([a], [b]) => Number(a) - Number(b))
+        .map(([, move]) => move.name);
+      expect(cls.distinctions.map((d) => d.rank), cls.id).toEqual(["apprentice", "expert", "master"]);
+      expect(cls.distinctions.map((d) => d.move), cls.id).toEqual(unlocked);
+    }
+  });
+
+  it("keeps the class places unplaced: no anchor is invented, and no lore beyond the doc", () => {
+    for (const home of Object.values(HOMES)) {
+      const place = registry.byId.get(home) as LocationEntity;
+      expect(place.map_anchor, home).toBeUndefined();
+      expect(place.canon_status).toBe("newly_defined");
+      // No lore block means no hidden_truths to protect, and nothing to leak.
+      expect(place.lore, home).toBeUndefined();
+    }
+  });
+
+  it("holds the Rookery to the crows", () => {
+    const rookery = registry.byId.get("location.rookery") as LocationEntity;
+    expect(rookery.canon_constraints).toMatch(/no crow is named/);
+    expect(rookery.access_from).toEqual(["location.exchange"]);
+  });
+
+  it("refuses a class without a home, with its distinctions out of order, or not teaching from its own place", () => {
+    const thornguard = registry.byId.get("class.thornguard") as ClassEntity;
+    expect(PlayerClass.safeParse(thornguard).success).toBe(true);
+    const { home: _home, ...homeless } = thornguard;
+    expect(PlayerClass.safeParse(homeless).success).toBe(false);
+    expect(PlayerClass.safeParse({ ...thornguard, distinctions: [...thornguard.distinctions].reverse() }).success).toBe(false);
+    expect(PlayerClass.safeParse({ ...thornguard, distinctions: thornguard.distinctions.slice(0, 2) }).success).toBe(false);
+    expect(PlayerClass.safeParse({ ...thornguard, relationships: { locations: [] } }).success).toBe(false);
+  });
+
+  it("lets a class place answer which class it teaches, without saying so itself", () => {
+    const teachers = related(registry, "location.dojo", { direction: "in", field: "home" });
+    expect(teachers.map((edge) => edge.from)).toEqual(["class.thornguard"]);
+  });
+
+  it("is a location entity the Location schema accepts, with a controlled location_type", () => {
+    expect(Location.safeParse(registry.byId.get("location.academy")).success).toBe(true);
   });
 });
 

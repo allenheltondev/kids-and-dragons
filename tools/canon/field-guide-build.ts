@@ -12,6 +12,7 @@ import type { CanonRegistry, Taxonomy } from "@kad/canon";
 import type {
   FieldGuide,
   FieldGuideCategory,
+  FieldGuideClass,
   FieldGuideEntry,
   FieldGuideKind,
   FieldGuideLore,
@@ -30,9 +31,10 @@ const SCOPE: Partial<Record<Taxonomy, { category: FieldGuideCategory; kind: Fiel
   biome: { category: "places", kind: "biome" },
   location: { category: "places", kind: "location" },
   faction: { category: "factions", kind: "faction" },
+  class: { category: "classes", kind: "class" },
 };
 
-const CATEGORY_ORDER: FieldGuideCategory[] = ["creatures", "peoples", "folk", "places", "factions"];
+const CATEGORY_ORDER: FieldGuideCategory[] = ["creatures", "peoples", "classes", "folk", "places", "factions"];
 
 /** The entity as the allow-list sees it: every field optional, nothing trusted. */
 interface Loose {
@@ -44,6 +46,10 @@ interface Loose {
   classification?: string;
   asset_id?: string;
   lore?: Record<string, unknown>;
+  role?: string;
+  gear?: string;
+  home?: string;
+  distinctions?: { rank: FieldGuideClass["distinctions"][number]["rank"]; move: string }[];
   encounter?: { resolutions?: { kind: string; text?: string }[] };
 }
 
@@ -91,6 +97,14 @@ function artFor(taxonomy: Taxonomy, entity: Loose, exists: FileExists): string |
   // These places/groups have scene or cast art rather than a same-name portrait.
   const illustrations: Record<string, string> = {
     "location.hollow_gate": "scenes/gemfall/hollow-gate.webp",
+    // A class place's painting (assets/scenes/classes). Its class gets none on
+    // purpose: the class entry shows the class's own painted badge in the
+    // client, and the room's painting would give the room away before the
+    // party has been there.
+    "location.dojo": "scenes/classes/dojo.webp",
+    "location.academy": "scenes/classes/academy.webp",
+    "location.rookery": "scenes/classes/rookery.webp",
+    "location.conservatory": "scenes/classes/conservatory.webp",
     "faction.deep_hollow_cult": "cast/cult_bigfoot/assembled.png",
   };
   if (illustrations[entity.id]) candidates.push(illustrations[entity.id]!);
@@ -187,6 +201,19 @@ export function buildFieldGuide(
       if (lore.hook !== undefined) guideLore.hook = lore.hook as string;
       if (lore.social !== undefined) guideLore.social = lore.social as string;
       entry.lore = guideLore;
+    }
+
+    if (taxonomy === "class") {
+      const home = entity.home as string;
+      check(entity.id, "home", home);
+      const info: FieldGuideClass = {
+        role: entity.role as string,
+        gear: entity.gear as string,
+        home,
+        homeTitle: titleOf(home),
+        distinctions: (entity.distinctions ?? []).map((d) => ({ rank: d.rank, move: d.move })),
+      };
+      entry.class = info;
     }
 
     // Opinions can name any kind of entity (a faction, an individual), so every

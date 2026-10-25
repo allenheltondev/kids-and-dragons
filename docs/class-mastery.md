@@ -64,6 +64,22 @@ Rookery scene says it in some form, from a sign on the chimney ("NO MESSING. (WI
 note in your pocket after a fight ("Saw that. Nice. Don't mess with us."). Whenever a Duskrunner
 earns a distinction anywhere in the world, a crow lands on a nearby fence, says it, and flies off.
 
+### In canon and the Field Guide
+
+The four classes are `class.*` entries in [`canon/classes.yaml`](../canon/classes.yaml), each with
+its role, its gear, its three distinctions and a `home`, and the four places are `location.dojo`,
+`location.academy`, `location.rookery` and `location.conservatory` in
+[`canon/locations.yaml`](../canon/locations.yaml) (`location_type: class_place`). A class place is a
+side room, so none has a `map_anchor`: no spot on the painted map is established for any of them, and
+the map shows nothing for a place canon has not anchored. The Academy's `parent_biome` is the glacier
+for now, with the marsh village noted as where it belongs.
+
+The Field Guide has a **Classes** shelf. A class entry is found when a hero at the table wears that
+class (at a chapter's start, or when a hero's class changes), or when the party walks into its class
+place scene (`classPlace`), which also finds the place's own entry. Until the party has been to the
+place, the class entry shows it as "???", with no name and no picture of the room. See
+[`discoveries.ts`](../packages/shared/src/discoveries.ts).
+
 ### How a party gets there
 
 - **A class place is a side room of an existing place**, never a place on the graph of its own: the

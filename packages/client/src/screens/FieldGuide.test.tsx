@@ -133,3 +133,34 @@ describe("FieldGuide shell", () => {
     resetFieldGuideCache();
   });
 });
+
+describe("FieldGuideIndex classes", () => {
+  const classes: FieldGuideData = {
+    version: 1,
+    entries: {
+      "class.thornguard": { id: "class.thornguard", category: "classes", kind: "class", title: "Thornguard" },
+      "class.songkeeper": { id: "class.songkeeper", category: "classes", kind: "class", title: "Songkeeper" },
+      "location.dojo": { id: "location.dojo", category: "places", kind: "location", title: "The Dojo" },
+    },
+  };
+
+  it("has a Classes tab, and a class nobody has met is an anonymous card", async () => {
+    setFieldGuideDiscoveries({ "class.thornguard": find() });
+    const user = userEvent.setup();
+    const { container } = render(<FieldGuideIndex guide={classes} />);
+    await user.click(screen.getByRole("tab", { name: "Classes" }));
+    expect(screen.getByText("1 of 2 classes found")).toBeTruthy();
+    expect(screen.getByRole("button", { name: /Thornguard/ })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Undiscovered class" }).hasAttribute("disabled")).toBe(true);
+    expect(container.innerHTML).not.toContain("Songkeeper");
+  });
+
+  it("finding a class does not find its place", async () => {
+    setFieldGuideDiscoveries({ "class.thornguard": find() });
+    const user = userEvent.setup();
+    const { container } = render(<FieldGuideIndex guide={classes} />);
+    await user.click(screen.getByRole("tab", { name: "Places" }));
+    expect(screen.getByText("0 of 1 places found")).toBeTruthy();
+    expect(container.innerHTML).not.toContain("The Dojo");
+  });
+});
