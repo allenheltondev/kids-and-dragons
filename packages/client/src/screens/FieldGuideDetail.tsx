@@ -49,13 +49,42 @@ export const TIP_LABELS: Readonly<Record<string, string>> = {
 };
 
 const CATEGORY_ICON: Readonly<Record<string, string>> = {
-  creatures: "flame", peoples: "party", folk: "heart", places: "leaf", factions: "shield",
+  creatures: "flame", peoples: "party", classes: "star", folk: "heart", places: "leaf", factions: "shield",
 };
+
+/**
+ * The glyph for an entry with no picture. A class has no painting in the guide
+ * (the room's painting would give the room away), so it wears its own painted
+ * badge, named by its slug: `class.thornguard` is the "thornguard" icon.
+ */
+export function entryIcon(entry: Pick<FieldGuideEntry, "id" | "kind" | "category">, fallback?: string): string {
+  if (entry.kind === "class") return entry.id.slice(entry.id.indexOf(".") + 1);
+  return fallback ?? CATEGORY_ICON[entry.category] ?? "leaf";
+}
+
+/** Canon `role` slugs and distinction ranks in kid words. */
+const prettyRank = (rank: string) => prettify(rank);
 
 const prettify = (kind: string) => {
   const s = kind.replace(/[_-]+/g, " ").trim();
   return s.charAt(0).toUpperCase() + s.slice(1);
 };
+
+/**
+ * What "Read aloud" says for an entry. A class names its place only once the
+ * party has found it, aloud as on screen.
+ */
+export function spokenText(entry: FieldGuideEntry, discoveries: FieldGuideDiscoveries): string {
+  const { lore, place, class: cls } = entry;
+  const homeFound = cls !== undefined && !!discoveries[cls.home];
+  return [
+    entry.title, lore?.hook, entry.short_description, lore?.story, place?.origin, place?.recorded_history,
+    place?.cultural_significance,
+    cls && `${prettify(cls.role)}. Their gear is ${cls.gear}`,
+    cls && homeFound ? `Taught at ${cls.homeTitle}` : undefined,
+    ...(cls?.distinctions.map((d) => `${prettyRank(d.rank)}: ${d.move}`) ?? []),
+  ].filter((s): s is string => !!s).join(". ");
+}
 
 /** The detail screen for one discovered entry. Renders nothing about an undiscovered one. */
 export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }: {
@@ -76,16 +105,14 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }
       : (party.find((m) => m.playerId === find.firstFoundBy)?.character.name ?? finders[find.firstFoundBy]);
   const lore = entry.lore;
   const place = entry.place;
+  const cls = entry.class;
   const danger = entry.danger_level ? (DANGER_LABELS[entry.danger_level] ?? prettify(entry.danger_level)) : undefined;
   const size = entry.scale ? (SCALE_LABELS[entry.scale] ?? prettify(entry.scale)) : undefined;
   const link = (id: string, title: string): ReactNode => (
     <EntryLink guide={guide} discoveries={discoveries} id={id} title={title} onSelect={onSelect} />
   );
 
-  const spoken = [
-    entry.title, lore?.hook, entry.short_description, lore?.story, place?.origin, place?.recorded_history,
-    place?.cultural_significance,
-  ].filter((s): s is string => !!s).join(". ");
+  const spoken = spokenText(entry, discoveries);
 
   return (
     <>
@@ -95,7 +122,7 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }
       <div key={entryId} className="field-guide__body kad-scroll field-guide__detail" data-testid="guide-detail">
         <header className="fgd__header">
           <span className={`fgd__art${entry.category === "places" ? " fgd__art--place" : ""}`} aria-hidden="true" {...(entry.category === "places" ? {} : motionProps(entry.art, entry.id))}>
-            {entry.art ? <img src={entry.art} alt="" /> : <Icon name={CATEGORY_ICON[entry.category] ?? "leaf"} />}
+            {entry.art ? <img src={entry.art} alt="" /> : <Icon name={entryIcon(entry)} />}
           </span>
           <h3 className="field-guide__detail-title">{entry.title}</h3>
           {lore?.hook && <p className="fgd__hook">{lore.hook}</p>}
@@ -145,6 +172,25 @@ export function FieldGuideDetail({ guide, entryId, onSelect = selectGuideEntry }
               <ul className="fgd__list">
                 {place.regional_relationships.map((r) => (
                   <li key={r.place}><strong>{link(r.place, r.title)}</strong> {r.relationship}</li>
+                ))}
+              </ul>
+            </Section>
+          </>
+        )}
+
+        {cls && (
+          <>
+            <Section title="What they do" show>
+              <p>{prettify(cls.role)}. Their gear is {cls.gear}.</p>
+            </Section>
+            <Section title="Where they learn" show>
+              {/* "???" until the party has found the place: EntryLink never renders an undiscovered title. */}
+              <p>Taught at <strong>{link(cls.home, cls.homeTitle)}</strong>.</p>
+            </Section>
+            <Section title="Distinctions" show={cls.distinctions.length > 0}>
+              <ul className="fgd__list">
+                {cls.distinctions.map((d) => (
+                  <li key={d.rank}><strong>{prettyRank(d.rank)}.</strong> New move: {d.move}.</li>
                 ))}
               </ul>
             </Section>

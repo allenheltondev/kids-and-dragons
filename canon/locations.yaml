@@ -15,6 +15,7 @@ agent_instructions:
   - Locations controlled by non-canon factions inherit the faction's intentionally_undefined status.
   - Named individuals, villainous factions, and political governments are not yet canon unless added in a future version.
   - Empty relationship lists are deliberate; they do not authorize an agent to fill the gap.
+  - "Class places (the Dojo, the Academy, the Rookery, the Conservatory) are side rooms of the places that hold them, never places on the travel graph (docs/class-mastery.md §2). They carry no `map_anchor` on purpose: the docs name the place that holds each room, not a spot on the painted map, and an invented anchor would put a school in the sea. Each teaches only its own class, and `class.*` in classes.yaml points back at it."
   - "`lore` is the storyteller's half of a place: its accepted origin, its recorded past, and its reputation. `origin`, `recorded_history`, and `cultural_significance` are in-world common knowledge. `common_beliefs` and `disputed_beliefs` are what people *say*, and are allowed to be wrong - a superstition is canon about the believers, not the place. `hidden_truths` are creator canon: a story may build toward one, but no NPC recites one, and on an `intentionally_undefined` entry the list stays empty so the protected mystery stays protected. `regional_relationships.place` is a validated reference; the `relationship` prose is the story hook."
 
 controlled_values:
@@ -47,6 +48,7 @@ controlled_values:
     underground_sanctum: "A hidden or subterranean sacred space."
     ancient_ruins: "Remnants of an older civilization or structure."
     river_mouth_landmark: "A landmark built by normal river and coastal deposition where a river meets the sea."
+    class_place: "A school that teaches one class, tucked into a larger place as a side room. It is never a stop on a map of its own."
 
 location_ids:
   - redspire_citadel
@@ -344,7 +346,7 @@ locations:
       supernatural_manifestations: []
       population_rule: Mixed population with no native or dominant people.
     relationships:
-      locations: [biome.sunward_fields, biome.whispering_marsh, biome.open_sea]
+      locations: [biome.sunward_fields, biome.whispering_marsh, biome.open_sea, location.rookery]
       factions: []
       items: []
       biome: [biome.sunward_fields]
@@ -901,3 +903,113 @@ locations:
       items: []
       quests: []
       campaigns: []
+
+  # -------------------------------------------------------------------------
+  # The four class places (docs/class-mastery.md §2). Each teaches only its own
+  # class, and each is a side room of a larger place. Nothing here goes beyond
+  # that doc: no `lore` block (so no `hidden_truths` to leak), and no
+  # `map_anchor`, because the docs say which place holds each room and never a
+  # spot on the painted map.
+  # -------------------------------------------------------------------------
+
+  - id: location.dojo
+    title: "The Dojo"
+    canon_status: newly_defined
+    location_type: class_place
+    parent_biome: biome.glacier_of_origins
+    featured: false
+    tags: [class_place, school, thornguard]
+    short_description: >-
+      The school for Thornguards. The teacher has held the same door shut against
+      the wind for forty years. Students practice Brace by catching falling
+      pillows.
+    canon_constraints: >-
+      Teaches only the Thornguard. Where it stands is decided campaign by campaign
+      (Riftlight puts it up the slope from the Riftseekers' camp), so no fixed
+      spot on the map is canon yet.
+    canon_note: >-
+      Held in Riftlight's draft up the slope from the Riftseekers' camp.
+    relationships:
+      biome: [biome.glacier_of_origins]
+      locations: []
+      creatures: []
+      factions: []
+      items: []
+      quests: []
+      campaigns: [campaign.riftlight]
+
+  - id: location.academy
+    title: "The Academy"
+    canon_status: newly_defined
+    location_type: class_place
+    parent_biome: biome.glacier_of_origins
+    featured: false
+    tags: [class_place, school, starweaver]
+    short_description: >-
+      The school for Starweavers. The roof is open to the sky, so the homework
+      floats away. The big telescope sneezes.
+    canon_constraints: >-
+      Teaches only the Starweaver.
+    canon_note: >-
+      Provisional placement. The design puts the Academy in the marsh village, and
+      Riftlight's story does not have that village yet, so its draft stands in a
+      roofless tower above the Riftseekers' camp. When the marsh village is
+      written, this entry moves there and its `parent_biome` changes with it.
+    relationships:
+      biome: [biome.glacier_of_origins]
+      locations: []
+      creatures: []
+      factions: []
+      items: []
+      quests: []
+      campaigns: [campaign.riftlight]
+
+  - id: location.rookery
+    title: "The Rookery"
+    canon_status: newly_defined
+    location_type: class_place
+    parent_biome: biome.sunward_fields
+    featured: false
+    tags: [class_place, school, duskrunner, crows]
+    short_description: >-
+      The school for Duskrunners, on the Exchange's rooftops. It is run by the
+      crows, all of them together. A sign on the chimney says NO MESSING. (WITH US.)
+    canon_constraints: >-
+      Teaches only the Duskrunner. The crows teach it as a flock, so no crow is
+      named or singled out, and there is no single teacher. Every Rookery scene
+      says "don't mess with us" in some form, and whenever a Duskrunner earns a
+      distinction anywhere in the world, a crow lands on a nearby fence, says it,
+      and flies off.
+    access_from: [location.exchange]
+    relationships:
+      biome: [biome.sunward_fields]
+      locations: []
+      creatures: []
+      factions: []
+      items: []
+      quests: []
+      campaigns: [campaign.riftlight]
+
+  - id: location.conservatory
+    title: "The Conservatory"
+    canon_status: newly_defined
+    location_type: class_place
+    parent_biome: biome.glacier_of_origins
+    featured: false
+    tags: [class_place, school, songkeeper]
+    short_description: >-
+      The school for Songkeepers. It is a music school that is also a greenhouse.
+      The plants lean toward whoever is singing best.
+    canon_constraints: >-
+      Teaches only the Songkeeper.
+    canon_note: >-
+      Held in Riftlight's draft off the yetis' singing hall, whose rest heals the
+      party for free on every arrival.
+    relationships:
+      biome: [biome.glacier_of_origins]
+      locations: []
+      creatures: []
+      factions: []
+      items: []
+      quests: []
+      campaigns: [campaign.riftlight]

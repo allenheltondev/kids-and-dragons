@@ -6,7 +6,8 @@ import { FORGOTTEN_FINDER, setSpeaker } from "@kad/shared";
 import type { FieldGuide as FieldGuideData } from "@kad/shared";
 import real from "../../../../content/field-guide.json";
 import { FieldGuide } from "./FieldGuide";
-import { FieldGuideDetail } from "./FieldGuideDetail";
+import { FieldGuideDetail, spokenText } from "./FieldGuideDetail";
+import { CLASS_PLACE_NAME } from "./ClassPlace";
 import { resetFieldGuideCache } from "./content";
 import { runBackStep } from "../store/back-steps";
 import { openGuide, setPlayerSection, usePlayerNavigation } from "../store/player-navigation";
@@ -143,6 +144,63 @@ describe("FieldGuideDetail sections", () => {
       vi.unstubAllGlobals();
       Reflect.deleteProperty(window, "speechSynthesis");
     }
+  });
+});
+
+describe("classes", () => {
+  const CLASSES = ["thornguard", "starweaver", "duskrunner", "songkeeper"] as const;
+  const hub = (cls: (typeof CLASSES)[number]) => guide.entries[`class.${cls}`]!.class!.home;
+
+  it("names each class's place the way the class place screen does", () => {
+    for (const cls of CLASSES) {
+      const title = guide.entries[hub(cls)]!.title;
+      expect(title.replace(/^The /, "the "), cls).toBe(CLASS_PLACE_NAME[cls]);
+    }
+  });
+
+  it("shows the role, the gear and the three distinctions", () => {
+    const e = guide.entries["class.thornguard"]!;
+    setFieldGuideDiscoveries({ [e.id]: find() });
+    render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+    expect(screen.getByRole("heading", { name: "Thornguard" })).toBeTruthy();
+    expect(screen.getByText(/Front line\. Their gear is a thorn bracer\./)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Distinctions" })).toBeTruthy();
+    expect(screen.getByText("Apprentice.").closest("li")?.textContent).toContain("Shove");
+    expect(screen.getByText("Expert.").closest("li")?.textContent).toContain("Bramble Wall");
+    expect(screen.getByText("Master.").closest("li")?.textContent).toContain("Unbreakable");
+  });
+
+  it.each(CLASSES)("keeps the %s's place a ??? until the party has been there", (cls) => {
+    const e = guide.entries[`class.${cls}`]!;
+    const place = guide.entries[hub(cls)]!;
+    setFieldGuideDiscoveries({ [e.id]: find() });
+    const { container } = render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+    expect(screen.getByRole("heading", { name: "Where they learn" })).toBeTruthy();
+    expect(screen.getByText("???")).toBeTruthy();
+    // Neither the name nor the picture of the place is anywhere on the page.
+    expect(container.innerHTML).not.toContain(place.title);
+    expect(screen.queryByRole("button", { name: place.title })).toBeNull();
+    // The class wears its own painted badge, never a picture of the room.
+    expect(container.querySelector('img[src*="scenes"], img[src*="dojo"], img[src*="academy"], img[src*="rookery"], img[src*="conservatory"]')).toBeNull();
+  });
+
+  it.each(CLASSES)("links the %s to its place once the party has been there, and opens it", async (cls) => {
+    const e = guide.entries[`class.${cls}`]!;
+    const place = guide.entries[hub(cls)]!;
+    setFieldGuideDiscoveries({ [e.id]: find(), [place.id]: find() });
+    const user = userEvent.setup();
+    render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+    expect(screen.queryByText("???")).toBeNull();
+    await user.click(screen.getByRole("button", { name: place.title }));
+    expect(usePlayerNavigation.getState().guideEntry).toBe(place.id);
+  });
+
+  it("reads aloud the place only once it is found", () => {
+    const e = guide.entries["class.songkeeper"]!;
+    expect(spokenText(e, {})).toContain("Songkeeper");
+    expect(spokenText(e, {})).toContain("Soothe");
+    expect(spokenText(e, {})).not.toContain("Conservatory");
+    expect(spokenText(e, { [e.class!.home]: find() })).toContain("Taught at The Conservatory");
   });
 });
 
