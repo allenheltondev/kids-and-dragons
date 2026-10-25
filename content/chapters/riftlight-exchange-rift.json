@@ -271,6 +271,7 @@
     },
     "check_pattern": {
       "type": "check",
+      "tags": ["search"],
       "stat": "clever",
       "tn": 8,
       "prompt": "Can you spot which loose things will slide first?",
@@ -516,6 +517,7 @@
     },
     "anchor": {
       "type": "check",
+      "tags": ["force"],
       "stat": "might",
       "tn": 12,
       "prompt": "Hold the line while everyone grabs on.",
@@ -584,6 +586,7 @@
     },
     "smash": {
       "type": "check",
+      "tags": ["force"],
       "stat": "might",
       "tn": 8,
       "prompt": "Smash breaks a crate into a barrier. Can you guide the loose line around it?",

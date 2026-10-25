@@ -148,6 +148,7 @@ function harness(state: RunState = makeState()): Harness {
     })),
     loadChapter: vi.fn(async () => ({ id: "bramblewood-01", biome: "enchanted_woods", scenes: {} })),
     loadAbilities: vi.fn(async () => ({ version: 1, abilities: {} })),
+    loadBestiary: vi.fn(async () => ({ version: 1, creatures: {} })),
     loadWorld: vi.fn(async () => ({
       title: "The Realm of Red Sky",
       image: { src: "/assets/world/realm_of_red_sky.webp", width: 10, height: 10 },
@@ -1286,6 +1287,18 @@ describe("content", () => {
 
     expect(h.api.loadRules).toHaveBeenCalledTimes(1);
     expect(h.store.getState().rules).toEqual({ version: 1 });
+    expect(h.store.getState().bestiary).toEqual({ version: 1, creatures: {} });
+  });
+
+  it("carries on without the bestiary when its fetch fails", async () => {
+    const h = harness();
+    h.api.loadBestiary.mockRejectedValueOnce(new Error("offline"));
+    await h.store.getState().loadContent();
+
+    expect(h.store.getState().rules).toEqual({ version: 1 });
+    expect(h.store.getState().abilities).not.toBeNull();
+    expect(h.store.getState().bestiary).toBeNull();
+    expect(h.store.getState().error).toBeNull();
   });
 });
 

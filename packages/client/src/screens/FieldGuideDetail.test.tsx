@@ -16,7 +16,8 @@ import { openGuide, setPlayerSection, usePlayerNavigation } from "../store/playe
 import { setFieldGuideDiscoveries } from "../store/field-guide-discoveries";
 import { FIELD_GUIDE_SEEN_KEY, resetFieldGuideSeen } from "../store/field-guide-seen";
 import { useGameStore } from "../store";
-import type { WorldMap } from "@kad/shared";
+import rulesJson from "../../../../content/rules.json";
+import type { RulesContent, WorldMap } from "@kad/shared";
 
 const guide = real as unknown as FieldGuideData;
 const find = (by = "p_1") => ({ firstFoundBy: by, foundAt: "2026-01-01T00:00:00Z" });
@@ -354,5 +355,113 @@ describe("FieldGuide shell guard", () => {
     expect(screen.queryByRole("button", { name: /Back to the guide|Return to the guide/ })).toBeNull();
     act(() => { expect(runBackStep()).toBe(true); });
     expect(usePlayerNavigation.getState().guideEntry).toBeNull();
+  });
+});
+
+describe("FieldGuideDetail matchups", () => {
+  const rules = rulesJson as unknown as RulesContent;
+  beforeEach(() => useGameStore.setState({ rules }));
+  afterEach(() => useGameStore.setState({ rules: null }));
+
+  it("creature: Fighting it shows traits, who is good, careful and the gentle line", () => {
+    const e = guide.entries["creature.bone_crawler"]!;
+    expect(e.traits).toEqual(["armored", "swarming"]);
+    setFieldGuideDiscoveries({ [e.id]: find() });
+    render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+    expect(screen.getByRole("heading", { name: "Fighting it" })).toBeTruthy();
+    expect(screen.getByText("Shell-hided")).toBeTruthy();
+    expect(screen.getByText(rules.matchups!.traits.armored!.text)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Good against it" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Careful" })).toBeTruthy();
+    expect(screen.getByText(/Not every fight has to be a fight/)).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Likes" })).toBeTruthy();
+  });
+
+  it("names the playable species a creature likes", () => {
+    const e = guide.entries["creature.glassback_crab"]!;
+    setFieldGuideDiscoveries({ [e.id]: find() });
+    render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+    expect(screen.getByText(/Goes easy on:/).parentElement!.textContent).toMatch(/Dragonling/);
+  });
+
+  it("is hidden for a creature with no traits and no species opinions", () => {
+    const e = { ...guide.entries["creature.bone_crawler"]!, traits: undefined, lore: { ...guide.entries["creature.bone_crawler"]!.lore!, likes: [], dislikes: [] } };
+    setFieldGuideDiscoveries({ [e.id]: find() });
+    render(<FieldGuideDetail guide={{ ...guide, entries: { [e.id]: e } }} entryId={e.id} />);
+    expect(screen.queryByRole("heading", { name: "Fighting it" })).toBeNull();
+  });
+
+  it("leaks nothing for an undiscovered creature", () => {
+    const e = guide.entries["creature.bone_crawler"]!;
+    setFieldGuideDiscoveries({});
+    const { container } = render(<FieldGuideDetail guide={guide} entryId={e.id} />);
+    expect(container.textContent).toBe("");
+  });
+
+  it("species: Good at and Watch out, in words", () => {
+    setFieldGuideDiscoveries({ "character.unicorn": find() });
+    render(<FieldGuideDetail guide={guide} entryId="character.unicorn" />);
+    expect(screen.getByRole("heading", { name: "Good at" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "Watch out" })).toBeTruthy();
+    expect(screen.getByText(/horn glances off armor/)).toBeTruthy();
+  });
+
+  it("class: Good at and Watch out, in words", () => {
+    setFieldGuideDiscoveries({ "class.thornguard": find() });
+    render(<FieldGuideDetail guide={guide} entryId="class.thornguard" />);
+    expect(screen.getByRole("heading", { name: "Good at" })).toBeTruthy();
+    expect(screen.getByRole("heading", { name: "What they do" })).toBeTruthy();
+  });
+
+  describe("campaign gate", () => {
+    const inRun = (campaignId: string) => useGameStore.setState({ state: { campaignId } } as never);
+    afterEach(() => useGameStore.setState({ state: null } as never));
+
+    it("riftlight: shows the matchup advice, creature, species and class", () => {
+      inRun("riftlight");
+      setFieldGuideDiscoveries({ "creature.bone_crawler": find(), "character.unicorn": find(), "class.thornguard": find() });
+      const { unmount } = render(<FieldGuideDetail guide={guide} entryId="creature.bone_crawler" />);
+      expect(screen.getByRole("heading", { name: "Fighting it" })).toBeTruthy();
+      unmount();
+      const second = render(<FieldGuideDetail guide={guide} entryId="character.unicorn" />);
+      expect(screen.getByRole("heading", { name: "Good at" })).toBeTruthy();
+      second.unmount();
+      render(<FieldGuideDetail guide={guide} entryId="class.thornguard" />);
+      expect(screen.getByRole("heading", { name: "Good at" })).toBeTruthy();
+    });
+
+    it("gemfall: no matchup advice anywhere, but the lore stays", () => {
+      inRun("gemfall");
+      setFieldGuideDiscoveries({ "creature.bone_crawler": find(), "character.unicorn": find(), "class.thornguard": find() });
+      const crawler = render(<FieldGuideDetail guide={guide} entryId="creature.bone_crawler" />);
+      expect(screen.queryByRole("heading", { name: "Fighting it" })).toBeNull();
+      expect(screen.queryByText(/Not every fight has to be a fight/)).toBeNull();
+      expect(crawler.container.textContent).toContain(guide.entries["creature.bone_crawler"]!.title);
+      crawler.unmount();
+      const unicorn = render(<FieldGuideDetail guide={guide} entryId="character.unicorn" />);
+      expect(screen.queryByRole("heading", { name: "Good at" })).toBeNull();
+      expect(screen.queryByRole("heading", { name: "Watch out" })).toBeNull();
+      unicorn.unmount();
+      render(<FieldGuideDetail guide={guide} entryId="class.thornguard" />);
+      expect(screen.queryByRole("heading", { name: "Good at" })).toBeNull();
+      expect(screen.getByRole("heading", { name: "What they do" })).toBeTruthy();
+    });
+
+    it("outside a run: shows it, since the guide describes the world", () => {
+      setFieldGuideDiscoveries({ "creature.bone_crawler": find() });
+      render(<FieldGuideDetail guide={guide} entryId="creature.bone_crawler" />);
+      expect(screen.getByRole("heading", { name: "Fighting it" })).toBeTruthy();
+    });
+
+    it("read aloud includes the advice when on, and none of it when off", () => {
+      const crawler = guide.entries["creature.bone_crawler"]!;
+      const on = spokenText(crawler, {}, rules);
+      expect(on).toContain("Fighting it");
+      expect(on).toContain("Not every fight has to be a fight");
+      const off = spokenText(crawler, {}, null);
+      expect(off).not.toContain("Fighting it");
+      expect(spokenText(guide.entries["character.unicorn"]!, {}, rules)).toContain("Good at");
+      expect(spokenText(guide.entries["class.thornguard"]!, {}, rules)).toContain("Good at");
+    });
   });
 });

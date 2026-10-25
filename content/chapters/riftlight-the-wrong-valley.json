@@ -125,6 +125,7 @@
     },
     "look_again_1_check": {
       "type": "check",
+      "tags": ["search"],
       "stat": "clever",
       "tn": 12,
       "roller": "party",
@@ -1546,6 +1547,7 @@
     },
     "crossing_choice_2_check": {
       "type": "check",
+      "tags": ["climb"],
       "stat": "quick",
       "tn": 12,
       "roller": "party",

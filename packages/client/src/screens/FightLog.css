@@ -198,3 +198,62 @@
     display: none;
   }
 }
+
+/*
+ * Matchups (docs/matchups.md). A plus and a minus differ in icon (plus /
+ * minus glyph), in their lead words ("Strong here!" / "Careful:") and in the
+ * edge (solid / dashed), so colour is never the only thing telling them apart
+ * (spec §11). Plain text on the log's own background, nothing to tap.
+ */
+.fight-log__chips {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fight-log__chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.15em 0.6em;
+  border: 0.08em solid var(--color-accent, #ffc95c);
+  border-radius: var(--radius-pill, 999em);
+  background: var(--color-surface, #191534);
+  font-size: 0.9em;
+  font-weight: 700;
+  line-height: 1.25;
+  animation: fight-log-arrive 320ms ease-out both;
+}
+
+.fight-log__matchup {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  padding-inline-start: 0.5em;
+  border-inline-start: 0.18em solid currentColor;
+  font-size: 0.9em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.fight-log__matchup--plus {
+  color: var(--color-success, #4ad991);
+}
+
+.fight-log__matchup--minus {
+  color: var(--color-warning, #ffc95c);
+  border-inline-start-style: dashed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fight-log__chip {
+    animation: none;
+  }
+}
+
+:root[data-motion="reduced"] .fight-log__chip {
+  animation: none;
+}

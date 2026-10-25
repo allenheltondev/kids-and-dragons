@@ -11,6 +11,7 @@ import type { ChapterOutcome, SceneId, ScenePriority, SceneType } from "./chapte
 import type { FieldGuideFind } from "../field-guide-record.js";
 import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
+import type { MatchupNote } from "./matchups.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -30,6 +31,14 @@ export interface DiceRoll {
    * Checks only; absent on every roll no buff touched.
    */
   buff?: { id: BuffId; label: string; amount: number };
+  /**
+   * Matchups that moved this roll (docs/matchups.md): `amount` is what they
+   * added to `total`, already capped (on a monster's swing at a hero a note
+   * that helps the hero makes it negative), and `notes` name each one for the
+   * screens, each `roll` from the hero's side. Absent on every roll no matchup touched,
+   * which is every roll in a campaign that plays without them (Gemfall).
+   */
+  matchup?: { amount: number; notes: MatchupNote[] };
   /**
    * On the last roll of a whole-party check (`roller: "all"`): how many made
    * it, out of how many, and so how the party did. Half or more is a success.
@@ -369,6 +378,16 @@ export interface RunState {
    * open. Absent otherwise. The rank-up moment itself is #314's.
    */
   rankUps?: { sceneId: SceneId | null; ups: RankUp[] };
+  /**
+   * The story choice the table just made, and the scene it led to: the shared
+   * screen says what was picked in one line while that scene is open, so a
+   * room that voted can see its conclusion. `vote` says whether the party
+   * decided it together or one kid picked for everyone; `byPlayerId` is the
+   * kid who had the final say (for a vote, the last to tip it). Absent when
+   * there was nothing to decide (a "Go on" with one way on), and on a run
+   * saved before this existed.
+   */
+  decision?: { sceneId: SceneId | null; label: string; byPlayerId: string; vote: boolean };
   /**
    * Every scene this run has entered, in order — the spine of the story, for
    * the end-of-chapter recap of its priority-1 scenes (chapter.ts

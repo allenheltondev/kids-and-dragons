@@ -74,6 +74,7 @@
     },
     "grab": {
       "type": "check",
+      "tags": ["force"],
       "stat": "might",
       "tn": 16,
       "prompt": "Catch the ledge and pull the rope toward shore.",
@@ -258,6 +259,7 @@
     },
     "climb": {
       "type": "check",
+      "tags": ["climb"],
       "stat": "quick",
       "tn": 12,
       "prompt": "Everyone reaches the branch on the same dip.",
@@ -521,6 +523,7 @@
     },
     "swim": {
       "type": "check",
+      "tags": ["swim"],
       "stat": "quick",
       "tn": 12,
       "prompt": "Angle the line toward the gravel and bring everyone with you.",

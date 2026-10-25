@@ -13,6 +13,7 @@ import type {
   JournalResponse,
   KidProfileView,
   AbilityCatalog,
+  Bestiary,
   Campaign,
   Chapter,
   ClientIntent,
@@ -157,6 +158,12 @@ export interface GameStore {
    * same catalog the server validates against, loaded the same way as rules.
    */
   abilities: AbilityCatalog | null;
+  /**
+   * Canon's creatures (content/bestiary.json), for creature likes and dislikes
+   * on a check badge. `null` until loaded, and stays `null` if the fetch fails:
+   * the game works without it.
+   */
+  bestiary: Bestiary | null;
   /**
    * The chapter in play, for rendering only: its biome picks the combat tile
    * sheet, its encounter scenes carry the enemy art ids. Never consulted for

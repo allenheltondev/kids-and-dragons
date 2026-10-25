@@ -7,6 +7,7 @@
  */
 
 import type { ProfileFlair } from "../kid-profile.js";
+import type { MatchupRules } from "./matchups.js";
 
 export type StatId = "might" | "quick" | "clever" | "heart";
 
@@ -678,6 +679,11 @@ export interface RulesContent {
    * without it have no stall, and nobody is offered a fitting.
    */
   fittingStall?: FittingStall;
+  /**
+   * Who is good and bad against what (docs/matchups.md). Optional: rules
+   * without it play with no matchups at all.
+   */
+  matchups?: MatchupRules;
 }
 
 /**

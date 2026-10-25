@@ -118,6 +118,7 @@ export const SW_PRECACHE_CONTENT: readonly string[] = [
   "/content/rules.json",
   "/content/items.json",
   "/content/abilities.json",
+  "/content/bestiary.json",
   "/content/world.json",
   "/content/field-guide.json",
   "/content/help.json",
