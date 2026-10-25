@@ -17,6 +17,7 @@ import type {
   TierId,
 } from "./domain.js";
 import type { RiftActionKind } from "./campaign-graph.js";
+import type { InteractionAction } from "../interactions.js";
 import type { ChapterOutcome } from "./chapter.js";
 import type { RoomMode, RunState, DiceRoll } from "./state.js";
 import type { FieldGuideFind } from "../field-guide-record.js";
@@ -134,6 +135,7 @@ export type ClientIntent =
    * without one, and never spends something else in its place.
    */
   | { type: "ROLL"; spendBuff?: string }
+  | ({ type: "INTERACT"; openedSeq: number; attempt: number } & InteractionAction)
   /** Offer your help on the check someone else is about to roll. */
   | { type: "HELP" }
   | { type: "ADVANCE" }

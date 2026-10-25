@@ -1,5 +1,75 @@
 # `content/` — the game as data
 
+## Story interactions
+
+An `interaction` scene combines a reusable mechanic with your story, art, cast,
+and outcome branches. The engine handles readiness, participation, results,
+retry, assistance, and continuation. No scene-specific client code is needed.
+
+```json
+{
+  "type": "interaction",
+  "narration": "Tansy hangs a little bell from the gate.",
+  "cast": [{ "figure": "entities/faun", "name": "Tansy" }],
+  "interaction": {
+    "kind": "precision",
+    "cue": "Tap when the seed reaches the gold.",
+    "actionLabel": "Toss the seed!",
+    "target": 0.5,
+    "width": 0.3,
+    "periodMs": 4000
+  },
+  "onSuccess": { "goto": "next_scene", "narration": "Ding!" },
+  "onFailure": { "goto": "next_scene", "narration": "Tansy catches the seed and rings the bell for you." },
+  "onAssisted": { "goto": "next_scene", "narration": "Together you guide the seed into the bell." }
+}
+```
+
+All three kinds require `cue` and `actionLabel`:
+
+| Kind | Additional fields | Reusable behavior |
+| --- | --- | --- |
+| `precision` | `target` (0–1), `width` (0.05–1), `periodMs` (2000–20000) | Repeating aim marker; relaxed play doubles target width. |
+| `cooperate` | `supportLabel` | Friends hold supports while the acting hero completes the action; solo and relaxed play use props. |
+| `sequence` | `options` with unique `id`, `label`, `icon`; `answer` as an ordered list of option ids; `clues` as shareable strings | Players share clues and assemble a sequence. Repeated option ids in an answer are allowed. |
+| `tracking` | `covers` (2–4 position labels), `start` (zero-based position), `swaps` (pairs of different position indexes), `stepMs` (800–5000) | Reveal a glow, move the covers, then choose its final position. Relaxed play reveals the final location. |
+| `memory` | `options`, `answer`, `stepMs` (600–5000) | Watch a symbol pattern and echo it. Repeats are allowed. Relaxed play keeps a reference visible. |
+| `timing` | Same fields as `precision` | A repeating wait/now signal for sneaking, jumping, or dodging. No deadline. |
+| `balance` | `objectLabel` | Every connected hero raises or lowers their side in quarter steps, aiming for the middle before carrying the object. Relaxed play allows a wider range. |
+| `relay` | `objectLabel` | Each connected hero catches and passes the object in turn. Disconnected receivers are skipped; solo play catches and sends to the destination. |
+| `play` | `options` with `id`, `label`, `icon`, and `reaction`; `participation` (`any` or `everyone`); optional `stages` | Freely feed, pet, celebrate, or contribute to a shared scene. Optional stages advance on each tap, useful for waking a creature. |
+
+For `play`, every option immediately adds its authored reaction to the shared
+view. `everyone` also shows a contribution from each connected hero, useful for
+camp building and celebrations. There is no scoring or miss. Completion waits
+for the required participation and, when present, every stage. Repeated taps
+can replay reactions; a retry clears contributions and stages. Only the latest
+twelve reactions are persisted. Creature reactions and celebration descriptions
+are text feedback today; they do not trigger new character animations or painted
+props. Scenes can still use the existing cast and art system.
+
+More examples are available at the Practice Meadow picnic through **Try more
+meadow games**. Each optional game returns to Tansy’s closing scene so the
+practice stays short; the entire catalog is not required in one sitting.
+
+Both `onSuccess` and `onFailure` must continue the story. `onAssisted` is optional,
+defaulting to `onSuccess`. Every branch supports normal narration, variants, and
+effects. Results wait for a phone's **See what happens next** before applying
+branch effects. Retry starts a fresh attempt without reapplying `onEnter` effects.
+
+The acting hero rotates with story turns; a connected friend takes over when
+that phone is away. Clues redistribute among connected original participants,
+and every phone can share all clues. Keep clues cooperative, readable aloud,
+and sufficient to solve the puzzle. Never gate a required clue on a class.
+
+Use `art`, `music`, `cast`, `discovers`, `priority`, `hint`, and narration variants
+as on story scenes. Current interaction labels and clues are literal authored
+strings; narration still supports normal tokens and variants. Examples are in
+`first-steps-01.json`, scenes `interaction_bell`, `interaction_roots`, and
+`interaction_stones`. See [runtime details and limits](../docs/briefs/story-interactions.md).
+
+## Content files
+
 Rules, items, campaigns, and chapters are JSON, not code. Adding content never requires a deploy of
 game code (roadmap, "Content as data"). Everything here is validated in CI by
 `npm run content:validate`, because **a malformed chapter must fail the build, never the play

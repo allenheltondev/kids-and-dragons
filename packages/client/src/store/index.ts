@@ -37,6 +37,7 @@ import {
   owesClassAnswer,
   isPromptForPlayer,
   previewContext,
+  relayHolder,
 } from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
 import type {
@@ -1672,7 +1673,10 @@ export function useMyTurnKey(): string | null {
       // A group check names its next roller in `characterId`, which moves as
       // others roll, so it is left out there and kept for a single roller.
       const stablePrompt =
-        prompt.kind === "choice"
+        prompt.kind === "interaction"
+          ? { kind: prompt.kind, openedSeq: prompt.openedSeq, attempt: prompt.attempt, phase: prompt.phase,
+              receiving: prompt.spec.kind === "relay" ? relayHolder(prompt, state.party.filter((member) => member.connected).map((member) => member.playerId)) === playerId : undefined }
+          : prompt.kind === "choice"
           ? { ...prompt, votes: undefined }
           : prompt.kind === "roll"
             ? {

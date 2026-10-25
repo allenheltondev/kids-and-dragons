@@ -167,6 +167,12 @@ export function edgesOf(sceneId: SceneId, scene: Scene): Omit<MapEdge, "backward
         label: choice.label,
         gate: gateOf(choice),
       }));
+    case "interaction":
+      return [
+        { from: sceneId, to: scene.onSuccess.goto, kind: "success", label: "completed", gate: null },
+        { from: sceneId, to: scene.onFailure.goto, kind: "failure", label: "another way", gate: null },
+        ...(scene.onAssisted ? [{ from: sceneId, to: scene.onAssisted.goto, kind: "success" as const, label: "helping hand", gate: null }] : []),
+      ];
     case "check":
       return [
         ...(scene.onSuccess
