@@ -22,6 +22,10 @@ it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: ev
   if (chapter.id === "riftlight-the-island-due-back") {
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { whales_guided: true }).visited) visited.add(scene);
   }
+  if (chapter.id === "riftlight-hidden-glacier-rift") {
+    // A returning party, with the opening already awake, may walk straight back to the fold.
+    for (const scene of allPaths(chapter, "manticore", "duskrunner", { glacier_rift_woken: true }).visited) visited.add(scene);
+  }
   if (chapter.id === "riftlight-convergence") {
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { orin_chime_shared: true, olivia_trusted: true }).visited) visited.add(scene);
   }

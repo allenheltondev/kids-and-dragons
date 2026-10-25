@@ -1133,16 +1133,335 @@
         "hall",
         "seam",
         "learned_note",
-        "listening_chime"
+        "listening_chime",
+        "chime_rules",
+        "orin",
+        "herder",
+        "goat",
+        "sledge"
       ],
       "scenes": {
         "search": {
           "requires": [
             "hall",
-            "seam"
+            "seam",
+            "herder",
+            "goat"
+          ],
+          "introduces": {}
+        },
+        "back_at_fold": {
+          "requires": [],
+          "introduces": {}
+        },
+        "plan": {
+          "requires": [
+            "herder",
+            "sledge",
+            "goat"
           ],
           "introduces": {
-            "passage": "A narrow passage"
+            "lantern": "a lantern tied on"
+          }
+        },
+        "plan_a": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "plan_b": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "climb_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "climb_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "climb_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "climb_slip": {
+          "requires": [],
+          "introduces": {}
+        },
+        "ridge": {
+          "requires": [],
+          "introduces": {
+            "wind_hole": "A dark hole the size of a bucket"
+          }
+        },
+        "ridge_a": {
+          "requires": [
+            "wind_hole"
+          ],
+          "introduces": {}
+        },
+        "ridge_b": {
+          "requires": [
+            "wind_hole"
+          ],
+          "introduces": {}
+        },
+        "ridge_chime": {
+          "requires": [
+            "wind_hole",
+            "listening_chime",
+            "chime_rules",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "ridge_done": {
+          "requires": [
+            "wind_hole"
+          ],
+          "introduces": {}
+        },
+        "ridge_off": {
+          "requires": [
+            "wind_hole"
+          ],
+          "introduces": {}
+        },
+        "kid": {
+          "requires": [],
+          "introduces": {}
+        },
+        "kid_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "kid_b": {
+          "requires": [
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "kid_wing": {
+          "requires": [],
+          "introduces": {}
+        },
+        "kid_wing_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "kid_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "kid_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_wing": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_wing_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crack_slip": {
+          "requires": [],
+          "introduces": {}
+        },
+        "post": {
+          "requires": [],
+          "introduces": {
+            "post": "an old yeti listening post"
+          }
+        },
+        "post_a": {
+          "requires": [
+            "post",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "post_b": {
+          "requires": [
+            "post"
+          ],
+          "introduces": {}
+        },
+        "post_a_check": {
+          "requires": [
+            "post"
+          ],
+          "introduces": {}
+        },
+        "post_b_check": {
+          "requires": [
+            "post"
+          ],
+          "introduces": {}
+        },
+        "post_done": {
+          "requires": [
+            "post",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "post_off": {
+          "requires": [
+            "post",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "warm": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "tunnel": {
+          "requires": [
+            "lantern",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "tunnel_a": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "tunnel_b": {
+          "requires": [
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "tunnel_star": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "tunnel_moss": {
+          "requires": [
+            "lantern"
+          ],
+          "introduces": {}
+        },
+        "tunnel_moss_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tunnel_a_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tunnel_b_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tunnel_star_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tunnel_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tunnel_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_brace": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_slip": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_brace_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_slip_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "squeeze_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "seam_back": {
+          "requires": [
+            "seam",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "seam_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "seam_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "seam_done": {
+          "requires": [
+            "seam"
+          ],
+          "introduces": {}
+        },
+        "seam_off": {
+          "requires": [
+            "seam"
+          ],
+          "introduces": {}
+        },
+        "behind": {
+          "requires": [],
+          "introduces": {
+            "passage": "into a narrow passage"
           }
         },
         "passage": {
@@ -1174,10 +1493,114 @@
           ],
           "introduces": {}
         },
+        "look": {
+          "requires": [
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "beat": {
+          "requires": [
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "beat_done": {
+          "requires": [
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "beat_off": {
+          "requires": [
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "cairn": {
+          "requires": [
+            "glacier_opening",
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "cairn_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "cairn_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "cairn_smash": {
+          "requires": [],
+          "introduces": {}
+        },
+        "cairn_smash_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "cairn_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "cairn_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "herder_say": {
+          "requires": [],
+          "introduces": {}
+        },
+        "herder_share": {
+          "requires": [],
+          "introduces": {}
+        },
+        "footing": {
+          "requires": [
+            "glacier_opening",
+            "herder"
+          ],
+          "introduces": {}
+        },
+        "footing_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "footing_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "footing_buy": {
+          "requires": [],
+          "introduces": {}
+        },
+        "footing_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "footing_off": {
+          "requires": [],
+          "introduces": {}
+        },
         "decide": {
           "requires": [
             "hall",
             "seam",
+            "learned_note",
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "hold": {
+          "requires": [
+            "learned_note",
+            "glacier_opening"
+          ],
+          "introduces": {}
+        },
+        "sing_wobble": {
+          "requires": [
             "learned_note",
             "glacier_opening"
           ],
@@ -1212,6 +1635,13 @@
           ],
           "introduces": {}
         }
+      },
+      "entryByFlag": {
+        "glacier_rift_woken": [
+          "glacier_opening",
+          "coast_glimpse",
+          "passage"
+        ]
       }
     },
     "riftlight-headwaters-washout": {
@@ -1658,7 +2088,8 @@
     },
     "riftlight-saltrot-arrival": {
       "entryFacts": [
-        "learned_note"
+        "learned_note",
+        "orin"
       ],
       "scenes": {
         "flats": {
@@ -1667,21 +2098,105 @@
             "saltrot": "Welcome to the Saltrot",
             "skupper": "The guide is a Skupper",
             "shell_bank": "a shell-bank"
-          }
+          },
+          "conditional": [
+            {
+              "flag": "saltrot_arrival_ferry",
+              "requires": [
+                "ossley"
+              ]
+            }
+          ]
         },
-        "lesson": {
+        "shells": {
           "requires": [
-            "learned_note"
+            "skupper",
+            "shell_bank"
+          ],
+          "introduces": {}
+        },
+        "shells_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shells_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shells_a_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shells_b_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shells_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "shells_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "town": {
+          "requires": [
+            "skupper"
           ],
           "introduces": {
-            "seren": "Seren Wisp",
-            "pip": "Pip Thistledown"
+            "tidepocket": "Tidepocket, the guide's burrow town"
+          }
+        },
+        "town_a_check": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "town_b_check": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "town_brace": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "town_brace_check": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "town_done": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "town_off": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "silt": {
+          "requires": [
+            "tidepocket",
+            "skupper"
+          ],
+          "introduces": {
+            "pale_silt": "pale and gray and cold"
           }
         },
         "local": {
           "requires": [
             "skupper",
-            "shell_bank"
+            "shell_bank",
+            "pale_silt"
           ],
           "introduces": {
             "silt": "New silt",
@@ -1704,13 +2219,353 @@
           ],
           "introduces": {}
         },
+        "bag_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "path_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "traveler_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "traveler_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "puff": {
+          "requires": [
+            "skupper"
+          ],
+          "introduces": {
+            "cousin": "My cousin"
+          }
+        },
+        "puff_a": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "puff_b": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "puff_song": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "puff_song_check": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "puff_done": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "puff_off": {
+          "requires": [
+            "cousin"
+          ],
+          "introduces": {}
+        },
+        "ossley": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {
+            "ossley": "Old Ossley"
+          }
+        },
+        "ossley_a": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ossley_b": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ossley_done": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "ossley_off": {
+          "requires": [
+            "ossley"
+          ],
+          "introduces": {}
+        },
+        "camp": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "camp_story": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "camp_gift": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "camp_boots": {
+          "requires": [
+            "tidepocket"
+          ],
+          "introduces": {}
+        },
+        "lesson": {
+          "requires": [
+            "learned_note"
+          ],
+          "introduces": {
+            "seren": "Seren Wisp",
+            "pip": "Pip Thistledown"
+          }
+        },
+        "hum": {
+          "requires": [
+            "seren",
+            "pip",
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "hum_chime": {
+          "requires": [
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "hum_chime_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "hum_a_check": {
+          "requires": [
+            "learned_note"
+          ],
+          "introduces": {}
+        },
+        "hum_b_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "hum_star": {
+          "requires": [
+            "seren"
+          ],
+          "introduces": {}
+        },
+        "hum_star_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "hum_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "hum_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles": {
+          "requires": [
+            "skupper"
+          ],
+          "introduces": {}
+        },
+        "poles_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles_a_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles_b_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles_buy": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "poles_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail": {
+          "requires": [
+            "pip",
+            "pale_silt"
+          ],
+          "introduces": {}
+        },
+        "trail_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_charm": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_charm_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_wing": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_a_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_b_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_wing_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "trail_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs": {
+          "requires": [
+            "skupper",
+            "pip"
+          ],
+          "introduces": {}
+        },
+        "crabs_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs_leap": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs_leap_check": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "crabs_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tide": {
+          "requires": [
+            "skupper",
+            "shell_bank"
+          ],
+          "introduces": {}
+        },
+        "tide_a": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tide_b": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tide_done": {
+          "requires": [],
+          "introduces": {}
+        },
+        "tide_off": {
+          "requires": [],
+          "introduces": {}
+        },
+        "lead": {
+          "requires": [
+            "pale_silt",
+            "seren"
+          ],
+          "introduces": {
+            "buried_bridge": "The buried bridge"
+          }
+        },
+        "bridge_ask": {
+          "requires": [
+            "buried_bridge",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "bridge_go": {
+          "requires": [
+            "buried_bridge"
+          ],
+          "introduces": {}
+        },
+        "bridge_plan": {
+          "requires": [
+            "buried_bridge"
+          ],
+          "introduces": {}
+        },
         "flats_rest": {
           "requires": [
             "skupper",
-            "silt"
+            "pale_silt",
+            "buried_bridge"
           ],
           "introduces": {}
         }
+      },
+      "entryByFlag": {
+        "saltrot_arrival_ferry": [
+          "ossley"
+        ]
       }
     },
     "riftlight-stone-counters": {
