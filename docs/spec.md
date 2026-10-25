@@ -306,6 +306,7 @@ Levels 11 to 30 extend the ladder without touching the first ten: the thresholds
 - **Rewards.** Every level still grants a stat point. Each adds 1 max HP, and each new tier adds 2 max HP and 1 Guard, as the first three do.
 - **The stat ceiling rises slowly.** Bonus points in one stat cap at 9 through level 10, then one higher at 15, 20, 25 and 30 (13 at the top), `maxStatGainAt`. A push past about +12 is what lets the d20 stop deciding anything, so the ceiling creeps rather than tracks the level.
 - **Helping.** The helper's die is a d10 at Ascendant and a d12 at Starborn and Legendary.
+- **Heroes who banked XP past 6,300.** XP kept accruing at level 10, so some heroes already hold enough for level 11 or more. That XP is theirs and counts: it is never capped or erased. A one-time migration (character v7 to v8, `migrate.ts`) brings each saved hero, committed and provisional halves separately, to the level her XP now reaches and banks the stat points those levels owe, so she is paid exactly as if she had earned the levels at the table. It cannot run twice. Her tier follows her level, so a hero past 15, 20 or 30 XP changes body on her next load with no cutscene (nothing is being awarded then); every tier she crosses after that plays the cutscene as normal.
 - **Joining a party** still offers only 1, 4, 7 and 10. A newcomer never skips straight to the legend tiers.
 - **Class moves** still come from distinctions, with no level cap (§4.3).
 
