@@ -187,13 +187,14 @@ describe("field guide", () => {
       for (const id of Object.keys(CLASSES)) expect(guide.entries[id]!.art).toBeUndefined();
     });
 
-    it("gives a class place no map pin: it is a side room, with no anchor to show", () => {
+    it("keeps map positions out of the guide: the map comes from content/world.json, which pins all four", () => {
       const world = JSON.parse(readFileSync(path.join(REPO, "content", "world.json"), "utf8")) as {
-        places: Record<string, unknown>;
+        places: Record<string, { id: string }>;
       };
-      for (const { home } of Object.values(CLASSES)) expect(world.places[home.split(".")[1]!], home).toBeUndefined();
+      for (const { home } of Object.values(CLASSES)) expect(world.places[home.split(".")[1]!]?.id, home).toBe(home);
       for (const entry of Object.values(guide.entries)) {
         expect(Object.keys(entry), entry.id).not.toContain("map_anchor");
+        expect(Object.keys(entry.class ?? {}), entry.id).not.toContain("anchor");
       }
     });
 

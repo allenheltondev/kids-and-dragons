@@ -9,12 +9,15 @@ played_in: ["riftlight-riftseekers-departure"]
 tags: ["class_place", "school", "thornguard"]
 lore_hook: "The school for Thornguards. The teacher has held the same door shut against the wind for forty years. Students practice Brace by catching falling pillows."
 related:
-  - id: biome.glacier_of_origins
+  - id: biome.sky_islands
     type: biome
     relationship: biome
   - id: campaign.riftlight
     type: campaign
     relationship: campaigns
+  - id: biome.sky_islands
+    type: biome
+    relationship: access_from
   - id: class.thornguard
     type: class
     relationship: locations
@@ -26,8 +29,8 @@ ai_context:
   visual_style: ""
   common_encounters: ""
   lore_highlights: ""
-  related_entities: "biome.glacier_of_origins, campaign.riftlight, class.thornguard"
-  writing_guidance: "Teaches only the Thornguard. Where it stands is decided campaign by campaign (Riftlight puts it up the slope from the Riftseekers' camp), so no fixed spot on the map is canon yet."
+  related_entities: "biome.sky_islands, campaign.riftlight, biome.sky_islands, class.thornguard"
+  writing_guidance: "Teaches only the Thornguard."
   generation_hints: ""
 layout: locations
 infobox: location
@@ -37,7 +40,7 @@ infobox: location
 ## Related Entities
 
 ### Biomes
-- [Glacier of Origins](/biomes/glacier_of_origins/) `Biome`
+- [Sky Islands](/biomes/sky_islands/) `Biome` `Access From`
 
 ### Campaigns
 - [Riftlight](/campaigns/riftlight/) `Campaigns`

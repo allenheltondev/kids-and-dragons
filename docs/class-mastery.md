@@ -70,14 +70,18 @@ The four classes are `class.*` entries in [`canon/classes.yaml`](../canon/classe
 its role, its gear, its three distinctions and a `home`, and the four places are `location.dojo`,
 `location.academy`, `location.rookery` and `location.conservatory` in
 [`canon/locations.yaml`](../canon/locations.yaml) (`location_type: class_place`). A class place is a
-side room, so none has a `map_anchor`: no spot on the painted map is established for any of them, and
-the map shows nothing for a place canon has not anchored. The Academy's `parent_biome` is the glacier
-for now, with the marsh village noted as where it belongs.
+side room, never a stop on the travel graph, and canon puts one in each of four hosts: the Rookery on
+the Exchange's rooftops, the Conservatory in the Glacier of Origins, the Dojo in the Sky Islands and
+the Academy in the Whispering Marsh (the marsh village). Each takes its host's `map_anchor` with a
+small offset (a label's height up), an offset for reading and not a survey; the Sky Islands drift,
+so the Dojo's pin is that biome's normal map area, as the biome's own anchor is.
 
 The Field Guide has a **Classes** shelf. A class entry is found when a hero at the table wears that
 class (at a chapter's start, or when a hero's class changes), or when the party walks into its class
 place scene (`classPlace`), which also finds the place's own entry. Until the party has been to the
-place, the class entry shows it as "???", with no name and no picture of the room. See
+place, the class entry shows it as "???", with no name, no picture of the room and no map. Once the
+place is found for the first time, the entry links to it and shows it on the painted map (and the
+world map pins it, as it does any found location). See
 [`discoveries.ts`](../packages/shared/src/discoveries.ts).
 
 ### How a party gets there
@@ -95,10 +99,10 @@ place, the class entry shows it as "???", with no name and no picture of the roo
   room introduces its teacher (and the crows) whenever a party walks in. A second visit can read
   shorter ("The crows eye you. 'Back again.'").
 - **Gemfall gets none.** It is pinned, and its only class change is the Exchange stall.
-- **Riftlight (draft, #315).** The Rookery is on the Exchange's rooftops, the Conservatory off the
-  singing hall, and the Dojo up the slope from the Riftseekers' camp. The Academy belongs in the
-  marsh village, which Riftlight's story does not have yet; until that place is written, it stands in
-  a roofless tower above the Riftseekers' camp, and moves when the village exists.
+- **Riftlight (draft, #315).** The Rookery is on the Exchange's rooftops and the Conservatory off
+  the singing hall, in the Glacier of Origins. Canon now puts the Dojo in the Sky Islands and the
+  Academy in the Whispering Marsh; Riftlight's draft still stages both at the Riftseekers' camp (the
+  Dojo up the slope, the Academy in a roofless tower), and moves when those places are written.
 - **A free heal is deliberate.** The game always keeps somewhere to heal for free. In Riftlight it is
   the singing hall: its rest heals on every arrival, so walking into the Conservatory and back heals
   again, as often as a table likes. That is intended, not a loophole.
