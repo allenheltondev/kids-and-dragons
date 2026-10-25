@@ -20,7 +20,7 @@ import { Spinner } from "../ui/Spinner";
 import { CharacterPortrait } from "./CharacterPortrait";
 import { ClassToken } from "./ClassToken";
 import { Icon } from "./icons";
-import { savedHeading, savedHeroes } from "./save-copy";
+import { savedHeading, savedHeroes, savedWhere } from "./save-copy";
 import { VoteTicks } from "./VoteTicks";
 import { useHelp } from "../help/content";
 import { joinUrl } from "../ui/share-invite";
@@ -151,6 +151,9 @@ export function LobbyContent(): ReactElement {
         <Icon name="party" />
         <span>Everyone in?</span>
       </h2>
+      {/* The screen's own name, when the family gave it one: it is where the
+          game is kept, not the phones. */}
+      {state?.location ? <p className="lobby__place kad-muted">Playing at {state.location}</p> : null}
       {/* A chapter this household stopped partway (#259): said to the room, and
           taken up from any phone. */}
       {state?.saved ? (
@@ -160,7 +163,7 @@ export function LobbyContent(): ReactElement {
             <span>{savedHeading(state.saved)}</span>
           </p>
           <p className="lobby__premise-text">
-            {state.saved.recap} {savedHeroes(state.saved)} can tap Keep going on a phone.
+            {savedWhere(state.saved)} {state.saved.recap} {savedHeroes(state.saved)} can tap Keep going on a phone.
           </p>
         </div>
       ) : null}

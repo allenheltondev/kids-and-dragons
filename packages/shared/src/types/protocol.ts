@@ -489,6 +489,12 @@ export interface CreateRoomRequest {
    * Party Mode only — Travel Mode has no screen that is not also a seat.
    */
   display?: boolean;
+  /**
+   * What the family calls the screen the game is on ("Living room TV"), sent
+   * by a TV opening a room. Kept on the run, so a saved game can say where it
+   * was saved. Optional: an unnamed screen is the common case.
+   */
+  location?: string;
 }
 
 export interface CreateRoomResponse {

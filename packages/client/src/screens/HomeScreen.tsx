@@ -22,14 +22,14 @@ import { randomName } from "./creationContent";
 import { Suspense, useCallback, useEffect, useId, useMemo, useState } from "react";
 import { ChunkBoundary, lazyChunk } from "../ui/ChunkBoundary";
 import type { ChangeEvent, ReactElement } from "react";
-import type { RoomMode } from "@kad/shared";
+import { LOCATION_NAME_MAX, type RoomMode } from "@kad/shared";
 import { useGameStore } from "../store";
 import { useKeepsakeStore } from "../store/keepsake";
 import { takeMoveLink } from "./move-link";
 // The one normalize helper for typed and prefilled codes — the router owns the
 // code shape, and a second filter here is how /p/AB1C once prefilled as "ABC".
 import { VISITOR_CODE_LENGTH as CODE_LENGTH, codeComplete, codeSlots, navigate, normalizeCodeInput as normalizeCode, pairingFromSearch, useRoute } from "../router";
-import { loadPlayerDeviceToken, loadSharedDevice } from "../store/persistence";
+import { loadLocationName, loadPlayerDeviceToken, loadSharedDevice } from "../store/persistence";
 import { browserEnv, browserName, needsFirstLaunchChoice } from "../install/detect";
 import { firstLaunch as firstLaunchRecord } from "../install/remember";
 import { InstallCard } from "../install/InstallCard";
@@ -120,6 +120,9 @@ function PersonalHome(): ReactElement {
 
   const [displayName, setDisplayName] = useState(() => randomName());
   const [hosting, setHosting] = useState(false);
+  // What this screen is called, kept on the device so the TV remembers it.
+  const [location, setLocation] = useState(() => loadLocationName());
+  const locationFieldId = useId();
   const [mode, setMode] = useState<RoomMode>("party");
   const [code, setCode] = useState(() => normalizeCode(pendingCode ?? ""));
   const [busy, setBusy] = useState<null | "create" | "join">(null);
@@ -209,14 +212,14 @@ function PersonalHome(): ReactElement {
     setError(null);
     setBusy("create");
     try {
-      if (mode === "party") await openOnThisScreen();
+      if (mode === "party") await openOnThisScreen(location);
       else await createRoom(mode, trimmedName);
     } catch (err) {
       setError(err instanceof Error ? err.message : "We could not start the game.");
     } finally {
       setBusy(null);
     }
-  }, [createRoom, openOnThisScreen, mode, trimmedName]);
+  }, [createRoom, openOnThisScreen, mode, trimmedName, location]);
 
   const join = useCallback(async () => {
     setError(null);
@@ -389,6 +392,28 @@ function PersonalHome(): ReactElement {
                 </label>
               ))}
             </div>
+
+            {mode === "party" ? (
+              <div className="home__field">
+                <label className="home__label" htmlFor={locationFieldId}>
+                  <Icon name="name" />
+                  <span>Name this screen</span>
+                </label>
+                <input
+                  id={locationFieldId}
+                  className="home__text-input kad-focusable"
+                  type="text"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder="Living room TV"
+                  enterKeyHint="done"
+                  maxLength={LOCATION_NAME_MAX}
+                />
+                <p className="home__hint kad-muted">
+                  The lobby shows this name, and a game you stop here says it was saved here.
+                </p>
+              </div>
+            ) : null}
 
             {mode === "travel" ? (
               <div className="home__field">

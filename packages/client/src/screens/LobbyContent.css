@@ -31,6 +31,11 @@
   font-weight: 800;
 }
 
+.lobby__place {
+  margin: 0;
+  font-size: var(--font-size-md, 1em);
+}
+
 .lobby__join {
   display: flex;
   align-items: center;

@@ -56,7 +56,7 @@ import {
   tabletHost,
 } from "../handlers/shared-device.ts";
 import type { DeviceIdentity, SessionIdentity, SharedDeviceIdentity } from "../identity.ts";
-import type { RoomMode } from "@kad/shared";
+import { checkLocationName, type RoomMode } from "@kad/shared";
 import { pushKey, subscribePush, unsubscribePush } from "../handlers/push.ts";
 import { requiredEnv, runtime, verifyAccountToken, type VerifiedAccount } from "./runtime.ts";
 
@@ -262,10 +262,14 @@ async function postRoom(req: Req, deps: HandlerDeps) {
   if (!mode) return error(400, "ILLEGAL", 'mode must be "party" or "travel"');
   const display = req.body.display === true;
   if (display && mode !== "party") return error(400, "ILLEGAL", "only a Party Mode room has a TV");
+  // Only a TV has a place to name; a phone host's request never carries one.
+  const place = display ? checkLocationName(req.body.location) : null;
+  if (place && !place.ok) return error(400, "ILLEGAL", place.message);
+  const location = place?.ok && place.name !== "" ? place.name : undefined;
 
   // A shared tablet opens a room for whichever kid was picked on it (#250).
   const shared = await resolveShared(req, deps);
-  if (shared !== undefined) return postRoomShared(req, deps, mode, display, shared);
+  if (shared !== undefined) return postRoomShared(req, deps, mode, display, shared, location);
 
   // Anonymous play (§4.5): a device nobody has seen before gets a household on
   // the spot. Nobody signs up to start a game.
@@ -287,6 +291,7 @@ async function postRoom(req: Req, deps: HandlerDeps) {
       // The TV's household is a placeholder until a phone joins (RoomRecord.claimable).
       claimable: display,
       hostDeviceId: host.principal.deviceId,
+      ...(location ? { location } : {}),
     },
     deps,
   );
@@ -337,6 +342,7 @@ async function postRoomShared(
   mode: RoomMode,
   display: boolean,
   shared: SharedDeviceIdentity | null,
+  location?: string,
 ) {
   if (!shared) return forgottenDevice();
   if (display) {
@@ -347,6 +353,7 @@ async function postRoomShared(
         campaignId: (req.body.campaignId as string | null | undefined) ?? null,
         hostDeviceId: shared.deviceId,
         display: true,
+        ...(location ? { location } : {}),
       },
       deps,
     );

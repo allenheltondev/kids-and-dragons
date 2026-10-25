@@ -36,9 +36,9 @@ async function household(players = 2) {
 type Household = Awaited<ReturnType<typeof household>>;
 
 /** A room for `campaignId`, opened by player `host`'s device. */
-async function room(h: Household, campaignId: string | null = GEMFALL, host = 0) {
+async function room(h: Household, campaignId: string | null = GEMFALL, host = 0, location?: string) {
   const created = await createRoom(
-    { householdId: h.householdId, mode: "party", campaignId, hostDeviceId: h.players[host]!.principal.deviceId },
+    { householdId: h.householdId, mode: "party", campaignId, hostDeviceId: h.players[host]!.principal.deviceId, ...(location ? { location } : {}) },
     h.harness.deps,
   );
   if (!created.ok) throw new Error(`room: ${JSON.stringify(created)}`);
@@ -70,8 +70,8 @@ const SPECS = [
 ] as const;
 
 /** Both players make a hero in a fresh Gemfall room and begin chapter 1. */
-async function evening(h: Household) {
-  const created = await room(h);
+async function evening(h: Household, location?: string) {
+  const created = await room(h, GEMFALL, 0, location);
   const one = await sit(h, created.code, created.runId, 0);
   const two = await sit(h, created.code, created.runId, 1);
   for (const [seat, spec] of [
@@ -211,6 +211,34 @@ describe("stopping for today (#259)", () => {
     const e = await evening(h);
     await closeRoom({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
     expect(await savedGame(h.householdId, h.harness.deps)).toBeNull();
+  });
+});
+
+describe("naming the screen a game is saved on", () => {
+  it("keeps the name on the run and says it on the save, in the next room's lobby", async () => {
+    const h = await household();
+    const e = await evening(h, "Living room TV");
+    expect((await e.one.state()).location).toBe("Living room TV");
+    await walkIn([e.one, e.two]);
+    await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
+    expect((await h.harness.repo.getRun(e.runId))?.location).toBe("Living room TV");
+
+    h.harness.clock.advance(DAY);
+    const next = await room(h, GEMFALL, 1);
+    const lobby = (await h.harness.repo.getState(next.runId))!;
+    expect(lobby.saved?.location).toBe("Living room TV");
+    // The new room is not on that screen unless it says so.
+    expect(lobby.location).toBeUndefined();
+  });
+
+  it("leaves a save from an unnamed screen without a place", async () => {
+    const h = await household();
+    const e = await evening(h);
+    await walkIn([e.one, e.two]);
+    await stopForToday({ code: e.code, principal: h.players[0]!.principal }, h.harness.deps);
+    h.harness.clock.advance(DAY);
+    const next = await room(h, GEMFALL, 1);
+    expect((await h.harness.repo.getState(next.runId))!.saved).not.toHaveProperty("location");
   });
 });
 
