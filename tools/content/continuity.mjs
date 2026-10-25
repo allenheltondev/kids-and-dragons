@@ -308,6 +308,9 @@ export function sceneExits(scene) {
   switch (scene.type) {
     case "check":
       return [branch(scene.onSuccess), branch(scene.onFailure)];
+    case "interaction":
+      // A story interaction (#495) continues on success, failure or the helping hand.
+      return [scene.onSuccess, scene.onFailure, scene.onAssisted].filter(Boolean).map(branch);
     case "encounter":
       // An environmental fight's other endings (#201) are branches like these.
       return [scene.onVictory, scene.onDefeat, scene.onEscape, scene.onTimeout].filter(Boolean).map(branch);
