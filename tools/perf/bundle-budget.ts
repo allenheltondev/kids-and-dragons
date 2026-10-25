@@ -91,8 +91,15 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  * spectator rules, used only once somebody is watching, cost every first
  * paint. No shared module does anything on import, and none may: the flag
  * lets the bundler drop a module nothing uses.
+ *
+ * 315 -> 318 on 2026-10-25, deliberately (matchups, #488). 316KB measured. The
+ * 1KB that landed in the first paint is the bestiary: `loadBestiary` rides the
+ * shared client and the store's content batch, which every phone loads, so the
+ * check badge can read a creature's opinions offline. Everything else the
+ * feature added (the matchup engine, the hints, the field guide sections) is in
+ * lazy chunks; `matchups` is its own 3KB chunk.
  */
-const FIRST_PAINT_BUDGET_KB = 315;
+const FIRST_PAINT_BUDGET_KB = 318;
 
 /**
  * Everything, including what is lazily fetched.
@@ -107,8 +114,12 @@ const FIRST_PAINT_BUDGET_KB = 315;
  * (315KB). 1415KB measured with the bump, 10KB of slack. React 19.3 was not
  * taken for the opposite reason: it grew the first paint, which this budget
  * cannot give back (see .github/dependabot.yml).
+ *
+ * 1425 -> 1440 on 2026-10-25, deliberately (matchups, #488). 1432KB measured.
+ * The matchup hints, the field guide's "Fighting it" and "Good at" sections and
+ * the creation cards, all in lazy chunks; the first paint grew 1KB (see above).
  */
-const TOTAL_BUDGET_KB = 1425;
+const TOTAL_BUDGET_KB = 1440;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
