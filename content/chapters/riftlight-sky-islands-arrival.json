@@ -6,7 +6,7 @@
   "title": "Land Under an Unfamiliar Sky",
   "biome": "sky_islands",
   "music": "riftlight-paths",
-  "estimatedMinutes": 36,
+  "estimatedMinutes": 40,
   "xpAward": 140,
   "entry": "island",
   "goal": {
@@ -1178,9 +1178,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Watch the sky",
+          "label": "Watch the basket",
           "icon": "hand",
-          "goto": "dusk_ferry"
+          "goto": "wisps"
         }
       ],
       "onEnter": [
@@ -1215,9 +1215,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Watch the sky",
+          "label": "Watch the basket",
           "icon": "hand",
-          "goto": "dusk_ferry"
+          "goto": "wisps"
         }
       ],
       "onEnter": [
@@ -1598,34 +1598,6 @@
       ]
     },
     "thimble": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/captain_thimble",
-          "name": "Captain Thimble"
-        },
-        {
-          "figure": "cast/courier_griffin",
-          "name": "Fenwick"
-        }
-      ],
-      "narration": "Thimble unrolls a chart, held flat by three hens. \"My old lane is gone, and my passengers want to go home. I used to steer by the cloud whales' song. Wherever they sing, the sky stays level and a ferry can cross. Now the song has wandered, and I cannot find the lane.\" Fenwick preens his satchel. \"Flags have no word for 'the sky has moved,'\" he says. They both look at you. What will you ask first?",
-      "choices": [
-        {
-          "id": "chart",
-          "label": "Ask Thimble how the song marks a lane",
-          "icon": "hand",
-          "goto": "thimble_chart"
-        },
-        {
-          "id": "flags",
-          "label": "Ask Fenwick how the islands talk by flag",
-          "icon": "hand",
-          "goto": "fenwick_flags"
-        }
-      ]
-    },
-    "thimble_chart": {
       "type": "story",
       "cast": [
         {
@@ -1637,33 +1609,11 @@
           "name": "Fenwick"
         }
       ],
-      "narration": "Thimble's finger runs along a thin gold line. \"The whales do not carry us. They sing, and where they sing the sky is steady, so I steer by that. The song grows louder as you near them, and a ferry can feel it in the rail.\" She lays a paw on the ferry's rail. It hums faintly, and the hum leans east. Fenwick holds a feather beside it, and the feather leans east too. \"There. The song is that way. Find the whales, and you find my lane. Follow it, and I will follow you.\"",
+      "narration": "Thimble unrolls a chart, held flat by three hens. \"My old lane is gone, and my passengers want to go home. I used to steer by the cloud whales' song. Wherever they sing, the sky stays level and a ferry can cross. Now the song has wandered.\" She lays a paw on the ferry's rail. It hums faintly, and the hum leans east. Fenwick holds a feather beside it, and the feather leans east too. \"Flags have no word for 'the sky has moved,'\" he says. \"But you can ask the air.\" Thimble nods. \"Find the whales, and you find my lane. Find where the song comes from, and Fenwick will carry the news to every island in the sky.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "windbreak_rest"
-        }
-      ]
-    },
-    "fenwick_flags": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/captain_thimble",
-          "name": "Captain Thimble"
-        },
-        {
-          "figure": "cast/courier_griffin",
-          "name": "Fenwick"
-        }
-      ],
-      "narration": "Fenwick spreads a wing like a map. \"Flags say how, not where. One flag is steady air, two is a gale, three is a long drop. The islands answer the same.\" He plucks a feather and holds it up. It points east and wobbles. Thimble lays a paw on her ferry rail, and it hums the same way. \"You cannot ask a flag for a direction. But you can ask the air. And lately the air is humming from that way.\" Thimble sighs. \"The whales' song, I suppose. Find where it comes from, and I will carry the news to every island in the sky.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
+          "label": "Rest by the wind wall",
           "icon": "hand",
           "goto": "windbreak_rest"
         }
@@ -2334,6 +2284,109 @@
         "goto": "route_vote",
         "narration": "Seren rings along and steadies each note. The song answers, long and warm, from the east."
       }
+    },
+    "wisps": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "size": "tiny",
+          "count": 2
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "The brighter the basket glows, the more the dusk fills with little floating lights. Two wisps tumble in on the gale, tiny and ghostly, and circle the flame like moths. They tug at it and giggle. They think the fire is a very large, very rude candle, and they want it for themselves. The wind pulls the flame sideways. The keeper grabs her rope. \"They will tear it apart! Shoo them off, gently!\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Shoo the wisps away",
+          "icon": "hand",
+          "goto": "wisp_fight"
+        }
+      ]
+    },
+    "wisp_fight": {
+      "type": "encounter",
+      "map": "glade",
+      "narration": "The wisps zip in circles around the pole and dive at the flame. Drive them away from the basket before the gale and their tugging pull the fire apart.",
+      "enemies": [
+        {
+          "id": "wisp",
+          "creature": "will_o_wisp",
+          "count": 2
+        }
+      ],
+      "onVictory": {
+        "goto": "wisps_shooed",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "mosslight_jar",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "wisps_rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "wisps_shooed": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "The wisps squeak, wobble, and bob away over the edge, still giggling. The flame stands straight again. Pip, who has a jar for everything, catches a spoonful of their soft leftover glow and screws on the lid. \"For emergencies,\" he says. \"Or snacks.\" The keeper laughs so hard her ears flap.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch the sky",
+          "icon": "hand",
+          "goto": "dusk_ferry"
+        }
+      ]
+    },
+    "wisps_rescued": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "narration": "The wisps swirl around you until the world is all dizzy sparkles. The keeper rings the shrine bell with both paws. Wisps hate a loud, honest bell, and they scatter into the dusk with a rude little pop. The keeper wraps everyone in blankets and passes round hot tea. Nobody gets a jar of glow tonight, but the basket is still burning, a little singed and very proud.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch the sky",
+          "icon": "hand",
+          "goto": "dusk_ferry"
+        }
+      ]
     },
     "island_rest": {
       "type": "rest",
