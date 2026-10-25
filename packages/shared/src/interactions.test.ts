@@ -42,6 +42,36 @@ function step(state: RunState, ctx: EngineContext, action: InteractionAction, pl
 }
 
 describe("authoritative story interactions", () => {
+  it("nominates from the full-party turn marker when an earlier seat is disconnected", () => {
+    const { state, ctx } = setup(precision, 3);
+    state.party[0]!.connected = false;
+    state.storyTurn = 1;
+    const reopened = enterScene(state, "interaction_test", ctx);
+    expect(reopened.error).toBeUndefined();
+    expect(prompt(reopened.state).actorId).toBe("p1");
+    expect(prompt(reopened.state).playerIds).toEqual(["p1", "p2"]);
+  });
+
+  it("passes the story turn from the nominated hero, even when another friend continues", () => {
+    const { state, ctx } = setup(precision, 3);
+    state.party[0]!.connected = false;
+    const reopened = enterScene(state, "interaction_test", ctx).state;
+    const result = step(reopened, ctx, { action: "assist" }, "p1");
+    const next = step(result, ctx, { action: "continue" }, "p2");
+    expect(next.storyTurn).toBe(2);
+    expect(next.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p2"] });
+  });
+
+  it("passes from the fallback actor after the nominee disconnects", () => {
+    const { state, ctx } = setup(precision, 3);
+    expect(prompt(state).actorId).toBe("p0");
+    state.party[0]!.connected = false;
+    const result = step(state, ctx, { action: "assist" }, "p1");
+    const next = step(result, ctx, { action: "continue" }, "p2");
+    expect(next.storyTurn).toBe(2);
+    expect(next.prompt).toMatchObject({ kind: "choice", forPlayerIds: ["p2"] });
+  });
+
   it("tracks the hidden object through swaps and rejects guesses during playback", () => {
     const { state, ctx } = setup(tracking);
     const active = step(state, ctx, { action: "start", relaxed: false });
