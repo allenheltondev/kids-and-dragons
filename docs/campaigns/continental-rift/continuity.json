@@ -2476,6 +2476,33 @@
             "orin"
           ],
           "introduces": {}
+        },
+        "ring_throw": {
+          "requires": [
+            "ring",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "drip_run": {
+          "requires": [
+            "icicles"
+          ],
+          "introduces": {}
+        },
+        "hold_line": {
+          "requires": [
+            "rope",
+            "gap"
+          ],
+          "introduces": {}
+        },
+        "level_line": {
+          "requires": [
+            "rope",
+            "gap"
+          ],
+          "introduces": {}
         }
       }
     },
@@ -3552,6 +3579,41 @@
             "ashspan": "Ashspan Bridge",
             "supper_bundle": "a supper bundle"
           }
+        },
+        "floe_hop": {
+          "requires": [
+            "floes",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "jam_hold": {
+          "requires": [
+            "jam",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "scarf_pass": {
+          "requires": [
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "knob_toss": {
+          "requires": [
+            "river_ledge",
+            "knob",
+            "rope"
+          ],
+          "introduces": {}
+        },
+        "haul_loop": {
+          "requires": [
+            "knob",
+            "rope"
+          ],
+          "introduces": {}
         }
       }
     },

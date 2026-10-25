@@ -6,7 +6,7 @@
   "title": "The River Chooses a Road",
   "biome": "glacier_of_origins",
   "music": "riftlight-paths",
-  "estimatedMinutes": 32,
+  "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "current",
   "plate": {
@@ -240,11 +240,11 @@
       "prompt": "Kick each floe away before it reaches the line.",
       "roller": "party",
       "onSuccess": {
-        "goto": "floe_rest",
+        "goto": "floe_hop",
         "narration": "Bonk. Bonk. Bonk. The floes bounce off your boots and slide away, looking embarrassed."
       },
       "onFailure": {
-        "goto": "floe_rest",
+        "goto": "floe_hop",
         "narration": "One floe gets through and bumps a shoulder with a very rude clunk. It stings.",
         "effects": [
           {
@@ -268,11 +268,11 @@
       "prompt": "Everyone heaves onto the floe at the same moment.",
       "roller": "all",
       "onSuccess": {
-        "goto": "floe_rest",
+        "goto": "floe_hop",
         "narration": "Heave! Everyone lands on the floe in a heap of wet coats and elbows. It dips and rocks, and then it holds."
       },
       "onFailure": {
-        "goto": "floe_rest",
+        "goto": "floe_hop",
         "narration": "The floe tips and dumps you back in. You scramble up again, one at a time, and manage to stay on, sort of."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -288,18 +288,18 @@
       "prompt": "Shove the big floe aside, and hold the others back with the rope.",
       "roller": "party",
       "onSuccess": {
-        "goto": "floe_rest",
+        "goto": "floe_hop",
         "narration": "Shove! The big floe spins away like a dropped plate, and the others bob after it."
       },
       "onFailure": {
-        "goto": "floe_rest",
+        "goto": "floe_hop",
         "narration": "The big floe is heavier than it looks. It scrapes past, close enough to touch, and nobody is hurt, only startled."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "floe_rest": {
       "type": "rest",
-      "narration": "A broad, flat floe drifts alongside and bumps your knees, as if asking to be climbed. You climb on, drag in the rope and lie flat, breathing. For one whole minute, the river is only a bumpy road. How will you use it?",
+      "narration": "The big floe holds still long enough for everyone to climb on. You drag in the rope and lie flat, breathing. In a coat pocket, a honeycake sealed in oilcloth has stayed dry. For one whole minute, the river is only a bumpy road. How will you use it?",
       "heal": 1,
       "choices": [
         {
@@ -315,11 +315,18 @@
           "goto": "floe_look"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "honeycake",
+          "to": "party"
+        }
+      ]
     },
     "floe_warm": {
       "type": "story",
-      "narration": "You huddle in a wet, shivering heap, and slowly the heap gets less shivery. Somebody's teeth are playing a tune. The cold has gone from stabbing to merely rude. Somebody finds a honeycake in a pocket sealed in oilcloth. It is dry, and still a little warm. You keep it for later.",
+      "narration": "You huddle in a wet, shivering heap, and slowly the heap gets less shivery. Somebody's teeth are playing a tune. The cold has gone from stabbing to merely rude.",
       "choices": [
         {
           "id": "continue",
@@ -332,11 +339,6 @@
         {
           "type": "heal",
           "amount": 1,
-          "to": "party"
-        },
-        {
-          "type": "grantItem",
-          "itemId": "honeycake",
           "to": "party"
         }
       ],
@@ -351,12 +353,6 @@
           "label": "Check the rope",
           "icon": "hand",
           "goto": "snag"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "saw_the_bend"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -619,11 +615,11 @@
       "prompt": "Steer the line into the widest gap, and keep the rope from catching on the branches.",
       "roller": "party",
       "onSuccess": {
-        "goto": "chute",
+        "goto": "jam_hold",
         "narration": "Swish! The line threads the gap like thread through a needle, and the branches only tickle."
       },
       "onFailure": {
-        "goto": "chute",
+        "goto": "jam_hold",
         "narration": "A branch snags the rope and tugs. You unhook it, and a twig tugs your hat off. The river takes the hat as its fee.",
         "effects": [
           {
@@ -647,7 +643,7 @@
       "prompt": "Brace the rope across your shoulders and push the line off the jam.",
       "roller": "party",
       "onSuccess": {
-        "goto": "chute",
+        "goto": "jam_hold",
         "narration": "You push, and the line swings. The jam creaks past with a long, grumpy groan, and you slide free. A tin box clinks loose from the branches: a log driver's lost pocket money. It holds three coins.",
         "effects": [
           {
@@ -657,7 +653,7 @@
         ]
       },
       "onFailure": {
-        "goto": "chute",
+        "goto": "jam_hold",
         "narration": "The line scrapes along the jam, and the branches scratch at your coats. You come loose, with a few twigs for souvenirs."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -783,11 +779,11 @@
       "prompt": "Everyone hauls the rope hand over hand to bring your friend back.",
       "roller": "all",
       "onSuccess": {
-        "goto": "shiver",
+        "goto": "scarf_pass",
         "narration": "Haul, haul, haul. Your friend bumps into the group with a gasp and a grin, and every hand grabs hold."
       },
       "onFailure": {
-        "goto": "shiver",
+        "goto": "scarf_pass",
         "narration": "The wet rope burns through cold gloves, and the haul is slow. But your friend gets back, shivering, and nobody lets go again.",
         "effects": [
           {
@@ -808,11 +804,11 @@
       "prompt": "The best thrower of you swings the rope end out over your friend's arm.",
       "roller": "best",
       "onSuccess": {
-        "goto": "shiver",
+        "goto": "scarf_pass",
         "narration": "Whoop! The rope end drops over your friend's arm, and the others reel them in."
       },
       "onFailure": {
-        "goto": "shiver",
+        "goto": "scarf_pass",
         "narration": "The first swing falls short. The next lap of the current carries your friend close enough to catch."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -955,13 +951,7 @@
       ],
       "onSuccess": {
         "goto": "ledge_ahead",
-        "narration": "Tap, tap, skip. The goats stay on the dark, hard ice and skip the pale patches. Far ahead, a dark ledge sticks out into the river, and you know to look for it.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "saw_the_bend"
-          }
-        ]
+        "narration": "Tap, tap, skip. The goats stay on the dark, hard ice and skip the pale patches. Far ahead, a dark ledge sticks out into the river, and you know to look for it."
       },
       "onFailure": {
         "goto": "ledge_ahead",
@@ -983,13 +973,7 @@
       ],
       "onSuccess": {
         "goto": "ledge_ahead",
-        "narration": "You drift beside the goats, step for step, until they stop at a dark ledge that sticks out into the river. They stay and watch you go.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "saw_the_bend"
-          }
-        ]
+        "narration": "You drift beside the goats, step for step, until they stop at a dark ledge that sticks out into the river. They stay and watch you go."
       },
       "onFailure": {
         "goto": "ledge_ahead",
@@ -1006,14 +990,6 @@
           "label": "Get ready",
           "icon": "hand",
           "goto": "aim"
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "saw_the_bend"
-          },
-          "text": "You were watching for it, and you are ready."
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1052,11 +1028,11 @@
       "prompt": "Angle your boots together to swing the line toward the ledge.",
       "roller": "party",
       "onSuccess": {
-        "goto": "ledge",
+        "goto": "knob_toss",
         "narration": "The line swings in a long, slow curve. The ledge slides closer, until you could almost touch it."
       },
       "onFailure": {
-        "goto": "ledge",
+        "goto": "knob_toss",
         "narration": "You turn too early, and the line sags. The ledge is farther than you hoped, but a strong reach will still get there."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1069,11 +1045,11 @@
       "prompt": "Swing the rope end ahead and let the current curl the line in toward the ledge.",
       "roller": "party",
       "onSuccess": {
-        "goto": "ledge",
+        "goto": "knob_toss",
         "narration": "The rope end curls in toward the bank like a lazy finger, and the whole line follows it."
       },
       "onFailure": {
-        "goto": "ledge",
+        "goto": "knob_toss",
         "narration": "The rope end tangles in a floe and drags a bit sideways. You are a little farther out than you wanted, but not too far."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1086,11 +1062,11 @@
       "prompt": "Spot the best handhold on the ledge, and call out which way to steer.",
       "roller": "party",
       "onSuccess": {
-        "goto": "ledge",
+        "goto": "knob_toss",
         "narration": "From above, the knob stands out like a doorknob on a white door. You call the steer, and the line follows your voice."
       },
       "onFailure": {
-        "goto": "ledge",
+        "goto": "knob_toss",
         "narration": "The wet wings drop you back into the water before you finish looking. You call out what you saw, which is mostly splashing."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1127,6 +1103,13 @@
             "griffin",
             "dragonling"
           ]
+        },
+        {
+          "id": "hooked",
+          "label": "Haul in on the loop hooked over the knob",
+          "icon": "hand",
+          "goto": "haul_loop",
+          "requiresFlag": "knob_hooked"
         },
         {
           "id": "loop",
@@ -2057,6 +2040,161 @@
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "floe_hop": {
+      "type": "interaction",
+      "narration": "The floes drift apart, then together, then apart. A path of flat ones leads toward a big, calm floe. Wait until they touch, then hop.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the floes to touch, then tap to hop.",
+        "actionLabel": "Hop!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 3000
+      },
+      "onSuccess": {
+        "goto": "floe_rest",
+        "narration": "Hop, hop, hop! Boots land on one floe after another, and the rope pulls everyone after you."
+      },
+      "onFailure": {
+        "goto": "floe_rest",
+        "narration": "The gap opens too soon. Your boots dip in the icy water, but the rope pulls you onto the big floe, dripping."
+      },
+      "onAssisted": {
+        "goto": "floe_rest",
+        "narration": "Together you nudge the floes closer with your boots, and everyone steps across."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "jam_hold": {
+      "type": "interaction",
+      "narration": "Past the jam, a last branch still has the end of your rope. Some of you hold the line clear of the water while one friend lifts the branch off.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the rope up while your friend lifts the branch off.",
+        "supportLabel": "Hold the rope",
+        "actionLabel": "Lift it free"
+      },
+      "onSuccess": {
+        "goto": "chute",
+        "narration": "The branch lets go with a twang. The rope is free, and the roar of the chute is just ahead."
+      },
+      "onFailure": {
+        "goto": "chute",
+        "narration": "The branch will not budge. You let the rope slip through and tie a new loop on the end, a little shorter than before."
+      },
+      "onAssisted": {
+        "goto": "chute",
+        "narration": "Together you hold the line high and tip the branch off. The roar of the chute is just ahead."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "scarf_pass": {
+      "type": "interaction",
+      "narration": "Your friend is back on the line, but shaking all over. There is a warm wool scarf in the driest pack. Pass it hand to hand until it reaches them.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the scarf, then pass it on.",
+        "actionLabel": "Pass it on",
+        "objectLabel": "the warm scarf"
+      },
+      "onSuccess": {
+        "goto": "shiver",
+        "narration": "The scarf reaches your friend and is wound around and around. A tiny smile appears over the top."
+      },
+      "onFailure": {
+        "goto": "shiver",
+        "narration": "The scarf takes a dip in the river on the way. It arrives wet, but the thought is warm."
+      },
+      "onAssisted": {
+        "goto": "shiver",
+        "narration": "Together you wrap the scarf around your friend, one loop each."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "knob_toss": {
+      "type": "interaction",
+      "narration": "The ledge is beside you now, and the round knob on its tip is just out of reach. Swing the loop in your rope, and toss it when the knob comes by.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap when the loop is over the knob.",
+        "actionLabel": "Toss the loop!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 3500
+      },
+      "onSuccess": {
+        "goto": "ledge",
+        "narration": "Flup! The loop settles over the knob, and the line goes taut.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "knob_hooked"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "ledge",
+        "narration": "The loop slides off. The knob is right there, but now it is only a knob."
+      },
+      "onAssisted": {
+        "goto": "ledge",
+        "narration": "Together you swing the loop out, and it settles over the knob.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "knob_hooked"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "haul_loop": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "narration": "The loop is already on the knob. Now all of you have to pull.",
+      "prompt": "Haul on the rope to pull the whole line in to the ledge.",
+      "roller": "party",
+      "tags": [
+        "force"
+      ],
+      "onSuccess": {
+        "goto": "ashore",
+        "narration": "The line draws tight, and the whole party swings into the shallows.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "river_escaped_early",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "reached_for_the_ledge"
+          },
+          {
+            "type": "setFlag",
+            "flag": "found_a_way_out"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "tree",
+        "narration": "The loop slips off the knob at the last moment. You keep the line and float onward together.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "reached_for_the_ledge"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
     }
   },
   "voiceGuide": {

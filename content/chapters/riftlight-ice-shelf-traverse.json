@@ -6,7 +6,7 @@
   "title": "The Path Beside the River",
   "biome": "glacier_of_origins",
   "music": "riftlight-paths",
-  "estimatedMinutes": 32,
+  "estimatedMinutes": 35,
   "xpAward": 140,
   "entry": "shelf",
   "plate": {
@@ -289,13 +289,13 @@
     },
     "ring_pull": {
       "type": "story",
-      "narration": "You take turns hanging on the ring. It does not budge. As the last of you lets go, a frozen glove drops out of the crack beside it, with a good bootlace tucked inside. A rusty ring that holds is better than a shiny one that does not. You thread your rope through it, tug twice, and pocket the lace. Then you start toward a place where the wall squeezes in.",
+      "narration": "You take turns hanging on the ring. It does not budge. As the last of you lets go, a frozen glove drops out of the crack beside it, with a good bootlace tucked inside. A rusty ring that holds is better than a shiny one that does not. You pocket the lace and shake out a loop of rope. The ring needs to take it.",
       "choices": [
         {
           "id": "continue",
-          "label": "Follow the wall",
+          "label": "Throw the rope loop",
           "icon": "hand",
-          "goto": "squeeze"
+          "goto": "ring_throw"
         }
       ],
       "onEnter": [
@@ -313,13 +313,13 @@
     },
     "ring_look": {
       "type": "story",
-      "narration": "Scratched into the rust is a tiny feather. Griffin keepers hung their lines along this shelf long ago, when it was the road to Frostfang. If they trusted this ring, you can too. Tied through it is a tiny tin that rattles. A note inside says: For the next traveler. Three coins lie beneath it. You take them, and promise to leave something behind someday. Then you tug the rope twice, just to be sure, and start toward a place where the wall squeezes in.",
+      "narration": "Scratched into the rust is a tiny feather. Griffin keepers hung their lines along this shelf long ago, when it was the road to Frostfang. If they trusted this ring, you can too. Tied through it is a tiny tin that rattles. A note inside says: For the next traveler. Three coins lie beneath it. You take them, and promise to leave something behind someday. Then you shake out a loop of rope. The ring needs to take it.",
       "choices": [
         {
           "id": "continue",
-          "label": "Follow the wall",
+          "label": "Throw the rope loop",
           "icon": "hand",
-          "goto": "squeeze"
+          "goto": "ring_throw"
         }
       ],
       "onEnter": [
@@ -654,23 +654,15 @@
       "stat": "quick",
       "tn": 12,
       "narration": "Plink. Plink. Plink-plink. There is a rhythm to the drips, if you listen.",
-      "prompt": "Find the gap in the rhythm, then dart through the curtain.",
+      "prompt": "Listen to the drips and find the gap in their rhythm.",
       "roller": "party",
       "onSuccess": {
-        "goto": "gust",
-        "narration": "Plink, plink, dart! Everyone is through, and the icicles seem a little disappointed. One of them gives a long, sad plink."
+        "goto": "drip_run",
+        "narration": "Plink, plink, gap! You have the rhythm of the drips by heart."
       },
       "onFailure": {
-        "goto": "gust",
-        "narration": "An icicle snaps off and bonks the nearest hat. It stings, but everyone scrambles through.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
+        "goto": "drip_run",
+        "narration": "An icicle snaps off and bonks the nearest hat while you listen. It stings, but now you know where the gaps are."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
@@ -682,12 +674,12 @@
       "prompt": "Aim a snowball at the root of each long icicle, high on the wall.",
       "roller": "party",
       "onSuccess": {
-        "goto": "gust",
-        "narration": "Thwack. Crash. Tinkle. The long icicles fall in a glittering heap, and the way is clear."
+        "goto": "drip_run",
+        "narration": "Thwack. Crash. Tinkle. The long icicles fall in a glittering heap, and only small drips are left."
       },
       "onFailure": {
-        "goto": "gust",
-        "narration": "Your snowballs miss, and your arm tires. You pick a path between the longest icicles anyway, slowly."
+        "goto": "drip_run",
+        "narration": "Your snowballs miss, and your arm tires. A few long ones are still hanging there, so you will have to be careful."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
@@ -1312,11 +1304,11 @@
       "prompt": "Slip across the line to test it, light on your toes.",
       "roller": "best",
       "onSuccess": {
-        "goto": "gear",
+        "goto": "hold_line",
         "narration": "Tip, tap, tip. The quick one reaches the far rock and waves both arms. The line has not even wobbled."
       },
       "onFailure": {
-        "goto": "gear",
+        "goto": "hold_line",
         "narration": "Halfway over, the line wobbles and squeaks. The quick one hugs it, shuffles the rest of the way and says a very small word that nobody will repeat."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1332,11 +1324,11 @@
       "prompt": "Cross hand over hand, then tie the far end tight.",
       "roller": "best",
       "onSuccess": {
-        "goto": "gear",
+        "goto": "hold_line",
         "narration": "Hand over hand, hand over hand. The far end is tied with a knot like a fist."
       },
       "onFailure": {
-        "goto": "gear",
+        "goto": "hold_line",
         "narration": "The far end slips twice before it takes the knot. It is tied with extra loops and a lot of grumbling, but it holds."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1349,11 +1341,11 @@
       "prompt": "Dash across the line before the ice notices, then tie the far end.",
       "roller": "best",
       "onSuccess": {
-        "goto": "gear",
+        "goto": "hold_line",
         "narration": "Whoosh! The dash is over before the ice notices. The far end is tied, and the others hear a faint cheer."
       },
       "onFailure": {
-        "goto": "gear",
+        "goto": "hold_line",
         "narration": "The dash wobbles in the middle, but your speed carries you over. The far end is tied, a little crooked."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1385,11 +1377,11 @@
       "prompt": "Clip each pack to the line with a loop, so it slides to the far rock.",
       "roller": "party",
       "onSuccess": {
-        "goto": "ready",
+        "goto": "level_line",
         "narration": "The packs zoom along the line like little sleds. The last one arrives with a bump and a small, soggy clank."
       },
       "onFailure": {
-        "goto": "ready",
+        "goto": "level_line",
         "narration": "A loop jams halfway. Someone pulls it free with a hook of rope, and the pack arrives a little later, and a little damper."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1405,11 +1397,11 @@
       "prompt": "Carry each pack over the line, one careful trip at a time.",
       "roller": "party",
       "onSuccess": {
-        "goto": "ready",
+        "goto": "level_line",
         "narration": "Step by wobbly step, every pack goes over. Somebody sings to a pack to keep it calm, and it works."
       },
       "onFailure": {
-        "goto": "ready",
+        "goto": "level_line",
         "narration": "A strap snaps, and a pack slides toward the edge. A quick hand snags it by the loop. It is knotted back together, and it goes over."
       },
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -1450,6 +1442,13 @@
           "icon": "hand",
           "goto": "assisted",
           "requiresFlag": "found_ring"
+        },
+        {
+          "id": "level",
+          "label": "Cross along the level line",
+          "icon": "hand",
+          "goto": "assisted",
+          "requiresFlag": "line_level"
         },
         {
           "id": "whistle",
@@ -1806,6 +1805,122 @@
           "flag": "traverse_failed"
         }
       ],
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "ring_throw": {
+      "type": "interaction",
+      "narration": "You step back and swing the loop in a slow circle. If it drops over the ring, the next stretch of wall has a handrail. The ring is small, and the loop is floppy.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap when the loop is over the ring.",
+        "actionLabel": "Throw the loop!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "squeeze",
+        "narration": "Flup! The loop drops over the ring and snugs tight. The wall has a handrail now."
+      },
+      "onFailure": {
+        "goto": "squeeze",
+        "narration": "The loop flops against the rock and falls. You walk up and tie it on by hand, with a clumsy knot that holds anyway."
+      },
+      "onAssisted": {
+        "goto": "squeeze",
+        "narration": "Together you guide the loop over the ring. Flup. It holds."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "drip_run": {
+      "type": "interaction",
+      "narration": "Only a few drips are left, plinking in a steady rhythm. You go through one at a time, between the drops. Wait for the gap, then go.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the gold gap, then tap to go.",
+        "actionLabel": "Go through!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 3000
+      },
+      "onSuccess": {
+        "goto": "gust",
+        "narration": "Plink, plink, dart! Everyone is through, and the icicles seem a little disappointed. One of them gives a long, sad plink."
+      },
+      "onFailure": {
+        "goto": "gust",
+        "narration": "A drip catches the nearest hat with a cold plop. It stings a little, and everyone scrambles through.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "party",
+            "nonlethal": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "gust",
+        "narration": "Together you count the drips out loud, and everyone slips through on the gap."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "hold_line": {
+      "type": "interaction",
+      "narration": "The far end is tied, but the line still sags in the middle. It needs to be pulled tight. Some of you hold the near end firm while one of you hauls in the slack.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the line firm while your friend hauls in the slack.",
+        "supportLabel": "Hold the line",
+        "actionLabel": "Haul it tight"
+      },
+      "onSuccess": {
+        "goto": "gear",
+        "narration": "The line goes tight as a harp string. When you pluck it, it hums."
+      },
+      "onFailure": {
+        "goto": "gear",
+        "narration": "The slack wins at first. You tie the line off with a bigger knot, and it holds, but it hangs a little low."
+      },
+      "onAssisted": {
+        "goto": "gear",
+        "narration": "Together you wedge the end behind a rock. The line goes tight."
+      },
+      "art": "scenes/riftlight/ice-shelf-headwaters"
+    },
+    "level_line": {
+      "type": "interaction",
+      "narration": "Your packs are over. Before anyone steps out, the line itself must hang level. Hold your end, and raise or lower it until the rope is straight across the gap.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Raise or lower your end until the line is level.",
+        "actionLabel": "Tie it off",
+        "objectLabel": "the rope line"
+      },
+      "onSuccess": {
+        "goto": "ready",
+        "narration": "The line hangs straight and level as a ruler. A steady line is a happy line.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "line_level"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "ready",
+        "narration": "The line stays a little crooked. You tie it off where it is. It will do."
+      },
+      "onAssisted": {
+        "goto": "ready",
+        "narration": "Together you rest the middle on a lump of rock, and the line hangs level.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "line_level"
+          }
+        ]
+      },
       "art": "scenes/riftlight/ice-shelf-headwaters"
     }
   },

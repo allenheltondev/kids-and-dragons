@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
+import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, interactionActor, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DESIGN } from "./riftlight-preview.ts";
@@ -154,6 +154,21 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
           expect(result.error).toBeUndefined();
           pending.push({ state: result.state, known, introduced });
         }
+      }
+    } else if (state.prompt?.kind === "interaction") {
+      // A story interaction (#495) resolves to success, a gentle failure or the
+      // untimed helping hand. The mechanic itself is tested in the engine; here
+      // each outcome is put in place and the engine's own "continue" takes the branch.
+      for (const outcome of ["success", "failure", "assisted"] as const) {
+        const forced = structuredClone(state);
+        const prompt = forced.prompt;
+        if (prompt?.kind !== "interaction") throw new Error("Expected an interaction");
+        const connected = forced.party.filter((member) => member.connected).map((member) => member.playerId);
+        const actor = interactionActor(prompt, connected) ?? connected[0]!;
+        prompt.phase = "result"; prompt.outcome = outcome; prompt.resolvedActorId = actor;
+        const result = applyIntent(forced, { playerId: actor, intent: { type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, action: "continue" } }, context(chapter));
+        expect(result.error, `${chapter.id}/${state.sceneId}: interaction ${outcome}`).toBeUndefined();
+        pending.push({ state: result.state, known, introduced });
       }
     } else if (state.prompt?.kind === "choice") {
       expect(state.prompt.options.length).toBeGreaterThan(0);
