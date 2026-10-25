@@ -258,7 +258,7 @@ If the **whole party** is knocked down, the encounter is **lost, not fatal** —
 
 ### 8.1 Leveling
 
-XP is awarded per chapter, not per enemy defeated — so exploring and talking are worth as much as fighting. Levels 1–10.
+Story XP is awarded per chapter, not per enemy defeated — so exploring and talking are worth as much as fighting. Each hero also earns XP for her own rolls that go well (§8.2). Levels 1–10.
 
 **A chapter pays each hero once, ever** (#408). Replaying a campaign is for the story: a chapter a hero has already been paid for, in an earlier attempt or at another table, pays her nothing more, bonuses included, while a chapter she has never finished (another road through Gemfall) pays in full. Each hero is judged on her own record, so a new hero at the table is paid while a veteran is not. A payment made during a campaign that then fails goes back with the XP, so she can earn it again (`CharacterProgress.paidChapters`).
 
@@ -330,11 +330,11 @@ Halving rather than zeroing matters. A family that hits two setbacks should fall
 
 Both caps exist to protect the pacing above: with setbacks at half and bonuses at a quarter, a campaign lands within about 25% of its intended total, which moves a tier by at most a chapter. Uncapped, "Sworn ends campaign 1" stops being true.
 
-#### Why XP is never individual
+#### Why the story's XP is shared, and roll XP is not
 
-The reward for a level is *visible* — a new body, and a cutscene where the whole party stops to watch. Award XP per player and the eight-year-old who rolls badly for a few weeks is a visibly smaller creature standing between two Sworn adults, on the television, every session. That is not a difficulty setting; that is a child being shown she is the worst one at the table.
+The reward for a level is *visible* — a new body, and a cutscene where the whole party stops to watch. Uniform party XP for the story is what keeps everybody transforming on the same evening, and it is also what makes the pacing above a promise rather than an average.
 
-Uniform party XP is what keeps everybody transforming on the same evening. It is also what makes the pacing above a promise rather than an average.
+Roll XP is individual. Each hero earns XP for her own rolls that go well: a check she succeeds, an attack she lands, a foe her action knocks out, and a natural 20 on top. It is paid into her own total when the chapter settles, and capped per hero by the chapter's roll-XP cap. Heroes therefore level at their own pace, and a hero who rolls well is a little further on. This is a deliberate choice, and it is why the pacing above is a rough average for each hero rather than a promise for all of them. The story's XP stays uniform: a chapter's base XP, its setback halving and its grantXp effects go to the whole party. Objective bonuses stay party-wide as well: they are never individual.
 
 ### 8.3 Carryover — the commitment rule
 

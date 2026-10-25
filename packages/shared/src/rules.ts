@@ -318,8 +318,8 @@ export function assertRulesContent(json: unknown): RulesContent {
   if (raw["rollXp"] !== undefined) {
     const rollRaw = obj(raw["rollXp"], "rollXp");
     rollXp = {} as RollXp;
-    for (const key of ["check", "attack", "defeat", "chapterCap"] as const) {
-      if (key === "defeat" && rollRaw[key] === undefined) continue;
+    for (const key of ["check", "attack", "defeat", "natural20", "chapterCap"] as const) {
+      if ((key === "defeat" || key === "natural20") && rollRaw[key] === undefined) continue;
       const amount = num(rollRaw[key], `rollXp.${key}`);
       if (!Number.isInteger(amount) || amount < 0) fail(`rollXp.${key}`, "a whole number, 0 or more", amount);
       rollXp[key] = amount;

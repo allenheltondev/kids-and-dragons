@@ -3586,7 +3586,7 @@ describe("a player who steps away (#258)", () => {
 });
 
 describe("XP for rolls that go well", () => {
-  const paying = makeRules({ rollXp: { check: 2, attack: 1, chapterCap: 5 } });
+  const paying = makeRules({ rollXp: { check: 2, attack: 1, natural20: 3, chapterCap: 5 } });
 
   function atCheck(context: EngineContext): RunState {
     return walk(
@@ -3599,14 +3599,19 @@ describe("XP for rolls that go well", () => {
     ).state;
   }
 
-  it("pays the party for a check that succeeds", () => {
-    const context = ctx({ rules: paying, rng: fixedRng(20) });
+  /** Every hero's roll XP, added up: what the rolls paid, however it was split. */
+  function heroTotal(state: RunState): number {
+    return Object.values(state.heroRollXp ?? {}).reduce((sum, xp) => sum + xp, 0);
+  }
+
+  it("pays the hero who makes a check that succeeds, and the party nothing", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, chapterCap: 5 } }), rng: fixedRng(20) });
     const state = atCheck(context);
-    const before = state.xpEarned;
     const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    const roller = rolled.lastRoll?.characterId ?? "";
     expect(rolled.lastRoll?.result).toBe("success");
-    expect(rolled.xpEarned).toBe(before + 2);
-    expect(rolled.rollXp).toBe(2);
+    expect(rolled.xpEarned).toBe(state.xpEarned);
+    expect(rolled.heroRollXp).toEqual({ [roller]: 2 });
   });
 
   it("pays nothing for a check that fails", () => {
@@ -3615,7 +3620,7 @@ describe("XP for rolls that go well", () => {
     const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
     expect(rolled.lastRoll?.result).toBe("failure");
     expect(rolled.xpEarned).toBe(state.xpEarned);
-    expect(rolled.rollXp).toBeUndefined();
+    expect(rolled.heroRollXp).toBeUndefined();
   });
 
   it("pays nothing when the rules have no roll XP", () => {
@@ -3623,18 +3628,68 @@ describe("XP for rolls that go well", () => {
     const state = atCheck(context);
     const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
     expect(rolled.xpEarned).toBe(state.xpEarned);
-    expect(rolled.rollXp).toBeUndefined();
+    expect(rolled.heroRollXp).toBeUndefined();
   });
 
-  it("stops at the chapter's cap", () => {
-    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, chapterCap: 3 } }), rng: fixedRng(20) });
-    const state = { ...atCheck(context), rollXp: 2 };
+  it("pays a natural 20 on top of the check it succeeds, to the hero who rolled it", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, natural20: 3, chapterCap: 100 } }), rng: fixedRng(20) });
+    const state = atCheck(context);
     const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
-    expect(rolled.rollXp).toBe(3);
-    expect(rolled.xpEarned).toBe(state.xpEarned + 1);
+    const roller = rolled.lastRoll?.characterId ?? "";
+    expect(rolled.xpEarned).toBe(state.xpEarned);
+    expect(rolled.heroRollXp).toEqual({ [roller]: 5 });
   });
 
-  it("pays for each hit the heroes land in a fight, and not for the monsters'", () => {
+  it("pays no natural 20 bonus for a roll that is not one", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, natural20: 3, chapterCap: 100 } }), rng: fixedRng(19) });
+    const state = atCheck(context);
+    const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    expect(rolled.lastRoll?.die).toBe(19);
+    expect(heroTotal(rolled)).toBe(rolled.lastRoll?.result === "success" ? 2 : 0);
+  });
+
+  it("pays nobody but the roller", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, natural20: 3, chapterCap: 100 } }), rng: fixedRng(20) });
+    const state = atCheck(context);
+    const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    const others = rolled.party.filter((m) => m.character.id !== rolled.lastRoll?.characterId);
+    expect(others.length).toBeGreaterThan(0);
+    for (const m of others) expect(rolled.heroRollXp?.[m.character.id] ?? 0).toBe(0);
+  });
+
+  it("keeps a chapter begun before individual roll XP on its one shared pot", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, natural20: 3, chapterCap: 30 } }), rng: fixedRng(20) });
+    // A run persisted before roll XP was individual: 28 of the shared 30 already paid.
+    const state: RunState = { ...atCheck(context), rollXp: 28 };
+    const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    expect(rolled.xpEarned).toBe(state.xpEarned + 2);
+    expect(rolled.rollXp).toBe(30);
+    expect(rolled.heroRollXp).toBeUndefined();
+  });
+
+  it("clears a legacy shared pot when the next chapter starts", () => {
+    const context = ctx({ rules: paying, rng: fixedRng(20) });
+    const seated: RunState = { ...seatedParty(context), rollXp: 28 };
+    const started = applyIntent(seated, { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } }, context).state;
+    expect(started.rollXp).toBeUndefined();
+  });
+
+  it("stops at the chapter's cap, for each hero on her own", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, chapterCap: 3 } }), rng: fixedRng(20) });
+    const base = atCheck(context);
+    const state: RunState = {
+      ...base,
+      heroRollXp: Object.fromEntries(base.party.map((m) => [m.character.id, 2])),
+    };
+    const rolled = applyIntent(state, { playerId: "p_2", intent: { type: "ROLL" } }, context).state;
+    const roller = rolled.lastRoll?.characterId ?? "";
+    expect(rolled.heroRollXp?.[roller]).toBe(3);
+    for (const m of rolled.party) {
+      if (m.character.id !== roller) expect(rolled.heroRollXp?.[m.character.id]).toBe(2);
+    }
+  });
+
+  it("pays each hero for her own hits in a fight, and the party nothing", () => {
     const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, chapterCap: 100 } }), rng: fixedRng(20) });
     let state = walk(
       seatedParty(context),
@@ -3647,15 +3702,107 @@ describe("XP for rolls that go well", () => {
       ],
       context,
     ).state;
-    const checkXp = state.rollXp ?? 0;
+    const checkXp = heroTotal(state);
+    const partyXp = state.xpEarned;
     const begun = applyIntent(state, { playerId: "p_2", intent: { type: "READY", ready: true } }, context);
     if (!begun.state.encounter) throw new Error("expected a fight in progress");
     state = fightToTheEnd(begun.state, context);
-    expect(state.rollXp ?? 0).toBeGreaterThan(checkXp);
-    expect(state.xpEarned).toBeGreaterThanOrEqual(state.rollXp ?? 0);
+    expect(heroTotal(state)).toBeGreaterThan(checkXp);
+    expect(state.xpEarned).toBe(partyXp);
   });
 
-  it("pays more when foes are knocked out", () => {
+  it("pays the hero who lands a natural 20 an attack", () => {
+    const play = (natural20: number): { heroes: number; party: number } => {
+      const context = ctx({ rules: makeRules({ rollXp: { check: 0, attack: 1, natural20, chapterCap: 1000 } }), rng: fixedRng(20) });
+      const state = walk(
+        seatedParty(context),
+        [
+          { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+          { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+          { playerId: "p_2", intent: { type: "ROLL" } },
+          { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+          { playerId: "p_1", intent: { type: "READY", ready: true } },
+        ],
+        context,
+      ).state;
+      const begun = applyIntent(state, { playerId: "p_2", intent: { type: "READY", ready: true } }, context);
+      const done = fightToTheEnd(begun.state, context);
+      return { heroes: heroTotal(done), party: done.xpEarned };
+    };
+    expect(play(3).heroes).toBeGreaterThan(play(0).heroes);
+  });
+
+  it("pays the acting hero exactly attack plus natural 20 for one natural 20 attack, and nobody else", () => {
+    const context = ctx({ rules: makeRules({ rollXp: { check: 2, attack: 1, natural20: 3, chapterCap: 100 } }), rng: fixedRng(20) });
+    const begun = applyIntent(
+      walk(
+        seatedParty(context),
+        [
+          { playerId: "p_1", intent: { type: "START_CHAPTER", chapterId: "bramblewood-01" } },
+          { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+          { playerId: "p_2", intent: { type: "ROLL" } },
+          { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "east" } },
+          { playerId: "p_1", intent: { type: "READY", ready: true } },
+        ],
+        context,
+      ).state,
+      { playerId: "p_2", intent: { type: "READY", ready: true } },
+      context,
+    ).state;
+    const combatContext = { rules: context.rules, abilities: context.abilities ?? {}, rng: context.rng };
+    // Play the fight forward, a turn at a time, until a hero has a swing in reach.
+    let ready = begun;
+    for (let turn = 0; turn < 40; turn++) {
+      const enc = ready.encounter!;
+      const actor = currentActor(enc);
+      const member = actor ? ready.party.find((m) => m.character.id === actor.id) : undefined;
+      if (!actor || !member) break;
+      if (legalActions(enc, combatContext).some((a: LegalAction) => a.targets.length > 0)) break;
+      const at = enc.board.actors.find((a) => a.id === actor.id);
+      const plan = at
+        ? planEnemyTurn({
+            board: enc.board,
+            enemy: { id: actor.id, at: { x: at.x, y: at.y }, steps: actor.steps },
+            party: enc.combatants
+              .filter((c) => c.side === "enemy")
+              .map((c) => {
+                const spot = enc.board.actors.find((a) => a.id === c.id);
+                return { id: c.id, at: { x: spot?.x ?? 0, y: spot?.y ?? 0 }, hp: c.hp, maxHp: c.maxHp, down: c.down };
+              }),
+          })
+        : undefined;
+      if (plan?.moveTo) {
+        const moved = applyIntent(ready, { playerId: member.playerId, intent: { type: "MOVE", to: plan.moveTo } as ClientIntent }, context);
+        if (!moved.error) ready = moved.state;
+      }
+      if (legalActions(ready.encounter!, combatContext).some((a: LegalAction) => a.targets.length > 0)) break;
+      ready = applyIntent(ready, { playerId: member.playerId, intent: { type: "END_TURN" } as ClientIntent }, context).state;
+    }
+    const encounter = ready.encounter!;
+    const actorId = currentActorId(encounter);
+    const member = ready.party.find((m) => m.character.id === actorId);
+    if (!member) throw new Error("expected a hero to act first");
+    const attack = legalActions(encounter, combatContext).find((a: LegalAction) => a.targets.length > 0);
+    if (!attack) throw new Error("expected the hero to have an attack in reach");
+
+    const swung = applyIntent(
+      ready,
+      { playerId: member.playerId, intent: { type: "COMBAT_ACTION", abilityId: attack.abilityId, targetId: attack.targets[0]! } as ClientIntent },
+      context,
+    );
+    expect(swung.error).toBeUndefined();
+    const before = ready.heroRollXp ?? {};
+    const after = swung.state.heroRollXp ?? {};
+    // A natural 20 always hits: 1 for the attack, 3 more for the natural 20.
+    expect((after[actorId!] ?? 0) - (before[actorId!] ?? 0)).toBe(4);
+    for (const m of ready.party) {
+      if (m.character.id === actorId) continue;
+      expect(after[m.character.id] ?? 0).toBe(before[m.character.id] ?? 0);
+    }
+    expect(swung.state.xpEarned).toBe(ready.xpEarned);
+  });
+
+  it("pays more when foes are knocked out, to the hero who knocks them out", () => {
     const play = (defeat: number): number => {
       const context = ctx({ rules: makeRules({ rollXp: { check: 0, attack: 1, defeat, chapterCap: 1000 } }), rng: fixedRng(20) });
       const state = walk(
@@ -3678,7 +3825,7 @@ describe("XP for rolls that go well", () => {
           combatants: begun.state.encounter!.combatants.map((c) => (c.side === "enemy" ? { ...c, hp: 1 } : c)),
         },
       };
-      return fightToTheEnd(fragile, context).rollXp ?? 0;
+      return heroTotal(fightToTheEnd(fragile, context));
     };
     expect(play(5)).toBeGreaterThan(play(0));
   });
