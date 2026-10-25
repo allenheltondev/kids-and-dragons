@@ -1859,7 +1859,8 @@
         },
         "fuel": {
           "requires": [
-            "temple_keeper"
+            "temple_keeper",
+            "dob"
           ],
           "introduces": {}
         },
@@ -1872,6 +1873,13 @@
         "fuel_twigs": {
           "requires": [
             "temple_keeper"
+          ],
+          "introduces": {}
+        },
+        "fuel_lace": {
+          "requires": [
+            "temple_keeper",
+            "dob"
           ],
           "introduces": {}
         },
@@ -1969,6 +1977,13 @@
           ],
           "introduces": {}
         },
+        "ferry_whistle": {
+          "requires": [
+            "temple_keeper",
+            "fenwick"
+          ],
+          "introduces": {}
+        },
         "ferry_post": {
           "requires": [
             "temple_keeper",
@@ -1997,6 +2012,14 @@
         "passengers": {
           "requires": [
             "thimble"
+          ],
+          "introduces": {}
+        },
+        "passengers_fed": {
+          "requires": [
+            "temple_keeper",
+            "thimble",
+            "hens"
           ],
           "introduces": {}
         },
@@ -2045,6 +2068,7 @@
             "temple_keeper",
             "seren",
             "pip",
+            "dob",
             "hens",
             "distant_song"
           ],
@@ -2089,6 +2113,13 @@
             "temple_keeper",
             "seren",
             "fenwick"
+          ],
+          "introduces": {}
+        },
+        "bearing_chime": {
+          "requires": [
+            "temple_keeper",
+            "seren"
           ],
           "introduces": {}
         },

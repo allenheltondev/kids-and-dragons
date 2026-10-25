@@ -89,13 +89,20 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "Every hand finds a ring. The gust howls over your heads and moves on. The keeper counts you with her chin. \"Good grips. Most visitors arrive by sitting down hard.\" She leads you past a gold-roofed shrine with a bronze bell as big as a barrel. Wind banners snap above it, each one pointing a different way. \"Walk where I walk,\" she says. \"Ask questions when both feet are happy.\"",
+      "narration": "Every hand finds a ring. The gust howls over your heads and moves on. The keeper counts you with her chin. \"Good grips. Most visitors arrive by sitting down hard.\" She leads you past a gold-roofed shrine with a bronze bell as big as a barrel. Wind banners snap above it, each one pointing a different way. \"Walk where I walk,\" she says. \"Ask questions when both feet are happy.\" She presses a wrapped supper bundle into your hands. \"Eat when the wind lets you.\"",
       "choices": [
         {
           "id": "continue",
           "label": "Follow the keeper",
           "icon": "hand",
           "goto": "lesson"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
         }
       ]
     },
@@ -107,7 +114,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The wind scoops your whole party off its feet. You slide across the boards like soap. The keeper flings her rope and hooks the last boot an arm's length from the edge. Everyone is safe, if scraped. Your hats keep going. One lands on a passing gull, which now looks very official. \"Welcome,\" says the keeper, dusting off her tails. \"That is how the pad says hello.\"",
+      "narration": "The wind scoops your whole party off its feet. You slide across the boards like soap. The keeper flings her rope and hooks the last boot an arm's length from the edge. Everyone is safe, if scraped. Your hats keep going. One lands on a passing gull, which now looks very official. \"Welcome,\" says the keeper, dusting off her tails. \"That is how the pad says hello.\" She tosses you a wrapped supper bundle for the scrapes.",
       "choices": [
         {
           "id": "continue",
@@ -122,6 +129,11 @@
           "amount": 1,
           "to": "party",
           "nonlethal": true
+        },
+        {
+          "type": "grantItem",
+          "itemId": "supper_bundle",
+          "to": "party"
         }
       ]
     },
@@ -645,13 +657,28 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "Dob stops, one wheel on the last plank, and looks down. He looks up. He looks at his map, and turns it right side up. \"Ah,\" he says. The keeper does not scold. She makes him tea he forgets to drink. \"I sell kites to the island across,\" says Dob. \"The road went wrong, and I did not. I think.\" He unrolls a bundle of bright kite-flags with long tails. \"You saved my cart. Wave these, and the whole sky will see.\"",
+      "narration": "Dob stops, one wheel on the last plank, and looks down. He looks up. He looks at his map, and turns it right side up. \"Ah,\" he says. The keeper does not scold. She makes him tea he forgets to drink. \"I sell kites to the island across,\" says Dob. \"The road went wrong, and I did not. I think.\" He unrolls a bundle of bright kite-flags with long tails. \"You saved my cart. Wave these, and the whole sky will see.\" He ties a springy kite-string lace around your ankle. \"For quick feet.\" Then he counts four coins into your hand, with a bow.",
       "choices": [
         {
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
           "goto": "edge_merge"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "dob_safe"
+        },
+        {
+          "type": "grantItem",
+          "itemId": "quickfoot_lace",
+          "to": "party"
+        },
+        {
+          "type": "grantCoins",
+          "amount": 4
         }
       ]
     },
@@ -663,13 +690,23 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The cart tips at the last plank, one wheel in the sky. You and the keeper haul on the rope while kites spill off like startled birds. A few escape. Most snag on the posts. Dob dangles from his strap, smiling, his hat gone. \"Ah,\" he says. \"Wrong road.\" Back on stone, he gathers what is left, a bundle of bright kite-flags with long tails. \"I sell kites to the island across. Wave these, and the whole sky will see.\"",
+      "narration": "The cart tips at the last plank, one wheel in the sky. You and the keeper haul on the rope while kites spill off like startled birds. A few escape. Most snag on the posts. Dob dangles from his strap, smiling, his hat gone. \"Ah,\" he says. \"Wrong road.\" Back on stone, he gathers what is left, a bundle of bright kite-flags with long tails. \"I sell kites to the island across. Wave these, and the whole sky will see.\" He presses three coins into your hand, all he can find in his pockets.",
       "choices": [
         {
           "id": "continue",
           "label": "Go on",
           "icon": "hand",
           "goto": "edge_merge"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "dob_rescued"
+        },
+        {
+          "type": "grantCoins",
+          "amount": 3
         }
       ]
     },
@@ -895,6 +932,13 @@
           "icon": "arrow",
           "goto": "fuel_dash",
           "requiresClass": "duskrunner"
+        },
+        {
+          "id": "lace",
+          "label": "Tie on Dob's lace and run for the dry logs",
+          "icon": "arrow",
+          "goto": "fuel_lace",
+          "requiresItem": "quickfoot_lace"
         }
       ]
     },
@@ -927,6 +971,24 @@
       "stat": "quick",
       "tn": 12,
       "prompt": "Dash after the windfall twigs before the wind scatters them over the edge. Grab and stuff them in your sacks!",
+      "onSuccess": {
+        "goto": "fuel_dry"
+      },
+      "onFailure": {
+        "goto": "fuel_soggy"
+      }
+    },
+    "fuel_lace": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Dob's springy lace on your ankle makes your feet light. Race the gusts to the dry logs and bring them back.",
       "onSuccess": {
         "goto": "fuel_dry"
       },
@@ -1112,7 +1174,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The flame catches, flares, and stands up tall and gold. The whole basket glows like a lantern. Far off in the mist, a tiny answering light blinks once, twice. The keeper's face unclenches. \"There. Now the sky can find us.\" The edge is told about, and lit. For the first time the island feels like a place on a map. Pip bows to the basket, and the basket, being on fire, glows politely back.",
+      "narration": "The flame catches, flares, and stands up tall and gold. The whole basket glows like a lantern. Far off in the mist, a tiny answering light blinks once, twice. The keeper's face unclenches. \"There. Now the sky can find us.\" The edge is told about, and lit. For the first time the island feels like a place on a map. Pip bows to the basket, and the basket, being on fire, glows politely back. The keeper hands you a brass whistle from the shrine. \"One loud note, for when the sky needs to hear you.\"",
       "choices": [
         {
           "id": "continue",
@@ -1125,6 +1187,15 @@
         {
           "type": "setFlag",
           "flag": "guarded_the_island_edge"
+        },
+        {
+          "type": "setFlag",
+          "flag": "got_the_whistle"
+        },
+        {
+          "type": "grantItem",
+          "itemId": "brave_whistle",
+          "to": "party"
         }
       ]
     },
@@ -1198,6 +1269,19 @@
           "icon": "shield",
           "goto": "ferry_post",
           "requiresClass": "thornguard"
+        },
+        {
+          "id": "whistle",
+          "label": "Blow the brass whistle so she can steer by it",
+          "icon": "spark",
+          "goto": "ferry_whistle",
+          "requiresItem": "brave_whistle",
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": "brave_whistle"
+            }
+          ]
         }
       ],
       "variants": [
@@ -1277,6 +1361,28 @@
         "goto": "ferry_bumped"
       }
     },
+    "ferry_whistle": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/courier_griffin",
+          "name": "Fenwick"
+        }
+      ],
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "One loud brass note rolls out over the gap. Call the ferry in with it, note by note, so she steers straight to the pad.",
+      "onSuccess": {
+        "goto": "ferry_in"
+      },
+      "onFailure": {
+        "goto": "ferry_bumped"
+      }
+    },
     "ferry_post": {
       "type": "check",
       "cast": [
@@ -1318,6 +1424,30 @@
           "label": "Help the passengers off",
           "icon": "hand",
           "goto": "passengers"
+        },
+        {
+          "id": "share",
+          "label": "Share your supper with the passengers first",
+          "icon": "heart",
+          "goto": "passengers_fed",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
         }
       ],
       "variants": [
@@ -1348,6 +1478,30 @@
           "label": "Help the passengers off",
           "icon": "hand",
           "goto": "passengers"
+        },
+        {
+          "id": "share",
+          "label": "Share your supper with the passengers first",
+          "icon": "heart",
+          "goto": "passengers_fed",
+          "when": {
+            "count": {
+              "of": [
+                "supper_bundle",
+                "honeycake"
+              ],
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "takeItem",
+              "itemId": [
+                "supper_bundle",
+                "honeycake"
+              ]
+            }
+          ]
         }
       ],
       "variants": [
@@ -1376,6 +1530,28 @@
       "onFailure": {
         "goto": "passengers_stuck"
       }
+    },
+    "passengers_fed": {
+      "type": "story",
+      "cast": [
+        {
+          "figure": "cast/captain_thimble",
+          "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "narration": "You pass the wrapped supper around. A hungry passenger sniffs it, then smiles. One by one the passengers let go of the rail, just to hold a piece of bread. The keeper sends them to the shrine for barley tea, and the hens follow, in a line. Thimble drops onto a barrel, finally quiet enough to think.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Sit with Thimble",
+          "icon": "hand",
+          "goto": "thimble"
+        }
+      ]
     },
     "passengers_calm": {
       "type": "story",
@@ -1505,7 +1681,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The keeper builds a wind wall of baskets and blankets behind the shrine. Hot barley tea goes around in chipped cups. The hens roost on Pip, who bears it nobly. Far off, the low song comes again, slower than before. Seren says the next part is the hardest to hear and the easiest to miss. Everyone gets warm.",
+      "narration": "The keeper builds a wind wall of baskets and blankets behind the shrine. Hot barley tea goes around in chipped cups. The hens roost on Pip, who bears it nobly. Far off, the low song comes again, slower than before. Seren says the next part is the hardest to hear and the easiest to miss. Everyone gets warm. Dob has hung his kites along the wind wall like laundry, and a ribbon cart sits open beside the fire.",
       "choices": [
         {
           "id": "rest",
@@ -1518,6 +1694,28 @@
           "label": "Help Pip dry his notebook",
           "icon": "heart",
           "goto": "pip_night"
+        },
+        {
+          "id": "buy",
+          "label": "Buy a songbird ribbon from Dob's cart (3 coins)",
+          "icon": "heart",
+          "goto": "night_song",
+          "when": {
+            "coins": {
+              "min": 3
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 3
+            },
+            {
+              "type": "grantItem",
+              "itemId": "songbird_ribbon",
+              "to": "party"
+            }
+          ]
         },
         {
           "id": "mend",
@@ -1616,6 +1814,13 @@
           "icon": "heart",
           "goto": "bearing_sing",
           "requiresClass": "songkeeper"
+        },
+        {
+          "id": "chime",
+          "label": "Ring your listening chime and listen for its echo",
+          "icon": "star",
+          "goto": "bearing_chime",
+          "requiresItem": "listening_chime"
         }
       ]
     },
@@ -1662,6 +1867,28 @@
       "tn": 12,
       "roller": "all",
       "prompt": "Each of you takes a place around the edge with a feather or a lantern. Call out when yours leans, and see if most of you agree.",
+      "onSuccess": {
+        "goto": "bearing_found"
+      },
+      "onFailure": {
+        "goto": "bearing_blurred"
+      }
+    },
+    "bearing_chime": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Ring the listening chime beside the song. An echo that leans one way shows where the song leads. Can you read it?",
       "onSuccess": {
         "goto": "bearing_found"
       },
