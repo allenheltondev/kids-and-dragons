@@ -156,6 +156,9 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
+      "tags": [
+        "swim"
+      ],
       "narration": "Feet first means you meet the rocks with your boots, not your face. Everyone rolls onto their backs, all along the rope.",
       "prompt": "Roll onto your back with your boots pointing downstream, and keep the rope tight.",
       "roller": "party",
@@ -173,6 +176,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "swim"
+      ],
       "narration": "The bank looks so near. You kick as hard as you can and drag the whole line with you.",
       "prompt": "Kick for the east bank, and pull the others along with you.",
       "roller": "party",
@@ -255,6 +261,9 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
+      "tags": [
+        "climb"
+      ],
       "narration": "A wide, flat floe floats beside you like a raft that has decided to help.",
       "prompt": "Everyone heaves onto the floe at the same moment.",
       "roller": "all",
@@ -272,6 +281,9 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
+      "tags": [
+        "force"
+      ],
       "narration": "A floe as big as a barn door heads for the line. You plant both feet on a smaller floe and get ready to shove.",
       "prompt": "Shove the big floe aside, and hold the others back with the rope.",
       "roller": "party",
@@ -372,6 +384,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "The line is stuck fast. A hard, steady pull should free it, if your arms do not give up first.",
       "prompt": "Haul the line in and free it from the ice stump.",
       "roller": "party",
@@ -544,6 +559,9 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
+      "tags": [
+        "swim"
+      ],
       "narration": "The trick with an eddy is that everyone has to kick the same way. Otherwise, you only go around faster.",
       "prompt": "Everyone kicks for the outer current on the same count.",
       "roller": "all",
@@ -622,6 +640,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "The trunks are big, and the river is bigger, but a long pole can still push off a wall.",
       "prompt": "Brace the rope across your shoulders and push the line off the jam.",
       "roller": "party",
@@ -671,6 +692,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "The rope is your friend. If everyone holds it high, then nobody can be pulled away from it.",
       "prompt": "Hold the rope high and tight until the water spits you out.",
       "roller": "party",
@@ -705,6 +729,9 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
+      "tags": [
+        "force"
+      ],
       "narration": "A thornguard stands in front. Even on a river, that is the whole job.",
       "prompt": "Take the bumps against the wall, so the others glide by.",
       "roller": "party",
@@ -749,6 +776,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "Every hand on the rope is a hand that can pull. So you pull.",
       "prompt": "Everyone hauls the rope hand over hand to bring your friend back.",
       "roller": "all",
@@ -871,6 +901,9 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
+      "tags": [
+        "swim"
+      ],
       "narration": "Paddling is hard work, and hard work makes heat. You take turns on the outside of the line.",
       "prompt": "Paddle in turns to push the line along and warm up.",
       "roller": "party",
@@ -1107,9 +1140,11 @@
     },
     "grab": {
       "type": "check",
-      "tags": ["force"],
       "stat": "might",
       "tn": 16,
+      "tags": [
+        "force"
+      ],
       "narration": "The lip is smooth and cold, and very close. You reach for it with both hands.",
       "prompt": "Catch the ledge and pull the rope toward shore.",
       "roller": "party",
@@ -1198,6 +1233,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "Smash can break a barrier, and a lip of ice is only a barrier that looks like a handle.",
       "prompt": "A broken ice handhold helps. Pull the rope toward it.",
       "roller": "party",
@@ -1242,6 +1280,9 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "Wet wings are heavy, but they can still lift a rope. The roller will have to pull it into a firm hold.",
       "prompt": "Wings lift the rope toward the ledge. Pull it into a firm hold.",
       "roller": "party",
@@ -1462,9 +1503,11 @@
     },
     "climb": {
       "type": "check",
-      "tags": ["climb"],
       "stat": "quick",
       "tn": 12,
+      "tags": [
+        "climb"
+      ],
       "prompt": "Everyone reaches the branch on the same dip.",
       "roller": "all",
       "onSuccess": {
@@ -1501,6 +1544,9 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
+      "tags": [
+        "force"
+      ],
       "narration": "A rope is for pulling, and a branch is for being pulled to. All it takes is a good throw.",
       "prompt": "Throw the loop of the rope over the branch, then pull everyone in.",
       "roller": "party",
@@ -1799,9 +1845,11 @@
     },
     "swim": {
       "type": "check",
-      "tags": ["swim"],
       "stat": "quick",
       "tn": 12,
+      "tags": [
+        "swim"
+      ],
       "prompt": "Angle the line toward the gravel and bring everyone with you.",
       "roller": "party",
       "onSuccess": {
