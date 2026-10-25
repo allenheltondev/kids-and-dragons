@@ -6,7 +6,7 @@
   "title": "When the Ferry Goes Your Way",
   "biome": "eastern_plains",
   "music": "riftlight-paths",
-  "estimatedMinutes": 8,
+  "estimatedMinutes": 14,
   "xpAward": 140,
   "entry": "bridge",
   "plate": {
@@ -31,7 +31,7 @@
   "scenes": {
     "bridge": {
       "type": "story",
-      "narration": "The bridge over the Great River is called Ashspan Bridge. Old Ossley, a frogfolk boatman, rests a pole across his flat boat. \"Changed melt,\" he says, watching a branch turn in the current. \"Busy year.\"",
+      "narration": "The bridge over the Great River is called Ashspan Bridge. Old Ossley, a frogfolk boatman, rests a pole across his flat boat. \"Changed melt,\" he says, watching a branch turn in the current. \"Busy year.\" You can help the waiting travelers board, then fetch a dry reed mat from a village in the Whispering Marsh for his slippery deck. A raised footpath runs from the bridge to the village. \"Follow the posts,\" he says. \"The ducks take shortcuts. You should not.\"",
       "choices": [
         {
           "id": "continue",
@@ -98,9 +98,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "routes"
+          "label": "Follow the posts into the marsh",
+          "icon": "travel",
+          "goto": "marsh_path"
         }
       ],
       "onEnter": [
@@ -128,9 +128,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "routes"
+          "label": "Follow the posts into the marsh",
+          "icon": "travel",
+          "goto": "marsh_path"
         }
       ],
       "onEnter": [
@@ -154,7 +154,7 @@
     },
     "routes": {
       "type": "rest",
-      "narration": "Ossley points downriver. \"The coast is called the Saltrot. When I go.\" Then he points to the road beside the boundary stones. You can ask about the coast or follow the stone-keepers' questions inland. For now, you have a safe landing and a route to discuss.",
+      "narration": "Ossley points downriver. \"The coast is called the Saltrot. When I go.\" Then he points to the road beside the boundary stones. You can ask about the coast or follow the stone-keepers' questions inland. For now, you have a safe landing and a route to discuss. He marks an upper bank road north to a landing called Frostfang Shore. \"Dry ground. Long walk. Griffin country at the far end.\"",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -165,6 +165,160 @@
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "marsh_path": {
+      "type": "choice_point",
+      "narration": "The raised path carries you into the Whispering Marsh. Reeds brush your sleeves. Ahead, a village stands on wooden legs above the water. A rolled reed mat waits beside a notice: \"For the ferry. Please keep dry.\" A puddle fills the last stretch of path. How will you carry the mat back?",
+      "choices": [
+        {
+          "id": "high",
+          "label": "Carry it high above the puddle",
+          "icon": "hand",
+          "goto": "mat_high"
+        },
+        {
+          "id": "wrap",
+          "label": "Wrap it in your dry cloak",
+          "icon": "hand",
+          "goto": "mat_wrap"
+        }
+      ]
+    },
+    "mat_high": {
+      "type": "story",
+      "narration": "You lift the mat overhead and carry it to a dry bench in the village. A duck walks under it. For a moment, the duck has a roof.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Rest by the bench",
+          "icon": "hand",
+          "goto": "village_rest"
+        }
+      ]
+    },
+    "mat_wrap": {
+      "type": "story",
+      "narration": "You wrap the mat in a dry cloak and carry it to a bench in the village. Water splashes your ankles. The mat stays dry. Your socks are less lucky.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Rest by the bench",
+          "icon": "hand",
+          "goto": "village_rest"
+        }
+      ]
+    },
+    "village_rest": {
+      "type": "rest",
+      "heal": 0,
+      "narration": "You rest beside the dry mat in the marsh village. A round tower rises above the reeds. It has no roof. A page of homework floats down and lands on a duck. The duck looks pleased with its marks. The posted path will take you back to the ferry.",
+      "choices": [
+        {
+          "id": "tower",
+          "label": "Climb the tower with no roof",
+          "icon": "star",
+          "goto": "academy"
+        },
+        {
+          "id": "return",
+          "label": "Carry the mat back to the ferry",
+          "icon": "travel",
+          "goto": "mat_return"
+        }
+      ]
+    },
+    "mat_return": {
+      "type": "story",
+      "narration": "You follow the posts out of the marsh and back to the bridge. Ossley unrolls the dry mat across his wet deck. The travelers step onto it without slipping. \"Better,\" he says. He tucks a corner under a rope so it will stay put.",
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Discuss the roads ahead",
+          "icon": "hand",
+          "goto": "routes"
+        }
+      ]
+    },
+    "academy": {
+      "type": "story",
+      "narration": "Above the marsh village, at the top of the tower is a classroom with no roof at all, only sky. This school is called the Academy. Here students learn to be a Starweaver, a hero who reads the stars. A dragonling named Professor Nettle stands beside a huge brass telescope. Homework floats up off the desks and drifts away over the reeds. Nobody chases it. \"It comes down somewhere,\" says the professor. On a cushion sits a star circlet. A Starweaver's light lives in that circlet, and a dusk hood worn beside it starts to itch. \"Anyone who wants the circlet,\" says Professor Nettle, \"may try it on.\"",
+      "variants": [
+        {
+          "when": {
+            "flag": "met_professor_nettle"
+          },
+          "text": "Professor Nettle waves from beside the big brass telescope. \"Back at the Academy! Mind the homework.\" A page floats past your nose and off over the reeds. The star circlet waits on its cushion for anyone who wants to try it on.",
+          "replace": true
+        }
+      ],
+      "classPlace": "starweaver",
+      "cast": [
+        {
+          "figure": "cast/professor_nettle",
+          "name": "Professor Nettle"
+        }
+      ],
+      "choices": [
+        {
+          "id": "telescope",
+          "label": "Look through the telescope",
+          "icon": "eye",
+          "goto": "academy_stars",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_professor_nettle",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "back",
+          "label": "Back down to the village",
+          "icon": "back",
+          "goto": "village_rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_professor_nettle",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/academy"
+    },
+    "academy_stars": {
+      "type": "story",
+      "narration": "Professor Nettle lets you look through the telescope. Even by day, the stars are so close you could count their points. Then the telescope sneezes. Brass rattles. Dust puffs out of the far end. \"Bless you,\" says the professor, to the telescope. \"It does that when it sees something new.\"",
+      "cast": [
+        {
+          "figure": "cast/professor_nettle",
+          "name": "Professor Nettle"
+        }
+      ],
+      "choices": [
+        {
+          "id": "back",
+          "label": "Back down to the village",
+          "icon": "back",
+          "goto": "village_rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_professor_nettle",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/classes/academy"
     }
   },
   "voiceGuide": {
