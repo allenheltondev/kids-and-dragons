@@ -1,0 +1,1247 @@
+--- a/assets/manifest.json
++++ b/assets/manifest.json
+@@ -1047,7 +1047,17 @@
+     "scenes/riftlight/boundary-river-row",
+     "scenes/riftlight/boundary-mountain-carving",
+     "scenes/riftlight/tidepocket-open-hatch",
+-    "scenes/riftlight/boundary-river-row-aligned"
++    "scenes/riftlight/boundary-river-row-aligned",
++    "scenes/riftlight/exchange-noodle-awning",
++    "scenes/riftlight/exchange-barge-sacks",
++    "scenes/riftlight/exchange-leaning-crates",
++    "scenes/riftlight/glacier-snow-lip",
++    "scenes/riftlight/glacier-meltwater-step",
++    "scenes/riftlight/glacier-herd-rest",
++    "scenes/riftlight/departure-loaded-sledge",
++    "scenes/riftlight/departure-chime-rest",
++    "scenes/riftlight/ice-shelf-roped-gap",
++    "scenes/riftlight/headwaters-log-chute"
+   ],
+   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
+   "campaignArt": {
+@@ -2734,5 +2744,81 @@
+         "freed": "entities/snowhorn_goat/portrait.webp"
+       }
+     ]
++  },
++  "storyProps": {
++    "canvas": {
++      "width": 512,
++      "height": 512
++    },
++    "edgeMarginPx": 24,
++    "ids": [
++      "rope-loop",
++      "relay-sack",
++      "relay-log",
++      "relay-plank",
++      "relay-hay",
++      "relay-oil-jar",
++      "relay-scarf",
++      "relay-trunk",
++      "snow-mound",
++      "water-surge",
++      "note-low",
++      "note-middle",
++      "note-high"
++    ],
++    "motions": {
++      "rope-loop": {
++        "preset": "swing",
++        "durationMs": 2600
++      },
++      "relay-sack": {
++        "preset": "relay",
++        "durationMs": 3200
++      },
++      "relay-log": {
++        "preset": "relay",
++        "durationMs": 3200
++      },
++      "relay-plank": {
++        "preset": "relay",
++        "durationMs": 3200
++      },
++      "relay-hay": {
++        "preset": "relay",
++        "durationMs": 3200
++      },
++      "relay-oil-jar": {
++        "preset": "relay",
++        "durationMs": 3200
++      },
++      "relay-scarf": {
++        "preset": "sway",
++        "durationMs": 2600
++      },
++      "relay-trunk": {
++        "preset": "relay",
++        "durationMs": 3200
++      },
++      "snow-mound": {
++        "preset": "still",
++        "durationMs": 2600
++      },
++      "water-surge": {
++        "preset": "surge",
++        "durationMs": 2600
++      },
++      "note-low": {
++        "preset": "pulse",
++        "durationMs": 2600
++      },
++      "note-middle": {
++        "preset": "pulse",
++        "durationMs": 2600
++      },
++      "note-high": {
++        "preset": "pulse",
++        "durationMs": 2600
++      }
++    }
+   }
+ }
+--- a/content/chapters/riftlight-exchange-rift.json
++++ b/content/chapters/riftlight-exchange-rift.json
+@@ -41,7 +41,7 @@
+           "goto": "morning"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-noodle-awning",
+       "cast": [
+         {
+           "figure": "cast/soup_woman",
+@@ -79,7 +79,7 @@
+           ]
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-noodle-awning",
+       "cast": [
+         {
+           "figure": "entities/quay_gull",
+@@ -104,7 +104,7 @@
+           "goto": "delivery"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-quay",
++      "art": "scenes/riftlight/exchange-noodle-awning",
+       "cast": [
+         {
+           "figure": "cast/fishmonger",
+@@ -130,7 +130,7 @@
+           "value": true
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-noodle-stall",
++      "art": "scenes/riftlight/exchange-noodle-awning",
+       "cast": [
+         {
+           "figure": "cast/fishmonger",
+@@ -159,7 +159,7 @@
+           "goto": "delivery"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-quay",
++      "art": "scenes/riftlight/exchange-noodle-awning",
+       "cast": [
+         {
+           "figure": "entities/quay_gull",
+@@ -178,7 +178,7 @@
+           "goto": "delivery"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-quay",
++      "art": "scenes/riftlight/exchange-noodle-awning",
+       "cast": [
+         {
+           "figure": "entities/quay_gull",
+@@ -209,7 +209,7 @@
+           "name": "Captain Thimble"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks"
++      "art": "scenes/riftlight/exchange-noodle-awning"
+     },
+     "ship_help": {
+       "type": "story",
+@@ -228,7 +228,7 @@
+           "name": "Captain Thimble"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks"
++      "art": "scenes/riftlight/exchange-noodle-awning"
+     },
+     "ship_cold": {
+       "type": "story",
+@@ -247,7 +247,7 @@
+           "name": "Captain Thimble"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks"
++      "art": "scenes/riftlight/exchange-noodle-awning"
+     },
+     "quay": {
+       "type": "choice_point",
+@@ -266,12 +266,14 @@
+           "goto": "clear_quay"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady"
+     },
+     "check_pattern": {
+       "type": "check",
+-      "tags": ["search"],
++      "tags": [
++        "search"
++      ],
+       "stat": "clever",
+       "tn": 8,
+       "prompt": "Can you spot which loose things will slide first?",
+@@ -291,7 +293,7 @@
+         "goto": "pattern_missed",
+         "narration": "A barrel lid shoots past your ankle before you can point."
+       },
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady"
+     },
+     "pattern_seen": {
+@@ -305,7 +307,7 @@
+           "goto": "shimmer"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady"
+     },
+     "pattern_missed": {
+@@ -319,7 +321,7 @@
+           "goto": "shimmer"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady"
+     },
+     "clear_quay": {
+@@ -333,7 +335,7 @@
+           "goto": "shimmer"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady",
+       "cast": [
+         {
+@@ -378,11 +380,11 @@
+           "flag": "found_the_cold_fold"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "open",
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -398,7 +400,7 @@
+           "goto": "pull"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady"
+     },
+     "pull": {
+@@ -468,11 +470,11 @@
+           "text": "From his safely moored boat, the pilot calls, \"Watch that crate on your left!\" You see it tilt in time to step clear."
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady",
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         },
+         {
+@@ -504,7 +506,7 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         },
+         {
+@@ -512,12 +514,14 @@
+           "name": "Dock worker"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady"
+     },
+     "anchor": {
+       "type": "check",
+-      "tags": ["force"],
++      "tags": [
++        "force"
++      ],
+       "stat": "might",
+       "tn": 12,
+       "prompt": "Hold the line while everyone grabs on.",
+@@ -539,7 +543,7 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         },
+         {
+@@ -547,7 +551,7 @@
+           "name": "Dock worker"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady"
+     },
+     "swoop": {
+@@ -573,7 +577,7 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         },
+         {
+@@ -581,12 +585,14 @@
+           "name": "Dock worker"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady"
+     },
+     "smash": {
+       "type": "check",
+-      "tags": ["force"],
++      "tags": [
++        "force"
++      ],
+       "stat": "might",
+       "tn": 8,
+       "prompt": "Smash breaks a crate into a barrier. Can you guide the loose line around it?",
+@@ -608,7 +614,7 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         },
+         {
+@@ -616,7 +622,7 @@
+           "name": "Dock worker"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady"
+     },
+     "brace": {
+@@ -642,7 +648,7 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         },
+         {
+@@ -650,7 +656,7 @@
+           "name": "Dock worker"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady"
+     },
+     "caught": {
+@@ -664,11 +670,11 @@
+           "goto": "through"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady",
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         },
+         {
+@@ -688,11 +694,11 @@
+           "goto": "through"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady",
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         },
+         {
+@@ -712,11 +718,11 @@
+           "goto": "through"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-leaning-crates",
+       "rift": "steady",
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -739,11 +745,11 @@
+           "flag": "kept_the_kid_safe"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/glacier-snow-lip",
+       "rift": "collapse",
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -754,10 +760,10 @@
+       "heal": 0,
+       "choices": [],
+       "outcome": "success",
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-snow-lip",
++      "cast": [
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -779,7 +785,7 @@
+           "goto": "delivery_moor"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-barge-sacks",
+       "cast": [
+         {
+           "figure": "entities/frogfolk",
+@@ -809,7 +815,7 @@
+           "flag": "helped_the_barge"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-barge-sacks",
+       "cast": [
+         {
+           "figure": "entities/frogfolk",
+@@ -839,7 +845,7 @@
+           "flag": "helped_the_barge"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-docks",
++      "art": "scenes/riftlight/exchange-barge-sacks",
+       "cast": [
+         {
+           "figure": "entities/frogfolk",
+@@ -865,7 +871,7 @@
+           "goto": "quay"
+         }
+       ],
+-      "art": "scenes/gemfall/exchange-noodle-stall",
++      "art": "scenes/riftlight/exchange-noodle-awning",
+       "cast": [
+         {
+           "figure": "entities/frogfolk",
+--- a/content/chapters/riftlight-glacier-survival.json
++++ b/content/chapters/riftlight-glacier-survival.json
+@@ -50,13 +50,13 @@
+           "goto": "shelter"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/glacier-snow-lip",
+       "discovers": [
+         "creature.snowhorn_goat"
+       ],
+       "cast": [
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -85,10 +85,10 @@
+           "requiresSpecies": "unicorn"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-snow-lip",
++      "cast": [
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -111,10 +111,10 @@
+           "value": true
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-snow-lip",
++      "cast": [
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -130,10 +130,10 @@
+           "goto": "drift"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-snow-lip",
++      "cast": [
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -149,10 +149,10 @@
+           "goto": "drift"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-snow-lip",
++      "cast": [
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -180,7 +180,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "cast/goat_kid",
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ],
+@@ -207,7 +207,7 @@
+           "text": "You point out the hollow behind you. She nods. \"And you found your own way out. Keep that rope.\""
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/glacier-snow-lip"
+     },
+     "tell_rift": {
+       "type": "story",
+@@ -220,14 +220,14 @@
+           "goto": "channel"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-snow-lip",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -243,14 +243,14 @@
+           "goto": "channel"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-snow-lip",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -289,14 +289,14 @@
+           "requiresClass": "songkeeper"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-meltwater-step",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -322,14 +322,14 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-meltwater-step",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -355,14 +355,14 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-meltwater-step",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -388,14 +388,14 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-meltwater-step",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -421,14 +421,14 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-meltwater-step",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -455,14 +455,14 @@
+           "flag": "goat_back_with_herd"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-herd-rest",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -484,14 +484,14 @@
+           "flag": "goat_back_with_herd"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-herd-rest",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -519,14 +519,14 @@
+           "goto": "hum"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-herd-rest",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -542,14 +542,14 @@
+           "goto": "hall"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-herd-rest",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -565,14 +565,14 @@
+           "goto": "hall"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-herd-rest",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -588,14 +588,14 @@
+           "goto": "hall"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-herd-rest",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -899,7 +899,7 @@
+           "name": "Cloaked unicorn"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "drift": {
+       "type": "choice_point",
+@@ -924,10 +924,10 @@
+           "goto": "drift_slip"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-snow-lip",
++      "cast": [
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -954,10 +954,10 @@
+           "flag": "got_past_the_drift"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-snow-lip",
++      "cast": [
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -984,10 +984,10 @@
+           "flag": "got_past_the_drift"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-snow-lip",
++      "cast": [
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+@@ -1014,10 +1014,10 @@
+           "flag": "got_past_the_drift"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
+-      "cast": [
+-        {
+-          "figure": "cast/goat_kid",
++      "art": "scenes/riftlight/glacier-snow-lip",
++      "cast": [
++        {
++          "figure": "cast/snowhorn_kid",
+           "name": "Goat kid"
+         }
+       ]
+--- a/content/chapters/riftlight-headwaters-washout.json
++++ b/content/chapters/riftlight-headwaters-washout.json
+@@ -609,7 +609,7 @@
+           "goto": "jam_push"
+         }
+       ],
+-      "art": "scenes/riftlight/headwaters-floes"
++      "art": "scenes/riftlight/headwaters-log-chute"
+     },
+     "jam_gap": {
+       "type": "check",
+@@ -634,7 +634,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/headwaters-floes"
++      "art": "scenes/riftlight/headwaters-log-chute"
+     },
+     "jam_push": {
+       "type": "check",
+@@ -660,7 +660,7 @@
+         "goto": "chute",
+         "narration": "The line scrapes along the jam, and the branches scratch at your coats. You come loose, with a few twigs for souvenirs."
+       },
+-      "art": "scenes/riftlight/headwaters-floes"
++      "art": "scenes/riftlight/headwaters-log-chute"
+     },
+     "chute": {
+       "type": "choice_point",
+@@ -686,7 +686,7 @@
+           "requiresClass": "thornguard"
+         }
+       ],
+-      "art": "scenes/riftlight/headwaters-floes"
++      "art": "scenes/riftlight/headwaters-log-chute"
+     },
+     "chute_ride": {
+       "type": "check",
+@@ -706,7 +706,7 @@
+         "goto": "slip",
+         "narration": "The chute shakes the rope so hard that everyone's teeth rattle. You come out the other end in a tangle, but you come out together."
+       },
+-      "art": "scenes/riftlight/headwaters-floes"
++      "art": "scenes/riftlight/headwaters-log-chute"
+     },
+     "chute_steer": {
+       "type": "check",
+@@ -723,7 +723,7 @@
+         "goto": "slip",
+         "narration": "You push off too hard and spin the whole line around. You go through backward, which is not as bad as it sounds."
+       },
+-      "art": "scenes/riftlight/headwaters-floes"
++      "art": "scenes/riftlight/headwaters-log-chute"
+     },
+     "chute_brace": {
+       "type": "check",
+@@ -751,7 +751,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/headwaters-floes"
++      "art": "scenes/riftlight/headwaters-log-chute"
+     },
+     "slip": {
+       "type": "choice_point",
+@@ -770,7 +770,7 @@
+           "goto": "slip_swing"
+         }
+       ],
+-      "art": "scenes/riftlight/headwaters-floes"
++      "art": "scenes/riftlight/headwaters-log-chute"
+     },
+     "slip_haul": {
+       "type": "check",
+@@ -798,7 +798,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/headwaters-floes"
++      "art": "scenes/riftlight/headwaters-log-chute"
+     },
+     "slip_swing": {
+       "type": "check",
+@@ -815,7 +815,7 @@
+         "goto": "shiver",
+         "narration": "The first swing falls short. The next lap of the current carries your friend close enough to catch."
+       },
+-      "art": "scenes/riftlight/headwaters-floes"
++      "art": "scenes/riftlight/headwaters-log-chute"
+     },
+     "shiver": {
+       "type": "choice_point",
+--- a/content/chapters/riftlight-ice-shelf-traverse.json
++++ b/content/chapters/riftlight-ice-shelf-traverse.json
+@@ -1465,7 +1465,7 @@
+           ]
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/ice-shelf-roped-gap"
+     },
+     "cross": {
+       "type": "check",
+@@ -1494,7 +1494,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/ice-shelf-roped-gap"
+     },
+     "cross_turns": {
+       "type": "check",
+@@ -1523,7 +1523,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/ice-shelf-roped-gap"
+     },
+     "assisted": {
+       "type": "check",
+@@ -1552,7 +1552,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/ice-shelf-roped-gap"
+     },
+     "cross_whistle": {
+       "type": "check",
+@@ -1581,7 +1581,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/ice-shelf-roped-gap"
+     },
+     "across": {
+       "type": "story",
+--- a/content/chapters/riftlight-riftseekers-departure.json
++++ b/content/chapters/riftlight-riftseekers-departure.json
+@@ -65,7 +65,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "arrival_story": {
+       "type": "story",
+@@ -92,7 +92,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "arrival_question": {
+       "type": "story",
+@@ -119,7 +119,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "fellowship": {
+       "type": "story",
+@@ -146,7 +146,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "seren": {
+       "type": "story",
+@@ -187,7 +187,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "lead": {
+       "type": "story",
+@@ -221,7 +221,7 @@
+           "flag": "heard_the_travelers_plan"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "olivia": {
+       "type": "choice_point",
+@@ -254,7 +254,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "route": {
+       "type": "story",
+@@ -281,7 +281,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "chime": {
+       "type": "story",
+@@ -314,7 +314,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-chime-rest"
+     },
+     "test_chime": {
+       "type": "choice_point",
+@@ -347,7 +347,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-chime-rest"
+     },
+     "ring": {
+       "type": "story",
+@@ -380,7 +380,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-chime-rest"
+     },
+     "wrap": {
+       "type": "story",
+@@ -413,7 +413,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-chime-rest"
+     },
+     "parting": {
+       "type": "story",
+@@ -440,7 +440,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "camp": {
+       "type": "rest",
+@@ -454,7 +454,7 @@
+           "goto": "set_out"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-chime-rest"
+     },
+     "set_out": {
+       "type": "rest",
+@@ -462,7 +462,7 @@
+       "heal": 0,
+       "choices": [],
+       "outcome": "success",
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "help_now": {
+       "type": "story",
+@@ -495,7 +495,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     },
+     "safe_routes": {
+       "type": "story",
+@@ -528,7 +528,7 @@
+           "name": "Seren Wisp"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp"
++      "art": "scenes/riftlight/departure-loaded-sledge"
+     }
+   },
+   "voiceGuide": {

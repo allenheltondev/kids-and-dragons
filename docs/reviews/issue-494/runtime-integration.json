@@ -1,0 +1,83 @@
+{
+  "chapters": {
+    "riftlight-exchange-rift": [
+      "barge_toss",
+      "sack_chain",
+      "ridge_walk",
+      "ridge_lee"
+    ],
+    "riftlight-glacier-survival": [
+      "kid_burrow",
+      "crust_hold",
+      "herd_play",
+      "shelf_cross"
+    ],
+    "riftlight-riftseekers-departure": [
+      "sledge_lift",
+      "ring_sort",
+      "trial_echo",
+      "camp_play"
+    ],
+    "riftlight-ice-shelf-traverse": [
+      "ring_throw",
+      "drip_run",
+      "hold_line",
+      "level_line",
+      "slope",
+      "slope_steps",
+      "slope_rope",
+      "slope_slide"
+    ],
+    "riftlight-headwaters-washout": [
+      "floe_hop",
+      "jam_hold",
+      "scarf_pass",
+      "knob_toss",
+      "ledge_ahead"
+    ],
+    "riftlight-hidden-glacier-rift": [
+      "holes",
+      "squeeze_hold",
+      "seam_echo",
+      "beat"
+    ],
+    "riftlight-saltrot-arrival": [
+      "shell_path",
+      "hatch_party",
+      "lamp_line",
+      "tide_dash"
+    ],
+    "riftlight-frostfang-shore": [
+      "ladder_hold",
+      "bar_carry",
+      "wave_gap",
+      "hay_relay"
+    ],
+    "riftlight-cairnstep-pass": [
+      "cairn_order",
+      "drawing_memory",
+      "capstone",
+      "last_stone"
+    ],
+    "riftlight-boundary-stone-bank": [
+      "surge_check",
+      "tighten",
+      "chalk_snap",
+      "stone_order"
+    ],
+    "riftlight-ashspan-bridge": [
+      "ferry_dock",
+      "unload_relay",
+      "carry_beam",
+      "duck_play"
+    ],
+    "riftlight-sky-islands-arrival": [
+      "gust_lull",
+      "fuel_chain",
+      "camp_play",
+      "song_track",
+      "song_echo"
+    ]
+  },
+  "revision": "50388e4865b763e6f212fb4fe85f8ca76ee7a70f"
+}

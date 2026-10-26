@@ -58,7 +58,9 @@ interface Manifest {
   storyPlates?: { ids: string[] };
   paintedIcons?: { ids: string[] };
   badgeArt?: { ids: string[] };
-  entities: { id: string; classification: string }[];
+  entities: { id: string; classification: string; states?: Record<string, string> }[];
+  stageFigures?: { id: string }[];
+  storyProps?: { ids: string[] };
 }
 
 /**
@@ -307,6 +309,39 @@ const delivered = (line: Line): number => line.need - line.missing.length;
     note: "single assembled.png each — enemies do not level, so no tier dimension",
   });
 
+}
+
+{
+  const figures = manifest.stageFigures ?? [];
+  lines.push({
+    category: "Stage animals",
+    need: figures.length,
+    missing: figures.filter((figure) => !has(`assets/entities/${figure.id}`, "assembled.png"))
+      .map((figure) => `${figure.id}/assembled.png`),
+    note: "ordinary animals on the story stage, including ducklings",
+  });
+}
+
+{
+  const ids = manifest.storyProps?.ids ?? [];
+  lines.push({
+    category: "Story interaction props",
+    need: ids.length,
+    missing: ids.filter((id) => !has("assets/story-props", `${id}.webp`)),
+    note: "transparent relay objects, covers, water cue and sound glyphs",
+  });
+}
+
+{
+  const states = [...new Set(manifest.entities.flatMap((entity) =>
+    Object.values(entity.states ?? {}).filter((path) => path !== `entities/${entity.id}/assembled.png`),
+  ))];
+  lines.push({
+    category: "Entity appearance states",
+    need: states.length,
+    missing: states.filter((path) => !existsSync(join(root, "assets", path))),
+    note: "declared alternate poses, including nonlethal fight exits",
+  });
 }
 
 // --- Report ------------------------------------------------------------------

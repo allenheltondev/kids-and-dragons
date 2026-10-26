@@ -50,13 +50,13 @@
           "goto": "shelter"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "discovers": [
         "creature.snowhorn_goat"
       ],
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -85,10 +85,10 @@
           "requiresSpecies": "unicorn"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -111,10 +111,10 @@
           "value": true
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -130,10 +130,10 @@
           "goto": "wind_warm"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -149,10 +149,10 @@
           "goto": "wind_warm"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -183,7 +183,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -229,10 +229,10 @@
         "goto": "prints",
         "narration": "You line up the mounds and listen. A tiny bleat gives it away, and the kid goes back in your coat."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -267,7 +267,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -290,7 +290,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -313,7 +313,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -335,7 +335,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -363,7 +363,7 @@
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ],
@@ -390,7 +390,7 @@
           "text": "You point out the hollow behind you. She nods. \"And you found your own way out. Keep that rope.\""
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/glacier-snow-lip"
     },
     "tell_rift": {
       "type": "story",
@@ -403,14 +403,14 @@
           "goto": "herder_gift"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -426,14 +426,14 @@
           "goto": "herder_gift"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -463,7 +463,7 @@
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -490,7 +490,7 @@
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -529,14 +529,14 @@
           "requiresClass": "songkeeper"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-meltwater-step",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -562,14 +562,14 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-meltwater-step",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -595,14 +595,14 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-meltwater-step",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -628,14 +628,14 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-meltwater-step",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -661,14 +661,14 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-meltwater-step",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -695,14 +695,14 @@
           "flag": "goat_back_with_herd"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-herd-rest",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -724,14 +724,14 @@
           "flag": "goat_back_with_herd"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-herd-rest",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -780,7 +780,7 @@
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -810,7 +810,7 @@
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -841,7 +841,7 @@
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -867,7 +867,7 @@
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -896,7 +896,7 @@
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -945,14 +945,14 @@
         "goto": "herd",
         "narration": "The herder shows you a good scratching spot, and the herd settles around it."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-herd-rest",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -983,14 +983,14 @@
           "goto": "hum"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-herd-rest",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1006,14 +1006,14 @@
           "goto": "hall"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-herd-rest",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1029,14 +1029,14 @@
           "goto": "hall"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-herd-rest",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1052,14 +1052,14 @@
           "goto": "hall"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-herd-rest",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1713,7 +1713,7 @@
         "goto": "ledge_done",
         "narration": "The herder counts the gulps aloud, and you cross on the count. The pole goes in."
       },
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/glacier-meltwater-step",
       "cast": [
         {
           "figure": "cast/yeti_herder",
@@ -1770,7 +1770,7 @@
           "name": "Cloaked unicorn"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "drift": {
       "type": "choice_point",
@@ -1795,10 +1795,10 @@
           "goto": "drift_slip"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1825,10 +1825,10 @@
           "flag": "got_past_the_drift"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1855,10 +1855,10 @@
           "flag": "got_past_the_drift"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1885,10 +1885,10 @@
           "flag": "got_past_the_drift"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1914,10 +1914,10 @@
         "goto": "cairn",
         "narration": "You wedge your rope and some stones under the lip. It holds, and everyone gets through."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1949,7 +1949,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1972,7 +1972,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1995,7 +1995,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -2017,7 +2017,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -2042,7 +2042,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]

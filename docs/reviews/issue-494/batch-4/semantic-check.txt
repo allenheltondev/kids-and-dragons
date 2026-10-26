@@ -1,0 +1,1 @@
+10 original creature and portrait hashes unchanged; 24 chapter files unchanged; batch 4 registration idempotent.

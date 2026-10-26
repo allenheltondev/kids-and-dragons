@@ -1,0 +1,519 @@
+{
+  "fights": [
+    {
+      "chapter": "riftlight-headwaters-washout",
+      "scene": "drake_fight",
+      "board": "ford",
+      "creature": "river_drake",
+      "introScenes": [
+        "drake_shallows"
+      ],
+      "backdrop": "scenes/riftlight/fight-headwaters-ford",
+      "props": [
+        "pickup-river-charm"
+      ],
+      "poses": {
+        "intro": "warning",
+        "retreat": "shooed",
+        "recovery": "proud"
+      },
+      "rewardItem": "river_charm",
+      "victoryScene": "ledge_ahead",
+      "defeatScene": "drake_rescued",
+      "sharedOutcome": false,
+      "tileUrl": "/assets/fight-boards/fight_gravel_ford/tiles.png",
+      "terrainProps": [
+        "fight-wet-gravel",
+        "fight-grounded-floe"
+      ],
+      "rescueFigure": "",
+      "retreatDirection": -1,
+      "activeUrl": "/assets/entities/river_drake/warning.png",
+      "retreatUrl": "/assets/entities/river_drake/shooed.png"
+    },
+    {
+      "chapter": "riftlight-frostfang-shore",
+      "scene": "bar_crab",
+      "board": "ford",
+      "creature": "glassback_crab",
+      "introScenes": [
+        "bar_reached"
+      ],
+      "backdrop": "scenes/riftlight/frostfang-gravel-bar",
+      "props": [
+        "fight-warm-mud-hollow",
+        "pickup-luckstone"
+      ],
+      "poses": {
+        "intro": "warning",
+        "retreat": "shooed"
+      },
+      "rewardItem": "luckstone",
+      "victoryScene": "bar_carry",
+      "defeatScene": "bar_carry",
+      "sharedOutcome": true,
+      "tileUrl": "/assets/fight-boards/fight_gravel_ford/tiles.png",
+      "terrainProps": [
+        "fight-burrow-mouth",
+        "fight-washed-burrow"
+      ],
+      "rescueFigure": "tamsin_whistling",
+      "retreatDirection": 1,
+      "activeUrl": "/assets/entities/glassback_crab/warning.png",
+      "retreatUrl": "/assets/entities/glassback_crab/shooed.png"
+    },
+    {
+      "chapter": "riftlight-cairnstep-pass",
+      "scene": "cache_fight",
+      "board": "switchback",
+      "creature": "cinder_wolf",
+      "introScenes": [
+        "shelter_found"
+      ],
+      "backdrop": "scenes/riftlight/cairnstep-survey-slab",
+      "props": [
+        "fight-supply-cairn",
+        "pickup-hearthstone-bead"
+      ],
+      "poses": {
+        "intro": "cache_sniff",
+        "retreat": "shooed"
+      },
+      "rewardItem": "hearthstone_bead",
+      "victoryScene": "neck",
+      "defeatScene": "neck",
+      "sharedOutcome": true,
+      "tileUrl": "/assets/fight-boards/fight_cairn_pass/tiles.png",
+      "terrainProps": [
+        "fight-supply-cairn"
+      ],
+      "rescueFigure": "brask_pot_lid",
+      "retreatDirection": 1,
+      "activeUrl": "/assets/entities/cinder_wolf/cache_sniff.png",
+      "retreatUrl": "/assets/entities/cinder_wolf/shooed.png"
+    },
+    {
+      "chapter": "riftlight-saltrot-arrival",
+      "scene": "crab_fight",
+      "board": "reedbank",
+      "creature": "glassback_crab",
+      "introScenes": [
+        "crab_warn"
+      ],
+      "backdrop": "scenes/riftlight/fight-saltrot-silt",
+      "props": [
+        "fight-warm-mud-hollow",
+        "pickup-luckstone"
+      ],
+      "poses": {
+        "intro": "warning",
+        "retreat": "shooed"
+      },
+      "rewardItem": "luckstone",
+      "victoryScene": "crab_done",
+      "defeatScene": "crab_rescued",
+      "sharedOutcome": false,
+      "tileUrl": "/assets/biomes/sallow_wastelands/tiles.png",
+      "terrainProps": [
+        "fight-warm-mud-hollow"
+      ],
+      "rescueFigure": "tidepocket_pots",
+      "retreatDirection": 1,
+      "activeUrl": "/assets/entities/glassback_crab/warning.png",
+      "retreatUrl": "/assets/entities/glassback_crab/shooed.png"
+    },
+    {
+      "chapter": "riftlight-ashspan-bridge",
+      "scene": "mimic_fight",
+      "board": "reedbank",
+      "creature": "mire_mimic",
+      "introScenes": [
+        "plank_pile"
+      ],
+      "backdrop": "scenes/riftlight/ashspan-broken-deck",
+      "props": [
+        "fight-disguised-planks",
+        "pickup-quickfoot-lace"
+      ],
+      "poses": {
+        "intro": "ordinary",
+        "retreat": "shooed",
+        "little": "little"
+      },
+      "rewardItem": "quickfoot_lace",
+      "victoryScene": "mimic_won",
+      "defeatScene": "mimic_shooed",
+      "sharedOutcome": false,
+      "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+      "terrainProps": [
+        "fight-landing-ramp",
+        "fight-mooring-post",
+        "fight-plank-edge"
+      ],
+      "rescueFigure": "ossley_pole_tip",
+      "retreatDirection": 1,
+      "activeUrl": "/assets/entities/mire_mimic/assembled.png",
+      "retreatUrl": "/assets/entities/mire_mimic/shooed.png"
+    },
+    {
+      "chapter": "riftlight-sky-islands-arrival",
+      "scene": "wisp_fight",
+      "board": "glade",
+      "creature": "will_o_wisp",
+      "introScenes": [
+        "wisps"
+      ],
+      "backdrop": "scenes/riftlight/signal-gale",
+      "props": [
+        "pickup-mosslight-jar"
+      ],
+      "poses": {
+        "intro": "ordinary",
+        "retreat": "shooed"
+      },
+      "rewardItem": "mosslight_jar",
+      "victoryScene": "wisps_shooed",
+      "defeatScene": "wisps_rescued",
+      "sharedOutcome": false,
+      "tileUrl": "/assets/fight-boards/fight_wind_yard/tiles.png",
+      "terrainProps": [
+        "fight-signal-pole",
+        "fight-wind-shrub"
+      ],
+      "rescueFigure": "",
+      "retreatDirection": 1,
+      "activeUrl": "/assets/entities/will_o_wisp/assembled.png",
+      "retreatUrl": "/assets/entities/will_o_wisp/shooed.png"
+    }
+  ],
+  "interactions": {
+    "riftlight-exchange-rift": {
+      "barge_toss": {
+        "props": [
+          "rope-loop",
+          "iron-anchor-ring"
+        ]
+      },
+      "sack_chain": {
+        "props": [
+          "relay-sack"
+        ]
+      },
+      "ridge_walk": {
+        "props": [
+          "coat-kid"
+        ]
+      },
+      "ridge_lee": {
+        "props": [
+          "coat-kid",
+          "wind-blanket"
+        ]
+      }
+    },
+    "riftlight-glacier-survival": {
+      "kid_burrow": {
+        "props": [
+          "snow-mound"
+        ]
+      },
+      "crust_hold": {
+        "props": [
+          "roof-slab",
+          "rope-wedge"
+        ]
+      },
+      "herd_play": {
+        "props": [
+          "goat-brush",
+          "relay-hay"
+        ]
+      },
+      "shelf_cross": {
+        "props": [
+          "water-surge",
+          "moving-floe"
+        ]
+      },
+      "note_try": {
+        "props": [
+          "note-low",
+          "note-middle",
+          "note-high"
+        ]
+      }
+    },
+    "riftlight-riftseekers-departure": {
+      "sledge_lift": {
+        "props": [
+          "relay-trunk",
+          "relay-barrel",
+          "relay-sack"
+        ]
+      },
+      "ring_sort": {
+        "props": [
+          "ring-case",
+          "clue-scrap"
+        ]
+      },
+      "trial_echo": {
+        "props": [
+          "standing-rings",
+          "note-low",
+          "note-middle",
+          "note-high"
+        ]
+      },
+      "camp_play": {
+        "props": [
+          "wind-blanket",
+          "camp-firepit",
+          "barley-tea"
+        ]
+      }
+    },
+    "riftlight-ice-shelf-traverse": {
+      "ring_throw": {
+        "props": [
+          "rope-loop",
+          "iron-anchor-ring"
+        ]
+      },
+      "drip_run": {
+        "props": [
+          "icicle-drips"
+        ]
+      },
+      "hold_line": {
+        "props": [
+          "rope-taut",
+          "rope-sag"
+        ]
+      },
+      "level_line": {
+        "props": [
+          "rope-sag",
+          "rope-taut"
+        ]
+      }
+    },
+    "riftlight-headwaters-washout": {
+      "floe_hop": {
+        "props": [
+          "moving-floe",
+          "water-surge"
+        ]
+      },
+      "jam_hold": {
+        "props": [
+          "relay-log",
+          "rope-taut"
+        ]
+      },
+      "scarf_pass": {
+        "props": [
+          "relay-scarf"
+        ]
+      },
+      "knob_toss": {
+        "props": [
+          "rope-loop",
+          "ice-knob"
+        ]
+      }
+    },
+    "riftlight-hidden-glacier-rift": {
+      "holes": {
+        "props": [
+          "snow-mound",
+          "ticking-crystal"
+        ]
+      },
+      "squeeze_hold": {
+        "props": [
+          "roof-slab",
+          "rope-wedge"
+        ]
+      },
+      "seam_echo": {
+        "props": [
+          "ticking-crystal"
+        ]
+      },
+      "beat": {
+        "props": [
+          "ticking-crystal"
+        ]
+      }
+    },
+    "riftlight-saltrot-arrival": {
+      "shell_path": {
+        "props": [
+          "shell-whelk",
+          "shell-cockle",
+          "shell-oyster"
+        ]
+      },
+      "hatch_party": {
+        "props": [
+          "hatch-cover",
+          "kelp-cake",
+          "tidepocket-broom"
+        ]
+      },
+      "lamp_line": {
+        "props": [
+          "relay-oil-jar",
+          "rope-ladder",
+          "hanging-lamp"
+        ]
+      },
+      "tide_dash": {
+        "props": [
+          "water-surge",
+          "shell-cockle"
+        ]
+      }
+    },
+    "riftlight-frostfang-shore": {
+      "ladder_hold": {
+        "props": [
+          "rope-ladder",
+          "rope-taut"
+        ]
+      },
+      "bar_carry": {
+        "props": [
+          "coat-kid",
+          "rope-sag"
+        ]
+      },
+      "wave_gap": {
+        "props": [
+          "water-surge",
+          "fight-wet-gravel"
+        ]
+      },
+      "hay_relay": {
+        "props": [
+          "relay-hay",
+          "rope-basket"
+        ]
+      }
+    },
+    "riftlight-cairnstep-pass": {
+      "cairn_order": {
+        "props": [
+          "cairn-leaning",
+          "cairn-flat",
+          "cairn-twin",
+          "clue-scrap"
+        ]
+      },
+      "drawing_memory": {
+        "props": [
+          "cairn-ledger"
+        ]
+      },
+      "capstone": {
+        "props": [
+          "cairn-flat",
+          "capstone-target"
+        ]
+      },
+      "last_stone": {
+        "props": [
+          "toss-pebble",
+          "capstone-target"
+        ]
+      }
+    },
+    "riftlight-boundary-stone-bank": {
+      "surge_check": {
+        "props": [
+          "boundary-bundle",
+          "water-surge"
+        ]
+      },
+      "tighten": {
+        "props": [
+          "count-cord"
+        ]
+      },
+      "chalk_snap": {
+        "props": [
+          "chalk-cord"
+        ]
+      },
+      "stone_order": {
+        "props": [
+          "fight-wet-gravel",
+          "notched-stone",
+          "carved-stone"
+        ]
+      }
+    },
+    "riftlight-ashspan-bridge": {
+      "ferry_dock": {
+        "props": [
+          "ferry-boat",
+          "fight-mooring-post"
+        ]
+      },
+      "unload_relay": {
+        "props": [
+          "relay-plank",
+          "relay-plank-cracked"
+        ]
+      },
+      "carry_beam": {
+        "props": [
+          "carry-beam"
+        ]
+      },
+      "duck_play": {
+        "props": [
+          "oat-crumbs"
+        ]
+      }
+    },
+    "riftlight-sky-islands-arrival": {
+      "gust_lull": {
+        "props": [
+          "wind-banner",
+          "fight-signal-pole"
+        ]
+      },
+      "fuel_chain": {
+        "props": [
+          "relay-log",
+          "fight-signal-pole",
+          "rope-ladder"
+        ]
+      },
+      "camp_play": {
+        "props": [
+          "kite-shade",
+          "barley-tea",
+          "wind-blanket",
+          "camp-firepit"
+        ]
+      },
+      "song_track": {
+        "props": [
+          "wind-bells"
+        ]
+      },
+      "song_echo": {
+        "props": [
+          "fight-shrine-bell",
+          "cloud-whale",
+          "note-low",
+          "note-middle",
+          "note-high"
+        ]
+      }
+    }
+  }
+}

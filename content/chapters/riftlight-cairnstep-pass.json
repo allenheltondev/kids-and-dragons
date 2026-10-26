@@ -53,7 +53,7 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -92,7 +92,7 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -123,7 +123,7 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -154,7 +154,7 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -184,7 +184,7 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -214,7 +214,7 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -233,7 +233,7 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
       "art": "scenes/riftlight/cairnstep",
@@ -274,10 +274,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "ridge": {
       "type": "story",
@@ -293,10 +293,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "ridge_spot": {
       "type": "check",
@@ -315,10 +315,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "supplies": {
       "type": "story",
@@ -334,10 +334,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "supplies_trace": {
       "type": "check",
@@ -355,10 +355,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "ledger_sky": {
       "type": "check",
@@ -377,10 +377,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "compared": {
       "type": "story",
@@ -396,10 +396,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onEnter": [
         {
           "type": "setFlag",
@@ -460,7 +460,7 @@
           "name": "Pass keeper"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "pebble": {
       "type": "story",
@@ -476,15 +476,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "pebble_help": {
       "type": "choice_point",
@@ -513,15 +513,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "pebble_walk": {
       "type": "check",
@@ -548,15 +548,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "pebble_page": {
       "type": "check",
@@ -575,15 +575,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "pebble_mend": {
       "type": "check",
@@ -602,15 +602,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "pebble_done": {
       "type": "story",
@@ -626,15 +626,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onEnter": [
         {
           "type": "grantItem",
@@ -693,12 +693,12 @@
           "name": "Pass keeper"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "moved": {
       "type": "choice_point",
@@ -734,15 +734,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "test_roll": {
       "type": "check",
@@ -761,15 +761,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "test_lean": {
       "type": "check",
@@ -789,15 +789,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "test_brace": {
       "type": "check",
@@ -816,15 +816,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "test_smash": {
       "type": "check",
@@ -843,15 +843,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "tested": {
       "type": "story",
@@ -867,15 +867,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onEnter": [
         {
           "type": "setFlag",
@@ -913,15 +913,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "survey_shelf": {
       "type": "check",
@@ -941,15 +941,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "survey_pace": {
       "type": "check",
@@ -968,15 +968,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "survey_sky": {
       "type": "check",
@@ -995,15 +995,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "survey_done": {
       "type": "story",
@@ -1019,15 +1019,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onEnter": [
         {
           "type": "grantCoins",
@@ -1085,15 +1085,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "tea_share": {
       "type": "story",
@@ -1109,15 +1109,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onEnter": [
         {
           "type": "grantItem",
@@ -1140,15 +1140,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "pages_x": {
       "type": "story",
@@ -1164,15 +1164,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "shelter": {
       "type": "choice_point",
@@ -1218,15 +1218,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "shelter_drip": {
       "type": "check",
@@ -1245,15 +1245,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "shelter_dig": {
       "type": "check",
@@ -1272,15 +1272,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "shelter_leap": {
       "type": "check",
@@ -1307,15 +1307,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "shelter_cover": {
       "type": "check",
@@ -1334,15 +1334,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "shelter_found": {
       "type": "story",
@@ -1358,15 +1358,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "cache_fight": {
       "type": "encounter",
@@ -1405,7 +1405,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "neck": {
       "type": "choice_point",
@@ -1427,15 +1427,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "neck_rope": {
       "type": "check",
@@ -1462,15 +1462,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "neck_tap": {
       "type": "check",
@@ -1489,15 +1489,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "neck_done": {
       "type": "story",
@@ -1513,15 +1513,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "mark": {
       "type": "choice_point",
@@ -1549,15 +1549,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "mark_open": {
       "type": "story",
@@ -1573,15 +1573,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1607,15 +1607,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1641,15 +1641,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
+      "art": "scenes/riftlight/cairnstep-survey-slab",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1685,15 +1685,15 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-capstone"
     },
     "capstone_done": {
       "type": "story",
@@ -1709,10 +1709,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
@@ -1769,12 +1769,12 @@
           "name": "Pass keeper"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep-capstone"
     },
     "signal": {
       "type": "choice_point",
@@ -1825,10 +1825,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
@@ -1852,10 +1852,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
@@ -1879,10 +1879,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
@@ -1903,10 +1903,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }
@@ -1931,10 +1931,10 @@
       "cast": [
         {
           "figure": "cast/pass_keeper",
-          "name": "Pass keeper"
+          "name": "Brask"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/pebble",
           "name": "Pebble",
           "size": "small"
         }

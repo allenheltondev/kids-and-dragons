@@ -64,7 +64,7 @@
           "name": "Old Ossley"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "landing": {
       "type": "choice_point",
@@ -107,7 +107,7 @@
           "count": 2
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "plank_check": {
       "type": "check",
@@ -132,7 +132,7 @@
           "count": 2
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "rope_check": {
       "type": "check",
@@ -157,7 +157,7 @@
           "count": 2
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "brace_check": {
       "type": "check",
@@ -182,7 +182,7 @@
           "count": 2
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "plank": {
       "type": "story",
@@ -212,7 +212,7 @@
           "count": 2
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "rope": {
       "type": "story",
@@ -242,7 +242,7 @@
           "count": 2
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "brace_done": {
       "type": "story",
@@ -272,7 +272,7 @@
           "count": 2
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "board_wet": {
       "type": "story",
@@ -308,7 +308,7 @@
           "count": 2
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "ferry_ask": {
       "type": "story",
@@ -327,11 +327,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly_eggs",
           "name": "Tilly"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "ferry_plan": {
       "type": "choice_point",
@@ -366,11 +366,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "pole_check": {
       "type": "check",
@@ -390,11 +390,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "watch_check": {
       "type": "check",
@@ -414,11 +414,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "ferry_hold": {
       "type": "check",
@@ -438,11 +438,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "crossing": {
       "type": "story",
@@ -461,11 +461,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly_eggs",
           "name": "Tilly"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "ferry_spin": {
       "type": "story",
@@ -492,11 +492,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly_eggs",
           "name": "Tilly"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "ferry_dock": {
       "type": "interaction",
@@ -507,7 +507,7 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         }
       ],
@@ -519,7 +519,7 @@
         "width": 0.3,
         "periodMs": 4000
       },
-      "art": "scenes/gemfall/northern-bridge-foot",
+      "art": "scenes/riftlight/ashspan-ferry-landing",
       "onSuccess": {
         "goto": "far_bank",
         "narration": "A gentle bump. The flat boat stops like a sleepy cat, and the eggs do not even quack."
@@ -550,15 +550,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly_eggs",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "plank_pile": {
       "type": "choice_point",
@@ -583,15 +583,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "poke_reveal": {
       "type": "story",
@@ -610,11 +610,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
@@ -637,11 +637,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
@@ -678,7 +678,7 @@
           }
         ]
       },
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "mimic_won": {
       "type": "story",
@@ -697,11 +697,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
@@ -724,11 +724,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
@@ -764,15 +764,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "dig_check": {
       "type": "check",
@@ -792,15 +792,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "track_check": {
       "type": "check",
@@ -820,15 +820,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "roar_check": {
       "type": "check",
@@ -848,15 +848,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "cart_free": {
       "type": "story",
@@ -886,15 +886,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "cart_stuck": {
       "type": "story",
@@ -934,15 +934,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "unload_relay": {
       "type": "interaction",
@@ -953,11 +953,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
@@ -967,7 +967,7 @@
         "actionLabel": "Pass it on",
         "objectLabel": "Bryn's planks"
       },
-      "art": "scenes/gemfall/northern-bridge-foot",
+      "art": "scenes/riftlight/ashspan-ferry-landing",
       "onSuccess": {
         "goto": "bridge_head",
         "narration": "Plank after plank goes hand to hand, tap, tap, tap, until the stack stands at the bridge end."
@@ -1004,15 +1004,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "jam_plan": {
       "type": "choice_point",
@@ -1044,15 +1044,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "hook_check": {
       "type": "check",
@@ -1072,15 +1072,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "haul_check": {
       "type": "check",
@@ -1100,15 +1100,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "slip_check": {
       "type": "check",
@@ -1128,15 +1128,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "jam_shift": {
       "type": "story",
@@ -1163,15 +1163,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "jam_clear": {
       "type": "story",
@@ -1191,15 +1191,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "carry_beam": {
       "type": "interaction",
@@ -1210,11 +1210,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
@@ -1224,7 +1224,7 @@
         "actionLabel": "Carry it to the pier",
         "objectLabel": "The new beam"
       },
-      "art": "scenes/gemfall/northern-bridge-foot",
+      "art": "scenes/riftlight/ashspan-broken-deck",
       "onSuccess": {
         "goto": "beam_plan",
         "narration": "The beam rides level all the way to the pier, like a very long and serious tray."
@@ -1275,15 +1275,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "lift_check": {
       "type": "check",
@@ -1303,15 +1303,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "roll_check": {
       "type": "check",
@@ -1331,15 +1331,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "smash_check": {
       "type": "check",
@@ -1359,15 +1359,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "hum_check": {
       "type": "check",
@@ -1388,15 +1388,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "beam_up": {
       "type": "story",
@@ -1426,15 +1426,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "beam_slip": {
       "type": "story",
@@ -1470,15 +1470,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "hatch": {
       "type": "story",
@@ -1497,15 +1497,16 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
+          "figure": "entities/duckling",
+          "name": "Ducklings",
+          "count": 3
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "duck_play": {
       "type": "interaction",
@@ -1516,11 +1517,11 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
@@ -1550,7 +1551,7 @@
           }
         ]
       },
-      "art": "scenes/gemfall/northern-bridge-foot",
+      "art": "scenes/riftlight/ashspan-mended-deck",
       "onSuccess": {
         "goto": "duck_plan",
         "narration": "The ducklings settle into one warm heap, every one of them yawning."
@@ -1594,15 +1595,16 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
+          "figure": "entities/duckling",
+          "name": "Ducklings",
+          "count": 3
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "scoop_check": {
       "type": "check",
@@ -1622,15 +1624,16 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
+          "figure": "entities/duckling",
+          "name": "Ducklings",
+          "count": 3
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "coax_check": {
       "type": "check",
@@ -1650,15 +1653,16 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
+          "figure": "entities/duckling",
+          "name": "Ducklings",
+          "count": 3
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "trail_check": {
       "type": "check",
@@ -1678,15 +1682,16 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
+          "figure": "entities/duckling",
+          "name": "Ducklings",
+          "count": 3
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "ducks_safe": {
       "type": "story",
@@ -1716,15 +1721,16 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
+          "figure": "entities/duckling",
+          "name": "Ducklings",
+          "count": 3
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "ducks_loose": {
       "type": "story",
@@ -1760,15 +1766,16 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
-          "name": "Bryn"
+          "figure": "entities/duckling",
+          "name": "Ducklings",
+          "count": 3
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "planks_plan": {
       "type": "choice_point",
@@ -1803,15 +1810,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "rope2_check": {
       "type": "check",
@@ -1831,15 +1838,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "pass_check": {
       "type": "check",
@@ -1860,15 +1867,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "pwing_check": {
       "type": "check",
@@ -1888,15 +1895,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "planks_dropped": {
       "type": "story",
@@ -1923,15 +1930,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "planks_laid": {
       "type": "story",
@@ -1958,15 +1965,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "lash_plan": {
       "type": "choice_point",
@@ -2005,15 +2012,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "knots_check": {
       "type": "check",
@@ -2033,15 +2040,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "pegs_check": {
       "type": "check",
@@ -2061,15 +2068,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "whistle_check": {
       "type": "check",
@@ -2089,15 +2096,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "straps_check": {
       "type": "check",
@@ -2117,15 +2124,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "lashed": {
       "type": "story",
@@ -2144,15 +2151,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "lashed_loose": {
       "type": "story",
@@ -2179,15 +2186,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "test_check": {
       "type": "check",
@@ -2207,15 +2214,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "bridge_open": {
       "type": "story",
@@ -2240,15 +2247,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "bridge_creak": {
       "type": "story",
@@ -2279,15 +2286,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "folk_cross": {
       "type": "story",
@@ -2312,15 +2319,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "gift_plan": {
       "type": "choice_point",
@@ -2356,15 +2363,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "buy_cakes": {
       "type": "story",
@@ -2394,15 +2401,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "cakes": {
       "type": "story",
@@ -2421,15 +2428,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot",
+      "art": "scenes/riftlight/ashspan-mended-deck",
       "onEnter": [
         {
           "type": "grantItem",
@@ -2455,15 +2462,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "rest_hut": {
       "type": "rest",
@@ -2510,15 +2517,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "share_bryn": {
       "type": "story",
@@ -2551,15 +2558,15 @@
           "name": "Old Ossley"
         },
         {
-          "figure": "characters/griffin",
+          "figure": "cast/tilly",
           "name": "Tilly"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/bryn",
           "name": "Bryn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "dangle": {
       "type": "story",
@@ -2578,7 +2585,7 @@
           "name": "Old Ossley"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "tie_boat": {
       "type": "story",
@@ -2597,7 +2604,7 @@
           "name": "Old Ossley"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "ossley_routes": {
       "type": "choice_point",
@@ -2622,7 +2629,7 @@
           "name": "Old Ossley"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "coast_talk": {
       "type": "story",
@@ -2641,7 +2648,7 @@
           "name": "Old Ossley"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "inland_talk": {
       "type": "story",
@@ -2660,7 +2667,7 @@
           "name": "Old Ossley"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "routes": {
       "type": "rest",
@@ -2674,7 +2681,7 @@
           "name": "Old Ossley"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "marsh_path": {
       "type": "choice_point",
@@ -2758,7 +2765,7 @@
           "goto": "ossley_routes"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/ashspan-mended-deck"
     },
     "academy": {
       "type": "story",

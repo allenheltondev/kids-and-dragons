@@ -1,0 +1,424 @@
+--- a/assets/manifest.json
++++ b/assets/manifest.json
+@@ -1023,7 +1023,16 @@
+     "scenes/bramblewood/thicket",
+     "scenes/bramblewood/shrine",
+     "scenes/bramblewood/hill_door",
+-    "scenes/bramblewood/lanternfall"
++    "scenes/bramblewood/lanternfall",
++    "scenes/riftlight/sky-landing",
++    "scenes/riftlight/signal-pole",
++    "scenes/riftlight/signal-gale",
++    "scenes/riftlight/sky-ferry",
++    "scenes/riftlight/windbreak-camp",
++    "scenes/riftlight/shelf-icicles",
++    "scenes/riftlight/headwaters-floes",
++    "scenes/riftlight/ashspan-broken-deck",
++    "scenes/riftlight/ashspan-mended-deck"
+   ],
+   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
+   "campaignArt": {
+@@ -2037,6 +2046,70 @@
+       "basis": "burrowfolk",
+       "scale": "small_to_medium",
+       "heightCm": 95,
++      "stance": "standing"
++    },
++    {
++      "id": "pebble",
++      "name": "Pebble",
++      "basis": "griffin",
++      "scale": "small_to_medium",
++      "heightCm": 95,
++      "stance": "standing"
++    },
++    {
++      "id": "dob",
++      "name": "Dob",
++      "basis": "bigfoot",
++      "scale": "medium",
++      "heightCm": 185,
++      "stance": "standing"
++    },
++    {
++      "id": "bryn",
++      "name": "Bryn",
++      "basis": "dragonling",
++      "scale": "medium",
++      "heightCm": 125,
++      "stance": "standing"
++    },
++    {
++      "id": "tilly",
++      "name": "Tilly",
++      "basis": "griffin",
++      "scale": "medium",
++      "heightCm": 165,
++      "stance": "standing"
++    },
++    {
++      "id": "tilly_eggs",
++      "name": "Tilly",
++      "basis": "griffin",
++      "scale": "medium",
++      "heightCm": 165,
++      "stance": "standing"
++    },
++    {
++      "id": "boundary_runner",
++      "name": "Runner",
++      "basis": "dragonling",
++      "scale": "small_to_medium",
++      "heightCm": 105,
++      "stance": "standing"
++    },
++    {
++      "id": "snowhorn_kid",
++      "name": "Kid goat",
++      "basis": "snowhorn_goat",
++      "scale": "small",
++      "heightCm": 45,
++      "stance": "standing"
++    },
++    {
++      "id": "tamsin_river_keeper",
++      "name": "Tamsin",
++      "basis": "griffin",
++      "scale": "medium_to_large",
++      "heightCm": 205,
+       "stance": "standing"
+     }
+   ],
+--- a/content/chapters/riftlight-headwaters-washout.json
++++ b/content/chapters/riftlight-headwaters-washout.json
+@@ -40,7 +40,7 @@
+           "goto": "ledge"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "ledge": {
+       "type": "choice_point",
+@@ -70,7 +70,7 @@
+           ]
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "grab": {
+       "type": "check",
+@@ -113,7 +113,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "smash": {
+       "type": "check",
+@@ -156,7 +156,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "lift": {
+       "type": "check",
+@@ -199,7 +199,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "early": {
+       "type": "rest",
+@@ -214,7 +214,7 @@
+           "value": true
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "tree": {
+       "type": "story",
+@@ -227,7 +227,7 @@
+           "goto": "tree_choice"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "tree_choice": {
+       "type": "choice_point",
+@@ -254,7 +254,7 @@
+           "requiresSpecies": "manticore"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "climb": {
+       "type": "check",
+@@ -289,7 +289,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "guide": {
+       "type": "check",
+@@ -324,7 +324,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "call": {
+       "type": "check",
+@@ -359,7 +359,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "middle": {
+       "type": "rest",
+@@ -374,7 +374,7 @@
+           "value": true
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "rift": {
+       "type": "story",
+@@ -387,7 +387,7 @@
+           "goto": "rift_choice"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/headwaters-floes",
+       "rift": "open"
+     },
+     "rift_choice": {
+@@ -415,7 +415,7 @@
+           "goto": "rapids"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/headwaters-floes",
+       "rift": "steady"
+     },
+     "river_chime": {
+@@ -429,7 +429,7 @@
+           "goto": "rift_decision"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/headwaters-floes",
+       "rift": "steady"
+     },
+     "river_read": {
+@@ -443,7 +443,7 @@
+           "goto": "rift_decision"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/headwaters-floes",
+       "rift": "steady"
+     },
+     "rift_decision": {
+@@ -474,7 +474,7 @@
+           "goto": "rapids"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/headwaters-floes",
+       "rift": "steady"
+     },
+     "rift_end": {
+@@ -490,7 +490,7 @@
+           "value": true
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/headwaters-floes",
+       "rift": "steady"
+     },
+     "rapids": {
+@@ -517,7 +517,7 @@
+           "requiresSpecies": "unicorn"
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "swim": {
+       "type": "check",
+@@ -562,7 +562,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "signal": {
+       "type": "check",
+@@ -607,7 +607,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "mend_signal": {
+       "type": "check",
+@@ -652,7 +652,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "late": {
+       "type": "rest",
+--- a/content/chapters/riftlight-ice-shelf-traverse.json
++++ b/content/chapters/riftlight-ice-shelf-traverse.json
+@@ -40,7 +40,7 @@
+           "goto": "inspect"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "inspect": {
+       "type": "choice_point",
+--- a/content/chapters/riftlight-sky-islands-arrival.json
++++ b/content/chapters/riftlight-sky-islands-arrival.json
+@@ -55,7 +55,8 @@
+           "replace": true,
+           "text": "The Cairnstep griffins bring your whole party across to an island high above the realm. A kitsune temple keeper welcomes you away from the edge. \"These are called the Sky Islands,\" she says. \"Our old landing route points into empty sky now.\" Find shelter, listen for the opening, and help her mark the unsafe path."
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "lesson": {
+       "type": "story",
+@@ -101,7 +102,8 @@
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "local": {
+       "type": "choice_point",
+@@ -125,7 +127,8 @@
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "markers": {
+       "type": "story",
+@@ -149,7 +152,8 @@
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "song": {
+       "type": "story",
+@@ -173,7 +177,8 @@
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "island_rest": {
+       "type": "rest",
+@@ -198,7 +203,8 @@
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "island_done": {
+       "type": "rest",
+@@ -219,7 +225,8 @@
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "dojo": {
+       "type": "story",
+--- a/packages/client/src/world/figure-sizes.ts
++++ b/packages/client/src/world/figure-sizes.ts
+@@ -17,12 +17,14 @@
+   "cast/bell_code_expert": [70, "standing"],
+   "cast/bell_courier": [160, "standing"],
+   "cast/boarding_traveler": [95, "standing"],
++  "cast/boundary_runner": [105, "standing"],
+   "cast/bracken_swiftmile": [230, "standing"],
+   "cast/bram_lock": [240, "standing"],
+   "cast/brask": [165, "standing"],
+   "cast/brassbuckle_recordkeeper": [95, "standing"],
+   "cast/brassbuckle_scout": [95, "standing"],
+   "cast/brisk": [230, "standing"],
++  "cast/bryn": [125, "standing"],
+   "cast/bryony": [110, "standing"],
+   "cast/burdock": [165, "standing"],
+   "cast/cadet_linnet": [160, "standing"],
+@@ -39,6 +41,7 @@
+   "cast/cult_bigfoot": [240, "standing"],
+   "cast/cult_frogfolk": [105, "standing"],
+   "cast/deep-ice-figure": [280, "standing"],
++  "cast/dob": [185, "standing"],
+   "cast/dock_worker": [115, "standing"],
+   "cast/dragonling_grandmother": [130, "standing"],
+   "cast/dragonling_stone_keeper": [130, "standing"],
+@@ -92,6 +95,7 @@
+   "cast/pass_keeper": [210, "standing"],
+   "cast/passing_fisher": [110, "standing"],
+   "cast/path_keeper": [240, "standing"],
++  "cast/pebble": [95, "standing"],
+   "cast/pellam": [165, "standing"],
+   "cast/perrin_nine_verse": [230, "standing"],
+   "cast/pib": [25, "standing"],
+@@ -114,12 +118,16 @@
+   "cast/skywarden_centaur": [235, "standing"],
+   "cast/skywarden_faun": [170, "standing"],
+   "cast/skywarden_griffin": [185, "standing"],
++  "cast/snowhorn_kid": [45, "standing"],
+   "cast/soup_woman": [160, "standing"],
+   "cast/stall_witch": [140, "standing"],
+   "cast/tamsin": [110, "standing"],
++  "cast/tamsin_river_keeper": [205, "standing"],
+   "cast/tansy": [90, "standing"],
+   "cast/tib": [85, "standing"],
+   "cast/tidewell": [165, "standing"],
++  "cast/tilly": [165, "standing"],
++  "cast/tilly_eggs": [165, "standing"],
+   "cast/tobble": [160, "standing"],
+   "cast/warden_clerk": [110, "standing"],
+   "cast/wend": [100, "standing"],

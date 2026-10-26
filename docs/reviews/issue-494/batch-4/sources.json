@@ -1,0 +1,186 @@
+[
+  {
+    "id": "river_drake-shooed",
+    "kind": "entity-state",
+    "entity": "river_drake",
+    "state": "shooed",
+    "source": "art/source/issue-494/batch-4/river_drake-shooed.png",
+    "prompt": "Use case: identity-preserve. Create ONE new full-body story/combat pose of the reference creature for Kids & Dragons. Preserve species, anatomy, face identity, authored colors, materials, dark warm outlines and crafted painted style. Same single creature only, complete silhouette with generous clear margins on genuinely transparent square canvas, no ground plane, cast shadow, text or UI. This is a NONLETHAL shooed/retreat outcome: the creature is healthy, relieved or surprised, never injured, flattened, dead, crying or bleeding. The gray-scaled river drake with pale green belly, teal dorsal fins and webbed feet is a younger playful member of the same species. It hiccups in surprise, mouth a little round, then starts sliding happily to the RIGHT on its smooth belly. One webbed forefoot lifts, long tail curls safely behind with a few clean water droplets. Head turns back with a relieved friendly glance. No limbs missing, no wings added.",
+    "references": [
+      "assets/entities/river_drake/assembled.png"
+    ]
+  },
+  {
+    "id": "river_drake-warning",
+    "kind": "entity-state",
+    "entity": "river_drake",
+    "state": "warning",
+    "source": "art/source/issue-494/batch-4/river_drake-warning.png",
+    "prompt": "Use case: identity-preserve. One new complete cutout pose of the reference creature for the Kids & Dragons story and combat stage. Preserve species, authored colors, facial identity, anatomy, natural materials and warm hand-painted finish. Full body, generous clear border, genuinely transparent square background. No floor, shadow, lettering, UI or extra creature. Nonlethal playful standoff, no injury or broken body parts. A young gray and pale-green river drake puffs its neck and chest to look important, teal fins lifted. Its long tail flicks once to the side with a small clear splash of water. Four webbed feet planted, slightly silly round mouth and determined eyes, not a vicious snarl. Keep its gray pebbled scales and large green eyes. No wings or horns added.",
+    "references": [
+      "assets/entities/river_drake/assembled.png"
+    ]
+  },
+  {
+    "id": "river_drake-proud",
+    "kind": "entity-state",
+    "entity": "river_drake",
+    "state": "proud",
+    "source": "art/source/issue-494/batch-4/river_drake-proud.png",
+    "prompt": "Use case: identity-preserve. One new complete cutout pose of the reference creature for the Kids & Dragons story and combat stage. Preserve species, authored colors, facial identity, anatomy, natural materials and warm hand-painted finish. Full body, generous clear border, genuinely transparent square background. No floor, shadow, lettering, UI or extra creature. Nonlethal playful standoff, no injury or broken body parts. The young gray river drake is sitting proudly upright on its haunches, forefeet planted close together, pale-green chest lifted and long teal-finned tail curled neatly alongside. Happy small closed-mouth smile, eyes bright and satisfied, relaxed fins. No gravel or floor painted into the cutout.",
+    "references": [
+      "assets/entities/river_drake/assembled.png"
+    ]
+  },
+  {
+    "id": "glassback_crab-shooed",
+    "kind": "entity-state",
+    "entity": "glassback_crab",
+    "state": "shooed",
+    "source": "art/source/issue-494/batch-4/glassback_crab-shooed.png",
+    "prompt": "Use case: identity-preserve. Create ONE new full-body story/combat pose of the reference creature for Kids & Dragons. Preserve species, anatomy, face identity, authored colors, materials, dark warm outlines and crafted painted style. Same single creature only, complete silhouette with generous clear margins on genuinely transparent square canvas, no ground plane, cast shadow, text or UI. This is a NONLETHAL shooed/retreat outcome: the creature is healthy, relieved or surprised, never injured, flattened, dead, crying or bleeding. The crab with faceted translucent turquoise glass shell, amber stalked eyes and gray-brown stony legs is scuttling sideways to the RIGHT, one pair of legs lifted mid-step, claws relaxed and drawn back. A relieved surprised expression with tiny friendly smile, intact shining shell. Keep whole shell and all visible limbs connected; repair/ignore the reference's rectangular transparency gaps rather than reproducing them. No cracked shell or damage marks.",
+    "references": [
+      "assets/entities/glassback_crab/assembled.png"
+    ]
+  },
+  {
+    "id": "glassback_crab-warning",
+    "kind": "entity-state",
+    "entity": "glassback_crab",
+    "state": "warning",
+    "source": "art/source/issue-494/batch-4/glassback_crab-warning.png",
+    "prompt": "Use case: identity-preserve. One new complete cutout pose of the reference creature for the Kids & Dragons story and combat stage. Preserve species, authored colors, facial identity, anatomy, natural materials and warm hand-painted finish. Full body, generous clear border, genuinely transparent square background. No floor, shadow, lettering, UI or extra creature. Nonlethal playful standoff, no injury or broken body parts. The glassback crab raises ONE large claw above its shell for a warning clack, the other held low and relaxed. Amber eyes look alert, faceted turquoise shell catches one gentle golden gleam, all stony jointed legs complete and grounded. Intact shell, no injury. Do not reproduce rectangular transparency holes from the reference; shell and legs must be continuous painted surfaces.",
+    "references": [
+      "assets/entities/glassback_crab/assembled.png"
+    ]
+  },
+  {
+    "id": "cinder_wolf-shooed",
+    "kind": "entity-state",
+    "entity": "cinder_wolf",
+    "state": "shooed",
+    "source": "art/source/issue-494/batch-4/cinder_wolf-shooed.png",
+    "prompt": "Use case: identity-preserve. Create ONE new full-body story/combat pose of the reference creature for Kids & Dragons. Preserve species, anatomy, face identity, authored colors, materials, dark warm outlines and crafted painted style. Same single creature only, complete silhouette with generous clear margins on genuinely transparent square canvas, no ground plane, cast shadow, text or UI. This is a NONLETHAL shooed/retreat outcome: the creature is healthy, relieved or surprised, never injured, flattened, dead, crying or bleeding. The lean charcoal wolf with warm gray muzzle, amber eyes and subtle ember markings is startled into a light bound to the RIGHT, ears pricked, four natural legs in a readable running pose, tail lifted with a restrained warm ember tip. It glances back, more startled than afraid. One small soft ash puff trails behind hind paws, no fire burning its body and no injury. Real animal wolf anatomy.",
+    "references": [
+      "assets/entities/cinder_wolf/assembled.png"
+    ]
+  },
+  {
+    "id": "cinder_wolf-cache_sniff",
+    "kind": "entity-state",
+    "entity": "cinder_wolf",
+    "state": "cache_sniff",
+    "source": "art/source/issue-494/batch-4/cinder_wolf-cache_sniff.png",
+    "prompt": "Use case: identity-preserve. One new complete cutout pose of the reference creature for the Kids & Dragons story and combat stage. Preserve species, authored colors, facial identity, anatomy, natural materials and warm hand-painted finish. Full body, generous clear border, genuinely transparent square background. No floor, shadow, lettering, UI or extra creature. Nonlethal playful standoff, no injury or broken body parts. The charcoal cinder wolf lowers its muzzle curiously to sniff something just beyond its forepaws, four legs planted and ears relaxed. Warm amber eyes, subtle orange ember line on neck and a gently glowing tail tip, no aggressive bared teeth. Do not include the supply cairn or ground: only the wolf, a curious nosing pose.",
+    "references": [
+      "assets/entities/cinder_wolf/assembled.png"
+    ]
+  },
+  {
+    "id": "mire_mimic-shooed",
+    "kind": "entity-state",
+    "entity": "mire_mimic",
+    "state": "shooed",
+    "source": "art/source/issue-494/batch-4/mire_mimic-shooed.png",
+    "prompt": "Use case: identity-preserve. Create ONE new full-body story/combat pose of the reference creature for Kids & Dragons. Preserve species, anatomy, face identity, authored colors, materials, dark warm outlines and crafted painted style. Same single creature only, complete silhouette with generous clear margins on genuinely transparent square canvas, no ground plane, cast shadow, text or UI. This is a NONLETHAL shooed/retreat outcome: the creature is healthy, relieved or surprised, never injured, flattened, dead, crying or bleeding. The low broad mossy old-plank creature with three small teal eyes beneath its plank lid, root-like whiskers and stubby wooden legs hiccups gently and waddles to the RIGHT. One front foot lifts, plank lid tilts only a little as the three eyes blink in mild surprise; reeds lean with its motion. Keep the friendly marsh-wood identity, no sharp teeth, weapons, wounds or human limbs.",
+    "references": [
+      "assets/entities/mire_mimic/assembled.png"
+    ]
+  },
+  {
+    "id": "mire_mimic-little",
+    "kind": "entity-state",
+    "entity": "mire_mimic",
+    "state": "little",
+    "source": "art/source/issue-494/batch-4/mire_mimic-little.png",
+    "prompt": "Use case: identity-preserve. One new complete cutout pose of the reference creature for the Kids & Dragons story and combat stage. Preserve species, authored colors, facial identity, anatomy, natural materials and warm hand-painted finish. Full body, generous clear border, genuinely transparent square background. No floor, shadow, lettering, UI or extra creature. Nonlethal playful standoff, no injury or broken body parts. A little juvenile variant of the same marsh plank mimic: low rounded mossy plank body, three friendly teal eyes under the upper plank, short root-like whiskers, four small stubby wooden feet and only two little reed tufts. Fewer shorter planks and softer proportions than the adult, recognizably the same species. Curious peek outward, no teeth or threatening mouth.",
+    "references": [
+      "assets/entities/mire_mimic/assembled.png"
+    ]
+  },
+  {
+    "id": "will_o_wisp-shooed",
+    "kind": "entity-state",
+    "entity": "will_o_wisp",
+    "state": "shooed",
+    "source": "art/source/issue-494/batch-4/will_o_wisp-shooed.png",
+    "prompt": "Use case: identity-preserve. Create ONE new full-body story/combat pose of the reference creature for Kids & Dragons. Preserve species, anatomy, face identity, authored colors, materials, dark warm outlines and crafted painted style. Same single creature only, complete silhouette with generous clear margins on genuinely transparent square canvas, no ground plane, cast shadow, text or UI. This is a NONLETHAL shooed/retreat outcome: the creature is healthy, relieved or surprised, never injured, flattened, dead, crying or bleeding. The tiny pale white-gray will-o'-wisp is giggling in surprise as its flame-shaped wispy body curls to the RIGHT, leaving three little soft white motes behind it. Preserve the two tiny eyes and gentle face; a small happy open mouth, not a skull. Transparent gaps between motes. Soft white layered flame lines, no purple/cyan aura or explosive blast, no ground shadow.",
+    "references": [
+      "assets/entities/will_o_wisp/assembled.png"
+    ]
+  },
+  {
+    "id": "pickup-river-charm",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-4/pickup-river-charm.png",
+    "prompt": "Use case: illustration-story. One reusable reward PICKUP prop for Kids & Dragons, warm hand-painted storybook illustration with tapered dark brown outlines, textured soft cel shading, upper-left lighting and a bold readable silhouette at 96px. Complete single object isolated on genuinely transparent square background with generous 10% margins. No ground, cast shadow, hands, creatures, lettering, labels, UI, floating symbols or watermark. A flat smooth gray river pebble with a clean naturally worn ROUND HOLE through it, strung on a short loop of braided river grass lying loosely around the stone. A faint sea-glass sheen at the wet edge, but predominantly a gray holed stone, not a blue crystal gem. The round hole is genuinely transparent. Three-quarter close view, modest humble found charm.",
+    "references": []
+  },
+  {
+    "id": "pickup-luckstone",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-4/pickup-luckstone.png",
+    "prompt": "Use case: illustration-story. One reusable reward PICKUP prop for Kids & Dragons, warm hand-painted storybook illustration with tapered dark brown outlines, textured soft cel shading, upper-left lighting and a bold readable silhouette at 96px. Complete single object isolated on genuinely transparent square background with generous 10% margins. No ground, cast shadow, hands, creatures, lettering, labels, UI, floating symbols or watermark. One smooth small pale ivory WHITE OVOID PEBBLE, gently glassy, with one face faintly starred by a natural five-ray inclusion inside the stone. Cream and cool gray shading, small unusual highlight, simple whole pebble silhouette. Not a cut gem, gold coin, medallion or separate floating star.",
+    "references": []
+  },
+  {
+    "id": "pickup-hearthstone-bead",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-4/pickup-hearthstone-bead.png",
+    "prompt": "Use case: illustration-story. One reusable reward PICKUP prop for Kids & Dragons, warm hand-painted storybook illustration with tapered dark brown outlines, textured soft cel shading, upper-left lighting and a bold readable silhouette at 96px. Complete single object isolated on genuinely transparent square background with generous 10% margins. No ground, cast shadow, hands, creatures, lettering, labels, UI, floating symbols or watermark. One rough rounded TERRACOTTA CLAY BEAD, with a visible cord hole and a fine crackle-glaze web on its warm orange-red surface. Soft tiny amber warmth at its center, modest home-fired charm, no flames or beads necklace. Three-quarter view, honest clay texture, intact bead.",
+    "references": []
+  },
+  {
+    "id": "pickup-quickfoot-lace",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-4/pickup-quickfoot-lace.png",
+    "prompt": "Use case: illustration-story. One reusable reward PICKUP prop for Kids & Dragons, warm hand-painted storybook illustration with tapered dark brown outlines, textured soft cel shading, upper-left lighting and a bold readable silhouette at 96px. Complete single object isolated on genuinely transparent square background with generous 10% margins. No ground, cast shadow, hands, creatures, lettering, labels, UI, floating symbols or watermark. One DARK PLAITED BOOTLACE, soft charcoal-brown cord with a restrained SILVER SHEEN woven through the braid. Laid in one loose readable loop with two short ends, simple tidy cord silhouette. No shoe or boot attached, no colorful ribbon, no metal chains.",
+    "references": []
+  },
+  {
+    "id": "pickup-mosslight-jar",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-4/pickup-mosslight-jar.png",
+    "prompt": "Use case: illustration-story. One reusable reward PICKUP prop for Kids & Dragons, warm hand-painted storybook illustration with tapered dark brown outlines, textured soft cel shading, upper-left lighting and a bold readable silhouette at 96px. Complete single object isolated on genuinely transparent square background with generous 10% margins. No ground, cast shadow, hands, creatures, lettering, labels, UI, floating symbols or watermark. One small wide-mouthed clear GLASS JAR packed with pale living moss, a loose brass lid tilted slightly on its rim, soft green light welling around the lid and through the glass. Friendly gentle path-light, not a potion bottle or captured ghost. Clear moss leaf shapes visible inside, no face, label or ornate stand.",
+    "references": []
+  },
+  {
+    "id": "fight-supply-cairn",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-4/fight-supply-cairn.png",
+    "prompt": "Use case: illustration-story. One reusable fight-location prop for Kids & Dragons, warm hand-painted storybook style, tapered dark brown outlines, upper-left light, simple textured forms readable at small size. Whole prop isolated on genuinely transparent square background, generous clear margins. No floor background, drop shadow, people, creatures, lettering, UI or watermark. Three-quarter stage view. A small stack of broad gray STONES forming a mountain supply cairn/cache, with one tucked burlap bread sack and one compact golden hay bundle under a flat stone shelf. Clearly a friendly practical mountain cache, about waist-high, no food labels or carved writing. One heel of bread peeks from the sack. No wolf, no huge cliff or shrine.",
+    "references": []
+  },
+  {
+    "id": "fight-warm-mud-hollow",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-4/fight-warm-mud-hollow.png",
+    "prompt": "Use case: illustration-story. One reusable fight-location prop for Kids & Dragons, warm hand-painted storybook style, tapered dark brown outlines, upper-left light, simple textured forms readable at small size. Whole prop isolated on genuinely transparent square background, generous clear margins. No floor background, drop shadow, people, creatures, lettering, UI or watermark. Three-quarter stage view. A low oval BURROW MOUTH in wet gravel and dark warm mud. Small smooth river stones rim the hollow, a few pale broken shells embedded at one side. The hole is a dark shallow interior with a little warm brown sheen, soft slightly slumped mud lip, no eyes or resident creature. Self-contained small patch/decal with irregular transparent outer edge.",
+    "references": []
+  },
+  {
+    "id": "fight-disguised-planks",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-4/fight-disguised-planks.png",
+    "prompt": "Use case: illustration-story. One reusable fight-location prop for Kids & Dragons, warm hand-painted storybook style, tapered dark brown outlines, upper-left light, simple textured forms readable at small size. Whole prop isolated on genuinely transparent square background, generous clear margins. No floor background, drop shadow, people, creatures, lettering, UI or watermark. Three-quarter stage view. A modest irregular pile of old water-worn gray-brown WOODEN PLANKS with a little green moss and two reed shoots at the side. One tiny partly hidden TEAL EYE peeks under the top plank as a subtle tell; otherwise it reads as a harmless stack of old lumber. No feet or full creature body in this disguised state, no teeth or scary mouth. Clear layered plank silhouette, plank grain not text.",
+    "references": []
+  },
+  {
+    "id": "fight-headwaters-ford",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-4/fight-headwaters-ford.png",
+    "prompt": "Use case: illustration-story. One 16:9 story/combat-introduction backdrop for Kids & Dragons. Warm crafted children's storybook gouache, fine warm-brown lines, textured natural materials, broad readable shapes and layered atmosphere. Match the reference location and painted finish. No people, creatures, lettering, UI or watermark. Keep an open foreground for separately rendered actors. A shallow gravel ford in the Great River's glacier headwaters, low water washing over smooth wet gray pebbles, two dry gravel bars proud of the stream and one flat grounded ice floe caught at the near bar. The broken glacier shelf lies DOWNRIVER in the background, with sharp snowy Frostfang peaks farther off. A safe narrow shallows route is visible between the gravel bars. Camera low on the gravel, cold golden daylight, no bridge, buildings or log jam. This is where two young river drakes could sit and guard a toll crossing, but do not paint the drakes.",
+    "references": [
+      "assets/scenes/riftlight/headwaters-floes.webp"
+    ]
+  },
+  {
+    "id": "fight-saltrot-silt",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-4/fight-saltrot-silt.png",
+    "prompt": "Use case: illustration-story. One 16:9 story/combat-introduction backdrop for Kids & Dragons. Warm crafted children's storybook gouache, fine warm-brown lines, textured natural materials, broad readable shapes and layered atmosphere. Match the reference location and painted finish. No people, creatures, lettering, UI or watermark. Keep an open foreground for separately rendered actors. On the Saltrot tidal shell bank, the pale gray silt has begun HEAVING OPEN in two low mounds with split wet seams, exposing warm dark mud hollows below. Shallow pools and scattered whelk and cockle shells glisten around the mounds. The low Tidepocket hatch roof and reed marker poles are a distant landmark. Cold gray coastal light softened by warm mud tones. The creatures have not been painted into the background; the broken silt itself suggests something surfacing. Clear shell-covered foreground island above the waterline.",
+    "references": [
+      "assets/scenes/riftlight/tidepocket-open-hatch.webp"
+    ]
+  }
+]

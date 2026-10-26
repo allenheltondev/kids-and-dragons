@@ -70,7 +70,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "arrival_story": {
       "type": "story",
@@ -93,7 +93,7 @@
           "name": "Lady Olivia"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "arrival_question": {
       "type": "story",
@@ -120,7 +120,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "fellowship": {
       "type": "choice_point",
@@ -161,7 +161,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "sledge_lift": {
       "type": "interaction",
@@ -214,7 +214,7 @@
           "name": "Lady Olivia"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "sledge_brace": {
       "type": "check",
@@ -348,7 +348,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-chime-rest"
     },
     "seren": {
       "type": "story",
@@ -385,7 +385,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "instruments": {
       "type": "check",
@@ -469,7 +469,7 @@
           "name": "Yeti herder"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "olivia": {
       "type": "choice_point",
@@ -502,7 +502,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "help_now": {
       "type": "story",
@@ -535,7 +535,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "safe_routes": {
       "type": "story",
@@ -568,7 +568,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "haul_supper": {
       "type": "check",
@@ -679,7 +679,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "lookout": {
       "type": "choice_point",
@@ -1198,7 +1198,7 @@
           "name": "Orin Vale"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-chime-rest"
     },
     "test_chime": {
       "type": "choice_point",
@@ -1237,7 +1237,7 @@
           "name": "Orin Vale"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-chime-rest"
     },
     "ring": {
       "type": "story",
@@ -1266,7 +1266,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-chime-rest"
     },
     "wrap": {
       "type": "story",
@@ -1291,7 +1291,7 @@
           "name": "Orin Vale"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-chime-rest"
     },
     "chime_jar": {
       "type": "story",
@@ -1555,7 +1555,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-chime-rest"
     },
     "trial_all": {
       "type": "check",
@@ -1860,7 +1860,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "camp_play": {
       "type": "interaction",
@@ -1908,7 +1908,7 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "camp": {
       "type": "rest",
@@ -1952,7 +1952,7 @@
           "goto": "camp_hall"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-chime-rest"
     },
     "camp_supper": {
       "type": "story",
@@ -1993,7 +1993,7 @@
       "heal": 0,
       "choices": [],
       "outcome": "success",
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/departure-loaded-sledge"
     }
   },
   "voiceGuide": {

@@ -1,0 +1,11 @@
+
+ RUN  v5.0.5 C:/Users/allen/.codex/worktrees/issue-494-riftlight-art/kids-and-dragons
+
+
+ Test Files  11 passed (11)
+      Tests  90 passed (90)
+   Start at  19:24:29
+   Duration  7.22s (tests 88%, import 7%, transform 4%, worker 1%)
+
+    Isolate  11 workers spawned · ~289ms startup each (spawn + environment, per file)
+             at least ~505ms faster with isolate: false — reuses workers across files instead of one per file

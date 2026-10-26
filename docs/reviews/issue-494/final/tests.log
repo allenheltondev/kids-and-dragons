@@ -1,0 +1,14 @@
+
+ RUN  v5.0.5 C:/Users/allen/.codex/worktrees/issue-494-riftlight-art/kids-and-dragons
+
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+Not implemented: HTMLCanvasElement's getContext() method: without installing the canvas npm package
+
+ Test Files  20 passed (20)
+      Tests  372 passed (372)
+   Start at  05:16:30
+   Duration  9.53s (tests 37%, environment 28%, import 28%, transform 6%, worker 1%)
+
+    Isolate  20 workers spawned · ~597ms startup each (spawn + environment, per file)
+             at least ~2.39s faster with isolate: false — reuses workers across files instead of one per file
