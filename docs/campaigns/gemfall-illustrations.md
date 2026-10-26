@@ -25,7 +25,15 @@ for exact mappings and TV/phone captures, and the
 [source record](../../art/source/gemfall-05-fights.json) for exact prompts,
 source/production hashes and export details. Only presentation art changes.
 
-Six backdrops created with the built-in image generation tool. Production files live in
+Chapter 06 adds `citadel-cellar-hall` in the same export format for its crawler
+fight introduction and both outcomes. The records hall retains the canon's long
+stone table and adds the descending cellar stairwell and broom rack. See the
+[chapter 06 fight review](../review/gemfall-06-fights/README.md) for the three
+mappings and actual TV/phone captures, and the
+[source record](../../art/source/gemfall-06-fight.json) for generation/revision
+prompts, reference/source/production hashes and export details.
+
+The original six backdrops were created with the built-in image generation tool. Production files live in
 `assets/scenes/gemfall/`: 1920×1080 WebP, quality 88, about 3.0 MB total. Original generated
 PNGs remain in the local Codex generated-images directory. Existing biome art is unchanged.
 
