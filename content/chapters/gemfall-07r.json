@@ -5,7 +5,7 @@
   "index": 7,
   "title": "The Returning",
   "biome": "red_sky_foothills",
-  "estimatedMinutes": 45,
+  "estimatedMinutes": 52,
   "xpAward": 90,
   "route": {
     "set": "pursuit",
@@ -144,7 +144,7 @@
       "stat": "might",
       "tn": 12,
       "prompt": "Heave Odo's wheelbarrow out of the Pinch",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "choice_how",
         "narration": "With a grunt and a heave, the barrow pops free and forty wagons cheer. Odo is so grateful he digs through the glitter and hands you the humming thing: a real stone, warm as a teapot. \"Keeps me up at night,\" he says. \"Singing.\"",
@@ -516,11 +516,11 @@
       "prompt": "Scoop up a sack of stones that are rolling the wrong way",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_road_gifts",
+        "goto": "interaction_stone_chain",
         "narration": "You dive, scoop and juggle. Every last stone ends up in your arms, still humming, still leaning gently uphill, like puppies pulling on a lead."
       },
       "onFailure": {
-        "goto": "scene_road_gifts",
+        "goto": "interaction_stone_chain",
         "narration": "The stones slip through your fingers and roll straight into a goat pen. The goat gives them back one at a time, very slowly, and wants a scratch behind the ears for every single one."
       }
     },
@@ -532,7 +532,7 @@
           "id": "on",
           "label": "Carry them back to the pile",
           "icon": "eye",
-          "goto": "scene_road_gifts"
+          "goto": "interaction_stone_chain"
         }
       ]
     },
@@ -544,7 +544,7 @@
           "id": "on",
           "label": "Gather them up",
           "icon": "gem",
-          "goto": "scene_road_gifts"
+          "goto": "interaction_stone_chain"
         }
       ]
     },
@@ -1161,11 +1161,11 @@
       "prompt": "Make friends with a grumpy snowhorn goat",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_evening",
+        "goto": "interaction_shelter_stack",
         "narration": "The goat sniffs you, sniffs the cart, and decides you are acceptable. It pulls the whole load up the hill at a steady trot, stopping only once, to eat the corner of your sign."
       },
       "onFailure": {
-        "goto": "scene_evening",
+        "goto": "interaction_shelter_stack",
         "narration": "The goat sits down. It will not move. In the end you pull the cart on your own, and the goat rides on top of the stones, looking very pleased with itself, all the way to the shelter."
       }
     },
@@ -1176,11 +1176,11 @@
       "prompt": "Carry the whole pile up the hill, sack by sack",
       "roller": "all",
       "onSuccess": {
-        "goto": "scene_evening",
+        "goto": "interaction_shelter_stack",
         "narration": "You make a chain up the hill and pass the sacks along, hand to hand, singing a counting song. Strangers on the road join in. By the top the chain is forty people long, and nobody remembers who started it."
       },
       "onFailure": {
-        "goto": "scene_evening",
+        "goto": "interaction_shelter_stack",
         "narration": "Halfway up, your arms turn to noodles. You sit down on the sacks to rest, and a passing grandmother tuts, hitches your cart to her own wagon, and tows the lot up the hill without a word."
       }
     },
@@ -1191,11 +1191,11 @@
       "prompt": "Build a sledge that slides uphill",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_evening",
+        "goto": "interaction_shelter_stack",
         "narration": "Rope, a broken door and some greased planks. The sledge glides up the slope on its runners like a dream, and a crowd of dragonling children follow it all the way to the shelter, asking for a turn."
       },
       "onFailure": {
-        "goto": "scene_evening",
+        "goto": "interaction_shelter_stack",
         "narration": "The sledge works beautifully, in the wrong direction. It slides gently back to the bottom of the hill twice before you think to tie it to a tree and winch it up, one heave at a time. It gets there. Eventually."
       }
     },
@@ -1207,7 +1207,7 @@
           "id": "on",
           "label": "Look over the yard",
           "icon": "hand",
-          "goto": "scene_evening"
+          "goto": "interaction_shelter_stack"
         }
       ]
     },
@@ -1234,6 +1234,28 @@
           "label": "Sit down at a campfire full of strangers",
           "icon": "flame",
           "goto": "scene_evening_campfire"
+        },
+        {
+          "id": "pay_cakes",
+          "label": "Pay 2 coins for warm honeycakes at the shelter kitchen",
+          "icon": "cake",
+          "goto": "scene_evening_cakes",
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 2
+            },
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
         },
         {
           "id": "camp",
@@ -1533,6 +1555,13 @@
           "icon": "drop",
           "goto": "scene_morning_slide_reed_knot",
           "requiresItem": "ossley_reed_knot"
+        },
+        {
+          "id": "brace_heap",
+          "label": "Have a thornguard brace the heap",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "check_morning_slide"
         }
       ]
     },
@@ -1543,11 +1572,11 @@
       "prompt": "Find the one rock that holds up all the others, and pull",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_switchback",
+        "goto": "interaction_trickle",
         "narration": "You find the one rock that holds up all the rest, and pull. The whole heap shrugs, sighs, and slides politely off the edge of the road. The warden crosses out CLOSED and writes OPEN, in slightly bigger letters."
       },
       "onFailure": {
-        "goto": "scene_switchback",
+        "goto": "interaction_trickle",
         "narration": "The big rock will not budge. But behind it, between two boulders, there is a gap just wide enough to wriggle through. You come out the other side red with dust from head to toe, and the warden writes that down too."
       }
     },
@@ -1562,7 +1591,7 @@
           "id": "on",
           "label": "Up the zigzags",
           "icon": "boot",
-          "goto": "scene_switchback"
+          "goto": "interaction_trickle"
         }
       ]
     },
@@ -1574,7 +1603,7 @@
           "id": "on",
           "label": "Up the zigzags",
           "icon": "note",
-          "goto": "scene_switchback"
+          "goto": "interaction_trickle"
         }
       ]
     },
@@ -1586,7 +1615,7 @@
           "id": "on",
           "label": "Up the zigzags",
           "icon": "drop",
-          "goto": "scene_switchback"
+          "goto": "interaction_trickle"
         }
       ]
     },
@@ -1748,6 +1777,13 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "scout_ridge",
+          "label": "Have a duskrunner creep along the ridge",
+          "icon": "moon",
+          "requiresClass": "duskrunner",
+          "goto": "check_bend_scout"
         }
       ]
     },
@@ -1756,9 +1792,9 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Sneak along the ridge and pick out the humming wagon",
-      "roller": "party",
+      "roller": "best",
       "onSuccess": {
-        "goto": "choice_the_bend",
+        "goto": "interaction_wagon_bells",
         "narration": "You creep along the ridge and watch. Mules with cotton in their ears. A caravan master rubbing her head every few minutes, as if it aches. And the middle wagon, humming so hard its canvas trembles. You know exactly where to go now.",
         "effects": [
           {
@@ -1769,7 +1805,7 @@
         ]
       },
       "onFailure": {
-        "goto": "choice_the_bend",
+        "goto": "interaction_wagon_bells",
         "narration": "You creep along the ridge, slip on loose gravel, and slide most of the way down to the road on your bottom. A mule looks at you. You look at the mule. Neither of you tells anybody, and you scramble back up just in time."
       }
     },
@@ -1781,7 +1817,7 @@
           "id": "on",
           "label": "Wait for the caravan",
           "icon": "ribbon",
-          "goto": "choice_the_bend"
+          "goto": "interaction_wagon_bells"
         }
       ]
     },
@@ -1793,7 +1829,7 @@
           "id": "on",
           "label": "Wait for the caravan",
           "icon": "gem",
-          "goto": "choice_the_bend"
+          "goto": "interaction_wagon_bells"
         }
       ]
     },
@@ -2184,11 +2220,11 @@
       "prompt": "Race up a steep stair before the light goes",
       "roller": "party",
       "onSuccess": {
-        "goto": "rest_tree_line",
+        "goto": "scene_drake_ledge",
         "narration": "Up and up and up, two steps at a time. You reach the top with your legs wobbling and your heart thumping, well ahead of the dark."
       },
       "onFailure": {
-        "goto": "rest_tree_line",
+        "goto": "scene_drake_ledge",
         "narration": "Halfway up, a tremor shakes loose a shower of little stones. You press flat against the rock and wait, and then climb on carefully, one step at a time, and reach the top dusty but whole, just as the light turns orange."
       }
     },
@@ -2200,7 +2236,7 @@
           "id": "on",
           "label": "Look back down the road",
           "icon": "map",
-          "goto": "rest_tree_line"
+          "goto": "scene_drake_ledge"
         }
       ]
     },
@@ -2212,7 +2248,7 @@
           "id": "on",
           "label": "Look back down the road",
           "icon": "lantern",
-          "goto": "rest_tree_line"
+          "goto": "scene_drake_ledge"
         }
       ]
     },
@@ -2278,6 +2314,240 @@
           "label": "Keep working",
           "icon": "eye",
           "goto": "scene_noon_shake"
+        }
+      ]
+    },
+    "interaction_stone_chain": {
+      "type": "interaction",
+      "narration": "The warden who dropped his pencil has found another one, and a plan. He lines everybody up along the road, and the runaway stones are to go hand to hand, away from the wheels, into his sacks. \"Pass them back and do not drop any!\" he calls. \"There is a little pay in it for the people in this line.\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the stone, then pass it down the line.",
+        "actionLabel": "Pass the stone",
+        "objectLabel": "A humming stone"
+      },
+      "onSuccess": {
+        "goto": "scene_road_gifts",
+        "narration": "The last stone drops into the last sack, and the warden writes a very tidy number in his ledger. He counts three coins into your hands. \"Honest work,\" he says, and then, quieter, \"I have never been so glad to be bored.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_road_gifts",
+        "narration": "One stone slips through and rolls off uphill to join its friends. The warden writes it down sadly. The rest are safe in the sacks, and the line cheers anyway."
+      },
+      "onAssisted": {
+        "goto": "scene_road_gifts",
+        "narration": "The warden joins the line himself, and together you pass the stones along without losing a single one. He counts three coins into your hands. \"Honest work,\" he says.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      }
+    },
+    "interaction_shelter_stack": {
+      "type": "interaction",
+      "narration": "At the dragonling way-shelter, the keeper meets your pile at the gate. Her name is Brindle, and she is carrying a board as big as a door. \"Stack them on here, then carry the board up to the top shelf,\" she says. \"Level, mind. Stones hum louder when they tilt, and then nobody sleeps.\" She wants every one of them safe before the next shrug.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Everyone lift or lower your side until the stones sit level, then carry the board.",
+        "actionLabel": "Carry the board",
+        "objectLabel": "A board of humming stones"
+      },
+      "onSuccess": {
+        "goto": "scene_evening",
+        "narration": "The stones sit as still as eggs. Brindle taps the shelf twice, satisfied, and tucks a wrapped supper into your pack. \"From my own pot,\" she says. \"Do not tell the cat.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_evening",
+        "narration": "The board tips and the stones hum like angry bees. Brindle lays one hand on the loudest of them, and it quiets down at once, embarrassed. \"Wobbly day,\" she says. \"Up they go.\""
+      },
+      "onAssisted": {
+        "goto": "scene_evening",
+        "narration": "Brindle takes one corner of the board herself, and the stones sit as still as eggs. She tucks a wrapped supper into your pack. \"From my own pot,\" she says. \"Do not tell the cat.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_evening_cakes": {
+      "type": "story",
+      "narration": "You count two coins into Brindle's floury palm. She hands you a paper bag of honeycakes, still warm, and a look that says she knows exactly how many you will eat before breakfast. The whole yard smells of honey and hot stone.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go up to the way-shelter door",
+          "icon": "rest",
+          "goto": "scene_last_moth"
+        }
+      ]
+    },
+    "interaction_trickle": {
+      "type": "interaction",
+      "narration": "Past the slide, the hillside is still letting go. Small red stones trickle across the road in bursts, ping, ping, ping, and then stop, and then start again. Behind you, the warden with the clipboard waves both arms. \"Go in the gaps! Go in the gaps!\"",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the pebbles to stop, then tap to dash across.",
+        "actionLabel": "Dash!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_switchback",
+        "narration": "You dash across in the quiet, and the pebbles patter harmlessly behind you. The warden writes something on his clipboard and underlines it twice."
+      },
+      "onFailure": {
+        "goto": "scene_switchback",
+        "narration": "Ping. A pebble bonks your hat. Ping, ping, and you run the rest of the way with your hands over your heads, laughing a little more than you meant to. Nobody is hurt, and the warden writes down \"bonked\"."
+      },
+      "onAssisted": {
+        "goto": "scene_switchback",
+        "narration": "The warden calls out each gap for you, loud and clear, and you slip across between the pebbles without a single bonk."
+      }
+    },
+    "interaction_wagon_bells": {
+      "type": "interaction",
+      "narration": "The caravan comes around the hairpin with its harness bells ringing. At the front, a tired woman with a headache is the caravan master, and she rings a little tune to the wagons behind her: low bell, high bell, low bell, brass bell. It is how wagons on the north road say \"slow down, make room\". If you ring it back, she will know you are friends and will stop to hear you out. Listen, then ring it back.",
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
+        }
+      ],
+      "interaction": {
+        "kind": "memory",
+        "cue": "Listen to the bells, then ring them back in the same order.",
+        "actionLabel": "Ring the bells",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "low",
+            "label": "Low bell",
+            "icon": "drop"
+          },
+          {
+            "id": "high",
+            "label": "High bell",
+            "icon": "feather"
+          },
+          {
+            "id": "brass",
+            "label": "Brass bell",
+            "icon": "bead"
+          }
+        ],
+        "answer": [
+          "low",
+          "high",
+          "low",
+          "brass"
+        ]
+      },
+      "onSuccess": {
+        "goto": "choice_the_bend",
+        "narration": "The master hears her own tune come back from the ridge, blinks, and holds up one hand. The whole caravan eases to a stop on the hairpin, mules snorting, and she looks you over with the first interested look she has had all day."
+      },
+      "onFailure": {
+        "goto": "choice_the_bend",
+        "narration": "Your tune comes out wrong, and the lead mule winces. But the master slows the wagons anyway, to find out who is making that noise. \"Is that a bell?\" she asks. \"It is the saddest bell I have ever heard.\""
+      },
+      "onAssisted": {
+        "goto": "choice_the_bend",
+        "narration": "The lead wagoneer rings the tune again, slowly, until you have it. The master hears it come back from the ridge, and the whole caravan eases to a stop on the hairpin."
+      }
+    },
+    "scene_drake_ledge": {
+      "type": "story",
+      "discovers": [
+        "creature.river_drake"
+      ],
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "narration": "Where the stair and the old path meet again, the first trees begin and the ground turns damp. A little spring bubbles out of the rock, and a young river drake is lying across the path in front of it, as long as a rowboat, its scales dull and dusty. Its creek must have dried up in the shaking, and it has climbed the mountain, following the smell of water. It wants that spring, and it thinks everybody else wants it too. It will not let you by. It will not let anyone near.",
+      "choices": [
+        {
+          "id": "ease_back",
+          "label": "Ease the drake back from the path",
+          "icon": "swords",
+          "goto": "encounter_drake"
+        }
+      ]
+    },
+    "encounter_drake": {
+      "type": "encounter",
+      "map": "thicket",
+      "narration": "The drake hisses like a kettle and lashes its tail. It does not want to hurt anybody. It only wants the spring to itself. Drive it back from the path, and give it room to drink.",
+      "enemies": [
+        {
+          "id": "drake",
+          "name": "Young River Drake",
+          "creature": "river_drake",
+          "hp": 10
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_drake_drinks",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "sunbloom_draught",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_drake_rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_drake_drinks": {
+      "type": "story",
+      "narration": "The drake gives up, backs away from the path, and plunges snout first into the spring. Gulp, gulp, gulp. Then it rolls over and blows bubbles at the sky. The splash waters a sunbloom beside the spring, and the bloom opens at once. You fill a flask with spring water and one gold petal, and the drake does not mind at all.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on to the tree line",
+          "icon": "forward",
+          "goto": "rest_tree_line"
+        }
+      ]
+    },
+    "scene_drake_rescued": {
+      "type": "story",
+      "narration": "The drake's tail sweeps your feet out from under you, and everyone sits down hard in the moss. Nobody is hurt. A warden runner jogging down the mountain skids to a halt, sees the drake's dry sides, and empties a whole water-skin over its snout. The drake forgets all about you and goes to sulk in the spring. The runner hands round hot tea and warm blankets. Nobody gets a flask of spring water tonight, but the path is clear.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on to the tree line",
+          "icon": "forward",
+          "goto": "rest_tree_line"
         }
       ]
     }
