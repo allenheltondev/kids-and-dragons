@@ -1,13 +1,14 @@
 """Package real TV/phone captures into chapter review sheets (Pillow only)."""
 import json
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
+from review_font import review_font
 
 ROOT = Path(__file__).resolve().parents[2]
 REVIEW = ROOT / 'docs/review/gemfall-497-locations'
 RAW = ROOT / 'test-results/gemfall-497-locations'
 RAW.mkdir(parents=True, exist_ok=True)
-font = ImageFont.truetype('C:/Windows/Fonts/segoeui.ttf', 18)
+font = review_font(18)
 rows = json.loads((ROOT / 'art/source/gemfall-497-locations.json').read_text(encoding='utf-8'))
 chapters = dict.fromkeys(a['chapter'] for a in rows if not a['delivered'])
 for chapter in chapters:

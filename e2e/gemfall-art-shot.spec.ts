@@ -149,6 +149,10 @@ const priorChapterEndings = [
   ["rest_end", "ending_foothills_rim", "end_through_the_stones"],
 ];
 const interactionReview = remainingLocations.filter(a => ['stump-river-fog', 'wisp-raft-crowd', 'fern-calf-hide', 'rope-bridge-spare-planks', 'tally-house-floor-map', 'pellam-tea-table', 'checkpoint-box-shelf', 'washed-out-step-cart', 'warm-rock-chimney'].includes(a.slug)).map(a => ({ ...a, scenes: [a.scenes[0]!], introScenes: a.scenes }));
+interactionReview.push(
+  { chapter: "gemfall-04c", slug: "downbound-wagon-auction", scenes: ["check_search"], introScenes: ["check_search"], brief: "Distinct wagon tracking covers", delivered: true },
+  { chapter: "gemfall-06", slug: "moth-slope-rocks", scenes: ["interaction_moth_trail"], introScenes: ["interaction_moth_trail"], brief: "Distinct rock tracking covers", delivered: false },
+);
 for (const batch of [{ number: "interactions", art: { assets: interactionReview } }, { number: "03", art: fightArt }, { number: "04", art: fight04Art }, { number: "05", art: fight05Art }, { number: "06", art: fight06Art }, { number: "07", art: fight07Art }, { number: "08", art: fight08Art }, { number: "remaining", art: { assets: remainingLocations.filter((asset) => !asset.delivered).map((asset) => ({ ...asset, introScenes: asset.scenes })) } }]) {
 test(`photograph chapter ${batch.number} fight introductions and outcomes on TV and phone`, async ({ browser }) => {
   test.setTimeout(batch.number === "remaining" ? 1_800_000 : batch.number === "interactions" ? 600_000 : 240_000);

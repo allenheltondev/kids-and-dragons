@@ -71,6 +71,8 @@ by real interaction scene ids. A minimal example is:
 `assets/manifest.json`; tracking art must have one `coverIcons` id for each
 cover. An optional tracking `props[0]` paints the target during the initial
 peek and the relaxed-mode hint only; it stays hidden throughout shuffling.
+Distinct moving cover paintings use positional labels in the display, hints,
+and answer buttons: answers refer to slots, not to the paintings' identities.
 The validator checks scene keys, IDs, counts, and image files. These
 paintings join the chapter's existing warming list automatically, so authors
 do not need to duplicate them in `warmUrls`. The `fights` and `warmUrls`

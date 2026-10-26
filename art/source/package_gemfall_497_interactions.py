@@ -1,6 +1,7 @@
 """Package active TV/phone snapshots; retain originals outside test output cleanup."""
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
+from review_font import review_font
 
 ROOT = Path(__file__).resolve().parents[2]
 REVIEW = ROOT / 'docs/review/gemfall-497-interactions'
@@ -9,10 +10,10 @@ RAW.mkdir(parents=True, exist_ok=True)
 for path in REVIEW.glob('*.png'):
     path.replace(RAW / path.name)
 scenes = sorted(p.name.removesuffix('-tv.png') for p in RAW.glob('*-tv.png'))
-assert len(scenes) == 9, scenes
+assert len(scenes) == 11, scenes
 sheet = Image.new('RGB', (1320, 325*((len(scenes)+1)//2)), '#17142a')
 draw = ImageDraw.Draw(sheet)
-font = ImageFont.truetype('C:/Windows/Fonts/segoeui.ttf',18)
+font = review_font(18)
 for i, scene in enumerate(scenes):
     x, y = i%2*660, i//2*325
     for device, width, dx in [('tv',512,0),('phone',133,520)]:
