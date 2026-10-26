@@ -2164,7 +2164,7 @@
       "narration": "The grumbling is close now, but so is the biggest stump yet, rolling slowly in the current like a sleeping cow. \"Fend it off!\" hums Gullet. \"One pushes with the pole. Everybody else keeps the raft still, or we all go for a swim.\"",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends hold the raft steady while one of you pushes the stump away.",
+        "cue": "Friends hold the raft steady while someone pushes the stump away.",
         "actionLabel": "Push off the stump",
         "supportLabel": "Hold the raft steady"
       },

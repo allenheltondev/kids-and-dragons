@@ -9,7 +9,7 @@
     "set": "road",
     "flag": "route_river"
   },
-  "estimatedMinutes": 48,
+  "estimatedMinutes": 42,
   "xpAward": 90,
   "entry": "scene_east_bank",
   "plate": {
@@ -1862,7 +1862,7 @@
       "narration": "The manticores have the post at its new hole at last, and it leans over the hole like a tired giraffe. \"Hold it straight,\" says the bigger one, \"while somebody stamps the earth in.\"",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends hold the post upright while one of you stamps the earth in.",
+        "cue": "Friends hold the post upright while someone stamps the earth in.",
         "actionLabel": "Stamp the earth in",
         "supportLabel": "Hold the post straight"
       },

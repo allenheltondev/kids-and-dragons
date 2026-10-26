@@ -2574,7 +2574,7 @@
     },
     "interaction_stuck_wagon": {
       "type": "interaction",
-      "narration": "One lone wagon has a wheel stuck deep in a rut at the end of the lane, a little short of the hedges. Its drover, a centaur with a very polite voice, waves you over. \"Everybody else is busy shouting,\" she says. \"One of you steer the pole, the rest push, and I will pull. I tip well.\"",
+      "narration": "One lone wagon has a wheel stuck deep in a rut at the end of the lane, a little short of the hedges. Its drover, a centaur with a very polite voice, waves you over. \"Everybody else is busy shouting,\" she says. \"Somebody steer the pole, everybody push, and I will pull. I tip well.\"",
       "cast": [
         {
           "figure": "entities/centaur",
@@ -2583,7 +2583,7 @@
       ],
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends push the wagon while one of you steers the pole.",
+        "cue": "Friends push the wagon while someone steers the pole.",
         "actionLabel": "Steer the pole",
         "supportLabel": "Push the wagon"
       },

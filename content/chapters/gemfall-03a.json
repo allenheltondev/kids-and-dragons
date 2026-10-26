@@ -1975,7 +1975,7 @@
       "narration": "You have barely gone three steps when behind you something goes HISSSS. The camp's supper pot, a copper pot as big as a barrel, is boiling over, and the cook is waving her ladle like a flag. \"Tip it off the fire before it scorches!\" she cries. \"One to tip, and everybody else to hold the pole!\" There is porridge in there for the whole camp.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends hold the pole steady while one of you tips the pot.",
+        "cue": "Friends hold the pole steady while someone tips the pot.",
         "actionLabel": "Tip the pot",
         "supportLabel": "Hold the pole steady"
       },

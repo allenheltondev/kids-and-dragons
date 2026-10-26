@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_wild"
   },
-  "estimatedMinutes": 50,
+  "estimatedMinutes": 45,
   "xpAward": 90,
   "entry": "scene_mosshome",
   "plate": {
@@ -751,10 +751,10 @@
     },
     "check_chair_sit": {
       "type": "interaction",
-      "narration": "The small archivist with the string waves you over. \"It will not stand up for one person,\" she says. \"One of you sits and leans, and the rest push on the back. The chair has to feel all of you.\"",
+      "narration": "The small archivist with the string waves you over. \"It will not stand up for one person,\" she says. \"Somebody sits and leans, and everybody pushes on the back. The chair has to feel the whole group.\"",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends push the chair upright while one of you sits and leans back.",
+        "cue": "Friends push the chair upright while someone sits and leans back.",
         "actionLabel": "Lean back",
         "supportLabel": "Push the chair"
       },
