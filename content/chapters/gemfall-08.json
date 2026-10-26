@@ -4,7 +4,7 @@
   "index": 8,
   "title": "Gemfall",
   "biome": "mount_red_sky",
-  "estimatedMinutes": 45,
+  "estimatedMinutes": 50,
   "xpAward": 120,
   "entry": "scene_tree_line",
   "plate": {
@@ -261,7 +261,7 @@
           "id": "on",
           "label": "Climb on, carrying it",
           "icon": "hand",
-          "goto": "scene_wolf_ledge"
+          "goto": "interaction_bundles"
         }
       ]
     },
@@ -280,7 +280,7 @@
           "id": "on",
           "label": "Wave goodbye and climb on",
           "icon": "heart",
-          "goto": "scene_wolf_ledge"
+          "goto": "interaction_bundles"
         }
       ]
     },
@@ -299,7 +299,7 @@
           "id": "on",
           "label": "Climb on",
           "icon": "charm",
-          "goto": "scene_wolf_ledge"
+          "goto": "interaction_bundles"
         }
       ]
     },
@@ -341,6 +341,13 @@
           "icon": "gem",
           "requiresItem": "facet_pride",
           "goto": "scene_wolf_ledge_pride"
+        },
+        {
+          "id": "scout_ledge",
+          "label": "Have a duskrunner scout the ledge and lead the way",
+          "icon": "spark",
+          "requiresClass": "duskrunner",
+          "goto": "check_wolf_ledge"
         }
       ]
     },
@@ -421,7 +428,7 @@
     },
     "scene_warden_post": {
       "type": "story",
-      "narration": "Higher up is the wardens' last post, and it is empty. On the table is a logbook and a very neat sign: ALL CLIMBERS MUST SIGN IN. Under it, a smaller sign: THIS MEANS YOU. Beside the log sits a little box labeled FOR CLIMBERS WHO SIGNED.",
+      "narration": "Higher up is the wardens' last post, and it is empty. On the table is a logbook and a very neat sign: ALL CLIMBERS MUST SIGN IN. Under it, a smaller sign: THIS MEANS YOU. Beside the log sits a little box labeled FOR CLIMBERS WHO SIGNED. Beside the box sits a dented tin with a slot in the lid: FOR THE NEXT ONES UP. ONE COIN, PLEASE.",
       "variants": [
         {
           "when": {
@@ -486,6 +493,23 @@
               "itemId": "mosslight_jar"
             }
           ]
+        },
+        {
+          "id": "tin",
+          "label": "Drop a coin in the tin, for the next ones up",
+          "icon": "bead",
+          "when": {
+            "coins": {
+              "min": 1
+            }
+          },
+          "goto": "scene_warden_post_tin",
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 1
+            }
+          ]
         }
       ]
     },
@@ -497,7 +521,7 @@
           "id": "on",
           "label": "Climb on",
           "icon": "scroll",
-          "goto": "scene_overlook"
+          "goto": "interaction_chimney"
         }
       ]
     },
@@ -509,7 +533,7 @@
           "id": "on",
           "label": "Climb on, still laughing",
           "icon": "cake",
-          "goto": "scene_overlook"
+          "goto": "interaction_chimney"
         }
       ]
     },
@@ -521,7 +545,7 @@
           "id": "on",
           "label": "Climb on",
           "icon": "gem",
-          "goto": "scene_overlook"
+          "goto": "interaction_chimney"
         }
       ]
     },
@@ -533,7 +557,7 @@
           "id": "on",
           "label": "Climb on",
           "icon": "shield",
-          "goto": "scene_overlook"
+          "goto": "interaction_chimney"
         }
       ]
     },
@@ -829,11 +853,37 @@
       ]
     },
     "check_bell_code": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Remember the bell-code for all's well",
-      "roller": "party",
+      "type": "interaction",
+      "narration": "Inside the hut, the all's well code is painted on a card, but a mouse has nibbled it into scraps. Put the rings back in the right order, and then pull the rope.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share the scraps, then choose the rings in order.",
+        "actionLabel": "Ring the code",
+        "options": [
+          {
+            "id": "long",
+            "label": "Long ring",
+            "icon": "note"
+          },
+          {
+            "id": "short",
+            "label": "Short ring",
+            "icon": "spark"
+          }
+        ],
+        "answer": [
+          "long",
+          "long",
+          "short",
+          "long",
+          "long"
+        ],
+        "clues": [
+          "The code starts with two long rings.",
+          "One short ring sits right in the middle.",
+          "It ends with two long rings, the same as the start."
+        ]
+      },
       "onSuccess": {
         "goto": "scene_crab_field",
         "narration": "Two long, one short, two long. Exactly right. The ring rolls down the mountain, and hut after hut rings it back: all's well. It is not quite true yet. It is a promise."
@@ -841,6 +891,10 @@
       "onFailure": {
         "goto": "scene_soup_ring",
         "narration": "Two long, one short? Or one short, two long? You ring it anyway. Far below, the next hut pauses. Then it rings it back, and the next, and the next. It is not all's well. It is something else entirely."
+      },
+      "onAssisted": {
+        "goto": "scene_crab_field",
+        "narration": "You lay the scraps side by side and the code comes clear. Two long, one short, two long. The ring rolls down the mountain, and hut after hut rings it back: all's well. It is not quite true yet. It is a promise."
       }
     },
     "scene_soup_ring": {
@@ -933,11 +987,11 @@
       "prompt": "Read what the glassback crabs are waving about",
       "roller": "best",
       "onSuccess": {
-        "goto": "scene_ember_drift",
+        "goto": "scene_crab_guards",
         "narration": "Claw up means not here. Claw sideways means go on. You read them like a signpost and walk a wiggly line across, and not one crab gets stepped on."
       },
       "onFailure": {
-        "goto": "scene_ember_drift",
+        "goto": "scene_crab_guards",
         "narration": "You read go on where it clearly said absolutely not, and step on a crab. It is not hurt, only very offended, and it holds onto your bootlace all the way across like a ticket."
       }
     },
@@ -954,11 +1008,11 @@
       "roller": "party",
       "prompt": "Hop from rock to rock around the crumbly edge of the ash field",
       "onSuccess": {
-        "goto": "scene_ember_drift",
+        "goto": "scene_crab_guards",
         "narration": "You hop from rock to rock, quick as a sparrow. The whole field of crabs shuffles sideways to keep an eye on you, glittering, like the world's most suspicious audience."
       },
       "onFailure": {
-        "goto": "scene_ember_drift",
+        "goto": "scene_crab_guards",
         "narration": "A rock rolls, and you sit down hard in the ash. A hundred crabs turn to stare. One pats your boot, very kindly, as if you were a new and slightly broken gem. You get up and keep going, dusty."
       }
     },
@@ -976,7 +1030,7 @@
           "id": "on",
           "label": "Climb on, sparkling",
           "icon": "spark",
-          "goto": "scene_ember_drift"
+          "goto": "scene_crab_guards"
         }
       ]
     },
@@ -1014,7 +1068,7 @@
           "id": "on",
           "label": "Climb on",
           "icon": "gem",
-          "goto": "scene_ember_drift"
+          "goto": "scene_crab_guards"
         }
       ]
     },
@@ -3075,6 +3129,13 @@
           "label": "Brace the cracking seal with your shoulders",
           "icon": "might",
           "goto": "check_brace_seal"
+        },
+        {
+          "id": "shield_seal",
+          "label": "Have a thornguard plant a shield against the seal's edge",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "check_brace_seal"
         }
       ]
     },
@@ -3175,19 +3236,38 @@
       ]
     },
     "check_hum_note": {
-      "type": "check",
+      "type": "interaction",
       "art": "scenes/gemfall/seal-chamber",
-      "cast": [
-        {
-          "figure": "cast/seal_keeper",
-          "name": "Seal-Keeper"
-        }
-      ],
-      "stat": "heart",
-      "tn": 12,
-      "roller": "all",
-      "checkKind": "doing",
-      "prompt": "Hum the old note back, low and steady, the way the stones do",
+      "narration": "The old note comes up through the floor in a pattern. Low, high, low, middle. The great eye waits, as if it hopes you will answer. Listen, then hum it back the same way.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Listen to the hums, then hum them back in order.",
+        "actionLabel": "Hum it back",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "low",
+            "label": "Low hum",
+            "icon": "drop"
+          },
+          {
+            "id": "mid",
+            "label": "Middle hum",
+            "icon": "note"
+          },
+          {
+            "id": "high",
+            "label": "High hum",
+            "icon": "feather"
+          }
+        ],
+        "answer": [
+          "low",
+          "high",
+          "low",
+          "mid"
+        ]
+      },
       "onSuccess": {
         "goto": "scene_seal_chamber",
         "narration": "You hum, and the great eye blinks, slowly. The note comes back softer, like a sleepy friend answering from under the covers. The shaking eases. It heard you."
@@ -3195,21 +3275,54 @@
       "onFailure": {
         "goto": "scene_seal_chamber",
         "narration": "Your note comes out as a squeak. The great eye crinkles at the corners, and you are almost sure it is laughing. The floor shakes harder, but the note that comes back sounds friendlier."
-      }
-    },
-    "check_hear_titan": {
-      "type": "check",
-      "art": "scenes/gemfall/seal-chamber",
+      },
+      "onAssisted": {
+        "goto": "scene_seal_chamber",
+        "narration": "The Seal-Keeper hums the first note beside you, soft as a cat's purr, and you follow it, one hum at a time. The great eye blinks, slowly. The note comes back, like a sleepy friend answering from under the covers. The shaking eases. It heard you."
+      },
       "cast": [
         {
           "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
-      ],
-      "stat": "clever",
-      "tn": 12,
-      "roller": "best",
-      "prompt": "Press your ear to the warm glass and puzzle out what the note is saying",
+      ]
+    },
+    "check_hear_titan": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "narration": "You press your ear to the warm glass. The sounds arrive in pieces, one at a time, and every piece is part of the same question. Share what all of you hear, then put the sounds in order.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share what you hear, then choose the sounds in order.",
+        "actionLabel": "Say what it says",
+        "options": [
+          {
+            "id": "rumble",
+            "label": "Rumble",
+            "icon": "drop"
+          },
+          {
+            "id": "chime",
+            "label": "Chime",
+            "icon": "star"
+          },
+          {
+            "id": "sigh",
+            "label": "Sigh",
+            "icon": "feather"
+          }
+        ],
+        "answer": [
+          "rumble",
+          "chime",
+          "sigh"
+        ],
+        "clues": [
+          "It starts with the low rumble.",
+          "The chime comes just before the sigh.",
+          "Use each sound once."
+        ]
+      },
       "onSuccess": {
         "goto": "scene_seal_chamber",
         "narration": "It is not one note. It is a question, the same few sounds over and over, the way a little kid asks the same thing at bedtime. The Seal-Keeper nods. \"Yes,\" it says. \"You hear it too.\""
@@ -3217,7 +3330,17 @@
       "onFailure": {
         "goto": "scene_seal_chamber",
         "narration": "All you hear is a hum that makes your ear itch. Then the Seal-Keeper lowers its head beside you. \"It is asking something,\" it says. \"It always asks the same thing.\""
-      }
+      },
+      "onAssisted": {
+        "goto": "scene_seal_chamber",
+        "narration": "The Seal-Keeper lowers its head beside you and listens too. Rumble, chime, sigh, over and over, the way a little kid asks the same thing at bedtime. \"Yes,\" it says. \"You hear it too.\""
+      },
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ]
     },
     "scene_seal_chamber": {
       "type": "story",
@@ -5376,6 +5499,181 @@
           "label": "Carry the Keystone out of the mountain",
           "icon": "gem",
           "goto": "ending_collectors"
+        }
+      ]
+    },
+    "interaction_bundles": {
+      "type": "interaction",
+      "narration": "Down the slope, the faun family has stopped again. Their goat has parked the cart across a washed-out step, and it will not budge. Tansy's father waves both arms at you. \"Help us pass the bundles over the gap, hand to hand!\" he calls. \"Quick, before the goat has opinions!\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the bundle, then pass it along.",
+        "actionLabel": "Pass the bundle",
+        "objectLabel": "A faun family's bundle"
+      },
+      "onSuccess": {
+        "goto": "scene_wolf_ledge",
+        "narration": "Bundle after bundle goes over the gap, and not one lands in the mud. The goat watches the whole thing, chewing. Tansy's mother presses a warm honeycake into your hands. \"For the climb,\" she says, \"and for being nice to my small one.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_wolf_ledge",
+        "narration": "One bundle bursts open, and a whole pillow's worth of feathers floats down the mountain like snow. The goat sneezes. The family laughs, and the cart rolls on."
+      },
+      "onAssisted": {
+        "goto": "scene_wolf_ledge",
+        "narration": "Together you and Tansy's father pass the bundles in a slow, steady row, and not one lands in the mud. Tansy's mother presses a warm honeycake into your hands. \"For the climb,\" she says.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/tansy",
+          "name": "Tansy",
+          "size": "small"
+        }
+      ]
+    },
+    "scene_warden_post_tin": {
+      "type": "story",
+      "narration": "The coin goes in with a clink. The tin rattles, and the lid pops open. Inside is a brave whistle on a string, with a tag: FOR A LOUD MOMENT. Somebody has been saving these for climbers who pay it forward. You sign the log too, in small letters, just under the last name.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on",
+          "icon": "whistle",
+          "goto": "interaction_chimney",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "brave_whistle",
+              "to": "party"
+            }
+          ]
+        }
+      ]
+    },
+    "interaction_chimney": {
+      "type": "interaction",
+      "narration": "Above the wardens' post, the stair gives out into a steep chimney of warm rock. A rope hangs down it, and a sign says: ONE CLIMBER AT A TIME. EVERYBODY ELSE HOLDS THE ROPE. THIS MEANS YOU TOO. The top is very high, and very close to the clouds.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends hold the rope steady while one of you climbs.",
+        "actionLabel": "Climb the rope",
+        "supportLabel": "Hold the rope steady"
+      },
+      "onSuccess": {
+        "goto": "scene_overlook",
+        "narration": "Hand over hand, up you go, and the rope never wobbles once. You pop out over the lip of the chimney with your hair full of cloud."
+      },
+      "onFailure": {
+        "goto": "scene_overlook",
+        "narration": "The rope swings, and you slide down on your bottom to the nearest ledge. You try again from the side, the long way round. It takes longer, but you pop out over the lip with your hair full of cloud."
+      },
+      "onAssisted": {
+        "goto": "scene_overlook",
+        "narration": "Everybody holds the rope together, and you climb one slow hand at a time. You pop out over the lip of the chimney with your hair full of cloud."
+      }
+    },
+    "scene_crab_guards": {
+      "type": "story",
+      "narration": "On the far side of the field, the two biggest crabs have beaten you to the path. They must have taken a shortcut under the ash. They plant themselves in the only way up, claws raised. They are the field's guards, and they have decided that anybody who crossed their gem field must be a digger. Crabs cannot be argued with. They can, however, be bumped. Gently, with a shoulder, until they get the idea.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab",
+          "count": 2
+        }
+      ],
+      "choices": [
+        {
+          "id": "bump",
+          "label": "Shoulder the guard crabs off the path",
+          "icon": "swords",
+          "goto": "encounter_crabs"
+        }
+      ]
+    },
+    "encounter_crabs": {
+      "type": "encounter",
+      "map": "switchback",
+      "narration": "The guard crabs click and clack and puff out their glassy backs. They only want you off their field. Bump them off the path before they bump you back.",
+      "enemies": [
+        {
+          "id": "crab",
+          "name": "Guard Crab",
+          "creature": "glassback_crab",
+          "hp": 10
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_crabs_bumped",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "luckstone",
+            "to": "party"
+          },
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_crabs_herded",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_crabs_bumped": {
+      "type": "story",
+      "narration": "The guard crabs go over like two upside-down teacups, and then right themselves, very offended. Then the oldest one clacks its claws and scuttles aside. Under the spot where it sat is a small pile of things diggers dropped long ago: three coins, and a smooth, lucky-looking stone. The crab pushes them toward you with one claw. You are, it seems, climbers after all.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab",
+          "count": 2
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Thank them and climb on",
+          "icon": "gem",
+          "goto": "scene_ember_drift"
+        }
+      ]
+    },
+    "scene_crabs_herded": {
+      "type": "story",
+      "narration": "The crabs shoulder you back and forth until you are sitting in the ash, dizzy and a little giggly. Then they march around you in a circle, clicking, and herd you off their field and onto the path, the way a sheepdog would. The oldest crab pats your boot. Nobody is hurt. You get a rest in the ash, and a good look at the sky.",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab",
+          "count": 2
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Dust off and climb on",
+          "icon": "boot",
+          "goto": "scene_ember_drift"
         }
       ]
     }
