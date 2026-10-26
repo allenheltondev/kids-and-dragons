@@ -269,6 +269,8 @@ const DIGESTS: PreEpicSave["digests"] = {
 // all other chapter fields and gameplay digests remain unchanged.
 // Re-pinned for #497 chapter 06 records-hall fight art: three scene.art
 // fields only. All gameplay content and gameplay digest constants are unchanged.
+// Re-pinned for #497 chapter 08 guard-crab fight art: three scene.art fields
+// only; all other chapter fields and gameplay digest constants are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
   "chapters/gemfall-01.json": "67a4b9a4d8a8be313734b201acc02cd8a26a164f22f7b4df2330ef15fd74b8f8",
@@ -286,7 +288,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-07h.json": "fd6e78a23167c772b9b0e2863585ab825c64a1bed7fa76f7674a0891f2653d0d",
   "chapters/gemfall-07l.json": "9450f815b2443364ad0aab48f910999cebe9bd5c76476caf84635e28bdd442e9",
   "chapters/gemfall-07r.json": "7fcfcba309e4c86fa9ab94e566083819d6c8a75eccc0cbeab9508022fa2773d0",
-  "chapters/gemfall-08.json": "701771b5943a5313857f355cea5919e04ba4a5087d506916e33d7c098dd7e4a2",
+  "chapters/gemfall-08.json": "298e57b12ef7f25fa707fbec749cd9d8b92fdcd8aa5fe7fcfd9e4bbaea7f9b1f",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {
