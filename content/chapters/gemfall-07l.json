@@ -2535,7 +2535,8 @@
           "icon": "swords",
           "goto": "encounter_crawlers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pinch-box-crawlers"
     },
     "encounter_crawlers": {
       "type": "encounter",
@@ -2580,7 +2581,8 @@
           "icon": "travel",
           "goto": "choice_the_test"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pinch-box-crawlers"
     },
     "scene_crawlers_boxed": {
       "type": "story",
@@ -2592,7 +2594,8 @@
           "icon": "travel",
           "goto": "choice_the_test"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pinch-box-crawlers"
     }
   },
   "voiceGuide": {

@@ -33,6 +33,13 @@ mappings and actual TV/phone captures, and the
 [source record](../../art/source/gemfall-06-fight.json) for generation/revision
 prompts, reference/source/production hashes and export details.
 
+Chapter 07h/07l/07r adds `echo-cutting`, `pinch-box-crawlers` and
+`spring-drake-ledge` in the same export format, each shared by its fight
+introduction and both outcomes. See the [chapter 07 fight review](../review/gemfall-07-fights/README.md)
+for all nine mappings and actual TV/390px phone captures, and the
+[source record](../../art/source/gemfall-07-fights.json) for exact prompts,
+reference/source/production hashes and export details. Gameplay is unchanged.
+
 The original six backdrops were created with the built-in image generation tool. Production files live in
 `assets/scenes/gemfall/`: 1920×1080 WebP, quality 88, about 3.0 MB total. Original generated
 PNGs remain in the local Codex generated-images directory. Existing biome art is unchanged.

@@ -1,0 +1,69 @@
+{
+  "issue": 497,
+  "date": "2026-10-26",
+  "generator": "Built-in image_gen",
+  "reference": "assets/scenes/gemfall/ditch-plank-mimics.webp",
+  "export": {
+    "size": [
+      1920,
+      1080
+    ],
+    "format": "WebP",
+    "quality": 88,
+    "resample": "Lanczos"
+  },
+  "assets": [
+    {
+      "chapter": "gemfall-07h",
+      "slug": "echo-cutting",
+      "scenes": [
+        "scene_echo_cutting",
+        "scene_echo_quiet",
+        "scene_echo_lost"
+      ],
+      "prompt": "Use case: illustration-story. Create ONE production environment backdrop for Kids & Dragons Gemfall, wide 16:9 landscape target 1920x1080. Reference image is ONLY the house style: polished dimensional painterly storybook brushwork, tactile natural materials, rich warm/cool color, welcoming slightly mysterious fantasy for children age 8. Full bleed single painting. No people, animals, monsters, creatures, faces, eyes, limbs, readable lettering, numbers, text, UI, border, frame or watermark. Environment only: cast and creatures are separate game cutouts. Keep the bottom third a clear broad level foreground for sprites. Major distinguishing props should sit near horizontal center at 40–55 percent image height so they remain recognizable in the narrow central phone crop. Do not copy reference hay cart, ditch, planks or cakes. New place: a mountain road in a rocky cutting just below the tree line. Layered slate rock walls have curious repeated curved seams and recesses that suggest sound answering back WITHOUT faces or creatures. Two large old copper cooking pots rest together on a low flat rock beside the road, near the center of the composition; their handles and open rims clearly visible. A gap between rock walls gives a view down to a tiny village far below. A few first mountain trees along the upper ridge, warm late afternoon sun and soft cool stone shadows. Lower third is the broad open dusty level road, not a chasm.",
+      "introScenes": [
+        "scene_echo_cutting"
+      ],
+      "sourceFile": "exec-cbc75fd7-8a93-4779-b77a-15f335ae9ab7.png",
+      "sourceSha256": "9ec1805db33bdec31f699bb5237f24e31897b2a65d203f5a8995e32e1595d723",
+      "productionSha256": "aa20034ffac0ceddf1f3bc266f5c8df3752439e19750d4e0c267411106dce865",
+      "bytes": 579178
+    },
+    {
+      "chapter": "gemfall-07l",
+      "slug": "pinch-box-crawlers",
+      "scenes": [
+        "scene_box_crawlers",
+        "scene_crawlers_scattered",
+        "scene_crawlers_boxed"
+      ],
+      "prompt": "Use case: illustration-story. Create ONE production environment backdrop for Kids & Dragons Gemfall, wide 16:9 landscape target 1920x1080. Reference image is ONLY the house style: polished dimensional painterly storybook brushwork, tactile natural materials, rich warm/cool color, welcoming slightly mysterious fantasy for children age 8. Full bleed single painting. No people, animals, monsters, creatures, faces, eyes, limbs, readable lettering, numbers, text, UI, border, frame or watermark. Environment only: cast and creatures are separate game cutouts. Keep the bottom third a clear broad level foreground for sprites. Major distinguishing props should sit near horizontal center at 40–55 percent image height so they remain recognizable in the narrow central phone crop. Do not copy reference hay cart, ditch, planks or cakes. New place: the Pinch, a tight bend in a mountain caravan road between warm grey rock walls. Near the center midground is a burst wooden shipping box, lid sprung sideways, torn blank inventory tags hanging from its rim and scattered nearby, chewed edges but NO creature or teeth. A plain empty burlap soup sack hangs from an iron hook on a short roadside post close beside the box. Beyond, the road bends down around the ledge to a waiting empty covered wagon well below. Small abstract tag marks only, absolutely no legible numbers. Golden afternoon lighting with cool rock shadows. Lower third is a wide clear level road apron for sprites, safe and readable.",
+      "introScenes": [
+        "scene_box_crawlers"
+      ],
+      "sourceFile": "exec-bb6fa6f9-4f27-4cc7-b867-9a13f85949a0.png",
+      "sourceSha256": "b6f81f930200722d5923258de5abecf03900fa0dc520d5a8e7167bf3521b3904",
+      "productionSha256": "6300547e6fc75d788c1389fb6e569964642983d02605911c1a2ac4f5e419c10d",
+      "bytes": 661486
+    },
+    {
+      "chapter": "gemfall-07r",
+      "slug": "spring-drake-ledge",
+      "scenes": [
+        "scene_drake_ledge",
+        "scene_drake_drinks",
+        "scene_drake_rescued"
+      ],
+      "prompt": "Use case: illustration-story. Create ONE production environment backdrop for Kids & Dragons Gemfall, wide 16:9 landscape target 1920x1080. Reference image is ONLY the house style: polished dimensional painterly storybook brushwork, tactile natural materials, rich warm/cool color, welcoming slightly mysterious fantasy for children age 8. Full bleed single painting. No people, animals, monsters, creatures, faces, eyes, limbs, readable lettering, numbers, text, UI, border, frame or watermark. Environment only: cast and creatures are separate game cutouts. Keep the bottom third a clear broad level foreground for sprites. Major distinguishing props should sit near horizontal center at 40–55 percent image height so they remain recognizable in the narrow central phone crop. Do not copy reference hay cart, ditch, planks or cakes. New place: where a flight of old stone mountain steps meets a winding old path at the first trees. A dry shallow creek bed of smooth pale pebbles crosses the ledge. A little clear spring bubbles from a fissure in a mossy rock face near the center midground, trickling into a small rock basin edged with lush damp green moss; the water source and basin clearly recognizable. One small golden sunbloom beside the water. Sparse early trees frame the upper sides, blue mountain distance through branches. Fresh soft daylight, gentle welcoming relief after a dry climb. Lower third is broad level rocky ground with a little low moss for separately rendered sprites. No drake, animal, footprints, clothing or equipment.",
+      "introScenes": [
+        "scene_drake_ledge"
+      ],
+      "sourceFile": "exec-59cc4fa6-bac2-4c24-9bb8-40ed3237dfa2.png",
+      "sourceSha256": "0c727f00b0ad3cbd91617dce74404af819fdb43daa3ee9d34b87ae20e70c8d83",
+      "productionSha256": "c4911ae0f97fc7633a147f82940a515c6a86d4369db3415c66a2a5595e9b7782",
+      "bytes": 672054
+    }
+  ],
+  "referenceSha256": "89e9475243c3d26e7ed5f0f0a0fe5f93402e8453b1d634ee6460f83e2a301eb6"
+}

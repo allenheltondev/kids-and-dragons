@@ -1105,7 +1105,10 @@
     "scenes/gemfall/bridge-lantern-wisps",
     "scenes/gemfall/high-stream-drake",
     "scenes/gemfall/tally-porch-crawlers",
-    "scenes/gemfall/citadel-cellar-hall"
+    "scenes/gemfall/citadel-cellar-hall",
+    "scenes/gemfall/echo-cutting",
+    "scenes/gemfall/pinch-box-crawlers",
+    "scenes/gemfall/spring-drake-ledge"
   ],
   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
   "campaignArt": {
