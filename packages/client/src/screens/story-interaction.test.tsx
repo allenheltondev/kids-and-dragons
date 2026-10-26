@@ -83,6 +83,32 @@ describe("reusable story controls", () => {
     const { container } = render(<StoryInteractionWorld />);
     expect(container.querySelector(`img[src="/assets/story-props/${id}.webp"]`)).toBeTruthy();
   });
+  it("moves the egg basket between two active players as they catch and pass", () => {
+    seed({ kind: "relay", cue: "Pass the eggs", actionLabel: "Pass", objectLabel: "basket" }, { phase: "ready", playerIds: ["p", "p2"] });
+    const state = useGameStore.getState().state!;
+    useGameStore.setState({
+      state: { ...state, sceneId: "interaction_egg_baskets", party: [...state.party, { ...state.party[0]!, playerId: "p2" }] },
+      chapter: { id: "test", presentation: { interactions: { interaction_egg_baskets: { props: ["prop_egg_basket"] } } } } as never,
+    });
+    const { container } = render(<StoryInteractionWorld />);
+    const basket = () => container.querySelector(".interaction-art__main") as HTMLImageElement;
+    const position = () => [basket().style.left, basket().style.top];
+    const update = (change: Partial<InteractionPrompt>) => act(() => {
+      const current = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...current, prompt: { ...current.prompt as InteractionPrompt, ...change } } });
+    });
+    expect(position()).toEqual(["70%", "48%"]);
+    update({ phase: "active" });
+    expect(position()).toEqual(["15%", "35%"]);
+    update({ caughtBy: "p" });
+    expect(position()).toEqual(["15%", "44%"]);
+    update({ passed: ["p"], caughtBy: undefined });
+    expect(position()).toEqual(["50%", "35%"]);
+    update({ caughtBy: "p2" });
+    expect(position()).toEqual(["50%", "44%"]);
+    update({ passed: ["p", "p2"], caughtBy: undefined, phase: "result", outcome: "success" });
+    expect(basket().style.left).toBe("85%");
+  });
   it("preserves catalog-only Riftlight visuals when content has no prop", () => {
     seed({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "bundle" });
     authoredChapter({ props: ["relay-log"] });

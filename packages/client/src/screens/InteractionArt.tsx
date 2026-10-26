@@ -68,7 +68,7 @@ export function PaintedInteraction({prompt,party,now}:{prompt:InteractionPrompt;
   style.left=(15+(index/Math.max(1,party.length))*70)+"%";
   style.top=prompt.caughtBy===holder?"44%":"35%";
  }
- if(state?.sceneId==="interaction_egg_baskets"&&primary==="prop_egg_basket"){style.left="70%";style.top="48%";}
+ if(prompt.phase==="ready"&&state?.sceneId==="interaction_egg_baskets"&&primary==="prop_egg_basket"){style.left="70%";style.top="48%";}
  if(spec.kind==="cooperate" && primary) {
   const supported=supportsReady(prompt,connected,new Date(now).toISOString());
   style.top=supported?"40%":"60%";
