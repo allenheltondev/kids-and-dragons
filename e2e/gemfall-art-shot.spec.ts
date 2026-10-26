@@ -10,6 +10,7 @@ import type { Chapter, ClientIntent, RunState } from "../packages/shared/src/ind
 import fightArt from "../art/source/gemfall-03-fights.json" with { type: "json" };
 import fight04Art from "../art/source/gemfall-04-fights.json" with { type: "json" };
 import fight05Art from "../art/source/gemfall-05-fights.json" with { type: "json" };
+import fight06Art from "../art/source/gemfall-06-fight.json" with { type: "json" };
 import type { SeedResponse, SeededPhone } from "../packages/server/src/dev-seed";
 import { onAir } from "./seed";
 
@@ -142,8 +143,9 @@ test("photograph Gemfall chapter 02 art and relaxed tracking on TV and phone", a
 const priorChapterEndings = [
   ["rest_dry_end", "ending_forded_clean", "end_forded"],
   ["rest_pride_fire", "ending_marked_present", "end_foothills_in_sight"],
+  ["rest_end", "ending_foothills_rim", "end_through_the_stones"],
 ];
-for (const batch of [{ number: "03", art: fightArt }, { number: "04", art: fight04Art }, { number: "05", art: fight05Art }]) {
+for (const batch of [{ number: "03", art: fightArt }, { number: "04", art: fight04Art }, { number: "05", art: fight05Art }, { number: "06", art: fight06Art }]) {
 test(`photograph chapter ${batch.number} fight introductions and outcomes on TV and phone`, async ({ browser }) => {
   test.setTimeout(240_000);
   for (const asset of batch.art.assets) {
@@ -165,7 +167,7 @@ test(`photograph chapter ${batch.number} fight introductions and outcomes on TV 
       await send(phone, table.code, { type: "READY", ready: true });
       await send(phone, table.code, { type: "CONTINUE_CAMPAIGN", campaignId: "gemfall" });
       await send(phone, table.code, { type: "PLAYTEST_GOTO", sceneId: "choice_rumour_board" });
-      const road = asset.chapter.slice(-1);
+      const road = /[abc]$/.test(asset.chapter) ? asset.chapter.slice(-1) : "a";
       const choiceId = road === "a" ? "east" : road === "b" ? "west" : "north";
       await send(phone, table.code, { type: "CHOOSE", choiceId });
       await send(phone, table.code, { type: "ADVANCE" });

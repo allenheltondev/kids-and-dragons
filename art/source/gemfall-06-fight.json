@@ -1,0 +1,64 @@
+{
+  "issue": 497,
+  "date": "2026-10-26",
+  "generator": "Built-in image_gen",
+  "reference": "assets/scenes/gemfall/facet-table.webp",
+  "export": {
+    "size": [
+      1920,
+      1080
+    ],
+    "format": "WebP",
+    "quality": 88,
+    "resample": "Lanczos"
+  },
+  "assets": [
+    {
+      "chapter": "gemfall-06",
+      "slug": "citadel-cellar-hall",
+      "scenes": [
+        "scene_crawlers_hall",
+        "scene_crawlers_home",
+        "scene_crawlers_rescued"
+      ],
+      "introScenes": [
+        "scene_crawlers_hall"
+      ],
+      "prompt": "Use case: illustration-story. Create one new production backdrop for Kids & Dragons Gemfall chapter 06, 'citadel-cellar-hall'. Wide landscape 16:9 composition, target 1920x1080. The supplied image is a STYLE and ARCHITECTURE reference: keep the same polished painterly storybook medium, tactile grey basalt masonry, warm golden light, welcoming Redspire watchtower interior, and the canon's long rectangular stone captain's table. This is a DIFFERENT VIEW of the records hall, not another close-up of gemstones. A spacious old black-basalt records hall with the captain's long rectangular stone table in the upper middle/right, piled with thick watch-log books accumulated over four hundred years, some leather covers faded and frayed, small neat stacks and a few open books bearing only abstract unreadable strokes. Shelves and closed record cabinets frame the back wall. At the far left end of the hall an ordinary wooden cellar door stands open against the wall, revealing the first several stone stairs descending into a softly lit cellar, not an alarming black pit. Three straw brooms wait in a simple rack by the cellar doorway, ready to sweep the stairs. High narrow windows angle upward toward the sky; gentle late-afternoon gold light crosses the stone floor. Family friendly for children age 8, a cozy busy archive with a little mystery, no horror. Main table, stairs and other props stay in the upper two thirds or at edges; the lower third is a wide unobstructed flat stone floor for separately rendered game sprites. Preserve a readable central mobile crop. No people, wardens, fauns, animals, beetles, crawlers, bones, creatures, silhouettes, eyes or faces. No recognizable writing, letters, numbers, labels, UI, border, frame or watermark. No titan, seal, weapons or fantasy figure. Do not reproduce the reference's central gemstone, facet diagram, gems or tabletop close-up. Full bleed single environment painting.",
+      "initialSource": "exec-be4a763b-618c-413b-ad9e-5ec2b9601c63.png",
+      "revisions": [
+        {
+          "inputSource": "exec-be4a763b-618c-413b-ad9e-5ec2b9601c63.png",
+          "source": "exec-df3acc7e-1bf7-499b-b399-295c7fbf6059.png",
+          "prompt": "Edit the supplied records-hall image. Preserve the painterly style, exact long rectangular STONE table and its books, grey basalt walls, gold-and-blue furnishings, warm golden lighting, open foreground, shelves and windows. One required architectural correction ONLY: the left archway currently looks like stairs going UP. Replace that ascending stair arrangement with a clearly recognizable cellar stairwell going DOWN BELOW THE SURROUNDING HALL FLOOR. At the open doorway, the near top landing is level with the hall floor; beyond it the first several treads descend away and down into a recessed stair opening, below floor height, with a low stone side wall and gentle lantern illumination below. Use a slightly elevated view of that local stair opening so the downward steps are unambiguous. The opening should look like an ordinary safe household cellar entrance, not a pit. No steps climbing upward into the wall, no raised flight of stairs. Keep the ordinary wooden cellar door open to the side and preserve the broom rack beside it. Keep the lower third open for game sprites. Do not add people, crawlers, animals, creatures, readable text, UI, borders or watermarks. Keep wide 16:9 composition.",
+          "inputSourceSha256": "f7f8f2075c3802c33f0d9eb391e47886b8edb51ad8b873334f3474b5c058ef00",
+          "sourceSha256": "ab284a672e9c13140ec7caecff3f66578ee857db7912e1ac106850f76dd1e2ce"
+        },
+        {
+          "inputSource": "exec-df3acc7e-1bf7-499b-b399-295c7fbf6059.png",
+          "source": "exec-8425bf96-d57b-458b-b185-66c33ea88abe.png",
+          "prompt": "Edit ONLY the left cellar entrance of this records hall. Keep the entire right-hand stone table, books, cabinets, windows, lighting, banners, brushwork and broad empty foreground unchanged. IMPORTANT: REMOVE the tall arched wall doorway at the left completely, including its arch stones and ALL stairs behind that wall opening. Replace that area with an OPEN RECTANGULAR STAIRWELL CUT INTO THE FLOOR, below the hall's floor level, like an open cellar hatch. The back wall there is now ordinary flat stone without any door-shaped hole. The rectangular floor opening occupies the upper-left floor area and is seen from slightly above: a near stone lip at hall-floor height, then several wooden stair treads descending DOWN into a sunken warm-lit cellar below. A simple handrail slopes downward inside the opening; low wooden safety railing on its far side. An ordinary wooden hatch lid is hinged upright at the far edge of the floor opening, not mounted as a wall door. The stairwell's bottom and steps must sit BELOW the surrounding floor, with visible vertical inside walls proving the depth. There must be NO staircase ascending toward a door in a wall. Keep the three straw brooms beside this floor hatch. Keep the wide lower-third foreground flat, empty and uninterrupted; the stairwell is above that stage area. No people, creatures, crawler shapes, readable text, UI or border. Wide 16:9 painterly fantasy storybook backdrop.",
+          "inputSourceSha256": "ab284a672e9c13140ec7caecff3f66578ee857db7912e1ac106850f76dd1e2ce",
+          "sourceSha256": "5594896fdcf381a9c895efcb78b852deab52d6db5ac2ba3abe8403b129526934"
+        },
+        {
+          "inputSource": "exec-8425bf96-d57b-458b-b185-66c33ea88abe.png",
+          "source": "exec-0ba8913d-e167-48be-be94-2f9ca32804d1.png",
+          "prompt": "Recompose this exact records hall for a game backdrop that crops the central middle/lower part on phones. Keep the polished painterly style, grey basalt architecture, golden light, record cabinets, blue/gold furnishings, book-covered LONG RECTANGULAR STONE TABLE, and the correctly descending open floor-hatch cellar stairs at the left. The present image has TOO MUCH empty floor (roughly its lower half). Reduce empty floor to ONLY THE BOTTOM THIRD. Move the stone table and books DOWN AND TOWARD CENTER: table surface around 50â€“55% of image height, its stone feet/base ending around 68% height. Put prominent stacks of aged watch-log books across the table within the central horizontal 35â€“65% of image width, so they remain visible in a narrow central phone crop. The top of the table and books must be clearly visible around 40â€“58% image height, not confined to the top quarter. Move the descending cellar floor opening slightly down with the table to the left-middle region, around 48â€“65% height; keep it clearly BELOW the hall floor, with a raised wooden hatch lid, downward handrail, warm light below, and the three brooms beside it. Do not turn it back into ascending stairs or a wall doorway. Keep the bottom 70â€“100% of the frame flat open stone floor for game figures. This is a composition adjustment of the room, not a tighter crop, not a zoomed-out view, and not an overhead view: retain the comfortable three-quarter room perspective. No people, crawlers, animals, other creatures, readable text, UI, border or watermark. Wide full-bleed 16:9.",
+          "inputSourceSha256": "5594896fdcf381a9c895efcb78b852deab52d6db5ac2ba3abe8403b129526934",
+          "sourceSha256": "38568c77647ebbd7a5c582e4b31afbdf3db7601041c4ed533cfa1ce8ea1f8aad"
+        }
+      ],
+      "source": "exec-0ba8913d-e167-48be-be94-2f9ca32804d1.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "sourceSha256": "38568c77647ebbd7a5c582e4b31afbdf3db7601041c4ed533cfa1ce8ea1f8aad",
+      "initialSourceSha256": "f7f8f2075c3802c33f0d9eb391e47886b8edb51ad8b873334f3474b5c058ef00",
+      "productionSha256": "7cea15e449d054d82033b208221223566cf2815388a824821f9147f7d14d85fb",
+      "productionBytes": 512090
+    }
+  ],
+  "referenceSha256": "96e797af99fe188e6769138b5b35e4a79cf6e19e3f82624e90edf5b1205855c4"
+}
