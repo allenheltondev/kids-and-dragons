@@ -1,3 +1,6 @@
+import { castArtUrl as castFigureUrl } from "./art-paths";
+export { castArtUrl as castFigureUrl } from "./art-paths";
+import { artCast, castPoseUrl } from "./riftlight-art";
 /**
  * The story stage's cast: who is standing in a scene with the party.
  *
@@ -72,13 +75,6 @@ export const ENSEMBLES: Readonly<Record<string, readonly string[]>> = {
 };
 
 /** `entities/selkie` → its art. Null for anything the schema would refuse. */
-export function castFigureUrl(figure: string): string | null {
-  const match = /^(entities|characters|cast)\/([a-z0-9]+(?:[_-][a-z0-9]+)*)$/.exec(figure);
-  if (!match) return null;
-  const [, kind, id] = match;
-  if (kind === "characters") return `/assets/characters/${id}/fledgling/assembled.png`;
-  return `/assets/${kind}/${id}/assembled.png`;
-}
 
 export function stageCast(members: readonly CastMember[]): StageCastMember[] {
   const out: StageCastMember[] = [];
@@ -128,7 +124,11 @@ export function castFor(chapter: Chapter | null, state: RunState | null): StageC
   if (!chapter || !state || chapter.id !== state.chapterId || !state.sceneId || state.encounter) return [];
   const scene = chapter.scenes[state.sceneId];
   if (!scene || scene.type === "encounter") return [];
-  return stageCast(scene.cast ?? []);
+  return stageCast(artCast(chapter,state,scene.cast ?? [])).map(member => {
+    const figure=member.key.split("|")[0]!;
+    const url=castPoseUrl(figure,chapter,state);
+    return url ? {...member,url,key:member.key+"@"+url} : member;
+  });
 }
 
 /**

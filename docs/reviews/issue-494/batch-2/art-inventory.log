@@ -1,0 +1,38 @@
+Kids & Dragons - image asset inventory
+derived from assets/manifest.json + what is on disk
+
+  Painted badge medals                   9/9     complete
+                                      #426 Me page medals; bundled and precached with the client
+  Character illustrations               24/24    complete
+                                      6 species x 4 tiers; one transparent illustration per appearance
+  Gear portraits                        72/72    complete
+                                      approved opaque source art — one exact fit per class, tier, and species
+  Class figure variants                 72/72    complete
+                                      finished transparent illustrations; assembled.png only
+  Effect sheets (declared)              28/28    complete
+  Effect sheets (spec'd, undeclared)     0/0     complete
+                                      asset-brief §9.4 audit hook — all six commissioned sheets are declared
+  Biome backdrops + tiles               51/51    complete
+                                      17 destinations; 102 prop files across them
+  Story-only environments                5/5     complete
+                                      sallow_wastelands, bramblewood, redspire_citadel, open_sea, the_whirlpool; backdrops only — no tactical tiles or props required
+  Canon place coverage                  27/27    complete
+                                      biomes + named locations; every backdrop must be declared and present (shared art allowed)
+  Scene illustrations                  128/128   complete
+                                      optional story backdrops; biome art remains the fallback
+  Campaign key art                       4/4     complete
+                                      lobby adventure cards; a story scene stands in until delivered
+  Story plates                          46/46    complete
+                                      prologue and chapter plates, 1600x900 (docs/story-plates.md); the story plays without a plate until it lands
+  Additional painted icons              50/50    complete
+                                      #421 ability icons and distinct facets, key and potion; bundled with the client
+  Entity cutouts                        32/32    complete
+                                      single assembled.png each — enemies do not level, so no tier dimension
+  Stage animals                          6/6     complete
+                                      ordinary animals on the story stage, including ducklings
+
+Outstanding
+
+  nothing outstanding
+
+0 deliverable(s) outstanding. This reports; it does not gate — see art:verify.

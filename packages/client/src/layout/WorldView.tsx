@@ -69,6 +69,8 @@ const PixiStage = lazy(() =>
  * performance pass. Lazy like the stage: measuring the renderer is not worth
  * a byte in the bundle of a game nobody is measuring.
  */
+const StoryArtLayer = lazyChunk(() => import("../screens/StoryArtLayer"), (module) => module.StoryArtLayer);
+
 const FrameMeter = lazyChunk(() => import("../world/FrameMeter"), (module) => module.FrameMeter);
 
 export function WorldView({
@@ -186,6 +188,7 @@ export function WorldView({
           puts the fight there, and a mount-on-fight would miss it. It draws
           nothing outside a fight. */}
       {isSceneLike(phase) && <FightLog />}
+      {isSceneLike(phase) && <Suspense fallback={null}><StoryArtLayer /></Suspense>}
       {phase === "chapter_complete" && <ChapterCompletePanel />}
       {/* Spectators' cheers and how many are watching (#388). Only on the room's
           own screen: a party phone's world pane, mounted behind its controls,

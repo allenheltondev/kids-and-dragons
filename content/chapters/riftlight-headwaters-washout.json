@@ -45,7 +45,7 @@
           "goto": "stock"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "stock": {
       "type": "choice_point",
@@ -71,7 +71,7 @@
           "requiresClass": "songkeeper"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "count": {
       "type": "check",
@@ -89,7 +89,7 @@
         "goto": "ride",
         "narration": "One squeeze comes late, and your heart jumps. A hand finds the late one and holds it tight."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "pack_grab": {
       "type": "check",
@@ -113,7 +113,7 @@
         "goto": "ride",
         "narration": "One pack gets away, spins twice, and snags on the rope. You reel it in, soggy and offended."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "rally_breath": {
       "type": "check",
@@ -131,7 +131,7 @@
         "goto": "ride",
         "narration": "Your voice shakes, but the others pick up the rhythm, and it steadies you in return."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "ride": {
       "type": "choice_point",
@@ -150,7 +150,7 @@
           "goto": "kick_bank"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "feet_first": {
       "type": "check",
@@ -170,7 +170,7 @@
         "goto": "floes",
         "narration": "A boot tips up, then down, and a wave slaps a face. They splutter, roll back, and everyone shuffles to make room."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "kick_bank": {
       "type": "check",
@@ -204,7 +204,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "floes": {
       "type": "choice_point",
@@ -230,7 +230,7 @@
           "requiresSpecies": "bigfoot"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "push_floes": {
       "type": "check",
@@ -255,7 +255,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "climb_floe": {
       "type": "check",
@@ -275,7 +275,7 @@
         "goto": "floe_hop",
         "narration": "The floe tips and dumps you back in. You scramble up again, one at a time, and manage to stay on, sort of."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "smash_floe": {
       "type": "check",
@@ -295,7 +295,7 @@
         "goto": "floe_hop",
         "narration": "The big floe is heavier than it looks. It scrapes past, close enough to touch, and nobody is hurt, only startled."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "floe_rest": {
       "type": "rest",
@@ -315,7 +315,7 @@
           "goto": "floe_look"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/headwaters-floes",
       "onEnter": [
         {
           "type": "grantItem",
@@ -342,7 +342,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "floe_look": {
       "type": "story",
@@ -355,7 +355,7 @@
           "goto": "snag"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "snag": {
       "type": "choice_point",
@@ -374,7 +374,7 @@
           "goto": "loop_tie"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "unhook": {
       "type": "check",
@@ -406,7 +406,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "loop_tie": {
       "type": "check",
@@ -439,7 +439,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "arch": {
       "type": "choice_point",
@@ -471,7 +471,7 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "arch_flat": {
       "type": "check",
@@ -496,7 +496,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "arch_look": {
       "type": "check",
@@ -513,7 +513,7 @@
         "goto": "jam",
         "narration": "You steer for a high spot that turns out to be a low spot with good manners. Everyone ducks, hats bump the roof, and you squeeze through."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "arch_light": {
       "type": "check",
@@ -530,7 +530,7 @@
         "goto": "jam",
         "narration": "The jar swings wildly, and the roof flickers. You duck early and slide under, with the jar spent and your hats a little squashed."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "jam": {
       "type": "choice_point",
@@ -549,7 +549,7 @@
           "goto": "jam_push"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-log-chute"
     },
     "jam_gap": {
       "type": "check",
@@ -574,7 +574,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-log-chute"
     },
     "jam_push": {
       "type": "check",
@@ -600,7 +600,7 @@
         "goto": "jam_hold",
         "narration": "The line scrapes along the jam, and the branches scratch at your coats. You come loose, with a few twigs for souvenirs."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-log-chute"
     },
     "chute": {
       "type": "choice_point",
@@ -626,7 +626,7 @@
           "requiresClass": "thornguard"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-log-chute"
     },
     "chute_ride": {
       "type": "check",
@@ -646,7 +646,7 @@
         "goto": "slip",
         "narration": "The chute shakes the rope so hard that everyone's teeth rattle. You come out the other end in a tangle, but you come out together."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-log-chute"
     },
     "chute_steer": {
       "type": "check",
@@ -663,7 +663,7 @@
         "goto": "slip",
         "narration": "You push off too hard and spin the whole line around. You go through backward, which is not as bad as it sounds."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-log-chute"
     },
     "chute_brace": {
       "type": "check",
@@ -691,7 +691,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-log-chute"
     },
     "slip": {
       "type": "choice_point",
@@ -710,7 +710,7 @@
           "goto": "slip_swing"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-log-chute"
     },
     "slip_haul": {
       "type": "check",
@@ -738,7 +738,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-log-chute"
     },
     "slip_swing": {
       "type": "check",
@@ -755,7 +755,7 @@
         "goto": "scarf_pass",
         "narration": "The first swing falls short. The next lap of the current carries your friend close enough to catch."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-log-chute"
     },
     "shiver": {
       "type": "choice_point",
@@ -798,7 +798,7 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "shiver_eat": {
       "type": "story",
@@ -818,7 +818,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "shiver_sing": {
       "type": "check",
@@ -835,7 +835,7 @@
         "goto": "goats",
         "narration": "Your song runs out after three lines. Somebody invents a fourth, and it is worse, and everyone laughs anyway."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "shiver_paddle": {
       "type": "check",
@@ -855,7 +855,7 @@
         "goto": "goats",
         "narration": "The paddling is lopsided, and you drift in circles for a moment. But the shivers ease a little."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "goats": {
       "type": "choice_point",
@@ -879,7 +879,7 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "goats_watch": {
       "type": "check",
@@ -901,7 +901,7 @@
         "goto": "drake_shallows",
         "narration": "The goats are quicker than your eyes. You catch only a hoof or two, and the rest is a blur of fluff."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "goats_follow": {
       "type": "check",
@@ -923,7 +923,7 @@
         "goto": "drake_shallows",
         "narration": "The current is quicker than the goats, and you drift ahead of them. They watch you go, and one bleats a good-bye."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "ledge_ahead": {
       "type": "story",
@@ -936,7 +936,7 @@
           "goto": "aim"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-bank-tree"
     },
     "aim": {
       "type": "choice_point",
@@ -962,7 +962,7 @@
           "requiresSpecies": "griffin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "aim_kick": {
       "type": "check",
@@ -979,7 +979,7 @@
         "goto": "knob_toss",
         "narration": "You turn too early, and the line sags. The ledge is farther than you hoped, but a strong reach will still get there."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "aim_swing": {
       "type": "check",
@@ -996,7 +996,7 @@
         "goto": "knob_toss",
         "narration": "The rope end tangles in a floe and drags a bit sideways. You are a little farther out than you wanted, but not too far."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "aim_sky": {
       "type": "check",
@@ -1013,7 +1013,7 @@
         "goto": "knob_toss",
         "narration": "The wet wings drop you back into the water before you finish looking. You call out what you saw, which is mostly splashing."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "ledge": {
       "type": "choice_point",
@@ -1063,7 +1063,7 @@
           "requiresFlag": "loop_tied"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "grab": {
       "type": "check",
@@ -1110,7 +1110,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "hook": {
       "type": "check",
@@ -1154,7 +1154,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "smash": {
       "type": "check",
@@ -1201,7 +1201,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "lift": {
       "type": "check",
@@ -1248,7 +1248,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "throw_loop": {
       "type": "check",
@@ -1292,7 +1292,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "ashore": {
       "type": "story",
@@ -1305,7 +1305,7 @@
           "goto": "tend"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "tend": {
       "type": "choice_point",
@@ -1324,7 +1324,7 @@
           "goto": "tend_dry"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "tend_warm": {
       "type": "check",
@@ -1341,7 +1341,7 @@
         "goto": "early",
         "narration": "The hopping goes sideways, and two of you fall in a heap. It is warm in the heap."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "tend_dry": {
       "type": "check",
@@ -1358,7 +1358,7 @@
         "goto": "early",
         "narration": "The rope fights back, and wins a little. You get most of the water out, and the rest can drip on its own."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "early": {
       "type": "rest",
@@ -1373,7 +1373,7 @@
           "value": true
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "tree": {
       "type": "story",
@@ -1386,7 +1386,7 @@
           "goto": "tree_choice"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "tree_choice": {
       "type": "choice_point",
@@ -1426,7 +1426,7 @@
           "requiresSpecies": "manticore"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "climb": {
       "type": "check",
@@ -1464,7 +1464,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/headwaters-floes",
       "narration": "The branch swings down, up, down, up, like a slow gate. You time it in your head."
     },
     "lasso": {
@@ -1504,7 +1504,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "lane": {
       "type": "check",
@@ -1540,7 +1540,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "guide": {
       "type": "check",
@@ -1575,7 +1575,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "call": {
       "type": "check",
@@ -1610,7 +1610,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "middle": {
       "type": "rest",
@@ -1625,7 +1625,7 @@
           "value": true
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "rift": {
       "type": "story",
@@ -1639,7 +1639,7 @@
         }
       ],
       "rift": "open",
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "rift_choice": {
       "type": "choice_point",
@@ -1667,7 +1667,7 @@
         }
       ],
       "rift": "steady",
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "river_chime": {
       "type": "story",
@@ -1681,7 +1681,7 @@
         }
       ],
       "rift": "steady",
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "river_read": {
       "type": "story",
@@ -1695,7 +1695,7 @@
         }
       ],
       "rift": "steady",
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "rift_decision": {
       "type": "choice_point",
@@ -1726,7 +1726,7 @@
         }
       ],
       "rift": "steady",
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "rift_end": {
       "type": "rest",
@@ -1742,7 +1742,7 @@
         }
       ],
       "rift": "steady",
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "rapids": {
       "type": "choice_point",
@@ -1768,7 +1768,7 @@
           "requiresSpecies": "unicorn"
         }
       ],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "swim": {
       "type": "check",
@@ -1816,7 +1816,7 @@
           }
         ]
       },
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "signal": {
       "type": "check",
@@ -1861,7 +1861,7 @@
           }
         ]
       },
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "mend_signal": {
       "type": "check",
@@ -1906,7 +1906,7 @@
           }
         ]
       },
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "late": {
       "type": "rest",
@@ -2008,7 +2008,7 @@
         "goto": "floe_rest",
         "narration": "Together you nudge the floes closer with your boots, and everyone steps across."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "jam_hold": {
       "type": "interaction",
@@ -2031,7 +2031,7 @@
         "goto": "chute",
         "narration": "Together you hold the line high and tip the branch off. The roar of the chute is just ahead."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-log-chute"
     },
     "scarf_pass": {
       "type": "interaction",
@@ -2054,7 +2054,7 @@
         "goto": "shiver",
         "narration": "Together you wrap the scarf around your friend, one loop each."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "knob_toss": {
       "type": "interaction",
@@ -2091,7 +2091,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/headwaters-floes"
     },
     "haul_loop": {
       "type": "check",
@@ -2157,7 +2157,7 @@
           "name": "Young river drakes"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/fight-headwaters-ford"
     },
     "drake_fight": {
       "type": "encounter",
@@ -2191,7 +2191,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/fight-headwaters-ford"
     },
     "drake_rescued": {
       "type": "story",

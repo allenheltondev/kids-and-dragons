@@ -46,7 +46,7 @@
           "goto": "awning_plan"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-noodle-awning",
       "cast": [
         {
           "figure": "cast/soup_woman",
@@ -308,7 +308,7 @@
           ]
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-noodle-awning",
       "cast": [
         {
           "figure": "entities/quay_gull",
@@ -333,7 +333,7 @@
           "goto": "trail_check"
         }
       ],
-      "art": "scenes/gemfall/exchange-quay",
+      "art": "scenes/riftlight/exchange-noodle-awning",
       "cast": [
         {
           "figure": "cast/fishmonger",
@@ -387,7 +387,7 @@
           "amount": 2
         }
       ],
-      "art": "scenes/gemfall/exchange-noodle-stall",
+      "art": "scenes/riftlight/exchange-noodle-awning",
       "cast": [
         {
           "figure": "cast/fishmonger",
@@ -474,7 +474,7 @@
           "goto": "trail_check"
         }
       ],
-      "art": "scenes/gemfall/exchange-quay",
+      "art": "scenes/riftlight/exchange-noodle-awning",
       "cast": [
         {
           "figure": "entities/quay_gull",
@@ -493,7 +493,7 @@
           "goto": "trail_check"
         }
       ],
-      "art": "scenes/gemfall/exchange-quay",
+      "art": "scenes/riftlight/exchange-noodle-awning",
       "cast": [
         {
           "figure": "entities/quay_gull",
@@ -543,7 +543,7 @@
           "name": "Captain Thimble"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/riftlight/exchange-noodle-awning"
     },
     "chart_pin": {
       "type": "check",
@@ -583,7 +583,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-noodle-awning",
       "cast": [
         {
           "figure": "cast/captain_thimble",
@@ -627,7 +627,7 @@
           "name": "Captain Thimble"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/riftlight/exchange-noodle-awning"
     },
     "trail_check": {
       "type": "check",
@@ -706,7 +706,7 @@
           ]
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-barge-sacks",
       "cast": [
         {
           "figure": "entities/frogfolk",
@@ -822,7 +822,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-barge-sacks",
       "cast": [
         {
           "figure": "entities/frogfolk",
@@ -889,7 +889,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-barge-sacks",
       "cast": [
         {
           "figure": "entities/frogfolk",
@@ -1088,7 +1088,7 @@
           "goto": "quay"
         }
       ],
-      "art": "scenes/gemfall/exchange-noodle-stall",
+      "art": "scenes/riftlight/exchange-noodle-awning",
       "cast": [
         {
           "figure": "entities/frogfolk",
@@ -1208,7 +1208,7 @@
           ]
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady"
     },
     "check_pattern": {
@@ -1235,7 +1235,7 @@
         "goto": "pattern_missed",
         "narration": "A barrel lid shoots past your ankle before you can point."
       },
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady"
     },
     "quay_slip": {
@@ -1301,7 +1301,7 @@
           "goto": "crate_plan"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady",
       "cast": [
         {
@@ -1321,7 +1321,7 @@
           "goto": "crate_plan"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady"
     },
     "clear_check": {
@@ -1362,7 +1362,7 @@
         }
       ],
       "rift": "steady",
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "cast": [
         {
           "figure": "cast/dock_worker",
@@ -1689,11 +1689,11 @@
           "flag": "found_the_cold_fold"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "open",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1713,7 +1713,7 @@
       "art": "scenes/gemfall/exchange-docks",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -1729,7 +1729,7 @@
           "goto": "pull"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady"
     },
     "pull": {
@@ -1799,20 +1799,16 @@
           "text": "From his safely moored boat, the pilot calls, \"Watch that crate on your left!\" You see it tilt in time to step clear."
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
           "figure": "cast/dock_worker",
           "name": "Dock worker"
-        },
-        {
-          "figure": "entities/frogfolk",
-          "name": "Barge pilot"
         }
       ]
     },
@@ -1839,7 +1835,7 @@
       },
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -1847,7 +1843,7 @@
           "name": "Dock worker"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady"
     },
     "anchor": {
@@ -1876,7 +1872,7 @@
       },
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -1884,7 +1880,7 @@
           "name": "Dock worker"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady"
     },
     "swoop": {
@@ -1910,7 +1906,7 @@
       },
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -1918,7 +1914,7 @@
           "name": "Dock worker"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady"
     },
     "smash": {
@@ -1947,7 +1943,7 @@
       },
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -1955,7 +1951,7 @@
           "name": "Dock worker"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady"
     },
     "brace": {
@@ -1981,7 +1977,7 @@
       },
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -1989,7 +1985,7 @@
           "name": "Dock worker"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady"
     },
     "caught": {
@@ -2003,11 +1999,11 @@
           "goto": "through"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -2027,11 +2023,11 @@
           "goto": "through"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         },
         {
@@ -2051,11 +2047,11 @@
           "goto": "through"
         }
       ],
-      "art": "scenes/gemfall/exchange-docks",
+      "art": "scenes/riftlight/exchange-leaning-crates",
       "rift": "steady",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -2078,11 +2074,11 @@
           "flag": "kept_the_kid_safe"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "rift": "collapse",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -2092,7 +2088,7 @@
       "narration": "The wind pushes like a giant hand. You knot your coat into a sling around the kid, and everyone takes a corner. The low ridge is a few steps away. Keep the sling level, and the kid will not even notice the wind.",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ],
@@ -2108,7 +2104,7 @@
       "onFailure": {
         "goto": "ridge_drift"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/exchange-squall-ridge"
     },
     "ridge_ok": {
       "type": "story",
@@ -2124,7 +2120,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -2143,7 +2139,7 @@
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -2153,7 +2149,7 @@
       "narration": "Behind the ridge, the wind drops to a mutter. The snow here is deep and quiet, and the sky is the color of milk. The kid is shaking so hard its ears rattle. It needs warming before anything else.",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ],
@@ -2191,7 +2187,7 @@
         "goto": "white",
         "narration": "The kid wiggles free, sneezes, and burrows back in on its own."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/exchange-ridge-lee"
     },
     "white": {
       "type": "rest",
@@ -2199,10 +2195,10 @@
       "heal": 0,
       "choices": [],
       "outcome": "success",
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/glacier-snow-lip",
       "cast": [
         {
-          "figure": "cast/goat_kid",
+          "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
       ]
@@ -2212,7 +2208,7 @@
       "narration": "The horn belongs to a supply barge, sliding toward the quay faster than a barge should. Its frogfolk pilot waves a boat hook in one hand. \"Throw me the end of that rope!\" he shouts. \"Right over my hook, if you please!\"",
       "cast": [
         {
-          "figure": "entities/frogfolk",
+          "figure": "cast/frogfolk_pilot",
           "name": "Barge pilot"
         }
       ],
@@ -2232,7 +2228,7 @@
         "goto": "delivery",
         "narration": "The rope plops into the harbor. The pilot fishes it out with his hook, unbothered, and hauls the barge in."
       },
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/riftlight/exchange-barge-sacks"
     },
     "sack_chain": {
       "type": "interaction",
@@ -2257,7 +2253,7 @@
         "goto": "quay_rest",
         "narration": "A sack lands in a puddle. A crew fishes it out, shakes it, and cheers anyway."
       },
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/riftlight/exchange-six-boats"
     }
   },
   "voiceGuide": {

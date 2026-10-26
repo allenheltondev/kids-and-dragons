@@ -225,3 +225,11 @@ export function biomeTilesUrl(biome: string): string {
  * uses that instead, so this is a first-frame default, not a hardcoded setting.
  */
 export const CREATION_BIOME = "enchanted_woods";
+
+/** Shared by the cast stage and offline chapter warming. */
+export function castArtUrl(figure: string): string | null {
+ const match=/^(entities|characters|cast)\/([a-z0-9]+(?:[_-][a-z0-9]+)*)$/.exec(figure);
+ if(!match)return null;
+ const [,kind,id]=match;
+ return kind==="characters" ? "/assets/characters/"+id+"/fledgling/assembled.png" : "/assets/"+kind+"/"+id+"/assembled.png";
+}

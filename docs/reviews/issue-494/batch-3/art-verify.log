@@ -1,0 +1,1444 @@
+Kids & Dragons - asset verify
+manifest: assets\manifest.json
+  pass  assets\characters\unicorn\fledgling\assembled.png  1024x1024 RGBA  margin=79px
+  pass  unicorn/fledgling origin  feet at y=899
+  pass  assets\characters\unicorn\sworn\assembled.png  1024x1024 RGBA  margin=40px
+  pass  unicorn/sworn origin  feet at y=899
+  pass  assets\characters\unicorn\radiant\assembled.png  1024x1024 RGBA  margin=16px
+  pass  unicorn/radiant origin  feet at y=899
+  pass  assets\characters\unicorn\mythic\assembled.png  1024x1024 RGBA  margin=22px
+  pass  unicorn/mythic origin  feet at y=900
+  pass  assets\characters\dragonling\fledgling\assembled.png  1024x1024 RGBA  margin=69px
+  pass  dragonling/fledgling origin  feet at y=899
+  pass  assets\characters\dragonling\sworn\assembled.png  1024x1024 RGBA  margin=17px
+  pass  dragonling/sworn origin  feet at y=900
+  pass  assets\characters\dragonling\radiant\assembled.png  1024x1024 RGBA  margin=16px
+  pass  dragonling/radiant origin  feet at y=898
+  pass  assets\characters\dragonling\mythic\assembled.png  1024x1024 RGBA  margin=17px
+  pass  dragonling/mythic origin  feet at y=899
+  pass  assets\characters\griffin\fledgling\assembled.png  1024x1024 RGBA  margin=78px
+  pass  griffin/fledgling origin  feet at y=899
+  pass  assets\characters\griffin\sworn\assembled.png  1024x1024 RGBA  margin=101px
+  pass  griffin/sworn origin  feet at y=898
+  pass  assets\characters\griffin\radiant\assembled.png  1024x1024 RGBA  margin=44px
+  pass  griffin/radiant origin  feet at y=899
+  pass  assets\characters\griffin\mythic\assembled.png  1024x1024 RGBA  margin=87px
+  pass  griffin/mythic origin  feet at y=899
+  pass  assets\characters\bigfoot\fledgling\assembled.png  1024x1024 RGBA  margin=79px
+  pass  bigfoot/fledgling origin  feet at y=899
+  pass  assets\characters\bigfoot\sworn\assembled.png  1024x1024 RGBA  margin=109px
+  pass  bigfoot/sworn origin  feet at y=899
+  pass  assets\characters\bigfoot\radiant\assembled.png  1024x1024 RGBA  margin=117px
+  pass  bigfoot/radiant origin  feet at y=898
+  pass  assets\characters\bigfoot\mythic\assembled.png  1024x1024 RGBA  margin=105px
+  pass  bigfoot/mythic origin  feet at y=898
+  pass  assets\characters\kitsune\fledgling\assembled.png  1024x1024 RGBA  margin=79px
+  pass  kitsune/fledgling origin  feet at y=899
+  pass  assets\characters\kitsune\sworn\assembled.png  1024x1024 RGBA  margin=68px
+  pass  kitsune/sworn origin  feet at y=899
+  pass  assets\characters\kitsune\radiant\assembled.png  1024x1024 RGBA  margin=69px
+  pass  kitsune/radiant origin  feet at y=899
+  pass  assets\characters\kitsune\mythic\assembled.png  1024x1024 RGBA  margin=48px
+  pass  kitsune/mythic origin  feet at y=899
+  pass  assets\characters\manticore\fledgling\assembled.png  1024x1024 RGBA  margin=79px
+  pass  manticore/fledgling origin  feet at y=899
+  pass  assets\characters\manticore\sworn\assembled.png  1024x1024 RGBA  margin=111px
+  pass  manticore/sworn origin  feet at y=899
+  pass  assets\characters\manticore\radiant\assembled.png  1024x1024 RGBA  margin=71px
+  pass  manticore/radiant origin  feet at y=899
+  pass  assets\characters\manticore\mythic\assembled.png  1024x1024 RGBA  margin=105px
+  pass  manticore/mythic origin  feet at y=899
+
+entity/sheeple
+  pass  entity/sheeple primary biome  plains
+  pass  entity/sheeple canonical locations  plains, sunward_fields, exchange
+  pass  assets\entities\sheeple\assembled.png  1024x1024 RGBA  margin=48px
+
+entity/centaur
+  pass  entity/centaur primary biome  plains
+  pass  entity/centaur canonical locations  the_plains, eastern_plains, stone_crossing
+  pass  assets\entities\centaur\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/faun
+  pass  entity/faun primary biome  sunward_fields
+  pass  entity/faun canonical locations  sunward_fields
+  pass  assets\entities\faun\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/burrowfolk
+  pass  entity/burrowfolk primary biome  sunward_fields
+  pass  entity/burrowfolk canonical locations  sunward_fields, plains, red_sky_foothills, exchange
+  pass  assets\entities\burrowfolk\assembled.png  1024x1024 RGBA  margin=82px
+
+entity/harvest_sprite
+  pass  entity/harvest_sprite primary biome  sunward_fields
+  pass  entity/harvest_sprite canonical locations  sunward_fields, enchanted_woods
+  pass  assets\entities\harvest_sprite\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/frogfolk
+  pass  entity/frogfolk primary biome  whispering_marsh
+  pass  entity/frogfolk canonical locations  whispering_marsh, great_river
+  pass  assets\entities\frogfolk\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/boggart
+  pass  entity/boggart primary biome  whispering_marsh
+  pass  entity/boggart canonical locations  whispering_marsh
+  pass  assets\entities\boggart\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/yeti
+  pass  entity/yeti primary biome  glacier_of_origins
+  pass  entity/yeti canonical locations  glacier_of_origins, frostfang_peaks
+  pass  assets\entities\yeti\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/merfolk
+  pass  entity/merfolk primary biome  mermaid_cove
+  pass  entity/merfolk canonical locations  mermaid_cove, great_river
+  pass  assets\entities\merfolk\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/selkie
+  pass  entity/selkie primary biome  mermaid_cove
+  pass  entity/selkie canonical locations  mermaid_cove, open_sea
+  pass  assets\entities\selkie\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/stone_troll
+  pass  entity/stone_troll primary biome  stone_crossing
+  pass  entity/stone_troll canonical locations  stone_crossing, skullwater_cave, eastern_plains
+  pass  assets\entities\stone_troll\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/witch_order
+  pass  entity/witch_order primary biome  whispering_marsh
+  pass  entity/witch_order canonical locations  whispering_marsh
+  pass  assets\entities\witch_order\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/legend_dragon
+  pass  entity/legend_dragon primary biome  mount_red_sky
+  pass  entity/legend_dragon canonical locations  mount_redsky
+  pass  assets\entities\legend_dragon\assembled.png  2048x2048 RGBA  margin=24px
+
+entity/embermoth
+  pass  entity/embermoth primary biome  red_sky_foothills
+  pass  entity/embermoth canonical locations  red_sky_foothills, mount_redsky
+  pass  assets\entities\embermoth\assembled.png  1024x1024 RGBA  margin=62px
+
+entity/mosshorn
+  pass  entity/mosshorn primary biome  enchanted_woods
+  pass  entity/mosshorn canonical locations  enchanted_woods, mosshome
+  pass  assets\entities\mosshorn\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/jackalope
+  pass  entity/jackalope primary biome  plains
+  pass  entity/jackalope canonical locations  the_plains, sunward_fields, eastern_plains
+  pass  assets\entities\jackalope\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/cloud_whale
+  pass  entity/cloud_whale primary biome  sky_islands
+  pass  entity/cloud_whale canonical locations  sky_islands
+  pass  assets\entities\cloud_whale\assembled.png  1024x1024 RGBA  margin=62px
+
+entity/snowhorn_goat
+  pass  entity/snowhorn_goat primary biome  frostfang_peaks
+  pass  entity/snowhorn_goat canonical locations  frostfang_peaks, glacier_of_origins
+  pass  assets\entities\snowhorn_goat\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/silver_otter
+  pass  entity/silver_otter primary biome  stone_crossing
+  pass  entity/silver_otter canonical locations  great_river, stone_crossing, mermaid_cove
+  pass  assets\entities\silver_otter\assembled.png  1024x1024 RGBA  margin=60px
+
+entity/reefglider
+  pass  entity/reefglider primary biome  mermaid_cove
+  pass  entity/reefglider canonical locations  mermaid_cove
+  pass  assets\entities\reefglider\assembled.png  1024x1024 RGBA  margin=62px
+
+entity/glassback_crab
+  pass  entity/glassback_crab primary biome  red_sky_foothills
+  pass  entity/glassback_crab canonical locations  red_sky_foothills, mount_redsky
+  pass  assets\entities\glassback_crab\assembled.png  1024x1024 RGBA  margin=8px
+
+entity/cinder_wolf
+  pass  entity/cinder_wolf primary biome  red_sky_foothills
+  pass  entity/cinder_wolf canonical locations  red_sky_foothills, the_plains
+  pass  assets\entities\cinder_wolf\assembled.png  1024x1024 RGBA  margin=124px
+
+entity/mire_mimic
+  pass  entity/mire_mimic primary biome  whispering_marsh
+  pass  entity/mire_mimic canonical locations  whispering_marsh
+  pass  assets\entities\mire_mimic\assembled.png  1024x1024 RGBA  margin=8px
+
+entity/frost_wyrm
+  pass  entity/frost_wyrm primary biome  frostfang_peaks
+  pass  entity/frost_wyrm canonical locations  frostfang_peaks, glacier_of_origins
+  pass  assets\entities\frost_wyrm\assembled.png  1024x1024 RGBA  margin=40px
+
+entity/river_drake
+  pass  entity/river_drake primary biome  stone_crossing
+  pass  entity/river_drake canonical locations  great_river, stone_crossing
+  pass  assets\entities\river_drake\assembled.png  1024x1024 RGBA  margin=11px
+
+entity/bone_crawler
+  pass  entity/bone_crawler primary biome  bone_yard
+  pass  entity/bone_crawler canonical locations  bone_yard
+  pass  assets\entities\bone_crawler\assembled.png  1024x1024 RGBA  margin=124px
+
+entity/echo_hunter
+  pass  entity/echo_hunter primary biome  skullwater_cave
+  pass  entity/echo_hunter canonical locations  skullwater_cave
+  pass  assets\entities\echo_hunter\assembled.png  1024x1024 RGBA  margin=8px
+
+entity/kavari
+  pass  entity/kavari primary biome  skullwater_cave
+  pass  entity/kavari canonical locations  skullwater_cave
+  pass  assets\entities\kavari\assembled.png  1024x1024 RGBA  margin=91px
+  pass  assets\entities\kavari\wings-down.png  1024x1024 RGBA  margin=129px
+
+entity/will_o_wisp
+  pass  entity/will_o_wisp primary biome  whispering_marsh
+  pass  entity/will_o_wisp canonical locations  whispering_marsh, enchanted_woods
+  pass  assets\entities\will_o_wisp\assembled.png  1024x1024 RGBA  margin=119px
+
+entity/restless_remains
+  pass  entity/restless_remains primary biome  bone_yard
+  pass  entity/restless_remains canonical locations  bone_yard
+  pass  assets\entities\restless_remains\assembled.png  1024x1024 RGBA  margin=62px
+
+entity/boughkin
+  pass  entity/boughkin primary biome  enchanted_woods
+  pass  entity/boughkin canonical locations  enchanted_woods, mosshome
+  pass  assets\entities\boughkin\assembled.png  1024x1024 RGBA  margin=94px
+
+entity/skupper
+  pass  entity/skupper primary biome  sallow_wastelands
+  pass  entity/skupper canonical locations  sallow_wastelands
+  pass  assets\entities\skupper\assembled.png  1024x1024 RGBA  margin=82px
+  pass  assets\entities\skupper\puffed.png  1024x1024 RGBA  margin=82px
+
+stage/donkey
+  pass  assets\entities\donkey\assembled.png  1024x1024 RGBA  margin=109px
+
+stage/mule
+  pass  assets\entities\mule\assembled.png  1024x1024 RGBA  margin=86px
+
+stage/pony
+  pass  assets\entities\pony\assembled.png  1024x1024 RGBA  margin=103px
+
+stage/rookery_crows
+  pass  assets\entities\rookery_crows\assembled.png  1024x1024 RGBA  margin=38px
+
+stage/quay_gull
+  pass  assets\entities\quay_gull\assembled.png  1024x1024 RGBA  margin=83px
+
+stage/duckling
+  pass  assets\entities\duckling\assembled.png  1024x1024 RGBA  margin=91px
+
+cast/coralie_fenn
+  pass  cast/coralie_fenn basis  merfolk
+  pass  assets\cast\coralie_fenn\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/coralie_fenn feet  y=900
+
+cast/great_gran_ashby
+  pass  cast/great_gran_ashby basis  dragonling
+  pass  assets\cast\great_gran_ashby\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/great_gran_ashby feet  y=900
+
+cast/pellam
+  pass  cast/pellam basis  faun
+  pass  assets\cast\pellam\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/pellam feet  y=900
+
+cast/grandmother_tull
+  pass  cast/grandmother_tull basis  dragonling
+  pass  assets\cast\grandmother_tull\assembled.png  1024x1024 RGBA  margin=42px
+  pass  cast/grandmother_tull feet  y=900
+
+cast/dragonling_grandmother
+  pass  cast/dragonling_grandmother basis  dragonling
+  pass  assets\cast\dragonling_grandmother\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/dragonling_grandmother feet  y=900
+
+cast/mosshome_archivist
+  pass  cast/mosshome_archivist basis  bigfoot
+  pass  assets\cast\mosshome_archivist\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/mosshome_archivist feet  y=900
+
+cast/oldest_archivist
+  pass  cast/oldest_archivist basis  bigfoot
+  pass  assets\cast\oldest_archivist\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/oldest_archivist feet  y=900
+
+cast/mosshome_eldest
+  pass  cast/mosshome_eldest basis  bigfoot
+  pass  assets\cast\mosshome_eldest\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/mosshome_eldest feet  y=900
+
+cast/mosshome_runner
+  pass  cast/mosshome_runner basis  bigfoot
+  pass  assets\cast\mosshome_runner\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/mosshome_runner feet  y=900
+
+cast/flood_warden
+  pass  cast/flood_warden basis  bigfoot
+  pass  assets\cast\flood_warden\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/flood_warden feet  y=900
+
+cast/elder_sefa
+  pass  cast/elder_sefa basis  manticore
+  pass  assets\cast\elder_sefa\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/elder_sefa feet  y=900
+
+cast/elder_unicorn
+  pass  cast/elder_unicorn basis  unicorn
+  pass  assets\cast\elder_unicorn\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/elder_unicorn feet  y=900
+
+cast/tamsin
+  pass  cast/tamsin basis  kitsune
+  pass  assets\cast\tamsin\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/tamsin feet  y=900
+
+cast/tidewell
+  pass  cast/tidewell basis  selkie
+  pass  assets\cast\tidewell\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/tidewell feet  y=900
+
+cast/mortar
+  pass  cast/mortar basis  stone_troll
+  pass  assets\cast\mortar\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/mortar feet  y=900
+
+cast/gullet
+  pass  cast/gullet basis  frogfolk
+  pass  assets\cast\gullet\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/gullet feet  y=900
+
+cast/old_ossley
+  pass  cast/old_ossley basis  frogfolk
+  pass  assets\cast\old_ossley\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/old_ossley feet  y=900
+
+cast/old_lintel
+  pass  cast/old_lintel basis  stone_troll
+  pass  assets\cast\old_lintel\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/old_lintel feet  y=900
+
+cast/hesper
+  pass  cast/hesper basis  centaur
+  pass  assets\cast\hesper\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/hesper feet  y=900
+
+cast/marda_thorn
+  pass  cast/marda_thorn basis  centaur
+  pass  assets\cast\marda_thorn\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/marda_thorn feet  y=900
+
+cast/tobble
+  pass  cast/tobble basis  faun
+  pass  assets\cast\tobble\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/tobble feet  y=900
+
+cast/hob
+  pass  cast/hob basis  faun
+  pass  assets\cast\hob\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/hob feet  y=900
+
+cast/nan_rummage
+  pass  cast/nan_rummage basis  boggart
+  pass  assets\cast\nan_rummage\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/nan_rummage feet  y=900
+
+cast/captain_voss
+  pass  cast/captain_voss basis  griffin
+  pass  assets\cast\captain_voss\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/captain_voss feet  y=900
+
+cast/brask
+  pass  cast/brask basis  faun
+  pass  assets\cast\brask\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/brask feet  y=900
+
+cast/holloway
+  pass  cast/holloway basis  griffin
+  pass  assets\cast\holloway\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/holloway feet  y=900
+
+cast/mother_thrum
+  pass  cast/mother_thrum basis  witch_order
+  pass  assets\cast\mother_thrum\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/mother_thrum feet  y=900
+
+cast/ma_ruddle
+  pass  cast/ma_ruddle basis  burrowfolk
+  pass  assets\cast\ma_ruddle\assembled.png  1024x1024 RGBA  margin=92px
+  pass  cast/ma_ruddle feet  y=897
+
+cast/tib
+  pass  cast/tib basis  burrowfolk
+  pass  assets\cast\tib\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/tib feet  y=894
+
+cast/dunmore
+  pass  cast/dunmore basis  burrowfolk
+  pass  assets\cast\dunmore\assembled.png  1024x1024 RGBA  margin=86px
+  pass  cast/dunmore feet  y=897
+
+cast/hessa_wren
+  pass  cast/hessa_wren basis  harvest_sprite
+  pass  assets\cast\hessa_wren\assembled.png  1024x1024 RGBA  margin=99px
+  pass  cast/hessa_wren feet  y=900
+
+cast/wend
+  pass  cast/wend basis  frogfolk
+  pass  assets\cast\wend\assembled.png  1024x1024 RGBA  margin=89px
+  pass  cast/wend feet  y=898
+
+cast/hollis
+  pass  cast/hollis basis  bigfoot
+  pass  assets\cast\hollis\assembled.png  1024x1024 RGBA  margin=113px
+  pass  cast/hollis feet  y=900
+
+cast/soup_woman
+  pass  cast/soup_woman basis  selkie
+  pass  assets\cast\soup_woman\assembled.png  1024x1024 RGBA  margin=95px
+  pass  cast/soup_woman feet  y=893
+
+cast/clerk_pennywhistle
+  pass  cast/clerk_pennywhistle basis  harvest_sprite
+  pass  assets\cast\clerk_pennywhistle\assembled.png  1024x1024 RGBA  margin=123px
+  pass  cast/clerk_pennywhistle feet  y=900
+
+cast/caravan_master
+  pass  cast/caravan_master basis  centaur
+  pass  assets\cast\caravan_master\assembled.png  1024x1024 RGBA  margin=123px
+  pass  cast/caravan_master feet  y=900
+
+cast/crying_gem_buyer
+  pass  cast/crying_gem_buyer basis  merfolk
+  pass  assets\cast\crying_gem_buyer\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/crying_gem_buyer feet  y=898
+
+cast/rope_shop_boy
+  pass  cast/rope_shop_boy basis  faun
+  pass  assets\cast\rope_shop_boy\assembled.png  1024x1024 RGBA  margin=123px
+  pass  cast/rope_shop_boy feet  y=900
+
+cast/cult_frogfolk
+  pass  cast/cult_frogfolk basis  frogfolk
+  pass  assets\cast\cult_frogfolk\assembled.png  1024x1024 RGBA  margin=84px
+  pass  cast/cult_frogfolk feet  y=895
+
+cast/cult_bigfoot
+  pass  cast/cult_bigfoot basis  bigfoot
+  pass  assets\cast\cult_bigfoot\assembled.png  1024x1024 RGBA  margin=84px
+  pass  cast/cult_bigfoot feet  y=896
+
+cast/mrs_tuft
+  pass  cast/mrs_tuft basis  sheeple
+  pass  assets\cast\mrs_tuft\assembled.png  1024x1024 RGBA  margin=22px
+  pass  cast/mrs_tuft feet  y=891
+
+cast/old_wick
+  pass  cast/old_wick basis  frogfolk
+  pass  assets\cast\old_wick\assembled.png  1024x1024 RGBA  margin=50px
+  pass  cast/old_wick feet  y=900
+
+cast/postmaster_quill
+  pass  cast/postmaster_quill basis  griffin
+  pass  assets\cast\postmaster_quill\assembled.png  1024x1024 RGBA  margin=44px
+  pass  cast/postmaster_quill feet  y=893
+
+cast/bracken_swiftmile
+  pass  cast/bracken_swiftmile basis  centaur
+  pass  assets\cast\bracken_swiftmile\assembled.png  1024x1024 RGBA  margin=31px
+  pass  cast/bracken_swiftmile feet  y=899
+
+cast/burdock
+  pass  cast/burdock basis  faun
+  pass  assets\cast\burdock\assembled.png  1024x1024 RGBA  margin=24px
+  pass  cast/burdock feet  y=895
+
+cast/fennick
+  pass  cast/fennick basis  centaur
+  pass  assets\cast\fennick\assembled.png  1024x1024 RGBA  margin=41px
+  pass  cast/fennick feet  y=900
+
+cast/mother_bracken
+  pass  cast/mother_bracken basis  faun
+  pass  assets\cast\mother_bracken\assembled.png  1024x1024 RGBA  margin=20px
+  pass  cast/mother_bracken feet  y=888
+
+cast/littlest_bracken
+  pass  cast/littlest_bracken basis  faun
+  pass  assets\cast\littlest_bracken\assembled.png  1024x1024 RGBA  margin=127px
+  pass  cast/littlest_bracken feet  y=896
+
+cast/innkeeper_flint
+  pass  cast/innkeeper_flint basis  stone_troll
+  pass  assets\cast\innkeeper_flint\assembled.png  1024x1024 RGBA  margin=75px
+  pass  cast/innkeeper_flint feet  y=900
+
+cast/pib
+  pass  cast/pib basis  harvest_sprite
+  pass  assets\cast\pib\assembled.png  1024x1024 RGBA  margin=123px
+  pass  cast/pib feet  y=900
+
+cast/granny_ash
+  pass  cast/granny_ash basis  manticore
+  pass  assets\cast\granny_ash\assembled.png  1024x1024 RGBA  margin=33px
+  pass  cast/granny_ash feet  y=900
+
+cast/old_corran
+  pass  cast/old_corran basis  centaur
+  pass  assets\cast\old_corran\assembled.png  1024x1024 RGBA  margin=21px
+  pass  cast/old_corran feet  y=899
+
+cast/nim
+  pass  cast/nim basis  dragonling
+  pass  assets\cast\nim\assembled.png  1024x1024 RGBA  margin=124px
+  pass  cast/nim feet  y=899
+
+cast/corporal_tibbet
+  pass  cast/corporal_tibbet basis  griffin
+  pass  assets\cast\corporal_tibbet\assembled.png  1024x1024 RGBA  margin=62px
+  pass  cast/corporal_tibbet feet  y=899
+
+cast/brisk
+  pass  cast/brisk basis  centaur
+  pass  assets\cast\brisk\assembled.png  1024x1024 RGBA  margin=62px
+  pass  cast/brisk feet  y=899
+
+cast/perrin_nine_verse
+  pass  cast/perrin_nine_verse basis  centaur
+  pass  assets\cast\perrin_nine_verse\assembled.png  1024x1024 RGBA  margin=36px
+  pass  cast/perrin_nine_verse feet  y=900
+
+cast/bryony
+  pass  cast/bryony basis  dragonling
+  pass  assets\cast\bryony\assembled.png  1024x1024 RGBA  margin=123px
+  pass  cast/bryony feet  y=900
+
+cast/lady_fleecewick
+  pass  cast/lady_fleecewick basis  sheeple
+  pass  assets\cast\lady_fleecewick\assembled.png  1024x1024 RGBA  margin=63px
+  pass  cast/lady_fleecewick feet  y=899
+
+cast/cadet_linnet
+  pass  cast/cadet_linnet basis  griffin
+  pass  assets\cast\cadet_linnet\assembled.png  1024x1024 RGBA  margin=60px
+  pass  cast/cadet_linnet feet  y=899
+
+cast/tansy
+  pass  cast/tansy basis  faun
+  pass  assets\cast\tansy\assembled.png  1024x1024 RGBA  margin=123px
+  pass  cast/tansy feet  y=900
+
+cast/odo
+  pass  cast/odo basis  burrowfolk
+  pass  assets\cast\odo\assembled.png  1024x1024 RGBA  margin=21px
+  pass  cast/odo feet  y=900
+
+cast/corbin
+  pass  cast/corbin basis  burrowfolk
+  pass  assets\cast\corbin\assembled.png  1024x1024 RGBA  margin=21px
+  pass  cast/corbin feet  y=900
+
+cast/posy
+  pass  cast/posy basis  burrowfolk
+  pass  assets\cast\posy\assembled.png  1024x1024 RGBA  margin=21px
+  pass  cast/posy feet  y=900
+
+cast/rook
+  pass  cast/rook basis  burrowfolk
+  pass  assets\cast\rook\assembled.png  1024x1024 RGBA  margin=21px
+  pass  cast/rook feet  y=900
+
+cast/selkie_grandmother
+  pass  cast/selkie_grandmother basis  selkie
+  pass  assets\cast\selkie_grandmother\assembled.png  1024x1024 RGBA  margin=21px
+  pass  cast/selkie_grandmother feet  y=900
+
+cast/path_keeper
+  pass  cast/path_keeper basis  bigfoot
+  pass  assets\cast\path_keeper\assembled.png  1024x1024 RGBA  margin=21px
+  pass  cast/path_keeper feet  y=900
+
+cast/young_gatherer
+  pass  cast/young_gatherer basis  dragonling
+  pass  assets\cast\young_gatherer\assembled.png  1024x1024 RGBA  margin=21px
+  pass  cast/young_gatherer feet  y=900
+
+cast/courier_griffin
+  pass  cast/courier_griffin basis  griffin
+  pass  assets\cast\courier_griffin\assembled.png  1024x1024 RGBA  margin=21px
+  pass  cast/courier_griffin feet  y=900
+
+cast/corbin_carrying_posy
+  pass  cast/corbin_carrying_posy basis  burrowfolk
+  pass  assets\cast\corbin_carrying_posy\assembled.png  1024x1024 RGBA  margin=21px
+  pass  cast/corbin_carrying_posy feet  y=900
+
+cast/orin_vale
+  pass  cast/orin_vale basis  griffin
+  pass  assets\cast\orin_vale\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/orin_vale feet  y=897
+
+cast/lady_olivia
+  pass  cast/lady_olivia basis  unicorn
+  pass  assets\cast\lady_olivia\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/lady_olivia feet  y=899
+
+cast/seren_wisp
+  pass  cast/seren_wisp basis  kitsune
+  pass  assets\cast\seren_wisp\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/seren_wisp feet  y=899
+
+cast/pip_thistledown
+  pass  cast/pip_thistledown basis  manticore
+  pass  assets\cast\pip_thistledown\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/pip_thistledown feet  y=899
+
+cast/bram_lock
+  pass  cast/bram_lock basis  bigfoot
+  pass  assets\cast\bram_lock\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/bram_lock feet  y=899
+
+cast/yeti_elder
+  pass  cast/yeti_elder basis  yeti
+  pass  assets\cast\yeti_elder\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/yeti_elder feet  y=899
+
+cast/kitsune_temple_keeper
+  pass  cast/kitsune_temple_keeper basis  kitsune
+  pass  assets\cast\kitsune_temple_keeper\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/kitsune_temple_keeper feet  y=899
+
+cast/dragonling_stone_keeper
+  pass  cast/dragonling_stone_keeper basis  dragonling
+  pass  assets\cast\dragonling_stone_keeper\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/dragonling_stone_keeper feet  y=899
+
+cast/saltrot_guide
+  pass  cast/saltrot_guide basis  skupper
+  pass  assets\cast\saltrot_guide\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/saltrot_guide feet  y=898
+
+cast/deep-ice-figure
+  pass  cast/deep-ice-figure basis  faun
+  pass  assets\cast\deep-ice-figure\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/deep-ice-figure feet  y=899
+
+cast/skywarden_griffin
+  pass  cast/skywarden_griffin basis  griffin
+  pass  assets\cast\skywarden_griffin\assembled.png  1024x1024 RGBA  margin=61px
+  pass  cast/skywarden_griffin feet  y=900
+
+cast/skywarden_faun
+  pass  cast/skywarden_faun basis  faun
+  pass  assets\cast\skywarden_faun\assembled.png  1024x1024 RGBA  margin=61px
+  pass  cast/skywarden_faun feet  y=900
+
+cast/skywarden_centaur
+  pass  cast/skywarden_centaur basis  centaur
+  pass  assets\cast\skywarden_centaur\assembled.png  1024x1024 RGBA  margin=61px
+  pass  cast/skywarden_centaur feet  y=900
+
+cast/captain_thimble
+  pass  cast/captain_thimble basis  kitsune
+  pass  assets\cast\captain_thimble\assembled.png  1024x1024 RGBA  margin=84px
+  pass  cast/captain_thimble feet  y=900
+
+cast/master_dunnick
+  pass  cast/master_dunnick basis  bigfoot
+  pass  assets\cast\master_dunnick\assembled.png  1024x1024 RGBA  margin=84px
+  pass  cast/master_dunnick feet  y=900
+
+cast/professor_nettle
+  pass  cast/professor_nettle basis  dragonling
+  pass  assets\cast\professor_nettle\assembled.png  1024x1024 RGBA  margin=85px
+  pass  cast/professor_nettle feet  y=900
+
+cast/aunt_bellow
+  pass  cast/aunt_bellow basis  yeti
+  pass  assets\cast\aunt_bellow\assembled.png  1024x1024 RGBA  margin=87px
+  pass  cast/aunt_bellow feet  y=900
+
+cast/yeti_herder
+  pass  cast/yeti_herder basis  yeti
+  pass  assets\cast\yeti_herder\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/yeti_herder feet  y=900
+
+cast/seal_keeper
+  pass  cast/seal_keeper basis  legend_dragon
+  pass  assets\cast\seal_keeper\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/seal_keeper feet  y=900
+
+cast/brassbuckle_scout
+  pass  cast/brassbuckle_scout basis  burrowfolk
+  pass  assets\cast\brassbuckle_scout\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/brassbuckle_scout feet  y=900
+
+cast/brassbuckle_recordkeeper
+  pass  cast/brassbuckle_recordkeeper basis  burrowfolk
+  pass  assets\cast\brassbuckle_recordkeeper\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/brassbuckle_recordkeeper feet  y=900
+
+cast/relay_runner
+  pass  cast/relay_runner basis  centaur
+  pass  assets\cast\relay_runner\assembled.png  1024x1024 RGBA  margin=100px
+  pass  cast/relay_runner feet  y=900
+
+cast/masked_choir_singer
+  pass  cast/masked_choir_singer basis  burrowfolk
+  pass  assets\cast\masked_choir_singer\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/masked_choir_singer feet  y=900
+
+cast/bell_code_expert
+  pass  cast/bell_code_expert basis  dragonling
+  pass  assets\cast\bell_code_expert\assembled.png  1024x1024 RGBA  margin=94px
+  pass  cast/bell_code_expert feet  y=900
+
+cast/gullets_cousin
+  pass  cast/gullets_cousin basis  frogfolk
+  pass  assets\cast\gullets_cousin\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/gullets_cousin feet  y=900
+
+cast/road_warden
+  pass  cast/road_warden basis  centaur
+  pass  assets\cast\road_warden\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/road_warden feet  y=900
+
+cast/fishmonger
+  pass  cast/fishmonger basis  yeti
+  pass  assets\cast\fishmonger\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/fishmonger feet  y=900
+
+cast/road_boss
+  pass  cast/road_boss basis  centaur
+  pass  assets\cast\road_boss\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/road_boss feet  y=900
+
+cast/warden_clerk
+  pass  cast/warden_clerk basis  frogfolk
+  pass  assets\cast\warden_clerk\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/warden_clerk feet  y=900
+
+cast/rush_prospector
+  pass  cast/rush_prospector basis  burrowfolk
+  pass  assets\cast\rush_prospector\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/rush_prospector feet  y=900
+
+cast/bell_courier
+  pass  cast/bell_courier basis  dragonling
+  pass  assets\cast\bell_courier\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/bell_courier feet  y=900
+
+cast/stall_witch
+  pass  cast/stall_witch basis  witch_order
+  pass  assets\cast\stall_witch\assembled.png  1024x1024 RGBA  margin=101px
+  pass  cast/stall_witch feet  y=900
+
+cast/goat_kid
+  pass  cast/goat_kid basis  snowhorn_goat
+  pass  assets\cast\goat_kid\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/goat_kid feet  y=899
+
+cast/adult_dragonling
+  pass  cast/adult_dragonling basis  dragonling
+  pass  assets\cast\adult_dragonling\assembled.png  1024x1024 RGBA  margin=81px
+  pass  cast/adult_dragonling feet  y=899
+
+cast/island_keeper
+  pass  cast/island_keeper basis  kitsune
+  pass  assets\cast\island_keeper\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/island_keeper feet  y=899
+
+cast/new_island_keeper
+  pass  cast/new_island_keeper basis  kitsune
+  pass  assets\cast\new_island_keeper\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/new_island_keeper feet  y=898
+
+cast/younger_keeper
+  pass  cast/younger_keeper basis  yeti
+  pass  assets\cast\younger_keeper\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/younger_keeper feet  y=899
+
+cast/newcomer_yeti
+  pass  cast/newcomer_yeti basis  yeti
+  pass  assets\cast\newcomer_yeti\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/newcomer_yeti feet  y=898
+
+cast/route_worker_yeti
+  pass  cast/route_worker_yeti basis  yeti
+  pass  assets\cast\route_worker_yeti\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/route_worker_yeti feet  y=898
+
+cast/yeti_watcher
+  pass  cast/yeti_watcher basis  yeti
+  pass  assets\cast\yeti_watcher\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/yeti_watcher feet  y=899
+
+cast/pass_keeper
+  pass  cast/pass_keeper basis  griffin
+  pass  assets\cast\pass_keeper\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/pass_keeper feet  y=899
+
+cast/ridge_griffin
+  pass  cast/ridge_griffin basis  griffin
+  pass  assets\cast\ridge_griffin\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/ridge_griffin feet  y=899
+
+cast/allied_wyrm
+  pass  cast/allied_wyrm basis  frost_wyrm
+  pass  assets\cast\allied_wyrm\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/allied_wyrm feet  y=898
+
+cast/memory_reader
+  pass  cast/memory_reader basis  yeti
+  pass  assets\cast\memory_reader\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/memory_reader feet  y=899
+
+cast/frogfolk_student
+  pass  cast/frogfolk_student basis  frogfolk
+  pass  assets\cast\frogfolk_student\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/frogfolk_student feet  y=899
+
+cast/young_yeti_singer
+  pass  cast/young_yeti_singer basis  yeti
+  pass  assets\cast\young_yeti_singer\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/young_yeti_singer feet  y=899
+
+cast/dock_worker
+  pass  cast/dock_worker basis  frogfolk
+  pass  assets\cast\dock_worker\assembled.png  1024x1024 RGBA  margin=83px
+  pass  cast/dock_worker feet  y=899
+
+cast/passing_fisher
+  pass  cast/passing_fisher basis  frogfolk
+  pass  assets\cast\passing_fisher\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/passing_fisher feet  y=898
+
+cast/boarding_traveler
+  pass  cast/boarding_traveler basis  burrowfolk
+  pass  assets\cast\boarding_traveler\assembled.png  1024x1024 RGBA  margin=82px
+  pass  cast/boarding_traveler feet  y=899
+
+cast/pebble
+  pass  cast/pebble basis  griffin
+  pass  assets\cast\pebble\assembled.png  1024x1024 RGBA  margin=91px
+  pass  cast/pebble feet  y=900
+
+cast/dob
+  pass  cast/dob basis  bigfoot
+  pass  assets\cast\dob\assembled.png  1024x1024 RGBA  margin=91px
+  pass  cast/dob feet  y=900
+
+cast/bryn
+  pass  cast/bryn basis  dragonling
+  pass  assets\cast\bryn\assembled.png  1024x1024 RGBA  margin=72px
+  pass  cast/bryn feet  y=900
+
+cast/tilly
+  pass  cast/tilly basis  griffin
+  pass  assets\cast\tilly\assembled.png  1024x1024 RGBA  margin=91px
+  pass  cast/tilly feet  y=900
+
+cast/tilly_eggs
+  pass  cast/tilly_eggs basis  griffin
+  pass  assets\cast\tilly_eggs\assembled.png  1024x1024 RGBA  margin=91px
+  pass  cast/tilly_eggs feet  y=900
+
+cast/boundary_runner
+  pass  cast/boundary_runner basis  dragonling
+  pass  assets\cast\boundary_runner\assembled.png  1024x1024 RGBA  margin=91px
+  pass  cast/boundary_runner feet  y=900
+
+cast/snowhorn_kid
+  pass  cast/snowhorn_kid basis  snowhorn_goat
+  pass  assets\cast\snowhorn_kid\assembled.png  1024x1024 RGBA  margin=91px
+  pass  cast/snowhorn_kid feet  y=900
+
+cast/tamsin_river_keeper
+  pass  cast/tamsin_river_keeper basis  griffin
+  pass  assets\cast\tamsin_river_keeper\assembled.png  1024x1024 RGBA  margin=91px
+  pass  cast/tamsin_river_keeper feet  y=900
+
+cast/yeti_grit_seller
+  pass  cast/yeti_grit_seller basis  yeti
+  pass  assets\cast\yeti_grit_seller\assembled.png  1024x1024 RGBA  margin=91px
+  pass  cast/yeti_grit_seller feet  y=899
+  pass  effects/aura_bigfoot  12 frames @ 12fps, 256px
+  pass  effects/aura_dragonling  12 frames @ 12fps, 256px
+  pass  effects/aura_griffin  12 frames @ 12fps, 256px
+  pass  effects/aura_kitsune  12 frames @ 12fps, 256px
+  pass  effects/aura_manticore  12 frames @ 12fps, 256px
+  pass  effects/aura_unicorn  12 frames @ 12fps, 256px
+  pass  effects/bonus_spark  8 frames @ 12fps, 256px
+  pass  effects/burst_star  12 frames @ 12fps, 256px
+  pass  effects/daze_swirl  12 frames @ 12fps, 256px
+  pass  effects/down_settle  12 frames @ 12fps, 256px
+  pass  effects/dust_scuff  8 frames @ 12fps, 256px
+  pass  effects/guard_ward  8 frames @ 12fps, 256px
+  pass  effects/heal_bloom  12 frames @ 12fps, 256px
+  pass  effects/impact_strike  8 frames @ 12fps, 256px
+  pass  effects/miss_veer  8 frames @ 12fps, 256px
+  pass  effects/revive_lift  12 frames @ 12fps, 256px
+  pass  effects/rift_amber  24 frames @ 12fps, 320px
+  pass  effects/rift_base  24 frames @ 12fps, 320px
+  pass  effects/rift_blue  24 frames @ 12fps, 320px
+  pass  effects/rift_collapse  24 frames @ 12fps, 320px
+  pass  effects/rift_green  24 frames @ 12fps, 320px
+  pass  effects/rift_neutral  24 frames @ 12fps, 320px
+  pass  effects/rift_open  24 frames @ 12fps, 320px
+  pass  effects/rift_shrink  24 frames @ 12fps, 320px
+  pass  effects/rift_stutter  24 frames @ 12fps, 320px
+  pass  effects/rift_sync  24 frames @ 12fps, 320px
+  pass  effects/rift_violet  24 frames @ 12fps, 320px
+  pass  effects/transform_flash  18 frames @ 12fps, 256px
+  pass  together/heave/band-slack.png format and bytes
+  pass  together/heave/band-slack.png transparency
+  pass  together/heave/band-slack.png visible and registered
+  pass  together/heave/band-taut.png format and bytes
+  pass  together/heave/band-taut.png transparency
+  pass  together/heave/band-taut.png visible and registered
+  pass  together/heave/band state registration
+  pass  together/heave/token-empty.png format and bytes
+  pass  together/heave/token-empty.png transparency
+  pass  together/heave/token-empty.png visible and registered
+  pass  together/heave/token-holding.png format and bytes
+  pass  together/heave/token-holding.png transparency
+  pass  together/heave/token-holding.png visible and registered
+  pass  together/heave/token-done.png format and bytes
+  pass  together/heave/token-done.png transparency
+  pass  together/heave/token-done.png visible and registered
+  pass  together/heave/token-helped.png format and bytes
+  pass  together/heave/token-helped.png transparency
+  pass  together/heave/token-helped.png visible and registered
+  pass  together/hum/band-wobble.png format and bytes
+  pass  together/hum/band-wobble.png transparency
+  pass  together/hum/band-wobble.png visible and registered
+  pass  together/hum/band-together.png format and bytes
+  pass  together/hum/band-together.png transparency
+  pass  together/hum/band-together.png visible and registered
+  pass  together/hum/band state registration
+  pass  together/hum/token-empty.png format and bytes
+  pass  together/hum/token-empty.png transparency
+  pass  together/hum/token-empty.png visible and registered
+  pass  together/hum/token-holding.png format and bytes
+  pass  together/hum/token-holding.png transparency
+  pass  together/hum/token-holding.png visible and registered
+  pass  together/hum/token-done.png format and bytes
+  pass  together/hum/token-done.png transparency
+  pass  together/hum/token-done.png visible and registered
+  pass  together/hum/token-helped.png format and bytes
+  pass  together/hum/token-helped.png transparency
+  pass  together/hum/token-helped.png visible and registered
+  pass  together/tiptoe/band-hush.png format and bytes
+  pass  together/tiptoe/band-hush.png transparency
+  pass  together/tiptoe/band-hush.png visible and registered
+  pass  together/tiptoe/band-over.png format and bytes
+  pass  together/tiptoe/band-over.png transparency
+  pass  together/tiptoe/band-over.png visible and registered
+  pass  together/tiptoe/band state registration
+  pass  together/tiptoe/token-empty.png format and bytes
+  pass  together/tiptoe/token-empty.png transparency
+  pass  together/tiptoe/token-empty.png visible and registered
+  pass  together/tiptoe/token-holding.png format and bytes
+  pass  together/tiptoe/token-holding.png transparency
+  pass  together/tiptoe/token-holding.png visible and registered
+  pass  together/tiptoe/token-done.png format and bytes
+  pass  together/tiptoe/token-done.png transparency
+  pass  together/tiptoe/token-done.png visible and registered
+  pass  together/tiptoe/token-helped.png format and bytes
+  pass  together/tiptoe/token-helped.png transparency
+  pass  together/tiptoe/token-helped.png visible and registered
+  pass  gear-portraits/thornguard/sworn/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/sworn/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/sworn/griffin.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/sworn/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/sworn/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/sworn/manticore.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/radiant/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/radiant/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/radiant/griffin.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/radiant/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/radiant/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/radiant/manticore.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/mythic/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/mythic/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/mythic/griffin.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/mythic/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/mythic/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/thornguard/mythic/manticore.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/sworn/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/sworn/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/sworn/griffin.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/sworn/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/sworn/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/sworn/manticore.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/radiant/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/radiant/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/radiant/griffin.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/radiant/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/radiant/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/radiant/manticore.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/mythic/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/mythic/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/mythic/griffin.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/mythic/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/mythic/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/duskrunner/mythic/manticore.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/sworn/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/sworn/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/sworn/griffin.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/sworn/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/sworn/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/sworn/manticore.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/radiant/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/radiant/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/radiant/griffin.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/radiant/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/radiant/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/radiant/manticore.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/mythic/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/mythic/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/mythic/griffin.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/mythic/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/mythic/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/starweaver/mythic/manticore.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/sworn/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/sworn/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/sworn/griffin.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/sworn/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/sworn/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/sworn/manticore.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/radiant/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/radiant/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/radiant/griffin.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/radiant/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/radiant/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/radiant/manticore.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/mythic/unicorn.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/mythic/dragonling.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/mythic/griffin.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/mythic/bigfoot.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/mythic/kitsune.png  1254x1254 RGB
+  pass  gear-portraits/songkeeper/mythic/manticore.png  1254x1254 RGB
+  pass  assets\character-rigs\songkeeper\mythic\bigfoot\assembled.png  1024x1024 RGBA  margin=105px
+  pass  character-rigs/songkeeper/mythic/bigfoot origin  feet at y=898
+  pass  assets\character-rigs\songkeeper\radiant\bigfoot\assembled.png  1024x1024 RGBA  margin=117px
+  pass  character-rigs/songkeeper/radiant/bigfoot origin  feet at y=898
+  pass  assets\character-rigs\songkeeper\sworn\bigfoot\assembled.png  1024x1024 RGBA  margin=109px
+  pass  character-rigs/songkeeper/sworn/bigfoot origin  feet at y=899
+  pass  assets\character-rigs\starweaver\mythic\bigfoot\assembled.png  1024x1024 RGBA  margin=105px
+  pass  character-rigs/starweaver/mythic/bigfoot origin  feet at y=898
+  pass  assets\character-rigs\starweaver\radiant\bigfoot\assembled.png  1024x1024 RGBA  margin=117px
+  pass  character-rigs/starweaver/radiant/bigfoot origin  feet at y=898
+  pass  assets\character-rigs\duskrunner\sworn\unicorn\assembled.png  1024x1024 RGBA  margin=37px
+  pass  character-rigs/duskrunner/sworn/unicorn origin  feet at y=899
+  pass  assets\character-rigs\duskrunner\sworn\dragonling\assembled.png  1024x1024 RGBA  margin=17px
+  pass  character-rigs/duskrunner/sworn/dragonling origin  feet at y=900
+  pass  assets\character-rigs\duskrunner\sworn\griffin\assembled.png  1024x1024 RGBA  margin=101px
+  pass  character-rigs/duskrunner/sworn/griffin origin  feet at y=898
+  pass  assets\character-rigs\duskrunner\sworn\bigfoot\assembled.png  1024x1024 RGBA  margin=109px
+  pass  character-rigs/duskrunner/sworn/bigfoot origin  feet at y=899
+  pass  assets\character-rigs\duskrunner\sworn\kitsune\assembled.png  1024x1024 RGBA  margin=68px
+  pass  character-rigs/duskrunner/sworn/kitsune origin  feet at y=899
+  pass  assets\character-rigs\duskrunner\sworn\manticore\assembled.png  1024x1024 RGBA  margin=111px
+  pass  character-rigs/duskrunner/sworn/manticore origin  feet at y=899
+  pass  assets\character-rigs\starweaver\sworn\unicorn\assembled.png  1024x1024 RGBA  margin=52px
+  pass  character-rigs/starweaver/sworn/unicorn origin  feet at y=909
+  pass  assets\character-rigs\starweaver\sworn\dragonling\assembled.png  1024x1024 RGBA  margin=17px
+  pass  character-rigs/starweaver/sworn/dragonling origin  feet at y=900
+  pass  assets\character-rigs\starweaver\sworn\griffin\assembled.png  1024x1024 RGBA  margin=100px
+  pass  character-rigs/starweaver/sworn/griffin origin  feet at y=898
+  pass  assets\character-rigs\starweaver\sworn\bigfoot\assembled.png  1024x1024 RGBA  margin=85px
+  pass  character-rigs/starweaver/sworn/bigfoot origin  feet at y=899
+  pass  assets\character-rigs\starweaver\sworn\kitsune\assembled.png  1024x1024 RGBA  margin=68px
+  pass  character-rigs/starweaver/sworn/kitsune origin  feet at y=899
+  pass  assets\character-rigs\starweaver\sworn\manticore\assembled.png  1024x1024 RGBA  margin=110px
+  pass  character-rigs/starweaver/sworn/manticore origin  feet at y=899
+  pass  assets\character-rigs\duskrunner\radiant\unicorn\assembled.png  1024x1024 RGBA  margin=22px
+  pass  character-rigs/duskrunner/radiant/unicorn origin  feet at y=899
+  pass  assets\character-rigs\duskrunner\radiant\dragonling\assembled.png  1024x1024 RGBA  margin=8px
+  pass  character-rigs/duskrunner/radiant/dragonling origin  feet at y=898
+  pass  assets\character-rigs\duskrunner\radiant\griffin\assembled.png  1024x1024 RGBA  margin=43px
+  pass  character-rigs/duskrunner/radiant/griffin origin  feet at y=890
+  pass  assets\character-rigs\duskrunner\radiant\bigfoot\assembled.png  1024x1024 RGBA  margin=117px
+  pass  character-rigs/duskrunner/radiant/bigfoot origin  feet at y=898
+  pass  assets\character-rigs\duskrunner\radiant\kitsune\assembled.png  1024x1024 RGBA  margin=66px
+  pass  character-rigs/duskrunner/radiant/kitsune origin  feet at y=899
+  pass  assets\character-rigs\duskrunner\radiant\manticore\assembled.png  1024x1024 RGBA  margin=90px
+  pass  character-rigs/duskrunner/radiant/manticore origin  feet at y=894
+  pass  assets\character-rigs\duskrunner\mythic\unicorn\assembled.png  1024x1024 RGBA  margin=19px
+  pass  character-rigs/duskrunner/mythic/unicorn origin  feet at y=896
+  pass  assets\character-rigs\duskrunner\mythic\dragonling\assembled.png  1024x1024 RGBA  margin=17px
+  pass  character-rigs/duskrunner/mythic/dragonling origin  feet at y=899
+  pass  assets\character-rigs\duskrunner\mythic\griffin\assembled.png  1024x1024 RGBA  margin=88px
+  pass  character-rigs/duskrunner/mythic/griffin origin  feet at y=900
+  pass  assets\character-rigs\duskrunner\mythic\bigfoot\assembled.png  1024x1024 RGBA  margin=105px
+  pass  character-rigs/duskrunner/mythic/bigfoot origin  feet at y=898
+  pass  assets\character-rigs\duskrunner\mythic\kitsune\assembled.png  1024x1024 RGBA  margin=45px
+  pass  character-rigs/duskrunner/mythic/kitsune origin  feet at y=900
+  pass  assets\character-rigs\duskrunner\mythic\manticore\assembled.png  1024x1024 RGBA  margin=97px
+  pass  character-rigs/duskrunner/mythic/manticore origin  feet at y=899
+  pass  assets\character-rigs\thornguard\sworn\bigfoot\assembled.png  1024x1024 RGBA  margin=109px
+  pass  character-rigs/thornguard/sworn/bigfoot origin  feet at y=899
+  pass  assets\character-rigs\thornguard\sworn\dragonling\assembled.png  1024x1024 RGBA  margin=17px
+  pass  character-rigs/thornguard/sworn/dragonling origin  feet at y=900
+  pass  assets\character-rigs\thornguard\sworn\griffin\assembled.png  1024x1024 RGBA  margin=101px
+  pass  character-rigs/thornguard/sworn/griffin origin  feet at y=898
+  pass  assets\character-rigs\thornguard\sworn\kitsune\assembled.png  1024x1024 RGBA  margin=68px
+  pass  character-rigs/thornguard/sworn/kitsune origin  feet at y=899
+  pass  assets\character-rigs\thornguard\sworn\manticore\assembled.png  1024x1024 RGBA  margin=111px
+  pass  character-rigs/thornguard/sworn/manticore origin  feet at y=899
+  pass  assets\character-rigs\thornguard\sworn\unicorn\assembled.png  1024x1024 RGBA  margin=40px
+  pass  character-rigs/thornguard/sworn/unicorn origin  feet at y=899
+  pass  assets\character-rigs\thornguard\radiant\unicorn\assembled.png  1024x1024 RGBA  margin=16px
+  pass  character-rigs/thornguard/radiant/unicorn origin  feet at y=899
+  pass  assets\character-rigs\thornguard\radiant\dragonling\assembled.png  1024x1024 RGBA  margin=16px
+  pass  character-rigs/thornguard/radiant/dragonling origin  feet at y=898
+  pass  assets\character-rigs\thornguard\radiant\griffin\assembled.png  1024x1024 RGBA  margin=111px
+  pass  character-rigs/thornguard/radiant/griffin origin  feet at y=900
+  pass  assets\character-rigs\thornguard\radiant\bigfoot\assembled.png  1024x1024 RGBA  margin=47px
+  pass  character-rigs/thornguard/radiant/bigfoot origin  feet at y=900
+  pass  assets\character-rigs\thornguard\radiant\kitsune\assembled.png  1024x1024 RGBA  margin=81px
+  pass  character-rigs/thornguard/radiant/kitsune origin  feet at y=900
+  pass  assets\character-rigs\thornguard\radiant\manticore\assembled.png  1024x1024 RGBA  margin=42px
+  pass  character-rigs/thornguard/radiant/manticore origin  feet at y=900
+  pass  assets\character-rigs\thornguard\mythic\unicorn\assembled.png  1024x1024 RGBA  margin=23px
+  pass  character-rigs/thornguard/mythic/unicorn origin  feet at y=892
+  pass  assets\character-rigs\thornguard\mythic\dragonling\assembled.png  1024x1024 RGBA  margin=8px
+  pass  character-rigs/thornguard/mythic/dragonling origin  feet at y=902
+  pass  assets\character-rigs\thornguard\mythic\griffin\assembled.png  1024x1024 RGBA  margin=73px
+  pass  character-rigs/thornguard/mythic/griffin origin  feet at y=910
+  pass  assets\character-rigs\thornguard\mythic\bigfoot\assembled.png  1024x1024 RGBA  margin=75px
+  pass  character-rigs/thornguard/mythic/bigfoot origin  feet at y=908
+  pass  assets\character-rigs\thornguard\mythic\kitsune\assembled.png  1024x1024 RGBA  margin=56px
+  pass  character-rigs/thornguard/mythic/kitsune origin  feet at y=900
+  pass  assets\character-rigs\thornguard\mythic\manticore\assembled.png  1024x1024 RGBA  margin=108px
+  pass  character-rigs/thornguard/mythic/manticore origin  feet at y=911
+  pass  assets\character-rigs\songkeeper\sworn\kitsune\assembled.png  1024x1024 RGBA  margin=84px
+  pass  character-rigs/songkeeper/sworn/kitsune origin  feet at y=900
+  pass  assets\character-rigs\starweaver\radiant\unicorn\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/starweaver/radiant/unicorn origin  feet at y=900
+  pass  assets\character-rigs\starweaver\radiant\dragonling\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/starweaver/radiant/dragonling origin  feet at y=900
+  pass  assets\character-rigs\starweaver\radiant\griffin\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/starweaver/radiant/griffin origin  feet at y=900
+  pass  assets\character-rigs\starweaver\radiant\kitsune\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/starweaver/radiant/kitsune origin  feet at y=900
+  pass  assets\character-rigs\starweaver\radiant\manticore\assembled.png  1024x1024 RGBA  margin=59px
+  pass  character-rigs/starweaver/radiant/manticore origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\sworn\unicorn\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/sworn/unicorn origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\sworn\dragonling\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/sworn/dragonling origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\sworn\griffin\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/sworn/griffin origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\sworn\manticore\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/sworn/manticore origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\radiant\unicorn\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/radiant/unicorn origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\radiant\dragonling\assembled.png  1024x1024 RGBA  margin=75px
+  pass  character-rigs/songkeeper/radiant/dragonling origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\radiant\griffin\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/radiant/griffin origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\radiant\kitsune\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/radiant/kitsune origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\radiant\manticore\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/radiant/manticore origin  feet at y=900
+  pass  assets\character-rigs\starweaver\mythic\unicorn\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/starweaver/mythic/unicorn origin  feet at y=900
+  pass  assets\character-rigs\starweaver\mythic\dragonling\assembled.png  1024x1024 RGBA  margin=72px
+  pass  character-rigs/starweaver/mythic/dragonling origin  feet at y=900
+  pass  assets\character-rigs\starweaver\mythic\griffin\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/starweaver/mythic/griffin origin  feet at y=900
+  pass  assets\character-rigs\starweaver\mythic\kitsune\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/starweaver/mythic/kitsune origin  feet at y=900
+  pass  assets\character-rigs\starweaver\mythic\manticore\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/starweaver/mythic/manticore origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\mythic\unicorn\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/mythic/unicorn origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\mythic\dragonling\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/mythic/dragonling origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\mythic\griffin\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/mythic/griffin origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\mythic\kitsune\assembled.png  1024x1024 RGBA  margin=84px
+  pass  character-rigs/songkeeper/mythic/kitsune origin  feet at y=900
+  pass  assets\character-rigs\songkeeper\mythic\manticore\assembled.png  1024x1024 RGBA  margin=83px
+  pass  character-rigs/songkeeper/mythic/manticore origin  feet at y=900
+  pass  campaigns/gemfall  1600x900
+  pass  campaigns/riftlight  1600x900
+  pass  campaigns/first-steps  1600x900
+  pass  campaigns/the-hollow-crown  1600x900
+  pass  plates/gemfall/prologue-1  1600x900
+  pass  plates/gemfall/prologue-2  1600x900
+  pass  plates/gemfall/prologue-3  1600x900
+  pass  plates/gemfall/prologue-4  1600x900
+  pass  plates/riftlight/prologue-1  1600x900
+  pass  plates/riftlight/prologue-2  1600x900
+  pass  plates/riftlight/prologue-3  1600x900
+  pass  plates/riftlight/prologue-4  1600x900
+  pass  plates/riftlight/sky-islands-arrival  1600x900
+  pass  plates/riftlight/saltrot-arrival  1600x900
+  pass  plates/riftlight/cairnstep-pass  1600x900
+  pass  plates/riftlight/reading-room  1600x900
+  pass  plates/riftlight/finale  1600x900
+  pass  plates/riftlight/glacier-survival  1600x900
+  pass  plates/riftlight/riftseekers-departure  1600x900
+  pass  plates/riftlight/ice-shelf-traverse  1600x900
+  pass  plates/riftlight/hidden-glacier-rift  1600x900
+  pass  plates/riftlight/headwaters-washout  1600x900
+  pass  plates/riftlight/frostfang-shore  1600x900
+  pass  plates/riftlight/boundary-stone-bank  1600x900
+  pass  plates/riftlight/ashspan-bridge  1600x900
+  pass  plates/riftlight/stone-counters  1600x900
+  pass  plates/riftlight/whale-road  1600x900
+  pass  plates/riftlight/buried-bridge  1600x900
+  pass  plates/riftlight/the-wrong-valley  1600x900
+  pass  plates/riftlight/the-island-due-back  1600x900
+  pass  plates/riftlight/stuttering-flats  1600x900
+  pass  plates/riftlight/bone-yard  1600x900
+  pass  plates/riftlight/wyrm-nest  1600x900
+  pass  plates/riftlight/squall-temple  1600x900
+  pass  plates/riftlight/convergence  1600x900
+  pass  plates/gemfall/02  1600x900
+  pass  plates/gemfall/03a  1600x900
+  pass  plates/gemfall/03b  1600x900
+  pass  plates/gemfall/03c  1600x900
+  pass  plates/gemfall/04a  1600x900
+  pass  plates/gemfall/04b  1600x900
+  pass  plates/gemfall/04c  1600x900
+  pass  plates/gemfall/05a  1600x900
+  pass  plates/gemfall/05b  1600x900
+  pass  plates/gemfall/05c  1600x900
+  pass  plates/gemfall/06  1600x900
+  pass  plates/gemfall/07r  1600x900
+  pass  plates/gemfall/07h  1600x900
+  pass  plates/gemfall/07l  1600x900
+  pass  plates/gemfall/08  1600x900
+  pass  scenes/entry/home-market-portrait  900x1600 opaque
+  pass  scenes/entry/creation-species-portrait  900x1600 opaque
+  pass  scenes/entry/creation-class-portrait  900x1600 opaque
+  pass  scenes/entry/creation-stats-portrait  900x1600 opaque
+  pass  scenes/entry/creation-appearance-portrait  900x1600 opaque
+  pass  scenes/entry/creation-name-portrait  900x1600 opaque
+  pass  scenes/entry/lobby-waiting-portrait  900x1600 opaque
+  pass  scenes/entry/lobby-ready-portrait  900x1600 opaque
+  pass  scenes/entry/home-market  1920x1080 opaque
+  pass  scenes/entry/creation-species  1920x1080 opaque
+  pass  scenes/entry/creation-class  1920x1080 opaque
+  pass  scenes/entry/creation-stats  1920x1080 opaque
+  pass  scenes/entry/creation-appearance  1920x1080 opaque
+  pass  scenes/entry/creation-name  1920x1080 opaque
+  pass  scenes/entry/lobby-waiting  1920x1080 opaque
+  pass  scenes/entry/lobby-ready  1920x1080 opaque
+  pass  scenes/gemfall/hollow-gate  1920x1080 opaque
+  pass  scenes/gemfall/redspire-citadel  1920x1080 opaque
+  pass  scenes/gemfall/facet-table  1920x1080 opaque
+  pass  scenes/gemfall/gem-gallery  1920x1080 opaque
+  pass  scenes/gemfall/seal-chamber  1920x1080 opaque
+  pass  scenes/gemfall/sheeple-ridge  1920x1080 opaque
+  pass  scenes/gemfall/exchange-lighthouse  1920x1080 opaque
+  pass  scenes/gemfall/exchange-docks  1920x1080 opaque
+  pass  scenes/gemfall/exchange-noodle-stall  1920x1080 opaque
+  pass  scenes/gemfall/empty-chair-tavern  1920x1080 opaque
+  pass  scenes/gemfall/exchange-quay  1920x1080 opaque
+  pass  scenes/gemfall/outfitters-steps  1920x1080 opaque
+  pass  scenes/gemfall/caravan-yard  1920x1080 opaque
+  pass  scenes/gemfall/exchange-long-bridge  1920x1080 opaque
+  pass  scenes/gemfall/exchange-griffin-post  1920x1080 opaque
+  pass  scenes/gemfall/exchange-north-gate  1920x1080 opaque
+  pass  scenes/gemfall/east-road-markers  1920x1080 opaque
+  pass  scenes/gemfall/stone-crossing-queue  1920x1080 opaque
+  pass  scenes/gemfall/lintel-toll-stone  1920x1080 opaque
+  pass  scenes/gemfall/drake-rock-shelf  1920x1080 opaque
+  pass  scenes/gemfall/drowned-crossing-bank  1920x1080 opaque
+  pass  scenes/gemfall/river-mouth-shore  1920x1080 opaque
+  pass  scenes/gemfall/eastern-shore-camp  1920x1080 opaque
+  pass  scenes/gemfall/eastern-bank-landing  1920x1080 opaque
+  pass  scenes/gemfall/caravan-road-ruts  1920x1080 opaque
+  pass  scenes/gemfall/ford-queue-market  1920x1080 opaque
+  pass  scenes/gemfall/wend-soup-tent  1920x1080 opaque
+  pass  scenes/gemfall/bracken-cart  1920x1080 opaque
+  pass  scenes/gemfall/queue-dusk-camp  1920x1080 opaque
+  pass  scenes/gemfall/ford-witch-stall  1920x1080 opaque
+  pass  scenes/gemfall/west-branch-ford  1920x1080 opaque
+  pass  scenes/gemfall/pride-marker-road  1920x1080 opaque
+  pass  scenes/gemfall/sefa-ridge-camp  1920x1080 opaque
+  pass  scenes/gemfall/centaur-sash-barn  1920x1080 opaque
+  pass  scenes/gemfall/pride-stone-crater  1920x1080 opaque
+  pass  scenes/gemfall/abandoned-caravan-rest  1920x1080 opaque
+  pass  scenes/gemfall/pride-night-fire  1920x1080 opaque
+  pass  scenes/gemfall/north-rush-road  1920x1080 opaque
+  pass  scenes/gemfall/quiet-road-stretch  1920x1080 opaque
+  pass  scenes/gemfall/downbound-wagon-auction  1920x1080 opaque
+  pass  scenes/gemfall/downbound-soup-tents  1920x1080 opaque
+  pass  scenes/gemfall/warden-supply-stop  1920x1080 opaque
+  pass  scenes/gemfall/rush-depot  1920x1080 opaque
+  pass  scenes/gemfall/relay-route-fire  1920x1080 opaque
+  pass  scenes/gemfall/road-bend-grass  1920x1080 opaque
+  pass  scenes/gemfall/north-signpost-fork  1920x1080 opaque
+  pass  scenes/gemfall/north-noon-stop  1920x1080 opaque
+  pass  scenes/gemfall/north-road-detour  1920x1080 opaque
+  pass  scenes/gemfall/cracked-bridge-span  1920x1080 opaque
+  pass  scenes/gemfall/bridge-pillar-shallows  1920x1080 opaque
+  pass  scenes/gemfall/bridge-engineers-tent  1920x1080 opaque
+  pass  scenes/gemfall/hollis-soup-queue  1920x1080 opaque
+  pass  scenes/gemfall/northern-bridge-foot  1920x1080 opaque
+  pass  scenes/gemfall/redspire-rim-lookout  1920x1080 opaque
+  pass  scenes/riftlight/ice-shelf-headwaters  1920x1080 opaque
+  pass  scenes/riftlight/reading-room  1920x1080 opaque
+  pass  scenes/riftlight/cairnstep  1920x1080 opaque
+  pass  scenes/riftlight/buried-bridge  1920x1080 opaque
+  pass  scenes/riftlight/temple-island-squall  1920x1080 opaque
+  pass  scenes/riftlight/stuttering-flats  1920x1080 opaque
+  pass  scenes/riftlight/glacier-deep-ice  1920x1080 opaque
+  pass  scenes/riftlight/stone-counters  1920x1080 opaque
+  pass  scenes/riftlight/whale-road  1920x1080 opaque
+  pass  scenes/riftlight/buried-bridge-dry-channel  1920x1080 opaque
+  pass  scenes/riftlight/stone-counters-evidence  1920x1080 opaque
+  pass  scenes/riftlight/buried-bridge-evidence  1920x1080 opaque
+  pass  scenes/riftlight/whale-road-cleared  1920x1080 opaque
+  pass  scenes/riftlight/island-due-back  1920x1080 opaque
+  pass  scenes/classes/conservatory  1920x1080 opaque
+  pass  scenes/riftlight/wrong-valley  1920x1080 opaque
+  pass  scenes/riftlight/convergence-ledge  1920x1080 opaque
+  pass  scenes/riftlight/wyrm-nest  1920x1080 opaque
+  pass  scenes/riftlight/bone-yard-ruins  1920x1080 opaque
+  pass  scenes/riftlight/singing-hall  1920x1080 opaque
+  pass  scenes/riftlight/singing-hall-camp  1920x1080 opaque
+  pass  scenes/classes/dojo  1920x1080 opaque
+  pass  scenes/classes/academy  1920x1080 opaque
+  pass  scenes/classes/rookery  1920x1080 opaque
+  pass  scenes/bramblewood/hedge_wall  1920x1080 opaque
+  pass  scenes/bramblewood/clearing  1920x1080 opaque
+  pass  scenes/bramblewood/fork  1920x1080 opaque
+  pass  scenes/bramblewood/canopy  1920x1080 opaque
+  pass  scenes/bramblewood/stair  1920x1080 opaque
+  pass  scenes/bramblewood/stream  1920x1080 opaque
+  pass  scenes/bramblewood/thicket  1920x1080 opaque
+  pass  scenes/bramblewood/shrine  1920x1080 opaque
+  pass  scenes/bramblewood/hill_door  1920x1080 opaque
+  pass  scenes/bramblewood/lanternfall  1920x1080 opaque
+  pass  scenes/riftlight/sky-landing  1920x1080 opaque
+  pass  scenes/riftlight/signal-pole  1920x1080 opaque
+  pass  scenes/riftlight/signal-gale  1920x1080 opaque
+  pass  scenes/riftlight/sky-ferry  1920x1080 opaque
+  pass  scenes/riftlight/windbreak-camp  1920x1080 opaque
+  pass  scenes/riftlight/shelf-icicles  1920x1080 opaque
+  pass  scenes/riftlight/headwaters-floes  1920x1080 opaque
+  pass  scenes/riftlight/ashspan-broken-deck  1920x1080 opaque
+  pass  scenes/riftlight/ashspan-mended-deck  1920x1080 opaque
+  pass  scenes/riftlight/hidden-ticking-ridge  1920x1080 opaque
+  pass  scenes/riftlight/hidden-ice-tunnel  1920x1080 opaque
+  pass  scenes/riftlight/hidden-sealed-seam  1920x1080 opaque
+  pass  scenes/riftlight/hidden-ticking-fold  1920x1080 opaque
+  pass  scenes/riftlight/tidepocket-buried-hatch  1920x1080 opaque
+  pass  scenes/riftlight/saltrot-ossley-aground  1920x1080 opaque
+  pass  scenes/riftlight/saltrot-high-shells  1920x1080 opaque
+  pass  scenes/riftlight/frostfang-ladder  1920x1080 opaque
+  pass  scenes/riftlight/frostfang-gravel-bar  1920x1080 opaque
+  pass  scenes/riftlight/cairnstep-survey-slab  1920x1080 opaque
+  pass  scenes/riftlight/cairnstep-capstone  1920x1080 opaque
+  pass  scenes/riftlight/boundary-river-row  1920x1080 opaque
+  pass  scenes/riftlight/boundary-mountain-carving  1920x1080 opaque
+  pass  scenes/riftlight/tidepocket-open-hatch  1920x1080 opaque
+  pass  scenes/riftlight/boundary-river-row-aligned  1920x1080 opaque
+  pass  scenes/riftlight/exchange-noodle-awning  1920x1080 opaque
+  pass  scenes/riftlight/exchange-barge-sacks  1920x1080 opaque
+  pass  scenes/riftlight/exchange-leaning-crates  1920x1080 opaque
+  pass  scenes/riftlight/glacier-snow-lip  1920x1080 opaque
+  pass  scenes/riftlight/glacier-meltwater-step  1920x1080 opaque
+  pass  scenes/riftlight/glacier-herd-rest  1920x1080 opaque
+  pass  scenes/riftlight/departure-loaded-sledge  1920x1080 opaque
+  pass  scenes/riftlight/departure-chime-rest  1920x1080 opaque
+  pass  scenes/riftlight/ice-shelf-roped-gap  1920x1080 opaque
+  pass  scenes/riftlight/headwaters-log-chute  1920x1080 opaque
+  pass  painted/eye  256x256 RGBA  margin=16px
+  pass  painted/facet_barge  256x256 RGBA  margin=16px
+  pass  painted/facet_caravan  256x256 RGBA  margin=16px
+  pass  painted/facet_clerks  256x256 RGBA  margin=16px
+  pass  painted/facet_confiscated  256x256 RGBA  margin=16px
+  pass  painted/facet_depot  256x256 RGBA  margin=16px
+  pass  painted/facet_drakes_rate  256x256 RGBA  margin=16px
+  pass  painted/facet_ember  256x256 RGBA  margin=16px
+  pass  painted/facet_ford  256x256 RGBA  margin=16px
+  pass  painted/facet_glade  256x256 RGBA  margin=16px
+  pass  painted/facet_harvest  256x256 RGBA  margin=16px
+  pass  painted/facet_keystone  256x256 RGBA  margin=16px
+  pass  painted/facet_pride  256x256 RGBA  margin=16px
+  pass  painted/facet_table  256x256 RGBA  margin=16px
+  pass  painted/facet_unassigned  256x256 RGBA  margin=16px
+  pass  painted/fist  256x256 RGBA  margin=16px
+  pass  painted/flame  256x256 RGBA  margin=16px
+  pass  painted/key  256x256 RGBA  margin=16px
+  pass  painted/moon  256x256 RGBA  margin=16px
+  pass  painted/potion  256x256 RGBA  margin=16px
+  pass  painted/shield  256x256 RGBA  margin=16px
+  pass  painted/spark  256x256 RGBA  margin=16px
+  pass  painted/thorn  256x256 RGBA  margin=16px
+  pass  painted/wing  256x256 RGBA  margin=16px
+  pass  painted/stats  256x256 RGBA  margin=19px
+  pass  painted/bag  256x256 RGBA  margin=16px
+  pass  painted/token_thornguard  256x256 RGBA  margin=22px
+  pass  painted/token_duskrunner  256x256 RGBA  margin=34px
+  pass  painted/token_starweaver  256x256 RGBA  margin=22px
+  pass  painted/token_songkeeper  256x256 RGBA  margin=35px
+  pass  painted/ear  256x256 RGBA  margin=31px
+  pass  painted/d20  256x256 RGBA  margin=19px
+  pass  painted/dice  256x256 RGBA  margin=42px
+  pass  painted/phone  256x256 RGBA  margin=24px
+  pass  painted/tv  256x256 RGBA  margin=29px
+  pass  painted/storybook  256x256 RGBA  margin=17px
+  pass  painted/waiting  256x256 RGBA  margin=30px
+  pass  painted/numbed  256x256 RGBA  margin=25px
+  pass  painted/puffed  256x256 RGBA  margin=29px
+  pass  painted/levelup  256x256 RGBA  margin=22px
+  pass  painted/down  256x256 RGBA  margin=24px
+  pass  painted/ready  256x256 RGBA  margin=30px
+  pass  painted/vote  256x256 RGBA  margin=22px
+  pass  painted/rest  256x256 RGBA  margin=31px
+  pass  painted/leaf  256x256 RGBA  margin=33px
+  pass  painted/coin  256x256 RGBA  margin=34px
+  pass  painted/envelope  256x256 RGBA  margin=25px
+  pass  painted/passkey  256x256 RGBA  margin=25px
+  pass  painted/riftlight_indicator  256x256 RGBA  margin=38px
+  pass  painted/crow  256x256 RGBA  margin=32px
+  pass  badges/finished  256x256 RGBA  margin=18px
+  pass  badges/finished-3  256x256 RGBA  margin=18px
+  pass  badges/guest-star  256x256 RGBA  margin=23px
+  pass  badges/kept-going  256x256 RGBA  margin=34px
+  pass  badges/level-3  256x256 RGBA  margin=15px
+  pass  badges/level-5  256x256 RGBA  margin=22px
+  pass  badges/finds-1  256x256 RGBA  margin=17px
+  pass  badges/finds-5  256x256 RGBA  margin=20px
+  pass  badges/finds-15  256x256 RGBA  margin=20px
+  pass  assets\story-props\rope-loop.webp  512x512 RGBA  margin=32px
+  pass  story-props/rope-loop motion  swing 2600ms
+  pass  assets\story-props\relay-sack.webp  512x512 RGBA  margin=32px
+  pass  story-props/relay-sack motion  relay 3200ms
+  pass  assets\story-props\relay-log.webp  512x512 RGBA  margin=32px
+  pass  story-props/relay-log motion  relay 3200ms
+  pass  assets\story-props\relay-plank.webp  512x512 RGBA  margin=32px
+  pass  story-props/relay-plank motion  relay 3200ms
+  pass  assets\story-props\relay-hay.webp  512x512 RGBA  margin=32px
+  pass  story-props/relay-hay motion  relay 3200ms
+  pass  assets\story-props\relay-oil-jar.webp  512x512 RGBA  margin=32px
+  pass  story-props/relay-oil-jar motion  relay 3200ms
+  pass  assets\story-props\relay-scarf.webp  512x512 RGBA  margin=32px
+  pass  story-props/relay-scarf motion  sway 2600ms
+  pass  assets\story-props\relay-trunk.webp  512x512 RGBA  margin=32px
+  pass  story-props/relay-trunk motion  relay 3200ms
+  pass  assets\story-props\snow-mound.webp  512x512 RGBA  margin=32px
+  pass  story-props/snow-mound motion  still 2600ms
+  pass  assets\story-props\water-surge.webp  512x512 RGBA  margin=32px
+  pass  story-props/water-surge motion  surge 2600ms
+  pass  assets\story-props\note-low.webp  512x512 RGBA  margin=32px
+  pass  story-props/note-low motion  pulse 2600ms
+  pass  assets\story-props\note-middle.webp  512x512 RGBA  margin=32px
+  pass  story-props/note-middle motion  pulse 2600ms
+  pass  assets\story-props\note-high.webp  512x512 RGBA  margin=32px
+  pass  story-props/note-high motion  pulse 2600ms
+
+------------------------------------------------------------
+1107 passed
+
+PASS - mechanical checks clean. Artistic review is still required (asset-brief.md section 6.2).

@@ -460,9 +460,9 @@ def verify_cast_figure(rep: Report, mf: dict, figure: dict) -> None:
         return
 
     basis = figure.get("basis", "")
-    kinds = {e["id"] for e in mf.get("entities", [])} | {s["id"] for s in mf["species"]}
+    kinds = {e["id"] for e in mf.get("entities", [])} | {s["id"] for s in mf["species"]} | {s["id"] for s in mf.get("stageFigures", [])}
     if basis not in kinds:
-        rep.fail(f"{label} basis", "an entity or species id", basis or "none")
+        rep.fail(f"{label} basis", "an entity, species or stage-animal id", basis or "none")
     else:
         rep.ok(f"{label} basis  {basis}")
 
@@ -479,6 +479,17 @@ def verify_cast_figure(rep: Report, mf: dict, figure: dict) -> None:
             rep.fail(f"{label} feet", f"lowest opaque row within 12px of y={origin}", f"y={bottom}")
         else:
             rep.ok(f"{label} feet  y={bottom}")
+
+
+def verify_stage_figure(rep: Report, mf: dict, figure: dict) -> None:
+    """Ordinary stage animals use the same cutout format as canonical entities."""
+    label = f"stage/{figure['id']}"
+    print(f"\n{BOLD}{label}{RESET}")
+    path = os.path.join(ROOT, "assets", "entities", figure["id"], "assembled.png")
+    if not os.path.isfile(path):
+        rep.fail(f"{label} assembled.png", "present", "missing")
+        return
+    check_format(rep, path, mf["canvas"], mf["tolerance"])
 
 
 def verify_entity(rep: Report, mf: dict, entity: dict) -> None:
@@ -722,6 +733,45 @@ def check_painted_icons(rep: Report, mf: dict, section: str = "paintedIcons", di
         rep.ok(f"{label}  {size[0]}x{size[1]} RGBA  margin={margin}px")
 
 
+def check_story_props(rep: Report, mf: dict) -> None:
+    """Reusable transparent interaction objects and their decorative motion presets."""
+    spec = mf.get("storyProps")
+    if not spec:
+        return
+    directory = os.path.join(ROOT, "assets", "story-props")
+    ids = spec["ids"]
+    declared = set(ids)
+    if len(declared) != len(ids):
+        rep.fail("story props ids", "unique ids", "duplicate declaration")
+    motions = spec.get("motions", {})
+    if set(motions) != declared:
+        rep.fail("story props motions", "one motion per declared prop", "missing or undeclared motion")
+    tolerance = {**mf["tolerance"], "edgeMarginPx": spec.get("edgeMarginPx", 24)}
+    presets = {"still", "swing", "relay", "sway", "surge", "pulse", "peek"}
+    for id in ids:
+        label = f"story-props/{id}"
+        path = os.path.join(directory, f"{id}.webp")
+        if not os.path.isfile(path):
+            rep.fail(label, "declared story prop present", "missing")
+            continue
+        with Image.open(path) as im:
+            if im.format != "WEBP":
+                rep.fail(f"{label} format", "WEBP", im.format)
+                continue
+        check_format(rep, path, spec["canvas"], tolerance)
+        motion = motions.get(id, {})
+        duration = motion.get("durationMs")
+        if motion.get("preset") not in presets or type(duration) is not int or not 1000 <= duration <= 20000:
+            rep.fail(f"{label} motion", "known preset and integer duration 1000-20000ms", motion)
+        else:
+            rep.ok(f"{label} motion  {motion['preset']} {duration}ms")
+    if os.path.isdir(directory):
+        for filename in os.listdir(directory):
+            stem, extension = os.path.splitext(filename)
+            if extension.lower() == ".webp" and stem not in declared:
+                rep.fail(f"story-props/{stem}", "declared in manifest.storyProps.ids", "undeclared file")
+
+
 def main() -> int:
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     strict = "--strict" in sys.argv
@@ -763,6 +813,11 @@ def main() -> int:
             continue
         verify_entity(rep, mf, entity)
 
+    for figure in mf.get("stageFigures", []):
+        if args and figure["id"] not in args:
+            continue
+        verify_stage_figure(rep, mf, figure)
+
     for figure in mf.get("castFigures", []):
         if args and figure["id"] not in args:
             continue
@@ -782,6 +837,7 @@ def main() -> int:
     check_scene_illustrations(rep, mf)
     check_painted_icons(rep, mf)
     check_painted_icons(rep, mf, "badgeArt", "badges")
+    check_story_props(rep, mf)
 
     print(f"\n{BOLD}{'-' * 60}{RESET}")
     if skipped:

@@ -1055,6 +1055,7 @@ function enterSceneDraft(
   // silently lose the item the whole prompt exists to protect (§9.1).
   const carriedSwap = draft.prompt?.kind === "item_swap" ? draft.prompt : undefined;
 
+  delete draft.lastEncounter;
   draft.sceneId = sceneId;
   draft.sceneType = scene.type;
   draft.art = scene.art ?? null;
@@ -2874,8 +2875,13 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
       if (objective.effects && done[i]) applyEffectsDraft(draft, objective.effects, ctx);
     });
   }
+  const coinsBefore=draft.coins ?? 0;
   const spoils = lootFrom(draft, encounter, outcome, ctx);
+  const coinsEarned=(draft.coins ?? 0)-coinsBefore;
+  const sourceScene = draft.sceneId;
   const branched = takeBranch(draft, outcomeBranch(scene, outcome), ctx, undefined, spoils);
+  // A persisted presentation receipt distinguishes shared win/loss destinations.
+  draft.lastEncounter = { chapterId: draft.chapterId, sceneId: sourceScene, destination: draft.sceneId, outcome, coinsEarned };
   announceRankUps(draft, ups);
   return branched;
 }

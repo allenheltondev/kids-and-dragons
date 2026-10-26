@@ -1,0 +1,11 @@
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - import "./vitest.config" without a file extension (vitest.issue494.config.ts:3:18). Add the file extension
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.
+
+ RUN  v5.0.5 C:/git/kids-and-dragons/tmp/issue-494-art
+
+
+ Test Files  5 passed (5)
+      Tests  60 passed (60)
+   Start at  17:53:56
+   Duration  1.63s (transform 64%, import 26%, tests 9%, worker 1%)

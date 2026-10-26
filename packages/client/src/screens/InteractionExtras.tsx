@@ -1,10 +1,13 @@
+import { useRunState } from "../store";
+import { interactionAppearance } from "../world/riftlight-art";
+import { PaintedInteraction, PaintedCover, PaintedGlyph } from "./InteractionArt";
 import { balanceReady, playbackMs, playReady, precisionPosition, precisionSuccess, relayHolder, trackedCover } from "@kad/shared";
 import type { InteractionAction, InteractionPrompt, PartyMember } from "@kad/shared";
 import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
 
 /** The same observation surface on TV and phone; it never sends an intent. */
-export function InteractionShow({ prompt, party, now }: { prompt: InteractionPrompt; party: PartyMember[]; now: number }) {
+function InteractionShowBase({ prompt, party, now, painted, bells }: { prompt: InteractionPrompt; party: PartyMember[]; now: number; painted?: boolean; bells?: boolean }) {
   const spec = prompt.spec;
   const connected = party.filter((member) => member.connected).map((member) => member.playerId);
   const name = (id: string) => party.find((member) => member.playerId === id)?.character.name ?? "Your friend";
@@ -20,13 +23,13 @@ export function InteractionShow({ prompt, party, now }: { prompt: InteractionPro
         for (let i = 0; i < positions.length; i++) positions[i] = positions[i] === a ? b : positions[i] === b ? a : positions[i]!;
       }
       const swap = spec.swaps[done];
-      return <div className="story-interaction__covers" role="img" aria-label={elapsed < step && !still ? "Watch the glowing object before the covers move" : "Follow the moving covers"}>
+      return <div className={"story-interaction__covers"+(painted?" story-interaction__covers--painted":"")} role="img" aria-label={elapsed < step && !still ? "Watch the glowing object before the covers move" : "Follow the moving covers"}>
         {spec.covers.map((label, index) => {
           const at = positions[index]!;
           const destination = swap ? at === swap[0] ? swap[1] : at === swap[1] ? swap[0] : at : at;
           const position = at + (destination - at) * (progress - done);
           return <span className="story-interaction__cover" key={index} style={{ left: `${(position + 0.5) / spec.covers.length * 100}%` }}>
-            <span aria-hidden="true">{(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec)) ? "✦" : "▰"}</span>
+            {painted ? <PaintedCover bells={bells ?? false} diving={elapsed>step*.5&&elapsed<step} reveal={(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec))} /> : <span aria-hidden="true">{(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec)) ? "✦" : "▰"}</span>}
           </span>;
         })}
         {spec.covers.map((label, index) => <span className="story-interaction__cover story-interaction__cover-label" key={`label:${index}`} style={{ left: `${(index + 0.5) / spec.covers.length * 100}%` }}><small>{label}</small></span>)}
@@ -39,7 +42,7 @@ export function InteractionShow({ prompt, party, now }: { prompt: InteractionPro
       const visible = prompt.relaxed || still;
       return <div className="story-interaction__memory" aria-label="Magic pattern">
         {visible ? <p>{spec.answer.map((id) => spec.options.find((option) => option.id === id)?.label).join(" → ")}</p> :
-          <p>{index < spec.answer.length ? <><Icon name={spec.options.find((option) => option.id === spec.answer[index])?.icon ?? "star"} /> {spec.options.find((option) => option.id === spec.answer[index])?.label}<small> · {index + 1} of {spec.answer.length}</small></> : "Now echo the magic!"}</p>}
+          <p>{index < spec.answer.length ? <><PaintedGlyph label={spec.options.find((option) => option.id === spec.answer[index])?.label ?? ""} /> <Icon name={spec.options.find((option) => option.id === spec.answer[index])?.icon ?? "star"} /> {spec.options.find((option) => option.id === spec.answer[index])?.label}<small> · {index + 1} of {spec.answer.length}</small></> : "Now echo the magic!"}</p>}
       </div>;
     }
     case "timing": {
@@ -92,4 +95,10 @@ export function ExtraControls({ prompt, playerId, connected, mine, now, busy, se
       return <>{spec.options.map((option) => <span key={option.id}>{button(option.label, { action: "play", optionId: option.id })}</span>)}{mine && button(spec.actionLabel, { action: "complete" }, !playReady(prompt, connected))}</>;
     default: return null;
   }
+}
+
+export function InteractionShow(props: { prompt: InteractionPrompt; party: PartyMember[]; now: number }) {
+ const state=useRunState();
+ const painted=interactionAppearance(state?.chapterId,state?.sceneId)!==null;
+ return <><PaintedInteraction {...props} />{props.prompt.phase==="active"&&<InteractionShowBase {...props} painted={painted} bells={state?.sceneId==="song_track"} />}</>;
 }

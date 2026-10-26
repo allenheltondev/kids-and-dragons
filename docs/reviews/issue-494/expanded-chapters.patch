@@ -1,0 +1,5801 @@
+--- a/assets/manifest.json
++++ b/assets/manifest.json
+@@ -1023,7 +1023,16 @@
+     "scenes/bramblewood/thicket",
+     "scenes/bramblewood/shrine",
+     "scenes/bramblewood/hill_door",
+-    "scenes/bramblewood/lanternfall"
++    "scenes/bramblewood/lanternfall",
++    "scenes/riftlight/sky-landing",
++    "scenes/riftlight/signal-pole",
++    "scenes/riftlight/signal-gale",
++    "scenes/riftlight/sky-ferry",
++    "scenes/riftlight/windbreak-camp",
++    "scenes/riftlight/shelf-icicles",
++    "scenes/riftlight/headwaters-floes",
++    "scenes/riftlight/ashspan-broken-deck",
++    "scenes/riftlight/ashspan-mended-deck"
+   ],
+   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
+   "campaignArt": {
+@@ -2037,6 +2046,70 @@
+       "basis": "burrowfolk",
+       "scale": "small_to_medium",
+       "heightCm": 95,
++      "stance": "standing"
++    },
++    {
++      "id": "pebble",
++      "name": "Pebble",
++      "basis": "griffin",
++      "scale": "small_to_medium",
++      "heightCm": 95,
++      "stance": "standing"
++    },
++    {
++      "id": "dob",
++      "name": "Dob",
++      "basis": "bigfoot",
++      "scale": "medium",
++      "heightCm": 185,
++      "stance": "standing"
++    },
++    {
++      "id": "bryn",
++      "name": "Bryn",
++      "basis": "dragonling",
++      "scale": "medium",
++      "heightCm": 125,
++      "stance": "standing"
++    },
++    {
++      "id": "tilly",
++      "name": "Tilly",
++      "basis": "griffin",
++      "scale": "medium",
++      "heightCm": 165,
++      "stance": "standing"
++    },
++    {
++      "id": "tilly_eggs",
++      "name": "Tilly",
++      "basis": "griffin",
++      "scale": "medium",
++      "heightCm": 165,
++      "stance": "standing"
++    },
++    {
++      "id": "boundary_runner",
++      "name": "Runner",
++      "basis": "dragonling",
++      "scale": "small_to_medium",
++      "heightCm": 105,
++      "stance": "standing"
++    },
++    {
++      "id": "snowhorn_kid",
++      "name": "Kid goat",
++      "basis": "snowhorn_goat",
++      "scale": "small",
++      "heightCm": 45,
++      "stance": "standing"
++    },
++    {
++      "id": "tamsin_river_keeper",
++      "name": "Tamsin",
++      "basis": "griffin",
++      "scale": "medium_to_large",
++      "heightCm": 205,
+       "stance": "standing"
+     }
+   ],
+--- a/content/chapters/riftlight-ashspan-bridge.json
++++ b/content/chapters/riftlight-ashspan-bridge.json
+@@ -64,7 +64,7 @@
+           "name": "Old Ossley"
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "landing": {
+       "type": "choice_point",
+@@ -107,7 +107,7 @@
+           "count": 2
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "plank_check": {
+       "type": "check",
+@@ -132,7 +132,7 @@
+           "count": 2
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "rope_check": {
+       "type": "check",
+@@ -157,7 +157,7 @@
+           "count": 2
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "brace_check": {
+       "type": "check",
+@@ -182,7 +182,7 @@
+           "count": 2
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "plank": {
+       "type": "story",
+@@ -212,7 +212,7 @@
+           "count": 2
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "rope": {
+       "type": "story",
+@@ -242,7 +242,7 @@
+           "count": 2
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "brace_done": {
+       "type": "story",
+@@ -272,7 +272,7 @@
+           "count": 2
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "board_wet": {
+       "type": "story",
+@@ -308,7 +308,7 @@
+           "count": 2
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "ferry_ask": {
+       "type": "story",
+@@ -327,11 +327,11 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "ferry_plan": {
+       "type": "choice_point",
+@@ -366,11 +366,11 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "pole_check": {
+       "type": "check",
+@@ -390,11 +390,11 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "watch_check": {
+       "type": "check",
+@@ -414,11 +414,11 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "ferry_hold": {
+       "type": "check",
+@@ -438,11 +438,11 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "crossing": {
+       "type": "story",
+@@ -461,11 +461,11 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "ferry_spin": {
+       "type": "story",
+@@ -492,11 +492,11 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "far_bank": {
+       "type": "story",
+@@ -515,15 +515,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "cart_plan": {
+       "type": "choice_point",
+@@ -555,15 +555,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "dig_check": {
+       "type": "check",
+@@ -583,15 +583,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "track_check": {
+       "type": "check",
+@@ -611,15 +611,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "roar_check": {
+       "type": "check",
+@@ -639,15 +639,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "cart_free": {
+       "type": "story",
+@@ -677,15 +677,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "cart_stuck": {
+       "type": "story",
+@@ -725,15 +725,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "bridge_head": {
+       "type": "story",
+@@ -752,15 +752,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "jam_plan": {
+       "type": "choice_point",
+@@ -792,15 +792,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "hook_check": {
+       "type": "check",
+@@ -820,15 +820,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "haul_check": {
+       "type": "check",
+@@ -848,15 +848,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "slip_check": {
+       "type": "check",
+@@ -876,15 +876,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "jam_shift": {
+       "type": "story",
+@@ -911,15 +911,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "jam_clear": {
+       "type": "story",
+@@ -939,15 +939,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "beam_intro": {
+       "type": "story",
+@@ -966,15 +966,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "beam_plan": {
+       "type": "choice_point",
+@@ -1013,15 +1013,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "lift_check": {
+       "type": "check",
+@@ -1041,15 +1041,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "roll_check": {
+       "type": "check",
+@@ -1069,15 +1069,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "smash_check": {
+       "type": "check",
+@@ -1097,15 +1097,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "hum_check": {
+       "type": "check",
+@@ -1126,15 +1126,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "beam_up": {
+       "type": "story",
+@@ -1164,15 +1164,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "beam_slip": {
+       "type": "story",
+@@ -1208,15 +1208,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly_eggs",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "hatch": {
+       "type": "story",
+@@ -1235,15 +1235,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "duck_plan": {
+       "type": "choice_point",
+@@ -1275,15 +1275,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "scoop_check": {
+       "type": "check",
+@@ -1303,15 +1303,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "coax_check": {
+       "type": "check",
+@@ -1331,15 +1331,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "trail_check": {
+       "type": "check",
+@@ -1359,15 +1359,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "ducks_safe": {
+       "type": "story",
+@@ -1397,15 +1397,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "ducks_loose": {
+       "type": "story",
+@@ -1441,15 +1441,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "planks_plan": {
+       "type": "choice_point",
+@@ -1484,15 +1484,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "rope2_check": {
+       "type": "check",
+@@ -1512,15 +1512,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "pass_check": {
+       "type": "check",
+@@ -1541,15 +1541,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "pwing_check": {
+       "type": "check",
+@@ -1569,15 +1569,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "planks_dropped": {
+       "type": "story",
+@@ -1604,15 +1604,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "planks_laid": {
+       "type": "story",
+@@ -1639,15 +1639,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "lash_plan": {
+       "type": "choice_point",
+@@ -1686,15 +1686,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "knots_check": {
+       "type": "check",
+@@ -1714,15 +1714,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "pegs_check": {
+       "type": "check",
+@@ -1742,15 +1742,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "whistle_check": {
+       "type": "check",
+@@ -1770,15 +1770,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "straps_check": {
+       "type": "check",
+@@ -1798,15 +1798,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-broken-deck"
+     },
+     "lashed": {
+       "type": "story",
+@@ -1825,15 +1825,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "lashed_loose": {
+       "type": "story",
+@@ -1860,15 +1860,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "test_check": {
+       "type": "check",
+@@ -1888,15 +1888,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "bridge_open": {
+       "type": "story",
+@@ -1925,15 +1925,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "bridge_creak": {
+       "type": "story",
+@@ -1968,15 +1968,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "goat_plan": {
+       "type": "choice_point",
+@@ -2008,15 +2008,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "oats_check": {
+       "type": "check",
+@@ -2037,15 +2037,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "ribbon_check": {
+       "type": "check",
+@@ -2065,15 +2065,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "carry_check": {
+       "type": "check",
+@@ -2093,15 +2093,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "goat_over": {
+       "type": "story",
+@@ -2120,15 +2120,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "goat_bolt": {
+       "type": "story",
+@@ -2155,15 +2155,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "folk_cross": {
+       "type": "story",
+@@ -2182,15 +2182,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "gift_plan": {
+       "type": "choice_point",
+@@ -2226,15 +2226,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "buy_cakes": {
+       "type": "story",
+@@ -2264,15 +2264,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "cakes": {
+       "type": "story",
+@@ -2291,15 +2291,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot",
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck",
+       "onEnter": [
+         {
+           "type": "grantItem",
+@@ -2325,15 +2325,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "rest_hut": {
+       "type": "rest",
+@@ -2380,15 +2380,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "share_bryn": {
+       "type": "story",
+@@ -2421,15 +2421,15 @@
+           "name": "Old Ossley"
+         },
+         {
+-          "figure": "characters/griffin",
+-          "name": "Tilly"
+-        },
+-        {
+-          "figure": "characters/dragonling",
+-          "name": "Bryn"
+-        }
+-      ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++          "figure": "cast/tilly",
++          "name": "Tilly"
++        },
++        {
++          "figure": "cast/bryn",
++          "name": "Bryn"
++        }
++      ],
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "dangle": {
+       "type": "story",
+@@ -2448,7 +2448,7 @@
+           "name": "Old Ossley"
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "tie_boat": {
+       "type": "story",
+@@ -2467,7 +2467,7 @@
+           "name": "Old Ossley"
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "ossley_routes": {
+       "type": "choice_point",
+@@ -2492,7 +2492,7 @@
+           "name": "Old Ossley"
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "coast_talk": {
+       "type": "story",
+@@ -2511,7 +2511,7 @@
+           "name": "Old Ossley"
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "inland_talk": {
+       "type": "story",
+@@ -2530,7 +2530,7 @@
+           "name": "Old Ossley"
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "routes": {
+       "type": "rest",
+@@ -2544,7 +2544,7 @@
+           "name": "Old Ossley"
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "marsh_path": {
+       "type": "choice_point",
+@@ -2628,7 +2628,7 @@
+           "goto": "ossley_routes"
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/ashspan-mended-deck"
+     },
+     "academy": {
+       "type": "story",
+--- a/content/chapters/riftlight-boundary-stone-bank.json
++++ b/content/chapters/riftlight-boundary-stone-bank.json
+@@ -1572,7 +1572,7 @@
+           "name": "Stone keeper"
+         },
+         {
+-          "figure": "characters/dragonling",
++          "figure": "cast/boundary_runner",
+           "name": "Runner"
+         }
+       ],
+@@ -1596,7 +1596,7 @@
+           "name": "Stone keeper"
+         },
+         {
+-          "figure": "characters/dragonling",
++          "figure": "cast/boundary_runner",
+           "name": "Runner"
+         }
+       ],
+@@ -1619,7 +1619,7 @@
+           "name": "Stone keeper"
+         },
+         {
+-          "figure": "characters/dragonling",
++          "figure": "cast/boundary_runner",
+           "name": "Runner"
+         }
+       ],
+@@ -1642,7 +1642,7 @@
+           "name": "Stone keeper"
+         },
+         {
+-          "figure": "characters/dragonling",
++          "figure": "cast/boundary_runner",
+           "name": "Runner"
+         }
+       ],
+@@ -1678,7 +1678,7 @@
+           "name": "Stone keeper"
+         },
+         {
+-          "figure": "characters/dragonling",
++          "figure": "cast/boundary_runner",
+           "name": "Runner"
+         }
+       ],
+@@ -1711,7 +1711,7 @@
+           "name": "Stone keeper"
+         },
+         {
+-          "figure": "characters/dragonling",
++          "figure": "cast/boundary_runner",
+           "name": "Runner"
+         }
+       ],
+--- a/content/chapters/riftlight-cairnstep-pass.json
++++ b/content/chapters/riftlight-cairnstep-pass.json
+@@ -53,7 +53,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -92,7 +92,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -123,7 +123,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -154,7 +154,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -184,7 +184,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -214,7 +214,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -233,7 +233,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep",
+@@ -274,7 +274,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -293,7 +293,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -315,7 +315,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -334,7 +334,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -355,7 +355,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -377,7 +377,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -396,7 +396,7 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
++          "name": "Brask"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep",
+@@ -421,10 +421,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -458,10 +458,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -493,10 +493,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -520,10 +520,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -547,10 +547,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -571,10 +571,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -622,10 +622,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -649,10 +649,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -677,10 +677,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -704,10 +704,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -731,10 +731,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -755,10 +755,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -801,10 +801,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -829,10 +829,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -856,10 +856,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -883,10 +883,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -907,10 +907,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -973,10 +973,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -997,10 +997,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1028,10 +1028,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1052,10 +1052,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1089,10 +1089,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1123,10 +1123,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1156,10 +1156,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1189,10 +1189,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1213,10 +1213,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1276,10 +1276,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1303,10 +1303,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1330,10 +1330,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1365,10 +1365,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1392,10 +1392,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1416,10 +1416,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1446,10 +1446,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1481,10 +1481,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1508,10 +1508,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1532,10 +1532,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1568,10 +1568,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1592,10 +1592,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1626,10 +1626,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1660,10 +1660,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1698,10 +1698,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1722,10 +1722,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1802,10 +1802,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1829,10 +1829,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1856,10 +1856,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1880,10 +1880,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+@@ -1908,10 +1908,10 @@
+       "cast": [
+         {
+           "figure": "cast/pass_keeper",
+-          "name": "Pass keeper"
+-        },
+-        {
+-          "figure": "characters/griffin",
++          "name": "Brask"
++        },
++        {
++          "figure": "cast/pebble",
+           "name": "Pebble",
+           "size": "small"
+         }
+--- a/content/chapters/riftlight-frostfang-shore.json
++++ b/content/chapters/riftlight-frostfang-shore.json
+@@ -52,8 +52,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -77,8 +77,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -96,8 +96,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters",
+@@ -121,8 +121,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -160,8 +160,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters",
+@@ -185,8 +185,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -221,8 +221,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -249,8 +249,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -277,8 +277,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -305,8 +305,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -324,8 +324,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters",
+@@ -364,8 +364,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -386,8 +386,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -408,8 +408,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -427,8 +427,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -459,8 +459,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -487,8 +487,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -515,8 +515,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -543,8 +543,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -562,8 +562,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters",
+@@ -615,8 +615,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -649,8 +649,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -682,8 +682,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -715,8 +715,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -748,8 +748,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -770,8 +770,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -832,8 +832,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -867,8 +867,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -901,8 +901,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -934,8 +934,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -967,8 +967,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1001,8 +1001,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1023,8 +1023,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1065,8 +1065,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1091,8 +1091,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -1113,8 +1113,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -1132,8 +1132,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -1164,8 +1164,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1195,8 +1195,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1227,8 +1227,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1258,8 +1258,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1311,8 +1311,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1333,8 +1333,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1355,8 +1355,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1384,8 +1384,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1426,8 +1426,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1460,8 +1460,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1494,8 +1494,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1527,8 +1527,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1560,8 +1560,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         },
+         {
+           "figure": "entities/snowhorn_goat"
+@@ -1582,8 +1582,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters",
+@@ -1633,8 +1633,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -1663,8 +1663,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -1693,8 +1693,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -1723,8 +1723,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -1753,8 +1753,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/ice-shelf-headwaters"
+@@ -1772,8 +1772,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep",
+@@ -1820,8 +1820,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -1842,8 +1842,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -1865,8 +1865,8 @@
+       },
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -1884,8 +1884,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -1903,8 +1903,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep",
+@@ -1935,8 +1935,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+@@ -1954,8 +1954,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep",
+@@ -1979,8 +1979,8 @@
+       ],
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep",
+@@ -1999,8 +1999,8 @@
+       "outcome": "success",
+       "cast": [
+         {
+-          "figure": "cast/ridge_griffin",
+-          "name": "Ridge griffin"
++          "figure": "cast/tamsin_river_keeper",
++          "name": "Tamsin"
+         }
+       ],
+       "art": "scenes/riftlight/cairnstep"
+--- a/content/chapters/riftlight-headwaters-washout.json
++++ b/content/chapters/riftlight-headwaters-washout.json
+@@ -45,7 +45,7 @@
+           "goto": "stock"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "stock": {
+       "type": "choice_point",
+@@ -71,7 +71,7 @@
+           "requiresClass": "songkeeper"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "count": {
+       "type": "check",
+@@ -89,7 +89,7 @@
+         "goto": "ride",
+         "narration": "One squeeze comes late, and your heart jumps. A hand finds the late one and holds it tight."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "pack_grab": {
+       "type": "check",
+@@ -113,7 +113,7 @@
+         "goto": "ride",
+         "narration": "One pack gets away, spins twice, and snags on the rope. You reel it in, soggy and offended."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "rally_breath": {
+       "type": "check",
+@@ -131,7 +131,7 @@
+         "goto": "ride",
+         "narration": "Your voice shakes, but the others pick up the rhythm, and it steadies you in return."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "ride": {
+       "type": "choice_point",
+@@ -150,7 +150,7 @@
+           "goto": "kick_bank"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "feet_first": {
+       "type": "check",
+@@ -170,7 +170,7 @@
+         "goto": "floes",
+         "narration": "A boot tips up, then down, and a wave slaps a face. They splutter, roll back, and everyone shuffles to make room."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "kick_bank": {
+       "type": "check",
+@@ -204,7 +204,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "floes": {
+       "type": "choice_point",
+@@ -230,7 +230,7 @@
+           "requiresSpecies": "bigfoot"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "push_floes": {
+       "type": "check",
+@@ -255,7 +255,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "climb_floe": {
+       "type": "check",
+@@ -275,7 +275,7 @@
+         "goto": "floe_rest",
+         "narration": "The floe tips and dumps you back in. You scramble up again, one at a time, and manage to stay on, sort of."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "smash_floe": {
+       "type": "check",
+@@ -295,7 +295,7 @@
+         "goto": "floe_rest",
+         "narration": "The big floe is heavier than it looks. It scrapes past, close enough to touch, and nobody is hurt, only startled."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "floe_rest": {
+       "type": "rest",
+@@ -315,7 +315,7 @@
+           "goto": "floe_look"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "floe_warm": {
+       "type": "story",
+@@ -340,7 +340,7 @@
+           "to": "party"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "floe_look": {
+       "type": "story",
+@@ -359,7 +359,7 @@
+           "flag": "saw_the_bend"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "snag": {
+       "type": "choice_point",
+@@ -378,7 +378,7 @@
+           "goto": "loop_tie"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "unhook": {
+       "type": "check",
+@@ -410,7 +410,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "loop_tie": {
+       "type": "check",
+@@ -443,7 +443,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "arch": {
+       "type": "choice_point",
+@@ -475,7 +475,7 @@
+           ]
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "arch_flat": {
+       "type": "check",
+@@ -500,7 +500,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "arch_look": {
+       "type": "check",
+@@ -517,7 +517,7 @@
+         "goto": "eddy",
+         "narration": "You steer for a high spot that turns out to be a low spot with good manners. Everyone ducks, hats bump the roof, and you squeeze through."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "arch_light": {
+       "type": "check",
+@@ -534,7 +534,7 @@
+         "goto": "eddy",
+         "narration": "The jar swings wildly, and the roof flickers. You duck early and slide under, with the jar spent and your hats a little squashed."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "eddy": {
+       "type": "choice_point",
+@@ -553,7 +553,7 @@
+           "goto": "eddy_hook"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "eddy_kick": {
+       "type": "check",
+@@ -573,7 +573,7 @@
+         "goto": "jam",
+         "narration": "Half of you kick left, and half kick right, and you go around twice more. The third time, the outer current finally grabs you."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "eddy_hook": {
+       "type": "check",
+@@ -590,7 +590,7 @@
+         "goto": "jam",
+         "narration": "The rope misses the spur and plops in the water. You reel it in, soggy, and kick out of the eddy the long way."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "jam": {
+       "type": "choice_point",
+@@ -609,7 +609,7 @@
+           "goto": "jam_push"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "jam_gap": {
+       "type": "check",
+@@ -634,7 +634,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "jam_push": {
+       "type": "check",
+@@ -660,7 +660,7 @@
+         "goto": "chute",
+         "narration": "The line scrapes along the jam, and the branches scratch at your coats. You come loose, with a few twigs for souvenirs."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "chute": {
+       "type": "choice_point",
+@@ -686,7 +686,7 @@
+           "requiresClass": "thornguard"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "chute_ride": {
+       "type": "check",
+@@ -706,7 +706,7 @@
+         "goto": "slip",
+         "narration": "The chute shakes the rope so hard that everyone's teeth rattle. You come out the other end in a tangle, but you come out together."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "chute_steer": {
+       "type": "check",
+@@ -723,7 +723,7 @@
+         "goto": "slip",
+         "narration": "You push off too hard and spin the whole line around. You go through backward, which is not as bad as it sounds."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "chute_brace": {
+       "type": "check",
+@@ -751,7 +751,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "slip": {
+       "type": "choice_point",
+@@ -770,7 +770,7 @@
+           "goto": "slip_swing"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "slip_haul": {
+       "type": "check",
+@@ -798,7 +798,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "slip_swing": {
+       "type": "check",
+@@ -815,7 +815,7 @@
+         "goto": "shiver",
+         "narration": "The first swing falls short. The next lap of the current carries your friend close enough to catch."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "shiver": {
+       "type": "choice_point",
+@@ -858,7 +858,7 @@
+           ]
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "shiver_eat": {
+       "type": "story",
+@@ -878,7 +878,7 @@
+           "to": "party"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "shiver_sing": {
+       "type": "check",
+@@ -895,7 +895,7 @@
+         "goto": "goats",
+         "narration": "Your song runs out after three lines. Somebody invents a fourth, and it is worse, and everyone laughs anyway."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "shiver_paddle": {
+       "type": "check",
+@@ -915,7 +915,7 @@
+         "goto": "goats",
+         "narration": "The paddling is lopsided, and you drift in circles for a moment. But the shivers ease a little."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "goats": {
+       "type": "choice_point",
+@@ -939,7 +939,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "goats_watch": {
+       "type": "check",
+@@ -967,7 +967,7 @@
+         "goto": "ledge_ahead",
+         "narration": "The goats are quicker than your eyes. You catch only a hoof or two, and the rest is a blur of fluff."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "goats_follow": {
+       "type": "check",
+@@ -995,7 +995,7 @@
+         "goto": "ledge_ahead",
+         "narration": "The current is quicker than the goats, and you drift ahead of them. They watch you go, and one bleats a good-bye."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "ledge_ahead": {
+       "type": "story",
+@@ -1016,7 +1016,7 @@
+           "text": "You were watching for it, and you are ready."
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "aim": {
+       "type": "choice_point",
+@@ -1042,7 +1042,7 @@
+           "requiresSpecies": "griffin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "aim_kick": {
+       "type": "check",
+@@ -1059,7 +1059,7 @@
+         "goto": "ledge",
+         "narration": "You turn too early, and the line sags. The ledge is farther than you hoped, but a strong reach will still get there."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "aim_swing": {
+       "type": "check",
+@@ -1076,7 +1076,7 @@
+         "goto": "ledge",
+         "narration": "The rope end tangles in a floe and drags a bit sideways. You are a little farther out than you wanted, but not too far."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "aim_sky": {
+       "type": "check",
+@@ -1093,7 +1093,7 @@
+         "goto": "ledge",
+         "narration": "The wet wings drop you back into the water before you finish looking. You call out what you saw, which is mostly splashing."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "ledge": {
+       "type": "choice_point",
+@@ -1136,7 +1136,7 @@
+           "requiresFlag": "loop_tied"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "grab": {
+       "type": "check",
+@@ -1183,7 +1183,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "hook": {
+       "type": "check",
+@@ -1227,7 +1227,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "smash": {
+       "type": "check",
+@@ -1274,7 +1274,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "lift": {
+       "type": "check",
+@@ -1321,7 +1321,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "throw_loop": {
+       "type": "check",
+@@ -1365,7 +1365,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "ashore": {
+       "type": "story",
+@@ -1378,7 +1378,7 @@
+           "goto": "tend"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "tend": {
+       "type": "choice_point",
+@@ -1397,7 +1397,7 @@
+           "goto": "tend_dry"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "tend_warm": {
+       "type": "check",
+@@ -1414,7 +1414,7 @@
+         "goto": "early",
+         "narration": "The hopping goes sideways, and two of you fall in a heap. It is warm in the heap."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "tend_dry": {
+       "type": "check",
+@@ -1431,7 +1431,7 @@
+         "goto": "early",
+         "narration": "The rope fights back, and wins a little. You get most of the water out, and the rest can drip on its own."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "early": {
+       "type": "rest",
+@@ -1446,7 +1446,7 @@
+           "value": true
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "tree": {
+       "type": "story",
+@@ -1459,7 +1459,7 @@
+           "goto": "tree_choice"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "tree_choice": {
+       "type": "choice_point",
+@@ -1499,7 +1499,7 @@
+           "requiresSpecies": "manticore"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "climb": {
+       "type": "check",
+@@ -1537,7 +1537,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/headwaters-floes",
+       "narration": "The branch swings down, up, down, up, like a slow gate. You time it in your head."
+     },
+     "lasso": {
+@@ -1577,7 +1577,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "lane": {
+       "type": "check",
+@@ -1613,7 +1613,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "guide": {
+       "type": "check",
+@@ -1648,7 +1648,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "call": {
+       "type": "check",
+@@ -1683,7 +1683,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "middle": {
+       "type": "rest",
+@@ -1698,7 +1698,7 @@
+           "value": true
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "rift": {
+       "type": "story",
+@@ -1712,7 +1712,7 @@
+         }
+       ],
+       "rift": "open",
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "rift_choice": {
+       "type": "choice_point",
+@@ -1740,7 +1740,7 @@
+         }
+       ],
+       "rift": "steady",
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "river_chime": {
+       "type": "story",
+@@ -1754,7 +1754,7 @@
+         }
+       ],
+       "rift": "steady",
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "river_read": {
+       "type": "story",
+@@ -1768,7 +1768,7 @@
+         }
+       ],
+       "rift": "steady",
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "rift_decision": {
+       "type": "choice_point",
+@@ -1799,7 +1799,7 @@
+         }
+       ],
+       "rift": "steady",
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "rift_end": {
+       "type": "rest",
+@@ -1815,7 +1815,7 @@
+         }
+       ],
+       "rift": "steady",
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "rapids": {
+       "type": "choice_point",
+@@ -1841,7 +1841,7 @@
+           "requiresSpecies": "unicorn"
+         }
+       ],
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "swim": {
+       "type": "check",
+@@ -1889,7 +1889,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "signal": {
+       "type": "check",
+@@ -1934,7 +1934,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "mend_signal": {
+       "type": "check",
+@@ -1979,7 +1979,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/gemfall/northern-bridge-foot"
++      "art": "scenes/riftlight/headwaters-floes"
+     },
+     "late": {
+       "type": "rest",
+--- a/content/chapters/riftlight-hidden-glacier-rift.json
++++ b/content/chapters/riftlight-hidden-glacier-rift.json
+@@ -73,7 +73,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -134,7 +134,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -157,7 +157,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -180,7 +180,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -204,7 +204,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -228,7 +228,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -251,7 +251,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -274,7 +274,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -310,7 +310,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -333,7 +333,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -356,7 +356,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -379,7 +379,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -408,7 +408,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -437,7 +437,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -476,7 +476,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -500,7 +500,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -525,7 +525,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -548,7 +548,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -571,7 +571,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -601,7 +601,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -624,7 +624,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -663,7 +663,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -687,7 +687,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -710,7 +710,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -733,7 +733,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -756,7 +756,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -779,7 +779,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -810,7 +810,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -839,7 +839,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -862,7 +862,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -885,7 +885,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -909,7 +909,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -932,7 +932,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -955,7 +955,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -978,7 +978,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -1009,7 +1009,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+@@ -1619,7 +1619,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1643,7 +1643,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1667,7 +1667,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1691,7 +1691,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1715,7 +1715,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1739,7 +1739,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1763,7 +1763,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1822,7 +1822,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1846,7 +1846,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1893,7 +1893,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1917,7 +1917,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1941,7 +1941,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1965,7 +1965,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -1989,7 +1989,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -2021,7 +2021,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -2063,7 +2063,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -2089,7 +2089,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -2113,7 +2113,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ],
+@@ -2194,7 +2194,7 @@
+           "name": "Yeti herder"
+         },
+         {
+-          "figure": "entities/snowhorn_goat",
++          "figure": "cast/snowhorn_kid",
+           "name": "Kid goat"
+         }
+       ]
+--- a/content/chapters/riftlight-ice-shelf-traverse.json
++++ b/content/chapters/riftlight-ice-shelf-traverse.json
+@@ -45,7 +45,7 @@
+           "goto": "lineup"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "lineup": {
+       "type": "choice_point",
+@@ -71,7 +71,7 @@
+           "requiresClass": "songkeeper"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "knots": {
+       "type": "check",
+@@ -94,7 +94,7 @@
+         "goto": "ring_thud",
+         "narration": "One knot slides loose and flaps like a tiny flag. You retie it, and the wind finds your ears while you work."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "coil": {
+       "type": "check",
+@@ -117,7 +117,7 @@
+         "goto": "ring_thud",
+         "narration": "The rope tangles into a knot the size of a cabbage. You pick it loose one loop at a time."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "beat": {
+       "type": "check",
+@@ -141,7 +141,7 @@
+         "goto": "ring_thud",
+         "narration": "Your beat is perfect. Everyone else's boots have ideas of their own. You settle for a gentler tune."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "ring_thud": {
+       "type": "choice_point",
+@@ -174,7 +174,7 @@
+           "requiresClass": "starweaver"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "tap": {
+       "type": "check",
+@@ -197,7 +197,7 @@
+         "goto": "boot_marks",
+         "narration": "Everything sounds a little bit like a thud, and a little bit like a ring. You step lightly and trust the old boot marks."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "slide": {
+       "type": "check",
+@@ -220,7 +220,7 @@
+         "goto": "boot_marks",
+         "narration": "The stone skids off the edge. Plop. You will do the rest of your testing with your boots."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "scout": {
+       "type": "check",
+@@ -243,7 +243,7 @@
+         "goto": "boot_marks",
+         "narration": "From up here, everything is white. You land with a plan to trust the old boot marks."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "starlight": {
+       "type": "check",
+@@ -266,7 +266,7 @@
+         "goto": "boot_marks",
+         "narration": "The light flickers in the wind. You can't tell dim from bright, so you settle for the old boot marks."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "boot_marks": {
+       "type": "choice_point",
+@@ -285,7 +285,7 @@
+           "goto": "ring_look"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "ring_pull": {
+       "type": "story",
+@@ -309,7 +309,7 @@
+           "to": "party"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "ring_look": {
+       "type": "story",
+@@ -332,7 +332,7 @@
+           "amount": 3
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "squeeze": {
+       "type": "choice_point",
+@@ -358,7 +358,7 @@
+           "requiresSpecies": "bigfoot"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "inch": {
+       "type": "check",
+@@ -386,7 +386,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "packs": {
+       "type": "check",
+@@ -413,7 +413,7 @@
+         "goto": "wide_spot",
+         "narration": "A pack drops with a thump and slides toward the edge. Somebody's boot stops it just in time, and everyone breathes out."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "chop": {
+       "type": "check",
+@@ -433,7 +433,7 @@
+         "goto": "wide_spot",
+         "narration": "The chips fly everywhere, but the step comes out crooked. You lean into the wall and shuffle along it anyway."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "wide_spot": {
+       "type": "rest",
+@@ -483,7 +483,7 @@
+           "flag": "reached_the_wide_spot"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "wide_snack": {
+       "type": "story",
+@@ -503,7 +503,7 @@
+           "to": "party"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "wide_eat": {
+       "type": "story",
+@@ -523,7 +523,7 @@
+           "to": "party"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "wide_look": {
+       "type": "story",
+@@ -542,7 +542,7 @@
+           "flag": "saw_ahead"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "crack": {
+       "type": "choice_point",
+@@ -647,7 +647,7 @@
+           "goto": "knock"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "dash": {
+       "type": "check",
+@@ -672,7 +672,7 @@
+           }
+         ]
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "knock": {
+       "type": "check",
+@@ -689,7 +689,7 @@
+         "goto": "gust",
+         "narration": "Your snowballs miss, and your arm tires. You pick a path between the longest icicles anyway, slowly."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "gust": {
+       "type": "choice_point",
+@@ -714,7 +714,7 @@
+           "goto": "sing"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "huddle": {
+       "type": "check",
+@@ -734,7 +734,7 @@
+         "goto": "slope",
+         "narration": "A big gust makes the line stagger. Everyone grabs somebody, and you wobble through in a messy, laughing clump."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "lull": {
+       "type": "check",
+@@ -751,7 +751,7 @@
+         "goto": "slope",
+         "narration": "You lose count in the middle, and the wind catches you twice. It only takes a hat and a bit of dignity."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "sing": {
+       "type": "check",
+@@ -768,7 +768,7 @@
+         "goto": "slope",
+         "narration": "The wind steals the tune and gives it to a passing snow flurry. You hum the rest of the way, with chattering teeth."
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/shelf-icicles"
+     },
+     "slope": {
+       "type": "choice_point",
+--- a/content/chapters/riftlight-sky-islands-arrival.json
++++ b/content/chapters/riftlight-sky-islands-arrival.json
+@@ -60,7 +60,8 @@
+           "replace": true,
+           "text": "The Cairnstep griffins swoop low and set your whole party down on a stone pad high above the realm. They are gone again in three flaps. A kitsune temple keeper hooks one arm through a rope ring and waves you over. \"Hold on to something! These are called the Sky Islands. Our old landing route points into empty sky now.\" Your goal is to find your feet up here. Find shelter, listen for the opening, and help her mark the unsafe path."
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "landing": {
+       "type": "check",
+@@ -79,7 +80,8 @@
+       },
+       "onFailure": {
+         "goto": "landing_slid"
+-      }
++      },
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "landing_held": {
+       "type": "story",
+@@ -104,7 +106,8 @@
+           "itemId": "supper_bundle",
+           "to": "party"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "landing_slid": {
+       "type": "story",
+@@ -135,7 +138,8 @@
+           "itemId": "supper_bundle",
+           "to": "party"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "lesson": {
+       "type": "story",
+@@ -204,7 +208,8 @@
+           "replace": true,
+           "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. They wear the Riftseekers' clasps. Pip taps his notebook. \"The count keeps changing here too. Help me and you can read it.\" Seren asks you to compare the sounds with what she taught you before."
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "pip_notes": {
+       "type": "story",
+@@ -226,7 +231,8 @@
+           "icon": "hand",
+           "goto": "hum"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "hum": {
+       "type": "check",
+@@ -248,7 +254,8 @@
+       },
+       "onFailure": {
+         "goto": "hum_fuzzy"
+-      }
++      },
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "hum_attuned": {
+       "type": "check",
+@@ -270,7 +277,8 @@
+       },
+       "onFailure": {
+         "goto": "hum_fuzzy"
+-      }
++      },
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "hum_heard": {
+       "type": "story",
+@@ -298,7 +306,8 @@
+           "type": "setFlag",
+           "flag": "listened_for_the_rift_hum"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "hum_fuzzy": {
+       "type": "story",
+@@ -326,7 +335,8 @@
+           "type": "setFlag",
+           "flag": "listened_for_the_rift_hum"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "local": {
+       "type": "choice_point",
+@@ -360,7 +370,8 @@
+             "dragonling"
+           ]
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "markers": {
+       "type": "story",
+@@ -378,7 +389,8 @@
+           "icon": "hand",
+           "goto": "markers_check"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "markers_check": {
+       "type": "check",
+@@ -397,7 +409,8 @@
+       },
+       "onFailure": {
+         "goto": "markers_dropped"
+-      }
++      },
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "markers_set": {
+       "type": "story",
+@@ -415,7 +428,8 @@
+           "icon": "hand",
+           "goto": "walker"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "markers_dropped": {
+       "type": "story",
+@@ -433,7 +447,8 @@
+           "icon": "hand",
+           "goto": "walker"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "song": {
+       "type": "story",
+@@ -451,7 +466,8 @@
+           "icon": "hand",
+           "goto": "song_check"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "song_check": {
+       "type": "check",
+@@ -470,7 +486,8 @@
+       },
+       "onFailure": {
+         "goto": "song_muddled"
+-      }
++      },
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "song_bearing": {
+       "type": "story",
+@@ -488,7 +505,8 @@
+           "icon": "hand",
+           "goto": "walker"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "song_muddled": {
+       "type": "story",
+@@ -506,7 +524,8 @@
+           "icon": "hand",
+           "goto": "walker"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "edge_scout": {
+       "type": "check",
+@@ -525,7 +544,8 @@
+       },
+       "onFailure": {
+         "goto": "edge_gusted"
+-      }
++      },
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "edge_scouted": {
+       "type": "story",
+@@ -543,7 +563,8 @@
+           "icon": "hand",
+           "goto": "walker"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "edge_gusted": {
+       "type": "story",
+@@ -561,7 +582,8 @@
+           "icon": "hand",
+           "goto": "walker"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "walker": {
+       "type": "choice_point",
+@@ -569,6 +591,10 @@
+         {
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
++        },
++        {
++          "figure": "cast/dob",
++          "name": "Dob"
+         }
+       ],
+       "narration": "A rattle comes down the old rope road. A kite seller is pulling a cart of kites toward the edge, his eyes on the sky and his nose in a map. The map is upside down. The road ends in empty air twenty steps ahead of him. \"Dob!\" shouts the keeper. \"Stop!\" The kite seller waves cheerfully and keeps walking. How will you stop him?",
+@@ -592,7 +618,8 @@
+           "goto": "walker_leap",
+           "requiresSpecies": "manticore"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "walker_catch": {
+       "type": "check",
+@@ -600,6 +627,10 @@
+         {
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
++        },
++        {
++          "figure": "cast/dob",
++          "name": "Dob"
+         }
+       ],
+       "stat": "quick",
+@@ -610,7 +641,8 @@
+       },
+       "onFailure": {
+         "goto": "walker_dragged"
+-      }
++      },
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "walker_call": {
+       "type": "check",
+@@ -618,6 +650,10 @@
+         {
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
++        },
++        {
++          "figure": "cast/dob",
++          "name": "Dob"
+         }
+       ],
+       "stat": "heart",
+@@ -628,7 +664,8 @@
+       },
+       "onFailure": {
+         "goto": "walker_dragged"
+-      }
++      },
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "walker_leap": {
+       "type": "check",
+@@ -636,6 +673,10 @@
+         {
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
++        },
++        {
++          "figure": "cast/dob",
++          "name": "Dob"
+         }
+       ],
+       "stat": "quick",
+@@ -647,7 +688,8 @@
+       },
+       "onFailure": {
+         "goto": "walker_dragged"
+-      }
++      },
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "walker_safe": {
+       "type": "story",
+@@ -655,6 +697,10 @@
+         {
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
++        },
++        {
++          "figure": "cast/dob",
++          "name": "Dob"
+         }
+       ],
+       "narration": "Dob stops, one wheel on the last plank, and looks down. He looks up. He looks at his map, and turns it right side up. \"Ah,\" he says. The keeper does not scold. She makes him tea he forgets to drink. \"I sell kites to the island across,\" says Dob. \"The road went wrong, and I did not. I think.\" He unrolls a bundle of bright kite-flags with long tails. \"You saved my cart. Wave these, and the whole sky will see.\" He ties a springy kite-string lace around your ankle. \"For quick feet.\" Then he counts four coins into your hand, with a bow.",
+@@ -680,7 +726,8 @@
+           "type": "grantCoins",
+           "amount": 4
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "walker_dragged": {
+       "type": "story",
+@@ -688,6 +735,10 @@
+         {
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
++        },
++        {
++          "figure": "cast/dob",
++          "name": "Dob"
+         }
+       ],
+       "narration": "The cart tips at the last plank, one wheel in the sky. You and the keeper haul on the rope while kites spill off like startled birds. A few escape. Most snag on the posts. Dob dangles from his strap, smiling, his hat gone. \"Ah,\" he says. \"Wrong road.\" Back on stone, he gathers what is left, a bundle of bright kite-flags with long tails. \"I sell kites to the island across. Wave these, and the whole sky will see.\" He presses three coins into your hand, all he can find in his pockets.",
+@@ -708,7 +759,8 @@
+           "type": "grantCoins",
+           "amount": 3
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "edge_merge": {
+       "type": "story",
+@@ -716,6 +768,10 @@
+         {
+           "figure": "cast/kitsune_temple_keeper",
+           "name": "Temple keeper"
++        },
++        {
++          "figure": "cast/dob",
++          "name": "Dob"
+         }
+       ],
+       "narration": "The keeper leans on a rope ring and studies the sky. Dob sits on his cart with his map the right way up. \"Good. That is the edge told about, and one kite seller safe. Now the hard part.\" She points to a tall pole with an iron basket on top. \"The signal basket. At dusk we light it, so every island and ferry knows where we hang. The pole is crooked from the move, and our fuel is a mess. A ferry captain named Thimble is due tonight with passengers, and without a light she will never find us.\"",
+@@ -726,7 +782,8 @@
+           "icon": "hand",
+           "goto": "basket_plan"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "basket_plan": {
+       "type": "choice_point",
+@@ -768,7 +825,8 @@
+           "goto": "pole_brace",
+           "requiresClass": "thornguard"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "pole_ropes": {
+       "type": "check",
+@@ -791,7 +849,8 @@
+       },
+       "onFailure": {
+         "goto": "pole_leaning"
+-      }
++      },
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "pole_wedge": {
+       "type": "check",
+@@ -813,7 +872,8 @@
+       },
+       "onFailure": {
+         "goto": "pole_leaning"
+-      }
++      },
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "pole_smash": {
+       "type": "check",
+@@ -836,7 +896,8 @@
+       },
+       "onFailure": {
+         "goto": "pole_leaning"
+-      }
++      },
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "pole_brace": {
+       "type": "check",
+@@ -858,7 +919,8 @@
+       },
+       "onFailure": {
+         "goto": "pole_leaning"
+-      }
++      },
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "pole_up": {
+       "type": "story",
+@@ -880,7 +942,8 @@
+           "icon": "hand",
+           "goto": "fuel"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "pole_leaning": {
+       "type": "story",
+@@ -902,7 +965,8 @@
+           "icon": "hand",
+           "goto": "fuel"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "fuel": {
+       "type": "choice_point",
+@@ -940,7 +1004,8 @@
+           "goto": "fuel_lace",
+           "requiresItem": "quickfoot_lace"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "fuel_logs": {
+       "type": "check",
+@@ -958,7 +1023,8 @@
+       },
+       "onFailure": {
+         "goto": "fuel_soggy"
+-      }
++      },
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "fuel_twigs": {
+       "type": "check",
+@@ -976,7 +1042,8 @@
+       },
+       "onFailure": {
+         "goto": "fuel_soggy"
+-      }
++      },
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "fuel_lace": {
+       "type": "check",
+@@ -994,7 +1061,8 @@
+       },
+       "onFailure": {
+         "goto": "fuel_soggy"
+-      }
++      },
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "fuel_dash": {
+       "type": "check",
+@@ -1012,7 +1080,8 @@
+       },
+       "onFailure": {
+         "goto": "fuel_soggy"
+-      }
++      },
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "fuel_dry": {
+       "type": "story",
+@@ -1034,7 +1103,8 @@
+           "icon": "hand",
+           "goto": "light"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "fuel_soggy": {
+       "type": "story",
+@@ -1056,7 +1126,8 @@
+           "icon": "hand",
+           "goto": "light"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "light": {
+       "type": "choice_point",
+@@ -1091,7 +1162,8 @@
+           "goto": "light_fox",
+           "requiresSpecies": "kitsune"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "light_flint": {
+       "type": "check",
+@@ -1114,7 +1186,8 @@
+       },
+       "onFailure": {
+         "goto": "basket_smoky"
+-      }
++      },
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "light_coals": {
+       "type": "check",
+@@ -1138,7 +1211,8 @@
+       },
+       "onFailure": {
+         "goto": "basket_smoky"
+-      }
++      },
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "light_fox": {
+       "type": "check",
+@@ -1160,7 +1234,8 @@
+       },
+       "onFailure": {
+         "goto": "basket_smoky"
+-      }
++      },
++      "art": "scenes/riftlight/signal-pole"
+     },
+     "basket_lit": {
+       "type": "story",
+@@ -1197,7 +1272,8 @@
+           "itemId": "brave_whistle",
+           "to": "party"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/signal-gale"
+     },
+     "basket_smoky": {
+       "type": "story",
+@@ -1225,7 +1301,8 @@
+           "type": "setFlag",
+           "flag": "guarded_the_island_edge"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "dusk_ferry": {
+       "type": "choice_point",
+@@ -1291,7 +1368,8 @@
+           },
+           "text": "\"The Cairnstep watchers told me where you landed,\" he adds. \"They said to look after you.\""
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/signal-gale"
+     },
+     "ferry_lines": {
+       "type": "check",
+@@ -1313,7 +1391,8 @@
+       },
+       "onFailure": {
+         "goto": "ferry_bumped"
+-      }
++      },
++      "art": "scenes/riftlight/signal-gale"
+     },
+     "ferry_flags": {
+       "type": "check",
+@@ -1336,7 +1415,8 @@
+       },
+       "onFailure": {
+         "goto": "ferry_bumped"
+-      }
++      },
++      "art": "scenes/riftlight/signal-gale"
+     },
+     "ferry_tow": {
+       "type": "check",
+@@ -1359,7 +1439,8 @@
+       },
+       "onFailure": {
+         "goto": "ferry_bumped"
+-      }
++      },
++      "art": "scenes/riftlight/signal-gale"
+     },
+     "ferry_whistle": {
+       "type": "check",
+@@ -1381,7 +1462,8 @@
+       },
+       "onFailure": {
+         "goto": "ferry_bumped"
+-      }
++      },
++      "art": "scenes/riftlight/signal-gale"
+     },
+     "ferry_post": {
+       "type": "check",
+@@ -1403,7 +1485,8 @@
+       },
+       "onFailure": {
+         "goto": "ferry_bumped"
+-      }
++      },
++      "art": "scenes/riftlight/signal-gale"
+     },
+     "ferry_in": {
+       "type": "story",
+@@ -1457,7 +1540,8 @@
+           },
+           "text": "Then she stops and stares. \"You! You found us. I told you to look for the washing.\" A line of damp socks flaps from the ferry rail."
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-ferry"
+     },
+     "ferry_bumped": {
+       "type": "story",
+@@ -1511,7 +1595,8 @@
+           },
+           "text": "She stops and stares. \"You! You found us. I told you to look for the washing.\" She waves a sock at you, then at the pad."
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "passengers": {
+       "type": "check",
+@@ -1529,7 +1614,8 @@
+       },
+       "onFailure": {
+         "goto": "passengers_stuck"
+-      }
++      },
++      "art": "scenes/riftlight/sky-ferry"
+     },
+     "passengers_fed": {
+       "type": "story",
+@@ -1551,7 +1637,8 @@
+           "icon": "hand",
+           "goto": "thimble"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-ferry"
+     },
+     "passengers_calm": {
+       "type": "story",
+@@ -1573,7 +1660,8 @@
+           "icon": "hand",
+           "goto": "thimble"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-ferry"
+     },
+     "passengers_stuck": {
+       "type": "story",
+@@ -1595,7 +1683,8 @@
+           "icon": "hand",
+           "goto": "thimble"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-ferry"
+     },
+     "thimble": {
+       "type": "choice_point",
+@@ -1623,7 +1712,8 @@
+           "icon": "hand",
+           "goto": "fenwick_flags"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-ferry"
+     },
+     "thimble_chart": {
+       "type": "story",
+@@ -1645,7 +1735,8 @@
+           "icon": "hand",
+           "goto": "windbreak_rest"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-ferry"
+     },
+     "fenwick_flags": {
+       "type": "story",
+@@ -1667,7 +1758,8 @@
+           "icon": "hand",
+           "goto": "windbreak_rest"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-ferry"
+     },
+     "windbreak_rest": {
+       "type": "rest",
+@@ -1679,6 +1771,10 @@
+         {
+           "figure": "cast/pip_thistledown",
+           "name": "Pip Thistledown"
++        },
++        {
++          "figure": "cast/dob",
++          "name": "Dob"
+         }
+       ],
+       "narration": "The keeper builds a wind wall of baskets and blankets behind the shrine. Hot barley tea goes around in chipped cups. The hens roost on Pip, who bears it nobly. Far off, the low song comes again, slower than before. Seren says the next part is the hardest to hear and the easiest to miss. Everyone gets warm. Dob has hung his kites along the wind wall like laundry, and a ribbon cart sits open beside the fire.",
+@@ -1732,7 +1828,8 @@
+           ]
+         }
+       ],
+-      "heal": 2
++      "heal": 2,
++      "art": "scenes/riftlight/windbreak-camp"
+     },
+     "pip_night": {
+       "type": "story",
+@@ -1754,7 +1851,8 @@
+           "icon": "hand",
+           "goto": "night_song"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/windbreak-camp"
+     },
+     "night_song": {
+       "type": "story",
+@@ -1776,7 +1874,8 @@
+           "icon": "hand",
+           "goto": "bearing_vote"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/windbreak-camp"
+     },
+     "bearing_vote": {
+       "type": "choice_point",
+@@ -1822,7 +1921,8 @@
+           "goto": "bearing_chime",
+           "requiresItem": "listening_chime"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/windbreak-camp"
+     },
+     "bearing_notes": {
+       "type": "check",
+@@ -1845,7 +1945,8 @@
+       },
+       "onFailure": {
+         "goto": "bearing_blurred"
+-      }
++      },
++      "art": "scenes/riftlight/windbreak-camp"
+     },
+     "bearing_air": {
+       "type": "check",
+@@ -1872,7 +1973,8 @@
+       },
+       "onFailure": {
+         "goto": "bearing_blurred"
+-      }
++      },
++      "art": "scenes/riftlight/windbreak-camp"
+     },
+     "bearing_chime": {
+       "type": "check",
+@@ -1894,7 +1996,8 @@
+       },
+       "onFailure": {
+         "goto": "bearing_blurred"
+-      }
++      },
++      "art": "scenes/riftlight/windbreak-camp"
+     },
+     "bearing_sing": {
+       "type": "check",
+@@ -1917,7 +2020,8 @@
+       },
+       "onFailure": {
+         "goto": "bearing_blurred"
+-      }
++      },
++      "art": "scenes/riftlight/windbreak-camp"
+     },
+     "bearing_found": {
+       "type": "story",
+@@ -1949,7 +2053,8 @@
+           "type": "setFlag",
+           "flag": "found_the_whale_song"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/windbreak-camp"
+     },
+     "bearing_blurred": {
+       "type": "story",
+@@ -1981,7 +2086,8 @@
+           "type": "setFlag",
+           "flag": "found_the_whale_song"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/windbreak-camp"
+     },
+     "route_vote": {
+       "type": "choice_point",
+@@ -2013,7 +2119,8 @@
+           "icon": "hand",
+           "goto": "route_flags"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "route_ferry": {
+       "type": "story",
+@@ -2025,6 +2132,10 @@
+         {
+           "figure": "cast/captain_thimble",
+           "name": "Captain Thimble"
++        },
++        {
++          "figure": "cast/dob",
++          "name": "Dob"
+         }
+       ],
+       "narration": "Thimble hands out boarding ropes. \"Hold the rail with both hands, and do not sing back until I say.\" Her passengers have voted to stay with the keeper, hens included, in case there is more barley tea. Dob has loaded his cart of kites aboard, and sits on top of it with his map the right way up. The keeper tucks her island's flag-cloth into your pack and pats it twice, for luck.",
+@@ -2041,7 +2152,8 @@
+           "type": "setFlag",
+           "flag": "sky_route_ferry"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-ferry"
+     },
+     "route_flags": {
+       "type": "story",
+@@ -2069,7 +2181,8 @@
+           "type": "setFlag",
+           "flag": "sky_route_flags"
+         }
+-      ]
++      ],
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "island_done": {
+       "type": "rest",
+@@ -2102,7 +2215,8 @@
+         }
+       ],
+       "heal": 0,
+-      "outcome": "success"
++      "outcome": "success",
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "island_rest": {
+       "type": "rest",
+@@ -2131,7 +2245,8 @@
+           "goto": "island_done"
+         }
+       ],
+-      "heal": 0
++      "heal": 0,
++      "art": "scenes/riftlight/sky-landing"
+     },
+     "dojo": {
+       "type": "story",
+--- a/packages/client/src/world/figure-sizes.ts
++++ b/packages/client/src/world/figure-sizes.ts
+@@ -17,12 +17,14 @@
+   "cast/bell_code_expert": [70, "standing"],
+   "cast/bell_courier": [160, "standing"],
+   "cast/boarding_traveler": [95, "standing"],
++  "cast/boundary_runner": [105, "standing"],
+   "cast/bracken_swiftmile": [230, "standing"],
+   "cast/bram_lock": [240, "standing"],
+   "cast/brask": [165, "standing"],
+   "cast/brassbuckle_recordkeeper": [95, "standing"],
+   "cast/brassbuckle_scout": [95, "standing"],
+   "cast/brisk": [230, "standing"],
++  "cast/bryn": [125, "standing"],
+   "cast/bryony": [110, "standing"],
+   "cast/burdock": [165, "standing"],
+   "cast/cadet_linnet": [160, "standing"],
+@@ -39,6 +41,7 @@
+   "cast/cult_bigfoot": [240, "standing"],
+   "cast/cult_frogfolk": [105, "standing"],
+   "cast/deep-ice-figure": [280, "standing"],
++  "cast/dob": [185, "standing"],
+   "cast/dock_worker": [115, "standing"],
+   "cast/dragonling_grandmother": [130, "standing"],
+   "cast/dragonling_stone_keeper": [130, "standing"],
+@@ -92,6 +95,7 @@
+   "cast/pass_keeper": [210, "standing"],
+   "cast/passing_fisher": [110, "standing"],
+   "cast/path_keeper": [240, "standing"],
++  "cast/pebble": [95, "standing"],
+   "cast/pellam": [165, "standing"],
+   "cast/perrin_nine_verse": [230, "standing"],
+   "cast/pib": [25, "standing"],
+@@ -114,12 +118,16 @@
+   "cast/skywarden_centaur": [235, "standing"],
+   "cast/skywarden_faun": [170, "standing"],
+   "cast/skywarden_griffin": [185, "standing"],
++  "cast/snowhorn_kid": [45, "standing"],
+   "cast/soup_woman": [160, "standing"],
+   "cast/stall_witch": [140, "standing"],
+   "cast/tamsin": [110, "standing"],
++  "cast/tamsin_river_keeper": [205, "standing"],
+   "cast/tansy": [90, "standing"],
+   "cast/tib": [85, "standing"],
+   "cast/tidewell": [165, "standing"],
++  "cast/tilly": [165, "standing"],
++  "cast/tilly_eggs": [165, "standing"],
+   "cast/tobble": [160, "standing"],
+   "cast/warden_clerk": [110, "standing"],
+   "cast/wend": [100, "standing"],

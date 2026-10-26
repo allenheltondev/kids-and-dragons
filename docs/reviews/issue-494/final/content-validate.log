@@ -1,0 +1,136 @@
+Kids & Dragons - content validate
+schemas: schemas   content: content
+
+rules & items
+  pass  content/rules.json  schema rules
+  pass  content/rules.json  rules invariants  (XP curve, tier order, one class per stat, icons, deeds)
+  pass  content/items.json  schema items
+  pass  content/items.json  item catalog  (40 items, icons present)
+  pass  content/abilities.json  schema abilities
+  pass  content/abilities.json  ability catalog  (22 authored, 0 deferred, 22 granted; every grant defined or deferred, names match rules.json)
+  pass  content/world.json  schema world
+  pass  content/world.json  world map  (22 places, painting present)
+  pass  content/help.json  schema help
+  pass  content/help.json  help  (every player surface, the three long-press kinds and the join line, in the child's voice)
+
+maps
+  pass  content/maps/ford.json  schema map
+  pass  content/maps/gallery.json  schema map
+  pass  content/maps/glade.json  schema map
+  pass  content/maps/reedbank.json  schema map
+  pass  content/maps/riftlight_bone_yard.json  schema map
+  pass  content/maps/riftlight_finale.json  schema map
+  pass  content/maps/riftlight_squall_temple.json  schema map
+  pass  content/maps/riftlight_wyrm_nest.json  schema map
+  pass  content/maps/roadside.json  schema map
+  pass  content/maps/switchback.json  schema map
+  pass  content/maps/thicket.json  schema map
+  pass  content/maps  11 map(s)  (10×8 board, spawns open and reachable)
+  pass  content/bestiary.json  10 creature(s) projected from canon
+
+chapters
+  pass  content/chapters/bramblewood-01.json  schema chapter
+  pass  content/chapters/bramblewood-01.json  graph  (24 scenes, 1 ending, 2 objective(s) within the 25 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/first-steps-01.json  schema chapter
+  pass  content/chapters/first-steps-01.json  graph  (35 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-01.json  schema chapter
+  pass  content/chapters/gemfall-01.json  graph  (92 scenes, 1 ending, 3 objective(s) within the 25 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-02.json  schema chapter
+  pass  content/chapters/gemfall-02.json  graph  (86 scenes, 3 endings, 3 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-03a.json  schema chapter
+  pass  content/chapters/gemfall-03a.json  graph  (72 scenes, 3 endings, 3 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-03b.json  schema chapter
+  pass  content/chapters/gemfall-03b.json  graph  (72 scenes, 4 endings, 2 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-03c.json  schema chapter
+  pass  content/chapters/gemfall-03c.json  graph  (73 scenes, 3 endings, 3 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-04a.json  schema chapter
+  pass  content/chapters/gemfall-04a.json  graph  (66 scenes, 3 endings, 3 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-04b.json  schema chapter
+  pass  content/chapters/gemfall-04b.json  graph  (68 scenes, 3 endings, 2 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-04c.json  schema chapter
+  pass  content/chapters/gemfall-04c.json  graph  (70 scenes, 2 endings, 3 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-05a.json  schema chapter
+  pass  content/chapters/gemfall-05a.json  graph  (69 scenes, 2 endings, 3 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-05b.json  schema chapter
+  pass  content/chapters/gemfall-05b.json  graph  (68 scenes, 2 endings, 2 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-05c.json  schema chapter
+  pass  content/chapters/gemfall-05c.json  graph  (71 scenes, 1 ending, 3 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-06.json  schema chapter
+  pass  content/chapters/gemfall-06.json  graph  (93 scenes, 2 endings, 3 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-07h.json  schema chapter
+  pass  content/chapters/gemfall-07h.json  graph  (108 scenes, 4 endings, 3 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-07l.json  schema chapter
+  pass  content/chapters/gemfall-07l.json  graph  (81 scenes, 2 endings, 3 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-07r.json  schema chapter
+  pass  content/chapters/gemfall-07r.json  graph  (85 scenes, 2 endings, 3 objective(s) within the 22 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/gemfall-08.json  schema chapter
+  pass  content/chapters/gemfall-08.json  graph  (163 scenes, 10 endings, 2 objective(s) within the 30 XP cap, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-ashspan-bridge.json  schema chapter
+  pass  content/chapters/riftlight-ashspan-bridge.json  graph  (90 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-bone-yard.json  schema chapter
+  pass  content/chapters/riftlight-bone-yard.json  graph  (65 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-boundary-stone-bank.json  schema chapter
+  pass  content/chapters/riftlight-boundary-stone-bank.json  graph  (77 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-buried-bridge.json  schema chapter
+  pass  content/chapters/riftlight-buried-bridge.json  graph  (84 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-cairnstep-pass.json  schema chapter
+  pass  content/chapters/riftlight-cairnstep-pass.json  graph  (60 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-convergence.json  schema chapter
+  pass  content/chapters/riftlight-convergence.json  graph  (68 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-exchange-rift.json  schema chapter
+  pass  content/chapters/riftlight-exchange-rift.json  graph  (83 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-finale.json  schema chapter
+  warn  content/chapters/riftlight-finale.json /scenes/fight_standard/enemies/corvane has no `creature`
+        Name the canon creature it is one of, so its stats come from canon instead of being written twice.
+  warn  content/chapters/riftlight-finale.json /scenes/fight_weakened/enemies/corvane has no `creature`
+        Name the canon creature it is one of, so its stats come from canon instead of being written twice.
+  pass  content/chapters/riftlight-finale.json  graph  (88 scenes, 3 endings, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-frostfang-shore.json  schema chapter
+  pass  content/chapters/riftlight-frostfang-shore.json  graph  (63 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-glacier-survival.json  schema chapter
+  pass  content/chapters/riftlight-glacier-survival.json  graph  (68 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-headwaters-washout.json  schema chapter
+  pass  content/chapters/riftlight-headwaters-washout.json  graph  (84 scenes, 5 endings, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-hidden-glacier-rift.json  schema chapter
+  pass  content/chapters/riftlight-hidden-glacier-rift.json  graph  (96 scenes, 2 endings, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-ice-shelf-traverse.json  schema chapter
+  pass  content/chapters/riftlight-ice-shelf-traverse.json  graph  (81 scenes, 2 endings, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-reading-room.json  schema chapter
+  pass  content/chapters/riftlight-reading-room.json  graph  (91 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-riftseekers-departure.json  schema chapter
+  pass  content/chapters/riftlight-riftseekers-departure.json  graph  (61 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-saltrot-arrival.json  schema chapter
+  pass  content/chapters/riftlight-saltrot-arrival.json  graph  (89 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-sky-islands-arrival.json  schema chapter
+  pass  content/chapters/riftlight-sky-islands-arrival.json  graph  (88 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-squall-temple.json  schema chapter
+  pass  content/chapters/riftlight-squall-temple.json  graph  (69 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-stone-counters.json  schema chapter
+  pass  content/chapters/riftlight-stone-counters.json  graph  (86 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-stuttering-flats.json  schema chapter
+  pass  content/chapters/riftlight-stuttering-flats.json  graph  (67 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-the-island-due-back.json  schema chapter
+  pass  content/chapters/riftlight-the-island-due-back.json  graph  (106 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-the-wrong-valley.json  schema chapter
+  pass  content/chapters/riftlight-the-wrong-valley.json  graph  (90 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-whale-road.json  schema chapter
+  pass  content/chapters/riftlight-whale-road.json  graph  (85 scenes, 2 endings, all reachable, all goto/itemId resolve)
+  pass  content/chapters/riftlight-wyrm-nest.json  schema chapter
+  pass  content/chapters/riftlight-wyrm-nest.json  graph  (68 scenes, 1 ending, all reachable, all goto/itemId resolve)
+  pass  content/rules.json  fitting stall (1 stand)
+  pass  content/rules.json  matchups (72 edge(s), 10 traits, 6 check tags; every id named is defined, every edge does something, nothing above 2)
+
+campaigns
+  pass  content/campaigns/first-steps.json  schema campaign
+  pass  content/campaigns/first-steps.json  campaign  (1 chapter(s), 1 beat(s))
+  pass  content/campaigns/gemfall.json  schema campaign
+  pass  content/campaigns/gemfall.json  campaign  (16 chapter(s), 8 beat(s), 4 routed)
+  pass  content/campaigns/riftlight.json  schema campaign
+  pass  content/campaigns/riftlight.json  campaign  (graph v1: 24 node(s), 54 edge(s), 1 ending(s), walked 219320 state(s), proven)
+  pass  content/campaigns/the-hollow-crown.json  schema campaign
+  pass  content/campaigns/the-hollow-crown.json  campaign  (1 chapter(s), 1 beat(s))
+
+------------------------------------------------------------
+117 passed   2 warnings
+
+PASS - schemas and scene graphs are clean.

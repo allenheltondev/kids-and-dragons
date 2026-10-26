@@ -1,0 +1,29 @@
+.interaction-art{position:relative;block-size:clamp(4em,13cqh,8em);inline-size:100%;overflow:hidden;pointer-events:none;isolation:isolate}
+.interaction-art__prop{position:absolute;inline-size:clamp(3em,14cqw,7em);block-size:90%;object-fit:contain;left:50%;top:48%;transform:translate(-50%,-50%)}
+.interaction-art__support{opacity:.85;inline-size:clamp(2.5em,10cqw,5em)}
+.interaction-art__main{z-index:2}
+.interaction-art__hero{position:absolute;bottom:-5%;inline-size:clamp(2.4em,9cqw,5em);block-size:64%;object-fit:contain;transform:translateX(-50%);z-index:3}
+.interaction-art__hero--catch{transform:translateX(-50%) translateY(-6%) rotate(-6deg)}
+.interaction-art__reaction{position:absolute;right:1%;bottom:0;block-size:95%;inline-size:30%;object-fit:contain;z-index:4}
+.interaction-art[data-still=false] .interaction-art__prop{transition:opacity .12s,filter .12s}
+.interaction-art[data-kind=relay][data-still=false] .interaction-art__main{transition:left .35s,top .2s}
+.painted-glyph{display:inline-block;inline-size:2em;block-size:2em;object-fit:contain;vertical-align:middle}
+.painted-cover{position:relative;display:block;inline-size:5em;block-size:4em;transform:translateX(-50%)}
+.painted-cover img{position:absolute;inline-size:100%;block-size:100%;object-fit:contain;left:0;bottom:0}
+.painted-cover .painted-cover__peek{bottom:18%;clip-path:inset(0 0 30% 0)}
+.painted-cover__front{z-index:2}
+.painted-cover--bell{overflow:hidden}
+.painted-cover--bell .painted-cover__front{inline-size:300%;max-inline-size:none;left:-100%}
+.story-interaction__covers--painted{height:7em!important}
+.story-interaction__covers--painted .story-interaction__cover-label{bottom:0}
+@media(prefers-reduced-motion:reduce){.interaction-art *{transition:none!important;animation:none!important}}
+[data-motion=reduced] .interaction-art *{transition:none!important;animation:none!important}
+
+.story-interaction__cover>.painted-cover{font-size:1em;inline-size:100%;block-size:4em;transform:none}
+.story-interaction__covers--painted .story-interaction__cover-label{top:5em}
+.story-interaction__memory:has(.painted-glyph) svg{display:none}
+
+.interaction-art__extra{position:absolute;bottom:0;block-size:85%;inline-size:28%;object-fit:contain;z-index:3}
+
+.story-interaction__covers--painted{height:8em!important}
+.story-interaction__covers--painted .story-interaction__tracking-help{position:absolute;inset-inline:0;top:auto;bottom:0;padding:0;text-align:center;line-height:1.2}

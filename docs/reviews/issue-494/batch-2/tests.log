@@ -1,0 +1,8 @@
+
+ RUN  v5.0.5 C:/Users/allen/.codex/worktrees/issue-494-riftlight-art/kids-and-dragons
+
+
+ Test Files  8 passed (8)
+      Tests  72 passed (72)
+   Start at  18:20:30
+   Duration  4.02s (tests 80%, import 12%, transform 7%, worker 1%)

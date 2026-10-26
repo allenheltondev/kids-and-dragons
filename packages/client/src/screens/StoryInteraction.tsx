@@ -1,3 +1,4 @@
+import { PaintedInteraction } from "./InteractionArt";
 import { useEffect, useRef, useState } from "react";
 import { interactionActor, interactionClues, playbackMs, precisionPosition, supportPlayers, supportsReady, speak } from "@kad/shared";
 import type { InteractionAction, InteractionPrompt, PartyMember } from "@kad/shared";
@@ -63,7 +64,7 @@ export function StoryInteractionWorld() {
   return <section className="story-interaction" aria-label="Story interaction">
     <p>{prompt.spec.cue}</p>
     {prompt.phase === "active" && !still && <Meter prompt={prompt} now={now} />}
-    {prompt.phase === "active" && <InteractionShow prompt={prompt} party={state.party} now={now} />}
+    <InteractionShow prompt={prompt} party={state.party} now={now} />
     {prompt.spec.kind === "cooperate" && prompt.phase === "active" && <ul>
       {supportPlayers(prompt, connected).map((id) => <li key={id}>
         {state.party.find((member) => member.playerId === id)?.character.name}: {prompt.supports[id] === null || Date.parse(prompt.supports[id] ?? "") > now ? "holding the way" : "ready to help"}
@@ -128,6 +129,7 @@ function Controls({ prompt, party, playerId, dispatch, busy }: {
     <button className="story-interaction__button kad-focusable" disabled={busy || disabled} onClick={() => send(action)}>{label}</button>;
   return <section className="story-interaction" aria-label="Interaction controls">
     <h3>{prompt.spec.cue}</h3>
+    {prompt.phase !== "active" && <PaintedInteraction prompt={prompt} party={party} now={now} />}
     {prompt.phase === "result" ? <>
       <p role="status">{outcomeLine(prompt)}</p>
       {button("See what happens next", { action: "continue" })}
