@@ -9,6 +9,7 @@ import { expect, test, type BrowserContextOptions } from "@playwright/test";
 import type { Chapter, ClientIntent, RunState } from "../packages/shared/src/index";
 import fightArt from "../art/source/gemfall-03-fights.json" with { type: "json" };
 import fight04Art from "../art/source/gemfall-04-fights.json" with { type: "json" };
+import fight05Art from "../art/source/gemfall-05-fights.json" with { type: "json" };
 import type { SeedResponse, SeededPhone } from "../packages/server/src/dev-seed";
 import { onAir } from "./seed";
 
@@ -138,7 +139,11 @@ test("photograph Gemfall chapter 02 art and relaxed tracking on TV and phone", a
   }
 });
 
-for (const batch of [{ number: "03", art: fightArt }, { number: "04", art: fight04Art }]) {
+const priorChapterEndings = [
+  ["rest_dry_end", "ending_forded_clean", "end_forded"],
+  ["rest_pride_fire", "ending_marked_present", "end_foothills_in_sight"],
+];
+for (const batch of [{ number: "03", art: fightArt }, { number: "04", art: fight04Art }, { number: "05", art: fight05Art }]) {
 test(`photograph chapter ${batch.number} fight introductions and outcomes on TV and phone`, async ({ browser }) => {
   test.setTimeout(240_000);
   for (const asset of batch.art.assets) {
@@ -166,8 +171,8 @@ test(`photograph chapter ${batch.number} fight introductions and outcomes on TV 
       await send(phone, table.code, { type: "ADVANCE" });
       await send(phone, table.code, { type: "READY", ready: true });
       await send(phone, table.code, { type: "CONTINUE_CAMPAIGN", campaignId: "gemfall" });
-      if (batch.number === "04") {
-        const sceneId = road === "a" ? "rest_dry_end" : road === "b" ? "ending_forded_clean" : "end_forded";
+      for (const endings of priorChapterEndings.slice(0, Number(batch.number) - 3)) {
+        const sceneId = endings[road === "a" ? 0 : road === "b" ? 1 : 2]!;
         await send(phone, table.code, { type: "PLAYTEST_GOTO", sceneId });
         await send(phone, table.code, { type: "ADVANCE" });
         await send(phone, table.code, { type: "READY", ready: true });
@@ -190,7 +195,8 @@ test(`photograph chapter ${batch.number} fight introductions and outcomes on TV 
             await new Promise<void>((done) => requestAnimationFrame(() => requestAnimationFrame(() => done())));
           }, `/assets/${scene.art}.webp`);
         }
-        const folder = `${index === 0 ? "docs/review" : "test-results"}/gemfall-${batch.number}-fights`;
+        const introScenes: readonly string[] = "introScenes" in asset ? asset.introScenes : [asset.scenes[0]!];
+        const folder = `${introScenes.includes(sceneId) ? "docs/review" : "test-results"}/gemfall-${batch.number}-fights`;
         await tv.screenshot({ path: `${folder}/${sceneId}-tv.png` });
         await phone.screenshot({ path: `${folder}/${sceneId}-phone.png` });
       }
