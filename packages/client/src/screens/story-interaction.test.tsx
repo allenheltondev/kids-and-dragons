@@ -6,6 +6,7 @@ import type { ClientIntent, InteractionPrompt, InteractionSpec } from "@kad/shar
 import { makeCharacter, makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore, useMyTurnKey } from "../store";
 import { StoryInteractionControls, StoryInteractionWorld } from "./StoryInteraction";
+import { PaintedCover } from "./InteractionArt";
 
 const initial = useGameStore.getState();
 beforeEach(() => { vi.spyOn(window, "requestAnimationFrame").mockReturnValue(1); });
@@ -46,13 +47,20 @@ describe("reusable story controls", () => {
     expect(container.querySelector(".painted-cover__peek")).toBeNull();
     expect(screen.getByText("Left")).toBeTruthy();
   });
-  it("reveals the tracked cover in reduced motion while keeping its words", () => {
+  it("uses a neutral reveal for authored covers in relaxed mode", () => {
     seed({ kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000 }, { startedAt: new Date(Date.now() - 3000).toISOString() });
     authoredChapter({ coverIcons: ["snow-mound", "wind-bells"] });
     document.documentElement.setAttribute("data-motion", "reduced");
     render(<StoryInteractionWorld />);
-    expect(document.querySelectorAll(".painted-cover__peek")).toHaveLength(1);
+    expect(document.querySelectorAll(".painted-cover__glow")).toHaveLength(1);
+    expect(document.querySelector(".painted-cover__peek")).toBeNull();
     expect(screen.getByText("The glow waits under: Right.")).toBeTruthy();
+  });
+  it("preserves the original Riftlight reveal figures when no cover art is authored", () => {
+    const { container, rerender } = render(<PaintedCover bells={false} reveal diving={false} />);
+    expect(container.querySelector(".painted-cover__peek")?.getAttribute("src")).toBe("/assets/cast/kid_peeking/assembled.png");
+    rerender(<PaintedCover bells={false} reveal diving />);
+    expect(container.querySelector(".painted-cover__peek")?.getAttribute("src")).toBe("/assets/cast/kid_burrowing/assembled.png");
   });
   it("keeps a visible fallback cover and labels when custom tracking art fails", () => {
     seed({ kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000 }, { startedAt: new Date(Date.now() - 3000).toISOString() });
