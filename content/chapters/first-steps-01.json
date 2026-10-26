@@ -805,7 +805,6 @@
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the branch while your friend fetches the ribbon.",
-        "prop": "rope-loop",
         "supportLabel": "Hold the branch",
         "actionLabel": "Fetch the ribbon"
       },
@@ -1485,6 +1484,11 @@
       "tansy": "a faun who keeps the practice meadow; patient, cheerful, says everybody does that, loves her bark clipboard",
       "flick": "a tiny wisp who loves tag; squeaky, boastful, a terrible loser for about two seconds",
       "bun": "a goat kid; only bleats, and wiggles her legs to say thank you"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_roots": { "props": ["rope-loop"] }
     }
   }
 }
