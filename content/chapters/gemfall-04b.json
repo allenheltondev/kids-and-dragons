@@ -1914,7 +1914,8 @@
           "icon": "boot",
           "goto": "encounter_logs"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/brook-log-mimics"
     },
     "encounter_logs": {
       "type": "encounter",
@@ -1963,7 +1964,8 @@
           "icon": "travel",
           "goto": "scene_crater"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/brook-log-mimics"
     },
     "scene_logs_slipped": {
       "type": "story",
@@ -1980,7 +1982,8 @@
           "icon": "travel",
           "goto": "scene_crater"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/brook-log-mimics"
     }
   },
   "voiceGuide": {

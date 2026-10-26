@@ -1853,7 +1853,7 @@
           "goto": "encounter_boxes"
         }
       ],
-      "art": "scenes/gemfall/rush-depot"
+      "art": "scenes/gemfall/depot-barn-strongboxes"
     },
     "encounter_boxes": {
       "type": "encounter",
@@ -1904,7 +1904,7 @@
           "goto": "scene_rumor_fire"
         }
       ],
-      "art": "scenes/gemfall/rush-depot"
+      "art": "scenes/gemfall/depot-barn-strongboxes"
     },
     "scene_boxes_sulking": {
       "type": "story",
@@ -1923,7 +1923,7 @@
           "goto": "scene_rumor_fire"
         }
       ],
-      "art": "scenes/gemfall/rush-depot"
+      "art": "scenes/gemfall/depot-barn-strongboxes"
     },
     "interaction_pony": {
       "type": "interaction",
