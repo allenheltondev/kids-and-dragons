@@ -1878,7 +1878,8 @@
           "icon": "boot",
           "goto": "interaction_stones"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/high-stream-drake"
     },
     "interaction_stones": {
       "type": "interaction",
@@ -1920,7 +1921,8 @@
           "icon": "swords",
           "goto": "encounter_drake"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/high-stream-drake"
     },
     "encounter_drake": {
       "type": "encounter",
@@ -1970,7 +1972,8 @@
           "icon": "travel",
           "goto": "scene_high_paths"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/high-stream-drake"
     },
     "scene_drake_splashed": {
       "type": "story",
@@ -1989,7 +1992,8 @@
           "icon": "travel",
           "goto": "scene_high_paths"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/high-stream-drake"
     },
     "interaction_camp": {
       "type": "interaction",

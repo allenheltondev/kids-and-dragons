@@ -1,0 +1,82 @@
+{
+  "issue": 497,
+  "date": "2026-10-26",
+  "generator": "Built-in image_gen",
+  "reference": "assets/scenes/gemfall/ditch-plank-mimics.webp",
+  "export": {
+    "size": [
+      1920,
+      1080
+    ],
+    "format": "WebP",
+    "quality": 88,
+    "resample": "Lanczos"
+  },
+  "assets": [
+    {
+      "chapter": "gemfall-05a",
+      "slug": "bridge-lantern-wisps",
+      "scenes": [
+        "scene_lantern_wisps",
+        "scene_wisps_shooed",
+        "scene_wisps_scattered"
+      ],
+      "introScenes": [
+        "scene_lantern_wisps"
+      ],
+      "prompt": "Use case: illustration-story. One production environment backdrop for Kids & Dragons Gemfall. Wide 16:9 landscape composition, target 1920x1080. The supplied image is ONLY a style reference: match its polished dimensional painterly storybook brushwork, tactile natural materials, rich warm and cool color, and gentle fantasy for children age 8. The lower third is broad open ground for separately drawn game sprites; keep major landmarks in the upper two thirds and center crop understandable on a phone. Full bleed single painting. No people, animals, monsters, creatures, character silhouettes, faces, eyes, mouths or limbs on objects. Characters and creatures are rendered separately by the game. No readable text, lettering, numbers, UI, border, frame or watermark. Do not copy the reference's hay cart, cake table, ditch or planks. New place: the cracked Northern River Bridge at the evening ration. A broad old stone bridge extends across a deep northern river in the upper middle distance, with visible cracks in its parapet and a carefully propped or roped-off section, sturdy rather than collapsing. Warm lit lanterns on wooden poles line the approach. Beside the bridge is a wooden gem cart with covered crates, a faint amber glow through their seams, and several loosened lantern strings hanging at different angles, suggesting they have been swinging. A tether rope loops around a post next to the cart, but NO mule or other animal is painted. Twilight violet-blue river and hills, warm gold pools of lamplight, a small ration trestle with plain bowls at the far edge. Lower third is a wide open gravel-and-stone bridge approach with no rails or props cutting across the sprite stage. Gentle comic commotion suggested only by the loose strings, not by pictured wisps or motion symbols.",
+      "source": "exec-a59dc44d-3b77-4d14-a993-91045c73803e.png",
+      "sourceSize": [
+        1672,
+        940
+      ],
+      "sourceSha256": "a47686603b1fac9773a4cb01e659d64bf1534ffb5d0e0226b6dbe4b8cf65121f",
+      "productionSha256": "80e0a95d5a69ff417bd19390f0b15c7f2c4f6e96edfd29a9ffefa0abaf36a872",
+      "productionBytes": 564318
+    },
+    {
+      "chapter": "gemfall-05b",
+      "slug": "high-stream-drake",
+      "scenes": [
+        "scene_drake_ford",
+        "scene_drake_bank",
+        "scene_drake_shooed",
+        "scene_drake_splashed"
+      ],
+      "introScenes": [
+        "scene_drake_ford",
+        "scene_drake_bank"
+      ],
+      "prompt": "Use case: illustration-story. One production environment backdrop for Kids & Dragons Gemfall. Wide 16:9 landscape composition, target 1920x1080. The supplied image is ONLY a style reference: match its polished dimensional painterly storybook brushwork, tactile natural materials, rich warm and cool color, and gentle fantasy for children age 8. The lower third is broad open ground for separately drawn game sprites; keep major landmarks in the upper two thirds and center crop understandable on a phone. Full bleed single painting. No people, animals, monsters, creatures, character silhouettes, faces, eyes, mouths or limbs on objects. Characters and creatures are rendered separately by the game. No readable text, lettering, numbers, UI, border, frame or watermark. Do not copy the reference's hay cart, cake table, ditch or planks. New place: a high cliffside stream on the path above MossHome. In the middle distance slick irregular stepping stones lead uphill through a clear tumbling stream; farther up the water narrows into a rocky slot between mossy cliff walls. In the slot's center is a shallow scooped-out wallow, with a small soft puff of white steam rising from the water but absolutely no dragon or creature shape. Folded simple towels and a small battered tin kettle sit on a dry rock beside the path, off to the right. Ferns, mossy basalt and pale grey rock, early warm sunlight and cool sparkling blue water, distant falls hinted beyond the cliff edge. Foreground lower third is an open flat stony bank where separately drawn game figures can stand safely. The stone path and the slot should both read in one coherent environment, a friendly adventure bottleneck rather than a dangerous precipice. No guard, traveler, drake, pony or other figure.",
+      "source": "exec-66531c9a-a73e-481e-a741-6eabf6db7786.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "sourceSha256": "a486d3572c4a737e578e333089a2f487f5e9627dda18d65cff1199836dfabead",
+      "productionSha256": "52c223cca8597279fb4cd229d4124c74a941d9a510afd587604bb89f4241f1d6",
+      "productionBytes": 664262
+    },
+    {
+      "chapter": "gemfall-05c",
+      "slug": "tally-porch-crawlers",
+      "scenes": [
+        "scene_crawlers_porch",
+        "scene_crawlers_shooed",
+        "scene_crawlers_scattered"
+      ],
+      "introScenes": [
+        "scene_crawlers_porch"
+      ],
+      "prompt": "Use case: illustration-story. One production environment backdrop for Kids & Dragons Gemfall. Wide 16:9 landscape composition, target 1920x1080. The supplied image is ONLY a style reference: match its polished dimensional painterly storybook brushwork, tactile natural materials, rich warm and cool color, and gentle fantasy for children age 8. The lower third is broad open ground for separately drawn game sprites; keep major landmarks in the upper two thirds and center crop understandable on a phone. Full bleed single painting. No people, animals, monsters, creatures, character silhouettes, faces, eyes, mouths or limbs on objects. Characters and creatures are rendered separately by the game. No readable text, lettering, numbers, UI, border, frame or watermark. Do not copy the reference's hay cart, cake table, ditch or planks. New place: the tally-house porch at dusk in the northern foothills. A modest weathered stone-and-timber record house, a broad wooden porch and shallow steps. The front door stands slightly ajar in the upper center, revealing shelves and cabinets packed with thick closed ledgers, their spines blank or abstractly marked, no readable words. A row of small varied brass hand bells hangs low under the eaves along a wooden rail. Clear narrow dark gaps beneath the porch boards and between the steps suggest places tiny creatures could hide, but no creatures, bones, eyes or silhouettes appear. Warm lamplight through the doorway against cool lavender dusk and distant hills. A few loose blank pages near the wall, a simple walking-stick rack, all positioned away from the clear center. Lower third is a broad open porch floor and level gravel apron for the separate elder and crawler sprites. Cozy determined storybook mood, never creepy or frightening.",
+      "source": "exec-3bd7c3d5-bd60-45ba-8278-997e4cdd554a.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "sourceSha256": "84bd0248306c85c3fab9c428cc85f0b5a82428babb3308cb95ece4c670c3521d",
+      "productionSha256": "8d689d5beee9695cf7c4e4f2cf7589ee5b779f2b2bcb58b264d9e8770834f332",
+      "productionBytes": 569650
+    }
+  ]
+}
