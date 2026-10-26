@@ -12,6 +12,7 @@ import fight04Art from "../art/source/gemfall-04-fights.json" with { type: "json
 import fight05Art from "../art/source/gemfall-05-fights.json" with { type: "json" };
 import fight06Art from "../art/source/gemfall-06-fight.json" with { type: "json" };
 import fight07Art from "../art/source/gemfall-07-fights.json" with { type: "json" };
+import fight08Art from "../art/source/gemfall-08-fight.json" with { type: "json" };
 import type { SeedResponse, SeededPhone } from "../packages/server/src/dev-seed";
 import { onAir } from "./seed";
 
@@ -146,7 +147,7 @@ const priorChapterEndings = [
   ["rest_pride_fire", "ending_marked_present", "end_foothills_in_sight"],
   ["rest_end", "ending_foothills_rim", "end_through_the_stones"],
 ];
-for (const batch of [{ number: "03", art: fightArt }, { number: "04", art: fight04Art }, { number: "05", art: fight05Art }, { number: "06", art: fight06Art }, { number: "07", art: fight07Art }]) {
+for (const batch of [{ number: "03", art: fightArt }, { number: "04", art: fight04Art }, { number: "05", art: fight05Art }, { number: "06", art: fight06Art }, { number: "07", art: fight07Art }, { number: "08", art: fight08Art }]) {
 test(`photograph chapter ${batch.number} fight introductions and outcomes on TV and phone`, async ({ browser }) => {
   test.setTimeout(240_000);
   for (const asset of batch.art.assets) {
@@ -182,11 +183,17 @@ test(`photograph chapter ${batch.number} fight introductions and outcomes on TV 
         await send(phone, table.code, { type: "CONTINUE_CAMPAIGN", campaignId: "gemfall" });
       }
       const chapter = await (await tv.request.get(`/content/chapters/${asset.chapter}.json`)).json() as Chapter;
-      if (batch.number === "07") {
+      if (Number(batch.number) >= 7) {
         await send(phone, table.code, { type: "PLAYTEST_GOTO", sceneId: "scene_what_for" });
         const choiceId = asset.chapter.endsWith("h") ? "hoard" : asset.chapter.endsWith("l") ? "leash" : "restore";
         await send(phone, table.code, { type: "CHOOSE", choiceId });
         await send(phone, table.code, { type: "PLAYTEST_GOTO", sceneId: "rest_end_ashfall" });
+        await send(phone, table.code, { type: "ADVANCE" });
+        await send(phone, table.code, { type: "READY", ready: true });
+        await send(phone, table.code, { type: "CONTINUE_CAMPAIGN", campaignId: "gemfall" });
+      }
+      if (batch.number === "08") {
+        await send(phone, table.code, { type: "PLAYTEST_GOTO", sceneId: "rest_tree_line" });
         await send(phone, table.code, { type: "ADVANCE" });
         await send(phone, table.code, { type: "READY", ready: true });
         await send(phone, table.code, { type: "CONTINUE_CAMPAIGN", campaignId: "gemfall" });

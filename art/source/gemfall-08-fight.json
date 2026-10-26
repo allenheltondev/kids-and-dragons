@@ -1,0 +1,35 @@
+{
+  "issue": 497,
+  "date": "2026-10-26",
+  "generator": "Built-in image_gen",
+  "reference": "assets/scenes/gemfall/echo-cutting.webp",
+  "export": {
+    "size": [
+      1920,
+      1080
+    ],
+    "format": "WebP",
+    "quality": 88,
+    "resample": "Lanczos"
+  },
+  "assets": [
+    {
+      "chapter": "gemfall-08",
+      "slug": "crab-field-guards",
+      "scenes": [
+        "scene_crab_guards",
+        "scene_crabs_bumped",
+        "scene_crabs_herded"
+      ],
+      "introScenes": [
+        "scene_crab_guards"
+      ],
+      "prompt": "Use case: illustration-story. Create ONE production environment backdrop for Kids & Dragons Gemfall, wide 16:9 landscape target 1920x1080. The reference is ONLY house style: match its polished dimensional painterly storybook brushwork, tactile rock textures, rich warm/cool light, gentle slightly mysterious fantasy for children age 8. New scene: the far uphill edge of an ash-grey mountain field where glassback crabs live (DO NOT paint any crabs). A narrow dusty path winds upward through pale volcanic ash, with softly glowing warm patches, several low smooth glassy burrow mouths embedded in the ground, and a small freshly dug hollow with a subtle glint of a smooth lucky pebble and three little coin edges at its bottom. Put the distinctive small hollow and a couple of glassy burrow openings near horizontal center around 45–55 percent image height, visible in a narrow phone crop. Broad barren rocky mountain rises behind, wisps of warm air and peach late daylight, not fire or lava. Bottom third is a broad clear level ash-covered ground apron for separately rendered sprites, not a pit. Warm rather than scary. No characters, people, animals, monsters, crabs, creature silhouettes, eyes, faces, claws, readable text, numbers, UI, frame, border or watermark. Do not copy reference pots, village or green cutting. Environment only; all creatures are rendered as separate game cutouts.",
+      "sourceFile": "exec-a50a592a-730c-4c7b-85bc-22d464265911.png",
+      "sourceSha256": "eec4a54342660d2d519b48242a4916cec47239ef70f243ab4553e44ebb58ac58",
+      "productionSha256": "835eaff41c0a1c115f2268c03722c7d6d24e13f621a07e2498df92bbf637527d",
+      "bytes": 558162
+    }
+  ],
+  "referenceSha256": "aa20034ffac0ceddf1f3bc266f5c8df3752439e19750d4e0c267411106dce865"
+}

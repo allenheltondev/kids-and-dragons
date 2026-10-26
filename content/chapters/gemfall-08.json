@@ -5602,7 +5602,8 @@
           "icon": "swords",
           "goto": "encounter_crabs"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/crab-field-guards"
     },
     "encounter_crabs": {
       "type": "encounter",
@@ -5657,7 +5658,8 @@
           "icon": "gem",
           "goto": "scene_ember_drift"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/crab-field-guards"
     },
     "scene_crabs_herded": {
       "type": "story",
@@ -5675,7 +5677,8 @@
           "icon": "boot",
           "goto": "scene_ember_drift"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/crab-field-guards"
     },
     "interaction_climb_warmup": {
       "type": "interaction",
