@@ -18,8 +18,10 @@ cover. The phone capture keeps the pick control above the fixed navigation.
 |---|---|
 | ![Jackalope hat tracking on TV](chapter02-hats-relaxed-tv.png) | ![Jackalope hat tracking on phone](chapter02-hats-relaxed-phone.png) |
 
-The egg-basket phone capture shows the authored prop alongside the ready and
-help controls:
+The relaxed reveal has a visible gold halo over the tracked hat. The egg-basket
+phone capture shows the decoded prop clear of the hero, with the ready and help
+controls in view. The capture check also starts the relay and confirms its catch
+control remains available:
 
 ![Egg-basket interaction on phone](chapter02-egg-basket-phone.png)
 
@@ -55,4 +57,4 @@ Original generated PNGs remain in the local Codex image output directory. Produc
 - `npm run content:validate`: 117 checks passed; chapter scene graphs remain valid.
 - `npm run typecheck` and `npm run build`: passed.
 - `npm run perf:bundle`: first paint 319/320 KB; total 1460/1460 KB.
-- `e2e/gemfall-art-shot.spec.ts`: TV/phone relaxed tracking and phone prop/control capture.
+- `e2e/gemfall-art-shot.spec.ts`: TV/phone relaxed tracking and phone decoded-prop, ready/help, and active-relay control capture.

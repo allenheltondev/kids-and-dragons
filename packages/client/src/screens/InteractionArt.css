@@ -12,7 +12,7 @@
 .painted-cover{position:relative;display:block;inline-size:5em;block-size:4em;transform:translateX(-50%)}
 .painted-cover img{position:absolute;inline-size:100%;block-size:100%;object-fit:contain;left:0;bottom:0}
 .painted-cover .painted-cover__peek{bottom:18%;clip-path:inset(0 0 30% 0)}
-.painted-cover__glow{position:absolute;z-index:1;left:50%;bottom:18%;inline-size:2.8em;block-size:2.8em;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,250,203,.98) 0%,rgba(255,225,112,.82) 28%,rgba(255,184,57,.3) 58%,transparent 74%);filter:blur(.06em)}
+.painted-cover__glow{position:absolute;z-index:3;left:50%;bottom:5%;inline-size:6em;block-size:6em;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,250,203,.12) 0%,rgba(255,225,112,.32) 28%,rgba(255,184,57,.5) 43%,rgba(255,184,57,.16) 59%,transparent 72%);mix-blend-mode:screen;pointer-events:none}
 .painted-cover__front{z-index:2}
 .painted-cover__fallback{position:absolute;z-index:2;left:12%;bottom:0;inline-size:76%;block-size:72%;border-radius:48% 48% 18% 18%;background:linear-gradient(145deg,#e4dfd2,#a8a294);box-shadow:inset -0.35em -0.2em 0 #817f78,0 0.12em 0.2em #242a31}
 .painted-cover>.kad-icon{position:absolute;inset:0;inline-size:100%;block-size:100%;object-fit:contain;z-index:2}
@@ -31,3 +31,5 @@
 
 .story-interaction__covers--painted{height:8em!important}
 .story-interaction__covers--painted .story-interaction__tracking-help{position:absolute;inset-inline:0;top:auto;bottom:0;padding:0;text-align:center;line-height:1.2}
+.interaction-art[data-scene=interaction_egg_baskets]{block-size:clamp(8em,20cqh,12em)}
+.interaction-art[data-scene=interaction_egg_baskets] .interaction-art__main{inline-size:clamp(6em,22cqw,9em);left:70%;top:48%}
