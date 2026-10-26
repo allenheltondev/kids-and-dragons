@@ -40,6 +40,14 @@ for all nine mappings and actual TV/390px phone captures, and the
 [source record](../../art/source/gemfall-07-fights.json) for exact prompts,
 reference/source/production hashes and export details. Gameplay is unchanged.
 
+Chapter 08 completes the fight-art pass with `crab-field-guards` in the same
+export format, shared by `scene_crab_guards`, `scene_crabs_bumped` and
+`scene_crabs_herded`. See the [chapter 08 fight review](../review/gemfall-08-fights/README.md)
+for TV/390px phone captures and the [source record](../../art/source/gemfall-08-fight.json)
+for the exact prompt, reference/source/production hashes and export settings.
+All 16 requested fight-arc paintings are created and wired; issue #497's
+remaining location and interaction deliveries are still open.
+
 The original six backdrops were created with the built-in image generation tool. Production files live in
 `assets/scenes/gemfall/`: 1920×1080 WebP, quality 88, about 3.0 MB total. Original generated
 PNGs remain in the local Codex generated-images directory. Existing biome art is unchanged.
