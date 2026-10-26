@@ -145,7 +145,7 @@ const ACTOR_HEIGHT = DESIGN.height * 0.56;
  * figures' feet, wherever the stage has had to move them.
  */
 export const BACKDROP_FLOOR = DESIGN.height * 0.8;
-/** How far the painting runs under the narration plate before it ends. */
+/** Maximum overlap beneath the plate; narrow panes need less to avoid excess zoom. */
 const BACKDROP_TAIL_PX = 48;
 
 /**
@@ -170,12 +170,13 @@ export function backdropFit(
   if (!(feetY > 0)) {
     return { scale: cover, x: (pane.width - DESIGN.width * cover) / 2, y: (pane.height - DESIGN.height * cover) / 2 };
   }
+  const tail = Math.min(BACKDROP_TAIL_PX, pane.width * 0.03);
   const scale = Math.min(
     cover * 3,
     Math.max(
       (pane.width + bleed * 2) / DESIGN.width,
       (feetY + bleed) / BACKDROP_FLOOR,
-      (stageBottom + BACKDROP_TAIL_PX - feetY) / (DESIGN.height - BACKDROP_FLOOR),
+      (stageBottom + tail - feetY) / (DESIGN.height - BACKDROP_FLOOR),
     ),
   );
   return { scale, x: (pane.width - DESIGN.width * scale) / 2, y: feetY - BACKDROP_FLOOR * scale };
