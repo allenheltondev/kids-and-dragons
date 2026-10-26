@@ -2492,7 +2492,8 @@
           "icon": "swords",
           "goto": "encounter_drake"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/spring-drake-ledge"
     },
     "encounter_drake": {
       "type": "encounter",
@@ -2537,7 +2538,8 @@
           "icon": "forward",
           "goto": "rest_tree_line"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/spring-drake-ledge"
     },
     "scene_drake_rescued": {
       "type": "story",
@@ -2549,7 +2551,8 @@
           "icon": "forward",
           "goto": "rest_tree_line"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/spring-drake-ledge"
     }
   },
   "voiceGuide": {

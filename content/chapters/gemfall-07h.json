@@ -3009,7 +3009,8 @@
           "icon": "swords",
           "goto": "encounter_echo"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/echo-cutting"
     },
     "encounter_echo": {
       "type": "encounter",
@@ -3061,7 +3062,8 @@
           "icon": "forward",
           "goto": "choice_tree_line"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/echo-cutting"
     },
     "scene_echo_lost": {
       "type": "story",
@@ -3079,7 +3081,8 @@
           "icon": "forward",
           "goto": "choice_tree_line"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/echo-cutting"
     }
   },
   "voiceGuide": {
