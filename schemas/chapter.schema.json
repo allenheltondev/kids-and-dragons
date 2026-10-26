@@ -182,11 +182,7 @@
     "presentation": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "fights",
-        "interactions",
-        "warmUrls"
-      ],
+      "required": ["interactions"],
       "properties": {
         "fights": {
           "type": "array",
@@ -304,9 +300,6 @@
           "type": "object",
           "additionalProperties": {
             "type": "object",
-            "required": [
-              "props"
-            ],
             "additionalProperties": false,
             "properties": {
               "props": {
@@ -314,6 +307,12 @@
                 "items": {
                   "type": "string"
                 }
+              },
+              "coverIcons": {
+                "type": "array",
+                "minItems": 2,
+                "maxItems": 4,
+                "items": { "type": "string", "minLength": 1 }
               }
             }
           }
@@ -2731,10 +2730,6 @@
                 "supportLabel": {
                   "type": "string",
                   "minLength": 1
-                },
-                "prop": {
-                  "type": "string",
-                  "minLength": 1
                 }
               }
             },
@@ -2846,10 +2841,6 @@
                   "type": "integer",
                   "minimum": 2000,
                   "maximum": 20000
-                },
-                "prop": {
-                  "type": "string",
-                  "minLength": 1
                 }
               }
             },
@@ -2886,12 +2877,6 @@
                     "type": "string",
                     "minLength": 1
                   }
-                },
-                "icons": {
-                  "type": "array",
-                  "minItems": 2,
-                  "maxItems": 4,
-                  "items": { "type": "string", "minLength": 1 }
                 },
                 "start": {
                   "type": "integer",
@@ -3011,10 +2996,6 @@
                 "objectLabel": {
                   "type": "string",
                   "minLength": 1
-                },
-                "prop": {
-                  "type": "string",
-                  "minLength": 1
                 }
               }
             },
@@ -3040,10 +3021,6 @@
                   "minLength": 1
                 },
                 "objectLabel": {
-                  "type": "string",
-                  "minLength": 1
-                },
-                "prop": {
                   "type": "string",
                   "minLength": 1
                 }

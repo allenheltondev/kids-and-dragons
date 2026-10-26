@@ -77,15 +77,16 @@ describe("the whole chapter", () => {
     expect(new Set(urls).size).toBe(urls.length);
   });
 
-  it("warms authored interaction props and tracking cover paintings", () => {
+  it("derives warm URLs from the canonical interaction presentation", () => {
     const base = chapter();
     const authored = {
       ...base,
       scenes: {
         ...base.scenes,
-        scene_visual: { type: "interaction", interaction: { kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000, icons: ["rope-loop", "carved-stone"] } },
-        scene_prop: { type: "interaction", interaction: { kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "Bundle", prop: "relay-sack" } },
+        scene_visual: { type: "interaction", interaction: { kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000 } },
+        scene_prop: { type: "interaction", interaction: { kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "Bundle" } },
       } as never,
+      presentation: { interactions: { scene_visual: { props: [], coverIcons: ["rope-loop", "carved-stone"] }, scene_prop: { props: ["relay-sack"] } } },
     } as Chapter;
     const urls = chapterAssets(authored, []);
     expect(urls).toContain("/assets/story-props/rope-loop.webp");

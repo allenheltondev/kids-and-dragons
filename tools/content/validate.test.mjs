@@ -500,15 +500,17 @@ describe("the files themselves", () => {
     expect(result.out).toContain("chapters/bramblewood-01.json");
   });
 
-  it("rejects unknown authored visuals, tracking icon counts, and option icon typos", () => {
+  it("rejects unknown presentation props, stale scene keys, wrong tracking counts, and option icon typos", () => {
     const result = withFirstSteps((chapter) => {
-      chapter.scenes.interaction_roots.interaction.prop = "unknown-prop";
-      chapter.scenes.interaction_cups.interaction.icons = ["snow-mound", "wind-bells"];
+      chapter.presentation.interactions.interaction_roots.props = ["unknown-prop"];
+      chapter.presentation.interactions.misspelled_scene = { props: ["rope-loop"] };
+      chapter.presentation.interactions.interaction_cups = { props: [], coverIcons: ["snow-mound", "wind-bells"] };
       chapter.scenes.interaction_stones.interaction.options[0].icon = "starr";
     });
     expect(result.code).not.toBe(0);
     expect(result.out).toContain('problem: unknown story prop id "unknown-prop"');
-    expect(result.out).toContain("problem: has 2 icons for 3 covers");
+    expect(result.out).toContain("does not name an interaction scene");
+    expect(result.out).toContain("has 2 icons for 3 covers");
     expect(result.out).toContain('problem: unknown icon id "starr"');
   });
 });

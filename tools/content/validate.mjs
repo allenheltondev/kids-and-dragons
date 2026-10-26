@@ -73,7 +73,6 @@ const assetRegistry = JSON.parse(readFileSync(MANIFEST, "utf8"));
 const storyPropIds = new Set(assetRegistry.storyProps?.ids ?? []);
 const paintedIconIds = new Set(assetRegistry.paintedIcons?.ids ?? []);
 const interactionIconIds = new Set([...paintedIconIds, ...BUILT_IN_ICON_IDS]);
-const interactionVisualIds = new Set([...storyPropIds, ...interactionIconIds]);
 /**
  * The art itself is always this checkout's, whichever tree is being judged: a
  * staged test tree may carry the manifest and not the megabytes of PNG a cast
@@ -1135,22 +1134,40 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
     }
   };
   checkMusic("/music", chapter.music);
+  for (const [sceneId, appearance] of Object.entries(chapter.presentation?.interactions ?? {})) {
+    const at = `/presentation/interactions/${sceneId}`;
+    const scene = scenes[sceneId];
+    if (!scene || scene.type !== "interaction") {
+      fail(at, `does not name an interaction scene`, "Use an existing interaction scene id from this chapter.");
+      continue;
+    }
+    for (const [index, prop] of (appearance.props ?? []).entries()) {
+      if (!storyPropIds.has(prop)) {
+        fail(`${at}/props/${index}`, `unknown story prop id "${prop}"`, "Use an id from assets/manifest.json storyProps.ids.");
+      } else if (!existsSync(join(REPO_ASSETS, "story-props", `${prop}.webp`))) {
+        fail(`${at}/props/${index}`, `story prop "${prop}" has no image asset`, `Expected assets/story-props/${prop}.webp.`);
+      }
+    }
+    if (appearance.coverIcons !== undefined) {
+      if (scene.interaction.kind !== "tracking") {
+        fail(`${at}/coverIcons`, "coverIcons are only valid on tracking scenes", "Attach tracking cover art to a tracking interaction.");
+      } else if (appearance.coverIcons.length !== scene.interaction.covers.length) {
+        fail(`${at}/coverIcons`, `has ${appearance.coverIcons.length} icons for ${scene.interaction.covers.length} covers`, "Provide one registered story prop per cover, in the same order.");
+      }
+      appearance.coverIcons.forEach((icon, index) => {
+        if (!storyPropIds.has(icon)) {
+          fail(`${at}/coverIcons/${index}`, `unknown story prop id "${icon}"`, "Use an id from assets/manifest.json storyProps.ids.");
+        } else if (!existsSync(join(REPO_ASSETS, "story-props", `${icon}.webp`))) {
+          fail(`${at}/coverIcons/${index}`, `story prop "${icon}" has no image asset`, `Expected assets/story-props/${icon}.webp.`);
+        }
+      });
+    }
+  }
   for (const [sceneId, scene] of Object.entries(scenes)) {
     checkMusic(`/scenes/${sceneId}/music`, scene.music);
     if (scene.type !== "interaction") continue;
     const spec = scene.interaction;
     const at = `/scenes/${sceneId}/interaction`;
-    if (spec.prop !== undefined && !storyPropIds.has(spec.prop)) {
-      fail(`${at}/prop`, `unknown story prop id "${spec.prop}"`, "Use an id from assets/manifest.json storyProps.ids.");
-    }
-    if (spec.kind === "tracking" && spec.icons !== undefined) {
-      if (spec.icons.length !== spec.covers.length) {
-        fail(`${at}/icons`, `has ${spec.icons.length} icons for ${spec.covers.length} covers`, "Provide one registered visual id per cover, in the same order.");
-      }
-      spec.icons.forEach((icon, index) => {
-        if (!interactionVisualIds.has(icon)) fail(`${at}/icons/${index}`, `unknown interaction visual id "${icon}"`, "Use an id from assets/manifest.json storyProps.ids or paintedIcons.ids, or a built-in icon name.");
-      });
-    }
     for (const [index, option] of (spec.options ?? []).entries()) {
       if (!interactionIconIds.has(option.icon)) fail(`${at}/options/${index}/icon`, `unknown icon id "${option.icon}"`, "Use a registered painted icon or built-in Icon name.");
     }

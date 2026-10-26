@@ -1,11 +1,10 @@
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import { balanceReady, precisionPosition, precisionSuccess, relayHolder, supportsReady } from "@kad/shared";
 import type { InteractionPrompt, PartyMember } from "@kad/shared";
 import { useChapter, useRunState } from "../store";
 import { reducedMotion } from "../a11y/prefs";
 import { characterWorldArtUrl } from "../world/art-paths";
 import { interactionAppearance, reactionFigure } from "../world/riftlight-art";
-import { hasIcon, Icon } from "./icons";
 import "./InteractionArt.css";
 
 export const propUrl = (id: string): string => "/assets/story-props/"+id+".webp";
@@ -26,9 +25,11 @@ export function PaintedGlyph({label}:{label:string}) {
  const url=glyphUrl(label);return url?<img className="painted-glyph" src={url} alt="" aria-hidden="true" />:null;
 }
 export function PaintedCover({ bells, reveal, diving=false, icon }: {bells:boolean;reveal:boolean;diving?:boolean;icon?:string}) {
+ const [failed,setFailed]=useState(false);
  return <span className={"painted-cover"+(bells?" painted-cover--bell":"")} aria-hidden="true">
   {reveal&&<img className="painted-cover__peek" src={bells?propUrl("ticking-crystal"):"/assets/cast/"+(diving?"kid_burrowing":"kid_peeking")+"/assembled.png"} alt="" />}
-  {icon ? hasIcon(icon) ? <Icon name={icon} className="painted-cover__front" /> : <img className="painted-cover__front" src={propUrl(icon)} alt="" onError={e=>{e.currentTarget.style.visibility="hidden";}} /> : <img className="painted-cover__front" src={propUrl(bells?"wind-bells":"snow-mound")} alt="" />}
+  {!failed && <img className="painted-cover__front" src={propUrl(icon ?? (bells?"wind-bells":"snow-mound"))} alt="" onError={()=>setFailed(true)} />}
+  {failed && <span className="painted-cover__fallback" />}
  </span>;
 }
 function Picture({id,style,className=""}:{id:string;style?:CSSProperties;className?:string}) {
@@ -39,13 +40,12 @@ export function PaintedInteraction({prompt,party,now}:{prompt:InteractionPrompt;
  const state=useRunState();
  const chapter=useChapter();
  const appearance=interactionAppearance(chapter?.id===state?.chapterId?chapter:null,state?.sceneId);
- const authoredProp="prop" in prompt.spec ? prompt.spec.prop : undefined;
- if((!appearance&&!authoredProp) || prompt.spec.kind==="tracking")return null;
+ if(!appearance || prompt.spec.kind==="tracking")return null;
  const {spec}=prompt;
  const still=reducedMotion()||prompt.relaxed||prompt.phase!=="active";
  const elapsed=Math.max(0,now-Date.parse(prompt.startedAt??new Date(now).toISOString()));
  const connected=party.filter(m=>m.connected).map(m=>m.playerId);
- let props=authoredProp ? [authoredProp] : (appearance?.props ?? []).filter(id=>!id.startsWith("note-"));
+ let props=(appearance.props ?? []).filter(id=>!id.startsWith("note-"));
  if(props.includes("rope-taut")&&props.includes("rope-sag")) {
   const ready=spec.kind==="cooperate"?supportsReady(prompt,connected,new Date(now).toISOString()):spec.kind==="balance"?balanceReady(prompt,connected):false;
   props=[ready?"rope-taut":"rope-sag"];
