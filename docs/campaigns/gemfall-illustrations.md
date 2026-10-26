@@ -1,5 +1,7 @@
 # Gemfall scene illustrations
 
+The chapter 01–02 pilot for issue #497 is documented in the [pilot art review](../review/gemfall-01-02-pilot/README.md).
+
 Six backdrops created with the built-in image generation tool. Production files live in
 `assets/scenes/gemfall/`: 1920×1080 WebP, quality 88, about 3.0 MB total. Original generated
 PNGs remain in the local Codex generated-images directory. Existing biome art is unchanged.

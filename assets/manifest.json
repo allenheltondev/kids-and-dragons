@@ -967,6 +967,12 @@
     "scenes/gemfall/exchange-noodle-stall",
     "scenes/gemfall/empty-chair-tavern",
     "scenes/gemfall/exchange-quay",
+    "scenes/gemfall/exchange-quay-wisps",
+    "scenes/gemfall/ditch-plank-mimics",
+    "scenes/gemfall/egg-stall-baskets",
+    "scenes/gemfall/jackalope-meadow-hats",
+    "scenes/gemfall/moth-bell-wagons",
+    "scenes/gemfall/stuck-wagon-lane",
     "scenes/gemfall/outfitters-steps",
     "scenes/gemfall/caravan-yard",
     "scenes/gemfall/exchange-long-bridge",
@@ -2964,7 +2970,10 @@
       "envelope",
       "passkey",
       "riftlight_indicator",
-      "crow"
+      "crow",
+      "glyph_bell_little",
+      "glyph_bell_big",
+      "glyph_bell_brass"
     ]
   },
   "badgeArt": {
@@ -3092,7 +3101,13 @@
       "hatch-cover",
       "hanging-lamp",
       "capstone-target",
-      "wind-banner"
+      "wind-banner",
+      "prop_rope_pole",
+      "prop_jar_tray",
+      "prop_pear_crate",
+      "prop_letters",
+      "prop_egg_basket",
+      "prop_straw_hat"
     ],
     "motions": {
       "rope-loop": {
@@ -3404,6 +3419,30 @@
         "durationMs": 3200
       },
       "wind-banner": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_rope_pole": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_jar_tray": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_pear_crate": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_letters": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_egg_basket": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_straw_hat": {
         "preset": "still",
         "durationMs": 3200
       }
