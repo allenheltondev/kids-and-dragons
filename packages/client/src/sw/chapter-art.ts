@@ -46,6 +46,10 @@ export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[
       urls.add(biomeTilesUrl(chapter.biome));
       for (const enemy of scene.enemies) {const art=enemy.art ?? (enemy.creature ? "enemies/"+enemy.creature : null);if(art)urls.add(enemyArtUrl(art));}
     }
+    if (scene.type === "interaction") {
+      const ids = ["prop" in scene.interaction ? scene.interaction.prop : undefined, ...(scene.interaction.kind === "tracking" ? scene.interaction.icons ?? [] : [])];
+      for (const id of ids) if (id?.includes("-")) urls.add(`/assets/story-props/${id}.webp`);
+    }
   }
   for(const url of chapter.presentation?.warmUrls ?? [])urls.add(url);
   return [...urls];

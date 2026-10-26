@@ -29,7 +29,7 @@ function InteractionShowBase({ prompt, party, now, painted, bells }: { prompt: I
           const destination = swap ? at === swap[0] ? swap[1] : at === swap[1] ? swap[0] : at : at;
           const position = at + (destination - at) * (progress - done);
           return <span className="story-interaction__cover" key={index} style={{ left: `${(position + 0.5) / spec.covers.length * 100}%` }}>
-            {painted ? <PaintedCover bells={bells ?? false} diving={elapsed>step*.5&&elapsed<step} reveal={(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec))} /> : <span aria-hidden="true">{(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec)) ? "✦" : "▰"}</span>}
+            {painted ? <PaintedCover bells={bells ?? false} icon={spec.icons?.[index]} diving={elapsed>step*.5&&elapsed<step} reveal={(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec))} /> : <span aria-hidden="true">{(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec)) ? "✦" : "▰"}</span>}
           </span>;
         })}
         {spec.covers.map((label, index) => <span className="story-interaction__cover story-interaction__cover-label" key={`label:${index}`} style={{ left: `${(index + 0.5) / spec.covers.length * 100}%` }}><small>{label}</small></span>)}
@@ -100,6 +100,6 @@ export function ExtraControls({ prompt, playerId, connected, mine, now, busy, se
 export function InteractionShow(props: { prompt: InteractionPrompt; party: PartyMember[]; now: number }) {
  const state=useRunState();
  const chapter=useChapter();
- const painted=interactionAppearance(chapter?.id===state?.chapterId?chapter:null,state?.sceneId)!==null;
+ const painted=interactionAppearance(chapter?.id===state?.chapterId?chapter:null,state?.sceneId)!==null || ("prop" in props.prompt.spec && props.prompt.spec.prop!==undefined) || (props.prompt.spec.kind==="tracking" && props.prompt.spec.icons!==undefined);
  return <><PaintedInteraction {...props} />{props.prompt.phase==="active"&&<InteractionShowBase {...props} painted={painted} bells={state?.sceneId==="song_track"} />}</>;
 }

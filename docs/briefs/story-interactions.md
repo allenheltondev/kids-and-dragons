@@ -31,8 +31,14 @@ visible and allows an immediate answer. Replay is a fresh attempt.
 Balance uses deliberate lift/lower taps, not device tilt or continuous physics.
 Relay is an untimed catch/pass chain. Catch ownership follows the current player;
 disconnecting after a catch cannot give the next receiver an already-caught spark.
-Playful reactions are shared text with the existing cast backdrop, not newly
-animated pets, poses, or camp props. Those richer visuals remain future work.
+Playful reactions remain shared text with the existing cast backdrop. Painted
+interaction props can now be authored with `prop` on relay, balance, cooperate,
+and timing specs, or with one `icons` id per tracking cover. Use a registered
+story prop, painted icon, or built-in icon as appropriate. Authored visuals take
+precedence over a scene-specific painted catalog entry; without either, the
+original text and widget remain. Pictures are decorative and never replace
+labels or status words. Tracking covers keep the hidden answer concealed while
+they move, including when custom visuals are present.
 
 Results remain visible until a player continues. Branch effects apply exactly
 once on continuing. The acting hero may retry without spending resources. Every

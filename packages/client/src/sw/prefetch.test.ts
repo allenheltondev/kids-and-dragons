@@ -77,6 +77,22 @@ describe("the whole chapter", () => {
     expect(new Set(urls).size).toBe(urls.length);
   });
 
+  it("warms authored interaction props and tracking cover paintings", () => {
+    const base = chapter();
+    const authored = {
+      ...base,
+      scenes: {
+        ...base.scenes,
+        scene_visual: { type: "interaction", interaction: { kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000, icons: ["rope-loop", "carved-stone"] } },
+        scene_prop: { type: "interaction", interaction: { kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "Bundle", prop: "relay-sack" } },
+      } as never,
+    } as Chapter;
+    const urls = chapterAssets(authored, []);
+    expect(urls).toContain("/assets/story-props/rope-loop.webp");
+    expect(urls).toContain("/assets/story-props/carved-stone.webp");
+    expect(urls).toContain("/assets/story-props/relay-sack.webp");
+  });
+
   it("reaches scenes beyond the prefetch depth, and visits each scene once", () => {
     const c = chapter();
     const scenes = { ...c.scenes };
