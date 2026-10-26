@@ -735,6 +735,17 @@ describe("backdropFit: nobody floats", () => {
     expect(fit.scale).toBeCloseTo(1.2);
     expect(fit.y).toBeCloseTo(0);
   });
+
+  it("keeps midground landmarks below the phone's upper UI without moving the floor", () => {
+    const fit = backdropFit({ width: 390, height: 844 }, 300, 380, 0);
+    // The records-hall books sit halfway down the painting. They need to
+    // appear below the ~135px chapter/goal controls rather than behind them.
+    expect(fit.y + 450 * fit.scale).toBeGreaterThan(135);
+    expect(fit.y + BACKDROP_FLOOR * fit.scale).toBeCloseTo(300);
+    expect(fit.y + 900 * fit.scale).toBeGreaterThan(380);
+    expect(fit.x).toBeLessThanOrEqual(0);
+    expect(fit.x + 1600 * fit.scale).toBeGreaterThanOrEqual(390);
+  });
 });
 
 describe("a new pane", () => {

@@ -27,6 +27,11 @@ The capture waits for narration, decoded artwork and the temporary recap card
 to clear. Phone captures use the World tab at 390×844; TV captures are 1920×1080.
 The mobile guest carousel shows one guest group at a time, as it does in play.
 
+Review found that the fixed 48-pixel backdrop overlap beneath the narration
+plate zoomed the phone painting too far in. The overlap now scales with pane
+width, capped at 48 pixels. The refreshed phone capture shows the stone table
+and open watch-log while retaining foreground space and floor alignment.
+
 | TV | Phone |
 |---|---|
 | ![Records hall on TV](scene_crawlers_hall-tv.png) | ![Records hall on phone](scene_crawlers_hall-phone.png) |
@@ -48,7 +53,7 @@ Generated on 2026-10-26 with the built-in image generation tool, using the
 existing `facet-table.webp` as the style and architecture reference. The stone
 table follows chapter 06's text. Targeted revisions make the cellar stairwell
 descend below the hall floor and place the books within the phone's central
-crop. Exact generation and revision prompts, source and
+composition. Exact generation and revision prompts, source and
 production hashes, reference hash and export settings are recorded in
 [the source record](../../../art/source/gemfall-06-fight.json).
 
@@ -64,7 +69,9 @@ The 68 focused Gemfall compatibility/interaction/wiring and client
 presentation/prefetch checks, typecheck, production build and revised TV/phone
 capture also pass. The local Windows payload gate reports 319/320 KB first paint
 and 1461/1460 KB total, as in the preceding batches; CI's Linux build must confirm
-its gate before merge. No production client code or payload cap changes are made.
+its gate before merge. The framing fix adds a regression test covering phone
+landmark visibility, floor alignment and stage coverage; all 45 stage tests pass.
+The payload cap remains unchanged.
 
 Issue #497 remains open. This brings its fight paintings to 12 of 16 painted
 and wired. Chapter 07's three pursuit fights are next, followed by chapter 08;
