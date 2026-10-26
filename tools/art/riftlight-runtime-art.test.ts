@@ -4,8 +4,9 @@ import { describe, expect, it } from "vitest";
 import { applyIntent, enterScene, resolveEnemy } from "@kad/shared";
 import type { Bestiary, EncounterMap, EngineContext } from "@kad/shared";
 import { chapters, context, start } from "../../tools/content/riftlight-test-support";
-import { fightResult, RIFTLIGHT_ART, interactionAppearance } from "../../packages/client/src/world/riftlight-art";
+import { fightResult, interactionAppearance } from "../../packages/client/src/world/riftlight-art";
 
+const RIFTLIGHT_ART={fights:[...chapters.values()].flatMap(c=>c.presentation?.fights??[])};
 const root=path.resolve(import.meta.dirname,"../..");
 const bestiary=JSON.parse(fs.readFileSync(path.join(root,"content/bestiary.json"),"utf8")) as Bestiary;
 function play(fight:typeof RIFTLIGHT_ART.fights[number],won:boolean) {
@@ -43,7 +44,7 @@ describe("persisted outcome art for the six opening fights",()=>{
   let count=0;
   for(const chapter of chapters.values())for(const [id,scene]of Object.entries(chapter.scenes)){
    if(scene.type!=="interaction" || !chapter.id.startsWith("riftlight-"))continue;
-   const art=interactionAppearance(chapter.id,id);expect(art,chapter.id+"/"+id).not.toBeNull();
+   const art=interactionAppearance(chapter,id);expect(art,chapter.id+"/"+id).not.toBeNull();
    for(const prop of art!.props)expect(fs.existsSync(path.join(root,"assets/story-props",prop+".webp")),prop).toBe(true);
    count++;
   }

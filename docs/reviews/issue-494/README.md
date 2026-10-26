@@ -28,7 +28,7 @@ Earlier batch reports describe the checkout at their delivery time. Their notes 
 
 ## Verification
 
-**372 tests across 20 suites**, **1,344 mechanical art checks** and **117 content checks** pass (two existing content warnings). Production TypeScript and the client/service-worker build pass. Payload remains within the merged budgets: **320 KB first paint / 320 KB**, **1,441 KB total / 1,460 KB**.
+**372 tests across 20 suites**, **1,344 mechanical art checks** and **117 content checks** pass (two existing content warnings). Production TypeScript and the client/service-worker build pass. Payload remains within the merged budgets: **319 KB first paint / 320 KB**, **1,460 KB total / 1,460 KB**.
 
 Real Chromium checks cover **56 cases at desktop and 390px phone widths**, 918 loaded-image checks, all 12 fight outcomes, concealed tracking and reduced motion, with no page errors or horizontal overflow. All non-presentation chapter fields match the merged authoring snapshot; only Saltrot's biome changes intentionally. Original creature paintings and portraits remain byte-identical.
 
@@ -43,4 +43,4 @@ npm run content:validate
 npm run art:verify
 ```
 
-Pass `--export` to `install.py` to re-export the selected raster sources before registration. `wire.py` applies the reviewed chapter presentation assignments; `runtime-catalog.py` projects the small client catalog and import-free offline URL list. Replaying these assignments preserves narration, choices, effects, routing and combat geometry.
+Pass `--export` to `install.py` to re-export the selected raster sources before registration. `wire.py` applies the reviewed chapter presentation assignments; `runtime-catalog.py` projects the presentation metadata loaded and cached with each chapter. Replaying these assignments preserves narration, choices, effects, routing and combat geometry.

@@ -27,7 +27,6 @@ import {
 } from "../world/art-paths";
 import { warm } from "./warm";
 
-export { chapterAssets } from "./chapter-art";
 
 /** How many steps of the story ahead to fetch. */
 export const PREFETCH_DEPTH = 2;

@@ -2457,5 +2457,122 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [
+      {
+        "chapter": "riftlight-saltrot-arrival",
+        "scene": "crab_fight",
+        "board": "reedbank",
+        "creature": "glassback_crab",
+        "introScenes": [
+          "crab_warn"
+        ],
+        "backdrop": "scenes/riftlight/fight-saltrot-silt",
+        "props": [
+          "fight-warm-mud-hollow",
+          "pickup-luckstone"
+        ],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed"
+        },
+        "victoryScene": "crab_done",
+        "defeatScene": "crab_rescued",
+        "tileUrl": "/assets/biomes/sallow_wastelands/tiles.png",
+        "terrainProps": [
+          "fight-warm-mud-hollow"
+        ],
+        "rescueFigure": "tidepocket_pots",
+        "retreatDirection": 1,
+        "activeUrl": "/assets/entities/glassback_crab/warning.png",
+        "retreatUrl": "/assets/entities/glassback_crab/shooed.png",
+        "outcomeCast": {
+          "victory": [
+            {
+              "figure": "cast/saltrot_guide",
+              "name": "Saltrot guide"
+            },
+            {
+              "figure": "cast/pip_thistledown",
+              "name": "Pip Thistledown"
+            }
+          ],
+          "defeat": [
+            {
+              "figure": "cast/saltrot_guide",
+              "name": "Saltrot guide"
+            },
+            {
+              "figure": "cast/pip_thistledown",
+              "name": "Pip Thistledown"
+            },
+            {
+              "figure": "cast/tidepocket_pots",
+              "name": "Tidepocket family"
+            }
+          ]
+        }
+      }
+    ],
+    "interactions": {
+      "shell_path": {
+        "props": [
+          "shell-whelk",
+          "shell-cockle",
+          "shell-oyster"
+        ]
+      },
+      "hatch_party": {
+        "props": [
+          "hatch-cover",
+          "kelp-cake",
+          "tidepocket-broom"
+        ]
+      },
+      "lamp_line": {
+        "props": [
+          "relay-oil-jar",
+          "rope-ladder",
+          "hanging-lamp"
+        ]
+      },
+      "tide_dash": {
+        "props": [
+          "water-surge",
+          "shell-cockle"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/biomes/sallow_wastelands/tiles.png",
+      "/assets/cast/skupper_child/assembled.png",
+      "/assets/cast/skupper_grandmother/assembled.png",
+      "/assets/cast/skupper_weaver/assembled.png",
+      "/assets/cast/tidepocket_pots/assembled.png",
+      "/assets/entities/glassback_crab/shooed.png",
+      "/assets/entities/glassback_crab/warning.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/fight-warm-mud-hollow.webp",
+      "/assets/story-props/hanging-lamp.webp",
+      "/assets/story-props/hatch-cover.webp",
+      "/assets/story-props/kelp-cake.webp",
+      "/assets/story-props/pickup-luckstone.webp",
+      "/assets/story-props/relay-oil-jar.webp",
+      "/assets/story-props/rope-ladder.webp",
+      "/assets/story-props/shell-cockle.webp",
+      "/assets/story-props/shell-oyster.webp",
+      "/assets/story-props/shell-whelk.webp",
+      "/assets/story-props/tidepocket-broom.webp",
+      "/assets/story-props/water-surge.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

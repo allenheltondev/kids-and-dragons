@@ -39,7 +39,6 @@ const here = fileURLToPath(new URL(".", import.meta.url));
  */
 export const WORKER_SOURCES = [
   "src/world/art-paths.ts",
-  "src/world/riftlight-art-urls.ts",
   "src/sw/chapter-art.ts",
   "src/sw/next-chapter.ts",
   "src/sw/policy.ts",

@@ -1989,5 +1989,51 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [],
+    "interactions": {
+      "surge_check": {
+        "props": [
+          "boundary-bundle",
+          "water-surge"
+        ]
+      },
+      "tighten": {
+        "props": [
+          "count-cord"
+        ]
+      },
+      "chalk_snap": {
+        "props": [
+          "chalk-cord"
+        ]
+      },
+      "stone_order": {
+        "props": [
+          "fight-wet-gravel",
+          "notched-stone",
+          "carved-stone"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/boundary-bundle.webp",
+      "/assets/story-props/carved-stone.webp",
+      "/assets/story-props/chalk-cord.webp",
+      "/assets/story-props/count-cord.webp",
+      "/assets/story-props/fight-wet-gravel.webp",
+      "/assets/story-props/notched-stone.webp",
+      "/assets/story-props/water-surge.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

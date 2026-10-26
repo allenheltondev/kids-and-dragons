@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react";
 import { balanceReady, precisionPosition, precisionSuccess, relayHolder, supportsReady } from "@kad/shared";
 import type { InteractionPrompt, PartyMember } from "@kad/shared";
-import { useRunState } from "../store";
+import { useChapter, useRunState } from "../store";
 import { reducedMotion } from "../a11y/prefs";
 import { characterWorldArtUrl } from "../world/art-paths";
 import { interactionAppearance, reactionFigure } from "../world/riftlight-art";
@@ -36,7 +36,8 @@ function Picture({id,style,className=""}:{id:string;style?:CSSProperties;classNa
 /** Uses the same clock and authoritative prompt as the controls. It never scores an action. */
 export function PaintedInteraction({prompt,party,now}:{prompt:InteractionPrompt;party:PartyMember[];now:number}) {
  const state=useRunState();
- const appearance=interactionAppearance(state?.chapterId,state?.sceneId);
+ const chapter=useChapter();
+ const appearance=interactionAppearance(chapter?.id===state?.chapterId?chapter:null,state?.sceneId);
  if(!appearance || prompt.spec.kind==="tracking")return null;
  const {spec}=prompt;
  const still=reducedMotion()||prompt.relaxed||prompt.phase!=="active";
@@ -73,7 +74,7 @@ export function PaintedInteraction({prompt,party,now}:{prompt:InteractionPrompt;
  if(spec.kind==="play"&&primary==="hatch-cover"){const open=spec.stages?.length?Math.min(1,(prompt.taps??0)/spec.stages.length):1;style.transform="translate(-50%,-50%) rotate("+(-open*65)+"deg)";}
  if(spec.kind==="play")style.filter=prompt.reactions?.length?"drop-shadow(0 0 6px #e6c878)":"none";
  const extras=state?.sceneId==="hatch_party"?["skupper_child","skupper_grandmother","skupper_weaver"]:state?.sceneId==="camp_play"&&state.chapterId==="riftlight-sky-islands-arrival"?["camp_hen"]:[];
- const reaction=reactionFigure(state?.sceneId??null,prompt,elapsed);
+ const reaction=reactionFigure(state?.sceneId??null,prompt,elapsed,chapter);
  return <div className="interaction-art" aria-hidden="true" data-kind={spec.kind} data-still={still} data-phase={prompt.phase} key={prompt.openedSeq+":"+prompt.attempt}>
   {props.slice(1).map((id,index)=><Picture key={id} id={id} className="interaction-art__support" style={{left:(spec.kind==="precision"?10+spec.target*80:id==="fight-signal-pole"||id==="rope-basket"?85:15+index*70/Math.max(1,props.length-2))+"%",top:"58%"}} />)}
   {primary&&<Picture id={primary} style={style} className="interaction-art__main" />}

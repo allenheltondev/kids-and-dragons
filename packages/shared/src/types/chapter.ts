@@ -980,6 +980,8 @@ export interface Chapter {
   index: number;
   title: string;
   biome: string;
+  /** Painted presentation data; never consulted by the rules engine. */
+  presentation?: ChapterPresentation;
   /**
    * A `MUSIC_SPECS` track id (packages/client/src/audio/paths.ts) that plays
    * instead of the biome's track for this chapter. A scene's own `music` wins
@@ -1215,4 +1217,19 @@ export interface Campaign {
    * campaign authored before it existed, Gemfall included. See `Prologue` and story-plates.ts.
    */
   prologue?: Prologue;
+}
+
+/** Data loaded and cached with its chapter, rather than bundled as client code. */
+export interface ChapterPresentation {
+ fights: ChapterFightAppearance[];
+ interactions: Record<string,{props:string[]}>;
+ warmUrls: string[];
+ reactions?: Record<string,{defaultFigure?:string;options?:Record<string,string>;memory?:Record<string,string>;onFailure?:string}>;
+ castPoses?: Record<string,Record<string,string>>;
+}
+export interface ChapterFightAppearance {
+ outcomeCast?: {victory:CastMember[];defeat:CastMember[]};
+ chapter: string; scene: string; creature: string; introScenes: string[]; board: string;
+ backdrop: string; props: string[]; poses: Record<string,string>; victoryScene: string; defeatScene: string;
+ tileUrl: string; terrainProps: string[]; rescueFigure: string; activeUrl: string; retreatUrl: string; retreatDirection: number;
 }

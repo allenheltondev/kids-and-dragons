@@ -2371,5 +2371,49 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [],
+    "interactions": {
+      "holes": {
+        "props": [
+          "snow-mound",
+          "ticking-crystal"
+        ]
+      },
+      "squeeze_hold": {
+        "props": [
+          "roof-slab",
+          "rope-wedge"
+        ]
+      },
+      "seam_echo": {
+        "props": [
+          "ticking-crystal"
+        ]
+      },
+      "beat": {
+        "props": [
+          "ticking-crystal"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/cast/kid_burrowing/assembled.png",
+      "/assets/cast/kid_peeking/assembled.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/roof-slab.webp",
+      "/assets/story-props/rope-wedge.webp",
+      "/assets/story-props/snow-mound.webp",
+      "/assets/story-props/ticking-crystal.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

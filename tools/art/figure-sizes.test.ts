@@ -1,3 +1,4 @@
+import { FIGURE_SIZES } from "../../packages/client/src/world/figure-sizes";
 /**
  * The stage's height table (#362) against what it is projected from.
  *
@@ -82,4 +83,9 @@ describe("figure sizes (#362)", () => {
       expect(["top", "right"], figure).toContain(way);
     }
   });
+});
+
+it("preserves every decoded figure height and stance",()=>{
+ expect(Object.keys(FIGURE_SIZES).sort()).toEqual([...sizes.keys()].sort());
+ for(const [id,size] of sizes)expect(FIGURE_SIZES[id],id).toEqual([size.heightCm,size.stance]);
 });

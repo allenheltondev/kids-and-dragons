@@ -1937,5 +1937,49 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [],
+    "interactions": {
+      "ring_throw": {
+        "props": [
+          "rope-loop",
+          "iron-anchor-ring"
+        ]
+      },
+      "drip_run": {
+        "props": [
+          "icicle-drips"
+        ]
+      },
+      "hold_line": {
+        "props": [
+          "rope-taut",
+          "rope-sag"
+        ]
+      },
+      "level_line": {
+        "props": [
+          "rope-sag",
+          "rope-taut"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/icicle-drips.webp",
+      "/assets/story-props/iron-anchor-ring.webp",
+      "/assets/story-props/rope-loop.webp",
+      "/assets/story-props/rope-sag.webp",
+      "/assets/story-props/rope-taut.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

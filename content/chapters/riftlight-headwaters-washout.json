@@ -2229,5 +2229,98 @@
     "npcVoices": {
       "Old Ossley": "He/him, frogfolk ferryman, few words and long pauses. Never cruel, never charges coins. No claim that the party met him in Gemfall."
     }
+  },
+  "presentation": {
+    "fights": [
+      {
+        "chapter": "riftlight-headwaters-washout",
+        "scene": "drake_fight",
+        "board": "ford",
+        "creature": "river_drake",
+        "introScenes": [
+          "drake_shallows"
+        ],
+        "backdrop": "scenes/riftlight/fight-headwaters-ford",
+        "props": [
+          "pickup-river-charm"
+        ],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed",
+          "recovery": "proud"
+        },
+        "victoryScene": "ledge_ahead",
+        "defeatScene": "drake_rescued",
+        "tileUrl": "/assets/fight-boards/fight_gravel_ford/tiles.png",
+        "terrainProps": [
+          "fight-wet-gravel",
+          "fight-grounded-floe"
+        ],
+        "rescueFigure": "",
+        "retreatDirection": -1,
+        "activeUrl": "/assets/entities/river_drake/warning.png",
+        "retreatUrl": "/assets/entities/river_drake/shooed.png",
+        "outcomeCast": {
+          "victory": [],
+          "defeat": [
+            {
+              "figure": "entities/river_drake",
+              "name": "Young river drakes",
+              "count": 2
+            }
+          ]
+        }
+      }
+    ],
+    "interactions": {
+      "floe_hop": {
+        "props": [
+          "moving-floe",
+          "water-surge"
+        ]
+      },
+      "jam_hold": {
+        "props": [
+          "relay-log",
+          "rope-taut"
+        ]
+      },
+      "scarf_pass": {
+        "props": [
+          "relay-scarf"
+        ]
+      },
+      "knob_toss": {
+        "props": [
+          "rope-loop",
+          "ice-knob"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/entities/river_drake/proud.png",
+      "/assets/entities/river_drake/shooed.png",
+      "/assets/entities/river_drake/warning.png",
+      "/assets/fight-boards/fight_gravel_ford/tiles.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/fight-grounded-floe.webp",
+      "/assets/story-props/fight-wet-gravel.webp",
+      "/assets/story-props/ice-knob.webp",
+      "/assets/story-props/moving-floe.webp",
+      "/assets/story-props/pickup-river-charm.webp",
+      "/assets/story-props/relay-log.webp",
+      "/assets/story-props/relay-scarf.webp",
+      "/assets/story-props/rope-loop.webp",
+      "/assets/story-props/rope-taut.webp",
+      "/assets/story-props/water-surge.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

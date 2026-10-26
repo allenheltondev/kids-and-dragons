@@ -2856,5 +2856,141 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [
+      {
+        "chapter": "riftlight-ashspan-bridge",
+        "scene": "mimic_fight",
+        "board": "reedbank",
+        "creature": "mire_mimic",
+        "introScenes": [
+          "plank_pile"
+        ],
+        "backdrop": "scenes/riftlight/ashspan-broken-deck",
+        "props": [
+          "fight-disguised-planks",
+          "pickup-quickfoot-lace"
+        ],
+        "poses": {
+          "intro": "ordinary",
+          "retreat": "shooed",
+          "little": "little"
+        },
+        "victoryScene": "mimic_won",
+        "defeatScene": "mimic_shooed",
+        "tileUrl": "/assets/fight-boards/fight_ferry_landing/tiles.png",
+        "terrainProps": [
+          "fight-landing-ramp",
+          "fight-mooring-post",
+          "fight-plank-edge"
+        ],
+        "rescueFigure": "ossley_pole_tip",
+        "retreatDirection": 1,
+        "activeUrl": "/assets/entities/mire_mimic/assembled.png",
+        "retreatUrl": "/assets/entities/mire_mimic/shooed.png",
+        "outcomeCast": {
+          "victory": [
+            {
+              "figure": "cast/old_ossley",
+              "name": "Old Ossley"
+            },
+            {
+              "figure": "cast/tilly",
+              "name": "Tilly"
+            },
+            {
+              "figure": "cast/bryn",
+              "name": "Bryn"
+            }
+          ],
+          "defeat": [
+            {
+              "figure": "cast/ossley_pole_tip",
+              "name": "Old Ossley"
+            },
+            {
+              "figure": "cast/tilly",
+              "name": "Tilly"
+            },
+            {
+              "figure": "cast/bryn",
+              "name": "Bryn"
+            }
+          ]
+        }
+      }
+    ],
+    "interactions": {
+      "ferry_dock": {
+        "props": [
+          "ferry-boat",
+          "fight-mooring-post"
+        ]
+      },
+      "unload_relay": {
+        "props": [
+          "relay-plank",
+          "relay-plank-cracked"
+        ]
+      },
+      "carry_beam": {
+        "props": [
+          "carry-beam"
+        ]
+      },
+      "duck_play": {
+        "props": [
+          "oat-crumbs"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/cast/duckling_crumbs/assembled.png",
+      "/assets/cast/duckling_heap/assembled.png",
+      "/assets/cast/duckling_peeping/assembled.png",
+      "/assets/cast/duckling_yawning/assembled.png",
+      "/assets/cast/kid_kicking/assembled.png",
+      "/assets/cast/ossley_pole_tip/assembled.png",
+      "/assets/entities/mire_mimic/assembled.png",
+      "/assets/entities/mire_mimic/little.png",
+      "/assets/entities/mire_mimic/shooed.png",
+      "/assets/fight-boards/fight_ferry_landing/tiles.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/carry-beam.webp",
+      "/assets/story-props/ferry-boat.webp",
+      "/assets/story-props/fight-disguised-planks.webp",
+      "/assets/story-props/fight-landing-ramp.webp",
+      "/assets/story-props/fight-mooring-post.webp",
+      "/assets/story-props/fight-plank-edge.webp",
+      "/assets/story-props/oat-crumbs.webp",
+      "/assets/story-props/pickup-quickfoot-lace.webp",
+      "/assets/story-props/relay-plank-cracked.webp",
+      "/assets/story-props/relay-plank.webp"
+    ],
+    "reactions": {
+      "carry_beam": {
+        "onFailure": "kid_kicking"
+      },
+      "duck_play": {
+        "defaultFigure": "duckling_heap",
+        "options": {
+          "crumbs": "duckling_crumbs",
+          "pet": "duckling_heap",
+          "hum": "duckling_heap"
+        }
+      }
+    },
+    "castPoses": {
+      "ferry_dock": {
+        "cast/old_ossley": "ossley_pole_tip"
+      }
+    }
   }
 }

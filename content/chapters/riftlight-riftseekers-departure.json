@@ -2021,5 +2021,69 @@
       "name": "Listening Chime",
       "text": "Near a rift: sour means not ready; an echo means it stays open and offers a way back."
     }
+  },
+  "presentation": {
+    "fights": [],
+    "interactions": {
+      "sledge_lift": {
+        "props": [
+          "relay-trunk",
+          "relay-barrel",
+          "relay-sack"
+        ]
+      },
+      "ring_sort": {
+        "props": [
+          "ring-case",
+          "clue-scrap"
+        ]
+      },
+      "trial_echo": {
+        "props": [
+          "standing-rings",
+          "note-low",
+          "note-middle",
+          "note-high"
+        ]
+      },
+      "camp_play": {
+        "props": [
+          "wind-blanket",
+          "camp-firepit",
+          "barley-tea"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/cast/lead_goat_bell/assembled.png",
+      "/assets/cast/olivia_blanket/assembled.png",
+      "/assets/cast/seren_listening/assembled.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/barley-tea.webp",
+      "/assets/story-props/camp-firepit.webp",
+      "/assets/story-props/clue-scrap.webp",
+      "/assets/story-props/note-high.webp",
+      "/assets/story-props/note-low.webp",
+      "/assets/story-props/note-middle.webp",
+      "/assets/story-props/relay-barrel.webp",
+      "/assets/story-props/relay-sack.webp",
+      "/assets/story-props/relay-trunk.webp",
+      "/assets/story-props/ring-case.webp",
+      "/assets/story-props/standing-rings.webp",
+      "/assets/story-props/wind-blanket.webp"
+    ],
+    "reactions": {},
+    "castPoses": {
+      "trial_echo": {
+        "cast/seren_wisp": "seren_listening",
+        "cast/lady_olivia": "olivia_blanket"
+      }
+    }
   }
 }
