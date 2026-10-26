@@ -10,6 +10,9 @@ export async function openPlayerTask(page: Page): Promise<void> {
     })
     .and(page.locator("button:not(.choice)"));
   if (await entry.isVisible().catch(() => false)) {
-    await entry.click({ timeout: 5000 });
+    // A refreshed phone can still be settling its scroll container while the
+    // other live surfaces render. Use Playwright's normal action timeout so
+    // it can finish scrolling and checking stability before tapping.
+    await entry.click();
   }
 }

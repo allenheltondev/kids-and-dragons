@@ -1,5 +1,5 @@
 {
-  "$comment": "Gemfall beat 1, The Spark. Story: docs/campaigns/gemfall.md §1. Wiring: docs/campaigns/gemfall-authoring.md. Must set on every path to every ending: exactly one motive_* (choice_why_north, which every path passes through) and exactly one of ember_sold / ember_kept (choice_ember, which every path passes through). The six motive votes each land on a short result scene (scene_motive_*) before the docks, so the vote is seen to matter at the table. No combat: the Exchange is people, prices and promises. Expansion: the prologue ends on a vote (what the party was doing on the docks that night), and each pick pays off later in the chapter: the lamps open Old Wick's path over the Long Bridge, the oranges buy the sailors' rumors, the sardine feeds the gull. Further episodes: the jammed Long Bridge, the Griffin Post (whose friends can vouch for the stone), the gull, Mrs. Tuft's provision barge, Mortar's goodbye (whose word gets you hired by Hesper), and the North Gate on the way out. Second pass: a selkie family arriving on the quay (help them, and they make room for you when the Empty Chair inn is full) and the full inn itself.",
+  "$comment": "Gemfall beat 1, The Spark. Story: docs/campaigns/gemfall.md §1. Wiring: docs/campaigns/gemfall-authoring.md. Must set on every path to every ending: exactly one motive_* (choice_why_north, which every path passes through) and exactly one of ember_sold / ember_kept (choice_ember, which every path passes through). The six motive votes each land on a short result scene (scene_motive_*) before the docks, so the vote is seen to matter at the table. Mostly people, prices and promises, with one gentle fight on the spine: two wisps drawn to the warm Ember Facet tangle the quay lamps (scene_quay_wisps, encounter_quay_wisps), which every road walks between the tavern and Madame Fenn; a lost fight is a cocoa rescue that rejoins at choice_ember, never a setback. Expansion: the prologue ends on a vote (what the party was doing on the docks that night), and each pick pays off later in the chapter: the lamps open Old Wick's path over the Long Bridge, the oranges buy the sailors' rumors, the sardine feeds the gull. Further episodes: the jammed Long Bridge, the Griffin Post (whose friends can vouch for the stone), the gull, Mrs. Tuft's provision barge, Mortar's goodbye (whose word gets you hired by Hesper), and the North Gate on the way out. Second pass: a selkie family arriving on the quay (help them, and they make room for you when the Empty Chair inn is full) and the full inn itself. Interactions on the spine: the pear line (relay), the letters (timing), Mrs. Tuft's jar tray (balance) and the lantern pole (cooperate).",
   "id": "gemfall-01",
   "campaignId": "gemfall",
   "index": 1,
@@ -383,6 +383,13 @@
           "icon": "boot",
           "requiresSpecies": "bigfoot",
           "goto": "scene_long_bridge_wade"
+        },
+        {
+          "id": "duskrunner_lead",
+          "label": "Have a duskrunner lead us through the crowd",
+          "icon": "quick",
+          "requiresClass": "duskrunner",
+          "goto": "check_bridge_squeeze"
         }
       ],
       "art": "scenes/gemfall/exchange-long-bridge"
@@ -756,11 +763,11 @@
       ],
       "roller": "all",
       "onSuccess": {
-        "goto": "scene_docks",
+        "goto": "interaction_quay_line",
         "narration": "Trunks, bundles, a rocking chair and a fishbowl with a very calm fish in it: you carry the lot up the hill without dropping a thing. The selkies take a room at the Empty Chair, and the five children wave from the window until you turn the corner."
       },
       "onFailure": {
-        "goto": "scene_docks",
+        "goto": "interaction_quay_line",
         "narration": "Halfway up the hill the biggest trunk pops open, and out pour about a hundred knitted socks. All five children help you chase them down the street. It takes ages, and it is the most fun anybody has had all week. The selkies take a room at the Empty Chair, socks and all."
       },
       "art": "scenes/gemfall/exchange-docks"
@@ -779,7 +786,7 @@
           "id": "on",
           "label": "Wave goodbye and head for the docks",
           "icon": "scroll",
-          "goto": "scene_docks"
+          "goto": "interaction_quay_line"
         }
       ]
     },
@@ -797,7 +804,7 @@
           "id": "on",
           "label": "Head down to the docks",
           "icon": "leaf",
-          "goto": "scene_docks"
+          "goto": "interaction_quay_line"
         }
       ]
     },
@@ -1109,7 +1116,7 @@
           "id": "pocket",
           "label": "Pick it up and pocket it",
           "icon": "hand",
-          "goto": "scene_gull_dive"
+          "goto": "interaction_letters"
         },
         {
           "id": "whose",
@@ -1140,7 +1147,7 @@
           "id": "on",
           "label": "Pocket it, and wave him off",
           "icon": "hand",
-          "goto": "scene_gull_dive"
+          "goto": "interaction_letters"
         }
       ]
     },
@@ -1152,7 +1159,7 @@
           "id": "to_tavern",
           "label": "Pocket it and head for the Empty Chair",
           "icon": "hand",
-          "goto": "scene_gull_dive"
+          "goto": "interaction_letters"
         }
       ]
     },
@@ -1303,7 +1310,7 @@
           "id": "shopping",
           "label": "Leave her be. There are gem-buyers to see",
           "icon": "gem",
-          "goto": "choice_ember"
+          "goto": "scene_quay_wisps"
         }
       ],
       "art": "scenes/gemfall/empty-chair-tavern"
@@ -1355,7 +1362,7 @@
           "id": "thank_her",
           "label": "Thank her, and think about it",
           "icon": "heart",
-          "goto": "choice_ember"
+          "goto": "scene_quay_wisps"
         }
       ]
     },
@@ -1595,7 +1602,7 @@
           "id": "on",
           "label": "Climb the steps to the cobbler",
           "icon": "cake",
-          "goto": "scene_market"
+          "goto": "interaction_jars"
         }
       ],
       "art": "scenes/gemfall/outfitters-steps"
@@ -1614,7 +1621,7 @@
           "id": "on",
           "label": "Climb the steps to the cobbler",
           "icon": "potion",
-          "goto": "scene_market"
+          "goto": "interaction_jars"
         }
       ],
       "art": "scenes/gemfall/outfitters-steps"
@@ -1633,7 +1640,7 @@
           "id": "on",
           "label": "Climb the steps to the cobbler",
           "icon": "lantern",
-          "goto": "scene_market"
+          "goto": "interaction_jars"
         }
       ],
       "art": "scenes/gemfall/outfitters-steps"
@@ -1652,7 +1659,7 @@
           "id": "on",
           "label": "Pocket the stone and climb the steps",
           "icon": "gem",
-          "goto": "scene_market"
+          "goto": "interaction_jars"
         }
       ],
       "art": "scenes/gemfall/outfitters-steps"
@@ -2281,6 +2288,13 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "thornguard_watch",
+          "label": "Have a thornguard stand watch over the lantern wagon",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "scene_caravan_yard_thornguard"
         }
       ],
       "art": "scenes/gemfall/caravan-yard"
@@ -2443,7 +2457,7 @@
           "id": "roll_north",
           "label": "Roll north",
           "icon": "travel",
-          "goto": "scene_north_gate"
+          "goto": "interaction_lantern_pole"
         }
       ],
       "onEnter": [
@@ -2468,7 +2482,7 @@
           "id": "roll_north_turnips",
           "label": "Roll north anyway",
           "icon": "travel",
-          "goto": "scene_north_gate"
+          "goto": "interaction_lantern_pole"
         }
       ],
       "onEnter": [
@@ -2586,6 +2600,212 @@
       "narration": "That night the caravan camps in the first of the Sunward Fields, where the grass smells of honey and everybody's boots still smell of the city. Far to the north the sky glows faintly red, like a coal somebody forgot to put out. Share out your things, patch each other up, and get some sleep. The road starts properly tomorrow.",
       "heal": 4,
       "choices": []
+    },
+    "interaction_quay_line": {
+      "type": "interaction",
+      "narration": "Along the quay, a line of dockhands is passing crates of pears up from a ship, and the line has a gap exactly where you are standing. \"Don't just stand there!\" bellows the dockmaster. \"Every pair of hands is a pair of hands! Pass them along, and nobody drops a pear!\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the crate, then pass it down the line.",
+        "actionLabel": "Pass the crate",
+        "objectLabel": "A crate of pears"
+      },
+      "onSuccess": {
+        "goto": "scene_docks",
+        "narration": "Not one pear drops. The last crate reaches the top of the quay, and the dockmaster tips his hat so far forward it falls off. You each get a pear for the walk to the docks, and it is the best pear in the Exchange, which is saying something this week."
+      },
+      "onFailure": {
+        "goto": "scene_docks",
+        "narration": "One crate slips, and a pear rolls all the way down the quay with a dockhand running after it. Everybody cheers when he catches it. You each get a slightly bruised pear for the walk to the docks."
+      },
+      "onAssisted": {
+        "goto": "scene_docks",
+        "narration": "The dockmaster joins the gap in the line himself, and the crates go by smooth as a river. You each get a pear for the walk to the docks."
+      },
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "interaction_letters": {
+      "type": "interaction",
+      "narration": "The courier is long gone, but the letters are not. They flutter down the street toward the canal, and a clerk from the Griffin Post runs up, waving both arms. \"Catch them before they get wet!\" she squawks. \"Every one of those is somebody's good news!\" A letter drifts by, and another. Wait for the right moment, then grab.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the letter to float close, then grab it.",
+        "actionLabel": "Grab!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_gull_dive",
+        "narration": "You snatch the last letter an inch above the water. The clerk stamps it DELIVERED, even though it is not, and hurries off with her arms full of good news. You set off again, pleased with yourselves."
+      },
+      "onFailure": {
+        "goto": "scene_gull_dive",
+        "narration": "The last letter takes a bath in the canal. The clerk fishes it out with a ladle and decides it now smells of canal, which is a very fine smell for a letter to the harbor master. She hurries off, and you set off again."
+      },
+      "onAssisted": {
+        "goto": "scene_gull_dive",
+        "narration": "The clerk grabs the last letter herself, and stamps it DELIVERED, even though it is not. She hurries off with her arms full of good news, and you set off again."
+      },
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "interaction_jars": {
+      "type": "interaction",
+      "narration": "The barge bobs, and a whole shelf of Mrs. Tuft's jars starts to slide toward the water. \"Quick, the tray!\" she says, shoving a wide wooden tray into your hands. It is packed with jars of every size, all of them one wobble from the canal. \"Carry it up the Outfitters' Steps. Level. Everything comes in a jar, and everything has to get there in one.\"",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Everyone lift or lower your side until the jars sit level, then carry the tray.",
+        "actionLabel": "Carry the tray",
+        "objectLabel": "A tray of wobbling jars"
+      },
+      "onSuccess": {
+        "goto": "scene_market",
+        "narration": "Not a jar clinks. Mrs. Tuft counts them twice, finds every one, and writes a small tick in the air with her pencil. \"Good hands,\" she says, which from a grocer is a lot. You carry the tray to the top of the steps."
+      },
+      "onFailure": {
+        "goto": "scene_market",
+        "narration": "The jars clink, tilt and slide, and one of them goes for a swim. Mrs. Tuft fishes it out with a net. \"It was the pickled kind,\" she says. \"It will not mind.\" You carry the rest of the tray to the top of the steps."
+      },
+      "onAssisted": {
+        "goto": "scene_market",
+        "narration": "Mrs. Tuft grabs one corner of the tray, and the jars settle at once. You carry it to the top of the steps together."
+      },
+      "cast": [
+        {
+          "figure": "cast/mrs_tuft",
+          "name": "Mrs. Tuft"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-quay"
+    },
+    "interaction_lantern_pole": {
+      "type": "interaction",
+      "narration": "The streets get narrower as the wagons roll toward the North Gate, and the lantern wagon's tall pole of lanterns catches on a washing line. Somebody's long underwear flaps from the top like a flag. \"Hold the pole steady,\" calls Hesper, \"and somebody unhook it, gently. Those lanterns are older than I am.\"",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends hold the pole steady while someone unhooks the washing line.",
+        "actionLabel": "Unhook the line",
+        "supportLabel": "Steady the pole"
+      },
+      "onSuccess": {
+        "goto": "scene_north_gate",
+        "narration": "Click. The line comes free, and the long underwear floats down onto a very surprised goat. Not a lantern swings. Hesper nods once, and the wagons roll on to the North Gate."
+      },
+      "onFailure": {
+        "goto": "scene_north_gate",
+        "narration": "The pole sways, the lanterns chime like bells, and the long underwear comes down on Hesper's head. She wears it with great dignity all the way to the North Gate."
+      },
+      "onAssisted": {
+        "goto": "scene_north_gate",
+        "narration": "Hesper holds the pole steady herself and the line comes free. Not a lantern swings, and the wagons roll on to the North Gate."
+      },
+      "cast": [
+        {
+          "figure": "cast/hesper",
+          "name": "Hesper Longstride",
+          "size": "large"
+        }
+      ],
+      "art": "scenes/gemfall/caravan-yard"
+    },
+    "scene_quay_wisps": {
+      "type": "story",
+      "narration": "The dusk lamps are being lit along the quay, and the thing in your pocket is humming louder than before. Two wisps, tiny, pale and giggling, have followed the warm red stone all the way from the tavern door. They think it is a very small sun. They tangle themselves in the lamp strings, and a ferryman's rope comes loose, and his little ferry starts to drift. \"Shoo them off my lamps!\" he cries. \"Before I am halfway to the sea!\"",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp",
+          "size": "tiny",
+          "count": 2
+        }
+      ],
+      "choices": [
+        {
+          "id": "shoo",
+          "label": "Shoo the wisps off the lamps",
+          "icon": "swords",
+          "goto": "encounter_quay_wisps"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-quay"
+    },
+    "encounter_quay_wisps": {
+      "type": "encounter",
+      "map": "reedbank",
+      "narration": "The wisps zip around the lamp strings, giggling and tugging. Drive them off before the ferry drifts away.",
+      "enemies": [
+        {
+          "id": "wisp",
+          "name": "Lantern Wisp",
+          "creature": "will_o_wisp",
+          "count": 2
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_quay_wisps_shooed",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "songbird_ribbon",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_quay_wisps_scattered",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_quay_wisps_shooed": {
+      "type": "story",
+      "narration": "The wisps squeak, wobble and bob away over the water, still giggling. The ferryman hauls his rope back in, hand over hand, and ties the ferry up with a bow. \"Free light,\" he says, and unties a bright ribbon from his best lamp string. \"Take it. For luck, and for the shooing.\" Then he ties the lamp strings back up, and it turns out he has been hanging them in the wrong order for years.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Head along the quay to the gem-buyers",
+          "icon": "gem",
+          "goto": "choice_ember"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-quay"
+    },
+    "scene_quay_wisps_scattered": {
+      "type": "story",
+      "narration": "The wisps swirl until the whole quay is dizzy sparkles. The ferryman bangs his tin kettle against the rail, loud and honest, and the wisps pop away over the water like soap bubbles. He hauls the ferry back in and presses hot cocoa into everybody's hands. Nobody gets a ribbon tonight, but the lamps are still lit, and the cocoa is excellent.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Head along the quay to the gem-buyers",
+          "icon": "gem",
+          "goto": "choice_ember"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-quay"
+    },
+    "scene_caravan_yard_thornguard": {
+      "type": "story",
+      "narration": "The thornguard in your band plants both boots beside the lantern wagon and does not move. A pickpocket takes one look, remembers a very important appointment elsewhere, and leaves. Hesper watches all this out of the corner of one eye. \"Steady,\" she says, which from a centaur is a medal. She hands over a long pole with a hook on the end.",
+      "cast": [
+        {
+          "figure": "cast/hesper",
+          "name": "Hesper Longstride",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Take up your post",
+          "icon": "shield",
+          "goto": "scene_hired"
+        }
+      ],
+      "art": "scenes/gemfall/caravan-yard"
     }
   },
   "voiceGuide": {

@@ -17,9 +17,15 @@ import {
   createRunState,
   effectiveProgress,
   isNewHero,
+  currentActor,
+  currentActorId,
+  interactionActor,
   keepClassIntent,
+  legalActions,
+  legalMoves,
   makeRng,
   newCharacter,
+  positionOf,
   type Campaign,
   type Chapter,
   type ClientIntent,
@@ -369,6 +375,40 @@ async function playOpening(
       await t.must(s.party.find((m) => m.character.id === prompt.characterId)!.playerId, { type: "ROLL" });
     } else if (prompt?.kind === "item_swap") {
       await t.must(s.party.find((m) => m.character.id === prompt.characterId)!.playerId, { type: "RESOLVE_ITEM_SWAP", dropItemId: null });
+    } else if (prompt?.kind === "interaction") {
+      // A story interaction: take the untimed helping hand, then continue (as playthrough-driver.ts does).
+      const actor = interactionActor(prompt, s.party.filter((m) => m.connected).map((m) => m.playerId)) ?? s.party[0]!.playerId;
+      await t.must(actor, { type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, action: prompt.phase === "result" ? ("continue" as const) : ("assist" as const) });
+    } else if (prompt?.kind === "ready") {
+      // Every phone readies up before the board goes up.
+      for (const playerId of prompt.forPlayerIds) await t.must(playerId, { type: "READY", ready: true });
+    } else if (s.phase === "encounter" && s.encounter) {
+      // A fight, played as playthrough-driver.ts plays one: attack what is in reach, else walk toward the nearest foe.
+      const encounter = s.encounter;
+      const holder = encounter.combatants.find((c) => c.id === currentActorId(encounter));
+      const actor = currentActor(encounter);
+      const owner = (id: string) => s.party.find((m) => m.character.id === id)!.playerId;
+      if (holder && holder.side === "party" && !actor) {
+        await t.must(owner(holder.id), { type: "END_TURN" });
+      } else if (!actor || actor.side !== "party") {
+        await t.must("p_1", { type: "ADVANCE" });
+      } else {
+        const ctx = { rules: content.rules(), abilities: content.abilities(), rng: makeRng("legal-actions") };
+        const foes = encounter.combatants.filter((c) => c.side !== "party" && !c.down).map((c) => c.id);
+        const attack = legalActions(encounter, ctx).find((a) => a.targets.some((x) => foes.includes(x)));
+        const swung = attack && !encounter.actionTaken
+          ? (await t.send(owner(actor.id), { type: "COMBAT_ACTION", abilityId: attack.abilityId, targetId: attack.targets.find((x) => foes.includes(x))! })).ok
+          : false;
+        if (!swung) {
+          const goals = foes.map((id) => positionOf(encounter, id)).filter((g) => g !== null);
+          const moves = legalMoves(encounter);
+          const here = positionOf(encounter, actor.id)!;
+          const distance = (c: { x: number; y: number }) => Math.min(...goals.map((g) => Math.abs(g!.x - c.x) + Math.abs(g!.y - c.y)));
+          const best = moves.length && goals.length && encounter.stepsLeft > 0 && !encounter.actionTaken ? [...moves].sort((a, b) => distance(a) - distance(b))[0]! : undefined;
+          if (best && distance(best) < distance(here)) await t.must(owner(actor.id), { type: "MOVE", to: { x: best.x, y: best.y } });
+          else await t.must(owner(actor.id), { type: "END_TURN" });
+        }
+      }
     } else if (prompt?.kind === "choice") {
       await t.choose(prompt.options[0]!.id);
     } else {
