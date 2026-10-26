@@ -13,11 +13,21 @@ afterEach(() => { cleanup(); useGameStore.setState(initial, true); document.docu
 const precision: InteractionSpec = { kind: "precision", cue: "Ring the bell", actionLabel: "Toss!", target: 0.5, width: 0.3, periodMs: 4000 };
 function seed(spec: InteractionSpec = precision, extra: Partial<InteractionPrompt> = {}) {
   const state = createRunState({ runId: "r", roomCode: "TEST", mode: "party", now: new Date().toISOString() });
+  state.chapterId = "test";
+  state.sceneId = "test";
   state.party = [{ playerId: "p", character: resolveCharacter(makeCharacter(), makeRules(), makeItems()), connected: true, ready: true, down: false, hp: 10 }];
   state.prompt = { kind: "interaction", sceneId: "test", openedSeq: 4, attempt: 0, spec, playerIds: ["p"], actorId: "p", phase: "active", relaxed: false, supports: {}, startedAt: new Date().toISOString(), ...extra };
   const send = vi.fn(async (_intent: ClientIntent) => true);
   useGameStore.setState({ state, send, synced: true, session: { playerId: "p", runId: "r", roomCode: "TEST", mode: "party", sessionToken: "test" } });
   return send;
+}
+
+function authoredChapter(props: { props?: string[] } = { props: [] }) {
+  const store = useGameStore.getState();
+  useGameStore.setState({
+    state: { ...store.state!, chapterId: "test" },
+    chapter: { id: "test", presentation: { fights: [], interactions: { test: { props: props.props ?? [] } }, warmUrls: [] } } as never,
+  });
 }
 
 describe("reusable story controls", () => {
@@ -27,6 +37,68 @@ describe("reusable story controls", () => {
     expect(screen.getByText("The glow waits under: Right.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Look under: Right" }));
     expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "answer", answer: ["2"] }));
+  });
+  it("uses one authored visual per moving tracking cover without revealing the answer", () => {
+    seed({ kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Middle", "Right"], start: 0, swaps: [[0, 2]], stepMs: 1000, icons: ["snow-mound", "relay-sack", "wind-bells"] }, { startedAt: new Date(Date.now() - 1500).toISOString() });
+    authoredChapter();
+    const { container } = render(<StoryInteractionWorld />);
+    expect(container.querySelectorAll(".painted-cover img[alt='']")).toHaveLength(3);
+    expect(container.querySelector(".painted-cover__peek")).toBeNull();
+    expect(screen.getByText("Left")).toBeTruthy();
+  });
+  it("reveals the tracked cover in reduced motion while keeping its words", () => {
+    seed({ kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000, icons: ["snow-mound", "wind-bells"] });
+    authoredChapter();
+    document.documentElement.setAttribute("data-motion", "reduced");
+    render(<StoryInteractionWorld />);
+    expect(document.querySelectorAll(".painted-cover__peek")).toHaveLength(1);
+    expect(screen.getByText("The glow waits under: Right.")).toBeTruthy();
+  });
+  it("renders built-in painted icons as tracking covers", () => {
+    seed({ kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000, icons: ["star", "snow-mound"] });
+    authoredChapter();
+    const { container } = render(<StoryInteractionWorld />);
+    expect(container.querySelector(".painted-cover .kad-icon--painted")).toBeTruthy();
+    expect(container.querySelector(".painted-cover img[src*='star']")).toBeTruthy();
+  });
+  it.each([
+    [{ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "bundle", prop: "relay-sack" }, "relay-sack"],
+    [{ kind: "balance", cue: "Steady", actionLabel: "Lift", objectLabel: "basket", prop: "rope-basket" }, "rope-basket"],
+    [{ kind: "cooperate", cue: "Hold", supportLabel: "Hold", actionLabel: "Go", prop: "rope-loop" }, "rope-loop"],
+    [{ kind: "timing", cue: "Wait", actionLabel: "Jump", target: 0.5, width: 0.3, periodMs: 4000, prop: "carved-stone" }, "carved-stone"],
+  ] as const)("shows the authored %s prop on the shared display", (spec, id) => {
+    seed(spec as InteractionSpec);
+    authoredChapter();
+    const { container } = render(<StoryInteractionWorld />);
+    expect(container.querySelector(`img[src="/assets/story-props/${id}.webp"]`)).toBeTruthy();
+  });
+  it("gives an authored prop precedence over the chapter's scene catalog", () => {
+    seed({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "bundle", prop: "relay-sack" });
+    authoredChapter({ props: ["relay-log"] });
+    const { container } = render(<StoryInteractionWorld />);
+    expect(container.querySelector(`img[src="/assets/story-props/relay-sack.webp"]`)).toBeTruthy();
+    expect(container.querySelector(`img[src="/assets/story-props/relay-log.webp"]`)).toBeNull();
+  });
+  it("preserves catalog-only Riftlight visuals when content has no prop", () => {
+    seed({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "bundle" });
+    authoredChapter({ props: ["relay-log"] });
+    const { container } = render(<StoryInteractionWorld />);
+    expect(container.querySelector(`img[src="/assets/story-props/relay-log.webp"]`)).toBeTruthy();
+  });
+  it("hides a painted interaction image if its asset fails at runtime", () => {
+    seed({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "bundle", prop: "not-loaded" });
+    authoredChapter();
+    const { container } = render(<StoryInteractionWorld />);
+    const image = container.querySelector(".interaction-art__main") as HTMLImageElement;
+    expect(image).toBeTruthy();
+    fireEvent.error(image);
+    expect(image.style.visibility).toBe("hidden");
+  });
+  it("keeps the original text widget when neither content nor catalog art exists", () => {
+    seed({ kind: "balance", cue: "Steady", actionLabel: "Lift", objectLabel: "basket" });
+    const { container } = render(<StoryInteractionWorld />);
+    expect(screen.getByText("basket")).toBeTruthy();
+    expect(container.querySelector(".interaction-art")).toBeNull();
   });
   it("lets a player echo a repeated memory pattern using ordinary symbol buttons", async () => {
     const send = seed({ kind: "memory", cue: "Echo", actionLabel: "Send", options: [{ id: "star", label: "Star", icon: "star" }, { id: "leaf", label: "Leaf", icon: "leaf" }], answer: ["star", "leaf", "star"], stepMs: 1000 }, { relaxed: true });

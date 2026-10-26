@@ -805,6 +805,7 @@
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the branch while your friend fetches the ribbon.",
+        "prop": "rope-loop",
         "supportLabel": "Hold the branch",
         "actionLabel": "Fetch the ribbon"
       },

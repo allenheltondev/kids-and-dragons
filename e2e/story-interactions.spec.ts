@@ -67,9 +67,17 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     await expect(controls(two).getByRole("button", { name: "See what happens next" })).toBeVisible();
     await controls(two).getByRole("button", { name: "See what happens next" }).click();
     await expect(world).toContainText("Hold the branch");
+    await expect(tv.locator(".interaction-art__main").first()).toHaveAttribute("src", "/assets/story-props/rope-loop.webp");
+    await expect(one.locator(".interaction-art__main").first()).toHaveAttribute("src", "/assets/story-props/rope-loop.webp");
     await controls(two).getByLabel("Relaxed play").check();
     await controls(two).getByRole("button", { name: "We’re ready" }).click();
     await expect(controls(two).getByRole("button", { name: "Fetch the ribbon" })).toBeDisabled();
+    await one.setViewportSize({ width: 390, height: 640 });
+    await controls(one).getByRole("button", { name: "Hold the branch", exact: true }).scrollIntoViewIfNeeded();
+    const shortPhoneAction = await controls(one).getByRole("button", { name: "Hold the branch", exact: true }).boundingBox();
+    expect(shortPhoneAction).not.toBeNull();
+    expect(shortPhoneAction!.y).toBeGreaterThanOrEqual(0);
+    expect(shortPhoneAction!.y + shortPhoneAction!.height).toBeLessThanOrEqual(640);
     await controls(one).getByRole("button", { name: "Hold the branch", exact: true }).click();
     await controls(two).getByRole("button", { name: "Fetch the ribbon" }).click();
     await expect(world).toContainText("You did it together");

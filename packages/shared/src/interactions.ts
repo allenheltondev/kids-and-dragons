@@ -1,12 +1,13 @@
 /** Reusable story mechanics. All completion and branching is decided by the engine. */
 export type InteractionSpec =
-  | { kind: "precision" | "timing"; cue: string; actionLabel: string; target: number; width: number; periodMs: number }
-  | { kind: "tracking"; cue: string; actionLabel: string; covers: string[]; start: number; swaps: [number, number][]; stepMs: number }
+  | { kind: "precision"; cue: string; actionLabel: string; target: number; width: number; periodMs: number }
+  | { kind: "timing"; cue: string; actionLabel: string; target: number; width: number; periodMs: number; prop?: string }
+  | { kind: "tracking"; cue: string; actionLabel: string; covers: string[]; start: number; swaps: [number, number][]; stepMs: number; icons?: string[] }
   | { kind: "memory"; cue: string; actionLabel: string; options: InteractionOption[]; answer: string[]; stepMs: number }
-  | { kind: "balance"; cue: string; actionLabel: string; objectLabel: string }
-  | { kind: "relay"; cue: string; actionLabel: string; objectLabel: string }
+  | { kind: "balance"; cue: string; actionLabel: string; objectLabel: string; prop?: string }
+  | { kind: "relay"; cue: string; actionLabel: string; objectLabel: string; prop?: string }
   | { kind: "play"; cue: string; actionLabel: string; options: (InteractionOption & { reaction: string })[]; participation: "any" | "everyone"; stages?: string[] }
-  | { kind: "cooperate"; cue: string; supportLabel: string; actionLabel: string }
+  | { kind: "cooperate"; cue: string; supportLabel: string; actionLabel: string; prop?: string }
   | { kind: "sequence"; cue: string; actionLabel: string; options: { id: string; label: string; icon: string }[]; answer: string[]; clues: string[] };
 
 export interface InteractionOption { id: string; label: string; icon: string }
@@ -57,7 +58,7 @@ export function precisionPosition(elapsedMs: number, periodMs: number): number {
   return phase <= 1 ? phase : 2 - phase;
 }
 
-export function precisionSuccess(spec: Extract<InteractionSpec, { kind: "precision" | "timing" }>, position: number, relaxed: boolean): boolean {
+export function precisionSuccess(spec: Extract<InteractionSpec, { kind: "precision" } | { kind: "timing" }>, position: number, relaxed: boolean): boolean {
   return Number.isFinite(position) && position >= 0 && position <= 1 &&
     Math.abs(position - spec.target) <= Math.min(1, spec.width * (relaxed ? 2 : 1)) / 2;
 }

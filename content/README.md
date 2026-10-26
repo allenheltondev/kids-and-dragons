@@ -30,13 +30,13 @@ All three kinds require `cue` and `actionLabel`:
 | Kind | Additional fields | Reusable behavior |
 | --- | --- | --- |
 | `precision` | `target` (0–1), `width` (0.05–1), `periodMs` (2000–20000) | Repeating aim marker; relaxed play doubles target width. |
-| `cooperate` | `supportLabel` | Friends hold supports while the acting hero completes the action; solo and relaxed play use props. |
+| `cooperate` | `supportLabel`; optional `prop` | Friends hold supports while the acting hero completes the action; solo and relaxed play use props. A painted prop can illustrate the moment. |
 | `sequence` | `options` with unique `id`, `label`, `icon`; `answer` as an ordered list of option ids; `clues` as shareable strings | Players share clues and assemble a sequence. Repeated option ids in an answer are allowed. |
-| `tracking` | `covers` (2–4 position labels), `start` (zero-based position), `swaps` (pairs of different position indexes), `stepMs` (800–5000) | Reveal a glow, move the covers, then choose its final position. Relaxed play reveals the final location. |
+| `tracking` | `covers` (2–4 position labels); optional `icons` (one visual id per cover); `start` (zero-based position), `swaps` (pairs of different position indexes), `stepMs` (800–5000) | Reveal a glow, move the covers, then choose its final position. Relaxed play reveals the final location. |
 | `memory` | `options`, `answer`, `stepMs` (600–5000) | Watch a symbol pattern and echo it. Repeats are allowed. Relaxed play keeps a reference visible. |
-| `timing` | Same fields as `precision` | A repeating wait/now signal for sneaking, jumping, or dodging. No deadline. |
-| `balance` | `objectLabel` | Every connected hero raises or lowers their side in quarter steps, aiming for the middle before carrying the object. Relaxed play allows a wider range. |
-| `relay` | `objectLabel` | Each connected hero catches and passes the object in turn. Disconnected receivers are skipped; solo play catches and sends to the destination. |
+| `timing` | Same fields as `precision`; optional `prop` | A repeating wait/now signal for sneaking, jumping, or dodging. No deadline. |
+| `balance` | `objectLabel`; optional `prop` | Every connected hero raises or lowers their side in quarter steps, aiming for the middle before carrying the object. Relaxed play allows a wider range. |
+| `relay` | `objectLabel`; optional `prop` | Each connected hero catches and passes the object in turn. Disconnected receivers are skipped; solo play catches and sends to the destination. |
 | `play` | `options` with `id`, `label`, `icon`, and `reaction`; `participation` (`any` or `everyone`); optional `stages` | Freely feed, pet, celebrate, or contribute to a shared scene. Optional stages advance on each tap, useful for waking a creature. |
 
 For `play`, every option immediately adds its authored reaction to the shared
@@ -51,6 +51,16 @@ props. Scenes can still use the existing cast and art system.
 More examples are available at the Practice Meadow picnic through **Try more
 meadow games**. Each optional game returns to Tansy’s closing scene so the
 practice stays short; the entire catalog is not required in one sitting.
+
+`prop` accepts an id from `storyProps.ids` in `assets/manifest.json`. Tracking
+`icons` accept story prop ids, registered `paintedIcons.ids`, and the built-in
+`Icon` names (including their aliases). An authored visual takes precedence
+over the chapter's scene-specific painted interaction; without either, the
+existing text and plain widget remain. Tracking icons are decorative covers;
+they never expose the hidden answer while the covers move. Art stays
+`aria-hidden`: labels and status words continue to carry the interaction's
+meaning. The Practice Meadow branch scene `first-steps-01` shows `prop` on a
+cooperative branch moment.
 
 Both `onSuccess` and `onFailure` must continue the story. `onAssisted` is optional,
 defaulting to `onSuccess`. Every branch supports normal narration, variants, and
