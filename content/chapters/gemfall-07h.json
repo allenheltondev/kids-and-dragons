@@ -3065,7 +3065,7 @@
     },
     "scene_echo_lost": {
       "type": "story",
-      "narration": "The echoes pile up until nobody can hear themselves think. Then the grandmother bangs two pots together, loud and honest, and the echo hunters lose the thread and slink away into the rocks. She wraps all of you in blankets and hands round hot milk. There is no whistle for anyone tonight, but the cutting is clear.",
+      "narration": "The echoes pile up until nobody can hear themselves think. Then the grandmother bangs two pots together, loud and honest, and the echo hunters lose the thread and slink away into the rocks. She wraps everyone in blankets and hands around hot milk. There is no whistle for anyone tonight, but the cutting is clear.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",

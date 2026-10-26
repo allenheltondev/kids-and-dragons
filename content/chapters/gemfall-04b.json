@@ -1711,7 +1711,7 @@
       "narration": "The hedge has let go of the prospectors, and now it is tidying up. It knits its branches into a neat green gate across the path, with one thorny latch in the middle, and sits there looking innocent. The path is on the other side. The gate will open for anyone who is polite about the latch.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends hold the branches apart while one of you slips the latch.",
+        "cue": "Friends hold the branches apart while someone slips the latch.",
         "actionLabel": "Slip the latch",
         "supportLabel": "Hold the branches apart"
       },
@@ -1918,8 +1918,8 @@
     },
     "encounter_logs": {
       "type": "encounter",
-      "map": "ford",
-      "narration": "The logs heave up out of the brook on long, muddy legs. There are two crossings, and each one has a mimic sitting on it. Make them let go of the bridge.",
+      "map": "reedbank",
+      "narration": "The logs heave up out of the brook on long, muddy legs. Two of the logs have a mimic sitting on them. Make them let go of the bridge.",
       "enemies": [
         {
           "id": "log",

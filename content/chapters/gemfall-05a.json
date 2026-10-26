@@ -1422,7 +1422,7 @@
       "narration": "Behind the tent, the apprentice is stretching a knotted string along the crack. \"Hold this end?\" she asks. \"It only reads true when it's tight. One hand reads the knots, everyone else pulls.\"",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends pull the string tight while one of you reads the knots.",
+        "cue": "Friends pull the string tight while someone reads the knots.",
         "actionLabel": "Read the knots",
         "supportLabel": "Pull the string tight"
       },

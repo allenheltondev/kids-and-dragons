@@ -2683,7 +2683,7 @@
       "narration": "The streets get narrower as the wagons roll toward the North Gate, and the lantern wagon's tall pole of lanterns catches on a washing line. Somebody's long underwear flaps from the top like a flag. \"Hold the pole steady,\" calls Hesper, \"and somebody unhook it, gently. Those lanterns are older than I am.\"",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends hold the pole steady while one of you unhooks the washing line.",
+        "cue": "Friends hold the pole steady while someone unhooks the washing line.",
         "actionLabel": "Unhook the line",
         "supportLabel": "Steady the pole"
       },

@@ -1763,7 +1763,7 @@
       "narration": "At the end of the new curve lies the last marker post, the tall one, as heavy as a barn door. \"One to steer, the rest to hold the ropes,\" says the road boss, tossing you a coil. \"Straight up, mind. A crooked post sends the whole relay the wrong way.\"",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends hold the ropes tight while one of you steers the post upright.",
+        "cue": "Friends hold the ropes tight while someone steers the post upright.",
         "actionLabel": "Steer the post up",
         "supportLabel": "Hold the ropes"
       },

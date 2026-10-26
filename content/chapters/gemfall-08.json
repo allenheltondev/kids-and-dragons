@@ -4,7 +4,7 @@
   "index": 8,
   "title": "Gemfall",
   "biome": "mount_red_sky",
-  "estimatedMinutes": 50,
+  "estimatedMinutes": 55,
   "xpAward": 120,
   "entry": "scene_tree_line",
   "plate": {
@@ -3290,7 +3290,7 @@
     "check_hear_titan": {
       "type": "interaction",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "You press your ear to the warm glass. The sounds arrive in pieces, one at a time, and every piece is part of the same question. Share what all of you hear, then put the sounds in order.",
+      "narration": "You press your ear to the warm glass. The sounds arrive in pieces, one at a time, and every piece is part of the same question. Share what everyone hears, then put the sounds in order.",
       "interaction": {
         "kind": "sequence",
         "cue": "Share what you hear, then choose the sounds in order.",
@@ -5569,7 +5569,7 @@
       "narration": "Above the wardens' post, the stair gives out into a steep chimney of warm rock. A rope hangs down it, and a sign says: ONE CLIMBER AT A TIME. EVERYBODY ELSE HOLDS THE ROPE. THIS MEANS YOU TOO. The top is very high, and very close to the clouds.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends hold the rope steady while one of you climbs.",
+        "cue": "Friends hold the rope steady while someone climbs.",
         "actionLabel": "Climb the rope",
         "supportLabel": "Hold the rope steady"
       },

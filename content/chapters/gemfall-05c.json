@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_rush"
   },
-  "estimatedMinutes": 48,
+  "estimatedMinutes": 42,
   "xpAward": 90,
   "entry": "scene_stones_line",
   "plate": {
@@ -1851,10 +1851,10 @@
     },
     "interaction_bell_cart": {
       "type": "interaction",
-      "narration": "Before the morning crowd gets any worse, the grandmothers wheel their loudest hand bell down to the stones on a little cart. One wheel has stuck in a rut. \"One of you steer!\" calls the small bell-code expert, hopping up and down. \"Everybody else push! Quickly, quickly, quickly!\"",
+      "narration": "Before the morning crowd gets any worse, the grandmothers wheel their loudest hand bell down to the stones on a little cart. One wheel has stuck in a rut. \"Somebody steer!\" calls the small bell-code expert, hopping up and down. \"Everybody push! Quickly, quickly, quickly!\"",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends push the cart while one of you steers it out of the rut.",
+        "cue": "Friends push the cart while someone steers it out of the rut.",
         "actionLabel": "Steer the cart",
         "supportLabel": "Push the cart"
       },

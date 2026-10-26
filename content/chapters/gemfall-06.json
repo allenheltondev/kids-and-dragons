@@ -4,7 +4,7 @@
   "index": 6,
   "title": "Ashfall",
   "biome": "red_sky_foothills",
-  "estimatedMinutes": 50,
+  "estimatedMinutes": 45,
   "xpAward": 90,
   "entry": "scene_arrival",
   "plate": {
@@ -2934,10 +2934,10 @@
     },
     "interaction_wagons": {
       "type": "interaction",
-      "narration": "At the bottom of the slope, the road is moving again, almost. The lead wagon has dropped a wheel into a deep rut, and forty more wagons are stacked up behind it, honking, if wagons could honk. The centaur drover waves you over. \"One of you steer,\" the drover calls. \"The rest of you push, and push together!\"",
+      "narration": "At the bottom of the slope, the road is moving again, almost. The lead wagon has dropped a wheel into a deep rut, and forty more wagons are stacked up behind it, honking, if wagons could honk. The centaur drover waves you over. \"Somebody steer,\" the drover calls. \"Everybody push, and push together!\"",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends push the wagon while one of you steers.",
+        "cue": "Friends push the wagon while someone steers.",
         "actionLabel": "Steer the wagon",
         "supportLabel": "Push the wagon"
       },

@@ -736,10 +736,10 @@
     },
     "check_block_jumpers": {
       "type": "interaction",
-      "narration": "The red scarves charge up the line, elbows first. The old faun grabs your sleeve. \"Link arms!\" he says. One of you takes the front of the line, and everybody else braces behind.",
+      "narration": "The red scarves charge up the line, elbows first. The old faun grabs your sleeve. \"Link arms!\" he says. Somebody takes the front of the line, and everybody braces behind.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Friends brace the line while one of you holds the front.",
+        "cue": "Friends brace the line while someone holds the front.",
         "actionLabel": "Hold the line!",
         "supportLabel": "Brace the line"
       },
@@ -941,7 +941,7 @@
         },
         {
           "id": "thornguard_heave",
-          "label": "Have a thornguard take the weight while all of you heave",
+          "label": "Have a thornguard take the weight while everyone heaves",
           "icon": "shield",
           "requiresClass": "thornguard",
           "goto": "check_unmire"
