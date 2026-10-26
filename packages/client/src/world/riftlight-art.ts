@@ -1,26 +1,26 @@
 /** Painted presentation for the authored Riftlight opening. No input or reward logic. */
 import type { CastMember, Chapter, InteractionPrompt, RunState } from "@kad/shared";
 
-export type FightAppearance = NonNullable<Chapter["presentation"]>["fights"][number];
-export interface InteractionAppearance { props: string[] }
+export type FightAppearance = NonNullable<NonNullable<Chapter["presentation"]>["fights"]>[number];
+export interface InteractionAppearance { props?: string[]; coverIcons?: string[] }
 export function fightAppearance(chapter: Chapter | null, state: RunState | null): FightAppearance | null {
  if (!chapter || !state || chapter.id !== state.chapterId) return null;
- return chapter.presentation?.fights.find(f => f.chapter === chapter.id && f.scene === state.sceneId) ?? null;
+ return chapter.presentation?.fights?.find(f => f.chapter === chapter.id && f.scene === state.sceneId) ?? null;
 }
 export function fightResult(chapter: Chapter | null, state: RunState | null): { art: FightAppearance; won: boolean } | null {
  const receipt = state?.lastEncounter;
  if (!chapter || !state || !receipt || chapter.id !== state.chapterId || receipt.chapterId !== chapter.id ||
      receipt.destination !== state.sceneId || state.encounter || !["victory","defeat"].includes(receipt.outcome)) return null;
- const art = chapter.presentation?.fights.find(f => f.chapter === chapter.id && f.scene === receipt.sceneId);
+ const art = chapter.presentation?.fights?.find(f => f.chapter === chapter.id && f.scene === receipt.sceneId);
  if (!art || state.sceneId !== (receipt.outcome === "victory" ? art.victoryScene : art.defeatScene)) return null;
  return { art, won: receipt.outcome === "victory" };
 }
 export function interactionAppearance(chapter: Chapter | null | undefined, sceneId: string | null | undefined): InteractionAppearance | null {
- return sceneId ? chapter?.presentation?.interactions[sceneId] ?? null : null;
+ return sceneId ? chapter?.presentation?.interactions?.[sceneId] ?? null : null;
 }
 export function introAppearance(chapter: Chapter | null, state: RunState | null): FightAppearance | null {
  if (!chapter || !state || chapter.id !== state.chapterId) return null;
- return chapter.presentation?.fights.find(f => f.chapter === chapter.id && f.introScenes.includes(state.sceneId ?? "")) ?? null;
+ return chapter.presentation?.fights?.find(f => f.chapter === chapter.id && f.introScenes.includes(state.sceneId ?? "")) ?? null;
 }
 export function reactionFigure(sceneId: string | null, prompt: InteractionPrompt, elapsed = 0, chapter?: Chapter | null): string | null {
  const rule=chapter?.presentation?.reactions?.[sceneId??''];

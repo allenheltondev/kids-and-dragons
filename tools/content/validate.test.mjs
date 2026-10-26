@@ -85,6 +85,15 @@ function withChapter(mutate) {
   return validate(dir);
 }
 
+function withFirstSteps(mutate) {
+  const dir = copyTree();
+  const path = ["content", "chapters", "first-steps-01.json"];
+  const chapter = readJson(dir, ...path);
+  mutate(chapter);
+  writeJson(dir, path, chapter);
+  return validate(dir);
+}
+
 /** The id of some scene that is not the entry — a safe thing to orphan. */
 function laterSceneOf(chapter) {
   const id = Object.keys(chapter.scenes).find((s) => s !== chapter.entry);
@@ -489,6 +498,20 @@ describe("the files themselves", () => {
     });
     expect(result.code).not.toBe(0);
     expect(result.out).toContain("chapters/bramblewood-01.json");
+  });
+
+  it("rejects unknown presentation props, stale scene keys, wrong tracking counts, and option icon typos", () => {
+    const result = withFirstSteps((chapter) => {
+      chapter.presentation.interactions.interaction_roots.props = ["unknown-prop"];
+      chapter.presentation.interactions.misspelled_scene = { props: ["rope-loop"] };
+      chapter.presentation.interactions.interaction_cups = { props: [], coverIcons: ["snow-mound", "wind-bells"] };
+      chapter.scenes.interaction_stones.interaction.options[0].icon = "starr";
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain('problem: unknown story prop id "unknown-prop"');
+    expect(result.out).toContain("does not name an interaction scene");
+    expect(result.out).toContain("has 2 icons for 3 covers");
+    expect(result.out).toContain('problem: unknown icon id "starr"');
   });
 });
 

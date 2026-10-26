@@ -31,8 +31,18 @@ visible and allows an immediate answer. Replay is a fresh attempt.
 Balance uses deliberate lift/lower taps, not device tilt or continuous physics.
 Relay is an untimed catch/pass chain. Catch ownership follows the current player;
 disconnecting after a catch cannot give the next receiver an already-caught spark.
-Playful reactions are shared text with the existing cast backdrop, not newly
-animated pets, poses, or camp props. Those richer visuals remain future work.
+Playful reactions remain shared text with the existing cast backdrop. Painted
+interaction props are authored under `chapter.presentation.interactions`, keyed
+by interaction scene id. Each entry's `props` array selects registered story
+props for the shared renderer. Tracking scenes may also provide `coverIcons`,
+one registered story prop per cover. The validator checks scene keys, IDs,
+image files, and cover counts, and the existing chapter warmer derives the
+required image URLs from these declarations. `fights` and `warmUrls` can be
+omitted when unused. Pictures are decorative and never replace labels or status
+words. If an image fails at runtime, a visible neutral cover remains. Tracking
+covers keep the hidden answer concealed while they move, including when custom
+visuals are present. `content/chapters/first-steps-01.json` demonstrates a
+cooperative branch prop on a non-Riftlight chapter.
 
 Results remain visible until a player continues. Branch effects apply exactly
 once on continuing. The acting hero may retry without spending resources. Every

@@ -1485,5 +1485,10 @@
       "flick": "a tiny wisp who loves tag; squeaky, boastful, a terrible loser for about two seconds",
       "bun": "a goat kid; only bleats, and wiggles her legs to say thank you"
     }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_roots": { "props": ["rope-loop"] }
+    }
   }
 }

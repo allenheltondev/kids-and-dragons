@@ -45,7 +45,7 @@ describe("persisted outcome art for the six opening fights",()=>{
   for(const chapter of chapters.values())for(const [id,scene]of Object.entries(chapter.scenes)){
    if(scene.type!=="interaction" || !chapter.id.startsWith("riftlight-"))continue;
    const art=interactionAppearance(chapter,id);expect(art,chapter.id+"/"+id).not.toBeNull();
-   for(const prop of art!.props)expect(fs.existsSync(path.join(root,"assets/story-props",prop+".webp")),prop).toBe(true);
+   for(const prop of art!.props ?? [])expect(fs.existsSync(path.join(root,"assets/story-props",prop+".webp")),prop).toBe(true);
    count++;
   }
   expect(count).toBe(50);
