@@ -77,6 +77,23 @@ describe("the whole chapter", () => {
     expect(new Set(urls).size).toBe(urls.length);
   });
 
+  it("derives warm URLs from the canonical interaction presentation", () => {
+    const base = chapter();
+    const authored = {
+      ...base,
+      scenes: {
+        ...base.scenes,
+        scene_visual: { type: "interaction", interaction: { kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000 } },
+        scene_prop: { type: "interaction", interaction: { kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "Bundle" } },
+      } as never,
+      presentation: { interactions: { scene_visual: { props: [], coverIcons: ["rope-loop", "carved-stone"] }, scene_prop: { props: ["relay-sack"] } } },
+    } as Chapter;
+    const urls = chapterAssets(authored, []);
+    expect(urls).toContain("/assets/story-props/rope-loop.webp");
+    expect(urls).toContain("/assets/story-props/carved-stone.webp");
+    expect(urls).toContain("/assets/story-props/relay-sack.webp");
+  });
+
   it("reaches scenes beyond the prefetch depth, and visits each scene once", () => {
     const c = chapter();
     const scenes = { ...c.scenes };

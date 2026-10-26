@@ -40,6 +40,7 @@ import { plateProblems } from "../../packages/shared/src/story-plates.ts";
 import { factTestProblems } from "../../packages/shared/src/world-state.ts";
 import { helpProblems } from "../../packages/shared/src/help.ts";
 import { DEED_OWNERS } from "../../packages/shared/src/types/domain.ts";
+import { BUILT_IN_ICON_IDS } from "../../packages/shared/src/icon-registry.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 import { classPlaceReach, classPlaceVerdict, loadAllowList as loadClassPlaceAllow } from "./class-places.mjs";
 
@@ -68,6 +69,10 @@ const CLASS_PLACE_ALLOW = loadClassPlaceAllow();
 const CLASS_PLACES_OFF = process.env.KAD_CLASS_PLACES === "off";
 const SCHEMAS = join(ROOT, "schemas");
 const MANIFEST = join(ROOT, "assets", "manifest.json");
+const assetRegistry = JSON.parse(readFileSync(MANIFEST, "utf8"));
+const storyPropIds = new Set(assetRegistry.storyProps?.ids ?? []);
+const paintedIconIds = new Set(assetRegistry.paintedIcons?.ids ?? []);
+const interactionIconIds = new Set([...paintedIconIds, ...BUILT_IN_ICON_IDS]);
 /**
  * The art itself is always this checkout's, whichever tree is being judged: a
  * staged test tree may carry the manifest and not the megabytes of PNG a cast
@@ -1129,7 +1134,44 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
     }
   };
   checkMusic("/music", chapter.music);
-  for (const [sceneId, scene] of Object.entries(scenes)) checkMusic(`/scenes/${sceneId}/music`, scene.music);
+  for (const [sceneId, appearance] of Object.entries(chapter.presentation?.interactions ?? {})) {
+    const at = `/presentation/interactions/${sceneId}`;
+    const scene = scenes[sceneId];
+    if (!scene || scene.type !== "interaction") {
+      fail(at, `does not name an interaction scene`, "Use an existing interaction scene id from this chapter.");
+      continue;
+    }
+    for (const [index, prop] of (appearance.props ?? []).entries()) {
+      if (!storyPropIds.has(prop)) {
+        fail(`${at}/props/${index}`, `unknown story prop id "${prop}"`, "Use an id from assets/manifest.json storyProps.ids.");
+      } else if (!existsSync(join(REPO_ASSETS, "story-props", `${prop}.webp`))) {
+        fail(`${at}/props/${index}`, `story prop "${prop}" has no image asset`, `Expected assets/story-props/${prop}.webp.`);
+      }
+    }
+    if (appearance.coverIcons !== undefined) {
+      if (scene.interaction.kind !== "tracking") {
+        fail(`${at}/coverIcons`, "coverIcons are only valid on tracking scenes", "Attach tracking cover art to a tracking interaction.");
+      } else if (appearance.coverIcons.length !== scene.interaction.covers.length) {
+        fail(`${at}/coverIcons`, `has ${appearance.coverIcons.length} icons for ${scene.interaction.covers.length} covers`, "Provide one registered story prop per cover, in the same order.");
+      }
+      appearance.coverIcons.forEach((icon, index) => {
+        if (!storyPropIds.has(icon)) {
+          fail(`${at}/coverIcons/${index}`, `unknown story prop id "${icon}"`, "Use an id from assets/manifest.json storyProps.ids.");
+        } else if (!existsSync(join(REPO_ASSETS, "story-props", `${icon}.webp`))) {
+          fail(`${at}/coverIcons/${index}`, `story prop "${icon}" has no image asset`, `Expected assets/story-props/${icon}.webp.`);
+        }
+      });
+    }
+  }
+  for (const [sceneId, scene] of Object.entries(scenes)) {
+    checkMusic(`/scenes/${sceneId}/music`, scene.music);
+    if (scene.type !== "interaction") continue;
+    const spec = scene.interaction;
+    const at = `/scenes/${sceneId}/interaction`;
+    for (const [index, option] of (spec.options ?? []).entries()) {
+      if (!interactionIconIds.has(option.icon)) fail(`${at}/options/${index}/icon`, `unknown icon id "${option.icon}"`, "Use a registered painted icon or built-in Icon name.");
+    }
+  }
 
   // Field Guide tags (#103): `discovers` must name real entries, once each; and
   // so must everything the shared rules would reveal implicitly, so the

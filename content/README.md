@@ -30,9 +30,9 @@ All three kinds require `cue` and `actionLabel`:
 | Kind | Additional fields | Reusable behavior |
 | --- | --- | --- |
 | `precision` | `target` (0–1), `width` (0.05–1), `periodMs` (2000–20000) | Repeating aim marker; relaxed play doubles target width. |
-| `cooperate` | `supportLabel` | Friends hold supports while the acting hero completes the action; solo and relaxed play use props. |
+| `cooperate` | `supportLabel` | Friends hold supports while the acting hero completes the action; solo and relaxed play use props. A painted prop can illustrate the moment. |
 | `sequence` | `options` with unique `id`, `label`, `icon`; `answer` as an ordered list of option ids; `clues` as shareable strings | Players share clues and assemble a sequence. Repeated option ids in an answer are allowed. |
-| `tracking` | `covers` (2–4 position labels), `start` (zero-based position), `swaps` (pairs of different position indexes), `stepMs` (800–5000) | Reveal a glow, move the covers, then choose its final position. Relaxed play reveals the final location. |
+| `tracking` | `covers` (2–4 position labels); `start` (zero-based position), `swaps` (pairs of different position indexes), `stepMs` (800–5000) | Reveal a glow, move the covers, then choose its final position. Relaxed play reveals the final location. |
 | `memory` | `options`, `answer`, `stepMs` (600–5000) | Watch a symbol pattern and echo it. Repeats are allowed. Relaxed play keeps a reference visible. |
 | `timing` | Same fields as `precision` | A repeating wait/now signal for sneaking, jumping, or dodging. No deadline. |
 | `balance` | `objectLabel` | Every connected hero raises or lowers their side in quarter steps, aiming for the middle before carrying the object. Relaxed play allows a wider range. |
@@ -51,6 +51,34 @@ props. Scenes can still use the existing cast and art system.
 More examples are available at the Practice Meadow picnic through **Try more
 meadow games**. Each optional game returns to Tansy’s closing scene so the
 practice stays short; the entire catalog is not required in one sitting.
+
+Scene-specific interaction paintings live in chapter presentation data, keyed
+by real interaction scene ids. A minimal example is:
+
+```json
+"presentation": {
+  "interactions": {
+    "interaction_roots": { "props": ["rope-loop"] },
+    "tracking_scene": {
+      "props": [],
+      "coverIcons": ["snow-mound", "wind-bells", "relay-sack"]
+    }
+  }
+}
+```
+
+`props` and `coverIcons` accept ids from `storyProps.ids` in
+`assets/manifest.json`; tracking art must have one `coverIcons` id for each
+cover. The validator checks scene keys, IDs, counts, and image files. These
+paintings join the chapter's existing warming list automatically, so authors
+do not need to duplicate them in `warmUrls`. The `fights` and `warmUrls`
+presentation fields can be omitted when unused. Without a presentation entry,
+the existing text and plain widget remain. If an image fails at runtime, the
+interaction keeps a visible neutral cover and its labels. Tracking art stays
+decorative and never exposes the hidden answer while the covers move. All
+artwork is `aria-hidden`; labels and status words carry the interaction's
+meaning. The Practice Meadow branch scene `first-steps-01` shows the `props`
+mapping on a cooperative branch moment.
 
 Both `onSuccess` and `onFailure` must continue the story. `onAssisted` is optional,
 defaulting to `onSuccess`. Every branch supports normal narration, variants, and

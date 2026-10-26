@@ -1,5 +1,6 @@
 .interaction-art{position:relative;block-size:clamp(4em,13cqh,8em);inline-size:100%;overflow:hidden;pointer-events:none;isolation:isolate}
 .interaction-art__prop{position:absolute;inline-size:clamp(3em,14cqw,7em);block-size:90%;object-fit:contain;left:50%;top:48%;transform:translate(-50%,-50%)}
+.interaction-art__prop>.kad-icon{inline-size:100%;block-size:100%;object-fit:contain}
 .interaction-art__support{opacity:.85;inline-size:clamp(2.5em,10cqw,5em)}
 .interaction-art__main{z-index:2}
 .interaction-art__hero{position:absolute;bottom:-5%;inline-size:clamp(2.4em,9cqw,5em);block-size:64%;object-fit:contain;transform:translateX(-50%);z-index:3}
@@ -12,6 +13,8 @@
 .painted-cover img{position:absolute;inline-size:100%;block-size:100%;object-fit:contain;left:0;bottom:0}
 .painted-cover .painted-cover__peek{bottom:18%;clip-path:inset(0 0 30% 0)}
 .painted-cover__front{z-index:2}
+.painted-cover__fallback{position:absolute;z-index:2;left:12%;bottom:0;inline-size:76%;block-size:72%;border-radius:48% 48% 18% 18%;background:linear-gradient(145deg,#e4dfd2,#a8a294);box-shadow:inset -0.35em -0.2em 0 #817f78,0 0.12em 0.2em #242a31}
+.painted-cover>.kad-icon{position:absolute;inset:0;inline-size:100%;block-size:100%;object-fit:contain;z-index:2}
 .painted-cover--bell{overflow:hidden}
 .painted-cover--bell .painted-cover__front{inline-size:300%;max-inline-size:none;left:-100%}
 .story-interaction__covers--painted{height:7em!important}
