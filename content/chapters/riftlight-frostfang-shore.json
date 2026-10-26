@@ -52,8 +52,8 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -77,8 +77,8 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -96,8 +96,8 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters",
@@ -121,8 +121,8 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/ice-shelf-headwaters"
@@ -160,11 +160,11 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/frostfang-ladder",
       "onEnter": [
         {
           "type": "setFlag",
@@ -185,11 +185,11 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "haul_foot": {
       "type": "check",
@@ -221,11 +221,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "lash_foot": {
       "type": "check",
@@ -249,11 +249,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "brace_foot": {
       "type": "check",
@@ -277,11 +277,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "smash_foot": {
       "type": "check",
@@ -305,11 +305,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "foot_set": {
       "type": "story",
@@ -324,11 +324,11 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/frostfang-ladder",
       "onEnter": [
         {
           "type": "setFlag",
@@ -368,11 +368,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "driftline": {
       "type": "choice_point",
@@ -400,11 +400,11 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "net_hook": {
       "type": "check",
@@ -428,11 +428,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "net_drag": {
       "type": "check",
@@ -456,11 +456,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "net_lasso": {
       "type": "check",
@@ -484,11 +484,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "net_saved": {
       "type": "story",
@@ -503,11 +503,11 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/frostfang-ladder",
       "onEnter": [
         {
           "type": "grantCoins",
@@ -556,14 +556,14 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "bar_wade": {
       "type": "check",
@@ -590,14 +590,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "bar_stones": {
       "type": "check",
@@ -624,14 +624,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "bar_fly": {
       "type": "check",
@@ -657,14 +657,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "bar_leap": {
       "type": "check",
@@ -690,14 +690,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "bar_reached": {
       "type": "story",
@@ -712,14 +712,14 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/frostfang-gravel-bar",
       "discovers": [
         "creature.snowhorn_goat"
       ]
@@ -760,7 +760,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "bar_carry": {
       "type": "interaction",
@@ -785,14 +785,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
-          "figure": "entities/snowhorn_goat"
+          "figure": "cast/snowhorn_kid"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "goats": {
       "type": "choice_point",
@@ -844,14 +844,14 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "goat_line": {
       "type": "check",
@@ -879,14 +879,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "goat_lead": {
       "type": "check",
@@ -913,8 +913,8 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
@@ -946,14 +946,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "goat_song": {
       "type": "check",
@@ -979,14 +979,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "goat_bait": {
       "type": "check",
@@ -1013,14 +1013,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "goat_back": {
       "type": "story",
@@ -1035,14 +1035,14 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/frostfang-gravel-bar",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1084,14 +1084,14 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "fire_build": {
       "type": "check",
@@ -1109,14 +1109,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "fire_huddle": {
       "type": "check",
@@ -1135,14 +1135,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "fire_smash": {
       "type": "check",
@@ -1160,14 +1160,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "rest_fire": {
       "type": "rest",
@@ -1213,14 +1213,14 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "rest_socks": {
       "type": "story",
@@ -1235,14 +1235,14 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "rest_share": {
       "type": "story",
@@ -1257,14 +1257,14 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/frostfang-gravel-bar",
       "onEnter": [
         {
           "type": "grantItem",
@@ -1286,14 +1286,14 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "surge": {
       "type": "choice_point",
@@ -1328,14 +1328,14 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "surge_run": {
       "type": "check",
@@ -1354,14 +1354,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "surge_chain": {
       "type": "check",
@@ -1380,14 +1380,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "surge_roar": {
       "type": "check",
@@ -1405,14 +1405,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "surge_brace": {
       "type": "check",
@@ -1430,14 +1430,14 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         },
         {
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "surge_after": {
       "type": "story",
@@ -1452,11 +1452,11 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/frostfang-ladder",
       "variants": [
         {
           "when": {
@@ -1492,11 +1492,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "ascend": {
       "type": "choice_point",
@@ -1534,11 +1534,11 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "climb_line": {
       "type": "check",
@@ -1556,11 +1556,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "climb_sling": {
       "type": "check",
@@ -1578,11 +1578,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "climb_wings": {
       "type": "check",
@@ -1600,11 +1600,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "climb_rally": {
       "type": "check",
@@ -1622,11 +1622,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/frostfang-ladder"
     },
     "top": {
       "type": "story",
@@ -1641,8 +1641,8 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/cairnstep",
@@ -1689,8 +1689,8 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -1711,8 +1711,8 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -1734,8 +1734,8 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -1753,8 +1753,8 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -1772,8 +1772,8 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/cairnstep",
@@ -1808,11 +1808,11 @@
       },
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/cairnstep",
+      "art": "scenes/riftlight/frostfang-ladder",
       "variants": [
         {
           "when": {
@@ -1842,8 +1842,8 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -1861,8 +1861,8 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/cairnstep",
@@ -1886,8 +1886,8 @@
       ],
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/cairnstep",
@@ -1906,8 +1906,8 @@
       "outcome": "success",
       "cast": [
         {
-          "figure": "cast/ridge_griffin",
-          "name": "Ridge griffin"
+          "figure": "cast/tamsin_river_keeper",
+          "name": "Tamsin"
         }
       ],
       "art": "scenes/riftlight/cairnstep"
@@ -1926,5 +1926,111 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [
+      {
+        "chapter": "riftlight-frostfang-shore",
+        "scene": "bar_crab",
+        "board": "ford",
+        "creature": "glassback_crab",
+        "introScenes": [
+          "bar_reached"
+        ],
+        "backdrop": "scenes/riftlight/frostfang-gravel-bar",
+        "props": [
+          "fight-warm-mud-hollow",
+          "pickup-luckstone"
+        ],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed"
+        },
+        "victoryScene": "bar_carry",
+        "defeatScene": "bar_carry",
+        "tileUrl": "/assets/fight-boards/fight_gravel_ford/tiles.png",
+        "terrainProps": [
+          "fight-burrow-mouth",
+          "fight-washed-burrow"
+        ],
+        "rescueFigure": "tamsin_whistling",
+        "retreatDirection": 1,
+        "activeUrl": "/assets/entities/glassback_crab/warning.png",
+        "retreatUrl": "/assets/entities/glassback_crab/shooed.png",
+        "outcomeCast": {
+          "victory": [
+            {
+              "figure": "cast/tamsin_river_keeper",
+              "name": "Tamsin"
+            },
+            {
+              "figure": "cast/snowhorn_kid"
+            }
+          ],
+          "defeat": [
+            {
+              "figure": "cast/tamsin_whistling",
+              "name": "Tamsin"
+            },
+            {
+              "figure": "cast/snowhorn_kid"
+            }
+          ]
+        }
+      }
+    ],
+    "interactions": {
+      "ladder_hold": {
+        "props": [
+          "rope-ladder",
+          "rope-taut"
+        ]
+      },
+      "bar_carry": {
+        "props": [
+          "coat-kid",
+          "rope-sag"
+        ]
+      },
+      "wave_gap": {
+        "props": [
+          "water-surge",
+          "fight-wet-gravel"
+        ]
+      },
+      "hay_relay": {
+        "props": [
+          "relay-hay",
+          "rope-basket"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/cast/tamsin_whistling/assembled.png",
+      "/assets/entities/glassback_crab/shooed.png",
+      "/assets/entities/glassback_crab/warning.png",
+      "/assets/fight-boards/fight_gravel_ford/tiles.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/coat-kid.webp",
+      "/assets/story-props/fight-burrow-mouth.webp",
+      "/assets/story-props/fight-warm-mud-hollow.webp",
+      "/assets/story-props/fight-washed-burrow.webp",
+      "/assets/story-props/fight-wet-gravel.webp",
+      "/assets/story-props/pickup-luckstone.webp",
+      "/assets/story-props/relay-hay.webp",
+      "/assets/story-props/rope-basket.webp",
+      "/assets/story-props/rope-ladder.webp",
+      "/assets/story-props/rope-sag.webp",
+      "/assets/story-props/rope-taut.webp",
+      "/assets/story-props/water-surge.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

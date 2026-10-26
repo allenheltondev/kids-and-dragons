@@ -25,10 +25,8 @@ import {
   enemyArtUrl,
   sceneBackdropUrl,
 } from "../world/art-paths";
-import { chapterAssets } from "./chapter-art";
 import { warm } from "./warm";
 
-export { chapterAssets } from "./chapter-art";
 
 /** How many steps of the story ahead to fetch. */
 export const PREFETCH_DEPTH = 2;
@@ -131,18 +129,21 @@ export function useWarmChapter(display: boolean): void {
 
   useEffect(() => {
     if (!display || chapter === null || chapter.id !== chapterId) return;
-    const fresh = chapterAssets(chapter, party ?? []).filter((url) => !asked.has(url));
-    if (fresh.length === 0) return;
+    let cancelled=false;
     const start = (): void => {
-      for (const url of fresh) asked.add(url);
-      void warm(fresh, { lanes: 2 });
+      void import("./chapter-art").then(({chapterAssets})=>{
+        if(cancelled)return;
+        const fresh=chapterAssets(chapter,party ?? []).filter(url=>!asked.has(url));
+        for(const url of fresh)asked.add(url);
+        if(fresh.length)void warm(fresh,{lanes:2});
+      }).catch(()=>{ /* Missing optional warm-up never blocks the scene. */ });
     };
     if (typeof window !== "undefined" && "requestIdleCallback" in window) {
       const handle = window.requestIdleCallback(start, { timeout: 4_000 });
-      return () => window.cancelIdleCallback(handle);
+      return () => { cancelled=true;window.cancelIdleCallback(handle); };
     }
     const timer = setTimeout(start, 1_500);
-    return () => clearTimeout(timer);
+    return () => { cancelled=true;clearTimeout(timer); };
     // Keyed on the chapter, not the scene; `party` is read through `partyKey`.
   }, [display, chapter, chapterId, partyKey]);
 }

@@ -272,6 +272,8 @@ export interface RunState {
    * with `chapterId`. Optional for runs persisted before it existed.
    */
   chapterInfo?: { index: number; title: string } | null;
+  /** Last resolved fight, retained only through its immediate destination; display data, never rewards. */
+  lastEncounter?: { chapterId: string | null; sceneId: SceneId | null; destination: SceneId | null; outcome: "victory" | "defeat" | "escaped" | "timedOut"; coinsEarned?: number };
   sceneId: SceneId | null;
   sceneType: SceneType | null;
   /**

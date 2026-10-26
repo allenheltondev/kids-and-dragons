@@ -1,0 +1,8 @@
+
+ RUN  v5.0.5 C:/git/kids-and-dragons
+
+
+ Test Files  5 passed (5)
+      Tests  59 passed (59)
+   Start at  17:51:38
+   Duration  1.01s (transform 44%, import 40%, tests 14%, worker 3%)

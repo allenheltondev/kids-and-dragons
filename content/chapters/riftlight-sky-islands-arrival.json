@@ -60,7 +60,8 @@
           "replace": true,
           "text": "The Cairnstep griffins swoop low and set your whole party down on a stone pad high above the realm. They are gone again in three flaps. A kitsune temple keeper hooks one arm through a rope ring and waves you over. \"Hold on to something! These are called the Sky Islands. Our old landing route points into empty sky now.\" Your goal is to find your feet up here. Find shelter, listen for the opening, and help her mark the unsafe path."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "landing": {
       "type": "check",
@@ -79,7 +80,8 @@
       },
       "onFailure": {
         "goto": "landing_slid"
-      }
+      },
+      "art": "scenes/riftlight/sky-landing"
     },
     "landing_held": {
       "type": "story",
@@ -104,7 +106,8 @@
           "itemId": "supper_bundle",
           "to": "party"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "landing_slid": {
       "type": "story",
@@ -135,7 +138,8 @@
           "itemId": "supper_bundle",
           "to": "party"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "lesson": {
       "type": "story",
@@ -204,7 +208,8 @@
           "replace": true,
           "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. They wear the Riftseekers' clasps. Pip taps his notebook. \"The count keeps changing here too. Help me and you can read it.\" Seren asks you to compare the sounds with what she taught you before."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "pip_notes": {
       "type": "story",
@@ -226,7 +231,8 @@
           "icon": "hand",
           "goto": "hum"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "hum": {
       "type": "check",
@@ -248,7 +254,8 @@
       },
       "onFailure": {
         "goto": "hum_fuzzy"
-      }
+      },
+      "art": "scenes/riftlight/sky-landing"
     },
     "hum_attuned": {
       "type": "check",
@@ -270,7 +277,8 @@
       },
       "onFailure": {
         "goto": "hum_fuzzy"
-      }
+      },
+      "art": "scenes/riftlight/sky-landing"
     },
     "hum_heard": {
       "type": "story",
@@ -298,7 +306,8 @@
           "type": "setFlag",
           "flag": "listened_for_the_rift_hum"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "hum_fuzzy": {
       "type": "story",
@@ -326,7 +335,8 @@
           "type": "setFlag",
           "flag": "listened_for_the_rift_hum"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "local": {
       "type": "choice_point",
@@ -360,7 +370,8 @@
             "dragonling"
           ]
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "markers": {
       "type": "story",
@@ -378,7 +389,8 @@
           "icon": "hand",
           "goto": "markers_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "markers_check": {
       "type": "check",
@@ -397,7 +409,8 @@
       },
       "onFailure": {
         "goto": "markers_dropped"
-      }
+      },
+      "art": "scenes/riftlight/sky-landing"
     },
     "markers_set": {
       "type": "story",
@@ -415,7 +428,8 @@
           "icon": "hand",
           "goto": "walker"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "markers_dropped": {
       "type": "story",
@@ -433,7 +447,8 @@
           "icon": "hand",
           "goto": "walker"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "song": {
       "type": "story",
@@ -451,7 +466,8 @@
           "icon": "hand",
           "goto": "song_check"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "song_check": {
       "type": "check",
@@ -470,7 +486,8 @@
       },
       "onFailure": {
         "goto": "song_muddled"
-      }
+      },
+      "art": "scenes/riftlight/sky-landing"
     },
     "song_bearing": {
       "type": "story",
@@ -488,7 +505,8 @@
           "icon": "hand",
           "goto": "walker"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "song_muddled": {
       "type": "story",
@@ -506,7 +524,8 @@
           "icon": "hand",
           "goto": "walker"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "edge_scout": {
       "type": "check",
@@ -525,7 +544,8 @@
       },
       "onFailure": {
         "goto": "edge_gusted"
-      }
+      },
+      "art": "scenes/riftlight/sky-landing"
     },
     "edge_scouted": {
       "type": "story",
@@ -543,7 +563,8 @@
           "icon": "hand",
           "goto": "walker"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "edge_gusted": {
       "type": "story",
@@ -561,7 +582,8 @@
           "icon": "hand",
           "goto": "walker"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "walker": {
       "type": "choice_point",
@@ -569,6 +591,10 @@
         {
           "figure": "cast/kitsune_temple_keeper",
           "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/dob",
+          "name": "Dob"
         }
       ],
       "narration": "A rattle comes down the old rope road. A kite seller is pulling a cart of kites toward the edge, his eyes on the sky and his nose in a map. The map is upside down. The road ends in empty air twenty steps ahead of him. \"Dob!\" shouts the keeper. \"Stop!\" The kite seller waves cheerfully and keeps walking. How will you stop him?",
@@ -592,7 +618,8 @@
           "goto": "walker_leap",
           "requiresSpecies": "manticore"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "walker_catch": {
       "type": "check",
@@ -600,6 +627,10 @@
         {
           "figure": "cast/kitsune_temple_keeper",
           "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/dob",
+          "name": "Dob"
         }
       ],
       "stat": "quick",
@@ -610,7 +641,8 @@
       },
       "onFailure": {
         "goto": "walker_dragged"
-      }
+      },
+      "art": "scenes/riftlight/sky-landing"
     },
     "walker_call": {
       "type": "check",
@@ -618,6 +650,10 @@
         {
           "figure": "cast/kitsune_temple_keeper",
           "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/dob",
+          "name": "Dob"
         }
       ],
       "stat": "heart",
@@ -628,7 +664,8 @@
       },
       "onFailure": {
         "goto": "walker_dragged"
-      }
+      },
+      "art": "scenes/riftlight/sky-landing"
     },
     "walker_leap": {
       "type": "check",
@@ -636,6 +673,10 @@
         {
           "figure": "cast/kitsune_temple_keeper",
           "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/dob",
+          "name": "Dob"
         }
       ],
       "stat": "quick",
@@ -647,7 +688,8 @@
       },
       "onFailure": {
         "goto": "walker_dragged"
-      }
+      },
+      "art": "scenes/riftlight/sky-landing"
     },
     "walker_safe": {
       "type": "story",
@@ -655,6 +697,10 @@
         {
           "figure": "cast/kitsune_temple_keeper",
           "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/dob",
+          "name": "Dob"
         }
       ],
       "narration": "Dob stops, one wheel on the last plank, and looks down. He looks up. He looks at his map, and turns it right side up. \"Ah,\" he says. The keeper does not scold. She makes him tea he forgets to drink. \"I sell kites to the island across,\" says Dob. \"The road went wrong, and I did not. I think.\" He unrolls a bundle of bright kite-flags with long tails. \"You saved my cart. Wave these, and the whole sky will see.\" He ties a springy kite-string lace around your ankle. \"For quick feet.\" Then he counts four coins into your hand, with a bow.",
@@ -680,7 +726,8 @@
           "type": "grantCoins",
           "amount": 4
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "walker_dragged": {
       "type": "story",
@@ -688,6 +735,10 @@
         {
           "figure": "cast/kitsune_temple_keeper",
           "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/dob",
+          "name": "Dob"
         }
       ],
       "narration": "The cart tips at the last plank, one wheel in the sky. You and the keeper haul on the rope while kites spill off like startled birds. A few escape. Most snag on the posts. Dob dangles from his strap, smiling, his hat gone. \"Ah,\" he says. \"Wrong road.\" Back on stone, he gathers what is left, a bundle of bright kite-flags with long tails. \"I sell kites to the island across. Wave these, and the whole sky will see.\" He presses three coins into your hand, all he can find in his pockets.",
@@ -708,7 +759,8 @@
           "type": "grantCoins",
           "amount": 3
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "edge_merge": {
       "type": "story",
@@ -716,6 +768,10 @@
         {
           "figure": "cast/kitsune_temple_keeper",
           "name": "Temple keeper"
+        },
+        {
+          "figure": "cast/dob",
+          "name": "Dob"
         }
       ],
       "narration": "The keeper leans on a rope ring and studies the sky. Dob sits on his cart with his map the right way up. \"Good. That is the edge told about, and one kite seller safe. Now the hard part.\" She points to a tall pole with an iron basket on top. \"The signal basket. At dusk we light it, so every island and ferry knows where we hang. The pole is crooked from the move, and our fuel is a mess. A ferry captain named Thimble is due tonight with passengers, and without a light she will never find us.\"",
@@ -726,7 +782,8 @@
           "icon": "hand",
           "goto": "gust_lull"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "basket_plan": {
       "type": "choice_point",
@@ -768,7 +825,8 @@
           "goto": "pole_brace",
           "requiresClass": "thornguard"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/signal-pole"
     },
     "pole_ropes": {
       "type": "check",
@@ -791,7 +849,8 @@
       },
       "onFailure": {
         "goto": "pole_leaning"
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "pole_wedge": {
       "type": "check",
@@ -813,7 +872,8 @@
       },
       "onFailure": {
         "goto": "pole_leaning"
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "pole_smash": {
       "type": "check",
@@ -836,7 +896,8 @@
       },
       "onFailure": {
         "goto": "pole_leaning"
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "pole_brace": {
       "type": "check",
@@ -858,7 +919,8 @@
       },
       "onFailure": {
         "goto": "pole_leaning"
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "pole_up": {
       "type": "story",
@@ -880,7 +942,8 @@
           "icon": "hand",
           "goto": "fuel"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/signal-pole"
     },
     "pole_leaning": {
       "type": "story",
@@ -902,7 +965,8 @@
           "icon": "hand",
           "goto": "fuel"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/signal-pole"
     },
     "fuel": {
       "type": "choice_point",
@@ -940,7 +1004,8 @@
           "goto": "fuel_lace",
           "requiresItem": "quickfoot_lace"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/signal-pole"
     },
     "fuel_logs": {
       "type": "check",
@@ -958,7 +1023,8 @@
       },
       "onFailure": {
         "goto": "fuel_soggy"
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "fuel_twigs": {
       "type": "check",
@@ -976,7 +1042,8 @@
       },
       "onFailure": {
         "goto": "fuel_soggy"
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "fuel_lace": {
       "type": "check",
@@ -994,7 +1061,8 @@
       },
       "onFailure": {
         "goto": "fuel_soggy"
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "fuel_dash": {
       "type": "check",
@@ -1012,7 +1080,8 @@
       },
       "onFailure": {
         "goto": "fuel_soggy"
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "fuel_dry": {
       "type": "story",
@@ -1034,7 +1103,8 @@
           "icon": "hand",
           "goto": "fuel_chain"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/signal-pole"
     },
     "fuel_soggy": {
       "type": "story",
@@ -1056,7 +1126,8 @@
           "icon": "hand",
           "goto": "fuel_chain"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/signal-pole"
     },
     "light": {
       "type": "choice_point",
@@ -1091,7 +1162,8 @@
           "goto": "light_fox",
           "requiresSpecies": "kitsune"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/signal-pole"
     },
     "light_flint": {
       "type": "check",
@@ -1114,7 +1186,8 @@
       },
       "onFailure": {
         "goto": "basket_smoky"
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "light_coals": {
       "type": "check",
@@ -1138,7 +1211,8 @@
       },
       "onFailure": {
         "goto": "basket_smoky"
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "light_fox": {
       "type": "check",
@@ -1160,7 +1234,8 @@
       },
       "onFailure": {
         "goto": "basket_smoky"
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "basket_lit": {
       "type": "story",
@@ -1197,7 +1272,8 @@
           "itemId": "brave_whistle",
           "to": "party"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/signal-gale"
     },
     "basket_smoky": {
       "type": "story",
@@ -1225,7 +1301,8 @@
           "type": "setFlag",
           "flag": "guarded_the_island_edge"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "dusk_ferry": {
       "type": "choice_point",
@@ -1291,7 +1368,8 @@
           },
           "text": "\"The Cairnstep watchers told me where you landed,\" he adds. \"They said to look after you.\""
         }
-      ]
+      ],
+      "art": "scenes/riftlight/signal-gale"
     },
     "ferry_lines": {
       "type": "check",
@@ -1313,7 +1391,8 @@
       },
       "onFailure": {
         "goto": "ferry_bumped"
-      }
+      },
+      "art": "scenes/riftlight/signal-gale"
     },
     "ferry_flags": {
       "type": "check",
@@ -1336,7 +1415,8 @@
       },
       "onFailure": {
         "goto": "ferry_bumped"
-      }
+      },
+      "art": "scenes/riftlight/signal-gale"
     },
     "ferry_tow": {
       "type": "check",
@@ -1359,7 +1439,8 @@
       },
       "onFailure": {
         "goto": "ferry_bumped"
-      }
+      },
+      "art": "scenes/riftlight/signal-gale"
     },
     "ferry_whistle": {
       "type": "check",
@@ -1381,7 +1462,8 @@
       },
       "onFailure": {
         "goto": "ferry_bumped"
-      }
+      },
+      "art": "scenes/riftlight/signal-gale"
     },
     "ferry_post": {
       "type": "check",
@@ -1403,7 +1485,8 @@
       },
       "onFailure": {
         "goto": "ferry_bumped"
-      }
+      },
+      "art": "scenes/riftlight/signal-gale"
     },
     "ferry_in": {
       "type": "story",
@@ -1457,7 +1540,8 @@
           },
           "text": "Then she stops and stares. \"You! You found us. I told you to look for the washing.\" A line of damp socks flaps from the ferry rail."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-ferry"
     },
     "ferry_bumped": {
       "type": "story",
@@ -1511,7 +1595,8 @@
           },
           "text": "She stops and stares. \"You! You found us. I told you to look for the washing.\" She waves a sock at you, then at the pad."
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "passengers": {
       "type": "check",
@@ -1529,7 +1614,8 @@
       },
       "onFailure": {
         "goto": "passengers_stuck"
-      }
+      },
+      "art": "scenes/riftlight/sky-ferry"
     },
     "passengers_fed": {
       "type": "story",
@@ -1551,7 +1637,8 @@
           "icon": "hand",
           "goto": "thimble"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-ferry"
     },
     "passengers_calm": {
       "type": "story",
@@ -1573,7 +1660,8 @@
           "icon": "hand",
           "goto": "thimble"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-ferry"
     },
     "passengers_stuck": {
       "type": "story",
@@ -1595,7 +1683,8 @@
           "icon": "hand",
           "goto": "thimble"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-ferry"
     },
     "thimble": {
       "type": "story",
@@ -1617,7 +1706,8 @@
           "icon": "hand",
           "goto": "windbreak_rest"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-ferry"
     },
     "windbreak_rest": {
       "type": "rest",
@@ -1629,6 +1719,10 @@
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/dob",
+          "name": "Dob"
         }
       ],
       "narration": "The keeper builds a wind wall of baskets and blankets behind the shrine. Hot barley tea goes around in chipped cups. The hens roost on Pip, who bears it nobly. Far off, the low song comes again, slower than before. Seren says the next part is the hardest to hear and the easiest to miss. Everyone gets warm. Dob has hung his kites along the wind wall like laundry, and a ribbon cart sits open beside the fire.",
@@ -1682,7 +1776,8 @@
           ]
         }
       ],
-      "heal": 2
+      "heal": 2,
+      "art": "scenes/riftlight/windbreak-camp"
     },
     "pip_night": {
       "type": "story",
@@ -1704,7 +1799,8 @@
           "icon": "hand",
           "goto": "camp_play"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/windbreak-camp"
     },
     "night_song": {
       "type": "story",
@@ -1726,7 +1822,8 @@
           "icon": "hand",
           "goto": "song_track"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/windbreak-camp"
     },
     "bearing_vote": {
       "type": "choice_point",
@@ -1772,7 +1869,8 @@
           "goto": "bearing_chime",
           "requiresItem": "listening_chime"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/windbreak-camp"
     },
     "bearing_notes": {
       "type": "check",
@@ -1795,7 +1893,8 @@
       },
       "onFailure": {
         "goto": "bearing_blurred"
-      }
+      },
+      "art": "scenes/riftlight/windbreak-camp"
     },
     "bearing_air": {
       "type": "check",
@@ -1822,7 +1921,8 @@
       },
       "onFailure": {
         "goto": "bearing_blurred"
-      }
+      },
+      "art": "scenes/riftlight/windbreak-camp"
     },
     "bearing_chime": {
       "type": "check",
@@ -1844,7 +1944,8 @@
       },
       "onFailure": {
         "goto": "bearing_blurred"
-      }
+      },
+      "art": "scenes/riftlight/windbreak-camp"
     },
     "bearing_sing": {
       "type": "check",
@@ -1867,7 +1968,8 @@
       },
       "onFailure": {
         "goto": "bearing_blurred"
-      }
+      },
+      "art": "scenes/riftlight/windbreak-camp"
     },
     "bearing_found": {
       "type": "story",
@@ -1899,7 +2001,8 @@
           "type": "setFlag",
           "flag": "found_the_whale_song"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/windbreak-camp"
     },
     "bearing_blurred": {
       "type": "story",
@@ -1931,7 +2034,8 @@
           "type": "setFlag",
           "flag": "found_the_whale_song"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/windbreak-camp"
     },
     "route_vote": {
       "type": "choice_point",
@@ -1963,7 +2067,8 @@
           "icon": "hand",
           "goto": "route_flags"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "route_ferry": {
       "type": "story",
@@ -1975,6 +2080,10 @@
         {
           "figure": "cast/captain_thimble",
           "name": "Captain Thimble"
+        },
+        {
+          "figure": "cast/dob",
+          "name": "Dob"
         }
       ],
       "narration": "Thimble hands out boarding ropes. \"Hold the rail with both hands, and do not sing back until I say.\" Her passengers have voted to stay with the keeper, hens included, in case there is more barley tea. Dob has loaded his cart of kites aboard, and sits on top of it with his map the right way up. The keeper tucks her island's flag-cloth into your pack and pats it twice, for luck.",
@@ -1991,7 +2100,8 @@
           "type": "setFlag",
           "flag": "sky_route_ferry"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-ferry"
     },
     "route_flags": {
       "type": "story",
@@ -2019,7 +2129,8 @@
           "type": "setFlag",
           "flag": "sky_route_flags"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/sky-landing"
     },
     "island_done": {
       "type": "rest",
@@ -2052,7 +2163,8 @@
         }
       ],
       "heal": 0,
-      "outcome": "success"
+      "outcome": "success",
+      "art": "scenes/riftlight/sky-landing"
     },
     "gust_lull": {
       "type": "interaction",
@@ -2086,7 +2198,8 @@
       "onAssisted": {
         "goto": "basket_plan",
         "narration": "The keeper calls the lull for you. \"Now!\" You cross together without a single stumble."
-      }
+      },
+      "art": "scenes/riftlight/sky-landing"
     },
     "fuel_chain": {
       "type": "interaction",
@@ -2118,7 +2231,8 @@
       "onAssisted": {
         "goto": "light",
         "narration": "The keeper hauls the last logs up on a rope and ties them off with a bow. \"A little help is still help,\" she says."
-      }
+      },
+      "art": "scenes/riftlight/signal-pole"
     },
     "camp_play": {
       "type": "interaction",
@@ -2176,7 +2290,8 @@
       "onAssisted": {
         "goto": "night_song",
         "narration": "The keeper adds the last touches herself, humming. The camp is cozy before you know it."
-      }
+      },
+      "art": "scenes/riftlight/sky-night-windbreak"
     },
     "song_track": {
       "type": "interaction",
@@ -2228,7 +2343,8 @@
       "onAssisted": {
         "goto": "bearing_vote",
         "narration": "Seren points at the east bell, steady as a signpost. \"There. Now you know what to prove.\""
-      }
+      },
+      "art": "scenes/riftlight/sky-mist-song"
     },
     "song_echo": {
       "type": "interaction",
@@ -2283,7 +2399,8 @@
       "onAssisted": {
         "goto": "route_vote",
         "narration": "Seren rings along and steadies each note. The song answers, long and warm, from the east."
-      }
+      },
+      "art": "scenes/riftlight/sky-mist-song"
     },
     "wisps": {
       "type": "story",
@@ -2310,7 +2427,8 @@
           "icon": "hand",
           "goto": "wisp_fight"
         }
-      ]
+      ],
+      "art": "scenes/riftlight/signal-gale"
     },
     "wisp_fight": {
       "type": "encounter",
@@ -2342,7 +2460,8 @@
             "to": "party"
           }
         ]
-      }
+      },
+      "art": "scenes/riftlight/signal-gale"
     },
     "wisps_shooed": {
       "type": "story",
@@ -2415,7 +2534,8 @@
           "goto": "island_done"
         }
       ],
-      "heal": 0
+      "heal": 0,
+      "art": "scenes/riftlight/sky-landing"
     },
     "dojo": {
       "type": "story",
@@ -2506,5 +2626,133 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [
+      {
+        "chapter": "riftlight-sky-islands-arrival",
+        "scene": "wisp_fight",
+        "board": "glade",
+        "creature": "will_o_wisp",
+        "introScenes": [
+          "wisps"
+        ],
+        "backdrop": "scenes/riftlight/signal-gale",
+        "props": [
+          "pickup-mosslight-jar"
+        ],
+        "poses": {
+          "intro": "ordinary",
+          "retreat": "shooed"
+        },
+        "victoryScene": "wisps_shooed",
+        "defeatScene": "wisps_rescued",
+        "tileUrl": "/assets/fight-boards/fight_wind_yard/tiles.png",
+        "terrainProps": [
+          "fight-signal-pole",
+          "fight-wind-shrub"
+        ],
+        "rescueFigure": "",
+        "retreatDirection": 1,
+        "activeUrl": "/assets/entities/will_o_wisp/assembled.png",
+        "retreatUrl": "/assets/entities/will_o_wisp/shooed.png",
+        "outcomeCast": {
+          "victory": [
+            {
+              "figure": "cast/kitsune_temple_keeper",
+              "name": "Temple keeper"
+            },
+            {
+              "figure": "cast/pip_catching_glow",
+              "name": "Pip Thistledown"
+            }
+          ],
+          "defeat": [
+            {
+              "figure": "cast/kitsune_temple_keeper",
+              "name": "Temple keeper"
+            },
+            {
+              "figure": "cast/pip_thistledown",
+              "name": "Pip Thistledown"
+            }
+          ]
+        }
+      }
+    ],
+    "interactions": {
+      "gust_lull": {
+        "props": [
+          "wind-banner",
+          "fight-signal-pole"
+        ]
+      },
+      "fuel_chain": {
+        "props": [
+          "relay-log",
+          "fight-signal-pole",
+          "rope-ladder"
+        ]
+      },
+      "camp_play": {
+        "props": [
+          "kite-shade",
+          "barley-tea",
+          "wind-blanket",
+          "camp-firepit"
+        ]
+      },
+      "song_track": {
+        "props": [
+          "wind-bells"
+        ]
+      },
+      "song_echo": {
+        "props": [
+          "fight-shrine-bell",
+          "cloud-whale",
+          "note-low",
+          "note-middle",
+          "note-high"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/cast/camp_hen/assembled.png",
+      "/assets/cast/pip_catching_glow/assembled.png",
+      "/assets/cast/seren_listening/assembled.png",
+      "/assets/entities/will_o_wisp/assembled.png",
+      "/assets/entities/will_o_wisp/shooed.png",
+      "/assets/fight-boards/fight_wind_yard/tiles.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/barley-tea.webp",
+      "/assets/story-props/camp-firepit.webp",
+      "/assets/story-props/cloud-whale.webp",
+      "/assets/story-props/fight-shrine-bell.webp",
+      "/assets/story-props/fight-signal-pole.webp",
+      "/assets/story-props/fight-wind-shrub.webp",
+      "/assets/story-props/kite-shade.webp",
+      "/assets/story-props/note-high.webp",
+      "/assets/story-props/note-low.webp",
+      "/assets/story-props/note-middle.webp",
+      "/assets/story-props/pickup-mosslight-jar.webp",
+      "/assets/story-props/relay-log.webp",
+      "/assets/story-props/rope-ladder.webp",
+      "/assets/story-props/wind-banner.webp",
+      "/assets/story-props/wind-bells.webp",
+      "/assets/story-props/wind-blanket.webp"
+    ],
+    "reactions": {},
+    "castPoses": {
+      "song_track": {
+        "cast/seren_wisp": "seren_listening"
+      }
+    }
   }
 }

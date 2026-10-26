@@ -51,80 +51,26 @@ export function characterArtUrl(species: SpeciesId, tier: TierId = STARTING_TIER
  * time. This set is intentionally tested against manifest.figureVariants: the
  * runtime stays tiny while the manifest remains the source of truth.
  */
-const CLASS_FIGURE_VARIANTS = new Set<string>([
-  "starweaver/mythic/unicorn",
-  "starweaver/mythic/dragonling",
-  "starweaver/mythic/griffin",
-  "starweaver/mythic/kitsune",
-  "starweaver/mythic/manticore",
-  "songkeeper/mythic/unicorn",
-  "songkeeper/mythic/dragonling",
-  "songkeeper/mythic/griffin",
-  "songkeeper/mythic/kitsune",
-  "songkeeper/mythic/manticore",
-  "songkeeper/radiant/manticore",
-  "songkeeper/radiant/kitsune",
-  "songkeeper/radiant/griffin",
-  "songkeeper/radiant/dragonling",
-  "songkeeper/radiant/unicorn",
-  "songkeeper/sworn/manticore",
-  "songkeeper/sworn/griffin",
-  "songkeeper/sworn/dragonling",
-  "songkeeper/sworn/unicorn",
-  "starweaver/radiant/manticore",
-  "starweaver/radiant/kitsune",
-  "starweaver/radiant/griffin",
-  "starweaver/radiant/dragonling",
-  "starweaver/radiant/unicorn",
-  "songkeeper/sworn/bigfoot",
-  "songkeeper/sworn/kitsune",
-  "songkeeper/radiant/bigfoot",
-  "songkeeper/mythic/bigfoot",
-  "starweaver/radiant/bigfoot",
-  "starweaver/mythic/bigfoot",
-  "duskrunner/mythic/bigfoot",
-  "duskrunner/mythic/dragonling",
-  "duskrunner/mythic/griffin",
-  "duskrunner/mythic/kitsune",
-  "duskrunner/mythic/manticore",
-  "duskrunner/mythic/unicorn",
-  "duskrunner/radiant/bigfoot",
-  "duskrunner/radiant/dragonling",
-  "duskrunner/radiant/griffin",
-  "duskrunner/radiant/kitsune",
-  "duskrunner/radiant/manticore",
-  "duskrunner/radiant/unicorn",
-  "duskrunner/sworn/bigfoot",
-  "duskrunner/sworn/dragonling",
-  "duskrunner/sworn/griffin",
-  "duskrunner/sworn/kitsune",
-  "duskrunner/sworn/manticore",
-  "duskrunner/sworn/unicorn",
-  "starweaver/sworn/bigfoot",
-  "starweaver/sworn/dragonling",
-  "starweaver/sworn/griffin",
-  "starweaver/sworn/kitsune",
-  "starweaver/sworn/manticore",
-  "starweaver/sworn/unicorn",
-  "thornguard/mythic/bigfoot",
-  "thornguard/mythic/dragonling",
-  "thornguard/mythic/griffin",
-  "thornguard/mythic/kitsune",
-  "thornguard/mythic/manticore",
-  "thornguard/mythic/unicorn",
-  "thornguard/radiant/bigfoot",
-  "thornguard/radiant/dragonling",
-  "thornguard/radiant/griffin",
-  "thornguard/radiant/kitsune",
-  "thornguard/radiant/manticore",
-  "thornguard/radiant/unicorn",
-  "thornguard/sworn/bigfoot",
-  "thornguard/sworn/dragonling",
-  "thornguard/sworn/griffin",
-  "thornguard/sworn/kitsune",
-  "thornguard/sworn/manticore",
-  "thornguard/sworn/unicorn",
-]);
+// Every commissioned class/tier group currently has the full species roster.
+// The manifest coverage test guards this compact representation.
+const CLASS_FIGURE_VARIANTS = new Set<string>(
+  [
+  "starweaver/mythic",
+  "songkeeper/mythic",
+  "songkeeper/radiant",
+  "songkeeper/sworn",
+  "starweaver/radiant",
+  "duskrunner/mythic",
+  "duskrunner/radiant",
+  "duskrunner/sworn",
+  "starweaver/sworn",
+  "thornguard/mythic",
+  "thornguard/radiant",
+  "thornguard/sworn"
+].flatMap(prefix=>
+    ["bigfoot", "dragonling", "griffin", "kitsune", "manticore", "unicorn"].map(species=>prefix+"/"+species),
+  ),
+);
 
 function classFigureKey(species: SpeciesId, tier: TierId, characterClass: ClassId): string {
   return `${characterClass}/${artTierOf(tier)}/${species}`;
@@ -225,3 +171,11 @@ export function biomeTilesUrl(biome: string): string {
  * uses that instead, so this is a first-frame default, not a hardcoded setting.
  */
 export const CREATION_BIOME = "enchanted_woods";
+
+/** Shared by the cast stage and offline chapter warming. */
+export function castArtUrl(figure: string): string | null {
+ const match=/^(entities|characters|cast)\/([a-z0-9]+(?:[_-][a-z0-9]+)*)$/.exec(figure);
+ if(!match)return null;
+ const [,kind,id]=match;
+ return kind==="characters" ? "/assets/characters/"+id+"/fledgling/assembled.png" : "/assets/"+kind+"/"+id+"/assembled.png";
+}

@@ -45,7 +45,7 @@
           "goto": "lineup"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "lineup": {
       "type": "choice_point",
@@ -71,7 +71,7 @@
           "requiresClass": "songkeeper"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "knots": {
       "type": "check",
@@ -94,7 +94,7 @@
         "goto": "ring_thud",
         "narration": "One knot slides loose and flaps like a tiny flag. You retie it, and the wind finds your ears while you work."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "coil": {
       "type": "check",
@@ -117,7 +117,7 @@
         "goto": "ring_thud",
         "narration": "The rope tangles into a knot the size of a cabbage. You pick it loose one loop at a time."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "beat": {
       "type": "check",
@@ -141,7 +141,7 @@
         "goto": "ring_thud",
         "narration": "Your beat is perfect. Everyone else's boots have ideas of their own. You settle for a gentler tune."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "ring_thud": {
       "type": "choice_point",
@@ -174,7 +174,7 @@
           "requiresClass": "starweaver"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "tap": {
       "type": "check",
@@ -197,7 +197,7 @@
         "goto": "boot_marks",
         "narration": "Everything sounds a little bit like a thud, and a little bit like a ring. You step lightly and trust the old boot marks."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "slide": {
       "type": "check",
@@ -220,7 +220,7 @@
         "goto": "boot_marks",
         "narration": "The stone skids off the edge. Plop. You will do the rest of your testing with your boots."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "scout": {
       "type": "check",
@@ -243,7 +243,7 @@
         "goto": "boot_marks",
         "narration": "From up here, everything is white. You land with a plan to trust the old boot marks."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "starlight": {
       "type": "check",
@@ -266,7 +266,7 @@
         "goto": "boot_marks",
         "narration": "The light flickers in the wind. You can't tell dim from bright, so you settle for the old boot marks."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "boot_marks": {
       "type": "choice_point",
@@ -285,7 +285,7 @@
           "goto": "ring_look"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "ring_pull": {
       "type": "story",
@@ -309,7 +309,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "ring_look": {
       "type": "story",
@@ -332,7 +332,7 @@
           "amount": 3
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "squeeze": {
       "type": "choice_point",
@@ -358,7 +358,7 @@
           "requiresSpecies": "bigfoot"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "inch": {
       "type": "check",
@@ -386,7 +386,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "packs": {
       "type": "check",
@@ -413,7 +413,7 @@
         "goto": "wide_spot",
         "narration": "A pack drops with a thump and slides toward the edge. Somebody's boot stops it just in time, and everyone breathes out."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "chop": {
       "type": "check",
@@ -433,7 +433,7 @@
         "goto": "wide_spot",
         "narration": "The chips fly everywhere, but the step comes out crooked. You lean into the wall and shuffle along it anyway."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "wide_spot": {
       "type": "rest",
@@ -483,7 +483,7 @@
           "flag": "reached_the_wide_spot"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "wide_snack": {
       "type": "story",
@@ -503,7 +503,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "wide_eat": {
       "type": "story",
@@ -523,7 +523,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "wide_look": {
       "type": "story",
@@ -542,7 +542,7 @@
           "flag": "saw_ahead"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "crack": {
       "type": "choice_point",
@@ -647,7 +647,7 @@
           "goto": "knock"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "dash": {
       "type": "check",
@@ -664,7 +664,7 @@
         "goto": "drip_run",
         "narration": "An icicle snaps off and bonks the nearest hat while you listen. It stings, but now you know where the gaps are."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "knock": {
       "type": "check",
@@ -681,7 +681,7 @@
         "goto": "drip_run",
         "narration": "Your snowballs miss, and your arm tires. A few long ones are still hanging there, so you will have to be careful."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "gust": {
       "type": "choice_point",
@@ -706,7 +706,7 @@
           "goto": "sing"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "huddle": {
       "type": "check",
@@ -726,7 +726,7 @@
         "goto": "slope",
         "narration": "A big gust makes the line stagger. Everyone grabs somebody, and you wobble through in a messy, laughing clump."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "lull": {
       "type": "check",
@@ -743,7 +743,7 @@
         "goto": "slope",
         "narration": "You lose count in the middle, and the wind catches you twice. It only takes a hat and a bit of dignity."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "sing": {
       "type": "check",
@@ -760,7 +760,7 @@
         "goto": "slope",
         "narration": "The wind steals the tune and gives it to a passing snow flurry. You hum the rest of the way, with chattering teeth."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "slope": {
       "type": "choice_point",
@@ -785,7 +785,7 @@
           "goto": "slope_slide"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-steep-slope"
     },
     "slope_steps": {
       "type": "check",
@@ -805,7 +805,7 @@
         "goto": "gap",
         "narration": "The steps come out shallow and uneven. You cross anyway, on hands and toes, like a family of nervous crabs."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-steep-slope"
     },
     "slope_rope": {
       "type": "check",
@@ -822,7 +822,7 @@
         "goto": "gap",
         "narration": "The first lump of rock is not as solid as it looks, and the rope slips off. You find a better lump, a little farther on, and the handrail goes up crooked."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-steep-slope"
     },
     "slope_slide": {
       "type": "check",
@@ -850,7 +850,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-steep-slope"
     },
     "gap": {
       "type": "story",
@@ -1464,7 +1464,7 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-roped-gap"
     },
     "cross": {
       "type": "check",
@@ -1493,7 +1493,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-roped-gap"
     },
     "cross_turns": {
       "type": "check",
@@ -1522,7 +1522,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-roped-gap"
     },
     "assisted": {
       "type": "check",
@@ -1551,7 +1551,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-roped-gap"
     },
     "cross_whistle": {
       "type": "check",
@@ -1580,7 +1580,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-roped-gap"
     },
     "across": {
       "type": "story",
@@ -1830,7 +1830,7 @@
         "goto": "squeeze",
         "narration": "Together you guide the loop over the ring. Flup. It holds."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-iron-ring"
     },
     "drip_run": {
       "type": "interaction",
@@ -1863,7 +1863,7 @@
         "goto": "gust",
         "narration": "Together you count the drips out loud, and everyone slips through on the gap."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/shelf-icicles"
     },
     "hold_line": {
       "type": "interaction",
@@ -1886,7 +1886,7 @@
         "goto": "gear",
         "narration": "Together you wedge the end behind a rock. The line goes tight."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-roped-gap"
     },
     "level_line": {
       "type": "interaction",
@@ -1921,7 +1921,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "art": "scenes/riftlight/ice-shelf-roped-gap"
     }
   },
   "voiceGuide": {
@@ -1937,5 +1937,49 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [],
+    "interactions": {
+      "ring_throw": {
+        "props": [
+          "rope-loop",
+          "iron-anchor-ring"
+        ]
+      },
+      "drip_run": {
+        "props": [
+          "icicle-drips"
+        ]
+      },
+      "hold_line": {
+        "props": [
+          "rope-taut",
+          "rope-sag"
+        ]
+      },
+      "level_line": {
+        "props": [
+          "rope-sag",
+          "rope-taut"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/icicle-drips.webp",
+      "/assets/story-props/iron-anchor-ring.webp",
+      "/assets/story-props/rope-loop.webp",
+      "/assets/story-props/rope-sag.webp",
+      "/assets/story-props/rope-taut.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

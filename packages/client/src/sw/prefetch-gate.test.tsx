@@ -60,9 +60,12 @@ describe("warming the whole chapter", () => {
     return null;
   }
 
-  it("warms every scene's art on the display, in two lanes", () => {
+  it("warms every scene's art on the display, in two lanes", async () => {
     render(<Tv display />);
-    act(() => void vi.advanceTimersByTime(10_000));
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(10_000);
+      await vi.dynamicImportSettled();
+    });
     expect(warm).toHaveBeenCalledTimes(1);
     expect((warm.mock.calls[0] as unknown[])[1]).toEqual({ lanes: 2 });
   });

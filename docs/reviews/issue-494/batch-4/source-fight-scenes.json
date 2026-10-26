@@ -1,0 +1,238 @@
+{
+  "revision": "50388e4865b763e6f212fb4fe85f8ca76ee7a70f",
+  "encounters": [
+    {
+      "chapter": "riftlight-headwaters-washout",
+      "scene": "drake_fight",
+      "definition": {
+        "type": "encounter",
+        "map": "ford",
+        "narration": "The drakes slap the water and rush at the nearest boots. They are big, but they are also a bit unsure. Shoo them off the ford, and the way on is clear.",
+        "enemies": [
+          {
+            "id": "drake",
+            "creature": "river_drake",
+            "name": "Young river drake"
+          }
+        ],
+        "onVictory": {
+          "goto": "ledge_ahead",
+          "narration": "The drakes give huge, offended hiccups and slide away down the river, tails first. In the gravel where they sat, a smooth charm of river glass is left behind. You keep it, and keep an eye on the water.",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "river_charm",
+              "to": "party"
+            }
+          ]
+        },
+        "onDefeat": {
+          "goto": "drake_rescued",
+          "effects": [
+            {
+              "type": "heal",
+              "amount": 3,
+              "to": "party"
+            }
+          ]
+        },
+        "art": "scenes/riftlight/ice-shelf-headwaters"
+      }
+    },
+    {
+      "chapter": "riftlight-frostfang-shore",
+      "scene": "bar_crab",
+      "definition": {
+        "type": "encounter",
+        "map": "ford",
+        "narration": "The glassback crabs clack their claws and sidle across the gravel. Their shells are thick, so be patient. They do not want to hurt anyone. They want their house back, and a house needs a doorstep.",
+        "enemies": [
+          {
+            "id": "crab",
+            "creature": "glassback_crab"
+          }
+        ],
+        "onVictory": {
+          "goto": "bar_carry",
+          "narration": "The crabs tuck in their claws and clink into a new burrow under the rocks. One looks out, satisfied. In the gravel they leave behind a smooth, lucky-looking stone, which you pocket.",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "luckstone",
+              "to": "party"
+            }
+          ]
+        },
+        "onDefeat": {
+          "goto": "bar_carry",
+          "narration": "Their shells are just too tough. You stumble back, wet and puffing, and Tamsin whistles a loud call from the ridge. The crabs huff and sidle off to sulk. You lose your breath and some of the afternoon.",
+          "effects": [
+            {
+              "type": "heal",
+              "amount": 3,
+              "to": "party"
+            },
+            {
+              "type": "setFlag",
+              "flag": "crab_won_the_bar"
+            }
+          ]
+        },
+        "art": "scenes/riftlight/ice-shelf-headwaters"
+      }
+    },
+    {
+      "chapter": "riftlight-cairnstep-pass",
+      "scene": "cache_fight",
+      "definition": {
+        "type": "encounter",
+        "map": "switchback",
+        "narration": "The wolves wag their glowing tails and creep toward the cairn. They are hungry and cheeky, and they are not very big. A good shout and a firm stand should do it. Pebble hides behind Brask and cheers.",
+        "enemies": [
+          {
+            "id": "wolf",
+            "creature": "cinder_wolf",
+            "count": 2
+          }
+        ],
+        "onVictory": {
+          "goto": "neck",
+          "narration": "The wolves yelp, spin and bolt down the slope in two puffs of ash. Pebble tosses them a heel of bread for the road, which seems fair. In the ashy paw prints, Brask finds a warm bead and presses it into your hand. \"The hearth keeps its own,\" he says. Then he looks up the pass toward the neck.",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "hearthstone_bead",
+              "to": "party"
+            }
+          ]
+        },
+        "onDefeat": {
+          "goto": "neck",
+          "narration": "The wolves dodge and dart, and in the end they trot off with a loaf and a good bit of hay. Brask bangs a pot lid until they are gone. You are scuffed but fine. \"Hay can be bought,\" says Brask. \"Friends are harder.\" Then he looks up the pass toward the neck.",
+          "effects": [
+            {
+              "type": "heal",
+              "amount": 3,
+              "to": "party"
+            },
+            {
+              "type": "setFlag",
+              "flag": "wolves_took_hay"
+            }
+          ]
+        },
+        "art": "scenes/riftlight/cairnstep"
+      }
+    },
+    {
+      "chapter": "riftlight-saltrot-arrival",
+      "scene": "crab_fight",
+      "definition": {
+        "type": "encounter",
+        "map": "reedbank",
+        "narration": "The crabs scuttle sideways at you, claws up, shells flashing in the gray light. They are not evil. They are cold and cross, and they want you off their warm ground. Hold the shell-bank until they settle.",
+        "enemies": [
+          {
+            "id": "crab",
+            "name": "Glassback Crab",
+            "creature": "glassback_crab"
+          }
+        ],
+        "onVictory": {
+          "goto": "crab_done",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "luckstone",
+              "to": "party"
+            }
+          ]
+        },
+        "onDefeat": {
+          "goto": "crab_rescued",
+          "effects": [
+            {
+              "type": "heal",
+              "amount": 3,
+              "to": "party"
+            }
+          ]
+        },
+        "art": "scenes/riftlight/stuttering-flats"
+      }
+    },
+    {
+      "chapter": "riftlight-ashspan-bridge",
+      "scene": "mimic_fight",
+      "definition": {
+        "type": "encounter",
+        "map": "reedbank",
+        "narration": "The two mire mimics wobble up on their little legs, planks clattering down their backs. They do not want to hurt anybody. They want a snack, a nap and to be left alone, in that order. Shoo them back to the reeds before they eat Tilly's bag!",
+        "enemies": [
+          {
+            "id": "mimic",
+            "name": "Mire Mimic",
+            "creature": "mire_mimic"
+          }
+        ],
+        "onVictory": {
+          "goto": "mimic_won",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "quickfoot_lace",
+              "to": "party"
+            }
+          ]
+        },
+        "onDefeat": {
+          "goto": "mimic_shooed",
+          "effects": [
+            {
+              "type": "heal",
+              "amount": 3,
+              "to": "party"
+            }
+          ]
+        },
+        "art": "scenes/gemfall/northern-bridge-foot"
+      }
+    },
+    {
+      "chapter": "riftlight-sky-islands-arrival",
+      "scene": "wisp_fight",
+      "definition": {
+        "type": "encounter",
+        "map": "glade",
+        "narration": "The wisps zip in circles around the pole and dive at the flame. Drive them away from the basket before the gale and their tugging pull the fire apart.",
+        "enemies": [
+          {
+            "id": "wisp",
+            "creature": "will_o_wisp",
+            "count": 2
+          }
+        ],
+        "onVictory": {
+          "goto": "wisps_shooed",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "mosslight_jar",
+              "to": "party"
+            }
+          ]
+        },
+        "onDefeat": {
+          "goto": "wisps_rescued",
+          "effects": [
+            {
+              "type": "heal",
+              "amount": 3,
+              "to": "party"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

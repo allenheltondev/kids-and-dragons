@@ -1,0 +1,17 @@
+.story-art-layer{position:absolute;pointer-events:none;right:4%;top:10%;inline-size:clamp(5em,23cqw,16em);block-size:clamp(5em,30cqh,17em);z-index:2;overflow:hidden}
+.story-art-layer img{object-fit:contain}
+.story-art-layer__prop{position:absolute;right:5%;bottom:0;inline-size:55%;block-size:62%;filter:drop-shadow(0 2px 3px #15202a55)}
+.story-art-layer__retreat{position:absolute;inline-size:100%;block-size:100%;animation:story-retreat 1.25s ease-out .2s both}
+.story-art-layer__retreat[data-direction="-1"]{animation-name:story-retreat-left}
+.story-art-layer__little{position:absolute;inline-size:45%;block-size:50%;bottom:0;left:0}
+.story-art-layer__breath{animation:story-pile-breath 2.8s ease-in-out infinite}
+.story-art-layer__wisp{position:absolute;inline-size:35%;block-size:35%;left:45%;top:20%;animation:story-wisp-orbit 3.2s linear infinite}
+.story-art-layer__coins{position:absolute;left:15%;top:25%;inline-size:65%;display:flex}
+.story-art-layer__coins img{inline-size:25%;animation:story-coin 1.2s ease-out both}
+@keyframes story-retreat{to{transform:translateX(100%);opacity:0}}
+@keyframes story-retreat-left{to{transform:translateX(-100%);opacity:0}}
+@keyframes story-pile-breath{50%{transform:translateY(-2%) scaleY(1.035)}}
+@keyframes story-wisp-orbit{from{transform:rotate(0deg) translateX(30%) rotate(0deg)}to{transform:rotate(360deg) translateX(30%) rotate(-360deg)}}
+@keyframes story-coin{0%{opacity:0;transform:translateY(20%) scale(.6)}35%{opacity:1}100%{opacity:0;transform:translateY(-80%) scale(1)}}
+@media(prefers-reduced-motion:reduce){.story-art-layer *{animation:none!important;transition:none!important}.story-art-layer__coins img{opacity:1}}
+[data-motion=reduced] .story-art-layer *{animation:none!important;transition:none!important}

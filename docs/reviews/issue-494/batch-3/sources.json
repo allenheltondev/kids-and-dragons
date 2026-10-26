@@ -1,0 +1,183 @@
+[
+  {
+    "id": "exchange-noodle-awning",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-3/exchange-noodle-awning.png",
+    "prompt": "Use case: illustration-story. Production 16:9 backdrop for Kids & Dragons. Warm hand-painted children's storybook gouache, fine warm-brown linework, natural textured materials, broad readable shapes and deep atmosphere. Match the reference's Exchange harbor architecture and crafted painted style, but this is BRIGHT MORNING, not dusk. No foreground people or creatures, lettering, UI, logos or watermark. Keep the lower quarter of the quay open for separately rendered characters. The Exchange market beside the harbor: a generous striped warm ochre and cream noodle-seller awning lifted on a long broom, steaming noodle pot beneath it, nearby wooden honeycake counter with a neat stack of small golden cakes under a cloth. Buckets of fish and wooden market barrels, mooring posts and blue-roofed stone harbor buildings behind. A small unexpected patch of snow lies beside one fish stall despite the clear blue morning sky. Busy place shown between visitors, cozy and practical, not a lavish banquet.",
+    "references": [
+      "assets/scenes/gemfall/exchange-docks.webp"
+    ]
+  },
+  {
+    "id": "exchange-barge-sacks",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-3/exchange-barge-sacks-v2.png",
+    "prompt": "Use case: precise-object-edit. Preserve this morning Exchange barge painting, boat, harbor, all architecture, rope and foreground exactly. Make two targeted corrections. FIRST: the stone landing steps at the LEFT must look displaced and unsafe, as the story says: tilt the bottom three steps sideways and leave their jagged ends hanging above the water, visibly no longer a continuous walkable staircase. Keep the low iron mooring ring nearby usable. SECOND: remove every stamped letter or fake text mark from every burlap potato sack, leaving plain warm burlap and simple stitched patches. No other changes; no people or new objects.",
+    "references": [
+      "art/source/issue-494/batch-3/exchange-barge-sacks.png"
+    ]
+  },
+  {
+    "id": "exchange-leaning-crates",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-3/exchange-leaning-crates.png",
+    "prompt": "Use case: illustration-story. Production 16:9 backdrop for Kids & Dragons. Warm hand-painted children's storybook gouache, fine warm-brown linework, natural textured materials, broad readable shapes and deep atmosphere. Match the reference's Exchange harbor architecture and crafted painted style, but this is BRIGHT MORNING, not dusk. No foreground people or creatures, lettering, UI, logos or watermark. Keep the lower quarter of the quay open for separately rendered characters. At the far end of the Exchange quay, two stacks of wooden cargo crates LEAN toward a very thin vertical fold in the air between them. A loose rope slides in an S curve across wet planks. A faint dusting of snow and cold white breathlike mist emerge from the glassy crease; a pale snowfield barely glimpsed through it, while harbor water and a blue-roofed town remain normal behind. No masonry portal arch or glowing runes, no purple magic. One loose round crate lid lies flat, a wooden wedge near the nearest crate. Morning sunlight, clearly readable precarious crate silhouettes.",
+    "references": [
+      "assets/scenes/gemfall/exchange-docks.webp"
+    ]
+  },
+  {
+    "id": "glacier-snow-lip",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-3/glacier-snow-lip.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 landscape backdrop for Kids & Dragons. Match the reference's warm hand-painted storybook gouache, fine brown lines, textured blue-white glacier and warm gray stone, golden upper-left light. Snowy Frostfang mountain region. Quiet open foreground for separately rendered game characters. No people, text, letters, UI, watermark or futuristic objects. A low glacier ridge path between dark rock shoulders, thick wind-sculpted snow lip overhanging a hollow drift. Deep yeti footprints and two sledge runner tracks follow firm dark stones around the risky snow. One small stone cairn beside the path has an old open tin tucked at its foot, with a faded scrap of cloth inside. Snow-squall wisps blow horizontally but the landscape is inviting and legible, no goats, no magical light. The dark rocks offer a visibly safer detour.",
+    "references": [
+      "assets/scenes/riftlight/singing-hall-camp.webp"
+    ]
+  },
+  {
+    "id": "glacier-meltwater-step",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-3/glacier-meltwater-step.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 landscape backdrop for Kids & Dragons. Match the reference's warm hand-painted storybook gouache, fine brown lines, textured blue-white glacier and warm gray stone, golden upper-left light. Snowy Frostfang mountain region. Quiet open foreground for separately rendered game characters. No people, text, letters, UI, watermark or futuristic objects. A fast narrow meltwater stream cuts a snowy glacier shelf. A fragile sagging snow bridge is visible left of center, a broad flat DARK STEPPING STONE projects above the water farther upstream, and a firm dry gravel bank lies beyond. A simple wooden empty herder's sledge and loose rope wait on the near side at the edge, not in the center foreground. The safe stone and unsafe crust are distinct at small size. No animals or figures.",
+    "references": [
+      "assets/scenes/riftlight/singing-hall-camp.webp"
+    ]
+  },
+  {
+    "id": "glacier-herd-rest",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-3/glacier-herd-rest.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 landscape backdrop for Kids & Dragons. Match the reference's warm hand-painted storybook gouache, fine brown lines, textured blue-white glacier and warm gray stone, golden upper-left light. Snowy Frostfang mountain region. Quiet open foreground for separately rendered game characters. No people, text, letters, UI, watermark or futuristic objects. A sheltered ledge outside the low entrance to a glacier singing hall. A small settled herd of five adult snowhorn goats with fluffy cream coats and sturdy curled honey-colored horns stands or lies on dry hay beside warm stones. The lead adult has a chipped horn and one worn bronze bell on a red collar. No baby goat; the separate game cast supplies the kid. Steam from a small tea pot and folded blankets near a rock; quiet sky, snowy peaks beyond. The herd occupies the background and sides, leaving a broad empty foreground strip.",
+    "references": [
+      "assets/scenes/riftlight/singing-hall-camp.webp"
+    ]
+  },
+  {
+    "id": "departure-loaded-sledge",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-3/departure-loaded-sledge.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 landscape backdrop for Kids & Dragons. Match the reference's warm hand-painted storybook gouache, fine brown lines, textured blue-white glacier and warm gray stone, golden upper-left light. Snowy Frostfang mountain region. Quiet open foreground for separately rendered game characters. No people, text, letters, UI, watermark or futuristic objects. Outside the same glacier singing hall, a practical low wooden sledge loaded with a trunk, potato sacks, one small barrel and folded blankets. Rope lashings secure the load; enough room remains to tuck in one supper bundle. Packs and a rolled route map beside the sledge, warm lantern under a canvas shelter to left, monumental textured ice-hall entrance behind and two snowy paths diverging toward distant cairns. No creatures, people, text or symbols on luggage.",
+    "references": [
+      "assets/scenes/riftlight/singing-hall-camp.webp"
+    ]
+  },
+  {
+    "id": "departure-chime-rest",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-3/departure-chime-rest.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 landscape backdrop for Kids & Dragons. Match the reference's warm hand-painted storybook gouache, fine brown lines, textured blue-white glacier and warm gray stone, golden upper-left light. Snowy Frostfang mountain region. Quiet open foreground for separately rendered game characters. No people, text, letters, UI, watermark or futuristic objects. A sheltered tea rest outside the glacier singing hall. In the midground a small bronze listening chime hangs from a short cord looped over a low wooden fork. On a flat stone beside it: a simple open wooden case with three fitted grooves holding three differently sized plain bronze rings; a folded soft cloth, small chipped tea cups and a steaming kettle. Snow paths and the tall ice-hall entrance softly behind. Handcrafted travel kit, not a magical machine, no glow or musical text. Leave the foreground lower quarter open.",
+    "references": [
+      "assets/scenes/riftlight/singing-hall-camp.webp"
+    ]
+  },
+  {
+    "id": "ice-shelf-roped-gap",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-3/ice-shelf-roped-gap.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape painting for Kids & Dragons. Warm crafted storybook gouache, fine warm-brown drawing, textured blue-white glacier and warm gray rock, broad legible shapes, golden cold daylight. No people, creatures, lettering, UI or watermark. Open lower foreground for game characters. A section has fallen from a narrow glacier shelf above the Great River. Dark rocky footholds climb above the gap, while a thin icy lip still connects both sides below. A thick ROPE HANDRAIL is tied firmly to sound rocks at both ends, taut across the crossing, ready for travelers. No wooden bridge or deck. The route hugs rock rather than open river; a few bags already rest on the far dry ledge. Snow peaks recede beyond, water below. Readable anchor knots and taut line.",
+    "references": [
+      "assets/scenes/riftlight/shelf-icicles.webp"
+    ]
+  },
+  {
+    "id": "headwaters-log-chute",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-3/headwaters-log-chute.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape painting for Kids & Dragons. Warm crafted storybook gouache, fine warm-brown drawing, textured blue-white glacier and warm gray rock, broad legible shapes, golden cold daylight. No people, creatures, lettering, UI or watermark. Open lower foreground for game characters. Low river-level view in the Great River headwaters: a spiky jam of tree trunks, roots and ice spans part of the rushing river at left, with water pouring through a visible safe opening. Just beyond, a narrow fast chute runs between two tall glacier ice walls. A rope is snagged on one branch, a dark thumb-shaped ledge with a round knob rises above water near the right bank. This is a close adventurous location, not a distant wide valley. No boats, heroes or buildings.",
+    "references": [
+      "assets/scenes/riftlight/shelf-icicles.webp"
+    ]
+  },
+  {
+    "id": "rope-loop",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/rope-loop.png",
+    "prompt": "Use case: illustration-story. One reusable transparent interaction prop for Kids & Dragons, matching a warm crafted children's storybook game. Tapered dark brown outlines, textured soft cel shading, upper-left light, bold readable silhouette at 96px. Single complete object isolated on genuinely transparent background, NO floor, drop shadow, hands, people, labels, text, watermark or extra items. Square canvas with generous 10% transparent border. Three-quarter front view. A thick natural hemp rope coil with one large OPEN oval throwing loop raised above it and a short trailing end. Loop hole is fully transparent and clear, rope twisted fiber texture broad and readable, simple golden tan rope and brown binding. Coil and open loop form one continuous rope, no hooks or anchors.",
+    "references": []
+  },
+  {
+    "id": "relay-sack",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/relay-sack.png",
+    "prompt": "Use case: illustration-story. One reusable transparent interaction prop for Kids & Dragons, matching a warm crafted children's storybook game. Tapered dark brown outlines, textured soft cel shading, upper-left light, bold readable silhouette at 96px. Single complete object isolated on genuinely transparent background, NO floor, drop shadow, hands, people, labels, text, watermark or extra items. Square canvas with generous 10% transparent border. Three-quarter front view. A soft plump burlap POTATO SACK tied securely at the neck with twine. Warm ochre coarse cloth, a few broad folds and one stitched repair patch, simple bulging silhouette. Closed intact sack, no potato faces, no contents spilling out.",
+    "references": []
+  },
+  {
+    "id": "relay-log",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/relay-log.png",
+    "prompt": "Use case: illustration-story. One reusable transparent interaction prop for Kids & Dragons, matching a warm crafted children's storybook game. Tapered dark brown outlines, textured soft cel shading, upper-left light, bold readable silhouette at 96px. Single complete object isolated on genuinely transparent background, NO floor, drop shadow, hands, people, labels, text, watermark or extra items. Square canvas with generous 10% transparent border. Three-quarter front view. One short dry split FIREWOOD LOG, chunky roughly cylindrical with golden cut end and two readable growth rings, warm brown bark along its side. Horizontal orientation tilted only slightly, proportions 2.5 times as long as thick. No leaves, axe, fire or branches.",
+    "references": []
+  },
+  {
+    "id": "relay-plank",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/relay-plank.png",
+    "prompt": "Use case: illustration-story. One reusable transparent interaction prop for Kids & Dragons, matching a warm crafted children's storybook game. Tapered dark brown outlines, textured soft cel shading, upper-left light, bold readable silhouette at 96px. Single complete object isolated on genuinely transparent background, NO floor, drop shadow, hands, people, labels, text, watermark or extra items. Square canvas with generous 10% transparent border. Three-quarter front view. One long sturdy TIMBER PLANK for bridge repairs, rectangular sawn wood with warm honey grain and two shallow knots. Horizontal orientation, approximately 4 times longer than wide; readable thickness along lower edge and clean intact ends. No nails or cracks, no decorative symbols.",
+    "references": []
+  },
+  {
+    "id": "relay-hay",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/relay-hay.png",
+    "prompt": "Use case: illustration-story. One reusable transparent interaction prop for Kids & Dragons, matching a warm crafted children's storybook game. Tapered dark brown outlines, textured soft cel shading, upper-left light, bold readable silhouette at 96px. Single complete object isolated on genuinely transparent background, NO floor, drop shadow, hands, people, labels, text, watermark or extra items. Square canvas with generous 10% transparent border. Three-quarter front view. One compact rectangular HAY BUNDLE, tied across with two thick red-brown wool cords. Golden straw ends protrude slightly at both sides, simple readable bunched straw texture, sturdy soft parcel silhouette, horizontal orientation. No pitchfork, no goat.",
+    "references": []
+  },
+  {
+    "id": "relay-oil-jar",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/relay-oil-jar.png",
+    "prompt": "Use case: illustration-story. One reusable transparent interaction prop for Kids & Dragons, matching a warm crafted children's storybook game. Tapered dark brown outlines, textured soft cel shading, upper-left light, bold readable silhouette at 96px. Single complete object isolated on genuinely transparent background, NO floor, drop shadow, hands, people, labels, text, watermark or extra items. Square canvas with generous 10% transparent border. Three-quarter front view. One squat glazed ceramic LAMP-OIL JAR, muted warm olive glaze, broad rounded belly, short narrow corked neck, a little carrying loop of thick rope tied around its neck. Clearly stoppered and spill-proof, no painted label, no lit flame or liquid outside.",
+    "references": []
+  },
+  {
+    "id": "relay-scarf",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/relay-scarf.png",
+    "prompt": "Use case: illustration-story. One reusable transparent interaction prop for Kids & Dragons, matching a warm crafted children's storybook game. Tapered dark brown outlines, textured soft cel shading, upper-left light, bold readable silhouette at 96px. Single complete object isolated on genuinely transparent background, NO floor, drop shadow, hands, people, labels, text, watermark or extra items. Square canvas with generous 10% transparent border. Three-quarter front view. One thick knitted wool SCARF in muted rust red with a simple cream stripe near each tasseled end. Folded once into a loose U shape, the two ends hang slightly apart and the center bend is clearly visible, bold soft knitted texture. No knot, no person wearing it.",
+    "references": []
+  },
+  {
+    "id": "relay-trunk",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/relay-trunk.png",
+    "prompt": "Use case: illustration-story. One reusable transparent interaction prop for Kids & Dragons, matching a warm crafted children's storybook game. Tapered dark brown outlines, textured soft cel shading, upper-left light, bold readable silhouette at 96px. Single complete object isolated on genuinely transparent background, NO floor, drop shadow, hands, people, labels, text, watermark or extra items. Square canvas with generous 10% transparent border. Three-quarter front view. One compact sturdy wooden TRAVEL TRUNK, warm chestnut planks, two weathered leather straps over its closed lid, plain bronze corner guards and a simple front latch. Broad readable rounded rectangular box, three-quarter view with one side handle visible. No stickers, jewels, text or magical glow.",
+    "references": []
+  },
+  {
+    "id": "snow-mound",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/snow-mound.png",
+    "prompt": "Use case: illustration-story. One reusable transparent story-interaction asset for Kids & Dragons. Warm hand-painted children's storybook gouache with tapered dark brown outlines, subtle natural texture, upper-left lighting, readable at 96px. Entire object centered on genuinely transparent square background with generous 10% margins. No floor, cast shadow, people, lettering, UI or watermark. A single low rounded SNOW MOUND with a smooth domed top and irregular soft base. Pale warm ivory snow with muted slate-blue shading on lower right, a few soft scallops, clean opaque white snow body and transparent outside. Front view, broad squat silhouette, no footprints, holes, eyes or hidden animal. Designed so three exact copies can act as look-alike tracking covers.",
+    "references": []
+  },
+  {
+    "id": "water-surge",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/water-surge.png",
+    "prompt": "Use case: illustration-story. One reusable transparent story-interaction asset for Kids & Dragons. Warm hand-painted children's storybook gouache with tapered dark brown outlines, subtle natural texture, upper-left lighting, readable at 96px. Entire object centered on genuinely transparent square background with generous 10% margins. No floor, cast shadow, people, lettering, UI or watermark. One low rolling crest of cold gray-green river WATER with a soft cream foam edge, side/front view, wide horizontal silhouette approximately three times as wide as high. Curving lip visibly rolls to the right, a few small disconnected foam drops near the crest. Natural river wave, no sea monster or boat, no rectangular water background, genuinely transparent all around. Designed as a movable overlay for tide pull and surge.",
+    "references": []
+  },
+  {
+    "id": "note-low",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/note-low.png",
+    "prompt": "Use case: illustration-story. One reusable transparent story-interaction asset for Kids & Dragons. Warm hand-painted children's storybook gouache with tapered dark brown outlines, subtle natural texture, upper-left lighting, readable at 96px. Entire object centered on genuinely transparent square background with generous 10% margins. No floor, cast shadow, people, lettering, UI or watermark. One thick hand-painted bronze sound glyph: a SINGLE broad low horizontal curling wave, like a deep humming tone drawn in one stroke. Warm ochre bronze with a modest golden highlight and brown outline. The glyph itself only, no bell, plaque or circle background; simple bold shape with one clear low wave.",
+    "references": []
+  },
+  {
+    "id": "note-middle",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/note-middle.png",
+    "prompt": "Use case: illustration-story. One reusable transparent story-interaction asset for Kids & Dragons. Warm hand-painted children's storybook gouache with tapered dark brown outlines, subtle natural texture, upper-left lighting, readable at 96px. Entire object centered on genuinely transparent square background with generous 10% margins. No floor, cast shadow, people, lettering, UI or watermark. One thick hand-painted bronze sound glyph: TWO clearly separated curved arches stacked one above the other, like two round middle-tone sound ripples. Warm ochre bronze, modest golden highlight and brown outline. Glyph strokes only, no bell, plaque or circle background. Two arches must remain countable at small size.",
+    "references": []
+  },
+  {
+    "id": "note-high",
+    "kind": "prop",
+    "source": "art/source/issue-494/batch-3/note-high.png",
+    "prompt": "Use case: illustration-story. One reusable transparent story-interaction asset for Kids & Dragons. Warm hand-painted children's storybook gouache with tapered dark brown outlines, subtle natural texture, upper-left lighting, readable at 96px. Entire object centered on genuinely transparent square background with generous 10% margins. No floor, cast shadow, people, lettering, UI or watermark. One thick hand-painted bronze sound glyph: THREE short clearly separated upward-pointing rays spreading like a small fan, like a bright high chime. Warm ochre bronze with modest golden highlight and brown outline. Glyph strokes only, no bell, plaque or circle background. Three broad rays must remain countable at small size, not thin needles.",
+    "references": []
+  }
+]

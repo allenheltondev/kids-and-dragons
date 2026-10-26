@@ -1,0 +1,17 @@
+/* Decorative motion only. Interaction scoring and outcome timing belong to the engine. */
+.story-prop { object-fit: contain; animation-duration: var(--story-prop-duration, 2600ms); animation-iteration-count: infinite; animation-timing-function: ease-in-out; transform-origin: 50% 75%; }
+.story-prop[data-motion="swing"] { animation-name: story-prop-swing; }
+.story-prop[data-motion="relay"] { animation-name: story-prop-relay; }
+.story-prop[data-motion="sway"] { animation-name: story-prop-sway; }
+.story-prop[data-motion="surge"] { animation-name: story-prop-surge; }
+.story-prop[data-motion="pulse"] { animation-name: story-prop-pulse; }
+.story-prop[data-motion="peek"] { animation-name: story-prop-peek; }
+@keyframes story-prop-swing { 0%,100% { transform: rotate(-9deg); } 50% { transform: rotate(9deg); } }
+@keyframes story-prop-relay { 0%,100% { transform: translateX(calc(0px - var(--story-prop-travel, 18px))) rotate(-4deg); } 50% { transform: translateX(var(--story-prop-travel, 18px)) rotate(4deg); } }
+@keyframes story-prop-sway { 0%,100% { transform: rotate(-5deg) translateY(3px); } 50% { transform: rotate(5deg) translateY(-3px); } }
+@keyframes story-prop-surge { 0%,100% { transform: translateX(calc(0px - var(--story-prop-travel, 18px))) scaleX(.78); opacity: .65; } 50% { transform: translateX(var(--story-prop-travel, 18px)) scaleX(1.1); opacity: 1; } }
+@keyframes story-prop-pulse { 0%,100% { transform: scale(.92); filter: brightness(.85); } 50% { transform: scale(1.04); filter: brightness(1.15); } }
+@keyframes story-prop-peek { 0%,20%,85%,100% { transform: translateY(85%); } 40%,65% { transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) { .story-prop { animation: none !important; } }
+
+@media (max-width: 500px) { .story-prop { --story-prop-travel: 12px; } }

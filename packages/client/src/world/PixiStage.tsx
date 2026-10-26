@@ -1,3 +1,4 @@
+import { interactionBackdrop, fightAppearance } from "./riftlight-art";
 /** Container-sized renderer; state updates do not recreate its WebGL context. */
 
 import { useEffect, useRef, useState } from "react";
@@ -94,8 +95,15 @@ function boardView(
 ): BoardViewState | null {
   const encounter = state?.encounter ?? null;
   if (!encounter) return null;
+  const appearance=fightAppearance(chapter,state);
+  const fightScene=chapter?.scenes[state?.sceneId ?? ""];
+  const enemyPoses: Record<string,{active:string;retreat:string;direction:number}>={};
+  if(appearance && fightScene?.type==="encounter")for(const enemy of fightScene.enemies) {
+    if(enemy.creature===appearance.creature)enemyPoses[enemy.id]={active:appearance.activeUrl,retreat:appearance.retreatUrl,direction:appearance.retreatDirection};
+  }
   return {
     encounter,
+    ...(appearance?{tileUrl:appearance.tileUrl,terrainProps:appearance.terrainProps,enemyPoses}:{}),
     biome: chapter?.biome ?? null,
     enemyArt: enemyArtFor(chapter, state?.sceneId ?? null),
     party,
@@ -112,6 +120,7 @@ export function PixiStage(): React.JSX.Element {
   const session = useSession();
   const chapter = useChapter();
   const previews = usePreviews();
+  const selectedArt=interactionBackdrop(chapter,state) ?? sceneArtFor(chapter,state);
   const [paneWidth, setPaneWidth] = useState(0);
   const [guestPage, setGuestPage] = useState({ key: "", index: 0 });
   const guests = castFor(chapter, state);
@@ -206,7 +215,7 @@ export function PixiStage(): React.JSX.Element {
       // name for one frame before the effect below caught up.
       scene.setNameplatesVisible(nameplatesVisibleIn(live.state?.phase));
       scene.setParty(live.state?.party ?? []);
-      scene.setBiome(live.chapter?.biome ?? null, sceneArtFor(live.chapter, live.state));
+      scene.setBiome(live.chapter?.biome ?? null, interactionBackdrop(live.chapter,live.state) ?? sceneArtFor(live.chapter, live.state));
       scene.setRift(sceneRiftFor(live.chapter, live.state), sceneKey(live.state));
       scene.setCast(visibleGuestsRef.current);
       scene.setStageInset(stageInsetBottom());
@@ -272,8 +281,8 @@ export function PixiStage(): React.JSX.Element {
 
   // Selected story scenes override the backdrop without changing combat tiles.
   useEffect(() => {
-    sceneRef.current?.setBiome(chapter?.biome ?? null, sceneArtFor(chapter, state));
-  }, [chapter, state?.chapterId, state?.sceneId, state?.encounter]);
+    sceneRef.current?.setBiome(chapter?.biome ?? null, selectedArt);
+  }, [chapter, state?.chapterId, state?.sceneId, state?.encounter, selectedArt]);
 
   // A rift in plain view (#401), keyed by the scene so an opening plays once.
   useEffect(() => {

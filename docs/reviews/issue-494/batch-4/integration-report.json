@@ -1,0 +1,17 @@
+{
+  "appliedScenes": [
+    "riftlight-headwaters-washout/drake_shallows",
+    "riftlight-headwaters-washout/drake_fight",
+    "riftlight-frostfang-shore/bar_reached",
+    "riftlight-frostfang-shore/bar_crab",
+    "riftlight-cairnstep-pass/shelter_found",
+    "riftlight-cairnstep-pass/cache_fight",
+    "riftlight-saltrot-arrival/crab_warn",
+    "riftlight-saltrot-arrival/crab_fight",
+    "riftlight-ashspan-bridge/plank_pile",
+    "riftlight-ashspan-bridge/mimic_fight",
+    "riftlight-sky-islands-arrival/wisps",
+    "riftlight-sky-islands-arrival/wisp_fight"
+  ],
+  "pendingFights": []
+}
