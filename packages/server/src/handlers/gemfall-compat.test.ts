@@ -41,6 +41,10 @@
  * scene with the same hero down; the beats moved, by their damage numbers and
  * the target and tier each roll now carries. The endings, roads and setbacks
  * throw no dice and still match the pre-epic build.
+ *
+ * Re-pinned for #497's chapter 01/02 presentation art: scene backdrops,
+ * interaction props, tracking covers and memory option icons only. The
+ * gameplay digests below continue to match the pre-epic build.
  */
 
 import { createHash } from "node:crypto";
@@ -257,8 +261,8 @@ const DIGESTS: PreEpicSave["digests"] = {
 // the ending, road, setback and resumed-save digests remain pinned.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
-  "chapters/gemfall-01.json": "22841ee7adea056f380c9c6091f964c4073d89c5421bf017be421245c3f0d50d",
-  "chapters/gemfall-02.json": "0a544d66e864a199fd38ae7bc3889f6bffb962715bba8ee3e91b02dd5dc24529",
+  "chapters/gemfall-01.json": "67a4b9a4d8a8be313734b201acc02cd8a26a164f22f7b4df2330ef15fd74b8f8",
+  "chapters/gemfall-02.json": "ab26cdedc0b4af9f0153e75829ba49220c40e323bf6d739309cdfc82c101911e",
   "chapters/gemfall-03a.json": "238ed5c991bd49835a583890fd41cdfca9061e31f31f6664a5eb68243ea27966",
   "chapters/gemfall-03b.json": "772b4ce6d85b071ba2563d9925d8d05e8dbf76d3a47cbd446536d80dd4108f61",
   "chapters/gemfall-03c.json": "791d23ee397910abcb5a7766b10569851684938aa7b796279dd55a03c84b2ecf",

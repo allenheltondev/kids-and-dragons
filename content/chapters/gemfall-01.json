@@ -7,6 +7,30 @@
   "biome": "exchange",
   "estimatedMinutes": 45,
   "xpAward": 100,
+  "presentation": {
+    "interactions": {
+      "interaction_lantern_pole": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_jars": {
+        "props": [
+          "prop_jar_tray"
+        ]
+      },
+      "interaction_quay_line": {
+        "props": [
+          "prop_pear_crate"
+        ]
+      },
+      "interaction_letters": {
+        "props": [
+          "prop_letters"
+        ]
+      }
+    }
+  },
   "entry": "scene_prologue_realm",
   "objectives": [
     {
@@ -2726,7 +2750,7 @@
           "goto": "encounter_quay_wisps"
         }
       ],
-      "art": "scenes/gemfall/exchange-quay"
+      "art": "scenes/gemfall/exchange-quay-wisps"
     },
     "encounter_quay_wisps": {
       "type": "encounter",
@@ -2772,7 +2796,7 @@
           "goto": "choice_ember"
         }
       ],
-      "art": "scenes/gemfall/exchange-quay"
+      "art": "scenes/gemfall/exchange-quay-wisps"
     },
     "scene_quay_wisps_scattered": {
       "type": "story",
@@ -2785,7 +2809,7 @@
           "goto": "choice_ember"
         }
       ],
-      "art": "scenes/gemfall/exchange-quay"
+      "art": "scenes/gemfall/exchange-quay-wisps"
     },
     "scene_caravan_yard_thornguard": {
       "type": "story",

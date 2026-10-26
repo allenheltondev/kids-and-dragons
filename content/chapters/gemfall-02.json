@@ -2317,7 +2317,8 @@
             "to": "party"
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/egg-stall-baskets"
     },
     "interaction_jackalope_hats": {
       "type": "interaction",
@@ -2365,7 +2366,8 @@
       "onAssisted": {
         "goto": "scene_wolf_sign",
         "narration": "A friendly faun points out the right hat. The leader thumps her foot, and the crowd parts to leave a path toward the long grass."
-      }
+      },
+      "art": "scenes/gemfall/jackalope-meadow-hats"
     },
     "scene_mimic_ditch": {
       "type": "story",
@@ -2386,7 +2388,8 @@
           "icon": "swords",
           "goto": "encounter_mimic_plank"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ditch-plank-mimics"
     },
     "encounter_mimic_plank": {
       "type": "encounter",
@@ -2443,7 +2446,8 @@
           "icon": "travel",
           "goto": "scene_ditch_hay_home"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ditch-plank-mimics"
     },
     "scene_mimic_squelched": {
       "type": "story",
@@ -2461,7 +2465,8 @@
           "icon": "travel",
           "goto": "scene_ditch_hay_home"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ditch-plank-mimics"
     },
     "scene_ditch_hay_home": {
       "type": "story",
@@ -2501,7 +2506,8 @@
           "icon": "heart",
           "goto": "scene_embermoths"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ditch-plank-mimics"
     },
     "scene_ditch_cake": {
       "type": "story",
@@ -2519,7 +2525,8 @@
           "icon": "travel",
           "goto": "scene_embermoths"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/ditch-plank-mimics"
     },
     "interaction_moth_bells": {
       "type": "interaction",
@@ -2539,17 +2546,17 @@
           {
             "id": "little",
             "label": "Little bell",
-            "icon": "note"
+            "icon": "glyph_bell_little"
           },
           {
             "id": "big",
             "label": "Big bell",
-            "icon": "drop"
+            "icon": "glyph_bell_big"
           },
           {
             "id": "brass",
             "label": "Brass bell",
-            "icon": "star"
+            "icon": "glyph_bell_brass"
           }
         ],
         "answer": [
@@ -2570,7 +2577,8 @@
       "onAssisted": {
         "goto": "choice_night_tremor",
         "narration": "The cook hums the lullaby under her breath, and you ring along. The stragglers sigh and tuck their wings in, and everybody falls asleep fast."
-      }
+      },
+      "art": "scenes/gemfall/moth-bell-wagons"
     },
     "interaction_stuck_wagon": {
       "type": "interaction",
@@ -2610,7 +2618,8 @@
             "amount": 3
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/stuck-wagon-lane"
     }
   },
   "voiceGuide": {
@@ -2638,6 +2647,28 @@
       "cook": "the caravan cook; only ever talks in her sleep, about gravy",
       "ferrier": "a frogfolk ferrier with reeds in her hat; slow, storytelling, fond of the marsh and politely firm about rude passengers",
       "relay_runner": "a muddy centaur relay runner; talks fast, plain, practical, has seen the whole road east"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_stuck_wagon": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_egg_baskets": {
+        "props": [
+          "prop_egg_basket"
+        ]
+      },
+      "interaction_jackalope_hats": {
+        "props": [],
+        "coverIcons": [
+          "prop_straw_hat",
+          "prop_straw_hat",
+          "prop_straw_hat"
+        ]
+      }
     }
   }
 }
