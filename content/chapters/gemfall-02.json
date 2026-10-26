@@ -5,7 +5,7 @@
   "index": 2,
   "title": "Green Roads North",
   "biome": "sunward_fields",
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 45,
   "xpAward": 90,
   "entry": "scene_song_stops",
   "plate": {
@@ -226,7 +226,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Dash in front of the lead oxen and steer them around the field",
+      "prompt": "Everybody dash in front of the lead oxen and steer them around the field",
       "cast": [
         {
           "figure": "cast/hob",
@@ -237,7 +237,7 @@
           "name": "Rush drover"
         }
       ],
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_caravan_turned",
         "narration": "You dash in front of the lead oxen, flapping your arms like a scarecrow in a gale. The oxen decide the edge of the field looks nicer, and the drover, sighing, lets them have it."
@@ -454,7 +454,7 @@
           "id": "on",
           "label": "Back to the road north",
           "icon": "travel",
-          "goto": "scene_jackalope_road"
+          "goto": "interaction_egg_baskets"
         }
       ],
       "onEnter": [
@@ -477,7 +477,7 @@
           "id": "on",
           "label": "Back to the road north",
           "icon": "travel",
-          "goto": "scene_jackalope_road"
+          "goto": "interaction_egg_baskets"
         }
       ],
       "onEnter": [
@@ -511,7 +511,7 @@
           "id": "on",
           "label": "Back to the road north",
           "icon": "travel",
-          "goto": "scene_jackalope_road"
+          "goto": "interaction_egg_baskets"
         }
       ]
     },
@@ -528,7 +528,7 @@
           "id": "on",
           "label": "Back to the road north",
           "icon": "travel",
-          "goto": "scene_jackalope_road"
+          "goto": "interaction_egg_baskets"
         }
       ],
       "onEnter": [
@@ -551,7 +551,7 @@
           "id": "on",
           "label": "Back to the road north",
           "icon": "travel",
-          "goto": "scene_jackalope_road"
+          "goto": "interaction_egg_baskets"
         }
       ],
       "onEnter": [
@@ -578,7 +578,7 @@
           "id": "look_inland",
           "label": "Look where the jackalopes are looking",
           "icon": "eye",
-          "goto": "scene_wolf_sign"
+          "goto": "interaction_jackalope_hats"
         },
         {
           "id": "fly_look",
@@ -623,7 +623,7 @@
           "id": "wave",
           "label": "Wave goodbye and go back to the road",
           "icon": "back",
-          "goto": "scene_wolf_sign"
+          "goto": "interaction_jackalope_hats"
         }
       ]
     },
@@ -679,7 +679,7 @@
           "id": "down",
           "label": "Head down toward the wolves, with company",
           "icon": "party",
-          "goto": "scene_wolf_sign"
+          "goto": "interaction_jackalope_hats"
         }
       ]
     },
@@ -692,7 +692,7 @@
           "id": "on",
           "label": "Thank the flock and go and see",
           "icon": "eye",
-          "goto": "scene_wolf_sign"
+          "goto": "interaction_jackalope_hats"
         }
       ]
     },
@@ -707,7 +707,7 @@
           "id": "on",
           "label": "Land and tell the others",
           "icon": "wing",
-          "goto": "scene_wolf_sign"
+          "goto": "interaction_jackalope_hats"
         }
       ]
     },
@@ -851,6 +851,13 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "brace_beam",
+          "label": "Have a thornguard brace the new beam for everyone",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "check_bridge_beam"
         }
       ]
     },
@@ -858,13 +865,13 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Lift a fence post the size of a canoe and drop it in exactly the right place",
+      "prompt": "Everybody lift a fence post the size of a canoe and drop it in exactly the right place",
       "cast": [
         {
           "figure": "entities/faun"
         }
       ],
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_bridge_mended",
         "narration": "Heave. Shove. Thump. The new beam drops into place with a sound like a door shutting. The first hay cart rolls over, and the bridge does not even creak.",
@@ -894,7 +901,7 @@
           "id": "on",
           "label": "On down the road",
           "icon": "travel",
-          "goto": "scene_embermoths"
+          "goto": "scene_mimic_ditch"
         }
       ],
       "onEnter": [
@@ -917,7 +924,7 @@
           "id": "on",
           "label": "On down the road",
           "icon": "travel",
-          "goto": "scene_embermoths"
+          "goto": "scene_mimic_ditch"
         }
       ],
       "onEnter": [
@@ -940,7 +947,7 @@
           "id": "on",
           "label": "On down the road",
           "icon": "travel",
-          "goto": "scene_embermoths"
+          "goto": "scene_mimic_ditch"
         }
       ],
       "onEnter": [
@@ -963,7 +970,7 @@
           "id": "on",
           "label": "On down the road",
           "icon": "travel",
-          "goto": "scene_embermoths"
+          "goto": "scene_mimic_ditch"
         }
       ],
       "onEnter": [
@@ -986,7 +993,7 @@
           "id": "on",
           "label": "On down the road",
           "icon": "travel",
-          "goto": "scene_embermoths"
+          "goto": "scene_mimic_ditch"
         }
       ],
       "onEnter": [
@@ -1051,7 +1058,7 @@
           "id": "sleep",
           "label": "Get some sleep",
           "icon": "moon",
-          "goto": "choice_night_tremor"
+          "goto": "interaction_moth_bells"
         }
       ]
     },
@@ -1069,7 +1076,7 @@
           "id": "sleep",
           "label": "Sleep",
           "icon": "moon",
-          "goto": "choice_night_tremor"
+          "goto": "interaction_moth_bells"
         }
       ]
     },
@@ -1087,7 +1094,7 @@
           "id": "sleep",
           "label": "Get some sleep",
           "icon": "moon",
-          "goto": "choice_night_tremor"
+          "goto": "interaction_moth_bells"
         }
       ]
     },
@@ -1586,6 +1593,13 @@
           "icon": "crown",
           "requiresFlag": "motive_prestige",
           "goto": "scene_signpost_direct"
+        },
+        {
+          "id": "read_signs",
+          "label": "Have a duskrunner read the signs at a glance",
+          "icon": "eye",
+          "requiresClass": "duskrunner",
+          "goto": "check_signpost"
         }
       ]
     },
@@ -1612,7 +1626,7 @@
           "id": "on",
           "label": "On to the hedges",
           "icon": "travel",
-          "goto": "scene_hedge_mob"
+          "goto": "interaction_stuck_wagon"
         }
       ]
     },
@@ -1629,7 +1643,7 @@
           "id": "on",
           "label": "On to the hedges",
           "icon": "travel",
-          "goto": "scene_hedge_mob"
+          "goto": "interaction_stuck_wagon"
         }
       ]
     },
@@ -1641,7 +1655,7 @@
           "id": "on",
           "label": "Squeeze through to the hedges",
           "icon": "travel",
-          "goto": "scene_hedge_mob"
+          "goto": "interaction_stuck_wagon"
         }
       ]
     },
@@ -1658,7 +1672,7 @@
           "id": "on",
           "label": "On to the hedges",
           "icon": "travel",
-          "goto": "scene_hedge_mob"
+          "goto": "interaction_stuck_wagon"
         }
       ]
     },
@@ -1675,7 +1689,7 @@
           "id": "on",
           "label": "On to the hedges",
           "icon": "travel",
-          "goto": "scene_hedge_mob"
+          "goto": "interaction_stuck_wagon"
         }
       ]
     },
@@ -2263,6 +2277,340 @@
       ],
       "heal": 4,
       "choices": []
+    },
+    "interaction_egg_baskets": {
+      "type": "interaction",
+      "narration": "Word has spread. Every neighbor for a mile has come with a basket, and the egg faun is counting eggs into them as fast as her hooves allow. \"Pass them down, pass them down!\" she sings. The hen on the cart is supervising.",
+      "cast": [
+        {
+          "figure": "entities/faun"
+        }
+      ],
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the basket, then pass it down the line.",
+        "actionLabel": "Pass the basket",
+        "objectLabel": "A basket of fresh eggs"
+      },
+      "onSuccess": {
+        "goto": "scene_jackalope_road",
+        "narration": "Not one egg cracks. The last basket reaches the faun dad at the back, and he is grinning from ear to ear. The egg faun tucks a wrapped supper into your pack. \"Bread, cheese and a bit of everything,\" she says. \"For the road.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_jackalope_road",
+        "narration": "One egg rolls off the cart, and the hen catches it in her wing, which nobody knew she could do. \"Professional,\" says the egg faun. The line goes on."
+      },
+      "onAssisted": {
+        "goto": "scene_jackalope_road",
+        "narration": "The egg faun passes half the baskets herself, and between you not one egg cracks. She tucks a wrapped supper into your pack. \"Bread, cheese and a bit of everything,\" she says. \"For the road.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "interaction_jackalope_hats": {
+      "type": "interaction",
+      "narration": "The jackalopes will not budge for anybody. Then a gray one with a single white ear hops forward and sits under a straw hat that someone left on the road. \"That's their leader,\" says a passing faun. \"Find her, and she'll make the others part.\" The other jackalopes crowd in and nudge the hats around with their noses. Keep your eyes on the white ear.",
+      "cast": [
+        {
+          "figure": "entities/jackalope",
+          "count": 3
+        }
+      ],
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the white ear, then pick the hat she is under.",
+        "actionLabel": "Lift the hat",
+        "covers": [
+          "Left hat",
+          "Middle hat",
+          "Right hat"
+        ],
+        "start": 0,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "stepMs": 1200
+      },
+      "onSuccess": {
+        "goto": "scene_wolf_sign",
+        "narration": "There she is, ear twitching. She thumps her foot once, and the whole crowd of jackalopes parts, leaving a path that points straight at the long grass."
+      },
+      "onFailure": {
+        "goto": "scene_wolf_sign",
+        "narration": "Wrong hat. The jackalope under it sneezes. The leader pops out of another hat, thumps her foot, and the crowd parts anyway, a bit huffily, leaving a path toward the long grass."
+      },
+      "onAssisted": {
+        "goto": "scene_wolf_sign",
+        "narration": "A friendly faun points out the right hat. The leader thumps her foot, and the crowd parts to leave a path toward the long grass."
+      }
+    },
+    "scene_mimic_ditch": {
+      "type": "story",
+      "discovers": [
+        "creature.mire_mimic"
+      ],
+      "narration": "Past the canal, the hay lane crosses one last ditch. A faun called Burdock stands on this side of it, twisting his hat in his hands. \"Please do not step on that plank,\" he whispers. Across the ditch lies a long gray plank. It was not there this morning. It has been getting a little longer all afternoon, and twice it has blinked. \"That is a mire mimic,\" says Burdock, \"a mud creature that pretends to be something you would want to step on. My hay has to cross there, and I would like it to cross with all its wheels.\" Beside the big plank lies a small one. It is blinking too.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Burdock"
+        }
+      ],
+      "choices": [
+        {
+          "id": "poke",
+          "label": "Tap the plank with Burdock's hay fork",
+          "icon": "swords",
+          "goto": "encounter_mimic_plank"
+        }
+      ]
+    },
+    "encounter_mimic_plank": {
+      "type": "encounter",
+      "map": "ford",
+      "narration": "The plank sits up on a hundred muddy toes, and so does the little one. They flop about, trying to look like planks again. Get them off the hay lane.",
+      "enemies": [
+        {
+          "id": "mimic",
+          "name": "Mire Mimic (as a Plank)",
+          "creature": "mire_mimic"
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_mimic_gone",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "party"
+          },
+          {
+            "type": "grantCoins",
+            "amount": 4
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_mimic_squelched",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_mimic_gone": {
+      "type": "story",
+      "narration": "The planks give up. They go floppy, turn mud brown, and slide away down the ditch, looking very embarrassed. They were sitting on a little heap of things the rush wagons dropped: four coins and a drover's brave whistle. \"Finders keepers,\" says Burdock. \"And thank you. Truly.\"",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Burdock"
+        },
+        {
+          "figure": "entities/mire_mimic"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Help Burdock roll the hay cart over",
+          "icon": "travel",
+          "goto": "scene_ditch_hay_home"
+        }
+      ]
+    },
+    "scene_mimic_squelched": {
+      "type": "story",
+      "narration": "You end up sitting in the ditch, wearing a lot of mud. The planks are very pleased with themselves. Then Burdock's forty goats arrive, bleating, and the planks do not like goats at all. They pop away down the ditch like corks, taking whatever they were sitting on. Burdock hands out dry blankets and warm cider, and the mud comes off, mostly.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Burdock"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Help Burdock roll the hay cart over",
+          "icon": "travel",
+          "goto": "scene_ditch_hay_home"
+        }
+      ]
+    },
+    "scene_ditch_hay_home": {
+      "type": "story",
+      "narration": "The hay cart rolls over the ditch on good solid mud, and Burdock sings all the way. On the far side, his wife has set up a table of warm honeycakes. \"Two coins a cake,\" she says. \"Or a thank-you, which is also very nice.\"",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Burdock"
+        }
+      ],
+      "choices": [
+        {
+          "id": "buy",
+          "label": "Buy a warm honeycake for two coins",
+          "icon": "cake",
+          "goto": "scene_ditch_cake",
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 2
+            },
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
+        },
+        {
+          "id": "thanks",
+          "label": "Say a big thank-you and walk on",
+          "icon": "heart",
+          "goto": "scene_embermoths"
+        }
+      ]
+    },
+    "scene_ditch_cake": {
+      "type": "story",
+      "narration": "The honeycake is so warm that it steams through your pack. Burdock's wife wraps it in a cabbage leaf and pats it twice, for luck.",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "name": "Burdock"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "On down the road",
+          "icon": "travel",
+          "goto": "scene_embermoths"
+        }
+      ]
+    },
+    "interaction_moth_bells": {
+      "type": "interaction",
+      "narration": "The big cloud has gone south, but a few stragglers have dropped out of it and landed on the wagon bells. They glow on one bell, then another, in turn. \"They're asking for a lullaby,\" says the caravan cook, with her ladle in the air. \"Ring it back in the same order and they'll let us sleep.\"",
+      "cast": [
+        {
+          "figure": "entities/embermoth",
+          "count": 3
+        }
+      ],
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the bells glow, then ring them back in order.",
+        "actionLabel": "Ring the bells",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "little",
+            "label": "Little bell",
+            "icon": "note"
+          },
+          {
+            "id": "big",
+            "label": "Big bell",
+            "icon": "drop"
+          },
+          {
+            "id": "brass",
+            "label": "Brass bell",
+            "icon": "star"
+          }
+        ],
+        "answer": [
+          "little",
+          "big",
+          "big",
+          "brass"
+        ]
+      },
+      "onSuccess": {
+        "goto": "choice_night_tremor",
+        "narration": "Ding, dong, dong, clang. The stragglers sigh in a glowing sort of way and tuck their wings in. The camp goes dark and cozy, and everybody falls asleep fast."
+      },
+      "onFailure": {
+        "goto": "choice_night_tremor",
+        "narration": "Ding, clang, dong. The moths flicker crossly, then give up and settle down anyway. The camp goes dark and cozy, and everybody falls asleep fast."
+      },
+      "onAssisted": {
+        "goto": "choice_night_tremor",
+        "narration": "The cook hums the lullaby under her breath, and you ring along. The stragglers sigh and tuck their wings in, and everybody falls asleep fast."
+      }
+    },
+    "interaction_stuck_wagon": {
+      "type": "interaction",
+      "narration": "One lone wagon has a wheel stuck deep in a rut at the end of the lane, a little short of the hedges. Its drover, a centaur with a very polite voice, waves you over. \"Everybody else is busy shouting,\" she says. \"One of you steer the pole, the rest push, and I will pull. I tip well.\"",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Rush drover"
+        }
+      ],
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends push the wagon while one of you steers the pole.",
+        "actionLabel": "Steer the pole",
+        "supportLabel": "Push the wagon"
+      },
+      "onSuccess": {
+        "goto": "scene_hedge_mob",
+        "narration": "With a slurp, the wheel pops out of the rut. The drover counts three coins into your hand. \"Told you,\" she says. \"I tip well.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_hedge_mob",
+        "narration": "The wheel slides back in with a squelch. Then it pops out all by itself, and the drover blinks. \"Next time I will ask the oxen,\" she says, and trots off, spattered and polite."
+      },
+      "onAssisted": {
+        "goto": "scene_hedge_mob",
+        "narration": "The drover pulls harder than she planned to, and the wheel pops out. She counts three coins into your hand. \"I tip well,\" she says.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      }
     }
   },
   "voiceGuide": {
