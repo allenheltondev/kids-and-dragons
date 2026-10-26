@@ -497,7 +497,7 @@
           "id": "on",
           "label": "Back into the trading",
           "icon": "gem",
-          "goto": "scene_road_gifts"
+          "goto": "interaction_cabinet"
         }
       ]
     },
@@ -514,7 +514,7 @@
       "prompt": "Out-talk a sheeple who has been collecting since before you were born",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_road_gifts",
+        "goto": "interaction_cabinet",
         "narration": "You admire her cabinet so knowledgeably that she goes pink to the tips of her wool. In the end she will not trade at all. She gives you a luckstone, just for the conversation, and asks you to write.",
         "effects": [
           {
@@ -525,7 +525,7 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_road_gifts",
+        "goto": "interaction_cabinet",
         "narration": "You haggle hard. She haggles harder. By the end you have traded nothing, agreed to everything, and promised to visit her cabinet at home, which apparently has a room of its own. She seems delighted."
       }
     },
@@ -543,7 +543,7 @@
           "id": "on",
           "label": "Back into the trading",
           "icon": "gem",
-          "goto": "scene_road_gifts"
+          "goto": "interaction_cabinet"
         }
       ]
     },
@@ -1232,6 +1232,13 @@
           "icon": "leaf",
           "goto": "scene_humming_night_glade",
           "requiresItem": "facet_glade"
+        },
+        {
+          "id": "songkeeper_lead",
+          "label": "Have a songkeeper lead the lullaby",
+          "icon": "note",
+          "requiresClass": "songkeeper",
+          "goto": "check_humming_night"
         }
       ]
     },
@@ -1315,6 +1322,13 @@
           "icon": "shield",
           "goto": "scene_checkpoint_pass",
           "requiresFlag": "warden_pass"
+        },
+        {
+          "id": "scout_scree",
+          "label": "Have a duskrunner lead everyone round over the scree",
+          "icon": "quick",
+          "requiresClass": "duskrunner",
+          "goto": "check_checkpoint"
         }
       ]
     },
@@ -1332,7 +1346,7 @@
           "id": "on",
           "label": "On up the road",
           "icon": "scroll",
-          "goto": "scene_milestone_boy"
+          "goto": "interaction_boxes"
         }
       ]
     },
@@ -1346,14 +1360,14 @@
       ],
       "stat": "quick",
       "tn": 12,
-      "prompt": "Scramble round a warden checkpoint over loose scree",
-      "roller": "party",
+      "prompt": "Everybody scramble round a warden checkpoint over loose scree",
+      "roller": "all",
       "onSuccess": {
-        "goto": "scene_milestone_boy",
+        "goto": "interaction_boxes",
         "narration": "Up the scree and round the gate, quick and light as goats. Nobody sees. Well. One goat sees. It does not tell."
       },
       "onFailure": {
-        "goto": "scene_milestone_boy",
+        "goto": "interaction_boxes",
         "narration": "Halfway round, the scree starts to slide, and so do you, all the way down into the checkpoint queue, right at the front. The clerk looks at you, sighs, and waves you through, because the paperwork for this would take all day."
       }
     },
@@ -1371,7 +1385,7 @@
           "id": "on",
           "label": "On up the road",
           "icon": "shield",
-          "goto": "scene_milestone_boy"
+          "goto": "interaction_boxes"
         }
       ]
     },
@@ -1599,8 +1613,8 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Scramble up a crumbly rock for a look inside the caravan",
-      "roller": "party",
+      "prompt": "Everybody scramble up a crumbly rock for a look inside the caravan",
+      "roller": "all",
       "onSuccess": {
         "goto": "choice_the_bend",
         "narration": "From the top you can see into every wagon. Eleven are full of pots, pans and grumpy passengers. The middle one holds a single crate, nailed shut, and the canvas above it is trembling. Now you know exactly where to stand.",
@@ -1824,7 +1838,7 @@
         "narration": "Your offer is so good, and so fast, that the caravan master shakes your hand before anybody else has finished shouting."
       },
       "onFailure": {
-        "goto": "scene_tidewell",
+        "goto": "interaction_hairpin",
         "narration": "While you are still counting, a masked wagoneer quietly steers the middle wagon off up a side track. The masterpiece stone is gone, and the masks have it.",
         "effects": [
           {
@@ -1857,7 +1871,7 @@
           "id": "on",
           "label": "On up the road",
           "icon": "forward",
-          "goto": "scene_tidewell"
+          "goto": "interaction_hairpin"
         }
       ]
     },
@@ -1935,7 +1949,7 @@
       "prompt": "Follow a very fast-talking scholar to the end of her theory",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_tamsins_offer",
+        "goto": "interaction_tidewell_knocks",
         "narration": "She grabs a napkin and draws on it, very fast. \"The eighth is the crown of the seal, the stone the whole arch leans on. It isn't lying loose, it isn't for sale, and taking it would be like pulling the lid off a jar.\" She folds the napkin into your hand. \"I only ever wanted to be right,\" she says. \"Not this right.\"",
         "effects": [
           {
@@ -1946,7 +1960,7 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_tamsins_offer",
+        "goto": "interaction_tidewell_knocks",
         "narration": "She starts to explain, talking faster and faster, and then the ground shakes, and her notes fly off down the hill like startled birds. She runs after them, shouting back over her shoulder, \"Whatever you do, don't PRY!\" You never quite hear the rest."
       }
     },
@@ -1994,7 +2008,7 @@
           "id": "on",
           "label": "Make camp below the tree line",
           "icon": "gem",
-          "goto": "scene_tamsins_offer"
+          "goto": "interaction_tidewell_knocks"
         }
       ]
     },
@@ -2012,7 +2026,7 @@
           "id": "on",
           "label": "Make camp below the tree line",
           "icon": "gem",
-          "goto": "scene_tamsins_offer"
+          "goto": "interaction_tidewell_knocks"
         }
       ]
     },
@@ -2211,11 +2225,11 @@
       "prompt": "Catch a swinging bell rope before it rings",
       "roller": "party",
       "onSuccess": {
-        "goto": "choice_tree_line",
+        "goto": "scene_echo_cutting",
         "narration": "You reach it in three bounds and hang on with everything you have. The bell swings, slows, and stops, one hair from ringing. A grandmother in a nightcap looks out of a window and nods at you, once."
       },
       "onFailure": {
-        "goto": "choice_tree_line",
+        "goto": "scene_echo_cutting",
         "narration": "You are one step too slow. The bell gives a single small tink. The whole valley freezes. Then a grandmother leans out of a window in her nightcap and shouts, \"Just the wind, dears!\" and everybody breathes again."
       }
     },
@@ -2227,7 +2241,7 @@
           "id": "on",
           "label": "On to the tree line",
           "icon": "hand",
-          "goto": "choice_tree_line"
+          "goto": "scene_echo_cutting"
         }
       ]
     },
@@ -2239,7 +2253,7 @@
           "id": "on",
           "label": "On to the tree line",
           "icon": "ribbon",
-          "goto": "choice_tree_line"
+          "goto": "scene_echo_cutting"
         }
       ]
     },
@@ -2818,6 +2832,254 @@
       "choices": [],
       "outcome": "setback",
       "endsCampaign": true
+    },
+    "interaction_cabinet": {
+      "type": "interaction",
+      "narration": "Before you go, Lady Fleecewick will not let a fellow collector leave without a small favor. One wheel of her glass cabinet has stuck in a rut, and forty stones on forty cushions are sliding toward the low corner. \"Lift, dears! Gently! They bruise!\" she cries, and hangs her lace shawl over your arm to keep it safe.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Everyone lift or lower your side until the cushions are flat, then carry the cabinet.",
+        "actionLabel": "Carry the cabinet",
+        "objectLabel": "A glass cabinet of forty stones"
+      },
+      "onSuccess": {
+        "goto": "scene_road_gifts",
+        "narration": "Not one cushion slides. Lady Fleecewick counts her forty stones twice, takes back her shawl, and presses three coins into your hand. \"Collector's courtesy,\" she says. \"Do not spend it all on honeycakes.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_road_gifts",
+        "narration": "The cabinet tips, and forty stones roll gently into a heap of lace. Nothing breaks. Lady Fleecewick picks them up one by one, sighing at each, and waves you on with the shawl."
+      },
+      "onAssisted": {
+        "goto": "scene_road_gifts",
+        "narration": "Not one cushion slides. Lady Fleecewick counts her forty stones twice, takes back her shawl, and presses three coins into your hand. \"Collector's courtesy,\" she says. \"Do not spend it all on honeycakes.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/lady_fleecewick",
+          "name": "Lady Fleecewick"
+        }
+      ]
+    },
+    "interaction_boxes": {
+      "type": "interaction",
+      "narration": "Beside the checkpoint table, the numbered boxes are piling up faster than the clerk can stamp them. \"You! Yes, you! Hands!\" he cries, pointing at a long shelf by the road. The boxes have to go down the line hand to hand, and every single one is humming. The top one seems to be humming a song about lunch.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the box, then pass it down the line.",
+        "actionLabel": "Pass the box",
+        "objectLabel": "A humming numbered box"
+      },
+      "onSuccess": {
+        "goto": "scene_milestone_boy",
+        "narration": "Every box reaches the shelf. The clerk stamps the last one with both stamps at once, and pulls a honeycake out of his hat. \"For the hands,\" he says. \"It has only been in there since Tuesday.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_milestone_boy",
+        "narration": "One box slips and rolls downhill, humming happily, and three wardens chase it. The clerk sighs and stamps the rest himself, one stamp at a time."
+      },
+      "onAssisted": {
+        "goto": "scene_milestone_boy",
+        "narration": "Every box reaches the shelf. The clerk stamps the last one with both stamps at once, and pulls a honeycake out of his hat. \"For the hands,\" he says. \"It has only been in there since Tuesday.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/warden_clerk",
+          "name": "Warden clerk"
+        }
+      ]
+    },
+    "interaction_hairpin": {
+      "type": "interaction",
+      "narration": "The last wagons are still grinding around the hairpin, one after another, and the mountain path you want is straight across their road. The wheels roll by in a slow, steady beat. A mule wearing a little straw hat stops to watch you think. Wait for a gap, and then go.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap when the gap between the wagons is wide open.",
+        "actionLabel": "Dash across!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 3600
+      },
+      "onSuccess": {
+        "goto": "scene_tidewell",
+        "narration": "You dash through the gap with a whole wagon-length to spare. The mule in the straw hat nods, as if it had timed you itself."
+      },
+      "onFailure": {
+        "goto": "scene_tidewell",
+        "narration": "You step out a heartbeat early, and a wagon rolls close enough to tip the mule's hat over your head. Nobody is hurt. The driver says sorry twice, and you cross on the next gap, a little out of breath."
+      },
+      "onAssisted": {
+        "goto": "scene_tidewell",
+        "narration": "You dash through the gap with a whole wagon-length to spare. The mule in the straw hat nods, as if it had timed you itself."
+      }
+    },
+    "interaction_tidewell_knocks": {
+      "type": "interaction",
+      "narration": "Before she hurries off, Professor Tidewell kneels and knocks on a rock with her pencil: a slow beat in three kinds of knock. \"The mountain says it in this order,\" she whispers. \"Watch it, and knock it back to me. Then I will know somebody besides me has heard it.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the knocks, then knock them back in order.",
+        "actionLabel": "Knock it back",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "thump",
+            "label": "Thump",
+            "icon": "bead"
+          },
+          {
+            "id": "tap",
+            "label": "Tap",
+            "icon": "hand"
+          },
+          {
+            "id": "rumble",
+            "label": "Rumble",
+            "icon": "drop"
+          }
+        ],
+        "answer": [
+          "thump",
+          "tap",
+          "tap",
+          "rumble"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_tamsins_offer",
+        "narration": "Thump, tap, tap, rumble. Professor Tidewell writes it down with a flourish and says you may be the second person in the world to have heard it properly. Then she hands back the pencil. It was yours."
+      },
+      "onFailure": {
+        "goto": "scene_tamsins_offer",
+        "narration": "Your knocks come out a little tangled, and Tidewell writes down the tangle too. \"Even a muddle is data,\" she says cheerfully. \"Mine usually are.\""
+      },
+      "onAssisted": {
+        "goto": "scene_tamsins_offer",
+        "narration": "Thump, tap, tap, rumble. Professor Tidewell writes it down with a flourish and says you may be the second person in the world to have heard it properly. Then she hands back the pencil. It was yours."
+      },
+      "cast": [
+        {
+          "figure": "cast/tidewell",
+          "name": "Professor Tidewell"
+        }
+      ]
+    },
+    "scene_echo_cutting": {
+      "type": "story",
+      "narration": "Down in the village the bell is quiet now, but something up the road is not. In the cutting just below the tree line, two long gray shapes are copying every sound the valley makes, half a breath late. One copies the valley, and the other copies the first. Tink, like the bell. Thump, like the ground. A grandmother in a nightcap hurries after you, holding up her skirts. \"Those are echo hunters, dears, and they have been at the bell all morning,\" she puffs. \"They will not let anyone through the cutting while they have a sound to follow, and your stones are the loudest thing for a hundred miles. Make them lose the thread, please. The whole valley wants to get past.\"",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        },
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "choices": [
+        {
+          "id": "face",
+          "label": "Face the echo hunters",
+          "icon": "swords",
+          "goto": "encounter_echo"
+        }
+      ]
+    },
+    "encounter_echo": {
+      "type": "encounter",
+      "map": "switchback",
+      "narration": "Two echo hunters unfold out of the rock wall, one copying the other, and both copying your footsteps one beat late. Be louder than one sound, and stronger than an echo.",
+      "enemies": [
+        {
+          "id": "echo",
+          "name": "Echo Hunter",
+          "creature": "echo_hunter",
+          "count": 2,
+          "hp": 8
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_echo_quiet",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_echo_lost",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_echo_quiet": {
+      "type": "story",
+      "narration": "The echo hunters fold themselves back into the rock and sulk, repeating only each other's grumbling. The cutting is just a cutting again. The grandmother tucks a little whistle into your hand. \"For calling a village when something copies you,\" she says. \"You will not need it. Keep it anyway.\"",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up to the tree line",
+          "icon": "forward",
+          "goto": "choice_tree_line"
+        }
+      ]
+    },
+    "scene_echo_lost": {
+      "type": "story",
+      "narration": "The echoes pile up until nobody can hear themselves think. Then the grandmother bangs two pots together, loud and honest, and the echo hunters lose the thread and slink away into the rocks. She wraps all of you in blankets and hands round hot milk. There is no whistle for anyone tonight, but the cutting is clear.",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Up to the tree line",
+          "icon": "forward",
+          "goto": "choice_tree_line"
+        }
+      ]
     }
   },
   "voiceGuide": {
