@@ -32,7 +32,7 @@ function InteractionShowBase({ prompt, party, now, painted, bells }: { prompt: I
           const destination = swap ? at === swap[0] ? swap[1] : at === swap[1] ? swap[0] : at : at;
           const position = at + (destination - at) * (progress - done);
           return <span className="story-interaction__cover" key={index} style={{ left: `${(position + 0.5) / spec.covers.length * 100}%` }}>
-            {painted ? <PaintedCover bells={bells ?? false} icon={appearance?.coverIcons?.[index]} diving={elapsed>step*.5&&elapsed<step} reveal={(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec))} /> : <span aria-hidden="true">{(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec)) ? "✦" : "▰"}</span>}
+            {painted ? <PaintedCover bells={bells ?? false} icon={appearance?.coverIcons?.[index]} target={appearance?.props?.[0]} diving={elapsed>step*.5&&elapsed<step} reveal={(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec))} /> : <span aria-hidden="true">{(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec)) ? "✦" : "▰"}</span>}
           </span>;
         })}
         {spec.covers.map((label, index) => <span className="story-interaction__cover story-interaction__cover-label" key={`label:${index}`} style={{ left: `${(index + 0.5) / spec.covers.length * 100}%` }}><small>{label}</small></span>)}
@@ -95,7 +95,7 @@ export function ExtraControls({ prompt, playerId, connected, mine, now, busy, se
     case "relay":
       return !relayHolder(prompt, connected) ? mine ? button(spec.actionLabel, { action: "complete" }) : null : relayHolder(prompt, connected) === playerId ? button(prompt.caughtBy === playerId ? spec.actionLabel : `Catch ${spec.objectLabel}`, { action: prompt.caughtBy === playerId ? "pass" : "catch" }) : <p>Watch the spark travel to your friend!</p>;
     case "play":
-      return <>{spec.options.map((option) => <span key={option.id}>{button(option.label, { action: "play", optionId: option.id })}</span>)}{mine && button(spec.actionLabel, { action: "complete" }, !playReady(prompt, connected))}</>;
+      return <>{spec.options.map((option) => <button className="story-interaction__button kad-focusable" key={option.id} disabled={busy} onClick={() => send({ action: "play", optionId: option.id })}><Icon name={option.icon} /> {option.label}</button>)}{mine && button(spec.actionLabel, { action: "complete" }, !playReady(prompt, connected))}</>;
     default: return null;
   }
 }

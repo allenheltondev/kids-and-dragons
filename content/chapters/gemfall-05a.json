@@ -1112,19 +1112,19 @@
           {
             "id": "hum",
             "label": "Hum a slow tune",
-            "icon": "note",
+            "icon": "play_slow_tune",
             "reaction": "Pepper's ears swivel toward the sound."
           },
           {
             "id": "stroke",
             "label": "Stroke her nose",
-            "icon": "hand",
+            "icon": "play_stroke_nose",
             "reaction": "Pepper leans into your palm with a sigh."
           },
           {
             "id": "apple",
             "label": "Offer a windfall apple",
-            "icon": "cake",
+            "icon": "play_apple",
             "reaction": "Pepper crunches it and forgets all about the carts."
           }
         ],
@@ -1232,17 +1232,17 @@
           {
             "id": "spiral",
             "label": "Spiral",
-            "icon": "bead"
+            "icon": "glyph_spiral"
           },
           {
             "id": "wave",
             "label": "Wave",
-            "icon": "drop"
+            "icon": "glyph_wave"
           },
           {
             "id": "step",
             "label": "Step",
-            "icon": "boot"
+            "icon": "glyph_step"
           }
         ],
         "answer": [
@@ -2109,6 +2109,25 @@
       "apprentice": "an apprentice engineer measuring the crack with knotted string every evening; 'a hair wider than yesterday'",
       "flag_warden": "the Skywarden with the flag at the span; asks the troll's question of every cart",
       "bracken_swiftmile": "a relay-running centaur stuffed with letters; quick, cheerful; 'relay waits for nobody, but it does catch up'"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "check_string": {
+        "props": [
+          "prop_knotted_string"
+        ]
+      },
+      "interaction_level": {
+        "props": [
+          "prop_water_tray"
+        ]
+      },
+      "interaction_bowls": {
+        "props": [
+          "prop_soup_bowl"
+        ]
+      }
     }
   }
 }

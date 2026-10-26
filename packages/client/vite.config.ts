@@ -5,6 +5,9 @@ import { buildId, serviceWorker } from "./sw-build";
 
 const repoRoot = fileURLToPath(new URL("../..", import.meta.url));
 const apiTarget = process.env.KAD_DEV_API_TARGET ?? "http://localhost:8787";
+// These names identify lazy/failure boundaries in production diagnostics and
+// browser probes. Other internal chunks only need their content fingerprint.
+const namedChunks = new Set(["auth", "organizer", "audio", "speech", "JournalScreen", "TrayObjects", "PartyLayout"]);
 
 /**
  * `/assets` and `/content` are proxied to the dev server in development and
@@ -33,6 +36,13 @@ export default defineConfig({
   build: {
     outDir: "dist",
     sourcemap: true,
+    // Hundreds of imported paintings share URLs in JS/CSS. Content hashes
+    // already identify them; repeating every long source name costs downloads.
+    rolldownOptions: { output: {
+      assetFileNames: "bundle/[hash][extname]",
+      chunkFileNames: (chunk) => chunk.isDynamicEntry || namedChunks.has(chunk.name)
+        ? "bundle/[name]-[hash].js" : "bundle/[hash].js",
+    } },
     /*
      * The shared screen's most likely home is a smart TV's own browser, which runs years
      * behind the panel it is in: a 2024 Samsung is Tizen 8, Chromium 108 (docs/hardware.md).

@@ -24,10 +24,11 @@ export function glyphUrl(label: string): string | null {
 export function PaintedGlyph({label}:{label:string}) {
  const url=glyphUrl(label);return url?<img className="painted-glyph" src={url} alt="" aria-hidden="true" />:null;
 }
-export function PaintedCover({ bells, reveal, diving=false, icon }: {bells:boolean;reveal:boolean;diving?:boolean;icon?:string}) {
+export function PaintedCover({ bells, reveal, diving=false, icon, target }: {bells:boolean;reveal:boolean;diving?:boolean;icon?:string;target?:string}) {
  const [failed,setFailed]=useState(false);
  return <span className={"painted-cover"+(bells?" painted-cover--bell":"")} aria-hidden="true">
   {reveal&&(icon?<span className="painted-cover__glow" />:<img className="painted-cover__peek" src={bells?propUrl("ticking-crystal"):"/assets/cast/"+(diving?"kid_burrowing":"kid_peeking")+"/assembled.png"} alt="" />)}
+  {reveal && target && <img className="painted-cover__target" src={propUrl(target)} alt="" onError={e=>{e.currentTarget.style.visibility="hidden";}} />}
   {!failed && <img className="painted-cover__front" src={propUrl(icon ?? (bells?"wind-bells":"snow-mound"))} alt="" onError={()=>setFailed(true)} />}
   {failed && <span className="painted-cover__fallback" />}
  </span>;

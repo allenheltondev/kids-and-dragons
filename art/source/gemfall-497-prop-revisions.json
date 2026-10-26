@@ -1,0 +1,12 @@
+[
+  {
+    "id": "prop_numbered_box",
+    "prompt": "Edit into a plain square WOODEN SHIPPING BOX, flat lid, iron corner straps and ONE inventory tag with abstract notches, subtle gold hum lines. Remove winding key, music-box decoration and rounded lid. Warm storybook style, isolated transparent background with generous clear margins.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e10fd642-2f05-4602-9bef-0fb0355cbbff.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+  },
+  {
+    "id": "prop_box_stack",
+    "prompt": "Edit into a leaning stack of THREE plain WOODEN SHIPPING CRATES with iron corner straps and abstract inventory tags. Remove wrapping paper, gift ribbons and bows. Warm storybook style, isolated transparent background, generous clear margins.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-f3669944-4f05-4b27-9720-6f387ec891d9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+  }
+]

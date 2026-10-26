@@ -1,0 +1,530 @@
+[
+  {
+    "id": "glyph_note_low",
+    "brief": "",
+    "reuse": "assets/story-props/note-low.webp",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\assets\\story-props\\note-low.webp",
+    "sourceSha256": "af57800f45b05d63415e93e5cf0cbdf17f4b26c424f465db8cd5f94636d292a6",
+    "productionSha256": "1d0210a53073616fdb974fc9fcbfffc21c95706da9a68f4b15624e3300dccfee"
+  },
+  {
+    "id": "glyph_note_middle",
+    "brief": "",
+    "reuse": "assets/story-props/note-middle.webp",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\assets\\story-props\\note-middle.webp",
+    "sourceSha256": "9210d883f6f81d19ff71d35707cf4625bbad89eb506553a06d617c753fe52ba7",
+    "productionSha256": "867e6dea6d9788f9b5463552faf89c1abe550c236c0234c330bde02248391b53"
+  },
+  {
+    "id": "glyph_note_high",
+    "brief": "",
+    "reuse": "assets/story-props/note-high.webp",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\assets\\story-props\\note-high.webp",
+    "sourceSha256": "45e30c8c6f5b38fddbe44b2d67e4ea850bc623f9268d89dcc99104f4af02dfcc",
+    "productionSha256": "7132c8a23ecb35cf45beee10410029fc15c4e6fc0597544fce0ce420ee10f383"
+  },
+  {
+    "id": "glyph_rune_tall",
+    "brief": "A tall narrow vertical carved rune on a small stone tablet",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-5f119528-d709-4c9d-984f-80a1ca85c5ea.png",
+    "sourceSha256": "ddfb20310e10ca11d30964f84890ef36815114e2388e00e13a06fa88d145efa5",
+    "productionSha256": "f696040b5ae639141b5d1e7fbf9f8248e514f7c1e02fe2540bc98efadaf35586"
+  },
+  {
+    "id": "glyph_rune_wavy",
+    "brief": "A wavy flowing carved rune on a small stone tablet",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-385b23c5-6bcb-4417-ac3f-afe21ca10b7d.png",
+    "sourceSha256": "29418bbd694584f6e6cd0c64a04391ee554ecff3707202a59551348f69f63019",
+    "productionSha256": "7e02ce9b85a8844b49af200b2b8db431f5717a2b5fd591815c50dc274ebc0c99"
+  },
+  {
+    "id": "glyph_rune_round",
+    "brief": "A round ring-shaped carved rune on a small stone tablet",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-546bef22-15cc-4117-bf55-fee8b6b4e7b8.png",
+    "sourceSha256": "54adacc6f649d86838dfd4f53fabf79f2cd2ecf2ebca335780c3d853481a5e8e",
+    "productionSha256": "2e490c2df6d10408abfb8de52fe5407c79496263514255ed7496efd7930f24d1"
+  },
+  {
+    "id": "glyph_slow",
+    "brief": "One friendly little snail with spiral shell",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-346510e9-7c69-42a7-864f-89ff5d964988.png",
+    "sourceSha256": "37e3a5fcfc42fb68a50b317dab41dd2d2b0741b9e215716be89488211b81ed1a",
+    "productionSha256": "28ec74edbd36a0451b27d4a27ab22a0ec4b1bc07fd4602830b2e0b997fdbadb8"
+  },
+  {
+    "id": "glyph_wait",
+    "brief": "One hourglass with sand waiting to fall",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-66223ac4-2a79-482a-9a3d-aabb8b2d39c4.png",
+    "sourceSha256": "637b0d1df45d0878206ecb30a8dfb7cd8412a0731081f2abc07518f880fd6b95",
+    "productionSha256": "7e3a042ae0b51b24ac910a70c64635913744d1b3c23b527e3ae9915642f37882"
+  },
+  {
+    "id": "glyph_sash_river",
+    "brief": "A blue fabric sash with a winding river emblem",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-c13a7681-7abd-4ea2-aece-c804e7c017b0.png",
+    "sourceSha256": "390370d6443b3fa8ebd1d9b419ec80a3e94892a4f32cb777bce6be96e2a1f529",
+    "productionSha256": "b2e1935e8d667039bb535126f8d7e6ae458e4ebcfeeb7a72e87d8b745c0ee8fd"
+  },
+  {
+    "id": "glyph_sash_pride",
+    "brief": "A red fabric sash with a golden crown emblem",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-1bc72913-12e1-46dd-9e08-0a6f68698a29.png",
+    "sourceSha256": "629961eaa2ad94d79c939e5fdac4d7f8f1dd95266113f5e4a077b19644396463",
+    "productionSha256": "66049971261aac4da84b3ce0f2af6ac43d363ea19b5b08486903f9e35a3cce02"
+  },
+  {
+    "id": "glyph_sash_bridge",
+    "brief": "An ochre fabric sash with an arched bridge emblem",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-3ceaad9a-d8d6-4140-af14-529cdfc22a27.png",
+    "sourceSha256": "a796b5afdd5eda9e9e6de09411d837754b114b52b1b95af7a52737791932ab2a",
+    "productionSha256": "6bee2e51cf5f3685639142adaf6522fbb6f5f3e4c52efb291260292055eabf94"
+  },
+  {
+    "id": "glyph_fern",
+    "brief": "A single green fern frond",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-cf9ca800-a3f6-4f7f-bdb9-39a7fb7fc4c8.png",
+    "sourceSha256": "3e53a71377e4842e486c27c2087f6e95dad44155c962a8aaccea853919ebce56",
+    "productionSha256": "fa908c9e2aae4e8eddd4f743227354a57208c22d002e4a3e30963f9cdd3c3050"
+  },
+  {
+    "id": "glyph_bluebell",
+    "brief": "A bluebell flower stem with three drooping bell blossoms",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-49e87554-fe20-4559-9f30-bfa4024b9d79.png",
+    "sourceSha256": "9bf1c8d1d1f435305e798761379ac54015a26e29d45d7ae085029dd75b4636cf",
+    "productionSha256": "5a9395d562cee8b210f6418dc843c9fd77cd683acaac72dfc8d8bb4f8fa1dcfc"
+  },
+  {
+    "id": "glyph_bridge",
+    "brief": "A little stone arch bridge",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-c777d8a4-5791-4faa-a560-f945feeb5859.png",
+    "sourceSha256": "8178a29a8ba371a933ecc423f5067640831065dbeb6eb4c46b19c0cc74c5e4f4",
+    "productionSha256": "6b818c756822aafa3d8ec3cbdaac28b32294d3f412db6034677f32beb87df60b"
+  },
+  {
+    "id": "glyph_stone",
+    "brief": "",
+    "reuse": "assets/story-props/pickup-luckstone.webp",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\assets\\story-props\\pickup-luckstone.webp",
+    "sourceSha256": "fe2add1afd640b68ba76213e5c24b9acaa0fc9fb3f477ebe84b54dc3df1a6252",
+    "productionSha256": "f5b65c5a4f28510f37fb5e589d4ad8d9b3ce971d20bf3d4907754964fde12945"
+  },
+  {
+    "id": "glyph_pond",
+    "brief": "A small round pond with reeds",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e7463203-15be-4899-83bf-5c995f955a18.png",
+    "sourceSha256": "24b7fa191319b2fcd1c735526051c2b45e6a731200e786accf0f31f021a5685a",
+    "productionSha256": "06b11a2197b8b6b1ab8158f36ffc0549beec64c12e2c94a09f297a281d648cd1"
+  },
+  {
+    "id": "glyph_spiral",
+    "brief": "A bold golden spiral carved in stone",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-0566f64b-7994-4d78-adaa-1b2f200a4bd3.png",
+    "sourceSha256": "70feb63e69fe55f314bf8f3d9a4ebdbe8c1b6f1b90f2e346873cba5071173dd9",
+    "productionSha256": "456b5e8cf105bb63ef210ce92552925f79297db1969ae8dd9fd6c03cd0a5edd8"
+  },
+  {
+    "id": "glyph_wave",
+    "brief": "A curling blue water wave",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-d234927b-043c-44cc-b263-2398dea3e26f.png",
+    "sourceSha256": "a4d4b72c7ade2bd92f2a795e34f4e03e758d99358b3e009fafbeaaaf66a3d5e4",
+    "productionSha256": "e3b421b3a72c27eba9f69ddfcdb6de257d8d77450b155010541c45ff4681df24"
+  },
+  {
+    "id": "glyph_step",
+    "brief": "",
+    "reuse": "packages/client/src/assets/painted/boot.webp",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\packages\\client\\src\\assets\\painted\\boot.webp",
+    "sourceSha256": "2d0c389ee302ec7e49c213314d162d1afb793ddaa64f82faf256e422b1127944",
+    "productionSha256": "c6d19db8ab036b28d681e768194fa5017280c0ee7c1d4d7eb516b966d885637a"
+  },
+  {
+    "id": "glyph_path_river",
+    "brief": "A path crossing a blue river on stepping stones",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e407abbd-4ad3-4a20-a132-c8531996bba1.png",
+    "sourceSha256": "86cbe93191bd99166ad0383f1588f0fd76e59bcc12bcf56932333c665ef63d53",
+    "productionSha256": "f6aaa77fe96ee6c8ea474343a695f810762d3a36324bd8f53ca3494ec2d186e0"
+  },
+  {
+    "id": "glyph_path_marsh",
+    "brief": "A path through cattails and marsh water",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-d283c31b-7a67-42a7-96de-6d4b3e4e2251.png",
+    "sourceSha256": "c1d55e535df744791ce76f87dc19680e88c48888468f5a76e5ccf322b4efb39e",
+    "productionSha256": "44105b7f53b66791384ab5899c804f54f24b5c6453ae96d10194c66ce30ccccb"
+  },
+  {
+    "id": "glyph_path_trees",
+    "brief": "A path between two leafy trees",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-45c009fe-958c-493b-877e-483453383b86.png",
+    "sourceSha256": "7c5cf47dd68ca575988b54b688baac94cd1c496acc59db2a5fc24d8156892cc8",
+    "productionSha256": "062621987c57a695c0291f14ad6301caa45adb2e95f78b945d509e7ffb939b3f"
+  },
+  {
+    "id": "glyph_knot_loop",
+    "brief": "A simple rope loop knot",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-222567fc-37a5-4bdd-b1a7-0ab1d8c53c88.png",
+    "sourceSha256": "243ab55eef11ded362f6ba7f914c70509965a673c6dd3cf6477c207562cff2c2",
+    "productionSha256": "3411c94cd74d4ac855176265d28403797f2c753303ad417f1fc1c827a305da6e"
+  },
+  {
+    "id": "glyph_knot_twist",
+    "brief": "Two rope strands twisted into a helix",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-9048f500-0787-4b35-8995-3e6f36cd2ee6.png",
+    "sourceSha256": "1f740bb1b9dba45083dfabb1252606949fc8192620564390c14e0f912cdd691d",
+    "productionSha256": "fcaaeb60fb8f73e0e4e3457af0ff422b73b6678d7f7d8b3c03cd572b25fdc650"
+  },
+  {
+    "id": "glyph_knot_pull",
+    "brief": "A rope knot with two ends pulled taut outward",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-5ab52e86-4119-4f24-8d05-74a873cf6d47.png",
+    "sourceSha256": "248bf34fa7c0fcaa0c7afe8384da0ae2ca24553d03736a950c79bac6fbb5dc71",
+    "productionSha256": "c5c877173fbfab4d4307f401421caeb357fd856a6d07cabe9e71be65706ed6f2"
+  },
+  {
+    "id": "glyph_clue_note",
+    "brief": "",
+    "reuse": "packages/client/src/assets/painted/note.webp",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\packages\\client\\src\\assets\\painted\\note.webp",
+    "sourceSha256": "99d7a6f354d10d073b2f47087f2855134358a8752cce08b8716d49fa32179bc8",
+    "productionSha256": "7d080c365d2f0aeab3bf104146e15522d96dec83c1f73fa3d2c12937cf6a3055"
+  },
+  {
+    "id": "glyph_clue_spiral",
+    "brief": "",
+    "reuse": "glyph_spiral",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\packages\\client\\src\\assets\\painted\\glyph_spiral.webp",
+    "sourceSha256": "456b5e8cf105bb63ef210ce92552925f79297db1969ae8dd9fd6c03cd0a5edd8",
+    "productionSha256": "456b5e8cf105bb63ef210ce92552925f79297db1969ae8dd9fd6c03cd0a5edd8"
+  },
+  {
+    "id": "glyph_clue_jackalope",
+    "brief": "One quiet friendly jackalope head with long ears and tiny antlers",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-a3b7deff-6e7d-4dde-b4cc-5a6400ccea0a.png",
+    "sourceSha256": "0fd5bffd4c810ccd6494516235f0867285a9fe5c76a0d87729ba01689b7cc28f",
+    "productionSha256": "a379afe37e5604e804372b8d432c719711e01ccecc8241324d771efe51f2d98a"
+  },
+  {
+    "id": "glyph_clue_tally",
+    "brief": "Two broken wooden tally sticks with abstract notches",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-013e7885-f3bd-4ec2-97db-a883aa925550.png",
+    "sourceSha256": "36b4fde6eac25b5b89e85dfa774eb46c4606897225abf0f59986db072b1e7d17",
+    "productionSha256": "3dc886a3c60da47fef8fcfc6ffafab8e647f6a23854d7255dadbe006b053e471"
+  },
+  {
+    "id": "glyph_knock_thump",
+    "brief": "A closed fist knocking a flat stone with one broad impact mark",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-685da734-487b-4a73-9c95-fcc527f5f2f7.png",
+    "sourceSha256": "f25cce7e6e82bf18640092704f943c8cae817f07abf7b36cb0da27066523408d",
+    "productionSha256": "826bf5ea74fbc1d521ba0e003ccea4a6f760df9c636f27a08adbda1ef4b5f02a"
+  },
+  {
+    "id": "glyph_knock_tap",
+    "brief": "One fingertip tapping a flat stone with one tiny impact mark",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-7680cf56-8271-4e6b-877d-7ad1e3a836d3.png",
+    "sourceSha256": "c1f0c19c92cf611cb33e74ceab2cbe70ed230517aeae111ff265767f7a86f7f9",
+    "productionSha256": "0243904ece30fbe5e9c8e7b08590bcf060d7eae8467c3f4ced10eca7edcc4577"
+  },
+  {
+    "id": "glyph_knock_rumble",
+    "brief": "",
+    "reuse": "play_rumble",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\packages\\client\\src\\assets\\painted\\play_rumble.webp",
+    "sourceSha256": "573c154b4a725b56d192f83b8efebc5446625ecc7f8efc6ddf006606cdee1fde",
+    "productionSha256": "573c154b4a725b56d192f83b8efebc5446625ecc7f8efc6ddf006606cdee1fde"
+  },
+  {
+    "id": "glyph_ring_long",
+    "brief": "One brass bell with a long sweeping sound ribbon",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e613c0b2-5acc-440a-9c29-739f9a23382d.png",
+    "sourceSha256": "875cb8ab0f8bb0235c395abe798e2789d87d02db0a7c5a680074c68a64354511",
+    "productionSha256": "c09df29ff92eec74d86851c35a2906c3f892f32ba9b3a22ea135153241121d5d"
+  },
+  {
+    "id": "glyph_ring_short",
+    "brief": "One brass bell with one short sound dash",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-89f99587-82fc-4740-a765-fbd76c562ae8.png",
+    "sourceSha256": "5e25a22edce19ab26fc21ccac396ce90579782364208ad02a9828a2c31cda47a",
+    "productionSha256": "340a81e64e6f75a40b38716abc2a2898880e8b3bf1b6024e734b4ab0e19a5c3d"
+  },
+  {
+    "id": "glyph_sound_rumble",
+    "brief": "",
+    "reuse": "play_rumble",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\packages\\client\\src\\assets\\painted\\play_rumble.webp",
+    "sourceSha256": "573c154b4a725b56d192f83b8efebc5446625ecc7f8efc6ddf006606cdee1fde",
+    "productionSha256": "573c154b4a725b56d192f83b8efebc5446625ecc7f8efc6ddf006606cdee1fde"
+  },
+  {
+    "id": "glyph_sound_chime",
+    "brief": "A small silver chime with three bright diamond sound marks",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-7a6b75c0-9c44-4e51-a247-e07409444780.png",
+    "sourceSha256": "c399a392cfa3fa2189eea6511e5f106a32452ebacea3befd7e6f1d4a895eef71",
+    "productionSha256": "68d9879b76bb323eb10bd93ae2203314eba5c49f2139d39c56f06e863df4b878"
+  },
+  {
+    "id": "glyph_sound_sigh",
+    "brief": "A soft pale curling breath ribbon",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-190c6280-bdec-462e-a4f8-94424bf54353.png",
+    "sourceSha256": "208f996e9d3f133324ddf83005e1dc679a9adb1ad474cd9f60e8ab752ee485f9",
+    "productionSha256": "93ab6a8e03e9211ca4fa1f15bb03a2fa9313e2f0841d6d19cd1d860a7ebc4b61"
+  },
+  {
+    "id": "play_lullaby",
+    "brief": "",
+    "reuse": "packages/client/src/assets/painted/note.webp",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\packages\\client\\src\\assets\\painted\\note.webp",
+    "sourceSha256": "99d7a6f354d10d073b2f47087f2855134358a8752cce08b8716d49fa32179bc8",
+    "productionSha256": "7d080c365d2f0aeab3bf104146e15522d96dec83c1f73fa3d2c12937cf6a3055"
+  },
+  {
+    "id": "play_cattails",
+    "brief": "Three cattail stems tossed in a juggling arc",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-b3475360-396b-4d30-880f-91f95150a4a9.png",
+    "sourceSha256": "35912785b6c64c0e600e812d961a7f71ddbbbd9096c67790ac0e1453c28a34fb",
+    "productionSha256": "1f1fc5114891cf08ed7b653adcc306053688a06bcacd736b40ded17a0d614c34"
+  },
+  {
+    "id": "play_lantern_held",
+    "brief": "A hand holding up a lit lantern",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-a48452cf-8043-4237-871f-0672015dc930.png",
+    "sourceSha256": "cb38f64afc5f74f49a996b37d36fcc46151e3aa40a58d365c6fd63e675dd2d6e",
+    "productionSha256": "096fd3f0ad16c9c7707e51bfe8ccb927981bbf6fb0f36b6da790519b9441d158"
+  },
+  {
+    "id": "play_rumble",
+    "brief": "A rounded mountain with three broad low vibration arcs",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-19775601-2f82-442a-a259-083c06e2911a.png",
+    "sourceSha256": "07d4d41f993357aa2dde80312bf76aa568655a73b9894e219bda0ae95a5f7308",
+    "productionSha256": "573c154b4a725b56d192f83b8efebc5446625ecc7f8efc6ddf006606cdee1fde"
+  },
+  {
+    "id": "play_red_blanket",
+    "brief": "A red blanket waving in a soft fold",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-42af7b85-b4d8-4dff-89a7-166c85cf4a6e.png",
+    "sourceSha256": "681d84414f48be517a20aa2e8d1d054eb4c89adae259ff43fcc63db15bc38cb1",
+    "productionSha256": "7bae13ab6d19d41ddc5b714380842a39e19117b1492d0cccd4316c05e7648793"
+  },
+  {
+    "id": "play_pinecones",
+    "brief": "Three pinecones bouncing in an arc",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-47851f02-55d8-4cca-b61c-067a763b3c2a.png",
+    "sourceSha256": "b6c2fb2c4be8e7c115ecf968063b7ddc8521779a173fb5776331b10369e983af",
+    "productionSha256": "e85ee038e0ed597ffb414dc55e59a783726265a20aaf8e8794db1beae577e59e"
+  },
+  {
+    "id": "play_warm_hand",
+    "brief": "One open warm hand with gentle golden warmth lines",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-1678d5fd-933d-4f77-8823-2e6caee64205.png",
+    "sourceSha256": "cad7d848cc8840bb0d64170537c5b88b6e6ae14a51b7948686c83ab74da5283b",
+    "productionSha256": "c3635f3e2cfa94d2b4097f139d6c0e8a80cbc89caaa1caa548ea31b186395c96"
+  },
+  {
+    "id": "play_soft_hum",
+    "brief": "",
+    "reuse": "play_lullaby",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\packages\\client\\src\\assets\\painted\\play_lullaby.webp",
+    "sourceSha256": "7d080c365d2f0aeab3bf104146e15522d96dec83c1f73fa3d2c12937cf6a3055",
+    "productionSha256": "7d080c365d2f0aeab3bf104146e15522d96dec83c1f73fa3d2c12937cf6a3055"
+  },
+  {
+    "id": "play_cupped_hands",
+    "brief": "Two gently cupped hands around a soft golden glow",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-ec685979-690f-4b52-ae3c-2440ce62bbd4.png",
+    "sourceSha256": "5e1503a83243a696654fa3d2558ec3801bcbb61f914249f6897a24e1c9ab34c9",
+    "productionSha256": "d42fe749cf6c62bd00ba2b47772a5261be1e1764a3dee7a624c6fb6ea1f64b48"
+  },
+  {
+    "id": "play_slow_tune",
+    "brief": "",
+    "reuse": "play_lullaby",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\packages\\client\\src\\assets\\painted\\play_lullaby.webp",
+    "sourceSha256": "7d080c365d2f0aeab3bf104146e15522d96dec83c1f73fa3d2c12937cf6a3055",
+    "productionSha256": "7d080c365d2f0aeab3bf104146e15522d96dec83c1f73fa3d2c12937cf6a3055"
+  },
+  {
+    "id": "play_scratch",
+    "brief": "A gentle hand scratching behind a friendly deer-like ear, symbolic crop",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-4c002c3a-3cf1-41af-94b0-2350013de0ee.png",
+    "sourceSha256": "8ee82019f474e80ca6f14f292e6701cd8af6cbfbe1e4bd0d1eb0030ec7ac1e09",
+    "productionSha256": "dd178e6a4c163a4ebfa0f6febb2fd072327eb1aeeb240baa1c6f44622c1a0ca5"
+  },
+  {
+    "id": "play_clover",
+    "brief": "Three leafy clover stems",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-b24fa614-0fd0-4771-b60a-4f243e68a62e.png",
+    "sourceSha256": "9a5344ad2eed356648158628701cc31415c9b5d02539f9a54d06ffd488bfbb55",
+    "productionSha256": "0567d67531fdf94c4d458dbcf5813fd1b1bbf3774c3dd6609159c6fefe7a0be2"
+  },
+  {
+    "id": "play_mane_brush",
+    "brief": "A wooden brush beside a lock of chestnut horse mane",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-779fd030-ae7c-42bf-a20d-77a6df55d5dd.png",
+    "sourceSha256": "46a2cf464e46024cec0d414d70c1b7b777a840ae8df91a71ed531486b7fdf46b",
+    "productionSha256": "a20b98db57bc3d186a78a864599f0297eb7a2ef927dc4ac3d0cc010a9e5f0ecd"
+  },
+  {
+    "id": "play_water_bucket",
+    "brief": "A wooden bucket brimming with blue water",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-80ece238-e0c8-4f4b-b94b-cefb4972c982.png",
+    "sourceSha256": "0fa478111d6d110eded1917b87e6b9f80501d823c49cd0464f327c6ffe949eb5",
+    "productionSha256": "bd94288bcf5d90ca8b834a18b9bcf95721d0f890426b9b983cf4099cea4f911e"
+  },
+  {
+    "id": "play_hum_tune",
+    "brief": "",
+    "reuse": "play_lullaby",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\packages\\client\\src\\assets\\painted\\play_lullaby.webp",
+    "sourceSha256": "7d080c365d2f0aeab3bf104146e15522d96dec83c1f73fa3d2c12937cf6a3055",
+    "productionSha256": "7d080c365d2f0aeab3bf104146e15522d96dec83c1f73fa3d2c12937cf6a3055"
+  },
+  {
+    "id": "play_stroke_nose",
+    "brief": "A hand gently stroking a friendly pony nose, symbolic crop",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-1dc7f6e0-452a-4505-b0a5-e3a944398bfe.png",
+    "sourceSha256": "15fda374cdb0b61552e2725b938a8e1b83b49e2fd38af218652371f12caa7f31",
+    "productionSha256": "eb5eeda83197844abdc37483899508cb584481c8da53f1522a40cac6bcac95ca"
+  },
+  {
+    "id": "play_apple",
+    "brief": "One red windfall apple with a leaf",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-77974f2a-ce48-4259-922a-3c53484f0f3a.png",
+    "sourceSha256": "3e841ff4854b838e04e66a5fbe36f28b8a12b9c1725c988ea62e04b3755927ec",
+    "productionSha256": "1ae9cc1423c5fb734a880e5e34784fba8c03533caebaccdeb1cc6b1b67f7648e"
+  },
+  {
+    "id": "play_stomp_marsh",
+    "brief": "A boot stomping in brown marsh mud",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-d2ada25c-5fe0-4db1-b745-a1bdd10162bf.png",
+    "sourceSha256": "0bf1d35b364e058aecbae4e828e4c1d8ea78ea9d5ea013bc3a4f5597e6c54b69",
+    "productionSha256": "c20a3a013601e4c5004241cf3916a08a41a08ec1d1701ce37a5701b501013608"
+  },
+  {
+    "id": "play_splash_river",
+    "brief": "A boot splashing blue river water",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-400a59d6-01aa-4fec-879d-83931c881c4b.png",
+    "sourceSha256": "f7011fcc1344c650bfa31b6eb4b1f80bb79e5a9e57e8a49c2296d807a384036f",
+    "productionSha256": "fb57c24d04d212317b474c7c735e2900add9dff7a406e996b45c7b42fb1f20d2"
+  },
+  {
+    "id": "play_tiptoe_thorns",
+    "brief": "A boot tiptoeing past a thorn sprig",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-ee769bd2-af95-403b-ae53-66972c77e131.png",
+    "sourceSha256": "5e0f9a8beb95cbc5aba82c7d1e41f18d28b88220cbc2d7650ee697ccef794902",
+    "productionSha256": "5e06ced05af23c3da26339960ca4ef887e9b4a2c5dad452b5a8eef26482103c0"
+  },
+  {
+    "id": "play_little_fire",
+    "brief": "A little friendly campfire on three sticks",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-1e1e4fcb-5914-4ab2-b358-3b800b034000.png",
+    "sourceSha256": "272d3bcb26e0e5b400c38e655f8c19b13550013da840ce8773b220b2af0193f4",
+    "productionSha256": "8b0d1a99bc8af8cac76ef757ae50fa91175be7958741b2b1ff8adc7c4cb0d60a"
+  },
+  {
+    "id": "play_blankets",
+    "brief": "Two neatly rolled colored blankets",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-1c47f6a3-2205-448a-b2e1-9c5d6ef2776f.png",
+    "sourceSha256": "e117a5e508f9d6be9eb9503283b0cf2486bc6d4cacd166b8940f200aad05e7cb",
+    "productionSha256": "d554629e98ff6fbb3c32cbb2ca156b5c843bafcf2bd9b5abb06fcca6e30b2f2c"
+  },
+  {
+    "id": "play_moss_tea",
+    "brief": "A cup of warm tea with moss-green leaves",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-b545cf97-aad9-46b1-a193-b4769ab300e6.png",
+    "sourceSha256": "0c3390e64c84708e5522fe281eacd521baf6b84ac8e3871eb80f3bb36ad60e55",
+    "productionSha256": "f4c8dd70b608c657587356fb1792fa130e07683218c3013ab23c114a8d5ff42e"
+  },
+  {
+    "id": "play_bell_cloth",
+    "brief": "A brass bell draped with a soft blue cloth",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-ac3cc6a8-84d0-46f5-aaa0-bb88a8f2bec1.png",
+    "sourceSha256": "ae2f4adbb90ef00b6c6c3fde6ff362524adcb31d302843f706ad001ada6a4a66",
+    "productionSha256": "b05f3506d21e4cf6b185ec002b39a1d9a746d6eb1b8ed03a7facbf1db6162032"
+  },
+  {
+    "id": "play_bell_lullaby",
+    "brief": "",
+    "reuse": "play_lullaby",
+    "sourceFile": "C:\\Users\\allen\\.codex\\worktrees\\issue-497-gemfall-pilot\\kids-and-dragons\\packages\\client\\src\\assets\\painted\\play_lullaby.webp",
+    "sourceSha256": "7d080c365d2f0aeab3bf104146e15522d96dec83c1f73fa3d2c12937cf6a3055",
+    "productionSha256": "7d080c365d2f0aeab3bf104146e15522d96dec83c1f73fa3d2c12937cf6a3055"
+  },
+  {
+    "id": "play_bell_polish",
+    "brief": "A brass bell being polished with a small cloth, bright glint",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-7df73481-f19c-4fc9-8737-ecd85fcf1774.png",
+    "sourceSha256": "cd54f3db4a033b891162521ff25e79ef6ca80f1b731e615ceeb79a7070dbf6e6",
+    "productionSha256": "b7585461325f3c5d1fa184b80d7145065a3f763443189ad064cb428cc2b57e2e"
+  },
+  {
+    "id": "play_pour_tea",
+    "brief": "A kettle pouring a thin tea stream into a tiny cup",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-d86f07fe-a1eb-4c76-ae27-d5e34443c01a.png",
+    "sourceSha256": "e4d9b2c3a5a5521b41bfa654f4be2166077420c669555b47a0e6459e2be6deea",
+    "productionSha256": "d06ab9cdff91e77130ceb4485dd383b4a2699fece9ce7ca59e100503f07ac4e0"
+  },
+  {
+    "id": "play_stir",
+    "brief": "A spoon swirling tea in a cup",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-48b3a91f-58ff-4a7f-b51c-69cf7cbb8de5.png",
+    "sourceSha256": "51c52a6431059752ec5dfa2480a364e910570e3e70865ab7f892085d65227249",
+    "productionSha256": "0cf3fcf59d405fe6b4638bc022b2a306873a5aebfb3e51e072911319f8e86ea6"
+  },
+  {
+    "id": "play_shortbread",
+    "brief": "Three pieces of shortbread on a small plate",
+    "reuse": null,
+    "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-a55c5394-bd1f-4fab-adda-373f29c53ef6.png",
+    "sourceSha256": "54ccc433a3fe3b063c25e1fa66c9335ee3888e7a2a8b525e303f10308ce3e6e7",
+    "productionSha256": "287f6458185e979834f5d1f8758f0b1c25bfae97febee5e33c1ca1531a15dd25"
+  }
+]

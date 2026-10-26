@@ -1,0 +1,682 @@
+[
+  {
+    "chapter": "gemfall-03b",
+    "slug": "toll-reeds-tunnel",
+    "scenes": [
+      "scene_toll_reeds_coin",
+      "interaction_reed_gap"
+    ],
+    "brief": "A tunnel of tall knotted reeds over dark water, swinging shut and open like doors.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A tunnel of tall knotted reeds over dark water, swinging shut and open like doors. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-f3b184da-0583-48fe-924c-6b04cd874bb0.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-f3b184da-0583-48fe-924c-6b04cd874bb0.png",
+    "sourceSha256": "7f61e5ee22a5f40885860fde9bdf6e011b0ec20553b5e9c5774cdf0c46c4038c",
+    "productionSha256": "c93533eaea0008bea7eb348235aebdbd9a68ae80702e090bd3cb212371b425d4"
+  },
+  {
+    "chapter": "gemfall-03b",
+    "slug": "wisp-raft-crowd",
+    "scenes": [
+      "interaction_wisp_crowd"
+    ],
+    "brief": "A flat marsh raft bumped by a swarm of tiny pale wisps, hanging moss, a ribbon strung overhead.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A flat marsh raft bumped by a swarm of tiny pale wisps, hanging moss, a ribbon strung overhead. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-9d30087c-f358-4e77-851d-854cd0a4d5c1.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-9d30087c-f358-4e77-851d-854cd0a4d5c1.png",
+    "sourceSha256": "7a6aacfd2f2430bae54594286aab6aeb82045846b354b4623afb3af0c5b7f3a2",
+    "productionSha256": "087ce37383e95856bfae539797eac8fe996056e1f1e55a25331cb4b2a1b17cb7",
+    "revision": {
+      "slug": "wisp-raft-crowd",
+      "request": "Remove every glowing wisp and mote. Empty marsh raft and ribbon only, all other scenery preserved.",
+      "prompt": "Edit this Gemfall environment to satisfy this precise correction: Remove every glowing wisp and mote. Empty marsh raft and ribbon only, all other scenery preserved. Keep polished dimensional painterly storybook style, wide 16:9, open lower third, no people, animals, creatures, text, UI or border.",
+      "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-9ee93334-aecd-47a3-abb1-cab50ccbd094.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-9ee93334-aecd-47a3-abb1-cab50ccbd094.png",
+      "sourceSha256": "b7fbcc5a7522872b8e4d170b38d1ee8edf9b5fc99ef0c2a7960b37cbc2331179"
+    }
+  },
+  {
+    "chapter": "gemfall-03b",
+    "slug": "fog-raft-lantern",
+    "scenes": [
+      "interaction_lantern"
+    ],
+    "brief": "The raft at dusk in thickening fog, a lantern hook at the bow, a pole at the stern.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: The raft at dusk in thickening fog, a lantern hook at the bow, a pole at the stern. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-36f45723-12ce-489c-b14a-dff1c583dc17.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-36f45723-12ce-489c-b14a-dff1c583dc17.png",
+    "sourceSha256": "76b9ef3bfa21d97b0f3760cef6ec28fd71c238a29333582be67f9a0cdec30725",
+    "productionSha256": "44b245e60b795a67ce038c8d90f52bec01045957089c66571af15bd179c4ead2"
+  },
+  {
+    "chapter": "gemfall-03b",
+    "slug": "stump-river-fog",
+    "scenes": [
+      "interaction_stumps"
+    ],
+    "brief": "A slow river with a drifting stump like a sleeping cow, fog, the Hollow Gate faint in the distance.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A slow river with a drifting stump like a sleeping cow, fog, the Hollow Gate faint in the distance. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict: environment only, no creature, wisp, face, human hand or animal even in background.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-764ed7cb-5c08-4c8c-a4dc-d292d64175cb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-764ed7cb-5c08-4c8c-a4dc-d292d64175cb.png",
+    "sourceSha256": "266e4a0021032ed30cb484dff298ad27a1486696260a7d3e5bd7e37a9d4e6676",
+    "productionSha256": "47dd402532a446f1c722b9bc469ec9738e165f3b6211648f7cad4042a5a2a4a4"
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "sapling-ring",
+    "scenes": [
+      "interaction_sapling_rhyme"
+    ],
+    "brief": "A ring of boot-high saplings in a clearing, leaves rustling.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A ring of boot-high saplings in a clearing, leaves rustling. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict: environment only, no creature, wisp, face, human hand or animal even in background.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-b7ca3748-c1cc-408d-a984-da65b2109742.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-b7ca3748-c1cc-408d-a984-da65b2109742.png",
+    "sourceSha256": "366c96cc3425a552f7e8a484246e869cdf79042cc0d515b65d28ea9e7d014683",
+    "productionSha256": "d6c8331229c71549bb17b5e257af1f3211fedb55942e561217404047160b91b5"
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "hedge-knit-gate",
+    "scenes": [
+      "interaction_hedge_gate"
+    ],
+    "brief": "A hedge knitting its branches into a neat green gate with one thorny latch.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A hedge knitting its branches into a neat green gate with one thorny latch. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict: environment only, no creature, wisp, face, human hand or animal even in background.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-185d53db-6b55-4be2-b360-f0c5d1f0ca9a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-185d53db-6b55-4be2-b360-f0c5d1f0ca9a.png",
+    "sourceSha256": "da63bf3ba0f00c1a08446da0a16f740bb14427cb4055823921e9a0367d68223f",
+    "productionSha256": "4a76bc8a14a87432a1d20904c3776e95637d3d50e65cebf6fca901842f427ea6"
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "gray-moss-patch",
+    "scenes": [
+      "interaction_herd_friends"
+    ],
+    "brief": "A patch of gray moss at the edge of a green one, a strawberry patch behind.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A patch of gray moss at the edge of a green one, a strawberry patch behind. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict: environment only, no creature, wisp, face, human hand or animal even in background.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-34443445-4de1-45b7-8c16-7aa47787da96.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-34443445-4de1-45b7-8c16-7aa47787da96.png",
+    "sourceSha256": "e6499f4a74f7c4209503199f3598b0b10efe6228c3d719399d3889e897a3f888",
+    "productionSha256": "bfa33539e7217fbb98f208a7c8b92e9912a449cfe6390d8edd8cb208318163d0"
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "fern-spring-glade",
+    "scenes": [
+      "interaction_spring_cup"
+    ],
+    "brief": "A dry glade with a small clear spring in a mossy dip, a hollow leaf for a cup.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: Deep enclosed woodland, forest trees filling the background, no mountain vista. A dry glade with a small clear spring in a mossy dip, a hollow leaf for a cup. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-f44a5214-bfb0-4a2a-8fd4-2938cfdcd883.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-f44a5214-bfb0-4a2a-8fd4-2938cfdcd883.png",
+    "sourceSha256": "063c8f00135486100653a74d0e4ef900c7d891e91f56e381463165d478f70cd2",
+    "productionSha256": "57e2f6d42d489452331885e6df7b6f8d07f23d76619aae1f59041c0395e0379d"
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "fern-calf-hide",
+    "scenes": [
+      "interaction_calf_hide"
+    ],
+    "brief": "Three big ferns in a row, dappled light.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: Deep enclosed woodland, forest trees filling the background, no mountain vista. Three big ferns in a row, dappled light. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-40e7c0c1-6d2d-48ac-8139-bdaaf7a15d30.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-40e7c0c1-6d2d-48ac-8139-bdaaf7a15d30.png",
+    "sourceSha256": "7115f386df19145f83e70ecf26a21550562e0faf2cc8f10b05538d3ac09f2b69",
+    "productionSha256": "aa4f7b368923d38d5169df056fa50d69bb11de4f1e0b357f81313cc1ecd912d8"
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "beech-squirrel-boughs",
+    "scenes": [
+      "scene_beech_squirrel"
+    ],
+    "brief": "An enormous old beech with a knot-hole and a branch for a squirrel to sit on.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: Deep enclosed woodland, forest trees filling the background, no mountain vista. An enormous old beech with a knot-hole and a branch for a squirrel to sit on. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-1ed9e421-2449-43c2-b080-9c3cab9c8310.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-1ed9e421-2449-43c2-b080-9c3cab9c8310.png",
+    "sourceSha256": "85382a18610d183c35be3db620111c73580df1ffa32ab024fed5956545c97774",
+    "productionSha256": "95c9b01fc4fd70fc892c3d5beb31ab185dbfb6882d687ff20d626de8455b74fd"
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "mosshome-archive-doorstep",
+    "scenes": [
+      "check_archive_door"
+    ],
+    "brief": "The MossHome archive doorstep: springy welcome moss, a round door, shelves seen through it.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: MossHome's lush old woodland and high forest paths, enclosed forest rather than open alpine valley. The MossHome archive doorstep: springy welcome moss, a round door, shelves seen through it. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e6867d23-8e06-4433-8775-2616454e2fe5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-e6867d23-8e06-4433-8775-2616454e2fe5.png",
+    "sourceSha256": "81a2913aa565062f06e9ad845522dd51c1cc14b109aae2d6835c7f2925cbbaf6",
+    "productionSha256": "0ced5952ee9a762fdf922ea3c7e918480770644a123cd801ea12393941efca4f"
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "archive-yarn-table",
+    "scenes": [
+      "check_plot"
+    ],
+    "brief": "A table with a ball of yarn, a fistful of thorns, and a cloth map to pin them on.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: MossHome's lush old woodland and high forest paths, enclosed forest rather than open alpine valley. A table with a ball of yarn, a fistful of thorns, and a cloth map to pin them on. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-ce8f9987-e075-454d-b054-4e017c536471.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-ce8f9987-e075-454d-b054-4e017c536471.png",
+    "sourceSha256": "54b9cd640657b4fb13a95832c2d5b44bc71a1c694a753911e0a94b73112cc893",
+    "productionSha256": "72c5b04e189c673d94087c6c4153cfc5a1f80a378d2add7b8187ec360993b08c"
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "archive-leaning-chair",
+    "scenes": [
+      "check_chair_sit"
+    ],
+    "brief": "A tall tilted chair that will not stand up, string and a ruler laid beside it.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: MossHome's lush old woodland and high forest paths, enclosed forest rather than open alpine valley. A tall tilted chair that will not stand up, string and a ruler laid beside it. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-8f679dc5-a42b-498d-8756-177b7103d2ad.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-8f679dc5-a42b-498d-8756-177b7103d2ad.png",
+    "sourceSha256": "43667dcf776e0e5242c84e99f6a1d9904509d298a10c3f1ca0cfb61acc012b9a",
+    "productionSha256": "dc74063b054cea340261bf75919624e01576f2412e1f20b4903f9d3ad482b28f"
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "rope-bridge-spare-planks",
+    "scenes": [
+      "check_bridge_test"
+    ],
+    "brief": "A swaying rope bridge with a gap, a stack of spare planks tied to the rail with a tag.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: MossHome's lush old woodland and high forest paths, enclosed forest rather than open alpine valley. A swaying rope bridge with a gap, a stack of spare planks tied to the rail with a tag. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-de4e43d7-b70d-4e01-9296-f376d99b989f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-de4e43d7-b70d-4e01-9296-f376d99b989f.png",
+    "sourceSha256": "9880e0245ada2536e8bc12f8a28a977ed65d344bc0f13147796558825cc9b44e",
+    "productionSha256": "6aadd97949eea24d50c88b95955a8c658732c987d63253b02447c9d92d69b4a4"
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "runners-post-stump",
+    "scenes": [
+      "interaction_post_relay"
+    ],
+    "brief": "The runners' post: a hollow stump for news cords, pegs of knotted cords.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: MossHome's lush old woodland and high forest paths, enclosed forest rather than open alpine valley. The runners' post: a hollow stump for news cords, pegs of knotted cords. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-57d32c3a-c5b3-4bd4-b092-47e48c4d7844.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-57d32c3a-c5b3-4bd4-b092-47e48c4d7844.png",
+    "sourceSha256": "9abd42a72f884e7bae59982a4a439e952116c41cdb225d04f73c9853fa55091a",
+    "productionSha256": "85ac64856436a9728ce30bdb5a632459c82d45da19318e6260ca2849aa8e7d27"
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "runner-cord-knots",
+    "scenes": [
+      "interaction_cord_knots"
+    ],
+    "brief": "A runner's hands (no figure) tying a cord against a MossHome wall, a bundle of cords.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: MossHome's lush old woodland and high forest paths, enclosed forest rather than open alpine valley. A half-tied cord resting on pegs against a MossHome wall, a bundle of cords. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-57b750f1-527d-4034-9d02-6c13590020ae.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-57b750f1-527d-4034-9d02-6c13590020ae.png",
+    "sourceSha256": "294156f8b82f63e19485ad3090439d63ec91c79aaf4001b70934c013866c9007",
+    "productionSha256": "512630ff0a6c8fbdef440b983410626333928aa6b4136849bb66ac5c8e3b0c38"
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "halfway-hut-tin",
+    "scenes": [
+      "scene_hut_honeycake"
+    ],
+    "brief": "The halfway hut: a shelf of honeycakes, a path-keeper's tin on the counter.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: MossHome's lush old woodland and high forest paths, enclosed forest rather than open alpine valley. The halfway hut: a shelf of honeycakes, a path-keeper's tin on the counter. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-b655d08e-6e2c-426e-9e72-55a1b3db5521.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-b655d08e-6e2c-426e-9e72-55a1b3db5521.png",
+    "sourceSha256": "7ff7b0c902108f2fc55672ad7cc24249ef0c95a091472495c1b4fe0414fdbcf3",
+    "productionSha256": "b23dfa935c2360c8fd34f250f6d30a577813ce1d0ea4d82c402838b33fd7b1c5"
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "stream-stepping-stones",
+    "scenes": [
+      "interaction_stones"
+    ],
+    "brief": "Slick stepping stones up a cliff stream, waves rolling down in a rhythm.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: MossHome's lush old woodland and high forest paths, enclosed forest rather than open alpine valley. Slick stepping stones up a cliff stream, waves rolling down in a rhythm. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-816b0891-a501-42fd-bf78-8c2fc295ed9d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-816b0891-a501-42fd-bf78-8c2fc295ed9d.png",
+    "sourceSha256": "b94564ca28007185e6a599fd2630c12d2cce52e98fe1f09e6bf96a8ea5747e3b",
+    "productionSha256": "c15c52b7bb355c61bf00203f538abc24e913c4a91a4d49e89866edac744fc298"
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "foothills-rim-camp",
+    "scenes": [
+      "interaction_camp"
+    ],
+    "brief": "A flat rock at the edge of the foothills at the last of the sun, bare and a little cold.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: MossHome's lush old woodland and high forest paths, enclosed forest rather than open alpine valley. A flat rock at the edge of the foothills at the last of the sun, bare and a little cold. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-23a76d56-7fa6-40ec-912b-d0656ce69aa8.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-23a76d56-7fa6-40ec-912b-d0656ce69aa8.png",
+    "sourceSha256": "b970bbefc56c635464342005ee1e071bdf4b4e6b8919789d949e4eced3858e16",
+    "productionSha256": "b1dd56631054ad40b46bfde2bac11ab3e9c3e93410ac6a7284852c93178caa09"
+  },
+  {
+    "chapter": "gemfall-05c",
+    "slug": "tally-house-floor-map",
+    "scenes": [
+      "check_outline"
+    ],
+    "brief": "The tally house floor with a big chalked map, four clue objects set on it.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: The tally house floor with a big chalked map, four clue objects set on it. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-5f384b92-22b5-436f-8a5b-970d756b190f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-5f384b92-22b5-436f-8a5b-970d756b190f.png",
+    "sourceSha256": "7c3f23dcad5f1f2ff343c1d0ddcd6db1152e46bc893957b75d986a25c90cec6d",
+    "productionSha256": "fed00ebf02004136f37c1eb0af755b663ba9867e61dbf0dfe0d20f5fdcac0d47",
+    "revision": {
+      "slug": "tally-house-floor-map",
+      "request": "Replace the four unrelated objects with the actual clue objects: a paper scrap with one abstract note mark, a paper with curling spiral marks, a small blank jackalope-footprint token (no creature), and two broken wooden tally sticks. No compass, telescope or crystal cluster. Keep interior floor map.",
+      "prompt": "Edit this Gemfall environment to satisfy this precise correction: Replace the four unrelated objects with the actual clue objects: a paper scrap with one abstract note mark, a paper with curling spiral marks, a small blank jackalope-footprint token (no creature), and two broken wooden tally sticks. No compass, telescope or crystal cluster. Keep interior floor map. Keep polished dimensional painterly storybook style, wide 16:9, open lower third, no people, animals, creatures, text, UI or border.",
+      "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-d29db6f1-d722-4969-bc26-2c18688e5867.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-d29db6f1-d722-4969-bc26-2c18688e5867.png",
+      "sourceSha256": "cdb94424e694879e6136df91ed14c63c544c2d6695c38b3b8290ab708cd7d6da"
+    }
+  },
+  {
+    "chapter": "gemfall-05c",
+    "slug": "pry-bar-wall",
+    "scenes": [
+      "interaction_pry_bars"
+    ],
+    "brief": "A long wall of pry bars hung on pegs by turned-back prospectors, a line of them climbing the hill.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A long wall of pry bars hung on pegs by turned-back prospectors, a line of them climbing the hill. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-a78b9e0a-335b-439e-b558-32b3f0f1f3de.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-a78b9e0a-335b-439e-b558-32b3f0f1f3de.png",
+    "sourceSha256": "1908e86ee1032e932235816e202bcb4d12c3b4e4bbf15368fd3f879abb40aaf4",
+    "productionSha256": "b9df430c8c1a3faeeea90ffa2ff9afb26b83857b0f4d853070da8cc74b94c6f3"
+  },
+  {
+    "chapter": "gemfall-05c",
+    "slug": "bell-cart-stones",
+    "scenes": [
+      "interaction_bell_cart"
+    ],
+    "brief": "A hand bell on a little cart with a wheel stuck in a rut on the way down to the boundary stones.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A hand bell on a little cart with a wheel stuck in a rut on the way down to the boundary stones. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-483ef341-33b7-4c3d-a61e-1f8376671bd9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-483ef341-33b7-4c3d-a61e-1f8376671bd9.png",
+    "sourceSha256": "2a4579f2c19a3354c5fadc47b5a3bb3fade37c8a20ee6c3a93d93ae4ebb7370a",
+    "productionSha256": "d7be46a332d2f9e6e2c3aba5c8623ec07a89e0e53b99045568361856a84a15f8"
+  },
+  {
+    "chapter": "gemfall-05c",
+    "slug": "bell-house-supper",
+    "scenes": [
+      "scene_bell_house_supper_honey"
+    ],
+    "brief": "The bell house's long table at supper, a pot of honey the size of a head.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: The bell house's long table at supper, a pot of honey the size of a head. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-20020939-975a-4319-bc24-9bcc42d3adf5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-20020939-975a-4319-bc24-9bcc42d3adf5.png",
+    "sourceSha256": "5b690e89d400567c2c227c6d5820bb6222c365c114e0980800eaab6c1b34a4b9",
+    "productionSha256": "557cfb1cb1b5d356b6a0a5caea51b4345cf92706a875580f0efb2c510f30b52d"
+  },
+  {
+    "chapter": "gemfall-05c",
+    "slug": "bell-house-tuck-in",
+    "scenes": [
+      "interaction_bell_tuck"
+    ],
+    "brief": "The bell house at night: rows of bells hung low, cloths, a lamp.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: The bell house at night: rows of bells hung low, cloths, a lamp. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-f308ff21-9e29-45c2-88bd-7fa2603323a1.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-f308ff21-9e29-45c2-88bd-7fa2603323a1.png",
+    "sourceSha256": "b07f072e5fff3c848321aceb01f0b46ab112a7ac2f7efb2423a2a39c0479f770",
+    "productionSha256": "e10b64074fe2ac08b338564f70052536b0f4a62e7f9fd2fde56fb3a4bea7c4da"
+  },
+  {
+    "chapter": "gemfall-06",
+    "slug": "moth-slope-rocks",
+    "scenes": [
+      "interaction_moth_trail"
+    ],
+    "brief": "A hillside slope with three flat rocks, one cracked, a single bright glow.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A hillside slope with three flat rocks, one cracked, a single bright glow. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-45fff7f9-b0c5-47e5-9c06-6d2d7bba36a5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-45fff7f9-b0c5-47e5-9c06-6d2d7bba36a5.png",
+    "sourceSha256": "6318e14e10f0d69e9671a1e9d60f859e03d396a44d4c6367589ce61f2504dbfe",
+    "productionSha256": "be660788a8f4d2cffa63375b7201b44190df76cc972dec8f2efaa05dc52e5f3f"
+  },
+  {
+    "chapter": "gemfall-06",
+    "slug": "wagon-road-rut",
+    "scenes": [
+      "interaction_wagons"
+    ],
+    "brief": "The road at the foot of the slope, a lead wagon with a dropped wheel in a deep rut, forty wagons queueing behind it.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: The road at the foot of the slope, a lead wagon with a dropped wheel in a deep rut, forty wagons queueing behind it. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-bc0f8caf-e38f-444d-b815-fd98a7d42acb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-bc0f8caf-e38f-444d-b815-fd98a7d42acb.png",
+    "sourceSha256": "74169c6a1405c0c05bc7866276dde73e9352051635437c5054f1b50805376988",
+    "productionSha256": "7280f7833afacc8d1965eccb1efe56ddabbba9a7aac664037f84f88dbc59d389"
+  },
+  {
+    "chapter": "gemfall-06",
+    "slug": "hessa-soup-camp",
+    "scenes": [
+      "interaction_soup_pots"
+    ],
+    "brief": "The edge of the camp at dusk: a hundred tents, Hessa's heavy soup pots on trestles.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: The edge of the camp at dusk: a hundred tents, Hessa's heavy soup pots on trestles. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-a6b46d09-4ce5-44be-a9a2-c979c6fcc906.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-a6b46d09-4ce5-44be-a9a2-c979c6fcc906.png",
+    "sourceSha256": "e9dc304840131e473859d1438320c944721c9d898273810a5112236d2064775c",
+    "productionSha256": "b9ef783185a790efc6ab010ca82badc36c6c9c464adb44f2de89c35b5d2e0a36"
+  },
+  {
+    "chapter": "gemfall-06",
+    "slug": "morning-bells-baker",
+    "scenes": [
+      "scene_morning_bells_bought"
+    ],
+    "brief": "A baker's stall by a bench, flour, warm honeycakes in a basket.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A baker's stall by a bench, flour, warm honeycakes in a basket. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-3f5faffb-ee42-49ee-816b-489b0f19734c.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-3f5faffb-ee42-49ee-816b-489b0f19734c.png",
+    "sourceSha256": "c7d9ca2afc5dcccb426545abf31091021352f8e8cb336a9f8735d89a9c24ad7d",
+    "productionSha256": "de36a66923d45641e9f47412fade5cea80a16c8ce0844e86cab23eb38a36ae94"
+  },
+  {
+    "chapter": "gemfall-06",
+    "slug": "pellam-tea-table",
+    "scenes": [
+      "interaction_tea"
+    ],
+    "brief": "Pellam's table: a bucket-sized kettle, thimble-sized cups, a plate of shortbread.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: Pellam's table: a bucket-sized kettle, thimble-sized cups, a plate of shortbread. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e83af46c-9181-41c8-abdb-a131b1773848.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-e83af46c-9181-41c8-abdb-a131b1773848.png",
+    "sourceSha256": "d20299cd53c37bba8fd8b7c0a97b74ae611bd7587503e68eae05ced090ee24a9",
+    "productionSha256": "e85e0c60d425ef16a15986efcad0521a183e5b1dd0260a434786cf011ff98943",
+    "revision": {
+      "slug": "pellam-tea-table",
+      "request": "Move tea service onto Pellam's long rectangular STONE table INSIDE Redspire citadel basalt records hall, bucket sized KETTLE with spout, tiny thimble cups, plate of shortbread, warm lamps, book shelves, basalt walls. No outdoor clearing or mountain vista.",
+      "prompt": "Edit this Gemfall environment to satisfy this precise correction: Move tea service onto Pellam's long rectangular STONE table INSIDE Redspire citadel basalt records hall, bucket sized KETTLE with spout, tiny thimble cups, plate of shortbread, warm lamps, book shelves, basalt walls. No outdoor clearing or mountain vista. Keep polished dimensional painterly storybook style, wide 16:9, open lower third, no people, animals, creatures, text, UI or border.",
+      "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e55fe2b5-f2d7-4947-a704-d824c4320e4d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e55fe2b5-f2d7-4947-a704-d824c4320e4d.png",
+      "sourceSha256": "c0d8b53fb718da8bd8b2ee8d404c63211994ceaab25ba15ca62c4f685e66e502"
+    }
+  },
+  {
+    "chapter": "gemfall-07h",
+    "slug": "fleecewick-cabinet-road",
+    "scenes": [
+      "interaction_cabinet"
+    ],
+    "brief": "A glass cabinet of forty stones on a cart, one wheel stuck in a rut.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A glass cabinet of forty stones on a cart, one wheel stuck in a rut. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-d1830ba5-987f-4f5c-a658-2df0b678c5ea.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-d1830ba5-987f-4f5c-a658-2df0b678c5ea.png",
+    "sourceSha256": "866a5b48f15303068cec5463dfa9a13202d1cbf406c387abe3f6353b9283416f",
+    "productionSha256": "d05c411c886fb4faff2e8f866f553ffc713e1cddf634b8dafd45107648f7b983",
+    "revision": {
+      "slug": "fleecewick-cabinet-road",
+      "request": "Cabinet must contain exactly FORTY stones in a grid of FIVE ROWS and EIGHT COLUMNS, one stone per cell. Keep cabinet cart with wheel in rut and clear foreground.",
+      "prompt": "Edit this Gemfall environment to satisfy this precise correction: Cabinet must contain exactly FORTY stones in a grid of FIVE ROWS and EIGHT COLUMNS, one stone per cell. Keep cabinet cart with wheel in rut and clear foreground. Keep polished dimensional painterly storybook style, wide 16:9, open lower third, no people, animals, creatures, text, UI or border.",
+      "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-a9de09d6-73dd-4663-941c-15a9c62c04d4.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-a9de09d6-73dd-4663-941c-15a9c62c04d4.png",
+      "sourceSha256": "9ceae2810d1fdf66222530be45ab77819afae2c1ed5c477cc836d037e1610e5b"
+    }
+  },
+  {
+    "chapter": "gemfall-07h",
+    "slug": "checkpoint-box-shelf",
+    "scenes": [
+      "interaction_boxes"
+    ],
+    "brief": "A checkpoint table with a stamp, boxes piled beside it, a long shelf by the road.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A checkpoint table with a stamp, boxes piled beside it, a long shelf by the road. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-10e1f92b-09c2-4a05-a63a-ae70c568adb5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-10e1f92b-09c2-4a05-a63a-ae70c568adb5.png",
+    "sourceSha256": "12333820ff29230cc981d8fc912a7329c2425267d94c08fd529e05c85b33b779",
+    "productionSha256": "8d732f86d2aa7f72d183903b34b48559374ee634a99f88d4455c97fa867a466b"
+  },
+  {
+    "chapter": "gemfall-07h",
+    "slug": "hairpin-wagons",
+    "scenes": [
+      "interaction_hairpin"
+    ],
+    "brief": "The mountain hairpin with a line of slow wagons rolling around it.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: The mountain hairpin with a line of slow wagons rolling around it. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-7761aba9-0dcc-4d6e-9976-ec7f1f25c083.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-7761aba9-0dcc-4d6e-9976-ec7f1f25c083.png",
+    "sourceSha256": "7e2bc31f22461da7d8637b17e839fb9376c2ce73f0242bd0df36102ec3c789df",
+    "productionSha256": "1efb89d1076498e5940acb851b37868965c0047ec25c9cbac99ca91f238269e4",
+    "revision": {
+      "slug": "hairpin-wagons",
+      "request": "Add a long line of EMPTY covered wooden caravan wagons around the hairpin bend, visible near the middle. At least five wagons, no drivers or animals. Preserve broad clear foreground.",
+      "prompt": "Edit this Gemfall environment to satisfy this precise correction: Add a long line of EMPTY covered wooden caravan wagons around the hairpin bend, visible near the middle. At least five wagons, no drivers or animals. Preserve broad clear foreground. Keep polished dimensional painterly storybook style, wide 16:9, open lower third, no people, animals, creatures, text, UI or border.",
+      "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-d5ed7007-6bc7-4ba0-a0fe-3e06e2c486fc.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-d5ed7007-6bc7-4ba0-a0fe-3e06e2c486fc.png",
+      "sourceSha256": "33edbad26fcc0e93e265a1fbd3c55592cf1ce856ef0818f3d57292881e1f2d0c"
+    }
+  },
+  {
+    "chapter": "gemfall-07h",
+    "slug": "tidewell-knock-rock",
+    "scenes": [
+      "interaction_tidewell_knocks"
+    ],
+    "brief": "A flat rock on a mountain path with a pencil beside it.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A flat rock on a mountain path with a pencil beside it. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-b36e17a2-f377-4d1e-92d4-e24167bd5580.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-b36e17a2-f377-4d1e-92d4-e24167bd5580.png",
+    "sourceSha256": "3399a3b5a5a6d2b7802f0e04c4cf7b5b4996f335d6524fa3b62c5f8e06a697d8",
+    "productionSha256": "eb8533127f1128af635496d77c61aacd87cccc5a0bf4f10995d94c68640291c9"
+  },
+  {
+    "chapter": "gemfall-07l",
+    "slug": "pinch-door-table",
+    "scenes": [
+      "interaction_set_table"
+    ],
+    "brief": "An old door laid across two barrels in the middle of the Pinch.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: An old door laid across two barrels in the middle of the Pinch. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-b13c31fd-ebe0-4778-9ecf-d1a63f8639d9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-b13c31fd-ebe0-4778-9ecf-d1a63f8639d9.png",
+    "sourceSha256": "6bfb2b16de6a8d87411e88c861cf03a9d337b20e6876e148114ccc23c5c6048f",
+    "productionSha256": "df9bf43fd1745f015a484b8a8ded57c9fafcfbfc33643e05139e4b573d7c92f9"
+  },
+  {
+    "chapter": "gemfall-07l",
+    "slug": "choir-warmup-masks",
+    "scenes": [
+      "interaction_choir_warmup"
+    ],
+    "brief": "A row of painted masks hung on posts, a leader's mask tapped.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A row of painted masks hung on posts, a leader's mask tapped. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-9263a257-8dfb-4cd5-9070-4f60c633c7ee.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-9263a257-8dfb-4cd5-9070-4f60c633c7ee.png",
+    "sourceSha256": "f30033040c5f74c058da84f5423da02c3ab802fce22b0e0386d5c2b9e8b52e34",
+    "productionSha256": "85f315bf527b430ba5bac654619e8ce186201bd13c694b120c8d224f545fa896"
+  },
+  {
+    "chapter": "gemfall-07l",
+    "slug": "warden-fire-tea",
+    "scenes": [
+      "interaction_tea_cups"
+    ],
+    "brief": "Two lines of fires, wardens' side and masks' side, a stack of tin mugs at the near one.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: Two lines of fires, wardens' side and masks' side, a stack of tin mugs at the near one. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-d5f88250-7ec7-4a05-ba36-be7d1cea9796.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-d5f88250-7ec7-4a05-ba36-be7d1cea9796.png",
+    "sourceSha256": "cbf44743da36dd7a8c0fc68309e10d4e7449a5ba99e2a84b8a2be0fd67c03742",
+    "productionSha256": "732c6d5146f4fc8d24d8e04e4d64654fed818bf7d3996c7c9c776e2e3d4a9aa1"
+  },
+  {
+    "chapter": "gemfall-07l",
+    "slug": "box-stack-slide",
+    "scenes": [
+      "interaction_box_slide"
+    ],
+    "brief": "Tall stacks of numbered boxes leaning and sliding down a bend toward waiting sacks.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: Tall stacks of numbered boxes leaning and sliding down a bend toward waiting sacks. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-108d4f9e-cabd-408a-b3b6-09ee93817cc2.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-108d4f9e-cabd-408a-b3b6-09ee93817cc2.png",
+    "sourceSha256": "41f12ef3bca0a6a5d14d18cccbc95b919b41a45439811e0ee22726535579b2d2",
+    "productionSha256": "85309bfb93d11d97b0ac84a5ff84ed03e0b1d7cd21087f09a4697847ac58a614"
+  },
+  {
+    "chapter": "gemfall-07r",
+    "slug": "stone-chain-road",
+    "scenes": [
+      "interaction_stone_chain"
+    ],
+    "brief": "A road with runaway stones rolling across it, sacks lined up at the far side.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A road with runaway stones rolling across it, sacks lined up at the far side. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-be773b40-60c5-4431-8a77-ed1aafcb6104.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-be773b40-60c5-4431-8a77-ed1aafcb6104.png",
+    "sourceSha256": "e9c7dc78c80b55db4b6ab6b938a916012802a90bf6c23444a62961920346e55c",
+    "productionSha256": "fb41e05254d3754e3514ad1a6169c80f92efe5ee52dc6b068c27ebb81fd4d591"
+  },
+  {
+    "chapter": "gemfall-07r",
+    "slug": "way-shelter-stack",
+    "scenes": [
+      "interaction_shelter_stack",
+      "scene_evening_cakes"
+    ],
+    "brief": "A dragonling way-shelter's gate, a board for stacking, a paper bag of honeycakes.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A dragonling way-shelter's gate, a board for stacking, a paper bag of honeycakes. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-d5bfc36b-01eb-4775-940b-e38fa5ffdab3.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-d5bfc36b-01eb-4775-940b-e38fa5ffdab3.png",
+    "sourceSha256": "9a89e74b522240fcca8dd67d1c9af55a0b9e3476293dc2f405f82ff72493c7aa",
+    "productionSha256": "03f90b23a3fde654193a92e7afaca95f5f96da7e9b65d1be2eafbdccd322f223"
+  },
+  {
+    "chapter": "gemfall-07r",
+    "slug": "trickling-slide-road",
+    "scenes": [
+      "interaction_trickle"
+    ],
+    "brief": "A hillside still letting go, small red stones trickling across the road in bursts.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A hillside still letting go, small red stones trickling across the road in bursts. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-690f9c38-7945-4c66-9022-89979bfa8e8f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-690f9c38-7945-4c66-9022-89979bfa8e8f.png",
+    "sourceSha256": "32520f252413e32d533288a70385ba12f6f0779d0aca7b5f82f5f3175a512319",
+    "productionSha256": "17aee4193564bc6aa299c065bd387dcf6e6268479de32a520457c1fd6ede6e0c"
+  },
+  {
+    "chapter": "gemfall-07r",
+    "slug": "caravan-bells-hairpin",
+    "scenes": [
+      "interaction_wagon_bells"
+    ],
+    "brief": "A caravan coming around a hairpin, harness bells ringing, a tired lead wagon.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A caravan coming around a hairpin, harness bells ringing, a tired lead wagon. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-448c75ae-fad5-4f1c-ac28-3c433471efed.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-448c75ae-fad5-4f1c-ac28-3c433471efed.png",
+    "sourceSha256": "ad603cbca4465287959376d4680c1f453c3f7e153a0b973d217671e34cc65805",
+    "productionSha256": "21bfe79bae81cdbd74fdb478053ae60b52a5d17a5c1ddc945b16b44e326cf3f7",
+    "revision": {
+      "slug": "caravan-bells-hairpin",
+      "request": "Add a caravan rounding the hairpin: three EMPTY covered wooden wagons, tired worn lead wagon, shiny harness bells tied along its shaft clearly visible. No animals or drivers. Preserve broad clear foreground.",
+      "prompt": "Edit this Gemfall environment to satisfy this precise correction: Add a caravan rounding the hairpin: three EMPTY covered wooden wagons, tired worn lead wagon, shiny harness bells tied along its shaft clearly visible. No animals or drivers. Preserve broad clear foreground. Keep polished dimensional painterly storybook style, wide 16:9, open lower third, no people, animals, creatures, text, UI or border.",
+      "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e5be955f-7528-48c5-9aab-12aff8198436.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e5be955f-7528-48c5-9aab-12aff8198436.png",
+      "sourceSha256": "e337e034f826718da20d63720af63022d7c5f47cdd2a3ce871616298400c937d"
+    }
+  },
+  {
+    "chapter": "gemfall-08",
+    "slug": "bell-code-hut",
+    "scenes": [
+      "check_bell_code"
+    ],
+    "brief": "The inside of a warden hut: a nibbled code card, a bell rope.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: The inside of a warden hut: a nibbled code card, a bell rope. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e6bee22c-0a02-4dcb-8a3a-90f0f67fee1e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-e6bee22c-0a02-4dcb-8a3a-90f0f67fee1e.png",
+    "sourceSha256": "8a3c10ac556f0b741eb0f590b232075b2a5b0dcdb2f51682e421bc39fb6a646e",
+    "productionSha256": "e7d482fb9b6cf27ee5176ad1d69b946ae55be50b9bbc22a0a1c37c11ad437c21"
+  },
+  {
+    "chapter": "gemfall-08",
+    "slug": "washed-out-step-cart",
+    "scenes": [
+      "interaction_bundles"
+    ],
+    "brief": "A slope with a washed-out step, a cart parked across it, bundles piled.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A slope with a washed-out step, a cart parked across it, bundles piled. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-50a2f373-2beb-4138-8519-025f40787cbd.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-50a2f373-2beb-4138-8519-025f40787cbd.png",
+    "sourceSha256": "4f6390cb40e9eaf25750102efb425c6382bead8f3d31b1b43c31d7ae8dcd3f38",
+    "productionSha256": "72a7b904b09e9621716e17c278a91955828172004fcf2ee9873b1d34d55757bc"
+  },
+  {
+    "chapter": "gemfall-08",
+    "slug": "warden-post-tin",
+    "scenes": [
+      "scene_warden_post_tin"
+    ],
+    "brief": "A warden post with a tin on a shelf, a sign-in book.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A warden post with a tin on a shelf, a sign-in book. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-387b5c73-2dca-4ff9-b555-a7d1d060f076.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-387b5c73-2dca-4ff9-b555-a7d1d060f076.png",
+    "sourceSha256": "f17190b609222047fab745fcd4865a04babe15cc98fceabc98523ee00b5f7096",
+    "productionSha256": "8607a8254b3e902452dfd92e5fa7c2943f7828329e5904689f0102511b477209"
+  },
+  {
+    "chapter": "gemfall-08",
+    "slug": "warm-rock-chimney",
+    "scenes": [
+      "interaction_chimney"
+    ],
+    "brief": "A steep chimney of warm rock with a hanging rope and a painted sign.",
+    "delivered": false,
+    "prompt": "Use case: illustration-story. One wide 16:9 production story-game environment, target 1920x1080. Match the supplied Gemfall style reference: rich dimensional painterly storybook brushwork, tactile materials, warm light with cool shadows, gently mysterious fantasy for age 8. Paint this place: A steep chimney of warm rock with a hanging rope and a painted sign. Environment only, NO people, creatures, animals, hands, faces or silhouettes, even where the brief names them; creatures and cast are separate cutouts. No readable text, lettering, numbers, UI, frame or watermark. Keep lower third clear level ground for sprites. Put the key landmark near horizontal center, around 45–55 percent image height, recognizable in a narrow central phone crop. Reference is style only; do not copy its pots or village. Strict environment only; no hands, animals, wisps or other creatures. Use the scene description for architecture, geography and weather rather than repeating reference scenery.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-7fa901a2-e360-4d84-9c7b-adf8ec881639.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-7fa901a2-e360-4d84-9c7b-adf8ec881639.png",
+    "sourceSha256": "a23f53259c7bcbf6c510e0fbde62da0f3c3706d7941829165594bac2671a60c2",
+    "productionSha256": "e8338bf68658e62a52e914aabab938572e7d997e1169dc217f3b6c8784506239"
+  }
+]

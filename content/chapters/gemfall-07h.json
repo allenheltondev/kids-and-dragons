@@ -2871,7 +2871,8 @@
           "figure": "cast/lady_fleecewick",
           "name": "Lady Fleecewick"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/fleecewick-cabinet-road"
     },
     "interaction_boxes": {
       "type": "interaction",
@@ -2913,7 +2914,8 @@
           "figure": "cast/warden_clerk",
           "name": "Warden clerk"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/checkpoint-box-shelf"
     },
     "interaction_hairpin": {
       "type": "interaction",
@@ -2937,7 +2939,8 @@
       "onAssisted": {
         "goto": "scene_tidewell",
         "narration": "You dash through the gap with a whole wagon-length to spare. The mule in the straw hat nods, as if it had timed you itself."
-      }
+      },
+      "art": "scenes/gemfall/hairpin-wagons"
     },
     "interaction_tidewell_knocks": {
       "type": "interaction",
@@ -2951,17 +2954,17 @@
           {
             "id": "thump",
             "label": "Thump",
-            "icon": "bead"
+            "icon": "glyph_knock_thump"
           },
           {
             "id": "tap",
             "label": "Tap",
-            "icon": "hand"
+            "icon": "glyph_knock_tap"
           },
           {
             "id": "rumble",
             "label": "Rumble",
-            "icon": "drop"
+            "icon": "glyph_knock_rumble"
           }
         ],
         "answer": [
@@ -2988,7 +2991,8 @@
           "figure": "cast/tidewell",
           "name": "Professor Tidewell"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/tidewell-knock-rock"
     },
     "scene_echo_cutting": {
       "type": "story",
@@ -3113,6 +3117,25 @@
       "lady_fleecewick": "a rival collector, a sheeple in a lace collar with a glass cabinet on wheels; gracious, thrilled by any stone, never sore about losing",
       "alder": "a boy on a milestone selling his one stone for the wagon home; polite, hopeful, trying hard to be grown-up",
       "tidewell": "Professor Marrow Tidewell, the selkie scholar from chapter 1; ink on both elbows, talks fast, draws on napkins, proud and worried at once"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_cabinet": {
+        "props": [
+          "prop_glass_cabinet"
+        ]
+      },
+      "interaction_boxes": {
+        "props": [
+          "prop_numbered_box"
+        ]
+      },
+      "interaction_hairpin": {
+        "props": [
+          "prop_wagon_wheels"
+        ]
+      }
     }
   }
 }

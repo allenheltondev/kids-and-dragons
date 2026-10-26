@@ -13,6 +13,7 @@ import fight05Art from "../art/source/gemfall-05-fights.json" with { type: "json
 import fight06Art from "../art/source/gemfall-06-fight.json" with { type: "json" };
 import fight07Art from "../art/source/gemfall-07-fights.json" with { type: "json" };
 import fight08Art from "../art/source/gemfall-08-fight.json" with { type: "json" };
+import remainingLocations from "../art/source/gemfall-497-locations.json" with { type: "json" };
 import type { SeedResponse, SeededPhone } from "../packages/server/src/dev-seed";
 import { onAir } from "./seed";
 
@@ -147,10 +148,14 @@ const priorChapterEndings = [
   ["rest_pride_fire", "ending_marked_present", "end_foothills_in_sight"],
   ["rest_end", "ending_foothills_rim", "end_through_the_stones"],
 ];
-for (const batch of [{ number: "03", art: fightArt }, { number: "04", art: fight04Art }, { number: "05", art: fight05Art }, { number: "06", art: fight06Art }, { number: "07", art: fight07Art }, { number: "08", art: fight08Art }]) {
+const interactionReview = remainingLocations.filter(a => ['stump-river-fog', 'wisp-raft-crowd', 'fern-calf-hide', 'rope-bridge-spare-planks', 'tally-house-floor-map', 'pellam-tea-table', 'checkpoint-box-shelf', 'washed-out-step-cart', 'warm-rock-chimney'].includes(a.slug)).map(a => ({ ...a, scenes: [a.scenes[0]!], introScenes: a.scenes }));
+for (const batch of [{ number: "interactions", art: { assets: interactionReview } }, { number: "03", art: fightArt }, { number: "04", art: fight04Art }, { number: "05", art: fight05Art }, { number: "06", art: fight06Art }, { number: "07", art: fight07Art }, { number: "08", art: fight08Art }, { number: "remaining", art: { assets: remainingLocations.filter((asset) => !asset.delivered).map((asset) => ({ ...asset, introScenes: asset.scenes })) } }]) {
 test(`photograph chapter ${batch.number} fight introductions and outcomes on TV and phone`, async ({ browser }) => {
-  test.setTimeout(240_000);
+  test.setTimeout(batch.number === "remaining" ? 1_800_000 : batch.number === "interactions" ? 600_000 : 240_000);
   for (const asset of batch.art.assets) {
+    const requestedScenes = process.env.KAD_ART_SCENES?.split(",");
+    if (requestedScenes && !asset.scenes.some(id => requestedScenes.includes(id))) continue;
+    const beat = parseInt(asset.chapter.split("-")[1]!, 10);
     const seeded = await fetch(`${API}/api/dev/seed`, {
       method: "POST", headers: { "content-type": "application/json" },
       body: JSON.stringify({ mode: "party", tv: true, campaignId: "gemfall", begin: true, sceneId: "rest_northbound",
@@ -175,7 +180,7 @@ test(`photograph chapter ${batch.number} fight introductions and outcomes on TV 
       await send(phone, table.code, { type: "ADVANCE" });
       await send(phone, table.code, { type: "READY", ready: true });
       await send(phone, table.code, { type: "CONTINUE_CAMPAIGN", campaignId: "gemfall" });
-      for (const endings of priorChapterEndings.slice(0, Number(batch.number) - 3)) {
+      for (const endings of priorChapterEndings.slice(0, beat - 3)) {
         const sceneId = endings[road === "a" ? 0 : road === "b" ? 1 : 2]!;
         await send(phone, table.code, { type: "PLAYTEST_GOTO", sceneId });
         await send(phone, table.code, { type: "ADVANCE" });
@@ -183,7 +188,7 @@ test(`photograph chapter ${batch.number} fight introductions and outcomes on TV 
         await send(phone, table.code, { type: "CONTINUE_CAMPAIGN", campaignId: "gemfall" });
       }
       const chapter = await (await tv.request.get(`/content/chapters/${asset.chapter}.json`)).json() as Chapter;
-      if (Number(batch.number) >= 7) {
+      if (beat >= 7) {
         await send(phone, table.code, { type: "PLAYTEST_GOTO", sceneId: "scene_what_for" });
         const choiceId = asset.chapter.endsWith("h") ? "hoard" : asset.chapter.endsWith("l") ? "leash" : "restore";
         await send(phone, table.code, { type: "CHOOSE", choiceId });
@@ -192,7 +197,7 @@ test(`photograph chapter ${batch.number} fight introductions and outcomes on TV 
         await send(phone, table.code, { type: "READY", ready: true });
         await send(phone, table.code, { type: "CONTINUE_CAMPAIGN", campaignId: "gemfall" });
       }
-      if (batch.number === "08") {
+      if (beat === 8) {
         await send(phone, table.code, { type: "PLAYTEST_GOTO", sceneId: "rest_tree_line" });
         await send(phone, table.code, { type: "ADVANCE" });
         await send(phone, table.code, { type: "READY", ready: true });
@@ -214,8 +219,29 @@ test(`photograph chapter ${batch.number} fight introductions and outcomes on TV 
             await new Promise<void>((done) => requestAnimationFrame(() => requestAnimationFrame(() => done())));
           }, `/assets/${scene.art}.webp`);
         }
+        if (batch.number === "interactions") {
+          phone.setDefaultTimeout(15_000);
+          await phone.getByRole("button", { name: "You", exact: true }).click();
+          await phone.getByRole("button", { name: "Your turn", exact: true }).click();
+          const controls = phone.getByRole("region", { name: "Interaction controls" });
+          await expect(controls).toBeVisible({ timeout: 60_000 });
+          await controls.getByLabel("Relaxed play").check();
+          await controls.getByRole("button", { name: "We’re ready" }).click();
+          if (scene.type === "interaction" && scene.interaction.kind === "play") {
+            await expect(controls.locator("button img")).toHaveCount(scene.interaction.options.length);
+          }
+          for (const page of [tv, phone]) {
+            await page.locator(".interaction-art img, .painted-cover img, .story-interaction__button img").evaluateAll(async images => {
+              await Promise.all(images.map(async element => {
+                const img = element as HTMLImageElement;
+                await img.decode();
+                if (!img.naturalWidth) throw new Error("Interaction painting failed to load");
+              }));
+            });
+          }
+        }
         const introScenes: readonly string[] = "introScenes" in asset ? asset.introScenes : [asset.scenes[0]!];
-        const folder = `${introScenes.includes(sceneId) ? "docs/review" : "test-results"}/gemfall-${batch.number}-fights`;
+        const folder = batch.number === "remaining" ? "test-results/gemfall-497-locations" : batch.number === "interactions" ? "docs/review/gemfall-497-interactions" : `${introScenes.includes(sceneId) ? "docs/review" : "test-results"}/gemfall-${batch.number === "remaining" ? "497-locations" : `${batch.number}-fights`}`;
         await tv.screenshot({ path: `${folder}/${sceneId}-tv.png` });
         await phone.screenshot({ path: `${folder}/${sceneId}-phone.png` });
       }
