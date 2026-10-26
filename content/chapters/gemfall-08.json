@@ -6,7 +6,7 @@
   "biome": "mount_red_sky",
   "estimatedMinutes": 55,
   "xpAward": 120,
-  "entry": "scene_tree_line",
+  "entry": "interaction_climb_warmup",
   "plate": {
     "art": "plates/gemfall/08",
     "narration": "At the last tree, the road gives out. Old steps zigzag toward the red glow; loose stones offer another climb. Below, a traveler hurries downhill. Above, the mountain waits for an answer."
@@ -5676,6 +5676,47 @@
           "goto": "scene_ember_drift"
         }
       ]
+    },
+    "interaction_climb_warmup": {
+      "type": "interaction",
+      "narration": "At the foot of the last climb, cold wind makes your fingers stiff. Take a moment to wake up hands and feet. A mountain this tall deserves your best stomping boots.",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Warm up before the mountain climb.",
+        "actionLabel": "Ready to climb!",
+        "options": [
+          {
+            "id": "stamp",
+            "label": "Stamp your boots",
+            "icon": "boot",
+            "reaction": "Loose grit dances around your feet."
+          },
+          {
+            "id": "stretch",
+            "label": "Stretch up high",
+            "icon": "hand",
+            "reaction": "The summit still looks very far away."
+          },
+          {
+            "id": "shake",
+            "label": "Shake out your hands",
+            "icon": "spark",
+            "reaction": "Your fingers feel ready for the rocks."
+          }
+        ],
+        "stages": [
+          "Wake your feet.",
+          "Wake your shoulders.",
+          "Wake your hands."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_tree_line"
+      },
+      "onFailure": {
+        "goto": "scene_tree_line"
+      }
     }
   },
   "voiceGuide": {
