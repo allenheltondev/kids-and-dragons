@@ -2,7 +2,7 @@
  * What the table plays in Gemfall besides voting (#496's Riftlight pass, applied to Gemfall).
  *
  * Every chapter has a fight every success ending walks, four or more story
- * interactions on its shortest path in at least three kinds, two or more
+ * interactions on every success route in at least three kinds, two or more
  * whole-party rolls, a class moment beside an ungated way, and things to earn
  * (items, coins). Setback endings may skip the fight: a lost fight is a rescue
  * that rejoins the spine, and the setbacks that exist were authored first.
@@ -54,7 +54,34 @@ function reachesEndingWithout(chapter: Chapter, blocked: string): boolean {
 const text = (chapter: Chapter): string => JSON.stringify(chapter.scenes);
 const count = (chapter: Chapter, re: RegExp): number => (text(chapter).match(re) ?? []).length;
 
+/** Explore every edge, including gated choices and missed checks. This
+ * over-approximates playable routes, proving coverage without assuming a party
+ * or flag history. Capped counts and kind sets keep loops finite. */
+function interactionCoverageGaps(chapter: Chapter): string[][] {
+  const queue = [{ id: chapter.entry, count: 0, kinds: [] as string[], route: [] as string[] }];
+  const seen = new Set<string>();
+  const gaps: string[][] = [];
+  for (let i = 0; i < queue.length; i++) {
+    const state = queue[i]!;
+    const scene = chapter.scenes[state.id]!;
+    const count = Math.min(4, state.count + Number(scene.type === "interaction"));
+    const kinds = [...new Set([...state.kinds, ...(scene.type === "interaction" ? [scene.interaction.kind] : [])])].sort();
+    const key = JSON.stringify([state.id, count, kinds]);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    if (count >= 4 && kinds.length >= 3) continue;
+    const route = [...state.route, state.id];
+    if (isSuccessEnding(scene)) gaps.push(route);
+    for (const id of exits(scene)) queue.push({ id, count, kinds, route });
+  }
+  return gaps;
+}
+
 describe.each(chapters)("$id", (chapter) => {
+  it("puts four interactions in three kinds on every success route, including alternate choices", () => {
+    expect(interactionCoverageGaps(chapter)).toEqual([]);
+  });
+
   it("has a fight that every success ending walks", () => {
     if (NO_SPINE_FIGHT[chapter.id]) return;
     const fights = Object.entries(chapter.scenes).filter(([, s]) => s.type === "encounter").map(([id]) => id);

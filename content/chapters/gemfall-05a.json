@@ -1989,7 +1989,7 @@
           "id": "on",
           "label": "Step up to the span",
           "icon": "travel",
-          "goto": "scene_crossing"
+          "goto": "interaction_flag_rope"
         }
       ],
       "art": "scenes/gemfall/cracked-bridge-span"
@@ -2008,7 +2008,7 @@
           "id": "on",
           "label": "Step up to the span",
           "icon": "travel",
-          "goto": "scene_crossing"
+          "goto": "interaction_flag_rope"
         }
       ],
       "art": "scenes/gemfall/cracked-bridge-span"
@@ -2031,6 +2031,59 @@
         }
       ],
       "art": "scenes/gemfall/redspire-rim-lookout"
+    },
+    "interaction_crossing_signal": {
+      "type": "interaction",
+      "narration": "Before your turn, the warden shows the bridge signals: wait, walk, wait. The river drowns out shouted instructions. Repeat the flags in order so you can follow them when you are on the span.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the signals, then repeat them in order.",
+        "actionLabel": "Repeat the signals",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "wait",
+            "label": "Wait",
+            "icon": "hand"
+          },
+          {
+            "id": "walk",
+            "label": "Walk",
+            "icon": "boot"
+          }
+        ],
+        "answer": [
+          "wait",
+          "walk",
+          "wait"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_crossing"
+      },
+      "onFailure": {
+        "goto": "scene_crossing"
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "interaction_flag_rope": {
+      "type": "interaction",
+      "narration": "The warden gives the signal rope a tug. Its loose end swings out over the bridge rail. Catch it as it swings back, so the flags can keep guiding the carts across.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Catch the rope when it swings back to the rail.",
+        "actionLabel": "Catch the rope!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "interaction_crossing_signal"
+      },
+      "onFailure": {
+        "goto": "interaction_crossing_signal"
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
     }
   },
   "voiceGuide": {

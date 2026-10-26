@@ -532,7 +532,7 @@
         "narration": "Every time she shuffles, the third tail flicks the Sun Card up her sleeve. You say so, loudly and politely."
       },
       "onFailure": {
-        "goto": "scene_soup_line",
+        "goto": "interaction_soup_bowls",
         "narration": "You pick the middle card with total confidence. It is a picture of a very smug fox. The crowd laughs, and so, to be fair, does she."
       },
       "art": "scenes/gemfall/ford-queue-market"
@@ -558,7 +558,7 @@
           "id": "onward",
           "label": "Head for the smell of soup",
           "icon": "arrow",
-          "goto": "scene_soup_line"
+          "goto": "interaction_soup_bowls"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -584,7 +584,7 @@
           "id": "onward",
           "label": "Head for the smell of soup",
           "icon": "arrow",
-          "goto": "scene_soup_line"
+          "goto": "interaction_soup_bowls"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -603,7 +603,7 @@
           "id": "on",
           "label": "Head for the smell of soup",
           "icon": "arrow",
-          "goto": "scene_soup_line"
+          "goto": "interaction_soup_bowls"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -744,7 +744,7 @@
         "supportLabel": "Brace the line"
       },
       "onSuccess": {
-        "goto": "scene_relay_message",
+        "goto": "interaction_clear_lane",
         "effects": [
           {
             "type": "setFlag",
@@ -759,7 +759,7 @@
         "narration": "You link arms with the old faun and two very surprised strangers, and the red scarves bounce off you like a ball off a wall. They grumble all the way back to the end of the queue. The whole line cheers, and the red scarves will remember you. The old faun fishes his hat out of the soup and, dripping, gives you two coins for the trouble."
       },
       "onFailure": {
-        "goto": "scene_relay_message",
+        "goto": "interaction_clear_lane",
         "narration": "The red scarves squeeze past, all elbows. Then the last one trips over Pudding's bucket, and the whole gang goes down in a red-scarfed heap. The queue laughs so hard that they slink off to the back anyway."
       },
       "art": "scenes/gemfall/ford-queue-market"
@@ -772,7 +772,7 @@
           "id": "on",
           "label": "Back to your place in line",
           "icon": "ear",
-          "goto": "scene_relay_message"
+          "goto": "interaction_clear_lane"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -785,7 +785,7 @@
           "id": "on",
           "label": "Back to your place in line",
           "icon": "spark",
-          "goto": "scene_relay_message"
+          "goto": "interaction_clear_lane"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -804,7 +804,7 @@
           "id": "on",
           "label": "Back to your place in line",
           "icon": "bead",
-          "goto": "scene_relay_message"
+          "goto": "interaction_clear_lane"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -1401,7 +1401,7 @@
         ]
       },
       "onSuccess": {
-        "goto": "scene_witch_stall",
+        "goto": "interaction_evening_echo",
         "effects": [
           {
             "type": "grantItem",
@@ -1412,7 +1412,7 @@
         "narration": "You stand on a barrel under a red blanket and RUMBLE. You erupt with a sack of pinecones. Three small children shriek with joy. The troupe leader says you are the best mountain they have ever had, and pays you a honeycake in wages."
       },
       "onFailure": {
-        "goto": "scene_witch_stall",
+        "goto": "interaction_evening_echo",
         "effects": [
           {
             "type": "grantItem",
@@ -1432,7 +1432,7 @@
           "id": "on",
           "label": "Walk on down the queue",
           "icon": "ear",
-          "goto": "scene_witch_stall"
+          "goto": "interaction_evening_echo"
         }
       ],
       "art": "scenes/gemfall/queue-dusk-camp"
@@ -1445,7 +1445,7 @@
           "id": "on",
           "label": "Walk on down the queue",
           "icon": "acorn",
-          "goto": "scene_witch_stall"
+          "goto": "interaction_evening_echo"
         }
       ],
       "art": "scenes/gemfall/queue-dusk-camp"
@@ -1458,7 +1458,7 @@
           "id": "on",
           "label": "Walk on down the queue",
           "icon": "spark",
-          "goto": "scene_witch_stall"
+          "goto": "interaction_evening_echo"
         }
       ],
       "art": "scenes/gemfall/queue-dusk-camp"
@@ -1721,7 +1721,7 @@
           "id": "to_ford",
           "label": "Go down to the water at dawn",
           "icon": "drop",
-          "goto": "scene_reed_crabs"
+          "goto": "interaction_dawn_warmup"
         }
       ],
       "art": "scenes/gemfall/queue-dusk-camp",
@@ -2222,6 +2222,119 @@
           "goto": "scene_crossing_verse"
         }
       ],
+      "art": "scenes/gemfall/west-branch-ford"
+    },
+    "interaction_soup_bowls": {
+      "type": "interaction",
+      "narration": "The soup tent is just ahead, but empty bowls are rolling out of a basket into the mud. Catch each bowl at the basket rim and stack it safely before the next hungry traveler arrives.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap when a bowl reaches the basket rim.",
+        "actionLabel": "Catch the bowl",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_soup_line"
+      },
+      "onFailure": {
+        "goto": "scene_soup_line"
+      },
+      "art": "scenes/gemfall/wend-soup-tent"
+    },
+    "interaction_clear_lane": {
+      "type": "interaction",
+      "narration": "Hoofbeats come racing down the queue. A relay-runner needs a clear lane, and a loose awning has sagged across the road. Hold its pole up while the people underneath duck out of the way.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends brace the pole while someone lifts the awning.",
+        "actionLabel": "Lift the awning!",
+        "supportLabel": "Brace the pole"
+      },
+      "onSuccess": {
+        "goto": "scene_relay_message"
+      },
+      "onFailure": {
+        "goto": "scene_relay_message"
+      },
+      "art": "scenes/gemfall/ford-queue-market"
+    },
+    "interaction_evening_echo": {
+      "type": "interaction",
+      "narration": "The camp settles into evening. At the last fire before the remedy stalls, travelers tap a little welcome on their bowls: tap, tap, rest, tap. Listen, then tap it back so the next fire can hear.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Listen, then repeat the welcome in order.",
+        "actionLabel": "Tap the welcome",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "tap",
+            "label": "Tap",
+            "icon": "note"
+          },
+          {
+            "id": "rest",
+            "label": "Rest",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "tap",
+          "tap",
+          "rest",
+          "tap"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_witch_stall"
+      },
+      "onFailure": {
+        "goto": "scene_witch_stall"
+      },
+      "art": "scenes/gemfall/ford-witch-stall"
+    },
+    "interaction_dawn_warmup": {
+      "type": "interaction",
+      "narration": "Morning is cold enough to make every boot creak. Before anyone heads down to the ford, the waiting travelers turn warming up into a game. Stamp, stretch and shake the sleep out of your fingers.",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Warm up for the crossing.",
+        "actionLabel": "Warm up!",
+        "options": [
+          {
+            "id": "stamp",
+            "label": "Stamp your boots",
+            "icon": "boot",
+            "reaction": "The cold mud thumps back."
+          },
+          {
+            "id": "stretch",
+            "label": "Reach for the sky",
+            "icon": "hand",
+            "reaction": "Sleepy travelers stretch beside you."
+          },
+          {
+            "id": "shake",
+            "label": "Shake out your fingers",
+            "icon": "spark",
+            "reaction": "Somebody wiggles all ten fingers at the river."
+          }
+        ],
+        "stages": [
+          "Wake your boots.",
+          "Wake your shoulders.",
+          "Wake your fingers."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_reed_crabs"
+      },
+      "onFailure": {
+        "goto": "scene_reed_crabs"
+      },
       "art": "scenes/gemfall/west-branch-ford"
     }
   },
