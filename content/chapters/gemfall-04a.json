@@ -1956,7 +1956,7 @@
           "goto": "encounter_mimics"
         }
       ],
-      "art": "scenes/gemfall/pride-stone-crater"
+      "art": "scenes/gemfall/mud-wallow-mimic-posts"
     },
     "encounter_mimics": {
       "type": "encounter",
@@ -2007,7 +2007,7 @@
           "goto": "scene_jackalope_wall"
         }
       ],
-      "art": "scenes/gemfall/pride-stone-crater"
+      "art": "scenes/gemfall/mud-wallow-mimic-posts"
     },
     "scene_mimics_took_boots": {
       "type": "story",
@@ -2020,7 +2020,7 @@
           "goto": "scene_jackalope_wall"
         }
       ],
-      "art": "scenes/gemfall/pride-stone-crater"
+      "art": "scenes/gemfall/mud-wallow-mimic-posts"
     }
   },
   "voiceGuide": {

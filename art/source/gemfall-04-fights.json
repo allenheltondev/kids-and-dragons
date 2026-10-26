@@ -1,0 +1,71 @@
+{
+  "issue": 497,
+  "date": "2026-10-26",
+  "generator": "Built-in image_gen",
+  "reference": "assets/scenes/gemfall/ditch-plank-mimics.webp",
+  "export": {
+    "size": [
+      1920,
+      1080
+    ],
+    "format": "WebP",
+    "quality": 88,
+    "resample": "Lanczos"
+  },
+  "assets": [
+    {
+      "chapter": "gemfall-04a",
+      "slug": "mud-wallow-mimic-posts",
+      "scenes": [
+        "scene_mud_posts",
+        "scene_mimics_unmasked",
+        "scene_mimics_took_boots"
+      ],
+      "prompt": "Use case: illustration-story. One production environment backdrop for Kids & Dragons Gemfall. Wide 16:9 landscape composition, target 1920x1080. The supplied image is a STYLE reference only: polished painterly storybook brushwork, dimensional natural materials, rich warm and cool color, gentle fantasy for children age 8. Keep lower third broad and uncluttered for separately rendered game character sprites, and preserve an understandable central mobile crop. Full bleed single painting. No people, animals, creatures or character silhouettes. No eyes, mouths, teeth, limbs or faces on objects: any mimics are rendered separately as game cutouts. No readable text, lettering, numbers, UI, border, frame or watermark. Do not copy the reference's hay cart, ditch, cake table or plank crossing. New place: the pride-stone plain after rain, with an old muddy wallow and several rain-filled round marker holes. Two tall weathered timber pride marker posts stand very straight at the upper edge of the muddy path, one on each side, with little tufts of tawny tail fur snagged on their tops. They look slightly suspicious only through their proud placement and very straight posture, but must remain inanimate wooden posts. Muddy puddles reflect clearing golden afternoon clouds; low grassy prairie, old rounded stones and distant gentle hills. The road bends around the wallow and the near path passes between the two posts. Put the post bases and main holes above the open foreground stage. Warm gold-green plain and slate-blue puddles, tactile soft mud, playful mystery rather than danger.",
+      "source": "exec-35c2972e-445c-46ef-ac67-e16344cbf1a7.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "sourceSha256": "12099f07f3c169c1ee8472cbaf49b50f469ee76ac0e391eb8a98759c56c2b813",
+      "productionSha256": "1a114df4dcbce3b262d5734e32db2d98b0f95a112cc99cf5bb372fa0fcb482cb",
+      "productionBytes": 628398
+    },
+    {
+      "chapter": "gemfall-04b",
+      "slug": "brook-log-mimics",
+      "scenes": [
+        "scene_stepping_logs",
+        "scene_logs_cleared",
+        "scene_logs_slipped"
+      ],
+      "prompt": "Use case: illustration-story. One production environment backdrop for Kids & Dragons Gemfall. Wide 16:9 landscape composition, target 1920x1080. The supplied image is a STYLE reference only: polished painterly storybook brushwork, dimensional natural materials, rich warm and cool color, gentle fantasy for children age 8. Keep lower third broad and uncluttered for separately rendered game character sprites, and preserve an understandable central mobile crop. Full bleed single painting. No people, animals, creatures or character silhouettes. No eyes, mouths, teeth, limbs or faces on objects: any mimics are rendered separately as game cutouts. No readable text, lettering, numbers, UI, border, frame or watermark. Do not copy the reference's hay cart, ditch, cake table or plank crossing. New place: a woodland brook crossed by exactly two mossy fallen logs lying side by side like a narrow bridge. The brook crosses the image in middle distance, logs leading toward the far bank. Ferns, roots and beech foliage frame the edges, dappled gold afternoon light on bright moss and clear flowing water. Beyond the far bank the path enters a darker, more tangled glade, mysterious but gentle and readable. One small ordinary toadstool grows on a log, with absolutely no face or eyes. A modest row of three old empty boots sits on the near bank beside the approach, off to one side, as story props; no feet or legs in the boots. Lower third is an open earth-and-leaf bank for game figures, not densely covered in ferns or boots. The logs are inanimate wood with natural bark and moss, no creature anatomy.",
+      "source": "exec-c3b6bc2d-8b9d-44a8-8bc5-bc630d84bcd0.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "sourceSha256": "02106ddcdc0cd72619207337411f40fe4361f5f0ecb866637d5eb2fd269531ce",
+      "productionSha256": "2ac513226d174c622062cf46a495e1fe54f7f91446ac799887e43cf07e038935",
+      "productionBytes": 717322
+    },
+    {
+      "chapter": "gemfall-04c",
+      "slug": "depot-barn-strongboxes",
+      "scenes": [
+        "scene_box_ten",
+        "scene_boxes_gone",
+        "scene_boxes_sulking"
+      ],
+      "prompt": "Use case: illustration-story. One production environment backdrop for Kids & Dragons Gemfall. Wide 16:9 landscape composition, target 1920x1080. The supplied image is a STYLE reference only: polished painterly storybook brushwork, dimensional natural materials, rich warm and cool color, gentle fantasy for children age 8. Keep lower third broad and uncluttered for separately rendered game character sprites, and preserve an understandable central mobile crop. Full bleed single painting. No people, animals, creatures or character silhouettes. No eyes, mouths, teeth, limbs or faces on objects: any mimics are rendered separately as game cutouts. No readable text, lettering, numbers, UI, border, frame or watermark. Do not copy the reference's hay cart, ditch, cake table or plank crossing. New place: inside the rush-depot barn, a friendly but thoroughly disordered timber storage barn. Sturdy shelves of ordinary closed iron-banded wooden strongboxes along side and back walls, each with a hanging brass tag marked ONLY with tiny abstract unreadable tally-like scratches (no recognizable numbers or letters). A clerk's high stool and a worktable with an open thick ledger, small ink pots and quills in upper-right middle ground. Loose cream paper scattered in corners and small puddles of deep violet-black ink on the worn plank floor. A few plain strongboxes sit near the shelves but keep the broad central lower-third floor open for the game's separate mimic and clerk figures. Warm slanting light from a high barn window and an open doorway, golden wood, cool shadow corners, tactile painted metal and paper. Cozy comic chaos, never scary. Boxes must not have faces, eyes, mouths, teeth or legs. Ledger pages have abstract brush marks only, no readable writing.",
+      "source": "exec-e40aa123-9e37-4040-8b24-96bbd608082a.png",
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "sourceSha256": "9ad7e2cf330325250e8a3d2a1475805b843d49c12f4e265d98773b147352217c",
+      "productionSha256": "9e7ce6fbd0ee8b7b2fcbc453b67330fd482f21985103aca2fd63cacf4a48d208",
+      "productionBytes": 484150
+    }
+  ]
+}
