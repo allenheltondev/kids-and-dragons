@@ -3185,7 +3185,7 @@
       "interaction": {
         "kind": "play",
         "participation": "any",
-        "cue": "Make the tea: pour it, stir it and share the biscuits.",
+        "cue": "Make the tea: pour it, stir it and share the shortbread.",
         "actionLabel": "Make the tea",
         "options": [
           {
@@ -3202,15 +3202,15 @@
           },
           {
             "id": "biscuit",
-            "label": "Pass the biscuits",
+            "label": "Pass the shortbread",
             "icon": "cake",
-            "reaction": "Pellam takes one biscuit and logs it. Then he takes another and does not log it."
+            "reaction": "Pellam takes one piece and logs it. Then he takes another piece and does not log it."
           }
         ],
         "stages": [
           "The kettle starts to steam.",
           "The first cups are full.",
-          "Everybody has a cup and a biscuit."
+          "Everybody has a cup and a piece of shortbread."
         ]
       },
       "onSuccess": {
