@@ -1896,7 +1896,8 @@
           "icon": "swords",
           "goto": "encounter_crawlers"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/tally-porch-crawlers"
     },
     "encounter_crawlers": {
       "type": "encounter",
@@ -1946,7 +1947,8 @@
           "icon": "moon",
           "goto": "scene_moths_leaving"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/tally-porch-crawlers"
     },
     "scene_crawlers_scattered": {
       "type": "story",
@@ -1964,7 +1966,8 @@
           "icon": "moon",
           "goto": "scene_moths_leaving"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/tally-porch-crawlers"
     },
     "scene_bell_house_supper_honey": {
       "type": "story",

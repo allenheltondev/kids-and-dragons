@@ -1940,7 +1940,7 @@
           "goto": "encounter_wisps"
         }
       ],
-      "art": "scenes/gemfall/cracked-bridge-span"
+      "art": "scenes/gemfall/bridge-lantern-wisps"
     },
     "encounter_wisps": {
       "type": "encounter",
@@ -1992,7 +1992,7 @@
           "goto": "interaction_flag_rope"
         }
       ],
-      "art": "scenes/gemfall/cracked-bridge-span"
+      "art": "scenes/gemfall/bridge-lantern-wisps"
     },
     "scene_wisps_scattered": {
       "type": "story",
@@ -2011,7 +2011,7 @@
           "goto": "interaction_flag_rope"
         }
       ],
-      "art": "scenes/gemfall/cracked-bridge-span"
+      "art": "scenes/gemfall/bridge-lantern-wisps"
     },
     "scene_rim_lookout_pay": {
       "type": "story",
