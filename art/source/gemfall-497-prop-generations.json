@@ -1,0 +1,422 @@
+[
+  {
+    "id": "prop_post_ropes",
+    "brief": "A tall marker post with two ropes",
+    "use": "cooperate: 04a `interaction_post_hole`, 04c `interaction_last_post`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A tall marker post with two ropes. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-b41e3580-aa1c-4bb3-9308-6986d70cb1d3.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-b41e3580-aa1c-4bb3-9308-6986d70cb1d3.png",
+    "sourceSha256": "3ba6c03b7f84f767e886add8ea21eaac84c39b7e9c9098fd3bab706e367df709",
+    "productionSha256": "a6ed37fce4104a57bf176c0c2712c077e10e35bd8b65a5fc1e9e908419f87213"
+  },
+  {
+    "id": "prop_wagon_wheel_rut",
+    "brief": "A wagon wheel stuck in a rut",
+    "use": "cooperate: 05c `interaction_bell_cart`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A wagon wheel stuck in a rut. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-ab12ca38-2a54-4681-8be6-d0a3532c471f.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-ab12ca38-2a54-4681-8be6-d0a3532c471f.png",
+    "sourceSha256": "945dabe6cfc6fa1bafa321a7fe4869533cbaebb30d4fb2a4ae269e3d0043ce67",
+    "productionSha256": "7460ffb193bab640e3c6764162aad93262a7e8a664499c6d3f4e58f6b20d025f"
+  },
+  {
+    "id": "prop_linked_arms",
+    "brief": "Linked arms",
+    "use": "cooperate: 03c `check_block_jumpers`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: Linked arms. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-3a3343de-08bc-4f7f-81d3-bb4f146b1bb5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-3a3343de-08bc-4f7f-81d3-bb4f146b1bb5.png",
+    "sourceSha256": "30ee4a7ca6584ffee28260a999c39090d8a5dbfe52da86fde7e6b84b8b6f5b9d",
+    "productionSha256": "66953c610ba2c89ae0689a87fc7c0a7b49a51daaad9c40b1a3a25ae727fa0360"
+  },
+  {
+    "id": "prop_leaning_chair",
+    "brief": "A tall chair tilted over",
+    "use": "cooperate: 05b `check_chair_sit`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A tall chair tilted over. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-4767cbf2-cde9-4b7d-8e29-6ba32891427c.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-4767cbf2-cde9-4b7d-8e29-6ba32891427c.png",
+    "sourceSha256": "6ffe1052ba5bb3b9af30fab2d6f614ec5d4e1e1b8afdd033241a8d6779ff499f",
+    "productionSha256": "64d371f07970f49a9bfaab6fa36839910594f07c479fbdf2045ceac673e0a98c"
+  },
+  {
+    "id": "prop_knotted_string",
+    "brief": "A knotted string stretched over a crack",
+    "use": "cooperate: 05a `check_string`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A knotted string stretched over a crack. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-b3a11626-2010-4aa9-a7a9-7cbfd50b0d19.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-b3a11626-2010-4aa9-a7a9-7cbfd50b0d19.png",
+    "sourceSha256": "e08943b721dc143ae4411ba0abded14ac3193ff82889ddcfc9651a22d58735b3",
+    "productionSha256": "bb8a8c3fb246dd18f06d34eeee96323959b3cc294b2be10c2ce96ad5b22f3886"
+  },
+  {
+    "id": "prop_hedge_latch",
+    "brief": "Hedge branches knitting round a thorny latch",
+    "use": "cooperate: 04b `interaction_hedge_gate`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: Hedge branches knitting round a thorny latch. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-119f3286-cfdc-46d7-8ad8-88c721b36fb0.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-119f3286-cfdc-46d7-8ad8-88c721b36fb0.png",
+    "sourceSha256": "fd2b39d5a30a8bd56c069ca85a476525d201fdf1748069af79bb26dda63d8fed",
+    "productionSha256": "d5807e50671e71ad10c9fa626ef6c0e777e1d0bca78bc0dbe64c1ac69e5467e2"
+  },
+  {
+    "id": "prop_plank",
+    "brief": "A long wooden plank",
+    "use": "relay 03a `interaction_planks`; balance 05b `check_bridge_test`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A long wooden plank. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-af44be9b-0d4f-44f3-9659-057e92a1eafb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-af44be9b-0d4f-44f3-9659-057e92a1eafb.png",
+    "sourceSha256": "8e1688e43819e5fcf1a72d0f70c48e8e77d078e7a8c86b0f16f8868bafb1d2a0",
+    "productionSha256": "5446df40173c92cb41b8e2d55d7e194f48eaa1cd9363553d42a8f41f7b93ce2f"
+  },
+  {
+    "id": "prop_water_tray",
+    "brief": "A wide tray of brimming water with a cork boat",
+    "use": "balance: 05a `interaction_level`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A wide tray of brimming water with a cork boat. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-16644b03-841b-4cb8-92e1-9b7c3aed2f9c.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-16644b03-841b-4cb8-92e1-9b7c3aed2f9c.png",
+    "sourceSha256": "2ea264df449e97593ea9f9378b162e8a1402c9cc2487493c05bbc0f1e3f80a7a",
+    "productionSha256": "390175d4eb11461c3eac9007e042f5ab483eac32d9b78d14213d572745a5dc55"
+  },
+  {
+    "id": "prop_leaf_cup",
+    "brief": "A leaf cup of spring water",
+    "use": "balance: 04b `interaction_spring_cup`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A leaf cup of spring water. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-23868739-7e54-43e4-bbe4-3de3a31ebb9b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-23868739-7e54-43e4-bbe4-3de3a31ebb9b.png",
+    "sourceSha256": "494f44d440cb12a97ae30f12efc4a92c1d7e11c7bf61e05ff5a9ba437666bcd2",
+    "productionSha256": "4550005cf4db4627ab7a4503b47b99cc4d67b1f7b52935a8b6e55d4d38a46f40"
+  },
+  {
+    "id": "prop_glass_cabinet",
+    "brief": "A glass cabinet of forty stones",
+    "use": "balance: 07h `interaction_cabinet`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A glass cabinet of forty stones. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-bd1d2a38-cba8-44ea-b709-af932ce77207.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-bd1d2a38-cba8-44ea-b709-af932ce77207.png",
+    "sourceSha256": "6f7f7bc321d8f7838dfd024c61b7128270491fead48a05eda19ea1f3c69e5503",
+    "productionSha256": "dac577c9aab2a9da0de610dfb9b869ee23611dc6a533292426255287cb94a7ec"
+  },
+  {
+    "id": "prop_door_barrels",
+    "brief": "An old door across two barrels",
+    "use": "balance: 07l `interaction_set_table`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: An old door across two barrels. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-5309e679-4798-4d03-b1f5-b49d7c99fb93.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-5309e679-4798-4d03-b1f5-b49d7c99fb93.png",
+    "sourceSha256": "b48c2e0fb2d028ed3b436fd2f9844ead064aa010964e0955ad17bed2f6c45b81",
+    "productionSha256": "a4466bf5960f87eba9f0262514763f76d604cf6188c13ff5acb33a4481316ccc"
+  },
+  {
+    "id": "prop_stone_board",
+    "brief": "A board stacked with humming stones",
+    "use": "balance: 07r `interaction_shelter_stack`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A board stacked with humming stones. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-ae7c80d0-b4ee-4a79-a3ec-320f4645e49b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-ae7c80d0-b4ee-4a79-a3ec-320f4645e49b.png",
+    "sourceSha256": "44a8c3f28e8cb4624a466218e467acfa55e0ced1505e9fdbc9b5d9c2165efc2c",
+    "productionSha256": "6c06e0753926b658c39c13fb624dc06371d101d2d02be84b6c30af2b66b2234a"
+  },
+  {
+    "id": "prop_lantern",
+    "brief": "A lit lantern",
+    "use": "03b `interaction_lantern`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A lit lantern. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-0027b24d-ad9b-4d82-b74f-4caa4c6ee70b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-0027b24d-ad9b-4d82-b74f-4caa4c6ee70b.png",
+    "sourceSha256": "920689a0948601f492ab6e2fe11f73a16f75c97e12fe456172f00b7bd9da66fc",
+    "productionSha256": "1fe4ded2bf1990e1e21e5ac101a2f70f198a85768d7dcbf33043f241f2b3f0ef"
+  },
+  {
+    "id": "prop_cake_plate",
+    "brief": "A plate of spiced grass-cake",
+    "use": "04a `interaction_plates`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A plate of spiced grass-cake. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-96535503-2b70-448d-bc21-7cfa8eaeb577.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-96535503-2b70-448d-bc21-7cfa8eaeb577.png",
+    "sourceSha256": "912ee7474a742f01249871a57b982a0ae45cc4f95b1e75fdc5d32dddd846dfc6",
+    "productionSha256": "0d6e2b85d8074b93322c91c03ee9ae63f13eca5ca63ef9b56db757e3b14e4505"
+  },
+  {
+    "id": "prop_word_scroll",
+    "brief": "A rolled message with a small boy in an orange hat",
+    "use": "04c `check_relay`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A rolled message with a small boy in an orange hat. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-6d81bad6-ce81-4975-8261-474f19aa13bf.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-6d81bad6-ce81-4975-8261-474f19aa13bf.png",
+    "sourceSha256": "1cfd6ce0abbc063b0067969ef774ba74307d706843630e0946d759195051ab78",
+    "productionSha256": "bb5c7f05951e393c568d2e973d078d4c333d5d8e9cf3cddcea709b29eab25d2c"
+  },
+  {
+    "id": "prop_soup_bowl",
+    "brief": "A bowl of hot soup",
+    "use": "05a `interaction_bowls`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A bowl of hot soup. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e3570d2b-bf77-4263-b088-b1d73249d582.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-e3570d2b-bf77-4263-b088-b1d73249d582.png",
+    "sourceSha256": "2ee2a0eae0992b4dd9d8e4364d8e5f7a2ae787a250e22d2a900ece76495f90c8",
+    "productionSha256": "1800bc8271de2e4c5f356576d449556877caec3aec2a01d9ce51119a0f6524bf"
+  },
+  {
+    "id": "prop_knotted_cords",
+    "brief": "A bundle of knotted cords",
+    "use": "05b `interaction_post_relay`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A bundle of knotted cords. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-6d347cc7-f674-4ad5-a41b-113279e5f851.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-6d347cc7-f674-4ad5-a41b-113279e5f851.png",
+    "sourceSha256": "a3213647acc74df3d52a43d1221e8ee1e1873ecd714a7dbd422e5e73b7ac26da",
+    "productionSha256": "459747efb8ee72ee72b4f66fbb333b9e6a36a45b2953311f6b4fd36ec41a1809"
+  },
+  {
+    "id": "prop_pry_bar",
+    "brief": "A heavy iron pry bar",
+    "use": "05c `interaction_pry_bars`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A heavy iron pry bar. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-0317e43b-9b97-4ed9-b83c-d8a565cc46d3.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-0317e43b-9b97-4ed9-b83c-d8a565cc46d3.png",
+    "sourceSha256": "c7d10cd1eb3fc939f8c8d8b3ff118de70cf72f3a79780365a62a69b4009ba69e",
+    "productionSha256": "a885aa17e01332b5398c062f244adc3939c332bc65579544b6ad4ff686d72382"
+  },
+  {
+    "id": "prop_soup_pot",
+    "brief": "A heavy pot of soup",
+    "use": "06 `interaction_soup_pots`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A heavy pot of soup. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-8c7598e8-7c2a-4f13-8075-4928e576c82a.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-8c7598e8-7c2a-4f13-8075-4928e576c82a.png",
+    "sourceSha256": "4b5b115cbb61bd336ecc304425f6e64a0ea0388909e18ce101f70521da7639dd",
+    "productionSha256": "28120a7e4a87214612a2ad0a76d340b1b18914ee74bce6f39ef41c638974282d"
+  },
+  {
+    "id": "prop_numbered_box",
+    "brief": "A humming numbered box",
+    "use": "07h `interaction_boxes`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A humming numbered box. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-7fe6e280-012f-4f05-ac7e-4dc581a5cf58.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-7fe6e280-012f-4f05-ac7e-4dc581a5cf58.png",
+    "sourceSha256": "191302e521e8956a7246811323946ddbc215612b1bef31f7c5cd23d7e3e4ecef",
+    "productionSha256": "b978d996b081dc85fe575d5b10200dd34ffb010645ea5c3e288ec057581240e9",
+    "revision": {
+      "id": "prop_numbered_box",
+      "prompt": "Edit into a plain square WOODEN SHIPPING BOX, flat lid, iron corner straps and ONE inventory tag with abstract notches, subtle gold hum lines. Remove winding key, music-box decoration and rounded lid. Warm storybook style, isolated transparent background with generous clear margins.",
+      "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e10fd642-2f05-4602-9bef-0fb0355cbbff.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-e10fd642-2f05-4602-9bef-0fb0355cbbff.png",
+      "sourceSha256": "cc347421e64a353faa62863c632cc1c2c57f2799222655e120c32b6e28ef4fff"
+    }
+  },
+  {
+    "id": "prop_tea_mug",
+    "brief": "A hot tin mug of tea",
+    "use": "07l `interaction_tea_cups`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A hot tin mug of tea. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-411f6bae-55b4-4d02-bbee-c84ca8f011fd.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-411f6bae-55b4-4d02-bbee-c84ca8f011fd.png",
+    "sourceSha256": "53974aaf586d7ceb1c97dac3ed77b245b08068faacfef97273dc4594dfbf2491",
+    "productionSha256": "667adc3fca9f97d5f17310022d2845628576607c19d95962e4eb04ad1e5eff41"
+  },
+  {
+    "id": "prop_humming_stone",
+    "brief": "A humming stone",
+    "use": "07r `interaction_stone_chain`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A humming stone. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-25c901c2-c51a-44fb-a81e-c942ef1b55fc.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-25c901c2-c51a-44fb-a81e-c942ef1b55fc.png",
+    "sourceSha256": "0b5f037bdd7790e99e7035abef93f982d089b2b7866212a6062a17c590c6cc0d",
+    "productionSha256": "a6032ecf529217f0f041641e65139e16dd2b9b7e155334ae456d3af878315c05"
+  },
+  {
+    "id": "prop_faun_bundle",
+    "brief": "A faun family's bundle",
+    "use": "08 `interaction_bundles`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: A faun family's bundle. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-8c9c0a35-e6f9-4364-bd1b-9a07539fa6fb.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-8c9c0a35-e6f9-4364-bd1b-9a07539fa6fb.png",
+    "sourceSha256": "267810905b56be6977b0df300c68f51b969705bb662e44cc921005add99e3362",
+    "productionSha256": "bef897f0f7c71816a1f37bcc9d2c87428c100b7db876722f64544bf63c8f9138"
+  },
+  {
+    "id": "prop_reed_gate",
+    "brief": "a pole through swinging reeds",
+    "use": "03b `interaction_reed_gap`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: a pole through swinging reeds. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-b00f3196-1c61-412a-ac88-34731f5588cc.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-b00f3196-1c61-412a-ac88-34731f5588cc.png",
+    "sourceSha256": "05c151c9256af15e0ba67ade1543aed342a2c12fa11534e04c17970182816199",
+    "productionSha256": "610e377248c249ae4ecd40702d8e84d99a1d55de524b29bcd13552a8a8b0de8d"
+  },
+  {
+    "id": "prop_goat_bucket",
+    "brief": "a goat with a bucket on its head",
+    "use": "03c `check_goat_chase`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: a goat with a bucket on its head. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-2d3fd6e7-c582-4e71-91ec-a84c9240ade8.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-2d3fd6e7-c582-4e71-91ec-a84c9240ade8.png",
+    "sourceSha256": "7cccee99954025f8a485b7d26490abbc95ead3c514a58b2fdb800d04d634cc51",
+    "productionSha256": "460d199699d2fbc289c2d79f716e6a0e34724ce5547d0bbd235bcc78a13a25fe"
+  },
+  {
+    "id": "prop_tall_grass",
+    "brief": "a creeping step in tall grass",
+    "use": "04a `interaction_ridge_creep`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: a creeping step in tall grass. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-f7225a47-dcbf-43bf-87d9-0e662281bc8e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-f7225a47-dcbf-43bf-87d9-0e662281bc8e.png",
+    "sourceSha256": "ca37b301ff3910a1fcd66e12362bb8a3089dce917365c1674e216ec7069deba5",
+    "productionSha256": "28b1f50037280da7507c6f6d7e3954a505b26e3aab93110e9ff017b2ed6a2945",
+    "revision": {
+      "prompt": "Revise this isolated story-prop painting: keep the same patch of tall green grass and painterly storybook style, but show ONE small brown walking boot lifted carefully above the grass, toe angled gently downward, clearly a quiet creeping step through tall grass. No person, leg above the ankle, face, letters, text, arrows, frame or background. Genuine transparent square canvas, generous clear margin on every side, complete uncut object. Readable at 100px. The boot must be unmistakable within the grass.",
+      "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-4b6d0db0-6e50-4e07-863c-c9ac1f618eda.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-4b6d0db0-6e50-4e07-863c-c9ac1f618eda.png",
+      "sourceSha256": "cea7c23efc931055c2b38d5117bd9a7eb1dcd10b8f133cdedda342dd0d06ca30"
+    }
+  },
+  {
+    "id": "prop_striped_gate",
+    "brief": "a striped gate pole",
+    "use": "04c `interaction_gate`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: a striped gate pole. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-545b036f-ffe2-4853-9448-e38edb05d7b1.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-545b036f-ffe2-4853-9448-e38edb05d7b1.png",
+    "sourceSha256": "4556f422b03a5415273f4e7f0b38d1ce7518aac1db636cf61f890f0606949c5c",
+    "productionSha256": "9f9d6ac16ec1449ccb52df19fc63c1b2cfadba174d21bdec16f2ca4ba2e07442"
+  },
+  {
+    "id": "prop_stepping_stones",
+    "brief": "stones with waves",
+    "use": "05b `interaction_stones`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: stones with waves. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-95f203d4-0a6f-413a-b75a-9048a9824324.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-95f203d4-0a6f-413a-b75a-9048a9824324.png",
+    "sourceSha256": "0fdb8df06e45f7dac2f4753eeb9adc50b5727c7b42b16c9afe989b9e2bef72d9",
+    "productionSha256": "2c0a124f0dc3d4430a9eebf47798f609a93a28019670a458a8b41c72a60b473d"
+  },
+  {
+    "id": "prop_wagon_wheels",
+    "brief": "rolling wheels",
+    "use": "07h `interaction_hairpin`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: rolling wheels. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-616c7934-0586-493c-94d8-2efd52afe75d.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-616c7934-0586-493c-94d8-2efd52afe75d.png",
+    "sourceSha256": "a6c77fbc97779cd68c7783a14c327776b87e794bc735bafc5098fb3984cf388b",
+    "productionSha256": "0cfca8f0010831a5a0d0ca3da5e055b9421f06edc0f945e5d9c35ab49c1001d6"
+  },
+  {
+    "id": "prop_box_stack",
+    "brief": "leaning stacks of boxes",
+    "use": "07l `interaction_box_slide`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: leaning stacks of boxes. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-498d49d2-aac8-453f-8d8c-0a18d99b10e6.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-498d49d2-aac8-453f-8d8c-0a18d99b10e6.png",
+    "sourceSha256": "f4e222e05c63af8a49bf3284bdd77712ff34524227fa6c55d9085f667edc499a",
+    "productionSha256": "5c30b7f6036cddff137be2db6f274567e6144e3cd6b29772dcc2fbd939dad304",
+    "revision": {
+      "id": "prop_box_stack",
+      "prompt": "Edit into a leaning stack of THREE plain WOODEN SHIPPING CRATES with iron corner straps and abstract inventory tags. Remove wrapping paper, gift ribbons and bows. Warm storybook style, isolated transparent background, generous clear margins.",
+      "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-f3669944-4f05-4b27-9720-6f387ec891d9.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+      "sourceFile": "C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-f3669944-4f05-4b27-9720-6f387ec891d9.png",
+      "sourceSha256": "b393974efe9df7c4bfed108f43b021c3db07c9f87f38417664704c9c96b3da62"
+    }
+  },
+  {
+    "id": "prop_red_stones",
+    "brief": "trickling red stones",
+    "use": "07r `interaction_trickle`",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: trickling red stones. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-b43cfe58-1d3d-4c16-891d-0bac67fbb1e5.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-b43cfe58-1d3d-4c16-891d-0bac67fbb1e5.png",
+    "sourceSha256": "80e4f07d49c064e1f1ec395a34adf562d1ac4ae99595555aeccb4dee3c69f487",
+    "productionSha256": "1f69845a4c5a3a8551cab0e73d725a8935690a40ce908ed5ff60c5bd8c68a645"
+  },
+  {
+    "id": "prop_brass_cup",
+    "brief": "An upside-down brass cup with a small shiny button beside it. Neutral identical cup, no marker indicating an answer.",
+    "use": "tracking",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: An upside-down brass cup with a small shiny button beside it. Neutral identical cup, no marker indicating an answer.. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-cb7709f0-6aa0-4c20-b5f8-2e388c75c517.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-cb7709f0-6aa0-4c20-b5f8-2e388c75c517.png",
+    "sourceSha256": "3fcc2c9fc420ac366e7b3fd84ceeb80f81ed4d038a8514cf3e7e1842a62b9c3a",
+    "productionSha256": "f84336736a0abd2e4b134c90e73bab02d1e97e1d15287d322aa46aa96ded4b9f"
+  },
+  {
+    "id": "prop_playing_card",
+    "brief": "One face-down playing card, blue geometric patterned back. No visible face, no correct-answer marker.",
+    "use": "tracking",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: One face-down playing card, blue geometric patterned back. No visible face, no correct-answer marker.. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-2aa020d4-6edf-4219-8d80-82b1c63bb84b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-2aa020d4-6edf-4219-8d80-82b1c63bb84b.png",
+    "sourceSha256": "3dce5061309ee85f303badbad4a8848e502133a1a98e5f3f0091710e468a9e80",
+    "productionSha256": "ce8eaed07c4089ad8f688e7fe836025f1622166c36a938e2fad92395e77655cc"
+  },
+  {
+    "id": "prop_sun_card",
+    "brief": "One playing card face up showing a bold golden sun symbol, no text.",
+    "use": "tracking",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: One playing card face up showing a bold golden sun symbol, no text.. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-97b8f112-736b-4429-84e9-49495b478bbf.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-97b8f112-736b-4429-84e9-49495b478bbf.png",
+    "sourceSha256": "e6fadaf313ac1467f0af64946e3eeb96fb02fa3f9a7b1f92eca1fb10081f876e",
+    "productionSha256": "495f6ae808054ca4f34c07b6436fe7b5ff60c2415601864f5597e2f98e743836"
+  },
+  {
+    "id": "prop_fern",
+    "brief": "One lush green fern, broad dense fronds that conceal anything behind, no calf or answer marker.",
+    "use": "tracking",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: One lush green fern, broad dense fronds that conceal anything behind, no calf or answer marker.. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-5ffa8842-fc11-4b40-95da-4ecac9a45b75.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-5ffa8842-fc11-4b40-95da-4ecac9a45b75.png",
+    "sourceSha256": "5ae8d9ddf4c5bf0885e2aecdff634c91cff942e544688b7fb452f10925ef0c27",
+    "productionSha256": "6aeb6e48851311c4029b04e5a680c17448fd57c9bfc8947a7bd25c4b3ab06c45"
+  },
+  {
+    "id": "prop_pickle_wagon",
+    "brief": "One small empty wooden cart with pickle barrels, no driver or animal.",
+    "use": "tracking",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: One small empty wooden cart with pickle barrels, no driver or animal.. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-3f0dafc8-9078-4f3f-9165-493e53afe2bf.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-3f0dafc8-9078-4f3f-9165-493e53afe2bf.png",
+    "sourceSha256": "a778ba1bf36c371b60438e5c0e90a95d57bbd7d3ff6cd7a1016c5bee1801952a",
+    "productionSha256": "8ab73153b43be50ec22444180303b9ab7f9d3ba6df75203f336af379bf03ba2c"
+  },
+  {
+    "id": "prop_hay_wagon",
+    "brief": "One small wooden hay wagon heaped with straw, no driver or animal.",
+    "use": "tracking",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: One small wooden hay wagon heaped with straw, no driver or animal.. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-bf4017e3-90b5-4c6f-a3b5-fc6d1efcf3ba.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-bf4017e3-90b5-4c6f-a3b5-fc6d1efcf3ba.png",
+    "sourceSha256": "14013c37fc465f5faad2d29254aea977a04aabc3bbaa53c3e7fe1b9fd7e00a15",
+    "productionSha256": "ddd26687de199d3424d9b76c00214f10555d5a6715038b4b83b9bb358d513a23"
+  },
+  {
+    "id": "prop_mule_cart",
+    "brief": "One empty small mule cart, shafts and tiny harness, no mule or driver.",
+    "use": "tracking",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: One empty small mule cart, shafts and tiny harness, no mule or driver.. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-0ab9d0e2-58f7-4fe7-a337-9372c557f5d0.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-0ab9d0e2-58f7-4fe7-a337-9372c557f5d0.png",
+    "sourceSha256": "4c9d40d2d0abd3c0070e963a10bee48d62c4997d8038e762b8d04a0e38d35905",
+    "productionSha256": "540511d5c97dbeddf63c10b5c092fef8ad07fbe627df8a6807ef9fea610b8b34"
+  },
+  {
+    "id": "prop_rock",
+    "brief": "One flat plain grey rock, no glow, no hidden moth, neutral tracking cover.",
+    "use": "tracking",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: One flat plain grey rock, no glow, no hidden moth, neutral tracking cover.. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-77a4c0bc-cba2-459c-9016-8866dc19cb4e.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-77a4c0bc-cba2-459c-9016-8866dc19cb4e.png",
+    "sourceSha256": "5bd5ed3211ca3a9386f8993bc88710f43734e7da593b3cf854b5f34a38ee489f",
+    "productionSha256": "5ad86f677e2746e1b6affeaaf1f76fce6e960f7e80a33c4cf1b2736bccf77e08"
+  },
+  {
+    "id": "prop_cracked_rock",
+    "brief": "One flat grey rock with a thin crack, no glow, no moth, neutral tracking cover.",
+    "use": "tracking",
+    "prompt": "Use case: illustration-story. ONE isolated painted game interaction prop on genuinely transparent background, square canvas, full object with at least 10 percent transparent margin all sides. Subject: One flat grey rock with a thin crack, no glow, no moth, neutral tracking cover.. Match supplied reference's warm polished storybook illustration, tactile materials, soft shading and clear silhouette for children age 8. Simple readable at 128px. No background, scenery, floor, cast shadow, UI, frame, border, watermark or text; abstract small marks instead of readable inventory numbers. Do not copy reference basket or eggs. For tracking covers never include the hidden creature, hidden object or identifying answer glow.",
+    "output_hint": "Generated images are saved to C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626 as C:\\Users\\allen\\.codex\\generated_images\\01a17534-0702-79b0-a028-033185cf9626\\exec-105e1dfd-eb8f-4f97-a96b-3136ce9e4318.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link.",
+    "sourceFile": "exec-105e1dfd-eb8f-4f97-a96b-3136ce9e4318.png",
+    "sourceSha256": "7485a10a81f10883f3acaebe0f65c40c37990daf68694c5819b494cac71935e3",
+    "productionSha256": "322772e5ace639e42f4056dc2c64a8708f755c47e7892265a5243ce3598a096f"
+  }
+]

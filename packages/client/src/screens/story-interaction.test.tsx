@@ -32,6 +32,32 @@ function authoredChapter(props: { props?: string[]; coverIcons?: string[] } = { 
 }
 
 describe("reusable story controls", () => {
+  it("renders painted play options and retains the action when a painting fails", async () => {
+    const send = seed({ kind: "play", cue: "Tea", actionLabel: "Share", participation: "any", options: [{ id: "pour", label: "Pour the tea", icon: "play_pour_tea", reaction: "Warm!" }] });
+    render(<StoryInteractionControls />);
+    const button = screen.getByRole("button", { name: "Pour the tea" });
+    const image = button.querySelector("img")!;
+    expect(image.getAttribute("src")).toContain("play_pour_tea");
+    expect(image.getAttribute("aria-hidden")).toBe("true");
+    fireEvent.error(image);
+    await act(async () => { fireEvent.click(button); });
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ type: "INTERACT", action: "play", optionId: "pour", openedSeq: 4, attempt: 0 }));
+  });
+  it("shows an authored tracking target only during the peek or accessibility hint", () => {
+    const spec: InteractionSpec = { kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000 };
+    for (const [elapsed, relaxed, visible] of [[0, false, true], [1500, false, false], [3000, false, false], [3000, true, true]] as const) {
+      seed(spec, { startedAt: new Date(Date.now() - elapsed).toISOString(), relaxed });
+      authoredChapter({ props: ["prop_sun_card"], coverIcons: ["prop_playing_card", "prop_playing_card"] });
+      const { container, unmount } = render(<StoryInteractionWorld />);
+      expect(container.querySelectorAll(".painted-cover__target")).toHaveLength(visible ? 1 : 0);
+      if (visible) {
+        fireEvent.error(container.querySelector(".painted-cover__target")!);
+        expect(container.querySelector(".painted-cover__glow")).toBeTruthy();
+        expect(screen.getByText("Left")).toBeTruthy();
+      }
+      unmount();
+    }
+  });
   it("offers final cover positions in relaxed tracking", () => {
     const send = seed({ kind: "tracking", cue: "Watch", actionLabel: "Look under", covers: ["Left", "Middle", "Right"], start: 0, swaps: [[0, 2]], stepMs: 1000 }, { relaxed: true });
     render(<StoryInteractionControls />);

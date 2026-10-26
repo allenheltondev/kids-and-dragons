@@ -2013,7 +2013,8 @@
           "icon": "bead",
           "goto": "interaction_reed_gap"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/toll-reeds-tunnel"
     },
     "interaction_wisp_crowd": {
       "type": "interaction",
@@ -2027,19 +2028,19 @@
           {
             "id": "hum",
             "label": "Hum a lullaby",
-            "icon": "note",
+            "icon": "play_lullaby",
             "reaction": "The wisps sway together, glowing slow and gold."
           },
           {
             "id": "juggle",
             "label": "Juggle three cattails",
-            "icon": "leaf",
+            "icon": "play_cattails",
             "reaction": "The wisps follow the cattails with their whole bodies."
           },
           {
             "id": "lantern",
             "label": "Hold up a lantern for them to circle",
-            "icon": "lantern",
+            "icon": "play_lantern_held",
             "reaction": "The wisps circle it, politely, like moths with manners."
           }
         ],
@@ -2083,7 +2084,8 @@
           "figure": "entities/will_o_wisp",
           "count": 3
         }
-      ]
+      ],
+      "art": "scenes/gemfall/wisp-raft-crowd"
     },
     "interaction_reed_gap": {
       "type": "interaction",
@@ -2114,7 +2116,8 @@
           "name": "Gullet",
           "size": "small_to_medium"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/toll-reeds-tunnel"
     },
     "interaction_lantern": {
       "type": "interaction",
@@ -2157,7 +2160,8 @@
           "name": "Gullet",
           "size": "small_to_medium"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/fog-raft-lantern"
     },
     "interaction_stumps": {
       "type": "interaction",
@@ -2186,7 +2190,8 @@
           "name": "Gullet",
           "size": "small_to_medium"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stump-river-fog"
     },
     "interaction_runes": {
       "type": "interaction",
@@ -2200,17 +2205,17 @@
           {
             "id": "tall",
             "label": "Tall rune",
-            "icon": "star"
+            "icon": "glyph_rune_tall"
           },
           {
             "id": "wavy",
             "label": "Wavy rune",
-            "icon": "drop"
+            "icon": "glyph_rune_wavy"
           },
           {
             "id": "round",
             "label": "Round rune",
-            "icon": "gem"
+            "icon": "glyph_rune_round"
           }
         ],
         "answer": [
@@ -2350,6 +2355,25 @@
       "gullets_cousins": "the frogfolk ribbon crew; loud, cheerful, all talk at once, the one in three stacked hats is in charge",
       "prospectors": "three soggy prospectors; gloomy, dripping, very polite once rescued, the tallest one mourns his hat",
       "sausage_seller": "a rush-road sausage seller stuck in the mud; out of breath, generous, shouts everything"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_stumps": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_lantern": {
+        "props": [
+          "prop_lantern"
+        ]
+      },
+      "interaction_reed_gap": {
+        "props": [
+          "prop_reed_gate"
+        ]
+      }
     }
   }
 }

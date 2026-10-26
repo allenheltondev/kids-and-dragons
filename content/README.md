@@ -69,7 +69,9 @@ by real interaction scene ids. A minimal example is:
 
 `props` and `coverIcons` accept ids from `storyProps.ids` in
 `assets/manifest.json`; tracking art must have one `coverIcons` id for each
-cover. The validator checks scene keys, IDs, counts, and image files. These
+cover. An optional tracking `props[0]` paints the target during the initial
+peek and the relaxed-mode hint only; it stays hidden throughout shuffling.
+The validator checks scene keys, IDs, counts, and image files. These
 paintings join the chapter's existing warming list automatically, so authors
 do not need to duplicate them in `warmUrls`. The `fights` and `warmUrls`
 presentation fields can be omitted when unused. Without a presentation entry,
