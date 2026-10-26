@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_rush"
   },
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 44,
   "xpAward": 90,
   "entry": "scene_north_roads",
   "plate": {
@@ -429,44 +429,77 @@
       "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "check_relay": {
-      "type": "check",
-      "discovers": [
-        "npc.centaur"
-      ],
-      "stat": "heart",
-      "tn": 12,
-      "prompt": "Explain Tib to a centaur at a full gallop",
+      "type": "interaction",
+      "narration": "Ma Ruddle cannot shout over the auction, but the centaur relay runs this lane all day. A runner skids to a stop beside you, hooves smoking. \"Small boy, orange hat, talks to horses?\" she says. \"Hand me the word and I will pass it down the line. Every runner after me passes it on.\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the message, then pass it on down the line.",
+        "actionLabel": "Pass the word",
+        "objectLabel": "The word: small boy, orange hat"
+      },
+      "onSuccess": {
+        "goto": "scene_tib_found",
+        "narration": "The runner sings \"small, orange hat, talks to horses\" to the next runner, and the next, and in less time than it takes to eat a honeycake the word comes back down the line: found."
+      },
+      "onFailure": {
+        "goto": "scene_tib_found",
+        "narration": "The word goes down the line a little crooked. \"Small orange horse,\" says one runner, and gallops off. Luckily the next runner has met Tib, and word comes back all the same: found."
+      },
       "cast": [
         {
           "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],
-      "roller": "party",
-      "onSuccess": {
-        "goto": "scene_tib_found",
-        "narration": "The runner nods, sings \"small, orange hat, talks to horses\" to the next runner, and in less time than it takes to eat a honeycake the word comes back down the line: found."
-      },
-      "onFailure": {
-        "goto": "scene_stubborn_mule",
-        "narration": "The runner hears \"small orange horse\" and gallops off. Much later, word comes back that Tib turned up by himself, talking to a centaur. Ma Ruddle's thanks are tired, and her papers went in the auction pile."
-      },
       "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "check_search": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Dodge through a very busy crowd after a small orange hat",
-      "roller": "party",
+      "type": "interaction",
+      "narration": "There! An orange hat, bobbing above the crowd. Then it ducks behind a wagon and is gone. Three wagons are parked side by side, and the hat could come out of any of them. \"Watch which one he hides behind,\" says Ma Ruddle, wringing her hands.",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the orange hat duck between the wagons, then pick the wagon it hides behind.",
+        "actionLabel": "Look behind this wagon",
+        "covers": [
+          "Pickle wagon",
+          "Hay wagon",
+          "Mule cart"
+        ],
+        "start": 0,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "stepMs": 1200
+      },
       "onSuccess": {
         "goto": "scene_tib_found",
         "narration": "You spot the hat, lose it behind a wagon, spot it again, and finally find Tib explaining something very seriously to a pony."
       },
       "onFailure": {
         "goto": "scene_stubborn_mule",
-        "narration": "Every time you get close, the orange hat turns out to be a pumpkin. Much later the relay finds Tib on its own, and Ma Ruddle's papers have gone in the auction pile."
+        "narration": "Every wagon you look behind holds a pumpkin in a hat. Much later the relay finds Tib on its own, and Ma Ruddle's papers have gone in the auction pile."
       },
+      "onAssisted": {
+        "goto": "scene_tib_found",
+        "narration": "A kind carter points the right way. You find Tib explaining something very seriously to a pony."
+      },
+      "cast": [
+        {
+          "figure": "cast/ma_ruddle",
+          "name": "Ma Ruddle"
+        }
+      ],
       "art": "scenes/gemfall/downbound-wagon-auction"
     },
     "scene_tib_found": {
@@ -535,6 +568,13 @@
           "icon": "heart",
           "goto": "scene_stubborn_mule_ask_mule",
           "requiresSpecies": "unicorn"
+        },
+        {
+          "id": "brace_mule",
+          "label": "Have a thornguard plant their feet and shoulder the mule up",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "check_push_mule"
         }
       ],
       "art": "scenes/gemfall/downbound-wagon-auction"
@@ -543,8 +583,8 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Shift a mule that has decided not to move",
-      "roller": "party",
+      "prompt": "Everybody push a mule that has decided not to move",
+      "roller": "all",
       "onSuccess": {
         "goto": "rest_soup_tents",
         "narration": "You heave, and the gem sack slips off the mule's back in the struggle. The moment it hits the ground, the mule leaps up, fresh as morning, and trots three steps away from it. \"She'll carry anything,\" says the owner, amazed. \"Anything but that, it seems.\"",
@@ -805,16 +845,16 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Carry marker posts for a centaur road crew",
+      "prompt": "Everybody carry marker posts for a centaur road crew",
       "cast": [
         {
           "figure": "cast/road_boss",
           "name": "Road Boss"
         }
       ],
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
-        "goto": "scene_warden_patrol",
+        "goto": "interaction_last_post",
         "effects": [
           {
             "type": "setFlag",
@@ -825,7 +865,7 @@
         "narration": "You carry posts until your arms feel like noodles, and you plant every one straight. The road boss looks down the new curve and nods. \"Good work. The relay will sing about this,\" she says, and she does not sound like she is joking."
       },
       "onFailure": {
-        "goto": "scene_warden_patrol",
+        "goto": "interaction_last_post",
         "narration": "You carry a post backward and plant it upside down, so the arrow points at the sky. The crew decides this is very funny and leaves it there, as a joke for the next runner. The road boss thanks you anyway, still chuckling."
       },
       "art": "scenes/gemfall/north-road-detour"
@@ -844,7 +884,7 @@
           "id": "on",
           "label": "Walk the new curve north",
           "icon": "ear",
-          "goto": "scene_warden_patrol"
+          "goto": "interaction_last_post"
         }
       ],
       "art": "scenes/gemfall/north-road-detour"
@@ -863,7 +903,7 @@
           "id": "on",
           "label": "Walk the new curve north",
           "icon": "charm",
-          "goto": "scene_warden_patrol"
+          "goto": "interaction_last_post"
         }
       ],
       "art": "scenes/gemfall/north-road-detour"
@@ -882,7 +922,7 @@
           "id": "on",
           "label": "Land and walk the new curve",
           "icon": "wing",
-          "goto": "scene_warden_patrol"
+          "goto": "interaction_last_post"
         }
       ],
       "art": "scenes/gemfall/north-road-detour"
@@ -959,7 +999,7 @@
           "id": "on",
           "label": "On toward the depot",
           "icon": "wing",
-          "goto": "scene_signposts"
+          "goto": "interaction_gate"
         }
       ],
       "art": "scenes/gemfall/warden-supply-stop"
@@ -978,7 +1018,7 @@
           "id": "on",
           "label": "On toward the depot",
           "icon": "check",
-          "goto": "scene_signposts"
+          "goto": "interaction_gate"
         }
       ],
       "art": "scenes/gemfall/warden-supply-stop"
@@ -996,7 +1036,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_signposts",
+        "goto": "interaction_gate",
         "effects": [
           {
             "type": "setFlag",
@@ -1007,7 +1047,7 @@
         "narration": "You find a mistake in the sergeant's sums. Sergeant Holloway checks it twice, corrects it, and pays you back two coppers with deep respect."
       },
       "onFailure": {
-        "goto": "scene_signposts",
+        "goto": "interaction_gate",
         "narration": "Sergeant Holloway listens to your whole argument, writes it down in the ledger under 'Complaints, Polite', and charges you the fixed rate anyway."
       },
       "art": "scenes/gemfall/warden-supply-stop"
@@ -1053,8 +1093,8 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Sort the honest signs from the nonsense",
-      "roller": "party",
+      "prompt": "The best reader reads the signs and sorts the honest from the nonsense",
+      "roller": "best",
       "onSuccess": {
         "goto": "scene_depot",
         "narration": "Most of the signs are nonsense. But a few old, weathered ones, nailed up by the relay, all agree about one thing: the road north bends away from every place a stone came down. You follow the honest arrows straight to the depot."
@@ -1140,7 +1180,7 @@
         "narration": "Clerk Pennywhistle holds your form up to the lamp, finds no smudges, and looks as if he might cry with happiness. He stamps it four times."
       },
       "onFailure": {
-        "goto": "scene_rumor_fire",
+        "goto": "scene_box_ten",
         "narration": "You fill in Form 9. It needed Form 7B first. Clerk Pennywhistle is very sorry. The queue behind you is not."
       },
       "art": "scenes/gemfall/rush-depot",
@@ -1170,7 +1210,7 @@
           "id": "onward",
           "label": "Walk on to the noon stop",
           "icon": "gem",
-          "goto": "scene_rumor_fire"
+          "goto": "scene_box_ten"
         }
       ],
       "art": "scenes/gemfall/rush-depot",
@@ -1189,7 +1229,7 @@
           "id": "on",
           "label": "Walk on to the noon stop",
           "icon": "arrow",
-          "goto": "scene_rumor_fire"
+          "goto": "scene_box_ten"
         }
       ],
       "art": "scenes/gemfall/rush-depot"
@@ -1327,11 +1367,11 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_relay_sing",
+        "goto": "interaction_pony",
         "narration": "Ding, ding, pause, ding. You get it exactly right, and far away to the south, very faintly, another bell rings it back. The courier beams. \"You'd make a grandmother one day,\" she says, which is the biggest compliment she knows."
       },
       "onFailure": {
-        "goto": "scene_relay_sing",
+        "goto": "interaction_pony",
         "narration": "Ding, pause, ding, ding, ding. The courier goes pink. \"That one means the cake is ready,\" she whispers. Far to the south, a whole camp sits down hopefully to wait for cake. She takes the bell back, giggling, and rings it properly."
       },
       "art": "scenes/gemfall/north-rush-road"
@@ -1350,7 +1390,7 @@
           "id": "on",
           "label": "Head for the relay campfire",
           "icon": "ear",
-          "goto": "scene_relay_sing"
+          "goto": "interaction_pony"
         }
       ],
       "art": "scenes/gemfall/north-rush-road"
@@ -1369,7 +1409,7 @@
           "id": "on",
           "label": "Head for the relay campfire",
           "icon": "flame",
-          "goto": "scene_relay_sing"
+          "goto": "interaction_pony"
         }
       ],
       "art": "scenes/gemfall/north-rush-road"
@@ -1405,6 +1445,13 @@
           "icon": "note",
           "goto": "scene_relay_sing_crew_verse",
           "requiresFlag": "helped_road_crew"
+        },
+        {
+          "id": "lead_verse",
+          "label": "Have a songkeeper start the verse for everyone",
+          "icon": "note",
+          "requiresClass": "songkeeper",
+          "goto": "check_sing"
         }
       ],
       "art": "scenes/gemfall/relay-route-fire"
@@ -1422,7 +1469,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_spiral",
+        "goto": "interaction_verses",
         "effects": [
           {
             "type": "setFlag",
@@ -1433,7 +1480,7 @@
         "narration": "Your voice wobbles once and then holds. The whole campfire sings the chorus back at you, and Old Corran thumps the ground with a hoof."
       },
       "onFailure": {
-        "goto": "scene_spiral",
+        "goto": "interaction_verses",
         "narration": "You sing the wrong verse, the one about a bridge three hundred miles away. Old Corran gently sings the right one over the top, and nobody minds at all."
       },
       "art": "scenes/gemfall/relay-route-fire"
@@ -1452,7 +1499,7 @@
           "id": "on",
           "label": "Ask Old Corran about the shape",
           "icon": "ear",
-          "goto": "scene_spiral"
+          "goto": "interaction_verses"
         }
       ],
       "art": "scenes/gemfall/relay-route-fire"
@@ -1471,7 +1518,7 @@
           "id": "on",
           "label": "Listen to the rest of the verses",
           "icon": "note",
-          "goto": "scene_spiral"
+          "goto": "interaction_verses"
         }
       ],
       "art": "scenes/gemfall/relay-route-fire"
@@ -1536,8 +1583,8 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Lean into the ash wind and keep walking",
-      "roller": "party",
+      "prompt": "Link arms, lean into the ash wind and keep walking",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_road_bend",
         "narration": "You link arms and march on through the glitter. It is like walking through warm gray snow. By the time the wind passes, you are gray from head to toe and look like a row of statues, and the bend in the road is just ahead."
@@ -1710,6 +1757,291 @@
       "heal": 3,
       "choices": [],
       "outcome": "setback"
+    },
+    "interaction_last_post": {
+      "type": "interaction",
+      "narration": "At the end of the new curve lies the last marker post, the tall one, as heavy as a barn door. \"One to steer, the rest to hold the ropes,\" says the road boss, tossing you a coil. \"Straight up, mind. A crooked post sends the whole relay the wrong way.\"",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends hold the ropes tight while one of you steers the post upright.",
+        "actionLabel": "Steer the post up",
+        "supportLabel": "Hold the ropes"
+      },
+      "onSuccess": {
+        "goto": "scene_warden_patrol",
+        "narration": "The post goes up straight as a candle. The road boss stamps it in and grins. \"The relay will find that in the dark,\" she says, and presses a jar of glowing moss into your hands for the night road.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "mosslight_jar",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_warden_patrol",
+        "narration": "The post wobbles, leans, and settles at a jaunty angle. The road boss tilts her head at it. \"Adds character,\" she decides, and leaves it exactly there."
+      },
+      "onAssisted": {
+        "goto": "scene_warden_patrol",
+        "narration": "The road boss takes a rope herself, and the post goes up straight as a candle. \"The relay will find that in the dark,\" she says, and presses a jar of glowing moss into your hands for the night road.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "mosslight_jar",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/road_boss",
+          "name": "Road Boss"
+        }
+      ],
+      "art": "scenes/gemfall/north-road-detour"
+    },
+    "interaction_gate": {
+      "type": "interaction",
+      "narration": "Past the sergeant's table, a striped pole swings across the road, up and down, up and down, letting one wagon through at a time. A patrol goat stands at its foot, chewing the corner of a ledger page. \"Cross on the lift,\" says Sergeant Holloway, writing GOAT, HUNGRY in the margin. \"I have timed it. Arithmetic.\"",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the pole to swing up, then go!",
+        "actionLabel": "Cross on the lift",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_signposts",
+        "narration": "You slip under the pole on the lift with not a hair to spare. Sergeant Holloway ticks the ledger, and the goat watches you go with great respect."
+      },
+      "onFailure": {
+        "goto": "scene_signposts",
+        "narration": "The pole drops on your hat. Sergeant Holloway lifts it by hand, writes DELAYED, POLITE, and waves you through. The goat takes the hat's feather as a toll."
+      },
+      "onAssisted": {
+        "goto": "scene_signposts",
+        "narration": "Sergeant Holloway holds the pole up for you, writes ESCORTED, POLITE, and waves you through. The goat looks disappointed."
+      },
+      "cast": [
+        {
+          "figure": "cast/holloway",
+          "name": "Sergeant Holloway"
+        }
+      ],
+      "art": "scenes/gemfall/warden-supply-stop"
+    },
+    "scene_box_ten": {
+      "type": "story",
+      "narration": "Behind you, something goes thump. Thump. THUMP. Strongbox number ten has hopped off its shelf on three short gray legs, and it is eating a ledger. Strongbox number eleven is trying to follow it. \"Ten has been empty since spring!\" cries Clerk Pennywhistle, hugging his pens. \"They are mire mimics! They have eaten the whole morning's paperwork and half my stamps! Please, please, get them out of my barn!\"",
+      "cast": [
+        {
+          "figure": "entities/mire_mimic",
+          "count": 2
+        },
+        {
+          "figure": "cast/clerk_pennywhistle",
+          "name": "Clerk Pennywhistle"
+        }
+      ],
+      "choices": [
+        {
+          "id": "shoo",
+          "label": "Shoo the strongboxes out of the barn",
+          "icon": "swords",
+          "goto": "encounter_boxes"
+        }
+      ],
+      "art": "scenes/gemfall/rush-depot"
+    },
+    "encounter_boxes": {
+      "type": "encounter",
+      "map": "roadside",
+      "narration": "The two boxes crash out into the depot yard, snapping their lids and burping ink. Drive them off before they swallow the whole queue's paperwork.",
+      "enemies": [
+        {
+          "id": "box",
+          "name": "Strongbox Mimic",
+          "creature": "mire_mimic"
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_boxes_gone",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_boxes_sulking",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_boxes_gone": {
+      "type": "story",
+      "narration": "The mimics wobble, sulk and slink away down the road, looking exactly like two very ordinary rocks. Clerk Pennywhistle sinks onto his stool and wipes his forehead with a clean form. \"A thousand thanks,\" he says, and digs in the lost-property drawer. \"Take this. It has been lost since the spring, and so, I think, has everyone's patience.\" It is a small brass whistle.",
+      "cast": [
+        {
+          "figure": "cast/clerk_pennywhistle",
+          "name": "Clerk Pennywhistle"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on to the noon stop",
+          "icon": "arrow",
+          "goto": "scene_rumor_fire"
+        }
+      ],
+      "art": "scenes/gemfall/rush-depot"
+    },
+    "scene_boxes_sulking": {
+      "type": "story",
+      "narration": "The boxes burp you out of the yard in a puff of ink. Clerk Pennywhistle slams a ledger down on their lids, and the whole queue sits on top of it until the boxes give up, sulk, and shuffle off. Somebody hands you hot tea. Nobody gets a lost-property whistle tonight, but the pens are safe.",
+      "cast": [
+        {
+          "figure": "cast/clerk_pennywhistle",
+          "name": "Clerk Pennywhistle"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on to the noon stop",
+          "icon": "arrow",
+          "goto": "scene_rumor_fire"
+        }
+      ],
+      "art": "scenes/gemfall/rush-depot"
+    },
+    "interaction_pony": {
+      "type": "interaction",
+      "narration": "While the courier gulps water, her fat pony nudges your elbow. Her name is Dumpling, and she is hot, itchy and sulky. \"She wants a fuss,\" says the courier, with her mouth full. \"Any fuss will do. She is not picky, except about carrots.\"",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Make a fuss of Dumpling until she stops sulking.",
+        "actionLabel": "Fuss over Dumpling",
+        "options": [
+          {
+            "id": "brush",
+            "label": "Brush her mane",
+            "icon": "hand",
+            "reaction": "Dumpling leans into the brush and groans with joy."
+          },
+          {
+            "id": "water",
+            "label": "Pour her a bucket of water",
+            "icon": "drop",
+            "reaction": "Dumpling slurps until the bucket is just a shiny bottom."
+          },
+          {
+            "id": "hum",
+            "label": "Hum her a tune",
+            "icon": "note",
+            "reaction": "Dumpling's tail swishes in time."
+          }
+        ],
+        "stages": [
+          "Dumpling's ears twitch.",
+          "She stops sulking.",
+          "She blows a happy raspberry."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_relay_sing",
+        "narration": "Dumpling blows a happy raspberry all over your sleeve. The courier laughs so hard she nearly drops the bell. \"Nobody does that on the first try,\" she says, and tips three coppers into your hand. \"Courier's tip. Do not tell the grandmothers.\" Then she is off down the road, ringing, and you follow the sound of singing to the relay campfire.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_relay_sing",
+        "narration": "Dumpling blows a happy raspberry all over your sleeve. The courier laughs so hard she nearly drops the bell. \"Nobody does that on the first try,\" she says, and tips three coppers into your hand. \"Courier's tip. Do not tell the grandmothers.\" Then she is off down the road, ringing, and you follow the sound of singing to the relay campfire.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/bell_courier",
+          "name": "Bell Courier"
+        },
+        {
+          "figure": "entities/pony",
+          "name": "Dumpling"
+        }
+      ],
+      "art": "scenes/gemfall/north-rush-road"
+    },
+    "interaction_verses": {
+      "type": "interaction",
+      "narration": "Old Corran lays his hoof-pick on a log. \"Watch,\" he says. He taps the new verses out one landmark at a time, and each one glows in the firelight as it goes by. \"Now give them back to me in road order, little traveler. The road remembers better when it is sung back.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the landmarks glow, then tap them back in the same order.",
+        "actionLabel": "Tap the verse",
+        "stepMs": 1200,
+        "options": [
+          {
+            "id": "bridge",
+            "label": "Bridge",
+            "icon": "travel"
+          },
+          {
+            "id": "stone",
+            "label": "Stone",
+            "icon": "gem"
+          },
+          {
+            "id": "pond",
+            "label": "Pond",
+            "icon": "drop"
+          }
+        ],
+        "answer": [
+          "bridge",
+          "stone",
+          "pond",
+          "stone"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_spiral",
+        "narration": "You tap the verse back note for note, and the firelight ripples with a hum. Old Corran thumps the ground with a hoof. \"There,\" he says. \"The road just learned you.\""
+      },
+      "onFailure": {
+        "goto": "scene_spiral",
+        "narration": "You tap the pond twice and the stone once, and the campfire giggles. Old Corran gently taps the verse right over the top of yours, slow and kind, and nobody minds at all."
+      },
+      "onAssisted": {
+        "goto": "scene_spiral",
+        "narration": "Old Corran taps the first landmark with you, and you finish the verse together. \"There,\" he says. \"The road just learned you.\""
+      },
+      "cast": [
+        {
+          "figure": "cast/old_corran",
+          "name": "Old Corran"
+        }
+      ],
+      "art": "scenes/gemfall/relay-route-fire"
     }
   },
   "voiceGuide": {
