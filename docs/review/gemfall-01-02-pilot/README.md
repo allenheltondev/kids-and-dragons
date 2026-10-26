@@ -11,6 +11,18 @@ and phone sizes:
 |---|---|
 | ![Quay wisps scene on TV](quay-wisps-scene_quay_wisps-tv.png) | ![Quay wisps scene on phone](quay-wisps-scene_quay_wisps-phone.png) |
 
+Chapter 02's relaxed hat tracking reveals a neutral glow under the correct
+cover. The phone capture keeps the pick control above the fixed navigation.
+
+| TV, 1920×1080 | Phone, 390×844 |
+|---|---|
+| ![Jackalope hat tracking on TV](chapter02-hats-relaxed-tv.png) | ![Jackalope hat tracking on phone](chapter02-hats-relaxed-phone.png) |
+
+The egg-basket phone capture shows the authored prop alongside the ready and
+help controls:
+
+![Egg-basket interaction on phone](chapter02-egg-basket-phone.png)
+
 ## Scene coverage
 
 | Asset | Chapter scenes |
@@ -34,7 +46,7 @@ Presentation metadata is limited to `presentation.interactions`; there are no in
 
 Created with the built-in image generation tool on 2026-10-26. Scene prompts described painterly, full-bleed storybook environments without people, creatures, readable text, UI, or a frame. Prop prompts requested a single centered, alpha-transparent object; option-icon prompts distinguished a small hanging hand bell, a broad heavy bell, and a low counter-style brass bell. Final files are registered in `assets/manifest.json`.
 
-Original generated PNGs remain in the local Codex image output directory. Production WebPs are stored in `assets/scenes/gemfall/`, `assets/story-props/`, and `packages/client/src/assets/painted/`. `assets.png` is a static contact sheet for art review; the two scene captures above show the rendered stage in the app.
+Original generated PNGs remain in the local Codex image output directory. Production WebPs are stored in `assets/scenes/gemfall/`, `assets/story-props/`, and `packages/client/src/assets/painted/`. `assets.png` is a static contact sheet for art review; the TV and phone captures show the rendered stage in the app.
 
 ## Verification
 
@@ -43,3 +55,4 @@ Original generated PNGs remain in the local Codex image output directory. Produc
 - `npm run content:validate`: 117 checks passed; chapter scene graphs remain valid.
 - `npm run typecheck` and `npm run build`: passed.
 - `npm run perf:bundle`: first paint 319/320 KB; total 1460/1460 KB.
+- `e2e/gemfall-art-shot.spec.ts`: TV/phone relaxed tracking and phone prop/control capture.
