@@ -45,6 +45,7 @@ describe("reusable story controls", () => {
     const { container } = render(<StoryInteractionWorld />);
     expect(container.querySelectorAll(".painted-cover img[alt='']")).toHaveLength(3);
     expect(container.querySelector(".painted-cover__peek")).toBeNull();
+    expect(container.querySelector(".painted-cover__glow")).toBeNull();
     expect(screen.getByText("Left")).toBeTruthy();
   });
   it("uses a neutral reveal for authored covers in relaxed mode", () => {

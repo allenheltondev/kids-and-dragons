@@ -84,6 +84,18 @@ test("photograph Gemfall chapter 02 art and relaxed tracking on TV and phone", a
     await expect(tvWorld.locator(".painted-cover__glow")).toBeVisible();
     await expect(tvWorld.locator(".painted-cover__peek")).toHaveCount(0);
     await expect(phoneControls.locator(".painted-cover__glow")).toBeVisible();
+    const glow = phoneControls.locator(".painted-cover__glow");
+    const front = phoneControls.locator(".painted-cover__front").first();
+    const [glowZ, frontZ, glowBox, frontBox] = await Promise.all([
+      glow.evaluate((element) => Number(getComputedStyle(element).zIndex)),
+      front.evaluate((element) => Number(getComputedStyle(element).zIndex)),
+      glow.boundingBox(),
+      front.boundingBox(),
+    ]);
+    expect(glowZ).toBeGreaterThan(frontZ);
+    expect(glowBox).not.toBeNull();
+    expect(frontBox).not.toBeNull();
+    expect(glowBox!.width).toBeGreaterThan(frontBox!.width);
     await expect(phoneControls.getByRole("button", { name: /Lift the hat:/ })).toHaveCount(3);
     const hatChoice = phoneControls.getByRole("button", { name: "Lift the hat: Left hat" });
     await hatChoice.scrollIntoViewIfNeeded();
@@ -95,10 +107,30 @@ test("photograph Gemfall chapter 02 art and relaxed tracking on TV and phone", a
     await phone.screenshot({ path: `${SHOTS}/chapter02-hats-relaxed-phone.png`, fullPage: true });
 
     await send(phone, code, { type: "PLAYTEST_GOTO", sceneId: "interaction_egg_baskets" });
-    await expect(phoneControls.locator('img[src="/assets/story-props/prop_egg_basket.webp"]')).toBeVisible();
-    await expect(phoneControls.getByRole("button", { name: "We’re ready" })).toBeVisible();
-    await expect(phoneControls.getByRole("checkbox", { name: "Relaxed play" })).toBeVisible();
+    const readyButton = phoneControls.getByRole("button", { name: "We’re ready" });
+    await expect(readyButton).toBeVisible();
+    const basket = phoneControls.locator('.interaction-art__main[src="/assets/story-props/prop_egg_basket.webp"]');
+    await expect(basket).toBeVisible();
+    await basket.evaluate(async (element) => {
+      const image = element as HTMLImageElement;
+      await image.decode();
+      if (!image.complete || image.naturalWidth === 0) throw new Error("Egg-basket prop did not decode");
+    });
+    const basketBox = await basket.boundingBox();
+    expect(basketBox).not.toBeNull();
+    expect(basketBox!.width).toBeGreaterThan(80);
+    expect(basketBox!.height).toBeGreaterThan(80);
+    const basketArt = basket.locator("xpath=ancestor::div[contains(@class,'interaction-art')]");
+    const basketHero = await basketArt.locator(".interaction-art__hero").boundingBox();
+    expect(basketHero).not.toBeNull();
+    expect(basketBox!.x).toBeGreaterThan(basketHero!.x + basketHero!.width);
+    const helpButton = phoneControls.getByRole("button", { name: "Take a helping hand" });
+    await expect(readyButton).toBeInViewport();
+    await expect(helpButton).toBeInViewport();
     await phone.screenshot({ path: `${SHOTS}/chapter02-egg-basket-phone.png`, fullPage: true });
+    await readyButton.click();
+    await expect(phoneControls.getByRole("button", { name: /basket/ })).toBeVisible();
+    await expect(helpButton).toBeVisible();
   } finally {
     await Promise.all(contexts.map((context) => context.close().catch(() => undefined)));
   }
