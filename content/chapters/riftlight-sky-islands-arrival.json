@@ -2626,5 +2626,133 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [
+      {
+        "chapter": "riftlight-sky-islands-arrival",
+        "scene": "wisp_fight",
+        "board": "glade",
+        "creature": "will_o_wisp",
+        "introScenes": [
+          "wisps"
+        ],
+        "backdrop": "scenes/riftlight/signal-gale",
+        "props": [
+          "pickup-mosslight-jar"
+        ],
+        "poses": {
+          "intro": "ordinary",
+          "retreat": "shooed"
+        },
+        "victoryScene": "wisps_shooed",
+        "defeatScene": "wisps_rescued",
+        "tileUrl": "/assets/fight-boards/fight_wind_yard/tiles.png",
+        "terrainProps": [
+          "fight-signal-pole",
+          "fight-wind-shrub"
+        ],
+        "rescueFigure": "",
+        "retreatDirection": 1,
+        "activeUrl": "/assets/entities/will_o_wisp/assembled.png",
+        "retreatUrl": "/assets/entities/will_o_wisp/shooed.png",
+        "outcomeCast": {
+          "victory": [
+            {
+              "figure": "cast/kitsune_temple_keeper",
+              "name": "Temple keeper"
+            },
+            {
+              "figure": "cast/pip_catching_glow",
+              "name": "Pip Thistledown"
+            }
+          ],
+          "defeat": [
+            {
+              "figure": "cast/kitsune_temple_keeper",
+              "name": "Temple keeper"
+            },
+            {
+              "figure": "cast/pip_thistledown",
+              "name": "Pip Thistledown"
+            }
+          ]
+        }
+      }
+    ],
+    "interactions": {
+      "gust_lull": {
+        "props": [
+          "wind-banner",
+          "fight-signal-pole"
+        ]
+      },
+      "fuel_chain": {
+        "props": [
+          "relay-log",
+          "fight-signal-pole",
+          "rope-ladder"
+        ]
+      },
+      "camp_play": {
+        "props": [
+          "kite-shade",
+          "barley-tea",
+          "wind-blanket",
+          "camp-firepit"
+        ]
+      },
+      "song_track": {
+        "props": [
+          "wind-bells"
+        ]
+      },
+      "song_echo": {
+        "props": [
+          "fight-shrine-bell",
+          "cloud-whale",
+          "note-low",
+          "note-middle",
+          "note-high"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/cast/camp_hen/assembled.png",
+      "/assets/cast/pip_catching_glow/assembled.png",
+      "/assets/cast/seren_listening/assembled.png",
+      "/assets/entities/will_o_wisp/assembled.png",
+      "/assets/entities/will_o_wisp/shooed.png",
+      "/assets/fight-boards/fight_wind_yard/tiles.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/barley-tea.webp",
+      "/assets/story-props/camp-firepit.webp",
+      "/assets/story-props/cloud-whale.webp",
+      "/assets/story-props/fight-shrine-bell.webp",
+      "/assets/story-props/fight-signal-pole.webp",
+      "/assets/story-props/fight-wind-shrub.webp",
+      "/assets/story-props/kite-shade.webp",
+      "/assets/story-props/note-high.webp",
+      "/assets/story-props/note-low.webp",
+      "/assets/story-props/note-middle.webp",
+      "/assets/story-props/pickup-mosslight-jar.webp",
+      "/assets/story-props/relay-log.webp",
+      "/assets/story-props/rope-ladder.webp",
+      "/assets/story-props/wind-banner.webp",
+      "/assets/story-props/wind-bells.webp",
+      "/assets/story-props/wind-blanket.webp"
+    ],
+    "reactions": {},
+    "castPoses": {
+      "song_track": {
+        "cast/seren_wisp": "seren_listening"
+      }
+    }
   }
 }

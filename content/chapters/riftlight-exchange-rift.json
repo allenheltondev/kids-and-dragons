@@ -2273,5 +2273,61 @@
       "The gull": "Indignant, literal, chilly. Brief complaints; never explains the magic.",
       "Fish seller": "Practical, protective of fish and helpers. Short dockside speech."
     }
+  },
+  "presentation": {
+    "fights": [],
+    "interactions": {
+      "barge_toss": {
+        "props": [
+          "rope-loop",
+          "iron-anchor-ring"
+        ]
+      },
+      "sack_chain": {
+        "props": [
+          "relay-sack"
+        ]
+      },
+      "ridge_walk": {
+        "props": [
+          "coat-kid"
+        ]
+      },
+      "ridge_lee": {
+        "props": [
+          "coat-kid",
+          "wind-blanket"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/cast/frogfolk_pilot/assembled.png",
+      "/assets/cast/kid_kicking/assembled.png",
+      "/assets/cast/kid_listening/assembled.png",
+      "/assets/cast/kid_shivering/assembled.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/coat-kid.webp",
+      "/assets/story-props/iron-anchor-ring.webp",
+      "/assets/story-props/relay-sack.webp",
+      "/assets/story-props/rope-loop.webp",
+      "/assets/story-props/wind-blanket.webp"
+    ],
+    "reactions": {
+      "ridge_lee": {
+        "defaultFigure": "kid_shivering",
+        "options": {
+          "tuck": "kid_shivering",
+          "rub": "kid_kicking",
+          "hum": "kid_listening"
+        }
+      }
+    },
+    "castPoses": {}
   }
 }

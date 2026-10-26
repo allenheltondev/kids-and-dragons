@@ -1926,5 +1926,111 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [
+      {
+        "chapter": "riftlight-frostfang-shore",
+        "scene": "bar_crab",
+        "board": "ford",
+        "creature": "glassback_crab",
+        "introScenes": [
+          "bar_reached"
+        ],
+        "backdrop": "scenes/riftlight/frostfang-gravel-bar",
+        "props": [
+          "fight-warm-mud-hollow",
+          "pickup-luckstone"
+        ],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed"
+        },
+        "victoryScene": "bar_carry",
+        "defeatScene": "bar_carry",
+        "tileUrl": "/assets/fight-boards/fight_gravel_ford/tiles.png",
+        "terrainProps": [
+          "fight-burrow-mouth",
+          "fight-washed-burrow"
+        ],
+        "rescueFigure": "tamsin_whistling",
+        "retreatDirection": 1,
+        "activeUrl": "/assets/entities/glassback_crab/warning.png",
+        "retreatUrl": "/assets/entities/glassback_crab/shooed.png",
+        "outcomeCast": {
+          "victory": [
+            {
+              "figure": "cast/tamsin_river_keeper",
+              "name": "Tamsin"
+            },
+            {
+              "figure": "cast/snowhorn_kid"
+            }
+          ],
+          "defeat": [
+            {
+              "figure": "cast/tamsin_whistling",
+              "name": "Tamsin"
+            },
+            {
+              "figure": "cast/snowhorn_kid"
+            }
+          ]
+        }
+      }
+    ],
+    "interactions": {
+      "ladder_hold": {
+        "props": [
+          "rope-ladder",
+          "rope-taut"
+        ]
+      },
+      "bar_carry": {
+        "props": [
+          "coat-kid",
+          "rope-sag"
+        ]
+      },
+      "wave_gap": {
+        "props": [
+          "water-surge",
+          "fight-wet-gravel"
+        ]
+      },
+      "hay_relay": {
+        "props": [
+          "relay-hay",
+          "rope-basket"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/cast/tamsin_whistling/assembled.png",
+      "/assets/entities/glassback_crab/shooed.png",
+      "/assets/entities/glassback_crab/warning.png",
+      "/assets/fight-boards/fight_gravel_ford/tiles.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/coat-kid.webp",
+      "/assets/story-props/fight-burrow-mouth.webp",
+      "/assets/story-props/fight-warm-mud-hollow.webp",
+      "/assets/story-props/fight-washed-burrow.webp",
+      "/assets/story-props/fight-wet-gravel.webp",
+      "/assets/story-props/pickup-luckstone.webp",
+      "/assets/story-props/relay-hay.webp",
+      "/assets/story-props/rope-basket.webp",
+      "/assets/story-props/rope-ladder.webp",
+      "/assets/story-props/rope-sag.webp",
+      "/assets/story-props/rope-taut.webp",
+      "/assets/story-props/water-surge.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

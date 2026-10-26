@@ -97,9 +97,18 @@ export function figureSizes(root = ROOT): Map<string, FigureSize> {
 }
 
 export function renderFigureSizes(sizes = figureSizes(), overflow = figureOverflow()): string {
-  const rows = [...sizes.entries()]
-    .sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))
-    .map(([key, size]) => `  ${JSON.stringify(key)}: [${size.heightCm}, ${JSON.stringify(size.stance)}],`);
+  const grouped = new Map<string,string[]>();
+  for (const [key,size] of [...sizes.entries()].sort(([a],[b])=>a<b?-1:a>b?1:0)) {
+    const slash=key.indexOf('/')+1;
+    const prefix=key.slice(0,slash),id=key.slice(slash);
+    if (/[|=]/.test(id)) throw new Error("Unencodable figure id: "+key);
+    const group=prefix+"|"+size.stance;
+    const entries=grouped.get(group)??[];entries.push(id+"="+size.heightCm);grouped.set(group,entries);
+  }
+  const rows=[...grouped].map(([key,entries])=>{
+    const [prefix,stance]=key.split('|');
+    return '  ['+JSON.stringify(prefix)+', '+JSON.stringify(stance)+', '+JSON.stringify(entries.join('|'))+'],';
+  });
   return [
     "/**",
     " * How tall each figure stands, in centimeters, and how it occupies a scene (#362).",
@@ -113,9 +122,16 @@ export function renderFigureSizes(sizes = figureSizes(), overflow = figureOverfl
     "",
     'import type { CastStance } from "@kad/shared";',
     "",
-    "export const FIGURE_SIZES: Readonly<Record<string, readonly [heightCm: number, stance: CastStance]>> = {",
+    "// Group repeated path prefixes and stances without changing the public lookup.",
+    "const groups: readonly (readonly [string, CastStance, string])[] = [",
     ...rows,
-    "};",
+    "];",
+    "export const FIGURE_SIZES: Readonly<Record<string, readonly [heightCm: number, stance: CastStance]>> = Object.fromEntries(",
+    "  groups.flatMap(([prefix,stance,entries])=>entries.split('|').map(entry=>{",
+    "    const [id,height]=entry.split('=');",
+    "    return [prefix+id,[Number(height),stance] as const];",
+    "  })),",
+    ");",
     "",
     "/**",
     " * How a figure too big for the story stage overflows it, where the manifest",

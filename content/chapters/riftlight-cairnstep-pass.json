@@ -1955,5 +1955,112 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [
+      {
+        "chapter": "riftlight-cairnstep-pass",
+        "scene": "cache_fight",
+        "board": "switchback",
+        "creature": "cinder_wolf",
+        "introScenes": [
+          "shelter_found"
+        ],
+        "backdrop": "scenes/riftlight/cairnstep-survey-slab",
+        "props": [
+          "fight-supply-cairn",
+          "pickup-hearthstone-bead"
+        ],
+        "poses": {
+          "intro": "cache_sniff",
+          "retreat": "shooed"
+        },
+        "victoryScene": "neck",
+        "defeatScene": "neck",
+        "tileUrl": "/assets/fight-boards/fight_cairn_pass/tiles.png",
+        "terrainProps": [
+          "fight-supply-cairn"
+        ],
+        "rescueFigure": "brask_pot_lid",
+        "retreatDirection": 1,
+        "activeUrl": "/assets/entities/cinder_wolf/cache_sniff.png",
+        "retreatUrl": "/assets/entities/cinder_wolf/shooed.png",
+        "outcomeCast": {
+          "victory": [
+            {
+              "figure": "cast/pass_keeper",
+              "name": "Brask"
+            },
+            {
+              "figure": "cast/pebble",
+              "name": "Pebble",
+              "size": "small"
+            }
+          ],
+          "defeat": [
+            {
+              "figure": "cast/brask_pot_lid",
+              "name": "Brask"
+            },
+            {
+              "figure": "cast/pebble",
+              "name": "Pebble",
+              "size": "small"
+            }
+          ]
+        }
+      }
+    ],
+    "interactions": {
+      "cairn_order": {
+        "props": [
+          "cairn-leaning",
+          "cairn-flat",
+          "cairn-twin",
+          "clue-scrap"
+        ]
+      },
+      "drawing_memory": {
+        "props": [
+          "cairn-ledger"
+        ]
+      },
+      "capstone": {
+        "props": [
+          "cairn-flat",
+          "capstone-target"
+        ]
+      },
+      "last_stone": {
+        "props": [
+          "toss-pebble",
+          "capstone-target"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/cast/brask_pot_lid/assembled.png",
+      "/assets/entities/cinder_wolf/cache_sniff.png",
+      "/assets/entities/cinder_wolf/shooed.png",
+      "/assets/fight-boards/fight_cairn_pass/tiles.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/cairn-flat.webp",
+      "/assets/story-props/cairn-leaning.webp",
+      "/assets/story-props/cairn-ledger.webp",
+      "/assets/story-props/cairn-twin.webp",
+      "/assets/story-props/capstone-target.webp",
+      "/assets/story-props/clue-scrap.webp",
+      "/assets/story-props/fight-supply-cairn.webp",
+      "/assets/story-props/pickup-hearthstone-bead.webp",
+      "/assets/story-props/toss-pebble.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

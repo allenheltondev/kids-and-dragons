@@ -2189,5 +2189,97 @@
       "Yeti herder": "Chapter-scoped female yeti herder and singer. Patient, dry humor, practical cold-weather care. Gives no complete history, prison hints, or explanation of the rifts.",
       "Young yeti singer": "Learns and listens; no lore lecture."
     }
+  },
+  "presentation": {
+    "fights": [],
+    "interactions": {
+      "kid_burrow": {
+        "props": [
+          "snow-mound"
+        ]
+      },
+      "crust_hold": {
+        "props": [
+          "roof-slab",
+          "rope-wedge"
+        ]
+      },
+      "herd_play": {
+        "props": [
+          "goat-brush",
+          "relay-hay"
+        ]
+      },
+      "shelf_cross": {
+        "props": [
+          "water-surge",
+          "moving-floe"
+        ]
+      },
+      "note_try": {
+        "props": [
+          "note-low",
+          "note-middle",
+          "note-high"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/cast/goat_chewing/assembled.png",
+      "/assets/cast/goat_leaning/assembled.png",
+      "/assets/cast/herder_hay_water/assembled.png",
+      "/assets/cast/kid_burrowing/assembled.png",
+      "/assets/cast/kid_peeking/assembled.png",
+      "/assets/cast/lead_goat_bell/assembled.png",
+      "/assets/cast/singer_hold/assembled.png",
+      "/assets/cast/singer_low/assembled.png",
+      "/assets/cast/singer_rise/assembled.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/goat-brush.webp",
+      "/assets/story-props/moving-floe.webp",
+      "/assets/story-props/note-high.webp",
+      "/assets/story-props/note-low.webp",
+      "/assets/story-props/note-middle.webp",
+      "/assets/story-props/relay-hay.webp",
+      "/assets/story-props/roof-slab.webp",
+      "/assets/story-props/rope-wedge.webp",
+      "/assets/story-props/snow-mound.webp",
+      "/assets/story-props/water-surge.webp"
+    ],
+    "reactions": {
+      "herd_play": {
+        "defaultFigure": "lead_goat_bell",
+        "options": {
+          "brush": "goat_leaning",
+          "scratch": "lead_goat_bell",
+          "hay": "goat_chewing"
+        }
+      },
+      "note_try": {
+        "defaultFigure": "singer_low",
+        "memory": {
+          "low": "singer_low",
+          "rise": "singer_rise",
+          "hold": "singer_hold"
+        }
+      }
+    },
+    "castPoses": {
+      "crust_hold": {
+        "cast/yeti_herder": "herder_hay_water"
+      },
+      "herd_play": {
+        "cast/yeti_herder": "herder_hay_water"
+      },
+      "shelf_cross": {
+        "cast/yeti_herder": "herder_hay_water"
+      }
+    }
   }
 }

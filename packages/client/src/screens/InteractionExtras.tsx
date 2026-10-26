@@ -1,4 +1,4 @@
-import { useRunState } from "../store";
+import { useChapter, useRunState } from "../store";
 import { interactionAppearance } from "../world/riftlight-art";
 import { PaintedInteraction, PaintedCover, PaintedGlyph } from "./InteractionArt";
 import { balanceReady, playbackMs, playReady, precisionPosition, precisionSuccess, relayHolder, trackedCover } from "@kad/shared";
@@ -99,6 +99,7 @@ export function ExtraControls({ prompt, playerId, connected, mine, now, busy, se
 
 export function InteractionShow(props: { prompt: InteractionPrompt; party: PartyMember[]; now: number }) {
  const state=useRunState();
- const painted=interactionAppearance(state?.chapterId,state?.sceneId)!==null;
+ const chapter=useChapter();
+ const painted=interactionAppearance(chapter?.id===state?.chapterId?chapter:null,state?.sceneId)!==null;
  return <><PaintedInteraction {...props} />{props.prompt.phase==="active"&&<InteractionShowBase {...props} painted={painted} bells={state?.sceneId==="song_track"} />}</>;
 }

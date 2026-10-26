@@ -1,4 +1,3 @@
-import { RIFTLIGHT_CHAPTER_ART } from "../world/riftlight-art-urls";
 /**
  * Every picture a chapter can draw, as a pure function of the chapter and who
  * is in the party. Two callers: the TV warming the chapter it is starting
@@ -48,6 +47,6 @@ export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[
       for (const enemy of scene.enemies) {const art=enemy.art ?? (enemy.creature ? "enemies/"+enemy.creature : null);if(art)urls.add(enemyArtUrl(art));}
     }
   }
-  for(const url of RIFTLIGHT_CHAPTER_ART[chapter.id] ?? [])urls.add(url);
+  for(const url of chapter.presentation?.warmUrls ?? [])urls.add(url);
   return [...urls];
 }
