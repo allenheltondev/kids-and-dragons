@@ -1,0 +1,26 @@
+first paint 319KB / 320KB   total 1460KB / 1460KB   (76 chunks)
+first paint (18 chunks):
+  index-DUMfizU2.js: 223KB  (entry)
+  store-UsubrCFm.js: 45KB
+  encounter-DANIWOTM.js: 10KB
+  client-DXEZgahN.js: 8KB
+  react-5p_uT4AF.js: 7KB
+  icons-CieQvEhB.js: 7KB
+  persistence-dz-yJ1v2.js: 4KB
+  ui-1JnfjU4F.js: 4KB
+  matchups-B1T_Wl6N.js: 3KB
+  router-CJRRuCzN.js: 3KB
+  preload-helper-BLdHbfdN.js: 1KB
+  react-CYQziiib.js: 1KB
+  rolldown-runtime-XKyaHtl9.js: 1KB
+  Button-BNFuZ-iU.js: 1KB
+  Spinner-DkqgZqMT.js: 1KB
+  jsx-runtime-LKYXHABd.js: 0KB
+  cue-DmG7k6jw.js: 0KB
+  shared-CI_oE0rN.js: 0KB
+largest overall:
+  scene-bEpfl3Rb.js: 291KB
+  index-DUMfizU2.js: 223KB
+  PaneFrame-CJtelrZh.js: 219KB
+  Geometry-C9iTm0f3.js: 69KB
+  GraphicsContext-CN6NvsG7.js: 60KB

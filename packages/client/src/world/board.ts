@@ -222,6 +222,9 @@ export interface BoardViewState {
   readonly encounter: EncounterState;
   /** The chapter's biome, for the tile sheet. Null falls back to flat tiles. */
   readonly biome: string | null;
+  readonly tileUrl?: string;
+  readonly terrainProps?: readonly string[];
+  readonly enemyPoses?: Readonly<Record<string,{active:string;retreat:string;direction:number}>>;
   /** Enemy spec id → authored art id ("enemies/will_o_wisp"). */
   readonly enemyArt: Readonly<Record<string, string>>;
   /** For species/tier art lookup by character id. */
@@ -282,6 +285,9 @@ interface BoardActor {
    */
   away: boolean;
   down: boolean;
+  retreatUrl?: string;
+  retreatDirection?: number;
+  retreating?: boolean;
   /** Board-pixel position of the feet; the container approaches it. */
   targetX: number;
   targetY: number;
@@ -420,6 +426,9 @@ export function createBoardLayer(): BoardLayer {
   /** What the tiles were last built from, so update() rebuilds only on change. */
   let builtTerrain: readonly string[] | null = null;
   let builtBiome: string | null = null;
+  let builtTileUrl: string | null = null;
+  let builtPropsKey = "";
+  let tileRevision = 0;
   /** The fight the actors were last synced for (`EncounterState.startedAt`). */
   let builtFight: number | null | undefined = undefined;
   /** The last moves drawn, as a cheap signature. */
@@ -447,10 +456,10 @@ export function createBoardLayer(): BoardLayer {
    */
   const sheets = new Map<string, Promise<{ floor: Texture[]; blocked: Texture[] } | null>>();
 
-  function tileSheet(biome: string): Promise<{ floor: Texture[]; blocked: Texture[] } | null> {
-    const cached = sheets.get(biome);
+  function tileSheet(url: string): Promise<{ floor: Texture[]; blocked: Texture[] } | null> {
+    const cached = sheets.get(url);
     if (cached) return cached;
-    const task = Assets.load<Texture>(biomeTilesUrl(biome))
+    const task = Assets.load<Texture>(url)
       .then((sheet) => {
         const slice = (row: number, col: number) =>
           new Texture({
@@ -464,21 +473,25 @@ export function createBoardLayer(): BoardLayer {
         };
       })
       .catch(() => null);
-    sheets.set(biome, task);
+    sheets.set(url, task);
     return task;
   }
 
-  function buildTiles(encounter: EncounterState, biome: string | null): void {
+  function buildTiles(encounter: EncounterState, biome: string | null, tileUrl?: string, decorations: readonly string[] = []): void {
+    const revision=++tileRevision;
+    builtTileUrl=tileUrl ?? null;
+    builtPropsKey=decorations.join("|");
     const { board } = encounter;
     builtTerrain = board.terrain;
     builtBiome = biome;
     drawFallbackTiles(tilesLayer, encounter);
 
-    if (!biome) return;
+    const url=tileUrl ?? (biome ? biomeTilesUrl(biome) : null);
+    if (!url) return;
     const wanted = board.terrain;
-    void tileSheet(biome).then((sliced) => {
+    void tileSheet(url).then((sliced) => {
       // The fight may have moved on (or ended) while the sheet downloaded.
-      if (destroyed || !sliced || builtTerrain !== wanted) return;
+      if (destroyed || !sliced || builtTerrain !== wanted || tileRevision !== revision) return;
       tilesLayer.removeChildren().forEach((child) => child.destroy({ children: true }));
       for (let y = 0; y < board.height; y++) {
         for (let x = 0; x < board.width; x++) {
@@ -494,6 +507,18 @@ export function createBoardLayer(): BoardLayer {
       // Art or not, a wall must read as a wall from three metres (spec §11:
       // shape, never colour alone) — the inset ring marks every blocked tile.
       tilesLayer.addChild(drawBlockedMarkers(encounter));
+      // Keep decoration inside blocked squares, under the grid's readable outlines.
+      const blocked=board.terrain.flatMap((kind,index)=>kind==="blocked"?[{x:index%board.width,y:Math.floor(index/board.width)}]:[]).sort((a,b)=>Math.hypot(a.x-board.width/2,a.y-board.height/2)-Math.hypot(b.x-board.width/2,b.y-board.height/2));
+      decorations.slice(0,blocked.length).forEach((id,index)=>{
+        const at=blocked[index]!;
+        void Assets.load<Texture>("/assets/story-props/"+id+".webp").then(texture=>{
+          if(destroyed || revision!==tileRevision)return;
+          const prop=new Sprite(texture);prop.label="fight-prop:"+id;prop.anchor.set(.5);
+          prop.position.set((at.x+.5)*BOARD_TILE_PX,(at.y+.5)*BOARD_TILE_PX);
+          prop.scale.set(BOARD_TILE_PX*.9/Math.max(texture.width,texture.height));
+          tilesLayer.addChildAt(prop,Math.max(0,tilesLayer.children.length-2));
+        }).catch(()=>{});
+      });
     });
   }
 
@@ -544,7 +569,7 @@ export function createBoardLayer(): BoardLayer {
     // Enemy ids are `<specId>#<n>` (encounter.ts); the art hangs off the spec.
     const specId = combatant.id.split("#")[0] ?? combatant.id;
     const art = current.enemyArt[specId];
-    return art ? enemyArtUrl(art) : null;
+    return current.enemyPoses?.[specId]?.active ?? (art ? enemyArtUrl(art) : null);
   }
 
   function makeActor(combatant: Combatant, at: Position, current: BoardViewState): BoardActor {
@@ -609,6 +634,8 @@ export function createBoardLayer(): BoardLayer {
       id: combatant.id,
       side: combatant.side,
       down: combatant.down,
+      retreatUrl: combatant.side==="enemy" ? current.enemyPoses?.[combatant.id.split("#")[0] ?? combatant.id]?.retreat : undefined,
+      retreatDirection: current.enemyPoses?.[combatant.id.split("#")[0] ?? combatant.id]?.direction ?? 1,
       away: isAway(current.party, combatant.id),
       targetX: feet.x,
       targetY: feet.y,
@@ -672,6 +699,7 @@ export function createBoardLayer(): BoardLayer {
         });
     };
 
+    if(actor.retreatUrl)void Assets.load<Texture>(actor.retreatUrl).catch(()=>{});
     loadCutout();
 
     return actor;
@@ -976,7 +1004,17 @@ export function createBoardLayer(): BoardLayer {
         return;
       case "down": {
         const actor = actors.get(event.actorId);
-        if (actor) actor.down = true;
+        if (actor) {
+          actor.down = true;
+          if(actor.retreatUrl) {
+            actor.retreating=true;actor.leaving=true;actor.art.rotation=0;
+            void Assets.load<Texture>(actor.retreatUrl).then(texture=>{
+              if(destroyed || actors.get(actor.id)!==actor || !actor.sprite)return;
+              actor.sprite.texture=texture;actor.paint=measurePaint(texture);
+              actor.footprint=groundedFootprint(measureFootprint(texture),actor.paint);sizeActors();
+            }).catch(()=>{});
+          }
+        }
         return;
       }
       case "revived": {
@@ -1070,8 +1108,8 @@ export function createBoardLayer(): BoardLayer {
       if (destroyed) return;
       view = next;
       const { encounter, biome } = next;
-      if (encounter.board.terrain !== builtTerrain || biome !== builtBiome) {
-        buildTiles(encounter, biome);
+      if (encounter.board.terrain !== builtTerrain || biome !== builtBiome || (next.tileUrl ?? null)!==builtTileUrl || (next.terrainProps ?? []).join("|")!==builtPropsKey) {
+        buildTiles(encounter, biome, next.tileUrl, next.terrainProps);
       }
       syncActors(next);
       drawEnvironment(encounter);
@@ -1145,7 +1183,11 @@ export function createBoardLayer(): BoardLayer {
         if (actor.leaving) {
           // Through the tear (#201): fading out, name and shadow with it,
           // until the patch takes the figure off the board.
-          actor.art.alpha = approach(actor.art.alpha, 0, LEAVE_RATE, dtSeconds);
+          if(actor.retreating) {
+            actor.art.rotation=0;
+            if(!still)actor.art.x+=(actor.retreatDirection ?? 1)*actor.facing*BOARD_TILE_PX*1.6*dtSeconds;
+          }
+          actor.art.alpha = actor.retreating && still ? 1 : approach(actor.art.alpha, 0, LEAVE_RATE, dtSeconds);
           actor.shadow.alpha = actor.art.alpha;
           if (actor.label) actor.label.alpha = actor.art.alpha;
           continue;

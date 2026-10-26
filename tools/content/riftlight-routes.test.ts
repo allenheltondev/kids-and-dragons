@@ -102,6 +102,8 @@ it("a background-only story biome needs explicit scene art rather than tactical 
   try {
     const file = path.join(root, "content/chapters/riftlight-buried-bridge.json");
     const chapter = JSON.parse(fs.readFileSync(file, "utf8"));
+    chapter.biome="bramblewood";
+    fs.writeFileSync(file, JSON.stringify(chapter));
     // This assertion concerns chapter art, not every route in the campaign.
     // Keep the shipping validator and assets, but give it a small valid route.
     const campaignFile = path.join(root, "content/campaigns", `${campaign.id}.json`);
@@ -123,7 +125,7 @@ it("a background-only story biome needs explicit scene art rather than tactical 
     fs.writeFileSync(file, JSON.stringify(chapter));
     const result = runValidator(root);
     expect(result.ok).toBe(false);
-    expect(result.problems.some((p) => p.includes('biome "sallow_wastelands"'))).toBe(true);
+    expect(result.problems.some((p) => p.includes('biome "bramblewood"'))).toBe(true);
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 });
 

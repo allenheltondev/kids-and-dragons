@@ -1,0 +1,3159 @@
+--- a/assets/manifest.json
++++ b/assets/manifest.json
+@@ -1032,7 +1032,22 @@
+     "scenes/riftlight/shelf-icicles",
+     "scenes/riftlight/headwaters-floes",
+     "scenes/riftlight/ashspan-broken-deck",
+-    "scenes/riftlight/ashspan-mended-deck"
++    "scenes/riftlight/ashspan-mended-deck",
++    "scenes/riftlight/hidden-ticking-ridge",
++    "scenes/riftlight/hidden-ice-tunnel",
++    "scenes/riftlight/hidden-sealed-seam",
++    "scenes/riftlight/hidden-ticking-fold",
++    "scenes/riftlight/tidepocket-buried-hatch",
++    "scenes/riftlight/saltrot-ossley-aground",
++    "scenes/riftlight/saltrot-high-shells",
++    "scenes/riftlight/frostfang-ladder",
++    "scenes/riftlight/frostfang-gravel-bar",
++    "scenes/riftlight/cairnstep-survey-slab",
++    "scenes/riftlight/cairnstep-capstone",
++    "scenes/riftlight/boundary-river-row",
++    "scenes/riftlight/boundary-mountain-carving",
++    "scenes/riftlight/tidepocket-open-hatch",
++    "scenes/riftlight/boundary-river-row-aligned"
+   ],
+   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
+   "campaignArt": {
+@@ -2111,6 +2126,14 @@
+       "scale": "medium_to_large",
+       "heightCm": 205,
+       "stance": "standing"
++    },
++    {
++      "id": "yeti_grit_seller",
++      "name": "Grit seller",
++      "basis": "yeti",
++      "scale": "medium",
++      "heightCm": 145,
++      "stance": "standing"
+     }
+   ],
+   "$stageFiguresComment": "Entity art a chapter casts (entities/<id>) that is not a canon creature or people: working animals and ordinary wildlife, including the Rookery's crow flock. Height and stance as for castFigures (#362). Each entry has its complete transparent figure at assets/entities/<id>/assembled.png.",
+@@ -2148,6 +2171,13 @@
+       "name": "Quay gull",
+       "scale": "small",
+       "heightCm": 35,
++      "stance": "standing"
++    },
++    {
++      "id": "duckling",
++      "name": "Duckling",
++      "scale": "small",
++      "heightCm": 20,
+       "stance": "standing"
+     }
+   ],
+--- a/content/chapters/riftlight-ashspan-bridge.json
++++ b/content/chapters/riftlight-ashspan-bridge.json
+@@ -1239,8 +1239,9 @@
+           "name": "Tilly"
+         },
+         {
+-          "figure": "cast/bryn",
+-          "name": "Bryn"
++          "figure": "entities/duckling",
++          "name": "Ducklings",
++          "count": 3
+         }
+       ],
+       "art": "scenes/riftlight/ashspan-broken-deck"
+@@ -1279,8 +1280,9 @@
+           "name": "Tilly"
+         },
+         {
+-          "figure": "cast/bryn",
+-          "name": "Bryn"
++          "figure": "entities/duckling",
++          "name": "Ducklings",
++          "count": 3
+         }
+       ],
+       "art": "scenes/riftlight/ashspan-broken-deck"
+@@ -1307,8 +1309,9 @@
+           "name": "Tilly"
+         },
+         {
+-          "figure": "cast/bryn",
+-          "name": "Bryn"
++          "figure": "entities/duckling",
++          "name": "Ducklings",
++          "count": 3
+         }
+       ],
+       "art": "scenes/riftlight/ashspan-broken-deck"
+@@ -1335,8 +1338,9 @@
+           "name": "Tilly"
+         },
+         {
+-          "figure": "cast/bryn",
+-          "name": "Bryn"
++          "figure": "entities/duckling",
++          "name": "Ducklings",
++          "count": 3
+         }
+       ],
+       "art": "scenes/riftlight/ashspan-broken-deck"
+@@ -1363,8 +1367,9 @@
+           "name": "Tilly"
+         },
+         {
+-          "figure": "cast/bryn",
+-          "name": "Bryn"
++          "figure": "entities/duckling",
++          "name": "Ducklings",
++          "count": 3
+         }
+       ],
+       "art": "scenes/riftlight/ashspan-broken-deck"
+@@ -1401,8 +1406,9 @@
+           "name": "Tilly"
+         },
+         {
+-          "figure": "cast/bryn",
+-          "name": "Bryn"
++          "figure": "entities/duckling",
++          "name": "Ducklings",
++          "count": 3
+         }
+       ],
+       "art": "scenes/riftlight/ashspan-broken-deck"
+@@ -1445,8 +1451,9 @@
+           "name": "Tilly"
+         },
+         {
+-          "figure": "cast/bryn",
+-          "name": "Bryn"
++          "figure": "entities/duckling",
++          "name": "Ducklings",
++          "count": 3
+         }
+       ],
+       "art": "scenes/riftlight/ashspan-broken-deck"
+--- a/content/chapters/riftlight-boundary-stone-bank.json
++++ b/content/chapters/riftlight-boundary-stone-bank.json
+@@ -56,7 +56,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "markings": {
+       "type": "choice_point",
+@@ -81,7 +81,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "carving": {
+       "type": "story",
+@@ -100,7 +100,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "rub_check": {
+       "type": "check",
+@@ -120,7 +120,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "rubbed": {
+       "type": "story",
+@@ -145,7 +145,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "rub_torn": {
+       "type": "story",
+@@ -170,7 +170,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "marker": {
+       "type": "story",
+@@ -189,7 +189,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "marker_haul": {
+       "type": "check",
+@@ -209,7 +209,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "marker_set": {
+       "type": "story",
+@@ -234,7 +234,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "marker_slid": {
+       "type": "story",
+@@ -265,7 +265,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "row": {
+       "type": "story",
+@@ -304,7 +304,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "plan": {
+       "type": "choice_point",
+@@ -336,7 +336,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "lever_check": {
+       "type": "check",
+@@ -356,7 +356,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "trench_check": {
+       "type": "check",
+@@ -376,7 +376,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "smash_check": {
+       "type": "check",
+@@ -396,7 +396,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "splash_slip": {
+       "type": "story",
+@@ -423,7 +423,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "splash_up": {
+       "type": "story",
+@@ -448,7 +448,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "surge_check": {
+       "type": "check",
+@@ -468,7 +468,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "surge_safe": {
+       "type": "story",
+@@ -494,7 +494,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "surge_wet": {
+       "type": "story",
+@@ -526,7 +526,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "notch_plan": {
+       "type": "choice_point",
+@@ -565,7 +565,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "chisel_check": {
+       "type": "check",
+@@ -585,7 +585,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "chalk_check": {
+       "type": "check",
+@@ -605,7 +605,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "moss_check": {
+       "type": "check",
+@@ -625,7 +625,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "beat_check": {
+       "type": "check",
+@@ -646,7 +646,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "notch_cut": {
+       "type": "story",
+@@ -676,7 +676,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "notch_crooked": {
+       "type": "story",
+@@ -712,7 +712,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "cord_plan": {
+       "type": "choice_point",
+@@ -747,7 +747,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "climb_check": {
+       "type": "check",
+@@ -767,7 +767,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "throw_check": {
+       "type": "check",
+@@ -787,7 +787,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "wing_check": {
+       "type": "check",
+@@ -807,7 +807,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "cord_tangle": {
+       "type": "story",
+@@ -834,7 +834,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "cord_run": {
+       "type": "story",
+@@ -853,7 +853,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "tighten": {
+       "type": "check",
+@@ -873,7 +873,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "tight": {
+       "type": "story",
+@@ -898,7 +898,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "tight_slack": {
+       "type": "story",
+@@ -929,7 +929,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "tie_plan": {
+       "type": "choice_point",
+@@ -961,7 +961,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "loop_check": {
+       "type": "check",
+@@ -981,7 +981,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "hitch_check": {
+       "type": "check",
+@@ -1001,7 +1001,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "flick_check": {
+       "type": "check",
+@@ -1021,7 +1021,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "tie_good": {
+       "type": "story",
+@@ -1040,7 +1040,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "tie_loose": {
+       "type": "story",
+@@ -1067,7 +1067,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "sight_plan": {
+       "type": "choice_point",
+@@ -1099,7 +1099,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "sight_check": {
+       "type": "check",
+@@ -1119,7 +1119,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "pebble_check": {
+       "type": "check",
+@@ -1139,7 +1139,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "star_check": {
+       "type": "check",
+@@ -1159,7 +1159,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "sight_found": {
+       "type": "story",
+@@ -1178,7 +1178,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "sight_wobble": {
+       "type": "story",
+@@ -1197,7 +1197,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "nudge_plan": {
+       "type": "choice_point",
+@@ -1229,7 +1229,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "push_check": {
+       "type": "check",
+@@ -1249,7 +1249,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "wedge_check": {
+       "type": "check",
+@@ -1269,7 +1269,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "brace_check": {
+       "type": "check",
+@@ -1289,7 +1289,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "fourth_ok": {
+       "type": "story",
+@@ -1308,7 +1308,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row-aligned"
+     },
+     "fourth_shift": {
+       "type": "story",
+@@ -1335,7 +1335,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-river-row"
+     },
+     "top_stone": {
+       "type": "story",
+@@ -1374,7 +1374,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "compare": {
+       "type": "choice_point",
+@@ -1399,7 +1399,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "notch_count_check": {
+       "type": "check",
+@@ -1419,7 +1419,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "peak_check": {
+       "type": "check",
+@@ -1439,7 +1439,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "muddle": {
+       "type": "story",
+@@ -1458,7 +1458,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "clue": {
+       "type": "story",
+@@ -1478,7 +1478,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "record_plan": {
+       "type": "choice_point",
+@@ -1503,7 +1503,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "wrote_plain": {
+       "type": "story",
+@@ -1528,7 +1528,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "drew_both": {
+       "type": "story",
+@@ -1553,7 +1553,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "runner": {
+       "type": "story",
+@@ -1576,7 +1576,7 @@
+           "name": "Runner"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "runner_check": {
+       "type": "check",
+@@ -1600,7 +1600,7 @@
+           "name": "Runner"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "runner_told": {
+       "type": "story",
+@@ -1623,7 +1623,7 @@
+           "name": "Runner"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "runner_short": {
+       "type": "story",
+@@ -1646,7 +1646,7 @@
+           "name": "Runner"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "go_plan": {
+       "type": "choice_point",
+@@ -1682,7 +1682,7 @@
+           "name": "Runner"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "runner_cake": {
+       "type": "story",
+@@ -1715,7 +1715,7 @@
+           "name": "Runner"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "carry_board": {
+       "type": "story",
+@@ -1740,7 +1740,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "tie_off": {
+       "type": "story",
+@@ -1765,7 +1765,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "rest_row": {
+       "type": "rest",
+@@ -1817,7 +1817,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "honey_buy": {
+       "type": "story",
+@@ -1847,7 +1847,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "share_supper": {
+       "type": "story",
+@@ -1880,7 +1880,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "supper": {
+       "type": "story",
+@@ -1899,7 +1899,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "watch": {
+       "type": "story",
+@@ -1918,7 +1918,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     },
+     "bank_rest": {
+       "type": "rest",
+@@ -1932,7 +1932,7 @@
+           "name": "Stone keeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stone-counters"
++      "art": "scenes/riftlight/boundary-mountain-carving"
+     }
+   },
+   "voiceGuide": {
+--- a/content/chapters/riftlight-cairnstep-pass.json
++++ b/content/chapters/riftlight-cairnstep-pass.json
+@@ -277,7 +277,7 @@
+           "name": "Brask"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "ridge": {
+       "type": "story",
+@@ -296,7 +296,7 @@
+           "name": "Brask"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "ridge_spot": {
+       "type": "check",
+@@ -318,7 +318,7 @@
+           "name": "Brask"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "supplies": {
+       "type": "story",
+@@ -337,7 +337,7 @@
+           "name": "Brask"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "supplies_trace": {
+       "type": "check",
+@@ -358,7 +358,7 @@
+           "name": "Brask"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "ledger_sky": {
+       "type": "check",
+@@ -380,7 +380,7 @@
+           "name": "Brask"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "compared": {
+       "type": "story",
+@@ -399,7 +399,7 @@
+           "name": "Brask"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep",
++      "art": "scenes/riftlight/cairnstep-survey-slab",
+       "onEnter": [
+         {
+           "type": "setFlag",
+@@ -429,7 +429,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "pebble_help": {
+       "type": "choice_point",
+@@ -466,7 +466,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "pebble_walk": {
+       "type": "check",
+@@ -501,7 +501,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "pebble_page": {
+       "type": "check",
+@@ -528,7 +528,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "pebble_mend": {
+       "type": "check",
+@@ -555,7 +555,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "pebble_done": {
+       "type": "story",
+@@ -579,7 +579,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep",
++      "art": "scenes/riftlight/cairnstep-survey-slab",
+       "onEnter": [
+         {
+           "type": "grantItem",
+@@ -630,7 +630,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "test_roll": {
+       "type": "check",
+@@ -657,7 +657,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "test_lean": {
+       "type": "check",
+@@ -685,7 +685,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "test_brace": {
+       "type": "check",
+@@ -712,7 +712,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "test_smash": {
+       "type": "check",
+@@ -739,7 +739,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "tested": {
+       "type": "story",
+@@ -763,7 +763,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep",
++      "art": "scenes/riftlight/cairnstep-survey-slab",
+       "onEnter": [
+         {
+           "type": "setFlag",
+@@ -809,7 +809,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "survey_shelf": {
+       "type": "check",
+@@ -837,7 +837,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "survey_pace": {
+       "type": "check",
+@@ -864,7 +864,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "survey_sky": {
+       "type": "check",
+@@ -891,7 +891,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "survey_done": {
+       "type": "story",
+@@ -915,7 +915,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep",
++      "art": "scenes/riftlight/cairnstep-survey-slab",
+       "onEnter": [
+         {
+           "type": "grantCoins",
+@@ -981,7 +981,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "tea_share": {
+       "type": "story",
+@@ -1005,7 +1005,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep",
++      "art": "scenes/riftlight/cairnstep-survey-slab",
+       "onEnter": [
+         {
+           "type": "grantItem",
+@@ -1036,7 +1036,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "pages_x": {
+       "type": "story",
+@@ -1060,7 +1060,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "gust": {
+       "type": "choice_point",
+@@ -1097,7 +1097,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "gust_grab": {
+       "type": "check",
+@@ -1131,7 +1131,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "gust_cover": {
+       "type": "check",
+@@ -1164,7 +1164,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "gust_leap": {
+       "type": "check",
+@@ -1197,7 +1197,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "pages_back": {
+       "type": "story",
+@@ -1221,7 +1221,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep",
++      "art": "scenes/riftlight/cairnstep-survey-slab",
+       "variants": [
+         {
+           "when": {
+@@ -1284,7 +1284,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "shelter_drip": {
+       "type": "check",
+@@ -1311,7 +1311,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "shelter_dig": {
+       "type": "check",
+@@ -1338,7 +1338,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "shelter_leap": {
+       "type": "check",
+@@ -1373,7 +1373,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "shelter_cover": {
+       "type": "check",
+@@ -1400,7 +1400,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "shelter_found": {
+       "type": "story",
+@@ -1424,7 +1424,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "neck": {
+       "type": "choice_point",
+@@ -1454,7 +1454,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "neck_rope": {
+       "type": "check",
+@@ -1489,7 +1489,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "neck_tap": {
+       "type": "check",
+@@ -1516,7 +1516,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "neck_done": {
+       "type": "story",
+@@ -1540,7 +1540,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "mark": {
+       "type": "choice_point",
+@@ -1576,7 +1576,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-survey-slab"
+     },
+     "mark_open": {
+       "type": "story",
+@@ -1600,7 +1600,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep",
++      "art": "scenes/riftlight/cairnstep-survey-slab",
+       "onEnter": [
+         {
+           "type": "setFlag",
+@@ -1634,7 +1634,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep",
++      "art": "scenes/riftlight/cairnstep-survey-slab",
+       "onEnter": [
+         {
+           "type": "setFlag",
+@@ -1668,7 +1668,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep",
++      "art": "scenes/riftlight/cairnstep-survey-slab",
+       "onEnter": [
+         {
+           "type": "setFlag",
+@@ -1706,7 +1706,7 @@
+           "size": "small"
+         }
+       ],
+-      "art": "scenes/riftlight/cairnstep"
++      "art": "scenes/riftlight/cairnstep-capstone"
+     },
+     "capstone_done": {
+       "type": "story",
+--- a/content/chapters/riftlight-frostfang-shore.json
++++ b/content/chapters/riftlight-frostfang-shore.json
+@@ -164,7 +164,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/frostfang-ladder",
+       "onEnter": [
+         {
+           "type": "setFlag",
+@@ -189,7 +189,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "haul_foot": {
+       "type": "check",
+@@ -225,7 +225,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "lash_foot": {
+       "type": "check",
+@@ -253,7 +253,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "brace_foot": {
+       "type": "check",
+@@ -281,7 +281,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "smash_foot": {
+       "type": "check",
+@@ -309,7 +309,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "foot_set": {
+       "type": "story",
+@@ -328,7 +328,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/frostfang-ladder",
+       "onEnter": [
+         {
+           "type": "setFlag",
+@@ -368,7 +368,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "scout_cliff": {
+       "type": "check",
+@@ -390,7 +390,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "scout_prints": {
+       "type": "check",
+@@ -412,7 +412,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "scout_done": {
+       "type": "story",
+@@ -431,7 +431,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "driftline": {
+       "type": "choice_point",
+@@ -463,7 +463,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "net_hook": {
+       "type": "check",
+@@ -491,7 +491,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "net_drag": {
+       "type": "check",
+@@ -519,7 +519,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "net_lasso": {
+       "type": "check",
+@@ -547,7 +547,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "net_saved": {
+       "type": "story",
+@@ -566,7 +566,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/frostfang-ladder",
+       "onEnter": [
+         {
+           "type": "grantCoins",
+@@ -622,7 +622,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "bar_wade": {
+       "type": "check",
+@@ -656,7 +656,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "bar_stones": {
+       "type": "check",
+@@ -689,7 +689,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "bar_fly": {
+       "type": "check",
+@@ -722,7 +722,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "bar_leap": {
+       "type": "check",
+@@ -755,7 +755,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "bar_reached": {
+       "type": "story",
+@@ -777,7 +777,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/frostfang-gravel-bar",
+       "discovers": [
+         "creature.snowhorn_goat"
+       ]
+@@ -839,7 +839,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "goat_line": {
+       "type": "check",
+@@ -874,7 +874,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "goat_carry": {
+       "type": "check",
+@@ -908,7 +908,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "goat_mend": {
+       "type": "check",
+@@ -941,7 +941,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "goat_song": {
+       "type": "check",
+@@ -974,7 +974,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "goat_bait": {
+       "type": "check",
+@@ -1008,7 +1008,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "goat_back": {
+       "type": "story",
+@@ -1030,7 +1030,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/frostfang-gravel-bar",
+       "onEnter": [
+         {
+           "type": "setFlag",
+@@ -1072,7 +1072,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "stack_cairn": {
+       "type": "check",
+@@ -1095,7 +1095,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "scratch_line": {
+       "type": "check",
+@@ -1117,7 +1117,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "waterline_done": {
+       "type": "story",
+@@ -1136,7 +1136,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "fire": {
+       "type": "choice_point",
+@@ -1171,7 +1171,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "fire_build": {
+       "type": "check",
+@@ -1202,7 +1202,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "fire_huddle": {
+       "type": "check",
+@@ -1234,7 +1234,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "fire_smash": {
+       "type": "check",
+@@ -1265,7 +1265,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "rest_fire": {
+       "type": "rest",
+@@ -1318,7 +1318,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "rest_socks": {
+       "type": "story",
+@@ -1340,7 +1340,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "rest_share": {
+       "type": "story",
+@@ -1362,7 +1362,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/frostfang-gravel-bar",
+       "onEnter": [
+         {
+           "type": "grantItem",
+@@ -1391,7 +1391,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-gravel-bar"
+     },
+     "surge": {
+       "type": "choice_point",
+@@ -1433,7 +1433,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "surge_run": {
+       "type": "check",
+@@ -1467,7 +1467,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "surge_chain": {
+       "type": "check",
+@@ -1501,7 +1501,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "surge_roar": {
+       "type": "check",
+@@ -1534,7 +1534,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "surge_brace": {
+       "type": "check",
+@@ -1567,7 +1567,7 @@
+           "figure": "entities/snowhorn_goat"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "surge_after": {
+       "type": "story",
+@@ -1586,7 +1586,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/frostfang-ladder",
+       "variants": [
+         {
+           "when": {
+@@ -1637,7 +1637,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "climb_line": {
+       "type": "check",
+@@ -1667,7 +1667,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "climb_sling": {
+       "type": "check",
+@@ -1697,7 +1697,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "climb_wings": {
+       "type": "check",
+@@ -1727,7 +1727,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "climb_rally": {
+       "type": "check",
+@@ -1757,7 +1757,7 @@
+           "name": "Tamsin"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters"
++      "art": "scenes/riftlight/frostfang-ladder"
+     },
+     "top": {
+       "type": "story",
+--- a/content/chapters/riftlight-hidden-glacier-rift.json
++++ b/content/chapters/riftlight-hidden-glacier-rift.json
+@@ -107,7 +107,7 @@
+           "flag": "decided_at_the_fold"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "steady"
+     },
+     "plan": {
+@@ -127,7 +127,7 @@
+           "goto": "plan_b"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -150,7 +150,7 @@
+           "goto": "climb_a"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -173,7 +173,7 @@
+           "goto": "climb_b"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -197,7 +197,7 @@
+       "onFailure": {
+         "goto": "climb_slip"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -221,7 +221,7 @@
+       "onFailure": {
+         "goto": "climb_slip"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -244,7 +244,7 @@
+           "goto": "ridge"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -267,7 +267,7 @@
+           "goto": "ridge"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -303,7 +303,7 @@
+           "requiresItem": "listening_chime"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -326,7 +326,7 @@
+       "onFailure": {
+         "goto": "ridge_off"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -349,7 +349,7 @@
+       "onFailure": {
+         "goto": "ridge_off"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -372,7 +372,7 @@
+           "goto": "ridge_done"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -401,7 +401,7 @@
+           "flag": "followed_the_goats"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -430,7 +430,7 @@
+           "flag": "followed_the_goats"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -469,7 +469,7 @@
+           ]
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -493,7 +493,7 @@
+       "onFailure": {
+         "goto": "kid_off"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -518,7 +518,7 @@
+       "onFailure": {
+         "goto": "kid_off"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -541,7 +541,7 @@
+           "goto": "kid_wing_check"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -564,7 +564,7 @@
+       "onFailure": {
+         "goto": "kid_off"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -594,7 +594,7 @@
+           "to": "party"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -617,7 +617,7 @@
+           "goto": "crack"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -656,7 +656,7 @@
+           ]
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -680,7 +680,7 @@
+       "onFailure": {
+         "goto": "crack_slip"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -703,7 +703,7 @@
+       "onFailure": {
+         "goto": "crack_slip"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -726,7 +726,7 @@
+           "goto": "crack_wing_check"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -749,7 +749,7 @@
+       "onFailure": {
+         "goto": "crack_slip"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -772,7 +772,7 @@
+           "goto": "post"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -803,7 +803,7 @@
+           "nonlethal": true
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -832,7 +832,7 @@
+           "goto": "post_b"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -855,7 +855,7 @@
+           "goto": "post_a_check"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -878,7 +878,7 @@
+           "goto": "post_b_check"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -902,7 +902,7 @@
+       "onFailure": {
+         "goto": "post_off"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -925,7 +925,7 @@
+       "onFailure": {
+         "goto": "post_off"
+       },
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -948,7 +948,7 @@
+           "goto": "warm"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -971,7 +971,7 @@
+           "goto": "warm"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1002,7 +1002,7 @@
+           "to": "party"
+         }
+       ],
+-      "art": "scenes/riftlight/ice-shelf-headwaters",
++      "art": "scenes/riftlight/hidden-ticking-ridge",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1051,7 +1051,7 @@
+           "requiresClass": "starweaver"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "tunnel_a": {
+       "type": "story",
+@@ -1064,7 +1064,7 @@
+           "goto": "tunnel_a_check"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "tunnel_b": {
+       "type": "story",
+@@ -1077,7 +1077,7 @@
+           "goto": "tunnel_b_check"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "tunnel_star": {
+       "type": "story",
+@@ -1090,7 +1090,7 @@
+           "goto": "tunnel_star_check"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "tunnel_moss": {
+       "type": "story",
+@@ -1103,7 +1103,7 @@
+           "goto": "tunnel_moss_check"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "tunnel_moss_check": {
+       "type": "check",
+@@ -1116,7 +1116,7 @@
+       "onFailure": {
+         "goto": "tunnel_off"
+       },
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "tunnel_a_check": {
+       "type": "check",
+@@ -1130,7 +1130,7 @@
+       "onFailure": {
+         "goto": "tunnel_off"
+       },
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "tunnel_b_check": {
+       "type": "check",
+@@ -1145,7 +1145,7 @@
+       "onFailure": {
+         "goto": "tunnel_off"
+       },
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "tunnel_star_check": {
+       "type": "check",
+@@ -1158,7 +1158,7 @@
+       "onFailure": {
+         "goto": "tunnel_off"
+       },
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "tunnel_done": {
+       "type": "story",
+@@ -1177,7 +1177,7 @@
+           "flag": "went_underground"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "tunnel_off": {
+       "type": "story",
+@@ -1196,7 +1196,7 @@
+           "flag": "went_underground"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "squeeze": {
+       "type": "choice_point",
+@@ -1229,7 +1229,7 @@
+           "requiresClass": "duskrunner"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "squeeze_a": {
+       "type": "check",
+@@ -1243,7 +1243,7 @@
+       "onFailure": {
+         "goto": "squeeze_off"
+       },
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "squeeze_b": {
+       "type": "check",
+@@ -1256,7 +1256,7 @@
+       "onFailure": {
+         "goto": "squeeze_off"
+       },
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "squeeze_brace": {
+       "type": "story",
+@@ -1269,7 +1269,7 @@
+           "goto": "squeeze_brace_check"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "squeeze_slip": {
+       "type": "story",
+@@ -1282,7 +1282,7 @@
+           "goto": "squeeze_slip_check"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "squeeze_brace_check": {
+       "type": "check",
+@@ -1295,7 +1295,7 @@
+       "onFailure": {
+         "goto": "squeeze_off"
+       },
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "squeeze_slip_check": {
+       "type": "check",
+@@ -1308,7 +1308,7 @@
+       "onFailure": {
+         "goto": "squeeze_off"
+       },
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "squeeze_done": {
+       "type": "story",
+@@ -1321,7 +1321,7 @@
+           "goto": "seam_back"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "squeeze_off": {
+       "type": "story",
+@@ -1334,7 +1334,7 @@
+           "goto": "seam_back"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ice-tunnel"
+     },
+     "seam_back": {
+       "type": "choice_point",
+@@ -1353,7 +1353,7 @@
+           "goto": "seam_b"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-sealed-seam"
+     },
+     "seam_a": {
+       "type": "check",
+@@ -1368,7 +1368,7 @@
+       "onFailure": {
+         "goto": "seam_off"
+       },
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-sealed-seam"
+     },
+     "seam_b": {
+       "type": "check",
+@@ -1381,7 +1381,7 @@
+       "onFailure": {
+         "goto": "seam_off"
+       },
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-sealed-seam"
+     },
+     "seam_done": {
+       "type": "story",
+@@ -1394,7 +1394,7 @@
+           "goto": "behind"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-sealed-seam"
+     },
+     "seam_off": {
+       "type": "story",
+@@ -1407,7 +1407,7 @@
+           "goto": "behind"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-sealed-seam"
+     },
+     "behind": {
+       "type": "story",
+@@ -1420,7 +1420,7 @@
+           "goto": "passage"
+         }
+       ],
+-      "art": "scenes/riftlight/glacier-deep-ice"
++      "art": "scenes/riftlight/hidden-ticking-fold"
+     },
+     "passage": {
+       "type": "choice_point",
+@@ -1453,7 +1453,7 @@
+           "goto": "look"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "steady"
+     },
+     "chime": {
+@@ -1482,7 +1482,7 @@
+           "flag": "traced_the_ticking"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "steady"
+     },
+     "read": {
+@@ -1502,7 +1502,7 @@
+           "flag": "traced_the_ticking"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "steady"
+     },
+     "listen": {
+@@ -1522,7 +1522,7 @@
+           "flag": "traced_the_ticking"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "steady"
+     },
+     "look": {
+@@ -1542,7 +1542,7 @@
+           "flag": "traced_the_ticking"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "steady"
+     },
+     "beat": {
+@@ -1557,7 +1557,7 @@
+       "onFailure": {
+         "goto": "beat_off"
+       },
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "steady"
+     },
+     "beat_done": {
+@@ -1571,7 +1571,7 @@
+           "goto": "cairn"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "steady"
+     },
+     "beat_off": {
+@@ -1585,7 +1585,7 @@
+           "goto": "cairn"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "steady"
+     },
+     "cairn": {
+@@ -1612,7 +1612,7 @@
+           "requiresSpecies": "bigfoot"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1636,7 +1636,7 @@
+       "onFailure": {
+         "goto": "cairn_off"
+       },
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1660,7 +1660,7 @@
+       "onFailure": {
+         "goto": "cairn_off"
+       },
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1684,7 +1684,7 @@
+           "goto": "cairn_smash_check"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1708,7 +1708,7 @@
+       "onFailure": {
+         "goto": "cairn_off"
+       },
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1732,7 +1732,7 @@
+           "goto": "herder_say"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1756,7 +1756,7 @@
+           "goto": "herder_say"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1815,7 +1815,7 @@
+           "to": "party"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1839,7 +1839,7 @@
+           "goto": "footing"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1886,7 +1886,7 @@
+           ]
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1910,7 +1910,7 @@
+       "onFailure": {
+         "goto": "footing_off"
+       },
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1934,7 +1934,7 @@
+       "onFailure": {
+         "goto": "footing_off"
+       },
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -1958,15 +1958,19 @@
+           "goto": "decide"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
+-      "cast": [
+-        {
+-          "figure": "cast/yeti_herder",
+-          "name": "Yeti herder"
+-        },
+-        {
+-          "figure": "cast/snowhorn_kid",
+-          "name": "Kid goat"
++      "art": "scenes/riftlight/hidden-ticking-fold",
++      "cast": [
++        {
++          "figure": "cast/yeti_herder",
++          "name": "Yeti herder"
++        },
++        {
++          "figure": "cast/snowhorn_kid",
++          "name": "Kid goat"
++        },
++        {
++          "figure": "cast/yeti_grit_seller",
++          "name": "Grit seller"
+         }
+       ],
+       "rift": "steady"
+@@ -1982,7 +1986,7 @@
+           "goto": "decide"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -2014,7 +2018,7 @@
+           "nonlethal": true
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -2056,7 +2060,7 @@
+           ]
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -2082,7 +2086,7 @@
+       "onFailure": {
+         "goto": "sing_wobble"
+       },
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -2106,7 +2110,7 @@
+           "goto": "sing"
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "cast": [
+         {
+           "figure": "cast/yeti_herder",
+@@ -2146,7 +2150,7 @@
+           "text": "You hum again. The opening stays just as wide. It does not need another note; it has stayed open since your first song."
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "open"
+     },
+     "test_open": {
+@@ -2169,7 +2173,7 @@
+           "text": "The opening stays wide after your song ends. Salt wind and gull cries continue. You can return to camp for the Listening Chime before trusting the crossing."
+         }
+       ],
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "steady"
+     },
+     "ready": {
+@@ -2178,7 +2182,7 @@
+       "heal": 0,
+       "choices": [],
+       "outcome": "success",
+-      "art": "scenes/riftlight/singing-hall-camp",
++      "art": "scenes/riftlight/hidden-ticking-fold",
+       "rift": "steady"
+     },
+     "leave": {
+--- a/content/chapters/riftlight-saltrot-arrival.json
++++ b/content/chapters/riftlight-saltrot-arrival.json
+@@ -70,7 +70,7 @@
+           "text": "Behind you the linked fold carries the cloud whales' distant song. Its echo still answers from the island."
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -95,7 +95,7 @@
+           "goto": "shells_b"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -114,7 +114,7 @@
+           "goto": "shells_a_check"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -133,7 +133,7 @@
+           "goto": "shells_b_check"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -153,7 +153,7 @@
+       "onFailure": {
+         "goto": "shells_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -172,7 +172,7 @@
+       "onFailure": {
+         "goto": "shells_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -197,7 +197,7 @@
+           "flag": "crossed_the_shells"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -222,7 +222,7 @@
+           "flag": "crossed_the_shells"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -254,7 +254,7 @@
+           "requiresClass": "thornguard"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -274,7 +274,7 @@
+       "onFailure": {
+         "goto": "town_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -293,7 +293,7 @@
+       "onFailure": {
+         "goto": "town_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -312,7 +312,7 @@
+           "goto": "town_brace_check"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -331,7 +331,7 @@
+       "onFailure": {
+         "goto": "town_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-buried-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -350,7 +350,7 @@
+           "goto": "silt"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -369,7 +369,7 @@
+           "goto": "silt"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -388,7 +388,7 @@
+           "goto": "local"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -413,7 +413,7 @@
+           "goto": "path"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -436,7 +436,7 @@
+           "goto": "bag_check"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -459,7 +459,7 @@
+           "goto": "path_check"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -483,7 +483,7 @@
+       "onFailure": {
+         "goto": "traveler_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -506,7 +506,7 @@
+       "onFailure": {
+         "goto": "traveler_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -540,7 +540,7 @@
+           "to": "party"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -569,7 +569,7 @@
+           "flag": "helped_the_flats_traveler"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -605,7 +605,7 @@
+           "requiresClass": "songkeeper"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -629,7 +629,7 @@
+       "onFailure": {
+         "goto": "puff_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -654,7 +654,7 @@
+       "onFailure": {
+         "goto": "puff_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -677,7 +677,7 @@
+           "goto": "puff_song_check"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -701,7 +701,7 @@
+       "onFailure": {
+         "goto": "puff_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -731,7 +731,7 @@
+           "to": "party"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -761,7 +761,7 @@
+           "to": "party"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -798,7 +798,7 @@
+           "text": "He grins at you. \"Same river, same fare, eh?\""
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-ossley-aground",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -822,7 +822,7 @@
+       "onFailure": {
+         "goto": "ossley_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-ossley-aground",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -845,7 +845,7 @@
+       "onFailure": {
+         "goto": "ossley_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-ossley-aground",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -874,7 +874,7 @@
+           "amount": 5
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-ossley-aground",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -903,7 +903,7 @@
+           "amount": 3
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-ossley-aground",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -951,7 +951,7 @@
+           ]
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -970,7 +970,7 @@
+           "goto": "lesson"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -989,7 +989,7 @@
+           "goto": "lesson"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -1008,7 +1008,7 @@
+           "goto": "lesson"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -1047,7 +1047,7 @@
+           "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. Seren asks you to compare the sounds with what she taught you before. Pip unrolls a muddy map. \"The pale silt starts somewhere upriver,\" he says. \"I need good ears.\""
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/seren_wisp",
+@@ -1094,7 +1094,7 @@
+           "requiresClass": "starweaver"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/seren_wisp",
+@@ -1121,7 +1121,7 @@
+           "goto": "hum_chime_check"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/seren_wisp",
+@@ -1148,7 +1148,7 @@
+       "onFailure": {
+         "goto": "hum_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/seren_wisp",
+@@ -1177,7 +1177,7 @@
+       "onFailure": {
+         "goto": "hum_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/seren_wisp",
+@@ -1204,7 +1204,7 @@
+       "onFailure": {
+         "goto": "hum_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/seren_wisp",
+@@ -1231,7 +1231,7 @@
+           "goto": "hum_star_check"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/seren_wisp",
+@@ -1258,7 +1258,7 @@
+       "onFailure": {
+         "goto": "hum_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/seren_wisp",
+@@ -1285,7 +1285,7 @@
+           "goto": "poles"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/seren_wisp",
+@@ -1312,7 +1312,7 @@
+           "goto": "poles"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/tidepocket-open-hatch",
+       "cast": [
+         {
+           "figure": "cast/seren_wisp",
+@@ -1835,7 +1835,7 @@
+           "requiresSpecies": "manticore"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -1858,7 +1858,7 @@
+       "onFailure": {
+         "goto": "crabs_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -1881,7 +1881,7 @@
+       "onFailure": {
+         "goto": "crabs_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -1904,7 +1904,7 @@
+           "goto": "crabs_leap_check"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -1927,7 +1927,7 @@
+       "onFailure": {
+         "goto": "crabs_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -1950,7 +1950,7 @@
+           "goto": "tide"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -1973,7 +1973,7 @@
+           "goto": "tide"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -2002,7 +2002,7 @@
+           "goto": "tide_b"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -2026,7 +2026,7 @@
+       "onFailure": {
+         "goto": "tide_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -2050,7 +2050,7 @@
+       "onFailure": {
+         "goto": "tide_off"
+       },
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -2073,7 +2073,7 @@
+           "goto": "lead"
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -2104,7 +2104,7 @@
+           "nonlethal": true
+         }
+       ],
+-      "art": "scenes/riftlight/stuttering-flats",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/saltrot_guide",
+@@ -2133,7 +2133,7 @@
+           "flag": "followed_the_silt"
+         }
+       ],
+-      "art": "scenes/riftlight/buried-bridge-dry-channel",
++      "art": "scenes/riftlight/saltrot-high-shells",
+       "cast": [
+         {
+           "figure": "cast/seren_wisp",
+--- a/packages/client/src/world/figure-sizes.ts
++++ b/packages/client/src/world/figure-sizes.ts
+@@ -132,6 +132,7 @@
+   "cast/warden_clerk": [110, "standing"],
+   "cast/wend": [100, "standing"],
+   "cast/yeti_elder": [245, "standing"],
++  "cast/yeti_grit_seller": [145, "standing"],
+   "cast/yeti_herder": [250, "standing"],
+   "cast/yeti_watcher": [255, "standing"],
+   "cast/young_gatherer": [70, "standing"],
+@@ -151,6 +152,7 @@
+   "entities/cinder_wolf": [95, "standing"],
+   "entities/cloud_whale": [1100, "flying"],
+   "entities/donkey": [130, "standing"],
++  "entities/duckling": [20, "standing"],
+   "entities/echo_hunter": [190, "standing"],
+   "entities/embermoth": [18, "flying"],
+   "entities/faun": [160, "standing"],

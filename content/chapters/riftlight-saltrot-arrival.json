@@ -4,7 +4,7 @@
   "campaignId": "riftlight",
   "index": 4,
   "title": "Mud Where Ice Should Be",
-  "biome": "whispering_marsh",
+  "biome": "sallow_wastelands",
   "music": "riftlight-paths",
   "estimatedMinutes": 33,
   "xpAward": 140,
@@ -70,7 +70,7 @@
           "text": "Behind you the linked fold carries the cloud whales' distant song. Its echo still answers from the island."
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -95,7 +95,7 @@
           "goto": "shells_b"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -114,7 +114,7 @@
           "goto": "shells_a_check"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -133,7 +133,7 @@
           "goto": "shells_b_check"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -153,7 +153,7 @@
       "onFailure": {
         "goto": "shells_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -172,7 +172,7 @@
       "onFailure": {
         "goto": "shells_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -191,7 +191,7 @@
           "goto": "shell_path"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -210,7 +210,7 @@
           "goto": "shell_path"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -283,7 +283,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -315,7 +315,7 @@
           "requiresClass": "thornguard"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -335,7 +335,7 @@
       "onFailure": {
         "goto": "town_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -354,7 +354,7 @@
       "onFailure": {
         "goto": "town_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -373,7 +373,7 @@
           "goto": "town_brace_check"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -392,7 +392,7 @@
       "onFailure": {
         "goto": "town_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-buried-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -411,7 +411,7 @@
           "goto": "hatch_party"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -430,7 +430,7 @@
           "goto": "hatch_party"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -480,7 +480,7 @@
         "goto": "silt",
         "narration": "The grandmother steps out last, hugs you, which is damp, and says, \"About time.\" A very small Skupper child holds up a very large shell like a trophy."
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -499,7 +499,7 @@
           "goto": "local"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -524,7 +524,7 @@
           "goto": "path"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -547,7 +547,7 @@
           "goto": "bag_check"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -570,7 +570,7 @@
           "goto": "path_check"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -594,7 +594,7 @@
       "onFailure": {
         "goto": "traveler_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -617,7 +617,7 @@
       "onFailure": {
         "goto": "traveler_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -651,7 +651,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -680,7 +680,7 @@
           "flag": "helped_the_flats_traveler"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -716,7 +716,7 @@
           "requiresClass": "songkeeper"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -740,7 +740,7 @@
       "onFailure": {
         "goto": "puff_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -765,7 +765,7 @@
       "onFailure": {
         "goto": "puff_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -788,7 +788,7 @@
           "goto": "puff_song_check"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -812,7 +812,7 @@
       "onFailure": {
         "goto": "puff_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -842,7 +842,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -872,7 +872,7 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -909,7 +909,7 @@
           "text": "He grins at you. \"Same river, same fare, eh?\""
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-ossley-aground",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -933,7 +933,7 @@
       "onFailure": {
         "goto": "ossley_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-ossley-aground",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -956,7 +956,7 @@
       "onFailure": {
         "goto": "ossley_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-ossley-aground",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -985,7 +985,7 @@
           "amount": 5
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-ossley-aground",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1014,7 +1014,7 @@
           "amount": 3
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-ossley-aground",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1047,7 +1047,7 @@
         "goto": "camp",
         "narration": "You and the guide pass the jars in a steady line. Below, the lamps pop alight, one by one."
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1091,7 +1091,7 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1110,7 +1110,7 @@
           "goto": "lesson"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1129,7 +1129,7 @@
           "goto": "lesson"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1148,7 +1148,7 @@
           "goto": "lesson"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1187,7 +1187,7 @@
           "text": "A kitsune named Seren Wisp and a manticore named Pip Thistledown are checking another displaced route. Seren asks you to compare the sounds with what she taught you before. Pip unrolls a muddy map. \"The pale silt starts somewhere upriver,\" he says. \"I need good ears.\""
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1234,7 +1234,7 @@
           "requiresClass": "starweaver"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1261,7 +1261,7 @@
           "goto": "hum_chime_check"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1288,7 +1288,7 @@
       "onFailure": {
         "goto": "hum_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1317,7 +1317,7 @@
       "onFailure": {
         "goto": "hum_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1344,7 +1344,7 @@
       "onFailure": {
         "goto": "hum_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1371,7 +1371,7 @@
           "goto": "hum_star_check"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1398,7 +1398,7 @@
       "onFailure": {
         "goto": "hum_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1425,7 +1425,7 @@
           "goto": "poles"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1452,7 +1452,7 @@
           "goto": "poles"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/tidepocket-open-hatch",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1883,7 +1883,7 @@
           "requiresSpecies": "manticore"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1906,7 +1906,7 @@
       "onFailure": {
         "goto": "crabs_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1929,7 +1929,7 @@
       "onFailure": {
         "goto": "crabs_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1952,7 +1952,7 @@
           "goto": "crabs_leap_check"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1975,7 +1975,7 @@
       "onFailure": {
         "goto": "crabs_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1998,7 +1998,7 @@
           "goto": "crab_warn"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -2021,7 +2021,7 @@
           "goto": "crab_warn"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -2044,7 +2044,7 @@
           "goto": "crab_fight"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/fight-saltrot-silt",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -2087,7 +2087,7 @@
           }
         ]
       },
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/fight-saltrot-silt"
     },
     "crab_done": {
       "type": "story",
@@ -2152,7 +2152,7 @@
           "goto": "tide_b"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -2176,7 +2176,7 @@
       "onFailure": {
         "goto": "tide_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -2200,7 +2200,7 @@
       "onFailure": {
         "goto": "tide_off"
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -2223,7 +2223,7 @@
           "goto": "tide_dash"
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -2254,7 +2254,7 @@
           "nonlethal": true
         }
       ],
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -2289,7 +2289,7 @@
         "goto": "lead",
         "narration": "The guide counts out the pulls for you, one by one, and you cross on the last of them."
       },
-      "art": "scenes/riftlight/stuttering-flats",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -2318,7 +2318,7 @@
           "flag": "followed_the_silt"
         }
       ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "art": "scenes/riftlight/saltrot-high-shells",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -2457,5 +2457,122 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [
+      {
+        "chapter": "riftlight-saltrot-arrival",
+        "scene": "crab_fight",
+        "board": "reedbank",
+        "creature": "glassback_crab",
+        "introScenes": [
+          "crab_warn"
+        ],
+        "backdrop": "scenes/riftlight/fight-saltrot-silt",
+        "props": [
+          "fight-warm-mud-hollow",
+          "pickup-luckstone"
+        ],
+        "poses": {
+          "intro": "warning",
+          "retreat": "shooed"
+        },
+        "victoryScene": "crab_done",
+        "defeatScene": "crab_rescued",
+        "tileUrl": "/assets/biomes/sallow_wastelands/tiles.png",
+        "terrainProps": [
+          "fight-warm-mud-hollow"
+        ],
+        "rescueFigure": "tidepocket_pots",
+        "retreatDirection": 1,
+        "activeUrl": "/assets/entities/glassback_crab/warning.png",
+        "retreatUrl": "/assets/entities/glassback_crab/shooed.png",
+        "outcomeCast": {
+          "victory": [
+            {
+              "figure": "cast/saltrot_guide",
+              "name": "Saltrot guide"
+            },
+            {
+              "figure": "cast/pip_thistledown",
+              "name": "Pip Thistledown"
+            }
+          ],
+          "defeat": [
+            {
+              "figure": "cast/saltrot_guide",
+              "name": "Saltrot guide"
+            },
+            {
+              "figure": "cast/pip_thistledown",
+              "name": "Pip Thistledown"
+            },
+            {
+              "figure": "cast/tidepocket_pots",
+              "name": "Tidepocket family"
+            }
+          ]
+        }
+      }
+    ],
+    "interactions": {
+      "shell_path": {
+        "props": [
+          "shell-whelk",
+          "shell-cockle",
+          "shell-oyster"
+        ]
+      },
+      "hatch_party": {
+        "props": [
+          "hatch-cover",
+          "kelp-cake",
+          "tidepocket-broom"
+        ]
+      },
+      "lamp_line": {
+        "props": [
+          "relay-oil-jar",
+          "rope-ladder",
+          "hanging-lamp"
+        ]
+      },
+      "tide_dash": {
+        "props": [
+          "water-surge",
+          "shell-cockle"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/biomes/sallow_wastelands/tiles.png",
+      "/assets/cast/skupper_child/assembled.png",
+      "/assets/cast/skupper_grandmother/assembled.png",
+      "/assets/cast/skupper_weaver/assembled.png",
+      "/assets/cast/tidepocket_pots/assembled.png",
+      "/assets/entities/glassback_crab/shooed.png",
+      "/assets/entities/glassback_crab/warning.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/fight-warm-mud-hollow.webp",
+      "/assets/story-props/hanging-lamp.webp",
+      "/assets/story-props/hatch-cover.webp",
+      "/assets/story-props/kelp-cake.webp",
+      "/assets/story-props/pickup-luckstone.webp",
+      "/assets/story-props/relay-oil-jar.webp",
+      "/assets/story-props/rope-ladder.webp",
+      "/assets/story-props/shell-cockle.webp",
+      "/assets/story-props/shell-oyster.webp",
+      "/assets/story-props/shell-whelk.webp",
+      "/assets/story-props/tidepocket-broom.webp",
+      "/assets/story-props/water-surge.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

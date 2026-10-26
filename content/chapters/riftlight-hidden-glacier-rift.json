@@ -73,7 +73,7 @@
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -107,7 +107,7 @@
           "flag": "decided_at_the_fold"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "steady"
     },
     "plan": {
@@ -127,14 +127,14 @@
           "goto": "plan_b"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -150,14 +150,14 @@
           "goto": "climb_a"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -173,14 +173,14 @@
           "goto": "climb_b"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -197,14 +197,14 @@
       "onFailure": {
         "goto": "climb_slip"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -221,14 +221,14 @@
       "onFailure": {
         "goto": "climb_slip"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -244,14 +244,14 @@
           "goto": "ridge"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -267,14 +267,14 @@
           "goto": "ridge"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -303,14 +303,14 @@
           "requiresItem": "listening_chime"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -326,14 +326,14 @@
       "onFailure": {
         "goto": "ridge_off"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -349,14 +349,14 @@
       "onFailure": {
         "goto": "ridge_off"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -372,14 +372,14 @@
           "goto": "ridge_done"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -401,14 +401,14 @@
           "flag": "followed_the_goats"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -430,14 +430,14 @@
           "flag": "followed_the_goats"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -483,14 +483,14 @@
         "goto": "kid",
         "narration": "The herder holds the kid still long enough for you to see it settle by the loudest patch of ice. West and low, it ticks."
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -522,14 +522,14 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -546,14 +546,14 @@
       "onFailure": {
         "goto": "kid_off"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -571,14 +571,14 @@
       "onFailure": {
         "goto": "kid_off"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -594,14 +594,14 @@
           "goto": "kid_wing_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -617,14 +617,14 @@
       "onFailure": {
         "goto": "kid_off"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -647,14 +647,14 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -670,14 +670,14 @@
           "goto": "crack"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -709,14 +709,14 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -733,14 +733,14 @@
       "onFailure": {
         "goto": "crack_slip"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -756,14 +756,14 @@
       "onFailure": {
         "goto": "crack_slip"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -779,14 +779,14 @@
           "goto": "crack_wing_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -802,14 +802,14 @@
       "onFailure": {
         "goto": "crack_slip"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -825,14 +825,14 @@
           "goto": "post"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -856,14 +856,14 @@
           "nonlethal": true
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -885,14 +885,14 @@
           "goto": "post_b"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -908,14 +908,14 @@
           "goto": "post_a_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -931,14 +931,14 @@
           "goto": "post_b_check"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -955,14 +955,14 @@
       "onFailure": {
         "goto": "post_off"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -978,14 +978,14 @@
       "onFailure": {
         "goto": "post_off"
       },
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -1001,14 +1001,14 @@
           "goto": "warm"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -1024,14 +1024,14 @@
           "goto": "warm"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -1055,14 +1055,14 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -1104,7 +1104,7 @@
           "requiresClass": "starweaver"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "tunnel_a": {
       "type": "story",
@@ -1117,7 +1117,7 @@
           "goto": "tunnel_a_check"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "tunnel_b": {
       "type": "story",
@@ -1130,7 +1130,7 @@
           "goto": "tunnel_b_check"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "tunnel_star": {
       "type": "story",
@@ -1143,7 +1143,7 @@
           "goto": "tunnel_star_check"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "tunnel_moss": {
       "type": "story",
@@ -1156,7 +1156,7 @@
           "goto": "tunnel_moss_check"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "tunnel_moss_check": {
       "type": "check",
@@ -1169,7 +1169,7 @@
       "onFailure": {
         "goto": "tunnel_off"
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "tunnel_a_check": {
       "type": "check",
@@ -1183,7 +1183,7 @@
       "onFailure": {
         "goto": "tunnel_off"
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "tunnel_b_check": {
       "type": "check",
@@ -1198,7 +1198,7 @@
       "onFailure": {
         "goto": "tunnel_off"
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "tunnel_star_check": {
       "type": "check",
@@ -1211,7 +1211,7 @@
       "onFailure": {
         "goto": "tunnel_off"
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "tunnel_done": {
       "type": "story",
@@ -1230,7 +1230,7 @@
           "flag": "went_underground"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "tunnel_off": {
       "type": "story",
@@ -1249,7 +1249,7 @@
           "flag": "went_underground"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "squeeze": {
       "type": "choice_point",
@@ -1282,7 +1282,7 @@
           "requiresClass": "duskrunner"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "squeeze_a": {
       "type": "check",
@@ -1296,7 +1296,7 @@
       "onFailure": {
         "goto": "squeeze_off"
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "squeeze_b": {
       "type": "check",
@@ -1309,7 +1309,7 @@
       "onFailure": {
         "goto": "squeeze_off"
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "squeeze_brace": {
       "type": "story",
@@ -1322,7 +1322,7 @@
           "goto": "squeeze_brace_check"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "squeeze_slip": {
       "type": "story",
@@ -1335,7 +1335,7 @@
           "goto": "squeeze_slip_check"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "squeeze_brace_check": {
       "type": "check",
@@ -1348,7 +1348,7 @@
       "onFailure": {
         "goto": "squeeze_off"
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "squeeze_slip_check": {
       "type": "check",
@@ -1361,7 +1361,7 @@
       "onFailure": {
         "goto": "squeeze_off"
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "squeeze_done": {
       "type": "story",
@@ -1374,7 +1374,7 @@
           "goto": "squeeze_hold"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "squeeze_off": {
       "type": "story",
@@ -1387,7 +1387,7 @@
           "goto": "squeeze_hold"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ice-tunnel"
     },
     "squeeze_hold": {
       "type": "interaction",
@@ -1410,7 +1410,7 @@
         "goto": "seam_back",
         "narration": "You wedge the rope hooks under the roof like two small props. They hold just long enough for everyone to come through."
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-steaming-crack"
     },
     "seam_back": {
       "type": "choice_point",
@@ -1429,7 +1429,7 @@
           "goto": "seam_b"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-sealed-seam"
     },
     "seam_a": {
       "type": "check",
@@ -1444,7 +1444,7 @@
       "onFailure": {
         "goto": "seam_off"
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-sealed-seam"
     },
     "seam_b": {
       "type": "check",
@@ -1457,7 +1457,7 @@
       "onFailure": {
         "goto": "seam_off"
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-sealed-seam"
     },
     "seam_done": {
       "type": "story",
@@ -1470,7 +1470,7 @@
           "goto": "seam_echo"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-sealed-seam"
     },
     "seam_off": {
       "type": "story",
@@ -1483,7 +1483,7 @@
           "goto": "seam_echo"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-sealed-seam"
     },
     "seam_echo": {
       "type": "interaction",
@@ -1529,7 +1529,7 @@
         "goto": "behind",
         "narration": "You trace the pattern together on the wall. A thin line of light draws itself along the ice to a crack in the corner, as narrow as a door left open for a cat. The seam itself stays shut."
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-sealed-seam"
     },
     "behind": {
       "type": "story",
@@ -1542,7 +1542,7 @@
           "goto": "passage"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/hidden-ticking-fold"
     },
     "passage": {
       "type": "choice_point",
@@ -1575,7 +1575,7 @@
           "goto": "look"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "steady"
     },
     "chime": {
@@ -1604,7 +1604,7 @@
           "flag": "traced_the_ticking"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "steady"
     },
     "read": {
@@ -1624,7 +1624,7 @@
           "flag": "traced_the_ticking"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "steady"
     },
     "listen": {
@@ -1644,7 +1644,7 @@
           "flag": "traced_the_ticking"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "steady"
     },
     "look": {
@@ -1664,7 +1664,7 @@
           "flag": "traced_the_ticking"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "steady"
     },
     "beat": {
@@ -1711,7 +1711,7 @@
       "onAssisted": {
         "goto": "beat_done"
       },
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "steady"
     },
     "beat_done": {
@@ -1725,7 +1725,7 @@
           "goto": "cairn"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "steady"
     },
     "beat_off": {
@@ -1739,7 +1739,7 @@
           "goto": "cairn"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "steady"
     },
     "cairn": {
@@ -1766,14 +1766,14 @@
           "requiresSpecies": "bigfoot"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -1790,14 +1790,14 @@
       "onFailure": {
         "goto": "cairn_off"
       },
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -1814,14 +1814,14 @@
       "onFailure": {
         "goto": "cairn_off"
       },
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -1838,14 +1838,14 @@
           "goto": "cairn_smash_check"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -1862,14 +1862,14 @@
       "onFailure": {
         "goto": "cairn_off"
       },
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -1886,14 +1886,14 @@
           "goto": "herder_say"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -1910,14 +1910,14 @@
           "goto": "herder_say"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -1969,14 +1969,14 @@
           "to": "party"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -1993,14 +1993,14 @@
           "goto": "footing"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -2040,14 +2040,14 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -2064,14 +2064,14 @@
       "onFailure": {
         "goto": "footing_off"
       },
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -2088,14 +2088,14 @@
       "onFailure": {
         "goto": "footing_off"
       },
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -2112,15 +2112,19 @@
           "goto": "decide"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
+        },
+        {
+          "figure": "cast/yeti_grit_seller",
+          "name": "Grit seller"
         }
       ],
       "rift": "steady"
@@ -2136,14 +2140,14 @@
           "goto": "decide"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -2168,14 +2172,14 @@
           "nonlethal": true
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -2210,14 +2214,14 @@
           ]
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -2236,14 +2240,14 @@
       "onFailure": {
         "goto": "sing_wobble"
       },
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -2260,14 +2264,14 @@
           "goto": "sing"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
           "figure": "cast/yeti_herder",
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ],
@@ -2300,7 +2304,7 @@
           "text": "You hum again. The opening stays just as wide. It does not need another note; it has stayed open since your first song."
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "open"
     },
     "test_open": {
@@ -2323,7 +2327,7 @@
           "text": "The opening stays wide after your song ends. Salt wind and gull cries continue. You can return to camp for the Listening Chime before trusting the crossing."
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "steady"
     },
     "ready": {
@@ -2332,7 +2336,7 @@
       "heal": 0,
       "choices": [],
       "outcome": "success",
-      "art": "scenes/riftlight/singing-hall-camp",
+      "art": "scenes/riftlight/hidden-ticking-fold",
       "rift": "steady"
     },
     "leave": {
@@ -2348,7 +2352,7 @@
           "name": "Yeti herder"
         },
         {
-          "figure": "entities/snowhorn_goat",
+          "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
       ]
@@ -2367,5 +2371,49 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [],
+    "interactions": {
+      "holes": {
+        "props": [
+          "snow-mound",
+          "ticking-crystal"
+        ]
+      },
+      "squeeze_hold": {
+        "props": [
+          "roof-slab",
+          "rope-wedge"
+        ]
+      },
+      "seam_echo": {
+        "props": [
+          "ticking-crystal"
+        ]
+      },
+      "beat": {
+        "props": [
+          "ticking-crystal"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/cast/kid_burrowing/assembled.png",
+      "/assets/cast/kid_peeking/assembled.png",
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/roof-slab.webp",
+      "/assets/story-props/rope-wedge.webp",
+      "/assets/story-props/snow-mound.webp",
+      "/assets/story-props/ticking-crystal.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

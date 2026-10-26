@@ -56,7 +56,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "markings": {
       "type": "choice_point",
@@ -81,7 +81,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "carving": {
       "type": "story",
@@ -100,7 +100,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "rub_check": {
       "type": "check",
@@ -120,7 +120,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "rubbed": {
       "type": "story",
@@ -145,7 +145,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "rub_torn": {
       "type": "story",
@@ -170,7 +170,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "marker": {
       "type": "story",
@@ -189,7 +189,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "marker_haul": {
       "type": "check",
@@ -209,7 +209,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "marker_set": {
       "type": "story",
@@ -234,7 +234,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "marker_slid": {
       "type": "story",
@@ -265,7 +265,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "row": {
       "type": "story",
@@ -304,7 +304,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "plan": {
       "type": "choice_point",
@@ -336,7 +336,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "lever_check": {
       "type": "check",
@@ -356,7 +356,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "trench_check": {
       "type": "check",
@@ -376,7 +376,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "smash_check": {
       "type": "check",
@@ -396,7 +396,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "splash_slip": {
       "type": "story",
@@ -423,7 +423,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "splash_up": {
       "type": "story",
@@ -448,7 +448,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "surge_check": {
       "type": "interaction",
@@ -465,7 +465,7 @@
         "actionLabel": "Pass it up!",
         "objectLabel": "the kettle and the cord"
       },
-      "art": "scenes/riftlight/stone-counters",
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "surge_safe",
         "narration": "Hand to hand to hand, the whole pile climbs the bank."
@@ -503,7 +503,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "notch_plan": {
       "type": "choice_point",
@@ -542,7 +542,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "chisel_check": {
       "type": "check",
@@ -562,7 +562,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "chalk_check": {
       "type": "check",
@@ -582,7 +582,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "moss_check": {
       "type": "check",
@@ -602,7 +602,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "beat_check": {
       "type": "check",
@@ -623,7 +623,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "notch_cut": {
       "type": "story",
@@ -653,7 +653,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "notch_crooked": {
       "type": "story",
@@ -689,7 +689,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "chalk_snap": {
       "type": "interaction",
@@ -708,7 +708,7 @@
         "width": 0.3,
         "periodMs": 4000
       },
-      "art": "scenes/riftlight/stone-counters",
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "cord_plan",
         "narration": "Snap! A thin chalk line runs straight up the row, and the notch sits right on it."
@@ -755,7 +755,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "climb_check": {
       "type": "check",
@@ -775,7 +775,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "throw_check": {
       "type": "check",
@@ -795,7 +795,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "wing_check": {
       "type": "check",
@@ -815,7 +815,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "cord_tangle": {
       "type": "story",
@@ -842,7 +842,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "cord_run": {
       "type": "story",
@@ -861,7 +861,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "tighten": {
       "type": "interaction",
@@ -878,7 +878,7 @@
         "actionLabel": "Pull it tight",
         "objectLabel": "The count cord"
       },
-      "art": "scenes/riftlight/stone-counters",
+      "art": "scenes/riftlight/boundary-river-row",
       "onSuccess": {
         "goto": "tight",
         "narration": "The cord rises out of the grass, steady as a held breath."
@@ -915,7 +915,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "tie_plan": {
       "type": "choice_point",
@@ -947,7 +947,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "loop_check": {
       "type": "check",
@@ -967,7 +967,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "hitch_check": {
       "type": "check",
@@ -987,7 +987,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "flick_check": {
       "type": "check",
@@ -1007,7 +1007,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "tie_good": {
       "type": "story",
@@ -1026,7 +1026,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "tie_loose": {
       "type": "story",
@@ -1053,7 +1053,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "sight_plan": {
       "type": "choice_point",
@@ -1085,7 +1085,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "sight_check": {
       "type": "check",
@@ -1105,7 +1105,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "pebble_check": {
       "type": "check",
@@ -1125,7 +1125,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "star_check": {
       "type": "check",
@@ -1145,7 +1145,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "sight_found": {
       "type": "story",
@@ -1164,7 +1164,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "sight_wobble": {
       "type": "story",
@@ -1183,7 +1183,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "nudge_plan": {
       "type": "choice_point",
@@ -1215,7 +1215,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "push_check": {
       "type": "check",
@@ -1235,7 +1235,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "wedge_check": {
       "type": "check",
@@ -1255,7 +1255,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "brace_check": {
       "type": "check",
@@ -1275,7 +1275,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "fourth_ok": {
       "type": "story",
@@ -1294,7 +1294,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row-aligned"
     },
     "fourth_shift": {
       "type": "story",
@@ -1321,7 +1321,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-river-row"
     },
     "top_stone": {
       "type": "story",
@@ -1360,7 +1360,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "stone_order": {
       "type": "interaction",
@@ -1403,7 +1403,7 @@
           "Use each stone once."
         ]
       },
-      "art": "scenes/riftlight/stone-counters",
+      "art": "scenes/riftlight/boundary-mountain-carving",
       "onSuccess": {
         "goto": "compare",
         "narration": "Mossy, notched, carved. The three stones sit in their old places, and the row looks calmer for it."
@@ -1440,7 +1440,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "notch_count_check": {
       "type": "check",
@@ -1460,7 +1460,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "peak_check": {
       "type": "check",
@@ -1480,7 +1480,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "muddle": {
       "type": "story",
@@ -1499,7 +1499,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "clue": {
       "type": "story",
@@ -1519,7 +1519,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "record_plan": {
       "type": "choice_point",
@@ -1544,7 +1544,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "wrote_plain": {
       "type": "story",
@@ -1569,7 +1569,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "drew_both": {
       "type": "story",
@@ -1594,7 +1594,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "runner": {
       "type": "story",
@@ -1613,11 +1613,11 @@
           "name": "Stone keeper"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/boundary_runner",
           "name": "Runner"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "runner_check": {
       "type": "check",
@@ -1637,11 +1637,11 @@
           "name": "Stone keeper"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/boundary_runner",
           "name": "Runner"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "runner_told": {
       "type": "story",
@@ -1660,11 +1660,11 @@
           "name": "Stone keeper"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/boundary_runner",
           "name": "Runner"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "runner_short": {
       "type": "story",
@@ -1683,11 +1683,11 @@
           "name": "Stone keeper"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/boundary_runner",
           "name": "Runner"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "go_plan": {
       "type": "choice_point",
@@ -1719,11 +1719,11 @@
           "name": "Stone keeper"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/boundary_runner",
           "name": "Runner"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "runner_cake": {
       "type": "story",
@@ -1752,11 +1752,11 @@
           "name": "Stone keeper"
         },
         {
-          "figure": "characters/dragonling",
+          "figure": "cast/boundary_runner",
           "name": "Runner"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "carry_board": {
       "type": "story",
@@ -1781,7 +1781,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "tie_off": {
       "type": "story",
@@ -1806,7 +1806,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "rest_row": {
       "type": "rest",
@@ -1858,7 +1858,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "honey_buy": {
       "type": "story",
@@ -1888,7 +1888,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "share_supper": {
       "type": "story",
@@ -1921,7 +1921,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "supper": {
       "type": "story",
@@ -1940,7 +1940,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "watch": {
       "type": "story",
@@ -1959,7 +1959,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "bank_rest": {
       "type": "rest",
@@ -1973,7 +1973,7 @@
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
+      "art": "scenes/riftlight/boundary-mountain-carving"
     }
   },
   "voiceGuide": {
@@ -1989,5 +1989,51 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "fights": [],
+    "interactions": {
+      "surge_check": {
+        "props": [
+          "boundary-bundle",
+          "water-surge"
+        ]
+      },
+      "tighten": {
+        "props": [
+          "count-cord"
+        ]
+      },
+      "chalk_snap": {
+        "props": [
+          "chalk-cord"
+        ]
+      },
+      "stone_order": {
+        "props": [
+          "fight-wet-gravel",
+          "notched-stone",
+          "carved-stone"
+        ]
+      }
+    },
+    "warmUrls": [
+      "/assets/story-glyphs/coin.svg",
+      "/assets/story-glyphs/hold.svg",
+      "/assets/story-glyphs/hush.svg",
+      "/assets/story-glyphs/quick.svg",
+      "/assets/story-glyphs/slow.svg",
+      "/assets/story-glyphs/tick.svg",
+      "/assets/story-glyphs/tock.svg",
+      "/assets/story-props/boundary-bundle.webp",
+      "/assets/story-props/carved-stone.webp",
+      "/assets/story-props/chalk-cord.webp",
+      "/assets/story-props/count-cord.webp",
+      "/assets/story-props/fight-wet-gravel.webp",
+      "/assets/story-props/notched-stone.webp",
+      "/assets/story-props/water-surge.webp"
+    ],
+    "reactions": {},
+    "castPoses": {}
   }
 }

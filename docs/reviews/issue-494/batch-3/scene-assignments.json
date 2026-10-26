@@ -1,0 +1,159 @@
+{
+  "riftlight-exchange-rift": [
+    {
+      "art": "scenes/riftlight/exchange-noodle-awning",
+      "scenes": [
+        "market",
+        "morning",
+        "fish",
+        "fish_help",
+        "gull",
+        "gull_help",
+        "ship",
+        "ship_help",
+        "ship_cold",
+        "quay_rest"
+      ]
+    },
+    {
+      "art": "scenes/riftlight/exchange-barge-sacks",
+      "scenes": [
+        "delivery",
+        "delivery_sacks",
+        "delivery_moor"
+      ]
+    },
+    {
+      "art": "scenes/riftlight/exchange-leaning-crates",
+      "scenes": [
+        "quay",
+        "check_pattern",
+        "pattern_seen",
+        "pattern_missed",
+        "clear_quay",
+        "shimmer",
+        "read_light",
+        "pull",
+        "catch",
+        "anchor",
+        "swoop",
+        "smash",
+        "brace",
+        "caught",
+        "together",
+        "tumbled"
+      ]
+    },
+    {
+      "art": "scenes/riftlight/glacier-snow-lip",
+      "scenes": [
+        "through",
+        "white"
+      ]
+    }
+  ],
+  "riftlight-glacier-survival": [
+    {
+      "art": "scenes/riftlight/glacier-snow-lip",
+      "scenes": [
+        "arrival",
+        "shelter",
+        "windbreak",
+        "rocks",
+        "mend",
+        "tracks",
+        "tell_rift",
+        "ask_help",
+        "drift",
+        "drift_probe",
+        "drift_detour",
+        "drift_slip"
+      ]
+    },
+    {
+      "art": "scenes/riftlight/glacier-meltwater-step",
+      "scenes": [
+        "channel",
+        "step",
+        "sledge",
+        "wing_line",
+        "song_step"
+      ]
+    },
+    {
+      "art": "scenes/riftlight/glacier-herd-rest",
+      "scenes": [
+        "dry_bank",
+        "wet_bank",
+        "herd",
+        "patient",
+        "sleeve",
+        "hum"
+      ]
+    },
+    {
+      "art": "scenes/riftlight/departure-loaded-sledge",
+      "scenes": [
+        "departure"
+      ]
+    }
+  ],
+  "riftlight-riftseekers-departure": [
+    {
+      "art": "scenes/riftlight/departure-loaded-sledge",
+      "scenes": [
+        "map",
+        "arrival_story",
+        "arrival_question",
+        "fellowship",
+        "seren",
+        "lead",
+        "olivia",
+        "route",
+        "parting",
+        "set_out",
+        "help_now",
+        "safe_routes"
+      ]
+    },
+    {
+      "art": "scenes/riftlight/departure-chime-rest",
+      "scenes": [
+        "chime",
+        "test_chime",
+        "ring",
+        "wrap",
+        "camp"
+      ]
+    }
+  ],
+  "riftlight-ice-shelf-traverse": [
+    {
+      "art": "scenes/riftlight/ice-shelf-roped-gap",
+      "scenes": [
+        "ready",
+        "cross",
+        "cross_turns",
+        "assisted",
+        "cross_whistle"
+      ]
+    }
+  ],
+  "riftlight-headwaters-washout": [
+    {
+      "art": "scenes/riftlight/headwaters-log-chute",
+      "scenes": [
+        "jam",
+        "jam_gap",
+        "jam_push",
+        "chute",
+        "chute_ride",
+        "chute_steer",
+        "chute_brace",
+        "slip",
+        "slip_haul",
+        "slip_swing"
+      ]
+    }
+  ]
+}

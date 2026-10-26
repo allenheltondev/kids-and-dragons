@@ -1,0 +1,153 @@
+[
+  {
+    "id": "hidden-ticking-ridge",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/hidden-ticking-ridge.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape backdrop for Kids & Dragons. Warm hand-painted children's storybook gouache, fine warm-brown lines, textured natural materials, atmospheric depth, broad readable shapes at phone size. Match the reference's crafted painted finish. No people, creatures, lettering, UI, watermark or modern objects. Keep an open walkable foreground across the lower quarter for separately rendered game characters. A bare wind-scoured glacier ridge in the Frostfang mountains. A dark bucket-sized circular wind hole opens in pale ice at middle left, not a huge cave. Windblown snow crosses the surface. Farther right, a long crevasse exhales gentle white steam; a fragile narrow snow bridge crosses that crack. Both sites clearly separate, with cold snow peaks beyond and weathered rock emerging through the glacier. Golden upper-left daylight, blue-white ice and warm gray rock. No magical portal.",
+    "references": [
+      "assets/scenes/riftlight/shelf-icicles.webp"
+    ]
+  },
+  {
+    "id": "hidden-ice-tunnel",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/hidden-ice-tunnel.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape backdrop for Kids & Dragons. Warm hand-painted children's storybook gouache, fine warm-brown lines, textured natural materials, atmospheric depth, broad readable shapes at phone size. Match the reference's crafted painted finish. No people, creatures, lettering, UI, watermark or modern objects. Keep an open walkable foreground across the lower quarter for separately rendered game characters. Inside a low glacier tunnel with a clear blue ice arch at the entrance behind the viewer. Long dark icy passage ahead; faint warm lantern light catches condensation and small frost stitches across glossy walls. At its far end a narrow squeeze behind a loose roof slab, one body wide, a coil of rope beside it. Quiet mystery, not horror; layered icy blues, muted warm light. No magical doorway, no cavern hall or furniture.",
+    "references": [
+      "assets/scenes/riftlight/shelf-icicles.webp"
+    ]
+  },
+  {
+    "id": "hidden-sealed-seam",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/hidden-sealed-seam.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape backdrop for Kids & Dragons. Warm hand-painted children's storybook gouache, fine warm-brown lines, textured natural materials, atmospheric depth, broad readable shapes at phone size. Match the reference's crafted painted finish. No people, creatures, lettering, UI, watermark or modern objects. Keep an open walkable foreground across the lower quarter for separately rendered game characters. A small round chamber inside a glacier. One broad smooth glossy warm ice wall fills the rear: the BACK of a sealed seam in the singing hall. Tiny frost sparkles run down it like stitches. A very narrow unlit corner crack on the right leads behind that wall. Low stone-and-ice floor in foreground. Gentle amber reflected lantern light on warm gray rock, pale blue ice. The wall is sealed solid with no open portal, door, window or symbols.",
+    "references": [
+      "assets/scenes/riftlight/shelf-icicles.webp"
+    ]
+  },
+  {
+    "id": "hidden-ticking-fold",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/hidden-ticking-fold-v2.png",
+    "prompt": "Use case: illustration-story. The supplied glacier chamber is ONLY a style and materials reference. Paint a DIFFERENT SMALL ENCLOSED underground rock passage behind the singing hall, with low icy ceiling and damp dark rock on all three visible sides; the passage ends at a solid rock back wall. In the air one meter BEFORE that wall floats a thin vertical translucent crease of pale gold light: the Riftlight fold. It is a distortion in the air, not an opening in a wall or a built arch. Through that thin shimmering crease only, a small blurred suggestion of a gray-green sea horizon is visible. The rest of the passage is entirely ENCLOSED, no outside view, mountains, valley, sky or cliff ledge. On the solid rock beside the fold are five small scratch-like tally marks. Frost lines converge on the crease, condensation beads on rock, quiet amber lantern light on gray stone and pale blue ice. Keep a broad empty slick-stone foreground for game characters, scene fits landscape16:9. Warm hand-painted children's storybook gouache and fine brown drawing. No figures, words, letters or machinery.",
+    "references": [
+      "assets/scenes/riftlight/hidden-sealed-seam.webp"
+    ]
+  },
+  {
+    "id": "tidepocket-buried-hatch",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/tidepocket-buried-hatch.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 game scene painting for Kids & Dragons. Warm hand-painted children's storybook gouache with fine brown lines, natural texture and layered atmosphere, story-specific props legible at phone size. Match the reference's coastal terrain and muted earth colors, with warm gentle daylight. No foreground people or creatures, UI, text, lettering or watermark. Reserve a calm open foreground strip for game cast. On the Saltrot's tidal flats, a low humped island of damp gray mud ringed by thick banks of whelk, cockle and oyster shells. Set into the hump is a ROUND CLOSED wooden hatch with a stout bronze ring, half-buried under fresh cold pale gray silt. Shell stepping stones lead up to it. Reed poles, shallow winding brackish channels, tufts of coastal grass. Front door of a small burrow town, not a ruin or a sewer. Low tide, mud exposed; no warm interior visible yet.",
+    "references": [
+      "assets/scenes/riftlight/stuttering-flats.webp"
+    ]
+  },
+  {
+    "id": "saltrot-ossley-aground",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/saltrot-ossley-aground.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 game scene painting for Kids & Dragons. Warm hand-painted children's storybook gouache with fine brown lines, natural texture and layered atmosphere, story-specific props legible at phone size. Match the reference's coastal terrain and muted earth colors, with warm gentle daylight. No foreground people or creatures, UI, text, lettering or watermark. Reserve a calm open foreground strip for game cast. A modest wooden flat-bottomed ferry aground in a narrow shallow brackish channel on the Saltrot mudflats, its keel resting on soft mud. Wooden crates of flour, dried kelp bundles and squat lamp-oil jars fill the boat, long wooden boat pole laid across the gunwales. Thick shell-bank and reed mooring poles beside it, a distant low mud island with a small round hatch. Tide still low, no storm, no high water or sailing ship. Dockside practical work scene, broad foreground bank.",
+    "references": [
+      "assets/scenes/riftlight/stuttering-flats.webp"
+    ]
+  },
+  {
+    "id": "saltrot-high-shells",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/saltrot-high-shells.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 game scene painting for Kids & Dragons. Warm hand-painted children's storybook gouache with fine brown lines, natural texture and layered atmosphere, story-specific props legible at phone size. Match the reference's coastal terrain and muted earth colors, with warm gentle daylight. No foreground people or creatures, UI, text, lettering or watermark. Reserve a calm open foreground strip for game cast. A high pale bank made of countless layered shells above the Saltrot mud flats. A broad last tidal channel curves between muddy islands, a gray-green surge of incoming water beginning to roll up the channel from the left, foaming at its edge. Shell stepping stones emerge along the safest high route at right; reed warning poles and bright cloth strips stream in salt wind. Distant low coast and gray sky. Water is rising, clearly threatening the low mud, but the upper shell bank remains dry.",
+    "references": [
+      "assets/scenes/riftlight/stuttering-flats.webp"
+    ]
+  },
+  {
+    "id": "frostfang-ladder",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/frostfang-ladder.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 scene painting for Kids & Dragons. Warm crafted children's storybook gouache with fine brown lines, textured rock and snow, atmospheric depth, broad readable silhouettes. Use the reference for Frostfang mountain geography, palette and painted finish. No foreground characters, animals, lettering, UI or watermark. Quiet open foreground for separately rendered cast. The east bank of a cold brown Great River below snowy Frostfang peaks. A rough gray cliff rises from a narrow shingle shore. A long wet ROPE LADDER hangs from the cliff-top down to a flat rock beside the river; rope sides and wooden rungs, no fixed stairs. An anchoring boulder and pegs at cliff top, river washing close to the lowest rung. Broken glacier ice shelf visible high in distant background, cold daytime sunlight. The shore remains passable and not submerged.",
+    "references": [
+      "assets/scenes/riftlight/cairnstep.webp"
+    ]
+  },
+  {
+    "id": "frostfang-gravel-bar",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/frostfang-gravel-bar.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 scene painting for Kids & Dragons. Warm crafted children's storybook gouache with fine brown lines, textured rock and snow, atmospheric depth, broad readable silhouettes. Use the reference for Frostfang mountain geography, palette and painted finish. No foreground characters, animals, lettering, UI or watermark. Quiet open foreground for separately rendered cast. At the foot of the same snowy mountain cliffs, a low gravel bar sits in the middle of a fast knee-deep brown meltwater stream. Smooth pale stones lead from the near shore toward the bar, a rope line ready beside the open near bank; tufted grass on the gravel island. In the background at right a long wooden-rung rope ladder descends a low cliff to a flat shore rock. Cold Frostfang peaks and river beyond, gentle upper-left daylight. No goats painted into the background.",
+    "references": [
+      "assets/scenes/riftlight/cairnstep.webp"
+    ]
+  },
+  {
+    "id": "cairnstep-survey-slab",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/cairnstep-survey-slab.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 scene painting for Kids & Dragons. Warm crafted children's storybook gouache with fine brown lines, textured rock and snow, atmospheric depth, broad readable silhouettes. Use the reference for Frostfang mountain geography, palette and painted finish. No foreground characters, animals, lettering, UI or watermark. Quiet open foreground for separately rendered cast. At the top of a high Frostfang mountain pass: a barn-sized slab of gray stone has shifted sideways and settled, leaving a conspicuous step and seam in a rocky ridge. A narrow rock neck crosses a deep gulf beside it, marked by small stone cairns. A knotted survey cord lies loose on the broad safe survey ledge in foreground; an open blank sketch ledger is weighted with pebbles on a flat rock, tiny pencil and rolled page beside it. Snowy shoulders and distant floating island. Realistic natural rock geometry, no constructed bridge, no readable text.",
+    "references": [
+      "assets/scenes/riftlight/cairnstep.webp"
+    ]
+  },
+  {
+    "id": "cairnstep-capstone",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/cairnstep-capstone.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 scene painting for Kids & Dragons. Warm crafted children's storybook gouache with fine brown lines, textured rock and snow, atmospheric depth, broad readable silhouettes. Use the reference for Frostfang mountain geography, palette and painted finish. No foreground characters, animals, lettering, UI or watermark. Quiet open foreground for separately rendered cast. A high narrow rock neck in the Frostfang pass. A tall unfinished stacked-stone cairn stands on a broad flat ledge beside the safe center of the route. Its heavy flat oval CAPSTONE rests on the ground nearby, ready to lift, visibly separate from the cairn. Two smaller completed cairns mark the route ahead. Snowy peaks, deep white gulf, distant floating island and fluttering small signal flag. Bright cold afternoon, open safe ledge foreground. No hovering stone or magical effect.",
+    "references": [
+      "assets/scenes/riftlight/cairnstep.webp"
+    ]
+  },
+  {
+    "id": "boundary-river-row",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/boundary-river-row.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 landscape backdrop for Kids & Dragons. Warm hand-painted storybook gouache, fine brown linework, textured weathered stone, broad clear forms, gentle sunlight, layered green foothills. Reference image is for regional river geography and painted style only; do not copy its bridge. No people, animals, buildings, lettering, numbers, UI or watermark. Open grassy foreground for game characters. On the grassy east bank of the broad brown Great River in the Red Sky Foothills, exactly NINE old upright boundary stones form a single crooked row climbing a gentle slope from wet gravel near the river up to a tall ancient stone at top. Each stone has a carved notch and a simple thick iron rope ring, but no count cord has been threaded yet. The lowest stone leans toward the water, the fourth stone in the row leans slightly, others varied mossy and weathered. Nine stones are clearly separated and countable, one row only, no extra standing rocks. Loose coil of cord, chalk and small kettle on safe foreground grass.",
+    "references": [
+      "assets/scenes/riftlight/ashspan-mended-deck.webp"
+    ]
+  },
+  {
+    "id": "boundary-mountain-carving",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/boundary-mountain-carving.png",
+    "prompt": "Use case: illustration-story. Production wide 16:9 landscape backdrop for Kids & Dragons. Warm hand-painted storybook gouache, fine brown linework, textured weathered stone, broad clear forms, gentle sunlight, layered green foothills. Reference image is for regional river geography and painted style only; do not copy its bridge. No people, animals, buildings, lettering, numbers, UI or watermark. Open grassy foreground for game characters. Near the top of the grassy river bank, a large weathered upright ancient boundary stone is deeply carved with a volcano and a spreading old eruption plume. The mountain in the carving has a broad shoulder on its RIGHT. Beyond the stone on the far horizon the real green-gray mountain has its shoulder distinctly farther LEFT, an observable mismatch of outlines. Beside the stone on foreground grass lies a weathered wooden record board with plain tally scratches and an unfinished charcoal mountain sketch, paper rubbing, charcoal wrapped in cloth, a small chisel. No readable letters or numbers, no written text, no active eruption on real mountain. View close enough for carved mountain to read clearly, open foreground; no other standing stones needed.",
+    "references": [
+      "assets/scenes/riftlight/ashspan-mended-deck.webp"
+    ]
+  },
+  {
+    "id": "yeti_grit_seller",
+    "kind": "cast",
+    "source": "art/source/issue-494/batch-2/yeti_grit_seller.png",
+    "prompt": "Use case: illustration-story. One new young yeti grit seller for Kids & Dragons, using the input image ONLY as a painted style and species anatomy reference, not as the same individual. Friendly short sturdy bipedal young yeti, fluffy pale gray-white fur, small rounded ears, warm beige face, curious dark eyes, a copper knitted scarf and simple moss-brown waistcoat. Both broad bare feet on the ground. Carry a burlap sack open at the top with visible coarse sand and small grit stones; small hand-painted wooden sign attached to sack says exactly GRIT. One free hand offering a pinch of grit. No book, no red singer robe or blue patterned scarf. Expressive crafted children's storybook illustration, dark brown tapered outlines, textured soft cel shading, upper-left light. Entire figure on genuinely transparent background, no floor or shadow. Square canvas, generous 8% clear margins, feet aligned near y900 on 1024 canvas. No extra characters or watermark.",
+    "references": [
+      "assets/cast/young_yeti_singer/assembled.png"
+    ]
+  },
+  {
+    "id": "duckling",
+    "kind": "entity",
+    "source": "art/source/issue-494/batch-2/duckling.png",
+    "prompt": "Use case: illustration-story. One tiny young duckling, a production stage animal cutout for Kids & Dragons. A fluffy warm yellow duckling with soft cream cheek and belly, short orange webbed feet planted on the same ground line, short broad orange bill, bright curious eyes, tiny folded fluffy wings and upturned little tail. Three-quarter side view, inquisitive slightly open beak as if peeping. Natural baby duck anatomy, round but not a toy or mascot; no clothing, no hat, no props. Warm crafted children's storybook illustration with tapered dark-brown outlines, textured soft cel shading and upper-left light, readable at small size. Full body centered on genuinely transparent background, no floor or cast shadow, no lettering or watermark. Square canvas with generous clear margins; feet near y900 at 1024 size.",
+    "references": []
+  },
+  {
+    "id": "tidepocket-open-hatch",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/tidepocket-open-hatch.png",
+    "prompt": "Use case: precise-object-edit. Edit target is the closed Tidepocket hatch painting. Preserve the exact composition, mud island, shell stepping-stones, coastal channels, distant deadwood, grasses, posts, sky, lighting and storybook brushwork. Change ONLY the door state: clear the blocking gray silt from its threshold, swing the entire round wooden hatch UP on its top hinge and prop it open above the entrance. The revealed round opening leads down into a cozy burrow with warm amber lamplight and a short wooden ladder descending below ground. No second door, no people, no animals or text. Keep the open foreground and landscape frame.",
+    "references": [
+      "art/source/issue-494/batch-2/tidepocket-buried-hatch.png"
+    ]
+  },
+  {
+    "id": "boundary-river-row-aligned",
+    "kind": "scene",
+    "source": "art/source/issue-494/batch-2/boundary-river-row-aligned.png",
+    "prompt": "Use case: precise-object-edit. Edit target is this row of NINE river boundary stones. Preserve exact nine stones, rings, placement, river, hills, daylight, kettle, charcoal, grass and painting composition. Show the COMPLETED repair state: straighten the lowest stone beside the water and the fourth stone from the bottom so all nine stones stand upright along the row. Thread ONE continuous thick natural rope count-cord through ALL NINE metal rings from bottom to top, pulled taut, with secure knots at both ends. Remove the loose coil from foreground because that rope is now in use. No extra posts or stones, no extra cords, no people, lettering or magic. Same 16:9 warm hand-painted storybook gouache.",
+    "references": [
+      "assets/scenes/riftlight/boundary-river-row.webp"
+    ]
+  }
+]

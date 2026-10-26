@@ -8,7 +8,8 @@ import { describe, expect, it } from "vitest";
 import type { Chapter } from "@kad/shared";
 import { makeChapter } from "../../../shared/src/test-fixtures";
 import { makeCharacter, makeMember } from "../testing/fixtures";
-import { chapterAssets, upcomingAssets } from "./prefetch";
+import { upcomingAssets } from "./prefetch";
+import { chapterAssets } from "./chapter-art";
 
 /**
  * The shared fixture, with real art: clearing → (check_squeeze | shrine);

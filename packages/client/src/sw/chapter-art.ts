@@ -7,11 +7,11 @@
  * The worker cannot import, so `sw-build.ts` concatenates this file (with
  * `world/art-paths.ts`, whose URL helpers it calls) into `sw.js` and drops
  * the `import`/`export` lines. Nothing here may import anything at runtime
- * beyond `art-paths.ts`, and every name here is a global in the worker.
+ * beyond the URL helpers and generated art list, and every name here is a global in the worker.
  */
 
 import type { Chapter, ResolvedCharacter } from "@kad/shared";
-import { biomeBackdropUrl, biomeTilesUrl, characterWorldArtUrl, enemyArtUrl, sceneBackdropUrl } from "../world/art-paths";
+import { castArtUrl, biomeBackdropUrl, biomeTilesUrl, characterWorldArtUrl, enemyArtUrl, sceneBackdropUrl } from "../world/art-paths";
 
 /** What a figure's art depends on: a seated party member, or a hero from the journal. */
 export interface FigureOf {
@@ -38,10 +38,15 @@ export function chapterAssets(chapter: Chapter | null, party: readonly FigureOf[
     const scene = chapter.scenes[id];
     if (!scene) continue;
     urls.add((scene.art ? sceneBackdropUrl(scene.art) : null) ?? biomeBackdropUrl(chapter.biome));
+    for(const member of ("cast" in scene ? scene.cast ?? [] : [])) {
+      const url=castArtUrl(member.figure);if(url)urls.add(url);
+      if(member.figure==="entities/skywardens")for(const id of ["skywarden_griffin","skywarden_faun","skywarden_centaur"])urls.add("/assets/cast/"+id+"/assembled.png");
+    }
     if (scene.type === "encounter") {
       urls.add(biomeTilesUrl(chapter.biome));
-      for (const enemy of scene.enemies) if (enemy.art) urls.add(enemyArtUrl(enemy.art));
+      for (const enemy of scene.enemies) {const art=enemy.art ?? (enemy.creature ? "enemies/"+enemy.creature : null);if(art)urls.add(enemyArtUrl(art));}
     }
   }
+  for(const url of chapter.presentation?.warmUrls ?? [])urls.add(url);
   return [...urls];
 }

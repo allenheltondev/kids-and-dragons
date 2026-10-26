@@ -1,0 +1,104 @@
+[
+  {
+    "id": "pebble",
+    "source": "art/source/issue-494/pebble.png",
+    "prompt": "Use case: illustration-story. Pebble, young female quadruped griffin surveyor apprentice, inked beak and one inked wing, rolled survey page held under folded wing, pale cream and russet feathers, sage satchel. Warm textured storybook cutout with dark brown outlines and upper-left light. Full figure on genuine transparent square background, feet near y900 on 1024 canvas; no shadow, text or scenery."
+  },
+  {
+    "id": "dob",
+    "source": "art/source/issue-494/dob.png",
+    "prompt": "Use case: illustration-story. Production game NPC transparent full-body cutout, warm crafted children's storybook illustration with tapered dark-brown outlines and textured soft cel shading, upper-left light. Expressive sturdy animal proportions, readable at 120px; not chibi or 3D. One figure only, no text, no scenery, no floor shadow. Square canvas, entire subject with generous 8% clear margins. Dob the cheerful kite seller: a friendly adult bigfoot with tawny shaggy fur, broad expressive face, straw travel hat and patched moss-green vest. Bipedal animal bigfoot, two feet planted. A small two-wheeled wooden cart behind his side carries a bundle of colorful paper kites on bamboo spars, fluttering kite tails. He holds a paper map upside down, smiling absentmindedly. Cart compact and secondary to character, clear silhouette."
+  },
+  {
+    "id": "bryn",
+    "source": "art/source/issue-494/bryn.png",
+    "prompt": "Use case: illustration-story. Production game NPC transparent full-body cutout, warm crafted children's storybook illustration with tapered dark-brown outlines and textured soft cel shading, upper-left light. Expressive sturdy animal proportions, readable at 120px; not chibi or 3D. One figure only, no text, no scenery, no floor shadow. Square canvas, entire subject with generous 8% clear margins. Bryn the dragonling bridge mender: quadruped small sturdy dragon with pale warm-cream scales, rusty orange crest, muted russet folded wings, broad snout and long sturdy tail. Worn leather work apron and a belt pouch containing wooden wedges; one forepaw planted confidently atop a little timber offcut (other three grounded), proud capable expression. No hands or humanoid body."
+  },
+  {
+    "id": "tilly",
+    "source": "art/source/issue-494/tilly.png",
+    "prompt": "Use case: illustration-story. Production game NPC transparent full-body cutout, warm crafted children's storybook illustration with tapered dark-brown outlines and textured soft cel shading, upper-left light. Expressive sturdy animal proportions, readable at 120px; not chibi or 3D. One figure only, no text, no scenery, no floor shadow. Square canvas, entire subject with generous 8% clear margins. Tilly the griffin egg farmer: adult quadruped griffin with cream eagle face and chest, warm brown folded wings, ochre beak and foreclaws, lion hindlegs and long tufted tail. Woven shoulder bag with a few intact pale duck eggs visible and one tiny yellow duckling peeking from its opening; practical terracotta kerchief, kindly surprised smile. All four feet grounded, no human hands."
+  },
+  {
+    "id": "tamsin_river_keeper",
+    "source": "art/source/issue-494/tamsin_river_keeper.png",
+    "prompt": "Use case: illustration-story. Production game NPC cutout in warm crafted children's storybook illustration, tapered dark-brown outlines, textured soft cel shading, upper-left light, readable at 120px. Full figure on genuinely transparent background; no floor, no shadow, text or scenery. Entire subject centered in square canvas with generous 8% margins. Animal anatomy, expressive sturdy proportions; not humanoid except yetis/bigfeet, not chibi, not 3D. Tamsin, female adult griffin river-line keeper: four planted legs, cream eagle face and chest, deep moss-green folded wing feathers, tawny lion body, ochre eagle foreclaws and beak, thick green tail tuft. Rope coil slung over a weathered leather shoulder harness, small brass river bell. Alert reassuring expression and proud watchful stance, no weapons. Clearly distinct from a blue-feathered ridge griffin."
+  },
+  {
+    "id": "boundary_runner",
+    "source": "art/source/issue-494/boundary_runner.png",
+    "prompt": "Use case: illustration-story. Production game NPC cutout in warm crafted children's storybook illustration, tapered dark-brown outlines, textured soft cel shading, upper-left light, readable at 120px. Full figure on genuinely transparent background; no floor, no shadow, text or scenery. Entire subject centered in square canvas with generous 8% margins. Animal anatomy, expressive sturdy proportions; not humanoid except yetis/bigfeet, not chibi, not 3D. Young dragonling runner, four feet planted, leaning forward catching breath, rosy flushed cheeks, mouth open in a pant with tongue visible, tired but eager face. Warm pale-cream scales, copper red neck spines and folded small wings, russet tail crest. Short mustard messenger scarf and compact leather message satchel. No floating sweat symbols."
+  },
+  {
+    "id": "snowhorn_kid",
+    "source": "art/source/issue-494/snowhorn_kid.png",
+    "prompt": "Use case: illustration-story. Production game NPC cutout in warm crafted children's storybook illustration, tapered dark-brown outlines, textured soft cel shading, upper-left light, readable at 120px. Full figure on genuinely transparent background; no floor, no shadow, text or scenery. Entire subject centered in square canvas with generous 8% margins. Animal anatomy, expressive sturdy proportions; not humanoid except yetis/bigfeet, not chibi, not 3D. A very small playful baby snowhorn goat, four grounded sturdy legs, fluffy warm ivory wool, short curved little honey-colored horns, tiny hooves, round pinkish nose and bright mischievous eyes. Simple red knitted collar with one small bronze bell, a tuft of snow on the forehead. Noticeably a kid with juvenile short muzzle and small horns, no adult horns. Tail lifted slightly."
+  },
+  {
+    "id": "sky-landing",
+    "kind": "scene",
+    "source": "art/source/issue-494/sky-landing.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape backdrop for Kids & Dragons fantasy storybook adventure. Warm hand-painted children's book gouache, fine brown drawing, textured stone and lush atmospheric clouds, cinematic depth, readable broad silhouettes at phone size. No text, labels, UI, watermark or foreground characters. Leave calm open stone ground across lower quarter for separately composited cast. A windblown floating stone island landing pad high above a sea of clouds; gold-roofed small shrine to the left rear, thick roots dangling below the island edge. Old rope road with snapped planks ending in empty sky on the right, sturdy rope rings fixed to the foreground pad, warning banner posts blowing sideways. Bright cold morning, distant drifting islands. Camera safely on the island looking diagonally toward the dangerous landing edge."
+  },
+  {
+    "id": "signal-pole",
+    "kind": "scene",
+    "source": "art/source/issue-494/signal-pole.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape backdrop for Kids & Dragons fantasy storybook adventure. Warm hand-painted children's book gouache, fine brown drawing, textured stone and lush atmospheric clouds, cinematic depth, readable broad silhouettes at phone size. No text, labels, UI, watermark or foreground characters. Leave calm open stone ground across lower quarter for separately composited cast. On the same sky island: a very tall wooden pole carrying an UNLIT black iron signal basket, its square cracked stone socket exposed, slack guy ropes around it, wedge stones, small ladder and pile of dry logs. Pole leans slightly. Gold-roofed shrine in background, floating islands and high wind clouds. Daylight, ochre stone and muted green grass. Repair scene before lighting; no fire anywhere."
+  },
+  {
+    "id": "signal-gale",
+    "kind": "scene",
+    "source": "art/source/issue-494/signal-gale.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape backdrop for Kids & Dragons fantasy storybook adventure. Warm hand-painted children's book gouache, fine brown drawing, textured stone and lush atmospheric clouds, cinematic depth, readable broad silhouettes at phone size. No text, labels, UI, watermark or foreground characters. Leave calm open stone ground across lower quarter for separately composited cast. The same floating island signal station at dusk in a gale. A straight tall wooden pole with a black iron basket at its top filled with a bright gold-orange signal fire, taut guy ropes secured in stone foot, short ladder, few logs beside foot. Kite-tail flags stream hard in the wind, dense layered clouds, distant islands with tiny answering gold lights. Small gold-roofed shrine behind. Basket clearly visible and lit; foreground open stone."
+  },
+  {
+    "id": "sky-ferry",
+    "kind": "scene",
+    "source": "art/source/issue-494/sky-ferry.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape backdrop for Kids & Dragons fantasy storybook adventure. Warm hand-painted children's book gouache, fine brown drawing, textured stone and lush atmospheric clouds, cinematic depth, readable broad silhouettes at phone size. No text, labels, UI, watermark or foreground characters. Leave calm open stone ground across lower quarter for separately composited cast. Small wooden flying ferry docking alongside a floating stone island landing pad at dusk. Broad flat-bottomed boat with simple wood rail, taut mooring lines between boat and pad, canvas canopy and baskets of freight, no visible crew. Gold-lit signal basket on tall pole distant left; gold-roofed shrine, scattered floating islands and windblown clouds. Ferry floats on AIR over cloud sea, no water, no balloons, no mechanical engines. Open stone landing foreground."
+  },
+  {
+    "id": "windbreak-camp",
+    "kind": "scene",
+    "source": "art/source/issue-494/windbreak-camp.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape backdrop for Kids & Dragons fantasy storybook adventure. Warm hand-painted children's book gouache, fine brown drawing, textured stone and lush atmospheric clouds, cinematic depth, readable broad silhouettes at phone size. No text, labels, UI, watermark or foreground characters. Leave calm open stone ground across lower quarter for separately composited cast. Warm sheltered nighttime camp on a floating island high over clouds. Low wind wall of wicker baskets and heavy blankets behind a small stone shrine, paper kites hung along the wall, one kite shading a lantern; little safe stone firepit, barley tea steaming from a pot into chipped cups, rolled blankets. Three small wind bells hanging by shrine. Stars and far mist beyond, hint of a very distant cloud-whale silhouette. Inviting amber firelight against blue-gray night, quiet open foreground; no figures."
+  },
+  {
+    "id": "shelf-icicles",
+    "kind": "scene",
+    "source": "art/source/issue-494/shelf-icicles.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape backdrop for Kids & Dragons fantasy adventure. Beautiful hand-painted children's storybook gouache, fine warm-brown lines, textured natural materials, broad readable silhouettes and believable geography, dramatic atmospheric depth. No text, lettering, UI or watermark; no foreground people or creatures. Composition leaves a quiet open ground strip in lower quarter for game cast. A perilous narrow ice shelf along a huge glacier, a dark rocky outcrop with a large rusty iron mooring ring bolted in; a thick rope tied through the ring, long icicle curtain hanging over the shelf farther along. Path narrows around the outcrop; a crack crosses it. Great River below and snowy Frostfang peaks receding into bright cold sky. Blue-white ice, warm gray rock, golden upper-left sunlight. Readable distinct rusted ring at middle-left, no bridges or buildings."
+  },
+  {
+    "id": "headwaters-floes",
+    "kind": "scene",
+    "source": "art/source/issue-494/headwaters-floes.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape backdrop for Kids & Dragons fantasy adventure. Beautiful hand-painted children's storybook gouache, fine warm-brown lines, textured natural materials, broad readable silhouettes and believable geography, dramatic atmospheric depth. No text, lettering, UI or watermark; no foreground people or creatures. Composition leaves a quiet open ground strip in lower quarter for game cast. The Great River headwaters in a glaciated mountain valley, turbulent cold blue-green water carrying a field of broad flat ice floes toward a tangle of brown fallen tree trunks at a narrow rocky chute. Tall melting ice arch above the distant inflow; safe dark rock ledge and a living wind-bent tree on right bank. Snowy slopes and sharp peaks. Eye level from a low bank; ice floes and log jam are separate visible regions, not a frozen river. Bright cold morning."
+  },
+  {
+    "id": "ashspan-broken-deck",
+    "kind": "scene",
+    "source": "art/source/issue-494/ashspan-broken-deck.png",
+    "prompt": "Use case: illustration-story. Production 16:9 landscape backdrop for Kids & Dragons fantasy adventure. Beautiful hand-painted children's storybook gouache, fine warm-brown lines, textured natural materials, broad readable silhouettes and believable geography, dramatic atmospheric depth. No text, lettering, UI or watermark; no foreground people or creatures. Composition leaves a quiet open ground strip in lower quarter for game cast. Ashspan Bridge over a broad muddy brown Great River. Old stone bridge piers hold a broken timber deck with a large clearly visible gap and a cracked support beam. On far muddy bank a tipped wooden plank cart is sunk near landing ramp; a low flat boat with long boat pole tied up beneath bridge, long repair timbers and coiled rope on near stone landing. A modest bridge-house beside the road, distant green river hills. Warm late morning, practical worksite; no magical Gemfall city architecture, no characters."
+  },
+  {
+    "id": "tilly_eggs",
+    "kind": "cast",
+    "source": "art/source/issue-494/tilly_eggs.png",
+    "prompt": "Use case: precise-object-edit. Edit target: Tilly the griffin egg farmer. Preserve the entire griffin identity, pose, four legs, feather colors, scarf, woven bag, outlines, lighting, composition, and transparent background. Make exactly one change: remove the yellow duckling from the shoulder basket and replace that area with intact pale duck eggs nestled in straw. Every egg is unhatched, no cracks, no beaks, no birds. This is Tilly BEFORE the eggs hatch. Keep all other details unchanged. Full figure cutout on transparent background.",
+    "references": [
+      "art/source/issue-494/tilly.png"
+    ]
+  },
+  {
+    "id": "ashspan-mended-deck",
+    "kind": "scene",
+    "source": "art/source/issue-494/ashspan-mended-deck.png",
+    "prompt": "Use case: precise-object-edit. Edit this Ashspan Bridge painting into its repaired outcome. Preserve geography, stone piers, bridge-house, hills, river, boat, color palette and hand-painted storybook style. Repair the entire broken timber bridge: continuous straight new wooden deck spans the central gap, evenly spaced planks, secure support beam and rope lashings, no breaks or holes, rail continuous at both sides. Stand the tipped cart upright on the far landing. Warm late afternoon sunlight. No people, animals or text. Maintain wide landscape composition and open bank foreground.\nRevision: Use case: precise-object-edit. The bridge deck is repaired but a broken diagonal timber still hangs below its left span. Remove that broken dangling diagonal timber and every splinter under the bridge. Replace it with an intact clean structural diagonal brace joined firmly at both ends. All support beams underneath must be intact, smooth-ended, secured to their sockets; no snapped beams. Preserve the newly continuous bridge deck and rail, stone piers, boat, upright cart, foreground, houses, geography, warm afternoon light, colors, wide composition and storybook painted style exactly. No text or new figures.",
+    "references": [
+      "art/source/issue-494/ashspan-broken-deck.png",
+      "art/source/issue-494/ashspan-mended-deck-v1.png"
+    ]
+  }
+]
