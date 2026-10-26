@@ -1,0 +1,71 @@
+{
+  "issue": 497,
+  "date": "2026-10-26",
+  "generator": "Built-in image_gen",
+  "reference": "assets/scenes/gemfall/ditch-plank-mimics.webp",
+  "export": {
+    "size": [
+      1920,
+      1080
+    ],
+    "format": "WebP",
+    "quality": 88,
+    "resample": "Lanczos"
+  },
+  "assets": [
+    {
+      "chapter": "gemfall-03a",
+      "slug": "queue-camp-crabs",
+      "source": "exec-09b446ab-1658-41f2-a9b6-096fd118f3a8.png",
+      "prompt": "Use case: illustration-story. Create one production game backdrop for Kids & Dragons, Gemfall chapter 03a, 'queue-camp-crabs'. Landscape 16:9, 1920x1080 composition. Match the supplied reference ONLY for polished painterly storybook medium, dimensional soft brushwork, tactile wood, stone, plants, and warm child-friendly fantasy atmosphere. New place: dusk at the stone-crossing queue, on a wide river bank. In the middle distance, a small orderly camp of folded wool blankets and a large soup pot beside an unlit cooking tripod, a few sturdy wooden gem carts carrying covered crates with a faint amber and teal glow seeping from seams. A gentle bank slopes toward the broad river and the first stones of an old crossing; orange sunset sky with violet clouds and distant wooded hills. The place feels patient, inviting and slightly magical, never frightening. Set all large props mainly in the upper two thirds and along edges. Lower third is a broad open earth-and-short-grass stage for separately drawn character sprites; keep central sight line clear and readable in a mobile center crop. No people, no creatures, no crabs, no silhouettes, no readable text, numbers, labels, letters, UI, border, frame or watermark. Full bleed environment painting, no split panels. Reference scene is not the subject: do not copy its ditch, planks, cake table or hay cart.",
+      "scenes": [
+        "scene_crab_dusk",
+        "scene_crabs_turned",
+        "scene_crabs_sent_home"
+      ],
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "sourceSha256": "8a6c3769ae5610354b06efce21e9fe24cfd3a82b8f585feaf38b8233700cd7c0",
+      "productionSha256": "0dded2d9701656627f776965e0f4ec92456d14f2165905a1a1acc6224e98b32f",
+      "productionBytes": 618900
+    },
+    {
+      "chapter": "gemfall-03b",
+      "slug": "marsh-steps-crabs",
+      "source": "exec-6e7c772e-4c62-4460-858b-afc7fc8b982c.png",
+      "prompt": "Use case: illustration-story. One production game environment backdrop for Kids & Dragons, Gemfall chapter 03b, 'marsh-steps-crabs'. Wide landscape 16:9 composition, 1920x1080. Reference image is STYLE ONLY: match its polished dimensional painterly storybook brushwork, tactile natural materials, inviting family-friendly fantasy for children age 8. New scene: quiet marsh shallows, dark teal slow water crossed by a small bank and an ancient worn stone step in the upper-middle of frame. On the step a charming gleaming heap of objects lost by travelers: several mismatched silver and brass spoons, tiny colorful buttons, a copper teapot lid, little beads and a bent buckle, clearly mundane lost things, not coins or treasure chests. Mossy stone, tall knotted reeds framing the sides, hanging willow foliage, floating leaves and soft luminous mist. Late-afternoon soft gold filters through the green canopy onto the stone and objects; cool blue-green water, gentle mystery without danger. Lower third broad clear shallow-water/muddy bank for separately rendered character sprites; keep large props and reeds at edges or upper two thirds, central mobile crop readable. Absolutely no people, no animals, no crabs, no wisps or creatures, no silhouettes, no face shapes. No text, letters, numbers, UI, frame or watermark. Full bleed single painting. Do not copy the reference's ditch, planks, hay cart, cake table or countryside road.",
+      "scenes": [
+        "scene_crab_shallows",
+        "scene_crabs_shooed",
+        "scene_crabs_rescue"
+      ],
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "sourceSha256": "2b83edbe691ddeeb064e76fa381e84f86bb883d8648a49597d660971ba31a6ff",
+      "productionSha256": "f2fa68bffa2e97d1f2e714fed50a71cfc1e17d55bc8b7e74ee3e1ae022f4c9d7",
+      "productionBytes": 602076
+    },
+    {
+      "chapter": "gemfall-03c",
+      "slug": "ford-reed-crabs",
+      "source": "exec-6d6e45c3-054c-4f20-9701-166daf563b59.png",
+      "prompt": "Use case: illustration-story. One production backdrop for Kids & Dragons Gemfall chapter 03c, 'ford-reed-crabs'. Wide landscape 16:9, target composition 1920x1080. Reference is ONLY a style guide: retain its polished painterly storybook brushwork, richly dimensional natural textures, warm friendly fantasy for children age 8. New place: the west ford on a quiet morning. A broad shallow river flows from upper left to lower right, its first irregular stepping stones surrounded by thick fresh reeds. A sturdy lead wooden wagon waits empty at the water's edge on the upper left bank, carrying tied cloth bundles and covered crates. Cool wisps of morning mist hover over the farther water, early sunlight catching the wet stones and reed tips, distant wooded hills gently fading. No bridge: the ford is crossed by stepping stones. Lower third must be a broad open gravel-and-earth riverbank with very shallow water along one side, a clean walking-stage area for separately rendered game figures. Place wagon and tallest reeds above or beside this open foreground; center-crop should still communicate a misty ford and stepping stones. Gentle anticipation, never frightening. No people, animals, horses, creatures, crabs or character silhouettes, no figures inside wagon. No readable text, numbers, lettering, symbols, UI, border, frame or watermark. Full bleed single environment painting. Do not reproduce the reference ditch, planks, cakes, hay-cart or road.",
+      "scenes": [
+        "scene_reed_crabs",
+        "scene_crabs_cleared",
+        "scene_crabs_coaxed"
+      ],
+      "sourceSize": [
+        1672,
+        941
+      ],
+      "sourceSha256": "5737a542ce670d2d00ff1c2e5124ddea9b515761d6c6c9ec9c344564f3160ab5",
+      "productionSha256": "43b1b687626f65765d565734d9eb608de8e8c42f29b1d6fc0c0125180e5c8dd5",
+      "productionBytes": 645010
+    }
+  ]
+}

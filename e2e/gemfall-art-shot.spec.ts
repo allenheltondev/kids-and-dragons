@@ -6,7 +6,8 @@
  * jump, then photographs chapter 02 on its actual TV and phone surfaces.
  */
 import { expect, test, type BrowserContextOptions } from "@playwright/test";
-import type { ClientIntent, RunState } from "../packages/shared/src/index";
+import type { Chapter, ClientIntent, RunState } from "../packages/shared/src/index";
+import fightArt from "../art/source/gemfall-03-fights.json" with { type: "json" };
 import type { SeedResponse, SeededPhone } from "../packages/server/src/dev-seed";
 import { onAir } from "./seed";
 
@@ -133,5 +134,58 @@ test("photograph Gemfall chapter 02 art and relaxed tracking on TV and phone", a
     await expect(helpButton).toBeVisible();
   } finally {
     await Promise.all(contexts.map((context) => context.close().catch(() => undefined)));
+  }
+});
+
+test("photograph chapter 03 fight introductions and outcomes on TV and phone", async ({ browser }) => {
+  test.setTimeout(240_000);
+  for (const asset of fightArt.assets) {
+    const seeded = await fetch(`${API}/api/dev/seed`, {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ mode: "party", tv: true, campaignId: "gemfall", begin: true, sceneId: "rest_northbound",
+        heroes: [{ name: "Aster", species: "unicorn", class: "songkeeper", stats: { might: 0, quick: 0, clever: 0, heart: 3 } }] }),
+    });
+    expect(seeded.ok).toBe(true);
+    const table = await seeded.json() as SeedResponse;
+    const tvContext = await browser.newContext({ viewport: { width: 1920, height: 1080 }, storageState: tvStorage(table) });
+    const phoneContext = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, storageState: phoneStorage(table.phones[0]!) });
+    try {
+      const tv = await tvContext.newPage();
+      const phone = await phoneContext.newPage();
+      await Promise.all([tv.goto(`/tv/${table.code}`), phone.goto(`/p/${table.code}`)]);
+      await Promise.all([onAir(tv), onAir(phone)]);
+      await send(phone, table.code, { type: "ADVANCE" });
+      await send(phone, table.code, { type: "READY", ready: true });
+      await send(phone, table.code, { type: "CONTINUE_CAMPAIGN", campaignId: "gemfall" });
+      await send(phone, table.code, { type: "PLAYTEST_GOTO", sceneId: "choice_rumour_board" });
+      const choiceId = asset.chapter === "gemfall-03a" ? "east" : asset.chapter === "gemfall-03b" ? "west" : "north";
+      await send(phone, table.code, { type: "CHOOSE", choiceId });
+      await send(phone, table.code, { type: "ADVANCE" });
+      await send(phone, table.code, { type: "READY", ready: true });
+      await send(phone, table.code, { type: "CONTINUE_CAMPAIGN", campaignId: "gemfall" });
+      const chapter = await (await tv.request.get(`/content/chapters/${asset.chapter}.json`)).json() as Chapter;
+      for (const [index, sceneId] of asset.scenes.entries()) {
+        await send(phone, table.code, { type: "PLAYTEST_GOTO", sceneId });
+        const scene = chapter.scenes[sceneId]!;
+        expect(scene.art).toBe(`scenes/gemfall/${asset.slug}`);
+        await expect(tv.getByText(scene.narration, { exact: true }).first()).toBeVisible();
+        const gotIt = phone.getByRole("button", { name: "Got it", exact: true });
+        if (await gotIt.isVisible()) await gotIt.click();
+        await phone.getByRole("navigation", { name: "What to look at" }).getByRole("button", { name: "World", exact: true }).click();
+        await expect(tv.getByTestId("chapter-preface")).toHaveCount(0, { timeout: 30_000 });
+        await expect(phone.getByTestId("chapter-preface")).toHaveCount(0, { timeout: 30_000 });
+        for (const page of [tv, phone]) {
+          await page.evaluate(async (url) => {
+            const image = new Image(); image.src = url; await image.decode();
+            await new Promise<void>((done) => requestAnimationFrame(() => requestAnimationFrame(() => done())));
+          }, `/assets/${scene.art}.webp`);
+        }
+        const folder = index === 0 ? "docs/review/gemfall-03-fights" : "test-results/gemfall-03-fights";
+        await tv.screenshot({ path: `${folder}/${sceneId}-tv.png` });
+        await phone.screenshot({ path: `${folder}/${sceneId}-phone.png` });
+      }
+    } finally {
+      await Promise.all([tvContext.close(), phoneContext.close()]);
+    }
   }
 });

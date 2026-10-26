@@ -2,6 +2,14 @@
 
 The chapter 01–02 pilot for issue #497 is documented in the [pilot art review](../review/gemfall-01-02-pilot/README.md).
 
+The next #497 delivery adds three fight-arc paintings for chapters 03a–03c:
+`queue-camp-crabs`, `marsh-steps-crabs`, and `ford-reed-crabs`. Each is a
+1920×1080 quality-88 WebP in `assets/scenes/gemfall/`, shared by that chapter's
+fight introduction and both outcome scenes. See the [chapter 03 fight review](../review/gemfall-03-fights/README.md)
+for all nine scene mappings and actual TV/phone captures, and the
+[source record](../../art/source/gemfall-03-fights.json) for exact generation
+prompts, source and production hashes, and export details. Gameplay is unchanged.
+
 Six backdrops created with the built-in image generation tool. Production files live in
 `assets/scenes/gemfall/`: 1920×1080 WebP, quality 88, about 3.0 MB total. Original generated
 PNGs remain in the local Codex generated-images directory. Existing biome art is unchanged.

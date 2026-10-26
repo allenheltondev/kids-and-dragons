@@ -259,13 +259,15 @@ const DIGESTS: PreEpicSave["digests"] = {
 // Re-pinned for PR #499 review: shared interactions cover alternate success
 // routes in 03c, 05a and 08. No rewards, flags, checks or endings changed;
 // the ending, road, setback and resumed-save digests remain pinned.
+// Re-pinned for #497 chapter 03a/03b/03c fight backdrops: nine scene.art
+// fields only. All gameplay content and gameplay digest constants are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
   "chapters/gemfall-01.json": "67a4b9a4d8a8be313734b201acc02cd8a26a164f22f7b4df2330ef15fd74b8f8",
   "chapters/gemfall-02.json": "ab26cdedc0b4af9f0153e75829ba49220c40e323bf6d739309cdfc82c101911e",
-  "chapters/gemfall-03a.json": "238ed5c991bd49835a583890fd41cdfca9061e31f31f6664a5eb68243ea27966",
-  "chapters/gemfall-03b.json": "772b4ce6d85b071ba2563d9925d8d05e8dbf76d3a47cbd446536d80dd4108f61",
-  "chapters/gemfall-03c.json": "791d23ee397910abcb5a7766b10569851684938aa7b796279dd55a03c84b2ecf",
+  "chapters/gemfall-03a.json": "2b9e13fb7c19dddfc82ca08c79c6486c0423b1c8b103ddb525cdb8d3fe3979e9",
+  "chapters/gemfall-03b.json": "372dcb9a228be80185d8e217225899e27f78b99e45434ab68304f4a9548d54c0",
+  "chapters/gemfall-03c.json": "8d50e19cefb7de7d705af362832ee3af542f183acaaae91b199b570920a17ae5",
   "chapters/gemfall-04a.json": "448d9b1fca9c1ae73f7d123c9a9de128ac7f6c0beece326c9aa39aa1b1e06de4",
   "chapters/gemfall-04b.json": "0539eb7f0cbb1c1f1209a4efd6ea804fde7c18688daae370d7d6b6f9ad9b38bf",
   "chapters/gemfall-04c.json": "a356768f7e48f660a172b5cac27126f914a554ee0d7532297ce4edc71d32a476",
