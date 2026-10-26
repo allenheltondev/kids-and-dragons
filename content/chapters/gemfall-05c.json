@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_rush"
   },
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 48,
   "xpAward": 90,
   "entry": "scene_stones_line",
   "plate": {
@@ -153,7 +153,7 @@
           "name": "Grandmother"
         }
       ],
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_gate_town",
         "narration": "Rope, socks, a squashed sandwich, a spoon. Not one pick, not one shovel, and you never once say the word treasure. The grandmother taps her pencil on her teeth. \"Not diggers,\" she writes. \"Very tidy.\" She waves you through with a look that is almost respect."
@@ -592,11 +592,11 @@
       "prompt": "Get a straight answer out of Wend",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_tallies",
+        "goto": "interaction_pry_bars",
         "narration": "Wend thinks for a long time. \"Everything that hums wants to go home,\" Wend says at last. \"We'd like to help it get there, all at once.\" It sounds lovely. It also sounds like something nobody should do on a guess. You go up to the tally house thinking about it."
       },
       "onFailure": {
-        "goto": "scene_tallies",
+        "goto": "interaction_pry_bars",
         "narration": "Wend answers a different question, beautifully, about the right amount of salt in soup. By the end you know a great deal about salt and nothing at all about roots. Wend waves you off to the tally house with a full bowl."
       }
     },
@@ -608,7 +608,7 @@
           "id": "on",
           "label": "Go up to the tally house",
           "icon": "heart",
-          "goto": "scene_tallies"
+          "goto": "interaction_pry_bars"
         }
       ]
     },
@@ -620,7 +620,7 @@
           "id": "on",
           "label": "Go up to the tally house",
           "icon": "hand",
-          "goto": "scene_tallies"
+          "goto": "interaction_pry_bars"
         }
       ]
     },
@@ -632,7 +632,7 @@
           "id": "on",
           "label": "Go up to the tally house",
           "icon": "gem",
-          "goto": "scene_tallies"
+          "goto": "interaction_pry_bars"
         }
       ]
     },
@@ -729,17 +729,42 @@
       ]
     },
     "check_outline": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 16,
-      "prompt": "Put every clue in the right place on the floor map",
-      "cast": [
-        {
-          "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
-        }
-      ],
-      "roller": "party",
+      "type": "interaction",
+      "narration": "Great-Gran Ashby sets a piece of chalk in your hand and taps the clues on the floor map, one at a time, in the order that makes the shape. \"Watch,\" she says. \"Then put them back the same way. Slowly, dears. The map is older than I am.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the clues light up, then chalk them back in order.",
+        "actionLabel": "Chalk the clues",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "hum",
+            "label": "The one note",
+            "icon": "note"
+          },
+          {
+            "id": "spiral",
+            "label": "The curling songs",
+            "icon": "song"
+          },
+          {
+            "id": "quiet",
+            "label": "The quiet jackalopes",
+            "icon": "ear"
+          },
+          {
+            "id": "tally",
+            "label": "The broken tallies",
+            "icon": "scroll"
+          }
+        ],
+        "answer": [
+          "hum",
+          "spiral",
+          "quiet",
+          "tally"
+        ]
+      },
       "onSuccess": {
         "goto": "scene_here_first",
         "effects": [
@@ -749,12 +774,29 @@
             "value": true
           }
         ],
-        "narration": "The one note every stone hums, the songs that curl, the jackalopes going quiet, the tallies breaking: you put them all down in the right order, and the shape they make is plain."
+        "narration": "The one note every stone hums, the songs that curl, the jackalopes going quiet, the tallies breaking: you chalk them all down in the right order, and the shape they make is plain."
       },
       "onFailure": {
         "goto": "scene_here_first",
-        "narration": "You get the pieces muddled, so Great-Gran Ashby moves them around with her walking stick, one by one, humming, until the shape is plain."
-      }
+        "narration": "You get the pieces muddled, so Great-Gran Ashby moves the chalk marks around with her walking stick, one by one, humming, until the shape is plain."
+      },
+      "onAssisted": {
+        "goto": "scene_here_first",
+        "narration": "Great-Gran Ashby taps the last clue with her walking stick, just once, and the shape on the floor map is plain: the one note every stone hums, the songs that curl, the jackalopes going quiet, the tallies breaking.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "drew_the_outline",
+            "value": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ]
     },
     "scene_here_first": {
       "type": "story",
@@ -798,7 +840,7 @@
           "name": "Great-Gran Ashby"
         }
       ],
-      "roller": "party",
+      "roller": "best",
       "onSuccess": {
         "goto": "scene_unassigned",
         "narration": "On the oldest stone, under the moss, are rows of marks worn almost smooth. They are tally marks, like the grandmothers' marks, but far older. Somebody was counting here before the first families came. The land has been keeping records. Great-Gran Ashby only nods. \"Now come and see my shelf.\""
@@ -889,7 +931,7 @@
           "id": "on",
           "label": "Step out into the evening",
           "icon": "moon",
-          "goto": "scene_moths_leaving"
+          "goto": "scene_crawlers_porch"
         }
       ]
     },
@@ -907,7 +949,7 @@
           "id": "on",
           "label": "Step out into the evening",
           "icon": "flame",
-          "goto": "scene_moths_leaving"
+          "goto": "scene_crawlers_porch"
         }
       ]
     },
@@ -924,7 +966,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_moths_leaving",
+        "goto": "scene_crawlers_porch",
         "effects": [
           {
             "type": "grantQuestItem",
@@ -939,7 +981,7 @@
         "narration": "Two hands, slow as a snail, and you square the list after with one finger. Great-Gran Ashby wraps the gem in a page torn from nothing important and puts it in your hands. \"The Unassigned Stone. Keep it. Don't you dare sell it.\""
       },
       "onFailure": {
-        "goto": "scene_moths_leaving",
+        "goto": "scene_crawlers_porch",
         "narration": "Your fingers bump the list crooked, and you grab at the gem as if it might run off. Great-Gran Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
       },
       "checkKind": "doing"
@@ -959,7 +1001,7 @@
           "count": 4
         }
       ],
-      "narration": "Outside, at dusk, the sky over the hills is full of tiny lights. Embermoths, thousands of them, glowing like sparks, are drifting south in one long river, away from the mountain. A bell on a pole rings once. A small dragonling tugs your sleeve: the town's bell-code expert, who tells everybody so, even people she has already told. \"Moths leaving,\" she whispers. \"Every night this month.\"",
+      "narration": "Above the porch, at dusk, the sky over the hills is full of tiny lights. Embermoths, thousands of them, glowing like sparks, are drifting south in one long river, away from the mountain. A bell on a pole rings once. A small dragonling tugs your sleeve: the town's bell-code expert, who tells everybody so, even people she has already told. \"Moths leaving,\" she whispers. \"Every night this month.\"",
       "choices": [
         {
           "id": "follow",
@@ -985,8 +1027,8 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Keep up with a river of embermoths",
-      "roller": "party",
+      "prompt": "Everybody run to keep up with a river of embermoths",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_bell_house_supper",
         "narration": "You run along the hillside under the glowing river. The moths do not drift at random. They flow around every cave where a stone has fallen, the way water flows around a rock, and then carry on south. You come back out of breath, with sparks in your hair."
@@ -1066,6 +1108,23 @@
           "icon": "gem",
           "goto": "scene_bell_house_supper_depot_tag",
           "requiresItem": "facet_depot"
+        },
+        {
+          "id": "buy_honey",
+          "label": "Pay a coin for a pot of honey for the table",
+          "icon": "bead",
+          "goto": "scene_bell_house_supper_honey",
+          "when": {
+            "coins": {
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 1
+            }
+          ]
         }
       ]
     },
@@ -1082,11 +1141,11 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "rest_bell_house",
+        "goto": "interaction_bell_tuck",
         "narration": "You tell them about the queues and the jackalopes and the roads that bend, and you do all the voices. Forty grandmothers laugh in the right places and gasp in the right places, and one of them cries a little at the end, and says it is the onions."
       },
       "onFailure": {
-        "goto": "rest_bell_house",
+        "goto": "interaction_bell_tuck",
         "narration": "You get the order muddled and tell the end first. The grandmothers do not mind at all. They simply tell it back to you in the right order, interrupting each other, until it is a much better story than the one you started with."
       }
     },
@@ -1104,7 +1163,7 @@
           "id": "on",
           "label": "Go up to bed, very full",
           "icon": "cake",
-          "goto": "rest_bell_house"
+          "goto": "interaction_bell_tuck"
         }
       ],
       "onEnter": [
@@ -1129,7 +1188,7 @@
           "id": "on",
           "label": "Go up to bed, thinking",
           "icon": "gem",
-          "goto": "rest_bell_house"
+          "goto": "interaction_bell_tuck"
         }
       ]
     },
@@ -1174,6 +1233,13 @@
           "icon": "wing",
           "goto": "scene_night_lights_fly_look",
           "requiresSpecies": "griffin"
+        },
+        {
+          "id": "duskrunner_slip",
+          "label": "Have a duskrunner slip up the dark hillside first",
+          "icon": "spark",
+          "requiresClass": "duskrunner",
+          "goto": "check_night_talk"
         }
       ]
     },
@@ -1243,6 +1309,13 @@
           "label": "Ask about the bell in the corner",
           "icon": "ear",
           "goto": "scene_morning_bells_unrung"
+        },
+        {
+          "id": "thornguard_rope",
+          "label": "Have a thornguard show everybody how to haul the big rope",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "check_big_bell"
         }
       ]
     },
@@ -1250,14 +1323,14 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Ring the biggest bell in the bell house",
-      "roller": "party",
+      "prompt": "Everybody haul on the rope of the biggest bell in the bell house",
+      "roller": "all",
       "onSuccess": {
-        "goto": "scene_crowd_at_stones",
+        "goto": "interaction_bell_cart",
         "narration": "You haul on the rope. The bell swings, and BONG, the whole hillside hums, and you feel it in your teeth. Far up the hills, other bell houses answer, one after another. The small dragonling says that was very nearly as good as a grandmother."
       },
       "onFailure": {
-        "goto": "scene_crowd_at_stones",
+        "goto": "interaction_bell_cart",
         "narration": "You haul on the rope, and the bell swings, and the rope swings back up and takes you with it. For one glorious moment you are flying. Then the grandmothers catch you, one on each ankle, and the bell rings anyway, louder than ever."
       }
     },
@@ -1275,7 +1348,7 @@
           "id": "on",
           "label": "Go down to the stones",
           "icon": "hand",
-          "goto": "scene_crowd_at_stones"
+          "goto": "interaction_bell_cart"
         }
       ]
     },
@@ -1294,7 +1367,7 @@
           "id": "on",
           "label": "Go down to the stones",
           "icon": "ear",
-          "goto": "scene_crowd_at_stones"
+          "goto": "interaction_bell_cart"
         }
       ]
     },
@@ -1735,6 +1808,244 @@
       "narration": "You walk north through the boundary stones into the foothills, with the rush all around you and the bells ringing ordinary rings behind you. Ahead, on a red ridge, stands the dark outline of the Skywardens' citadel. Tonight you camp under the stones that were here first, and they feel, for the first time, like they are on your side.",
       "heal": 4,
       "choices": []
+    },
+    "interaction_pry_bars": {
+      "type": "interaction",
+      "narration": "On the way up to the tally house, you pass a line of turned-back prospectors giving up their pry bars, one by one, to the grandmothers. The wall to hang them on is up the slope by the tally house door, and the line stretches all the way there. \"Pass them along, dears!\" calls a grandmother. \"A pry bar goes a long way, hand to hand.\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the pry bar, then pass it up the line.",
+        "actionLabel": "Pass the pry bar",
+        "objectLabel": "A heavy iron pry bar"
+      },
+      "onSuccess": {
+        "goto": "scene_tallies",
+        "narration": "The last pry bar reaches the wall with a clunk, and the grandmother hangs it up, very pleased. \"Wall-hanging rate,\" she says, and counts three coins into your hands. \"Honest work, honestly paid.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_tallies",
+        "narration": "One pry bar slips, and a prospector catches it with his boot. \"Ow,\" he says, bravely. The line laughs, and the pry bars go on up the hill."
+      },
+      "onAssisted": {
+        "goto": "scene_tallies",
+        "narration": "The grandmother takes the heavy end herself, and together you pass the pry bars up the slope without a single clunk. She counts three coins into your hands. \"Wall-hanging rate,\" she says.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ]
+    },
+    "interaction_bell_cart": {
+      "type": "interaction",
+      "narration": "Before the morning crowd gets any worse, the grandmothers wheel their loudest hand bell down to the stones on a little cart. One wheel has stuck in a rut. \"One of you steer!\" calls the small bell-code expert, hopping up and down. \"Everybody else push! Quickly, quickly, quickly!\"",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends push the cart while one of you steers it out of the rut.",
+        "actionLabel": "Steer the cart",
+        "supportLabel": "Push the cart"
+      },
+      "onSuccess": {
+        "goto": "scene_crowd_at_stones",
+        "narration": "The wheel pops out of the rut with a CLUNK, and the bell on the cart gives one happy ring all by itself. The small bell-code expert rides the rest of the way down the hill on top of it, bossing the goats."
+      },
+      "onFailure": {
+        "goto": "scene_crowd_at_stones",
+        "narration": "The cart tips, the bell goes BONG upside down, and then a grandmother lifts the whole thing out of the rut with one hand and says nothing at all. It is the most impressive thing you have seen this week."
+      },
+      "cast": [
+        {
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
+        }
+      ]
+    },
+    "scene_crawlers_porch": {
+      "type": "story",
+      "discovers": [
+        "creature.bone_crawler"
+      ],
+      "narration": "The moment you step out onto the porch, the humming in your packs jumps. Under the boards something clatters. Out scuttle bone crawlers, small and pale and many-legged, the color of old teeth, and they are drawn to the hum like cats to a warm lap. They are heading straight for the tally house door and the rows and rows of books inside, which is the best nest a crawler ever saw. Great-Gran Ashby plants her walking stick. \"Not in my books,\" she says. \"Shoo them off my porch, dears, before they get in the cabinets.\"",
+      "cast": [
+        {
+          "figure": "entities/bone_crawler",
+          "count": 3
+        },
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "choices": [
+        {
+          "id": "shoo",
+          "label": "Shoo the crawlers off the porch",
+          "icon": "swords",
+          "goto": "encounter_crawlers"
+        }
+      ]
+    },
+    "encounter_crawlers": {
+      "type": "encounter",
+      "map": "gallery",
+      "narration": "The crawlers click across the porch boards, straight for the humming packs and the tally house door. Drive them off before they reach the books.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "name": "Bone Crawler",
+          "creature": "bone_crawler"
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_crawlers_shooed",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_crawlers_scattered",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_crawlers_shooed": {
+      "type": "story",
+      "narration": "The crawlers click, spin, and scuttle away under the porch in one tidy line, as if they had an appointment. Great-Gran Ashby counts the books anyway, twice. Then she digs in her apron and hands you a little brass whistle. \"One loud note,\" she says. \"Crawlers hate it. So do I. Take it.\" Above the hills, the first tiny lights are coming out.",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look up at the evening sky",
+          "icon": "moon",
+          "goto": "scene_moths_leaving"
+        }
+      ]
+    },
+    "scene_crawlers_scattered": {
+      "type": "story",
+      "narration": "The crawlers swarm around and around your boots until the porch is all clatter. Then every grandmother in the tally house comes out ringing a hand bell at once, and the crawlers pop away under the boards like popcorn in reverse. Great-Gran Ashby wraps everybody in blankets and hands out hot tea. Nobody gets a whistle tonight, but the books are safe. Above the hills, the first tiny lights are coming out.",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Look up at the evening sky",
+          "icon": "moon",
+          "goto": "scene_moths_leaving"
+        }
+      ]
+    },
+    "scene_bell_house_supper_honey": {
+      "type": "story",
+      "narration": "You put a coin on the long table. Forty grandmothers go quiet, and then one of them carries in a pot of honey the size of her head. It goes around the table twice, on bread, on porridge, and once, by mistake, on a spectacles case. A grandmother wraps a honeycake in a napkin and slides it into your pack. \"For the road,\" she says. \"The coin was a very nice thought.\"",
+      "onEnter": [
+        {
+          "type": "grantItem",
+          "itemId": "honeycake",
+          "to": "party"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Help tuck the bells in for the night",
+          "icon": "bell",
+          "goto": "interaction_bell_tuck"
+        }
+      ]
+    },
+    "interaction_bell_tuck": {
+      "type": "interaction",
+      "narration": "After supper, the bell house has one last job, and it is the oldest one. Every bell is tucked in for the night, so it sleeps and does not ring by mistake. Great-Gran Ashby hands out cloths and nods at the dark rafters. \"Everybody helps,\" she says. \"Even the bells like company.\"",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Tuck the bells in for the night, any way you like.",
+        "actionLabel": "Tuck in the bells",
+        "options": [
+          {
+            "id": "cloth",
+            "label": "Drape a cloth over a bell",
+            "icon": "hand",
+            "reaction": "The bell settles with a very small, sleepy tink."
+          },
+          {
+            "id": "hum",
+            "label": "Hum a bell lullaby",
+            "icon": "note",
+            "reaction": "Every bell on the rafters hums along, softly."
+          },
+          {
+            "id": "polish",
+            "label": "Give one a last polish",
+            "icon": "spark",
+            "reaction": "The bell shines, and you can see your sleepy face in it."
+          }
+        ],
+        "stages": [
+          "A few bells go quiet.",
+          "Most of the bells are tucked in.",
+          "The whole bell house is hushed."
+        ]
+      },
+      "onSuccess": {
+        "goto": "rest_bell_house",
+        "narration": "The last bell goes quiet, and the whole bell house breathes out. A grandmother tucks a bundle of leftover bread into your pack. \"Breakfast,\" she whispers. \"Bells sleep better when guests are fed.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_bell_house",
+        "narration": "One small bell goes ting at the very last second. Forty grandmothers say shhh at once, and then they all giggle, and the bell house settles down for the night anyway."
+      },
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ]
     }
   },
   "voiceGuide": {
