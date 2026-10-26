@@ -2367,7 +2367,8 @@
           "figure": "cast/pellam",
           "name": "Pellam"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pinch-door-table"
     },
     "interaction_choir_warmup": {
       "type": "interaction",
@@ -2381,17 +2382,17 @@
           {
             "id": "low",
             "label": "Low",
-            "icon": "boot"
+            "icon": "glyph_note_low"
           },
           {
             "id": "middle",
             "label": "Middle",
-            "icon": "note"
+            "icon": "glyph_note_middle"
           },
           {
             "id": "high",
             "label": "High",
-            "icon": "wing"
+            "icon": "glyph_note_high"
           }
         ],
         "answer": [
@@ -2436,7 +2437,8 @@
           "figure": "cast/masked_choir_singer",
           "name": "Masked choir singer"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/choir-warmup-masks"
     },
     "interaction_tea_cups": {
       "type": "interaction",
@@ -2490,7 +2492,8 @@
           "figure": "cast/hessa_wren",
           "name": "Hessa Wren"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/warden-fire-tea"
     },
     "interaction_box_slide": {
       "type": "interaction",
@@ -2514,7 +2517,8 @@
       "onAssisted": {
         "goto": "scene_box_crawlers",
         "narration": "A warden grabs your sleeve and a mask grabs the other one, and the two of them haul you clear together. The last stack thuds against a rock, and the top box bursts open. Something inside it clicks."
-      }
+      },
+      "art": "scenes/gemfall/box-stack-slide"
     },
     "scene_box_crawlers": {
       "type": "story",
@@ -2624,6 +2628,25 @@
       "pellam": "Pellam, warden ledger clerk; writes everything down twice, never smiles on duty, says no politely and means it; secretly fair",
       "linnet": "Cadet Linnet, a young warden scout; keen, stiff, trying to look older, softens fast",
       "rook": "Rook, a young mask scout from the choir; prickly, quick, curious under it"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_set_table": {
+        "props": [
+          "prop_door_barrels"
+        ]
+      },
+      "interaction_tea_cups": {
+        "props": [
+          "prop_tea_mug"
+        ]
+      },
+      "interaction_box_slide": {
+        "props": [
+          "prop_box_stack"
+        ]
+      }
     }
   }
 }

@@ -1937,19 +1937,19 @@
           {
             "id": "brush",
             "label": "Brush her mane",
-            "icon": "hand",
+            "icon": "play_mane_brush",
             "reaction": "Dumpling leans into the brush and groans with joy."
           },
           {
             "id": "water",
             "label": "Pour her a bucket of water",
-            "icon": "drop",
+            "icon": "play_water_bucket",
             "reaction": "Dumpling slurps until the bucket is just a shiny bottom."
           },
           {
             "id": "hum",
             "label": "Hum her a tune",
-            "icon": "note",
+            "icon": "play_hum_tune",
             "reaction": "Dumpling's tail swishes in time."
           }
         ],
@@ -2003,17 +2003,17 @@
           {
             "id": "bridge",
             "label": "Bridge",
-            "icon": "travel"
+            "icon": "glyph_bridge"
           },
           {
             "id": "stone",
             "label": "Stone",
-            "icon": "gem"
+            "icon": "glyph_stone"
           },
           {
             "id": "pond",
             "label": "Pond",
-            "icon": "drop"
+            "icon": "glyph_pond"
           }
         ],
         "answer": [
@@ -2066,6 +2066,33 @@
       "road_boss": "a centaur road-crew boss; brisk and practical, a marker post on each shoulder, says 'a road goes where the walking goes'",
       "map_seller": "a map seller in a velvet coat; smooth, cheerful, never technically lies",
       "rumor_ring": "noon-stop travelers swapping news; eager, garbled, every story a little bigger each time"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_last_post": {
+        "props": [
+          "prop_post_ropes"
+        ]
+      },
+      "check_relay": {
+        "props": [
+          "prop_word_scroll"
+        ]
+      },
+      "interaction_gate": {
+        "props": [
+          "prop_striped_gate"
+        ]
+      },
+      "check_search": {
+        "props": [],
+        "coverIcons": [
+          "prop_pickle_wagon",
+          "prop_hay_wagon",
+          "prop_mule_cart"
+        ]
+      }
     }
   }
 }

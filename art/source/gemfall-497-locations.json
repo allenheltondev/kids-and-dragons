@@ -1,0 +1,445 @@
+[
+  {
+    "chapter": "gemfall-02",
+    "slug": "egg-stall-baskets",
+    "scenes": [
+      "interaction_egg_baskets"
+    ],
+    "brief": "The egg stall in the lane, empty baskets lined along a trestle, a crowd's worth of baskets on the ground.",
+    "delivered": true
+  },
+  {
+    "chapter": "gemfall-02",
+    "slug": "jackalope-meadow-hats",
+    "scenes": [
+      "interaction_jackalope_hats"
+    ],
+    "brief": "A meadow of jackalopes sitting still, a lone straw hat on the track.",
+    "delivered": true
+  },
+  {
+    "chapter": "gemfall-02",
+    "slug": "moth-bell-wagons",
+    "scenes": [
+      "interaction_moth_bells"
+    ],
+    "brief": "Wagon bells hanging along a wagon rail, moths glowing on a few.",
+    "delivered": true
+  },
+  {
+    "chapter": "gemfall-02",
+    "slug": "stuck-wagon-lane",
+    "scenes": [
+      "interaction_stuck_wagon"
+    ],
+    "brief": "A lone wagon with a wheel sunk in a rut at the end of a lane, hedges just ahead, a long steering pole.",
+    "delivered": true
+  },
+  {
+    "chapter": "gemfall-03b",
+    "slug": "toll-reeds-tunnel",
+    "scenes": [
+      "scene_toll_reeds_coin",
+      "interaction_reed_gap"
+    ],
+    "brief": "A tunnel of tall knotted reeds over dark water, swinging shut and open like doors.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-03b",
+    "slug": "wisp-raft-crowd",
+    "scenes": [
+      "interaction_wisp_crowd"
+    ],
+    "brief": "A flat marsh raft bumped by a swarm of tiny pale wisps, hanging moss, a ribbon strung overhead.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-03b",
+    "slug": "fog-raft-lantern",
+    "scenes": [
+      "interaction_lantern"
+    ],
+    "brief": "The raft at dusk in thickening fog, a lantern hook at the bow, a pole at the stern.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-03b",
+    "slug": "stump-river-fog",
+    "scenes": [
+      "interaction_stumps"
+    ],
+    "brief": "A slow river with a drifting stump like a sleeping cow, fog, the Hollow Gate faint in the distance.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "sapling-ring",
+    "scenes": [
+      "interaction_sapling_rhyme"
+    ],
+    "brief": "A ring of boot-high saplings in a clearing, leaves rustling.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "hedge-knit-gate",
+    "scenes": [
+      "interaction_hedge_gate"
+    ],
+    "brief": "A hedge knitting its branches into a neat green gate with one thorny latch.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "gray-moss-patch",
+    "scenes": [
+      "interaction_herd_friends"
+    ],
+    "brief": "A patch of gray moss at the edge of a green one, a strawberry patch behind.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "fern-spring-glade",
+    "scenes": [
+      "interaction_spring_cup"
+    ],
+    "brief": "A dry glade with a small clear spring in a mossy dip, a hollow leaf for a cup.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "fern-calf-hide",
+    "scenes": [
+      "interaction_calf_hide"
+    ],
+    "brief": "Three big ferns in a row, dappled light.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-04b",
+    "slug": "beech-squirrel-boughs",
+    "scenes": [
+      "scene_beech_squirrel"
+    ],
+    "brief": "An enormous old beech with a knot-hole and a branch for a squirrel to sit on.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "mosshome-archive-doorstep",
+    "scenes": [
+      "check_archive_door"
+    ],
+    "brief": "The MossHome archive doorstep: springy welcome moss, a round door, shelves seen through it.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "archive-yarn-table",
+    "scenes": [
+      "check_plot"
+    ],
+    "brief": "A table with a ball of yarn, a fistful of thorns, and a cloth map to pin them on.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "archive-leaning-chair",
+    "scenes": [
+      "check_chair_sit"
+    ],
+    "brief": "A tall tilted chair that will not stand up, string and a ruler laid beside it.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "rope-bridge-spare-planks",
+    "scenes": [
+      "check_bridge_test"
+    ],
+    "brief": "A swaying rope bridge with a gap, a stack of spare planks tied to the rail with a tag.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "runners-post-stump",
+    "scenes": [
+      "interaction_post_relay"
+    ],
+    "brief": "The runners' post: a hollow stump for news cords, pegs of knotted cords.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "runner-cord-knots",
+    "scenes": [
+      "interaction_cord_knots"
+    ],
+    "brief": "A runner's hands (no figure) tying a cord against a MossHome wall, a bundle of cords.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "halfway-hut-tin",
+    "scenes": [
+      "scene_hut_honeycake"
+    ],
+    "brief": "The halfway hut: a shelf of honeycakes, a path-keeper's tin on the counter.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "stream-stepping-stones",
+    "scenes": [
+      "interaction_stones"
+    ],
+    "brief": "Slick stepping stones up a cliff stream, waves rolling down in a rhythm.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05b",
+    "slug": "foothills-rim-camp",
+    "scenes": [
+      "interaction_camp"
+    ],
+    "brief": "A flat rock at the edge of the foothills at the last of the sun, bare and a little cold.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05c",
+    "slug": "tally-house-floor-map",
+    "scenes": [
+      "check_outline"
+    ],
+    "brief": "The tally house floor with a big chalked map, four clue objects set on it.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05c",
+    "slug": "pry-bar-wall",
+    "scenes": [
+      "interaction_pry_bars"
+    ],
+    "brief": "A long wall of pry bars hung on pegs by turned-back prospectors, a line of them climbing the hill.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05c",
+    "slug": "bell-cart-stones",
+    "scenes": [
+      "interaction_bell_cart"
+    ],
+    "brief": "A hand bell on a little cart with a wheel stuck in a rut on the way down to the boundary stones.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05c",
+    "slug": "bell-house-supper",
+    "scenes": [
+      "scene_bell_house_supper_honey"
+    ],
+    "brief": "The bell house's long table at supper, a pot of honey the size of a head.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-05c",
+    "slug": "bell-house-tuck-in",
+    "scenes": [
+      "interaction_bell_tuck"
+    ],
+    "brief": "The bell house at night: rows of bells hung low, cloths, a lamp.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-06",
+    "slug": "moth-slope-rocks",
+    "scenes": [
+      "interaction_moth_trail"
+    ],
+    "brief": "A hillside slope with three flat rocks, one cracked, a single bright glow.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-06",
+    "slug": "wagon-road-rut",
+    "scenes": [
+      "interaction_wagons"
+    ],
+    "brief": "The road at the foot of the slope, a lead wagon with a dropped wheel in a deep rut, forty wagons queueing behind it.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-06",
+    "slug": "hessa-soup-camp",
+    "scenes": [
+      "interaction_soup_pots"
+    ],
+    "brief": "The edge of the camp at dusk: a hundred tents, Hessa's heavy soup pots on trestles.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-06",
+    "slug": "morning-bells-baker",
+    "scenes": [
+      "scene_morning_bells_bought"
+    ],
+    "brief": "A baker's stall by a bench, flour, warm honeycakes in a basket.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-06",
+    "slug": "pellam-tea-table",
+    "scenes": [
+      "interaction_tea"
+    ],
+    "brief": "Pellam's table: a bucket-sized kettle, thimble-sized cups, a plate of shortbread.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07h",
+    "slug": "fleecewick-cabinet-road",
+    "scenes": [
+      "interaction_cabinet"
+    ],
+    "brief": "A glass cabinet of forty stones on a cart, one wheel stuck in a rut.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07h",
+    "slug": "checkpoint-box-shelf",
+    "scenes": [
+      "interaction_boxes"
+    ],
+    "brief": "A checkpoint table with a stamp, boxes piled beside it, a long shelf by the road.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07h",
+    "slug": "hairpin-wagons",
+    "scenes": [
+      "interaction_hairpin"
+    ],
+    "brief": "The mountain hairpin with a line of slow wagons rolling around it.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07h",
+    "slug": "tidewell-knock-rock",
+    "scenes": [
+      "interaction_tidewell_knocks"
+    ],
+    "brief": "A flat rock on a mountain path with a pencil beside it.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07l",
+    "slug": "pinch-door-table",
+    "scenes": [
+      "interaction_set_table"
+    ],
+    "brief": "An old door laid across two barrels in the middle of the Pinch.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07l",
+    "slug": "choir-warmup-masks",
+    "scenes": [
+      "interaction_choir_warmup"
+    ],
+    "brief": "A row of painted masks hung on posts, a leader's mask tapped.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07l",
+    "slug": "warden-fire-tea",
+    "scenes": [
+      "interaction_tea_cups"
+    ],
+    "brief": "Two lines of fires, wardens' side and masks' side, a stack of tin mugs at the near one.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07l",
+    "slug": "box-stack-slide",
+    "scenes": [
+      "interaction_box_slide"
+    ],
+    "brief": "Tall stacks of numbered boxes leaning and sliding down a bend toward waiting sacks.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07r",
+    "slug": "stone-chain-road",
+    "scenes": [
+      "interaction_stone_chain"
+    ],
+    "brief": "A road with runaway stones rolling across it, sacks lined up at the far side.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07r",
+    "slug": "way-shelter-stack",
+    "scenes": [
+      "interaction_shelter_stack",
+      "scene_evening_cakes"
+    ],
+    "brief": "A dragonling way-shelter's gate, a board for stacking, a paper bag of honeycakes.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07r",
+    "slug": "trickling-slide-road",
+    "scenes": [
+      "interaction_trickle"
+    ],
+    "brief": "A hillside still letting go, small red stones trickling across the road in bursts.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-07r",
+    "slug": "caravan-bells-hairpin",
+    "scenes": [
+      "interaction_wagon_bells"
+    ],
+    "brief": "A caravan coming around a hairpin, harness bells ringing, a tired lead wagon.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-08",
+    "slug": "bell-code-hut",
+    "scenes": [
+      "check_bell_code"
+    ],
+    "brief": "The inside of a warden hut: a nibbled code card, a bell rope.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-08",
+    "slug": "washed-out-step-cart",
+    "scenes": [
+      "interaction_bundles"
+    ],
+    "brief": "A slope with a washed-out step, a cart parked across it, bundles piled.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-08",
+    "slug": "warden-post-tin",
+    "scenes": [
+      "scene_warden_post_tin"
+    ],
+    "brief": "A warden post with a tin on a shelf, a sign-in book.",
+    "delivered": false
+  },
+  {
+    "chapter": "gemfall-08",
+    "slug": "warm-rock-chimney",
+    "scenes": [
+      "interaction_chimney"
+    ],
+    "brief": "A steep chimney of warm rock with a hanging rope and a painted sign.",
+    "delivered": false
+  }
+]

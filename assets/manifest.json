@@ -1109,7 +1109,52 @@
     "scenes/gemfall/echo-cutting",
     "scenes/gemfall/pinch-box-crawlers",
     "scenes/gemfall/spring-drake-ledge",
-    "scenes/gemfall/crab-field-guards"
+    "scenes/gemfall/crab-field-guards",
+    "scenes/gemfall/toll-reeds-tunnel",
+    "scenes/gemfall/wisp-raft-crowd",
+    "scenes/gemfall/fog-raft-lantern",
+    "scenes/gemfall/stump-river-fog",
+    "scenes/gemfall/sapling-ring",
+    "scenes/gemfall/hedge-knit-gate",
+    "scenes/gemfall/gray-moss-patch",
+    "scenes/gemfall/fern-spring-glade",
+    "scenes/gemfall/fern-calf-hide",
+    "scenes/gemfall/beech-squirrel-boughs",
+    "scenes/gemfall/mosshome-archive-doorstep",
+    "scenes/gemfall/archive-yarn-table",
+    "scenes/gemfall/archive-leaning-chair",
+    "scenes/gemfall/rope-bridge-spare-planks",
+    "scenes/gemfall/runners-post-stump",
+    "scenes/gemfall/runner-cord-knots",
+    "scenes/gemfall/halfway-hut-tin",
+    "scenes/gemfall/stream-stepping-stones",
+    "scenes/gemfall/foothills-rim-camp",
+    "scenes/gemfall/tally-house-floor-map",
+    "scenes/gemfall/pry-bar-wall",
+    "scenes/gemfall/bell-cart-stones",
+    "scenes/gemfall/bell-house-supper",
+    "scenes/gemfall/bell-house-tuck-in",
+    "scenes/gemfall/moth-slope-rocks",
+    "scenes/gemfall/wagon-road-rut",
+    "scenes/gemfall/hessa-soup-camp",
+    "scenes/gemfall/morning-bells-baker",
+    "scenes/gemfall/pellam-tea-table",
+    "scenes/gemfall/fleecewick-cabinet-road",
+    "scenes/gemfall/checkpoint-box-shelf",
+    "scenes/gemfall/hairpin-wagons",
+    "scenes/gemfall/tidewell-knock-rock",
+    "scenes/gemfall/pinch-door-table",
+    "scenes/gemfall/choir-warmup-masks",
+    "scenes/gemfall/warden-fire-tea",
+    "scenes/gemfall/box-stack-slide",
+    "scenes/gemfall/stone-chain-road",
+    "scenes/gemfall/way-shelter-stack",
+    "scenes/gemfall/trickling-slide-road",
+    "scenes/gemfall/caravan-bells-hairpin",
+    "scenes/gemfall/bell-code-hut",
+    "scenes/gemfall/washed-out-step-cart",
+    "scenes/gemfall/warden-post-tin",
+    "scenes/gemfall/warm-rock-chimney"
   ],
   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
   "campaignArt": {
@@ -2987,7 +3032,73 @@
       "crow",
       "glyph_bell_little",
       "glyph_bell_big",
-      "glyph_bell_brass"
+      "glyph_bell_brass",
+      "glyph_note_low",
+      "glyph_note_middle",
+      "glyph_note_high",
+      "glyph_rune_tall",
+      "glyph_rune_wavy",
+      "glyph_rune_round",
+      "glyph_slow",
+      "glyph_wait",
+      "glyph_sash_river",
+      "glyph_sash_pride",
+      "glyph_sash_bridge",
+      "glyph_fern",
+      "glyph_bluebell",
+      "glyph_bridge",
+      "glyph_stone",
+      "glyph_pond",
+      "glyph_spiral",
+      "glyph_wave",
+      "glyph_step",
+      "glyph_path_river",
+      "glyph_path_marsh",
+      "glyph_path_trees",
+      "glyph_knot_loop",
+      "glyph_knot_twist",
+      "glyph_knot_pull",
+      "glyph_clue_note",
+      "glyph_clue_spiral",
+      "glyph_clue_jackalope",
+      "glyph_clue_tally",
+      "glyph_knock_thump",
+      "glyph_knock_tap",
+      "glyph_knock_rumble",
+      "glyph_ring_long",
+      "glyph_ring_short",
+      "glyph_sound_rumble",
+      "glyph_sound_chime",
+      "glyph_sound_sigh",
+      "play_lullaby",
+      "play_cattails",
+      "play_lantern_held",
+      "play_rumble",
+      "play_red_blanket",
+      "play_pinecones",
+      "play_warm_hand",
+      "play_soft_hum",
+      "play_cupped_hands",
+      "play_slow_tune",
+      "play_scratch",
+      "play_clover",
+      "play_mane_brush",
+      "play_water_bucket",
+      "play_hum_tune",
+      "play_stroke_nose",
+      "play_apple",
+      "play_stomp_marsh",
+      "play_splash_river",
+      "play_tiptoe_thorns",
+      "play_little_fire",
+      "play_blankets",
+      "play_moss_tea",
+      "play_bell_cloth",
+      "play_bell_lullaby",
+      "play_bell_polish",
+      "play_pour_tea",
+      "play_stir",
+      "play_shortbread"
     ]
   },
   "badgeArt": {
@@ -3121,7 +3232,47 @@
       "prop_pear_crate",
       "prop_letters",
       "prop_egg_basket",
-      "prop_straw_hat"
+      "prop_straw_hat",
+      "prop_post_ropes",
+      "prop_wagon_wheel_rut",
+      "prop_linked_arms",
+      "prop_leaning_chair",
+      "prop_knotted_string",
+      "prop_hedge_latch",
+      "prop_plank",
+      "prop_water_tray",
+      "prop_leaf_cup",
+      "prop_glass_cabinet",
+      "prop_door_barrels",
+      "prop_stone_board",
+      "prop_lantern",
+      "prop_cake_plate",
+      "prop_word_scroll",
+      "prop_soup_bowl",
+      "prop_knotted_cords",
+      "prop_pry_bar",
+      "prop_soup_pot",
+      "prop_numbered_box",
+      "prop_tea_mug",
+      "prop_humming_stone",
+      "prop_faun_bundle",
+      "prop_reed_gate",
+      "prop_goat_bucket",
+      "prop_tall_grass",
+      "prop_striped_gate",
+      "prop_stepping_stones",
+      "prop_wagon_wheels",
+      "prop_box_stack",
+      "prop_red_stones",
+      "prop_brass_cup",
+      "prop_playing_card",
+      "prop_sun_card",
+      "prop_fern",
+      "prop_pickle_wagon",
+      "prop_hay_wagon",
+      "prop_mule_cart",
+      "prop_rock",
+      "prop_cracked_rock"
     ],
     "motions": {
       "rope-loop": {
@@ -3457,6 +3608,166 @@
         "durationMs": 3200
       },
       "prop_straw_hat": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_post_ropes": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_wagon_wheel_rut": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_linked_arms": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_leaning_chair": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_knotted_string": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_hedge_latch": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_plank": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_water_tray": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_leaf_cup": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_glass_cabinet": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_door_barrels": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_stone_board": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_lantern": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_cake_plate": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_word_scroll": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_soup_bowl": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_knotted_cords": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_pry_bar": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_soup_pot": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_numbered_box": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_tea_mug": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_humming_stone": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_faun_bundle": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_reed_gate": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_goat_bucket": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_tall_grass": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_striped_gate": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_stepping_stones": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_wagon_wheels": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_box_stack": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_red_stones": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_brass_cup": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_playing_card": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_sun_card": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_fern": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_pickle_wagon": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_hay_wagon": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_mule_cart": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_rock": {
+        "preset": "still",
+        "durationMs": 3200
+      },
+      "prop_cracked_rock": {
         "preset": "still",
         "durationMs": 3200
       }

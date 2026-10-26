@@ -180,19 +180,19 @@
           {
             "id": "marsh",
             "label": "Stomp a squelchy marsh",
-            "icon": "boot",
+            "icon": "play_stomp_marsh",
             "reaction": "Squelch, squelch. The archivist's eyebrow twitches."
           },
           {
             "id": "river",
             "label": "Splash across a river",
-            "icon": "drop",
+            "icon": "play_splash_river",
             "reaction": "Splash! A drop lands on the archivist's clipboard."
           },
           {
             "id": "thorns",
             "label": "Tiptoe past grumpy thorns",
-            "icon": "leaf",
+            "icon": "play_tiptoe_thorns",
             "reaction": "You tiptoe so well that the moss holds its breath."
           }
         ],
@@ -216,7 +216,8 @@
       "onFailure": {
         "goto": "scene_archive_table",
         "narration": "Halfway through, you stomp the wrong way and sit down hard in the moss. \"Wait on the bench,\" says the archivist. The bench is still growing. Very slowly, over the next hour, it lifts you up to the window, and you see the table anyway."
-      }
+      },
+      "art": "scenes/gemfall/mosshome-archive-doorstep"
     },
     "scene_archive_table": {
       "type": "story",
@@ -306,17 +307,17 @@
           {
             "id": "river",
             "label": "River path",
-            "icon": "drop"
+            "icon": "glyph_path_river"
           },
           {
             "id": "marsh",
             "label": "Marsh path",
-            "icon": "leaf"
+            "icon": "glyph_path_marsh"
           },
           {
             "id": "trees",
             "label": "Tree path",
-            "icon": "acorn"
+            "icon": "glyph_path_trees"
           }
         ],
         "answer": [
@@ -351,7 +352,8 @@
       "onFailure": {
         "goto": "scene_spiral",
         "narration": "You tangle the yarn so thoroughly a cat would be embarrassed. An archivist untangles it with one finger and shows you the shape anyway."
-      }
+      },
+      "art": "scenes/gemfall/archive-yarn-table"
     },
     "scene_spiral": {
       "type": "story",
@@ -765,7 +767,8 @@
       "onFailure": {
         "goto": "rest_guest_tree",
         "narration": "You sit, and lean, and the chair politely tips you out onto the moss, the way you would tip out a cat that has sat on your homework. The small archivist laughs so hard she drops her string. \"It does that to everybody,\" she says. \"Even the Eldest. Especially the Eldest.\""
-      }
+      },
+      "art": "scenes/gemfall/archive-leaning-chair"
     },
     "scene_leaning_chair_follow": {
       "type": "story",
@@ -1445,7 +1448,8 @@
       "onFailure": {
         "goto": "scene_halfway_hut",
         "narration": "The plank wobbles, and so do you, and it lands in the gap crooked. It creaks. You say AAH. Then it turns out to be perfectly fine, just a very dramatic plank. You cross with hearts thumping, and laugh about it all the way to the other side."
-      }
+      },
+      "art": "scenes/gemfall/rope-bridge-spare-planks"
     },
     "check_bridge_rope": {
       "type": "check",
@@ -1791,7 +1795,8 @@
           "name": "MossHome Runner",
           "size": "medium_to_large"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/runners-post-stump"
     },
     "interaction_cord_knots": {
       "type": "interaction",
@@ -1805,17 +1810,17 @@
           {
             "id": "loop",
             "label": "Loop",
-            "icon": "ribbon"
+            "icon": "glyph_knot_loop"
           },
           {
             "id": "twist",
             "label": "Twist",
-            "icon": "bead"
+            "icon": "glyph_knot_twist"
           },
           {
             "id": "pull",
             "label": "Pull",
-            "icon": "hand"
+            "icon": "glyph_knot_pull"
           }
         ],
         "answer": [
@@ -1839,7 +1844,8 @@
           "name": "MossHome Runner",
           "size": "medium_to_large"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/runner-cord-knots"
     },
     "scene_hut_honeycake": {
       "type": "story",
@@ -1858,7 +1864,8 @@
           "icon": "cake",
           "goto": "scene_drake_ford"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/halfway-hut-tin"
     },
     "scene_drake_ford": {
       "type": "story",
@@ -1904,7 +1911,8 @@
         {
           "figure": "entities/river_drake"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/stream-stepping-stones"
     },
     "scene_drake_bank": {
       "type": "story",
@@ -2007,19 +2015,19 @@
           {
             "id": "fire",
             "label": "Light a little fire",
-            "icon": "spark",
+            "icon": "play_little_fire",
             "reaction": "A small flame crackles on the rock."
           },
           {
             "id": "blankets",
             "label": "Roll out the blankets",
-            "icon": "rest",
+            "icon": "play_blankets",
             "reaction": "The blankets go down in a soft row."
           },
           {
             "id": "tea",
             "label": "Warm the moss tea",
-            "icon": "potion",
+            "icon": "play_moss_tea",
             "reaction": "Tea steam curls up into the dusk."
           }
         ],
@@ -2036,7 +2044,8 @@
       "onFailure": {
         "goto": "ending_foothills_rim",
         "narration": "The fire is a little smoky and the blankets are a little crooked, but the camp will do."
-      }
+      },
+      "art": "scenes/gemfall/foothills-rim-camp"
     }
   },
   "voiceGuide": {
@@ -2059,6 +2068,30 @@
       "flood_warden": "MossHome bigfoot in very tall boots; brisk, practical, has seen every kind of soggy",
       "path_keeper": "old bigfoot who keeps the halfway hut on the high paths; slow, kind, proud of his visitors' book",
       "young_gatherer": "a young dragonling gatherer; insists she is not lost, knows the one rule by heart, braver than she feels"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "check_chair_sit": {
+        "props": [
+          "prop_leaning_chair"
+        ]
+      },
+      "check_bridge_test": {
+        "props": [
+          "prop_plank"
+        ]
+      },
+      "interaction_post_relay": {
+        "props": [
+          "prop_knotted_cords"
+        ]
+      },
+      "interaction_stones": {
+        "props": [
+          "prop_stepping_stones"
+        ]
+      }
     }
   }
 }

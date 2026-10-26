@@ -1936,17 +1936,17 @@
           {
             "id": "low",
             "label": "Low note",
-            "icon": "note"
+            "icon": "glyph_note_low"
           },
           {
             "id": "middle",
             "label": "Middle note",
-            "icon": "note"
+            "icon": "glyph_note_middle"
           },
           {
             "id": "high",
             "label": "High note",
-            "icon": "note"
+            "icon": "glyph_note_high"
           }
         ],
         "answer": [
@@ -2136,6 +2136,28 @@
       "dilly": "a small girl from a carpet caravan telling a troll her first ever story; nervous, then magnificent",
       "prospector": "a pushy prospector who tries to pay the troll toll with a gem; tells the shortest story ever told",
       "parsnip_driver": "a caravan driver landing on the east bank, arguing with his donkey Parsnip, secretly very fond of her"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_pot": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_planks": {
+        "props": [
+          "prop_plank"
+        ]
+      },
+      "interaction_hats": {
+        "props": [],
+        "coverIcons": [
+          "prop_brass_cup",
+          "prop_brass_cup",
+          "prop_brass_cup"
+        ]
+      }
     }
   }
 }
