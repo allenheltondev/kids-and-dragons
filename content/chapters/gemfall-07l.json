@@ -93,7 +93,7 @@
           "id": "wardens_first",
           "label": "Get the table ready",
           "icon": "shield",
-          "goto": "choice_the_rule"
+          "goto": "interaction_set_table"
         },
         {
           "id": "grandmothers_chair",
@@ -125,13 +125,13 @@
           "id": "on",
           "label": "Get the table ready",
           "icon": "dragonling",
-          "goto": "choice_the_rule"
+          "goto": "interaction_set_table"
         }
       ]
     },
     "choice_the_rule": {
       "type": "choice_point",
-      "narration": "The wardens will not sit with the masks, and the masks will not sit with the wardens. So you build a table out of an old door and two barrels, right in the middle of the Pinch. It wobbles, and a folded sock goes under the short leg. A table between two sides needs one rule, chalked on top. Only one, or nobody will remember it. Wardens and masks drift over to see what you write. What is the rule?",
+      "narration": "The wardens will not sit with the masks, and the masks will not sit with the wardens. So the old door on its two barrels is your table now, right in the middle of the Pinch. It wobbles, and a folded sock goes under the short leg. A table between two sides needs one rule, chalked on top. Only one, or nobody will remember it. Wardens and masks drift over to see what you write. What is the rule?",
       "choices": [
         {
           "id": "no_shouting",
@@ -308,7 +308,7 @@
           "name": "Pellam"
         }
       ],
-      "roller": "party",
+      "roller": "best",
       "onSuccess": {
         "goto": "scene_two_scouts",
         "narration": "Two poles, a rope and a lot of squinting. You turn the desk into a little throne on poles, with the ledger riding on top, still chained, and off it goes up the valley, desk and all. Pellam reads his own rule twice, frowns at it twice, and cannot find a single word wrong. Nobody has ever seen Pellam almost smile. He very nearly does.",
@@ -473,6 +473,13 @@
           "goto": "check_chord"
         },
         {
+          "id": "songkeeper_note",
+          "label": "Have a songkeeper find the first note for everyone",
+          "icon": "note",
+          "requiresClass": "songkeeper",
+          "goto": "check_chord"
+        },
+        {
           "id": "vouch",
           "label": "Ask the grandmothers to vouch for you",
           "icon": "dragonling",
@@ -557,7 +564,7 @@
           "id": "on",
           "label": "Back to the table",
           "icon": "kitsune",
-          "goto": "scene_first_sitting"
+          "goto": "interaction_choir_warmup"
         }
       ],
       "cast": [
@@ -583,7 +590,7 @@
           "id": "on",
           "label": "Back to the table",
           "icon": "gem",
-          "goto": "scene_first_sitting"
+          "goto": "interaction_choir_warmup"
         }
       ],
       "cast": [
@@ -609,7 +616,7 @@
           "id": "on",
           "label": "Back to the table",
           "icon": "scroll",
-          "goto": "scene_first_sitting"
+          "goto": "interaction_choir_warmup"
         }
       ],
       "cast": [
@@ -641,7 +648,7 @@
           "id": "on",
           "label": "Back to the table",
           "icon": "dragonling",
-          "goto": "scene_first_sitting"
+          "goto": "interaction_choir_warmup"
         }
       ]
     },
@@ -653,7 +660,7 @@
       "prompt": "Hum three notes back to a whole masked choir, true and steady",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_first_sitting",
+        "goto": "interaction_choir_warmup",
         "narration": "Hessa hums the first note. You hum it back. She hums the second. You hum it back, wobbly. The third is so low it buzzes in your teeth, and you hold it anyway. The whole choir goes quiet. \"Don't make me sorry,\" says Hessa.",
         "effects": [
           {
@@ -668,7 +675,7 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_first_sitting",
+        "goto": "interaction_choir_warmup",
         "narration": "They sing it for you once, very fast, and then pull their masks down. You match the first note. Only the first."
       },
       "cast": [
@@ -700,6 +707,13 @@
           "id": "fix_leg",
           "label": "Fix the wobbly leg properly",
           "icon": "clever",
+          "goto": "check_first_sitting"
+        },
+        {
+          "id": "thornguard_leg",
+          "label": "Have a thornguard plant a boot against the short leg",
+          "icon": "shield",
+          "requiresClass": "thornguard",
           "goto": "check_first_sitting"
         },
         {
@@ -1252,7 +1266,7 @@
       "prompt": "Push a cart full of stones up the steep bit",
       "roller": "all",
       "onSuccess": {
-        "goto": "scene_evening",
+        "goto": "interaction_tea_cups",
         "narration": "Shoulders down, everybody push. The cart groans up the steep bit and over the top. The grandmother hands a warm bead from her apron to every hand, and says, \"Practice tonight, dears. You'll need it.\"",
         "effects": [
           {
@@ -1263,7 +1277,7 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_evening",
+        "goto": "interaction_tea_cups",
         "narration": "The cart rolls back two steps for every three you push it. In the end you sit on the back of it like a seesaw while the grandmother pulls, and between you it gets over the top. She laughs so hard she has to sit down."
       }
     },
@@ -1275,7 +1289,7 @@
           "id": "on",
           "label": "Back to the table",
           "icon": "note",
-          "goto": "scene_evening"
+          "goto": "interaction_tea_cups"
         }
       ]
     },
@@ -1293,7 +1307,7 @@
           "id": "on",
           "label": "Back to the table",
           "icon": "bigfoot",
-          "goto": "scene_evening"
+          "goto": "interaction_tea_cups"
         }
       ]
     },
@@ -1594,6 +1608,13 @@
           "goto": "check_rope_bridge"
         },
         {
+          "id": "duskrunner_gaps",
+          "label": "Have a duskrunner watch the swing and call the gaps",
+          "icon": "quick",
+          "requiresClass": "duskrunner",
+          "goto": "check_rope_bridge"
+        },
+        {
           "id": "roped",
           "label": "Rope up and go slowly",
           "icon": "ribbon",
@@ -1617,8 +1638,8 @@
       ],
       "stat": "quick",
       "tn": 12,
-      "prompt": "Dash across a swinging bridge between tremors",
-      "roller": "party",
+      "prompt": "Everyone dash across a swinging bridge between tremors",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_switchback",
         "narration": "You wait for the swing to settle, then go, light as leaves. The goat watches you squeeze past it, chews thoughtfully, and follows you off the far end, as if that had been its plan all along."
@@ -1826,7 +1847,7 @@
           "id": "on",
           "label": "Wait for the caravan",
           "icon": "map",
-          "goto": "choice_the_test"
+          "goto": "interaction_box_slide"
         }
       ]
     },
@@ -1837,7 +1858,7 @@
       "prompt": "Talk both sides into lending you one helper each",
       "roller": "party",
       "onSuccess": {
-        "goto": "choice_the_test",
+        "goto": "interaction_box_slide",
         "narration": "A warden steps over, and then, after a long pause, a mask. They stand on either side of you, not looking at each other, ready to help. It is the first time all season they have stood on the same bit of road.",
         "effects": [
           {
@@ -1848,7 +1869,7 @@
         ]
       },
       "onFailure": {
-        "goto": "choice_the_test",
+        "goto": "interaction_box_slide",
         "narration": "Both sides send their grumpiest. The two of them argue about where to stand until the caravan is nearly here. But while they are arguing, nobody else grabs anything, which is almost as good."
       }
     },
@@ -1870,7 +1891,7 @@
           "id": "on",
           "label": "Wait for the caravan",
           "icon": "party",
-          "goto": "choice_the_test"
+          "goto": "interaction_box_slide"
         }
       ]
     },
@@ -2319,6 +2340,259 @@
       "heal": 3,
       "outcome": "setback",
       "choices": []
+    },
+    "interaction_set_table": {
+      "type": "interaction",
+      "narration": "In the middle of the Pinch lie an old door and two barrels. Pellam taps the door with his pencil. \"A table,\" he says. \"Level, please. I will be measuring.\" The door is heavy, and the barrels are not the same height.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Everyone lift or lower your side until the door is flat, then carry it onto the barrels.",
+        "actionLabel": "Carry the door",
+        "objectLabel": "An old door"
+      },
+      "onSuccess": {
+        "goto": "choice_the_rule",
+        "narration": "The door settles onto the barrels, almost flat. Pellam lays his pencil on top, and it rolls only a little. \"Acceptable,\" he says, which from Pellam is a cheer."
+      },
+      "onFailure": {
+        "goto": "choice_the_rule",
+        "narration": "The door slides off one barrel with a thump, and the pencil rolls away. Pellam fetches it. \"Almost level,\" he says kindly. \"Nobody will notice.\" Everybody notices."
+      },
+      "onAssisted": {
+        "goto": "choice_the_rule",
+        "narration": "Pellam props up one corner of the door with his boot. The door settles onto the barrels, almost flat, and he lays his pencil on top. \"Acceptable,\" he says."
+      },
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ]
+    },
+    "interaction_choir_warmup": {
+      "type": "interaction",
+      "narration": "The three notes are not the whole song. Before you leave, Hessa taps her painted mask, and the choir goes quiet. \"Warm-up,\" she says. \"Even a table gets one. I hum, you hum back. No cheating, and no giggling at the low one.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the notes glow, then hum them back in order.",
+        "actionLabel": "Hum it back",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "low",
+            "label": "Low",
+            "icon": "boot"
+          },
+          {
+            "id": "middle",
+            "label": "Middle",
+            "icon": "note"
+          },
+          {
+            "id": "high",
+            "label": "High",
+            "icon": "wing"
+          }
+        ],
+        "answer": [
+          "middle",
+          "low",
+          "high",
+          "middle"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_first_sitting",
+        "narration": "The last note hangs in the air like a held door. Hessa nods once. A singer ties a bit of ribbon to your pack. \"For luck,\" she whispers. \"Don't tell the others I'm soft.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "songbird_ribbon",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_first_sitting",
+        "narration": "You wobble on the second note and lose the third. The choir hums the rest for you, gently, the way you would help a small child across a stream. Nobody minds. Somebody's mask slips off, giggling."
+      },
+      "onAssisted": {
+        "goto": "scene_first_sitting",
+        "narration": "The choir hums along under you, softly, until the last note comes out right. A singer ties a bit of ribbon to your pack. \"For luck,\" she whispers.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "songbird_ribbon",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/masked_choir_singer",
+          "name": "Masked choir singer"
+        }
+      ]
+    },
+    "interaction_tea_cups": {
+      "type": "interaction",
+      "narration": "As the sun goes down, Pellam waves a stack of tin mugs at you from the warden fires. \"Tea for the other side,\" he says, as if it were an ordinary sentence. \"From us. Hand to hand, please. Nobody has to cross anything.\" Far off across the dark strip of road, Hessa is holding out her empty hands.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the mug, then pass it along.",
+        "actionLabel": "Pass the mug",
+        "objectLabel": "A hot mug of tea"
+      },
+      "onSuccess": {
+        "goto": "scene_evening",
+        "narration": "Not a drop spills. At the far end Hessa takes the last mug, sniffs it, and sends a warm honeycake back down the line. Pellam counts three coins out of the camp's tea fund. \"Courier's pay,\" he says. \"I will log it as tea.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          },
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_evening",
+        "narration": "One mug slips, and a warden catches it with his boot. \"Hot boot,\" he says, bravely. Everyone laughs, on both sides of the road, at the same time, and the rest of the tea goes through."
+      },
+      "onAssisted": {
+        "goto": "scene_evening",
+        "narration": "Together you pass the mugs in a slow, steady row. Hessa takes the last one and sends a warm honeycake back down the line. Pellam counts three coins out of the tea fund. \"Courier's pay,\" he says.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          },
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ]
+    },
+    "interaction_box_slide": {
+      "type": "interaction",
+      "narration": "The caravan is almost here when the ground shrugs. The wardens' tall stacks of numbered boxes lean, creak, and begin to slide down the bend toward the masks' sacks, one stack after another, rumbling. Both sides yelp. The road is about to be very busy with boxes.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Dash across when the sliding boxes pause.",
+        "actionLabel": "Dash!",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "scene_box_crawlers",
+        "narration": "You dart through the gap, and the last stack thuds against a rock exactly where you were standing. The top box bursts open. Something inside it clicks."
+      },
+      "onFailure": {
+        "goto": "scene_box_crawlers",
+        "narration": "A box bumps you gently off your feet and sets you down in the heather, quite unhurt. The last stack thuds against a rock, and the top box bursts open. Something inside it clicks."
+      },
+      "onAssisted": {
+        "goto": "scene_box_crawlers",
+        "narration": "A warden grabs your sleeve and a mask grabs the other one, and the two of them haul you clear together. The last stack thuds against a rock, and the top box bursts open. Something inside it clicks."
+      }
+    },
+    "scene_box_crawlers": {
+      "type": "story",
+      "discovers": [
+        "creature.bone_crawler"
+      ],
+      "narration": "Out of the burst box tumble two bone crawlers: little scuttlers in shells of borrowed bone, no bigger than footstools, with elbows everywhere. They have been riding in the box all day, nibbling the tags. Now they lift their heads, and both small noses point down the hill at the caravan. They can smell the hum of the big stone in its middle wagon, and they want it for a snack. Wardens and masks freeze. If the crawlers reach that stone, nobody will hold anything still.",
+      "cast": [
+        {
+          "figure": "entities/bone_crawler",
+          "count": 2
+        }
+      ],
+      "choices": [
+        {
+          "id": "shoo",
+          "label": "Shoo the crawlers off before the caravan arrives",
+          "icon": "swords",
+          "goto": "encounter_crawlers"
+        }
+      ]
+    },
+    "encounter_crawlers": {
+      "type": "encounter",
+      "map": "roadside",
+      "narration": "The crawlers clatter down the bend, noses up, straight for the humming wagon. Turn them around before they reach it.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "name": "Bone Crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_crawlers_scattered",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "luckstone",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_crawlers_boxed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_crawlers_scattered": {
+      "type": "story",
+      "narration": "The crawlers clatter away down the slope with their elbows in the air, and they do not come back. In the burst box, under a heap of chewed tags, lies a smooth little pebble that glints like a wink. A warden pounces on it. \"My lucky stone! Nine weeks I have been looking for that!\" She presses it into your hand. \"Take it. I will stop losing things.\" Down the hill, the first wagon comes around the corner.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wait for the caravan",
+          "icon": "travel",
+          "goto": "choice_the_test"
+        }
+      ]
+    },
+    "scene_crawlers_boxed": {
+      "type": "story",
+      "narration": "The crawlers swirl around you until the whole bend is clatter. Then a mask drops a soup sack over the biggest one, and a warden slams the lid on the box, and the two of them sit on it together, arguing about who sat first. Little knocks drum from inside. They hand you hot tea and a blanket, and nobody has the breath to chase the small glinting thing that rolled out of the box and away down the hill. Below you, the first wagon comes around the corner.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Wait for the caravan",
+          "icon": "travel",
+          "goto": "choice_the_test"
+        }
+      ]
     }
   },
   "voiceGuide": {
