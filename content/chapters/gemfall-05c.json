@@ -740,22 +740,22 @@
           {
             "id": "hum",
             "label": "The one note",
-            "icon": "note"
+            "icon": "glyph_clue_note"
           },
           {
             "id": "spiral",
             "label": "The curling songs",
-            "icon": "song"
+            "icon": "glyph_clue_spiral"
           },
           {
             "id": "quiet",
             "label": "The quiet jackalopes",
-            "icon": "ear"
+            "icon": "glyph_clue_jackalope"
           },
           {
             "id": "tally",
             "label": "The broken tallies",
-            "icon": "scroll"
+            "icon": "glyph_clue_tally"
           }
         ],
         "answer": [
@@ -796,7 +796,8 @@
           "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/tally-house-floor-map"
     },
     "scene_here_first": {
       "type": "story",
@@ -1847,7 +1848,8 @@
           "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pry-bar-wall"
     },
     "interaction_bell_cart": {
       "type": "interaction",
@@ -1871,7 +1873,8 @@
           "figure": "cast/bell_code_expert",
           "name": "Bell-Code Expert"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bell-cart-stones"
     },
     "scene_crawlers_porch": {
       "type": "story",
@@ -1992,7 +1995,8 @@
           "icon": "bell",
           "goto": "interaction_bell_tuck"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bell-house-supper"
     },
     "interaction_bell_tuck": {
       "type": "interaction",
@@ -2006,19 +2010,19 @@
           {
             "id": "cloth",
             "label": "Drape a cloth over a bell",
-            "icon": "hand",
+            "icon": "play_bell_cloth",
             "reaction": "The bell settles with a very small, sleepy tink."
           },
           {
             "id": "hum",
             "label": "Hum a bell lullaby",
-            "icon": "note",
+            "icon": "play_bell_lullaby",
             "reaction": "Every bell on the rafters hums along, softly."
           },
           {
             "id": "polish",
             "label": "Give one a last polish",
-            "icon": "spark",
+            "icon": "play_bell_polish",
             "reaction": "The bell shines, and you can see your sleepy face in it."
           }
         ],
@@ -2048,7 +2052,8 @@
           "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/bell-house-tuck-in"
     }
   },
   "voiceGuide": {
@@ -2072,6 +2077,20 @@
       "wend": "a Deep Hollow ladler from the north road; gentle, generous, remembers every name, certain the world can be fixed at the root",
       "sergeant_holloway": "a Skywarden supply sergeant from the north road; rigid, honest, calls everything 'arithmetic', writes everything down",
       "feathered_hat": "a loud prospector on a cart; blustering, sure the stones are just old rocks, quiet once he really listens"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_bell_cart": {
+        "props": [
+          "prop_wagon_wheel_rut"
+        ]
+      },
+      "interaction_pry_bars": {
+        "props": [
+          "prop_pry_bar"
+        ]
+      }
     }
   }
 }

@@ -1378,19 +1378,19 @@
           {
             "id": "rumble",
             "label": "Rumble deep and low",
-            "icon": "note",
+            "icon": "play_rumble",
             "reaction": "The children shriek with joy."
           },
           {
             "id": "wobble",
             "label": "Wobble the red blanket",
-            "icon": "spark",
+            "icon": "play_red_blanket",
             "reaction": "The whole front row wobbles with you."
           },
           {
             "id": "erupt",
             "label": "Erupt with pinecones",
-            "icon": "acorn",
+            "icon": "play_pinecones",
             "reaction": "Pinecones bounce off three hats."
           }
         ],
@@ -1777,12 +1777,12 @@
           {
             "id": "slow",
             "label": "Slow",
-            "icon": "drop"
+            "icon": "glyph_slow"
           },
           {
             "id": "wait",
             "label": "Wait",
-            "icon": "hand"
+            "icon": "glyph_wait"
           }
         ],
         "answer": [
@@ -2359,6 +2359,30 @@
       "brackens": "the Brackens, a faun family whose season is over; tired, polite, the littlest one very brave about it",
       "troupe_leader": "a rush-camp actor-manager; grand and dramatic, calls everyone 'darlings', thrilled by any eruption",
       "red_scarves": "the red-scarf queue-jumpers' leader; pushy and impatient, but fair when fairly beaten"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "check_block_jumpers": {
+        "props": [
+          "prop_linked_arms"
+        ]
+      },
+      "check_goat_chase": {
+        "props": [
+          "prop_goat_bucket"
+        ]
+      },
+      "check_expose": {
+        "props": [
+          "prop_sun_card"
+        ],
+        "coverIcons": [
+          "prop_playing_card",
+          "prop_playing_card",
+          "prop_playing_card"
+        ]
+      }
     }
   }
 }

@@ -863,12 +863,12 @@
           {
             "id": "long",
             "label": "Long ring",
-            "icon": "note"
+            "icon": "glyph_ring_long"
           },
           {
             "id": "short",
             "label": "Short ring",
-            "icon": "spark"
+            "icon": "glyph_ring_short"
           }
         ],
         "answer": [
@@ -895,7 +895,8 @@
       "onAssisted": {
         "goto": "scene_crab_field",
         "narration": "You lay the scraps side by side and the code comes clear. Two long, one short, two long. The ring rolls down the mountain, and hut after hut rings it back: all's well. It is not quite true yet. It is a promise."
-      }
+      },
+      "art": "scenes/gemfall/bell-code-hut"
     },
     "scene_soup_ring": {
       "type": "story",
@@ -3248,17 +3249,17 @@
           {
             "id": "low",
             "label": "Low hum",
-            "icon": "drop"
+            "icon": "glyph_note_low"
           },
           {
             "id": "mid",
             "label": "Middle hum",
-            "icon": "note"
+            "icon": "glyph_note_middle"
           },
           {
             "id": "high",
             "label": "High hum",
-            "icon": "feather"
+            "icon": "glyph_note_high"
           }
         ],
         "answer": [
@@ -3299,17 +3300,17 @@
           {
             "id": "rumble",
             "label": "Rumble",
-            "icon": "drop"
+            "icon": "glyph_sound_rumble"
           },
           {
             "id": "chime",
             "label": "Chime",
-            "icon": "star"
+            "icon": "glyph_sound_chime"
           },
           {
             "id": "sigh",
             "label": "Sigh",
-            "icon": "feather"
+            "icon": "glyph_sound_sigh"
           }
         ],
         "answer": [
@@ -5543,7 +5544,8 @@
           "name": "Tansy",
           "size": "small"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/washed-out-step-cart"
     },
     "scene_warden_post_tin": {
       "type": "story",
@@ -5562,7 +5564,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/warden-post-tin"
     },
     "interaction_chimney": {
       "type": "interaction",
@@ -5584,7 +5587,8 @@
       "onAssisted": {
         "goto": "scene_overlook",
         "narration": "Everybody holds the rope together, and you climb one slow hand at a time. You pop out over the lip of the chimney with your hair full of cloud."
-      }
+      },
+      "art": "scenes/gemfall/warm-rock-chimney"
     },
     "scene_crab_guards": {
       "type": "story",
@@ -5742,6 +5746,20 @@
       "hessa": "Hessa Wren of the Deep Hollow Cult, only in epilogues; warm, certain, cries easily",
       "tansy": "Tansy, a small faun girl running downhill with her family; worried, brave, and very honest about the humming stone in her pocket",
       "titan": "the titan under the seal; never described or explained, only witnessed: a great sleepy eye, a warm breath, and the old note the stones hum, which the Seal-Keeper puts into words; curious, slow and never angry"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_chimney": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_bundles": {
+        "props": [
+          "prop_faun_bundle"
+        ]
+      }
     }
   }
 }

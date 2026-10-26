@@ -1,0 +1,363 @@
+{
+  "sets": {
+    "03a/interaction_hum": "glyph_note_low glyph_note_middle glyph_note_high",
+    "03b/interaction_runes": "glyph_rune_tall glyph_rune_wavy glyph_rune_round",
+    "03c/check_learn_verse": "glyph_slow glyph_wait",
+    "04a/check_sashes": "glyph_sash_river glyph_sash_pride glyph_sash_bridge",
+    "04b/interaction_sapling_rhyme": "glyph_fern acorn glyph_bluebell",
+    "04c/interaction_verses": "glyph_bridge glyph_stone glyph_pond",
+    "05a/check_rubbing": "glyph_spiral glyph_wave glyph_step",
+    "05b/check_plot": "glyph_path_river glyph_path_marsh glyph_path_trees",
+    "05b/interaction_cord_knots": "glyph_knot_loop glyph_knot_twist glyph_knot_pull",
+    "05c/check_outline": "glyph_clue_note glyph_clue_spiral glyph_clue_jackalope glyph_clue_tally",
+    "06/interaction_tags": "moon flame leaf",
+    "07h/interaction_tidewell_knocks": "glyph_knock_thump glyph_knock_tap glyph_knock_rumble",
+    "07l/interaction_choir_warmup": "glyph_note_low glyph_note_middle glyph_note_high",
+    "07r/interaction_wagon_bells": "glyph_bell_big glyph_bell_little glyph_bell_brass",
+    "08/check_bell_code": "glyph_ring_long glyph_ring_short",
+    "08/check_hum_note": "glyph_note_low glyph_note_middle glyph_note_high",
+    "08/check_hear_titan": "glyph_sound_rumble glyph_sound_chime glyph_sound_sigh",
+    "03b/interaction_wisp_crowd": "play_lullaby play_cattails play_lantern_held",
+    "03c/check_play_mountain": "play_rumble play_red_blanket play_pinecones",
+    "04a/interaction_lost_moths": "play_warm_hand play_soft_hum play_cupped_hands",
+    "04b/interaction_herd_friends": "play_slow_tune play_scratch play_clover",
+    "04c/interaction_pony": "play_mane_brush play_water_bucket play_hum_tune",
+    "05a/check_pony": "play_slow_tune play_stroke_nose play_apple",
+    "05b/check_archive_door": "play_stomp_marsh play_splash_river play_tiptoe_thorns",
+    "05b/interaction_camp": "play_little_fire play_blankets play_moss_tea",
+    "05c/interaction_bell_tuck": "play_bell_cloth play_bell_lullaby play_bell_polish",
+    "06/interaction_tea": "play_pour_tea play_stir play_shortbread"
+  },
+  "assets": [
+    {
+      "id": "glyph_note_low",
+      "brief": "",
+      "reuse": "assets/story-props/note-low.webp"
+    },
+    {
+      "id": "glyph_note_middle",
+      "brief": "",
+      "reuse": "assets/story-props/note-middle.webp"
+    },
+    {
+      "id": "glyph_note_high",
+      "brief": "",
+      "reuse": "assets/story-props/note-high.webp"
+    },
+    {
+      "id": "glyph_rune_tall",
+      "brief": "A tall narrow vertical carved rune on a small stone tablet",
+      "reuse": null
+    },
+    {
+      "id": "glyph_rune_wavy",
+      "brief": "A wavy flowing carved rune on a small stone tablet",
+      "reuse": null
+    },
+    {
+      "id": "glyph_rune_round",
+      "brief": "A round ring-shaped carved rune on a small stone tablet",
+      "reuse": null
+    },
+    {
+      "id": "glyph_slow",
+      "brief": "One friendly little snail with spiral shell",
+      "reuse": null
+    },
+    {
+      "id": "glyph_wait",
+      "brief": "One hourglass with sand waiting to fall",
+      "reuse": null
+    },
+    {
+      "id": "glyph_sash_river",
+      "brief": "A blue fabric sash with a winding river emblem",
+      "reuse": null
+    },
+    {
+      "id": "glyph_sash_pride",
+      "brief": "A red fabric sash with a golden crown emblem",
+      "reuse": null
+    },
+    {
+      "id": "glyph_sash_bridge",
+      "brief": "An ochre fabric sash with an arched bridge emblem",
+      "reuse": null
+    },
+    {
+      "id": "glyph_fern",
+      "brief": "A single green fern frond",
+      "reuse": null
+    },
+    {
+      "id": "glyph_bluebell",
+      "brief": "A bluebell flower stem with three drooping bell blossoms",
+      "reuse": null
+    },
+    {
+      "id": "glyph_bridge",
+      "brief": "A little stone arch bridge",
+      "reuse": null
+    },
+    {
+      "id": "glyph_stone",
+      "brief": "",
+      "reuse": "assets/story-props/pickup-luckstone.webp"
+    },
+    {
+      "id": "glyph_pond",
+      "brief": "A small round pond with reeds",
+      "reuse": null
+    },
+    {
+      "id": "glyph_spiral",
+      "brief": "A bold golden spiral carved in stone",
+      "reuse": null
+    },
+    {
+      "id": "glyph_wave",
+      "brief": "A curling blue water wave",
+      "reuse": null
+    },
+    {
+      "id": "glyph_step",
+      "brief": "",
+      "reuse": "packages/client/src/assets/painted/boot.webp"
+    },
+    {
+      "id": "glyph_path_river",
+      "brief": "A path crossing a blue river on stepping stones",
+      "reuse": null
+    },
+    {
+      "id": "glyph_path_marsh",
+      "brief": "A path through cattails and marsh water",
+      "reuse": null
+    },
+    {
+      "id": "glyph_path_trees",
+      "brief": "A path between two leafy trees",
+      "reuse": null
+    },
+    {
+      "id": "glyph_knot_loop",
+      "brief": "A simple rope loop knot",
+      "reuse": null
+    },
+    {
+      "id": "glyph_knot_twist",
+      "brief": "Two rope strands twisted into a helix",
+      "reuse": null
+    },
+    {
+      "id": "glyph_knot_pull",
+      "brief": "A rope knot with two ends pulled taut outward",
+      "reuse": null
+    },
+    {
+      "id": "glyph_clue_note",
+      "brief": "",
+      "reuse": "packages/client/src/assets/painted/note.webp"
+    },
+    {
+      "id": "glyph_clue_spiral",
+      "brief": "",
+      "reuse": "glyph_spiral"
+    },
+    {
+      "id": "glyph_clue_jackalope",
+      "brief": "One quiet friendly jackalope head with long ears and tiny antlers",
+      "reuse": null
+    },
+    {
+      "id": "glyph_clue_tally",
+      "brief": "Two broken wooden tally sticks with abstract notches",
+      "reuse": null
+    },
+    {
+      "id": "glyph_knock_thump",
+      "brief": "A closed fist knocking a flat stone with one broad impact mark",
+      "reuse": null
+    },
+    {
+      "id": "glyph_knock_tap",
+      "brief": "One fingertip tapping a flat stone with one tiny impact mark",
+      "reuse": null
+    },
+    {
+      "id": "glyph_knock_rumble",
+      "brief": "",
+      "reuse": "play_rumble"
+    },
+    {
+      "id": "glyph_ring_long",
+      "brief": "One brass bell with a long sweeping sound ribbon",
+      "reuse": null
+    },
+    {
+      "id": "glyph_ring_short",
+      "brief": "One brass bell with one short sound dash",
+      "reuse": null
+    },
+    {
+      "id": "glyph_sound_rumble",
+      "brief": "",
+      "reuse": "play_rumble"
+    },
+    {
+      "id": "glyph_sound_chime",
+      "brief": "A small silver chime with three bright diamond sound marks",
+      "reuse": null
+    },
+    {
+      "id": "glyph_sound_sigh",
+      "brief": "A soft pale curling breath ribbon",
+      "reuse": null
+    },
+    {
+      "id": "play_lullaby",
+      "brief": "",
+      "reuse": "packages/client/src/assets/painted/note.webp"
+    },
+    {
+      "id": "play_cattails",
+      "brief": "Three cattail stems tossed in a juggling arc",
+      "reuse": null
+    },
+    {
+      "id": "play_lantern_held",
+      "brief": "A hand holding up a lit lantern",
+      "reuse": null
+    },
+    {
+      "id": "play_rumble",
+      "brief": "A rounded mountain with three broad low vibration arcs",
+      "reuse": null
+    },
+    {
+      "id": "play_red_blanket",
+      "brief": "A red blanket waving in a soft fold",
+      "reuse": null
+    },
+    {
+      "id": "play_pinecones",
+      "brief": "Three pinecones bouncing in an arc",
+      "reuse": null
+    },
+    {
+      "id": "play_warm_hand",
+      "brief": "One open warm hand with gentle golden warmth lines",
+      "reuse": null
+    },
+    {
+      "id": "play_soft_hum",
+      "brief": "",
+      "reuse": "play_lullaby"
+    },
+    {
+      "id": "play_cupped_hands",
+      "brief": "Two gently cupped hands around a soft golden glow",
+      "reuse": null
+    },
+    {
+      "id": "play_slow_tune",
+      "brief": "",
+      "reuse": "play_lullaby"
+    },
+    {
+      "id": "play_scratch",
+      "brief": "A gentle hand scratching behind a friendly deer-like ear, symbolic crop",
+      "reuse": null
+    },
+    {
+      "id": "play_clover",
+      "brief": "Three leafy clover stems",
+      "reuse": null
+    },
+    {
+      "id": "play_mane_brush",
+      "brief": "A wooden brush beside a lock of chestnut horse mane",
+      "reuse": null
+    },
+    {
+      "id": "play_water_bucket",
+      "brief": "A wooden bucket brimming with blue water",
+      "reuse": null
+    },
+    {
+      "id": "play_hum_tune",
+      "brief": "",
+      "reuse": "play_lullaby"
+    },
+    {
+      "id": "play_stroke_nose",
+      "brief": "A hand gently stroking a friendly pony nose, symbolic crop",
+      "reuse": null
+    },
+    {
+      "id": "play_apple",
+      "brief": "One red windfall apple with a leaf",
+      "reuse": null
+    },
+    {
+      "id": "play_stomp_marsh",
+      "brief": "A boot stomping in brown marsh mud",
+      "reuse": null
+    },
+    {
+      "id": "play_splash_river",
+      "brief": "A boot splashing blue river water",
+      "reuse": null
+    },
+    {
+      "id": "play_tiptoe_thorns",
+      "brief": "A boot tiptoeing past a thorn sprig",
+      "reuse": null
+    },
+    {
+      "id": "play_little_fire",
+      "brief": "A little friendly campfire on three sticks",
+      "reuse": null
+    },
+    {
+      "id": "play_blankets",
+      "brief": "Two neatly rolled colored blankets",
+      "reuse": null
+    },
+    {
+      "id": "play_moss_tea",
+      "brief": "A cup of warm tea with moss-green leaves",
+      "reuse": null
+    },
+    {
+      "id": "play_bell_cloth",
+      "brief": "A brass bell draped with a soft blue cloth",
+      "reuse": null
+    },
+    {
+      "id": "play_bell_lullaby",
+      "brief": "",
+      "reuse": "play_lullaby"
+    },
+    {
+      "id": "play_bell_polish",
+      "brief": "A brass bell being polished with a small cloth, bright glint",
+      "reuse": null
+    },
+    {
+      "id": "play_pour_tea",
+      "brief": "A kettle pouring a thin tea stream into a tiny cup",
+      "reuse": null
+    },
+    {
+      "id": "play_stir",
+      "brief": "A spoon swirling tea in a cup",
+      "reuse": null
+    },
+    {
+      "id": "play_shortbread",
+      "brief": "Three pieces of shortbread on a small plate",
+      "reuse": null
+    }
+  ]
+}

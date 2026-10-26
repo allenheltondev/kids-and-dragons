@@ -2349,7 +2349,8 @@
             "amount": 3
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/stone-chain-road"
     },
     "interaction_shelter_stack": {
       "type": "interaction",
@@ -2385,7 +2386,8 @@
             "to": "party"
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/way-shelter-stack"
     },
     "scene_evening_cakes": {
       "type": "story",
@@ -2397,7 +2399,8 @@
           "icon": "rest",
           "goto": "scene_last_moth"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/way-shelter-stack"
     },
     "interaction_trickle": {
       "type": "interaction",
@@ -2421,7 +2424,8 @@
       "onAssisted": {
         "goto": "scene_switchback",
         "narration": "The warden calls out each gap for you, loud and clear, and you slip across between the pebbles without a single bonk."
-      }
+      },
+      "art": "scenes/gemfall/trickling-slide-road"
     },
     "interaction_wagon_bells": {
       "type": "interaction",
@@ -2441,17 +2445,17 @@
           {
             "id": "low",
             "label": "Low bell",
-            "icon": "drop"
+            "icon": "glyph_bell_big"
           },
           {
             "id": "high",
             "label": "High bell",
-            "icon": "feather"
+            "icon": "glyph_bell_little"
           },
           {
             "id": "brass",
             "label": "Brass bell",
-            "icon": "bead"
+            "icon": "glyph_bell_brass"
           }
         ],
         "answer": [
@@ -2472,7 +2476,8 @@
       "onAssisted": {
         "goto": "choice_the_bend",
         "narration": "The lead wagoneer rings the tune again, slowly, until you have it. The master hears it come back from the ridge, and the whole caravan eases to a stop on the hairpin."
-      }
+      },
+      "art": "scenes/gemfall/caravan-bells-hairpin"
     },
     "scene_drake_ledge": {
       "type": "story",
@@ -2579,6 +2584,25 @@
       "caravan_master": "exhausted, practical, has had a headache since the stone came aboard",
       "odo": "a cheerful man with a wheelbarrow of painted gravel he believes is gems; proud, easily delighted, never sulks",
       "posy": "Corbin the prospector's small daughter; serious, brave, thinks hard before she answers"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_shelter_stack": {
+        "props": [
+          "prop_stone_board"
+        ]
+      },
+      "interaction_stone_chain": {
+        "props": [
+          "prop_humming_stone"
+        ]
+      },
+      "interaction_trickle": {
+        "props": [
+          "prop_red_stones"
+        ]
+      }
     }
   }
 }

@@ -1,0 +1,227 @@
+[
+  {
+    "id": "prop_rope_pole",
+    "brief": "Coil of rope around a wooden pole",
+    "use": "cooperate: 01 `interaction_lantern_pole`, 02 `interaction_stuck_wagon`, 03a `interaction_pot`, 03b `interaction_stumps`, 06 `interaction_wagons`, 08 `interaction_chimney`"
+  },
+  {
+    "id": "prop_post_ropes",
+    "brief": "A tall marker post with two ropes",
+    "use": "cooperate: 04a `interaction_post_hole`, 04c `interaction_last_post`"
+  },
+  {
+    "id": "prop_wagon_wheel_rut",
+    "brief": "A wagon wheel stuck in a rut",
+    "use": "cooperate: 05c `interaction_bell_cart`"
+  },
+  {
+    "id": "prop_linked_arms",
+    "brief": "Linked arms",
+    "use": "cooperate: 03c `check_block_jumpers`"
+  },
+  {
+    "id": "prop_leaning_chair",
+    "brief": "A tall chair tilted over",
+    "use": "cooperate: 05b `check_chair_sit`"
+  },
+  {
+    "id": "prop_knotted_string",
+    "brief": "A knotted string stretched over a crack",
+    "use": "cooperate: 05a `check_string`"
+  },
+  {
+    "id": "prop_hedge_latch",
+    "brief": "Hedge branches knitting round a thorny latch",
+    "use": "cooperate: 04b `interaction_hedge_gate`"
+  },
+  {
+    "id": "prop_plank",
+    "brief": "A long wooden plank",
+    "use": "relay 03a `interaction_planks`; balance 05b `check_bridge_test`"
+  },
+  {
+    "id": "prop_water_tray",
+    "brief": "A wide tray of brimming water with a cork boat",
+    "use": "balance: 05a `interaction_level`"
+  },
+  {
+    "id": "prop_jar_tray",
+    "brief": "A tray of wobbling jars",
+    "use": "balance: 01 `interaction_jars`"
+  },
+  {
+    "id": "prop_leaf_cup",
+    "brief": "A leaf cup of spring water",
+    "use": "balance: 04b `interaction_spring_cup`"
+  },
+  {
+    "id": "prop_glass_cabinet",
+    "brief": "A glass cabinet of forty stones",
+    "use": "balance: 07h `interaction_cabinet`"
+  },
+  {
+    "id": "prop_door_barrels",
+    "brief": "An old door across two barrels",
+    "use": "balance: 07l `interaction_set_table`"
+  },
+  {
+    "id": "prop_stone_board",
+    "brief": "A board stacked with humming stones",
+    "use": "balance: 07r `interaction_shelter_stack`"
+  },
+  {
+    "id": "prop_pear_crate",
+    "brief": "A crate of pears",
+    "use": "01 `interaction_quay_line`"
+  },
+  {
+    "id": "prop_egg_basket",
+    "brief": "A basket of fresh eggs",
+    "use": "02 `interaction_egg_baskets`"
+  },
+  {
+    "id": "prop_lantern",
+    "brief": "A lit lantern",
+    "use": "03b `interaction_lantern`"
+  },
+  {
+    "id": "prop_cake_plate",
+    "brief": "A plate of spiced grass-cake",
+    "use": "04a `interaction_plates`"
+  },
+  {
+    "id": "prop_word_scroll",
+    "brief": "A rolled message with a small boy in an orange hat",
+    "use": "04c `check_relay`"
+  },
+  {
+    "id": "prop_soup_bowl",
+    "brief": "A bowl of hot soup",
+    "use": "05a `interaction_bowls`"
+  },
+  {
+    "id": "prop_knotted_cords",
+    "brief": "A bundle of knotted cords",
+    "use": "05b `interaction_post_relay`"
+  },
+  {
+    "id": "prop_pry_bar",
+    "brief": "A heavy iron pry bar",
+    "use": "05c `interaction_pry_bars`"
+  },
+  {
+    "id": "prop_soup_pot",
+    "brief": "A heavy pot of soup",
+    "use": "06 `interaction_soup_pots`"
+  },
+  {
+    "id": "prop_numbered_box",
+    "brief": "A humming numbered box",
+    "use": "07h `interaction_boxes`"
+  },
+  {
+    "id": "prop_tea_mug",
+    "brief": "A hot tin mug of tea",
+    "use": "07l `interaction_tea_cups`"
+  },
+  {
+    "id": "prop_humming_stone",
+    "brief": "A humming stone",
+    "use": "07r `interaction_stone_chain`"
+  },
+  {
+    "id": "prop_faun_bundle",
+    "brief": "A faun family's bundle",
+    "use": "08 `interaction_bundles`"
+  },
+  {
+    "id": "prop_letters",
+    "brief": "fluttering letters",
+    "use": "01 `interaction_letters`"
+  },
+  {
+    "id": "prop_reed_gate",
+    "brief": "a pole through swinging reeds",
+    "use": "03b `interaction_reed_gap`"
+  },
+  {
+    "id": "prop_goat_bucket",
+    "brief": "a goat with a bucket on its head",
+    "use": "03c `check_goat_chase`"
+  },
+  {
+    "id": "prop_tall_grass",
+    "brief": "a creeping step in tall grass",
+    "use": "04a `interaction_ridge_creep`"
+  },
+  {
+    "id": "prop_striped_gate",
+    "brief": "a striped gate pole",
+    "use": "04c `interaction_gate`"
+  },
+  {
+    "id": "prop_stepping_stones",
+    "brief": "stones with waves",
+    "use": "05b `interaction_stones`"
+  },
+  {
+    "id": "prop_wagon_wheels",
+    "brief": "rolling wheels",
+    "use": "07h `interaction_hairpin`"
+  },
+  {
+    "id": "prop_box_stack",
+    "brief": "leaning stacks of boxes",
+    "use": "07l `interaction_box_slide`"
+  },
+  {
+    "id": "prop_red_stones",
+    "brief": "trickling red stones",
+    "use": "07r `interaction_trickle`"
+  },
+  {
+    "id": "prop_brass_cup",
+    "brief": "An upside-down brass cup with a small shiny button beside it. Neutral identical cup, no marker indicating an answer.",
+    "use": "tracking"
+  },
+  {
+    "id": "prop_playing_card",
+    "brief": "One face-down playing card, blue geometric patterned back. No visible face, no correct-answer marker.",
+    "use": "tracking"
+  },
+  {
+    "id": "prop_sun_card",
+    "brief": "One playing card face up showing a bold golden sun symbol, no text.",
+    "use": "tracking"
+  },
+  {
+    "id": "prop_fern",
+    "brief": "One lush green fern, broad dense fronds that conceal anything behind, no calf or answer marker.",
+    "use": "tracking"
+  },
+  {
+    "id": "prop_pickle_wagon",
+    "brief": "One small empty wooden cart with pickle barrels, no driver or animal.",
+    "use": "tracking"
+  },
+  {
+    "id": "prop_hay_wagon",
+    "brief": "One small wooden hay wagon heaped with straw, no driver or animal.",
+    "use": "tracking"
+  },
+  {
+    "id": "prop_mule_cart",
+    "brief": "One empty small mule cart, shafts and tiny harness, no mule or driver.",
+    "use": "tracking"
+  },
+  {
+    "id": "prop_rock",
+    "brief": "One flat plain grey rock, no glow, no hidden moth, neutral tracking cover.",
+    "use": "tracking"
+  },
+  {
+    "id": "prop_cracked_rock",
+    "brief": "One flat grey rock with a thin crack, no glow, no moth, neutral tracking cover.",
+    "use": "tracking"
+  }
+]

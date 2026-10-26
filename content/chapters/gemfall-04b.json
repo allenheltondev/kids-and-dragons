@@ -1668,7 +1668,7 @@
           {
             "id": "fern",
             "label": "Fern",
-            "icon": "leaf"
+            "icon": "glyph_fern"
           },
           {
             "id": "acorn",
@@ -1678,7 +1678,7 @@
           {
             "id": "bluebell",
             "label": "Bluebell",
-            "icon": "bell"
+            "icon": "glyph_bluebell"
           }
         ],
         "answer": [
@@ -1704,7 +1704,8 @@
         {
           "figure": "entities/boughkin"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/sapling-ring"
     },
     "interaction_hedge_gate": {
       "type": "interaction",
@@ -1738,7 +1739,8 @@
             "amount": 3
           }
         ]
-      }
+      },
+      "art": "scenes/gemfall/hedge-knit-gate"
     },
     "interaction_herd_friends": {
       "type": "interaction",
@@ -1752,19 +1754,19 @@
           {
             "id": "hum",
             "label": "Hum a slow tune",
-            "icon": "note",
+            "icon": "play_slow_tune",
             "reaction": "The mosshorn tilts its antlers and listens."
           },
           {
             "id": "scratch",
             "label": "Scratch behind its ears",
-            "icon": "hand",
+            "icon": "play_scratch",
             "reaction": "It leans into your hand and a strawberry wobbles."
           },
           {
             "id": "clover",
             "label": "Offer a handful of clover",
-            "icon": "leaf",
+            "icon": "play_clover",
             "reaction": "It chews, thoughtfully, with its eyes shut."
           }
         ],
@@ -1786,7 +1788,8 @@
         {
           "figure": "entities/mosshorn"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/gray-moss-patch"
     },
     "interaction_spring_cup": {
       "type": "interaction",
@@ -1827,7 +1830,8 @@
         {
           "figure": "characters/unicorn"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/fern-spring-glade"
     },
     "interaction_calf_hide": {
       "type": "interaction",
@@ -1878,7 +1882,8 @@
         {
           "figure": "entities/mosshorn"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/fern-calf-hide"
     },
     "scene_beech_squirrel": {
       "type": "story",
@@ -1897,7 +1902,8 @@
             }
           ]
         }
-      ]
+      ],
+      "art": "scenes/gemfall/beech-squirrel-boughs"
     },
     "scene_stepping_logs": {
       "type": "story",
@@ -2004,6 +2010,28 @@
       "echo_hunter": "never speaks; tilts its frilled head, listening, filing every sound",
       "runner": "a MossHome runner; cheerful, out of breath, never stops jogging even while talking, carries bundles of knotted cords",
       "hedge_prospectors": "prospectors held by a hedge; loud, indignant, then sheepish once their pockets are empty"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_hedge_gate": {
+        "props": [
+          "prop_hedge_latch"
+        ]
+      },
+      "interaction_spring_cup": {
+        "props": [
+          "prop_leaf_cup"
+        ]
+      },
+      "interaction_calf_hide": {
+        "props": [],
+        "coverIcons": [
+          "prop_fern",
+          "prop_fern",
+          "prop_fern"
+        ]
+      }
     }
   }
 }

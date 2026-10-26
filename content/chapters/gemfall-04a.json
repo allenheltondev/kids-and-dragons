@@ -493,17 +493,17 @@
           {
             "id": "river",
             "label": "River road",
-            "icon": "drop"
+            "icon": "glyph_sash_river"
           },
           {
             "id": "pride",
             "label": "Pride road",
-            "icon": "crown"
+            "icon": "glyph_sash_pride"
           },
           {
             "id": "bridge",
             "label": "Bridge road",
-            "icon": "map"
+            "icon": "glyph_sash_bridge"
           }
         ],
         "answer": [
@@ -1904,19 +1904,19 @@
           {
             "id": "hand",
             "label": "Hold out a warm hand",
-            "icon": "hand",
+            "icon": "play_warm_hand",
             "reaction": "A moth lands on your thumb and stops shaking."
           },
           {
             "id": "hum",
             "label": "Hum very softly",
-            "icon": "note",
+            "icon": "play_soft_hum",
             "reaction": "The moths lean toward the sound, glowing a little brighter."
           },
           {
             "id": "dim",
             "label": "Cup your hands around the glow",
-            "icon": "flame",
+            "icon": "play_cupped_hands",
             "reaction": "The moths settle into the shadow, like birds into a nest."
           }
         ],
@@ -2043,6 +2043,25 @@
       "manticore_cubs": "two manticore cubs who pretend to be rocks; giggly, honest, dream the ground is singing",
       "granny_ash": "a manticore grandmother with a famous spiced grass-cake nobody finishes; bossy, delighted by everything",
       "marker_movers": "two polite manticores moving a pride marker post further from the caravans, again"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_post_hole": {
+        "props": [
+          "prop_post_ropes"
+        ]
+      },
+      "interaction_plates": {
+        "props": [
+          "prop_cake_plate"
+        ]
+      },
+      "interaction_ridge_creep": {
+        "props": [
+          "prop_tall_grass"
+        ]
+      }
     }
   }
 }

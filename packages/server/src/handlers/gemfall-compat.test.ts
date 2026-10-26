@@ -42,6 +42,10 @@
  * the target and tier each roll now carries. The endings, roads and setbacks
  * throw no dice and still match the pre-epic build.
  *
+ * Re-pinned for #497's remaining location and interaction paintings;
+ * only art, presentation and option icon fields changed. Gameplay comparisons
+ * against origin/main and the pre-epic digests are unchanged.
+ *
  * Re-pinned for #497's chapter 01/02 presentation art: scene backdrops,
  * interaction props, tracking covers and memory option icons only. The
  * gameplay digests below continue to match the pre-epic build.
@@ -275,20 +279,20 @@ const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
   "chapters/gemfall-01.json": "67a4b9a4d8a8be313734b201acc02cd8a26a164f22f7b4df2330ef15fd74b8f8",
   "chapters/gemfall-02.json": "ab26cdedc0b4af9f0153e75829ba49220c40e323bf6d739309cdfc82c101911e",
-  "chapters/gemfall-03a.json": "2b9e13fb7c19dddfc82ca08c79c6486c0423b1c8b103ddb525cdb8d3fe3979e9",
-  "chapters/gemfall-03b.json": "372dcb9a228be80185d8e217225899e27f78b99e45434ab68304f4a9548d54c0",
-  "chapters/gemfall-03c.json": "8d50e19cefb7de7d705af362832ee3af542f183acaaae91b199b570920a17ae5",
-  "chapters/gemfall-04a.json": "5058def48f2d86f9b949ad54e4cbe1cc561aa8ad8d6de32f3ad7f306ec0fdc71",
-  "chapters/gemfall-04b.json": "2eedc739b976578ccbaaff774d4063f653d9d84fdd8df49126fddb9e9e6b1dc0",
-  "chapters/gemfall-04c.json": "fb10593bb90240627ffd908dcb546b672251d6e982125fce0d89187ed036b753",
-  "chapters/gemfall-05a.json": "19809fd2a02ab301feed1eb3ae850a3737a0abd5b8b4b160a5ac49245897ab80",
-  "chapters/gemfall-05b.json": "8dda9528ca03b9b698dd67a111f31acd4b70f566734d108d4eb5b98e6b721953",
-  "chapters/gemfall-05c.json": "7a3ee0e81d12312ff2ce8ef770140492c1bd092cb7d90b7ef46c6c5c0095b13e",
-  "chapters/gemfall-06.json": "96619acd5bf1828937110bd831272207b8292fb5a0c80d3ecb6adbbd53bf462c",
-  "chapters/gemfall-07h.json": "fd6e78a23167c772b9b0e2863585ab825c64a1bed7fa76f7674a0891f2653d0d",
-  "chapters/gemfall-07l.json": "9450f815b2443364ad0aab48f910999cebe9bd5c76476caf84635e28bdd442e9",
-  "chapters/gemfall-07r.json": "7fcfcba309e4c86fa9ab94e566083819d6c8a75eccc0cbeab9508022fa2773d0",
-  "chapters/gemfall-08.json": "298e57b12ef7f25fa707fbec749cd9d8b92fdcd8aa5fe7fcfd9e4bbaea7f9b1f",
+  "chapters/gemfall-03a.json": "250d740d7f545cab34b78788370cbc02983c5f0505ade567779500081192230d",
+  "chapters/gemfall-03b.json": "d55edca4a9013cb0e278ccb32bcecd89e7fff3c40a92530ebc22f3b8dd309690",
+  "chapters/gemfall-03c.json": "1d88ec70d47634d94c1c53511aae0d977dca477f3ead22f5120a3bd9d3ded436",
+  "chapters/gemfall-04a.json": "6d1e1a8ef06254db10a1a189ea32c7a4afe10632870b695616e610a621ea63c3",
+  "chapters/gemfall-04b.json": "762bd6e4e84f7ed0cef6de70116d3be5cf2f15d7165078a7ba1b9244a3ded2b3",
+  "chapters/gemfall-04c.json": "8ec44a52e484bdea494d5f3e7de2b4c57ca2564094553e63176abbe977d2a522",
+  "chapters/gemfall-05a.json": "1d4dd137c4e28869a3efe90673d824bd9a7a586b56b263e7c9c309a8ecec4fc7",
+  "chapters/gemfall-05b.json": "bdbfcc8598c34b9e6dd1d7816d0290f9940aa26ce146a0ccb3536e3fbb2e632d",
+  "chapters/gemfall-05c.json": "190ba4ca072e7c95525dcef6dec60570a843e8818d91e7aa0bedb222d2448dda",
+  "chapters/gemfall-06.json": "1321cd4e6c6946e15d0f7802f1dd80e5d020574b2026d9ce6e09098e22c52c99",
+  "chapters/gemfall-07h.json": "1c90cbaf7f0fd268ebe0112a9ef568b844f5b84784612f3601a0eba8483af38e",
+  "chapters/gemfall-07l.json": "a890db266b3d0624a33be91687b18b873dafb3c584fa845cd90942b5bb9db577",
+  "chapters/gemfall-07r.json": "ea45e9c3b0b6d05e20a1329ecb2de52129e760b58aad5ee097c52ed158193626",
+  "chapters/gemfall-08.json": "982f9a5a7650d213e659c38c6f13dbba12d6c4b3c6fbdac4d2ed11e2f7ee73b3",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {

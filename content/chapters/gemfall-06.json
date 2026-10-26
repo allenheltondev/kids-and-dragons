@@ -2930,7 +2930,8 @@
           "figure": "cast/rush_prospector",
           "name": "Burrowfolk prospector"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/moth-slope-rocks"
     },
     "interaction_wagons": {
       "type": "interaction",
@@ -2974,7 +2975,8 @@
           "figure": "entities/faun",
           "name": "Faun drover"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/wagon-road-rut"
     },
     "interaction_soup_pots": {
       "type": "interaction",
@@ -3016,7 +3018,8 @@
           "figure": "cast/hessa_wren",
           "name": "Hessa Wren"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/hessa-soup-camp"
     },
     "scene_morning_bells_bought": {
       "type": "story",
@@ -3034,7 +3037,8 @@
           "icon": "forward",
           "goto": "scene_crab"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/morning-bells-baker"
     },
     "scene_crawlers_hall": {
       "type": "story",
@@ -3191,19 +3195,19 @@
           {
             "id": "pour",
             "label": "Pour the tea",
-            "icon": "potion",
+            "icon": "play_pour_tea",
             "reaction": "A thin gold stream fills a thimble cup without a drop spilled."
           },
           {
             "id": "stir",
             "label": "Stir it slowly",
-            "icon": "hand",
+            "icon": "play_stir",
             "reaction": "The tea swirls round and round, and a warden leans in to watch."
           },
           {
             "id": "biscuit",
             "label": "Pass the shortbread",
-            "icon": "cake",
+            "icon": "play_shortbread",
             "reaction": "Pellam takes one piece and logs it. Then he takes another piece and does not log it."
           }
         ],
@@ -3226,7 +3230,8 @@
           "figure": "entities/skywardens",
           "name": "Skywardens"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/pellam-tea-table"
     }
   },
   "voiceGuide": {
@@ -3247,6 +3252,28 @@
       "grandmother_tull": "Grandmother Tull, dragonling bell-keeper; brisk, cozy, says 'nothing to worry about' one time too many",
       "dunmore": "Dunmore, a prospector with a pick and no sense; embarrassed easily, means well",
       "claim_pair": "two prospectors sharing one humming boulder; stubborn, then sheepish, and hungry the whole time"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_wagons": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_soup_pots": {
+        "props": [
+          "prop_soup_pot"
+        ]
+      },
+      "interaction_moth_trail": {
+        "props": [],
+        "coverIcons": [
+          "prop_rock",
+          "prop_rock",
+          "prop_cracked_rock"
+        ]
+      }
     }
   }
 }
