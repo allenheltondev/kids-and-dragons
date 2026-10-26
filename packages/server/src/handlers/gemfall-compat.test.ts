@@ -263,6 +263,8 @@ const DIGESTS: PreEpicSave["digests"] = {
 // fields only. All gameplay content and gameplay digest constants are unchanged.
 // Re-pinned for #497 chapter 04a/04b/04c fight backdrops: nine scene.art
 // fields only. All gameplay content and gameplay digest constants are unchanged.
+// Re-pinned for #497 chapter 05a/05b/05c fight backdrops: ten scene.art
+// fields only. All gameplay content and gameplay digest constants are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
   "chapters/gemfall-01.json": "67a4b9a4d8a8be313734b201acc02cd8a26a164f22f7b4df2330ef15fd74b8f8",
@@ -273,9 +275,9 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-04a.json": "5058def48f2d86f9b949ad54e4cbe1cc561aa8ad8d6de32f3ad7f306ec0fdc71",
   "chapters/gemfall-04b.json": "2eedc739b976578ccbaaff774d4063f653d9d84fdd8df49126fddb9e9e6b1dc0",
   "chapters/gemfall-04c.json": "fb10593bb90240627ffd908dcb546b672251d6e982125fce0d89187ed036b753",
-  "chapters/gemfall-05a.json": "ce84ec3e8c8bbaed457b28fd5e6bf7570d73fce7d617c0ee32ba014829f26681",
-  "chapters/gemfall-05b.json": "fba42c9ae70d85688172ecd0a30013c28df318355f7bd666401109997dfac990",
-  "chapters/gemfall-05c.json": "9c5b1744786f4c8f79a4907aa98a4a93c7b420ed35226e438d0e92cdd14f05d4",
+  "chapters/gemfall-05a.json": "19809fd2a02ab301feed1eb3ae850a3737a0abd5b8b4b160a5ac49245897ab80",
+  "chapters/gemfall-05b.json": "8dda9528ca03b9b698dd67a111f31acd4b70f566734d108d4eb5b98e6b721953",
+  "chapters/gemfall-05c.json": "7a3ee0e81d12312ff2ce8ef770140492c1bd092cb7d90b7ef46c6c5c0095b13e",
   "chapters/gemfall-06.json": "e7da85f1b37fb604db88d62c4405624ddb0770cca1d00e6cb40a1b96e2c661fd",
   "chapters/gemfall-07h.json": "fabf1bf9378271048601b215db0774ceefdda5f68a4420c850196cbdf4ba2d01",
   "chapters/gemfall-07l.json": "b40c921d3d3e9a94fae504dc5e9d96f3fb1f1765527be0c006ee88b8337362fa",

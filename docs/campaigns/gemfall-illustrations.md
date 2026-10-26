@@ -17,6 +17,14 @@ for the nine scene mappings and TV/phone captures, and the
 [source record](../../art/source/gemfall-04-fights.json) for exact prompts,
 source/production hashes and export details. Only presentation art changes.
 
+Chapter 05a–05c adds `bridge-lantern-wisps`, `high-stream-drake`, and
+`tally-porch-crawlers` in the same export format. These cover ten scenes: four
+introductions/approaches (including both drake approaches) and six outcome
+destinations. See the [chapter 05 fight review](../review/gemfall-05-fights/README.md)
+for exact mappings and TV/phone captures, and the
+[source record](../../art/source/gemfall-05-fights.json) for exact prompts,
+source/production hashes and export details. Only presentation art changes.
+
 Six backdrops created with the built-in image generation tool. Production files live in
 `assets/scenes/gemfall/`: 1920×1080 WebP, quality 88, about 3.0 MB total. Original generated
 PNGs remain in the local Codex generated-images directory. Existing biome art is unchanged.
