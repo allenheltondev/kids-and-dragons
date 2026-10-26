@@ -18,6 +18,9 @@ import envelopeArt from "./painted/envelope.webp";
 import passkeyArt from "./painted/passkey.webp";
 import riftlight_indicatorArt from "./painted/riftlight_indicator.webp";
 import crowArt from "./painted/crow.webp";
+import glyphBellLittleArt from "./painted/glyph_bell_little.webp";
+import glyphBellBigArt from "./painted/glyph_bell_big.webp";
+import glyphBellBrassArt from "./painted/glyph_bell_brass.webp";
 import token_thornguardArt from "./painted/token_thornguard.webp";
 import token_duskrunnerArt from "./painted/token_duskrunner.webp";
 import token_starweaverArt from "./painted/token_starweaver.webp";
@@ -115,6 +118,9 @@ export const PAINTED_ART: Record<string, string> = {
   passkey: passkeyArt,
   riftlight_indicator: riftlight_indicatorArt,
   crow: crowArt,
+  glyph_bell_little: glyphBellLittleArt,
+  glyph_bell_big: glyphBellBigArt,
+  glyph_bell_brass: glyphBellBrassArt,
 
   token_thornguard: token_thornguardArt,
   token_duskrunner: token_duskrunnerArt,

@@ -6,6 +6,7 @@ import type { ClientIntent, InteractionPrompt, InteractionSpec } from "@kad/shar
 import { makeCharacter, makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore, useMyTurnKey } from "../store";
 import { StoryInteractionControls, StoryInteractionWorld } from "./StoryInteraction";
+import { PaintedCover } from "./InteractionArt";
 
 const initial = useGameStore.getState();
 beforeEach(() => { vi.spyOn(window, "requestAnimationFrame").mockReturnValue(1); });
@@ -44,15 +45,23 @@ describe("reusable story controls", () => {
     const { container } = render(<StoryInteractionWorld />);
     expect(container.querySelectorAll(".painted-cover img[alt='']")).toHaveLength(3);
     expect(container.querySelector(".painted-cover__peek")).toBeNull();
+    expect(container.querySelector(".painted-cover__glow")).toBeNull();
     expect(screen.getByText("Left")).toBeTruthy();
   });
-  it("reveals the tracked cover in reduced motion while keeping its words", () => {
+  it("uses a neutral reveal for authored covers in relaxed mode", () => {
     seed({ kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000 }, { startedAt: new Date(Date.now() - 3000).toISOString() });
     authoredChapter({ coverIcons: ["snow-mound", "wind-bells"] });
     document.documentElement.setAttribute("data-motion", "reduced");
     render(<StoryInteractionWorld />);
-    expect(document.querySelectorAll(".painted-cover__peek")).toHaveLength(1);
+    expect(document.querySelectorAll(".painted-cover__glow")).toHaveLength(1);
+    expect(document.querySelector(".painted-cover__peek")).toBeNull();
     expect(screen.getByText("The glow waits under: Right.")).toBeTruthy();
+  });
+  it("preserves the original Riftlight reveal figures when no cover art is authored", () => {
+    const { container, rerender } = render(<PaintedCover bells={false} reveal diving={false} />);
+    expect(container.querySelector(".painted-cover__peek")?.getAttribute("src")).toBe("/assets/cast/kid_peeking/assembled.png");
+    rerender(<PaintedCover bells={false} reveal diving />);
+    expect(container.querySelector(".painted-cover__peek")?.getAttribute("src")).toBe("/assets/cast/kid_burrowing/assembled.png");
   });
   it("keeps a visible fallback cover and labels when custom tracking art fails", () => {
     seed({ kind: "tracking", cue: "Watch", actionLabel: "Choose", covers: ["Left", "Right"], start: 0, swaps: [[0, 1]], stepMs: 1000 }, { startedAt: new Date(Date.now() - 3000).toISOString() });
@@ -73,6 +82,32 @@ describe("reusable story controls", () => {
     authoredChapter({ props: [id] });
     const { container } = render(<StoryInteractionWorld />);
     expect(container.querySelector(`img[src="/assets/story-props/${id}.webp"]`)).toBeTruthy();
+  });
+  it("moves the egg basket between two active players as they catch and pass", () => {
+    seed({ kind: "relay", cue: "Pass the eggs", actionLabel: "Pass", objectLabel: "basket" }, { phase: "ready", playerIds: ["p", "p2"] });
+    const state = useGameStore.getState().state!;
+    useGameStore.setState({
+      state: { ...state, sceneId: "interaction_egg_baskets", party: [...state.party, { ...state.party[0]!, playerId: "p2" }] },
+      chapter: { id: "test", presentation: { interactions: { interaction_egg_baskets: { props: ["prop_egg_basket"] } } } } as never,
+    });
+    const { container } = render(<StoryInteractionWorld />);
+    const basket = () => container.querySelector(".interaction-art__main") as HTMLImageElement;
+    const position = () => [basket().style.left, basket().style.top];
+    const update = (change: Partial<InteractionPrompt>) => act(() => {
+      const current = useGameStore.getState().state!;
+      useGameStore.setState({ state: { ...current, prompt: { ...current.prompt as InteractionPrompt, ...change } } });
+    });
+    expect(position()).toEqual(["70%", "48%"]);
+    update({ phase: "active" });
+    expect(position()).toEqual(["15%", "35%"]);
+    update({ caughtBy: "p" });
+    expect(position()).toEqual(["15%", "44%"]);
+    update({ passed: ["p"], caughtBy: undefined });
+    expect(position()).toEqual(["50%", "35%"]);
+    update({ caughtBy: "p2" });
+    expect(position()).toEqual(["50%", "44%"]);
+    update({ passed: ["p", "p2"], caughtBy: undefined, phase: "result", outcome: "success" });
+    expect(basket().style.left).toBe("85%");
   });
   it("preserves catalog-only Riftlight visuals when content has no prop", () => {
     seed({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "bundle" });
