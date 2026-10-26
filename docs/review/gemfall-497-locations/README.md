@@ -36,11 +36,22 @@ explicitly excluded existing backdrops and epilogues keep their prior art.
 WebP with transparent margins. Story props use a 512×512 canvas with at least
 24px margin; options use 256×256 with 16px margin.
 
-The [nine active TV/phone examples](../gemfall-497-interactions/active-interactions.webp)
+The [eleven active TV/phone examples](../gemfall-497-interactions/active-interactions.webp)
 show cooperation, balance, tracking, sequence, relay and play. Play buttons now
 draw their existing authored `icon` field through the shared `Icon` component;
 the control previously displayed only their labels. A test covers the painted
 button, its unchanged action payload and continued operation after image failure.
+
+Review follow-up: distinct wagon and rock covers now use Left/Middle/Right slot
+labels consistently under the paintings, in the relaxed hint, and on answer
+buttons. The paintings still move; the server still receives the same slot
+indices. Tests use the shipped wagon/rock scenes through every swap and verify
+their correct final choices in normal, relaxed and reduced-motion modes. The
+two additional TV/phone examples show these positional labels.
+
+All three contact-sheet generators share `art/source/review_font.py`: Segoe UI,
+DejaVu Sans, macOS Arial, then Pillow's bundled default (including older Pillow).
+The fallback was checked with platform fonts made unavailable.
 
 The [prop ledger](../../../art/source/gemfall-497-props.json) gives every shared
 use site; the pilot's straw hat is additionally retained. The
@@ -85,12 +96,12 @@ removing only `art`, `presentation` and option `icon` fields. The fourteen affec
 chapter file hashes are deliberately re-pinned; gameplay digests remain unchanged.
 
 The combined Gemfall/content/presentation/prefetch, icon-registry, interaction
-and service-worker run passes all 126 tests. Typecheck and content validation
+and service-worker run passes all 128 tests. Typecheck and content validation
 pass (117 checks; two existing warnings), and all 1,570 art checks pass.
 The 13 production offline/cache/performance browser cases pass. One initially
 lost its trace file because concurrent capture runs shared an output directory;
 it passed when rerun with a separate output directory. The complete location
-capture and nine active-interaction capture also pass; play examples were
+capture and eleven active-interaction capture also pass; play examples were
 refreshed after the icon rendering fix.
 
 The production bundle retains the existing 320KB first-paint and 1460KB total
@@ -98,6 +109,8 @@ caps. Repeated icon namespaces are built with a small prefix helper; bundled
 assets and internal shared chunks use their existing content hashes without
 repeating long source names. Dynamic entry names and named diagnostic/failure
 boundaries remain readable. No browser support floor or gameplay changes.
+After the tracking-label fix, the measured bundle is 320KB first paint and
+1458KB total, within those unchanged caps.
 
 Reproduce location captures with `npx playwright test -c
 playwright.cast-review.config.ts e2e/gemfall-art-shot.spec.ts -g "chapter remaining"`,

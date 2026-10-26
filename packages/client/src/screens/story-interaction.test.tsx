@@ -7,6 +7,8 @@ import { makeCharacter, makeItems, makeRules } from "../../../shared/src/test-fi
 import { useGameStore, useMyTurnKey } from "../store";
 import { StoryInteractionControls, StoryInteractionWorld } from "./StoryInteraction";
 import { PaintedCover } from "./InteractionArt";
+import wagons from "../../../../content/chapters/gemfall-04c.json";
+import rocks from "../../../../content/chapters/gemfall-06.json";
 
 const initial = useGameStore.getState();
 beforeEach(() => { vi.spyOn(window, "requestAnimationFrame").mockReturnValue(1); });
@@ -32,6 +34,38 @@ function authoredChapter(props: { props?: string[]; coverIcons?: string[] } = { 
 }
 
 describe("reusable story controls", () => {
+  it.each([
+    ["wagons", wagons.scenes.check_search.interaction, wagons.presentation.interactions.check_search, [[0, 1, 2], [1, 0, 2], [2, 0, 1], [2, 1, 0]], "Right", "2"],
+    ["rocks", rocks.scenes.interaction_moth_trail.interaction, rocks.presentation.interactions.interaction_moth_trail, [[0, 1, 2], [1, 0, 2], [1, 2, 0], [2, 1, 0]], "Middle", "1"],
+  ] as const)("keeps distinct tracking art and positional answers consistent: %s", async (_name, rawSpec, appearance, positions, answerLabel, answerIndex) => {
+    vi.spyOn(Date, "now").mockReturnValue(2_000_000);
+    const spec = rawSpec as Extract<InteractionSpec, { kind: "tracking" }>;
+    for (const mode of ["normal", "relaxed", "reduced"] as const) {
+      for (const [step, expected] of positions.entries()) {
+        const elapsed = step === 0 ? 0 : (step + 1) * spec.stepMs;
+        seed(spec, { relaxed: mode === "relaxed", startedAt: new Date(Date.now() - elapsed).toISOString() });
+        authoredChapter(appearance);
+        if (mode === "reduced") document.documentElement.setAttribute("data-motion", "reduced");
+        const { container, unmount } = render(<StoryInteractionWorld />);
+        const covers = container.querySelectorAll<HTMLElement>(".story-interaction__cover:not(.story-interaction__cover-label)");
+        for (const [index, cover] of [...covers].entries()) {
+          expect(cover.querySelector("img")?.getAttribute("src")).toContain(appearance.coverIcons[index]);
+          const slot = mode === "normal" ? expected[index]! : positions[3][index]!;
+          expect(parseFloat(cover.style.left)).toBeCloseTo((slot + 0.5) / 3 * 100);
+        }
+        expect([...container.querySelectorAll(".story-interaction__cover-label")].map(el => el.textContent)).toEqual(["Left", "Middle", "Right"]);
+        if (mode !== "normal") expect(screen.getByText(`The glow waits under: ${answerLabel}.`)).toBeTruthy();
+        unmount();
+      }
+      const send = seed(spec, { relaxed: mode === "relaxed", startedAt: new Date(Date.now() - spec.stepMs * 8).toISOString() });
+      authoredChapter(appearance);
+      const { unmount } = render(<StoryInteractionControls />);
+      await act(async () => { fireEvent.click(screen.getByRole("button", { name: `${spec.actionLabel}: ${answerLabel}` })); });
+      expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "answer", answer: [answerIndex] }));
+      unmount();
+      document.documentElement.removeAttribute("data-motion");
+    }
+  });
   it("renders painted play options and retains the action when a painting fails", async () => {
     const send = seed({ kind: "play", cue: "Tea", actionLabel: "Share", participation: "any", options: [{ id: "pour", label: "Pour the tea", icon: "play_pour_tea", reaction: "Warm!" }] });
     render(<StoryInteractionControls />);

@@ -1,11 +1,12 @@
 """Review transparent exports at display sizes on light and dark grounds."""
 import json
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
+from review_font import review_font
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / 'docs/review/gemfall-497-locations'
-font = ImageFont.truetype('C:/Windows/Fonts/segoeui.ttf', 14)
+font = review_font(14)
 for kind, catalog, directory, size in [
     ('props', 'gemfall-497-props.json', 'assets/story-props', 100),
     ('options', 'gemfall-497-options.json', 'packages/client/src/assets/painted', 40),

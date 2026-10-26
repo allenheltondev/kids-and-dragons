@@ -6,6 +6,13 @@ import type { InteractionAction, InteractionPrompt, PartyMember } from "@kad/sha
 import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
 
+/** Answers are slot indices; distinct moving paintings must not name those slots. */
+function trackingLabels(covers: string[], icons?: string[]): string[] {
+  if (icons?.length !== covers.length || new Set(icons).size < 2) return covers;
+  const positions = covers.length === 3 ? ["Left", "Middle", "Right"] : covers.length === 2 ? ["Left", "Right"] : [];
+  return covers.map((_, index) => positions[index] ?? `Position ${index + 1}`);
+}
+
 /** The same observation surface on TV and phone; it never sends an intent. */
 function InteractionShowBase({ prompt, party, now, painted, bells }: { prompt: InteractionPrompt; party: PartyMember[]; now: number; painted?: boolean; bells?: boolean }) {
   const chapter = useChapter();
@@ -18,6 +25,7 @@ function InteractionShowBase({ prompt, party, now, painted, bells }: { prompt: I
   const still = reducedMotion();
   switch (spec.kind) {
     case "tracking": {
+      const labels = trackingLabels(spec.covers, appearance?.coverIcons);
       const step = spec.stepMs * (prompt.relaxed ? 2 : 1);
       const progress = still || prompt.relaxed ? spec.swaps.length : Math.max(0, (elapsed - step) / step);
       const done = Math.min(spec.swaps.length, Math.floor(progress));
@@ -35,8 +43,8 @@ function InteractionShowBase({ prompt, party, now, painted, bells }: { prompt: I
             {painted ? <PaintedCover bells={bells ?? false} icon={appearance?.coverIcons?.[index]} target={appearance?.props?.[0]} diving={elapsed>step*.5&&elapsed<step} reveal={(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec))} /> : <span aria-hidden="true">{(!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec)) ? "✦" : "▰"}</span>}
           </span>;
         })}
-        {spec.covers.map((label, index) => <span className="story-interaction__cover story-interaction__cover-label" key={`label:${index}`} style={{ left: `${(index + 0.5) / spec.covers.length * 100}%` }}><small>{label}</small></span>)}
-        {(still || prompt.relaxed) && <span className="story-interaction__tracking-help">The glow waits under: {spec.covers[trackedCover(spec)]}.</span>}
+        {labels.map((label, index) => <span className="story-interaction__cover story-interaction__cover-label" key={`label:${index}`} style={{ left: `${(index + 0.5) / spec.covers.length * 100}%` }}><small>{label}</small></span>)}
+        {(still || prompt.relaxed) && <span className="story-interaction__tracking-help">The glow waits under: {labels[trackedCover(spec)]}.</span>}
       </div>;
     }
     case "memory": {
@@ -81,12 +89,15 @@ export function ExtraControls({ prompt, playerId, connected, mine, now, busy, se
   prompt: InteractionPrompt; playerId: string; connected: string[]; mine: boolean;
   now: number; busy: boolean; send: (action: InteractionAction) => void;
 }) {
+  const chapter = useChapter();
+  const state = useRunState();
+  const appearance = interactionAppearance(chapter?.id === state?.chapterId ? chapter : null, state?.sceneId);
   const spec = prompt.spec;
   const button = (label: string, action: InteractionAction, disabled = false) => <button className="story-interaction__button kad-focusable" disabled={busy || disabled} onClick={() => send(action)}>{label}</button>;
   switch (spec.kind) {
     case "tracking": {
       const ready = prompt.relaxed || now - Date.parse(prompt.startedAt ?? "") >= playbackMs(spec, prompt.relaxed) + 250;
-      return mine ? <>{!ready ? <p>Keep your eyes on the covers…</p> : spec.covers.map((label, index) => <span key={index}>{button(`${spec.actionLabel}: ${label}`, { action: "answer", answer: [String(index)] })}</span>)}</> : null;
+      return mine ? <>{!ready ? <p>Keep your eyes on the covers…</p> : trackingLabels(spec.covers, appearance?.coverIcons).map((label, index) => <span key={index}>{button(`${spec.actionLabel}: ${label}`, { action: "answer", answer: [String(index)] })}</span>)}</> : null;
     }
     case "timing":
       return mine ? reducedMotion() ? <p>Take a helping hand for an untimed crossing.</p> : button(spec.actionLabel, { action: "stop", position: precisionPosition(now - Date.parse(prompt.startedAt ?? ""), spec.periodMs) }) : null;
