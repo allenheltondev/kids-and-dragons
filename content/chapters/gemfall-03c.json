@@ -2151,7 +2151,7 @@
           "goto": "encounter_crabs"
         }
       ],
-      "art": "scenes/gemfall/west-branch-ford"
+      "art": "scenes/gemfall/ford-reed-crabs"
     },
     "encounter_crabs": {
       "type": "encounter",
@@ -2203,7 +2203,7 @@
           "goto": "scene_crossing_verse"
         }
       ],
-      "art": "scenes/gemfall/west-branch-ford"
+      "art": "scenes/gemfall/ford-reed-crabs"
     },
     "scene_crabs_coaxed": {
       "type": "story",
@@ -2222,7 +2222,7 @@
           "goto": "scene_crossing_verse"
         }
       ],
-      "art": "scenes/gemfall/west-branch-ford"
+      "art": "scenes/gemfall/ford-reed-crabs"
     },
     "interaction_soup_bowls": {
       "type": "interaction",
