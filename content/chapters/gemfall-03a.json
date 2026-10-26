@@ -2027,7 +2027,7 @@
           "goto": "encounter_crabs"
         }
       ],
-      "art": "scenes/gemfall/stone-crossing-queue"
+      "art": "scenes/gemfall/queue-camp-crabs"
     },
     "encounter_crabs": {
       "type": "encounter",
@@ -2073,7 +2073,7 @@
           "goto": "rest_queue_camp"
         }
       ],
-      "art": "scenes/gemfall/stone-crossing-queue"
+      "art": "scenes/gemfall/queue-camp-crabs"
     },
     "scene_crabs_sent_home": {
       "type": "story",
@@ -2093,7 +2093,7 @@
           "goto": "rest_queue_camp"
         }
       ],
-      "art": "scenes/gemfall/stone-crossing-queue"
+      "art": "scenes/gemfall/queue-camp-crabs"
     },
     "scene_wake_fee_pay_coin": {
       "type": "story",

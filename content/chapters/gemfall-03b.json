@@ -2254,7 +2254,8 @@
           "icon": "swords",
           "goto": "encounter_crabs"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/marsh-steps-crabs"
     },
     "encounter_crabs": {
       "type": "encounter",
@@ -2306,7 +2307,8 @@
           "icon": "boot",
           "goto": "scene_old_steps"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/marsh-steps-crabs"
     },
     "scene_crabs_rescue": {
       "type": "story",
@@ -2325,7 +2327,8 @@
           "icon": "boot",
           "goto": "scene_old_steps"
         }
-      ]
+      ],
+      "art": "scenes/gemfall/marsh-steps-crabs"
     }
   },
   "voiceGuide": {
