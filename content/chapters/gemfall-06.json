@@ -208,6 +208,13 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "brace_step",
+          "label": "Have a thornguard plant a shield on the step",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "check_doorstep"
         }
       ]
     },
@@ -223,7 +230,7 @@
           "name": "Grandmother"
         }
       ],
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_moths",
         "effects": [
@@ -329,7 +336,7 @@
           "id": "on",
           "label": "Go and see what's glowing",
           "icon": "eye",
-          "goto": "scene_wolves"
+          "goto": "interaction_moth_trail"
         }
       ]
     },
@@ -346,7 +353,7 @@
           "id": "on",
           "label": "Follow the moths down to the road",
           "icon": "flame",
-          "goto": "scene_wolves"
+          "goto": "interaction_moth_trail"
         }
       ]
     },
@@ -368,7 +375,7 @@
           "id": "on",
           "label": "Follow the moths' line down the slope",
           "icon": "eye",
-          "goto": "scene_wolves"
+          "goto": "interaction_moth_trail"
         }
       ]
     },
@@ -386,7 +393,7 @@
           "id": "on",
           "label": "Follow the moths' line down the slope",
           "icon": "spark",
-          "goto": "scene_wolves"
+          "goto": "interaction_moth_trail"
         }
       ]
     },
@@ -436,6 +443,13 @@
           "label": "Wait for them to move on",
           "icon": "rest",
           "goto": "scene_wolves_wait"
+        },
+        {
+          "id": "scout_ditches",
+          "label": "Have a duskrunner scout the ditches for wolf food",
+          "icon": "spark",
+          "requiresClass": "duskrunner",
+          "goto": "check_wolves"
         }
       ]
     },
@@ -461,7 +475,7 @@
           "id": "on",
           "label": "Up the road, toward a smell of soup",
           "icon": "rest",
-          "goto": "scene_claim_boulder"
+          "goto": "interaction_wagons"
         }
       ]
     },
@@ -479,7 +493,7 @@
           "id": "on",
           "label": "Up the road, toward a smell of soup",
           "icon": "wing",
-          "goto": "scene_claim_boulder"
+          "goto": "interaction_wagons"
         }
       ]
     },
@@ -496,7 +510,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_claim_boulder",
+        "goto": "interaction_wagons",
         "effects": [
           {
             "type": "setFlag",
@@ -507,7 +521,7 @@
         "narration": "You spot an overturned sausage cart in the ditch. The wolves spot it two seconds after you. The road clears in a hurry, and one wolf looks back at you as if it is memorizing your face."
       },
       "onFailure": {
-        "goto": "scene_claim_boulder",
+        "goto": "interaction_wagons",
         "narration": "Your plan involves a sausage on a string, and the wolves are not impressed. In the end they wander off on their own, howling long complaints at the mountain."
       }
     },
@@ -558,7 +572,7 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Find out whose claim flag went into the boulder first",
-      "roller": "party",
+      "roller": "best",
       "onSuccess": {
         "goto": "scene_soup_tent",
         "narration": "You check the flag holes. Both are brand new. But under the moss at the bottom of the boulder is a third mark, a little carved line, so old the moss has grown into it. It was here before either of them. It was here before anyone. Both prospectors stare at it, untie their bootlaces, and go and find a different boulder, quietly."
@@ -728,7 +742,7 @@
           "id": "on",
           "label": "Find somewhere warm to sleep",
           "icon": "note",
-          "goto": "rest_warm_stones"
+          "goto": "interaction_soup_pots"
         }
       ],
       "cast": [
@@ -746,7 +760,7 @@
           "id": "on",
           "label": "Find somewhere warm to sleep",
           "icon": "spark",
-          "goto": "rest_warm_stones"
+          "goto": "interaction_soup_pots"
         }
       ],
       "cast": [
@@ -764,7 +778,7 @@
           "id": "on",
           "label": "Find somewhere warm to sleep",
           "icon": "cake",
-          "goto": "rest_warm_stones"
+          "goto": "interaction_soup_pots"
         }
       ],
       "cast": [
@@ -782,7 +796,7 @@
           "id": "on",
           "label": "Find somewhere warm to sleep",
           "icon": "hand",
-          "goto": "rest_warm_stones"
+          "goto": "interaction_soup_pots"
         }
       ],
       "cast": [
@@ -800,7 +814,7 @@
           "id": "on",
           "label": "Find somewhere warm to sleep",
           "icon": "ear",
-          "goto": "rest_warm_stones"
+          "goto": "interaction_soup_pots"
         }
       ],
       "cast": [
@@ -863,6 +877,28 @@
           "icon": "wing",
           "requiresSpecies": "griffin",
           "goto": "scene_morning_bells_fly_ring"
+        },
+        {
+          "id": "buy_cake",
+          "label": "Buy a honeycake from the bench stall for 2 coins",
+          "icon": "cake",
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          },
+          "goto": "scene_morning_bells_bought",
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 2
+            },
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
         }
       ]
     },
@@ -1322,7 +1358,7 @@
           "id": "on",
           "label": "On to the captain's table",
           "icon": "hand",
-          "goto": "scene_truth_table"
+          "goto": "scene_crawlers_hall"
         }
       ]
     },
@@ -1341,7 +1377,7 @@
           "id": "on",
           "label": "On to the captain's table",
           "icon": "ear",
-          "goto": "scene_truth_table"
+          "goto": "scene_crawlers_hall"
         }
       ]
     },
@@ -1360,7 +1396,7 @@
           "id": "on",
           "label": "On to the captain's table",
           "icon": "scroll",
-          "goto": "scene_truth_table"
+          "goto": "scene_crawlers_hall"
         }
       ]
     },
@@ -1773,7 +1809,7 @@
           "id": "on",
           "label": "Back to the table for the record",
           "icon": "lantern",
-          "goto": "scene_ledger"
+          "goto": "interaction_tea"
         }
       ]
     },
@@ -1791,7 +1827,7 @@
           "id": "on",
           "label": "Back to the table for the record",
           "icon": "gem",
-          "goto": "scene_ledger"
+          "goto": "interaction_tea"
         }
       ]
     },
@@ -1809,7 +1845,7 @@
           "id": "on",
           "label": "Back to the table for the record",
           "icon": "whistle",
-          "goto": "scene_ledger"
+          "goto": "interaction_tea"
         }
       ]
     },
@@ -1827,7 +1863,7 @@
           "id": "on",
           "label": "Back to the table for the record",
           "icon": "eye",
-          "goto": "scene_ledger"
+          "goto": "interaction_tea"
         }
       ]
     },
@@ -1845,7 +1881,7 @@
           "id": "on",
           "label": "Back to the table for the record",
           "icon": "moon",
-          "goto": "scene_ledger"
+          "goto": "interaction_tea"
         }
       ]
     },
@@ -1863,7 +1899,7 @@
           "id": "on",
           "label": "Back to the table for the record",
           "icon": "note",
-          "goto": "scene_ledger"
+          "goto": "interaction_tea"
         }
       ]
     },
@@ -2846,6 +2882,349 @@
           "label": "Watch it all click together",
           "icon": "eye",
           "goto": "scene_whole_truth"
+        }
+      ]
+    },
+    "interaction_moth_trail": {
+      "type": "interaction",
+      "narration": "Halfway down the slope, one little moth glows brighter than the rest. It is the one that was shivering hardest, and now it is playing hide-and-seek with three flat rocks, popping under one, then another. The prospector with the soup follows to watch. \"Bet you can't tell where it ends up,\" he says.",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the glowing moth hide, then pick the rock it ends up under.",
+        "actionLabel": "Look under",
+        "covers": [
+          "Left rock",
+          "Flat rock",
+          "Cracked rock"
+        ],
+        "start": 1,
+        "swaps": [
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "stepMs": 1500
+      },
+      "onSuccess": {
+        "goto": "scene_wolves",
+        "narration": "You pick the right rock. The moth pops out glowing like a tiny stove, gives the prospector a smug look, and flutters off down the slope toward the caravan road, as if it had somewhere to be."
+      },
+      "onFailure": {
+        "goto": "scene_wolves",
+        "narration": "You pick the wrong rock. The moth peeks out from the right one and, if a moth can giggle, giggles. Then it zips off down the slope toward the caravan road, and you follow."
+      },
+      "cast": [
+        {
+          "figure": "entities/embermoth"
+        },
+        {
+          "figure": "cast/rush_prospector",
+          "name": "Burrowfolk prospector"
+        }
+      ]
+    },
+    "interaction_wagons": {
+      "type": "interaction",
+      "narration": "At the bottom of the slope, the road is moving again, almost. The lead wagon has dropped a wheel into a deep rut, and forty more wagons are stacked up behind it, honking, if wagons could honk. The centaur drover waves you over. \"Somebody steer,\" the drover calls. \"Everybody push, and push together!\"",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends push the wagon while someone steers.",
+        "actionLabel": "Steer the wagon",
+        "supportLabel": "Push the wagon"
+      },
+      "onSuccess": {
+        "goto": "scene_claim_boulder",
+        "narration": "The wheel pops out of the rut with a sound like a cork. Forty wagons cheer, forty drovers claim it was their idea, and the centaur drover presses three coins into your hand. \"Toll refund,\" the drover says. \"Do not ask which toll.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_claim_boulder",
+        "narration": "The wagon rolls back, then forward, then sideways. In the end the faun drover hitches a goat to it, and it pops out of the rut all by itself. Everybody pretends that was the plan."
+      },
+      "onAssisted": {
+        "goto": "scene_claim_boulder",
+        "narration": "The drovers lean in beside you, and together you rock the wagon free. It pops out of the rut with a sound like a cork, and the centaur drover presses three coins into your hand. \"Toll refund,\" the drover says. \"Do not ask which toll.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Centaur drover"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun drover"
+        }
+      ]
+    },
+    "interaction_soup_pots": {
+      "type": "interaction",
+      "narration": "Night is coming, and a hundred tents at the edge of the camp have no supper. One of Hessa's soup pots is heavier than a prospector. \"Pass it along, friends,\" says Hessa. \"Many hands, no hurry.\" Nobody asks what the soup is for. Everybody grabs a handle.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the pot, then pass it on.",
+        "actionLabel": "Pass the pot",
+        "objectLabel": "A heavy pot of soup"
+      },
+      "onSuccess": {
+        "goto": "rest_warm_stones",
+        "narration": "The pot goes from hand to hand to hand, all the way to the edge of the camp, and not a drop is lost. A tired prospector takes a bowl in both hands and closes his eyes. Hessa wraps a supper in a cloth and tucks it into your pack. \"For the road,\" she says. It is a very nice supper.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_warm_stones",
+        "narration": "The pot wobbles, and half the soup goes into a prospector's boots. He says it is the warmest his feet have been all week. Hessa laughs, and the pots go on."
+      },
+      "onAssisted": {
+        "goto": "rest_warm_stones",
+        "narration": "Hessa's helpers fill the gaps in the line, and the pot goes from hand to hand to the edge of the camp without a drop lost. Hessa wraps a supper in a cloth and tucks it into your pack. \"For the road,\" she says.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ]
+    },
+    "scene_morning_bells_bought": {
+      "type": "story",
+      "narration": "The stall by the bench belongs to a dragonling baker with flour on both ears. Two coins buys a honeycake as big as a fist, still warm. \"Eat on the way up,\" says the baker. \"The ridge is steep, and the citadel is not going anywhere.\" You tuck the honeycake into your pack.",
+      "cast": [
+        {
+          "figure": "cast/grandmother_tull",
+          "name": "Grandmother Tull"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb the ridge toward the citadel",
+          "icon": "forward",
+          "goto": "scene_crab"
+        }
+      ]
+    },
+    "scene_crawlers_hall": {
+      "type": "story",
+      "discovers": [
+        "creature.bone_crawler"
+      ],
+      "art": "scenes/gemfall/redspire-citadel",
+      "narration": "Pellam is still writing when the floor starts to go tick, tick, tick. Up the cellar stairs pours a clacking river of bone-white beetles, each the size of a loaf of bread. They are bone crawlers, and they are all pointing at your humming packs. \"They follow anything that hums,\" says Pellam, with his pen still moving. \"They live under the library. They are very polite, and they eat table legs.\" He nods at the next room, where the captain's table waits, with four hundred years of logs on it. \"Please get them back down the stairs before they find the logs.\"",
+      "cast": [
+        {
+          "figure": "entities/bone_crawler"
+        },
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "choices": [
+        {
+          "id": "shoo",
+          "label": "Herd the crawlers back to the cellar",
+          "icon": "swords",
+          "goto": "encounter_crawlers"
+        }
+      ]
+    },
+    "encounter_crawlers": {
+      "type": "encounter",
+      "map": "gallery",
+      "narration": "The bone crawlers clack along the gallery, chasing the hum in your packs. Herd them back to the cellar stairs before they reach the old logs.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "name": "Bone Crawler",
+          "creature": "bone_crawler"
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_crawlers_home",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_crawlers_rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_crawlers_home": {
+      "type": "story",
+      "art": "scenes/gemfall/redspire-citadel",
+      "narration": "The last crawler clacks down the cellar stairs, and Pellam shuts the door and writes CRAWLERS: HOME. Then he presses a tin whistle into your hand, stamped with a tiny tower. \"Warden's issue,\" he says. \"For loud moments. Log it if you use it.\" He straightens his collar. \"Now. Before the captain, the tags.\"",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Let Pellam tag your stones",
+          "icon": "scroll",
+          "goto": "interaction_tags"
+        }
+      ]
+    },
+    "scene_crawlers_rescued": {
+      "type": "story",
+      "art": "scenes/gemfall/redspire-citadel",
+      "narration": "A line of wardens marches in with brooms and sweeps the crawlers down the stairs like autumn leaves. Nobody is hurt. A warden hands out hot tea and a blanket, and the old logs are safe. You do not get a whistle for this one, but Pellam writes your names in the margin anyway. Then he straightens his collar. \"Now. Before the captain, the tags.\"",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Let Pellam tag your stones",
+          "icon": "scroll",
+          "goto": "interaction_tags"
+        }
+      ]
+    },
+    "interaction_tags": {
+      "type": "interaction",
+      "art": "scenes/gemfall/redspire-citadel",
+      "narration": "Every humming thing in the citadel gets a tag, and Pellam holds up the tag pictures one at a time. \"Watch them go by,\" he says, \"then put them back in the same order. The captain likes things in order.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the tags light up, then tap them back in order.",
+        "actionLabel": "Tag the stones",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "moon",
+            "label": "Moon",
+            "icon": "moon"
+          },
+          {
+            "id": "flame",
+            "label": "Flame",
+            "icon": "flame"
+          },
+          {
+            "id": "leaf",
+            "label": "Leaf",
+            "icon": "leaf"
+          }
+        ],
+        "answer": [
+          "moon",
+          "flame",
+          "leaf",
+          "flame"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_truth_table",
+        "narration": "Moon, flame, leaf, flame. Pellam gives a tiny, rare smile and stamps each tag. \"In the right order,\" he says. \"The captain will be thrilled. She will not show it.\""
+      },
+      "onFailure": {
+        "goto": "scene_truth_table",
+        "narration": "You swap two of the tags. Pellam sighs, fixes them with his pen, and writes a very small note in the margin. \"Order matters,\" he says kindly. \"It will do. The captain is waiting.\""
+      },
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ]
+    },
+    "interaction_tea": {
+      "type": "interaction",
+      "narration": "Back at the table, Pellam keeps his word about the tea. The kettle is the size of a bucket, and the cups are the size of thimbles. \"Everybody helps with tea,\" he says. \"It is in the regulations. Page nine.\"",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Make the tea: pour it, stir it and share the shortbread.",
+        "actionLabel": "Make the tea",
+        "options": [
+          {
+            "id": "pour",
+            "label": "Pour the tea",
+            "icon": "potion",
+            "reaction": "A thin gold stream fills a thimble cup without a drop spilled."
+          },
+          {
+            "id": "stir",
+            "label": "Stir it slowly",
+            "icon": "hand",
+            "reaction": "The tea swirls round and round, and a warden leans in to watch."
+          },
+          {
+            "id": "biscuit",
+            "label": "Pass the shortbread",
+            "icon": "cake",
+            "reaction": "Pellam takes one piece and logs it. Then he takes another piece and does not log it."
+          }
+        ],
+        "stages": [
+          "The kettle starts to steam.",
+          "The first cups are full.",
+          "Everybody has a cup and a piece of shortbread."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_ledger",
+        "narration": "The tea is only slightly too hot. Captain Voss drinks hers in one go without a word, and puts the cup down very gently, which from her is a compliment. Pellam turns to a fresh page."
+      },
+      "onFailure": {
+        "goto": "scene_ledger",
+        "narration": "The tea is only slightly too hot. Captain Voss drinks hers in one go without a word, and puts the cup down very gently, which from her is a compliment. Pellam turns to a fresh page."
+      },
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
         }
       ]
     }

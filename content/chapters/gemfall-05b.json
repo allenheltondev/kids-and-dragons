@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_wild"
   },
-  "estimatedMinutes": 42,
+  "estimatedMinutes": 45,
   "xpAward": 90,
   "entry": "scene_mosshome",
   "plate": {
@@ -169,10 +169,39 @@
       ]
     },
     "check_archive_door": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "Act out your whole road on the welcome moss, stomping every path that moved under your boots, until the archivist wants it written down",
+      "type": "interaction",
+      "narration": "The archivist folds her arms on the doorstep. \"Don't tell me your road,\" she says. \"Show me. Every path that moved under your boots.\" The welcome moss is springy and does not mind being stomped on.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Everybody act out a piece of your road, until the archivist's eyebrows go up.",
+        "actionLabel": "Act it out",
+        "options": [
+          {
+            "id": "marsh",
+            "label": "Stomp a squelchy marsh",
+            "icon": "boot",
+            "reaction": "Squelch, squelch. The archivist's eyebrow twitches."
+          },
+          {
+            "id": "river",
+            "label": "Splash across a river",
+            "icon": "drop",
+            "reaction": "Splash! A drop lands on the archivist's clipboard."
+          },
+          {
+            "id": "thorns",
+            "label": "Tiptoe past grumpy thorns",
+            "icon": "leaf",
+            "reaction": "You tiptoe so well that the moss holds its breath."
+          }
+        ],
+        "stages": [
+          "The archivist's eyebrow twitches.",
+          "Both eyebrows go up.",
+          "They go up again."
+        ]
+      },
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -180,7 +209,6 @@
           "size": "large"
         }
       ],
-      "roller": "party",
       "onSuccess": {
         "goto": "scene_archive_table",
         "narration": "You stomp the last bend of your road into the moss. The archivist's eyebrows go up, and then up again. \"Oh,\" she says. \"Oh, come in. Wipe your feet. Wipe them twice.\""
@@ -188,8 +216,7 @@
       "onFailure": {
         "goto": "scene_archive_table",
         "narration": "Halfway through, you stomp the wrong way and sit down hard in the moss. \"Wait on the bench,\" says the archivist. The bench is still growing. Very slowly, over the next hour, it lifts you up to the window, and you see the table anyway."
-      },
-      "checkKind": "doing"
+      }
     },
     "scene_archive_table": {
       "type": "story",
@@ -269,10 +296,40 @@
       ]
     },
     "check_plot": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Plot every moved path, thorn by thorn, without tangling the yarn",
+      "type": "interaction",
+      "narration": "The archivist hands you a ball of yarn and a fistful of thorns. \"Three paths moved in the first week,\" she says. \"Pin them in the order they moved, and the shape will show itself. The archive remembers a little. Put your memories together.\"",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share your clues, then pin the three moved paths in the order they moved.",
+        "actionLabel": "Pin them",
+        "options": [
+          {
+            "id": "river",
+            "label": "River path",
+            "icon": "drop"
+          },
+          {
+            "id": "marsh",
+            "label": "Marsh path",
+            "icon": "leaf"
+          },
+          {
+            "id": "trees",
+            "label": "Tree path",
+            "icon": "acorn"
+          }
+        ],
+        "answer": [
+          "river",
+          "marsh",
+          "trees"
+        ],
+        "clues": [
+          "The river path moved first, on the morning of the big rumble.",
+          "The tree path moved after the marsh path.",
+          "Each path moved once."
+        ]
+      },
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -280,7 +337,6 @@
           "size": "large"
         }
       ],
-      "roller": "party",
       "onSuccess": {
         "goto": "scene_spiral",
         "effects": [
@@ -694,11 +750,14 @@
       ]
     },
     "check_chair_sit": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Sit in the leaning chair and lean it back upright with your whole weight",
-      "roller": "party",
+      "type": "interaction",
+      "narration": "The small archivist with the string waves you over. \"It will not stand up for one person,\" she says. \"Somebody sits and leans, and everybody pushes on the back. The chair has to feel the whole group.\"",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends push the chair upright while someone sits and leans back.",
+        "actionLabel": "Lean back",
+        "supportLabel": "Push the chair"
+      },
       "onSuccess": {
         "goto": "rest_guest_tree",
         "narration": "You sit and lean back hard. With a long creak the chair comes upright, and holds, and holds, and the moment you stand up it leans straight back again, slowly, like a sunflower turning. The small archivist writes on her sign, under FILE OPENED: STILL OPEN."
@@ -830,7 +889,7 @@
           "id": "on",
           "label": "Go on to the elders' ring",
           "icon": "travel",
-          "goto": "scene_cloud_gatherer"
+          "goto": "interaction_post_relay"
         }
       ]
     },
@@ -849,7 +908,7 @@
           "id": "on",
           "label": "Go on to the elders' ring",
           "icon": "drop",
-          "goto": "scene_cloud_gatherer"
+          "goto": "interaction_post_relay"
         }
       ]
     },
@@ -868,7 +927,7 @@
           "id": "on",
           "label": "Go on to the elders' ring",
           "icon": "note",
-          "goto": "scene_cloud_gatherer"
+          "goto": "interaction_post_relay"
         }
       ]
     },
@@ -1042,7 +1101,7 @@
           "id": "on",
           "label": "Go and pack",
           "icon": "lantern",
-          "goto": "scene_runner"
+          "goto": "interaction_cord_knots"
         }
       ],
       "onEnter": [
@@ -1067,7 +1126,7 @@
           "id": "on",
           "label": "Go and pack",
           "icon": "flame",
-          "goto": "scene_runner"
+          "goto": "interaction_cord_knots"
         }
       ],
       "onEnter": [
@@ -1092,7 +1151,7 @@
           "id": "on",
           "label": "Go and pack",
           "icon": "shield",
-          "goto": "scene_runner"
+          "goto": "interaction_cord_knots"
         }
       ],
       "onEnter": [
@@ -1104,7 +1163,7 @@
     },
     "scene_runner": {
       "type": "story",
-      "narration": "As you pack, the runner from the square jogs up and presses a knotted cord into your hands, still warm from carrying. \"For later,\" she says. \"When the forest pays back what it took, it'll want to see this. It means the record knows you.\" Then she's off again, at a jog, because MossHome runners never walk anywhere.",
+      "narration": "The runner grins and presses the knotted cord into your hands, still warm from carrying. \"For later,\" she says. \"When the forest pays back what it took, it'll want to see this. It means the record knows you.\" Then she's off again, at a jog, because MossHome runners never walk anywhere.",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -1156,6 +1215,13 @@
           "icon": "drop",
           "requiresFlag": "marsh_kept_us",
           "goto": "scene_falls_stair_dripping"
+        },
+        {
+          "id": "brace_stair",
+          "label": "Have a thornguard plant a post in the flood to hold on to",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "check_falls_logs"
         }
       ]
     },
@@ -1163,7 +1229,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Drag heavy stepping logs across a flooded stair",
+      "prompt": "Everybody drag heavy stepping logs across the flooded stair",
       "cast": [
         {
           "figure": "cast/flood_warden",
@@ -1171,7 +1237,7 @@
           "size": "large"
         }
       ],
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_soup_tent",
         "narration": "Heave, roll, heave, and three logs settle across the flooded steps like a little bridge. The flood-warden stamps on each one, hard, and nods. \"Proper work,\" she says, which from a flood-warden is a medal. You cross with dry boots, and she waves you up toward the high paths."
@@ -1337,7 +1403,7 @@
       "choices": [
         {
           "id": "test",
-          "label": "Test every plank before you step on it",
+          "label": "Carry a spare plank out to fill the gap",
           "icon": "clever",
           "goto": "check_bridge_test"
         },
@@ -1353,22 +1419,32 @@
           "icon": "ribbon",
           "requiresFlag": "learned_a_knot",
           "goto": "choice_rope_bridge_knot"
+        },
+        {
+          "id": "scout_gap",
+          "label": "Have a duskrunner dart out and scout the gap",
+          "icon": "spark",
+          "requiresClass": "duskrunner",
+          "goto": "check_bridge_rope"
         }
       ]
     },
     "check_bridge_test": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Tap every plank and find the safe ones before anyone steps",
-      "roller": "party",
+      "type": "interaction",
+      "narration": "A stack of spare planks is tied to the bridge rail, with a tag: TAKE ONE, CARRY IT LEVEL, LAY IT OVER THE GAP. The bridge sways, and so does the plank. Every pair of hands has to keep its end steady.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Everyone lift or lower your end until the plank is level, then carry it to the gap.",
+        "actionLabel": "Carry the plank",
+        "objectLabel": "A long spare plank"
+      },
       "onSuccess": {
         "goto": "scene_halfway_hut",
-        "narration": "Tap, tap, step. Tap, tap, step. You find the two good planks hiding among the wobbly ones and lay them across the gap, and everybody crosses without a single wobble. On the far side, you add a line under the sign: WE MINDED IT."
+        "narration": "Step by careful step you carry the plank out, and lay it across the gap with a soft thump. Everybody crosses without a single wobble. On the far side, you add a line under the sign: WE MINDED IT."
       },
       "onFailure": {
         "goto": "scene_halfway_hut",
-        "narration": "You tap a plank. It says CREAK. You say AAH. Then it turns out to be perfectly fine, it is just a very dramatic plank. You cross with hearts thumping, and laugh about it all the way to the other side."
+        "narration": "The plank wobbles, and so do you, and it lands in the gap crooked. It creaks. You say AAH. Then it turns out to be perfectly fine, just a very dramatic plank. You cross with hearts thumping, and laugh about it all the way to the other side."
       }
     },
     "check_bridge_rope": {
@@ -1420,6 +1496,28 @@
           "label": "Read back through the oldest pages",
           "icon": "clever",
           "goto": "check_hut_pages"
+        },
+        {
+          "id": "buy_cake",
+          "label": "Buy a honeycake from the keeper's shelf (2 coins)",
+          "icon": "cake",
+          "goto": "scene_hut_honeycake",
+          "when": {
+            "coins": {
+              "min": 2
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 2
+            },
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
         }
       ],
       "onEnter": [
@@ -1444,7 +1542,7 @@
           "id": "on",
           "label": "Climb on",
           "icon": "scroll",
-          "goto": "scene_high_paths"
+          "goto": "scene_drake_ford"
         }
       ]
     },
@@ -1462,11 +1560,11 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_high_paths",
+        "goto": "scene_drake_ford",
         "narration": "Back and back you turn, past ink, past scratches, to the knots. Each knot is a climber, and the little knots tied on after are what they met on the way up. The commonest one, by far, means CROSS ANIMALS: THROW THEM A SNACK. The path-keeper taps it. \"Still good advice,\" he says. \"There are wolves up there today.\""
       },
       "onFailure": {
-        "goto": "scene_high_paths",
+        "goto": "scene_drake_ford",
         "narration": "The knotted pages are like trying to read a knitted sweater. You turn it upside down and it makes even less sense. The path-keeper chuckles, closes the book, and pours you a cup of something hot. \"Takes forty years to read those,\" he says. \"I've done thirty-one.\""
       }
     },
@@ -1610,7 +1708,7 @@
           "id": "camp",
           "label": "Make camp on the flat rock",
           "icon": "rest",
-          "goto": "ending_foothills_rim"
+          "goto": "interaction_camp"
         },
         {
           "id": "lookout",
@@ -1634,7 +1732,7 @@
           "id": "on",
           "label": "Climb down and make camp",
           "icon": "eye",
-          "goto": "ending_foothills_rim"
+          "goto": "interaction_camp"
         }
       ]
     },
@@ -1653,6 +1751,288 @@
       "heal": 3,
       "choices": [],
       "outcome": "setback"
+    },
+    "interaction_post_relay": {
+      "type": "interaction",
+      "narration": "Before you can leave the runners' post, a steaming runner thrusts a bundle of knotted cords at you. \"Pass them down the stump!\" she pants. \"Hand to hand! The news has to reach the far runner before the dew dries, and we have run out of legs!\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the bundle of cords, then pass it down the line.",
+        "actionLabel": "Pass the cords",
+        "objectLabel": "A bundle of knotted cords"
+      },
+      "onSuccess": {
+        "goto": "scene_cloud_gatherer",
+        "narration": "The cords fly from hand to hand and reach the far runner with a whole breath to spare. \"Post fee!\" she calls, and tosses you three coins, jingling. Then she jogs off with the news, still jogging.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_cloud_gatherer",
+        "narration": "One bundle lands in a puddle, and two cords tie themselves to a runner's boot. She hops, laughs, and untangles it. \"The news will get there,\" she says. \"News always does.\""
+      },
+      "onAssisted": {
+        "goto": "scene_cloud_gatherer",
+        "narration": "A runner jogs in between you and takes every other throw. The cords reach the far end in good time, and a runner tosses you three coins, jingling, for the help.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ]
+    },
+    "interaction_cord_knots": {
+      "type": "interaction",
+      "narration": "As you pack, the runner from the square jogs up, tying a cord as she goes. She holds it out. \"Watch my hands,\" she says. \"Then tie it back the same way, loop for loop. The record likes to know you can.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the knots light up, then tie them back in the same order.",
+        "actionLabel": "Tie the knots",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "loop",
+            "label": "Loop",
+            "icon": "ribbon"
+          },
+          {
+            "id": "twist",
+            "label": "Twist",
+            "icon": "bead"
+          },
+          {
+            "id": "pull",
+            "label": "Pull",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "loop",
+          "twist",
+          "pull",
+          "loop"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_runner",
+        "narration": "Loop, twist, pull, loop. Your cord comes out exactly like hers, and the runner whoops. \"Not one wrong knot!\" she says. \"I will tell the record.\""
+      },
+      "onFailure": {
+        "goto": "scene_runner",
+        "narration": "Your knots come out in a tangle shaped like a very confused spider. The runner unties it with one finger. \"Close,\" she says kindly. \"I will do the last loop for you.\""
+      },
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ]
+    },
+    "scene_hut_honeycake": {
+      "type": "story",
+      "narration": "You put two coins in the path-keeper's tin. He takes a honeycake off the shelf behind him, wraps it in a leaf, and hands it over as if it were a medal. \"My sister bakes them,\" he says. \"Still warm, if you hurry. Mind the path past the hut. There is a stream, and a young river drake has moved into it.\"",
+      "cast": [
+        {
+          "figure": "cast/path_keeper",
+          "name": "Path-Keeper",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, with cake",
+          "icon": "cake",
+          "goto": "scene_drake_ford"
+        }
+      ]
+    },
+    "scene_drake_ford": {
+      "type": "story",
+      "discovers": [
+        "creature.river_drake"
+      ],
+      "narration": "Just past the hut, the high path runs into a stream that tumbles down off the cliff to feed the falls. The only way up is along its stepping stones, and a young river drake has moved in. It is the size of a pony, and it is slapping the water with its tail to make waves, one after another. It does not look mean. It looks like someone whose house the mountain keeps shaking, and who has decided that this stream is the one thing still its own.",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "choices": [
+        {
+          "id": "hop",
+          "label": "Hop up the stones between the waves",
+          "icon": "boot",
+          "goto": "interaction_stones"
+        }
+      ]
+    },
+    "interaction_stones": {
+      "type": "interaction",
+      "narration": "Slap! A wave rolls down the stream. Slap! Another. The drake is not aiming at you, but the stones are slick and the waves are big. There is a gap between each one, if you watch for it.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the wave to pass, then tap to hop up the stones.",
+        "actionLabel": "Hop!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_drake_bank",
+        "narration": "Wave, gap, hop. Wave, gap, hop. You reach the top stone with dry boots, and the drake blinks at you in surprise."
+      },
+      "onFailure": {
+        "goto": "scene_drake_bank",
+        "narration": "You go one hop too early and a wave fills your boots. You scramble up the last stones anyway, squelching, and the drake looks at you as if you have taken its towel."
+      },
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ]
+    },
+    "scene_drake_bank": {
+      "type": "story",
+      "narration": "At the top, the path leaves the stones and follows the streambed itself, a narrow rocky slot with the drake wallowing right in the middle of it. It huffs a puff of steam like a teakettle. It will not move, and it will not let anyone squeeze by, not you, and not anybody else who climbs this path after you. \"Mine,\" its snort says. There is no way around. The drake will have to be shooed out of the slot.",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "choices": [
+        {
+          "id": "shoo",
+          "label": "Splash it out of the slot",
+          "icon": "swords",
+          "goto": "encounter_drake"
+        }
+      ]
+    },
+    "encounter_drake": {
+      "type": "encounter",
+      "map": "ford",
+      "narration": "The young drake rears up and slaps the stream, and the whole slot becomes a splash fight. Move it along before the next climbers get soaked.",
+      "enemies": [
+        {
+          "id": "drake",
+          "name": "Young River Drake",
+          "creature": "river_drake",
+          "hp": 10
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_drake_shooed",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "river_charm",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_drake_splashed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_drake_shooed": {
+      "type": "story",
+      "narration": "The drake squeaks, flops over the rocks and slides into a deep pool beside the path, where it blows a sulky bubble. Then it coughs up a smooth blue charm it has been keeping under its tongue, and pushes it across the stones with its nose. \"Thanks,\" says its bubble. The slot is open, and the next climbers can come up dry.",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, with the charm",
+          "icon": "travel",
+          "goto": "scene_high_paths"
+        }
+      ]
+    },
+    "scene_drake_splashed": {
+      "type": "story",
+      "narration": "The waves are too many, and you are washed back down the stones in a heap. The path-keeper has heard the splashing. He comes down the path with a stack of towels and a tea tray, and bangs the tray like a gong until the drake slides into a far pool and sulks. He wraps everybody up and hands out hot tea. Nobody gets a charm tonight, but the slot is clear.",
+      "cast": [
+        {
+          "figure": "cast/path_keeper",
+          "name": "Path-Keeper",
+          "size": "large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Climb on, warm and dry",
+          "icon": "travel",
+          "goto": "scene_high_paths"
+        }
+      ]
+    },
+    "interaction_camp": {
+      "type": "interaction",
+      "narration": "The flat rock at the edge of the foothills is bare and a little cold, and the sun is nearly gone. A camp will not make itself. Everybody does a piece of it.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Everybody add something to the camp until it feels cozy.",
+        "actionLabel": "Make camp",
+        "options": [
+          {
+            "id": "fire",
+            "label": "Light a little fire",
+            "icon": "spark",
+            "reaction": "A small flame crackles on the rock."
+          },
+          {
+            "id": "blankets",
+            "label": "Roll out the blankets",
+            "icon": "rest",
+            "reaction": "The blankets go down in a soft row."
+          },
+          {
+            "id": "tea",
+            "label": "Warm the moss tea",
+            "icon": "potion",
+            "reaction": "Tea steam curls up into the dusk."
+          }
+        ],
+        "stages": [
+          "A spark catches.",
+          "The fire settles down to a glow.",
+          "The camp feels like home."
+        ]
+      },
+      "onSuccess": {
+        "goto": "ending_foothills_rim",
+        "narration": "The fire glows, the blankets are warm, and the tea tastes like a rainy afternoon, in a good way."
+      },
+      "onFailure": {
+        "goto": "ending_foothills_rim",
+        "narration": "The fire is a little smoky and the blankets are a little crooked, but the camp will do."
+      }
     }
   },
   "voiceGuide": {

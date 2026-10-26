@@ -9,7 +9,7 @@
     "set": "road",
     "flag": "route_river"
   },
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 42,
   "xpAward": 90,
   "entry": "scene_east_bank",
   "plate": {
@@ -158,7 +158,7 @@
           "id": "to_pride",
           "label": "Head for the pride on the ridge",
           "icon": "crown",
-          "goto": "scene_cub_scouts"
+          "goto": "interaction_ridge_creep"
         },
         {
           "id": "fly_up",
@@ -198,7 +198,7 @@
           "id": "moths_to_pride",
           "label": "Go up to the pride",
           "icon": "crown",
-          "goto": "scene_cub_scouts"
+          "goto": "interaction_ridge_creep"
         }
       ],
       "art": "scenes/gemfall/pride-marker-road"
@@ -218,7 +218,7 @@
           "id": "land_pride",
           "label": "Land near the pride",
           "icon": "wing",
-          "goto": "scene_cub_scouts"
+          "goto": "interaction_ridge_creep"
         }
       ]
     },
@@ -460,22 +460,65 @@
           "icon": "wing",
           "requiresFlag": "ran_relay",
           "goto": "scene_waystation_letters_arrived"
+        },
+        {
+          "id": "pay_lesson",
+          "label": "Pay a centaur a coin for a quick lesson in reading sashes",
+          "icon": "bead",
+          "goto": "scene_waystation_lesson",
+          "when": {
+            "coins": {
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 1
+            }
+          ]
         }
       ],
       "art": "scenes/gemfall/centaur-sash-barn"
     },
     "check_sashes": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Line up the new stitched detours, thread by thread",
+      "type": "interaction",
+      "narration": "The centaur with the spools in her mouth lights a lantern behind each sash, one at a time. \"Quick,\" she says around the thread. \"The new detours glow in the order the stones fell. Watch them go by, then stitch them back the same way.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the roads glow, then stitch them back in order.",
+        "actionLabel": "Stitch the roads",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "river",
+            "label": "River road",
+            "icon": "drop"
+          },
+          {
+            "id": "pride",
+            "label": "Pride road",
+            "icon": "crown"
+          },
+          {
+            "id": "bridge",
+            "label": "Bridge road",
+            "icon": "map"
+          }
+        ],
+        "answer": [
+          "river",
+          "pride",
+          "bridge",
+          "pride"
+        ]
+      },
       "cast": [
         {
           "figure": "cast/road_warden",
           "name": "Road-Warden"
         }
       ],
-      "roller": "party",
       "onSuccess": {
         "goto": "scene_spiral",
         "narration": "Sash by sash, thread by thread, you line the new detours up. The centaur takes the spools out of her mouth to say \"oh.\"",
@@ -490,6 +533,17 @@
       "onFailure": {
         "goto": "scene_spiral",
         "narration": "The sashes tangle into one enormous woolly knot. The oldest centaur sighs, untangles it in about a minute, and lays them out for you, clucking her tongue."
+      },
+      "onAssisted": {
+        "goto": "scene_spiral",
+        "narration": "The oldest centaur holds the lanterns steady for as long as you need. Sash by sash, thread by thread, you line the new detours up. She takes the spools out of her mouth to say \"oh.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "read_the_sashes",
+            "value": true
+          }
+        ]
       },
       "art": "scenes/gemfall/centaur-sash-barn"
     },
@@ -989,14 +1043,14 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Race a relay centaur to the next pride post",
+      "prompt": "The fastest of you races a relay centaur to the next pride post",
       "cast": [
         {
           "figure": "cast/bracken_swiftmile",
           "name": "Bracken"
         }
       ],
-      "roller": "party",
+      "roller": "best",
       "onSuccess": {
         "goto": "scene_pride_road",
         "narration": "You run like the wind, and the wind is impressed. You touch the post one breath before Bracken does, mostly because she was laughing too hard to run properly. \"Fair's fair,\" she says, and tells you all the relay news for free: on every road in the realm, the stones are humming."
@@ -1179,7 +1233,7 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_pride_camp",
+        "goto": "interaction_plates",
         "narration": "Bite. Chew. Your eyes water. Your ears go hot. Bite. Chew. You swallow the last crumb, and the whole pride roars. Granny Ash pats your head and announces to the ridge that you are family now, and nobody is allowed to argue.",
         "effects": [
           {
@@ -1190,7 +1244,7 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_pride_camp",
+        "goto": "interaction_plates",
         "narration": "Bite, chew, and steam comes out of your ears. Actual steam. You have to stop halfway and drink a whole bucket of water. Granny Ash is delighted. She has never seen anyone steam before, and she tells everybody, all evening."
       },
       "art": "scenes/gemfall/sefa-ridge-camp"
@@ -1209,7 +1263,7 @@
           "id": "on",
           "label": "Sit down at the fire",
           "icon": "scroll",
-          "goto": "scene_pride_camp"
+          "goto": "interaction_plates"
         }
       ],
       "art": "scenes/gemfall/sefa-ridge-camp"
@@ -1228,7 +1282,7 @@
           "id": "on",
           "label": "Close your packs and sit down",
           "icon": "hand",
-          "goto": "scene_pride_camp"
+          "goto": "interaction_plates"
         }
       ],
       "art": "scenes/gemfall/sefa-ridge-camp"
@@ -1275,6 +1329,13 @@
           "icon": "drop",
           "requiresItem": "ossley_reed_knot",
           "goto": "choice_cub_nap_reed_knot"
+        },
+        {
+          "id": "songkeeper_lullaby",
+          "label": "Have a songkeeper start a lullaby, and everyone join in",
+          "icon": "note",
+          "requiresClass": "songkeeper",
+          "goto": "check_lullaby"
         }
       ],
       "art": "scenes/gemfall/sefa-ridge-camp"
@@ -1296,7 +1357,7 @@
       "type": "check",
       "stat": "heart",
       "tn": 12,
-      "prompt": "Sing two manticore cubs to sleep over the hum",
+      "prompt": "Everybody sing two manticore cubs to sleep over the hum",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -1304,7 +1365,7 @@
           "size": "large"
         }
       ],
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_moving_marker",
         "narration": "You sing the slowest, softest song you know, and then you sing it again. The cubs' eyes go heavy. One by one they flop over into a warm furry pile, purring, and Elder Sefa mouths a silent thank you over the top of them."
@@ -1377,6 +1438,13 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "thornguard_post",
+          "label": "Have a thornguard take the heavy end of the post",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "check_marker_post"
         }
       ],
       "art": "scenes/gemfall/pride-marker-road"
@@ -1385,15 +1453,15 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Carry a pride marker post to its new hole",
-      "roller": "party",
+      "prompt": "Everybody take a corner of a pride marker post and carry it to its new hole",
+      "roller": "all",
       "onSuccess": {
-        "goto": "scene_waystation",
-        "narration": "You heave the post up between you and march it out to the new spot, further from the caravan road. Thump. It goes in straight first time. The two manticores tie a fresh tuft of tail-fur on top and say this is the neatest move all month."
+        "goto": "interaction_post_hole",
+        "narration": "You heave the post up between you and march it out to the new spot, further from the caravan road. It arrives at the hole without a wobble, tuft and all."
       },
       "onFailure": {
-        "goto": "scene_waystation",
-        "narration": "The post is heavier than it looks, and it looks very heavy. You wobble, and it ends up planted slightly crooked. The manticores tilt their heads, decide crooked is fine, and tie a fresh tuft on top. \"It still says keep away,\" one of them says."
+        "goto": "interaction_post_hole",
+        "narration": "The post is heavier than it looks, and it looks very heavy. You wobble all the way there, and it ends up leaning against the hole like a tired giraffe."
       },
       "art": "scenes/gemfall/pride-marker-road"
     },
@@ -1405,7 +1473,7 @@
           "id": "on",
           "label": "Walk on to the waystation",
           "icon": "map",
-          "goto": "scene_waystation"
+          "goto": "interaction_post_hole"
         }
       ],
       "art": "scenes/gemfall/pride-marker-road"
@@ -1418,7 +1486,7 @@
           "id": "on",
           "label": "Walk on to the waystation",
           "icon": "wing",
-          "goto": "scene_waystation"
+          "goto": "interaction_post_hole"
         }
       ],
       "art": "scenes/gemfall/pride-marker-road"
@@ -1504,6 +1572,13 @@
           "label": "Catch one gently and look at it",
           "icon": "quick",
           "goto": "check_moth"
+        },
+        {
+          "id": "duskrunner_moth",
+          "label": "Have a duskrunner dart in and cup one",
+          "icon": "spark",
+          "requiresClass": "duskrunner",
+          "goto": "check_moth"
         }
       ],
       "art": "scenes/gemfall/pride-stone-crater"
@@ -1516,7 +1591,7 @@
           "id": "on",
           "label": "Walk on",
           "icon": "rest",
-          "goto": "scene_jackalope_wall"
+          "goto": "interaction_lost_moths"
         }
       ],
       "art": "scenes/gemfall/pride-stone-crater"
@@ -1534,11 +1609,11 @@
       ],
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_jackalope_wall",
+        "goto": "interaction_lost_moths",
         "narration": "You cup one, as gently as a bubble. It is shivering. Embermoths love warm and love the mountain, and this one is flying away from both. You hold it till it stops shaking, then let it go, south, with all the others."
       },
       "onFailure": {
-        "goto": "scene_jackalope_wall",
+        "goto": "interaction_lost_moths",
         "narration": "You miss. You miss again. On the third try an embermoth lands on your nose all by itself, glows very brightly, and makes you sneeze. Then it hurries south after the others, away from the mountain, as fast as it can go."
       },
       "art": "scenes/gemfall/pride-stone-crater"
@@ -1588,14 +1663,14 @@
       "type": "check",
       "stat": "quick",
       "tn": 8,
-      "prompt": "Crawl through a wall of jackalopes without stepping on anybody",
+      "prompt": "Everybody crawl through a wall of jackalopes without stepping on anybody",
       "cast": [
         {
           "figure": "entities/jackalope",
           "count": 3
         }
       ],
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_wolf_sign",
         "narration": "Hands, knees, hands, knees, and \"excuse me\" fifty times. Not one toe is stepped on. When you come out the far side, every jackalope turns its head to watch you go, the way you watch someone walk into a cold sea."
@@ -1691,6 +1766,258 @@
           "label": "Walk into the middle",
           "icon": "hand",
           "goto": "scene_widest_bend"
+        }
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
+    },
+    "scene_waystation_lesson": {
+      "type": "story",
+      "narration": "You press a coin into the warden's hand. She taps her sash with a needle. \"Every new detour has a little red cross stitched in the corner,\" she says. \"Find the crosses and the rest will follow.\" It is a very good lesson, and she spits out only one spool while giving it.",
+      "cast": [
+        {
+          "figure": "cast/road_warden",
+          "name": "Road-Warden"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Now lay them all out together",
+          "icon": "feather",
+          "goto": "check_sashes"
+        }
+      ],
+      "art": "scenes/gemfall/centaur-sash-barn"
+    },
+    "interaction_ridge_creep": {
+      "type": "interaction",
+      "narration": "The ridge path climbs through tall gold grass, and the wind comes in gusts. A pride lives up there, and a pride likes to know who is coming. The grass only hides your footsteps while it is rushing. When it goes still, so must you.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap to creep only while the wind is rushing through the grass.",
+        "actionLabel": "Creep!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_cub_scouts",
+        "narration": "Step, rush, freeze, step. You climb the slope without one rustle you could be blamed for."
+      },
+      "onFailure": {
+        "goto": "scene_cub_scouts",
+        "narration": "Crunch. A twig the size of a loaf snaps under your boot. Somewhere ahead, something small and hidden snorts, the way a person does when they are trying very hard not to laugh."
+      },
+      "onAssisted": {
+        "goto": "scene_cub_scouts",
+        "narration": "The wind rushes at just the right moments, and you climb the slope without one rustle you could be blamed for."
+      },
+      "art": "scenes/gemfall/pride-marker-road"
+    },
+    "interaction_plates": {
+      "type": "interaction",
+      "narration": "Granny Ash's cake is the pride's welcome, and the whole pride lines up along a long table for it. \"Pass the plates down!\" she calls. \"Gently! Cake this spicy has opinions.\" The plates go hand to hand, and the cubs cheer every one.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the plate, then pass it down the table.",
+        "actionLabel": "Pass the plate",
+        "objectLabel": "A plate of spiced grass-cake"
+      },
+      "onSuccess": {
+        "goto": "scene_pride_camp",
+        "narration": "Every plate arrives, and not one slice jumps off. Granny Ash tucks a honeycake into your pack. \"For later,\" she says. \"Something normal.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_pride_camp",
+        "narration": "One plate wobbles, and a cub catches the cake on his head. He wears it proudly. The line laughs, and the plates go on."
+      },
+      "onAssisted": {
+        "goto": "scene_pride_camp",
+        "narration": "Granny Ash passes every other plate herself, and not one slice jumps off. She tucks a honeycake into your pack. \"For later,\" she says. \"Something normal.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/granny_ash",
+          "name": "Granny Ash"
+        }
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
+    },
+    "interaction_post_hole": {
+      "type": "interaction",
+      "narration": "The manticores have the post at its new hole at last, and it leans over the hole like a tired giraffe. \"Hold it straight,\" says the bigger one, \"while somebody stamps the earth in.\"",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends hold the post upright while someone stamps the earth in.",
+        "actionLabel": "Stamp the earth in",
+        "supportLabel": "Hold the post straight"
+      },
+      "onSuccess": {
+        "goto": "scene_waystation",
+        "narration": "The post goes in straight the first time. The manticores tie a fresh tuft of tail-fur on top and say it is the neatest move all month. The smaller one pays you three coins from the pride jar. \"Hole-digging wages,\" she says. \"Do not tell the Brassbuckles.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_waystation",
+        "narration": "The post goes in slightly crooked. The manticores tilt their heads, decide crooked is fine, and tie a fresh tuft on top. \"It still says keep away,\" one of them says."
+      },
+      "onAssisted": {
+        "goto": "scene_waystation",
+        "narration": "The bigger manticore holds the post straight herself, and it goes in first time. They tie a fresh tuft of tail-fur on top, and the smaller one pays you three coins from the pride jar. \"Hole-digging wages,\" she says. \"Do not tell the Brassbuckles.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "art": "scenes/gemfall/pride-marker-road"
+    },
+    "interaction_lost_moths": {
+      "type": "interaction",
+      "narration": "The glowing river has gone, but a handful of little moths got left behind. They huddle in the grass, flickering, too scared to fly south by themselves.",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Help the lost moths feel safe until they glow steady again.",
+        "actionLabel": "Calm the moths",
+        "options": [
+          {
+            "id": "hand",
+            "label": "Hold out a warm hand",
+            "icon": "hand",
+            "reaction": "A moth lands on your thumb and stops shaking."
+          },
+          {
+            "id": "hum",
+            "label": "Hum very softly",
+            "icon": "note",
+            "reaction": "The moths lean toward the sound, glowing a little brighter."
+          },
+          {
+            "id": "dim",
+            "label": "Cup your hands around the glow",
+            "icon": "flame",
+            "reaction": "The moths settle into the shadow, like birds into a nest."
+          }
+        ],
+        "stages": [
+          "One moth stops flickering.",
+          "The little ones glow steady.",
+          "They lift off together, heading south."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_mud_posts",
+        "narration": "The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft."
+      },
+      "onFailure": {
+        "goto": "scene_mud_posts",
+        "narration": "The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft."
+      },
+      "art": "scenes/gemfall/pride-stone-crater"
+    },
+    "scene_mud_posts": {
+      "type": "story",
+      "discovers": [
+        "creature.mire_mimic"
+      ],
+      "narration": "Rain has filled the old marker holes, and the mud between them has a lot of opinions. At the edge stand two pride marker posts, straight and proud, with tufts of tail-fur on top. Nobody planted them. One of them blinks. Then it burps up a boot. They are mire mimics, and they have been collecting boots, hats and tufts all month. That is why the pride's road bends around this wallow, and why the road to the bend runs right between them. They look at your boots. They want them.",
+      "cast": [
+        {
+          "figure": "entities/mire_mimic",
+          "count": 2
+        }
+      ],
+      "choices": [
+        {
+          "id": "stomp",
+          "label": "Stomp the posts until they give up",
+          "icon": "swords",
+          "goto": "encounter_mimics"
+        }
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
+    },
+    "encounter_mimics": {
+      "type": "encounter",
+      "map": "glade",
+      "narration": "The posts pull up out of the mud on short wet legs and shuffle toward your boots. Stomp them back to being mud before they get a toehold.",
+      "enemies": [
+        {
+          "id": "mimic",
+          "name": "Marker-Post Mimic",
+          "creature": "mire_mimic"
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_mimics_unmasked",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_mimics_took_boots",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_mimics_unmasked": {
+      "type": "story",
+      "narration": "The posts slump, sigh, and melt back into mud, deeply embarrassed. Out of the middle of the wallow they cough up a heap of boots, hats and tufts, and, right on top, a shiny brave whistle somebody lost long ago. The tufts are the pride's. You pile them by the road for the cubs to find. The way to the bend is clear.",
+      "cast": [
+        {
+          "figure": "entities/mire_mimic",
+          "count": 2
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on toward the leaning grass",
+          "icon": "boot",
+          "goto": "scene_jackalope_wall"
+        }
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
+    },
+    "scene_mimics_took_boots": {
+      "type": "story",
+      "narration": "The mimics win the stomping, and take one boot each, very politely, as if it were a trade. Then two cubs come bounding over the grass with a bucket and a pair of long sticks, the way cubs turn up when something is funny. They hook your boots back out of the mud, and somebody finds a flask of hot tea. Nobody has a whistle to show for it, but the posts are only mud again, and the way to the bend is clear.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Walk on toward the leaning grass",
+          "icon": "boot",
+          "goto": "scene_jackalope_wall"
         }
       ],
       "art": "scenes/gemfall/pride-stone-crater"

@@ -182,8 +182,8 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Scoop up rolling gem chips before the crowd does",
-      "roller": "party",
+      "prompt": "Everybody scoop up the rolling gem chips before the crowd does",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_number_pebble",
         "effects": [
@@ -356,11 +356,16 @@
       "art": "scenes/gemfall/ford-queue-market"
     },
     "check_goat_chase": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Catch a goat with a bucket on her head",
-      "roller": "party",
+      "type": "interaction",
+      "narration": "Pudding gallops down the queue with the bucket on her head. Then she skids to a stop at a cabbage stall and starts to chew, because a goat cannot walk past a cabbage. She does it every few steps. \"Wait for the chew!\" wails Burdock. \"Then grab!\"",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap when Pudding stops to chew.",
+        "actionLabel": "Grab the bucket!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
       "onSuccess": {
         "goto": "scene_three_cards",
         "effects": [
@@ -372,9 +377,13 @@
           {
             "type": "setFlag",
             "flag": "dealt_with_the_goat"
+          },
+          {
+            "type": "grantCoins",
+            "amount": 3
           }
         ],
-        "narration": "You zig when Pudding zigs and zag when she zags, and grab the bucket by its handle just as she leaps a cooking pot. Pudding thinks this was a wonderful game. For the rest of the day, wherever you go, a goat goes too."
+        "narration": "You zig when Pudding zigs and zag when she zags, and grab the bucket by its handle just as she leaps a cooking pot. Pudding thinks this was a wonderful game. For the rest of the day, wherever you go, a goat goes too. Burdock pays you three coins for the rescued bucket, and kisses Pudding on the nose."
       },
       "onFailure": {
         "goto": "scene_three_cards",
@@ -480,23 +489,50 @@
       "art": "scenes/gemfall/ford-queue-market"
     },
     "check_expose": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 16,
-      "prompt": "Spot where the Sun Card really goes",
+      "type": "interaction",
+      "narration": "Tamsin's hands blur and the three cards fly, left, middle, right. The Sun Card starts under the left card. Her third tail twitches every time it moves. Watch where it goes.",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the Sun Card, then pick its card.",
+        "actionLabel": "Turn it over",
+        "covers": [
+          "Left card",
+          "Middle card",
+          "Right card"
+        ],
+        "start": 0,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "stepMs": 1200
+      },
       "cast": [
         {
           "figure": "cast/tamsin",
           "name": "Tamsin Three-Cards"
         }
       ],
-      "roller": "party",
       "onSuccess": {
         "goto": "scene_exposed",
         "narration": "Every time she shuffles, the third tail flicks the Sun Card up her sleeve. You say so, loudly and politely."
       },
       "onFailure": {
-        "goto": "scene_soup_line",
+        "goto": "interaction_soup_bowls",
         "narration": "You pick the middle card with total confidence. It is a picture of a very smug fox. The crowd laughs, and so, to be fair, does she."
       },
       "art": "scenes/gemfall/ford-queue-market"
@@ -522,7 +558,7 @@
           "id": "onward",
           "label": "Head for the smell of soup",
           "icon": "arrow",
-          "goto": "scene_soup_line"
+          "goto": "interaction_soup_bowls"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -548,7 +584,7 @@
           "id": "onward",
           "label": "Head for the smell of soup",
           "icon": "arrow",
-          "goto": "scene_soup_line"
+          "goto": "interaction_soup_bowls"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -567,7 +603,7 @@
           "id": "on",
           "label": "Head for the smell of soup",
           "icon": "arrow",
-          "goto": "scene_soup_line"
+          "goto": "interaction_soup_bowls"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -699,24 +735,31 @@
       "art": "scenes/gemfall/ford-queue-market"
     },
     "check_block_jumpers": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "prompt": "Link arms and hold the line against a shoving gang",
-      "roller": "party",
+      "type": "interaction",
+      "narration": "The red scarves charge up the line, elbows first. The old faun grabs your sleeve. \"Link arms!\" he says. Somebody takes the front of the line, and everybody braces behind.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends brace the line while someone holds the front.",
+        "actionLabel": "Hold the line!",
+        "supportLabel": "Brace the line"
+      },
       "onSuccess": {
-        "goto": "scene_relay_message",
+        "goto": "interaction_clear_lane",
         "effects": [
           {
             "type": "setFlag",
             "flag": "held_the_line",
             "value": true
+          },
+          {
+            "type": "grantCoins",
+            "amount": 2
           }
         ],
-        "narration": "You link arms with the old faun and two very surprised strangers, and the red scarves bounce off you like a ball off a wall. They grumble all the way back to the end of the queue. The whole line cheers, and the red scarves will remember you."
+        "narration": "You link arms with the old faun and two very surprised strangers, and the red scarves bounce off you like a ball off a wall. They grumble all the way back to the end of the queue. The whole line cheers, and the red scarves will remember you. The old faun fishes his hat out of the soup and, dripping, gives you two coins for the trouble."
       },
       "onFailure": {
-        "goto": "scene_relay_message",
+        "goto": "interaction_clear_lane",
         "narration": "The red scarves squeeze past, all elbows. Then the last one trips over Pudding's bucket, and the whole gang goes down in a red-scarfed heap. The queue laughs so hard that they slink off to the back anyway."
       },
       "art": "scenes/gemfall/ford-queue-market"
@@ -729,7 +772,7 @@
           "id": "on",
           "label": "Back to your place in line",
           "icon": "ear",
-          "goto": "scene_relay_message"
+          "goto": "interaction_clear_lane"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -742,7 +785,7 @@
           "id": "on",
           "label": "Back to your place in line",
           "icon": "spark",
-          "goto": "scene_relay_message"
+          "goto": "interaction_clear_lane"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -761,7 +804,7 @@
           "id": "on",
           "label": "Back to your place in line",
           "icon": "bead",
-          "goto": "scene_relay_message"
+          "goto": "interaction_clear_lane"
         }
       ],
       "art": "scenes/gemfall/ford-queue-market"
@@ -786,6 +829,13 @@
           "goto": "check_run_message"
         },
         {
+          "id": "duskrunner_dash",
+          "label": "Have a duskrunner sprint the note down the queue",
+          "icon": "boot",
+          "requiresClass": "duskrunner",
+          "goto": "check_run_message"
+        },
+        {
           "id": "sing",
           "label": "Sing it down the queue, the relay way",
           "icon": "note",
@@ -805,14 +855,14 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Run a message down a two-day queue",
+      "prompt": "Run a message down a two-day queue, with the fastest of you in front",
       "cast": [
         {
           "figure": "cast/relay_runner",
           "name": "Relay Runner"
         }
       ],
-      "roller": "party",
+      "roller": "best",
       "onSuccess": {
         "goto": "choice_tolls",
         "effects": [
@@ -890,6 +940,13 @@
           "goto": "check_unmire"
         },
         {
+          "id": "thornguard_heave",
+          "label": "Have a thornguard take the weight while everyone heaves",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "check_unmire"
+        },
+        {
           "id": "markers",
           "label": "Put the centaur markers back up",
           "icon": "map",
@@ -927,8 +984,8 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Heave a gem wagon out of the mud",
-      "roller": "party",
+      "prompt": "Everybody heave a gem wagon out of the mud",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_dusk_wolves",
         "effects": [
@@ -1310,26 +1367,60 @@
       "art": "scenes/gemfall/queue-dusk-camp"
     },
     "check_play_mountain": {
-      "type": "check",
-      "stat": "heart",
-      "checkKind": "doing",
-      "tn": 8,
-      "prompt": "Climb on the barrel under the red blanket and rumble like a mountain",
-      "roller": "party",
+      "type": "interaction",
+      "narration": "The troupe leader hands you a red blanket and points at a barrel. \"Climb up, darling, and be a MOUNTAIN!\" The children in the front row hold their breath.",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Rumble, wobble and erupt until the mountain is finished.",
+        "actionLabel": "Be the mountain!",
+        "options": [
+          {
+            "id": "rumble",
+            "label": "Rumble deep and low",
+            "icon": "note",
+            "reaction": "The children shriek with joy."
+          },
+          {
+            "id": "wobble",
+            "label": "Wobble the red blanket",
+            "icon": "spark",
+            "reaction": "The whole front row wobbles with you."
+          },
+          {
+            "id": "erupt",
+            "label": "Erupt with pinecones",
+            "icon": "acorn",
+            "reaction": "Pinecones bounce off three hats."
+          }
+        ],
+        "stages": [
+          "The mountain grumbles.",
+          "The mountain wobbles.",
+          "The mountain erupts!"
+        ]
+      },
       "onSuccess": {
-        "goto": "scene_witch_stall",
+        "goto": "interaction_evening_echo",
         "effects": [
           {
             "type": "grantItem",
             "itemId": "honeycake",
-            "to": "roller"
+            "to": "party"
           }
         ],
         "narration": "You stand on a barrel under a red blanket and RUMBLE. You erupt with a sack of pinecones. Three small children shriek with joy. The troupe leader says you are the best mountain they have ever had, and pays you a honeycake in wages."
       },
       "onFailure": {
-        "goto": "scene_witch_stall",
-        "narration": "You stand on a barrel under a red blanket, take an enormous breath to rumble, and sneeze instead. The blanket flies off. Everybody agrees it is the most surprising eruption yet, and the troupe keeps the sneeze in the show."
+        "goto": "interaction_evening_echo",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ],
+        "narration": "You stand on a barrel under a red blanket and RUMBLE. You erupt with a sack of pinecones. Three small children shriek with joy. The troupe leader says you are the best mountain they have ever had, and pays you a honeycake in wages."
       },
       "art": "scenes/gemfall/queue-dusk-camp"
     },
@@ -1341,7 +1432,7 @@
           "id": "on",
           "label": "Walk on down the queue",
           "icon": "ear",
-          "goto": "scene_witch_stall"
+          "goto": "interaction_evening_echo"
         }
       ],
       "art": "scenes/gemfall/queue-dusk-camp"
@@ -1354,7 +1445,7 @@
           "id": "on",
           "label": "Walk on down the queue",
           "icon": "acorn",
-          "goto": "scene_witch_stall"
+          "goto": "interaction_evening_echo"
         }
       ],
       "art": "scenes/gemfall/queue-dusk-camp"
@@ -1367,7 +1458,7 @@
           "id": "on",
           "label": "Walk on down the queue",
           "icon": "spark",
-          "goto": "scene_witch_stall"
+          "goto": "interaction_evening_echo"
         }
       ],
       "art": "scenes/gemfall/queue-dusk-camp"
@@ -1630,7 +1721,7 @@
           "id": "to_ford",
           "label": "Go down to the water at dawn",
           "icon": "drop",
-          "goto": "scene_crossing_verse"
+          "goto": "interaction_dawn_warmup"
         }
       ],
       "art": "scenes/gemfall/queue-dusk-camp",
@@ -1675,12 +1766,32 @@
       "art": "scenes/gemfall/west-branch-ford"
     },
     "check_learn_verse": {
-      "type": "check",
-      "stat": "heart",
-      "checkKind": "doing",
-      "tn": 12,
-      "prompt": "Sing the crossing verse back to the drover, line by line, one step per line",
-      "roller": "party",
+      "type": "interaction",
+      "narration": "The lead drover sings the crossing verse again and thumps one step on the ground for each line: slow, and slow, and wait, and slow. \"Listen first,\" he booms. \"Then sing it back to me, in order.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Listen to the verse, then sing it back in order.",
+        "actionLabel": "Sing the verse",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "slow",
+            "label": "Slow",
+            "icon": "drop"
+          },
+          {
+            "id": "wait",
+            "label": "Wait",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "slow",
+          "slow",
+          "wait",
+          "slow"
+        ]
+      },
       "onSuccess": {
         "goto": "choice_ford",
         "effects": [
@@ -1696,7 +1807,13 @@
         "goto": "choice_ford",
         "narration": "You learn a verse beautifully, with feeling. It turns out to be the one about turnips that the drovers sing at supper. The drover is far too pleased to tell you until much later."
       },
-      "art": "scenes/gemfall/west-branch-ford"
+      "art": "scenes/gemfall/west-branch-ford",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Lead Drover"
+        }
+      ]
     },
     "scene_crossing_verse_watch": {
       "type": "story",
@@ -2009,6 +2126,216 @@
       ],
       "choices": [],
       "outcome": "setback"
+    },
+    "scene_reed_crabs": {
+      "type": "story",
+      "discovers": [
+        "creature.glassback_crab"
+      ],
+      "narration": "The ford is tangled this morning. The lead drover stands on the first wagon, and he has not sung a note, because two young glassback crabs have climbed out of the reeds and parked themselves on the crossing stones. They sparkle like a spilled jewelry box. Whenever a wheel rolls close, they click their claws, and the wagon backs up. \"Cannot start the verse with crabs on the first step!\" booms the drover. \"Walk them back to the reeds, would you? Gently. Mostly.\"",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab",
+          "count": 2
+        },
+        {
+          "figure": "entities/centaur",
+          "name": "Lead Drover"
+        }
+      ],
+      "choices": [
+        {
+          "id": "nudge",
+          "label": "Nudge the crabs back to the reeds",
+          "icon": "swords",
+          "goto": "encounter_crabs"
+        }
+      ],
+      "art": "scenes/gemfall/west-branch-ford"
+    },
+    "encounter_crabs": {
+      "type": "encounter",
+      "map": "reedbank",
+      "narration": "The crabs clack and shuffle sideways, in no hurry at all. Nudge them off the stones before the whole queue loses patience.",
+      "enemies": [
+        {
+          "id": "crab",
+          "name": "Young Glassback Crab",
+          "creature": "glassback_crab",
+          "hp": 10
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_crabs_cleared",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "river_charm",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_crabs_coaxed",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_crabs_cleared": {
+      "type": "story",
+      "narration": "The crabs grumble, click, and shuffle back into the reeds with their claws up, like two small dukes leaving a party. The lead drover climbs down and hangs a river charm around your neck. \"For the first step,\" he booms. \"The river likes a polite neighbor.\" Then he fills his big chest, turns to the water, and starts the crossing verse.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Lead Drover"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Listen to the verse",
+          "icon": "note",
+          "goto": "scene_crossing_verse"
+        }
+      ],
+      "art": "scenes/gemfall/west-branch-ford"
+    },
+    "scene_crabs_coaxed": {
+      "type": "story",
+      "narration": "The crabs do not budge. They are crabs. In the end the lead drover tips a bucket of old bread crusts down the bank, and both crabs scuttle after it, clacking happily, and leave the stones free. He wraps everybody in a blanket and hands out hot tea. Nobody gets a river charm this morning, but the first step is clear. The drover fills his big chest, turns to the water, and starts the crossing verse.",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Lead Drover"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Listen to the verse",
+          "icon": "note",
+          "goto": "scene_crossing_verse"
+        }
+      ],
+      "art": "scenes/gemfall/west-branch-ford"
+    },
+    "interaction_soup_bowls": {
+      "type": "interaction",
+      "narration": "The soup tent is just ahead, but empty bowls are rolling out of a basket into the mud. Catch each bowl at the basket rim and stack it safely before the next hungry traveler arrives.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap when a bowl reaches the basket rim.",
+        "actionLabel": "Catch the bowl",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "scene_soup_line"
+      },
+      "onFailure": {
+        "goto": "scene_soup_line"
+      },
+      "art": "scenes/gemfall/wend-soup-tent"
+    },
+    "interaction_clear_lane": {
+      "type": "interaction",
+      "narration": "Hoofbeats come racing down the queue. A relay-runner needs a clear lane, and a loose awning has sagged across the road. Hold its pole up while the people underneath duck out of the way.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends brace the pole while someone lifts the awning.",
+        "actionLabel": "Lift the awning!",
+        "supportLabel": "Brace the pole"
+      },
+      "onSuccess": {
+        "goto": "scene_relay_message"
+      },
+      "onFailure": {
+        "goto": "scene_relay_message"
+      },
+      "art": "scenes/gemfall/ford-queue-market"
+    },
+    "interaction_evening_echo": {
+      "type": "interaction",
+      "narration": "The camp settles into evening. At the last fire before the remedy stalls, travelers tap a little welcome on their bowls: tap, tap, rest, tap. Listen, then tap it back so the next fire can hear.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Listen, then repeat the welcome in order.",
+        "actionLabel": "Tap the welcome",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "tap",
+            "label": "Tap",
+            "icon": "note"
+          },
+          {
+            "id": "rest",
+            "label": "Rest",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "tap",
+          "tap",
+          "rest",
+          "tap"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_witch_stall"
+      },
+      "onFailure": {
+        "goto": "scene_witch_stall"
+      },
+      "art": "scenes/gemfall/ford-witch-stall"
+    },
+    "interaction_dawn_warmup": {
+      "type": "interaction",
+      "narration": "Morning is cold enough to make every boot creak. Before anyone heads down to the ford, the waiting travelers turn warming up into a game. Stamp, stretch and shake the sleep out of your fingers.",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Warm up for the crossing.",
+        "actionLabel": "Warm up!",
+        "options": [
+          {
+            "id": "stamp",
+            "label": "Stamp your boots",
+            "icon": "boot",
+            "reaction": "The cold mud thumps back."
+          },
+          {
+            "id": "stretch",
+            "label": "Reach for the sky",
+            "icon": "hand",
+            "reaction": "Sleepy travelers stretch beside you."
+          },
+          {
+            "id": "shake",
+            "label": "Shake out your fingers",
+            "icon": "spark",
+            "reaction": "Somebody wiggles all ten fingers at the river."
+          }
+        ],
+        "stages": [
+          "Wake your boots.",
+          "Wake your shoulders.",
+          "Wake your fingers."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_reed_crabs"
+      },
+      "onFailure": {
+        "goto": "scene_reed_crabs"
+      },
+      "art": "scenes/gemfall/west-branch-ford"
     }
   },
   "voiceGuide": {

@@ -5,7 +5,8 @@ import { openPlayerTask } from "./player-navigation";
 import { API } from "./api";
 
 // Three live rendered surfaces are expensive to trace on a local Windows host.
-test.use({ trace: "off" });
+// Keep CI failure traces so refresh and multi-phone failures can be diagnosed.
+test.use({ trace: process.env.CI ? "retain-on-failure" : "off" });
 
 async function action(page: Page, code: string, intent: ClientIntent) {
   const session = await page.evaluate((room) => JSON.parse(localStorage.getItem(`kad.session.${room}`) ?? "null") as { playerId: string; sessionToken: string }, code);

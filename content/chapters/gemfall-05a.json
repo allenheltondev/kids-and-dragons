@@ -119,7 +119,7 @@
     },
     "scene_soup_line": {
       "type": "story",
-      "narration": "Further along the line is a pot of soup the size of a bathtub. The woman stirring it hands a bowl to a muddy prospector before she says a single word to anyone. Her name is Hollis. Her apron says DEEP HOLLOW in small, tidy stitches. Behind her, the prospector's wheelbarrow has lost a wheel.",
+      "narration": "Up close, the soup pot is the size of a bathtub. The woman stirring it hands a bowl to a muddy prospector before she says a single word to anyone. Her name is Hollis. Her apron says DEEP HOLLOW in small, tidy stitches. Behind her, the prospector's wheelbarrow has lost a wheel.",
       "choices": [
         {
           "id": "take_bowl",
@@ -475,7 +475,7 @@
           "name": "Engineer Brask"
         }
       ],
-      "roller": "party",
+      "roller": "best",
       "onSuccess": {
         "goto": "scene_outline",
         "narration": "You draw it in chalk: the old note the troll's bridge hums, the bent pride roads, the spiraling sashes. Then you draw the cracks over the top.",
@@ -690,6 +690,13 @@
           "icon": "wing",
           "requiresSpecies": "griffin",
           "goto": "scene_griffin_shortcut"
+        },
+        {
+          "id": "brace_rail",
+          "label": "Have a thornguard brace the rail for everyone",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "check_span_quiet"
         }
       ],
       "art": "scenes/gemfall/cracked-bridge-span"
@@ -699,7 +706,7 @@
       "stat": "quick",
       "tn": 16,
       "prompt": "Cross the swaying span before the warden's flag drops",
-      "roller": "party",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_far_rim",
         "narration": "Step, sway, step, sway, and you're over. The warden at the far end gives you a very small nod, which from a Skywarden is practically a hug."
@@ -1014,14 +1021,14 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Catch a toppling stack of crates",
-      "roller": "party",
+      "prompt": "Everybody grab at the toppling crates",
+      "roller": "all",
       "onSuccess": {
-        "goto": "scene_soup_line",
+        "goto": "interaction_bowls",
         "narration": "You catch the top crate, then the next, then the next, and stand there holding a wobbling tower until the carter props it back. \"Nine days those have been humming at me,\" she says, wiping her face. \"Nine days. Thank you.\" One crate has a tag on it: 4117."
       },
       "onFailure": {
-        "goto": "scene_soup_line",
+        "goto": "interaction_bowls",
         "narration": "The crates topple straight past your hands and land, thump, thump, thump, in a hay cart. Nothing breaks. One of them bursts open, and it is full of socks. \"Not that one,\" says the tired carter. \"The humming ones are underneath.\" One tag says 4117."
       },
       "art": "scenes/gemfall/hollis-soup-queue"
@@ -1034,7 +1041,7 @@
           "id": "on",
           "label": "Shuffle on up the line",
           "icon": "eye",
-          "goto": "scene_soup_line"
+          "goto": "interaction_bowls"
         }
       ],
       "art": "scenes/gemfall/hollis-soup-queue"
@@ -1094,25 +1101,65 @@
       "art": "scenes/gemfall/northern-bridge-foot"
     },
     "check_pony": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "prompt": "Talk a frightened pony past the humming carts",
+      "type": "interaction",
+      "narration": "Pepper has gone stiff-legged in the road, ears flat, staring at the humming carts. Nim has run out of bell. \"She'll stand there till Tuesday,\" she says. \"Do something nice at her.\"",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Do something calm and kind until Pepper's ears come forward.",
+        "actionLabel": "Calm Pepper",
+        "options": [
+          {
+            "id": "hum",
+            "label": "Hum a slow tune",
+            "icon": "note",
+            "reaction": "Pepper's ears swivel toward the sound."
+          },
+          {
+            "id": "stroke",
+            "label": "Stroke her nose",
+            "icon": "hand",
+            "reaction": "Pepper leans into your palm with a sigh."
+          },
+          {
+            "id": "apple",
+            "label": "Offer a windfall apple",
+            "icon": "cake",
+            "reaction": "Pepper crunches it and forgets all about the carts."
+          }
+        ],
+        "stages": [
+          "Pepper's ears twitch.",
+          "Her ears come forward.",
+          "She sighs, and her feet unfreeze."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_old_marks",
+        "narration": "Pepper sighs, and walks on past the carts as if it had been her idea all along. Nim stares at you. \"Grandmother can do that,\" she says. \"Nobody else can do that.\" She presses three coins into your hand. \"Bell-rider's tip. Do not tell Grandmother.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_old_marks",
+        "narration": "Pepper sighs, and walks on past the carts as if it had been her idea all along. Nim stares at you. \"Grandmother can do that,\" she says. \"Nobody else can do that.\" She presses three coins into your hand. \"Bell-rider's tip. Do not tell Grandmother.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
       "cast": [
         {
           "figure": "cast/nim",
           "name": "Nim"
         }
       ],
-      "roller": "party",
-      "onSuccess": {
-        "goto": "scene_old_marks",
-        "narration": "You talk to Pepper about nothing: grass, apples, the weather. Her ears come forward. She sighs, and walks on past the carts as if it had been her idea all along. Nim stares at you. \"Grandmother can do that,\" she says. \"Nobody else can do that.\""
-      },
-      "onFailure": {
-        "goto": "scene_old_marks",
-        "narration": "You talk to Pepper. Pepper talks back, loudly, and sits down in the road like a dog. In the end Nim gets off and you push from behind, and Pepper walks on past the carts with her nose in the air, pretending she was always going to."
-      },
       "art": "scenes/gemfall/northern-bridge-foot"
     },
     "scene_nim_pony_bell_greeting": {
@@ -1174,11 +1221,37 @@
       ]
     },
     "check_rubbing": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Rub charcoal over marks worn almost smooth",
-      "roller": "party",
+      "type": "interaction",
+      "narration": "The marks are worn so smooth that charcoal only catches them when the light is just right. The warden lifts her lantern, and the carved shapes glow, one at a time. \"Quick,\" she says. \"Light moves.\" Watch them go by, then draw them back in the same order.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the marks glow, then draw them back in order.",
+        "actionLabel": "Draw the marks",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "spiral",
+            "label": "Spiral",
+            "icon": "bead"
+          },
+          {
+            "id": "wave",
+            "label": "Wave",
+            "icon": "drop"
+          },
+          {
+            "id": "step",
+            "label": "Step",
+            "icon": "boot"
+          }
+        ],
+        "answer": [
+          "spiral",
+          "wave",
+          "step",
+          "spiral"
+        ]
+      },
       "onSuccess": {
         "goto": "scene_clerk",
         "narration": "Paper, charcoal, rub, rub, rub. The lines come up black and clear: a spiral, curling around and around a little circle in the middle. Just like the sashes at the waystation. Just like the pride roads. You roll the paper up very carefully.",
@@ -1193,6 +1266,17 @@
       "onFailure": {
         "goto": "scene_clerk",
         "narration": "Paper, charcoal, rub. What comes out is a perfect picture of a warden's boot, because a warden was standing on the corner of your paper. She asks if she can keep it. You let her."
+      },
+      "onAssisted": {
+        "goto": "scene_clerk",
+        "narration": "The warden holds her lantern still for as long as you need. Paper, charcoal, rub, rub, rub. The lines come up black and clear: a spiral, curling around and around a little circle in the middle. Just like the sashes at the waystation. You roll the paper up very carefully.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rubbed_the_marks",
+            "value": true
+          }
+        ]
       },
       "art": "scenes/gemfall/northern-bridge-foot"
     },
@@ -1334,11 +1418,14 @@
       "art": "scenes/gemfall/bridge-engineers-tent"
     },
     "check_string": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Hold a measuring string steady over a crack",
-      "roller": "party",
+      "type": "interaction",
+      "narration": "Behind the tent, the apprentice is stretching a knotted string along the crack. \"Hold this end?\" she asks. \"It only reads true when it's tight. One hand reads the knots, everyone else pulls.\"",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends pull the string tight while someone reads the knots.",
+        "actionLabel": "Read the knots",
+        "supportLabel": "Pull the string tight"
+      },
       "onSuccess": {
         "goto": "scene_engineers",
         "narration": "You hold it steady as a heron's leg. The apprentice counts the knots, then counts again. \"A hair wider than yesterday,\" she says, and chalks it. \"It's always a hair wider than yesterday.\" She says it as if she is getting tired of hair."
@@ -1581,7 +1668,7 @@
           "id": "on",
           "label": "Step up to the span",
           "icon": "hand",
-          "goto": "scene_crossing"
+          "goto": "interaction_level"
         }
       ],
       "art": "scenes/gemfall/cracked-bridge-span"
@@ -1600,7 +1687,7 @@
           "id": "on",
           "label": "Step up to the span",
           "icon": "travel",
-          "goto": "scene_crossing"
+          "goto": "interaction_level"
         }
       ],
       "art": "scenes/gemfall/cracked-bridge-span"
@@ -1619,7 +1706,7 @@
           "id": "on",
           "label": "Step up to the span",
           "icon": "drop",
-          "goto": "scene_crossing"
+          "goto": "interaction_level"
         }
       ],
       "art": "scenes/gemfall/cracked-bridge-span"
@@ -1660,6 +1747,23 @@
           "goto": "scene_rim_lookout_send_word"
         },
         {
+          "id": "pay_bracken",
+          "label": "Pay Bracken a coin to carry your letters first",
+          "icon": "bead",
+          "goto": "scene_rim_lookout_pay",
+          "when": {
+            "coins": {
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 1
+            }
+          ]
+        },
+        {
           "id": "count_fires",
           "label": "Try to count the campfires",
           "icon": "clever",
@@ -1671,6 +1775,13 @@
           "icon": "wing",
           "requiresSpecies": "griffin",
           "goto": "scene_rim_lookout_fly_redspire"
+        },
+        {
+          "id": "scout_rim",
+          "label": "Have a duskrunner dart ahead and count the fires",
+          "icon": "spark",
+          "requiresClass": "duskrunner",
+          "goto": "check_fires"
         }
       ],
       "art": "scenes/gemfall/redspire-rim-lookout"
@@ -1734,6 +1845,245 @@
         }
       ],
       "art": "scenes/gemfall/redspire-rim-lookout"
+    },
+    "interaction_bowls": {
+      "type": "interaction",
+      "narration": "The shudder has left the whole line shaky, and somewhere up ahead a woman is ladling soup out of a pot as fast as she can. \"Pass them back, loves!\" she calls. \"Hot bowls for the wobbly ones!\" The bowls come down the line hand to hand, steaming, and nobody wants to be the one who drops soup on a Skywarden.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the bowl, then pass it down the line.",
+        "actionLabel": "Pass the bowl",
+        "objectLabel": "A bowl of hot soup"
+      },
+      "onSuccess": {
+        "goto": "scene_soup_line",
+        "narration": "Not a drop spills. The last bowl reaches the tired carter, who drinks it with both hands. \"Humming gives me the shakes,\" she says. The woman with the ladle nods at you, as if you had passed a test she never said she was giving, and tucks a wrapped supper into your pack.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_soup_line",
+        "narration": "One bowl slips, and a prospector catches it on his hat. \"Hot hat,\" he says, bravely. The line laughs, and the soup goes on."
+      },
+      "onAssisted": {
+        "goto": "scene_soup_line",
+        "narration": "Together you and the carter pass the bowls in a slow, steady row. Not a drop spills, and the woman with the ladle tucks a wrapped supper into your pack.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
+        }
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
+    },
+    "interaction_level": {
+      "type": "interaction",
+      "narration": "Before anyone steps on the span, Engineer Brask jogs after you with a wide tray of water and a tiny cork boat floating in it. \"Engineers' level,\" she says. \"Carry it across the approach planks, flat and slow. If the boat slides to one side, the plank leans. If the boat slides off, you do.\"",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Everyone lift or lower your side until the water is flat, then carry the tray.",
+        "actionLabel": "Carry the tray",
+        "objectLabel": "A tray of brimming water"
+      },
+      "onSuccess": {
+        "goto": "scene_lantern_wisps",
+        "narration": "The cork boat never moves. \"Level to a hair,\" says Brask, and writes it down with the pencil she had forgotten about. \"The approach is sound. It is the middle that worries me.\""
+      },
+      "onFailure": {
+        "goto": "scene_lantern_wisps",
+        "narration": "The water slops over the side and the cork boat goes for a swim. \"Either the plank leans or you do,\" says Brask, mopping the tray with her hat. \"Probably both.\""
+      },
+      "onAssisted": {
+        "goto": "scene_lantern_wisps",
+        "narration": "Brask steadies one side of the tray herself, and the water lies flat. \"Level to a hair,\" she says. \"The approach is sound. It is the middle that worries me.\""
+      },
+      "cast": [
+        {
+          "figure": "cast/brask",
+          "name": "Engineer Brask"
+        }
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "scene_lantern_wisps": {
+      "type": "story",
+      "narration": "The bridge lanterns are lit for the evening ration, and two wisps have noticed. They are tiny, pale and giggling, and they have untied the lantern strings on the gem cart to see what happens. The cart's lamps swing wild. A mule starts to complain. \"Get them off the cart before the whole line spooks!\" shouts Brask.",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp",
+          "size": "tiny",
+          "count": 2
+        },
+        {
+          "figure": "cast/brask",
+          "name": "Engineer Brask"
+        }
+      ],
+      "choices": [
+        {
+          "id": "shoo",
+          "label": "Shoo the wisps off the cart",
+          "icon": "swords",
+          "goto": "encounter_wisps"
+        }
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "encounter_wisps": {
+      "type": "encounter",
+      "map": "roadside",
+      "narration": "The wisps zip around the cart, tugging lantern strings and giggling. Drive them off before the mule bolts.",
+      "enemies": [
+        {
+          "id": "wisp",
+          "name": "Lantern Wisp",
+          "creature": "will_o_wisp",
+          "count": 2
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_wisps_shooed",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "mosslight_jar",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_wisps_scattered",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_wisps_shooed": {
+      "type": "story",
+      "narration": "The wisps squeak, wobble and bob away over the river, still giggling. The mule stops complaining. Brask catches a spoonful of their leftover glow in an empty jar and screws on the lid. \"Free light,\" she says. \"Take it. The tent has plenty.\"",
+      "cast": [
+        {
+          "figure": "cast/brask",
+          "name": "Engineer Brask"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step up to the span",
+          "icon": "travel",
+          "goto": "interaction_flag_rope"
+        }
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "scene_wisps_scattered": {
+      "type": "story",
+      "narration": "The wisps swirl until the whole bridge is dizzy sparkles. Brask bangs a pot lid against the cart rail, loud and honest, and the wisps pop away over the river like soap bubbles. She wraps everybody in blankets and hands out hot tea. Nobody gets a jar of glow tonight, but the mule is calm again.",
+      "cast": [
+        {
+          "figure": "cast/brask",
+          "name": "Engineer Brask"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step up to the span",
+          "icon": "travel",
+          "goto": "interaction_flag_rope"
+        }
+      ],
+      "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "scene_rim_lookout_pay": {
+      "type": "story",
+      "narration": "You press a coin into Bracken's hand, and she tucks your letters in the front of her sash, ahead of everyone else's. \"Priority post,\" she says. \"First in the bag, first out.\" She is gone, south, at a gallop, and one very old letter flutters out behind her and lands on your boot.",
+      "cast": [
+        {
+          "figure": "cast/bracken_swiftmile",
+          "name": "Bracken"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Make camp on the rim",
+          "icon": "scroll",
+          "goto": "rest_end"
+        }
+      ],
+      "art": "scenes/gemfall/redspire-rim-lookout"
+    },
+    "interaction_crossing_signal": {
+      "type": "interaction",
+      "narration": "Before your turn, the warden shows the bridge signals: wait, walk, wait. The river drowns out shouted instructions. Repeat the flags in order so you can follow them when you are on the span.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the signals, then repeat them in order.",
+        "actionLabel": "Repeat the signals",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "wait",
+            "label": "Wait",
+            "icon": "hand"
+          },
+          {
+            "id": "walk",
+            "label": "Walk",
+            "icon": "boot"
+          }
+        ],
+        "answer": [
+          "wait",
+          "walk",
+          "wait"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_crossing"
+      },
+      "onFailure": {
+        "goto": "scene_crossing"
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "interaction_flag_rope": {
+      "type": "interaction",
+      "narration": "The warden gives the signal rope a tug. Its loose end swings out over the bridge rail. Catch it as it swings back, so the flags can keep guiding the carts across.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Catch the rope when it swings back to the rail.",
+        "actionLabel": "Catch the rope!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "interaction_crossing_signal"
+      },
+      "onFailure": {
+        "goto": "interaction_crossing_signal"
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
     }
   },
   "voiceGuide": {

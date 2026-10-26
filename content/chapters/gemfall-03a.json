@@ -9,7 +9,7 @@
     "set": "road",
     "flag": "route_river"
   },
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 42,
   "xpAward": 90,
   "entry": "scene_east_road",
   "plate": {
@@ -466,7 +466,7 @@
           "id": "on",
           "label": "Join the queue camp",
           "icon": "gem",
-          "goto": "choice_camp_spot"
+          "goto": "interaction_hum"
         }
       ],
       "art": "scenes/gemfall/lintel-toll-stone"
@@ -486,7 +486,7 @@
           "id": "on",
           "label": "Join the queue camp",
           "icon": "ear",
-          "goto": "choice_camp_spot"
+          "goto": "interaction_hum"
         }
       ],
       "art": "scenes/gemfall/lintel-toll-stone"
@@ -506,7 +506,7 @@
           "id": "on",
           "label": "Join the queue camp",
           "icon": "heart",
-          "goto": "choice_camp_spot"
+          "goto": "interaction_hum"
         }
       ],
       "art": "scenes/gemfall/lintel-toll-stone"
@@ -1008,7 +1008,7 @@
           "id": "on",
           "label": "Carry the signs on down the road",
           "icon": "hand",
-          "goto": "scene_stuck_wagon"
+          "goto": "interaction_pot"
         }
       ],
       "art": "scenes/gemfall/east-road-markers"
@@ -1020,11 +1020,11 @@
       "prompt": "Tell the campers which sinkhole each painted sign steers wagons around, before the kettle whistles",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_stuck_wagon",
+        "goto": "interaction_pot",
         "narration": "You explain that the signs steer wagons around the new sinkholes and away from the river's fast bits. The campers go pink, stand every sign back up by the road, and pour you tea to say sorry. It is excellent tea."
       },
       "onFailure": {
-        "goto": "scene_stuck_wagon",
+        "goto": "interaction_pot",
         "narration": "The campers nod, and nod, and say \"oh, absolutely,\" and then set the kettle back down on NOT THAT WAY. You leave them arguing about which way that way is."
       },
       "art": "scenes/gemfall/east-road-markers"
@@ -1044,6 +1044,13 @@
           "label": "Help him unload the crates first",
           "icon": "hand",
           "goto": "scene_stuck_wagon_unload"
+        },
+        {
+          "id": "brace_wheel",
+          "label": "Have a thornguard brace the wheel for everyone",
+          "icon": "shield",
+          "requiresClass": "thornguard",
+          "goto": "check_wagon"
         }
       ],
       "art": "scenes/gemfall/east-road-markers"
@@ -1052,10 +1059,10 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Heave a loaded wagon out of a rut",
-      "roller": "party",
+      "prompt": "Everybody heave a loaded wagon out of a rut",
+      "roller": "all",
       "onSuccess": {
-        "goto": "scene_river_view",
+        "goto": "interaction_planks",
         "narration": "One, two, HEAVE! The wagon pops out of the rut like a cork from a bottle. The driver says he was just about to do that himself, and gives you a honeycake for your trouble anyway.",
         "effects": [
           {
@@ -1066,7 +1073,7 @@
         ]
       },
       "onFailure": {
-        "goto": "scene_river_view",
+        "goto": "interaction_planks",
         "narration": "One, two, HEAVE! Nothing. Again! Nothing. The mule sighs, leans into its harness, and pulls the whole wagon out by itself, looking at you as if you were luggage."
       },
       "art": "scenes/gemfall/east-road-markers"
@@ -1079,7 +1086,7 @@
           "id": "on",
           "label": "Wave him off and walk on",
           "icon": "travel",
-          "goto": "scene_river_view"
+          "goto": "interaction_planks"
         }
       ],
       "art": "scenes/gemfall/east-road-markers"
@@ -1114,7 +1121,7 @@
       "stat": "clever",
       "tn": 12,
       "prompt": "Learn the crossing by watching a heron fish it",
-      "roller": "party",
+      "roller": "best",
       "onSuccess": {
         "goto": "scene_queue",
         "narration": "Left foot, right foot, never the middle. The heron only ever steps on the upstream edge of the stones, where they are only half under. You learn its line by heart. The heron notices you learning it and looks deeply offended.",
@@ -1209,11 +1216,11 @@
       "prompt": "Read the tiny writing on a SKIP-A-STORY pass",
       "roller": "party",
       "onSuccess": {
-        "goto": "scene_first_story",
+        "goto": "interaction_hats",
         "narration": "You squint. In letters the size of ants it says: VALID ON DAYS WHEN THE RIVER RUNS UPHILL. You read it out loud. The whole queue laughs, and the Brassbuckle sells exactly no passes at all. She tips her hat to you, quite sportingly."
       },
       "onFailure": {
-        "goto": "scene_first_story",
+        "goto": "interaction_hats",
         "narration": "The print is so small it might just be ants. One of the letters walks away. You hand the pass back politely, and the Brassbuckle moves on down the line, selling briskly."
       },
       "art": "scenes/gemfall/stone-crossing-queue"
@@ -1226,7 +1233,7 @@
           "id": "on",
           "label": "Shuffle forward in the queue",
           "icon": "arrow",
-          "goto": "scene_first_story"
+          "goto": "interaction_hats"
         }
       ],
       "art": "scenes/gemfall/stone-crossing-queue",
@@ -1433,7 +1440,7 @@
           "id": "on",
           "label": "Unroll your blankets",
           "icon": "heart",
-          "goto": "rest_queue_camp"
+          "goto": "scene_crab_dusk"
         }
       ],
       "art": "scenes/gemfall/stone-crossing-queue"
@@ -1446,7 +1453,7 @@
           "id": "on",
           "label": "Unroll your blankets",
           "icon": "eye",
-          "goto": "rest_queue_camp"
+          "goto": "scene_crab_dusk"
         }
       ],
       "art": "scenes/gemfall/stone-crossing-queue",
@@ -1469,7 +1476,7 @@
           "id": "on",
           "label": "Unroll your blankets",
           "icon": "drop",
-          "goto": "rest_queue_camp"
+          "goto": "scene_crab_dusk"
         }
       ],
       "art": "scenes/gemfall/stone-crossing-queue"
@@ -1496,6 +1503,13 @@
           "icon": "rest",
           "requiresFlag": "camped_by_brass",
           "goto": "scene_night_rope_sit_on_rope"
+        },
+        {
+          "id": "scout_rope",
+          "label": "Have a duskrunner slip down to the water ahead of them",
+          "icon": "spark",
+          "requiresClass": "duskrunner",
+          "goto": "check_night_rope"
         }
       ],
       "art": "scenes/gemfall/stone-crossing-queue",
@@ -1514,8 +1528,8 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Catch the Brassbuckles' rope before the river does",
-      "roller": "party",
+      "prompt": "Everybody grab the Brassbuckles' rope before the river does",
+      "roller": "all",
       "onSuccess": {
         "goto": "scene_wake_fee",
         "narration": "You grab the rope just as the river grabs the first Brassbuckle. Everybody pulls. Out he pops, soaked, minus his hat, and says thank you so quietly you nearly miss it. All six creep back to their places in the queue and stay there."
@@ -1604,6 +1618,30 @@
           "icon": "gem",
           "requiresItem": "facet_drakes_rate",
           "goto": "scene_wake_fee_show_paid"
+        },
+        {
+          "id": "sing_fee",
+          "label": "Have a songkeeper sing the drake its fee",
+          "icon": "note",
+          "requiresClass": "songkeeper",
+          "goto": "check_wake_joke"
+        },
+        {
+          "id": "pay_coin",
+          "label": "Pay the drake a coin and skip the joke",
+          "icon": "bead",
+          "goto": "scene_wake_fee_pay_coin",
+          "when": {
+            "coins": {
+              "min": 1
+            }
+          },
+          "effects": [
+            {
+              "type": "spendCoins",
+              "amount": 1
+            }
+          ]
         }
       ],
       "art": "scenes/gemfall/drowned-crossing-bank"
@@ -1776,6 +1814,304 @@
         }
       ],
       "art": "scenes/gemfall/river-mouth-shore"
+    },
+    "interaction_planks": {
+      "type": "interaction",
+      "narration": "The wagon is out, but the rut it leaves is deep as a bathtub, and a line of carts is already creeping up behind. \"Planks!\" cries the driver, pointing at a stack by the ditch. \"Fill the rut before the next fellow sinks! Hand them down, hand them down!\" So everyone lines up along the road, and the planks start to travel from hand to hand like a very slow train.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the plank, then pass it down the line.",
+        "actionLabel": "Pass the plank",
+        "objectLabel": "A long, heavy plank"
+      },
+      "onSuccess": {
+        "goto": "scene_river_view",
+        "narration": "The last plank drops into the rut, flat and snug. The first cart behind rolls over it without a single bump, and the driver presses a few coins into your hand. \"Plank money,\" he says gruffly. \"I was admiring the view, but I am also grateful.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_river_view",
+        "narration": "One plank goes in sideways and sticks up like a drawbridge. The first cart behind goes over it with a bump and a bang. The driver sighs, stamps it flat and says it will do. \"It's a rut,\" he says. \"It has had worse.\""
+      },
+      "onAssisted": {
+        "goto": "scene_river_view",
+        "narration": "The driver takes the middle of the line himself, and the planks fly down it, hand to hand to hand. The rut fills flat and snug, and he presses a few coins into your hand. \"Plank money,\" he says gruffly. \"I was admiring the view, but I am also grateful.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "art": "scenes/gemfall/east-road-markers"
+    },
+    "interaction_hats": {
+      "type": "interaction",
+      "narration": "Another of the brass hats has set up a little game on an upturned barrel, hoping to win back what the passes did not earn. Three brass cups. One shiny button. \"Watch the button!\" she calls to the queue. \"Find it, and there's a prize from my tray. Miss it, and you only lose your dignity!\" She slides the button under the middle cup, and her hands begin to fly.",
+      "cast": [
+        {
+          "figure": "cast/brassbuckle_recordkeeper",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ],
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the glow, then choose the cup with the button.",
+        "actionLabel": "Look under",
+        "covers": [
+          "Left cup",
+          "Middle cup",
+          "Right cup"
+        ],
+        "start": 1,
+        "swaps": [
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "stepMs": 1000
+      },
+      "onSuccess": {
+        "goto": "scene_first_story",
+        "narration": "You lift the right cup, and there is the button, winking at you. The queue cheers. The Brassbuckle grumbles, tips her hat and pays up with a little brass whistle from her tray. \"One tweet,\" she says, \"and think of me kindly.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_first_story",
+        "narration": "You lift the wrong cup. Under it there is nothing but a very small spider, who looks offended. The Brassbuckle bows to the queue. \"Better luck in the next line!\" she sings, and the spider goes back to bed."
+      },
+      "onAssisted": {
+        "goto": "scene_first_story",
+        "narration": "The Brassbuckle slows her hands, grinning, until the whole queue can follow the button. You lift the right cup, and she pays up with a little brass whistle from her tray. \"One tweet,\" she says, \"and think of me kindly.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/stone-crossing-queue"
+    },
+    "interaction_hum": {
+      "type": "interaction",
+      "narration": "Before you step away, Old Lintel rumbles one more thing. \"Hear the note first,\" he says. \"Then you will know it when it comes around again.\" He hums it, low enough to rattle the pebbles: low, high, middle, low. \"Now you,\" he says. \"Hum it back.\"",
+      "cast": [
+        {
+          "figure": "cast/old_lintel",
+          "name": "Old Lintel",
+          "size": "very_large"
+        }
+      ],
+      "interaction": {
+        "kind": "memory",
+        "cue": "Listen to the note, then hum it back in the same order.",
+        "actionLabel": "Hum it back",
+        "stepMs": 1200,
+        "options": [
+          {
+            "id": "low",
+            "label": "Low note",
+            "icon": "note"
+          },
+          {
+            "id": "middle",
+            "label": "Middle note",
+            "icon": "note"
+          },
+          {
+            "id": "high",
+            "label": "High note",
+            "icon": "note"
+          }
+        ],
+        "answer": [
+          "low",
+          "high",
+          "middle",
+          "low"
+        ]
+      },
+      "onSuccess": {
+        "goto": "choice_camp_spot",
+        "narration": "You hum it back, low, high, middle, low, and under your boots the bridge hums with you, very faintly. Old Lintel's mossy face does something that might be a smile. \"There,\" he says. \"You will know it again.\" He puts his palm back on the stone and waves you toward the queue camp."
+      },
+      "onFailure": {
+        "goto": "choice_camp_spot",
+        "narration": "You hum a pretty tune. It is not the note. The bridge hums back, low and flat, as if politely correcting you. Old Lintel hums it once more, slower, and you get close enough. \"Close,\" he says. \"Close counts, for a first time.\" He puts his palm back on the stone and waves you toward the queue camp."
+      },
+      "onAssisted": {
+        "goto": "choice_camp_spot",
+        "narration": "Old Lintel hums along underneath you to hold the note up, low, high, middle, low, and the bridge hums with you, very faintly. \"There,\" he says. \"You will know it again.\" He puts his palm back on the stone and waves you toward the queue camp."
+      },
+      "art": "scenes/gemfall/lintel-toll-stone"
+    },
+    "interaction_pot": {
+      "type": "interaction",
+      "narration": "You have barely gone three steps when behind you something goes HISSSS. The camp's supper pot, a copper pot as big as a barrel, is boiling over, and the cook is waving her ladle like a flag. \"Tip it off the fire before it scorches!\" she cries. \"One to tip, and everybody else to hold the pole!\" There is porridge in there for the whole camp.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends hold the pole steady while someone tips the pot.",
+        "actionLabel": "Tip the pot",
+        "supportLabel": "Hold the pole steady"
+      },
+      "onSuccess": {
+        "goto": "scene_stuck_wagon",
+        "narration": "The pot tips slow and steady, and the porridge pours out in one fat brown ribbon into a row of waiting bowls. Not a drop in the fire. The cook mops her forehead with her sleeve and wraps a hot supper in a cloth for you. \"Better than the porridge at MILE 3,\" she says. \"That is not hard.\" Down the road, a wagon is stuck right across the way.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_stuck_wagon",
+        "narration": "The pole wobbles, and the pot tips too soon. Porridge slides down the side in one slow slop and lands in the fire. Hiss. The cook looks at it for a while. \"Crunchy,\" she says bravely. \"We call it crunchy.\" Down the road, a wagon is stuck right across the way."
+      },
+      "onAssisted": {
+        "goto": "scene_stuck_wagon",
+        "narration": "The cook grabs the pole herself, and together you tip the pot slow and steady. The porridge pours out in one fat brown ribbon into a row of waiting bowls, and she wraps a hot supper in a cloth for you. \"Better than the porridge at MILE 3,\" she says. \"That is not hard.\" Down the road, a wagon is stuck right across the way.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/east-road-markers"
+    },
+    "scene_crab_dusk": {
+      "type": "story",
+      "discovers": [
+        "creature.glassback_crab"
+      ],
+      "narration": "Blankets down, supper started, the sky gone orange. Then the river goes click. Two crabs haul themselves up the bank, and their shells are clear as windowpanes, with a faint glow inside. Glassback crabs. Every pack in the queue is humming, and the crabs have decided that the humming is a dinner bell. They are marching for the gem carts at the end of the line, claws high, and a row of sleepy mules is starting to wake up and complain. \"Somebody do something!\" cries the soup seller. \"They'll tip the whole line!\"",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab",
+          "count": 2
+        }
+      ],
+      "choices": [
+        {
+          "id": "shoo",
+          "label": "Shoo the crabs back to the water",
+          "icon": "swords",
+          "goto": "encounter_crabs"
+        }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
+    },
+    "encounter_crabs": {
+      "type": "encounter",
+      "map": "ford",
+      "narration": "The crabs click and clatter up the bank, claws high, all aiming for whatever hums. Turn them around before they reach the carts.",
+      "enemies": [
+        {
+          "id": "crab",
+          "name": "Glassback Crab",
+          "creature": "glassback_crab",
+          "hp": 10
+        }
+      ],
+      "onVictory": {
+        "goto": "scene_crabs_turned",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "sunbloom_draught",
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "scene_crabs_sent_home",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "scene_crabs_turned": {
+      "type": "story",
+      "narration": "The crabs rock from side to side, grumble, and back down the bank into the water, shells flashing, as if they had only come to look. The mules go back to sleep. The soup seller has watched the whole thing with her ladle raised like a sword. She lowers it and presses a warm bottle into your hands. \"Queue tonic,\" she says. \"On the house. Do not tell the others.\"",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to your blankets",
+          "icon": "rest",
+          "goto": "rest_queue_camp"
+        }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
+    },
+    "scene_crabs_sent_home": {
+      "type": "story",
+      "narration": "The crabs keep coming, click, click, click, until far off at the front of the line Old Lintel simply lowers one enormous hand flat on the bridge. THUD. The whole bank shivers. The crabs freeze, take a long look at the hand, and scuttle back into the river, offended. Someone wraps blankets around you and hands out hot tea. There is no tonic tonight, but the mules are calm again.",
+      "cast": [
+        {
+          "figure": "cast/old_lintel",
+          "name": "Old Lintel",
+          "size": "very_large"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Back to your blankets",
+          "icon": "rest",
+          "goto": "rest_queue_camp"
+        }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
+    },
+    "scene_wake_fee_pay_coin": {
+      "type": "story",
+      "narration": "You drop a coin on the rock. The drake bites it, because it bites everything, rubs out WAKE FEE with its tail and writes PAID. Then, in smaller letters underneath, it adds PROMPT SERVICE. It sinks away looking extremely pleased with itself, and with you.",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Step up to the water",
+          "icon": "bead",
+          "goto": "scene_crossing_bank"
+        }
+      ],
+      "art": "scenes/gemfall/drowned-crossing-bank"
     }
   },
   "voiceGuide": {
