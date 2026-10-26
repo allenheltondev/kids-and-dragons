@@ -3041,7 +3041,7 @@
       "discovers": [
         "creature.bone_crawler"
       ],
-      "art": "scenes/gemfall/redspire-citadel",
+      "art": "scenes/gemfall/citadel-cellar-hall",
       "narration": "Pellam is still writing when the floor starts to go tick, tick, tick. Up the cellar stairs pours a clacking river of bone-white beetles, each the size of a loaf of bread. They are bone crawlers, and they are all pointing at your humming packs. \"They follow anything that hums,\" says Pellam, with his pen still moving. \"They live under the library. They are very polite, and they eat table legs.\" He nods at the next room, where the captain's table waits, with four hundred years of logs on it. \"Please get them back down the stairs before they find the logs.\"",
       "cast": [
         {
@@ -3095,7 +3095,7 @@
     },
     "scene_crawlers_home": {
       "type": "story",
-      "art": "scenes/gemfall/redspire-citadel",
+      "art": "scenes/gemfall/citadel-cellar-hall",
       "narration": "The last crawler clacks down the cellar stairs, and Pellam shuts the door and writes CRAWLERS: HOME. Then he presses a tin whistle into your hand, stamped with a tiny tower. \"Warden's issue,\" he says. \"For loud moments. Log it if you use it.\" He straightens his collar. \"Now. Before the captain, the tags.\"",
       "cast": [
         {
@@ -3114,7 +3114,7 @@
     },
     "scene_crawlers_rescued": {
       "type": "story",
-      "art": "scenes/gemfall/redspire-citadel",
+      "art": "scenes/gemfall/citadel-cellar-hall",
       "narration": "A line of wardens marches in with brooms and sweeps the crawlers down the stairs like autumn leaves. Nobody is hurt. A warden hands out hot tea and a blanket, and the old logs are safe. You do not get a whistle for this one, but Pellam writes your names in the margin anyway. Then he straightens his collar. \"Now. Before the captain, the tags.\"",
       "cast": [
         {
