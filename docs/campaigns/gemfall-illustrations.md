@@ -10,6 +10,13 @@ for all nine scene mappings and actual TV/phone captures, and the
 [source record](../../art/source/gemfall-03-fights.json) for exact generation
 prompts, source and production hashes, and export details. Gameplay is unchanged.
 
+Chapter 04a–04c adds `mud-wallow-mimic-posts`, `brook-log-mimics`, and
+`depot-barn-strongboxes` in the same export format, each shared by its fight
+introduction and both outcomes. See the [chapter 04 fight review](../review/gemfall-04-fights/README.md)
+for the nine scene mappings and TV/phone captures, and the
+[source record](../../art/source/gemfall-04-fights.json) for exact prompts,
+source/production hashes and export details. Only presentation art changes.
+
 Six backdrops created with the built-in image generation tool. Production files live in
 `assets/scenes/gemfall/`: 1920×1080 WebP, quality 88, about 3.0 MB total. Original generated
 PNGs remain in the local Codex generated-images directory. Existing biome art is unchanged.
