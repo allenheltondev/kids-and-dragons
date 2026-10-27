@@ -24,7 +24,7 @@ leave a note without its step, or count a step twice.
 | `close` / `stop` | the host closed the room, or stopped to save | nothing |
 
 Never kept: names, chat, audio, device ids, or anything a child typed. The party size is a count.
-A grown-up's note is free text, so the panel asks them to leave names out.
+A note is free text typed by the operator, so keep names out of it.
 
 **The content revision** is a short hash of the chapter's JSON (`chapterRevision`). Any edit makes a
 new revision, and the report never mixes two. `content:timing` marks which revision is the text on
@@ -69,13 +69,18 @@ be labelled a family observation.
 The report keeps `family` and `playtest` apart and `content:timing` prints playtests only with
 `--include-playtest`, under their own heading.
 
-## The host's controls
+## Operator controls (not shown to players)
 
-In the Room panel (`SessionClock`), host only, drawn only when the server is keeping time:
-**Pause the clock / Resume the clock**, **Save note**, and **Don't keep time / Keep time again**.
-Each is one committed change: pausing a paused clock writes nothing, two phones tapping at once are
-ordered by seq, and every screen sees the pause in the same patch. At the end of a chapter the host's
-screen says how long it took, and that it is not a score.
+This is for operators: story-length validation, not something the table sees. **Nothing in the
+client shows or asks for it**: no button, banner, note box or end-of-chapter summary on the TV or the
+phones. The controls exist only as the host-authorised API, for an operator running a real sitting:
+
+`POST /api/room/:code/timing` with `{ "action": "pause" | "resume" | "off" | "on" }` or
+`{ "action": "note", "text": "..." }`, sent with the host device's token like the other host controls.
+Each is one committed change: pausing a paused clock writes nothing, two calls at once are ordered by
+seq, and play is never blocked. Pause is the way to keep a meal or a dead wifi out of the numbers;
+`off` stops recording the room altogether. The pause flag is on the run state (`timingPaused`,
+`timingOff`) as `quiet` is, so it rides the same patch, but nothing reads it for display.
 
 ## Reading it
 

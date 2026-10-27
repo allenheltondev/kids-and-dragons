@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createStore, type StoreApi } from "zustand/vanilla";
 import type { ActionResponse, ChannelMessage, JsonPatchOp, ResolvedCharacter, RunState, ServerMessage } from "@kad/shared";
-import { decisionContext, TIMING_POLICY } from "@kad/shared";
+import { decisionContext } from "@kad/shared";
 import {
   gameStoreCreator,
   isPromptForPlayer,
@@ -130,7 +130,6 @@ function harness(state: RunState = makeState()): Harness {
     })),
     // Remove, lock, close (#263, #267): one call, by control.
     hostControl: vi.fn(async (): Promise<void> => undefined),
-    loadTiming: vi.fn(async () => ({ enabled: false, source: null, policy: TIMING_POLICY, generatedAt: "", sittings: [], aggregates: [], truncated: false })),
     postAction: vi.fn(async (): Promise<ActionResponse> => ({ ok: true, seq: state.seq })),
     postPreview: vi.fn(async (): Promise<void> => undefined),
     postCheer: vi.fn(async (): Promise<void> => undefined),
@@ -819,24 +818,6 @@ describe("arrivals and removal (#267)", () => {
       ["quiet", { quiet: true }],
       ["quiet", { quiet: false }],
     ]);
-  });
-
-  it("sends the session clock's controls as the host, and reads the report only as the host (#511)", async () => {
-    const h = harness();
-    await h.store.getState().createRoom("travel", "Allen");
-    expect(await h.store.getState().timingControl({ action: "pause" })).toBe(false);
-    expect(await h.store.getState().loadTiming()).toBeNull();
-    h.store.setState({ session: { ...h.store.getState().session!, host: true } });
-
-    expect(await h.store.getState().timingControl({ action: "pause" })).toBe(true);
-    expect(await h.store.getState().timingControl({ action: "note", text: "wanted another turn" })).toBe(true);
-    expect(h.api.hostControl.mock.calls.map((call) => [call[1], call[2]])).toEqual([
-      ["timing", { action: "pause" }],
-      ["timing", { action: "note", text: "wanted another turn" }],
-    ]);
-    expect((await h.store.getState().loadTiming())?.enabled).toBe(false);
-    h.api.loadTiming.mockRejectedValueOnce(new Error("offline"));
-    expect(await h.store.getState().loadTiming()).toBeNull();
   });
 
   it("never lets a burst push a host's arrival out, though it caps everyone else's", async () => {

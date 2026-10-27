@@ -28,7 +28,6 @@ import type {
   SharedDevicePlayer,
   SharedSeatRequest,
   WorldMap,
-  TimingReport,
 } from "@kad/shared";
 
 export type ConnectionStatus =
@@ -296,17 +295,6 @@ export interface GameStore {
    * (#260). Resolves like `removePlayer`.
    */
   quietRoom(quiet: boolean): Promise<boolean>;
-  /**
-   * The host's session clock (#511): pause or resume it, switch timing off or
-   * on for this room, or add one short note to the chapter. Resolves like
-   * `removePlayer`; what changed reaches every screen as the run's patch.
-   */
-  timingControl(control: { action: "pause" | "resume" | "on" | "off" } | { action: "note"; text: string }): Promise<boolean>;
-  /**
-   * How long this household's chapters really took, for the family summary
-   * and the host panel; null when this screen cannot ask or the server says no.
-   */
-  loadTiming(): Promise<TimingReport | null>;
   /** The host closes the room for everybody (#263). Resolves like `removePlayer`. */
   closeRoom(): Promise<boolean>;
   /**
