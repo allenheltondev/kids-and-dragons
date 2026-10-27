@@ -1,0 +1,201 @@
+{
+  "gemfall-06": {
+    "check_doorstep": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "checkKind": "doing",
+      "prompt": "Stand firm on the grandmother's doorstep so Dunmore cannot dig",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_moths",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "dunmore_friend",
+            "value": true
+          }
+        ],
+        "narration": "You climb onto the step beside the grandmother and plant your feet. Nobody can dig up a doorstep with people standing on it. Dunmore looks at your boots, then at the little round window with curtains in it, and goes pinker than ever. \"Sorry,\" he mumbles, and pulls up his flag. The grandmother gives him a cookie. He is so surprised that he says thank you twice."
+      },
+      "onFailure": {
+        "goto": "scene_moths",
+        "narration": "You climb onto the step, and Dunmore's pick nudges your boots right off it again. Then the grandmother starts ringing her bell right beside his ear. In the end he gives up on the step just to get away from the noise, and stomps off up the slope, rubbing his ear and grumbling about bells."
+      }
+    },
+    "check_wolves": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Find the hungry wolves something better than the road",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf",
+          "count": 3
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_wagons",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "wolves_fed",
+            "value": true
+          }
+        ],
+        "narration": "You spot an overturned sausage cart in the ditch. The wolves spot it two seconds after you. The road clears in a hurry, and one wolf looks back at you as if it is memorizing your face."
+      },
+      "onFailure": {
+        "goto": "interaction_wagons",
+        "narration": "Your plan involves a sausage on a string, and the wolves are not impressed. In the end they wander off on their own, howling long complaints at the mountain."
+      }
+    },
+    "check_claim": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Find out whose claim flag went into the boulder first",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_soup_tent",
+        "narration": "You check the flag holes. Both are brand new. But under the moss at the bottom of the boulder is a third mark, a little carved line, so old the moss has grown into it. It was here before either of them. It was here before anyone. Both prospectors stare at it, untie their bootlaces, and go and find a different boulder, quietly."
+      },
+      "onFailure": {
+        "goto": "scene_soup_tent",
+        "narration": "You measure the flags, count the footprints, and ask the crowd. Everybody gives a different answer, and two people give three. In the end the boulder settles it by humming so loudly that both prospectors hop off at once, and neither of them wants to get back on."
+      },
+      "cast": [
+        {
+          "figure": "entities/burrowfolk",
+          "name": "Burrowfolk Claimant"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Faun Claimant"
+        }
+      ]
+    },
+    "check_bells": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Ring the morning ring in time with the little dragonlings",
+      "cast": [
+        {
+          "figure": "cast/grandmother_tull",
+          "name": "Grandmother Tull"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_crab",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "learned_the_ring",
+            "value": true
+          },
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ],
+        "narration": "Ding, ding-ding, ding. You get it right, and the smallest dragonling gives you a solemn nod, as if you had joined something important. Grandmother Tull presses a warm honeycake into your hands for the climb, and tells you the ridge is that way, as if you might have forgotten."
+      },
+      "onFailure": {
+        "goto": "scene_crab",
+        "narration": "Your ring comes out ding, dong, clatter, which in bell code means, as far as anyone can tell, goats, but sideways. The little dragonlings laugh so hard that one falls off the bench. Grandmother Tull says you will get it next time, and points you up the ridge."
+      }
+    },
+    "check_crab": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Read the glassback crab's threat display",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        },
+        {
+          "figure": "cast/dunmore",
+          "name": "Dunmore"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crab_thanks",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "read_the_crab",
+            "value": true
+          }
+        ],
+        "narration": "Two claws up and a rock to the left means: this is my warm ground, and you are standing in my garden. You tell everybody to take three big steps back. The crab lowers its claws and goes back to tidying its pebbles, very pleased."
+      },
+      "onFailure": {
+        "goto": "encounter_crab",
+        "narration": "Two claws up and a rock to the left means... you guess \"hello.\" It does not mean hello. The crab charges, and its neighbor from the next burrow scuttles over to see what all the fuss is."
+      }
+    },
+    "check_late_gate": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 16,
+      "prompt": "Race the sunset up the ridge before the citadel gate closes",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_citadel_gate",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "clock_stirring",
+            "value": true
+          }
+        ],
+        "narration": "You run the switchbacks two at a time and slide in under the gate as it comes down, with one finger's width to spare."
+      },
+      "onFailure": {
+        "goto": "scene_shut_out",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "clock_late",
+            "value": true
+          }
+        ],
+        "narration": "The gate comes down with a BOOM just as you get there. A warden on the wall gives you a sad little shrug. Rules are rules, even for heroes."
+      }
+    },
+    "scene_truth_table_puzzle": {
+      "type": "check",
+      "art": "scenes/gemfall/facet-table",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Put the foothills together before the wardens read their logs",
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_whole_truth",
+        "narration": "You lay the last two days on the table: moths facing away, wolves too cold to hunt, a crab guarding its warm ground, a whole hillside of stones humming one note. \"Everything up here is leaning away from the mountain,\" you say. Captain Voss pushes the oldest log across the table. \"So did we,\" she says. \"Four hundred years ago.\""
+      },
+      "onFailure": {
+        "goto": "scene_whole_truth",
+        "narration": "You lay out the moths, the wolves and the crab, and they go around and around and will not join up. Pellam clears his throat, very kindly, and opens the oldest log. \"It took us four hundred years,\" he says. \"You have had two days.\""
+      }
+    }
+  }
+}

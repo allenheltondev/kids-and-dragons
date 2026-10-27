@@ -292,10 +292,20 @@ const DIGESTS: PreEpicSave["digests"] = {
 // Preserve all 29 shipped checks, disclosure flags, terminal effects and fight
 // numbers. Old/new probes match ending, road and setback digests, plus resumed
 // fight play after generated hero-id normalization. Fixed legacy save stays pinned.
+// Re-pinned for the owner-authorized opening/onboarding play wave: shared
+// introductions, checked mail bags and farm-work hedge payoffs. All 20 old
+// checks, campaign commitments and terminal effects remain intact. Old/new
+// content loaded through the real loader preserves campaign digests and fight
+// play-on after generated hero-id normalization; fixed legacy save unchanged.
+// Re-pinned for the owner-authorized Ashfall evidence/purpose wave. All seven
+// legacy checks and terminal effects remain; new comparison, discussion and
+// learned-call recovery preserve the original reveal and clock commitments.
+// Old/new loader-based probes match campaign digests and normalized fight
+// play-on. Fixed legacy save and gameplay digest constants remain unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
-  "chapters/gemfall-01.json": "67a4b9a4d8a8be313734b201acc02cd8a26a164f22f7b4df2330ef15fd74b8f8",
-  "chapters/gemfall-02.json": "ab26cdedc0b4af9f0153e75829ba49220c40e323bf6d739309cdfc82c101911e",
+  "chapters/gemfall-01.json": "fbf4c3bd06198c0e4c7e0d34d8b70fe5ba61cf74a531b1eb4014b529ba14a821",
+  "chapters/gemfall-02.json": "216eec64c75e9ced6987f9884f934f31202e8c63a890b5787a4ec53fbf78a780",
   "chapters/gemfall-03a.json": "d6201dc9591b54b0c5c3cdb2b976e79320323b5a014f7dbca65e52c602f43f74",
   "chapters/gemfall-03b.json": "47fcd09e1e8976970e599324e6b8a0d49915b5963ddcb99e58a7c8e014333111",
   "chapters/gemfall-03c.json": "536fed5cd8c29e696f1857eb35addf13159f1791ad1e04a940ea3d5f567f8c00",
@@ -305,7 +315,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05a.json": "696aeeec78ffa4138296d6935537ccdebf8b9e8935e053bad4da1375c77eb5f8",
   "chapters/gemfall-05b.json": "83d2572e23ba3b618bf3ffaec99274b6e3e06f57608bb4051f5230a78aed914e",
   "chapters/gemfall-05c.json": "9755b91a3046f20c8d2b1451bb62ad6a2dc9d42d997e243756b1e02500734279",
-  "chapters/gemfall-06.json": "1321cd4e6c6946e15d0f7802f1dd80e5d020574b2026d9ce6e09098e22c52c99",
+  "chapters/gemfall-06.json": "79c4e653be3c9358f7773894c62060f361758f72036d6ecf7fde961c53eb90c6",
   "chapters/gemfall-07h.json": "1c90cbaf7f0fd268ebe0112a9ef568b844f5b84784612f3601a0eba8483af38e",
   "chapters/gemfall-07l.json": "a890db266b3d0624a33be91687b18b873dafb3c584fa845cd90942b5bb9db577",
   "chapters/gemfall-07r.json": "ea45e9c3b0b6d05e20a1329ecb2de52129e760b58aad5ee097c52ed158193626",
