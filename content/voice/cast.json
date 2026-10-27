@@ -321,16 +321,7 @@
       "gemini": {
         "voice": "Callirrhoe"
       },
-      "lines": [
-        {
-          "text": "I never forget a good seller.",
-          "address": "gemfall-01/scene_sold/narration"
-        },
-        {
-          "text": "Rush prices, darlings!",
-          "address": "gemfall-01/choice_ember/narration"
-        }
-      ],
+      "lines": [],
       "speaks": true,
       "status": "provisional"
     },
@@ -2563,16 +2554,16 @@
       },
       "lines": [
         {
-          "text": "Before anybody decides anything, the record. What have you been doing, all this way?",
-          "address": "gemfall-06/scene_ledger/narration"
-        },
-        {
           "text": "Tea for the other side. From us. Hand to hand, please. Nobody has to cross anything.",
           "address": "gemfall-07l/interaction_tea_cups/narration"
         },
         {
           "text": "Leash. Holding is harder than asking. You have to know you are choosing it.",
           "address": "gemfall-06/scene_record_leash/narration"
+        },
+        {
+          "text": "In the right order. The captain will be thrilled. She will not show it.",
+          "address": "gemfall-06/interaction_tags/onSuccess/narration"
         }
       ],
       "speaks": true,
@@ -3270,16 +3261,16 @@
       },
       "lines": [
         {
-          "text": "Now. Who else gets to know? Choose carefully. Nobody is going to ask you again.",
-          "address": "gemfall-06/scene_who_to_tell/narration"
-        },
-        {
-          "text": "Then we'll need every stone that came down. Tomorrow they start coming back up. Rest.",
-          "address": "gemfall-06/scene_declared_restore/narration"
-        },
-        {
           "text": "Nobody else. Then you had better be right, and you had better be quick.",
           "address": "gemfall-06/scene_kept_close_room/narration"
+        },
+        {
+          "text": "No. It's three numbers. Houses, people, bells. I know.",
+          "address": "gemfall-06/scene_acceptable_losses_not_a_number/narration"
+        },
+        {
+          "text": "Then you'll want to know the plan properly.",
+          "address": "gemfall-06/scene_told_wardens_room/narration"
         }
       ],
       "speaks": true,
@@ -4763,12 +4754,7 @@
       "gemini": {
         "voice": "Sadaltager"
       },
-      "lines": [
-        {
-          "text": "Bet you can't tell where it ends up.",
-          "address": "gemfall-06/interaction_moth_trail/narration"
-        }
-      ],
+      "lines": [],
       "speaks": true,
       "status": "provisional"
     },
