@@ -204,3 +204,28 @@ it.each(sizes)("Pursuit class/species options at %i seats retain complete routes
  const h=walk(collection,size,{...collectPicks,scene_humming_night:"songkeeper_lead"},"success",20,false,{},"kitsune","songkeeper");expect(h.state.phase).toBe("chapter_complete");
  const l=walk(tether,size,{...tetherPicks,scene_returning_cart:"both",choice_the_test:"practiced"},"success",20,false,{},"bigfoot","duskrunner");expect(l.state.flags.practiced).toBe(true);
 });
+
+it.each(sizes.flatMap(size=>outcomes.map(outcome=>({size,outcome}))))
+ ("Tether review: $size / $outcome contrasts cart help with earned practice",({size,outcome})=>{
+ const practiced=walk(tether,size,{...tetherPicks,scene_night_visitor:"not_mine",choice_the_test:"bare_hands"},"success",20,false,{},"manticore","duskrunner",false,{interaction_small_hum:outcome});
+ const decision=practiced.trace.get("scene_returning_cart")!;
+ expect(offered(decision,"quiet_practice")).toBe(false);
+ expect(decision.prompt?.kind==="choice"&&decision.prompt.options.map(o=>o.id)).toEqual(["push","practice"]);
+ expect(practiced.trace.get("interaction_small_hum")!.flags.practiced).not.toBe(true);
+ expect(practiced.state.flags.practiced===true).toBe(outcome!=="miss-supported");
+ expect(practiced.trace.has("scene_returning_cart_practice")).toBe(outcome!=="miss-supported");
+ expect(offered(practiced.trace.get("choice_the_test")!,"practiced")).toBe(outcome!=="miss-supported");
+ const helped=walk(tether,size,{...tetherPicks,scene_returning_cart:"push",scene_night_visitor:"not_mine",choice_the_test:"bare_hands"});
+ expect(helped.trace.has("interaction_small_hum")).toBe(false);expect(helped.state.flags.practiced).not.toBe(true);
+ const beads=(state:RunState)=>state.party.flatMap(p=>p.character.inventory).filter(i=>i.itemId==="hearthstone_bead").length;
+ expect(beads(helped.trace.get("interaction_tea_cups")!)).toBeGreaterThan(beads(helped.trace.get("scene_returning_cart")!));
+ expect(beads(practiced.trace.get("interaction_tea_cups")!)).toBe(beads(decision));
+});
+it.each(sizes)("Tether review: an already-earned legacy practice save resumes directly at %i seats",size=>{
+ const old=read<Chapter>("content/chapters/gemfall-07l.json").scenes.scene_returning_cart_practice;
+ expect(old).toEqual({type:"story",narration:"You leave the cart to a passing warden and find a quiet rock. You hold a small humming stone between your hands and try to make it still. It takes all afternoon. Then, for half a breath, it stops. You feel it at once, like a held door. Behind you, the cart gets up the hill without you.",choices:[{id:"on",label:"Back to the table",icon:"note",goto:"interaction_tea_cups"}]});
+ let state=enterScene(initial(tether,size,{practiced:true}),"scene_returning_cart_practice",context(tether)).state;
+ state=JSON.parse(JSON.stringify(state)) as RunState;
+ state=send(state,{type:"CHOOSE",choiceId:"on"},tether);
+ expect(state.sceneId).toBe("interaction_tea_cups");expect(state.flags.practiced).toBe(true);
+});

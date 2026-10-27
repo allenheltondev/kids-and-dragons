@@ -1243,19 +1243,6 @@
               "value": true
             }
           ]
-        },
-        {
-          "id": "quiet_practice",
-          "label": "Spend the afternoon practicing quietly",
-          "icon": "note",
-          "goto": "scene_returning_cart_practice",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "practiced",
-              "value": true
-            }
-          ]
         }
       ]
     },
@@ -2801,7 +2788,7 @@
         "periodMs": 5000
       },
       "onSuccess": {
-        "goto": "interaction_tea_cups",
+        "goto": "scene_returning_cart_practice",
         "narration": "For half a breath the hum rests. Remember that feeling: it will give you a wider opening at the wagon.",
         "effects": [
           {
@@ -2816,7 +2803,7 @@
         "narration": "The hum slips away. The cart still reaches the cairn, and your other instruments can help tomorrow."
       },
       "onAssisted": {
-        "goto": "interaction_tea_cups",
+        "goto": "scene_returning_cart_practice",
         "narration": "A singer hums under your note until it settles. You know the feeling now.",
         "effects": [
           {
