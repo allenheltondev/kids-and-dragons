@@ -10,6 +10,8 @@
  *
  *   npm run voice:cast              # build or refresh the sheet
  *   npm run voice:cast -- --check   # report only; exit 1 on a voice clash
+ *   npm run voice:cast -- --review  # the approvals and rejections so far, as Markdown
+ *   npm run voice:cast -- --review --out review.json
  *
  * Then `npm run voice:bakeoff -- --serve` and open /cast to listen.
  */
@@ -19,12 +21,30 @@ import path from "node:path";
 import { parseArgs } from "node:util";
 import * as yaml from "js-yaml";
 import { inventory } from "../inventory.ts";
+import { reviewJson, reviewMarkdown } from "./review.ts";
 import { buildSheet, voiceClashes, type CastSheet, type ChapterLike, type IndividualLike } from "./sheet.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..");
 export const SHEET = path.join(ROOT, "content", "voice", "cast.json");
 
-const { values } = parseArgs({ options: { check: { type: "boolean", default: false } } });
+const { values } = parseArgs({ options: { check: { type: "boolean", default: false }, review: { type: "boolean", default: false }, out: { type: "string" } } });
+
+// `--review`: the approvals and rejections so far, as Markdown (or JSON when --out ends in .json). Changes nothing.
+if (values.review) {
+  if (!fs.existsSync(SHEET)) {
+    console.error("No cast sheet yet: run `npm run voice:cast` first.");
+    process.exit(2);
+  }
+  const sheet = JSON.parse(fs.readFileSync(SHEET, "utf8")) as CastSheet;
+  const text = values.out?.endsWith(".json") ? `${JSON.stringify(reviewJson(sheet), null, 2)}\n` : reviewMarkdown(sheet);
+  if (values.out) {
+    fs.writeFileSync(values.out, text);
+    console.log(`Wrote ${values.out}.`);
+  } else {
+    process.stdout.write(text);
+  }
+  process.exit(0);
+}
 
 const readDir = (dir: string): Record<string, unknown>[] =>
   fs

@@ -26,7 +26,7 @@ One entry per speaker, keyed by id:
 | `lines` | up to three real quotes of theirs from the narration, each with its address |
 | `speaks` | false for those who only bleat or sigh |
 | `status` | `provisional` (assigned by the builder) or `approved` (chosen by a person) |
-| `notes` | anything a listener wants to remember |
+| `history` | every approval and rejection, oldest first: the voice, the listener's notes, the model it was heard on, and when |
 
 ## How it's built
 
@@ -87,16 +87,71 @@ same clip cache and the same session spending cap.
 - **Clash warnings:** a red line names anyone who shares this voice in a chapter.
 - **Voice picker:** saves to the sheet straight away, and the auditions need rendering again in
   the new voice. Switching back is free, because the old clips stay cached.
-- **Approve this voice:** pins it, so no rebuild will ever move it.
-- **Accent override and notes** save to the sheet too.
-- **Filters:** search, campaign, still provisional, approved, sharing a voice, no line yet, and
-  doesn't speak.
+- **Approve and Reject:** see the next section.
+- **Accent override** saves to the sheet too.
+- **Filters:** search, campaign, still provisional, approved, rejected and waiting to be heard
+  again, not reviewed yet, sharing a voice, no line yet, and doesn't speak.
 - **Render all shown** renders every audition the filters show, three at a time. Rendering the
   whole cast on Gemini 3.8 Flash is about $0.42.
 
 Gemini's style for each line is the character's name and notes, then
 `Accent: General American, …`, then the line's delivery if it has one
 ([voice-bakeoff.md](./voice-bakeoff.md#expression-delivery-and-beats)).
+
+## Approving and rejecting
+
+Each card has a notes box and two buttons.
+
+- **Approve** pins the voice, so no rebuild ever moves it. The note (why it works) is optional.
+- **Reject, try another voice** needs a note saying what's wrong. It records the voice and the
+  note in the character's `history` and moves them straight to the next best voice, so you can
+  render and listen again at once.
+
+  The note steers that pick. Plain words are read:
+
+  | The note says | The next voice |
+  |---|---|
+  | "younger", "too old" | younger, smaller |
+  | "older", "too young" | older, mature |
+  | "deeper", "too thin" | bigger, more gravelly |
+  | "lighter", "too deep" | smaller, brighter |
+  | "softer", "too harsh" | soft, gentle |
+  | "brighter", "too flat" | brighter, upbeat |
+  | "calmer", "too excited" | even, easy-going |
+  | "warmer", "too cold" | warm, friendly |
+  | "firmer", "too timid" | firm |
+  | "a woman's voice", "a man's voice" | that gender |
+
+  A voice a character was rejected in is never offered to them again, and voices still never
+  clash within a chapter. That can mean the closest fit is taken: rejecting a voice as "should be
+  more gravelly" gets the most gravelly voice free in that character's chapters.
+- **Approved: reopen** takes an approval back, so the voice can be changed.
+
+Rebuilds keep every decision. An approved entry is untouched, and a provisional one keeps its
+history, so a rejected voice stays rejected.
+
+## The review: something to take away
+
+**Download review (Markdown)** and **(JSON)** in the page header, or from the command line:
+
+```
+npm run voice:cast -- --review                      # Markdown to the terminal
+npm run voice:cast -- --review --out review.md
+npm run voice:cast -- --review --out review.json
+```
+
+- **The Markdown** is for people:
+  - counts of approved, rejected and waiting, not reviewed, and voice clashes;
+  - a table of approved voices with their notes and what was turned down first;
+  - each rejection with its voice, note, model and date;
+  - **voices rejected most**: one turned down for several characters may be the wrong fit for
+    this game, not just for them;
+  - who hasn't been heard yet.
+- **The JSON** has the same summary plus every speaker's status, voice and full decision
+  history, for a script or an agent to act on.
+
+Both are reports of the sheet. `content/voice/cast.json`, committed with its history, stays the
+source of truth.
 
 ## What's still rough
 

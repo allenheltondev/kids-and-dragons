@@ -88,6 +88,20 @@ export interface CastEntry {
   /** "provisional": assigned by the builder and free to change. "approved": chosen by a person, never touched. */
   status: "provisional" | "approved";
   notes?: string;
+  /** Every approval and rejection, oldest first: what was heard, what was decided, and why. */
+  history?: Decision[];
+}
+
+export interface Decision {
+  decision: "approved" | "rejected";
+  /** The voice the decision was about. */
+  voice: string;
+  /** What the listener said: why it works, or what is wrong with it. */
+  notes?: string;
+  /** The model the auditions were heard on. */
+  model?: string;
+  /** ISO time. */
+  at: string;
 }
 
 export interface CastSheet {
@@ -408,8 +422,78 @@ function roleWords(draft: Pick<Draft, "name" | "aliases" | "who">): string[] {
   return [...words];
 }
 
-/** Picks a voice for each provisional character, never one already speaking in any of their chapters. */
-export function assignVoices(entries: Record<string, CastEntry>, fixed: (id: string) => boolean): void {
+export interface Hints {
+  gender: "f" | "m" | null;
+  want: string[];
+  avoid: string[];
+}
+
+/**
+ * What a listener's rejection notes ask of the next voice: "too old" wants a
+ * younger one, "needs to be deeper" a bigger one, "should be a woman" a
+ * woman's. Only plain words are read; anything else stays for a person.
+ */
+export function noteHints(notes: readonly string[]): Hints {
+  const text = notes.join(" ").toLowerCase();
+  const hints: Hints = { gender: null, want: [], avoid: [] };
+  const rules: [RegExp, string[], string[]][] = [
+    [/\b(younger|more youthful|too old|childlike|more like a kid|smaller voice)\b/, ["young", "small"], ["old"]],
+    [/\b(older|more mature|too young|wiser|elderly|grandparent)\b/, ["old", "mature"], ["young"]],
+    [/\b(deeper|bigger|heavier|too thin|too light|more gravel|gravellier|rumblier|boom(?:ier)?)\b/, ["big", "gravelly"], ["small"]],
+    [/\b(lighter|too deep|too heavy|too big)\b/, ["small", "bright"], ["big"]],
+    [/\b(softer|gentler|quieter|too harsh|too loud|too firm)\b/, ["soft", "gentle"], ["firm"]],
+    [/\b(brighter|bouncier|more energy|livelier|more excited|too flat|too dull|too sleepy|too serious)\b/, ["bright", "upbeat", "lively", "excitable"], []],
+    [/\b(calmer|slower|too excited|too much energy|too bouncy|too chipper)\b/, ["even", "easy-going", "gentle"], ["excitable", "lively"]],
+    [/\b(warmer|kinder|friendlier|too cold|too stern)\b/, ["warm", "friendly", "gentle"], ["firm"]],
+    [/\b(firmer|stronger|more authority|too soft|too timid)\b/, ["firm"], ["soft"]],
+  ];
+  for (const [pattern, want, avoid] of rules) {
+    if (pattern.test(text)) {
+      hints.want.push(...want);
+      hints.avoid.push(...avoid);
+    }
+  }
+  if (/\b(a woman|woman's|female|feminine|girl's)\b/.test(text)) hints.gender = "f";
+  if (/\b(a man|man's|male|masculine|boy's)\b/.test(text) && !/\bfemale\b/.test(text)) hints.gender = hints.gender === "f" ? null : "m";
+  return hints;
+}
+
+/** The voices a character has been rejected in: never offered to them again. */
+export const rejectedVoices = (entry: CastEntry): Set<string> => new Set((entry.history ?? []).filter((d) => d.decision === "rejected").map((d) => d.voice));
+
+/**
+ * The best voice for one character, given which voices are already speaking in
+ * which chapters. The character's gender and traits decide, the listener's
+ * rejection notes push it further, and a voice they were rejected in, a voice
+ * already in one of their chapters, or the narrator's is never chosen while
+ * any other is left.
+ */
+function bestVoice(entry: CastEntry, byChapter: ReadonlyMap<string, ReadonlyMap<string, string>>, uses: ReadonlyMap<string, number>): string {
+  const rejected = rejectedVoices(entry);
+  const hints = noteHints((entry.history ?? []).filter((d) => d.decision === "rejected").map((d) => d.notes ?? ""));
+  const gender = hints.gender ?? genderOf(entry);
+  const wants = [...traitsOf(entry), ...hints.want];
+  let best = "";
+  let bestScore = -Infinity;
+  for (const voice of GEMINI_VOICES.map((v) => v.id)) {
+    if (voice === NARRATOR_VOICE) continue;
+    const traits = GEMINI_VOICE_TRAITS[voice]!;
+    let score = rejected.has(voice) ? -1000 : 0;
+    if (gender !== null) score += traits.gender === gender ? 4 : -6;
+    if (hints.gender !== null) score += traits.gender === hints.gender ? 6 : -10;
+    for (const want of wants) if (traits.traits.includes(want)) score += 2;
+    for (const avoid of hints.avoid) if (traits.traits.includes(avoid)) score -= 3;
+    score -= entry.chapters.filter((c) => byChapter.get(c)?.has(voice)).length * 20;
+    score -= (uses.get(voice) ?? 0) * 0.5;
+    if (score > bestScore || (score === bestScore && voice < best)) {
+      best = voice;
+      bestScore = score;
+    }
+  }
+  return best;
+}
+
+function occupancy(entries: Record<string, CastEntry>, include: (id: string) => boolean) {
   const byChapter = new Map<string, Map<string, string>>(); // chapter → voice → speaker
   const uses = new Map<string, number>();
   const take = (id: string, entry: CastEntry): void => {
@@ -420,34 +504,46 @@ export function assignVoices(entries: Record<string, CastEntry>, fixed: (id: str
     }
     uses.set(entry.gemini.voice, (uses.get(entry.gemini.voice) ?? 0) + 1);
   };
-  for (const [id, entry] of Object.entries(entries)) if (fixed(id)) take(id, entry);
+  for (const [id, entry] of Object.entries(entries)) if (include(id)) take(id, entry);
+  return { byChapter, uses, take };
+}
 
+/** Picks a voice for each provisional character, never one already speaking in any of their chapters. */
+export function assignVoices(entries: Record<string, CastEntry>, fixed: (id: string) => boolean): void {
+  const { byChapter, uses, take } = occupancy(entries, fixed);
   // Recurring characters first: they have the fewest voices left to them.
   const open = Object.entries(entries)
     .filter(([id]) => !fixed(id))
     .sort(([a, x], [b, y]) => y.chapters.length - x.chapters.length || a.localeCompare(b));
   for (const [id, entry] of open) {
-    const gender = genderOf(entry);
-    const wants = traitsOf(entry);
-    let best = "";
-    let bestScore = -Infinity;
-    for (const voice of GEMINI_VOICES.map((v) => v.id)) {
-      if (voice === NARRATOR_VOICE) continue;
-      const traits = GEMINI_VOICE_TRAITS[voice]!;
-      let score = 0;
-      if (gender !== null) score += traits.gender === gender ? 4 : -6;
-      for (const want of wants) if (traits.traits.includes(want)) score += 2;
-      const clashes = entry.chapters.filter((c) => byChapter.get(c)?.has(voice)).length;
-      score -= clashes * 20;
-      score -= (uses.get(voice) ?? 0) * 0.5;
-      if (score > bestScore || (score === bestScore && voice < best)) {
-        best = voice;
-        bestScore = score;
-      }
-    }
-    entry.gemini = { voice: best };
+    entry.gemini = { voice: bestVoice(entry, byChapter, uses) };
     take(id, entry);
   }
+}
+
+/** The next voice for one character after a rejection, around everybody else as they are. */
+export function nextVoice(entries: Record<string, CastEntry>, id: string): string {
+  const { byChapter, uses } = occupancy(entries, (other) => other !== id && entries[other]!.kind !== "narrator" && entries[other]!.kind !== "party");
+  return bestVoice(entries[id]!, byChapter, uses);
+}
+
+/**
+ * Records a listener's decision on a character's current voice. Approving
+ * pins it. Rejecting remembers the voice and the notes, and moves the
+ * character to the next best voice at once, so it can be heard right away.
+ */
+export function decide(sheet: CastSheet, id: string, decision: Decision["decision"], notes: string | undefined, model: string | undefined, at = new Date().toISOString()): CastEntry {
+  const entry = sheet.speakers[id];
+  if (!entry) throw new Error(`nobody called ${id} in the sheet`);
+  const record: Decision = { decision, voice: entry.gemini.voice, ...(notes ? { notes } : {}), ...(model ? { model } : {}), at };
+  entry.history = [...(entry.history ?? []), record];
+  if (decision === "approved") {
+    entry.status = "approved";
+    return entry;
+  }
+  entry.status = "provisional";
+  entry.gemini = { voice: nextVoice(sheet.speakers, id) };
+  return entry;
 }
 
 /** Two speakers with one voice in the same chapter: what the sheet warns about. */
@@ -583,6 +679,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
       speaks: !SILENT.test(draft.who) && (lines.length > 0 || kind !== "creature"),
       status: "provisional",
       ...(old?.notes ? { notes: old.notes } : {}),
+      ...(old?.history?.length ? { history: old.history } : {}),
     };
   }
 

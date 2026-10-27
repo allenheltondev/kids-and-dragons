@@ -14,7 +14,8 @@ import { cellOf, estimate, renderCell, type Workspace } from "../bakeoff/bakeoff
 import type { Cell } from "../bakeoff/page.ts";
 import { GEMINI_VOICES, engineOf, type CastFile, type Fetch, type Keys, type ModelInfo } from "../bakeoff/providers.ts";
 import type { Sample } from "../bakeoff/samples.ts";
-import { GEMINI_VOICE_TRAITS, voiceClashes, type CastEntry, type CastSheet } from "./sheet.ts";
+import { reviewJson, reviewMarkdown } from "./review.ts";
+import { GEMINI_VOICE_TRAITS, decide, voiceClashes, type CastEntry, type CastSheet } from "./sheet.ts";
 
 export interface Budget {
   spent: number;
@@ -169,6 +170,23 @@ export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
         fs.writeFileSync(options.sheetPath, `${JSON.stringify(sheet, null, 2)}\n`);
         const clashes = Object.fromEntries(Object.keys(sheet.speakers).map((other) => [other, clashesOf(sheet, other)]));
         return { status: 200, body: { entry, clashes } };
+      }
+      case "/api/cast/decide": {
+        // Approve pins the voice; reject records why and moves the character to the next best voice.
+        const sheet = readSheet(options.sheetPath);
+        const id = String(body.id);
+        if (!sheet.speakers[id]) return { status: 400, body: { error: `nobody called ${id} in the sheet` } };
+        if (body.decision !== "approved" && body.decision !== "rejected") return { status: 400, body: { error: "decision is approved or rejected" } };
+        const notes = typeof body.notes === "string" ? body.notes.slice(0, 2000).trim() : "";
+        const model = typeof body.model === "string" && MODEL_ID.test(body.model) ? body.model : undefined;
+        const entry = decide(sheet, id, body.decision, notes || undefined, model);
+        fs.writeFileSync(options.sheetPath, `${JSON.stringify(sheet, null, 2)}\n`);
+        const clashes = Object.fromEntries(Object.keys(sheet.speakers).map((other) => [other, clashesOf(sheet, other)]));
+        return { status: 200, body: { entry, clashes } };
+      }
+      case "/api/cast/review": {
+        const sheet = readSheet(options.sheetPath);
+        return { status: 200, body: { markdown: reviewMarkdown(sheet), json: reviewJson(sheet) } };
       }
       default:
         return null;
