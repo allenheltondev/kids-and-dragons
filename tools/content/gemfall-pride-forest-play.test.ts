@@ -146,7 +146,7 @@ it.each([pride, forest])("$id still resumes every shipped roll prompt to its ori
 });
 it.each(sizes)("pride: a paid lesson spends its actual coin and the escort is an earned alternative at %i seats", size => {
  const {state,trace}=walk(pride,size,{...pridePicks,scene_waystation:"pay_lesson",rest_waystation:"with_escort",scene_wolves:"call_escort"});
- expect(trace.get("scene_waystation_lesson")!.coins).toBe(trace.get("scene_waystation")!.coins-1);
+ expect(trace.get("scene_waystation_lesson")!.coins).toBe((trace.get("scene_waystation")!.coins ?? 0)-1);
  expect(trace.has("interaction_sash_frame")).toBe(false);
  expect(trace.has("interaction_sashes_pinned")).toBe(true);
  expect(state.flags.pride_friends).toBe(true);

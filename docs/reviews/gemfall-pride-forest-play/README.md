@@ -35,7 +35,7 @@ These are plans, **not measured family timing**. The uncalibrated dice-oriented 
 | 04A | 33.9 → 30.1 | 39.0 → 32.8 |
 | 04B | 38.7–38.9 → 34.6–34.8 | 42.8–43.0 → 39.0–39.2 |
 
-The modeled shortest routes retain 37/39 scenes, 14/15 votes and 3/4 checks respectively, with no reading run above two scenes. Real timing, especially four-player discussion and optional second fights, remains needed before claiming either evening consistently fits 30 minutes. Tracking work remains issue #511.
+The modeled shortest routes retain 37/39 scenes, 14/15 votes and 3/4 checks respectively, with no reading run above two scenes. Real timing, especially four-player discussion and optional second fights, remains needed before claiming either evening consistently fits 30 minutes. The tracker from #511 is now integrated from main; use the operator export and revision-aware report in [session timing](../../session-timing.md) when real sessions are available. No production timing was fetched for this review.
 
 ## Compatibility and verification
 
