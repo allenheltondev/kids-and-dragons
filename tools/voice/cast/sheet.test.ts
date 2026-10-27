@@ -227,6 +227,15 @@ describe("the committed sheet", () => {
     expect(sheet.speakers.orin_vale!.pronouns).toBe("he/him");
     expect(sheet.speakers.coralie_fenn!.aliases).toContain("Madame Fenn");
   });
+
+  it("gives every character a gender, says where it came from, and knows their figure", () => {
+    for (const [id, entry] of Object.entries(sheet.speakers)) {
+      if (entry.kind === "narrator" || entry.kind === "party") continue;
+      expect(entry.gender, id).toBeDefined();
+      expect(entry.genderFrom, id).toBeDefined();
+    }
+    expect(sheet.speakers.pib).toMatchObject({ gender: "nonbinary", genderFrom: "canon", figure: "cast/pib", canon: "individual.pib" });
+  });
 });
 
 describe("the cast page's routes", () => {

@@ -61,6 +61,13 @@ export const NARRATOR_VOICE = "Sulafat";
 
 export type Kind = "narrator" | "party" | "character" | "group" | "creature";
 
+/** How a character's voice should read. "nonbinary" (they/them) and "unknown" can be either a woman's or a man's voice. */
+export type Gender = "female" | "male" | "nonbinary" | "unknown";
+export const GENDERS: readonly Gender[] = ["female", "male", "nonbinary", "unknown"];
+
+/** Where a gender came from: canon's pronouns, the narration's speech tags, words in the notes, or a person on the cast page. */
+export type GenderFrom = "canon" | "narration" | "notes" | "person" | "none";
+
 export interface AuditionLine {
   /** The words alone, as the character says them (no quotation marks). */
   text: string;
@@ -75,6 +82,15 @@ export interface CastEntry {
   who: string;
   /** "she/her", "he/him", "they/them", or unknown. Drives nothing but the voice guess. */
   pronouns?: string;
+  /** Whether the voice should read as a woman's or a man's. Set by a person, it survives rebuilds and steers the voice. */
+  gender?: Gender;
+  genderFrom?: GenderFrom;
+  /** The figure the scenes draw them with ("cast/coralie_fenn"), when they have one. */
+  figure?: string;
+  /** The canon individual they are (`individual.pib`), when canon has them. */
+  canon?: string;
+  /** Which chapters' `voiceGuide.npcVoices` describe them, and under which key: where their voice notes live. */
+  voiceNotes?: { chapter: string; key: string }[];
   chapters: string[];
   /** Other names the content uses for them (cast names, npcVoices keys). */
   aliases: string[];
@@ -176,6 +192,23 @@ export function genderOf(entry: Pick<CastEntry, "name" | "who" | "pronouns">): "
   if (f > m) return "f";
   if (m > f) return "m";
   return null;
+}
+
+/** A character's gender as the content tells it, and where from: pronouns first (canon's, or the narration's tags), then the notes' words. */
+export function derivedGender(entry: Pick<CastEntry, "name" | "who" | "pronouns">, pronounsFrom: "canon" | "narration" = "canon"): { gender: Gender; genderFrom: GenderFrom } {
+  if (entry.pronouns?.startsWith("she")) return { gender: "female", genderFrom: pronounsFrom };
+  if (entry.pronouns?.startsWith("he")) return { gender: "male", genderFrom: pronounsFrom };
+  if (entry.pronouns?.startsWith("they")) return { gender: "nonbinary", genderFrom: pronounsFrom };
+  const guess = genderOf(entry);
+  return guess ? { gender: guess === "f" ? "female" : "male", genderFrom: "notes" } : { gender: "unknown", genderFrom: "none" };
+}
+
+/** The voice gender a character wants: the gender on the sheet when there is one, else the guess. Null for either. */
+export function voiceGenderOf(entry: Pick<CastEntry, "name" | "who" | "pronouns" | "gender">): "f" | "m" | null {
+  if (entry.gender === "female") return "f";
+  if (entry.gender === "male") return "m";
+  if (entry.gender) return null;
+  return genderOf(entry);
 }
 
 /** What a character's notes ask of a voice: young or small, old, big. */
@@ -293,6 +326,10 @@ interface Draft {
   name: string;
   who: string;
   pronouns?: string;
+  pronounsFrom?: "canon" | "narration";
+  canon?: string;
+  voiceNotes: { chapter: string; key: string }[];
+  figures: Map<string, number>;
   chapters: Set<string>;
   campaigns: Set<string>;
   aliases: Set<string>;
@@ -309,7 +346,7 @@ export function collectCharacters(sources: Sources): Draft[] {
   const get = (id: string, name: string, who: string, generic: boolean): Draft => {
     let draft = drafts.get(id);
     if (!draft) {
-      draft = { id, name, who, chapters: new Set(), campaigns: new Set(), aliases: new Set(), generic };
+      draft = { id, name, who, chapters: new Set(), campaigns: new Set(), aliases: new Set(), generic, voiceNotes: [], figures: new Map() };
       drafts.set(id, draft);
     }
     if (!draft.who && who) draft.who = who;
@@ -323,6 +360,7 @@ export function collectCharacters(sources: Sources): Draft[] {
       // A one-word key whose notes open on "a"/"the" is what someone is, not who: "wisp", "drover".
       const generic = !/[A-Z\s_]/.test(key) && name === titleCase(key) && /^(an?|the)\b/i.test(notes.trim());
       const draft = get(id, name, notes, generic);
+      draft.voiceNotes.push({ chapter: chapter.id, key });
       draft.chapters.add(chapter.id);
       if (chapter.campaignId) draft.campaigns.add(chapter.campaignId);
     }
@@ -331,11 +369,16 @@ export function collectCharacters(sources: Sources): Draft[] {
   for (const chapter of sources.chapters) {
     const keyed = Object.entries(chapter.voiceGuide?.npcVoices ?? {}).map(([key, notes]) => ({ id: idOfKey(key), notes }));
     const keys = keyed.map((k) => k.id);
-    const names = new Set<string>();
+    const names = new Map<string, Map<string, number>>(); // name → figure → scenes
     for (const scene of Object.values(chapter.scenes ?? {})) {
-      for (const member of (scene as { cast?: { name?: string }[] }).cast ?? []) if (member.name) names.add(member.name);
+      for (const member of (scene as { cast?: { name?: string; figure?: string }[] }).cast ?? []) {
+        if (!member.name) continue;
+        const figures = names.get(member.name) ?? new Map<string, number>();
+        if (member.figure) figures.set(member.figure, (figures.get(member.figure) ?? 0) + 1);
+        names.set(member.name, figures);
+      }
     }
-    for (const name of names) {
+    for (const [name, figures] of names) {
       const s = identity(name);
       const parts = s.split("_");
       // The chapter's own voice notes, if they are about this person: same key, or one inside the other's name.
@@ -357,6 +400,7 @@ export function collectCharacters(sources: Sources): Draft[] {
       draft.chapters.add(chapter.id);
       if (chapter.campaignId) draft.campaigns.add(chapter.campaignId);
       if (name !== draft.name) draft.aliases.add(name);
+      for (const [figure, count] of figures) draft.figures.set(figure, (draft.figures.get(figure) ?? 0) + count);
       if (key && draft.name === titleCase(key) && name.length > draft.name.length) {
         draft.aliases.add(draft.name);
         draft.name = name;
@@ -368,7 +412,11 @@ export function collectCharacters(sources: Sources): Draft[] {
     const key = person.id.replace(/^individual\./, "");
     const draft = drafts.get(key) ?? [...drafts.values()].find((d) => slug(d.name) === slug(person.title));
     if (!draft) continue;
-    if (person.pronouns) draft.pronouns = person.pronouns;
+    draft.canon = person.id;
+    if (person.pronouns) {
+      draft.pronouns = person.pronouns;
+      draft.pronounsFrom = "canon";
+    }
     if (person.speech_register) {
       const register = person.speech_register.replace(/\s+/g, " ").trim();
       if (!draft.who.includes(register)) draft.who = draft.who ? `${draft.who}. ${register}` : register;
@@ -471,7 +519,7 @@ export const rejectedVoices = (entry: CastEntry): Set<string> => new Set((entry.
 function bestVoice(entry: CastEntry, byChapter: ReadonlyMap<string, ReadonlyMap<string, string>>, uses: ReadonlyMap<string, number>): string {
   const rejected = rejectedVoices(entry);
   const hints = noteHints((entry.history ?? []).filter((d) => d.decision === "rejected").map((d) => d.notes ?? ""));
-  const gender = hints.gender ?? genderOf(entry);
+  const gender = hints.gender ?? voiceGenderOf(entry);
   const wants = [...traitsOf(entry), ...hints.want];
   let best = "";
   let bestScore = -Infinity;
@@ -574,9 +622,9 @@ const NARRATOR_LINES: AuditionLine[] = [
 
 /**
  * Builds the sheet from the content, keeping everything a person has set on
- * the previous sheet: status, voice, accent, notes and decision history. What
- * the content says (name, aliases, notes on who they are, chapters, lines) is
- * refreshed for everyone, approved or not, so clash checks see an approved
+ * the previous sheet: status, voice, a gender they set, accent, notes and
+ * decision history. What the content says (name, aliases, notes on who they
+ * are, pronouns, figure, chapters, lines) is refreshed for everyone, approved or not, so clash checks see an approved
  * character in a chapter written after the approval.
  */
 export function buildSheet(sources: Sources, previous: CastSheet | null): CastSheet {
@@ -662,12 +710,23 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
     const counts = tagged.get(draft.id) ?? {};
     const [top, second] = Object.entries(counts).sort((a, b) => b[1] - a[1]);
     const heardPronoun = top && (!second || top[1] > second[1]) ? { she: "she/her", he: "he/him", they: "they/them" }[top[0]] : undefined;
-    if (!draft.pronouns && heardPronoun) draft.pronouns = heardPronoun;
+    if (!draft.pronouns && heardPronoun) {
+      draft.pronouns = heardPronoun;
+      draft.pronounsFrom = "narration";
+    }
+    const who = draft.who || `${draft.name}.`;
+    // A gender a person set is theirs; otherwise it follows the content.
+    const gender = old?.genderFrom === "person" && old.gender ? { gender: old.gender, genderFrom: "person" as const } : derivedGender({ name: draft.name, who, pronouns: draft.pronouns }, draft.pronounsFrom);
+    const figure = [...draft.figures].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0];
     speakers[draft.id] = {
       name: draft.name,
       kind,
-      who: draft.who || `${draft.name}.`,
+      who,
       ...(draft.pronouns ? { pronouns: draft.pronouns } : {}),
+      ...gender,
+      ...(figure ? { figure } : {}),
+      ...(draft.canon ? { canon: draft.canon } : {}),
+      ...(draft.voiceNotes.length ? { voiceNotes: draft.voiceNotes } : {}),
       chapters,
       aliases: [...draft.aliases].sort(),
       ...(old?.accent ? { accent: old.accent } : {}),
