@@ -237,6 +237,33 @@ describe("editing the canon", () => {
   });
 });
 
+describe("changing what the model is told", () => {
+  it("rewrites the narrator's description, which lives on the sheet, and refuses a character's, which comes from canon", async () => {
+    const root = fakeRepo();
+    const sheetPath = path.join(root, "content", "voice", "cast.json");
+    rebuildSheet(root, sheetPath);
+    const { handle } = routes(root, sheetPath);
+    const reply = await handle("/api/cast/save", { id: "narrator", who: "A warm storyteller, brisk and bright, a touch quicker than a bedtime story." }, {});
+    expect((reply!.body as { entry: { who: string } }).entry.who).toBe("A warm storyteller, brisk and bright, a touch quicker than a bedtime story.");
+    expect(toldFor(rebuildSheet(root, sheetPath), bakeoffCast(), "narrator", "gemini-3.8-flash-tts", [], "Once.").told).toContain("brisk and bright");
+    expect((await handle("/api/cast/save", { id: "narrator", who: "  " }, {}))!.status).toBe(400);
+    expect((await handle("/api/cast/save", { id: "pip", who: "anything" }, {}))!.status).toBe(400);
+  });
+
+  it("adds a person's direction after who they are, keeps it on every rebuild, and removes it when emptied", async () => {
+    const root = fakeRepo();
+    const sheetPath = path.join(root, "content", "voice", "cast.json");
+    rebuildSheet(root, sheetPath);
+    const { handle } = routes(root, sheetPath);
+    await handle("/api/cast/save", { id: "pip", direction: "a touch quicker than usual" }, {});
+    const sheet = rebuildSheet(root, sheetPath);
+    expect(sheet.speakers.pip!.direction).toBe("a touch quicker than usual");
+    expect(toldFor(sheet, bakeoffCast(), "pip", "gemini-3.8-flash-tts", [], "Hello.").told).toMatch(/^Pip: a bramble sprite[^]*earnest[^]*\. Direction: a touch quicker than usual\. Accent: General American/);
+    await handle("/api/cast/save", { id: "pip", direction: "" }, {});
+    expect(rebuildSheet(root, sheetPath).speakers.pip).not.toHaveProperty("direction");
+  });
+});
+
 describe("the profile page's routes", () => {
   it("says a typed line in the character's voice, and only looks until asked to render", async () => {
     const root = fakeRepo();
