@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect, it } from "vitest";
-import { applyEffects, enterScene } from "@kad/shared";
+import { applyEffects, applyIntent, enterScene, playbackMs } from "@kad/shared";
 import type { Chapter, CheckScene, ClassId, RunState, SpeciesId } from "@kad/shared";
 import { context, send, start } from "./riftlight-test-support.ts";
 import { act, landed, miss, promptOf, solve } from "./interaction-play.ts";
@@ -12,7 +12,11 @@ const bridge = read<Chapter>("content/chapters/gemfall-05a.json");
 const woods = read<Chapter>("content/chapters/gemfall-05b.json");
 const boundary = read<Chapter>("content/chapters/gemfall-05c.json");
 const sizes = [1, 2, 4];
-const outcomes = ["success", "failure", "assisted"] as const;
+// miss-supported misses only precision/timing/sequence/memory/tracking.
+// cooperate/balance/relay/play have no failing player action; they complete
+// successfully in this mixed profile. Their authored onFailure edges are not
+// claimed as executable failure coverage. Incomplete work is tested below.
+const outcomes = ["success", "miss-supported", "assisted"] as const;
 type Outcome = typeof outcomes[number];
 const offered = (s: RunState, id: string) => s.prompt?.kind === "choice" && s.prompt.options.some(o => o.id === id);
 
@@ -32,6 +36,7 @@ function walk(chapter: Chapter, size: number, picks: Record<string, string>, out
   let state = initial(chapter, size, flags, species, cls);
   if (food) state = applyEffects(state, [{type:"grantItem",itemId:"supper_bundle",to:"party"}], context(chapter));
   const trace = new Map<string, RunState>();
+  const interactionOutcomes = new Map<string, string>();
   for (let step = 0; state.phase !== "chapter_complete"; step++) {
     expect(step).toBeLessThan(170);
     trace.set(state.sceneId!, structuredClone(state));
@@ -42,8 +47,35 @@ function walk(chapter: Chapter, size: number, picks: Record<string, string>, out
       const next = enterScene(state, branch.goto, context(chapter));
       expect(next.error).toBeUndefined(); state = next.state;
     } else if (state.prompt?.kind === "interaction") {
-      const result = outcome === "assisted" ? act(chapter, state, { action: "assist" }, promptOf(state).playerIds.at(-1)!)
-        : outcome === "failure" ? miss(chapter, state) ?? solve(chapter, state) : solve(chapter, state);
+      let result: RunState;
+      if (outcome === "assisted") {
+        result = act(chapter, state, { action: "assist" }, promptOf(state).playerIds.at(-1)!);
+        expect(promptOf(result).outcome).toBe("assisted");
+      } else if (outcome === "miss-supported") {
+        let missed = miss(chapter, state);
+        const spec = promptOf(state).spec;
+        // Reversing a palindromic memory answer (wait/walk/wait) is still
+        // correct. Make a genuinely wrong, valid-length answer in that case.
+        if (!missed && (spec.kind === "memory" || spec.kind === "sequence")) {
+          const wrong = [...spec.answer];
+          wrong[0] = spec.options.find(option => option.id !== wrong[0])!.id;
+          const actor = promptOf(state).actorId;
+          const started = act(chapter, state, {action:"start",relaxed:false}, actor);
+          missed = act(chapter, started, {action:"answer",answer:wrong}, actor, playbackMs(spec,false)+1000);
+        }
+        if (missed) {
+          expect(promptOf(missed).outcome).toBe("failure");
+          result = missed;
+        } else {
+          expect(["cooperate", "balance", "relay", "play"]).toContain(promptOf(state).spec.kind);
+          result = solve(chapter, state);
+          expect(promptOf(result).outcome).toBe("success");
+        }
+      } else {
+        result = solve(chapter, state);
+        expect(promptOf(result).outcome).toBe("success");
+      }
+      interactionOutcomes.set(state.sceneId!, promptOf(result).outcome!);
       state = landed(chapter, result, promptOf(result).resolvedActorId ?? promptOf(result).actorId);
     } else if (state.prompt?.kind === "choice") {
       const id = picks[state.sceneId!] ?? state.prompt.options[0]!.id;
@@ -56,7 +88,7 @@ function walk(chapter: Chapter, size: number, picks: Record<string, string>, out
     const flags = Array.isArray(step.flag) ? step.flag : [step.flag!];
     expect(flags.some(flag => state.flags[flag]), step.id).toBe(true);
   }
-  return { state, trace };
+  return { state, trace, interactionOutcomes };
 }
 
 const bridgePicks={scene_brass_south:"ask_what",scene_tremor:"catch_crates",scene_soup_line:"stay_in_line",
@@ -77,7 +109,7 @@ it.each(sizes.flatMap(size=>outcomes.flatMap(outcome=>["hold_string","read_chalk
  const {state,trace}=walk(bridge,size,{...bridgePicks,scene_crack_string:job,scene_crossing:job==="hold_string"?"measured_line":"settled_interval"},outcome);
  expect(trace.has("interaction_transfer_rule")).toBe(true);
  expect(trace.has("interaction_survey_evidence")).toBe(true);
- expect(state.flags.bridge_preparation_used===true).toBe(job==="hold_string"||outcome!=="failure");
+ expect(state.flags.bridge_preparation_used===true).toBe(job==="hold_string"||outcome!=="miss-supported");
  expect(offered(trace.get("scene_crossing")!,"measured_line")).toBe(job==="hold_string");
  expect(offered(trace.get("scene_crossing")!,"settled_interval")).toBe(job==="read_chalk");
  expect(state.chapterOutcome).toBe("success");
@@ -108,8 +140,8 @@ it.each(sizes.flatMap(size=>outcomes.map(outcome=>({size,outcome}))))
  const {state,trace}=walk(woods,size,{...woodsPicks,scene_falls_stair:"count",scene_high_paths:"stand",scene_gully_recovery:"runoff"},outcome,20,true);
  expect(offered(trace.get("scene_high_paths")!,"ivy_ledge")).toBe(false);
  expect(trace.has("scene_gully_recovery")).toBe(true);
- expect(state.flags.runoff_recovery_used===true).toBe(outcome!=="failure");
- expect(state.chapterOutcome).toBe(outcome==="failure"?"setback":"success");
+ expect(state.flags.runoff_recovery_used===true).toBe(outcome!=="miss-supported");
+ expect(state.chapterOutcome).toBe(outcome==="miss-supported"?"setback":"success");
  });
 it.each(sizes)("woods: a checked feeding plan spends actual food at %i seats",size=>{
  const {state,trace}=walk(woods,size,{...woodsPicks,scene_halfway_hut:"read",scene_high_paths:"checked_snack"},"assisted",20,false,{},"manticore","duskrunner",true);
@@ -188,9 +220,46 @@ it.each(sizes.flatMap(size=>["wardens","gatherers","close"].map(audience=>({size
  for(const result of [a,b,c])expect(["told_wardens","told_gatherers","kept_close"].filter(f=>result.state.flags[f])).toEqual([expected]);
  });
 it.each(sizes)("boundary: missed crab warning still enters the original fight at %i seats",size=>{
- const {trace,state}=walk(boundary,size,{...boundaryPicks,scene_gate_town:"quick_rule",scene_crab_warning:"read",scene_crabs_rescue:"work"},"failure",1,true);
+ const {trace,state}=walk(boundary,size,{...boundaryPicks,scene_gate_town:"quick_rule",scene_crab_warning:"read",scene_crabs_rescue:"work"},"miss-supported",1,true);
  expect(trace.has("interaction_crab_warning")).toBe(true);
  expect(trace.has("encounter_crabs")).toBe(true);
  expect(trace.has("scene_crabs_rescue_work")).toBe(true);
  expect(state.chapterOutcome).toBe("success");
+});
+
+// No synthetic failure prompt: these are actual premature player actions. The
+// runtime rejects them and leaves the activity open, rather than taking onFailure.
+it.each(sizes)("incomplete non-failing jobs award no preparation at %i seats", size => {
+ for (const [chapter, id, flag] of [
+  [boundary, "interaction_dawn_rope", "bell_crew_ready"],
+  [woods, "interaction_falls_logs", "high_path_brace"],
+  [boundary, "interaction_kept_stone", "got_the_unassigned_stone"],
+  [bridge, "interaction_survey_evidence", "plotted_it_yourself"],
+ ] as const) {
+  let state = enterScene(initial(chapter, size), id, context(chapter)).state;
+  expect(miss(chapter, state)).toBeNull();
+  const actor = promptOf(state).actorId;
+  state = act(chapter, state, {action:"start",relaxed:false}, actor);
+  const attempt = applyIntent(state, {playerId:actor,intent:{type:"INTERACT",openedSeq:promptOf(state).openedSeq,attempt:promptOf(state).attempt,action:"complete"}}, context(chapter));
+  expect(attempt.error, id).toBeDefined();
+  expect(state.sceneId).toBe(id);
+  expect(promptOf(state).outcome).toBeUndefined();
+  expect(state.flags[flag]).not.toBe(true);
+ }
+});
+it.each(sizes)("mixed miss profile reports the actual outcomes and gates at %i seats",size=>{
+ const a=walk(bridge,size,{...bridgePicks,scene_crack_string:"read_chalk",scene_crossing:"settled_interval"},"miss-supported");
+ expect(a.interactionOutcomes.get("interaction_transfer_rule")).toBe("failure");
+ expect(a.interactionOutcomes.get("interaction_settled_span")).toBe("failure");
+ expect(a.interactionOutcomes.get("interaction_survey_evidence")).toBe("success");
+ expect(a.trace.has("scene_under_bridge")).toBe(true);
+ expect(a.state.flags.bridge_preparation_used).not.toBe(true);
+ const b=walk(woods,size,woodsPicks,"miss-supported");
+ expect(b.interactionOutcomes.get("interaction_falls_logs")).toBe("success");
+ expect(b.interactionOutcomes.get("interaction_ivy_ledge")).toBe("success");
+ expect(b.state.flags.high_path_brace_used).toBe(true);
+ const c=walk(boundary,size,boundaryPicks,"miss-supported");
+ expect(c.interactionOutcomes.get("interaction_dawn_rope")).toBe("success");
+ expect(c.interactionOutcomes.get("interaction_crowd_bell_line")).toBe("success");
+ expect(c.state.flags.bell_crew_ready).toBe(true);
 });
