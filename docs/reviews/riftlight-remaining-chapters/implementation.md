@@ -177,3 +177,44 @@ passes; content validation/proofs pass 117 checks with the same two existing
 Corvane warnings. Continuity has zero new findings and zero stale entries.
 The known preview shutdown test remains outside this focused suite and was not
 changed or disabled. Automated timing remains separate from family playtesting.
+
+## Final deeper pair
+
+Convergence and Finale now complete the planned deeper gameplay passes from this
+audit. See [final-playtest.md](../../campaigns/continental-rift/final-playtest.md)
+for planned thirty-minute budgets, decision payoffs and family observation. Earlier
+notes listing them as future work describe the preceding batches.
+
+Convergence plays regional comparisons, the chosen companion intervention, held
+and released cord observations, and team/prop/class condition practice. A measuring
+prop already in use must be retrieved before it can support the lesson. Its core
+Olivia/Pip choice and shared-chime intervention remain intact. Helped observations
+stay credited; nobody manipulates the chime or changes an opening's intrinsic rules.
+
+The finale plays retreat preparation, map protection, learned regional accounts
+and one optional support. Fitting a brace shortens actual board work; preparing
+rescue widens a later recovery interval. A reserve team has a different supported
+closing job. Map damage persists, used support is spent on retreat, and a lost
+encounter does not repeat. The reveal, two humane success futures, Rivers Wander
+and existing campaign callbacks remain. All four boards retain objective victory
+and real defeat.
+
+New raster art was not needed: existing character-free settings and separate cast
+are reused, with actual TV/phone captures. The planned chapter targets are thirty
+minutes, replacing the older 35/40-minute estimates; observed family timing remains
+unmeasured. Family playtesting and the tracker in #511 remain future work rather
+than claims that the campaign's pacing is proven.
+
+Final-pair validation: 3,783 focused tests across 39 files pass, including 2,243
+new interaction-route/mechanical checks. All four actual finale boards pass
+objective and defeat checks, including three-versus-four work counts. Typechecking
+passes. Content proofs pass 117 checks with four bespoke-Corvane warnings (the two
+new brace configurations reuse the same custom enemy stats); continuity has zero
+new findings or stale entries. The known preview shutdown test remains outside
+this focused suite and was not changed or disabled. The shared test helper now
+sends an actually wrong answer for palindromic memory/sequence patterns rather
+than reversing a pattern into the same correct answer.
+
+After the final recovery-narration correction, 2,300 relevant tests were rerun
+and pass. The correction prepares the brace crew's limit after everyone is safe;
+it no longer describes rescuing the same travelers twice.

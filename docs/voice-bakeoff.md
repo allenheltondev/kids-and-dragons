@@ -150,6 +150,42 @@ Sources:
 - [Prompting Gemini 3.1 Flash TTS (Google AI)](https://dev.to/googleai/how-to-prompt-gemini-31s-new-text-to-speech-model-24bb)
 - [A practical guide to prompting Gemini 3.1 Flash TTS](https://livekit.com/blog/gemini-3.1-flash-tts-prompting-guide)
 
+## Gemini's end-of-turn noise
+
+Raw audio from `gemini-3.8-flash-tts` has a short scratchy burst, roughly 50 to 150ms, where a
+turn of speech ends. It's most audible on two-speaker requests, which have a turn boundary on
+every line. It's in the raw API audio, not in AI Studio's player, which gates it away before you
+hear it. Earlier models have a similar end-of-clip static in forum reports.
+
+The harness cleans Gemini audio the same way (`tools/voice/bakeoff/clean.ts`):
+
+- It removes any DC offset, which turns a drop to silence into a click.
+- It silences a short, noise-like burst that comes after speech and before a silence or the end
+  of the clip, with short fades so the cut makes no click of its own.
+- It fades every clip's first and last few milliseconds, so a playlist of clips never clicks
+  between them.
+
+What it keeps:
+
+- a breath just before the next line, since speech follows it closely;
+- a sigh or a laugh, which run longer than a burst;
+- a word's own "s", which is attached to the word with no silence between.
+
+The raw audio is kept beside each cleaned clip (`<key>.raw.wav`). **Gemini raw** in the page's
+header plays the raw files instead, for an A/B listen. Each cell says how much it silenced
+("silenced 120ms of end noise"). Clips rendered before the cleaning existed are cleaned the next
+time the page or a run reads them, with nothing re-sent and nothing paid. A cleaned clip is served
+under a new URL (`?cleaned=1`), so a browser that cached the noisy file can't keep replaying it.
+
+The thresholds come from the reports, not from measuring this game's clips. A clip where the
+noise is still there, or where something real was cut, is the way to tune them: its `.raw.wav`
+is the test case.
+
+Sources:
+- [gemini-3.8-flash-tts trailing static at sentence and turn boundaries](https://discuss.ai.google.dev/t/gemini-3-8-flash-tts-trailing-static-scratch-noise-artifact-at-sentence-turn-boundaries/185861)
+- [Static noise at the end of TTS generation (2.5 and 3.1)](https://discuss.ai.google.dev/t/static-noise-artifact-at-the-end-of-tts-generation-gemini-2-5-flash-preview-tts-2-5-pro-and-3-1-flash/183814)
+- [Whistling noise after about 90s on long single requests](https://discuss.ai.google.dev/t/gemini-3-8-flash-tts-whistling-noise-appears-after-90-s-on-long-single-request-generations/184948)
+
 ## Columns: model, mode, delivery
 
 A column is a model plus two choices, and each choice is worth hearing on its own:
@@ -169,20 +205,33 @@ A column is a model plus two choices, and each choice is worth hearing on its ow
   Gemini 3.8 has no director's-notes option: it would read the notes aloud. A column asking for
   it says so in every cell.
 
-The recommended seven columns, all expressive:
+The recommended seven columns, all expressive, Gemini first (the provider the game is leaning
+toward):
 
-1. Eleven v4
-2. Eleven v3 as one dialogue request
-3. Multilingual v2 with context (pauses only)
-4. Gemini 3.8 Flash
-5. Gemini 3.8 Flash as one two-voice request
-6. Gemini 3.8 Flash-Lite
-7. Gemini 3.1 Flash, to hear the old tag style against 3.8's style field
+1. Gemini 3.8 Flash
+2. Gemini 3.8 Flash as one two-voice request
+3. Gemini 3.8 Flash-Lite
+4. Gemini 3.1 Flash, to hear the old tag style against 3.8's style field
+5. Eleven v4
+6. Eleven v3 as one dialogue request
+7. Multilingual v2 with context (pauses only)
 
 Adding a *plain words* column for a model beside its expressive one is the quickest way to hear
 what the expression adds.
 
 **Restore recommended columns** brings them back.
+
+## Accent
+
+Everyone speaks American: the game is for American children. `cast.json` → `accent`
+("General American…") goes into every Gemini 3.8 style and Gemini 3.1 audio profile, and a speaker
+can override it with their own `accent`. ElevenLabs voices carry their accent with them, so the
+bake-off's ElevenLabs voices are all American premade ones (Brian, Bill, Eric, Chris, Roger,
+Aria, Laura, Jessica, Sarah, Matilda, Will, Liam, River). The Cast panel's account list shows each
+voice's own accent label.
+
+The whole game's cast, with a voice each, is the [cast voice sheet](./voice-cast.md), on `/cast`
+in the same server.
 
 ## Cast: who voices whom
 
