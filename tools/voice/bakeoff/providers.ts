@@ -18,7 +18,7 @@
  */
 
 import { createHash } from "node:crypto";
-import type { Sample, ScriptLine } from "./samples.ts";
+import { BEAT, withoutBeats, type Sample, type ScriptLine } from "./samples.ts";
 
 export type Provider = "elevenlabs" | "gemini" | "fake";
 export type Delivery = "tag" | "instruction" | "none";
@@ -38,8 +38,6 @@ export interface Engine extends EngineConfig {
   label: string;
   settings?: Record<string, number | boolean>;
   seed?: number;
-  /** Gemini: the style prompt around each line. `{describe}`, `{delivery}`, `{text}`. */
-  prompt?: string;
 }
 
 /** A model the picker offers, from engines.json or a provider's live list. */
@@ -51,11 +49,27 @@ export interface ModelInfo {
   tags?: boolean;
   context?: boolean;
   dialogue?: boolean;
+  /** Gemini 3.1 and older: takes delivery as director's notes in a prompt. */
+  instruction?: boolean;
 }
+
+/**
+ * How a model wants expression written, from the providers' docs:
+ *  - `eleven`: ElevenLabs v3 and later. Free-form bracketed audio tags in the
+ *    words ([whispers], [sighs], [long pause]); no SSML.
+ *  - `elevenClassic`: ElevenLabs v2 and Flash. No tags; a pause is an SSML break.
+ *  - `gemini`: Gemini 3.8 and later. Everything in the text is spoken except
+ *    angle-bracket vocal tags (<sigh>, <short pause>), so the character and the
+ *    delivery go in each turn's speechMetadata.style, never in the text.
+ *  - `geminiPrompt`: Gemini 3.1 and older. Bracketed tags in the transcript,
+ *    under an audio profile and director's notes.
+ */
+export type Family = "eleven" | "elevenClassic" | "gemini" | "geminiPrompt" | "fake";
 
 export interface CastFile {
   speakers: Record<string, { describe: string; elevenlabs?: { voiceId: string; name?: string }; gemini?: { voice: string } }>;
-  delivery: Record<string, { tag?: string; gemini?: string }>;
+  delivery: Record<string, { tag?: string; style?: string }>;
+  beats: Record<string, Partial<Record<Exclude<Family, "fake">, string | null>>>;
 }
 
 export interface HttpRequest {
@@ -88,7 +102,8 @@ export interface Unsupported {
 const ELEVENLABS = "https://api.elevenlabs.io/v1";
 const GEMINI = "https://generativelanguage.googleapis.com/v1beta";
 const OUTPUT = "mp3_44100_128";
-const DEFAULT_PROMPT = "Read the words below aloud, and say only those words. Voice: {describe} {delivery}\n\n{text}";
+/** Where every line is heard, for the models that take a scene (Gemini's audio profile). */
+const SCENE = "A storyteller and friends reading a picture book aloud to eight-year-olds in a cozy living room. Warm, a little spooky on the quiet bits, never scary.";
 const PROVIDER_NAMES: Record<Provider, string> = { elevenlabs: "ElevenLabs", gemini: "Gemini", fake: "Fake" };
 
 /** Gemini's prebuilt voices and the one word Google uses for each. */
@@ -113,12 +128,32 @@ export function elevenSettings(model: string): Record<string, number | boolean> 
   return { stability: 0.55, similarity_boost: 0.8, style: 0.2, use_speaker_boost: true };
 }
 
+/** Gemini 3.8 and later take style in speechMetadata; earlier ones take a prompt. */
+function geminiTakesStyle(model: string): boolean {
+  const version = /gemini-(\d+)(?:\.(\d+))?/.exec(model);
+  if (version === null) return true;
+  const major = Number(version[1]);
+  const minor = Number(version[2] ?? 0);
+  return major > 3 || (major === 3 && minor >= 8);
+}
+
+export function familyOf(engine: Pick<EngineConfig, "provider" | "model">): Family {
+  switch (engine.provider) {
+    case "elevenlabs":
+      return EXPRESSIVE.test(engine.model) ? "eleven" : "elevenClassic";
+    case "gemini":
+      return geminiTakesStyle(engine.model) ? "gemini" : "geminiPrompt";
+    case "fake":
+      return "fake";
+  }
+}
+
 /** Fills in a column's id, label and per-model defaults. The id is what ratings are kept under. */
 export function engineOf(config: EngineConfig, catalog: readonly ModelInfo[] = []): Engine {
   const info = catalog.find((m) => m.provider === config.provider && m.model === config.model);
   const context = config.provider === "elevenlabs" && config.mode === "lines" && config.context === true;
   const id = [config.provider, config.model, config.mode, config.delivery, ...(context ? ["context"] : [])].join(":");
-  const how = { tag: "tags", instruction: "instructions", none: "plain" }[config.delivery];
+  const how = { tag: "expressive", instruction: "director's notes", none: "plain" }[config.delivery];
   const label = `${info?.label ?? `${PROVIDER_NAMES[config.provider]} ${config.model}`}${config.mode === "dialogue" ? ", one request" : ""}, ${how}${context ? ", context" : ""}`;
   return {
     ...config,
@@ -151,15 +186,53 @@ function geminiVoice(cast: CastFile, id: string): string {
   return voice;
 }
 
-/** The words as sent: with the delivery's audio tag in front when this column asks with tags. */
-function spoken(engine: Engine, cast: CastFile, line: ScriptLine): string {
-  const tag = engine.delivery === "tag" && line.delivery ? cast.delivery[line.delivery]?.tag : undefined;
-  return tag ? `${tag} ${line.text}` : line.text;
+/**
+ * The words as sent. An expressive column writes the line's beats the way its
+ * model family takes them (dropping any it has no way to say) and, where the
+ * family reads tags in the text, the line's delivery as a tag in front. Plain
+ * and director's-notes columns send the words alone.
+ */
+export function spoken(engine: Engine, cast: CastFile, line: ScriptLine): string {
+  const family = familyOf(engine);
+  if (engine.delivery !== "tag" || family === "fake") return withoutBeats(line.text);
+  let text = line.text.replace(BEAT, (_, name: string) => ` ${cast.beats[name]?.[family] ?? ""} `).replace(/\s+/g, " ").trim();
+  const tag = line.delivery && (family === "eleven" || family === "geminiPrompt") ? cast.delivery[line.delivery]?.tag : undefined;
+  if (tag) text = `${tag} ${text}`;
+  // Gemini 3.1's guide: never two tags side by side. Merge them into one direction instead.
+  if (family === "geminiPrompt") {
+    let merged = text;
+    do {
+      text = merged;
+      merged = text.replace(/\[([^\]]+)\]\s*\[([^\]]+)\]/, "[$1, then $2]");
+    } while (merged !== text);
+  }
+  return text;
 }
 
-function instruction(engine: Engine, cast: CastFile, line: ScriptLine): string {
-  const words = engine.delivery === "instruction" && line.delivery ? cast.delivery[line.delivery]?.gemini : undefined;
-  return words ? `${words}.` : "";
+/** How a line should sound, in words: the character, and the delivery when the column asks for it. */
+function styleOf(engine: Engine, cast: CastFile, line: ScriptLine): string {
+  const delivery = line.delivery ? cast.delivery[line.delivery]?.style : undefined;
+  return delivery ? `${speaker(cast, line.by).describe} Right now: ${delivery}.` : speaker(cast, line.by).describe;
+}
+
+/**
+ * Gemini 3.1's documented prompt: an audio profile, the scene, director's notes,
+ * then a labeled transcript. The preamble and the transcript header keep the
+ * model from reading the directions aloud.
+ */
+function geminiPrompt(engine: Engine, cast: CastFile, lines: readonly ScriptLine[], speakers: readonly string[]): string {
+  const profiles = speakers.map((id) => `# AUDIO PROFILE: ${speakerName(id)}\n${speaker(cast, id).describe}`).join("\n\n");
+  const notes = engine.delivery === "instruction"
+    ? lines.map((line, i) => (line.delivery ? `- ${speakerName(line.by)}, line ${String(i + 1)}: ${cast.delivery[line.delivery]?.style ?? line.delivery}` : null)).filter(Boolean)
+    : [];
+  const transcript = lines.map((line) => (speakers.length > 1 ? `${speakerName(line.by)}: ` : "") + spoken(engine, cast, line)).join("\n");
+  return [
+    "Synthesize speech for the transcript below. Speak only the transcript, never these directions or the speaker names.",
+    profiles,
+    `## THE SCENE\n${SCENE}`,
+    `## DIRECTOR'S NOTES\nPace: unhurried, with room for each joke to land.${notes.length ? `\n${notes.join("\n")}` : ""}`,
+    `## TRANSCRIPT\n${transcript}`,
+  ].join("\n\n");
 }
 
 /** Gemini's multi-speaker mode names speakers in the transcript: `seal_keeper` → `SealKeeper`. */
@@ -167,8 +240,8 @@ export function speakerName(id: string): string {
   return id.split("_").map((part) => part.charAt(0).toUpperCase() + part.slice(1)).join("");
 }
 
-function geminiBody(prompt: string, speech: unknown): unknown {
-  return { contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: speech } };
+function geminiBody(parts: unknown[], speech: unknown): unknown {
+  return { contents: [{ parts }], generationConfig: { responseModalities: ["AUDIO"], speechConfig: speech } };
 }
 
 function lineRequest(engine: Engine, cast: CastFile, sample: Sample, index: number, take: number): HttpRequest {
@@ -183,24 +256,21 @@ function lineRequest(engine: Engine, cast: CastFile, sample: Sample, index: numb
         ...(engine.seed !== undefined ? { seed: engine.seed + take - 1 } : {}),
       };
       if (engine.context) {
-        const before = sample.lines.slice(0, index).map((part) => part.text).join(" ");
-        const after = sample.lines.slice(index + 1).map((part) => part.text).join(" ");
+        const before = sample.lines.slice(0, index).map((part) => withoutBeats(part.text)).join(" ");
+        const after = sample.lines.slice(index + 1).map((part) => withoutBeats(part.text)).join(" ");
         if (before) body.previous_text = before;
         if (after) body.next_text = after;
       }
       return { url: `${ELEVENLABS}/text-to-speech/${elevenVoice(cast, line.by)}?output_format=${OUTPUT}`, headers: { "content-type": "application/json" }, body };
     }
     case "gemini": {
-      const prompt = (engine.prompt ?? DEFAULT_PROMPT)
-        .replace("{describe}", () => speaker(cast, line.by).describe)
-        .replace("{delivery}", () => instruction(engine, cast, line))
-        .replace("{text}", () => spoken(engine, cast, line));
+      const voice = { voiceConfig: { prebuiltVoiceConfig: { voiceName: geminiVoice(cast, line.by) } } };
+      // Gemini 3.8 speaks every word of the text, so the direction rides in speechMetadata.
+      const part = familyOf(engine) === "gemini"
+        ? { text: spoken(engine, cast, line), ...(engine.delivery === "none" ? {} : { speechMetadata: { style: styleOf(engine, cast, line) } }) }
+        : { text: engine.delivery === "none" ? spoken(engine, cast, line) : geminiPrompt(engine, cast, [line], [line.by]) };
       // Gemini has no seed; the take is in the cache key only, so each take is a separate call.
-      return {
-        url: `${GEMINI}/models/${engine.model}:generateContent`,
-        headers: { "content-type": "application/json" },
-        body: geminiBody(prompt, { voiceConfig: { prebuiltVoiceConfig: { voiceName: geminiVoice(cast, line.by) } } }),
-      };
+      return { url: `${GEMINI}/models/${engine.model}:generateContent`, headers: { "content-type": "application/json" }, body: geminiBody([part], voice) };
     }
     case "fake":
       return { url: "fake://tone", headers: {}, body: { text: spoken(engine, cast, line), speaker: line.by, delivery: line.delivery ?? null } };
@@ -225,22 +295,19 @@ function dialogueRequest(engine: Engine, cast: CastFile, sample: Sample, take: n
         return `Gemini's multi-speaker mode takes two voices, and this sample has ${String(sample.speakers.length)} (${sample.speakers.join(", ")}).`;
       }
       if (sample.speakers.length < 2) return "Only one voice in this sample: the one-request-per-line column covers it.";
-      const who = sample.speakers.map((id) => `${speakerName(id)} is ${speaker(cast, id).describe}`).join("\n");
-      const transcript = sample.lines
-        .map((line) => {
-          const how = engine.delivery === "instruction" && line.delivery ? `(${cast.delivery[line.delivery]?.gemini ?? line.delivery}) ` : "";
-          return `${speakerName(line.by)}: ${how}${spoken(engine, cast, line)}`;
-        })
-        .join("\n");
-      return {
-        url: `${GEMINI}/models/${engine.model}:generateContent`,
-        headers: { "content-type": "application/json" },
-        body: geminiBody(`Read this scene aloud for children, each speaker in their own voice. Say only the spoken words, never the speaker names.\n${who}\n\n${transcript}`, {
-          multiSpeakerVoiceConfig: {
-            speakerVoiceConfigs: sample.speakers.map((id) => ({ speaker: speakerName(id), voiceConfig: { prebuiltVoiceConfig: { voiceName: geminiVoice(cast, id) } } })),
-          },
-        }),
+      const voices = {
+        multiSpeakerVoiceConfig: {
+          speakerVoiceConfigs: sample.speakers.map((id) => ({ speaker: speakerName(id), voiceConfig: { prebuiltVoiceConfig: { voiceName: geminiVoice(cast, id) } } })),
+        },
       };
+      // Gemini 3.8: one part per turn, each naming its speaker and carrying its own style.
+      const parts = familyOf(engine) === "gemini"
+        ? sample.lines.map((line) => ({
+            text: spoken(engine, cast, line),
+            speechMetadata: { speaker: speakerName(line.by), ...(engine.delivery === "none" ? {} : { style: styleOf(engine, cast, line) }) },
+          }))
+        : [{ text: geminiPrompt(engine, cast, sample.lines, sample.speakers) }];
+      return { url: `${GEMINI}/models/${engine.model}:generateContent`, headers: { "content-type": "application/json" }, body: geminiBody(parts, voices) };
     }
     case "fake":
       return { url: "fake://tone", headers: {}, body: { dialogue: sample.lines.map((line) => ({ text: spoken(engine, cast, line), speaker: line.by })) } };
@@ -253,12 +320,15 @@ function billed(request: HttpRequest, lines: readonly ScriptLine[]): number {
   if (typeof body.text === "string") return body.text.length;
   if (Array.isArray(body.inputs)) return body.inputs.reduce((sum, input) => sum + input.text.length, 0);
   if (Array.isArray(body.dialogue)) return body.dialogue.reduce((sum, input) => sum + input.text.length, 0);
-  return lines.reduce((sum, line) => sum + line.text.length, 0);
+  return lines.reduce((sum, line) => sum + withoutBeats(line.text).length, 0);
 }
 
 /** Every request this engine makes for this sample and take, or the reason it cannot. */
 export function plan(engine: Engine, cast: CastFile, sample: Sample, take: number): Job[] | Unsupported {
   const base = { engine: engine.id, sample: sample.id, take, provider: engine.provider };
+  if (engine.delivery === "instruction" && familyOf(engine) !== "geminiPrompt") {
+    return { engine: engine.id, sample: sample.id, reason: "Director's notes are for Gemini 3.1 and older: this model would read them aloud. Use expressive delivery instead." };
+  }
   try {
     if (engine.mode === "dialogue") {
       const request = dialogueRequest(engine, cast, sample, take);
@@ -401,7 +471,7 @@ export async function listModels(provider: Provider, keys: Keys, fetch: Fetch): 
     };
     for (const m of json.models ?? []) {
       const model = m.name.replace(/^models\//, "");
-      if (/tts/i.test(model)) found.push({ provider, model, label: m.displayName ?? model, about: m.description, tags: true, dialogue: true });
+      if (/tts/i.test(model)) found.push({ provider, model, label: m.displayName ?? model, about: m.description, tags: true, dialogue: true, instruction: !geminiTakesStyle(model) });
     }
     page = json.nextPageToken ?? "";
   } while (page);

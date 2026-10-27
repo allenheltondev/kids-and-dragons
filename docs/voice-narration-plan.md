@@ -177,6 +177,12 @@ Why a sidecar:
 …) that each provider adapter maps to its own controls (audio tags, style prompt). It's metadata,
 never spoken.
 
+A script line can also carry **beats**: `<sigh>`, `<laugh>`, `<gasp>`, `<pause>`, `<long pause>`
+written in its text where they fall. They're not on screen, so the join check leaves them out.
+Each provider family writes them its own way: `[sighs]` on ElevenLabs v3/v4, `<sigh>` on
+Gemini 3.8, an SSML break for a pause on ElevenLabs v2. The bake-off already does this
+([voice-bakeoff.md](./voice-bakeoff.md#expression-delivery-and-beats)).
+
 ### Drafting scripts
 
 `voice:script --chapter X` drafts entries. It splits on quotation marks and attributes each quote

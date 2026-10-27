@@ -21,7 +21,7 @@ Open the address it prints (`http://127.0.0.1:5199/`), then:
    before you spend anything, and anything rendered before is free.
 4. **Listen and rate**, blind if you like.
 
-Rendering every sample on all seven recommended columns comes to about $1.64. The server
+Rendering every sample on all seven recommended columns comes to about $1.76. The server
 refuses any render that would take the session past its spending cap: $5 by default, raised
 from the page or with `--max-dollars`.
 
@@ -57,16 +57,16 @@ start if its estimate is over `--max-dollars`. Both ways share one cache.
 `tools/voice/bakeoff/engines.json` lists them. `tools/voice/pricing.json` holds the prices
 `voice:cost` and the bake-off use.
 
-| Provider | Model id | What it is | Audio tags | One-request scene | Price |
+| Provider | Model id | What it is | Expression | One-request scene | Price |
 |---|---|---|---|---|---|
-| ElevenLabs | `eleven_v4` | newest; built for expressive long-form narration | yes | — | $0.08 / 1k chars |
-| ElevenLabs | `eleven_v4_turbo` | v4 for real-time use | yes | — | $0.04 / 1k chars |
-| ElevenLabs | `eleven_v3` | previous generation; the text-to-dialogue default | yes | yes (`/v1/text-to-dialogue`) | $0.10 / 1k chars |
-| ElevenLabs | `eleven_multilingual_v2` | steady and proven | no (takes neighboring lines as context) | — | $0.10 / 1k chars |
-| ElevenLabs | `eleven_flash_v2_5` | lowest latency | no | — | $0.05 / 1k chars |
-| Gemini | `gemini-3.8-flash-tts` | newest Flash TTS | yes | yes, two voices at most | $9 / M audio tokens to 2026-12-31, then $18 |
-| Gemini | `gemini-3.8-flash-lite-tts` | cheaper 3.8, same API | yes | yes, two voices | $6 / M audio tokens to 2026-12-31, then $12 |
-| Gemini | `gemini-3.1-flash-tts-preview` | the first Gemini TTS with audio tags | yes | yes, two voices | $20 / M audio tokens |
+| ElevenLabs | `eleven_v4` | newest; built for expressive long-form narration | `[bracket]` tags | — | $0.08 / 1k chars |
+| ElevenLabs | `eleven_v4_turbo` | v4 for real-time use | `[bracket]` tags | — | $0.04 / 1k chars |
+| ElevenLabs | `eleven_v3` | previous generation; the text-to-dialogue default | `[bracket]` tags | yes (`/v1/text-to-dialogue`) | $0.10 / 1k chars |
+| ElevenLabs | `eleven_multilingual_v2` | steady and proven | SSML pauses only; takes neighboring lines as context | — | $0.10 / 1k chars |
+| ElevenLabs | `eleven_flash_v2_5` | lowest latency | SSML pauses only | — | $0.05 / 1k chars |
+| Gemini | `gemini-3.8-flash-tts` | newest Flash TTS | `speechMetadata.style`, plus `<angle>` vocal tags | yes, two voices at most | $9 / M audio tokens to 2026-12-31, then $18 |
+| Gemini | `gemini-3.8-flash-lite-tts` | cheaper 3.8, same API | as 3.8 Flash | yes, two voices | $6 / M audio tokens to 2026-12-31, then $12 |
+| Gemini | `gemini-3.1-flash-tts-preview` | the first Gemini TTS with audio tags | `[bracket]` tags, or director's notes in a prompt | yes, two voices | $20 / M audio tokens |
 
 What the research found:
 
@@ -77,8 +77,8 @@ What the research found:
   the harness sends 0.5.
 - **Gemini:** TTS runs through `models/<id>:generateContent` with
   `responseModalities: ["AUDIO"]`, and the audio comes back as base64 16-bit PCM, wrapped here as
-  WAV. Since 3.1, Gemini also follows bracketed audio tags in the text (`[whispers]`, pacing tags,
-  pause tags), as well as natural-language style prompts. Multi-speaker mode takes two speakers.
+  WAV. How it takes expression changed at 3.8 (see Expression, below). Multi-speaker mode takes
+  two speakers.
 - **Gemini 3.8's price is said to double on 2027-01-01.** `voice:cost -- --on 2027-01-15` shows
   the difference.
 
@@ -101,6 +101,55 @@ Sources:
 - [Eleven v4 pricing](https://www.glbgpt.com/hub/eleven-v4-pricing/)
 - [Google Cloud TTS pricing](https://cloud.google.com/text-to-speech/pricing)
 
+## Expression: delivery and beats
+
+Two kinds of expression, both in the scripts (`samples.json`), never on the game's screen:
+
+- **Delivery** is how a whole line sounds: `whisper`, `shout`, `grave`, `gentle`, `chorus`,
+  `kindly`, `excited`. It's a line's `delivery` field. `cast.json` → `delivery` gives each one as
+  a bracketed `tag` and as `style` words.
+- **Beats** are things that happen at one point in a line: `<pause>`, `<long pause>`, `<sigh>`,
+  `<laugh>`, `<chuckle>`, `<giggle>`, `<gasp>`, `<breath>`, `<gulp>`, `<yawn>`. They're written in a
+  line's text, where they fall (`"<sigh> \"I can only spare one,\""`). The check that a script
+  matches the chapter ignores them.
+
+Each model family takes these its own way, and the harness writes them accordingly
+(`cast.json` → `beats`, `providers.ts` → `spoken()`):
+
+| Family | Delivery | Beats | What the docs say |
+|---|---|---|---|
+| ElevenLabs v3, v4 | `[whispers]` before the line | `[sighs]`, `[laughs]`, `[gasps]`, `[pause]`, `[long pause]`, `[inhales]` … | Tags are free-form; an emotion carries forward until the next tag; tags stack; no SSML. Describe the voice (`[softly]`) rather than a sound that might come out as a sound effect. |
+| ElevenLabs v2, Flash | ignored | pauses become `<break time="0.6s" />` / `1.4s`; others left out | No audio tags. Punctuation and SSML breaks shape the rhythm. |
+| Gemini 3.8 | `speechMetadata.style` on the turn: the character's description, then "Right now: whispering, but clearly…" | `<sigh>`, `<laugh>`, `<chuckle>`, `<gasp>`, `<breath>`, `<short pause>` … | **Everything in the text is spoken aloud**, except vocal tags in `<angle brackets>` and backchannels in `\|pipes\|`. Sustained delivery belongs in the style field, point-in-time sounds inline. The text carries the words and vocal tags only, never a preamble. |
+| Gemini 3.1 | `[whispers]` in the transcript (expressive), or a director's-notes line (instructions) | `[sigh]`, `[laughs]`, `[short pause]` … | A prompt with an audio profile, the scene, director's notes, then a `## TRANSCRIPT` header; the preamble and header stop it reading directions aloud. Never two tags side by side, so the harness merges them (`[slowly, then breath]`). |
+
+**Unverified:** these beat spellings haven't been tried on a real call:
+
+- **ElevenLabs:** `[inhales]` and `[gulps]`.
+- **Gemini 3.8:** `<long pause>`. Google's table shows `<short pause>`, and `<gulp>` has no 3.8
+  form, so it's left out.
+
+The bake-off is how to find out: a mangled beat shows up as a flag ("read the prompt aloud",
+"delivery off") on its cell. Change the mapping in `cast.json` and re-render. Only the lines that
+use it are new requests.
+
+The provider docs couldn't be opened from this environment: its network policy blocks
+`elevenlabs.io`, `aistudio.google.com` and `ai.google.dev`. What's here comes from search
+summaries of those pages.
+
+Sources:
+- [ElevenLabs best practices](https://elevenlabs.io/docs/overview/capabilities/text-to-speech/best-practices)
+- [ElevenLabs audio tags list for Eleven v4](https://elevenlabs.io/blog/elevenlabs-audio-tags-list)
+- [Emotional text to speech with Eleven v4](https://elevenlabs.io/blog/emotional-text-to-speech-with-eleven-v4)
+- [ElevenLabs text to speech product guide](https://elevenlabs.io/docs/eleven-creative/playground/text-to-speech)
+- [Gemini 3.8 Flash TTS developer guide](https://aistudio.google.com/learn/gemini-3-8-flash-tts-developer-guide)
+- [Gemini TTS prompting guide (Google Cloud)](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/text-to-speech/prompting-guide)
+- [Gemini 3.8 Flash TTS on Google Cloud](https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/gemini/3-8-flash-tts)
+- [Gemini 3.8 text to speech announcement](https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-8-text-to-speech/)
+- [Gemini speech generation (API)](https://ai.google.dev/gemini-api/docs/speech-generation)
+- [Prompting Gemini 3.1 Flash TTS (Google AI)](https://dev.to/googleai/how-to-prompt-gemini-31s-new-text-to-speech-model-24bb)
+- [A practical guide to prompting Gemini 3.1 Flash TTS](https://livekit.com/blog/gemini-3.1-flash-tts-prompting-guide)
+
 ## Columns: model, mode, delivery
 
 A column is a model plus two choices, and each choice is worth hearing on its own:
@@ -111,22 +160,27 @@ A column is a model plus two choices, and each choice is worth hearing on its ow
   - *One request for the whole scene* hands the provider the whole sample: ElevenLabs
     text-to-dialogue, or Gemini's multi-speaker config. Gemini takes two voices at most, so on
     the ensemble samples its cell says so rather than faking it.
-- **Delivery.** How a line's `whisper`, `shout` or `chorus` is asked for:
-  - *audio tags* puts `[whispers]` in the words (`cast.json` → `delivery.*.tag`);
-  - *instructions* (Gemini only) puts a sentence in the style prompt;
-  - *no hints* sends the words bare.
+- **Delivery.** How the expression above is sent:
+  - *expressive* uses everything the model takes, as in the table above;
+  - *director's notes* (Gemini 3.1 and older only) puts each line's delivery in the prompt's
+    notes and sends the words bare;
+  - *plain words* sends the words with no delivery and no beats.
 
-  Comparing Gemini with tags against Gemini with instructions is one of the recommended pairs.
+  Gemini 3.8 has no director's-notes option: it would read the notes aloud. A column asking for
+  it says so in every cell.
 
-The recommended seven columns:
+The recommended seven columns, all expressive:
 
-1. v4 with tags
-2. v3 as one dialogue request
-3. Multilingual v2 with context
-4. Gemini 3.8 Flash with tags
-5. Gemini 3.8 Flash with instructions
-6. Gemini 3.8 Flash as one two-voice request
-7. Gemini 3.8 Flash-Lite with tags
+1. Eleven v4
+2. Eleven v3 as one dialogue request
+3. Multilingual v2 with context (pauses only)
+4. Gemini 3.8 Flash
+5. Gemini 3.8 Flash as one two-voice request
+6. Gemini 3.8 Flash-Lite
+7. Gemini 3.1 Flash, to hear the old tag style against 3.8's style field
+
+Adding a *plain words* column for a model beside its expressive one is the quickest way to hear
+what the expression adds.
 
 **Restore recommended columns** brings them back.
 

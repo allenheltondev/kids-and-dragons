@@ -122,6 +122,7 @@ label.field input, label.field select { color: var(--ink); }
 .script div.now { background: var(--now); border-left-color: var(--accent); }
 .script b { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-right: 6px; }
 .script i { font-size: 12px; color: var(--accent); margin-left: 6px; }
+.script .beat { font-size: 11px; color: var(--accent); border: 1px solid var(--accent-soft); background: var(--accent-soft); border-radius: 999px; padding: 0 6px; margin: 0 3px; white-space: nowrap; }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
 .cell { border: 1px solid var(--line); border-radius: 10px; padding: 10px; display: grid; gap: 8px; align-content: start; min-width: 0; }
 .cell.playing { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
@@ -309,9 +310,9 @@ details summary { cursor: pointer; font-weight: 600; }
       about.replaceChildren(info.about || "", missing ? el("span", { class: "bad" }, " Not in this key's model list.") : "");
       modeSel.replaceChildren(el("option", { value: "lines" }, "One request per line"), info.dialogue ? el("option", { value: "dialogue" }, "One request for the whole scene") : null);
       deliverySel.replaceChildren(
-        info.tags || provider === "fake" ? el("option", { value: "tag" }, "Delivery as audio tags") : null,
-        provider === "gemini" ? el("option", { value: "instruction" }, "Delivery as instructions") : null,
-        el("option", { value: "none" }, "No delivery hints"),
+        el("option", { value: "tag" }, info.tags || provider === "fake" ? "Expressive: delivery, beats and pauses" : "Expressive: pauses only (this model takes no tags)"),
+        provider === "gemini" && info.instruction ? el("option", { value: "instruction" }, "Delivery as director's notes") : null,
+        el("option", { value: "none" }, "Plain words"),
       );
       contextLabel.hidden = !(provider === "elevenlabs" && info.context);
       context.checked = !contextLabel.hidden;
@@ -542,8 +543,10 @@ details summary { cursor: pointer; font-weight: 600; }
   }
 
   function sampleCard(sample) {
+    // Beats (<sigh>, <long pause>) show as small marks where they fall; they are never on the game's screen.
+    const words = (text) => text.split(/(<[a-z][a-z ]*>)/).filter(Boolean).map((part) => /^<.*>$/.test(part) ? el("span", { class: "beat" }, part.slice(1, -1)) : part);
     const script = el("div", { class: "script" }, sample.lines.map((line) =>
-      el("div", {}, el("b", {}, line.by.replace(/_/g, " ")), line.text, line.delivery ? el("i", {}, line.delivery) : null)));
+      el("div", {}, el("b", {}, line.by.replace(/_/g, " ")), words(line.text), line.delivery ? el("i", {}, line.delivery) : null)));
     // A stable shuffle per sample when blind, so the letters do not move between reloads.
     const shown = data.engines.map((engine, index) => ({ engine, index }));
     if (state.blind) shown.sort((a, b) => hash(state.salt + sample.id + a.engine.id) - hash(state.salt + sample.id + b.engine.id));
