@@ -98,6 +98,8 @@ export interface CastEntry {
   aliases: string[];
   /** Overrides the sheet's accent for this one character. */
   accent?: string;
+  /** A person's direction for the voice model, told after who they are ("a touch quicker than usual"). Kept on every rebuild. */
+  direction?: string;
   gemini: { voice: string };
   /** Real lines of theirs, found in the narration. */
   lines: AuditionLine[];
@@ -624,10 +626,11 @@ const NARRATOR_LINES: AuditionLine[] = [
 
 /**
  * Builds the sheet from the content, keeping everything a person has set on
- * the previous sheet: status, voice, a gender they set, accent, notes and
- * decision history. What the content says (name, aliases, notes on who they
- * are, pronouns, figure, chapters, lines) is refreshed for everyone, approved or not, so clash checks see an approved
- * character in a chapter written after the approval.
+ * the previous sheet: status, voice, a gender they set, accent, direction,
+ * notes and decision history. What the content says (name, aliases, notes on
+ * who they are, pronouns, figure, chapters, lines) is refreshed for everyone,
+ * approved or not, so clash checks see an approved character in a chapter
+ * written after the approval.
  */
 export function buildSheet(sources: Sources, previous: CastSheet | null): CastSheet {
   const accent = previous?.accent ?? "General American, the way a warm American storyteller reads aloud";
@@ -732,6 +735,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
       chapters,
       aliases: [...draft.aliases].sort(),
       ...(old?.accent ? { accent: old.accent } : {}),
+      ...(old?.direction ? { direction: old.direction } : {}),
       gemini: old?.gemini ?? { voice: "" },
       lines,
       speaks: !SILENT.test(draft.who) && (lines.length > 0 || kind !== "creature"),

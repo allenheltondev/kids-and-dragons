@@ -53,6 +53,7 @@ import { claimIsLive, releaseClaim, standing, rewrite } from "./claim.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { commitRoomChange, hostedRoom, isClosed, type HostPrincipal } from "./host.ts";
 import { expectedIndex, UNDER_WAY } from "./progression.ts";
+import { recordTiming, resumedTimingNote } from "./timing.ts";
 
 /** Longest recap, in characters: a sentence an adult can read in one breath. */
 const RECAP_MAX = 140;
@@ -232,7 +233,7 @@ export async function stopForToday(
     input.principal.playerId,
     (current) => (current.closed ? null : { ...current, closed: true, stopped: true }),
     deps,
-    { closing: true },
+    { closing: true, timing: () => (deps.timing ? { kind: "stop" } : undefined) },
   );
   if (!result.ok) return result;
   await deps.repo.deleteRoom(room.code);
@@ -295,7 +296,14 @@ export async function resumeGame(
     const { party, writes, removed } = await restoreParty(room, found.state, run.householdId, deps);
     if (party.every((m) => removed.includes(m.playerId))) return fail("ILLEGAL", "Pick a hero first, then keep going.");
 
-    const { closed: _closed, stopped: _stopped, saved: _saved, ...play } = found.state;
+    const {
+      closed: _closed,
+      stopped: _stopped,
+      saved: _saved,
+      timingPaused: _paused,
+      timingOff: _off,
+      ...play
+    } = found.state;
     const base: Record<string, unknown> = { ...play };
     for (const key of ROOM_KEYS) {
       if (room[key] === undefined) delete base[key];
@@ -313,6 +321,7 @@ export async function resumeGame(
       seq: room.seq + 1,
       updatedAt: iso(nowMs),
     };
+    const timing = await resumedTimingNote(found.record.id, next, deps);
     const event: EventRecord = {
       seq: next.seq,
       runId: next.runId,
@@ -334,6 +343,8 @@ export async function resumeGame(
         runId: event.runId,
         patch: event.patch,
       });
+      // The sitting this one picks up, so the report reads one attempt, not two (#511).
+      await recordTiming(deps, { runId: next.runId, chapterId: next.chapterId, seq: next.seq, at: event.at }, timing);
       await spend(found.record, deps);
       await alignRun(run.id, found.state.campaignId, deps);
       return ok({ seq: next.seq });

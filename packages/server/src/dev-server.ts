@@ -48,7 +48,9 @@ import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom
 import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
 import { handKeeper } from "./handlers/keeper.ts";
+import { MemoryTimingStore } from "./store/timing-store.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
+import { localTimingReport, parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "./handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
@@ -161,6 +163,16 @@ async function main(): Promise<void> {
      */
     playtest: true,
     ...(push ? { push: push.config } : {}),
+    // Session timing (#511): a developer's own runs are playtests; `KAD_TIMING=family`
+    // is for a real family sitting at this server, and `off` keeps nothing.
+    ...(process.env.KAD_TIMING === "off"
+      ? {}
+      : {
+          timing: {
+            source: process.env.KAD_TIMING === "family" ? ("family" as const) : ("playtest" as const),
+            store: new MemoryTimingStore(),
+          },
+        }),
   };
 
   const app = express();
@@ -452,6 +464,10 @@ async function main(): Promise<void> {
     (body) => (typeof body.quiet === "boolean" ? null : "expected { quiet: true | false }"),
     (code, principal, body, deps) => setQuiet({ code, principal, quiet: body.quiet as boolean }, deps),
   ));
+  app.post("/api/room/:code/timing", hostControl(
+    (body) => (parseTimingControl(body) ? null : TIMING_BODY),
+    (code, principal, body, deps) => setTiming({ code, principal, control: parseTimingControl(body) as TimingControl }, deps),
+  ));
   app.post("/api/room/:code/close", hostControl(
     () => null,
     (code, principal, _body, deps) => closeRoom({ code, principal }, deps),
@@ -701,6 +717,14 @@ async function main(): Promise<void> {
     if (outcome === "malformed") return sendError(res, 400, "ILLEGAL", "not a crash report");
     if (outcome === "refused") return reportsSlowDown(res, base);
     res.status(204).end();
+  });
+
+  // What this process has recorded of session timing (#511): the dev server has no AWS
+  // table to export from, so an operator reads it here. Prod has no twin on purpose.
+  app.get("/api/dev/timing", async (_req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    res.json(await localTimingReport(deps));
   });
 
   // What this phone can study between games (see handlers/journal.ts).
