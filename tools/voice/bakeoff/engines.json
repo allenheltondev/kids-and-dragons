@@ -1,0 +1,70 @@
+{
+  "$comment": "The engines the bake-off compares (docs/voice-bakeoff.md). `mode: lines` renders each script line as its own request in its speaker's voice, and the page plays them in order, which is how the game would play them. `mode: dialogue` sends the whole sample in one request to the provider's own multi-speaker endpoint. `pricing` names a model in ../pricing.json for the estimate. `model` ids are the providers' API names: confirm the Gemini 3.8 ones in Google's model list before the first paid run; a wrong id fails its cells, not the run. `fake` makes tones so the page can be tried with no keys.",
+  "engines": [
+    {
+      "id": "elevenlabs-v3",
+      "label": "ElevenLabs v3",
+      "provider": "elevenlabs",
+      "model": "eleven_v3",
+      "mode": "lines",
+      "pricing": "elevenlabs-v3",
+      "tags": true,
+      "settings": { "stability": 0.5, "similarity_boost": 0.75, "style": 0.3, "use_speaker_boost": true },
+      "seed": 1201
+    },
+    {
+      "id": "elevenlabs-v3-dialogue",
+      "label": "ElevenLabs v3 (dialogue)",
+      "provider": "elevenlabs",
+      "model": "eleven_v3",
+      "mode": "dialogue",
+      "pricing": "elevenlabs-v3",
+      "tags": true,
+      "settings": { "stability": 0.5 },
+      "seed": 1201
+    },
+    {
+      "id": "elevenlabs-v2",
+      "label": "ElevenLabs Multilingual v2",
+      "provider": "elevenlabs",
+      "model": "eleven_multilingual_v2",
+      "mode": "lines",
+      "pricing": "elevenlabs-multilingual-v2",
+      "context": true,
+      "settings": { "stability": 0.55, "similarity_boost": 0.8, "style": 0.2, "use_speaker_boost": true },
+      "seed": 1201
+    },
+    {
+      "id": "gemini-3.8-flash",
+      "label": "Gemini 3.8 Flash TTS",
+      "provider": "gemini",
+      "model": "gemini-3.8-flash-tts",
+      "mode": "lines",
+      "pricing": "gemini-3.8-flash-tts"
+    },
+    {
+      "id": "gemini-3.8-flash-dialogue",
+      "label": "Gemini 3.8 Flash TTS (two-speaker)",
+      "provider": "gemini",
+      "model": "gemini-3.8-flash-tts",
+      "mode": "dialogue",
+      "pricing": "gemini-3.8-flash-tts"
+    },
+    {
+      "id": "gemini-3.8-flash-lite",
+      "label": "Gemini 3.8 Flash-Lite TTS",
+      "provider": "gemini",
+      "model": "gemini-3.8-flash-lite-tts",
+      "mode": "lines",
+      "pricing": "gemini-3.8-flash-lite-tts"
+    },
+    {
+      "id": "fake",
+      "label": "Fake (tones, no key)",
+      "provider": "fake",
+      "model": "tone",
+      "mode": "lines",
+      "default": false
+    }
+  ]
+}

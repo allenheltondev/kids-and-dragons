@@ -1,0 +1,105 @@
+{
+  "$comment": "Who speaks with which voice, for each provider (docs/voice-bakeoff.md). `describe` is the character in a sentence: it goes into Gemini's style prompt, and is what to listen for on every engine. ElevenLabs ids are premade voices (named beside each id); swap in Voice Library picks freely, and an id your account cannot use shows as a failed cell, never a failed run. Gemini names are its prebuilt voices. `party` is the heroes speaking (\"you say\"); it reads in the narrator's voice by default so no child is cast as a stranger's voice.",
+  "speakers": {
+    "narrator": {
+      "describe": "A warm grown-up storyteller reading to eight-year-olds: unhurried, smiling, a little spooky on the quiet bits, never scary.",
+      "elevenlabs": { "voiceId": "JBFqnCBsd6RMkjVDRZzb", "name": "George" },
+      "gemini": { "voice": "Sulafat" }
+    },
+    "party": {
+      "describe": "The heroes themselves, read by the storyteller.",
+      "elevenlabs": { "voiceId": "JBFqnCBsd6RMkjVDRZzb", "name": "George" },
+      "gemini": { "voice": "Sulafat" }
+    },
+    "pib": {
+      "describe": "A bramble sprite the size of a teapot: earnest, quick, over-explains, offers you things you did not ask for.",
+      "elevenlabs": { "voiceId": "cgSgspJ2msm6clMCkdW9", "name": "Jessica" },
+      "gemini": { "voice": "Leda" }
+    },
+    "mob": {
+      "describe": "A crowd of impatient treasure hunters shouting together.",
+      "elevenlabs": { "voiceId": "N2lVS1w4EtoT3dr4eOWO", "name": "Callum" },
+      "gemini": { "voice": "Fenrir" }
+    },
+    "faun": {
+      "describe": "A gentle faun gardener, soft-spoken and a little startled.",
+      "elevenlabs": { "voiceId": "EXAVITQu4vr4xnSDxMaL", "name": "Sarah" },
+      "gemini": { "voice": "Achernar" }
+    },
+    "quill": {
+      "describe": "A griffin postmaster in spectacles, flustered and squawky, far too busy.",
+      "elevenlabs": { "voiceId": "XB0fDUnXU5powFXDhCwa", "name": "Charlotte" },
+      "gemini": { "voice": "Sadachbia" }
+    },
+    "madame_fenn": {
+      "describe": "A theatrical merfolk trader in a barrel on wheels who calls everyone darling.",
+      "elevenlabs": { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Lily" },
+      "gemini": { "voice": "Laomedeia" }
+    },
+    "seal_keeper": {
+      "describe": "An enormous ancient dragon with a slow, deep, kind voice, surprised by kindness.",
+      "elevenlabs": { "voiceId": "nPczCjzI2devNBz1zQrb", "name": "Brian" },
+      "gemini": { "voice": "Algenib" }
+    },
+    "sheeple": {
+      "describe": "A flock of sheeple answering all together, slightly out of step.",
+      "elevenlabs": { "voiceId": "bIHbv24MWmeRgasZH58o", "name": "Will" },
+      "gemini": { "voice": "Puck" }
+    },
+    "sheeple_middle": {
+      "describe": "The sheeple in the middle of the flock: earnest, a bit slow, very sure of the group.",
+      "elevenlabs": { "voiceId": "IKne3meq5aSn9XLyUdCD", "name": "Charlie" },
+      "gemini": { "voice": "Zubenelgenubi" }
+    },
+    "sheeple_a": {
+      "describe": "One sheeple from the flock, eager to agree.",
+      "elevenlabs": { "voiceId": "TX3LPaxmHKxFdv7VOQHJ", "name": "Liam" },
+      "gemini": { "voice": "Autonoe" }
+    },
+    "sheeple_b": {
+      "describe": "Another sheeple from the flock, very solemn about it.",
+      "elevenlabs": { "voiceId": "SAz9YHcvj6GT2YYXdXww", "name": "River" },
+      "gemini": { "voice": "Umbriel" }
+    },
+    "traveler_a": {
+      "describe": "A chatty traveler at a roadside fire, enjoying the gossip.",
+      "elevenlabs": { "voiceId": "onwK4e9ZLuTAKqWW03F9", "name": "Daniel" },
+      "gemini": { "voice": "Charon" }
+    },
+    "traveler_b": {
+      "describe": "A second traveler, topping the first one's story.",
+      "elevenlabs": { "voiceId": "XrExE9yKIg1WjnnlVkGX", "name": "Matilda" },
+      "gemini": { "voice": "Aoede" }
+    },
+    "travelers": {
+      "describe": "A ring of travelers all asking at once.",
+      "elevenlabs": { "voiceId": "bIHbv24MWmeRgasZH58o", "name": "Will" },
+      "gemini": { "voice": "Puck" }
+    },
+    "hessa": {
+      "describe": "Hessa Wren: a soup-tent host, warm and motherly, who says unsettling things kindly.",
+      "elevenlabs": { "voiceId": "XrExE9yKIg1WjnnlVkGX", "name": "Matilda" },
+      "gemini": { "voice": "Vindemiatrix" }
+    },
+    "orin": {
+      "describe": "Orin, a steady older guide on the ice, practical and calm.",
+      "elevenlabs": { "voiceId": "onwK4e9ZLuTAKqWW03F9", "name": "Daniel" },
+      "gemini": { "voice": "Gacrux" }
+    },
+    "seren": {
+      "describe": "Seren, a curious young scholar, thoughtful and hopeful.",
+      "elevenlabs": { "voiceId": "EXAVITQu4vr4xnSDxMaL", "name": "Sarah" },
+      "gemini": { "voice": "Despina" }
+    }
+  },
+  "delivery": {
+    "$comment": "The closed delivery vocabulary (docs/voice-narration-plan.md §3), per provider: an ElevenLabs v3 audio tag, a Gemini style instruction. Models without tags (ElevenLabs v2) ignore delivery, which is part of what the bake-off shows.",
+    "whisper": { "elevenlabsTag": "[whispers]", "gemini": "Whisper, but clearly enough to be heard across a room" },
+    "excited": { "elevenlabsTag": "[excited]", "gemini": "Say it excitedly" },
+    "shout": { "elevenlabsTag": "[shouting]", "gemini": "Shout it, comically flustered, not angry" },
+    "gentle": { "elevenlabsTag": "[softly]", "gemini": "Say it gently and slowly" },
+    "grave": { "elevenlabsTag": "[slowly]", "gemini": "Say it slowly and gravely, deep and kind" },
+    "chorus": { "elevenlabsTag": "[together]", "gemini": "Say it like a group speaking together, slightly out of step" },
+    "kindly": { "elevenlabsTag": "[warmly]", "gemini": "Say it warmly and kindly, as if it were nothing at all" }
+  }
+}

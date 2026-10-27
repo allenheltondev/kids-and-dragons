@@ -1,6 +1,6 @@
 # Voice narration plan (ElevenLabs or Gemini TTS)
 
-**Status: plan. Built so far: `npm run voice:cost` (§9) and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
+**Status: plan. Built so far: `npm run voice:cost` (§9), the phase-0 bake-off harness `npm run voice:bakeoff` ([voice-bakeoff.md](./voice-bakeoff.md)), and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
 consistent voice for each cast member. It also covers the pipeline that turns authored text into
 audio linked to that text, knows what needs (re)generating, and caches hard at every layer.
 
@@ -338,8 +338,9 @@ with caching is possible later, but it's a privacy decision first and an enginee
 ## 9. Choosing a provider
 
 Both are plausible. The plan doesn't depend on which, because of the adapter and the
-provider-neutral voice bank. Decide with a **bake-off on bramblewood-01** (24 scenes, three NPC
-voices) rendered both ways, scored on:
+provider-neutral voice bank. Decide with the **bake-off** (`npm run voice:bakeoff`,
+[voice-bakeoff.md](./voice-bakeoff.md)): 16 real lines from five chapters, from a single narrator
+up to a five-voice flock, rendered by every engine and rated blind side by side, scored on:
 
 1. **Consistency.** Does Pib sound like Pib across 20 lines rendered on different days? This is
    the requirement that matters most. Pinned voice ids, settings and seeds favor ElevenLabs.
@@ -393,7 +394,7 @@ Each phase ships on its own and leaves the game working.
 
 | # | Phase | Delivers | Done when |
 |---|---|---|---|
-| 0 | **Spike** | bramblewood-01 rendered by both providers with a throwaway script; listening page | provider chosen, voice bank v1 drafted |
+| 0 | **Spike** | `voice:bakeoff` (built): 16 real lines from simple to ensemble, rendered by every engine, rated blind side by side ([voice-bakeoff.md](./voice-bakeoff.md)) | provider chosen, voice bank v1 drafted |
 | 1 | **Addresses & inventory** | line addresses, `voice:extract`, classification report, `narrationParts` on `RunState` (Gemfall digests checked first) | every spoken line in the game has an address and a kind |
 | 2 | **Voices** | `voices.json`, `cast.json`, `lexicon.json`, schema + validation, casting for all named NPCs | every speaker in every chapter is cast |
 | 3 | **Scripts** | sidecar schema, the join-equals-source validator, `voice:script` drafting | bramblewood-01 and first-steps-01 scripted and reviewed |
