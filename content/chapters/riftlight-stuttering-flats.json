@@ -1869,5 +1869,20 @@
       ],
       "art": "scenes/riftlight/stuttering-flats"
     }
+  },
+  "presentation": {
+    "interactions": {
+      "lift_check": {
+        "props": [
+          "rope-loop",
+          "goat-brush"
+        ]
+      },
+      "signal_check": {
+        "props": [
+          "wind-banner"
+        ]
+      }
+    }
   }
 }

@@ -3750,5 +3750,215 @@
         "narration": "The messenger takes the authorized message with her dry letters."
       }
     }
+  },
+  "presentation": {
+    "interactions": {
+      "return_song": {
+        "props": [
+          "note-low",
+          "note-middle",
+          "note-high"
+        ]
+      },
+      "sightings_1_check": {
+        "props": [
+          "carved-stone"
+        ]
+      },
+      "sightings_2_check": {
+        "props": [
+          "carved-stone"
+        ],
+        "coverIcons": [
+          "prop_playing_card",
+          "prop_playing_card",
+          "prop_playing_card"
+        ]
+      },
+      "bearings_1_check": {
+        "props": [
+          "carved-stone"
+        ]
+      },
+      "bearings_2_check": {
+        "props": [
+          "carved-stone"
+        ]
+      },
+      "bearings_relay_check": {
+        "props": [
+          "carved-stone"
+        ]
+      },
+      "sightings_whales_check": {
+        "props": [
+          "carved-stone"
+        ]
+      },
+      "letters_1_check": {
+        "props": [
+          "prop_letters",
+          "rope-loop"
+        ]
+      },
+      "letters_2_check": {
+        "props": [
+          "prop_letters",
+          "rope-loop"
+        ]
+      },
+      "letters_runner_check": {
+        "props": [
+          "prop_letters",
+          "rope-loop"
+        ]
+      },
+      "station": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "signal_plan_1": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "signal_plan_2": {
+        "props": [
+          "wind-banner"
+        ],
+        "coverIcons": [
+          "prop_playing_card",
+          "prop_playing_card",
+          "prop_playing_card"
+        ]
+      },
+      "message_frame": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "landing_1_check": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "landing_2_check": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "landing_batches": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "landing_borrow": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "return_kit": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "return_light": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "stone_care": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "carving_1_check": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "orientation": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "comparison_1_check": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "comparison_2_check": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "comparison_clear_check": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "comparison_recover_scale": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "comparison_recover_view": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "carving_frame": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "alternative": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "carving_2_check": {
+        "props": [
+          "kite-shade"
+        ]
+      },
+      "whale_report": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "message_pack": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "message_hand": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "message_messenger": {
+        "props": [
+          "clue-scrap"
+        ]
+      }
+    }
   }
 }
