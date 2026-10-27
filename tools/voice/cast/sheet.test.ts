@@ -116,16 +116,38 @@ describe("voices", () => {
     expect(speakers.other.gemini.voice).not.toBe("Kore");
   });
 
-  it("keeps an approved entry exactly, and a provisional one's voice, across a rebuild", () => {
+  it("keeps every decision across a rebuild, an approved one's included, and a provisional one's voice", () => {
     const chapters: ChapterLike[] = [{ id: "c", voiceGuide: { npcVoices: { a: "a baker; she hums", b: "a miller; he grumbles" } } }];
     const first = buildSheet({ chapters, individuals: [], narration: [] }, null);
     first.speakers.a!.gemini.voice = "Gacrux";
     first.speakers.a!.status = "approved";
     first.speakers.a!.notes = "perfect";
+    first.speakers.a!.accent = "Southern American";
     const bVoice = first.speakers.b!.gemini.voice;
     const again = buildSheet({ chapters, individuals: [], narration: [] }, first);
     expect(again.speakers.a).toEqual(first.speakers.a);
     expect(again.speakers.b!.gemini.voice).toBe(bVoice);
+  });
+
+  it("refreshes an approved character's chapters, so a clash in a new chapter is still caught", () => {
+    const before: ChapterLike[] = [
+      { id: "c1", voiceGuide: { npcVoices: { a: "a baker; she hums" } } },
+      { id: "c2", voiceGuide: { npcVoices: { b: "a weaver; she sings" } } },
+    ];
+    const sheet = buildSheet({ chapters: before, individuals: [], narration: [] }, null);
+    // Both approved on one voice: fine while they never meet.
+    for (const id of ["a", "b"]) {
+      sheet.speakers[id]!.gemini.voice = "Kore";
+      sheet.speakers[id]!.status = "approved";
+    }
+    expect(voiceClashes(sheet)).toEqual([]);
+    // A new chapter puts them in one scene.
+    const after = [...before, { id: "c3", voiceGuide: { npcVoices: { a: "a baker; she hums", b: "a weaver; she sings" } } }];
+    const rebuilt = buildSheet({ chapters: after, individuals: [], narration: [] }, sheet);
+    expect(rebuilt.speakers.a!.chapters).toEqual(["c1", "c3"]);
+    expect(rebuilt.speakers.a!.status).toBe("approved");
+    expect(rebuilt.speakers.a!.gemini.voice).toBe("Kore");
+    expect(voiceClashes(rebuilt)).toEqual([{ chapter: "c3", voice: "Kore", speakers: ["a", "b"] }]);
   });
 });
 

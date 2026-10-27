@@ -574,9 +574,10 @@ const NARRATOR_LINES: AuditionLine[] = [
 
 /**
  * Builds the sheet from the content, keeping everything a person has set on
- * the previous sheet: an approved entry is left exactly as it was, and a
- * provisional one keeps its voice, accent and notes, with its chapters and
- * lines refreshed.
+ * the previous sheet: status, voice, accent, notes and decision history. What
+ * the content says (name, aliases, notes on who they are, chapters, lines) is
+ * refreshed for everyone, approved or not, so clash checks see an approved
+ * character in a chapter written after the approval.
  */
 export function buildSheet(sources: Sources, previous: CastSheet | null): CastSheet {
   const accent = previous?.accent ?? "General American, the way a warm American storyteller reads aloud";
@@ -653,10 +654,6 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
 
   for (const draft of drafts) {
     const old = previous?.speakers[draft.id];
-    if (old?.status === "approved") {
-      speakers[draft.id] = old;
-      continue;
-    }
     const chapters = [...draft.chapters].sort();
     const candidates = heard.get(draft.id) ?? [];
     const kind = kindOf(draft.id, draft.name, draft.who);
@@ -677,7 +674,9 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
       gemini: old?.gemini ?? { voice: "" },
       lines,
       speaks: !SILENT.test(draft.who) && (lines.length > 0 || kind !== "creature"),
-      status: "provisional",
+      // What a person decided carries over; everything else above is refreshed from the content,
+      // so an approved character's chapters stay current and a new clash is still seen.
+      status: old?.status ?? "provisional",
       ...(old?.notes ? { notes: old.notes } : {}),
       ...(old?.history?.length ? { history: old.history } : {}),
     };
