@@ -198,6 +198,6 @@ it.each(sizes)("unfinished opening jobs cannot award preparation at %i seats",si
   const actor=promptOf(state).actorId;
   state=act(chapter,state,{action:"start",relaxed:false},actor);
   const result=applyIntent(state,{playerId:actor,intent:{type:"INTERACT",openedSeq:promptOf(state).openedSeq,attempt:promptOf(state).attempt,action:"complete"}},context(chapter));
-  expect(result.error,id).toBeDefined();expect(promptOf(state).outcome).toBeUndefined();expect(state.flags[flag]).not.toBe(true);
+  expect(result.error,id).toBeDefined();expect(result.state.sceneId).toBe(id);expect(promptOf(result.state).outcome).toBeUndefined();expect(result.state.flags[flag]).not.toBe(true);
  }
 });

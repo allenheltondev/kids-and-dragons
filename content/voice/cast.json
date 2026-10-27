@@ -321,7 +321,16 @@
       "gemini": {
         "voice": "Callirrhoe"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "I never forget a good seller.",
+          "address": "gemfall-01/scene_sold/narration"
+        },
+        {
+          "text": "Rush prices, darlings!",
+          "address": "gemfall-01/choice_ember/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },

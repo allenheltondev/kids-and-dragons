@@ -1446,7 +1446,7 @@
       "discovers": [
         "npc.merfolk"
       ],
-      "narration": "Gem-buyer Madame Coralie Fenn rolls up in her merfolk barrel. She names a huge price for the red stone. A pigeon faints. Sell the stone for coins, or keep its hum with you?",
+      "narration": "Gem-buyer Madame Coralie Fenn rolls up in her merfolk barrel. \"Rush prices, darlings!\" She names a huge price for the red stone. A pigeon faints. Sell the stone for coins, or keep its hum with you?",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
@@ -1535,7 +1535,7 @@
     },
     "scene_sold": {
       "type": "story",
-      "narration": "Fenn pays into a clanking purse and adds a lucky bead. \"I remember good sellers.\" The humming goes away in her barrel.",
+      "narration": "Fenn pays into a clanking purse and adds a lucky bead. \"I never forget a good seller.\" The humming goes away in her barrel.",
       "cast": [
         {
           "figure": "cast/coralie_fenn",
