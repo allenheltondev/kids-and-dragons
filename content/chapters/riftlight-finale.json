@@ -3096,5 +3096,20 @@
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
     }
+  },
+  "presentation": {
+    "interactions": {
+      "map_shelter_check": {
+        "props": [
+          "clue-scrap",
+          "wind-blanket"
+        ]
+      },
+      "first_anchor_check": {
+        "props": [
+          "clue-scrap"
+        ]
+      }
+    }
   }
 }

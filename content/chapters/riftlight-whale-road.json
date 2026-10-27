@@ -1592,5 +1592,113 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "interactions": {
+      "route_layout": {
+        "props": [
+          "cloud-whale"
+        ]
+      },
+      "follow_whale": {
+        "props": [
+          "cloud-whale"
+        ],
+        "coverIcons": [
+          "prop_playing_card",
+          "prop_playing_card",
+          "prop_playing_card"
+        ]
+      },
+      "song_watch": {
+        "props": [
+          "cloud-whale"
+        ]
+      },
+      "little_turn": {
+        "props": [
+          "cloud-whale"
+        ]
+      },
+      "guide_wait": {
+        "props": [
+          "cloud-whale"
+        ]
+      },
+      "note_practice": {
+        "props": [
+          "note-low"
+        ]
+      },
+      "songkeeper_practice": {
+        "props": [
+          "note-low"
+        ]
+      },
+      "guide_note": {
+        "props": [
+          "note-low"
+        ]
+      },
+      "arm_practice": {
+        "props": [
+          "wind-blanket",
+          "rope-loop"
+        ]
+      },
+      "shelter_setup": {
+        "props": [
+          "wind-blanket",
+          "rope-loop"
+        ]
+      },
+      "view_setup": {
+        "props": [
+          "wind-blanket",
+          "rope-loop"
+        ]
+      },
+      "guide_arms": {
+        "props": [
+          "wind-blanket",
+          "rope-loop"
+        ]
+      },
+      "slow_greeting": {
+        "props": [
+          "ring-case"
+        ]
+      },
+      "loose_kit": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "signal_relay": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "signal_memory": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "keeper_echo": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "guide_relay": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "quiet_wait": {
+        "props": [
+          "kite-shade"
+        ]
+      }
+    }
   }
 }

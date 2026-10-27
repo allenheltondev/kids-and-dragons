@@ -41,14 +41,19 @@ describe("persisted outcome art for the six opening fights",()=>{
   expect(left.error).toBeUndefined();expect(left.state.lastEncounter).toBeUndefined();
  });
  it("covers all authored interactions with real painted files",()=>{
+  const missing: string[]=[];
   let count=0;
   for(const chapter of chapters.values())for(const [id,scene]of Object.entries(chapter.scenes)){
    if(scene.type!=="interaction" || !chapter.id.startsWith("riftlight-"))continue;
-   const art=interactionAppearance(chapter,id);expect(art,chapter.id+"/"+id).not.toBeNull();
-   for(const prop of art!.props ?? [])expect(fs.existsSync(path.join(root,"assets/story-props",prop+".webp")),prop).toBe(true);
+   const art=interactionAppearance(chapter,id);
+   if(!art) { missing.push(chapter.id+"/"+id); continue; }
+   expect(art.props?.length,chapter.id+"/"+id+" painted props").toBeGreaterThan(0);
+   for(const prop of [...(art.props ?? []),...(art.coverIcons ?? [])])expect(fs.existsSync(path.join(root,"assets/story-props",prop+".webp")),chapter.id+"/"+id+": "+prop).toBe(true);
+   if(scene.interaction.kind==="tracking" && art.coverIcons)expect(art.coverIcons?.length,chapter.id+"/"+id+" tracking covers").toBe(scene.interaction.covers.length);
    count++;
   }
-  expect(count).toBe(50);
+  expect(missing,"Interactions missing painted presentation").toEqual([]);
+  expect(count).toBeGreaterThan(0);
  });
  it("resolves all declared encounter terrain and pose art",()=>{
   for(const fight of RIFTLIGHT_ART.fights) {

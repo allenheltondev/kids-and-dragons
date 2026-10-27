@@ -1548,6 +1548,70 @@
         "props": [
           "note-low"
         ]
+      },
+      "footprint": {
+        "props": [
+          "carved-stone",
+          "prop_stepping_stones"
+        ]
+      },
+      "views": {
+        "props": [
+          "carved-stone",
+          "prop_stepping_stones"
+        ]
+      },
+      "lower_neighbor": {
+        "props": [
+          "carved-stone",
+          "prop_stepping_stones"
+        ]
+      },
+      "landmark_copy": {
+        "props": [
+          "carved-stone",
+          "prop_stepping_stones"
+        ]
+      },
+      "grass_test": {
+        "props": [
+          "prop_tall_grass"
+        ]
+      },
+      "paperweight": {
+        "props": [
+          "clue-scrap",
+          "toss-pebble"
+        ]
+      },
+      "upper_cart": {
+        "props": [
+          "prop_wagon_wheels"
+        ]
+      },
+      "exact_copy": {
+        "props": [
+          "clue-scrap",
+          "carved-stone"
+        ]
+      },
+      "motion_memory": {
+        "props": [
+          "clue-scrap",
+          "carved-stone"
+        ]
+      },
+      "route_copy": {
+        "props": [
+          "clue-scrap",
+          "carved-stone"
+        ]
+      },
+      "carving_copy": {
+        "props": [
+          "clue-scrap",
+          "carved-stone"
+        ]
       }
     }
   }
