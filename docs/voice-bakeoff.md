@@ -174,7 +174,8 @@ What it keeps:
 The raw audio is kept beside each cleaned clip (`<key>.raw.wav`). **Gemini raw** in the page's
 header plays the raw files instead, for an A/B listen. Each cell says how much it silenced
 ("silenced 120ms of end noise"). Clips rendered before the cleaning existed are cleaned the next
-time the page or a run reads them, with nothing re-sent and nothing paid.
+time the page or a run reads them, with nothing re-sent and nothing paid. A cleaned clip is served
+under a new URL (`?cleaned=1`), so a browser that cached the noisy file can't keep replaying it.
 
 The thresholds come from the reports, not from measuring this game's clips. A clip where the
 noise is still there, or where something real was cut, is the way to tune them: its `.raw.wav`
