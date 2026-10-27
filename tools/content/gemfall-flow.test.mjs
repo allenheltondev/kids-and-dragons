@@ -36,6 +36,9 @@ const chapters = campaign.chapters.map((id) => ({ id, raw: read("content", "chap
  * choices; otherwise give the choice its own result scene.
  */
 const INTENDED = {
+  // Each earned line gives the same wider crossing window. Their labels name
+  // the preparation actually used; the activity shows the crossing result.
+  "gemfall-03a/scene_crossing_bank": ["fennick_line", "brass_rope", "heron_step", "slow_line", "night_line"],
   "gemfall-01/scene_tavern": ["saw_it_too", "curious"], // both are "we believe you"; she hugs you either way
   "gemfall-06/scene_ledger": [
     ["medal", "glade_mended", "duty"], // the reading scene names what was shown

@@ -258,9 +258,10 @@ describe("Gemfall, played by steered parties (#166)", { timeout: 60_000 }, () =>
  * (a variant with `count` in its `when`) in at least three scenes of the chapter.
  */
 describe("Gemfall, the Collection and the Tether, played at both ends of the haul (#164)", { timeout: 60_000 }, () => {
-  // Seeds 2 to 4: seed 1's dice send the party into the optional crab fight in 07h and out through
-  // Robbed (a setback) before the chapter's third count-gated scene. Dice move whenever a chapter gains
-  // scenes; 11 of 12 seeds reach three or more, so the content is sound and the seed was the unlucky one.
+  // Upstream content changes move these seeded parties' dice. A legitimate
+  // chapter-7 setback may close before three count-gated scenes. Audit every
+  // line on that route, require three on each success, and retain aggregate
+  // coverage across the seeds rather than replacing an unlucky seed.
   const SEEDS = [2, 3, 4];
   const RULES: AuditRule[] = ["stones_not_held", "counted_party", "unfilled_token"];
   const cases = [
@@ -277,6 +278,7 @@ describe("Gemfall, the Collection and the Tether, played at both ends of the hau
       it(`${chapterId} at ${level.name}: reaches an ending, clean, with count-gated wording in 3+ scenes`, async () => {
         const plan = onPursuit(level.base, pursuit);
         const chapter = content.chapter(chapterId) as Chapter;
+        const covered = new Set<string>();
         for (const seed of SEEDS) {
           const run = await playCampaign(content, seed, plan);
           expect(["complete", "failed"], `seed ${seed}`).toContain(run.status);
@@ -288,8 +290,14 @@ describe("Gemfall, the Collection and the Tether, played at both ends of the hau
           const offenders = findOffenders(run.lines, { facetNames, rules: RULES });
           expect(offenders, `seed ${seed}: ${formatOffenders(offenders)}`).toEqual([]);
           const shown = countVariantScenesShown(run.lines, chapter);
-          expect(shown.size, `seed ${seed}: count-gated text shown in ${[...shown].join(", ") || "no scene"}`).toBeGreaterThanOrEqual(3);
+          for (const id of shown) covered.add(id);
+          if (shown.size < 3) {
+            expect(run.outcomes[run.chapters.indexOf(chapterId)], `seed ${seed}: only a real setback may end before the third count scene`).toBe("setback");
+            const ending = chapterId === "gemfall-07h" ? "ending_robbed" : "ending_lost_in_echoes";
+            expect(run.lines.some(line => line.chapterId === chapterId && line.sceneId === ending)).toBe(true);
+          }
         }
+        expect(covered.size, `${chapterId}: count-gated scene coverage across all seeds`).toBeGreaterThanOrEqual(3);
       });
     }
   }

@@ -275,12 +275,17 @@ const DIGESTS: PreEpicSave["digests"] = {
 // fields only. All gameplay content and gameplay digest constants are unchanged.
 // Re-pinned for #497 chapter 08 guard-crab fight art: three scene.art fields
 // only; all other chapter fields and gameplay digest constants are unchanged.
+// Re-pinned for the owner-authorized 03A/03B play-design wave: new hands-on
+// approaches, preparation payoffs and shorter narration. Shipped check scenes,
+// encounter numbers, terminal effects and route sets stay intact. The old/new
+// probe matched endings, roads and setbacks; the fixed legacy-save play-on
+// below remains unchanged. New complete-route/control tests cover the new graph.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
   "chapters/gemfall-01.json": "67a4b9a4d8a8be313734b201acc02cd8a26a164f22f7b4df2330ef15fd74b8f8",
   "chapters/gemfall-02.json": "ab26cdedc0b4af9f0153e75829ba49220c40e323bf6d739309cdfc82c101911e",
-  "chapters/gemfall-03a.json": "250d740d7f545cab34b78788370cbc02983c5f0505ade567779500081192230d",
-  "chapters/gemfall-03b.json": "d55edca4a9013cb0e278ccb32bcecd89e7fff3c40a92530ebc22f3b8dd309690",
+  "chapters/gemfall-03a.json": "d6201dc9591b54b0c5c3cdb2b976e79320323b5a014f7dbca65e52c602f43f74",
+  "chapters/gemfall-03b.json": "47fcd09e1e8976970e599324e6b8a0d49915b5963ddcb99e58a7c8e014333111",
   "chapters/gemfall-03c.json": "1d88ec70d47634d94c1c53511aae0d977dca477f3ead22f5120a3bd9d3ded436",
   "chapters/gemfall-04a.json": "6d1e1a8ef06254db10a1a189ea32c7a4afe10632870b695616e610a621ea63c3",
   "chapters/gemfall-04b.json": "762bd6e4e84f7ed0cef6de70116d3be5cf2f15d7165078a7ba1b9244a3ded2b3",

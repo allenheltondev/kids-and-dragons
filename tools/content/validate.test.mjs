@@ -513,6 +513,27 @@ describe("the files themselves", () => {
     expect(result.out).toContain("has 2 icons for 3 covers");
     expect(result.out).toContain('problem: unknown icon id "starr"');
   });
+
+  it("accepts flags earned only by the untimed helping hand", () => {
+    const result = withFirstSteps((chapter) => {
+      const scene = chapter.scenes.interaction_roots;
+      scene.onAssisted.effects = [{ type: "setFlag", flag: "roots_helped", value: true }];
+      chapter.scenes[scene.onAssisted.goto].variants = [
+        { when: { flag: "roots_helped" }, text: "You remember the helping hand." },
+      ];
+    });
+    expect(result.code, result.out).toBe(0);
+  });
+
+  it("checks item effects on assisted interaction branches", () => {
+    const result = withFirstSteps((chapter) => {
+      chapter.scenes.interaction_roots.onAssisted.effects = [
+        { type: "grantItem", itemId: "missing_assisted_item", to: "party" },
+      ];
+    });
+    expect(result.code).not.toBe(0);
+    expect(result.out).toContain('item "missing_assisted_item" is not in content/items.json');
+  });
 });
 
 // ---------------------------------------------------------------------------
