@@ -9,6 +9,7 @@
  *   /journal            → <JournalScreen/> (between games: nothing to play,
  *                         everything to look at — no room, no session)
  *   /guide              → <GuideScreen/> (the grown-up's guide, #257)
+ *   /privacy            → <PrivacyScreen/> (the privacy policy, #523)
  *   /account            → <AccountScreen/> (sign-in, devices, tablets, groups)
  *   /tv/:code           → PartyLayout world  (a pure display client, spec §2.1)
  *   /p/:code   party    → PartyLayout player
@@ -122,6 +123,9 @@ const GuideScreen = lazyChunk(() => import("./guide/GuideScreen"), (module) => m
 // Accounts and devices (`/account`): the grown-up's errands, kept off the join
 // screen and out of its chunk.
 const AccountScreen = lazyChunk(() => import("./screens/AccountScreen"), (module) => module.default);
+
+// The privacy policy (`/privacy`, #523): public, and linked from the start screens.
+const PrivacyScreen = lazyChunk(() => import("./screens/PrivacyScreen"), (module) => module.default);
 
 export function App(): React.JSX.Element {
   const route = useRoute();
@@ -287,6 +291,15 @@ export function App(): React.JSX.Element {
         <ChunkBoundary message="The guide couldn’t open.">
           <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening the guide" showLabel /></div>}>
             <GuideScreen />
+          </Suspense>
+        </ChunkBoundary>
+      );
+    }
+    if (route.name === "privacy") {
+      return (
+        <ChunkBoundary message="The privacy page couldn’t open.">
+          <Suspense fallback={<div className="kad-boot"><Spinner size="lg" label="Opening the privacy page" showLabel /></div>}>
+            <PrivacyScreen />
           </Suspense>
         </ChunkBoundary>
       );
