@@ -13,8 +13,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { quote, type Pricing } from "../cost-model.ts";
+import { cleanPcm16, readWav16 } from "./clean.ts";
 import { renderPage, type Cell, type ClipRef, type Results } from "./page.ts";
-import { plan, send, type CastFile, type Engine, type Fetch, type Job, type Keys, type Unsupported } from "./providers.ts";
+import { pcmToWav, plan, send, type CastFile, type Engine, type Fetch, type Job, type Keys, type Unsupported } from "./providers.ts";
 import type { Sample } from "./samples.ts";
 
 export interface Workspace {
@@ -42,6 +43,26 @@ interface ClipMeta {
   renderMs: number;
   bytes: number;
   at: string;
+  /** Gemini clips: cleaned of end-of-turn noise, with the raw audio kept at `<key>.raw.wav`. */
+  cleaned?: boolean;
+  removedMs?: number;
+}
+
+/**
+ * A Gemini clip rendered before cleaning existed: clean it now, keeping the
+ * original as the raw copy. Costs nothing, sends nothing.
+ */
+function ensureCleaned(ws: Workspace, job: Job, meta: ClipMeta): ClipMeta {
+  if (job.provider !== "gemini" || meta.ext !== "wav" || meta.cleaned) return meta;
+  const file = path.join(clipsOf(ws), `${job.key}.wav`);
+  const wav = readWav16(fs.readFileSync(file));
+  if (wav === null) return meta;
+  const cleaned = cleanPcm16(wav.pcm, wav.rate);
+  fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.raw.wav`), pcmToWav(wav.pcm, wav.rate));
+  fs.writeFileSync(file, pcmToWav(cleaned.pcm, wav.rate));
+  const next: ClipMeta = { ...meta, cleaned: true, removedMs: cleaned.removed.reduce((sum, r) => sum + r.endMs - r.startMs, 0) };
+  fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.json`), JSON.stringify(next));
+  return next;
 }
 
 const clipsOf = (ws: Workspace): string => path.join(ws.outDir, "clips");
@@ -109,12 +130,19 @@ export function cellOf(engine: Engine, sample: Sample, takes: number, ws: Worksp
       const clips: ClipRef[] = [];
       let error: string | undefined;
       for (const job of jobs) {
-        const meta = clipMeta(ws, job.key);
-        if (meta === null) {
+        const found = clipMeta(ws, job.key);
+        if (found === null) {
           error ??= errors[job.key];
           continue;
         }
-        clips.push({ file: `clips/${job.key}.${meta.ext}`, lines: job.lines, chars: meta.chars, renderMs: meta.renderMs });
+        const meta = ensureCleaned(ws, job, found);
+        clips.push({
+          file: `clips/${job.key}.${meta.ext}`,
+          lines: job.lines,
+          chars: meta.chars,
+          renderMs: meta.renderMs,
+          ...(meta.cleaned ? { raw: `clips/${job.key}.raw.wav`, removedMs: meta.removedMs ?? 0 } : {}),
+        });
       }
       if (clips.length === jobs.length) return { clips };
       return { clips, ...(error !== undefined ? { error } : {}), pending: true };
@@ -151,7 +179,15 @@ export async function renderJobs(jobs: readonly Job[], ws: Workspace, keys: Keys
     try {
       const audio = await send(job, keys, fetch);
       fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.${audio.ext}`), audio.bytes);
-      const meta: ClipMeta = { ext: audio.ext, chars: job.chars, renderMs: Date.now() - started, bytes: audio.bytes.length, at: new Date().toISOString() };
+      if (audio.raw) fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.raw.wav`), audio.raw);
+      const meta: ClipMeta = {
+        ext: audio.ext,
+        chars: job.chars,
+        renderMs: Date.now() - started,
+        bytes: audio.bytes.length,
+        at: new Date().toISOString(),
+        ...(audio.raw ? { cleaned: true, removedMs: audio.removedMs ?? 0 } : {}),
+      };
       fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.json`), JSON.stringify(meta));
       outcome.rendered += 1;
     } catch (error) {

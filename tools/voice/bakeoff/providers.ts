@@ -18,6 +18,7 @@
  */
 
 import { createHash } from "node:crypto";
+import { cleanPcm16 } from "./clean.ts";
 import { BEAT, withoutBeats, type Sample, type ScriptLine } from "./samples.ts";
 
 export type Provider = "elevenlabs" | "gemini" | "fake";
@@ -347,6 +348,10 @@ export function plan(engine: Engine, cast: CastFile, sample: Sample, take: numbe
 export interface Rendered {
   bytes: Buffer;
   ext: "mp3" | "wav";
+  /** Gemini: the audio exactly as the API sent it, before cleaning (clean.ts). */
+  raw?: Buffer;
+  /** Gemini: how much end-of-turn noise the cleaning silenced. */
+  removedMs?: number;
 }
 
 export type Fetch = (url: string, init: { method: string; headers: Record<string, string>; body?: string }) => Promise<{
@@ -436,7 +441,15 @@ export async function send(job: Job, keys: Keys, fetch: Fetch): Promise<Rendered
   const audio = parts.map((part) => part.inlineData).filter((data) => data?.data);
   if (audio.length === 0) throw new Error(`No audio in the response: ${JSON.stringify(json).slice(0, 300)}`);
   const rate = Number(/rate=(\d+)/.exec(audio[0]?.mimeType ?? "")?.[1] ?? 24000);
-  return { bytes: pcmToWav(Buffer.concat(audio.map((data) => Buffer.from(data!.data!, "base64"))), rate), ext: "wav" };
+  const pcm = Buffer.concat(audio.map((data) => Buffer.from(data!.data!, "base64")));
+  // Raw Gemini audio carries a burst of noise where a turn ends; AI Studio's player gates it, so do we.
+  const cleaned = cleanPcm16(pcm, rate);
+  return {
+    bytes: pcmToWav(cleaned.pcm, rate),
+    raw: pcmToWav(pcm, rate),
+    removedMs: cleaned.removed.reduce((sum, r) => sum + r.endMs - r.startMs, 0),
+    ext: "wav",
+  };
 }
 
 async function getJson(url: string, headers: Record<string, string>, fetch: Fetch): Promise<unknown> {
