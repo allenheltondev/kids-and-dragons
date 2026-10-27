@@ -1793,5 +1793,117 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "interactions": {
+      "ground_test": {
+        "props": [
+          "water-surge",
+          "shell-cockle"
+        ]
+      },
+      "river_explain": {
+        "props": [
+          "water-surge",
+          "shell-cockle"
+        ]
+      },
+      "watch_pulse": {
+        "props": [
+          "water-surge",
+          "shell-cockle"
+        ]
+      },
+      "wet_notes": {
+        "props": [
+          "water-surge",
+          "shell-cockle"
+        ]
+      },
+      "brush_clue": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "research_plan": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "copy_relay": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "hold_plank": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "build_sled": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "rail_lift": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "sled_lift": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "build_rail": {
+        "props": [
+          "chalk-cord"
+        ]
+      },
+      "rail_warning": {
+        "props": [
+          "chalk-cord"
+        ]
+      },
+      "sled_warning": {
+        "props": [
+          "chalk-cord"
+        ]
+      },
+      "path_repair": {
+        "props": [
+          "prop_stepping_stones"
+        ]
+      },
+      "visitor_plan": {
+        "props": [
+          "prop_stepping_stones"
+        ]
+      },
+      "visitor_trial": {
+        "props": [
+          "prop_stepping_stones"
+        ]
+      },
+      "restore_bank": {
+        "props": [
+          "prop_stepping_stones"
+        ]
+      },
+      "compare_pulse": {
+        "props": [
+          "shell-cockle"
+        ],
+        "coverIcons": [
+          "prop_playing_card",
+          "prop_playing_card",
+          "prop_playing_card"
+        ]
+      }
+    }
   }
 }

@@ -1976,5 +1976,20 @@
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     }
+  },
+  "presentation": {
+    "interactions": {
+      "pull_check": {
+        "props": [
+          "count-cord"
+        ]
+      },
+      "count_check": {
+        "props": [
+          "rope-loop",
+          "note-low"
+        ]
+      }
+    }
   }
 }
