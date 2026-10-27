@@ -37,7 +37,7 @@ export interface ServerOptions {
 type CastOverrides = Record<string, { elevenlabs?: string; gemini?: string }>;
 
 const MODEL_ID = /^[A-Za-z0-9._-]{1,80}$/;
-const CLIP = /^[a-f0-9]{24}\.(mp3|wav)$/;
+const CLIP = /^[a-f0-9]{24}(\.raw)?\.(mp3|wav)$/;
 
 class BadRequest extends Error {}
 

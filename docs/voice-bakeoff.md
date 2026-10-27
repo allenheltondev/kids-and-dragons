@@ -150,6 +150,41 @@ Sources:
 - [Prompting Gemini 3.1 Flash TTS (Google AI)](https://dev.to/googleai/how-to-prompt-gemini-31s-new-text-to-speech-model-24bb)
 - [A practical guide to prompting Gemini 3.1 Flash TTS](https://livekit.com/blog/gemini-3.1-flash-tts-prompting-guide)
 
+## Gemini's end-of-turn noise
+
+Raw audio from `gemini-3.8-flash-tts` has a short scratchy burst, roughly 50 to 150ms, where a
+turn of speech ends. It's most audible on two-speaker requests, which have a turn boundary on
+every line. It's in the raw API audio, not in AI Studio's player, which gates it away before you
+hear it. Earlier models have a similar end-of-clip static in forum reports.
+
+The harness cleans Gemini audio the same way (`tools/voice/bakeoff/clean.ts`):
+
+- It removes any DC offset, which turns a drop to silence into a click.
+- It silences a short, noise-like burst that comes after speech and before a silence or the end
+  of the clip, with short fades so the cut makes no click of its own.
+- It fades every clip's first and last few milliseconds, so a playlist of clips never clicks
+  between them.
+
+What it keeps:
+
+- a breath just before the next line, since speech follows it closely;
+- a sigh or a laugh, which run longer than a burst;
+- a word's own "s", which is attached to the word with no silence between.
+
+The raw audio is kept beside each cleaned clip (`<key>.raw.wav`). **Gemini raw** in the page's
+header plays the raw files instead, for an A/B listen. Each cell says how much it silenced
+("silenced 120ms of end noise"). Clips rendered before the cleaning existed are cleaned the next
+time the page or a run reads them, with nothing re-sent and nothing paid.
+
+The thresholds come from the reports, not from measuring this game's clips. A clip where the
+noise is still there, or where something real was cut, is the way to tune them: its `.raw.wav`
+is the test case.
+
+Sources:
+- [gemini-3.8-flash-tts trailing static at sentence and turn boundaries](https://discuss.ai.google.dev/t/gemini-3-8-flash-tts-trailing-static-scratch-noise-artifact-at-sentence-turn-boundaries/185861)
+- [Static noise at the end of TTS generation (2.5 and 3.1)](https://discuss.ai.google.dev/t/static-noise-artifact-at-the-end-of-tts-generation-gemini-2-5-flash-preview-tts-2-5-pro-and-3-1-flash/183814)
+- [Whistling noise after about 90s on long single requests](https://discuss.ai.google.dev/t/gemini-3-8-flash-tts-whistling-noise-appears-after-90-s-on-long-single-request-generations/184948)
+
 ## Columns: model, mode, delivery
 
 A column is a model plus two choices, and each choice is worth hearing on its own:
