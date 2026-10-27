@@ -288,6 +288,10 @@ const DIGESTS: PreEpicSave["digests"] = {
 // Re-pinned for the owner-authorized Pride Roads / forest play-design wave.
 // All 21 shipped roll scenes remain identical; before/after campaign probes
 // preserve ending, road and setback digests and resumed fight behavior.
+// Re-pinned for the owner-authorized Outline / disclosure gameplay wave.
+// Preserve all 29 shipped checks, disclosure flags, terminal effects and fight
+// numbers. Old/new probes match ending, road and setback digests, plus resumed
+// fight play after generated hero-id normalization. Fixed legacy save stays pinned.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
   "chapters/gemfall-01.json": "67a4b9a4d8a8be313734b201acc02cd8a26a164f22f7b4df2330ef15fd74b8f8",
@@ -298,9 +302,9 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-04a.json": "14c8edd54d29064f06fb3039942d4e27bd18bf5c846c43e8cc43951b4570eea4",
   "chapters/gemfall-04b.json": "c38a1dc13c537f3ac036e744411e025dd50e6c44990d54ed3cae9b618fb0374c",
   "chapters/gemfall-04c.json": "cc7204b9456910cf495398d9fa5f901639edbf1d4ec9043517ca09c263838258",
-  "chapters/gemfall-05a.json": "1d4dd137c4e28869a3efe90673d824bd9a7a586b56b263e7c9c309a8ecec4fc7",
-  "chapters/gemfall-05b.json": "bdbfcc8598c34b9e6dd1d7816d0290f9940aa26ce146a0ccb3536e3fbb2e632d",
-  "chapters/gemfall-05c.json": "190ba4ca072e7c95525dcef6dec60570a843e8818d91e7aa0bedb222d2448dda",
+  "chapters/gemfall-05a.json": "696aeeec78ffa4138296d6935537ccdebf8b9e8935e053bad4da1375c77eb5f8",
+  "chapters/gemfall-05b.json": "83d2572e23ba3b618bf3ffaec99274b6e3e06f57608bb4051f5230a78aed914e",
+  "chapters/gemfall-05c.json": "9755b91a3046f20c8d2b1451bb62ad6a2dc9d42d997e243756b1e02500734279",
   "chapters/gemfall-06.json": "1321cd4e6c6946e15d0f7802f1dd80e5d020574b2026d9ce6e09098e22c52c99",
   "chapters/gemfall-07h.json": "1c90cbaf7f0fd268ebe0112a9ef568b844f5b84784612f3601a0eba8483af38e",
   "chapters/gemfall-07l.json": "a890db266b3d0624a33be91687b18b873dafb3c584fa845cd90942b5bb9db577",

@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_rush"
   },
-  "estimatedMinutes": 42,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_stones_line",
   "plate": {
@@ -66,7 +66,7 @@
   "scenes": {
     "scene_stones_line": {
       "type": "story",
-      "narration": "The caravan road climbs out of the grass and into red hills, and across it stands a line of tall gray stones, leaning like old people waiting for a parade. They are older than anyone remembers. This season, for the first time ever, they are holding back a crowd, and the crowd is not happy about it. You have to get past these stones, and find out why they hold the rush back.",
+      "narration": "Get past the old boundary stones and find out why they hold the rush back. Tall gray stones lean across the road into the red hills. A crowd waits outside them. Somebody has brought a chair. Somebody else has brought a larger chair.",
       "choices": [
         {
           "id": "join_queue",
@@ -119,7 +119,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "At the front of the queue, a grandmother waves a little bell on a stick over every pack that comes past. When it passes a gem, the bell rings by itself. She writes each ring in her tally book. Rules are rules, even for family. When she reaches you, the bell rings so hard it nearly jumps off its stick. She looks at you over her spectacles. \"Well, now.\"",
+      "narration": "A grandmother passes a bell over each pack and tallies every ring. Rules are rules. Your turn. She adjusts her spectacles, then her pencil, then her spectacles again.",
       "choices": [
         {
           "id": "open_packs",
@@ -131,7 +131,7 @@
           "id": "argue",
           "label": "Show her you carry no digging tools",
           "icon": "clever",
-          "goto": "check_not_diggers"
+          "goto": "interaction_gear_inventory"
         },
         {
           "id": "show_charm",
@@ -139,6 +139,12 @@
           "icon": "charm",
           "goto": "scene_inspection_show_charm",
           "requiresItem": "charm_ford_witch"
+        },
+        {
+          "id": "quick_inventory",
+          "label": "Risk listing the packs without laying them out",
+          "goto": "check_not_diggers",
+          "icon": "hand"
         }
       ]
     },
@@ -171,7 +177,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "You open your packs. The grandmother counts every humming thing inside into her tally book, slowly, with her tongue between her teeth. Then she looks up. \"That's a lot of humming for one little family,\" she says, not unkindly. \"The tally house will want to see you. Don't wander off.\"",
+      "narration": "The grandmother checks what you actually carry, tallying any humming things. \"The tally house will want your account.\" She sends you through, having inspected the socks twice.",
       "choices": [
         {
           "id": "on",
@@ -204,7 +210,7 @@
       "discovers": [
         "character.dragonling"
       ],
-      "narration": "The gate town is all bells: big bells, little bells, bells on poles and bells on goats. Dragonling grandmothers inspect every pick that comes through and recite the one rule to every prospector: \"Take what the mountain drops. Never pry at what it holds.\" A man with an enormous pry bar is saying he didn't hear that.",
+      "narration": "Bells hang from poles, packs and one goat. Grandmothers check every digging tool. \"Take what the mountain drops. Never pry at what it holds.\" A man with a huge pry bar says he did not hear. The goat heard.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -220,7 +226,7 @@
           "id": "explain",
           "label": "Help the grandmothers act out the rule",
           "icon": "heart",
-          "goto": "check_one_rule"
+          "goto": "interaction_one_rule"
         },
         {
           "id": "bells",
@@ -234,13 +240,19 @@
           "icon": "flame",
           "requiresSpecies": "dragonling",
           "goto": "scene_gate_town_explain_home"
+        },
+        {
+          "id": "quick_rule",
+          "label": "Risk telling the prospector the rule while he walks away",
+          "goto": "check_one_rule",
+          "icon": "hand"
         }
       ]
     },
     "scene_bell_code": {
       "type": "story",
       "priority": 2,
-      "narration": "A small dragonling, the town's bell-code expert, explains the bell code at top speed. One ring for moths leaving. Two for a warm cave. Three for come home now. And there is one ring that has never been rung, ever, and nobody will tell you what it means, and the small dragonling goes very quiet about it.",
+      "narration": "The small bell-code expert explains: one for moths leaving, two for a warm cave, three for come home now. There is an unrung bell too. She stops talking when you ask about that one.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -256,7 +268,7 @@
           "id": "back",
           "label": "Go back and help with the man and his pry bar",
           "icon": "hand",
-          "goto": "check_one_rule"
+          "goto": "interaction_one_rule"
         }
       ]
     },
@@ -306,7 +318,7 @@
     },
     "scene_rule_heard": {
       "type": "story",
-      "narration": "The man looks at his pry bar for a long moment. Then he hands it to the grandmother, who hangs it on a wall already covered in pry bars. There are hundreds of them. \"Every one of those listened, in the end,\" she says.",
+      "narration": "The prospector gives up his pry bar. A grandmother hangs it on a wall of hundreds. \"Every one of those listened, in the end.\" She finds a hook between two especially stubborn ones.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -353,7 +365,7 @@
           "id": "read",
           "label": "Read the crab's warning dance",
           "icon": "eye",
-          "goto": "check_read_crab"
+          "goto": "interaction_crab_warning"
         },
         {
           "id": "explain_dance",
@@ -367,6 +379,12 @@
           "label": "Get between the crabs and the prospector",
           "icon": "swords",
           "goto": "encounter_crabs"
+        },
+        {
+          "id": "quick_dance",
+          "label": "Risk guessing what the crab dance means",
+          "goto": "check_read_crab",
+          "icon": "hand"
         }
       ]
     },
@@ -555,7 +573,7 @@
     },
     "scene_turned_back": {
       "type": "story",
-      "narration": "Just outside the stones, where the turned-back prospectors sit around with nowhere to go, somebody has put up a tent with DEEP HOLLOW stitched small on the flap. A ladler with a humming crystal on a string is filling bowls. It is Wend, from the north road, who looks up and says all your names at once. On the soup pot sits a little wooden box. Its lid says FOR THE ROOT OF THINGS.",
+      "narration": "Outside the stones, Wend serves soup under a DEEP HOLLOW flap. Wend knows your names from the north road. A wooden box on the pot reads FOR THE ROOT OF THINGS. A humming crystal hangs beside the ladle.",
       "choices": [
         {
           "id": "share_soup",
@@ -638,7 +656,7 @@
     },
     "scene_tallies": {
       "type": "story",
-      "narration": "The tally house is full of books: every eruption the dragonlings ever counted, in neat rows of marks. Great-Gran Ashby, the oldest grandmother, opens the newest book. Since the big eruption, the Gemfall rhythm has broken completely. \"Show me what you've brought,\" she says. \"Everything.\"",
+      "narration": "Great-Gran Ashby opens a book in the tally house. Eruptions fill its pages in orderly marks. This season's page is mostly question marks. \"Show me what you know,\" says the oldest grandmother. \"We will compare.\"",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -682,7 +700,7 @@
           "name": "Great-Gran Ashby"
         }
       ],
-      "narration": "Great-Gran Ashby reads aloud. For a thousand years the falls came like a heartbeat: so many moons, then a small Gemfall, then so many moons again. Since the big eruption, nothing. No beat at all. Just scribbles, and question marks, and one page where somebody has drawn a very worried face.",
+      "narration": "For a thousand years: moons, small Gemfall, moons again. Ashby reads the old rhythm, then this season's broken one. Somebody has drawn a very worried face in the margin.",
       "choices": [
         {
           "id": "more",
@@ -871,7 +889,7 @@
     },
     "scene_unassigned": {
       "type": "story",
-      "narration": "On the shelf sits a fresh-fallen gem on top of a very old list: the caves no family is ever allowed to gather in. The list is older than every grandmother on record. \"We're not hiding it,\" says Great-Gran Ashby. \"We're keeping it. There's a difference.\"",
+      "narration": "A fresh-fallen gem rests on an old list of caves nobody may gather in. \"Keeping,\" says Great-Gran Ashby. \"Not hiding.\" Her stick straightens the list without touching the gem.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -883,7 +901,7 @@
           "id": "ask_carry",
           "label": "Ask to carry it, as proof for whoever needs to hear",
           "icon": "heart",
-          "goto": "check_carry"
+          "goto": "interaction_kept_stone"
         },
         {
           "id": "ask_proper",
@@ -915,12 +933,18 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "quick_carry",
+          "label": "Risk lifting the stone before its wrapping is level",
+          "goto": "check_carry",
+          "icon": "hand"
         }
       ]
     },
     "scene_unassigned_leave_kept": {
       "type": "story",
-      "narration": "You leave it on its list. Great-Gran Ashby looks at the gem, and at you, and nods one slow nod. \"Kept,\" she says, and squares the list underneath it with the end of her walking stick, so the two of them line up exactly. \"Some things want keeping more than they want carrying.\"",
+      "narration": "You leave the stone on its list. Ashby squares the paper with her stick. \"Some things want keeping more than carrying.\" The shelf hums quietly behind you.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -1002,7 +1026,7 @@
           "count": 4
         }
       ],
-      "narration": "Above the porch, at dusk, the sky over the hills is full of tiny lights. Embermoths, thousands of them, glowing like sparks, are drifting south in one long river, away from the mountain. A bell on a pole rings once. A small dragonling tugs your sleeve: the town's bell-code expert, who tells everybody so, even people she has already told. \"Moths leaving,\" she whispers. \"Every night this month.\"",
+      "narration": "Embermoths stream south over the porch. One bell rings. The small bell-code expert tugs your sleeve. \"Moths leaving. Every night this month.\" She knows this code. She wishes she had happier news.",
       "choices": [
         {
           "id": "follow",
@@ -1195,7 +1219,7 @@
     },
     "rest_bell_house": {
       "type": "rest",
-      "narration": "That night you sleep in the bell house, on warm stone, with the bells hanging silent over your heads. A grandmother tucks a hot rock into everybody's blanket, whether they want one or not. Outside, the rush is still queuing at the stones by lantern light.",
+      "narration": "Sleep on warm stone under silent bells. A grandmother adds a hot rock to your blanket. Outside, the rush still queues by lantern light. Inside, even the smallest bell is tucked in.",
       "heal": 3,
       "choices": [
         {
@@ -1214,7 +1238,7 @@
           "name": "Bell-Code Expert"
         }
       ],
-      "narration": "In the middle of the night, a small hand shakes you awake. It is the bell-code expert, in a nightgown. \"Lanterns,\" she whispers, pointing. Up on the dark hillside, three little lights are bobbing toward a cave mouth. \"That's one of the caves on the list,\" she says. \"Nobody goes there. Nobody.\"",
+      "narration": "The bell-code expert wakes you. Three lanterns bob toward a hillside cave. \"On the list,\" she whispers. \"Nobody gathers there.\" Her slippers are on the wrong feet. She has not noticed.",
       "choices": [
         {
           "id": "wake_grans",
@@ -1261,7 +1285,7 @@
     },
     "scene_night_lights_wake_grans": {
       "type": "story",
-      "narration": "You wake the grandmothers. Within one minute, eleven of them are marching up the hill in nightgowns and slippers, every one ringing a hand bell. The three lanterns stop, wobble, and then flee downhill, very fast. Great-Gran Ashby comes back yawning. \"Thank you, dears. Back to bed.\"",
+      "narration": "Eleven grandmothers march uphill in nightgowns, ringing hand bells. The lanterns wobble, then flee downhill. Ashby returns yawning. \"Thank you, dears. Back to bed.\"",
       "choices": [
         {
           "id": "on",
@@ -1291,13 +1315,13 @@
           "name": "Bell-Code Expert"
         }
       ],
-      "narration": "In the morning the bell house rings the dawn bells, and everybody helps. The bells are enormous, the ropes are fat as your arm, and the small bell-code expert is bossing everyone. In the corner hangs one bell nobody touches, with a rope tied up out of reach. She does not look at it, very hard.",
+      "narration": "Help the big-bell crew set its supports and learn their passing line, or polish the hand bells and prepare a small answering chorus. Either job will help at the morning queue. The corner bell stays untouched, its rope tied high. The bell-code expert keeps looking somewhere else.",
       "choices": [
         {
           "id": "pull_rope",
           "label": "Pull the biggest bell rope",
           "icon": "might",
-          "goto": "check_big_bell"
+          "goto": "interaction_dawn_rope"
         },
         {
           "id": "polish",
@@ -1317,6 +1341,12 @@
           "icon": "shield",
           "requiresClass": "thornguard",
           "goto": "check_big_bell"
+        },
+        {
+          "id": "quick_haul",
+          "label": "Risk hauling the big rope without setting supports",
+          "goto": "check_big_bell",
+          "icon": "hand"
         }
       ]
     },
@@ -1343,13 +1373,20 @@
           "name": "Bell-Code Expert"
         }
       ],
-      "narration": "You polish the little bells until you can see your faces in them, stretched out silly. Each one gives a tiny ring when you finish. The small dragonling inspects them all and declares them \"acceptable,\" which you find out later is the highest mark she has ever given anybody.",
+      "narration": "You polish the hand bells until your faces look stretched and silly in them. The expert checks each one, then teaches you where its note fits between the others. She declares the little chorus acceptable. This is her highest mark.",
       "choices": [
         {
           "id": "on",
           "label": "Go down to the stones",
           "icon": "hand",
           "goto": "interaction_bell_cart"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "hand_bells_ready",
+          "value": true
         }
       ]
     },
@@ -1380,13 +1417,13 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "Down at the line, the morning queue has turned into a crowd, and the crowd is getting loud. A big man in a feathered hat is up on a cart, shouting that the stones are just old rocks and the grandmothers are just old ladies. People are starting to push. The grandmothers stand very still with their bells. Everybody vote.",
+      "narration": "The morning queue is pushing. A feathered hat shouts from a cart that the stones are ordinary rocks. The grandmothers hold their ground. Help make room, share what you know, or use the bell job you prepared.",
       "choices": [
         {
           "id": "tell_story",
           "label": "Climb up and tell the crowd what you have seen",
           "icon": "heart",
-          "goto": "check_tell_crowd"
+          "goto": "interaction_crowd_account"
         },
         {
           "id": "stand_with",
@@ -1400,6 +1437,26 @@
           "icon": "note",
           "goto": "choice_crowd_at_stones_sing_verses",
           "requiresItem": "verses_relay_spiral"
+        },
+        {
+          "id": "crew_line",
+          "label": "Pass the signal bell down the crew line you practiced",
+          "goto": "interaction_crowd_bell_line",
+          "icon": "hand",
+          "requiresFlag": "bell_crew_ready"
+        },
+        {
+          "id": "hand_chorus",
+          "label": "Use the hand-bell chorus you prepared",
+          "goto": "interaction_crowd_hand_bells",
+          "icon": "hand",
+          "requiresFlag": "hand_bells_ready"
+        },
+        {
+          "id": "quick_account",
+          "label": "Risk speaking over the shouting without making room",
+          "goto": "check_tell_crowd",
+          "icon": "hand"
         }
       ]
     },
@@ -1465,7 +1522,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "When the crowd has settled, a centaur guide named Perrin Nine-Verse beckons you behind a boundary stone. He looks left. He looks right. He looks left again, just in case. \"There is a way,\" he whispers, \"through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.\"",
+      "narration": "With the crowd settled, centaur guide Perrin Nine-Verse beckons behind a stone. \"A Shortcut through the hills. My family has argued about it for nine generations. Nobody has walked it.\" He checks behind him twice.",
       "cast": [
         {
           "figure": "cast/perrin_nine_verse",
@@ -1569,7 +1626,7 @@
           "name": "Sergeant Holloway"
         }
       ],
-      "narration": "At the last boundary stone, a Skywarden patrol is counting the rush through, and it is Sergeant Holloway from the north road, ledger open. \"You again,\" says the sergeant. \"Good. I need counters. Picks going north: four hundred and twelve today. Picks coming back: nine. That is arithmetic. I do not like it.\"",
+      "narration": "At the last stone, Sergeant Holloway has the north-road ledger open. \"You again. Good. Counters needed. Picks north: four hundred and twelve. Picks back: nine.\" The sergeant taps the totals. \"I dislike this arithmetic.\"",
       "choices": [
         {
           "id": "count",
@@ -1651,7 +1708,7 @@
     },
     "scene_who_to_tell": {
       "type": "choice_point",
-      "narration": "The grandmothers come down to the last boundary stone to see you off. \"We've been telling everybody for a thousand years,\" says Great-Gran Ashby. \"Take what the mountain drops. Never pry at what it holds. Nobody listens.\" She looks you right in the eye. \"Make somebody finally listen.\" Who will you tell?",
+      "narration": "Who gets the outline first? The Skywardens keep logs at their citadel. The gathering grandmothers can send news through the bell towns. Or keep it close until you know more. Ashby waits while you decide.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -1734,7 +1791,7 @@
     },
     "scene_tell_wardens": {
       "type": "story",
-      "narration": "You write it all down for the Skywardens, neatly, the way Sergeant Holloway would like it, and a relay-runner takes it north at a gallop. Great-Gran Ashby sniffs. \"Wardens,\" she says. \"Well. They do write things down.\"",
+      "narration": "A relay runner carries your account to the Skywardens. Ashby sniffs. \"They do write things down.\" She checks that the runner's cord is tied properly.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -1758,7 +1815,7 @@
     },
     "scene_tell_gatherers": {
       "type": "story",
-      "narration": "The grandmothers ring a pattern on the bells that runs from town to town up the hills, faster than any rider. Every grandmother in the foothills knows now. Great-Gran Ashby blows her nose very loudly and pretends she has a cold.",
+      "narration": "The grandmothers ring your news from town to town. Ashby blows her nose very loudly and says it is a cold. Nobody asks why she is smiling.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -1782,7 +1839,7 @@
     },
     "scene_keep_close": {
       "type": "story",
-      "narration": "You keep the outline folded up small, in the safest pocket. Great-Gran Ashby nods slowly. \"Careful is not the same as quiet,\" she says. \"But careful is a start.\"",
+      "narration": "You keep the outline in your safest pocket. Ashby nods. \"Careful is not the same as quiet. But careful is a start.\" The bells keep their ordinary morning rhythm.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
@@ -1808,11 +1865,19 @@
       "type": "rest",
       "narration": "You walk north through the boundary stones into the foothills, with the rush all around you and the bells ringing ordinary rings behind you. Ahead, on a red ridge, stands the dark outline of the Skywardens' citadel. Tonight you camp under the stones that were here first, and they feel, for the first time, like they are on your side.",
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "prepared_queue_used"
+          },
+          "text": "Your morning bell job became a way to give the crowd room."
+        }
+      ]
     },
     "interaction_pry_bars": {
       "type": "interaction",
-      "narration": "On the way up to the tally house, you pass a line of turned-back prospectors giving up their pry bars, one by one, to the grandmothers. The wall to hang them on is up the slope by the tally house door, and the line stretches all the way there. \"Pass them along, dears!\" calls a grandmother. \"A pry bar goes a long way, hand to hand.\"",
+      "narration": "Prospectors hand over pry bars at the stones. Pass them up the slope to the grandmothers' wall. A grandmother has left room for the huge one. She is an optimist.",
       "interaction": {
         "kind": "relay",
         "cue": "Catch the pry bar, then pass it up the line.",
@@ -2000,7 +2065,7 @@
     },
     "interaction_bell_tuck": {
       "type": "interaction",
-      "narration": "After supper, the bell house has one last job, and it is the oldest one. Every bell is tucked in for the night, so it sleeps and does not ring by mistake. Great-Gran Ashby hands out cloths and nods at the dark rafters. \"Everybody helps,\" she says. \"Even the bells like company.\"",
+      "narration": "Help tuck the bells in with soft cloths so they will not ring in the night. \"Company helps,\" says Ashby. A little bell gives a sleepy ting before you reach it.",
       "interaction": {
         "kind": "play",
         "participation": "everyone",
@@ -2054,6 +2119,398 @@
         }
       ],
       "art": "scenes/gemfall/bell-house-tuck-in"
+    },
+    "interaction_gear_inventory": {
+      "type": "interaction",
+      "narration": "Lay out what your hero carries and say what each thing is for. The grandmother checks beside you. One sock has been mistaken for a digging tool. It is a particularly stiff sock.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Each hero names a real item and explains its use.",
+        "actionLabel": "Finish the inspection",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "show",
+            "label": "Show what I carry",
+            "icon": "hand",
+            "reaction": "The grandmother checks the things you show against her tally."
+          },
+          {
+            "id": "use",
+            "label": "Explain what my gear is for",
+            "icon": "scroll",
+            "reaction": "She writes the uses beside the gear. The sock receives a question mark."
+          },
+          {
+            "id": "check",
+            "label": "Ask her to check with me",
+            "icon": "eye",
+            "reaction": "She helps check one pocket at a time, leaving room for your answer."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_gate_town",
+        "narration": "The grandmother finishes checking the packs. She records your actual gear and waves you through."
+      },
+      "onFailure": {
+        "goto": "scene_gate_town",
+        "narration": "You lay it all out, but your packs are still ringing like a shop door. The grandmother inspects everything anyway, including your socks, and writes PROBABLY HONEST in the tally book. Then she hugs you, because that is what grandmothers do after an inspection."
+      },
+      "onAssisted": {
+        "goto": "scene_gate_town",
+        "narration": "The grandmother helps name the gear, then records what you showed. The inspection is complete."
+      },
+      "art": "scenes/gemfall/bell-cart-stones",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ]
+    },
+    "interaction_one_rule": {
+      "type": "interaction",
+      "narration": "Show the one rule together: take what the mountain drops; never pry at what it holds. Each hero adds a small part. The grandmother plays the mountain. She is excellent at standing firmly in one place.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Each hero acts a part of the one rule.",
+        "actionLabel": "Finish the little mountain play",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "drop",
+            "label": "Pretend to pick up a fallen pebble",
+            "icon": "gem",
+            "reaction": "You pick up what fell freely. The grandmother mountain nods."
+          },
+          {
+            "id": "pry",
+            "label": "Show why the pry bar must stop",
+            "icon": "hand",
+            "reaction": "You stop the pretend pry bar before it touches the grandmother mountain."
+          },
+          {
+            "id": "hold",
+            "label": "Be the mountain holding something safe",
+            "icon": "shield",
+            "reaction": "You hold your hands closed. The prospector finally watches what the rule means."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_rule_heard",
+        "narration": "The prospector watches the whole little play. He lowers his pry bar and asks the grandmother where to leave it."
+      },
+      "onFailure": {
+        "goto": "scene_crab_warning",
+        "narration": "He watches the whole thing, nods along, says \"Right, right,\" and marches off up the hill with his pry bar anyway. You follow him, because somebody should."
+      },
+      "onAssisted": {
+        "goto": "scene_rule_heard",
+        "narration": "The grandmother adds the missing part beside you. Together you show the rule, and the prospector lowers his bar."
+      },
+      "art": "scenes/gemfall/bell-cart-stones",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ]
+    },
+    "interaction_crab_warning": {
+      "type": "interaction",
+      "narration": "Watch the crab's warning: claws up, shuffle sideways, then leave its warm patch. Echo that order to show the prospector how to back away. Nobody needs to be pinched for the lesson.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the warning, then echo the safe response in order.",
+        "actionLabel": "Show the safe response",
+        "options": [
+          {
+            "id": "claws",
+            "label": "Claws up",
+            "icon": "hand"
+          },
+          {
+            "id": "shuffle",
+            "label": "Sideways shuffle",
+            "icon": "boot"
+          },
+          {
+            "id": "back",
+            "label": "Step off the warm patch",
+            "icon": "shield"
+          }
+        ],
+        "answer": [
+          "claws",
+          "shuffle",
+          "back"
+        ],
+        "stepMs": 1400
+      },
+      "onSuccess": {
+        "goto": "scene_crab_settles",
+        "narration": "You echo the warning and guide everyone back off the warm patch."
+      },
+      "onFailure": {
+        "goto": "encounter_crabs",
+        "narration": "You decide the dance means hello. It does not mean hello."
+      },
+      "onAssisted": {
+        "goto": "scene_crab_settles",
+        "narration": "The prospector copies your first two steps. Together you check the last one and back off the warm ground."
+      },
+      "art": "scenes/gemfall/crab-field-guards"
+    },
+    "interaction_kept_stone": {
+      "type": "interaction",
+      "narration": "Great-Gran Ashby agrees to let you carry the stone if you can keep its wrapping level. Raise or lower your side, then lift it gently. Her walking stick hovers over the list, ready to straighten it.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the wrapped stone before lifting it from the list.",
+        "actionLabel": "Lift the wrapped stone",
+        "objectLabel": "The Unassigned Stone in its wrapping"
+      },
+      "onSuccess": {
+        "goto": "scene_crawlers_porch",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_unassigned"
+          },
+          {
+            "type": "setFlag",
+            "flag": "got_the_unassigned_stone",
+            "value": true
+          }
+        ],
+        "narration": "You level the wrapped stone before lifting it. Great-Gran Ashby checks the list, then gives permission to carry the Unassigned Stone north."
+      },
+      "onFailure": {
+        "goto": "scene_crawlers_porch",
+        "narration": "Your fingers bump the list crooked, and you grab at the gem as if it might run off. Great-Gran Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
+      },
+      "onAssisted": {
+        "goto": "scene_crawlers_porch",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_unassigned"
+          },
+          {
+            "type": "setFlag",
+            "flag": "got_the_unassigned_stone",
+            "value": true
+          }
+        ],
+        "narration": "Great-Gran Ashby supports the wrapping with her stick. With that help, you lift the stone, and she gives permission to carry it north."
+      },
+      "art": "scenes/gemfall/tally-house-floor-map",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ]
+    },
+    "interaction_dawn_rope": {
+      "type": "interaction",
+      "narration": "Brace the big bell's rope while the acting hero guides the dawn pull. Alone, use the fixed cleat. The expert teaches the crew's hand-to-hand line for bringing help to the queue. She has a clipboard almost as tall as she is.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the rope supports while the acting hero guides the dawn pull.",
+        "actionLabel": "Guide the dawn pull",
+        "supportLabel": "Hold the rope steady"
+      },
+      "onSuccess": {
+        "goto": "interaction_bell_cart",
+        "narration": "The dawn bell rings cleanly. You practice the crew's passing line for the queue.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bell_crew_ready",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_bell_cart",
+        "narration": "You haul on the rope, and the bell swings, and the rope swings back up and takes you with it. For one glorious moment you are flying. Then the grandmothers catch you, one on each ankle, and the bell rings anyway, louder than ever."
+      },
+      "onAssisted": {
+        "goto": "interaction_bell_cart",
+        "narration": "A grandmother sets the cleat beside you. Together you ring the dawn bell and practice the crew line.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bell_crew_ready",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/bell-house-tuck-in",
+      "cast": [
+        {
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
+        }
+      ]
+    },
+    "interaction_crowd_bell_line": {
+      "type": "interaction",
+      "narration": "Use the crew line you practiced. Pass a small signal bell down to the grandmothers at the crowded gate. They can call the next row forward without anybody pushing. Keep it hand to hand, not over the feathered hat.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the signal bell and pass it toward the gate.",
+        "actionLabel": "Pass the signal bell",
+        "objectLabel": "The queue's small signal bell"
+      },
+      "onSuccess": {
+        "goto": "scene_centaur_whisper",
+        "narration": "The bell reaches the gate. The grandmothers call the queue forward in rows until the pushing stops.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "prepared_queue_used",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_centaur_whisper",
+        "narration": "A grandmother catches the bell before it drops. She leads the queue into rows while you help keep the gap clear."
+      },
+      "onAssisted": {
+        "goto": "scene_centaur_whisper",
+        "narration": "A grandmother fills the gap in the line beside you. Together you deliver the bell and settle the queue.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "prepared_queue_used",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/bell-cart-stones",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ]
+    },
+    "interaction_crowd_hand_bells": {
+      "type": "interaction",
+      "narration": "Fit your polished bells between the grandmothers' notes. Each hero adds a turn. The expert points to the next row, and people begin listening for their place. The feathered hat has to stop shouting to hear his row called.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Each hero adds a hand-bell answer to the prepared chorus.",
+        "actionLabel": "Finish the answering chorus",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "low",
+            "label": "Answer after the low bell",
+            "icon": "note",
+            "reaction": "Your answer follows the low bell. The next row waits for its turn."
+          },
+          {
+            "id": "high",
+            "label": "Answer after the high bell",
+            "icon": "note",
+            "reaction": "Your answer follows the high bell. The expert waves one row forward."
+          },
+          {
+            "id": "space",
+            "label": "Leave a space for the next answer",
+            "icon": "ear",
+            "reaction": "You leave a clear space. The waiting crowd hears the next little bell."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_centaur_whisper",
+        "narration": "The prepared chorus gives each row its turn. The crowd settles, with room around the stones.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "prepared_queue_used",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_centaur_whisper",
+        "narration": "The expert fills the missing note. The queue settles while you keep the space clear."
+      },
+      "onAssisted": {
+        "goto": "scene_centaur_whisper",
+        "narration": "The expert guides the answers beside you. Together you settle the queue with the hand bells.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "prepared_queue_used",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/bell-cart-stones",
+      "cast": [
+        {
+          "figure": "cast/bell_code_expert",
+          "name": "Bell-Code Expert"
+        }
+      ]
+    },
+    "interaction_crowd_account": {
+      "type": "interaction",
+      "narration": "The grandmothers make a place beside the cart for your account. Each hero shares something witnessed here, or asks for one of the tallies to be read. You do not have to outshout the feathered hat. The hat is running out of breath.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Each hero shares evidence or asks for a tally to be read.",
+        "actionLabel": "Finish the shared account",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "moths",
+            "label": "Describe the moths we saw leaving",
+            "icon": "wing",
+            "reaction": "Your account of the southbound moths gives the waiting people something to listen to."
+          },
+          {
+            "id": "tallies",
+            "label": "Ask Ashby to read the changed tallies",
+            "icon": "scroll",
+            "reaction": "Ashby reads the broken pattern aloud. The feathered hat stops to hear the numbers."
+          },
+          {
+            "id": "rule",
+            "label": "Explain the boundary rule in my own words",
+            "icon": "hand",
+            "reaction": "You explain what is freely dropped and what must stay held. A listener lowers a digging tool."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_centaur_whisper",
+        "narration": "The grandmothers repeat your account down the line. The crowd listens, and the pushing stops."
+      },
+      "onFailure": {
+        "goto": "scene_centaur_whisper",
+        "narration": "You climb up and start to tell them, and the crowd shouts you down. But while they are shouting at you, nobody is pushing. By the time they run out of breath, the grandmothers have rung for help, and twenty more grandmothers have arrived. The crowd sits down, grumbling."
+      },
+      "onAssisted": {
+        "goto": "scene_centaur_whisper",
+        "narration": "Ashby helps read the evidence beside you. Together you give the crowd an account it can hear."
+      },
+      "art": "scenes/gemfall/bell-cart-stones",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ]
     }
   },
   "voiceGuide": {
@@ -2089,6 +2546,46 @@
       "interaction_pry_bars": {
         "props": [
           "prop_pry_bar"
+        ]
+      },
+      "interaction_gear_inventory": {
+        "props": [
+          "prop_letters"
+        ]
+      },
+      "interaction_one_rule": {
+        "props": [
+          "prop_pry_bar"
+        ]
+      },
+      "interaction_crab_warning": {
+        "props": [
+          "prop_letters"
+        ]
+      },
+      "interaction_kept_stone": {
+        "props": [
+          "prop_humming_stone"
+        ]
+      },
+      "interaction_dawn_rope": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "interaction_crowd_bell_line": {
+        "props": [
+          "prop_hand_bell"
+        ]
+      },
+      "interaction_crowd_hand_bells": {
+        "props": [
+          "prop_hand_bell"
+        ]
+      },
+      "interaction_crowd_account": {
+        "props": [
+          "prop_letters"
         ]
       }
     }

@@ -1,0 +1,623 @@
+{
+  "gemfall-05a": {
+    "check_carter": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Talk a tired carter into trading gem 4117",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "entities/faun",
+          "name": "Tired carter"
+        },
+        {
+          "figure": "entities/mule",
+          "name": "Carter's mule"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_clerk_stone",
+        "narration": "She has been listening to that gem hum for nine days. \"Take it,\" she says. \"Give me a song I can sing over it instead.\" You give her the best one you know."
+      },
+      "onFailure": {
+        "goto": "scene_survey_guard",
+        "narration": "\"Promised to a buyer in the foothills,\" she says, and clicks to her mule. Gem 4117 hums away west across the bridge."
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "check_ledger": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 16,
+      "prompt": "Find the rule that lets a logged gem change hands",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_clerk_stone",
+        "narration": "Page four hundred and twelve: a logged gem may be transferred at the crossing if both parties sign and the clerk is not on his lunch. Pellam checks his watch. He is not on his lunch."
+      },
+      "onFailure": {
+        "goto": "scene_survey_guard",
+        "narration": "You find a rule about goats, a rule about very large goats, and a rule about goats that are actually two children in a coat. By the time you look up, gem 4117 is across."
+      },
+      "art": "scenes/gemfall/northern-bridge-foot"
+    },
+    "check_outline": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Plot everything you've seen since Bramblewood against the cracks",
+      "cast": [
+        {
+          "figure": "cast/brask",
+          "name": "Engineer Brask"
+        }
+      ],
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_outline",
+        "narration": "You draw it in chalk: the old note the troll's bridge hums, the bent pride roads, the spiraling sashes. Then you draw the cracks over the top.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "plotted_it_yourself",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_outline",
+        "narration": "Your map comes out looking like a cat walked across it. Brask takes the chalk, says \"no, no, you're right, look,\" and draws it again properly."
+      },
+      "art": "scenes/gemfall/bridge-engineers-tent"
+    },
+    "check_span": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 16,
+      "prompt": "Cross the swaying span before the warden's flag drops",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_far_rim",
+        "narration": "Step, sway, step, sway, and you're over. The warden at the far end gives you a very small nod, which from a Skywarden is practically a hug."
+      },
+      "onFailure": {
+        "goto": "scene_under_bridge",
+        "narration": "Halfway across, the bridge gives a long groan and the flag slams down. \"Span closed! Everybody back!\" The only other way over is the old pride ford, underneath."
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "check_wolves": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Get the pack interested in supper instead of you",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf",
+          "count": 3
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_far_rim",
+        "narration": "Every nose turns toward the supper. You wade the ford with your boots in your hands while a dozen ember eyes ignore you completely."
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "The supper is gone in four seconds. The pack looks at you as if to say: is that all?"
+      },
+      "art": "scenes/gemfall/bridge-pillar-shallows"
+    },
+    "check_crates": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Everybody grab at the toppling crates",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "interaction_bowls",
+        "narration": "You catch the top crate, then the next, then the next, and stand there holding a wobbling tower until the carter props it back. \"Nine days those have been humming at me,\" she says, wiping her face. \"Nine days. Thank you.\" One crate has a tag on it: 4117."
+      },
+      "onFailure": {
+        "goto": "interaction_bowls",
+        "narration": "The crates topple straight past your hands and land, thump, thump, thump, in a hay cart. Nothing breaks. One of them bursts open, and it is full of socks. \"Not that one,\" says the tired carter. \"The humming ones are underneath.\" One tag says 4117."
+      },
+      "art": "scenes/gemfall/hollis-soup-queue"
+    },
+    "check_tibbet": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Convince a very serious corporal to let you in",
+      "cast": [
+        {
+          "figure": "cast/corporal_tibbet",
+          "name": "Corporal Tibbet"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crack_string",
+        "narration": "You tell him about the old note the troll's bridge hums, and the bent roads, and the spiraling sashes. Tibbet listens with his mouth slightly open. Then he remembers he is a corporal, closes it, salutes, and lifts the tent flap for you."
+      },
+      "onFailure": {
+        "goto": "scene_crack_string",
+        "narration": "Tibbet listens to every word, writes \"REASON: LONG\" on his clipboard, and says no. Then an engineer pokes her head out, says \"Tibbet, let them hold the string,\" and pulls you around the side of the tent."
+      },
+      "art": "scenes/gemfall/bridge-engineers-tent"
+    },
+    "check_span_quiet": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Cross along the steady east rail before the flag drops",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_far_rim",
+        "narration": "Along the east rail the span hardly sways at all. You walk over almost easily, and the warden at the far end gives you a very small nod. The Brassbuckles' map was right. You hope somebody tells them."
+      },
+      "onFailure": {
+        "goto": "scene_under_bridge",
+        "narration": "The east rail is steadier, but not steady enough. Halfway over, the bridge groans and the flag slams down. \"Span closed! Everybody back!\" The only other way over is the old pride ford, underneath."
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "check_fires": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Count the rush's campfires in the foothills below",
+      "cast": [
+        {
+          "figure": "cast/bracken_swiftmile",
+          "name": "Bracken"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_end",
+        "narration": "You count in hundreds, then in patches, then in valleys. Bracken helps. Your best guess is four thousand and twelve, and Bracken writes it down to carry south. \"Biggest rush in living memory,\" she says, and whistles. \"And all of it humming.\""
+      },
+      "onFailure": {
+        "goto": "rest_end",
+        "narration": "One, two, three... you lose count at three hundred and something, when a cloud moves and a whole valley of fires appears at once. \"More than stars,\" says Bracken, and that will have to do. She trots off south with your news."
+      },
+      "art": "scenes/gemfall/redspire-rim-lookout"
+    }
+  },
+  "gemfall-05b": {
+    "check_trust": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell the archivists, honestly, what you want the stones for",
+      "cast": [
+        {
+          "figure": "cast/mosshome_archivist",
+          "name": "Archivist",
+          "size": "large"
+        },
+        {
+          "figure": "cast/oldest_archivist",
+          "name": "Oldest Archivist",
+          "size": "large"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_pile_visit",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "trusted_by_record",
+            "value": true
+          }
+        ],
+        "narration": "They listen to the whole thing. Then they all write something down at once, and the oldest one nods."
+      },
+      "onFailure": {
+        "goto": "scene_leaning_chair",
+        "narration": "\"The record doesn't know you yet,\" says the archivist, kindly, and closes the box. Maybe it will, by the time you're further north."
+      }
+    },
+    "check_follow_moths": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Keep up with a drifting flock of embermoths through the trees",
+      "cast": [
+        {
+          "figure": "cast/young_gatherer",
+          "name": "Young Gatherer",
+          "size": "small"
+        },
+        {
+          "figure": "entities/embermoth",
+          "count": 4
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_elders",
+        "narration": "You follow them, the gatherer at your heels, to the edge of town, where the whole flock has settled on a fence. Every single moth is facing away from the mountain, like people with their backs to a cold draft. \"I'm telling my grandmother,\" the gatherer whispers. Then she leads you back to the elders' ring."
+      },
+      "onFailure": {
+        "goto": "choice_elders",
+        "narration": "The moths vanish into the trees, glowing, and you lose them. Then they come drifting back past you the other way, as if they have changed their minds, and then change them again. \"Even they don't know where to go,\" says the gatherer, and leads you back to the elders' ring."
+      }
+    },
+    "check_falls_logs": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everybody drag heavy stepping logs across the flooded stair",
+      "cast": [
+        {
+          "figure": "cast/flood_warden",
+          "name": "Flood-Warden",
+          "size": "large"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_soup_tent",
+        "narration": "Heave, roll, heave, and three logs settle across the flooded steps like a little bridge. The flood-warden stamps on each one, hard, and nods. \"Proper work,\" she says, which from a flood-warden is a medal. You cross with dry boots, and she waves you up toward the high paths."
+      },
+      "onFailure": {
+        "goto": "scene_soup_tent",
+        "narration": "A log rolls the wrong way and you sit down in the falls with a splash. The flood-warden hauls you out with one hand, sets you on the top step, and says, \"Happens every season. Not usually to this many.\" Then she drags the logs across herself, as if they weigh nothing at all."
+      }
+    },
+    "check_bridge_rope": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Swing hand over hand along the side rope past the missing planks",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_halfway_hut",
+        "narration": "Hand, hand, hand, and swing your feet onto the far planks. One after another you go over the gap like monkeys, and the bridge hardly sways. A bigfoot coming the other way stops to clap, very slowly, with enormous hands."
+      },
+      "onFailure": {
+        "goto": "scene_halfway_hut",
+        "narration": "Halfway along, your arms get tired and you dangle for a moment, like a sock on a clothesline, until the others reach out and pull you in by the belt. Nobody looks down. Well, one person looks down, once, and decides never to do that again."
+      }
+    },
+    "check_hut_pages": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Untangle the oldest knotted pages of the visitors' book without pulling a single knot loose",
+      "cast": [
+        {
+          "figure": "cast/path_keeper",
+          "name": "Path-Keeper",
+          "size": "large"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_drake_ford",
+        "narration": "Back and back you turn, past ink, past scratches, to the knots. Each knot is a climber, and the little knots tied on after are what they met on the way up. The commonest one, by far, means CROSS ANIMALS: THROW THEM A SNACK. The path-keeper taps it. \"Still good advice,\" he says. \"There are wolves up there today.\""
+      },
+      "onFailure": {
+        "goto": "scene_drake_ford",
+        "narration": "The knotted pages are like trying to read a knitted sweater. You turn it upside down and it makes even less sense. The path-keeper chuckles, closes the book, and pours you a cup of something hot. \"Takes forty years to read those,\" he says. \"I've done thirty-one.\""
+      }
+    },
+    "check_distract": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Give three cross wolves something more interesting than you",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf",
+          "count": 3
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_foothills_view",
+        "narration": "You lob a handful of jerky from your packs down the slope. Three wolves look at each other, then at the jerky, and decide jerky wins."
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "A strip of jerky bounces off a wolf's nose. The wolf does not find this funny."
+      }
+    },
+    "check_dash": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 16,
+      "prompt": "Dash past three cinder wolves on a narrow cliff path",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf",
+          "count": 3
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_foothills_view",
+        "narration": "Over a rope bridge, under a ledge, and gone before a single wolf has finished yawning."
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "The rope bridge squeaks. Six glowing ears turn around."
+      }
+    },
+    "check_regroup": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Gather up your scattered packs before it gets dark",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_foothills_view",
+        "narration": "You find everything, even the sock nobody wanted back, and climb on, late but whole."
+      },
+      "onFailure": {
+        "goto": "ending_long_way_round",
+        "narration": "You find one pack, half of another, and a hat that is not yours. The light goes while you are still looking, and somewhere above you a wolf grumbles at the mountain as if it has lost something too."
+      }
+    }
+  },
+  "gemfall-05c": {
+    "check_not_diggers": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Turn out every pocket and lay your gear in one neat row, fast, so the grandmother can see there is not a pick or a shovel in it",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_gate_town",
+        "narration": "Rope, socks, a squashed sandwich, a spoon. Not one pick, not one shovel, and you never once say the word treasure. The grandmother taps her pencil on her teeth. \"Not diggers,\" she writes. \"Very tidy.\" She waves you through with a look that is almost respect."
+      },
+      "onFailure": {
+        "goto": "scene_gate_town",
+        "narration": "You lay it all out, but your packs are still ringing like a shop door. The grandmother inspects everything anyway, including your socks, and writes PROBABLY HONEST in the tally book. Then she hugs you, because that is what grandmothers do after an inspection."
+      }
+    },
+    "check_one_rule": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Act out the one rule for a stubborn prospector: pick up a fallen pebble nice and easy, then pry at the hill and get flattened",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        },
+        {
+          "figure": "cast/rush_prospector",
+          "name": "Rush prospector"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_rule_heard",
+        "narration": "You do not shout the rule at him. You act it out: pick up a pebble the mountain dropped, nice and easy, then pretend to pry at the hill, and pretend the hill sits on you. You fall over flat, very slowly, like a tree. Somewhere in the middle he stops saying \"right, right\" and starts actually watching."
+      },
+      "onFailure": {
+        "goto": "scene_crab_warning",
+        "narration": "He watches the whole thing, nods along, says \"Right, right,\" and marches off up the hill with his pry bar anyway. You follow him, because somebody should."
+      },
+      "checkKind": "doing"
+    },
+    "check_read_crab": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Read what the glassback crab's dance means",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crab_settles",
+        "narration": "Claws up. Sideways shuffle. Rock to the left. You have seen a cat do something very like it on a warm wall, and you know exactly what the cat meant."
+      },
+      "onFailure": {
+        "goto": "encounter_crabs",
+        "narration": "You decide the dance means hello. It does not mean hello."
+      }
+    },
+    "check_ask_wend": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Get a straight answer out of Wend",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_pry_bars",
+        "narration": "Wend thinks for a long time. \"Everything that hums wants to go home,\" Wend says at last. \"We'd like to help it get there, all at once.\" It sounds lovely. It also sounds like something nobody should do on a guess. You go up to the tally house thinking about it."
+      },
+      "onFailure": {
+        "goto": "interaction_pry_bars",
+        "narration": "Wend answers a different question, beautifully, about the right amount of salt in soup. By the end you know a great deal about salt and nothing at all about roots. Wend waves you off to the tally house with a full bowl."
+      }
+    },
+    "check_read_stone": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Read the worn marks on the oldest boundary stone",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_unassigned",
+        "narration": "On the oldest stone, under the moss, are rows of marks worn almost smooth. They are tally marks, like the grandmothers' marks, but far older. Somebody was counting here before the first families came. The land has been keeping records. Great-Gran Ashby only nods. \"Now come and see my shelf.\""
+      },
+      "onFailure": {
+        "goto": "scene_unassigned",
+        "narration": "The marks are worn so smooth you cannot tell scratches from weather. Great-Gran Ashby takes your hand and runs your fingers along them: one, one, one, and a gap. \"Counting,\" she says. \"Before us. Come and see the shelf.\""
+      }
+    },
+    "check_carry": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Lift the gem off its list the keeping way: two hands, slow as a snail, and set the list straight again after",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crawlers_porch",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_unassigned"
+          },
+          {
+            "type": "setFlag",
+            "flag": "got_the_unassigned_stone",
+            "value": true
+          }
+        ],
+        "narration": "Two hands, slow as a snail, and you square the list after with one finger. Great-Gran Ashby wraps the gem in a page torn from nothing important and puts it in your hands. \"The Unassigned Stone. Keep it. Don't you dare sell it.\""
+      },
+      "onFailure": {
+        "goto": "scene_crawlers_porch",
+        "narration": "Your fingers bump the list crooked, and you grab at the gem as if it might run off. Great-Gran Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
+      },
+      "checkKind": "doing"
+    },
+    "check_follow_moths": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Everybody run to keep up with a river of embermoths",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_bell_house_supper",
+        "narration": "You run along the hillside under the glowing river. The moths do not drift at random. They flow around every cave where a stone has fallen, the way water flows around a rock, and then carry on south. You come back out of breath, with sparks in your hair."
+      },
+      "onFailure": {
+        "goto": "scene_bell_house_supper",
+        "narration": "You run, trip over a goat, and lie on your back in the heather watching the moths go over. From down there it is the most beautiful thing you have ever seen. The goat lies down too. Neither of you says anything for a while."
+      }
+    },
+    "check_supper_story": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Tell forty grandmothers a good story",
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_bell_tuck",
+        "narration": "You tell them about the queues and the jackalopes and the roads that bend, and you do all the voices. Forty grandmothers laugh in the right places and gasp in the right places, and one of them cries a little at the end, and says it is the onions."
+      },
+      "onFailure": {
+        "goto": "interaction_bell_tuck",
+        "narration": "You get the order muddled and tell the end first. The grandmothers do not mind at all. They simply tell it back to you in the right order, interrupting each other, until it is a much better story than the one you started with."
+      }
+    },
+    "check_night_talk": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Talk three night diggers out of a cave",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_morning_bells",
+        "narration": "Halfway up you find three young prospectors with lanterns and one shovel. You sit down on a rock with them and tell them about the list, and the one rule, and the grandmothers' bells. They go a bit pale. \"We thought it was just a cave,\" says one. They walk back down with you, and nobody digs."
+      },
+      "onFailure": {
+        "goto": "scene_morning_bells",
+        "narration": "You climb up quietly, step on a bell somebody left in the heather, and it goes CLANG. The three diggers drop everything and run straight back down to the stones. Their shovel stays behind. A grandmother collects it at dawn and hangs it on the wall where the grandmothers keep every pry bar anybody ever gave up."
+      }
+    },
+    "check_big_bell": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Everybody haul on the rope of the biggest bell in the bell house",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "interaction_bell_cart",
+        "narration": "You haul on the rope. The bell swings, and BONG, the whole hillside hums, and you feel it in your teeth. Far up the hills, other bell houses answer, one after another. The small dragonling says that was very nearly as good as a grandmother."
+      },
+      "onFailure": {
+        "goto": "interaction_bell_cart",
+        "narration": "You haul on the rope, and the bell swings, and the rope swings back up and takes you with it. For one glorious moment you are flying. Then the grandmothers catch you, one on each ankle, and the bell rings anyway, louder than ever."
+      }
+    },
+    "check_tell_crowd": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Get a shouting crowd to listen",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_centaur_whisper",
+        "narration": "You climb up beside the feathered hat and tell them: the hum, the silent warrens, the roads that bend, the moths going south. You tell it like a story, because it is one. The crowd goes quiet. The feathered hat comes off. Nobody pushes after that."
+      },
+      "onFailure": {
+        "goto": "scene_centaur_whisper",
+        "narration": "You climb up and start to tell them, and the crowd shouts you down. But while they are shouting at you, nobody is pushing. By the time they run out of breath, the grandmothers have rung for help, and twenty more grandmothers have arrived. The crowd sits down, grumbling."
+      }
+    },
+    "check_count_picks": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Count every pick in a moving crowd",
+      "cast": [
+        {
+          "figure": "cast/holloway",
+          "name": "Sergeant Holloway"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_who_to_tell",
+        "narration": "You count, and count, and your number matches the sergeant's exactly. Holloway writes your names in the ledger under 'Counters, Reliable,' which is apparently a great honor. \"The citadel keeps logs,\" the sergeant says. \"Somebody has to.\""
+      },
+      "onFailure": {
+        "goto": "scene_who_to_tell",
+        "narration": "You count four hundred and twelve picks, two goats and a very tall hat. Holloway checks your sums, crosses out the goats, keeps the hat, and writes you down as 'Counters, Enthusiastic.' \"Close enough,\" says the sergeant. \"For arithmetic.\""
+      }
+    }
+  }
+}

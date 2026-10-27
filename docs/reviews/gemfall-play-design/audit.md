@@ -125,7 +125,7 @@ claim it mattered.
 2. **03C + 04C:** queue priorities and the north road's signs/forms/signals;
    see the [implementation and verification](../gemfall-ford-road-play/README.md).
 3. **04A + 04B:** regional behavior, observation and intervention. Implemented in the [third-wave review](../gemfall-pride-forest-play/README.md): marker brace versus checked line, prepared sash clues, herd-map recovery, and mending versus woodland chorus.
-4. **05A/B/C:** all three routes to the Outline of Truth and disclosure.
+4. **05A/B/C:** all three routes to the Outline of Truth and disclosure. Implemented in the [fourth-wave review](../gemfall-outline-play/README.md): survey crossing choices, high-path braces/runoff recovery, shared evidence and bell-duty crowd approaches.
 5. **01 + 02:** thirty-minute opening/onboarding pass, preserving the art pilot.
 6. **06:** evidence and purpose, with a separate reveal/continuity review.
 7. **07R/H/L:** each pursuit's own play, preserving Walk and clock economics.
@@ -136,7 +136,7 @@ than enforced by counting scenes. Review a finale-specific budget explicitly; do
 not silently retain 55 minutes or promise thirty without timing its alternatives.
 After each wave, run meaningful complete routes for solo/two/four players, assisted
 and missed actions, and the relevant real board outcomes. Record actual timings
-only from observed sessions; the proposed tracker remains #511.
+only from observed sessions; the tracker from #511 is now integrated. See [session timing](../../session-timing.md) for revision-aware exports and reports.
 
 ## Baseline and first-wave verification
 

@@ -9,7 +9,7 @@
     "set": "road",
     "flag": "route_river"
   },
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_bridge",
   "plate": {
@@ -75,7 +75,7 @@
       "discovers": [
         "faction.skywardens"
       ],
-      "narration": "The Northern River Bridge has a crack down the middle like a dropped plate glued back by somebody in a hurry. Skywardens in silver and violet stand on every span with chalk and clipboards, letting people over a few at a time. Coming the other way, south, is everybody whose rush is already over, and none of them are singing. Tonight you have to get across that bridge. And those cracks look like they are trying to say something. Find out what.",
+      "narration": "Cross the cracked Northern River Bridge and find out what its cracks are saying. Skywardens in silver and violet let a few travelers over at a time. Coming south are prospectors whose rush is over. Nobody is singing. The bridge looks like a plate glued by somebody in a hurry.",
       "cast": [
         {
           "figure": "entities/skywardens"
@@ -119,7 +119,7 @@
     },
     "scene_soup_line": {
       "type": "story",
-      "narration": "Up close, the soup pot is the size of a bathtub. The woman stirring it hands a bowl to a muddy prospector before she says a single word to anyone. Her name is Hollis. Her apron says DEEP HOLLOW in small, tidy stitches. Behind her, the prospector's wheelbarrow has lost a wheel.",
+      "narration": "A woman named Hollis stirs a bathtub-sized soup pot. DEEP HOLLOW is stitched on her apron. She feeds a muddy prospector before asking anything. His wheelbarrow has lost a wheel. He is holding the soup much more carefully.",
       "choices": [
         {
           "id": "take_bowl",
@@ -161,7 +161,7 @@
     },
     "scene_soup_line_fix_barrow": {
       "type": "story",
-      "narration": "You find the wheel in the ditch and knock it back on with a rock. The prospector watches you do it with his soup bowl in both hands, and when it is done he digs in his pocket and gives you the only thing he has left: a pebble he carried the whole way north for luck. It is not a gem. He says it worked anyway.",
+      "narration": "You knock the wheel back on with a rock. The prospector gives you his luck pebble, the only thing he has left. It is not a gem. He says it worked anyway.",
       "choices": [
         {
           "id": "on",
@@ -242,7 +242,7 @@
     },
     "scene_cult_pitch_finish_soup": {
       "type": "story",
-      "narration": "You finish your soup and say nothing. Hollis refills the bowl without asking, and says nothing either, and watches you go with the ladle resting on her shoulder. The jar hums behind her. You can still hear it at the bridge foot.",
+      "narration": "Hollis refills your bowl without asking. You finish without answering her pitch. The jar hums behind her; you can still hear it at the bridge foot.",
       "choices": [
         {
           "id": "on",
@@ -299,7 +299,7 @@
     },
     "scene_clerk": {
       "type": "story",
-      "narration": "At the bridge foot, a warden clerk named Pellam writes down every gem that crosses westbound, and keeps none of them. \"Logged is not owned,\" he says. \"Owned is not my department.\" A tagged caravan rolls up: gem 4117. As it passes, it hums, and his pen skips right off the page.",
+      "narration": "At the bridge foot, warden clerk Pellam logs every passing gem and keeps none. \"Logged is not owned,\" he says. \"Owned is not my department.\" A carter brings gem 4117. Its hum makes his pen leap off the page.",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -317,7 +317,7 @@
           "id": "find_rule",
           "label": "Find a rule in Pellam's big book",
           "icon": "scroll",
-          "goto": "check_ledger"
+          "goto": "interaction_transfer_rule"
         },
         {
           "id": "let_it_cross",
@@ -331,6 +331,12 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "quick_rule",
+          "label": "Risk finding the transfer rule before the cart leaves",
+          "goto": "check_ledger",
+          "icon": "hand"
         }
       ],
       "art": "scenes/gemfall/northern-bridge-foot"
@@ -419,7 +425,7 @@
     },
     "scene_engineers": {
       "type": "story",
-      "narration": "In the engineers' tent, a big chalk survey of the bridge is pinned up, every crack drawn in red. Engineer Brask, who has a pencil behind each ear and a third one she has forgotten about, says the cracks came with the tremors. Then she frowns at the drawing, as if it has just said something rude.",
+      "narration": "Engineer Brask pins every bridge crack in red on a chalk survey. She has a pencil behind each ear and has forgotten the third in her hair. She frowns at the drawing, as though it has said something rude.",
       "cast": [
         {
           "figure": "cast/brask",
@@ -431,7 +437,7 @@
           "id": "lay_evidence",
           "label": "Lay your evidence beside the survey",
           "icon": "map",
-          "goto": "check_outline"
+          "goto": "interaction_survey_evidence"
         },
         {
           "id": "cracks_lean",
@@ -460,6 +466,12 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "quick_plot",
+          "label": "Risk sketching the whole account from memory",
+          "goto": "check_outline",
+          "icon": "hand"
         }
       ],
       "art": "scenes/gemfall/bridge-engineers-tent"
@@ -521,7 +533,7 @@
     },
     "rest_tent": {
       "type": "rest",
-      "narration": "The engineers share their tea, which is very strong and has a tremor ripple in every cup. Outside, the bridge creaks like an old ship. Rest a while. You have the outline of the truth, and now you have to decide what to do with it.",
+      "narration": "The engineers share strong tea. Every cup has a tremor ripple. Outside, the bridge creaks. Rest and decide who should hear what you found.",
       "cast": [
         {
           "figure": "cast/brask",
@@ -541,7 +553,7 @@
     },
     "scene_who_to_tell": {
       "type": "choice_point",
-      "narration": "The wardens are right here: honest, careful, and already talking about acceptable losses. Out on the road, Nim the bell-rider is heading home to the gathering towns, who have kept the mountain's rules for a thousand years. Or you could fold the map up small and keep it. Who do you tell? Everybody vote.",
+      "narration": "Tell the wardens here, and they can use the survey to manage the crossing. Send the news with Nim the bell-rider, and the gathering towns will hear it. Or keep it close until you know more. Who should hear the outline first?",
       "cast": [
         {
           "figure": "cast/brask",
@@ -593,7 +605,7 @@
     },
     "scene_told_wardens": {
       "type": "story",
-      "narration": "Brask listens to all of it, writes all of it down, and underlines the bit about the mountain three times. \"Thank you,\" she says, completely serious. \"This changes the arithmetic.\" She tears a crossing pass out of her book. It is the first thing all day anybody has given away for free.",
+      "narration": "Brask writes everything down and underlines the mountain three times. \"This changes the arithmetic.\" She gives you a crossing pass. She has underlined that too.",
       "cast": [
         {
           "figure": "cast/brask",
@@ -618,7 +630,7 @@
     },
     "scene_told_gatherers": {
       "type": "story",
-      "narration": "You catch Nim just as Pepper is leaving. She listens to all of it, rings her bell once, high and clear, and says, \"Grandmother is going to say she told everyone.\" Then she gallops north with your news, and Pepper, for once, does not argue.",
+      "narration": "Nim listens, rings her bell once, and turns Pepper north. \"Grandmother is going to say she told everyone.\" For once, Pepper does not argue.",
       "cast": [
         {
           "figure": "cast/nim",
@@ -643,7 +655,7 @@
     },
     "scene_kept_close": {
       "type": "story",
-      "narration": "You fold the chalk map small, smaller, smallest, until it fits inside a boot. Nobody else knows. That is either very wise or very lonely, and you will find out which. Somewhere in your packs, the stones keep humming, as if they know too.",
+      "narration": "You fold the survey into your safest pocket. Brask keeps her measurements, but your observations travel with you. Nobody else gets the whole account today.",
       "choices": [
         {
           "id": "to_crossing_k",
@@ -662,7 +674,7 @@
     },
     "scene_crossing": {
       "type": "choice_point",
-      "narration": "Your turn on the bridge. The cracked span sways a little under each cart, and a warden at the end waves you on with a flag. Below, the river is cold and loud. On the far side the land climbs toward a red sky.",
+      "narration": "The cracked span sways under the last cart. A warden waits with her flag. Use what you prepared, show a crossing pass if you have one, or take an ordinary ration turn. Below, the river is very loud.",
       "choices": [
         {
           "id": "ration",
@@ -697,6 +709,20 @@
           "icon": "shield",
           "requiresClass": "thornguard",
           "goto": "check_span_quiet"
+        },
+        {
+          "id": "measured_line",
+          "label": "Use the rope brace you practiced with the apprentices",
+          "goto": "interaction_survey_line",
+          "icon": "hand",
+          "requiresFlag": "bridge_line_practiced"
+        },
+        {
+          "id": "settled_interval",
+          "label": "Cross in the quiet interval you recorded",
+          "goto": "interaction_settled_span",
+          "icon": "hand",
+          "requiresFlag": "bridge_settle_recorded"
         }
       ],
       "art": "scenes/gemfall/cracked-bridge-span"
@@ -828,7 +854,7 @@
       "discovers": [
         "biome.red_sky_foothills"
       ],
-      "narration": "The far side climbs, and keeps climbing. The grass gets shorter, the stones get redder, and the sky ahead glows like the inside of a lantern. These are the foothills of Mount Red Sky, and you are coming down into them from the north-east, with the truth folded up in your packs.",
+      "narration": "Beyond the bridge, grass gives way to red stones. The foothills of Mount Red Sky glow ahead. You climb toward their rim with the outline of the truth in your packs.",
       "choices": [
         {
           "id": "make_camp",
@@ -848,7 +874,15 @@
       "type": "rest",
       "narration": "You camp on the rim and look down. The foothills are full of tiny campfires, thousands of them, all the rush in the world. Above it all, the mountain glows. The stones hum. Somebody has to put this all together on one table, and tomorrow, at Redspire, the wardens' citadel, somebody will.",
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "bridge_preparation_used"
+          },
+          "text": "Your work at the crack became a way across the bridge."
+        }
+      ]
     },
     "rest_setback": {
       "type": "rest",
@@ -862,11 +896,19 @@
       "heal": 3,
       "outcome": "setback",
       "choices": [],
-      "art": "scenes/gemfall/northern-bridge-foot"
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "variants": [
+        {
+          "when": {
+            "flag": "bridge_preparation_used"
+          },
+          "text": "Your work at the crack became a way across the bridge."
+        }
+      ]
     },
     "scene_brass_south": {
       "type": "story",
-      "narration": "Coming south against the line is a wheelbarrow, pushed by six people in six very dented brass hats. The Brassbuckle Expedition. The wheelbarrow is empty. When they see you, they stop, and for once nobody is smiling smoothly. They just look tired.",
+      "narration": "Six tired people in dented brass hats push an empty wheelbarrow south. The Brassbuckle Expedition. They stop when they see you. Nobody smiles smoothly this time.",
       "choices": [
         {
           "id": "ask_what",
@@ -993,7 +1035,7 @@
     },
     "scene_tremor": {
       "type": "story",
-      "narration": "The ground shivers. Not a big shake: a long, low shudder, like a dog dreaming. The whole ration line wobbles. On the cart beside you a tall stack of crates begins to lean, and the tired carter driving it grabs for them too late.",
+      "narration": "The ground gives a long shudder. The ration line wobbles. On a cart beside you, a stack of crates leans. The tired carter reaches for it too late.",
       "choices": [
         {
           "id": "catch_crates",
@@ -1051,7 +1093,7 @@
       "discovers": [
         "character.dragonling"
       ],
-      "narration": "A very small, very fast pony has stopped dead in the road and will not take one more step toward the gem carts. On its back a dragonling about your size is ringing a bell at it, crossly. \"Come ON, Pepper.\" She is Nim, a bell-rider for the gathering towns up north, and she is very late.",
+      "narration": "Nim, a dragonling bell-rider, argues with her pony Pepper at the bridge foot. She wants north. Pepper wants grass. Her bell keeps ringing while she explains the difference.",
       "cast": [
         {
           "figure": "cast/nim",
@@ -1400,7 +1442,7 @@
     },
     "scene_crack_string": {
       "type": "story",
-      "narration": "Behind the tent, two apprentice engineers are kneeling at the end of the bridge, measuring the biggest crack with a knotted string. Every evening, at the same time, they measure it and chalk the date beside it. There is a long ladder of chalk marks now. \"Hold this end?\" one of them asks.",
+      "narration": "Two apprentices measure a crack with knotted string. Help tension the line and learn to brace a crossing rope, or study the chalk marks to learn when the span settles between carts. There is time for one job before the tent meeting. An apprentice has chalk on both eyebrows.",
       "choices": [
         {
           "id": "hold_string",
@@ -1428,17 +1470,35 @@
       },
       "onSuccess": {
         "goto": "scene_engineers",
-        "narration": "You hold it steady as a heron's leg. The apprentice counts the knots, then counts again. \"A hair wider than yesterday,\" she says, and chalks it. \"It's always a hair wider than yesterday.\" She says it as if she is getting tired of hair."
+        "narration": "You hold it steady as a heron's leg. The apprentice counts the knots, then counts again. \"A hair wider than yesterday,\" she says, and chalks it. \"It's always a hair wider than yesterday.\" She says it as if she is getting tired of hair.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_line_practiced",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
         "goto": "scene_engineers",
         "narration": "A breeze catches the string and it wiggles like a worm. You try again. It wiggles more. The apprentice laughs, measures it herself in a moment, and chalks the mark. \"A hair wider than yesterday,\" she says. \"Always is.\""
       },
-      "art": "scenes/gemfall/bridge-engineers-tent"
+      "art": "scenes/gemfall/bridge-engineers-tent",
+      "onAssisted": {
+        "goto": "scene_engineers",
+        "narration": "The apprentice props one end while you tension the line. With her help, you learn how to brace the crossing rope.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_line_practiced",
+            "value": true
+          }
+        ]
+      }
     },
     "scene_crack_string_read_chalk": {
       "type": "story",
-      "narration": "Chalk marks climb the crack, one for every evening since the eruption, each a hair further along. Most days the step is tiny. Some days it jumps. Next to the jumps, somebody has written the number of gem carts that crossed that day. Nobody has written what that means.",
+      "narration": "The chalk marks show each widening crack. Beside them are cart counts and checks made while the span rests. An apprentice shows you the safe interval after the last cart leaves. You copy it for the crossing. Her eyebrows shed a little chalk onto the page.",
       "choices": [
         {
           "id": "on",
@@ -1447,7 +1507,14 @@
           "goto": "scene_engineers"
         }
       ],
-      "art": "scenes/gemfall/bridge-engineers-tent"
+      "art": "scenes/gemfall/bridge-engineers-tent",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "bridge_settle_recorded",
+          "value": true
+        }
+      ]
     },
     "scene_engineers_rubbing": {
       "type": "story",
@@ -1624,7 +1691,7 @@
     },
     "scene_pack_crossing": {
       "type": "story",
-      "narration": "Pellam comes down the line with his big book. \"Humming goods,\" he announces, \"may cross on the wardens' gem cart, logged. Or in your own arms, also logged. The span shivers either way.\" He licks his pencil. \"Logged is not owned. Your choice.\"",
+      "narration": "Pellam offers the wardens' logged gem cart or your own arms for the packs. \"Logged is not owned.\" He licks his pencil. The cart hums like a hive; its mule looks unimpressed.",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -1656,7 +1723,7 @@
     },
     "scene_pack_crossing_carry": {
       "type": "story",
-      "narration": "\"We'll carry them,\" you say. Pellam writes CARRIED, BY HAND, BY CHOICE in his book. You hug your packs tight. They feel heavier than they did this morning, though nothing has been put in them. Pellam looks at them over his spectacles and says nothing, which for Pellam is a lot.",
+      "narration": "Pellam writes CARRIED, BY HAND, BY CHOICE. You keep the packs close. He considers adding an underline, then saves it for later.",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -1675,7 +1742,7 @@
     },
     "scene_pack_crossing_cart": {
       "type": "story",
-      "narration": "You load your packs on the gem cart with all the others. It hums like a hive. As it rolls onto the span, the whole bridge gives a long, low groan, and every warden on it stops and looks down at their boots. Then the cart is over, and the bridge is just a bridge again.",
+      "narration": "Your packs ride on the gem cart. The bridge groans; every warden checks the span. On the far approach, Pellam hands the packs back, still logged, still yours.",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -1732,7 +1799,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "On the rim stands a centaur road marker, freshly painted: REDSPIRE, ONE DAY. Below, the foothills glitter with campfires. Then hooves drum up the road behind you, and Bracken Swiftmile skids to a stop, sash stuffed with letters. \"Relay waits for nobody,\" she pants. \"But it does catch up. Anything going south?\"",
+      "narration": "A fresh centaur marker reads REDSPIRE, ONE DAY. Bracken Swiftmile skids up behind you, sash full of letters. \"Relay waits for nobody. But it does catch up. Anything going south?\"",
       "cast": [
         {
           "figure": "cast/bracken_swiftmile",
@@ -1848,7 +1915,7 @@
     },
     "interaction_bowls": {
       "type": "interaction",
-      "narration": "The shudder has left the whole line shaky, and somewhere up ahead a woman is ladling soup out of a pot as fast as she can. \"Pass them back, loves!\" she calls. \"Hot bowls for the wobbly ones!\" The bowls come down the line hand to hand, steaming, and nobody wants to be the one who drops soup on a Skywarden.",
+      "narration": "Hot soup bowls come down the shaky line. Pass them hand to hand to the tired travelers. The carter takes off her hat, considers using it as a bowl, and thinks better of it.",
       "interaction": {
         "kind": "relay",
         "cue": "Catch the bowl, then pass it down the line.",
@@ -1891,7 +1958,7 @@
     },
     "interaction_level": {
       "type": "interaction",
-      "narration": "Before anyone steps on the span, Engineer Brask jogs after you with a wide tray of water and a tiny cork boat floating in it. \"Engineers' level,\" she says. \"Carry it across the approach planks, flat and slow. If the boat slides to one side, the plank leans. If the boat slides off, you do.\"",
+      "narration": "Brask brings a tray of water with a tiny cork boat. \"Engineers' level.\" Carry it flat across the approach planks. The boat must stay in the middle. It has no interest in going overboard.",
       "interaction": {
         "kind": "balance",
         "cue": "Everyone lift or lower your side until the water is flat, then carry the tray.",
@@ -2084,6 +2151,200 @@
         "goto": "interaction_crossing_signal"
       },
       "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "interaction_transfer_rule": {
+      "type": "interaction",
+      "narration": "Pellam opens the transfer page. The carter agrees to give you the humming gem in return for a song she can sing over it. Put the steps in order before she signs. Pellam has a fresh pen. He is keeping it firmly on the page.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share the rule clues and prepare the agreed transfer.",
+        "actionLabel": "Record the transfer",
+        "options": [
+          {
+            "id": "record",
+            "label": "Record the new destination",
+            "icon": "scroll"
+          },
+          {
+            "id": "tag",
+            "label": "Match tag 4117",
+            "icon": "gem"
+          },
+          {
+            "id": "sign",
+            "label": "Both parties sign",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "tag",
+          "sign",
+          "record"
+        ],
+        "clues": [
+          "Match the gem tag before anyone signs.",
+          "The carter and the new carriers both sign after the tag is checked.",
+          "Record the new destination after both signatures."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_clerk_stone",
+        "narration": "Tag checked, both signatures made, new destination recorded. You sing for the carter. Pellam approves the transfer."
+      },
+      "onFailure": {
+        "goto": "scene_survey_guard",
+        "narration": "You find a rule about goats, a rule about very large goats, and a rule about goats that are actually two children in a coat. By the time you look up, gem 4117 is across."
+      },
+      "onAssisted": {
+        "goto": "scene_clerk_stone",
+        "narration": "Pellam points to each step while you check it. The carter signs, you sing, and the agreed transfer is recorded with help."
+      },
+      "art": "scenes/gemfall/northern-bridge-foot",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ]
+    },
+    "interaction_survey_evidence": {
+      "type": "interaction",
+      "narration": "Put what you noticed beside the crack survey. Say one observation aloud, or ask Brask to read one of her measurements. Each hero adds a piece. Brask moves her tea before the chalk arrives. Experience has taught her this.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Each hero contributes an observation or checks a measurement.",
+        "actionLabel": "Compare the evidence",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "road",
+            "label": "Describe a road we walked",
+            "icon": "map",
+            "reaction": "Your road goes beside the crack lines. Brask checks where it bends."
+          },
+          {
+            "id": "stone",
+            "label": "Describe what we noticed near stones",
+            "icon": "gem",
+            "reaction": "Brask marks the places you describe, asking where the observation came from."
+          },
+          {
+            "id": "measure",
+            "label": "Ask Brask for a bridge measurement",
+            "icon": "scroll",
+            "reaction": "Brask reads yesterday and today from the survey. One pencil falls out of her hair."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_outline",
+        "narration": "Your observations and the engineers' measurements fit on one survey. Together you compare the bends.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "plotted_it_yourself",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_outline",
+        "narration": "Your map comes out looking like a cat walked across it. Brask takes the chalk, says \"no, no, you're right, look,\" and draws it again properly."
+      },
+      "onAssisted": {
+        "goto": "scene_outline",
+        "narration": "Brask reads the survey aloud while you add your observations. Together you see where the lines meet.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "plotted_it_yourself",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/bridge-engineers-tent",
+      "cast": [
+        {
+          "figure": "cast/brask",
+          "name": "Engineer Brask"
+        }
+      ]
+    },
+    "interaction_survey_line": {
+      "type": "interaction",
+      "narration": "The warden has checked the crossing rope. Use the tension you practiced: hold it while the acting hero guides the passage. Alone, use its fixed support. The chalk on the rope must stay beside the chalk on the post.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Brace the checked rope while the acting hero guides the crossing.",
+        "actionLabel": "Guide the crossing",
+        "supportLabel": "Keep the rope taut"
+      },
+      "onSuccess": {
+        "goto": "scene_far_rim",
+        "narration": "The brace holds steady. The warden guides you across the checked span.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_preparation_used",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_under_bridge",
+        "narration": "The rope slackens. The warden closes the span and leads you down to the old ford."
+      },
+      "onAssisted": {
+        "goto": "scene_far_rim",
+        "narration": "The warden braces the post beside you. Together you keep the rope taut and cross.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_preparation_used",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "interaction_settled_span": {
+      "type": "interaction",
+      "narration": "The last cart clears the span. Your copied measurements show the quiet interval, and the warden confirms it with her flag. Wait for the gold signal before stepping onto the checked section.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Step when the gold signal marks the settled interval.",
+        "actionLabel": "Step onto the span",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "scene_far_rim",
+        "narration": "You use the recorded interval. The warden keeps the carts waiting until you are across.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_preparation_used",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_under_bridge",
+        "narration": "You stop when the flag drops. The span needs another inspection; the warden sends you to the old ford."
+      },
+      "onAssisted": {
+        "goto": "scene_far_rim",
+        "narration": "The warden calls the quiet interval from your notes. With her help, you cross before the carts move.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_preparation_used",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
     }
   },
   "voiceGuide": {
@@ -2126,6 +2387,26 @@
       "interaction_bowls": {
         "props": [
           "prop_soup_bowl"
+        ]
+      },
+      "interaction_transfer_rule": {
+        "props": [
+          "prop_letters"
+        ]
+      },
+      "interaction_survey_evidence": {
+        "props": [
+          "prop_letters"
+        ]
+      },
+      "interaction_survey_line": {
+        "props": [
+          "prop_knotted_string"
+        ]
+      },
+      "interaction_settled_span": {
+        "props": [
+          "prop_letters"
         ]
       }
     }
