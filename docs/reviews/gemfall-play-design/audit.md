@@ -126,8 +126,8 @@ claim it mattered.
    see the [implementation and verification](../gemfall-ford-road-play/README.md).
 3. **04A + 04B:** regional behavior, observation and intervention. Implemented in the [third-wave review](../gemfall-pride-forest-play/README.md): marker brace versus checked line, prepared sash clues, herd-map recovery, and mending versus woodland chorus.
 4. **05A/B/C:** all three routes to the Outline of Truth and disclosure. Implemented in the [fourth-wave review](../gemfall-outline-play/README.md): survey crossing choices, high-path braces/runoff recovery, shared evidence and bell-duty crowd approaches.
-5. **01 + 02:** thirty-minute opening/onboarding pass, preserving the art pilot.
-6. **06:** evidence and purpose, with a separate reveal/continuity review.
+5. **01 + 02:** thirty-minute opening/onboarding pass, preserving the art pilot. Implemented in the [fifth-wave review](../gemfall-opening-play/README.md): checked mail rescue, shared introductions and farm-work hedge help. Timing remains a target requiring family calibration.
+6. **06:** evidence and purpose. Implemented in the [sixth-wave review](../gemfall-ashfall-play/README.md): dated evidence, learned-call gate recovery and a purpose council; reveal/continuity and persistent ally/pursuit/clock checks included. Timing still needs family calibration.
 7. **07R/H/L:** each pursuit's own play, preserving Walk and clock economics.
 8. **08:** final philosophy/confrontation pass, after the upstream payoffs exist.
 

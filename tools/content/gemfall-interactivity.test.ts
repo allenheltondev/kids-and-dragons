@@ -51,6 +51,10 @@ function reachesEndingWithout(chapter: Chapter, blocked: string): boolean {
   return false;
 }
 
+// These gates inspect shortest paths only. Do not compute 500 typical-path
+// walks per scenario on each assertion: they are unused and can time out CI.
+const shortestReport = (chapter: Chapter) => pacingReport(chapter, undefined, 0);
+
 const text = (chapter: Chapter): string => JSON.stringify(chapter.scenes);
 const count = (chapter: Chapter, re: RegExp): number => (text(chapter).match(re) ?? []).length;
 
@@ -87,18 +91,18 @@ describe.each(chapters)("$id", (chapter) => {
     const fights = Object.entries(chapter.scenes).filter(([, s]) => s.type === "encounter").map(([id]) => id);
     const spine = fights.filter((id) => !reachesEndingWithout(chapter, id));
     expect(spine.length, `${chapter.id}: no encounter is on every road to a success ending`).toBeGreaterThan(0);
-    for (const { shortest } of pacingReport(chapter).scenarios) expect(shortest!.encounters).toBeGreaterThanOrEqual(1);
+    for (const { shortest } of shortestReport(chapter).scenarios) expect(shortest!.encounters).toBeGreaterThanOrEqual(1);
   });
 
   it("keeps the standard length: 30 scenes and 14 votes and checks on the shortest path", () => {
-    for (const { shortest } of pacingReport(chapter).scenarios) {
+    for (const { shortest } of shortestReport(chapter).scenarios) {
       expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
       expect(shortest!.decisions + shortest!.checks).toBeGreaterThanOrEqual(14);
     }
   });
 
   it("puts four story interactions in three kinds on the shortest path", () => {
-    for (const { scenario } of pacingReport(chapter).scenarios) {
+    for (const { scenario } of shortestReport(chapter).scenarios) {
       const onPath = (shortestSuccessPath(chapter, scenario) ?? []).map((id) => chapter.scenes[id]!).filter((s) => s.type === "interaction");
       expect(onPath.length, `${chapter.id} (${scenario.id})`).toBeGreaterThanOrEqual(4);
       const kinds = new Set(onPath.map((s) => (s.type === "interaction" ? s.interaction.kind : "")));

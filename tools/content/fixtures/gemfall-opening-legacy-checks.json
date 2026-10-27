@@ -1,0 +1,562 @@
+{
+  "gemfall-01": {
+    "check_bridge_squeeze": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Wriggle across a bridge where nobody can move",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "choice_why_north",
+        "narration": "You go sideways, then under a cart, then over a very patient yeti, and pop out of the far end like a cork from a bottle. The noodle stall is right there."
+      },
+      "onFailure": {
+        "goto": "choice_why_north",
+        "narration": "The crowd swallows you up and carries you the whole way across without your feet touching the ground once. It sets you down very politely, facing the wrong way, right beside the noodle stall."
+      },
+      "art": "scenes/gemfall/exchange-long-bridge"
+    },
+    "check_newcomers_carry": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Carry a whole family's luggage up the busiest street in the realm",
+      "cast": [
+        {
+          "figure": "cast/selkie_grandmother",
+          "name": "Selkie Grandmother"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "interaction_quay_line",
+        "narration": "Trunks, bundles, a rocking chair and a fishbowl with a very calm fish in it: you carry the lot up the hill without dropping a thing. The selkies take a room at the Empty Chair, and the five children wave from the window until you turn the corner."
+      },
+      "onFailure": {
+        "goto": "interaction_quay_line",
+        "narration": "Halfway up the hill the biggest trunk pops open, and out pour about a hundred knitted socks. All five children help you chase them down the street. It takes ages, and it is the most fun anybody has had all week. The selkies take a room at the Empty Chair, socks and all."
+      },
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "check_rumours": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Catch three good rumors out of a whole dock shouting at once",
+      "cast": [
+        {
+          "figure": "entities/boggart"
+        },
+        {
+          "figure": "cast/fishmonger",
+          "name": "Fishmonger"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_three_rumours",
+        "narration": "You stand very still in the middle of all that shouting and pick out the good bits: one from a sailor, one from a drover, one from a frogfolk with reeds in her hat. Three rumors, three roads, caught like fish in a net.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "heard_every_road",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_three_rumours",
+        "narration": "The dock shouts too fast. You catch half a rumor about a pie and a whole one about somebody's aunt. In the end the yeti fishmonger takes pity on you and says the roads again, slowly, between herrings."
+      },
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "check_post_sort": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Sort nine hundred claim letters before the griffins take off",
+      "cast": [
+        {
+          "figure": "cast/postmaster_quill",
+          "name": "Postmaster Quill"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_gutter_glint",
+        "narration": "You sort them by mountain, then by valley, then by how loud the handwriting is. Postmaster Quill is so pleased she gives you a brave whistle, the kind couriers blow to clear the sky.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "roller"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_gutter_glint",
+        "narration": "You sort the letters beautifully, into all the wrong sacks. A letter for a duke is now going to a duck. Quill sighs, says it will all come out in the wash, and stuffs everything into one enormous sack anyway."
+      },
+      "art": "scenes/gemfall/exchange-griffin-post"
+    },
+    "check_gull_grab": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Catch a seagull in mid-dive, gently",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tavern",
+        "narration": "You catch the gull in mid-dive, very gently, like a loaf of bread. It looks embarrassed. You set it down on a post, and it pretends that was where it was going all along."
+      },
+      "onFailure": {
+        "goto": "scene_tavern",
+        "narration": "The gull is quicker. It snatches the stone, flaps three circles over the market, finds it is much heavier than a fish, and drops it down the chimney of the nearest tavern. You run in after it and fish it out of the ashes, still warm, and only a little sooty."
+      },
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "check_haggle": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Sing the price back to Tobble, one key lower, without losing the tune",
+      "cast": [
+        {
+          "figure": "cast/tobble",
+          "name": "Tobble Reedpipe"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_laced",
+        "narration": "You sing back, one key lower. Tobble is so delighted he sells you the laces at last week's price.",
+        "effects": [
+          {
+            "type": "spendCoins",
+            "amount": 1
+          },
+          {
+            "type": "grantItem",
+            "itemId": "quickfoot_lace",
+            "to": "roller"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_lace_tangle",
+        "narration": "You sing back, but your note lands somewhere Tobble's song has never been. He loses his place and starts again from the top, twice. Somewhere in the muddle, money changes hands and something is wrapped in paper.",
+        "effects": [
+          {
+            "type": "spendCoins",
+            "amount": 2
+          }
+        ]
+      },
+      "art": "scenes/gemfall/outfitters-steps"
+    },
+    "check_inn_story": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell the red night so well a whole inn goes quiet",
+      "cast": [
+        {
+          "figure": "cast/innkeeper_flint",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "rest_empty_chair",
+        "narration": "You tell it all: the cherry-red sky, the gem-light falling, the seagull and its very surprised fish. The whole inn goes quiet. Flint wipes one eye with a dishcloth and hands you the cupboard key without a word."
+      },
+      "onFailure": {
+        "goto": "rest_empty_chair",
+        "narration": "Your story wanders off somewhere around the fish and never quite comes back. The prospectors laugh so kindly that Flint gives the cupboard to someone else and you the hayloft above the mules, which is warm, smells of apples, and is honestly nicer."
+      },
+      "art": "scenes/gemfall/empty-chair-tavern"
+    },
+    "check_signon": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Tell a caravan master the truth and mean it",
+      "cast": [
+        {
+          "figure": "cast/hesper",
+          "name": "Hesper Longstride",
+          "size": "large"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_hired",
+        "narration": "Hesper listens to the whole answer, all the way to the end. Then she nods once, like a gate closing.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "hired_as_crew",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_turnip_wagon",
+        "narration": "You get muddled halfway through and say \"um\" eleven times. Hesper is kind about it. Hesper is also busy."
+      },
+      "art": "scenes/gemfall/caravan-yard"
+    },
+    "check_leaving_bell": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Ring the Leaving Bell loud enough for the whole city",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "rest_northbound",
+        "narration": "You haul on the rope together. BONG. The bell is so loud that every gull in the harbor lifts off at once, and all over the Exchange, people you have never met stop and wave you goodbye."
+      },
+      "onFailure": {
+        "goto": "rest_northbound",
+        "narration": "You haul on the rope, and the rope hauls back. Up you go, dangling under the bell like the world's most surprised clapper. It rings anyway. The whole gate cheers, and Hesper waits, very patiently, for you to come down."
+      },
+      "art": "scenes/gemfall/exchange-north-gate"
+    }
+  },
+  "gemfall-02": {
+    "check_reroute": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Everybody dash in front of the lead oxen and steer them around the field",
+      "cast": [
+        {
+          "figure": "cast/hob",
+          "name": "Hob Thistledown"
+        },
+        {
+          "figure": "entities/centaur",
+          "name": "Rush drover"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_caravan_turned",
+        "narration": "You dash in front of the lead oxen, flapping your arms like a scarecrow in a gale. The oxen decide the edge of the field looks nicer, and the drover, sighing, lets them have it."
+      },
+      "onFailure": {
+        "goto": "scene_caravan_turned",
+        "narration": "The oxen don't see you in all the dust. Three wagons cut a muddy stripe right through the squash before the rest swing around. A faun starts singing a very sad verse about it.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "check_egg_price": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Work out a price that is fair to the neighbors and to the rush",
+      "cast": [
+        {
+          "figure": "entities/faun"
+        }
+      ],
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_egg_price_fair",
+        "narration": "You do the sums on the back of the price board. Two prices, you decide: one for the rush, and one for neighbors. The egg faun reads it twice and laughs out loud.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "fair_prices",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_egg_price_muddle",
+        "narration": "You do the sums three times and get three different answers. The last one says an egg costs one duck. The hen does not like that at all."
+      }
+    },
+    "check_flock_clever": {
+      "art": "scenes/gemfall/sheeple-ridge",
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Look closely enough that a whole flock decides you are worth copying",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_flock_copies",
+        "narration": "You crouch, and you squint, and you tilt your head. Thirty sheeple crouch, squint, and tilt their heads exactly the same way. The flock has decided you are clever. Nobody told it to. It just knows.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "flock_followed",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_flock_scatters",
+        "narration": "You crouch down. The flock watches you politely and does not crouch. Then a jackalope bursts out of the grass right beside you, and that is the end of the meeting."
+      }
+    },
+    "check_wolf_kind": {
+      "type": "check",
+      "stat": "heart",
+      "checkKind": "doing",
+      "tn": 12,
+      "prompt": "Put down your supper bundle without looking like a snack",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf",
+          "count": 2
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_plank_bridge",
+        "narration": "The wolves eat every crumb and the sausage too, curl up into one warm gray heap with eight legs, and watch you go. They are not tame. But they will remember you.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "fed_the_wolves",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "You trip over your own supper bundle. The wolves decide you are part of the offer."
+      }
+    },
+    "check_bridge_beam": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everybody lift a fence post the size of a canoe and drop it in exactly the right place",
+      "cast": [
+        {
+          "figure": "entities/faun"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_bridge_mended",
+        "narration": "Heave. Shove. Thump. The new beam drops into place with a sound like a door shutting. The first hay cart rolls over, and the bridge does not even creak.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_mended",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_bridge_ferry",
+        "narration": "Heave. Shove. Splash. The beam slides off the bank and into the canal, and floats there. The fauns look at it. Then they look at each other."
+      }
+    },
+    "check_tremor_listen": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Lie very, very still and hear what the ground is saying",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_tremor_heard",
+        "narration": "You press your ear flat to the cold ground and hold your breath. Far, far away, there is a sound.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "heard_the_tremor",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_tremor_snore",
+        "narration": "You press your ear flat to the ground and hold your breath. The only thing you can hear is the caravan cook, snoring."
+      }
+    },
+    "check_trade": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Offer the sprites the best thing in your pockets",
+      "cast": [
+        {
+          "figure": "entities/harvest_sprite",
+          "count": 4
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_medal_ceremony",
+        "narration": "You offer a shiny button, a song, and your very best joke. The sprites go into a huddle. They come out of the huddle. It's a deal.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "sprites_friends",
+            "value": true
+          },
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_harvest"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "check_earn",
+        "narration": "The sprites look at your offer for a long four seconds. Then they point, all together, at the weeds in the row. They don't want things. They want help."
+      }
+    },
+    "check_earn": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Pick up every dropped seed before the sprites do",
+      "cast": [
+        {
+          "figure": "entities/harvest_sprite",
+          "count": 4
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_medal_ceremony",
+        "narration": "It's a race, and it was always a race. You win by one seed. The sprites are thrilled, and tuck a honeycake into your pocket for later.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "sprites_friends",
+            "value": true
+          },
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_harvest"
+          },
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "roller"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_medal_ceremony",
+        "narration": "The sprites beat you to every seed, and you get stung by a nettle on the last one. But you worked till lunchtime without complaining, and the sprites decide that counts.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "sprites_friends",
+            "value": true
+          },
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_harvest"
+          },
+          {
+            "type": "damage",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "check_steal": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 16,
+      "prompt": "Snatch the stone between one trumpet toot and the next",
+      "cast": [
+        {
+          "figure": "entities/harvest_sprite",
+          "count": 4
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_stolen",
+        "narration": "Toot. Swap. Snatch. You are gone before the new guards reach their spots. Nobody saw. Probably.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "sprites_wronged",
+            "value": true
+          },
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_harvest"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_stolen",
+        "narration": "You grab it, and the trumpet toots the alarm. Forty sprites riding jackalopes chase you down three rows and through a nettle patch before you get away.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "sprites_wronged",
+            "value": true
+          },
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_harvest"
+          },
+          {
+            "type": "damage",
+            "amount": 1
+          }
+        ]
+      }
+    },
+    "check_signpost": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Peel off the rush's signs without bringing the whole post down",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_signpost_found",
+        "narration": "Board by board, you peel the rush's signs away. Underneath, carved deep and very old, is the real one."
+      },
+      "onFailure": {
+        "goto": "scene_signpost_lost",
+        "narration": "You pull one sign too many. Every board slides off at once and lands in a heap, all pointing different ways. You pick the biggest."
+      }
+    },
+    "check_hedge": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Say why you came, plainly enough for a hedge to hear",
+      "cast": [
+        {
+          "figure": "cast/pib",
+          "name": "Pib",
+          "size": "tiny"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_pib_gift",
+        "narration": "The hedge rustles, thinks about it, and quietly opens a path just wide enough for you and nobody else. The mob doesn't even notice. Pib looks very proud of the hedge.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "let_in_properly",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_long_path",
+        "narration": "You mean it, but it comes out sounding like a speech. The hedge has heard a lot of speeches this week."
+      }
+    }
+  }
+}
