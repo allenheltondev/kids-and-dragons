@@ -2618,6 +2618,12 @@
       ],
       "choices": [
         {
+          "id": "each_voice",
+          "label": "Each hero shares what the journey taught them",
+          "icon": "party",
+          "goto": "interaction_verdict_council"
+        },
+        {
           "id": "honest",
           "label": "Tell it what you want, honestly",
           "icon": "heart",
@@ -3465,6 +3471,18 @@
       ],
       "choices": [
         {
+          "id": "match_by_hum",
+          "label": "Use a carried stone's hum to fit the pieces together",
+          "icon": "gem",
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1
+            }
+          },
+          "goto": "interaction_restore_fit"
+        },
+        {
           "id": "fit",
           "label": "Match each piece to its gap, quick, before they move",
           "icon": "clever",
@@ -3704,6 +3722,12 @@
           "label": "Hunt for the latch that lets the wheel turn",
           "icon": "clever",
           "goto": "check_wheel_latch"
+        },
+        {
+          "id": "steady_latch",
+          "label": "Feel for the old latch as the wheel moves",
+          "icon": "hand",
+          "goto": "interaction_wheel_latch"
         }
       ]
     },
@@ -3905,9 +3929,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Pass her the leash",
+          "label": "Pass the leash along the prepared line",
           "icon": "whistle",
-          "goto": "check_pass_leash"
+          "goto": "interaction_leash_transfer"
         }
       ]
     },
@@ -5724,6 +5748,204 @@
       "onFailure": {
         "goto": "scene_tree_line"
       }
+    },
+    "interaction_verdict_council": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "The Seal-Keeper lowers its head. It asks what brought you here, but this time every hero has room to answer. Each of you can share something you carried, someone who helped, or a choice you want to make. It listens without counting who has the loudest voice.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Each hero shares one thing they carried, learned, or chose.",
+        "actionLabel": "Finish our answer",
+        "options": [
+          {
+            "id": "carried",
+            "label": "Name something I carried",
+            "icon": "gem",
+            "reaction": "The dragon notices how carefully you kept it."
+          },
+          {
+            "id": "helped",
+            "label": "Remember someone who helped",
+            "icon": "heart",
+            "reaction": "An embermoth settles closer to listen."
+          },
+          {
+            "id": "choice",
+            "label": "Say what I want for the realm",
+            "icon": "star",
+            "reaction": "The Seal-Keeper waits until your answer is complete."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_seal_cracks",
+        "narration": "The dragon heard everyone. It moves aside. \"You came a long way to give your own answers,\" it says.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "dragon_satisfied",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_seal_cracks",
+        "narration": "The Keeper helps find the words and makes room for the party at the seal."
+      },
+      "onAssisted": {
+        "goto": "scene_seal_cracks",
+        "narration": "The Keeper asks a question at a time. Together you finish your answer, and it lets you pass.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "dragon_satisfied",
+            "value": true
+          }
+        ]
+      }
+    },
+    "interaction_restore_fit": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "One of your carried stones hums beside its own gap. Follow that sound to arrange the work: listen for the matching note, set the stone where it belongs, then keep it steady while the Keeper warms the seal. The pieces do not mind taking turns.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Arrange the steps: listen, fit, then hold steady.",
+        "actionLabel": "Fit the carried stones",
+        "options": [
+          {
+            "id": "listen",
+            "label": "Listen for a matching hum",
+            "icon": "ear"
+          },
+          {
+            "id": "place",
+            "label": "Fit the stone in its own gap",
+            "icon": "gem"
+          },
+          {
+            "id": "steady",
+            "label": "Keep it steady as the seal warms",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "listen",
+          "place",
+          "steady"
+        ],
+        "clues": [
+          "The right gap answers the stone before anyone touches it.",
+          "A stone must be placed before it can be held still.",
+          "The Keeper warms the seal only after the pieces are in place."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_restore_last_gap",
+        "narration": "Each piece finds a home, then settles under your hands. Only the last gap remains."
+      },
+      "onFailure": {
+        "goto": "scene_restore_last_gap",
+        "narration": "A stone slips and bumps your fingers. The Keeper catches it and helps fit it correctly; the last gap remains.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "scene_restore_last_gap",
+        "narration": "The Keeper hums back each note so you can find its gap. Together you finish all but the last one."
+      }
+    },
+    "interaction_wheel_latch": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "The stone wheel turns a little, then sticks. You can feel the small moth-shaped latch moving beneath its rim. Wait for the wheel to settle and catch the latch gently. A very old mechanism deserves a careful hand.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Stop at the calm place to release the latch.",
+        "actionLabel": "Release the old latch",
+        "target": 0.6,
+        "width": 0.34,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "scene_titan_goes",
+        "narration": "Click. The latch opens, and the wheel turns the rest of the way. Beneath the seal, the old note becomes soft."
+      },
+      "onFailure": {
+        "goto": "scene_titan_goes",
+        "narration": "The latch catches your fingers, but the Keeper steadies the wheel so you can free it. Together you turn it all the way.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "scene_titan_goes",
+        "narration": "The Keeper braces the rim as you feel for the latch. It opens, and the wheel turns gently."
+      }
+    },
+    "interaction_leash_transfer": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        },
+        {
+          "figure": "cast/captain_voss",
+          "name": "Captain Voss"
+        }
+      ],
+      "narration": "You told the wardens what was happening, and they came prepared. Pellam and the others form a line across the cave. Catch the bucking leash, then pass it carefully into Captain Voss's hands. She has already tucked her ledger away.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the leash and pass it along the prepared line.",
+        "actionLabel": "Pass the leash",
+        "objectLabel": "The humming leash"
+      },
+      "onSuccess": {
+        "goto": "scene_cage_closes",
+        "narration": "Hand to hand, the leash reaches Captain Voss. She braces it while the wardens finish their promises."
+      },
+      "onFailure": {
+        "goto": "scene_cage_closes",
+        "narration": "The line wobbles, but the wardens catch and steady the leash before it reaches Voss."
+      },
+      "onAssisted": {
+        "goto": "scene_cage_closes",
+        "narration": "Pellam steps into the gap. Everyone passes the leash safely into Voss's hands."
+      }
     }
   },
   "voiceGuide": {
@@ -5758,6 +5980,21 @@
       "interaction_bundles": {
         "props": [
           "prop_faun_bundle"
+        ]
+      },
+      "interaction_restore_fit": {
+        "props": [
+          "prop_humming_stone"
+        ]
+      },
+      "interaction_wheel_latch": {
+        "props": [
+          "prop_stone_board"
+        ]
+      },
+      "interaction_leash_transfer": {
+        "props": [
+          "prop_rope_pole"
         ]
       }
     }
