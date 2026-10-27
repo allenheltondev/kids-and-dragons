@@ -422,16 +422,16 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
   }
 
   // ---- Sections ----
-  function editable(label, text, where, onSave, extra) {
+  function editable(label, text, where, onSave, extra, saveLabel = "Save to canon", allowEmpty = false) {
     const box = el("div", { class: "note" });
     const show = () => {
-      const edit = el("button", { type: "button", class: "link" }, "Edit");
+      const edit = el("button", { type: "button", class: "link" }, text || !allowEmpty ? "Edit" : "Add");
       edit.addEventListener("click", editing);
-      box.replaceChildren(...[el("div", { class: "where" }, el("span", {}, label + (where ? " · " + where : "")), edit), el("div", { class: "text" }, text || "—"), extra].filter(Boolean));
+      box.replaceChildren(...[el("div", { class: "where" }, el("span", {}, label + (where ? " · " + where : "")), edit), el("div", { class: "text" }, text || (allowEmpty ? "None." : "—")), extra].filter(Boolean));
     };
     const editing = () => {
       const area = el("textarea", { "aria-label": label }, text);
-      const saveButton = el("button", { type: "button", class: "primary" }, "Save to canon");
+      const saveButton = el("button", { type: "button", class: "primary" }, saveLabel);
       const cancel = el("button", { type: "button" }, "Cancel");
       cancel.addEventListener("click", show);
       saveButton.addEventListener("click", async () => {
@@ -553,12 +553,13 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     const empty = !notes.length && !individual.length;
     return el("section", { class: "panel" },
       el("h2", {}, "Voice notes in canon"),
-      empty ? el("div", { class: "hint" }, entry.kind === "narrator" || entry.kind === "party" ? "Described on the sheet itself, not in a chapter." : "No chapter gives a voice note for them yet: they appear only in scene casts.") : null,
+      empty ? el("div", { class: "hint" }, entry.kind === "narrator" || entry.kind === "party" ? "Described on the sheet itself, not in a chapter: change it under Voice and model." : "No chapter gives a voice note for them yet: they appear only in scene casts.") : null,
       notes, individual,
       el("div", { class: "hint" }, "Edits are written to the file shown, and the sheet is rebuilt so the voice model hears the new words. Your decisions are kept."));
   }
 
   function modelPanel(id, entry) {
+    const sheetOwned = entry.kind === "narrator" || entry.kind === "party";
     const voice = el("select", { "aria-label": "Voice" }, data.voices.map((v) => el("option", { value: v.id }, voiceLabel(v))));
     voice.value = entry.gemini.voice;
     voice.addEventListener("change", async () => { await save(id, { voice: voice.value }); draw(); loadTold(); if (prefs.autoplay) autoPlay(); });
@@ -573,8 +574,19 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       mismatch ? el("div", { class: "clash" }, "This voice reads as a " + (info.gender === "f" ? "woman's" : "man's") + ", and they're marked " + entry.gender + ".") : null,
       (clashes[id] || []).map((clash) => el("div", { class: "clash" }, "Same voice as " + clash.with.map((other) => (data.speakers[other] || { name: other }).name).join(", ") + " in " + clash.chapter)),
       el("label", { class: "inline grow" }, "Accent", accent),
+      sheetOwned ? editable("How they sound", entry.who, "on the sheet: the " + entry.name.toLowerCase() + " isn't in any chapter's canon", async (text) => {
+        const json = await save(id, { who: text });
+        if (json) loadTold();
+        return !!json;
+      }, null, "Save") : null,
+      editable("Your direction for the model", entry.direction || "", "added after who they are, kept on every rebuild", async (text) => {
+        const json = await save(id, { direction: text });
+        if (json) loadTold();
+        return !!json;
+      }, el("div", { class: "hint" }, "Plain words, like \u201ca touch quicker than usual\u201d or \u201cbrighter, with a smile in it\u201d. Leave it empty to remove it."), "Save", true),
       el("div", { class: "hint" }, "What " + (told ? told.model : prefs.model) + " is told, besides the words:"),
-      el("pre", { class: "told", id: "told" }, told && told.id === id ? told.display : "…"));
+      el("pre", { class: "told", id: "told" }, told && told.id === id ? told.display : "…"),
+      el("div", { class: "hint" }, "Changing the description or direction changes what is sent, so each line renders once more in the new words."));
   }
 
   function hearPanel(id, entry) {
