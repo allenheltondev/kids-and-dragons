@@ -265,6 +265,26 @@ describe("changing what the model is told", () => {
 });
 
 describe("the profile page's routes", () => {
+  it("renders a new take of a line as one more call, and shows each character through their take", async () => {
+    const root = fakeRepo();
+    const sheetPath = path.join(root, "content", "voice", "cast.json");
+    rebuildSheet(root, sheetPath);
+    const { handle, calls } = routes(root, sheetPath);
+    // Take 2 before take 1 was ever heard (the words just changed): one call, not two.
+    const second = await handle("/api/cast/render", { id: "pip", line: 0, take: 2 }, { gemini: "k" });
+    expect(calls()).toBe(1);
+    const cell = (second!.body as { cell: { takes: { clips: unknown[]; pending?: boolean }[] } }).cell;
+    expect(cell.takes).toHaveLength(2);
+    expect(cell.takes[1]!.clips).toHaveLength(1);
+    expect(cell.takes[0]!.pending).toBe(true);
+    const state = (await handle("/api/cast/state", { takes: { pip: 2 } }, {}))!.body as { cells: Record<string, { takes: unknown[] }[]> };
+    expect(state.cells.pip![0]!.takes).toHaveLength(2);
+    expect(state.cells.gruff![0]!.takes).toHaveLength(1);
+    // Takes run 1 to 5; anything else is the first.
+    await handle("/api/cast/render", { id: "pip", line: 0, take: 99 }, { gemini: "k" });
+    expect(calls()).toBe(2);
+  });
+
   it("says a typed line in the character's voice, and only looks until asked to render", async () => {
     const root = fakeRepo();
     const sheetPath = path.join(root, "content", "voice", "cast.json");
@@ -297,12 +317,14 @@ function routes(root: string, sheetPath: string) {
   const pricing = JSON.parse(fs.readFileSync(path.join(ROOT, "tools", "voice", "pricing.json"), "utf8")) as Pricing;
   const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "cast-clips-"));
   let sent: unknown = null;
+  let calls = 0;
   const fetch: Fetch = async (_url, init) => {
     sent = JSON.parse(init.body ?? "{}");
+    calls += 1;
     const body = JSON.stringify({ candidates: [{ content: { parts: [{ inlineData: { mimeType: "audio/L16;rate=24000", data: Buffer.alloc(4800).toString("base64") } }] } }] });
     return { ok: true, status: 200, headers: { get: () => null }, arrayBuffer: async () => new ArrayBuffer(0), text: async () => body };
   };
   const budget = { spent: 0, cap: 5 };
   const handle = createCastRoutes({ ws: { outDir, cast: bakeoffCast(), pricing, today: "2026-10-27" }, sheetPath, catalog: [], fetch, chapterCampaigns: { "a-01": "a", "gemfall-01": "gemfall" }, root }, budget);
-  return { handle, sent: () => sent, budget };
+  return { handle, sent: () => sent, calls: () => calls, budget };
 }
