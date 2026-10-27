@@ -80,6 +80,7 @@ label.inline { display: flex; gap: 6px; align-items: center; font-size: 13px; co
   <div class="top">
     <h1>Cast voice sheet</h1>
     <span class="meta" id="meta"></span>
+    <a href="/cast/profile">Review one at a time</a>
     <a href="/">Bake-off</a>
   </div>
   <div class="row">
@@ -325,7 +326,7 @@ label.inline { display: flex; gap: 6px; align-items: center; font-size: 13px; co
     const chapters = entry.chapters.slice(0, 8).map((c) => el("span", { class: "chip" }, c));
     if (entry.chapters.length > 8) chapters.push(el("span", { class: "chip" }, "+" + (entry.chapters.length - 8)));
     return el("section", { class: "card" + (entry.status === "approved" ? " is-approved" : ""), id: "cast-" + id },
-      el("h2", {}, entry.name, el("span", { class: "badge" }, entry.kind), entry.status === "approved" ? el("span", { class: "badge ok" }, "approved") : null),
+      el("h2", {}, entry.name, el("span", { class: "badge" }, entry.kind), entry.status === "approved" ? el("span", { class: "badge ok" }, "approved") : null, " ", el("a", { href: "/cast/profile?id=" + encodeURIComponent(id), class: "hint" }, "profile")),
       el("div", { class: "who" }, entry.who),
       el("div", { class: "chips" }, chapters),
       el("div", { class: "hint" }, [entry.pronouns ? "pronouns " + entry.pronouns : null, entry.aliases.length ? "also " + entry.aliases.join(", ") : null, entry.speaks ? null : "doesn't speak"].filter(Boolean).join(" · ")),
