@@ -13,9 +13,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { quote, type Pricing } from "../cost-model.ts";
-import { cleanPcm16, readWav16 } from "./clean.ts";
+import { CLEANER_VERSION, cleanPcm16, readWav16 } from "./clean.ts";
 import { renderPage, type Cell, type ClipRef, type Results } from "./page.ts";
-import { pcmToWav, plan, send, type CastFile, type Engine, type Fetch, type Job, type Keys, type Unsupported } from "./providers.ts";
+import { jobEndsOnSound, pcmToWav, plan, send, type CastFile, type Engine, type Fetch, type Job, type Keys, type Unsupported } from "./providers.ts";
 import type { Sample } from "./samples.ts";
 
 export interface Workspace {
@@ -43,24 +43,29 @@ interface ClipMeta {
   renderMs: number;
   bytes: number;
   at: string;
-  /** Gemini clips: cleaned of end-of-turn noise, with the raw audio kept at `<key>.raw.wav`. */
-  cleaned?: boolean;
+  /** Gemini clips: the cleaner version that cleaned them (true is version 1), with the raw audio kept at `<key>.raw.wav`. */
+  cleaned?: boolean | number;
   removedMs?: number;
 }
 
 /**
- * A Gemini clip rendered before cleaning existed: clean it now, keeping the
- * original as the raw copy. Costs nothing, sends nothing.
+ * A Gemini clip rendered before this cleaner: clean it now, from its raw copy
+ * when it has one (a clip cleaned by an older cleaner), or from itself (a clip
+ * rendered before cleaning existed, which becomes the raw copy). Costs
+ * nothing, sends nothing.
  */
 function ensureCleaned(ws: Workspace, job: Job, meta: ClipMeta): ClipMeta {
-  if (job.provider !== "gemini" || meta.ext !== "wav" || meta.cleaned) return meta;
+  if (job.provider !== "gemini" || meta.ext !== "wav" || meta.cleaned === CLEANER_VERSION) return meta;
   const file = path.join(clipsOf(ws), `${job.key}.wav`);
-  const wav = readWav16(fs.readFileSync(file));
+  const rawFile = path.join(clipsOf(ws), `${job.key}.raw.wav`);
+  const source = meta.cleaned && fs.existsSync(rawFile) ? rawFile : meta.cleaned ? null : file;
+  if (source === null) return meta;
+  const wav = readWav16(fs.readFileSync(source));
   if (wav === null) return meta;
-  const cleaned = cleanPcm16(wav.pcm, wav.rate);
-  fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.raw.wav`), pcmToWav(wav.pcm, wav.rate));
+  const cleaned = cleanPcm16(wav.pcm, wav.rate, { endsOnSound: jobEndsOnSound(job) });
+  if (source === file) fs.writeFileSync(rawFile, pcmToWav(wav.pcm, wav.rate));
   fs.writeFileSync(file, pcmToWav(cleaned.pcm, wav.rate));
-  const next: ClipMeta = { ...meta, cleaned: true, removedMs: cleaned.removed.reduce((sum, r) => sum + r.endMs - r.startMs, 0) };
+  const next: ClipMeta = { ...meta, cleaned: CLEANER_VERSION, removedMs: cleaned.removed.reduce((sum, r) => sum + r.endMs - r.startMs, 0) };
   fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.json`), JSON.stringify(next));
   return next;
 }
@@ -139,7 +144,7 @@ export function cellOf(engine: Engine, sample: Sample, takes: number, ws: Worksp
         clips.push({
           // A cleaned clip gets its own URL: the server tells browsers to keep clips for a year, and one
           // that played the uncleaned file under the same name would go on playing it.
-          file: `clips/${job.key}.${meta.ext}${meta.cleaned ? "?cleaned=1" : ""}`,
+          file: `clips/${job.key}.${meta.ext}${meta.cleaned ? `?cleaned=${String(meta.cleaned === true ? 1 : meta.cleaned)}` : ""}`,
           lines: job.lines,
           chars: meta.chars,
           renderMs: meta.renderMs,
@@ -188,7 +193,7 @@ export async function renderJobs(jobs: readonly Job[], ws: Workspace, keys: Keys
         renderMs: Date.now() - started,
         bytes: audio.bytes.length,
         at: new Date().toISOString(),
-        ...(audio.raw ? { cleaned: true, removedMs: audio.removedMs ?? 0 } : {}),
+        ...(audio.raw ? { cleaned: CLEANER_VERSION, removedMs: audio.removedMs ?? 0 } : {}),
       };
       fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.json`), JSON.stringify(meta));
       outcome.rendered += 1;
