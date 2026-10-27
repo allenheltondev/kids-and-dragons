@@ -366,3 +366,50 @@ describe("the visitor switch (#249)", () => {
     expect(screen.queryByRole("button", { name: "Let visitors join" })).toBeNull();
   });
 });
+
+describe("the session clock (#511)", () => {
+  const report = (enabled: boolean, sittings: unknown[] = []) => ({ enabled, source: "family", policy: {}, generatedAt: "", sittings, aggregates: [], truncated: false });
+  const mount = (enabled: boolean, run: Partial<RunState> = {}, sittings: unknown[] = []) => {
+    room({ host: true }, { ...RUN, phase: "scene", campaignId: "gemfall", ...run });
+    const timingControl = vi.fn(async () => true);
+    const loadTiming = vi.fn(async () => report(enabled, sittings) as never);
+    act(() => useGameStore.setState({ timingControl, loadTiming }));
+    render(<HostControls placement="inline" />);
+    fireEvent.click(screen.getByText("Running this room"));
+    return { timingControl };
+  };
+
+  it("draws nothing on a server that is not keeping time", async () => {
+    mount(false);
+    await act(async () => {});
+    expect(screen.queryByLabelText("Session clock")).toBeNull();
+  });
+
+  it("pauses and resumes the clock, and says what a pause does", async () => {
+    const { timingControl } = mount(true);
+    fireEvent.click(await screen.findByText("Pause the clock"));
+    expect(timingControl).toHaveBeenCalledWith({ action: "pause" });
+    act(() => useGameStore.setState({ state: { ...useGameStore.getState().state!, timingPaused: true } }));
+    fireEvent.click(await screen.findByText("Resume the clock"));
+    expect(timingControl).toHaveBeenLastCalledWith({ action: "resume" });
+    expect(screen.getByText(/Paused: this time is left out/)).toBeTruthy();
+  });
+
+  it("sends a trimmed note, and can turn timing off", async () => {
+    const { timingControl } = mount(true);
+    fireEvent.change(await screen.findByPlaceholderText("needed help with the clue"), { target: { value: "  wanted another turn " } });
+    fireEvent.click(screen.getByText("Save note"));
+    expect(timingControl).toHaveBeenCalledWith({ action: "note", text: "wanted another turn" });
+    await act(async () => {});
+    fireEvent.click(screen.getByText("Don't keep time"));
+    expect(timingControl).toHaveBeenLastCalledWith({ action: "off" });
+  });
+
+  it("tells the family how long a finished chapter took, and that it is not a score", async () => {
+    mount(true, { phase: "chapter_complete", runId: "r_1" }, [
+      { id: "r_1:2", status: "completed", activeMs: 31 * 60_000, pausedMs: 12 * 60_000, idleMs: 0, narrationMs: 0, activityMs: 0, encounterMs: 0 },
+    ]);
+    expect((await screen.findAllByText("You played for about 31 minutes, with about 12 minutes paused.")).length).toBeGreaterThan(0);
+    expect(screen.getByText(/not a score/)).toBeTruthy();
+  });
+});

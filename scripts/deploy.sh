@@ -151,6 +151,9 @@ PARAMS+=("AppDomainName=${APP_DOMAIN_NAME:-\"\"}" "AppHostedZoneId=${APP_HOSTED_
 # `on` is off; the subject is the contact the push services see.
 if [ "${KAD_PUSH:-}" = "on" ]; then PUSH_MODE=on; else PUSH_MODE=off; fi
 PARAMS+=("PushNotifications=$PUSH_MODE" "PushContact=${KAD_PUSH_SUBJECT:-\"\"}")
+# Family-session timing (#511): anything but `on` is off, as with pushes.
+if [ "${KAD_TIMING:-}" = "on" ]; then TIMING_MODE=on; else TIMING_MODE=off; fi
+PARAMS+=("SessionTiming=$TIMING_MODE")
 
 sam deploy \
   --template-file infra/template.yaml \

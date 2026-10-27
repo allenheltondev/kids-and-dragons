@@ -33,6 +33,7 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { Button } from "../ui";
 import { inviteData, joinUrl, shareInvite, type ShareOutcome } from "../ui/share-invite";
 import { Icon } from "./icons";
+import { SessionClock, SessionSummary } from "./SessionClock";
 import { SignInFlow } from "./SignInFlow";
 import { LET_GO_NOTE, STOP_CONFIRM, STOP_OFFER } from "./save-copy";
 import "./HostControls.css";
@@ -274,6 +275,7 @@ export function HostControls({ placement, button = true }: { placement: "inline"
       <>
         <div className="kad-host--inline-offer">
           <StopOffer state={state} />
+          <SessionSummary state={state} />
         </div>
         <details className="kad-host kad-host--inline">
           <summary className="kad-host__summary kad-focusable">
@@ -292,6 +294,7 @@ export function HostControls({ placement, button = true }: { placement: "inline"
           bottom corner it lay over the story's last choice (#257). What it opens drops below. */}
       {button ? <RoomButton inCorner={false} /> : null}
       <StopOffer state={state} timeoutMs={STOP_OFFER_MS} />
+      <SessionSummary state={state} />
       {open ? panel : null}
       {/* The grown-up's sign-in for the visitor switch. A phone's view
           already has one (layout/PlayerView); the shared display does not. */}
@@ -442,6 +445,8 @@ function HostPanel({ state, me, code, invite = false }: { state: RunState; me: s
             ? "Quiet: softer sound, no sudden noises, no shaking, and a dimmer screen on every device."
             : "For a sleeping sibling or a car ride: softer, calmer and dimmer on every device."}
         </p>
+
+        <SessionClock state={state} busy={busy} run={run} />
 
         {canStop(state) ? (
           stopping ? (

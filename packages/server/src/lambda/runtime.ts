@@ -77,6 +77,9 @@ async function build(): Promise<HandlerDeps> {
      */
     playtest: false,
     ...(push ? { push } : {}),
+    // Family-session timing (#511): only when the stack says on; the dev server
+    // labels its own runs `playtest`, so the two never share a source.
+    ...(process.env.KAD_TIMING === "on" ? { timing: { source: "family" as const } } : {}),
   };
 }
 

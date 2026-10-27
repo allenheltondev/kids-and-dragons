@@ -89,6 +89,17 @@ Parameters:
       the SecureString /kad/<stage>/push-vapid-keys on first use (as it does
       the token signing key) and needs PushContact.
 
+  SessionTiming:
+    Type: String
+    Default: "off"
+    AllowedValues: ["off", "on"]
+    Description: >-
+      Family-session timing (#511): the API stamps each chapter's opening,
+      steps, pauses and ending on the run's event log and a household can
+      export how long its chapters really took. Off by default: nothing is
+      recorded. No names, chat or audio are kept, and it is deleted with the
+      household (docs/session-timing.md).
+
   PushContact:
     Type: String
     Default: ""
@@ -480,6 +491,8 @@ Resources:
           KAD_PUSH: !Ref PushNotifications
           KAD_PUSH_SUBJECT: !Ref PushContact
           PUSH_KEY_PARAMETER: !Sub "/kad/${StageName}/push-vapid-keys"
+          # Family-session timing (#511): off unless the stack says on.
+          KAD_TIMING: !Ref SessionTiming
           # Where each step's push job goes, by an asynchronous invoke: the API
           # never sends a push itself (lambda/push-dispatch.ts).
           PUSH_SENDER_FUNCTION: !Ref PushSenderFunction

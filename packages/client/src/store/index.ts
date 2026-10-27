@@ -1474,6 +1474,22 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         return hostControl("quiet", { quiet }, "Could not change quiet mode.");
       },
 
+      timingControl(control) {
+        return hostControl("timing", { ...control }, "Could not change the session clock.");
+      },
+
+      async loadTiming() {
+        const session = get().session;
+        const auth = session?.host ? hostAuth(session) : null;
+        if (!auth) return null;
+        try {
+          return await deps.api.loadTiming(auth);
+        } catch {
+          // A summary is a nicety: a miss leaves the panel as it was.
+          return null;
+        }
+      },
+
       closeRoom() {
         return hostControl("close", {}, "Could not close the room.");
       },

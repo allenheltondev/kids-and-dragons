@@ -12,7 +12,7 @@
  * collision, and get the same dice twice.
  */
 
-import type { Rng } from "@kad/shared";
+import type { Rng, TimingSource } from "@kad/shared";
 import type { ActionResponse, RoomChannel } from "@kad/shared";
 import type { ContentStore } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
@@ -60,6 +60,13 @@ export interface HandlerDeps {
    * client is told there is nothing to subscribe to (`handlers/push.ts`).
    */
   push?: PushConfig | undefined;
+  /**
+   * Whose play the session clock is keeping (#511, handlers/timing.ts):
+   * `family` on the deployed Lambda, `playtest` on a developer's dev server.
+   * Absent means nothing is recorded, which is what tests, the load tool and
+   * seeded playthroughs get, so a synthetic run is never labelled as a family.
+   */
+  timing?: { source: TimingSource } | undefined;
 }
 
 /** The error shape the protocol already defines (`ActionResponse.error`). */

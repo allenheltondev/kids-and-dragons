@@ -558,6 +558,14 @@ export interface RunState {
    */
   quiet?: true;
   /**
+   * The host paused the session clock (#511): a meal, bedtime, a dead wifi.
+   * Play is never blocked; only the time is left out of the timing report.
+   * Cleared when a chapter starts. Absent is the normal case.
+   */
+  timingPaused?: true;
+  /** The host turned session timing off for this room (#511). Absent means on. */
+  timingOff?: true;
+  /**
    * A chapter this household stopped partway and can pick up again (#259):
    * the lobby offers "keep going", and the one-line recap is what it says.
    * Written when a room opens or refreshes its lobby (`offerCampaigns`) and
