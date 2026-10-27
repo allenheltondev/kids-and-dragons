@@ -21,6 +21,8 @@ import { renderPage, type LiveConfig } from "./page.ts";
 import { GEMINI_VOICES, engineOf, listModels, listVoices, type CastFile, type EngineConfig, type Fetch, type Keys, type ModelInfo } from "./providers.ts";
 import type { Sample } from "./samples.ts";
 import { renderCastPage } from "../cast/page.ts";
+import { ART } from "../cast/profile.ts";
+import { renderProfilePage } from "../cast/profile-page.ts";
 import { castPageData, createCastRoutes, type Budget } from "../cast/routes.ts";
 
 export interface ServerOptions {
@@ -35,7 +37,7 @@ export interface ServerOptions {
   maxDollars: number;
   token?: string;
   /** The cast sheet, for the /cast page (docs/voice-cast.md). Without it there is no cast page. */
-  cast?: { sheetPath: string; chapterCampaigns: Record<string, string> };
+  cast?: { sheetPath: string; chapterCampaigns: Record<string, string>; root?: string };
 }
 
 type CastOverrides = Record<string, { elevenlabs?: string; gemini?: string }>;
@@ -101,11 +103,20 @@ function send(response: http.ServerResponse, status: number, body: unknown): voi
 }
 
 export function createBakeoffServer(options: ServerOptions): { server: http.Server; token: string } {
+  const castOptions = (cast: NonNullable<ServerOptions["cast"]>) => ({
+    ws: options.ws,
+    sheetPath: cast.sheetPath,
+    catalog: options.catalog,
+    fetch: options.fetch,
+    chapterCampaigns: cast.chapterCampaigns,
+    ...(cast.root ? { root: cast.root } : {}),
+  });
+  const artRoot = options.cast ? (options.cast.root ?? path.resolve(path.dirname(options.cast.sheetPath), "..", "..")) : null;
   const token = options.token ?? randomBytes(16).toString("hex");
   // One budget for the whole session, whichever page spends it.
   const budget: Budget = { spent: 0, cap: options.maxDollars };
   const castRoutes = options.cast
-    ? createCastRoutes({ ws: options.ws, sheetPath: options.cast.sheetPath, catalog: options.catalog, fetch: options.fetch, chapterCampaigns: options.cast.chapterCampaigns }, budget)
+    ? createCastRoutes(castOptions(options.cast), budget)
     : null;
 
   const takesFrom = (body: Record<string, unknown>): number => {
@@ -203,14 +214,21 @@ export function createBakeoffServer(options: ServerOptions): { server: http.Serv
           response.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" });
           return response.end(page);
         }
-        if (url.pathname === "/cast" && request.method === "GET" && options.cast) {
-          const page = renderCastPage(castPageData({ ws: options.ws, sheetPath: options.cast.sheetPath, catalog: options.catalog, fetch: options.fetch, chapterCampaigns: options.cast.chapterCampaigns }), {
-            token,
-            cap: budget.cap,
-            envKeys: { elevenlabs: !!options.envKeys.elevenlabs, gemini: !!options.envKeys.gemini },
-          });
+        if ((url.pathname === "/cast" || url.pathname === "/cast/profile") && request.method === "GET" && options.cast) {
+          const castLive = { token, cap: budget.cap, envKeys: { elevenlabs: !!options.envKeys.elevenlabs, gemini: !!options.envKeys.gemini } };
+          const page = url.pathname === "/cast"
+            ? renderCastPage(castPageData(castOptions(options.cast)), castLive)
+            : renderProfilePage(castPageData(castOptions(options.cast), { profiles: true }), castLive);
           response.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" });
           return response.end(page);
+        }
+        if (url.pathname.startsWith("/art/") && request.method === "GET" && artRoot) {
+          // The characters' paintings, straight from assets/: only the figure files, nothing else in the repository.
+          const name = url.pathname.slice("/art/".length);
+          const file = path.join(artRoot, "assets", name);
+          if (!ART.test(name) || !fs.existsSync(file)) return send(response, 404, { error: "no such painting" });
+          response.writeHead(200, { "content-type": name.endsWith(".webp") ? "image/webp" : "image/png", "cache-control": "no-cache" });
+          return fs.createReadStream(file).pipe(response);
         }
         if (url.pathname.startsWith("/clips/") && request.method === "GET") {
           const name = url.pathname.slice("/clips/".length);
