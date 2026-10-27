@@ -82,6 +82,8 @@ export interface CastEntry {
   who: string;
   /** "she/her", "he/him", "they/them", or unknown. Drives nothing but the voice guess. */
   pronouns?: string;
+  /** Where the pronouns came from: canon's entry, or the narration's speech tags. */
+  pronounsFrom?: "canon" | "narration";
   /** Whether the voice should read as a woman's or a man's. Set by a person, it survives rebuilds and steers the voice. */
   gender?: Gender;
   genderFrom?: GenderFrom;
@@ -722,7 +724,7 @@ export function buildSheet(sources: Sources, previous: CastSheet | null): CastSh
       name: draft.name,
       kind,
       who,
-      ...(draft.pronouns ? { pronouns: draft.pronouns } : {}),
+      ...(draft.pronouns ? { pronouns: draft.pronouns, ...(draft.pronounsFrom ? { pronounsFrom: draft.pronounsFrom } : {}) } : {}),
       ...gender,
       ...(figure ? { figure } : {}),
       ...(draft.canon ? { canon: draft.canon } : {}),
