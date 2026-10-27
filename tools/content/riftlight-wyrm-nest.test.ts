@@ -20,5 +20,8 @@ it("the lost nest removes the unfinished shelf option and costs another building
   expect(next.state.prompt).toMatchObject({ kind: "choice", options: [expect.objectContaining({ id: "plan_2" })] });
   expect(next.state.narration).toContain("only the broad table");
   expect(enterScene(state, "ending", context(chapter)).state.narration).toContain("give up their free morning");
-  for (const scenario of pacingReport(chapter).scenarios) expect(scenario.shortest!.decisions).toBeGreaterThanOrEqual(14);
+  for (const scenario of pacingReport(chapter).scenarios) {
+    expect(scenario.shortest!.checks).toBe(0);
+    expect(scenario.shortest!.longestReadingRun).toBeLessThanOrEqual(3);
+  }
 });
