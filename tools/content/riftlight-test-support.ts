@@ -53,6 +53,7 @@ export function start(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
 }
 
 export function send(state: RunState, intent: ClientIntent, chapter: Chapter, face = 20) {
+  if (intent.type === "ADVANCE" && state.prompt?.kind === "interaction") return finishInteraction(state, chapter);
   const prompt = state.prompt;
   const players = prompt?.kind === "choice"
     ? prompt.vote ? state.party.map((member) => member.playerId) : [prompt.forPlayerIds[0] ?? "p1"]
@@ -109,6 +110,10 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
   const initial = start(chapter, species, cls, flags, partySize);
   if (initialHp !== undefined) for (const member of initial.party) member.hp = initialHp;
   const pending = [{ state: initial, known: new Set([...contract.entryFacts, ...conditionalEntry]), introduced: new Set<string>() }];
+  // A larger authored graph legitimately has more combinations of independent
+  // evidence, equipment and message outcomes. Keep a finite exploration guard
+  // proportional to graph size rather than treating every chapter as 50 scenes.
+  const stateLimit = Math.max(5000, Object.keys(chapter.scenes).length * 100);
   const seen = new Set<string>();
   const visited = new Set<string>();
   const ends: RunState[] = [];
@@ -117,10 +122,17 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
   while (pending.length) {
     const { state: arrived, known: before, introduced: priorIntroductions } = pending.pop()!;
     const state = answerClassPlace(arrived, chapter, classAnswer);
-    const key = JSON.stringify([state.sceneId, state.flags, state.prompt, state.party.map((p) => [p.hp, p.character.class, p.character.questItems]), state.phase, [...before].sort(), [...priorIntroductions].sort()]);
+    // Interaction nonces reject stale inputs; they do not change the authored route.
+    // Long and short approaches can reach the same configuration with different
+    // openedSeq values. Merge those configurations while retaining the acting seat,
+    // every flag, prompt control, and all path-specific continuity evidence.
+    const promptKey = state.prompt?.kind === "interaction"
+      ? { ...state.prompt, openedSeq: 0, attempt: 0 }
+      : state.prompt;
+    const key = JSON.stringify([state.sceneId, state.flags, promptKey, (state.storyTurn ?? 0) % state.party.length, state.party.map((p) => [p.hp, p.character.class, p.character.questItems]), state.phase, [...before].sort(), [...priorIntroductions].sort()]);
     if (seen.has(key)) continue;
     seen.add(key);
-    expect(seen.size, "Unexpected loop or path explosion").toBeLessThan(5000);
+    expect(seen.size, "Unexpected loop or path explosion").toBeLessThan(stateLimit);
     visited.add(state.sceneId!);
     const review = contract.scenes[state.sceneId!]!;
     expect(review, `${chapter.id}/${state.sceneId}: new scene needs a continuity review`).toBeDefined();
@@ -188,7 +200,7 @@ function walkAllPaths(chapter: Chapter, species: SpeciesId, cls: ClassId, flags:
     // ordinary missed checks and strand losses still finish successfully.
     expect(state.chapterOutcome).toBe(chapter.id === "riftlight-finale" && state.sceneId === "loss_epilogue" ? "setback" : "success");
   }
-  return { visited, ends, endingKnowledge, endingIntroductions };
+  return { visited, ends, endingKnowledge, endingIntroductions, explored: seen.size };
 }
 
 // Cache identical scenarios, including chapter content so negative fixtures
@@ -199,4 +211,58 @@ export function allPaths(...args: Parameters<typeof walkAllPaths>): ReturnType<t
   let result = pathCache.get(key);
   if (!result) { result = walkAllPaths(...args); pathCache.set(key, result); }
   return structuredClone(result);
+}
+
+/** Play the authored controls through the authoritative engine. */
+export function finishInteraction(state: RunState, chapter: Chapter, outcome: "success" | "assisted" | "failure" = "success"): RunState {
+  if (state.prompt?.kind !== "interaction") throw new Error("Expected interaction");
+  let current = state;
+  const actor = state.prompt.actorId;
+  const spec = state.prompt.spec;
+  let elapsedMs = 0;
+  const act = (action: import("../../packages/shared/src/interactions.ts").InteractionAction, playerId = actor) => {
+    if (current.prompt?.kind !== "interaction") throw new Error("Expected interaction");
+    const result = applyIntent(current, { playerId, intent: { type: "INTERACT", openedSeq: current.prompt.openedSeq, attempt: current.prompt.attempt, ...action } }, { ...context(chapter), now: new Date(Date.parse(context(chapter).now) + elapsedMs).toISOString() });
+    expect(result.error, chapter.id + "/" + current.sceneId + ": " + JSON.stringify(action)).toBeUndefined();
+    current = result.state;
+  };
+  if (outcome === "assisted") act({ action: "assist" });
+  else {
+    act({ action: "start", relaxed: false });
+    switch (spec.kind) {
+      case "precision": case "timing": act({ action: "stop", position: outcome === "failure" ? 0 : spec.target }); break;
+      case "tracking": {
+        elapsedMs = (spec.swaps.length + 1) * spec.stepMs + 1;
+        const at = spec.swaps.reduce((at, [a, b]) => at === a ? b : at === b ? a : at, spec.start);
+        act({ action: "answer", answer: [String(outcome === "failure" ? (at + 1) % spec.covers.length : at)] });
+        break;
+      }
+      case "memory":
+        elapsedMs = spec.answer.length * spec.stepMs + 1;
+        act({ action: "answer", answer: outcome === "failure" ? [...spec.answer].reverse() : spec.answer }); break;
+      case "sequence": act({ action: "answer", answer: outcome === "failure" ? [...spec.answer].reverse() : spec.answer }); break;
+      case "cooperate":
+        for (const m of current.party.filter(m => m.connected && (m.playerId !== actor || current.party.length === 1))) act({ action: "support", mode: "prop" }, m.playerId);
+        act({ action: "complete" }); break;
+      case "balance":
+        for (const m of current.party.filter(m => m.connected)) {
+          act({ action: "adjust", direction: "up" }, m.playerId);
+          act({ action: "adjust", direction: "up" }, m.playerId);
+        }
+        act({ action: "complete" }); break;
+      case "relay":
+        for (const m of current.party.filter(m => m.connected)) {
+          act({ action: "catch" }, m.playerId);
+          act({ action: "pass" }, m.playerId);
+        }
+        break;
+      case "play":
+        for (const m of current.party.filter(m => m.connected)) act({ action: "play", optionId: spec.options[0]!.id }, m.playerId);
+        act({ action: "complete" }); break;
+      default: throw new Error("Unknown story interaction");
+    }
+  }
+  expect(current.prompt).toMatchObject({ kind: "interaction", phase: "result", outcome });
+  act({ action: "continue" });
+  return current;
 }

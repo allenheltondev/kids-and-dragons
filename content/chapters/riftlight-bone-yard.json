@@ -138,7 +138,7 @@
     },
     "survey": {
       "type": "choice_point",
-      "narration": "A leaning wall blocks the narrow path. A longer path curves around a deep hollow. The crawlers cluster beside a tear in the air near the wall. Where will you look for a safe passage?",
+      "narration": "A leaning wall blocks the short passage. The long way curves around a deep hollow. Crawlers gather by a tear beside the wall, their backs clicking like pebbles in a cup. The guide watches from her pool. \"Shorter is only helpful if it stays a passage.\" Where will you look for a way through?",
       "choices": [
         {
           "id": "plan_1",
@@ -415,7 +415,7 @@
     },
     "vibration": {
       "type": "choice_point",
-      "narration": "The crawlers turn toward a fresh pulse from the tear. They are following its magic, not guarding treasure for you. You can tap a loose plank you brought or shake the empty line to learn whether movement draws them away.",
+      "narration": "Fresh magic pulses from the tear. The crawlers all turn at once. One bumps the next and has to untangle its legs. You can test whether movement draws them aside by tapping your own loose plank or shaking your empty line. Which will you try from the marked path?",
       "choices": [
         {
           "id": "plan_1",
@@ -625,11 +625,7 @@
       "rift": "steady"
     },
     "support_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Set the brace without putting anyone beneath the leaning stones.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "support_clear",
         "narration": "The wall settles onto the brace."
@@ -645,7 +641,18 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "rift": "steady",
+      "narration": "The support needs two jobs at once: keep it still and fix the brace. Pick your jobs. A loose bit of rope taps against the board.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the support while your friend secures it.",
+        "supportLabel": "Hold the support",
+        "actionLabel": "Secure the brace"
+      },
+      "onAssisted": {
+        "goto": "support_clear",
+        "narration": "The wall settles onto the brace."
+      }
     },
     "support_clear": {
       "type": "story",
@@ -936,7 +943,7 @@
     },
     "inventory": {
       "type": "choice_point",
-      "narration": "Before leaving the ruins, you check what is in your hands. A small carved chip sits against the path. It would fit in a pocket. The guide's rule has not changed.",
+      "narration": "A carved chip lies against the path, just the right size for a pocket. Nearby, a pebble rolls back uphill into the ruins. The guide raises one fin from her pool. \"It will make its own way home. Your pocket is merely a delay.\" Before leaving, what will you do with what is in your hands?",
       "choices": [
         {
           "id": "plan_1",
@@ -1069,11 +1076,7 @@
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "unbrace_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Check the wall is supported before drawing the party's line clear.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "unbrace_clear",
         "narration": "The wall stays still while you retrieve the free gear."
@@ -1088,7 +1091,18 @@
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "narration": "Anything holding the wall stays in place. Pass the loose marked gear back along the safe strip, one friend at a time. The wall does not get to borrow all your tools.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the loose gear and pass it back along the safe strip.",
+        "actionLabel": "Pass the gear",
+        "objectLabel": "loose marked gear"
+      },
+      "onAssisted": {
+        "goto": "unbrace_clear",
+        "narration": "The wall stays still while you retrieve the free gear."
+      }
     },
     "unbrace_clear": {
       "type": "story",
@@ -1332,7 +1346,6 @@
     },
     "boundary_check": {
       "type": "check",
-      "tags": ["search"],
       "stat": "clever",
       "tn": 12,
       "roller": "party",
@@ -1393,7 +1406,7 @@
     },
     "report": {
       "type": "choice_point",
-      "narration": "The guide wants a warning travelers can use. You saw the moved walls, but you do not know whose enormous old bones lie here or who moved the ruins. What will you record?",
+      "narration": "The guide is ready to scratch a warning on her board. \"Tell me what a traveler needs before their boots go in.\" You saw the displaced walls and the way the yard returns its things. You did not learn whose enormous bones lie here, or who moved the ruins. Which checked fact will lead your warning?",
       "choices": [
         {
           "id": "plan_1",

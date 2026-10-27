@@ -6,7 +6,7 @@
   "title": "A Bridge Without a River",
   "biome": "sallow_wastelands",
   "music": "riftlight-paths",
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "bank",
   "plate": {
@@ -14,7 +14,7 @@
     "narration": "Stone arches rise from the silt beside a dry channel. No river passes under them now. From the firm bank, the old bridge stretches away into a haze of salt and pale mud."
   },
   "goal": {
-    "text": "Study the buried bridge from the safe side of the bank.",
+    "text": "Solve the missing-river mystery from the bank.",
     "steps": [
       {
         "id": "find_shelf",
@@ -41,7 +41,7 @@
   "scenes": {
     "bank": {
       "type": "story",
-      "narration": "A Skupper guide stops at a slope of fresh silt. Below it, stone arches cross a dry channel. \"Buried bridge,\" says the guide. \"I will show the bank. I will not walk on that.\" Master Orin Vale, the griffin Riftseeker you met on the glacier, is brushing pale grit from a joint in the stone.",
+      "narration": "A Skupper guide stops above a dry riverbed. \"Buried bridge,\" says the guide. \"No river. Still not walking on it.\" Master Orin Vale, the griffin Riftseeker you met on the glacier, brushes grit from an arch. His next brushful lands on his own foot. \"A very dusty discovery.\"",
       "choices": [
         {
           "id": "ask",
@@ -64,7 +64,7 @@
     },
     "orin": {
       "type": "choice_point",
-      "narration": "\"This grit does not belong in the local mud,\" Orin says. \"It matches glacier silt. I think the glacier is draining somewhere through a rift.\" He points across the arches. A sealed door stands beyond the far bank. \"That stays shut. We can learn from this side.\"",
+      "narration": "\"This grit matches the glacier,\" says Orin. \"Perhaps water came through a rift.\" Across the bridge stands a sealed door. \"That stays shut. Today we have one question: where did the river go?\" He opens his notebook. Will you share your listening chime readings, or keep them private?",
       "choices": [
         {
           "id": "share",
@@ -93,7 +93,7 @@
     },
     "share": {
       "type": "story",
-      "narration": "You sound the listening chime and let Orin copy its rhythm. He writes down which sounds you heard near the glacier, keeping your observations separate from his guess. \"When we compare this with another opening, I can use your measurements.\"",
+      "narration": "You sound the listening chime. Orin copies its rhythm beside his glacier notes. \"Thank you. A sound we can compare.\" He draws an ear. It looks rather like a cabbage.",
       "choices": [
         {
           "id": "work",
@@ -123,7 +123,7 @@
     },
     "keep": {
       "type": "story",
-      "narration": "You keep the chime readings in your own notes. Orin puts his pencil away. \"Then I will work from the silt.\" He shows you a chipped arch visible from the bank. You can still examine it together.",
+      "narration": "You keep your chime readings private. Orin puts his pencil away. \"Fair enough. The stones have plenty to tell us.\" A sprinkle of grit lands on his foot again. \"Rather persistently.\"",
       "choices": [
         {
           "id": "work",
@@ -144,21 +144,128 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel"
     },
+    "guide_limits": {
+      "type": "story",
+      "narration": "Your guide plants both front fins in the wet mud at the edge of the bank. \"This far. No farther.\" You mark a stopping line on dry ground. Orin sets his tools behind it. \"Even my brush stays on this side.\" A trickle runs through a little groove below the shelf. \"The tide reaches this pocket later,\" the guide says. \"We have time to look, then we pack up. No crossing.\" Orin turns to you. \"Then let us make a proper little expedition.\"",
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Find our work spot",
+          "icon": "eye",
+          "goto": "ground_test"
+        }
+      ]
+    },
+    "ground_test": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "Orin has a short measuring stick and a coil of plain cord beside his bag. From dry ground, you test three nearby patches. Shells wobble. Dark mud squelches. The rock shelf stays firm. Share your clues and mark the patches from nearest the water to farthest away.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Put the patches in order, starting beside the water.",
+        "actionLabel": "Try our order",
+        "options": [
+          {
+            "id": "step2",
+            "label": "Rock shelf",
+            "icon": "hand"
+          },
+          {
+            "id": "step1",
+            "label": "Shell patch",
+            "icon": "hand"
+          },
+          {
+            "id": "step0",
+            "label": "Dark mud",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "step0",
+          "step1",
+          "step2"
+        ],
+        "clues": [
+          "The dark mud touches the water.",
+          "The shells sit between the mud and the rock shelf.",
+          "Our work spot is the rock shelf, farthest from the water."
+        ]
+      },
+      "onSuccess": {
+        "goto": "equipment",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "found_a_firm_work_shelf"
+          }
+        ],
+        "narration": "You mark the rock shelf. Everyone and every tool fit behind the stopping line."
+      },
+      "onFailure": {
+        "goto": "equipment",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "found_a_firm_work_shelf"
+          }
+        ],
+        "narration": "The guide points from water to mud, shells, then rock. You correct the marks and gather on the firm shelf."
+      },
+      "onAssisted": {
+        "goto": "equipment",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "found_a_firm_work_shelf"
+          }
+        ],
+        "narration": "Together you follow the guide: mud, shells, rock. The firm shelf is your work spot."
+      }
+    },
     "work": {
       "type": "choice_point",
-      "narration": "Loose silt hides the foot of the nearest arch. The guide points out firm ground, then stays there. You can clear a small patch from the bank or brace a plank to see the channel from above. No one needs to cross the bridge.",
+      "narration": "Loose silt covers the nearest arch. You can brush it away from the bank, or hold a viewing plank steady while a friend looks down. Both keep you behind the stopping line. Which job sounds better?",
       "choices": [
         {
           "id": "clear",
-          "label": "Clear the arch a handful at a time",
-          "icon": "hand",
-          "goto": "clear"
+          "label": "Brush out a buried clue",
+          "icon": "eye",
+          "goto": "brush_clue"
         },
         {
           "id": "brace",
-          "label": "brace a viewing plank together",
+          "label": "Hold a viewing plank together",
           "icon": "hand",
-          "goto": "brace"
+          "goto": "hold_plank"
+        },
+        {
+          "id": "class_brace",
+          "label": "Let our thornguard brace the plank",
+          "icon": "hand",
+          "requiresClass": "thornguard",
+          "goto": "braced_plank"
         }
       ],
       "cast": [
@@ -171,17 +278,31 @@
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "variants": [
+        {
+          "when": {
+            "flag": "bridge_rail_ready"
+          },
+          "text": "Your fixed rail gives you a ready viewing support. The kit still has to be carried by hand."
+        },
+        {
+          "when": {
+            "flag": "bridge_sled_ready"
+          },
+          "text": "Your sled keeps the kit together. For a mirror view, you will need to hold a temporary plank support."
+        }
+      ]
     },
     "clear": {
       "type": "story",
-      "narration": "You work from firm ground, passing the loosened silt back. A carved waterline appears under the arch. Below it lies an old bed of smooth river pebbles. The bridge was built over running water; this channel is dry.",
+      "narration": "Under the dust: a waterline carved into the arch, and smooth river pebbles below it. But the riverbed is dry. Orin draws all three. \"A bridge. A riverbed. A missing river.\" The guide leans closer from the bank.",
       "choices": [
         {
           "id": "record",
           "label": "Draw the waterline and dry channel",
           "icon": "hand",
-          "goto": "river_explain"
+          "goto": "water_question"
         }
       ],
       "cast": [
@@ -204,13 +325,13 @@
     },
     "brace": {
       "type": "story",
-      "narration": "You wedge the plank between two firm stones and check it together before leaning out. From above, smooth river pebbles run beneath every arch. A carved waterline marks their sides. The bridge was built over running water; this channel is dry.",
+      "narration": "In the mirror you spot smooth river pebbles beneath the arches. A waterline marks the stone above them. Today the riverbed is dry. Orin sketches the view. \"A bridge. A riverbed. A missing river.\"",
       "choices": [
         {
           "id": "record",
           "label": "Draw the waterline and dry channel",
           "icon": "hand",
-          "goto": "river_explain"
+          "goto": "water_question"
         }
       ],
       "cast": [
@@ -228,6 +349,169 @@
         {
           "type": "setFlag",
           "flag": "looked_under_the_arches"
+        }
+      ]
+    },
+    "river_explain": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "The waterline and smooth river pebbles appear in your notes beside the dry channel. \"What do they tell us?\" asks Orin. Fit the clues into a little story. The shut door offers no answers today.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Order the clues: what the water left, what it wore smooth, what we see today.",
+        "actionLabel": "Try our order",
+        "options": [
+          {
+            "id": "step2",
+            "label": "Dry riverbed",
+            "icon": "hand"
+          },
+          {
+            "id": "step1",
+            "label": "Rounded river pebbles",
+            "icon": "hand"
+          },
+          {
+            "id": "step0",
+            "label": "Waterline on the arch",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "step0",
+          "step1",
+          "step2"
+        ],
+        "clues": [
+          "Start with the mark high on the stone.",
+          "The smooth pebbles come between the waterline and the dry bed.",
+          "Finish with what the riverbed looks like now."
+        ]
+      },
+      "onSuccess": {
+        "goto": "record_decision",
+        "narration": "Water once flowed beneath these arches. Now it is gone from here. Where it went is still a mystery."
+      },
+      "onFailure": {
+        "goto": "record_decision",
+        "narration": "Orin lays the drawing beside the stones: waterline, worn pebbles, dry bed. You fix the order together. An old river flowed here. Where it went is still a mystery."
+      }
+    },
+    "restore_bank": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "Time to pack up. Bring the board and cord back from whichever job they did. Loose silt stays on the dry side. Everyone choose a last job. The guide checks the upper return path while Orin counts his kit aloud. \"One notebook. One brush. Two sandwiches. A remarkable improvement on last Tuesday.\"",
+      "interaction": {
+        "kind": "play",
+        "cue": "Everyone choose a job before we leave.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "play0",
+            "label": "Pack the brush",
+            "icon": "hand",
+            "reaction": "Orin checks his bag. \"Brush: one. Dust: several million.\""
+          },
+          {
+            "id": "play1",
+            "label": "Roll up the cord",
+            "icon": "hand",
+            "reaction": "You coil the cord. It finally stops trying to tie itself to Orin."
+          },
+          {
+            "id": "play2",
+            "label": "Mark the stopping line",
+            "icon": "hand",
+            "reaction": "The guide checks your stones. \"Good. A warning I can use.\""
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "guide_handover",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tidied_the_work_site"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "guide_handover",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "tidied_the_work_site"
+          }
+        ]
+      }
+    },
+    "guide_handover": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "story",
+      "narration": "You show the guide the waterline, the river pebbles, and your stopping line. \"An old river,\" the guide repeats. \"Still no bridge tours.\" Orin hands over a copy of the sketch. Nobody has to cross to see what you found.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "showed_the_guide_the_bridge"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Take our missing-river clue onward",
+          "icon": "travel",
+          "goto": "rest"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bridge_public_view"
+          },
+          "text": "Your tested signs leave a public viewing point on the high bank. The guide has the useful copy; Orin has his own field notes."
+        },
+        {
+          "when": {
+            "flag": "bridge_research_copy"
+          },
+          "text": "Orin carries the careful copy to the Riftseekers. Your closed-work-area sign asks visitors to wait for a later visit."
+        },
+        {
+          "when": {
+            "flag": "bridge_notes_rebuilt"
+          },
+          "text": "You label the drawing as rebuilt after the tide and leave out the lost fine measurements."
         }
       ]
     },
@@ -254,40 +538,35 @@
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel"
-    },
-    "guide_limits": {
-      "type": "choice_point",
-      "narration": "Your guide plants both front fins in the wet mud at the edge of the bank. \"This far. No farther.\" Orin puts down his brush and asks what help would be welcome without asking the guide to cross. The guide can read the mud from here, but will not test the bridge or lead anyone onto it. Your party must plan work that stands on its own. What will you ask the guide to show before you begin?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
+      "variants": [
         {
-          "id": "option_1",
-          "label": "Ask for the last firm stopping place",
-          "icon": "hand",
-          "goto": "guide_limits_1"
+          "when": {
+            "flag": "bridge_local_copy_tested"
+          },
+          "text": "Behind you, the guide lays your local sketch beside the stopping sign. People can learn from the high bank without setting foot on the bridge."
         },
         {
-          "id": "option_2",
-          "label": "Ask how the mud changes as water rises",
-          "icon": "hand",
-          "goto": "guide_limits_2"
+          "when": {
+            "flag": "bridge_research_copy_sent"
+          },
+          "text": "The work area is closed behind you. Orin tucks the research copy inside his cloak, ready to compare this missing river with other finds."
+        },
+        {
+          "when": {
+            "flag": "bridge_records_first"
+          },
+          "text": "You saved the original measurements and rebuilt the washed-out markers before leaving."
+        },
+        {
+          "when": {
+            "flag": "bridge_path_first"
+          },
+          "text": "You kept the return route clear and rebuilt a simpler drawing after the tide soaked the original."
         }
       ]
     },
-    "guide_limits_1": {
-      "type": "story",
-      "narration": "You ask the guide to point from where they are already comfortable. Your party marks that line from the dry side. Nobody offers a reward for stepping past it. Orin notes the boundary on his page before marking any possible inspection route.",
+    "brush_clue": {
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -299,129 +578,456 @@
         }
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "ground_test"
-        }
-      ]
-    },
-    "guide_limits_2": {
-      "type": "story",
-      "narration": "You stay back while the guide points out the darker mud near the shell ridge. The answer describes the bank, not a secret beneath it. Your party can watch those visible patches while working, and the guide can leave without taking your only safety plan along.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "ground_test"
-        }
-      ]
-    },
-    "ground_test": {
-      "type": "choice_point",
-      "narration": "Orin has a short measuring stick and a coil of plain cord beside his bag. The nearest arch looks close enough to touch, but a pale crust lies between it and the bank. Your guide says appearances are not a footing test. Before bringing tools closer, the party needs a working place that will not slide when everyone gathers. You can compare the bank from above or test a small patch without putting a hero on it. Which approach will you use?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Probe from the firm stopping line with the stick",
-          "icon": "hand",
-          "goto": "ground_test_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Map the bank from two firm viewpoints",
-          "icon": "hand",
-          "goto": "ground_test_2"
-        }
-      ]
-    },
-    "ground_test_1": {
-      "type": "story",
-      "narration": "One friend watches the marked line while another extends the stick over the pale crust. You press gently before shifting any weight. Orin draws the reach of the stick, not a path across ground your feet have never tested. The guide watches from the mud.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "ground_test_1_check"
-        }
-      ]
-    },
-    "ground_test_1_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Probe from the firm stopping line with the stick. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "You reach with a long brush from the rock shelf. A pale mark peeks through the dust. Orin holds a cloth under it. \"Brush the stone, please. My feet are quite clean enough.\"",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap when the marker reaches the gold.",
+        "actionLabel": "Brush the mark",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 4500
+      },
       "onSuccess": {
-        "goto": "ground_test_1_done",
+        "goto": "clear"
+      },
+      "onFailure": {
+        "goto": "clear",
+        "narration": "Pffft! Your brush catches a dust pocket. Orin sneezes, then helps clear the last handful. The mark is visible."
+      },
+      "onAssisted": {
+        "goto": "clear"
+      }
+    },
+    "hold_plank": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "The viewing plank rests between two firm rocks behind the stopping line. Hold it steady while a friend uses a little mirror to look beneath the arch. \"My tail is not a spare support,\" Orin says, moving it.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the plank while your friend lifts the mirror.",
+        "supportLabel": "Steady the plank",
+        "actionLabel": "Lift the mirror"
+      },
+      "onSuccess": {
+        "goto": "brace"
+      },
+      "onFailure": {
+        "goto": "brace"
+      },
+      "onAssisted": {
+        "goto": "brace"
+      }
+    },
+    "braced_plank": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "story",
+      "narration": "Your thornguard braces the plank against the firm rocks. The mirror gives everyone a clear view beneath the arch. Orin folds his tail safely away. \"Excellent. All supports accounted for.\"",
+      "choices": [
+        {
+          "id": "look",
+          "label": "Look under the arch",
+          "icon": "eye",
+          "goto": "brace"
+        }
+      ]
+    },
+    "equipment": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "choice_point",
+      "narration": "Orin has one broad board and enough cord for one job. Fix the board as a viewing rail, and everyone can study the arch together. Make it a carrying sled, and you can move the drawings and tools quickly if the tide creeps up. You cannot build both. \"I packed two sandwiches,\" says Orin. \"Apparently that is not the same thing as two boards.\" Which will you prepare?",
+      "choices": [
+        {
+          "id": "rail",
+          "label": "Build a fixed viewing rail",
+          "icon": "hand",
+          "goto": "build_rail",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bridge_rail_ready",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "bridge_sled_ready",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "sled",
+          "label": "Build a portable kit sled",
+          "icon": "hand",
+          "goto": "build_sled",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bridge_sled_ready",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "bridge_rail_ready",
+              "value": false
+            }
+          ]
+        }
+      ]
+    },
+    "build_rail": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "The guide points out three sound posts on the dry shelf. Pass the cord along them, one hero at a time, while Orin sets the board on the supports. The rail will stay here until you leave. You give it a gentle test from the dry side. Orin leans on it, nods, and carefully retrieves the sandwich he left underneath.",
+      "interaction": {
+        "kind": "relay",
+        "objectLabel": "rail cord",
+        "cue": "Catch and pass the cord along the dry-side posts.",
+        "actionLabel": "Pass the cord"
+      },
+      "onSuccess": {
+        "goto": "work",
+        "narration": "The rail stays solid. Your viewing spot will be ready when the tide reaches the lower groove."
+      },
+      "onFailure": {
+        "goto": "work",
+        "narration": "The rail stays solid. Your viewing spot will be ready when the tide reaches the lower groove."
+      },
+      "onAssisted": {
+        "goto": "work",
+        "narration": "The rail stays solid. Your viewing spot will be ready when the tide reaches the lower groove."
+      }
+    },
+    "build_sled": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "The board rests on two short runners from Orin's kit. Put the bag in the middle and level your sides before sliding it. The guide shows a dry parking place behind a rock. Orin adds his notebook, then removes his sandwich. \"Important equipment. Separate pocket.\" The sled can move, but it cannot serve as a fixed rail.",
+      "interaction": {
+        "kind": "balance",
+        "objectLabel": "kit sled",
+        "cue": "Raise or lower your side until the kit sled is level.",
+        "actionLabel": "Park the sled"
+      },
+      "onSuccess": {
+        "goto": "work",
+        "narration": "The loaded sled slides neatly into its dry parking place. It will be useful if you must move things in a hurry."
+      },
+      "onFailure": {
+        "goto": "work",
+        "narration": "The loaded sled slides neatly into its dry parking place. It will be useful if you must move things in a hurry."
+      },
+      "onAssisted": {
+        "goto": "work",
+        "narration": "The loaded sled slides neatly into its dry parking place. It will be useful if you must move things in a hurry."
+      }
+    },
+    "water_question": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "story",
+      "narration": "Orin turns the drawing so everyone can see. \"The waterline is up here. The round pebbles are down there. But that new trickle smells salty.\" The guide dips a fin into the low groove. \"Tide water. This old riverbed is much bigger.\" You have two different stories in one place: an old river, and a little tide arriving today. Test the little groove before mixing them up.",
+      "choices": [
+        {
+          "id": "test",
+          "label": "Watch the groove through a whole pulse",
+          "icon": "hand",
+          "goto": "watch_pulse"
+        }
+      ]
+    },
+    "watch_pulse": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "A scrap of reed turns in the groove. Water pushes it forward, pauses, then pulls it back. The guide marks one edge with a shell. Wait for the reed to return to that mark, then call it. Orin watches a different reed. It remains perfectly still. \"That one is my pencil,\" he admits.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap in the gold when the reed returns to the shell mark.",
+        "actionLabel": "Call the returning reed",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "compare_pulse",
+        "narration": "The reed comes back to the same shell. The guide watches a second pulse and confirms it: today's little tide moves both ways."
+      },
+      "onFailure": {
+        "goto": "compare_pulse",
+        "narration": "You call a little early. The guide keeps the shell in place and helps you watch the next complete pulse. The reed comes back; this tide moves both ways."
+      },
+      "onAssisted": {
+        "goto": "compare_pulse",
+        "narration": "The reed comes back to the same shell. The guide watches a second pulse and confirms it: today's little tide moves both ways."
+      }
+    },
+    "compare_pulse": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "Orin puts three covered sample pots on dry stone: glacier grit, fresh tide mud, and dust from the arch. He shows you the glacier pot first. A gust blows his labels loose. While he catches them, he moves the pots out of the wind. Keep track of the glacier sample so you can compare it with the arch dust. \"The lids are excellent,\" he says. \"The handwriting is airborne.\"",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the glacier sample as Orin moves the covered pots.",
+        "actionLabel": "Choose the glacier sample",
+        "covers": [
+          "Pot beside the notebook",
+          "Pot in the middle",
+          "Pot beside the brush"
+        ],
+        "start": 0,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "stepMs": 1500
+      },
+      "onSuccess": {
+        "goto": "tide_turn",
+        "narration": "You find the glacier pot. Side by side, its pale grit looks like the dust from the arch. The tide mud is darker. Today's little salty tide moves both ways; it does not explain the high old waterline or the river-worn pebbles."
+      },
+      "onFailure": {
+        "goto": "tide_turn",
+        "narration": "Orin lifts the lids and helps you find the glacier sample. Its pale grit looks like the arch dust; the tide mud is darker. Today's little tide does not explain the old waterline and river-worn pebbles."
+      },
+      "onAssisted": {
+        "goto": "tide_turn",
+        "narration": "You label each pot together before comparing the pale glacier grit with the arch dust. The darker tide mud is different. Today's little tide does not explain the old riverbed."
+      }
+    },
+    "tide_turn": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "choice_point",
+      "narration": "Plip. Water reaches the lower tool shelf sooner than expected. Everyone is already on the high rock shelf, but a tray of drawings sits low beside the return path. There is time to do one job first. Save the drawings, and the path markers will need rebuilding. Secure the return path, and the drawings will get wet; you will have to piece their marks together. Orin holds both sandwiches above his head. \"I have secured lunch. What first?\"",
+      "choices": [
+        {
+          "id": "records",
+          "label": "Save the drawings; rebuild the path afterward",
+          "icon": "hand",
+          "goto": "save_records",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bridge_records_first",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "bridge_path_first",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "path",
+          "label": "Secure the path; reconstruct the wet drawings",
+          "icon": "hand",
+          "goto": "save_path",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bridge_path_first",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "bridge_records_first",
+              "value": false
+            }
+          ]
+        }
+      ]
+    },
+    "save_records": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "choice_point",
+      "narration": "You choose the drawings. The little tide runs under the low tray while you stay on the high shelf. Use the equipment you prepared. The guide watches the water and calls a stop if it reaches the next shell. The far bank and the sealed door stay well beyond your work.",
+      "choices": [
+        {
+          "id": "rail",
+          "label": "Use our fixed rail to lift the tray",
+          "icon": "hand",
+          "goto": "rail_lift",
+          "when": {
+            "flag": "bridge_rail_ready"
+          }
+        },
+        {
+          "id": "sled",
+          "label": "Bring the tray back on a carrying board",
+          "icon": "hand",
+          "goto": "sled_lift",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bridge_sled_ready"
+            }
+          ]
+        }
+      ]
+    },
+    "rail_lift": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "Your fixed rail holds firm. One friend supports the long lifting cord while another tips the tray toward the high shelf. Orin is ready with a dry cloth. A page starts to curl. \"No flying lessons today,\" he tells it. Keep the cord steady until the whole tray reaches the cloth.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the lifting cord while your friend brings the tray in.",
+        "supportLabel": "Hold the cord",
+        "actionLabel": "Lift the tray"
+      },
+      "onSuccess": {
+        "goto": "path_repair",
+        "narration": "The drawings arrive dry. The low path markers have washed loose, so you must rebuild the return route.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "found_a_firm_work_shelf"
+            "flag": "bridge_drawings_dry",
+            "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "ground_test_1_changed",
+        "goto": "path_repair",
+        "narration": "The drawings arrive dry. The low path markers have washed loose, so you must rebuild the return route.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "found_a_firm_work_shelf"
+            "flag": "bridge_drawings_dry",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "path_repair",
+        "narration": "The drawings arrive dry. The low path markers have washed loose, so you must rebuild the return route.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_drawings_dry",
+            "value": true
           }
         ]
       }
     },
-    "ground_test_1_done": {
-      "type": "story",
-      "narration": "The comparison finds a firm shelf on your side of the channel. You mark its edge and return along the same route to check it twice. Orin moves his bag only after the second check. The group has a work site without crossing the bridge.",
+    "sled_lift": {
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -433,100 +1039,138 @@
         }
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "base_record"
-        }
-      ]
-    },
-    "ground_test_1_changed": {
-      "type": "story",
-      "narration": "A patch that looked firm crumbles under the stick or shifts in the second view. Your party marks it out of bounds. Orin chooses a higher, farther shelf. It gives a less convenient view, so your drawings will need a longer measuring line, but nobody has to test the crust with their feet.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "base_record"
-        }
-      ]
-    },
-    "ground_test_2": {
-      "type": "story",
-      "narration": "You leave the cord at the stopping line and walk the dry ridge with Orin. A friend stays below to point out the same rock from each view. You look for a broad stable shelf, keeping the apparent short route separate from a route you can actually use.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "ground_test_2_check"
-        }
-      ]
-    },
-    "ground_test_2_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Map the bank from two firm viewpoints. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "Your carrying board slides beneath the tray from the high side. Level the board so the drawings do not slip as you bring them back. Orin reaches for the notebook, then checks with you before lifting it. The guide stays at the marked shell, watching the water rather than asking anyone to hurry.",
+      "interaction": {
+        "kind": "balance",
+        "objectLabel": "drawing sled",
+        "cue": "Level the drawing sled before bringing it back.",
+        "actionLabel": "Bring the drawings back"
+      },
       "onSuccess": {
-        "goto": "ground_test_2_done",
+        "goto": "path_repair",
+        "narration": "The drawings arrive dry. Your sled helped save them, but the low path markers have washed loose.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "found_a_firm_work_shelf"
+            "flag": "bridge_drawings_dry",
+            "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "ground_test_2_changed",
+        "goto": "path_repair",
+        "narration": "The drawings arrive dry. Your sled helped save them, but the low path markers have washed loose.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "found_a_firm_work_shelf"
+            "flag": "bridge_drawings_dry",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "path_repair",
+        "narration": "The drawings arrive dry. Your sled helped save them, but the low path markers have washed loose.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_drawings_dry",
+            "value": true
+          }
+        ]
+      },
+      "variants": [
+        {
+          "when": {
+            "flag": "bridge_rail_ready"
+          },
+          "at": "start",
+          "text": "You choose to change your plan: take the board off its fixed posts and lash it to the spare runners. The viewing rail is gone; you now have a carrying sled."
+        }
+      ]
+    },
+    "path_repair": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "The old markers have rolled into the wet groove. The guide calls a different route along the high shelf: start behind the tall rock, pass the split post, then reach the dry steps. Each hero can see a different landmark. Tell one another what you see and lay out the return route before moving the kit.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Plan the dry route from the work shelf to the steps.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "rock",
+            "label": "Tall rock",
+            "icon": "hand"
+          },
+          {
+            "id": "steps",
+            "label": "Dry steps",
+            "icon": "hand"
+          },
+          {
+            "id": "post",
+            "label": "Split post",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "rock",
+          "post",
+          "steps"
+        ],
+        "clues": [
+          "Start behind the tallest rock.",
+          "The split post comes after the rock and before the steps.",
+          "Finish at the dry steps."
+        ]
+      },
+      "onSuccess": {
+        "goto": "records_review",
+        "narration": "You mark the upper route. The return path is ready again, and the drawings are dry.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_return_ready",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "records_review",
+        "narration": "The guide points out the upper route one landmark at a time. You correct the order and mark it together.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_return_ready",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "records_review",
+        "narration": "You mark the upper route. The return path is ready again, and the drawings are dry.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_return_ready",
+            "value": true
           }
         ]
       }
     },
-    "ground_test_2_done": {
-      "type": "story",
-      "narration": "The comparison finds a firm shelf on your side of the channel. You mark its edge and return along the same route to check it twice. Orin moves his bag only after the second check. The group has a work site without crossing the bridge.",
+    "save_path": {
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -538,70 +1182,33 @@
         }
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "base_record"
-        }
-      ]
-    },
-    "ground_test_2_changed": {
-      "type": "story",
-      "narration": "A patch that looked firm crumbles under the stick or shifts in the second view. Your party marks it out of bounds. Orin chooses a higher, farther shelf. It gives a less convenient view, so your drawings will need a longer measuring line, but nobody has to test the crust with their feet.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "base_record"
-        }
-      ]
-    },
-    "base_record": {
       "type": "choice_point",
-      "narration": "Before any silt is moved, Orin asks for a picture of the bank as you found it. His brush has already cleared a small joint; he points it out so you will not mistake his work for an ancient mark. Your party can record the untouched arch or the relationship between the bridge and the present bank. Both would help a later visitor separate a new change from something you changed today. What should the first page show?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "narration": "You choose the return path. The lowest marker wobbles in the water. Keep everyone on the high shelf and move the warning back before it falls. Your drawings will get wet while you do this. Orin looks at the tray, then at the path. \"People first. We can draw again.\" How will your prepared equipment help?",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Draw the untouched arch and mark Orin's brushed patch",
+          "id": "rail",
+          "label": "Secure the upper warning to our fixed rail",
           "icon": "hand",
-          "goto": "base_record_1"
+          "goto": "rail_warning",
+          "when": {
+            "flag": "bridge_rail_ready"
+          }
         },
         {
-          "id": "option_2",
-          "label": "Draw the whole bridge against the present banks",
+          "id": "sled",
+          "label": "Move the warning on a carrying board",
           "icon": "hand",
-          "goto": "base_record_2"
+          "goto": "sled_warning",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bridge_sled_ready"
+            }
+          ]
         }
       ]
     },
-    "base_record_1": {
-      "type": "story",
-      "narration": "You give the brushed patch a dotted outline and leave the rest of the arch plain. A friend compares your drawing from the work shelf. Orin writes today's visit beside his patch, making his own disturbance part of the record instead of hiding it.",
+    "rail_warning": {
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -613,1088 +1220,64 @@
         }
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "tools_bridge"
-        }
-      ]
-    },
-    "base_record_2": {
-      "type": "story",
-      "narration": "You begin with the banks and fit the arches between them. Another friend checks which stones are hidden by fresh silt. You leave those parts blank. Orin adds the location of his brushed joint so another investigator knows where a close view has already been taken.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "tools_bridge"
-        }
-      ]
-    },
-    "tools_bridge": {
-      "type": "choice_point",
-      "narration": "A loose bundle of Orin's measuring cord rolls toward the pale crust. It stops in a tuft of grass short of your marked boundary. The cord is useful, but Orin tells you it is not worth stepping onto untested ground. Your guide refuses to fetch it and does not need to explain that refusal again. There is room to reach from the firm shelf or to walk around the higher bank. How will you bring the bundle back?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Draw the bundle in with the end of the stick",
-          "icon": "hand",
-          "goto": "tools_bridge_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Walk the high bank and lift it from the grass",
-          "icon": "hand",
-          "goto": "tools_bridge_2"
-        },
-        {
-          "id": "assist",
-          "label": "Have a duskrunner secure the approach along firm ground",
-          "icon": "hand",
-          "goto": "tools_bridge_assisted",
-          "requiresClass": "duskrunner"
-        }
-      ]
-    },
-    "tools_bridge_1": {
-      "type": "story",
-      "narration": "One friend keeps the stick level while another watches the marked boundary. You aim for the loop on top of the bundle rather than pushing at its side. Orin stands ready to take the loose end once it reaches the firm shelf.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "tools_bridge_1_check"
-        }
-      ]
-    },
-    "tools_bridge_1_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Draw the bundle in with the end of the stick. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "onSuccess": {
-        "goto": "tools_bridge_1_done"
+      "type": "interaction",
+      "narration": "The rail makes a sturdy anchor for the new warning. Hold the cord while a friend secures the marker on the high side. The guide checks that it points toward the dry steps. Below you, the tray gives a soft splash. Orin winces. \"That was the notebook. I do hope the cabbage ear can swim.\"",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the warning cord while your friend ties the marker.",
+        "supportLabel": "Hold the warning cord",
+        "actionLabel": "Secure the marker"
       },
-      "onFailure": {
-        "goto": "tools_bridge_1_changed"
-      }
-    },
-    "tools_bridge_1_done": {
-      "type": "story",
-      "narration": "The cord comes back dry enough to use. You coil it around Orin's closed bag while he checks the loose knot. Your guide flicks a fin at the new coil. \"There. It knows where to stay now.\" The boundary remains where your party put it.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "silt_compare"
-        }
-      ]
-    },
-    "tools_bridge_1_changed": {
-      "type": "story",
-      "narration": "The first reach nudges the bundle farther into the tuft. You stop and ask Orin to hold the stick while the party approaches by the higher bank. The bundle returns with a muddy end. You mark that end and measure from a clean point, so the mud cannot hide a stretched loop.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "silt_compare"
-        }
-      ]
-    },
-    "tools_bridge_2": {
-      "type": "story",
-      "narration": "You leave a friend at the shelf to point out the bundle and take the longer route with Orin. From above, the tuft lies within reach of firm ground. You will stop if the grass moves rather than turning a useful tool into a reason to ignore the boundary.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "tools_bridge_2_check"
-        }
-      ]
-    },
-    "tools_bridge_2_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Walk the high bank and lift it from the grass. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
       "onSuccess": {
-        "goto": "tools_bridge_2_done"
-      },
-      "onFailure": {
-        "goto": "tools_bridge_2_changed"
-      }
-    },
-    "tools_bridge_2_done": {
-      "type": "story",
-      "narration": "The cord comes back dry enough to use. You coil it around Orin's closed bag while he checks the loose knot. Your guide flicks a fin at the new coil. \"There. It knows where to stay now.\" The boundary remains where your party put it.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "silt_compare"
-        }
-      ]
-    },
-    "tools_bridge_2_changed": {
-      "type": "story",
-      "narration": "The first reach nudges the bundle farther into the tuft. You stop and ask Orin to hold the stick while the party approaches by the higher bank. The bundle returns with a muddy end. You mark that end and measure from a clean point, so the mud cannot hide a stretched loop.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "silt_compare"
-        }
-      ]
-    },
-    "silt_compare": {
-      "type": "choice_point",
-      "narration": "Orin places a pinch of loose silt on a flat stone beside grit from the upper bank. He does not hand you a traveling sample or ask you to take anything from the bridge. The pale grains and dark local grit look different, but a difference alone cannot explain a whole river. Your chime notes may help later; today you can make the comparison clearer for someone who was not here. How will you record it?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Draw the two patches with their exact locations",
-          "icon": "hand",
-          "goto": "silt_compare_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Describe the texture while another friend draws",
-          "icon": "hand",
-          "goto": "silt_compare_2"
-        }
-      ]
-    },
-    "silt_compare_1": {
-      "type": "story",
-      "narration": "You draw the flat stone and label each patch by where Orin collected it. Your party checks the arrows back to the bank and joint. The guide corrects one arrow from their own stopping place. You keep the correction without claiming it proves Orin's larger guess.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "bank_work"
-        }
-      ]
-    },
-    "silt_compare_2": {
-      "type": "story",
-      "narration": "You compare how each patch breaks apart under the stick. A friend draws the coarse and fine grains large enough to see. Orin writes your words beside the picture, keeping what you touched separate from what he thinks carried the silt here.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "bank_work"
-        }
-      ]
-    },
-    "bank_work": {
-      "type": "choice_point",
-      "narration": "A small run of loose silt slips from the work shelf. It is not a collapse, but it shows where a busy group could hide the very stone it wants to study. Orin asks you to choose where the cleared material will go before anyone starts digging. Your guide points to one wet patch that must stay open for the bank's water. There is a dry hollow farther back and an empty length of cloth in Orin's bag. Which plan will you prepare?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Spread the loose silt on the cloth behind the shelf",
-          "icon": "hand",
-          "goto": "bank_work_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Use the dry hollow and keep a clear carrying lane",
-          "icon": "hand",
-          "goto": "bank_work_2"
-        },
-        {
-          "id": "assist",
-          "label": "Use brace to hold the work board steady",
-          "icon": "hand",
-          "goto": "bank_work_assisted",
-          "requiresClass": "thornguard"
-        }
-      ]
-    },
-    "bank_work_1": {
-      "type": "story",
-      "narration": "You lay the cloth flat on firm ground and weigh its corners with stones already lying loose there. Your party agrees to pass material back in small amounts. Orin will be able to check the silt once more before it is returned, and the wet patch stays open.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "bank_work_1_check"
-        }
-      ]
-    },
-    "bank_work_1_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Spread the loose silt on the cloth behind the shelf. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "onSuccess": {
-        "goto": "bank_work_1_done"
-      },
-      "onFailure": {
-        "goto": "bank_work_1_changed"
-      }
-    },
-    "bank_work_1_done": {
-      "type": "story",
-      "narration": "Your work area holds when everyone makes a slow practice pass with empty hands. Orin tests the place for the removed silt and finds it clear of the water. You have prepared a small job that will not bury the next useful observation.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "arch_question"
-        }
-      ]
-    },
-    "bank_work_1_changed": {
-      "type": "story",
-      "narration": "A loaded-looking step sends a little more silt down the slope during the rehearsal. You stop before moving any material and shift the carrying line higher. The new plan needs one person to pass from a fixed place instead of everyone walking the shelf together.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "arch_question"
-        }
-      ]
-    },
-    "bank_work_2": {
-      "type": "story",
-      "narration": "You mark the dry hollow without deepening it. A friend watches the wet patch while the others trace a path from the shelf. Your party will stop carrying if the lane gets crowded. The guide can see the outlet without having to enter your work site.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "bank_work_2_check"
-        }
-      ]
-    },
-    "bank_work_2_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Use the dry hollow and keep a clear carrying lane. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "onSuccess": {
-        "goto": "bank_work_2_done"
-      },
-      "onFailure": {
-        "goto": "bank_work_2_changed"
-      }
-    },
-    "bank_work_2_done": {
-      "type": "story",
-      "narration": "Your work area holds when everyone makes a slow practice pass with empty hands. Orin tests the place for the removed silt and finds it clear of the water. You have prepared a small job that will not bury the next useful observation.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "arch_question"
-        }
-      ]
-    },
-    "bank_work_2_changed": {
-      "type": "story",
-      "narration": "A loaded-looking step sends a little more silt down the slope during the rehearsal. You stop before moving any material and shift the carrying line higher. The new plan needs one person to pass from a fixed place instead of everyone walking the shelf together.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "arch_question"
-        }
-      ]
-    },
-    "arch_question": {
-      "type": "choice_point",
-      "narration": "From the firm shelf you can see two possible places to inspect. The nearest arch has a thin layer of silt at its foot. A little farther along, an exposed side gives a view beneath the bridge from a checked plank. Neither requires anyone to enter the sealed door or cross to the far bank. Orin asks what question the inspection should answer before you choose a tool. A useful question will tell you when you have enough evidence. What do you want to learn?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Ask whether the arch was built for water beneath it",
-          "icon": "hand",
-          "goto": "arch_question_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Ask whether the present channel fits the old bridge",
-          "icon": "hand",
-          "goto": "arch_question_2"
-        }
-      ]
-    },
-    "arch_question_1": {
-      "type": "story",
-      "narration": "You mark a space for observations below the arch rather than a conclusion at the top of the page. Orin agrees to look for signs in the stone and ground together. Your party will not treat one damp patch as proof that an old channel still flows.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "choose_limit"
-        }
-      ]
-    },
-    "arch_question_2": {
-      "type": "story",
-      "narration": "You draw a line beneath all the arches, leaving its contents blank. Your party wants to compare the whole span with what is visible now. Orin will check whether a mark belongs to one repaired stone or repeats across the structure before offering an explanation.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "choose_limit"
-        }
-      ]
-    },
-    "choose_limit": {
-      "type": "choice_point",
-      "narration": "The tools are ready. Orin asks how you will decide to stop, because a newly uncovered stone can always tempt someone to uncover one more. Your guide has no wish to wait while visitors turn a look from the bank into a walk across the bridge. Your party can name a clear limit without promising a discovery. The nearest arch and checked plank remain the only work sites. What limit will you agree before starting?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Stop once two independent observations answer the question",
-          "icon": "hand",
-          "goto": "choose_limit_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Stop at the first change in footing or water",
-          "icon": "hand",
-          "goto": "choose_limit_2"
-        }
-      ]
-    },
-    "choose_limit_1": {
-      "type": "story",
-      "narration": "You ask one friend to watch the ground and another the stonework. Orin will compare their notes before any more silt moves. If they disagree, the next step is to record that disagreement from firm ground, not keep digging until one answer wins.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "work"
-        }
-      ]
-    },
-    "choose_limit_2": {
-      "type": "story",
-      "narration": "You give the watcher permission to end the inspection without a vote if the shelf or wet patch changes. Orin writes the rule above his drawing. The party can finish from the bank with an incomplete sketch; the sealed door and far side remain outside the plan.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "work"
-        }
-      ]
-    },
-    "river_explain": {
-      "type": "choice_point",
-      "narration": "The waterline and smooth river pebbles appear in your notes beside the dry channel. Orin asks each hero to point to the observation behind the conclusion. A bridge alone could be built for many reasons; a water mark alone could come from a flood. Together with the worn riverbed beneath the arches, they support an older river here. You can now test whether your explanation says more than the evidence. Which claim will you check aloud first?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-evidence",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Check the claim that this channel once held a river",
-          "icon": "hand",
-          "goto": "river_explain_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Check the claim that the river is gone from this place",
-          "icon": "hand",
-          "goto": "river_explain_2"
-        }
-      ]
-    },
-    "river_explain_1": {
-      "type": "story",
-      "narration": "You ask a friend to name each piece of support without guessing who moved the land. The waterline shows a former level, the rounded pebbles show a worn bed, and the arches span it. Orin keeps the conclusion to a river that is no longer here.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-evidence",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "river_explain_1_check"
-        }
-      ]
-    },
-    "river_explain_1_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Check the claim that this channel once held a river. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-evidence",
-      "onSuccess": {
-        "goto": "river_explain_1_done"
-      },
-      "onFailure": {
-        "goto": "river_explain_1_changed"
-      }
-    },
-    "river_explain_1_done": {
-      "type": "story",
-      "narration": "Your explanation survives the questions without gaining a culprit or a date. Orin underlines the words \"used to flow here.\" The guide listens from the mud and agrees that those words match what you can see. The sealed door contributes no imagined answer.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-evidence",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "share_record"
-        }
-      ]
-    },
-    "river_explain_1_changed": {
-      "type": "story",
-      "narration": "Your first explanation claims the river disappeared in a single night. Orin asks which mark dates it. None does. Your party removes the claim and keeps the older channel and present dry bed. The corrected page is more useful than an impressive answer nobody can check.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-evidence",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "share_record"
-        }
-      ]
-    },
-    "river_explain_2": {
-      "type": "story",
-      "narration": "You compare the old line on the stone with the empty bed visible now. The distant brackish pools lie elsewhere on the flats. Orin asks you to say \"from here\" rather than \"gone forever.\" The drawing can travel without turning a local observation into a story about the whole realm.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-evidence",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "river_explain_2_check"
-        }
-      ]
-    },
-    "river_explain_2_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Check the claim that the river is gone from this place. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-evidence",
-      "onSuccess": {
-        "goto": "river_explain_2_done"
-      },
-      "onFailure": {
-        "goto": "river_explain_2_changed"
-      }
-    },
-    "river_explain_2_done": {
-      "type": "story",
-      "narration": "Your explanation survives the questions without gaining a culprit or a date. Orin underlines the words \"used to flow here.\" The guide listens from the mud and agrees that those words match what you can see. The sealed door contributes no imagined answer.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-evidence",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "share_record"
-        }
-      ]
-    },
-    "river_explain_2_changed": {
-      "type": "story",
-      "narration": "Your first explanation claims the river disappeared in a single night. Orin asks which mark dates it. None does. Your party removes the claim and keeps the older channel and present dry bed. The corrected page is more useful than an impressive answer nobody can check.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-evidence",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "share_record"
-        }
-      ]
-    },
-    "share_record": {
-      "type": "choice_point",
-      "narration": "Orin offers to carry a copy of the bridge drawing to other Riftseekers. Your own chime readings remain subject to the choice you already made; handing over a stonework sketch does not silently share them. The guide asks for something people on the flats can use as well. You have enough space for a local work boundary and the river observation. How will you divide the record so each recipient knows what it actually contains?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Make one local safety page and one evidence page",
-          "icon": "hand",
-          "goto": "share_record_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Make matching pages with safety and evidence together",
-          "icon": "hand",
-          "goto": "share_record_2"
-        }
-      ]
-    },
-    "share_record_1": {
-      "type": "story",
-      "narration": "You draw the firm stopping line large for the local page. The second page shows the arches, waterline and dry riverbed, with the work limits beside them. Orin checks the copy against your drawing. Neither page adds the chime's rhythm unless you have chosen to share it separately.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "restore_bank"
-        }
-      ]
-    },
-    "share_record_2": {
-      "type": "story",
-      "narration": "You put the stopping line above the bridge drawing on both copies. A traveler can see where to wait before reading the old river evidence. Orin keeps his larger inference in his own notes. Your party checks that your page describes a bridge, not an invitation to open the far door.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "restore_bank"
-        }
-      ]
-    },
-    "restore_bank": {
-      "type": "choice_point",
-      "narration": "The inspection is finished, but loose silt and a viewing board must not become the next traveler's surprise. Orin offers to pack the tools while your party chooses how to leave the work shelf. Returning every handful onto the newly visible stone would hide the clue again. Leaving a new pile over the wet patch would send trouble toward the guide's route. The dry side has room for a shallow spread with a clear boundary. How will you close the site?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Spread the loose silt thinly behind the stopping line",
-          "icon": "hand",
-          "goto": "restore_bank_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Leave a low marked mound on the dry side",
-          "icon": "hand",
-          "goto": "restore_bank_2"
-        }
-      ]
-    },
-    "restore_bank_1": {
-      "type": "story",
-      "narration": "Your party works from the firm shelf and passes small amounts back to the dry ground. You leave the stone evidence visible from the bank, without cutting a path across it. Orin keeps the water outlet in sight while your friends pack the cloth and cord.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "restore_bank_1_check"
-        }
-      ]
-    },
-    "restore_bank_1_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Spread the loose silt thinly behind the stopping line. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "onSuccess": {
-        "goto": "restore_bank_1_done",
+        "goto": "wet_notes",
+        "narration": "The upper return path stays clearly marked. The drawings are wet, and you will need to reconstruct their details.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "tidied_the_work_site"
+            "flag": "bridge_return_ready",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bridge_drawings_dry",
+            "value": false
           }
         ]
       },
       "onFailure": {
-        "goto": "restore_bank_1_changed",
+        "goto": "wet_notes",
+        "narration": "The upper return path stays clearly marked. The drawings are wet, and you will need to reconstruct their details.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "tidied_the_work_site"
+            "flag": "bridge_return_ready",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bridge_drawings_dry",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "wet_notes",
+        "narration": "The upper return path stays clearly marked. The drawings are wet, and you will need to reconstruct their details.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_return_ready",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bridge_drawings_dry",
+            "value": false
           }
         ]
       }
     },
-    "restore_bank_1_done": {
-      "type": "story",
-      "narration": "The tools come back to Orin's bag and the outlet stays clear. From the firm stopping place, the next visitor can see the exposed evidence without stepping onto your work shelf. The guide checks the boundary and leaves it where it is.",
+    "sled_warning": {
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1706,100 +1289,155 @@
         }
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "guide_handover"
-        }
-      ]
-    },
-    "restore_bank_1_changed": {
-      "type": "story",
-      "narration": "One corner slumps as you begin closing the site. Your party stops carrying and uses the board as a barrier while Orin clears the outlet from firm ground. You leave a smaller work area marked off. The clue remains visible, and the warning honestly shows where the footing changed.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "guide_handover"
-        }
-      ]
-    },
-    "restore_bank_2": {
-      "type": "story",
-      "narration": "You keep the cleared silt together where nobody needs to walk and mark its edge with loose stones. The guide checks the wet patch from their own place. Orin notes that your party made this mound today, so another investigator cannot mistake it for part of the old riverbed.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "restore_bank_2_check"
-        }
-      ]
-    },
-    "restore_bank_2_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Leave a low marked mound on the dry side. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "Load the warning board onto your sled. Pass its guide cord from friend to friend along the upper shelf so it never swings into the wet groove. At the dry steps, Orin wedges the marker between two sound rocks. Down below, the notebook takes a small, undignified bath.",
+      "interaction": {
+        "kind": "relay",
+        "objectLabel": "warning sled cord",
+        "cue": "Catch and pass the guide cord along the high shelf.",
+        "actionLabel": "Pass the guide cord"
+      },
       "onSuccess": {
-        "goto": "restore_bank_2_done",
+        "goto": "wet_notes",
+        "narration": "The upper return path stays clearly marked. The wet drawings will need to be pieced together.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "tidied_the_work_site"
+            "flag": "bridge_return_ready",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bridge_drawings_dry",
+            "value": false
           }
         ]
       },
       "onFailure": {
-        "goto": "restore_bank_2_changed",
+        "goto": "wet_notes",
+        "narration": "The upper return path stays clearly marked. The wet drawings will need to be pieced together.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "tidied_the_work_site"
+            "flag": "bridge_return_ready",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bridge_drawings_dry",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "wet_notes",
+        "narration": "The upper return path stays clearly marked. The wet drawings will need to be pieced together.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_return_ready",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bridge_drawings_dry",
+            "value": false
+          }
+        ]
+      },
+      "variants": [
+        {
+          "when": {
+            "flag": "bridge_rail_ready"
+          },
+          "at": "start",
+          "text": "You choose to change your plan: take the board off the rail posts and lash it to the spare runners. The fixed rail becomes a carrying sled."
+        }
+      ]
+    },
+    "wet_notes": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "You lift the wet sheets onto the high shelf. Before Orin separates them, look at the marks you copied: an arch, a high waterline, rounded pebbles, and an empty channel. Remember the pattern, then rebuild the sketch together. The guide keeps the original stonework in view, so a forgotten mark can always be checked.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the four marks, then rebuild the sketch.",
+        "actionLabel": "Show the pattern",
+        "options": [
+          {
+            "id": "pebbles",
+            "label": "Rounded pebbles",
+            "icon": "hand"
+          },
+          {
+            "id": "arch",
+            "label": "Bridge arch",
+            "icon": "hand"
+          },
+          {
+            "id": "dry",
+            "label": "Dry channel",
+            "icon": "hand"
+          },
+          {
+            "id": "line",
+            "label": "High waterline",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "arch",
+          "line",
+          "pebbles",
+          "dry"
+        ],
+        "stepMs": 1200
+      },
+      "onSuccess": {
+        "goto": "records_review",
+        "narration": "You rebuild the sketch and check it against the arch. The fine measurements are washed away; label this copy as a reconstruction.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_notes_rebuilt",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "records_review",
+        "narration": "One mark is out of place. The guide points to the arch, waterline, pebbles and dry channel. You check and redraw them. The fine measurements are gone, so this is a reconstruction.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_notes_rebuilt",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "records_review",
+        "narration": "You rebuild the sketch and check it against the arch. The fine measurements are washed away; label this copy as a reconstruction.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_notes_rebuilt",
+            "value": true
           }
         ]
       }
     },
-    "restore_bank_2_done": {
-      "type": "story",
-      "narration": "The tools come back to Orin's bag and the outlet stays clear. From the firm stopping place, the next visitor can see the exposed evidence without stepping onto your work shelf. The guide checks the boundary and leaves it where it is.",
+    "records_review": {
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1811,18 +1449,32 @@
         }
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "story",
+      "narration": "You spread the pages on dry stone and check every hero, every tool, and the return markers. The guide shakes water off one fin. Orin shakes water off his brush. Only one of them splashes the notebook. \"Sorry,\" says Orin. The guide says nothing at all, which is somehow worse. You have enough evidence to explain the old river, even if today changed your plans.",
       "choices": [
         {
           "id": "continue",
-          "label": "Work with this result",
+          "label": "Make our river explanation",
           "icon": "hand",
-          "goto": "guide_handover"
+          "goto": "river_explain"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "bridge_drawings_dry"
+          },
+          "text": "Your original drawings and measurements are dry. You can give Orin a precise copy, but had to spend time rebuilding the return path."
+        },
+        {
+          "when": {
+            "flag": "bridge_notes_rebuilt"
+          },
+          "text": "The return path stayed marked throughout. Your rebuilt sketch shows the main clues, but the fine measurements must wait for a later visit."
         }
       ]
     },
-    "restore_bank_2_changed": {
-      "type": "story",
-      "narration": "One corner slumps as you begin closing the site. Your party stops carrying and uses the board as a barrier while Orin clears the outlet from firm ground. You leave a smaller work area marked off. The clue remains visible, and the warning honestly shows where the footing changed.",
+    "record_decision": {
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1834,47 +1486,48 @@
         }
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "guide_handover"
-        }
-      ]
-    },
-    "guide_handover": {
       "type": "choice_point",
-      "narration": "Your guide asks you to explain the finished place from the mud-bank boundary, where future visitors will ask their questions. You must be able to point out what can be seen without asking the guide to lead anyone across. Orin stands back with the packed tools and lets your party speak. The guide may choose to share your directions or simply warn people away. What will you make clearest before leaving the bridge behind?",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "narration": "Orin can make one careful extra copy before you leave. Give it to the guide, and your group can help mark a public viewing point on the high bank. Send it with Orin, and other Riftseekers can compare the missing river with their own finds; the work area here will stay closed until someone returns. Your private chime readings stay private either way. Who needs this copy first?",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Show the safe view and say exactly where the work stops",
+          "id": "local",
+          "label": "Open a marked bank viewpoint for local visitors",
           "icon": "hand",
-          "goto": "guide_handover_1"
+          "goto": "visitor_plan",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bridge_public_view",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "bridge_research_copy",
+              "value": false
+            }
+          ]
         },
         {
-          "id": "option_2",
-          "label": "Ask the guide to repeat the warning in their own words",
+          "id": "research",
+          "label": "Send the careful copy with Orin; close this work area",
           "icon": "hand",
-          "goto": "guide_handover_2"
+          "goto": "research_plan",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bridge_research_copy",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "bridge_public_view",
+              "value": false
+            }
+          ]
         }
       ]
     },
-    "guide_handover_1": {
-      "type": "story",
-      "narration": "You stand on the marked line and point to the exposed waterline, the bed beneath the arches and the shut door beyond. You explain which places your party tested and which it did not. The guide can describe that view without promising to take anyone there.",
+    "visitor_plan": {
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1886,54 +1539,128 @@
         }
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "guide_handover_1_check"
-        }
-      ]
-    },
-    "guide_handover_1_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Show the safe view and say exactly where the work stops. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "Make the viewpoint useful without turning it into a bridge crossing. The guide has a waiting-place sign, a sketch of the waterline, and a return arrow. Put them where a visitor needs them: stop first, look from the high bank, then return by the dry steps. \"Could add a tea stall,\" Orin suggests. The guide looks at the mud. \"No.\"",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Arrange the visitor signs in the order people need them.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "stop",
+            "label": "Wait behind the stopping line",
+            "icon": "hand"
+          },
+          {
+            "id": "return",
+            "label": "Return by the dry steps",
+            "icon": "hand"
+          },
+          {
+            "id": "look",
+            "label": "Look at the waterline from the high bank",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "stop",
+          "look",
+          "return"
+        ],
+        "clues": [
+          "People must see the stopping line before looking at the bridge.",
+          "The view comes between waiting and returning.",
+          "The dry steps are the way out, not a way onto the bridge."
+        ]
+      },
       "onSuccess": {
-        "goto": "guide_handover_1_done",
+        "goto": "visitor_trial",
+        "narration": "The signs make a complete bank visit. Try them with Orin before leaving."
+      },
+      "onFailure": {
+        "goto": "visitor_trial",
+        "narration": "The guide moves the stopping sign to the start. You correct the rest together, then test the visit."
+      },
+      "onAssisted": {
+        "goto": "visitor_trial",
+        "narration": "The signs make a complete bank visit. Try them with Orin before leaving."
+      }
+    },
+    "visitor_trial": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "Orin pretends he has never been here. He walks to the stopping sign and peers at your sketch. \"Where do I put my feet?\" Everyone chooses a useful part of the welcome. The guide listens. If your words offer a bridge crossing, she stops the pretend tour and helps you correct it.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Everyone help Orin try the marked viewpoint.",
+        "actionLabel": "Finish the trial visit",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "stop",
+            "label": "Show him the waiting line",
+            "icon": "hand",
+            "reaction": "Orin plants both feet behind it. \"Even the dusty foot?\" Yes, that one too."
+          },
+          {
+            "id": "clue",
+            "label": "Point out the waterline and pebbles",
+            "icon": "eye",
+            "reaction": "Orin follows your pointing hand from the arch to the old riverbed. \"I can see it from here.\""
+          },
+          {
+            "id": "return",
+            "label": "Show him the dry return steps",
+            "icon": "travel",
+            "reaction": "Orin follows the arrow back to the steps. The guide nods: a visit with a way home."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "restore_bank",
+        "narration": "The viewpoint stays open on the high bank. Your guide keeps the local copy; Orin will compare his own notes later.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "showed_the_guide_the_bridge"
+            "flag": "bridge_local_copy_tested",
+            "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "guide_handover_1_changed",
+        "goto": "restore_bank",
+        "narration": "The viewpoint stays open on the high bank. Your guide keeps the local copy; Orin will compare his own notes later.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "showed_the_guide_the_bridge"
+            "flag": "bridge_local_copy_tested",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "restore_bank",
+        "narration": "The viewpoint stays open on the high bank. Your guide keeps the local copy; Orin will compare his own notes later.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_local_copy_tested",
+            "value": true
           }
         ]
       }
     },
-    "guide_handover_1_done": {
-      "type": "story",
-      "narration": "The guide repeats the stopping line and the older-river clue without adding a route across the bridge. Orin puts the finished copy beside his own notes. The work has an ending: evidence recorded, tools packed, and no promise made for the guide.",
+    "research_plan": {
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1945,235 +1672,111 @@
         }
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ]
-    },
-    "guide_handover_1_changed": {
-      "type": "story",
-      "narration": "Your first explanation makes the checked plank sound like a public crossing. The guide stops you. You change the drawing so the plank is shown as packed away, not left for visitors. The guide repeats the corrected warning, and Orin keeps that version.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ]
-    },
-    "guide_handover_2": {
-      "type": "story",
-      "narration": "You give the guide the local drawing and wait for their version. When they call the far side \"untested,\" you keep that word. When they refuse to promise a tour, you thank them. Your party can leave useful evidence without turning help into an obligation.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "guide_handover_2_check"
-        }
-      ]
-    },
-    "guide_handover_2_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Ask the guide to repeat the warning in their own words. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "Prepare a page another investigator can understand without you beside it. Put the old waterline first, the rounded riverbed pebbles next, then the dry channel you saw today. Mark the sealed door as unvisited. Orin adds a box for questions. It is much larger than the box for answers. \"Room to grow,\" he says.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Build an evidence page, ending with the limit of your visit.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "pebbles",
+            "label": "Rounded pebbles lie beneath it",
+            "icon": "hand"
+          },
+          {
+            "id": "line",
+            "label": "An old waterline marks the arch",
+            "icon": "hand"
+          },
+          {
+            "id": "door",
+            "label": "The far door was not visited",
+            "icon": "hand"
+          },
+          {
+            "id": "dry",
+            "label": "The channel is dry today",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "line",
+          "pebbles",
+          "dry",
+          "door"
+        ],
+        "clues": [
+          "Begin with the mark on the arch.",
+          "The pebbles go after the waterline and before today's dry channel.",
+          "The unvisited door belongs last, under things we did not test."
+        ]
+      },
       "onSuccess": {
-        "goto": "guide_handover_2_done",
+        "goto": "copy_relay",
+        "narration": "The page separates what you saw from what you do not know."
+      },
+      "onFailure": {
+        "goto": "copy_relay",
+        "narration": "You compare the page with the visible arch and fix the order. The far door stays in the unvisited box."
+      },
+      "onAssisted": {
+        "goto": "copy_relay",
+        "narration": "The page separates what you saw from what you do not know."
+      }
+    },
+    "copy_relay": {
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Master Orin Vale"
+        },
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/buried-bridge-dry-channel",
+      "type": "interaction",
+      "narration": "Pass the wrapped copy along the dry shelf to Orin. Each friend checks that its corner is tucked inside the cover before passing it. The guide rolls a closed-work-area sign into place. \"Visitors wait for a later trip,\" she says. Orin accepts the packet with both hands. His sandwich has finally found its proper pocket.",
+      "interaction": {
+        "kind": "relay",
+        "objectLabel": "wrapped research copy",
+        "cue": "Catch the wrapped page and pass it toward Orin.",
+        "actionLabel": "Pass the wrapped copy"
+      },
+      "onSuccess": {
+        "goto": "restore_bank",
+        "narration": "Orin has the careful research copy. The local work area stays closed, with a warning at its entrance.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "showed_the_guide_the_bridge"
+            "flag": "bridge_research_copy_sent",
+            "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "guide_handover_2_changed",
+        "goto": "restore_bank",
+        "narration": "Orin has the careful research copy. The local work area stays closed, with a warning at its entrance.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "showed_the_guide_the_bridge"
+            "flag": "bridge_research_copy_sent",
+            "value": true
           }
         ]
-      }
-    },
-    "guide_handover_2_done": {
-      "type": "story",
-      "narration": "The guide repeats the stopping line and the older-river clue without adding a route across the bridge. Orin puts the finished copy beside his own notes. The work has an ending: evidence recorded, tools packed, and no promise made for the guide.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ]
-    },
-    "guide_handover_2_changed": {
-      "type": "story",
-      "narration": "Your first explanation makes the checked plank sound like a public crossing. The guide stops you. You change the drawing so the plank is shown as packed away, not left for visitors. The guide repeats the corrected warning, and Orin keeps that version.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ]
-    },
-    "bank_work_assisted": {
-      "type": "story",
-      "narration": "A thornguard uses brace on the work board while friends prepare the place for loose silt. The guide stays at the wet boundary. Another hero can lead the passing line; the ability supplies a steady support, not permission to step onto untested stone.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work together using that help",
-          "icon": "hand",
-          "goto": "bank_work_assisted_check"
-        }
-      ]
-    },
-    "bank_work_assisted_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Use brace to hold the work board steady. The qualified hero assists; choose who leads the team check.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "onSuccess": {
-        "goto": "bank_work_1_done"
       },
-      "onFailure": {
-        "goto": "bank_work_1_changed"
-      }
-    },
-    "tools_bridge_assisted": {
-      "type": "story",
-      "narration": "A duskrunner checks the quick route around the high bank and marks where to stop. Your party approaches the cord from the firm side while the guide stays in the mud. The most nimble friend can lift the bundle without borrowing anyone else's class ability.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work together using that help",
-          "icon": "hand",
-          "goto": "tools_bridge_assisted_check"
-        }
-      ]
-    },
-    "tools_bridge_assisted_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Have a duskrunner secure the approach along firm ground. The qualified hero assists; choose who leads the team check.",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Master Orin Vale"
-        },
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/buried-bridge-dry-channel",
-      "onSuccess": {
-        "goto": "tools_bridge_1_done"
-      },
-      "onFailure": {
-        "goto": "tools_bridge_1_changed"
+      "onAssisted": {
+        "goto": "restore_bank",
+        "narration": "Orin has the careful research copy. The local work area stays closed, with a warning at its entrance.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_research_copy_sent",
+            "value": true
+          }
+        ]
       }
     }
   },

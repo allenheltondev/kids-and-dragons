@@ -105,7 +105,7 @@ it("keeps the success spine interactive across party scenarios", () => {
   for (const { shortest } of pacingReport(chapter, undefined, 0).scenarios) {
     expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
     expect(shortest!.decisions).toBeGreaterThanOrEqual(14);
-    expect(shortest!.checks).toBe(6);
+    expect(shortest!.checks).toBe(4);
     expect(shortest!.encounters).toBe(1);
   }
 });
@@ -130,7 +130,8 @@ it.each(["third", "wyrm", "olivia"])("a first loss spends the %s support and doe
   const { state, trace } = walk(support, false, "listen", { three_fragments_ready: true, fragment_sky_learned: true, wyrm_ally: true, olivia_ally: true }, true);
   expect(state.flags.third_anchor_used).toBe(false);
   expect(state.flags.final_battle_lost).not.toBe(true);
-  expect(trace.get("spent")).toContain("blurred corner");
+  expect(state.flags.final_map_wet).not.toBe(true);
+  expect(trace.get("spent")).not.toContain("blurred corner");
   expect([...trace.keys()].filter(k => k.startsWith("fight_"))).toEqual(["fight_weakened"]);
 });
 it("the first loss heals only partially and reserves final_battle_lost for the second failure", () => {

@@ -81,7 +81,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "The opening appears, skips a beat, then appears a little narrower. The goat flinches each time. Before moving, how will you learn its rhythm?",
+      "narration": "Snow appears through the opening. Then only muddy sky. Then snow again, in a narrower gap. The goat stops chewing to glare at it. Your guide plants her fins on firm shells. \"Before we move a goat, we need to know when there is somewhere to move it to.\" How will you learn the opening's rhythm?",
       "choices": [
         {
           "id": "plan_1",
@@ -726,7 +726,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "Mud grips the goat boots-tight. Pulling straight up would only frighten it. You can loosen one hoof at a time or work the mat beneath both back feet. Which job will your party try?",
+      "narration": "The mud holds the goat's back hooves like two stubborn boots. The goat leans forward. The mud makes a rude sucking noise. Your guide shakes her head. \"One hoof at a time, or work the mat under both. No straight-up tugging.\" Which job will your party try?",
       "choices": [
         {
           "id": "plan_1",
@@ -820,8 +820,7 @@
       "art": "scenes/riftlight/stuttering-flats"
     },
     "lift_check": {
-      "type": "check",
-      "tags": ["force"],
+      "type": "interaction",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -832,10 +831,6 @@
         }
       ],
       "rift": "steady",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Support the sling while the freed hooves step onto the mat.",
       "onSuccess": {
         "goto": "lift_clear",
         "narration": "The goat steps free and shakes mud over the mat."
@@ -844,7 +839,18 @@
         "goto": "lift_changed",
         "narration": "One hoof slips back and the goat leans hard against the sling."
       },
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/stuttering-flats",
+      "narration": "The sling takes the goat's weight. Hold steady while a friend guides its hooves onto the mat. The goat tries to eat the mat. One problem at a time.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the sling while your friend guides the hooves.",
+        "supportLabel": "Support the sling",
+        "actionLabel": "Guide the hooves"
+      },
+      "onAssisted": {
+        "goto": "lift_clear",
+        "narration": "The goat steps free and shakes mud over the mat."
+      }
     },
     "lift_clear": {
       "type": "story",
@@ -1165,7 +1171,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "The opening skips again. A blanket falling between two places would be harmless; a goat caught mid-step would not. You need one clear signal for moving and another for stopping.",
+      "narration": "The herder is ready on the snow side. Your guide waits on the flats. Between them, the opening skips another beat. Nobody moves the goat until both banks agree. You need one signal for go and another for stop. The goat contributes a loud bleat. \"Useful opinion,\" says the guide. \"Terrible signal.\" How will you make yours clear?",
       "choices": [
         {
           "id": "plan_1",
@@ -1237,7 +1243,7 @@
       "art": "scenes/riftlight/stuttering-flats"
     },
     "signal_check": {
-      "type": "check",
+      "type": "interaction",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1252,11 +1258,6 @@
         }
       ],
       "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "checkKind": "doing",
-      "prompt": "Repeat the crossing signals clearly through wind and blinking light.",
       "onSuccess": {
         "goto": "signal_clear",
         "narration": "The herder answers both signals in the right order."
@@ -1265,7 +1266,44 @@
         "goto": "signal_changed",
         "narration": "A gust swallows the short signal."
       },
-      "art": "scenes/riftlight/stuttering-flats"
+      "art": "scenes/riftlight/stuttering-flats",
+      "narration": "Use the signals you just agreed on. Send wait, let the herder repeat it, then send move. The goat has finished chewing and would like to be included.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Arrange a practice round: wait, repeat, move.",
+        "actionLabel": "Try our order",
+        "options": [
+          {
+            "id": "step0",
+            "label": "Send wait signal",
+            "icon": "hand"
+          },
+          {
+            "id": "step1",
+            "label": "Let the herder repeat",
+            "icon": "ear"
+          },
+          {
+            "id": "step2",
+            "label": "Send move signal",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "step0",
+          "step1",
+          "step2"
+        ],
+        "clues": [
+          "Send wait first.",
+          "The herder repeats your signal before you send move.",
+          "Move is the last signal in this practice round."
+        ]
+      },
+      "onAssisted": {
+        "goto": "signal_clear",
+        "narration": "The herder answers both signals in the right order."
+      }
     },
     "signal_clear": {
       "type": "story",
@@ -1337,7 +1375,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "The goat must cross while the opening is steady. You can guide its head while the herder receives the sling, or turn the mat into a short ramp so it walks toward its herd. Your party stays on the flats; the herder handles the snow side.",
+      "narration": "For a moment, the whole snowy landing is visible. The herder has room to receive the goat. Your party will stay on the flats: guide its head while she receives the sling, or lay the mat as a short ramp toward the herd. The goat stretches its nose toward the snow. Which crossing plan will you try?",
       "choices": [
         {
           "id": "plan_1",
@@ -1812,7 +1850,7 @@
     },
     "ending": {
       "type": "story",
-      "narration": "The snowhorn goat is home. Your guide checks the warning board. \"Wait until you can see the whole crossing,\" she says. You leave the closed opening and follow the markers back to firm ground.",
+      "narration": "The snowhorn goat is back with its herd. The opening has closed, and the tide smooths away its muddy hoof holes. Your guide checks the warning board. \"Wait until you can see the whole crossing.\" She leads you back along the markers to firm ground. The flats look quiet again. This time, you know what to look for.",
       "choices": [],
       "outcome": "success",
       "variants": [
