@@ -21,6 +21,6 @@ it("keeps a delayed letter courier separate from the temple rescue messenger", (
   expect(next.state.narration).toContain("still finishing the delayed letter relay");
   expect(next.state.narration).not.toContain("offers to relay");
   expect(next.state.narration).toContain("temple's own griffin messenger");
-  expect(chapter.scenes.repair_1).toMatchObject({ choices: [expect.objectContaining({ goto: "plan" })] });
-  expect(chapter.scenes.pushed).toMatchObject({ choices: [expect.objectContaining({ goto: "record" })] });
+  expect(chapter.scenes.repair_1).toMatchObject({ onSuccess: expect.objectContaining({ goto: "record" }) });
+  expect(chapter.scenes.pushed).toMatchObject({ choices: [expect.objectContaining({ goto: "boards_check" })] });
 });

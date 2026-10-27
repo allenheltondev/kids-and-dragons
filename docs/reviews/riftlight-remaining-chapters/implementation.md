@@ -146,3 +146,34 @@ Rescue-pair verification: 850 focused tests across 35 files pass, including
 pass 117 checks with the same two existing Corvane warnings; continuity has zero
 new findings and zero stale entries. The known Windows preview shutdown test
 remains outside this focused suite; it was not changed or disabled.
+
+## Follow-on strand endings
+
+Wyrm Nest and Squall Temple now have their deeper play/consequence pass. See
+[strand-playtest.md](../../campaigns/continental-rift/strand-playtest.md) for planned
+thirty-minute budgets, decision payoffs and family observation. These replace the
+earlier notes listing both chapters as future work.
+
+The nest makes bedding change the actual held-ground objective, and furniture
+choice change preparation after victory or retreat. An unused slab has a playable
+recovery into a reader step; a slab beneath the allied wyrm is left alone. Signals
+lead to a real teaching task or a different visible-marker relay. The held-hollow
+ally, ordinary drive-off and delayed room after defeat remain distinct.
+
+The temple makes an earlier warning skip an already-completed moving job. Turning
+rope changes push work; wind cover changes the party's Guard penalty without
+removing enemies or crosswind. Missed rope alignment rigs a shorter line. Actual
+outcomes determine repair-kit choices and a closed landing stays closed. The
+chosen record unlocks an appropriate relief-watch activity with honest helped
+recoveries. Existing reusable cast and setting backdrops remain in use.
+
+Convergence and Finale remain for the final deeper gameplay wave. The family-session
+tracker remains separate in #511. Planned duration is thirty minutes per chapter;
+observed family timing remains unmeasured.
+
+Strand-pair validation: 1,536 focused tests across 38 files pass, including
+651 new complete interaction routes and 21 actual board tests. Typechecking
+passes; content validation/proofs pass 117 checks with the same two existing
+Corvane warnings. Continuity has zero new findings and zero stale entries.
+The known preview shutdown test remains outside this focused suite and was not
+changed or disabled. Automated timing remains separate from family playtesting.
