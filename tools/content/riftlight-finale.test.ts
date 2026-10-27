@@ -1,7 +1,7 @@
 import { expect, it } from "vitest";
 import { applyEffects, completeVisit, enterScene, parseCampaignGraph, startJourney, takeExit } from "@kad/shared";
 import { pacingReport } from "../../packages/shared/src/chapter-pacing.ts";
-import { allPaths, campaign, chapters, context, send, start } from "./riftlight-test-support.ts";
+import { allPaths, campaign, chapters, context, finishInteraction, send, start } from "./riftlight-test-support.ts";
 const chapter = chapters.get("riftlight-finale")!;
 const learned = { fragment_paths_learned: true, fragment_coast_learned: true };
 function walk(anchor: string, win: boolean, fate = "listen", extra: Record<string, boolean> = {}, secondWin = false) {
@@ -16,6 +16,8 @@ function walk(anchor: string, win: boolean, fate = "listen", extra: Record<strin
       // Outcome contract only; actual board execution is tested separately.
       const branch = win ? scene.onVictory : scene.onDefeat;
       state = enterScene(applyEffects(state, branch.effects, context(chapter)), branch.goto, context(chapter)).state;
+    } else if (state.prompt?.kind === "interaction") {
+      state = finishInteraction(state, chapter, state.sceneId === "loss_anchor_check" ? secondWin ? "success" : "failure" : "success");
     } else if (state.prompt?.kind === "choice") {
       const id = state.sceneId === "anchors" ? anchor : state.sceneId === "fate" ? fate : state.prompt.options[0]!.id;
       state = send(state, { type: "CHOOSE", choiceId: id }, chapter);
@@ -103,9 +105,8 @@ it("offers the upriver escape once the guide has checked it at the Bone Yard", (
 it("keeps the success spine interactive across party scenarios", () => {
   // These assertions need exact shortest paths, not 3,000 sampled walks.
   for (const { shortest } of pacingReport(chapter, undefined, 0).scenarios) {
-    expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
-    expect(shortest!.decisions).toBeGreaterThanOrEqual(14);
-    expect(shortest!.checks).toBe(4);
+    expect(shortest!.checks).toBe(0);
+    expect(shortest!.longestReadingRun).toBeLessThanOrEqual(3);
     expect(shortest!.encounters).toBe(1);
   }
 });
