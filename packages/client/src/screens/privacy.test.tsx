@@ -89,6 +89,21 @@ describe("what it must never claim again", () => {
     expect(allWords()).not.toMatch(pattern);
   });
 
+  it("does not deny analytics outright while it measures chapter durations itself", () => {
+    const text = allWords();
+    // Every mention of analytics or trackers is limited to third parties or advertising.
+    for (const sentence of text.split(/(?<=[.!?])\s+/).filter((t) => /analytics|trackers?\b/i.test(t))) {
+      expect(sentence, sentence).toMatch(/third-party|advertising/i);
+    }
+    // And the first-party measuring it does is described, with how long it is kept.
+    const automatic = PRIVACY_SECTIONS.find((s) => s.id === "automatic")!.bullets!.join(" ");
+    expect(automatic).toMatch(/how long chapters take/i);
+    expect(automatic).toMatch(/add these up/i);
+    expect(automatic).toMatch(/180 days/);
+    const why = PRIVACY_SECTIONS.find((s) => s.id === "why")!.paragraphs!.join(" ");
+    expect(why).toMatch(/our own, of how long chapters take/i);
+  });
+
   it("says the nickname filter checks bad words, not personal details", () => {
     expect(allWords()).toMatch(/not for personal details/i);
   });
