@@ -151,6 +151,7 @@ details summary { cursor: pointer; font-weight: 600; }
   <h1>Voice bake-off</h1>
   <span class="meta" id="meta"></span>
   <div class="tools">
+    <a id="castLink" href="/cast" hidden>Cast voice sheet</a>
     <select id="tier" aria-label="Show tier"><option value="">All tiers</option></select>
     <button id="raw" type="button" title="Play Gemini clips exactly as the API sent them, before the end-of-turn noise is cleaned">Gemini raw</button>
     <button id="blind" type="button">Blind</button>
@@ -631,6 +632,7 @@ details summary { cursor: pointer; font-weight: 600; }
     a.remove();
   });
 
+  document.getElementById("castLink").hidden = !live;
   draw();
   if (live) {
     refresh().catch((error) => alert(error.message));

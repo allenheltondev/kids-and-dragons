@@ -68,7 +68,9 @@ export interface ModelInfo {
 export type Family = "eleven" | "elevenClassic" | "gemini" | "geminiPrompt" | "fake";
 
 export interface CastFile {
-  speakers: Record<string, { describe: string; elevenlabs?: { voiceId: string; name?: string }; gemini?: { voice: string } }>;
+  /** Everyone's accent, unless a speaker sets their own: written into Gemini's style and audio profile. */
+  accent?: string;
+  speakers: Record<string, { describe: string; accent?: string; elevenlabs?: { voiceId: string; name?: string }; gemini?: { voice: string } }>;
   delivery: Record<string, { tag?: string; style?: string }>;
   beats: Record<string, Partial<Record<Exclude<Family, "fake">, string | null>>>;
 }
@@ -210,10 +212,17 @@ export function spoken(engine: Engine, cast: CastFile, line: ScriptLine): string
   return text;
 }
 
-/** How a line should sound, in words: the character, and the delivery when the column asks for it. */
+/** A speaker's accent as Gemini is told it, or nothing when the cast names none. */
+function accentOf(cast: CastFile, id: string): string {
+  const accent = speaker(cast, id).accent ?? cast.accent;
+  return accent ? ` Accent: ${accent}.` : "";
+}
+
+/** How a line should sound, in words: the character, their accent, and the delivery when the column asks for it. */
 function styleOf(engine: Engine, cast: CastFile, line: ScriptLine): string {
   const delivery = line.delivery ? cast.delivery[line.delivery]?.style : undefined;
-  return delivery ? `${speaker(cast, line.by).describe} Right now: ${delivery}.` : speaker(cast, line.by).describe;
+  const who = `${speaker(cast, line.by).describe}${accentOf(cast, line.by)}`;
+  return delivery ? `${who} Right now: ${delivery}.` : who;
 }
 
 /**
@@ -222,7 +231,7 @@ function styleOf(engine: Engine, cast: CastFile, line: ScriptLine): string {
  * model from reading the directions aloud.
  */
 function geminiPrompt(engine: Engine, cast: CastFile, lines: readonly ScriptLine[], speakers: readonly string[]): string {
-  const profiles = speakers.map((id) => `# AUDIO PROFILE: ${speakerName(id)}\n${speaker(cast, id).describe}`).join("\n\n");
+  const profiles = speakers.map((id) => `# AUDIO PROFILE: ${speakerName(id)}\n${speaker(cast, id).describe}${accentOf(cast, id)}`).join("\n\n");
   const notes = engine.delivery === "instruction"
     ? lines.map((line, i) => (line.delivery ? `- ${speakerName(line.by)}, line ${String(i + 1)}: ${cast.delivery[line.delivery]?.style ?? line.delivery}` : null)).filter(Boolean)
     : [];

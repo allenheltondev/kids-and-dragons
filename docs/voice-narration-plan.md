@@ -1,6 +1,6 @@
 # Voice narration plan (ElevenLabs or Gemini TTS)
 
-**Status: plan. Built so far: `npm run voice:cost` (§9), the phase-0 bake-off harness `npm run voice:bakeoff` ([voice-bakeoff.md](./voice-bakeoff.md)), and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
+**Status: plan. Built so far: `npm run voice:cost` (§9), the phase-0 bake-off harness `npm run voice:bakeoff` ([voice-bakeoff.md](./voice-bakeoff.md)), the cast voice sheet `npm run voice:cast` and its `/cast` page ([voice-cast.md](./voice-cast.md)), and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
 consistent voice for each cast member. It also covers the pipeline that turns authored text into
 audio linked to that text, knows what needs (re)generating, and caches hard at every layer.
 
@@ -418,6 +418,11 @@ Phases 2–3 and the dialogue writing (7) can run alongside 4–5. The writing d
 pipeline, and rewriting before the full render (8) avoids paying to render text twice.
 
 ## Decided (2026-10-27)
+
+- **American accents for every voice**: the game is for American children. The accent is part of
+  every Gemini style ([voice-cast.md](./voice-cast.md)).
+- **Gemini is the leading provider.** The cast voice sheet (`content/voice/cast.json`, `/cast`)
+  casts the whole game in Gemini voices; ElevenLabs stays in the bake-off for comparison.
 
 - **The TV reads aloud by default**, with the switch to turn it off remembered per device. Built.
 - **Budget:** $75 cap for the first render run (`--max-dollars 75`).
