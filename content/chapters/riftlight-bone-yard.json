@@ -385,7 +385,7 @@
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins",
+      "art": "scenes/riftlight/bone-yard-returning-pebble",
       "interaction": {
         "kind": "play",
         "cue": "Compare the yard's things with your own gear.",
@@ -434,7 +434,7 @@
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins",
+      "art": "scenes/riftlight/bone-yard-returning-pebble",
       "interaction": {
         "kind": "tracking",
         "cue": "Follow the marked pebble hiding place through the shifting stones.",
