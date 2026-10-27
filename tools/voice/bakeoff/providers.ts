@@ -18,6 +18,7 @@
  */
 
 import { createHash } from "node:crypto";
+import { cleanPcm16 } from "./clean.ts";
 import { BEAT, withoutBeats, type Sample, type ScriptLine } from "./samples.ts";
 
 export type Provider = "elevenlabs" | "gemini" | "fake";
@@ -67,7 +68,9 @@ export interface ModelInfo {
 export type Family = "eleven" | "elevenClassic" | "gemini" | "geminiPrompt" | "fake";
 
 export interface CastFile {
-  speakers: Record<string, { describe: string; elevenlabs?: { voiceId: string; name?: string }; gemini?: { voice: string } }>;
+  /** Everyone's accent, unless a speaker sets their own: written into Gemini's style and audio profile. */
+  accent?: string;
+  speakers: Record<string, { describe: string; accent?: string; elevenlabs?: { voiceId: string; name?: string }; gemini?: { voice: string } }>;
   delivery: Record<string, { tag?: string; style?: string }>;
   beats: Record<string, Partial<Record<Exclude<Family, "fake">, string | null>>>;
 }
@@ -209,10 +212,17 @@ export function spoken(engine: Engine, cast: CastFile, line: ScriptLine): string
   return text;
 }
 
-/** How a line should sound, in words: the character, and the delivery when the column asks for it. */
+/** A speaker's accent as Gemini is told it, or nothing when the cast names none. */
+function accentOf(cast: CastFile, id: string): string {
+  const accent = speaker(cast, id).accent ?? cast.accent;
+  return accent ? ` Accent: ${accent}.` : "";
+}
+
+/** How a line should sound, in words: the character, their accent, and the delivery when the column asks for it. */
 function styleOf(engine: Engine, cast: CastFile, line: ScriptLine): string {
   const delivery = line.delivery ? cast.delivery[line.delivery]?.style : undefined;
-  return delivery ? `${speaker(cast, line.by).describe} Right now: ${delivery}.` : speaker(cast, line.by).describe;
+  const who = `${speaker(cast, line.by).describe}${accentOf(cast, line.by)}`;
+  return delivery ? `${who} Right now: ${delivery}.` : who;
 }
 
 /**
@@ -221,7 +231,7 @@ function styleOf(engine: Engine, cast: CastFile, line: ScriptLine): string {
  * model from reading the directions aloud.
  */
 function geminiPrompt(engine: Engine, cast: CastFile, lines: readonly ScriptLine[], speakers: readonly string[]): string {
-  const profiles = speakers.map((id) => `# AUDIO PROFILE: ${speakerName(id)}\n${speaker(cast, id).describe}`).join("\n\n");
+  const profiles = speakers.map((id) => `# AUDIO PROFILE: ${speakerName(id)}\n${speaker(cast, id).describe}${accentOf(cast, id)}`).join("\n\n");
   const notes = engine.delivery === "instruction"
     ? lines.map((line, i) => (line.delivery ? `- ${speakerName(line.by)}, line ${String(i + 1)}: ${cast.delivery[line.delivery]?.style ?? line.delivery}` : null)).filter(Boolean)
     : [];
@@ -347,6 +357,10 @@ export function plan(engine: Engine, cast: CastFile, sample: Sample, take: numbe
 export interface Rendered {
   bytes: Buffer;
   ext: "mp3" | "wav";
+  /** Gemini: the audio exactly as the API sent it, before cleaning (clean.ts). */
+  raw?: Buffer;
+  /** Gemini: how much end-of-turn noise the cleaning silenced. */
+  removedMs?: number;
 }
 
 export type Fetch = (url: string, init: { method: string; headers: Record<string, string>; body?: string }) => Promise<{
@@ -436,7 +450,15 @@ export async function send(job: Job, keys: Keys, fetch: Fetch): Promise<Rendered
   const audio = parts.map((part) => part.inlineData).filter((data) => data?.data);
   if (audio.length === 0) throw new Error(`No audio in the response: ${JSON.stringify(json).slice(0, 300)}`);
   const rate = Number(/rate=(\d+)/.exec(audio[0]?.mimeType ?? "")?.[1] ?? 24000);
-  return { bytes: pcmToWav(Buffer.concat(audio.map((data) => Buffer.from(data!.data!, "base64"))), rate), ext: "wav" };
+  const pcm = Buffer.concat(audio.map((data) => Buffer.from(data!.data!, "base64")));
+  // Raw Gemini audio carries a burst of noise where a turn ends; AI Studio's player gates it, so do we.
+  const cleaned = cleanPcm16(pcm, rate);
+  return {
+    bytes: pcmToWav(cleaned.pcm, rate),
+    raw: pcmToWav(pcm, rate),
+    removedMs: cleaned.removed.reduce((sum, r) => sum + r.endMs - r.startMs, 0),
+    ext: "wav",
+  };
 }
 
 async function getJson(url: string, headers: Record<string, string>, fetch: Fetch): Promise<unknown> {

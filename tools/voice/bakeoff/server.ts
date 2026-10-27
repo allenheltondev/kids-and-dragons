@@ -20,6 +20,8 @@ import { cellOf, estimate, renderCell, type Workspace } from "./bakeoff.ts";
 import { renderPage, type LiveConfig } from "./page.ts";
 import { GEMINI_VOICES, engineOf, listModels, listVoices, type CastFile, type EngineConfig, type Fetch, type Keys, type ModelInfo } from "./providers.ts";
 import type { Sample } from "./samples.ts";
+import { renderCastPage } from "../cast/page.ts";
+import { castPageData, createCastRoutes, type Budget } from "../cast/routes.ts";
 
 export interface ServerOptions {
   ws: Workspace;
@@ -32,12 +34,14 @@ export interface ServerOptions {
   /** The most the server will spend before it refuses, adjustable from the page. */
   maxDollars: number;
   token?: string;
+  /** The cast sheet, for the /cast page (docs/voice-cast.md). Without it there is no cast page. */
+  cast?: { sheetPath: string; chapterCampaigns: Record<string, string> };
 }
 
 type CastOverrides = Record<string, { elevenlabs?: string; gemini?: string }>;
 
 const MODEL_ID = /^[A-Za-z0-9._-]{1,80}$/;
-const CLIP = /^[a-f0-9]{24}\.(mp3|wav)$/;
+const CLIP = /^[a-f0-9]{24}(\.raw)?\.(mp3|wav)$/;
 
 class BadRequest extends Error {}
 
@@ -98,8 +102,11 @@ function send(response: http.ServerResponse, status: number, body: unknown): voi
 
 export function createBakeoffServer(options: ServerOptions): { server: http.Server; token: string } {
   const token = options.token ?? randomBytes(16).toString("hex");
-  let spent = 0;
-  let cap = options.maxDollars;
+  // One budget for the whole session, whichever page spends it.
+  const budget: Budget = { spent: 0, cap: options.maxDollars };
+  const castRoutes = options.cast
+    ? createCastRoutes({ ws: options.ws, sheetPath: options.cast.sheetPath, catalog: options.catalog, fetch: options.fetch, chapterCampaigns: options.cast.chapterCampaigns }, budget)
+    : null;
 
   const takesFrom = (body: Record<string, unknown>): number => {
     const takes = Number(body.takes ?? 1);
@@ -119,7 +126,7 @@ export function createBakeoffServer(options: ServerOptions): { server: http.Serv
     presets: options.presets,
     speakers: options.ws.cast.speakers,
     geminiVoices: GEMINI_VOICES.map((v) => ({ id: v.id, name: v.id, about: v.about })),
-    cap,
+    cap: budget.cap,
     envKeys: { elevenlabs: !!options.envKeys.elevenlabs, gemini: !!options.envKeys.gemini },
   });
 
@@ -145,15 +152,15 @@ export function createBakeoffServer(options: ServerOptions): { server: http.Serv
           engines: engines.map((e) => ({ id: e.id, label: e.label, provider: e.provider, model: e.model, mode: e.mode, delivery: e.delivery, context: e.context === true })),
           estimates: engines.map((e) => estimate(e, options.samples, takes, ws)),
           cells: Object.fromEntries(engines.map((e) => [e.id, Object.fromEntries(options.samples.map((s) => [s.id, cellOf(e, s, takes, ws)]))])),
-          spent,
-          cap,
+          spent: budget.spent,
+          cap: budget.cap,
         });
       }
       case "/api/cap": {
         const next = Number(body.cap);
         if (!Number.isFinite(next) || next < 0) throw new BadRequest("cap must be a number of dollars");
-        cap = next;
-        return send(response, 200, { spent, cap });
+        budget.cap = next;
+        return send(response, 200, { spent: budget.spent, cap: budget.cap });
       }
       case "/api/render": {
         const ws = wsWith(body);
@@ -167,20 +174,23 @@ export function createBakeoffServer(options: ServerOptions): { server: http.Serv
         if (price === null && quoted.requests > 0) {
           const rate = typeof body.approvedRate === "number" && Number.isFinite(body.approvedRate) && body.approvedRate >= 0 ? body.approvedRate : null;
           if (rate === null) {
-            return send(response, 409, { error: `pricing.json has no price for ${engine.model}, so the cap cannot be kept. Add it to tools/voice/pricing.json, or approve a rate on the column.`, spent, cap });
+            return send(response, 409, { error: `pricing.json has no price for ${engine.model}, so the cap cannot be kept. Add it to tools/voice/pricing.json, or approve a rate on the column.`, spent: budget.spent, cap: budget.cap });
           }
           price = (quoted.chars / 1000) * rate;
         }
         price ??= 0;
-        if (spent + price > cap + 1e-9) {
-          return send(response, 402, { error: `This would take the session past its $${cap.toFixed(2)} cap ($${spent.toFixed(2)} spent, this cell about $${price.toFixed(2)}). Raise the cap to go on.`, spent, cap });
+        if (budget.spent + price > budget.cap + 1e-9) {
+          return send(response, 402, { error: `This would take the session past its $${budget.cap.toFixed(2)} cap ($${budget.spent.toFixed(2)} spent, this cell about $${price.toFixed(2)}). Raise the cap to go on.`, spent: budget.spent, cap: budget.cap });
         }
-        spent += price;
+        budget.spent += price;
         const cell = await renderCell(engine, sample, takes, ws, keys, options.fetch);
-        return send(response, 200, { cell, spent, cap });
+        return send(response, 200, { cell, spent: budget.spent, cap: budget.cap });
       }
-      default:
+      default: {
+        const reply = castRoutes ? await castRoutes(route, body, keys) : null;
+        if (reply) return send(response, reply.status, reply.body);
         return send(response, 404, { error: "no such route" });
+      }
     }
   }
 
@@ -190,6 +200,15 @@ export function createBakeoffServer(options: ServerOptions): { server: http.Serv
       try {
         if (url.pathname === "/" && request.method === "GET") {
           const page = renderPage({ generated: new Date().toISOString(), tiers: options.tiers, samples: options.samples, engines: [], cells: {} }, live());
+          response.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" });
+          return response.end(page);
+        }
+        if (url.pathname === "/cast" && request.method === "GET" && options.cast) {
+          const page = renderCastPage(castPageData({ ws: options.ws, sheetPath: options.cast.sheetPath, catalog: options.catalog, fetch: options.fetch, chapterCampaigns: options.cast.chapterCampaigns }), {
+            token,
+            cap: budget.cap,
+            envKeys: { elevenlabs: !!options.envKeys.elevenlabs, gemini: !!options.envKeys.gemini },
+          });
           response.writeHead(200, { "content-type": "text/html; charset=utf-8", "cache-control": "no-store" });
           return response.end(page);
         }
