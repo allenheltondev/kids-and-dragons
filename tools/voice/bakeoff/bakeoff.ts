@@ -227,6 +227,12 @@ export async function runBakeoff(options: BatchOptions): Promise<BatchOutcome> {
   options.log(`  ${"total".padEnd(52)} ${String(estimates.reduce((s, r) => s + r.requests, 0)).padStart(4)} requests, about $${dollars.toFixed(2)} (${String(cached)} already cached, free)`);
 
   const outcome: BatchOutcome = { estimate: estimates, dollars, rendered: 0, cached, failed: 0 };
+  // An unpriced paid column would make the cap meaningless, so it stops the run rather than counting as free.
+  const unpriced = estimates.filter((row) => row.dollars === null && row.requests > 0).map((row) => row.engine);
+  if (unpriced.length > 0) {
+    outcome.refused = `No price in tools/voice/pricing.json for ${unpriced.join(", ")}, so the cap cannot be kept. Add the model there (with its apiModel) and run again.`;
+    return outcome;
+  }
   if (dollars > options.maxDollars) {
     outcome.refused = `That is over the $${options.maxDollars.toFixed(2)} cap. Narrow it with --engines, --samples or --tier, or raise --max-dollars.`;
     return outcome;

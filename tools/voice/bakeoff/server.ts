@@ -161,7 +161,17 @@ export function createBakeoffServer(options: ServerOptions): { server: http.Serv
         const engine = engineFrom(body.engine, options.catalog);
         const [sample] = samplesFrom({ samples: [body.sample] });
         if (sample === undefined) throw new BadRequest("unknown sample");
-        const price = estimate(engine, [sample], takes, ws).dollars ?? 0;
+        const quoted = estimate(engine, [sample], takes, ws);
+        // An unpriced paid model is never treated as free: it renders only at a rate the page approved.
+        let price = quoted.dollars;
+        if (price === null && quoted.requests > 0) {
+          const rate = typeof body.approvedRate === "number" && Number.isFinite(body.approvedRate) && body.approvedRate >= 0 ? body.approvedRate : null;
+          if (rate === null) {
+            return send(response, 409, { error: `pricing.json has no price for ${engine.model}, so the cap cannot be kept. Add it to tools/voice/pricing.json, or approve a rate on the column.`, spent, cap });
+          }
+          price = (quoted.chars / 1000) * rate;
+        }
+        price ??= 0;
         if (spent + price > cap + 1e-9) {
           return send(response, 402, { error: `This would take the session past its $${cap.toFixed(2)} cap ($${spent.toFixed(2)} spent, this cell about $${price.toFixed(2)}). Raise the cap to go on.`, spent, cap });
         }

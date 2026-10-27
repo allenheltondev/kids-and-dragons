@@ -295,6 +295,23 @@ describe("a command-line run", () => {
     expect(calls).toBe(0);
   });
 
+  it("refuses a column pricing.json has no price for, rather than counting it as free", async () => {
+    let calls = 0;
+    const outcome = await runBakeoff(
+      base(workspace(), {
+        engines: [column("elevenlabs", "eleven_v5_alpha")],
+        keys: { elevenlabs: "secret" },
+        maxDollars: 1000,
+        fetch: async () => {
+          calls += 1;
+          return response("");
+        },
+      }),
+    );
+    expect(outcome.refused).toMatch(/No price in tools\/voice\/pricing\.json for elevenlabs:eleven_v5_alpha/);
+    expect(calls).toBe(0);
+  });
+
   it("records a failure in its cell instead of stopping the run", async () => {
     const ws = workspace();
     const engine = column("gemini", "gemini-3.8-flash-tts");
@@ -359,6 +376,29 @@ describe("the live page's server", () => {
     const bad = await post("/api/render", { engine: { ...engine, model: "../../v1/user" }, sample: "closer-look" }, { "x-elevenlabs-key": "k" });
     expect(bad.status).toBe(400);
     expect(calls).toBe(0);
+  });
+
+  it("never renders an unpriced live model as free: only at an approved rate, and still under the cap", async () => {
+    let calls = 0;
+    const { post } = await start(async () => { calls += 1; return response(Buffer.from("ID3audio")); }, 1);
+    // A model the key lists live but pricing.json does not know.
+    const engine = { provider: "elevenlabs", model: "eleven_v5_alpha", mode: "lines", delivery: "tag" };
+    const keyed = { "x-elevenlabs-key": "k" };
+
+    const refused = await post("/api/render", { engine, sample: "closer-look" }, keyed);
+    expect(refused.status).toBe(409);
+    expect(((await refused.json()) as { error: string }).error).toMatch(/no price for eleven_v5_alpha/);
+    expect(calls).toBe(0);
+
+    const tooDear = await post("/api/render", { engine, sample: "closer-look", approvedRate: 1000 }, keyed);
+    expect(tooDear.status).toBe(402);
+    expect(calls).toBe(0);
+
+    const ok = await post("/api/render", { engine, sample: "closer-look", approvedRate: 0.2 }, keyed);
+    expect(ok.status).toBe(200);
+    const chars = byId("closer-look").lines[0]!.text.length;
+    expect(((await ok.json()) as { spent: number }).spent).toBeCloseTo((chars / 1000) * 0.2);
+    expect(calls).toBe(1);
   });
 
   it("estimates nothing left once a column is rendered", async () => {

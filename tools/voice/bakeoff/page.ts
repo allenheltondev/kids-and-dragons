@@ -250,7 +250,7 @@ details summary { cursor: pointer; font-weight: 600; }
 
   async function renderOne(config, engineId, sampleId) {
     try {
-      const json = await call("/api/render", { engine: config, sample: sampleId, takes: state.takes, cast: state.cast });
+      const json = await call("/api/render", { engine: config, sample: sampleId, takes: state.takes, cast: state.cast, approvedRate: config.approvedRate });
       (data.cells[engineId] ||= {})[sampleId] = json.cell;
       spent = json.spent;
       cap = json.cap;
@@ -388,6 +388,7 @@ details summary { cursor: pointer; font-weight: 600; }
     const capInput = el("input", { type: "number", min: "0", step: "1", value: String(cap), style: "width: 90px", "aria-label": "Spending cap in dollars" });
     capInput.addEventListener("change", async () => { cap = (await call("/api/cap", { cap: Number(capInput.value) })).cap; drawSetup(); });
     const left = data.engines.reduce((s, e) => s + ((estimates[e.id] && estimates[e.id].dollars) || 0), 0);
+    const unpricedLeft = data.engines.some((e) => estimates[e.id] && estimates[e.id].requests > 0 && estimates[e.id].dollars === null && e.provider !== "fake");
 
     const list = el("div", { class: "columns" }, columns().map((config, i) => {
       const engine = data.engines[i];
@@ -395,15 +396,33 @@ details summary { cursor: pointer; font-weight: 600; }
       const est = estimates[engine.id];
       const job = busy[engine.id];
       const finished = !job && est && est.requests === 0;
-      const go = el("button", { type: "button", class: job || finished ? "" : "primary", disabled: finished }, job ? "Stop" : finished ? "All rendered" : "Render all");
+      // A model pricing.json does not know renders only at a rate approved here, so the cap still holds.
+      const unpriced = !!est && est.requests > 0 && est.dollars === null && engine.provider !== "fake";
+      const approved = typeof config.approvedRate === "number";
+      const go = el("button", { type: "button", class: job || finished ? "" : "primary", disabled: finished || (unpriced && !approved) }, job ? "Stop" : finished ? "All rendered" : "Render all");
       go.addEventListener("click", () => renderColumn(i));
       const remove = el("button", { type: "button" }, "Remove");
       remove.addEventListener("click", () => { const next = [...columns()]; next.splice(i, 1); state.columns = next; save(); refresh(); });
       const needsKey = engine.provider !== "fake" && !keys[engine.provider] && !live.envKeys[engine.provider];
       const price = job ? "Rendering " + job.done + " of " + job.of + " samples…"
-        : est ? (!est.requests ? "Everything rendered" : est.dollars === null ? est.requests + " requests; no price for this model in pricing.json" : "About " + money(est.dollars) + " for " + est.requests + " requests") + (est.cached ? " (" + est.cached + " cached)" : "") : "";
+        : est ? (!est.requests ? "Everything rendered"
+          : unpriced ? (approved ? "About " + money(est.chars / 1000 * config.approvedRate) + " at your rate, for " + est.requests + " requests" : est.requests + " requests. No price for this model in pricing.json: approve a rate to render.")
+          : "About " + money(est.dollars) + " for " + est.requests + " requests") + (est.cached ? " (" + est.cached + " cached)" : "") : "";
+      let rate = null;
+      if (unpriced) {
+        rate = el("input", { type: "number", min: "0", step: "0.01", value: approved ? String(config.approvedRate) : "", placeholder: "$ per 1k chars", style: "width: 130px", "aria-label": "Approved price in dollars per 1,000 characters" });
+        rate.addEventListener("change", () => {
+          const next = [...columns()];
+          const value = rate.value.trim() === "" ? NaN : Number(rate.value);
+          next[i] = Object.assign({}, config);
+          if (Number.isFinite(value) && value >= 0) next[i].approvedRate = value; else delete next[i].approvedRate;
+          state.columns = next;
+          save();
+          drawSetup();
+        });
+      }
       return el("div", { class: "column" }, el("span", { class: "label" }, engine.label),
-        el("span", { class: "price" }, price, needsKey ? el("span", { class: "bad" }, " · needs a " + PROVIDERS[engine.provider] + " key") : ""), go, remove);
+        el("span", { class: "price" }, price, needsKey ? el("span", { class: "bad" }, " · needs a " + PROVIDERS[engine.provider] + " key") : ""), rate, go, remove);
     }));
     const restore = el("button", { type: "button" }, "Restore recommended columns");
     restore.addEventListener("click", () => { state.columns = null; save(); refresh(); });
@@ -418,7 +437,7 @@ details summary { cursor: pointer; font-weight: 600; }
       list,
       el("div", { class: "row" }, takes,
         el("label", { class: "row" }, "Spending cap $", capInput),
-        el("span", { class: spent > cap ? "bad" : "hint" }, "Spent this session: about " + money(spent) + ". Left to render: about " + money(left) + "."),
+        el("span", { class: spent > cap ? "bad" : "hint" }, "Spent this session: about " + money(spent) + ". Left to render: about " + money(left) + (unpricedLeft ? ", plus the unpriced columns" : "") + "."),
         restore),
       castPanel()));
   }
