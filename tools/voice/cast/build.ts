@@ -19,10 +19,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import * as yaml from "js-yaml";
-import { inventory } from "../inventory.ts";
 import { reviewJson, reviewMarkdown } from "./review.ts";
-import { buildSheet, voiceClashes, type CastSheet, type ChapterLike, type IndividualLike } from "./sheet.ts";
+import { buildSheet, voiceClashes, type CastSheet } from "./sheet.ts";
+import { loadSources, SHEET_COMMENT, writeSheet } from "./sources.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..");
 export const SHEET = path.join(ROOT, "content", "voice", "cast.json");
@@ -46,28 +45,9 @@ if (values.review) {
   process.exit(0);
 }
 
-const readDir = (dir: string): Record<string, unknown>[] =>
-  fs
-    .readdirSync(dir)
-    .filter((name) => name.endsWith(".json"))
-    .sort()
-    .map((name) => JSON.parse(fs.readFileSync(path.join(dir, name), "utf8")) as Record<string, unknown>);
-
-const chapters = readDir(path.join(ROOT, "content", "chapters"));
-const campaigns = readDir(path.join(ROOT, "content", "campaigns"));
-const canon = yaml.load(fs.readFileSync(path.join(ROOT, "canon", "individuals.yaml"), "utf8")) as { individuals?: IndividualLike[] };
-const narration = inventory({ chapters, campaigns }, { facetsMax: 6 })
-  .filter((line) => line.kind === "narration" || line.kind === "cue" || line.kind === "prompt")
-  .map((line) => ({ address: line.address, chapter: line.chapter, text: line.text }));
-
 const previous = fs.existsSync(SHEET) ? (JSON.parse(fs.readFileSync(SHEET, "utf8")) as CastSheet) : null;
-const sheet = buildSheet({ chapters: chapters as unknown as ChapterLike[], individuals: canon.individuals ?? [], narration }, previous);
-const out: CastSheet = {
-  $comment:
-    "The cast voice sheet (docs/voice-cast.md). Built by `npm run voice:cast` from the chapters' voiceGuide.npcVoices, their scene casts and canon/individuals.yaml; edit voices on the cast page (`npm run voice:bakeoff -- --serve`, then /cast) or here. An entry with status \"approved\" is never changed by a rebuild, and a provisional one keeps its voice. `lines` are real quotes from the narration, for auditions.",
-  accent: sheet.accent,
-  speakers: sheet.speakers,
-};
+const sheet = buildSheet(loadSources(ROOT), previous);
+const out: CastSheet = { $comment: SHEET_COMMENT, accent: sheet.accent, speakers: sheet.speakers };
 
 const entries = Object.values(out.speakers);
 const clashes = voiceClashes(out);
@@ -87,6 +67,5 @@ if (clashes.length > 0) {
 if (values.check) {
   process.exit(clashes.length > 0 ? 1 : 0);
 }
-fs.mkdirSync(path.dirname(SHEET), { recursive: true });
-fs.writeFileSync(SHEET, `${JSON.stringify(out, null, 2)}\n`);
+writeSheet(SHEET, out);
 console.log(`\nWrote ${path.relative(ROOT, SHEET)}.`);

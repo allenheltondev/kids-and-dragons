@@ -84,7 +84,7 @@ if (values.serve) {
   const { server } = createBakeoffServer({ ws, samples: all, tiers: file.tiers, catalog, presets, envKeys: keys, fetch, maxDollars, cast });
   server.listen(port, "127.0.0.1", () => {
     console.log(`Voice bake-off: http://127.0.0.1:${String(port)}/`);
-    if (cast) console.log(`Cast voice sheet: http://127.0.0.1:${String(port)}/cast`);
+    if (cast) console.log(`Cast profiles, one at a time: http://127.0.0.1:${String(port)}/cast/profile\nCast voice sheet, every card: http://127.0.0.1:${String(port)}/cast`);
     console.log(`Paste keys on the page${keys.elevenlabs || keys.gemini ? " (keys from your shell are already in use)" : ""}. Spending cap $${maxDollars.toFixed(2)} this session; raise it on the page.`);
     console.log("Ctrl-C to stop. Clips stay cached in " + path.join(ws.outDir, "clips"));
   });

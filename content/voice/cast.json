@@ -1,5 +1,5 @@
 {
-  "$comment": "The cast voice sheet (docs/voice-cast.md). Built by `npm run voice:cast` from the chapters' voiceGuide.npcVoices, their scene casts and canon/individuals.yaml; edit voices on the cast page (`npm run voice:bakeoff -- --serve`, then /cast) or here. An entry with status \"approved\" is never changed by a rebuild, and a provisional one keeps its voice. `lines` are real quotes from the narration, for auditions.",
+  "$comment": "The cast voice sheet (docs/voice-cast.md). Built by `npm run voice:cast` from the chapters' voiceGuide.npcVoices, their scene casts and canon/individuals.yaml; edit voices on the cast page (`npm run voice:bakeoff -- --serve`, then /cast) or here. A person's decisions (status, voice, gender, accent, notes, history) survive every rebuild; everything else is refreshed from the content. `lines` are real quotes from the narration, for auditions.",
   "accent": "General American, the way a warm American storyteller reads aloud",
   "speakers": {
     "narrator": {
@@ -43,6 +43,21 @@
       "kind": "character",
       "who": "a bramble sprite the size of a teapot; earnest, over-explains, offers you things you did not ask for. Earnest. Over-explains. Offers you things you did not ask for and looks hurt if you say no, then offers something else.",
       "pronouns": "they/them",
+      "pronounsFrom": "canon",
+      "gender": "nonbinary",
+      "genderFrom": "canon",
+      "figure": "cast/pib",
+      "canon": "individual.pib",
+      "voiceNotes": [
+        {
+          "chapter": "bramblewood-01",
+          "key": "pib"
+        },
+        {
+          "chapter": "gemfall-02",
+          "key": "pib"
+        }
+      ],
       "chapters": [
         "bramblewood-01",
         "gemfall-02"
@@ -73,6 +88,19 @@
       "kind": "character",
       "who": "curious, speaks in rhyme, easily distracted, apologizes immediately and then does it again",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "bramblewood-01",
+          "key": "wisp"
+        },
+        {
+          "chapter": "gemfall-03b",
+          "key": "wisp"
+        }
+      ],
       "chapters": [
         "bramblewood-01",
         "gemfall-03b"
@@ -94,6 +122,14 @@
       "name": "Door Voice",
       "kind": "character",
       "who": "very small, very embarrassed, absolutely not in trouble",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "bramblewood-01",
+          "key": "door_voice"
+        }
+      ],
       "chapters": [
         "bramblewood-01"
       ],
@@ -110,6 +146,20 @@
       "kind": "character",
       "who": "a faun who keeps the practice meadow; patient, cheerful, says everybody does that, loves her bark clipboard",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "entities/faun",
+      "voiceNotes": [
+        {
+          "chapter": "first-steps-01",
+          "key": "tansy"
+        },
+        {
+          "chapter": "gemfall-08",
+          "key": "tansy"
+        }
+      ],
       "chapters": [
         "first-steps-01",
         "gemfall-08"
@@ -140,6 +190,16 @@
       "kind": "character",
       "who": "a tiny wisp who loves tag; squeaky, boastful, a terrible loser for about two seconds",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "entities/will_o_wisp",
+      "voiceNotes": [
+        {
+          "chapter": "first-steps-01",
+          "key": "flick"
+        }
+      ],
       "chapters": [
         "first-steps-01"
       ],
@@ -168,6 +228,15 @@
       "name": "Bun",
       "kind": "character",
       "who": "a goat kid; only bleats, and wiggles her legs to say thank you",
+      "gender": "female",
+      "genderFrom": "notes",
+      "figure": "entities/snowhorn_goat",
+      "voiceNotes": [
+        {
+          "chapter": "first-steps-01",
+          "key": "bun"
+        }
+      ],
       "chapters": [
         "first-steps-01"
       ],
@@ -184,6 +253,20 @@
       "kind": "character",
       "who": "Professor Marrow Tidewell, a selkie scholar with ink on both elbows; talks fast, draws on napkins, has been laughed out of better taverns and keeps going anyway",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/tidewell",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "tidewell"
+        },
+        {
+          "chapter": "gemfall-07h",
+          "key": "tidewell"
+        }
+      ],
       "chapters": [
         "gemfall-01",
         "gemfall-07h"
@@ -216,6 +299,16 @@
       "kind": "character",
       "who": "Madame Coralie Fenn, a merfolk gem-buyer in a barrel on wheels; calls everyone darlings, names enormous numbers cheerfully, never forgets a seller",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/coralie_fenn",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "coralie_fenn"
+        }
+      ],
       "chapters": [
         "gemfall-01",
         "gemfall-07h",
@@ -246,6 +339,16 @@
       "kind": "character",
       "who": "Tobble Reedpipe, a faun cobbler who sings every price, going up a key each verse; delighted by anyone who sings back",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/tobble",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "tobble"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -267,6 +370,16 @@
       "kind": "character",
       "who": "Hesper Longstride, a centaur caravan master with a road-stitched sash; few words, listens to the whole answer, kind but busy",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/hesper",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "hesper"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -295,6 +408,26 @@
       "name": "Boggart",
       "kind": "character",
       "who": "a rumor-selling boggart in a coat made of other coats; never says anything straight, always says it twice",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "boggart"
+        },
+        {
+          "chapter": "gemfall-07h",
+          "key": "boggart"
+        },
+        {
+          "chapter": "gemfall-07l",
+          "key": "boggart"
+        },
+        {
+          "chapter": "gemfall-07r",
+          "key": "boggart"
+        }
+      ],
       "chapters": [
         "gemfall-01",
         "gemfall-07h",
@@ -318,6 +451,15 @@
       "name": "Lighthouse Keeper",
       "kind": "character",
       "who": "a very old merfolk in a bathtub at the top of the lighthouse; firmly did not see anything",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/merfolk",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "lighthouse_keeper"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -333,6 +475,15 @@
       "name": "Tour Guide",
       "kind": "character",
       "who": "a centaur tour guide who loves the seventeen plaques and charges for every fact",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/centaur",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "tour_guide"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -349,6 +500,16 @@
       "kind": "character",
       "who": "Mortar, a stone troll noodle cook; stirs one full slow turn before answering anything, says very little, and means all of it",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/mortar",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "mortar"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -378,6 +539,16 @@
       "kind": "character",
       "who": "Old Wick, a very old frogfolk lamplighter; croaks softly, wishes every lamp goodnight by name, knows the paths nobody else looks for",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/old_wick",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "old_wick"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -398,6 +569,15 @@
       "name": "Orange Captain",
       "kind": "character",
       "who": "the yeti captain of the Sunny Disposition, an orange ship; cheerful, orange peel in his fur, pays every debt, mostly in oranges",
+      "gender": "male",
+      "genderFrom": "notes",
+      "figure": "entities/yeti",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "orange_captain"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -419,6 +599,16 @@
       "kind": "character",
       "who": "Postmaster Quill, a griffin with spectacles on a chain who runs the Griffin Post; squawks, loses count, insists it will all come out in the wash",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/postmaster_quill",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "postmaster_quill"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -439,6 +629,15 @@
       "name": "Courier Griffin",
       "kind": "character",
       "who": "a young courier griffin, always hungry, bows with wings out to people it will remember",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/courier_griffin",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "courier_griffin"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -464,6 +663,16 @@
       "kind": "character",
       "who": "Mrs. Tuft, a sheeple grocer on a provision barge, wool full of price tags; everything comes in a jar; brisk and a little dry",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/mrs_tuft",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "mrs_tuft"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -492,6 +701,15 @@
       "name": "Selkie Grandmother",
       "kind": "character",
       "who": "the grandmother of a selkie family just arrived for a fresh start; brisk, warm, decides things are settled and they are",
+      "gender": "female",
+      "genderFrom": "notes",
+      "figure": "cast/selkie_grandmother",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "selkie_grandmother"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -513,6 +731,16 @@
       "kind": "character",
       "who": "Innkeeper Flint, a stone troll who runs the Empty Chair inn in a very small nightcap; rumbles, folds his arms, secretly soft",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/innkeeper_flint",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-01",
+          "key": "innkeeper_flint"
+        }
+      ],
       "chapters": [
         "gemfall-01"
       ],
@@ -534,6 +762,16 @@
       "kind": "character",
       "who": "Hob Thistledown, a faun field foreman; warm and half-singing, turns every answer into an anecdote, waves his hat a lot",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/hob",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-02",
+          "key": "hob"
+        }
+      ],
       "chapters": [
         "gemfall-02"
       ],
@@ -562,6 +800,14 @@
       "name": "Sprites",
       "kind": "group",
       "who": "harvest sprites; tiny, earnest, over-explaining, very serious about guard duty and award ceremonies, heartbroken by a refusal for about four seconds",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-02",
+          "key": "sprites"
+        }
+      ],
       "chapters": [
         "gemfall-02"
       ],
@@ -578,6 +824,17 @@
       "kind": "character",
       "who": "Marda Thorn, a gray-dappled centaur innkeeper; unhurried, asks one question and waits for the whole answer, never repeats herself. Unhurried. Asks one question, waits for the whole answer, and remembers it. Never repeats herself.",
       "pronouns": "she/her",
+      "pronounsFrom": "canon",
+      "gender": "female",
+      "genderFrom": "canon",
+      "figure": "cast/marda_thorn",
+      "canon": "individual.marda_thorn",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-02",
+          "key": "marda"
+        }
+      ],
       "chapters": [
         "gemfall-02"
       ],
@@ -603,6 +860,24 @@
       "kind": "character",
       "who": "a grumpy rush-caravan drover in a hurry who is, underneath, fond of her dinner",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "entities/centaur",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-02",
+          "key": "drover"
+        },
+        {
+          "chapter": "gemfall-03c",
+          "key": "drover"
+        },
+        {
+          "chapter": "gemfall-04c",
+          "key": "drover"
+        }
+      ],
       "chapters": [
         "gemfall-02",
         "gemfall-03c",
@@ -638,6 +913,15 @@
       "kind": "group",
       "who": "a flock of sheeple, never fewer than three and never named; warm, agreeable, and in chorus, checks with the others first (\"What do we think?\"), answers in three voices slightly out of step, finishes each other's sentences, skittish but never silly",
       "pronouns": "they/them",
+      "pronounsFrom": "narration",
+      "gender": "nonbinary",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-02",
+          "key": "sheeple"
+        }
+      ],
       "chapters": [
         "gemfall-02"
       ],
@@ -659,6 +943,15 @@
       "kind": "character",
       "who": "the faun with the irrigation flute; startled, whispery, generous to anyone polite",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-02",
+          "key": "flute_faun"
+        }
+      ],
       "chapters": [
         "gemfall-02"
       ],
@@ -680,6 +973,15 @@
       "kind": "character",
       "who": "a faun egg-seller at the crossroads; laughs easily, cannot do sums, fierce about neighbors paying neighbor prices",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-02",
+          "key": "egg_faun"
+        }
+      ],
       "chapters": [
         "gemfall-02"
       ],
@@ -708,6 +1010,14 @@
       "name": "Cook",
       "kind": "character",
       "who": "the caravan cook; only ever talks in her sleep, about gravy",
+      "gender": "female",
+      "genderFrom": "notes",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-02",
+          "key": "cook"
+        }
+      ],
       "chapters": [
         "gemfall-02"
       ],
@@ -729,6 +1039,15 @@
       "kind": "character",
       "who": "a frogfolk ferrier with reeds in her hat; slow, storytelling, fond of the marsh and politely firm about rude passengers",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-02",
+          "key": "ferrier"
+        }
+      ],
       "chapters": [
         "gemfall-02"
       ],
@@ -750,6 +1069,20 @@
       "kind": "character",
       "who": "a muddy centaur relay runner; talks fast, plain, practical, has seen the whole road east",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/relay_runner",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-02",
+          "key": "relay_runner"
+        },
+        {
+          "chapter": "gemfall-03c",
+          "key": "relay_runner"
+        }
+      ],
       "chapters": [
         "gemfall-02",
         "gemfall-03c",
@@ -783,6 +1116,16 @@
       "kind": "character",
       "who": "Fennick Longstride, a road-warden centaur; brisk, proud of her stitched route-sash, deeply offended that people burn road markers for firewood",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/fennick",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03a",
+          "key": "fennick"
+        }
+      ],
       "chapters": [
         "gemfall-03a"
       ],
@@ -806,6 +1149,16 @@
       "kind": "character",
       "who": "a stone troll toll-taker, mostly moss; speaks very slowly, hears everything in full, palm always on the bridge; asks only 'where did you get that, and where is it going?'",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/old_lintel",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03a",
+          "key": "old_lintel"
+        }
+      ],
       "chapters": [
         "gemfall-03a"
       ],
@@ -834,6 +1187,14 @@
       "name": "Drake",
       "kind": "creature",
       "who": "a river drake; semi-sapient, transactional, writes its rates on a slate; communicates in huffs, tail-taps and underlinings",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03a",
+          "key": "drake"
+        }
+      ],
       "chapters": [
         "gemfall-03a"
       ],
@@ -849,6 +1210,22 @@
       "name": "Brassbuckles",
       "kind": "group",
       "who": "the Brassbuckle Expedition, six people in matching brass hats; smooth, smiling, always somehow ahead in the queue",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03a",
+          "key": "brassbuckles"
+        },
+        {
+          "chapter": "gemfall-04a",
+          "key": "brassbuckles"
+        },
+        {
+          "chapter": "gemfall-05a",
+          "key": "brassbuckles"
+        }
+      ],
       "chapters": [
         "gemfall-03a",
         "gemfall-04a",
@@ -867,6 +1244,33 @@
       "kind": "character",
       "who": "frogfolk ferryman; very few words, long pauses that are not hesitation; answers the question you meant; never asks for coin. Very few words. Long pauses that are not hesitation. Answers the question you meant rather than the one you asked.",
       "pronouns": "he/him",
+      "pronounsFrom": "canon",
+      "gender": "male",
+      "genderFrom": "canon",
+      "figure": "cast/old_ossley",
+      "canon": "individual.old_ossley",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03a",
+          "key": "old_ossley"
+        },
+        {
+          "chapter": "gemfall-07h",
+          "key": "old_ossley"
+        },
+        {
+          "chapter": "gemfall-07l",
+          "key": "old_ossley"
+        },
+        {
+          "chapter": "gemfall-07r",
+          "key": "old_ossley"
+        },
+        {
+          "chapter": "riftlight-headwaters-washout",
+          "key": "Old Ossley"
+        }
+      ],
       "chapters": [
         "gemfall-03a",
         "gemfall-07h",
@@ -901,6 +1305,14 @@
       "name": "Kettle Campers",
       "kind": "group",
       "who": "a rush camp boiling a kettle on the centaurs' detour signs; cheerful, agreeable, say 'oh, absolutely' and do not change",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03a",
+          "key": "kettle_campers"
+        }
+      ],
       "chapters": [
         "gemfall-03a"
       ],
@@ -916,6 +1328,14 @@
       "name": "Wagon Driver",
       "kind": "character",
       "who": "a big rush wagon driver in a bigger coat, stuck in a rut, too proud to ask for help; 'admiring the view'",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03a",
+          "key": "wagon_driver"
+        }
+      ],
       "chapters": [
         "gemfall-03a"
       ],
@@ -931,7 +1351,14 @@
       "name": "Dilly",
       "kind": "character",
       "who": "a small girl from a carpet caravan telling a troll her first ever story; nervous, then magnificent",
-      "pronouns": "she/her",
+      "gender": "female",
+      "genderFrom": "notes",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03a",
+          "key": "dilly"
+        }
+      ],
       "chapters": [
         "gemfall-03a"
       ],
@@ -953,6 +1380,20 @@
       "kind": "character",
       "who": "a pushy prospector who tries to pay the troll toll with a gem; tells the shortest story ever told",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/rush_prospector",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03a",
+          "key": "prospector"
+        },
+        {
+          "chapter": "gemfall-05c",
+          "key": "prospector"
+        }
+      ],
       "chapters": [
         "gemfall-03a",
         "gemfall-05c"
@@ -972,6 +1413,14 @@
       "name": "Parsnip Driver",
       "kind": "character",
       "who": "a caravan driver landing on the east bank, arguing with his donkey Parsnip, secretly very fond of her",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03a",
+          "key": "parsnip_driver"
+        }
+      ],
       "chapters": [
         "gemfall-03a"
       ],
@@ -988,6 +1437,16 @@
       "kind": "character",
       "who": "frogfolk ferrywoman; unhurried, hums between sentences, never says the worrying thing out loud, very proud of her notched hat",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/gullet",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03b",
+          "key": "gullet"
+        }
+      ],
       "chapters": [
         "gemfall-03b"
       ],
@@ -1017,6 +1476,16 @@
       "kind": "character",
       "who": "a boggart; talks sideways to the lost things she is sorting, never answers the question you asked, adores a really good sound",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/nan_rummage",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03b",
+          "key": "nan_rummage"
+        }
+      ],
       "chapters": [
         "gemfall-03b"
       ],
@@ -1037,6 +1506,14 @@
       "name": "Mire Mimic",
       "kind": "character",
       "who": "never speaks; sighs like an actor who just read a bad review",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03b",
+          "key": "mire_mimic"
+        }
+      ],
       "chapters": [
         "gemfall-03b"
       ],
@@ -1052,6 +1529,15 @@
       "name": "Gullet's Cousins",
       "kind": "group",
       "who": "the frogfolk ribbon crew; loud, cheerful, all talk at once, the one in three stacked hats is in charge",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/gullets_cousin",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03b",
+          "key": "gullets_cousins"
+        }
+      ],
       "chapters": [
         "gemfall-03b"
       ],
@@ -1070,6 +1556,14 @@
       "name": "Prospectors",
       "kind": "group",
       "who": "three soggy prospectors; gloomy, dripping, very polite once rescued, the tallest one mourns his hat",
+      "gender": "male",
+      "genderFrom": "notes",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03b",
+          "key": "prospectors"
+        }
+      ],
       "chapters": [
         "gemfall-03b"
       ],
@@ -1085,6 +1579,16 @@
       "name": "Sausage Seller",
       "kind": "character",
       "who": "a rush-road sausage seller stuck in the mud; out of breath, generous, shouts everything",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03b",
+          "key": "sausage_seller"
+        }
+      ],
       "chapters": [
         "gemfall-03b"
       ],
@@ -1106,6 +1610,16 @@
       "kind": "character",
       "who": "a faun provisioner; cheerful, shameless about his prices, calls everyone 'my lucky number'; owns Pudding, a goat with a weakness for buckets",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/burdock",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03c",
+          "key": "burdock"
+        }
+      ],
       "chapters": [
         "gemfall-02",
         "gemfall-03c"
@@ -1136,6 +1650,16 @@
       "kind": "character",
       "who": "Tamsin Three-Cards, a kitsune card-sharp; quick, delighted to be caught, never sore about losing",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/tamsin_river_keeper",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03c",
+          "key": "tamsin"
+        }
+      ],
       "chapters": [
         "gemfall-03c",
         "riftlight-frostfang-shore"
@@ -1167,6 +1691,23 @@
       "name": "Wend",
       "kind": "character",
       "who": "a Deep Hollow soup ladler; gentle, generous, asks nothing, says 'kindness first' and means it a little too much",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/wend",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03c",
+          "key": "wend"
+        },
+        {
+          "chapter": "gemfall-04c",
+          "key": "wend"
+        },
+        {
+          "chapter": "gemfall-05c",
+          "key": "wend"
+        }
+      ],
       "chapters": [
         "gemfall-03c",
         "gemfall-04c",
@@ -1198,6 +1739,16 @@
       "kind": "character",
       "who": "a ford witch; careful and instructive, peers over spectacles, always asks 'what do you actually want?'",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/mother_thrum",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03c",
+          "key": "mother_thrum"
+        }
+      ],
       "chapters": [
         "gemfall-03c"
       ],
@@ -1226,6 +1777,14 @@
       "name": "Brackens",
       "kind": "group",
       "who": "the Brackens, a faun family whose season is over; tired, polite, the littlest one very brave about it",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03c",
+          "key": "brackens"
+        }
+      ],
       "chapters": [
         "gemfall-03c"
       ],
@@ -1242,6 +1801,15 @@
       "kind": "group",
       "who": "a rush-camp actor-manager; grand and dramatic, calls everyone 'darlings', thrilled by any eruption",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03c",
+          "key": "troupe_leader"
+        }
+      ],
       "chapters": [
         "gemfall-03c"
       ],
@@ -1270,7 +1838,14 @@
       "name": "Red Scarves",
       "kind": "group",
       "who": "the red-scarf queue-jumpers' leader; pushy and impatient, but fair when fairly beaten",
-      "pronouns": "he/him",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-03c",
+          "key": "red_scarves"
+        }
+      ],
       "chapters": [
         "gemfall-03c"
       ],
@@ -1292,6 +1867,15 @@
       "kind": "character",
       "who": "pride elder; voice like warm gravel; formal and kind; says 'east of the river, wave first'; quietly worried about the cubs",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04a",
+          "key": "sefa_tallgrass"
+        }
+      ],
       "chapters": [
         "gemfall-04a"
       ],
@@ -1316,6 +1900,15 @@
       "name": "Cart Driver",
       "kind": "character",
       "who": "a caravan driver from Stone Crossing; indignant about pride escort bookings; very fond of his donkey",
+      "gender": "male",
+      "genderFrom": "notes",
+      "figure": "entities/burrowfolk",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04a",
+          "key": "cart_driver"
+        }
+      ],
       "chapters": [
         "gemfall-04a"
       ],
@@ -1333,6 +1926,14 @@
       "name": "Waystation Centaur",
       "kind": "character",
       "who": "a road-warden centaur re-embroidering sashes; talks around spools of thread; tuts a great deal; precise about roads",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04a",
+          "key": "waystation_centaur"
+        }
+      ],
       "chapters": [
         "gemfall-04a"
       ],
@@ -1349,6 +1950,20 @@
       "kind": "character",
       "who": "a relay-running centaur stuffed with letters; quick, cheerful, competitive; 'relay waits for nobody'",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/bracken_swiftmile",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04a",
+          "key": "bracken_swiftmile"
+        },
+        {
+          "chapter": "gemfall-05a",
+          "key": "bracken_swiftmile"
+        }
+      ],
       "chapters": [
         "gemfall-04a",
         "gemfall-05a"
@@ -1381,6 +1996,15 @@
       "kind": "group",
       "who": "two manticore cubs who pretend to be rocks; giggly, honest, dream the ground is singing",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04a",
+          "key": "manticore_cubs"
+        }
+      ],
       "chapters": [
         "gemfall-04a"
       ],
@@ -1406,6 +2030,16 @@
       "kind": "character",
       "who": "a manticore grandmother with a famous spiced grass-cake nobody finishes; bossy, delighted by everything",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/granny_ash",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04a",
+          "key": "granny_ash"
+        }
+      ],
       "chapters": [
         "gemfall-04a"
       ],
@@ -1434,6 +2068,14 @@
       "name": "Marker Movers",
       "kind": "character",
       "who": "two polite manticores moving a pride marker post further from the caravans, again",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04a",
+          "key": "marker_movers"
+        }
+      ],
       "chapters": [
         "gemfall-04a"
       ],
@@ -1449,6 +2091,14 @@
       "name": "Beech Tree",
       "kind": "character",
       "who": "old, slow, smells of rain; whispers in long sentences and never raises its voice",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04b",
+          "key": "beech_tree"
+        }
+      ],
       "chapters": [
         "gemfall-04b"
       ],
@@ -1470,6 +2120,16 @@
       "kind": "character",
       "who": "calm, few words, frowns with her ears; says the important thing once and stops",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/elder_unicorn",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04b",
+          "key": "elder_unicorn"
+        }
+      ],
       "chapters": [
         "gemfall-04b"
       ],
@@ -1499,6 +2159,20 @@
       "kind": "character",
       "who": "MossHome bigfoot in very tall boots; brisk, practical, has seen every kind of soggy",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/flood_warden",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04b",
+          "key": "flood_warden"
+        },
+        {
+          "chapter": "gemfall-05b",
+          "key": "flood_warden"
+        }
+      ],
       "chapters": [
         "gemfall-04b",
         "gemfall-05b"
@@ -1530,6 +2204,14 @@
       "name": "Echo Hunter",
       "kind": "character",
       "who": "never speaks; tilts its frilled head, listening, filing every sound",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04b",
+          "key": "echo_hunter"
+        }
+      ],
       "chapters": [
         "gemfall-04b"
       ],
@@ -1546,6 +2228,20 @@
       "kind": "character",
       "who": "a MossHome runner; cheerful, out of breath, never stops jogging even while talking, carries bundles of knotted cords",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/mosshome_runner",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04b",
+          "key": "runner"
+        },
+        {
+          "chapter": "gemfall-05b",
+          "key": "runner"
+        }
+      ],
       "chapters": [
         "gemfall-04b",
         "gemfall-05b",
@@ -1579,6 +2275,14 @@
       "name": "Hedge Prospectors",
       "kind": "character",
       "who": "prospectors held by a hedge; loud, indignant, then sheepish once their pockets are empty",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04b",
+          "key": "hedge_prospectors"
+        }
+      ],
       "chapters": [
         "gemfall-04b"
       ],
@@ -1594,6 +2298,17 @@
       "name": "Ma Ruddle",
       "kind": "character",
       "who": "a sold-out prospector; tired, blunt, cares about Tib and nothing else",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/ma_ruddle",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04c",
+          "key": "ma_ruddle"
+        }
+      ],
       "chapters": [
         "gemfall-04c"
       ],
@@ -1614,6 +2329,15 @@
       "name": "Tib",
       "kind": "character",
       "who": "a small boy in an orange hat; talks to horses, ponies and centaurs as equals",
+      "gender": "male",
+      "genderFrom": "notes",
+      "figure": "cast/tib",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04c",
+          "key": "tib"
+        }
+      ],
       "chapters": [
         "gemfall-04c"
       ],
@@ -1629,6 +2353,19 @@
       "name": "Sergeant Holloway",
       "kind": "character",
       "who": "a Skywarden supply sergeant; rigid, honest, calls everything 'arithmetic', writes everything down",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/holloway",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04c",
+          "key": "sergeant_holloway"
+        },
+        {
+          "chapter": "gemfall-05c",
+          "key": "sergeant_holloway"
+        }
+      ],
       "chapters": [
         "gemfall-04c",
         "gemfall-05c"
@@ -1659,6 +2396,16 @@
       "kind": "character",
       "who": "a depot clerk; loves forms, horrified by smudges, very sorry about Form 7B",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/clerk_pennywhistle",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04c",
+          "key": "clerk_pennywhistle"
+        }
+      ],
       "chapters": [
         "gemfall-04c"
       ],
@@ -1684,6 +2431,16 @@
       "kind": "character",
       "who": "an old centaur relay singer; slow, warm, sings more than he speaks",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/old_corran",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04c",
+          "key": "old_corran"
+        }
+      ],
       "chapters": [
         "gemfall-04c"
       ],
@@ -1705,6 +2462,16 @@
       "kind": "character",
       "who": "a centaur road-crew boss; brisk and practical, a marker post on each shoulder, says 'a road goes where the walking goes'",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/road_boss",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04c",
+          "key": "road_boss"
+        }
+      ],
       "chapters": [
         "gemfall-04c"
       ],
@@ -1733,6 +2500,14 @@
       "name": "Map Seller",
       "kind": "character",
       "who": "a map seller in a velvet coat; smooth, cheerful, never technically lies",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04c",
+          "key": "map_seller"
+        }
+      ],
       "chapters": [
         "gemfall-04c"
       ],
@@ -1748,6 +2523,14 @@
       "name": "Rumor Ring",
       "kind": "character",
       "who": "noon-stop travelers swapping news; eager, garbled, every story a little bigger each time",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-04c",
+          "key": "rumor_ring"
+        }
+      ],
       "chapters": [
         "gemfall-04c"
       ],
@@ -1764,6 +2547,16 @@
       "kind": "character",
       "who": "a Deep Hollow Cult recruiter with a giant soup pot; gentle, patient, calls everyone 'love'; feeds people before she says anything; sincerely believes the seal is a lid on a cure",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/hollis",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05a",
+          "key": "hollis"
+        }
+      ],
       "chapters": [
         "gemfall-05a"
       ],
@@ -1785,6 +2578,24 @@
       "kind": "character",
       "who": "a Skywarden clerk; dry, precise, logs everything and keeps nothing; 'logged is not owned'; secretly enjoys irregular-but-legal",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/pellam",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05a",
+          "key": "pellam"
+        },
+        {
+          "chapter": "gemfall-06",
+          "key": "pellam"
+        },
+        {
+          "chapter": "gemfall-07l",
+          "key": "pellam"
+        }
+      ],
       "chapters": [
         "gemfall-05a",
         "gemfall-06",
@@ -1816,6 +2627,16 @@
       "kind": "character",
       "who": "Skywarden engineer; pencils behind both ears; blunt and honest; talks about arithmetic and acceptable losses but is not unkind",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/pass_keeper",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05a",
+          "key": "brask"
+        }
+      ],
       "chapters": [
         "gemfall-05a",
         "riftlight-cairnstep-pass"
@@ -1849,6 +2670,16 @@
       "kind": "character",
       "who": "a tired caravan driver; has heard gem 4117 hum for nine days; trades for a song; grateful when you catch her crates",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "entities/faun",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05a",
+          "key": "carter"
+        }
+      ],
       "chapters": [
         "gemfall-05a"
       ],
@@ -1881,6 +2712,16 @@
       "kind": "character",
       "who": "a dragonling bell-rider on a tiny fast pony called Pepper; quick, proud, a little cheeky about her grandmother",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/nim",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05a",
+          "key": "nim"
+        }
+      ],
       "chapters": [
         "gemfall-05a"
       ],
@@ -1910,6 +2751,16 @@
       "kind": "character",
       "who": "Corporal Tibbet, a very new Skywarden guarding the engineers' tent; helmet too big; wants reasons in writing",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/corporal_tibbet",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05a",
+          "key": "tibbet"
+        }
+      ],
       "chapters": [
         "gemfall-05a"
       ],
@@ -1935,6 +2786,15 @@
       "kind": "character",
       "who": "an apprentice engineer measuring the crack with knotted string every evening; 'a hair wider than yesterday'",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05a",
+          "key": "apprentice"
+        }
+      ],
       "chapters": [
         "gemfall-05a"
       ],
@@ -1964,6 +2824,15 @@
       "kind": "character",
       "who": "the Skywarden with the flag at the span; asks the troll's question of every cart",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05a",
+          "key": "flag_warden"
+        }
+      ],
       "chapters": [
         "gemfall-05a"
       ],
@@ -1992,6 +2861,14 @@
       "name": "Door Archivist",
       "kind": "character",
       "who": "brisk bigfoot archivist; fussy about feet, warm once she decides you matter",
+      "gender": "female",
+      "genderFrom": "notes",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05b",
+          "key": "door_archivist"
+        }
+      ],
       "chapters": [
         "gemfall-05b"
       ],
@@ -2007,6 +2884,15 @@
       "name": "Oldest Archivist",
       "kind": "character",
       "who": "very old, very slow, a bird lives in his beard; talks to the knot-cords as much as to you",
+      "gender": "male",
+      "genderFrom": "notes",
+      "figure": "cast/oldest_archivist",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05b",
+          "key": "oldest_archivist"
+        }
+      ],
       "chapters": [
         "gemfall-05b"
       ],
@@ -2023,6 +2909,16 @@
       "kind": "character",
       "who": "MossHome elder; mild, sips tea between every sentence, asks to be told second and means it",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/mosshome_eldest",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05b",
+          "key": "eldest"
+        }
+      ],
       "chapters": [
         "gemfall-05b"
       ],
@@ -2054,6 +2950,14 @@
       "name": "Soup Woman",
       "kind": "character",
       "who": "a Deep Hollow Cult member; genuinely kind, soft-spoken, believes every word; kindness first, always, and never menacing",
+      "gender": "female",
+      "genderFrom": "notes",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05b",
+          "key": "soup_woman"
+        }
+      ],
       "chapters": [
         "gemfall-05b"
       ],
@@ -2070,6 +2974,16 @@
       "kind": "character",
       "who": "old bigfoot who keeps the halfway hut on the high paths; slow, kind, proud of his visitors' book",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/path_keeper",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05b",
+          "key": "path_keeper"
+        }
+      ],
       "chapters": [
         "gemfall-05b"
       ],
@@ -2100,6 +3014,15 @@
       "name": "Young Gatherer",
       "kind": "character",
       "who": "a young dragonling gatherer; insists she is not lost, knows the one rule by heart, braver than she feels",
+      "gender": "female",
+      "genderFrom": "notes",
+      "figure": "cast/young_gatherer",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05b",
+          "key": "young_gatherer"
+        }
+      ],
       "chapters": [
         "gemfall-05b"
       ],
@@ -2121,6 +3044,16 @@
       "kind": "character",
       "who": "the oldest dragonling grandmother; brisk, tender, unarguable, taps things with her walking stick",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/great_gran_ashby",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05c",
+          "key": "great_gran_ashby"
+        }
+      ],
       "chapters": [
         "gemfall-05c"
       ],
@@ -2152,6 +3085,24 @@
       "kind": "character",
       "who": "a gate-town grandmother; spectacles on a chain, counts everything, hugs first and inspects later",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/dragonling_grandmother",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05c",
+          "key": "grandmother"
+        },
+        {
+          "chapter": "gemfall-07h",
+          "key": "grandmother"
+        },
+        {
+          "chapter": "gemfall-07r",
+          "key": "grandmother"
+        }
+      ],
       "chapters": [
         "gemfall-05c",
         "gemfall-06",
@@ -2185,6 +3136,15 @@
       "kind": "character",
       "who": "a bell-code expert aged about six; talks at top speed until the unrung bell comes up",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05c",
+          "key": "small_dragonling"
+        }
+      ],
       "chapters": [
         "gemfall-05c"
       ],
@@ -2214,6 +3174,16 @@
       "kind": "character",
       "who": "Perrin Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/perrin_nine_verse",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05c",
+          "key": "perrin"
+        }
+      ],
       "chapters": [
         "gemfall-05c"
       ],
@@ -2242,6 +3212,14 @@
       "name": "Feathered Hat",
       "kind": "character",
       "who": "a loud prospector on a cart; blustering, sure the stones are just old rocks, quiet once he really listens",
+      "gender": "male",
+      "genderFrom": "notes",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-05c",
+          "key": "feathered_hat"
+        }
+      ],
       "chapters": [
         "gemfall-05c"
       ],
@@ -2258,6 +3236,32 @@
       "kind": "character",
       "who": "Hessa Wren, Deep Hollow Cult cell contact running a soup tent; warm, generous, remembers every name, completely certain the seal is a cage on the cure",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/hessa_wren",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-06",
+          "key": "hessa"
+        },
+        {
+          "chapter": "gemfall-07h",
+          "key": "hessa"
+        },
+        {
+          "chapter": "gemfall-07l",
+          "key": "hessa"
+        },
+        {
+          "chapter": "gemfall-07r",
+          "key": "hessa"
+        },
+        {
+          "chapter": "gemfall-08",
+          "key": "hessa"
+        }
+      ],
       "chapters": [
         "gemfall-06",
         "gemfall-07h",
@@ -2291,6 +3295,19 @@
       "kind": "character",
       "who": "Captain Orla Voss of the Skywardens; rigid, honest, never wastes a word, says 'acceptable losses' as calmly as ordering breakfast",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-06",
+          "key": "captain"
+        },
+        {
+          "chapter": "gemfall-08",
+          "key": "captain"
+        }
+      ],
       "chapters": [
         "gemfall-06",
         "gemfall-08"
@@ -2321,6 +3338,16 @@
       "kind": "character",
       "who": "Grandmother Tull, dragonling bell-keeper; brisk, cozy, says 'nothing to worry about' one time too many",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/grandmother_tull",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-06",
+          "key": "grandmother_tull"
+        }
+      ],
       "chapters": [
         "gemfall-06"
       ],
@@ -2342,6 +3369,16 @@
       "kind": "character",
       "who": "Dunmore, a prospector with a pick and no sense; embarrassed easily, means well",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/dunmore",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-06",
+          "key": "dunmore"
+        }
+      ],
       "chapters": [
         "gemfall-06"
       ],
@@ -2362,6 +3399,14 @@
       "name": "Claim Pair",
       "kind": "character",
       "who": "two prospectors sharing one humming boulder; stubborn, then sheepish, and hungry the whole time",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-06",
+          "key": "claim_pair"
+        }
+      ],
       "chapters": [
         "gemfall-06"
       ],
@@ -2378,6 +3423,16 @@
       "kind": "character",
       "who": "rigid, honest, stamps things",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/warden_clerk",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07h",
+          "key": "warden_clerk"
+        }
+      ],
       "chapters": [
         "gemfall-07h"
       ],
@@ -2404,6 +3459,23 @@
       "name": "Mosshome Runner",
       "kind": "character",
       "who": "breathless, cheerful, counts knots out loud, then counts packs",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/mosshome_runner",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07h",
+          "key": "mosshome_runner"
+        },
+        {
+          "chapter": "gemfall-07l",
+          "key": "mosshome_runner"
+        },
+        {
+          "chapter": "gemfall-07r",
+          "key": "mosshome_runner"
+        }
+      ],
       "chapters": [
         "gemfall-06",
         "gemfall-07h",
@@ -2425,6 +3497,24 @@
       "kind": "character",
       "who": "Mother Thrum, the ford witch; pointed hat, dry, kind underneath; only asks one question and means it",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/mother_thrum",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07h",
+          "key": "ford_witch"
+        },
+        {
+          "chapter": "gemfall-07l",
+          "key": "ford_witch"
+        },
+        {
+          "chapter": "gemfall-07r",
+          "key": "ford_witch"
+        }
+      ],
       "chapters": [
         "gemfall-07h",
         "gemfall-07l",
@@ -2456,6 +3546,19 @@
       "kind": "character",
       "who": "brisk, proud of the roads, speaks over her shoulder at a canter",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07h",
+          "key": "centaur_relay"
+        },
+        {
+          "chapter": "gemfall-07l",
+          "key": "centaur_relay"
+        }
+      ],
       "chapters": [
         "gemfall-07h",
         "gemfall-07l"
@@ -2478,6 +3581,23 @@
       "kind": "character",
       "who": "Madame Coralie Fenn, the Exchange gem-buyer in a barrel on wheels; delighted to see you, genuinely fond, calls everyone darlings, and still a merchant",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07h",
+          "key": "exchange_merchant"
+        },
+        {
+          "chapter": "gemfall-07l",
+          "key": "exchange_merchant"
+        },
+        {
+          "chapter": "gemfall-07r",
+          "key": "exchange_merchant"
+        }
+      ],
       "chapters": [
         "gemfall-07h",
         "gemfall-07l",
@@ -2505,6 +3625,24 @@
       "kind": "character",
       "who": "exhausted, practical, will sell to whoever stops shouting first",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/caravan_master",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07h",
+          "key": "caravan_master"
+        },
+        {
+          "chapter": "gemfall-07l",
+          "key": "caravan_master"
+        },
+        {
+          "chapter": "gemfall-07r",
+          "key": "caravan_master"
+        }
+      ],
       "chapters": [
         "gemfall-07h",
         "gemfall-07l",
@@ -2536,6 +3674,16 @@
       "kind": "character",
       "who": "Brisk, a centaur relay runner; fast-talking, fair, says a lot by saying nothing",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/brisk",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07h",
+          "key": "brisk"
+        }
+      ],
       "chapters": [
         "gemfall-07h"
       ],
@@ -2565,6 +3713,16 @@
       "kind": "character",
       "who": "a dragonling girl who keeps the price board at the Pinch; chalky, quick, nosy, cheerful",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/bryony",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07h",
+          "key": "bryony"
+        }
+      ],
       "chapters": [
         "gemfall-07h"
       ],
@@ -2594,6 +3752,16 @@
       "kind": "character",
       "who": "a rival collector, a sheeple in a lace collar with a glass cabinet on wheels; gracious, thrilled by any stone, never sore about losing",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/lady_fleecewick",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07h",
+          "key": "lady_fleecewick"
+        }
+      ],
       "chapters": [
         "gemfall-07h"
       ],
@@ -2623,6 +3791,15 @@
       "kind": "character",
       "who": "a boy on a milestone selling his one stone for the wagon home; polite, hopeful, trying hard to be grown-up",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07h",
+          "key": "alder"
+        }
+      ],
       "chapters": [
         "gemfall-07h"
       ],
@@ -2648,6 +3825,16 @@
       "kind": "character",
       "who": "patched hat, brisk, charms ringing around her; lends questions, never sells them",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/stall_witch",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07l",
+          "key": "stall_witch"
+        }
+      ],
       "chapters": [
         "gemfall-07l"
       ],
@@ -2676,6 +3863,15 @@
       "name": "Cadet Linnet",
       "kind": "character",
       "who": "Cadet Linnet, a young warden scout; keen, stiff, trying to look older, softens fast",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/cadet_linnet",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07l",
+          "key": "linnet"
+        }
+      ],
       "chapters": [
         "gemfall-07l"
       ],
@@ -2700,6 +3896,15 @@
       "name": "Rook",
       "kind": "character",
       "who": "Rook, a young mask scout from the choir; prickly, quick, curious under it",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/rook",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07l",
+          "key": "rook"
+        }
+      ],
       "chapters": [
         "gemfall-07l"
       ],
@@ -2724,6 +3929,14 @@
       "name": "Warden Sergeant",
       "kind": "character",
       "who": "rigid, honest, tired; counts everything; secretly hates making children cry",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07r",
+          "key": "warden_sergeant"
+        }
+      ],
       "chapters": [
         "gemfall-07r"
       ],
@@ -2740,6 +3953,16 @@
       "kind": "character",
       "who": "a cheerful man with a wheelbarrow of painted gravel he believes is gems; proud, easily delighted, never sulks",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/odo",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07r",
+          "key": "odo"
+        }
+      ],
       "chapters": [
         "gemfall-07r"
       ],
@@ -2769,6 +3992,16 @@
       "kind": "character",
       "who": "Corbin the prospector's small daughter; serious, brave, thinks hard before she answers",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/corbin_carrying_posy",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-07r",
+          "key": "posy"
+        }
+      ],
       "chapters": [
         "gemfall-07r"
       ],
@@ -2801,6 +4034,15 @@
       "name": "Seal Keeper",
       "kind": "character",
       "who": "the Seal-Keeper, the legend dragon under Mount Red Sky; ancient, unhurried, dry as ash, asks questions it already knows the answers to, grades generously when surprised and is very rarely surprised",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/seal_keeper",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-08",
+          "key": "seal_keeper"
+        }
+      ],
       "chapters": [
         "gemfall-08"
       ],
@@ -2831,6 +4073,14 @@
       "name": "Bones",
       "kind": "character",
       "who": "the restless remains; do not speak, but nod, sigh and settle",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-08",
+          "key": "bones"
+        }
+      ],
       "chapters": [
         "gemfall-08"
       ],
@@ -2846,6 +4096,14 @@
       "name": "Titan",
       "kind": "character",
       "who": "the titan under the seal; never described or explained, only witnessed: a great sleepy eye, a warm breath, and the old note the stones hum, which the Seal-Keeper puts into words; curious, slow and never angry",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "gemfall-08",
+          "key": "titan"
+        }
+      ],
       "chapters": [
         "gemfall-08"
       ],
@@ -2862,6 +4120,24 @@
       "kind": "character",
       "who": "Methodical griffin scholar. Asks what a test actually showed.",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/orin_vale",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-convergence",
+          "key": "Orin Vale"
+        },
+        {
+          "chapter": "riftlight-finale",
+          "key": "Orin Vale"
+        },
+        {
+          "chapter": "riftlight-riftseekers-departure",
+          "key": "Orin Vale"
+        }
+      ],
       "chapters": [
         "riftlight-buried-bridge",
         "riftlight-convergence",
@@ -2896,6 +4172,20 @@
       "kind": "character",
       "who": "Ambitious unicorn. Certain at first, surprised by limits, never punished for disagreeing.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/lady_olivia",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-convergence",
+          "key": "Lady Olivia"
+        },
+        {
+          "chapter": "riftlight-riftseekers-departure",
+          "key": "Lady Olivia"
+        }
+      ],
       "chapters": [
         "riftlight-convergence",
         "riftlight-finale",
@@ -2928,6 +4218,16 @@
       "kind": "character",
       "who": "Protective bigfoot. Short practical requests, never orders the party.",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/bram_lock",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-convergence",
+          "key": "Bram Lock"
+        }
+      ],
       "chapters": [
         "riftlight-convergence"
       ],
@@ -2949,6 +4249,24 @@
       "kind": "character",
       "who": "Patient kitsune specialist. Distinguishes holding a condition from changing a rule.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/seren_wisp",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-convergence",
+          "key": "Seren Wisp"
+        },
+        {
+          "chapter": "riftlight-finale",
+          "key": "Seren Wisp"
+        },
+        {
+          "chapter": "riftlight-riftseekers-departure",
+          "key": "Seren Wisp"
+        }
+      ],
       "chapters": [
         "riftlight-convergence",
         "riftlight-finale",
@@ -2983,6 +4301,28 @@
       "kind": "character",
       "who": "Eager manticore scout. His choice mirrors the party.",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/pip_thistledown",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-convergence",
+          "key": "Pip Thistledown"
+        },
+        {
+          "chapter": "riftlight-reading-room",
+          "key": "Pip Thistledown"
+        },
+        {
+          "chapter": "riftlight-the-island-due-back",
+          "key": "Pip Thistledown"
+        },
+        {
+          "chapter": "riftlight-the-wrong-valley",
+          "key": "Pip Thistledown"
+        }
+      ],
       "chapters": [
         "riftlight-convergence",
         "riftlight-reading-room",
@@ -3018,6 +4358,16 @@
       "kind": "character",
       "who": "Chapter-scoped kitsune Sky Island captain, practical and brisk. Frustrated with a displaced island, kind to helpers. No explanation for the displacement.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/captain_thimble",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-exchange-rift",
+          "key": "Captain Thimble"
+        }
+      ],
       "chapters": [
         "riftlight-exchange-rift",
         "riftlight-sky-islands-arrival"
@@ -3047,6 +4397,15 @@
       "name": "The gull",
       "kind": "character",
       "who": "Indignant, literal, chilly. Brief complaints; never explains the magic.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/quay_gull",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-exchange-rift",
+          "key": "The gull"
+        }
+      ],
       "chapters": [
         "riftlight-exchange-rift"
       ],
@@ -3078,6 +4437,16 @@
       "kind": "character",
       "who": "Practical, protective of fish and helpers. Short dockside speech.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/fishmonger",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-exchange-rift",
+          "key": "Fish seller"
+        }
+      ],
       "chapters": [
         "riftlight-exchange-rift"
       ],
@@ -3103,6 +4472,16 @@
       "kind": "character",
       "who": "An old faun ruler, courtly, patient and confused. Certain about his remembered map, bewildered by today. Never threatens children. Short sentences. No conquer, punish, servants, destroy or hurt.",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/deep-ice-figure",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-finale",
+          "key": "Corvane"
+        }
+      ],
       "chapters": [
         "riftlight-finale"
       ],
@@ -3124,6 +4503,16 @@
       "kind": "character",
       "who": "Chapter-scoped female yeti herder and singer. Patient, dry humor, practical cold-weather care. Gives no complete history, prison hints, or explanation of the rifts.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/yeti_herder",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-glacier-survival",
+          "key": "Yeti herder"
+        }
+      ],
       "chapters": [
         "riftlight-glacier-survival",
         "riftlight-hidden-glacier-rift",
@@ -3155,6 +4544,15 @@
       "name": "Young yeti singer",
       "kind": "character",
       "who": "Learns and listens; no lore lecture.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/young_yeti_singer",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-glacier-survival",
+          "key": "Young yeti singer"
+        }
+      ],
       "chapters": [
         "riftlight-glacier-survival"
       ],
@@ -3170,6 +4568,18 @@
       "name": "Yeti keepers",
       "kind": "character",
       "who": "Slow, enormous and gentle. Deliberate before answering. Offer a safe method and leave unknown history unknown.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-reading-room",
+          "key": "Yeti keepers"
+        },
+        {
+          "chapter": "riftlight-the-wrong-valley",
+          "key": "Yeti keepers"
+        }
+      ],
       "chapters": [
         "riftlight-reading-room",
         "riftlight-the-wrong-valley"
@@ -3186,6 +4596,15 @@
       "name": "Kitsune keeper",
       "kind": "character",
       "who": "Practical, welcoming navigator. Uses songs alongside observations; never knows an unseen cause.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/island_keeper",
+      "voiceNotes": [
+        {
+          "chapter": "riftlight-the-island-due-back",
+          "key": "Kitsune keeper"
+        }
+      ],
       "chapters": [
         "riftlight-the-island-due-back",
         "riftlight-whale-road"
@@ -3202,6 +4621,9 @@
       "name": "Fishmonger",
       "kind": "character",
       "who": "Fishmonger.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/fishmonger",
       "chapters": [
         "gemfall-01"
       ],
@@ -3217,6 +4639,9 @@
       "name": "Rope-shop boy",
       "kind": "character",
       "who": "Rope-shop boy.",
+      "gender": "male",
+      "genderFrom": "notes",
+      "figure": "cast/rope_shop_boy",
       "chapters": [
         "gemfall-01"
       ],
@@ -3232,6 +4657,9 @@
       "name": "Brassbuckle scout",
       "kind": "character",
       "who": "Brassbuckle scout.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/brassbuckle_scout",
       "chapters": [
         "gemfall-03a",
         "gemfall-04a",
@@ -3249,6 +4677,9 @@
       "name": "Brassbuckle recordkeeper",
       "kind": "character",
       "who": "Brassbuckle recordkeeper.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/brassbuckle_recordkeeper",
       "chapters": [
         "gemfall-03a",
         "gemfall-04a",
@@ -3266,6 +4697,9 @@
       "name": "Mother Bracken",
       "kind": "character",
       "who": "Mother Bracken.",
+      "gender": "female",
+      "genderFrom": "notes",
+      "figure": "cast/mother_bracken",
       "chapters": [
         "gemfall-03c"
       ],
@@ -3281,6 +4715,9 @@
       "name": "Littlest Bracken",
       "kind": "character",
       "who": "Littlest Bracken.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/littlest_bracken",
       "chapters": [
         "gemfall-03c"
       ],
@@ -3296,6 +4733,9 @@
       "name": "Cart donkey",
       "kind": "creature",
       "who": "Cart donkey.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/donkey",
       "chapters": [
         "gemfall-04a"
       ],
@@ -3312,6 +4752,10 @@
       "kind": "character",
       "who": "Elder Sefa.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/elder_sefa",
       "chapters": [
         "gemfall-04a"
       ],
@@ -3332,6 +4776,9 @@
       "name": "Road-Warden",
       "kind": "character",
       "who": "Road-Warden.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/road_warden",
       "chapters": [
         "gemfall-04a"
       ],
@@ -3348,6 +4795,10 @@
       "kind": "character",
       "who": "Burrowfolk prospector.",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/rush_prospector",
       "chapters": [
         "gemfall-04b",
         "gemfall-06"
@@ -3369,6 +4820,9 @@
       "name": "Faun prospector",
       "kind": "character",
       "who": "Faun prospector.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/faun",
       "chapters": [
         "gemfall-04b"
       ],
@@ -3384,6 +4838,9 @@
       "name": "Boggart prospector",
       "kind": "character",
       "who": "Boggart prospector.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/boggart",
       "chapters": [
         "gemfall-04b"
       ],
@@ -3399,6 +4856,9 @@
       "name": "Tib's pony",
       "kind": "creature",
       "who": "Tib's pony.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/pony",
       "chapters": [
         "gemfall-04c"
       ],
@@ -3415,6 +4875,10 @@
       "kind": "character",
       "who": "Bell Courier.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/bell_courier",
       "chapters": [
         "gemfall-04c"
       ],
@@ -3443,6 +4907,9 @@
       "name": "Dumpling",
       "kind": "character",
       "who": "Dumpling.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/pony",
       "chapters": [
         "gemfall-04c"
       ],
@@ -3459,6 +4926,10 @@
       "kind": "character",
       "who": "Muddy prospector.",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/rush_prospector",
       "chapters": [
         "gemfall-05a"
       ],
@@ -3479,6 +4950,9 @@
       "name": "Carter's mule",
       "kind": "creature",
       "who": "Carter's mule.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/mule",
       "chapters": [
         "gemfall-05a"
       ],
@@ -3495,6 +4969,10 @@
       "kind": "character",
       "who": "Archivist.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/mosshome_archivist",
       "chapters": [
         "gemfall-05b"
       ],
@@ -3524,6 +5002,10 @@
       "kind": "character",
       "who": "Marigold.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/soup_woman",
       "chapters": [
         "gemfall-05b"
       ],
@@ -3545,6 +5027,10 @@
       "kind": "character",
       "who": "Bell-Code Expert.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/bell_code_expert",
       "chapters": [
         "gemfall-05c"
       ],
@@ -3569,6 +5055,9 @@
       "name": "Warden Engineers",
       "kind": "group",
       "who": "Warden Engineers.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/skywardens",
       "chapters": [
         "gemfall-06"
       ],
@@ -3584,6 +5073,9 @@
       "name": "Centaur drover",
       "kind": "character",
       "who": "Centaur drover.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/centaur",
       "chapters": [
         "gemfall-06"
       ],
@@ -3599,6 +5091,9 @@
       "name": "Faun drover",
       "kind": "character",
       "who": "Faun drover.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/faun",
       "chapters": [
         "gemfall-06"
       ],
@@ -3614,6 +5109,9 @@
       "name": "Burrowfolk Claimant",
       "kind": "character",
       "who": "Burrowfolk Claimant.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/burrowfolk",
       "chapters": [
         "gemfall-06"
       ],
@@ -3629,6 +5127,9 @@
       "name": "Faun Claimant",
       "kind": "character",
       "who": "Faun Claimant.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/faun",
       "chapters": [
         "gemfall-06"
       ],
@@ -3644,6 +5145,9 @@
       "name": "Skywardens",
       "kind": "group",
       "who": "Skywardens.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/skywardens",
       "chapters": [
         "gemfall-06",
         "gemfall-07r"
@@ -3660,6 +5164,9 @@
       "name": "Dragonling Runner",
       "kind": "character",
       "who": "Dragonling Runner.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "characters/dragonling",
       "chapters": [
         "gemfall-07h"
       ],
@@ -3676,6 +5183,10 @@
       "kind": "group",
       "who": "Masked choir singer.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/masked_choir_singer",
       "chapters": [
         "gemfall-07l",
         "gemfall-07r",
@@ -3698,6 +5209,9 @@
       "name": "Crying gem-buyer",
       "kind": "character",
       "who": "Crying gem-buyer.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/crying_gem_buyer",
       "chapters": [
         "gemfall-07r"
       ],
@@ -3713,6 +5227,9 @@
       "name": "Road mule",
       "kind": "creature",
       "who": "Road mule.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/mule",
       "chapters": [
         "gemfall-07r"
       ],
@@ -3729,6 +5246,10 @@
       "kind": "character",
       "who": "Captain Voss.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/captain_voss",
       "chapters": [
         "gemfall-08"
       ],
@@ -3750,6 +5271,10 @@
       "kind": "group",
       "who": "Travelers.",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/boarding_traveler",
       "chapters": [
         "riftlight-ashspan-bridge"
       ],
@@ -3771,6 +5296,10 @@
       "kind": "character",
       "who": "Tilly.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/tilly",
       "chapters": [
         "riftlight-ashspan-bridge"
       ],
@@ -3800,6 +5329,10 @@
       "kind": "character",
       "who": "Bryn.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/bryn",
       "chapters": [
         "riftlight-ashspan-bridge"
       ],
@@ -3828,6 +5361,9 @@
       "name": "Ducklings",
       "kind": "group",
       "who": "Ducklings.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/duckling",
       "chapters": [
         "riftlight-ashspan-bridge"
       ],
@@ -3843,6 +5379,9 @@
       "name": "Professor Nettle",
       "kind": "character",
       "who": "Professor Nettle.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/professor_nettle",
       "chapters": [
         "riftlight-ashspan-bridge"
       ],
@@ -3864,6 +5403,10 @@
       "kind": "character",
       "who": "Skupper guide.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/saltrot_guide",
       "chapters": [
         "riftlight-bone-yard",
         "riftlight-buried-bridge"
@@ -3894,6 +5437,10 @@
       "kind": "character",
       "who": "Stone keeper.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/dragonling_stone_keeper",
       "chapters": [
         "riftlight-boundary-stone-bank",
         "riftlight-stone-counters"
@@ -3923,6 +5470,9 @@
       "name": "Pass keeper",
       "kind": "character",
       "who": "Pass keeper.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/pass_keeper",
       "chapters": [
         "riftlight-cairnstep-pass"
       ],
@@ -3939,6 +5489,10 @@
       "kind": "character",
       "who": "Pebble.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/pebble",
       "chapters": [
         "riftlight-cairnstep-pass"
       ],
@@ -3968,6 +5522,10 @@
       "kind": "character",
       "who": "Noodle seller.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/soup_woman",
       "chapters": [
         "riftlight-exchange-rift"
       ],
@@ -3997,6 +5555,10 @@
       "kind": "character",
       "who": "Barge pilot.",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "entities/frogfolk",
       "chapters": [
         "riftlight-exchange-rift"
       ],
@@ -4026,6 +5588,10 @@
       "kind": "character",
       "who": "The crows.",
       "pronouns": "they/them",
+      "pronounsFrom": "narration",
+      "gender": "nonbinary",
+      "genderFrom": "narration",
+      "figure": "entities/rookery_crows",
       "chapters": [
         "riftlight-exchange-rift"
       ],
@@ -4051,6 +5617,10 @@
       "kind": "group",
       "who": "Dock workers.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/dock_worker",
       "chapters": [
         "riftlight-exchange-rift"
       ],
@@ -4072,6 +5642,10 @@
       "kind": "creature",
       "who": "Goat kid.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/snowhorn_kid",
       "chapters": [
         "riftlight-exchange-rift",
         "riftlight-glacier-survival",
@@ -4096,6 +5670,9 @@
       "name": "Dock worker",
       "kind": "character",
       "who": "Dock worker.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/dock_worker",
       "chapters": [
         "riftlight-exchange-rift"
       ],
@@ -4111,6 +5688,9 @@
       "name": "Yeti watcher",
       "kind": "character",
       "who": "Yeti watcher.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/yeti_watcher",
       "chapters": [
         "riftlight-finale"
       ],
@@ -4126,6 +5706,9 @@
       "name": "Frost wyrm",
       "kind": "creature",
       "who": "Frost wyrm.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/frost_wyrm",
       "chapters": [
         "riftlight-finale",
         "riftlight-wyrm-nest"
@@ -4143,6 +5726,10 @@
       "kind": "character",
       "who": "Aunt Bellow.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/aunt_bellow",
       "chapters": [
         "riftlight-glacier-survival"
       ],
@@ -4167,6 +5754,9 @@
       "name": "Frogfolk student",
       "kind": "character",
       "who": "Frogfolk student.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/frogfolk_student",
       "chapters": [
         "riftlight-glacier-survival"
       ],
@@ -4182,6 +5772,9 @@
       "name": "Cloaked griffin",
       "kind": "character",
       "who": "Cloaked griffin.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/orin_vale",
       "chapters": [
         "riftlight-glacier-survival"
       ],
@@ -4197,6 +5790,9 @@
       "name": "Cloaked unicorn",
       "kind": "character",
       "who": "Cloaked unicorn.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/lady_olivia",
       "chapters": [
         "riftlight-glacier-survival"
       ],
@@ -4212,6 +5808,9 @@
       "name": "Young river drakes",
       "kind": "creature",
       "who": "Young river drakes.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/river_drake",
       "chapters": [
         "riftlight-headwaters-washout"
       ],
@@ -4227,6 +5826,9 @@
       "name": "Grit seller",
       "kind": "character",
       "who": "Grit seller.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/yeti_grit_seller",
       "chapters": [
         "riftlight-hidden-glacier-rift"
       ],
@@ -4243,6 +5845,10 @@
       "kind": "character",
       "who": "Reading-room elder.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/yeti_elder",
       "chapters": [
         "riftlight-reading-room"
       ],
@@ -4271,6 +5877,9 @@
       "name": "Younger keeper",
       "kind": "character",
       "who": "Younger keeper.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/younger_keeper",
       "chapters": [
         "riftlight-reading-room"
       ],
@@ -4286,6 +5895,9 @@
       "name": "Newcomer",
       "kind": "character",
       "who": "Newcomer.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/newcomer_yeti",
       "chapters": [
         "riftlight-reading-room"
       ],
@@ -4302,6 +5914,10 @@
       "kind": "character",
       "who": "Saltrot guide.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/saltrot_guide",
       "chapters": [
         "riftlight-saltrot-arrival",
         "riftlight-stuttering-flats"
@@ -4332,6 +5948,10 @@
       "kind": "character",
       "who": "Traveler.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/boarding_traveler",
       "chapters": [
         "riftlight-saltrot-arrival"
       ],
@@ -4356,6 +5976,9 @@
       "name": "Skupper cousin",
       "kind": "character",
       "who": "Skupper cousin.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/skupper",
       "chapters": [
         "riftlight-saltrot-arrival"
       ],
@@ -4372,6 +5995,10 @@
       "kind": "character",
       "who": "Temple keeper.",
       "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
+      "figure": "cast/kitsune_temple_keeper",
       "chapters": [
         "riftlight-sky-islands-arrival",
         "riftlight-squall-temple"
@@ -4402,6 +6029,10 @@
       "kind": "character",
       "who": "Dob.",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/dob",
       "chapters": [
         "riftlight-sky-islands-arrival"
       ],
@@ -4427,6 +6058,10 @@
       "kind": "character",
       "who": "Fenwick.",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/courier_griffin",
       "chapters": [
         "riftlight-sky-islands-arrival"
       ],
@@ -4448,6 +6083,10 @@
       "kind": "character",
       "who": "Master Dunnick.",
       "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
+      "figure": "cast/master_dunnick",
       "chapters": [
         "riftlight-sky-islands-arrival"
       ],
@@ -4468,6 +6107,9 @@
       "name": "Griffin messenger",
       "kind": "character",
       "who": "Griffin messenger.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/courier_griffin",
       "chapters": [
         "riftlight-squall-temple"
       ],
@@ -4483,6 +6125,9 @@
       "name": "Passing fisher",
       "kind": "character",
       "who": "Passing fisher.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/passing_fisher",
       "chapters": [
         "riftlight-stuttering-flats"
       ],
@@ -4498,6 +6143,9 @@
       "name": "Lookout keeper",
       "kind": "character",
       "who": "Lookout keeper.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/island_keeper",
       "chapters": [
         "riftlight-the-island-due-back"
       ],
@@ -4513,6 +6161,9 @@
       "name": "Letter messenger",
       "kind": "character",
       "who": "Letter messenger.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/courier_griffin",
       "chapters": [
         "riftlight-the-island-due-back"
       ],
@@ -4528,6 +6179,9 @@
       "name": "Route worker",
       "kind": "character",
       "who": "Route worker.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/route_worker_yeti",
       "chapters": [
         "riftlight-the-wrong-valley"
       ],
@@ -4543,6 +6197,9 @@
       "name": "Far worker",
       "kind": "character",
       "who": "Far worker.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/route_worker_yeti",
       "chapters": [
         "riftlight-the-wrong-valley"
       ],
@@ -4558,6 +6215,9 @@
       "name": "Cloud whale",
       "kind": "creature",
       "who": "Cloud whale.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/cloud_whale",
       "chapters": [
         "riftlight-whale-road"
       ],
@@ -4573,6 +6233,9 @@
       "name": "New keeper",
       "kind": "character",
       "who": "New keeper.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/new_island_keeper",
       "chapters": [
         "riftlight-whale-road"
       ],
@@ -4588,6 +6251,9 @@
       "name": "Yeti builder",
       "kind": "character",
       "who": "Yeti builder.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "entities/yeti",
       "chapters": [
         "riftlight-wyrm-nest"
       ],
@@ -4608,6 +6274,9 @@
       "name": "Memory readers",
       "kind": "group",
       "who": "Memory readers.",
+      "gender": "unknown",
+      "genderFrom": "none",
+      "figure": "cast/memory_reader",
       "chapters": [
         "riftlight-wyrm-nest"
       ],
