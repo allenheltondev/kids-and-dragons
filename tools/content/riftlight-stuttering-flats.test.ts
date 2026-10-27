@@ -7,7 +7,7 @@ const chapter = chapters.get("riftlight-stuttering-flats")!;
 it.each([
   ["manticore", "duskrunner"], ["kitsune", "starweaver"], ["unicorn", "songkeeper"],
   ["bigfoot", "thornguard"], ["griffin", "duskrunner"], ["dragonling", "songkeeper"],
-] as const)("a %s %s returns the goat on every low/high roll path", (species, cls) => {
+] as const)("a %s %s returns the goat on every authored rescue outcome", (species, cls) => {
   const { ends } = allPaths(chapter, species, cls, {}, 1, 1);
   for (const end of ends) {
     expect(end.flags.goat_returned_home).toBe(true);
@@ -18,11 +18,10 @@ it.each([
   expect(ends.some(s => s.flags.flats_sling_left)).toBe(true);
   expect(ends.some(s => !s.flags.flats_sling_left)).toBe(true);
 });
-it("puts the rescue on an interactive spine with a rest and no repeated checks", () => {
+it("keeps the rescue and its rest playable without padding the spine with rolls", () => {
   for (const { shortest } of pacingReport(chapter).scenarios) {
-    expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
-    expect(shortest!.decisions).toBeGreaterThanOrEqual(14);
-    expect(shortest!.checks).toBe(4);
+    expect(shortest!.checks).toBe(0);
+    expect(shortest!.longestReadingRun).toBeLessThanOrEqual(3);
   }
 });
 

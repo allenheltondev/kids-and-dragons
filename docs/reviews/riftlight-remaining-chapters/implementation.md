@@ -117,3 +117,32 @@ Discovery-pair validation: 638 focused tests across 33 files pass, including 147
 new control tests. Typechecking passes; content/graph-proof validation passes
 117 checks with the same two existing warnings; continuity has zero new findings
 and zero stale allow-list entries. These are automated checks, not family timing.
+
+## Follow-on rescue pair
+
+Stuttering Flats and Bone Yard now have their deeper consequence/activity pass.
+See [rescue-playtest.md](../../campaigns/continental-rift/rescue-playtest.md) for
+planned thirty-minute budgets, equipment payoffs and family observation.
+
+Flats plays the adult goat's greeting, freeing, sling, herder signals and crossing.
+The short approach spends the stiff mat; the shell route preserves a playable
+ramp alternative. Signal preparation and unicorn tending change crossing targets.
+An ordinary miss still rescues the goat through cooperative recovery, honestly
+leaving the sling behind. Heroes remain on the Flats side throughout.
+
+Bone Yard plays the returning-object discovery, real combat preparation, own-gear
+recovery and the actual exit. Carried mats remove one hazard tile; seam preparation
+reduces the objective's work. Neither removes the enemies. Defeat leaves caught
+gear inside and requires the outer route before passage completion. Yard objects
+stay in the Yard; sharing the party account remains a choice.
+
+Wyrm Nest, Squall Temple, Convergence and Finale remain for deeper gameplay passes.
+The family-session timing tracker is separate future work in
+[issue #511](https://github.com/allenheltondev/kids-and-dragons/issues/511).
+Observed family timing for this pair remains unmeasured.
+
+Rescue-pair verification: 850 focused tests across 35 files pass, including
+212 new interaction-route and board tests. Typechecking passes. Content proofs
+pass 117 checks with the same two existing Corvane warnings; continuity has zero
+new findings and zero stale entries. The known Windows preview shutdown test
+remains outside this focused suite; it was not changed or disabled.
