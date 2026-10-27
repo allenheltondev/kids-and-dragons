@@ -9990,46 +9990,6 @@
           ],
           "introduces": {}
         },
-        "listen_1": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "listen_2": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "watch": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "watch_1": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "watch_2": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
         "watch_check": {
           "requires": [
             "nest_wyrm",
@@ -10038,15 +9998,7 @@
           ],
           "introduces": {}
         },
-        "watch_clear": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "watch_changed": {
+        "boundary": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
@@ -10060,9 +10012,11 @@
             "nest_builders",
             "nest_bench"
           ],
-          "introduces": {}
+          "introduces": {
+            "nest_kit": "A folded table"
+          }
         },
-        "supplies_1": {
+        "table_kit": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
@@ -10070,7 +10024,7 @@
           ],
           "introduces": {}
         },
-        "supplies_2": {
+        "shelf_kit": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
@@ -10084,53 +10038,45 @@
             "nest_builders",
             "nest_bench"
           ],
-          "introduces": {}
+          "introduces": {
+            "nest_hollow": "a sheltered snow hollow",
+            "nest_bones": "Loose bones rattle",
+            "nest_chime": "The Listening Chime"
+          }
         },
-        "cold_opening_1": {
+        "hollow_view": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         },
-        "cold_opening_2": {
+        "hollow_help": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         },
-        "cold_opening_3": {
+        "hollow_check": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         },
-        "cold_opening_check": {
+        "hollow_attuned": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "cold_opening_clear": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "cold_opening_changed": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         },
@@ -10138,23 +10084,26 @@
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         },
-        "bed_1": {
+        "bed_snow": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         },
-        "bed_2": {
+        "bed_slab": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         },
@@ -10162,59 +10111,12 @@
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "lanes_1": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "lanes_2": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "lanes_check": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "lanes_clear": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "lanes_changed": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         },
         "rest": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "rest_watch": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
@@ -10230,43 +10132,13 @@
           ],
           "introduces": {}
         },
-        "signal_1": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "signal_2": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
         "offer": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "offer_1": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "offer_2": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow",
+            "nest_bones"
           ],
           "introduces": {}
         },
@@ -10274,7 +10146,19 @@
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow",
+            "nest_bones"
+          ],
+          "introduces": {}
+        },
+        "fight_soft": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench",
+            "nest_hollow",
+            "nest_bones"
           ],
           "introduces": {}
         },
@@ -10282,7 +10166,8 @@
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         },
@@ -10290,55 +10175,8 @@
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "tools": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "tools_1": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "tools_2": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "tools_check": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "tools_clear": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "tools_changed": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         },
@@ -10350,7 +10188,7 @@
           ],
           "introduces": {}
         },
-        "shelves_1": {
+        "shelf_build": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
@@ -10358,7 +10196,7 @@
           ],
           "introduces": {}
         },
-        "shelves_2": {
+        "unpack_shelf": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
@@ -10374,15 +10212,16 @@
           ],
           "introduces": {}
         },
-        "shelves_clear": {
+        "slab_route": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         },
-        "shelves_changed": {
+        "reader_step": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
@@ -10398,23 +10237,15 @@
           ],
           "introduces": {}
         },
-        "readers_1": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "readers_2": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
         "readers_check": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "readers_markers": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
@@ -10430,79 +10261,7 @@
           ],
           "introduces": {}
         },
-        "readers_changed": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
         "quiet": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "quiet_1": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "quiet_2": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "neighbors": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "neighbors_1": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "neighbors_2": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "departure": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "departure_1": {
-          "requires": [
-            "nest_wyrm",
-            "nest_builders",
-            "nest_bench"
-          ],
-          "introduces": {}
-        },
-        "departure_2": {
           "requires": [
             "nest_wyrm",
             "nest_builders",
@@ -10514,7 +10273,8 @@
           "requires": [
             "nest_wyrm",
             "nest_builders",
-            "nest_bench"
+            "nest_bench",
+            "nest_hollow"
           ],
           "introduces": {}
         }
@@ -10526,58 +10286,13 @@
         "arrival": {
           "requires": [],
           "introduces": {
-            "temple_keeper": "The island you helped welcome home is drifting toward a temple island through heavy rain. A different kitsune keeper from the one at the lookout rings a lookout bell; its rope wears a tiny raincoat. Beside the temple, a fresh opening spills bone crawlers onto the wet landing: little scuttling creatures with jointed legs and rattling backs. \"Keep the temple safe as that island drifts toward us,\" the keeper calls. \"We can push its approach clear, or shelter this landing and let it settle.\" She points to people still carrying cushions across the yard.",
+            "temple_keeper": "A different kitsune keeper",
             "temple_island": "a temple island",
             "temple_crawlers": "bone crawlers",
             "temple_landing": "the wet landing"
           }
         },
         "look": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "look_1": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "look_2": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "look_check": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "look_clear": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "look_changed": {
           "requires": [
             "temple_keeper",
             "temple_island",
@@ -10595,16 +10310,7 @@
           ],
           "introduces": {}
         },
-        "people_1": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "people_2": {
+        "screen": {
           "requires": [
             "temple_keeper",
             "temple_island",
@@ -10622,7 +10328,7 @@
           ],
           "introduces": {}
         },
-        "people_clear": {
+        "screen_relay": {
           "requires": [
             "temple_keeper",
             "temple_island",
@@ -10631,34 +10337,7 @@
           ],
           "introduces": {}
         },
-        "people_changed": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "last_keeper": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "last_keeper_1": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "last_keeper_2": {
+        "ready_lane": {
           "requires": [
             "temple_keeper",
             "temple_island",
@@ -10674,7 +10353,9 @@
             "temple_crawlers",
             "temple_landing"
           ],
-          "introduces": {}
+          "introduces": {
+            "temple_messenger": "The temple's own griffin messenger"
+          }
         },
         "gear": {
           "requires": [
@@ -10683,113 +10364,28 @@
             "temple_crawlers",
             "temple_landing"
           ],
-          "introduces": {}
+          "introduces": {
+            "temple_rope": "the long turning rope",
+            "temple_cover": "wind cover"
+          }
         },
-        "gear_1": {
+        "gear_rope": {
           "requires": [
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
-            "temple_landing"
+            "temple_landing",
+            "temple_rope"
           ],
           "introduces": {}
         },
-        "gear_2": {
+        "short_line": {
           "requires": [
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "gear_check": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "gear_clear": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "gear_changed": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "signals": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "signals_1": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "signals_2": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "shelter": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "shelter_1": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "shelter_2": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "shelter_3": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
+            "temple_landing",
+            "temple_rope"
           ],
           "introduces": {}
         },
@@ -10798,20 +10394,22 @@
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
-            "temple_landing"
+            "temple_landing",
+            "temple_cover"
           ],
           "introduces": {}
         },
-        "shelter_clear": {
+        "shelter_braced": {
           "requires": [
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
-            "temple_landing"
+            "temple_landing",
+            "temple_cover"
           ],
           "introduces": {}
         },
-        "shelter_changed": {
+        "signals": {
           "requires": [
             "temple_keeper",
             "temple_island",
@@ -10829,48 +10427,14 @@
           ],
           "introduces": {}
         },
-        "rest_watch": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "crawl": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "crawl_1": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "crawl_2": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
         "plan": {
           "requires": [
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
-            "temple_landing"
+            "temple_landing",
+            "temple_rope",
+            "temple_cover"
           ],
           "introduces": {}
         },
@@ -10879,16 +10443,9 @@
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "shelter_plan": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
+            "temple_landing",
+            "temple_rope",
+            "temple_cover"
           ],
           "introduces": {}
         },
@@ -10897,7 +10454,42 @@
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
-            "temple_landing"
+            "temple_landing",
+            "temple_rope",
+            "temple_cover"
+          ],
+          "introduces": {}
+        },
+        "fight_push_rope": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing",
+            "temple_rope",
+            "temple_cover"
+          ],
+          "introduces": {}
+        },
+        "fight_push_cover": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing",
+            "temple_rope",
+            "temple_cover"
+          ],
+          "introduces": {}
+        },
+        "shelter_plan": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing",
+            "temple_rope",
+            "temple_cover"
           ],
           "introduces": {}
         },
@@ -10906,7 +10498,31 @@
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
-            "temple_landing"
+            "temple_landing",
+            "temple_rope",
+            "temple_cover"
+          ],
+          "introduces": {}
+        },
+        "fight_shelter_rope": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing",
+            "temple_rope",
+            "temple_cover"
+          ],
+          "introduces": {}
+        },
+        "fight_shelter_cover": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing",
+            "temple_rope",
+            "temple_cover"
           ],
           "introduces": {}
         },
@@ -10937,87 +10553,6 @@
           ],
           "introduces": {}
         },
-        "roof": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "roof_1": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "roof_2": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "roof_check": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "roof_clear": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "roof_changed": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "boards": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "boards_1": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
-        "boards_2": {
-          "requires": [
-            "temple_keeper",
-            "temple_island",
-            "temple_crawlers",
-            "temple_landing"
-          ],
-          "introduces": {}
-        },
         "boards_check": {
           "requires": [
             "temple_keeper",
@@ -11027,21 +10562,44 @@
           ],
           "introduces": {}
         },
-        "boards_clear": {
+        "roof": {
           "requires": [
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
             "temple_landing"
           ],
-          "introduces": {}
+          "introduces": {
+            "temple_gutter": "the loose gutter end"
+          }
         },
-        "boards_changed": {
+        "roof_pole": {
           "requires": [
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
-            "temple_landing"
+            "temple_landing",
+            "temple_gutter"
+          ],
+          "introduces": {}
+        },
+        "roof_basin": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing",
+            "temple_gutter"
+          ],
+          "introduces": {}
+        },
+        "runoff_help": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing",
+            "temple_gutter"
           ],
           "introduces": {}
         },
@@ -11081,7 +10639,7 @@
           ],
           "introduces": {}
         },
-        "record_1": {
+        "record_signals": {
           "requires": [
             "temple_keeper",
             "temple_island",
@@ -11090,7 +10648,7 @@
           ],
           "introduces": {}
         },
-        "record_2": {
+        "record_map": {
           "requires": [
             "temple_keeper",
             "temple_island",
@@ -11108,7 +10666,7 @@
           ],
           "introduces": {}
         },
-        "watch_1": {
+        "watch_signals": {
           "requires": [
             "temple_keeper",
             "temple_island",
@@ -11117,7 +10675,25 @@
           ],
           "introduces": {}
         },
-        "watch_2": {
+        "watch_help": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "watch_map": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "watch_map_help": {
           "requires": [
             "temple_keeper",
             "temple_island",
@@ -11131,7 +10707,8 @@
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
-            "temple_landing"
+            "temple_landing",
+            "temple_messenger"
           ],
           "introduces": {}
         },
@@ -11140,7 +10717,8 @@
             "temple_keeper",
             "temple_island",
             "temple_crawlers",
-            "temple_landing"
+            "temple_landing",
+            "temple_messenger"
           ],
           "introduces": {}
         }

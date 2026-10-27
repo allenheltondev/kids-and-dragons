@@ -5,7 +5,7 @@
   "title": "A Room Already Taken",
   "biome": "glacier_of_origins",
   "music": "riftlight-paths",
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "arrival",
   "plate": {
@@ -49,14 +49,6 @@
     "arrival": {
       "type": "story",
       "narration": "Beyond the memory reading room, yeti builders have stopped carving a new chamber for the memory readers. A frost wyrm has curled across their doorway, using a bench as a pillow. Its breath covers the wall in tiny ice ferns. \"Make room for us and the wyrm without waking the old ice,\" says a builder. \"We can move the room. We cannot ask the mountain for a second mountain.\" The wyrm opens one eye. Pip stays in the old reading room to help the elder sort the notes while you work below.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "listen"
-        }
-      ],
       "cast": [
         {
           "figure": "entities/yeti",
@@ -67,25 +59,19 @@
           "name": "Frost wyrm"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Watch before moving",
+          "goto": "listen",
+          "icon": "hand"
+        }
+      ]
     },
     "listen": {
-      "type": "choice_point",
-      "narration": "A tool scrapes. The frost wyrm tightens around the doorway and pulls the bench farther under its chin. The builder raises a quiet hand. \"That used to be our best bench.\" Every new scrape makes the doorway smaller. How will you approach without adding to the noise?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Wrap the loose tools before moving closer",
-          "icon": "hand",
-          "goto": "listen_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Follow the soft snow beside the wall",
-          "icon": "hand",
-          "goto": "listen_2"
-        }
-      ],
+      "type": "story",
+      "narration": "A chisel scrapes. The wyrm tightens around its bench, then loosens when the builder steps back. Watch the tail and breathing pattern from the far wall. \"The bench has become a very expensive pillow,\" whispers the builder.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -96,172 +82,111 @@
           "name": "Frost wyrm"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "listen_1": {
-      "type": "story",
-      "narration": "You wrap the chisels in a spare blanket. The builder looks relieved. The largest chisel has its own knitted hat.",
+      "art": "scenes/riftlight/wyrm-nest",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "watch"
+          "label": "Continue",
+          "goto": "watch_check",
+          "icon": "hand"
         }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "listen_2": {
-      "type": "story",
-      "narration": "You leave the tools where they are and take the snow strip. Your steps make shallow dimples instead of sharp echoes.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "watch"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "watch": {
-      "type": "choice_point",
-      "narration": "The nest blocks the doorway, not the whole tunnel. The wyrm watches anyone near the bench. You can observe its tail from the far wall or check the scrape marks beside the doorway.",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Watch where the tail moves when someone steps back",
-          "icon": "hand",
-          "goto": "watch_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Compare the marks without touching the nest",
-          "icon": "hand",
-          "goto": "watch_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "watch_1": {
-      "type": "story",
-      "narration": "You retreat one pace. The tail loosens. The wyrm is keeping a space, not chasing travelers down the tunnel.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "watch_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "watch_2": {
-      "type": "story",
-      "narration": "You study the scraped snow from the safe strip. Most marks curve around the bench. A small builder's stool sits outside them, politely ignored.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "watch_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
+      ]
     },
     "watch_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Mark the reach of the nest from ground the wyrm leaves clear.",
+      "type": "interaction",
+      "narration": "Watch the wyrm curl, breathe and relax. Echo the observed pattern before anyone marks a lane. The marks describe its reach today, not a command it must obey.",
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the nest pattern, then echo it.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "curl",
+            "label": "Tail curls",
+            "icon": "eye"
+          },
+          {
+            "id": "frost",
+            "label": "Frost breath",
+            "icon": "eye"
+          },
+          {
+            "id": "rest",
+            "label": "Tail rests",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "curl",
+          "frost",
+          "rest",
+          "rest"
+        ],
+        "stepMs": 1300
+      },
       "onSuccess": {
-        "goto": "watch_clear",
-        "narration": "Your marks stay outside the turning tail."
+        "goto": "boundary",
+        "narration": "You mark the observed reach, with a clear margin.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_watch_done",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "nest_pattern_read",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "watch_changed",
-        "narration": "The tail shifts farther than your first mark."
+        "goto": "boundary",
+        "narration": "The builder checks the shifting tail and adds a wider margin. Your record names this as a helped observation.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_watch_done",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "nest_pattern_read",
+            "value": false
+          }
+        ]
       },
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "onAssisted": {
+        "goto": "boundary",
+        "narration": "The builder checks the shifting tail and adds a wider margin. Your record names this as a helped observation.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_watch_done",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "nest_pattern_read",
+            "value": false
+          }
+        ]
+      }
     },
-    "watch_clear": {
-      "type": "story",
-      "narration": "The builders can see where the wyrm needs space. Nobody needs to test the mark with a foot.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "nest_watch_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "supplies"
-        }
-      ],
+    "boundary": {
+      "type": "interaction",
+      "narration": "Help the builders move everything outside that margin. Choose a quiet job; nothing is taken from under the wyrm. One builder knits a hat for a chisel that does not yet have a hat.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -272,54 +197,49 @@
           "name": "Frost wyrm"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "watch_changed": {
-      "type": "story",
-      "narration": "You erase the guessed mark and leave a wider margin. The builder moves the stool back with a hooked stick.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "nest_watch_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "supplies"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "play",
+        "cue": "Make the observation useful.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "pad",
+            "label": "Pad loose tools",
+            "icon": "hand",
+            "reaction": "The chisels travel without scraping."
+          },
+          {
+            "id": "stool",
+            "label": "Move the empty stool",
+            "icon": "hand",
+            "reaction": "The stool is beyond the tail mark."
+          },
+          {
+            "id": "sign",
+            "label": "Show the no-scrape edge",
+            "icon": "hand",
+            "reaction": "A builder marks only the new surface."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "supplies",
+        "narration": "The builders can prepare a reading place without testing the nest with a foot."
+      },
+      "onFailure": {
+        "goto": "supplies",
+        "narration": "The builders can prepare a reading place without testing the nest with a foot."
+      },
+      "onAssisted": {
+        "goto": "supplies",
+        "narration": "The builders can prepare a reading place without testing the nest with a foot."
+      }
     },
     "supplies": {
       "type": "choice_point",
-      "narration": "Two things lie outside the nest: a bundle of carving tools and a folded wall plan. The builders can reach either, but the wyrm keeps turning toward the noise. Which will you move first?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Carry the wrapped tools out along the snow strip",
-          "icon": "hand",
-          "goto": "supplies_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Roll the wall plan away from the nest",
-          "icon": "hand",
-          "goto": "supplies_2"
-        }
-      ],
+      "narration": "The readers will need furniture after the encounter. A folded table travels easily if the room must move, but takes more setting up if you win this doorway. Shelf parts make a sturdy low shelf here; after a retreat they must be unpacked into a temporary tabletop. Which kit will you carry?",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -330,19 +250,39 @@
           "name": "Frost wyrm"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "portable",
+          "label": "Carry the folding table kit",
+          "goto": "table_kit",
+          "icon": "hand",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_portable_kit",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "fixed",
+          "label": "Carry the low-shelf parts",
+          "goto": "shelf_kit",
+          "icon": "hand",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_portable_kit",
+              "value": false
+            }
+          ]
+        }
+      ]
     },
-    "supplies_1": {
-      "type": "story",
-      "narration": "You pass the quiet bundle along the wall. One chisel hat has slipped over its point. The builder fixes it before anyone picks the bundle up.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "cold_opening"
-        }
-      ],
+    "table_kit": {
+      "type": "interaction",
+      "narration": "Level the folded table before carrying it to the safe alcove. It folds very small. The builder briefly folds the instruction sheet into something much larger.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -353,19 +293,29 @@
           "name": "Frost wyrm"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the folded table for carrying.",
+        "actionLabel": "Carry the folded table",
+        "objectLabel": "folded table"
+      },
+      "onSuccess": {
+        "goto": "cold_opening",
+        "narration": "The portable kit waits outside the nest."
+      },
+      "onFailure": {
+        "goto": "cold_opening",
+        "narration": "The portable kit waits outside the nest."
+      },
+      "onAssisted": {
+        "goto": "cold_opening",
+        "narration": "The portable kit waits outside the nest."
+      }
     },
-    "supplies_2": {
-      "type": "story",
-      "narration": "You roll the plan from its far end. The builders will know where to start again, even if this doorway stays occupied.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "cold_opening"
-        }
-      ],
+    "shelf_kit": {
+      "type": "interaction",
+      "narration": "Pass the wide shelf blocks and bundled top to the alcove. Each bright mark belongs to the builders; none is a piece of old ice.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -376,32 +326,86 @@
           "name": "Frost wyrm"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the shelf parts along the safe wall.",
+        "actionLabel": "Pass the parts",
+        "objectLabel": "shelf parts"
+      },
+      "onSuccess": {
+        "goto": "cold_opening",
+        "narration": "The shelf kit waits outside the nest.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_fixed_kit",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "cold_opening",
+        "narration": "The shelf kit waits outside the nest.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_fixed_kit",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "cold_opening",
+        "narration": "The shelf kit waits outside the nest.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_fixed_kit",
+            "value": true
+          }
+        ]
+      }
     },
     "cold_opening": {
       "type": "choice_point",
-      "narration": "In the far wall, an opening shows an empty snow hollow sheltered from wind. The Listening Chime, the chime from the glacier travelers, returns a clear echo. A builder can see both sides from the tunnel. How will you check that the hollow is unoccupied? On your side of the opening, loose bones rattle in a heap. The builders have stopped work around them; nobody knows where they came from.",
+      "narration": "An opening in the far wall shows a sheltered snow hollow. The Listening Chime is the travelers' chime: its echo checks an open way back; it cannot command a rift. Loose bones rattle on this side, and the builders leave them alone. Check the hollow before inviting any creature into it.",
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
       "choices": [
         {
-          "id": "plan_1",
-          "label": "Watch the whole floor through the opening",
-          "icon": "hand",
-          "goto": "cold_opening_1"
+          "id": "view",
+          "label": "Observe the full floor from here",
+          "goto": "hollow_view",
+          "icon": "hand"
         },
         {
-          "id": "plan_2",
-          "label": "Ask a builder to signal from the far side",
-          "icon": "hand",
-          "goto": "cold_opening_2"
+          "id": "builder",
+          "label": "Support a builder checking both sides",
+          "goto": "hollow_check",
+          "icon": "hand"
         },
         {
-          "id": "plan_3",
-          "label": "Have a starweaver study the opening",
+          "id": "starweaver",
+          "label": "Let our starweaver study the opening",
+          "goto": "hollow_attuned",
           "icon": "hand",
-          "goto": "cold_opening_3",
           "requiresClass": "starweaver"
         }
-      ],
+      ]
+    },
+    "hollow_view": {
+      "type": "interaction",
+      "narration": "Wait for the drifting snow to reveal the whole hollow. Check tracks, floor and the return opening; a boot-shaped lump is only snow.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -413,94 +417,44 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
-    },
-    "cold_opening_1": {
-      "type": "story",
-      "narration": "You wait for blowing snow to clear. There are no tracks, nests or stored tools in the hollow. A lump shaped like a boot is only snow.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "cold_opening_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
-    },
-    "cold_opening_2": {
-      "type": "story",
-      "narration": "A builder steps through, leaves a marker and comes back while you watch. The way remains open. Nobody promises it will obey a new command.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "cold_opening_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
-    },
-    "cold_opening_3": {
-      "type": "story",
-      "narration": "A starweaver studies the light privately. The builders check the ground and the echo with the rest of the party. Everyone agrees on what the hollow can safely hold.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "cold_opening_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
-    },
-    "cold_opening_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Compare the hollow's floor and shelter with the wyrm's present nesting space.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Check the hollow during the full clear view.",
+        "actionLabel": "Check the sheltered floor",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
       "onSuccess": {
-        "goto": "cold_opening_clear",
-        "narration": "The hollow has room for the whole curling tail."
+        "goto": "bed",
+        "narration": "The floor is unoccupied and the way back remains visible.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_space_done",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "cold_opening_changed",
-        "narration": "Drifting snow hides the far edge."
+        "goto": "hollow_help",
+        "narration": "The far edge was hidden. A builder will check it from the open side before anyone offers the space."
       },
+      "onAssisted": {
+        "goto": "bed",
+        "narration": "The floor is unoccupied and the way back remains visible.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_space_done",
+            "value": true
+          }
+        ]
+      }
+    },
+    "hollow_help": {
+      "type": "interaction",
+      "narration": "Support the marker line while the builder clears the hidden drift, checks for tracks and returns. The party stays at the tunnel marker.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -512,85 +466,133 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the marker line for the builder.",
+        "actionLabel": "Recover the marker",
+        "supportLabel": "Hold the line"
+      },
+      "onSuccess": {
+        "goto": "bed",
+        "narration": "The checked hollow is empty and sheltered.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_space_done",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "bed",
+        "narration": "The checked hollow is empty and sheltered.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_space_done",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "bed",
+        "narration": "The checked hollow is empty and sheltered.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_space_done",
+            "value": true
+          }
+        ]
+      }
     },
-    "cold_opening_clear": {
+    "hollow_check": {
+      "type": "interaction",
+      "narration": "Hold the marker line while the builder crosses the visible opening, checks the ground and returns. Nobody tests unknown old ice.",
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the marker while the builder checks the hollow.",
+        "actionLabel": "Gather the returned marker",
+        "supportLabel": "Hold the marker line"
+      },
+      "onSuccess": {
+        "goto": "bed",
+        "narration": "The builder has checked both sides and returned.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_space_done",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "bed",
+        "narration": "The builder has checked both sides and returned.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_space_done",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "bed",
+        "narration": "The builder has checked both sides and returned.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_space_done",
+            "value": true
+          }
+        ]
+      }
+    },
+    "hollow_attuned": {
       "type": "story",
-      "narration": "You mark a clear sheltered space beyond the opening. Moving the wyrm there is possible; forcing it to like the place is not.",
+      "narration": "Your starweaver studies the opening's light while the builders check its echo and empty floor. This replaces the separate viewing task, not the ordinary ground checks. A clear way back is still required.",
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "nest_space_done"
+          "flag": "nest_space_done",
+          "value": true
         }
       ],
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "bed"
+          "label": "Continue",
+          "goto": "bed",
+          "icon": "hand"
         }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
-    },
-    "cold_opening_changed": {
-      "type": "story",
-      "narration": "The builder clears the drift with a long pole, then marks a wider clear space. You wait for the check rather than guessing.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "nest_space_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "bed"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
+      ]
     },
     "bed": {
       "type": "choice_point",
-      "narration": "The hollow is sheltered, but its floor is hard snow. The wyrm has already demonstrated strong opinions about pillows. You can prepare a softer place for it there. Even if you choose to drive it from the doorway, the hollow will offer shelter away from the readers. How will you make it ready?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Spread clean snow into a shallow bowl",
-          "icon": "hand",
-          "goto": "bed_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Set a broad ice slab below the wind lip",
-          "icon": "hand",
-          "goto": "bed_2"
-        }
-      ],
+      "narration": "The hollow is safe. Soft new snow will make a welcoming bowl: on the board, holding its approach for one clear round can invite the wyrm in. A broad slab takes two clear rounds to invite it, but can later be recovered as a low reader step if the hollow stays empty. Neither plan promises the wyrm will cooperate.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -602,19 +604,48 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
-    },
-    "bed_1": {
-      "type": "story",
-      "narration": "You shape the hollow from the open side without taking anything from the nest. The builder smooths one edge with a shovel the size of a soup spoon.",
       "choices": [
         {
-          "id": "continue",
-          "label": "Go on",
+          "id": "snow",
+          "label": "Shape a soft snow bed",
+          "goto": "bed_snow",
           "icon": "hand",
-          "goto": "lanes"
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_soft_bed",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "nest_slab_unused",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "slab",
+          "label": "Set a broad slab we can recover if unused",
+          "goto": "bed_slab",
+          "icon": "hand",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "nest_soft_bed",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "nest_slab_unused",
+              "value": true
+            }
+          ]
         }
-      ],
+      ]
+    },
+    "bed_snow": {
+      "type": "interaction",
+      "narration": "Shape loose new snow into a broad shallow bowl without taking anything from the nest. Level the base so the hollow still has a clear exit.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -626,147 +657,28 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
-    },
-    "bed_2": {
-      "type": "story",
-      "narration": "You slide a loose slab into the hollow while the builder steadies it. It offers a flat resting place without blocking the return opening.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "lanes"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
-    },
-    "lanes": {
-      "type": "choice_point",
-      "narration": "The builders need one lane to withdraw and another that leads the wyrm toward the hollow. The paths must not cross. How will you mark them?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Lay cloth along the people's lane",
-          "icon": "hand",
-          "goto": "lanes_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Cut shallow grooves along the empty lane",
-          "icon": "hand",
-          "goto": "lanes_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
-    },
-    "lanes_1": {
-      "type": "story",
-      "narration": "You lay cloth from the doorway to the snow strip. The wyrm's lane stays broad and empty. The builder straightens a corner that looks too much like a snack.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "lanes_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
-    },
-    "lanes_2": {
-      "type": "story",
-      "narration": "You scrape only the soft new snow. The lane curves toward the opening without pointing at the old ice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "lanes_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "rift": "steady"
-    },
-    "lanes_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Slide the loose benches away so the two lanes stay separate.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the new-snow bed.",
+        "actionLabel": "Settle the soft bed",
+        "objectLabel": "new snow bed"
+      },
       "onSuccess": {
-        "goto": "lanes_clear",
-        "narration": "The benches move without a sharp scrape."
+        "goto": "lanes",
+        "narration": "The softer bed needs one clear held round to invite the wyrm on the board."
       },
       "onFailure": {
-        "goto": "lanes_changed",
-        "narration": "One bench catches and the wyrm raises its head."
+        "goto": "lanes",
+        "narration": "The softer bed needs one clear held round to invite the wyrm on the board."
       },
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "onAssisted": {
+        "goto": "lanes",
+        "narration": "The softer bed needs one clear held round to invite the wyrm on the board."
+      }
     },
-    "lanes_clear": {
-      "type": "story",
-      "narration": "Both lanes are clear, with no builder standing between the wyrm and shelter.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
+    "bed_slab": {
+      "type": "interaction",
+      "narration": "Support a loose slab while the builder slides it below the wind lip. No one chips old ice to make a pillow.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -777,19 +689,29 @@
           "name": "Frost wyrm"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the loose slab at the hollow.",
+        "actionLabel": "Set the slab",
+        "supportLabel": "Support the slab"
+      },
+      "onSuccess": {
+        "goto": "lanes",
+        "narration": "The resting slab is ready. An invitation still needs two clear held rounds."
+      },
+      "onFailure": {
+        "goto": "lanes",
+        "narration": "The resting slab is ready. An invitation still needs two clear held rounds."
+      },
+      "onAssisted": {
+        "goto": "lanes",
+        "narration": "The resting slab is ready. An invitation still needs two clear held rounds."
+      }
     },
-    "lanes_changed": {
-      "type": "story",
-      "narration": "You stop instead of hauling. The builders pad the caught foot and ease the bench away while the wyrm settles.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
+    "lanes": {
+      "type": "interaction",
+      "narration": "Move the empty benches so the people's withdrawal lane never crosses the broad route to the hollow. Solo heroes use the builders' fixed supports. One lunch bag is removed from duty as a barrier.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -800,7 +722,25 @@
           "name": "Frost wyrm"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the bench while the withdrawal lane is cleared.",
+        "actionLabel": "Set down the bench",
+        "supportLabel": "Support the bench"
+      },
+      "onSuccess": {
+        "goto": "rest",
+        "narration": "Both routes are clear; nobody stands between the wyrm and shelter."
+      },
+      "onFailure": {
+        "goto": "rest",
+        "narration": "Both routes are clear; nobody stands between the wyrm and shelter."
+      },
+      "onAssisted": {
+        "goto": "rest",
+        "narration": "Both routes are clear; nobody stands between the wyrm and shelter."
+      }
     },
     "rest": {
       "type": "rest",
@@ -809,34 +749,15 @@
       "choices": [
         {
           "id": "rest",
-          "label": "Rest here, then carry on",
-          "icon": "hand",
-          "goto": "signal"
+          "label": "Rest before the encounter",
+          "goto": "signal",
+          "icon": "hand"
         },
         {
           "id": "watch",
-          "label": "Rest while watching the path",
-          "icon": "hand",
-          "goto": "rest_watch"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "rest_watch": {
-      "type": "story",
-      "narration": "You sit beside the alcove lamp while a builder takes the next watch. A drip taps the lunch tin like a tiny clock. You eat before the tin can count your cake away.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "signal"
+          "label": "Eat while a builder keeps watch",
+          "goto": "signal",
+          "icon": "hand"
         }
       ],
       "cast": [
@@ -848,22 +769,8 @@
       "art": "scenes/riftlight/wyrm-nest"
     },
     "signal": {
-      "type": "choice_point",
-      "narration": "The builders stand behind the cleared benches. They can help by holding the quiet lane or signaling when the hollow is clear. Which job will they take?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Ask them to keep the people's lane open",
-          "icon": "hand",
-          "goto": "signal_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Ask them to watch the empty hollow",
-          "icon": "hand",
-          "goto": "signal_2"
-        }
-      ],
+      "type": "interaction",
+      "narration": "A builder raises a mitten for wait, spreads both palms for clear and lowers them to finish. Remember the observed signal round. These are builder signals, not instructions that control the wyrm.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -874,71 +781,73 @@
           "name": "Frost wyrm"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "signal_1": {
-      "type": "story",
-      "narration": "The builders take turns watching the marked lane. One solemnly removes a lunch bag from the route. It was never a good barrier.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "offer"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "signal_2": {
-      "type": "story",
-      "narration": "A builder stands where both hollow and tunnel are visible. A raised mitten will mean wait; an open palm will mean clear.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "offer"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the builder signals, then echo them.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "clear",
+            "label": "Both palms open",
+            "icon": "eye"
+          },
+          {
+            "id": "finish",
+            "label": "Hands lowered",
+            "icon": "eye"
+          },
+          {
+            "id": "wait",
+            "label": "Mitten raised",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "wait",
+          "clear",
+          "wait",
+          "finish"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "offer",
+        "narration": "You can later show readers the checked signal round.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_signal_read",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "offer",
+        "narration": "A builder will lead the readers by visible markers instead of crediting a guessed signal round.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_signal_read",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "offer",
+        "narration": "A builder will lead the readers by visible markers instead of crediting a guessed signal round.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_signal_read",
+            "value": false
+          }
+        ]
+      }
     },
     "offer": {
-      "type": "choice_point",
-      "narration": "The withdrawal lane is clear. The hollow is ready. The wyrm lifts its head from the bench and watches you. On the board, you can drive it away from the doorway, or hold the hollow's approach while it finds the shelter. It may resist either plan. Which job will your party take into the encounter?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Make a firm line and drive it from the doorway",
-          "icon": "hand",
-          "goto": "offer_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Hold the quiet approach to invite it into the hollow",
-          "icon": "hand",
-          "goto": "offer_2"
-        }
-      ],
+      "type": "story",
+      "narration": "The hollow is ready and the people are behind the benches. On the board you may drive the creatures from the doorway, or hold the quiet approach to invite the wyrm into the hollow. Only the held approach makes it your ally. Defeat means moving the reading work to the old room, not fighting again. You may use the ordinary two-round invitation without relying on the bedding, or choose the soft-bed advantage if you prepared it.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -949,58 +858,29 @@
           "name": "Frost wyrm"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "offer_1": {
-      "type": "story",
-      "narration": "You leave the hollow's approach open while standing between the nest and the readers. Nobody corners the wyrm against the old ice.",
+      "art": "scenes/riftlight/wyrm-nest",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "fight"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
+          "label": "Use the ordinary two-round invitation, or drive them clear",
+          "goto": "fight",
+          "icon": "hand"
         },
         {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "offer_2": {
-      "type": "story",
-      "narration": "You keep the hollow visible and leave the wyrm an open route. The builders stay behind the benches. A mitten waits for the first signal.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
+          "id": "continue_soft",
+          "label": "Use our soft bed for a one-round invitation",
+          "goto": "fight_soft",
           "icon": "hand",
-          "goto": "fight"
+          "when": {
+            "flag": "nest_soft_bed"
+          }
         }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "entities/frost_wyrm",
-          "name": "Frost wyrm"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
+      ]
     },
     "fight": {
       "type": "encounter",
       "map": "riftlight_wyrm_nest",
-      "narration": "The frost wyrm rises from the bench. The restless bones you heard beside the opening rise and rattle. Drive them off, or hold the hollow approach for two clear rounds to guide it into a new home. The slick strip near its nest slows anyone who stops there.",
+      "narration": "The frost wyrm rises and the loose bones rattle upright. Drive the creatures from the doorway, or hold the hollow approach for 2 clear rounds to invite the wyrm into shelter. The slick new-ice strip still slows anyone stopping there.",
       "enemies": [
         {
           "id": "wyrm",
@@ -1054,6 +934,97 @@
               {
                 "type": "setFlag",
                 "flag": "wyrm_ally"
+              },
+              {
+                "type": "setFlag",
+                "flag": "nest_slab_unused",
+                "value": false
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "room_clear"
+      },
+      "onDefeat": {
+        "goto": "room_moved",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "wyrm_nest_kept"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/wyrm-nest"
+    },
+    "fight_soft": {
+      "type": "encounter",
+      "map": "riftlight_wyrm_nest",
+      "narration": "The frost wyrm rises and the loose bones rattle upright. Drive the creatures from the doorway, or hold the hollow approach for 1 clear round to invite the wyrm into shelter. The slick new-ice strip still slows anyone stopping there.",
+      "enemies": [
+        {
+          "id": "wyrm",
+          "creature": "frost_wyrm"
+        },
+        {
+          "id": "rattle",
+          "creature": "restless_remains"
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "slick_strip",
+            "kind": "rift",
+            "label": "Slick new ice",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "slow": {
+              "steps": 1,
+              "turns": 1
+            }
+          }
+        ],
+        "objectives": [
+          {
+            "id": "quiet_hollow",
+            "kind": "hold",
+            "label": "Hold the quiet approach",
+            "tiles": [
+              {
+                "x": 6,
+                "y": 3
+              },
+              {
+                "x": 6,
+                "y": 4
+              }
+            ],
+            "rounds": 1,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "wyrm_ally"
+              },
+              {
+                "type": "setFlag",
+                "flag": "nest_slab_unused",
+                "value": false
               }
             ]
           }
@@ -1084,9 +1055,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "tools"
+          "label": "Prepare the actual reading place",
+          "goto": "shelves",
+          "icon": "hand"
         }
       ],
       "variants": [
@@ -1109,7 +1080,14 @@
           "name": "Yeti builder"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "nest_room_won",
+          "value": true
+        }
+      ]
     },
     "room_moved": {
       "type": "story",
@@ -1117,132 +1095,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "tools"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "tools": {
-      "type": "choice_point",
-      "narration": "The carving tools wait beside the quiet lane. Before carrying them farther, the builders want to know whether the nearest wall is safe to work. How will you check it?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Test only the new surface with a padded tapping block",
-          "icon": "hand",
-          "goto": "tools_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Check the fresh cracks by lamplight",
-          "icon": "hand",
-          "goto": "tools_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "tools_1": {
-      "type": "story",
-      "narration": "You tap the recently carved edge. The deep old ice stays untouched. A builder listens with one mitten pressed flat against the wall.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "tools_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "tools_2": {
-      "type": "story",
-      "narration": "You move the lamp across the new surface. Fresh snow in a crack shows where the bench pressed, without asking the old ice for an answer.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "tools_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "tools_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Mark the fresh cracks that builders must leave alone.",
-      "onSuccess": {
-        "goto": "tools_clear",
-        "narration": "You mark each fresh crack without covering it."
-      },
-      "onFailure": {
-        "goto": "tools_changed",
-        "narration": "A shadow looks like a crack until the lamp shifts."
-      },
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "tools_clear": {
-      "type": "story",
-      "narration": "The builders have a clear working area and a marked edge they will not carve past.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "shelves"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "tools_changed": {
-      "type": "story",
-      "narration": "You move the lamp from both sides. The builder checks your final marks before any chisel is unwrapped.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "shelves"
+          "label": "Prepare the actual reading place",
+          "goto": "shelves",
+          "icon": "hand"
         }
       ],
       "cast": [
@@ -1255,24 +1110,7 @@
     },
     "shelves": {
       "type": "choice_point",
-      "narration": "The readers need somewhere to put their memory notes. A low shelf can rest on blocks, or the notes can stay on a broad table until the new wall is ready. Which will you help set up?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Set a low shelf on wide blocks",
-          "icon": "hand",
-          "goto": "shelves_1",
-          "when": {
-            "notFlag": "wyrm_nest_kept"
-          }
-        },
-        {
-          "id": "plan_2",
-          "label": "Put the notes on the broad table for now",
-          "icon": "hand",
-          "goto": "shelves_2"
-        }
-      ],
+      "narration": "Choose furniture for the room you actually have. The shelf kit can become a low shelf on sound floor here, or a temporary tabletop after unpacking. The folding kit can open in either room; after victory it also needs a separate low stand assembled.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1287,56 +1125,39 @@
           },
           "text": "The new site needs more carving, and its floor cannot hold shelf blocks yet. For now only the broad table fits in the old room. The builders must finish the new chamber after you leave."
         }
+      ],
+      "choices": [
+        {
+          "id": "plan_2",
+          "label": "Prepare our kit piece by piece as a table",
+          "goto": "unpack_shelf",
+          "icon": "hand"
+        },
+        {
+          "id": "portable_old",
+          "label": "Open the folded table in the old room",
+          "goto": "shelves_check",
+          "icon": "hand",
+          "when": {
+            "flag": "nest_portable_kit",
+            "notFlag": "nest_room_won"
+          }
+        },
+        {
+          "id": "plan_1",
+          "label": "Build the low shelf on the won floor",
+          "goto": "shelf_build",
+          "icon": "hand",
+          "when": {
+            "flag": "nest_fixed_kit",
+            "notFlag": "wyrm_nest_kept"
+          }
+        }
       ]
     },
-    "shelves_1": {
-      "type": "story",
-      "narration": "You stack the blocks where the floor is sound. The shortest reader can reach the shelf without sitting on anyone's shoulders.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "shelves_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "shelves_2": {
-      "type": "story",
-      "narration": "You clear the table and mark it for notes. A builder moves a spare bench away from the writing side.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "shelves_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "shelves_check": {
+    "shelf_build": {
       "type": "interaction",
-      "onSuccess": {
-        "goto": "shelves_clear",
-        "narration": "The furniture stays level when the builder tests its edge."
-      },
-      "onFailure": {
-        "goto": "shelves_changed",
-        "narration": "One foot rocks on a patch of loose snow."
-      },
+      "narration": "Support the low top while the builders secure its wide blocks. No shelf is fixed to the old ice.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1344,73 +1165,194 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "narration": "Level the reading furniture on the marked sound floor. One book keeps sliding off. It is becoming a very short story.",
       "interaction": {
-        "kind": "balance",
-        "objectLabel": "reading furniture",
-        "cue": "Raise or lower your side until the load is level.",
-        "actionLabel": "Carry it together"
+        "kind": "cooperate",
+        "cue": "Support the low shelf.",
+        "actionLabel": "Secure the blocks",
+        "supportLabel": "Hold the shelf top"
+      },
+      "onSuccess": {
+        "goto": "slab_route",
+        "narration": "The low shelf is ready.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_shelf_built",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "slab_route",
+        "narration": "The low shelf is ready.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_shelf_built",
+            "value": true
+          }
+        ]
       },
       "onAssisted": {
-        "goto": "shelves_clear",
-        "narration": "The furniture stays level when the builder tests its edge."
+        "goto": "slab_route",
+        "narration": "The low shelf is ready.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_shelf_built",
+            "value": true
+          }
+        ]
       }
     },
-    "shelves_clear": {
-      "type": "story",
-      "narration": "The notes have a steady place, clear of the working lane.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "readers"
-        }
-      ],
+    "unpack_shelf": {
+      "type": "interaction",
+      "narration": "Pass the shelf pieces into position for a temporary tabletop. The broad top will hold the notes; the blocks stay loose until the replacement room is ready.",
       "cast": [
         {
           "figure": "entities/yeti",
           "name": "Yeti builder"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass our kit pieces for the working table.",
+        "actionLabel": "Pass the tabletop parts",
+        "objectLabel": "furniture kit pieces"
+      },
+      "onSuccess": {
+        "goto": "shelves_check",
+        "narration": "The parts are ready to level as a tabletop."
+      },
+      "onFailure": {
+        "goto": "shelves_check",
+        "narration": "The parts are ready to level as a tabletop."
+      },
+      "onAssisted": {
+        "goto": "shelves_check",
+        "narration": "The parts are ready to level as a tabletop."
+      },
+      "variants": [
+        {
+          "when": {
+            "flag": "nest_portable_kit"
+          },
+          "replace": true,
+          "text": "Pass the folding kit's stand pieces to the builder. On this uneven threshold, the table needs its low stand. The builder consults the instruction sheet, which has unfolded into a small tent."
+        }
+      ]
     },
-    "shelves_changed": {
-      "type": "story",
-      "narration": "You sweep the loose snow away and use lower blocks. The furniture sits flatter, and everybody's toes are happier.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "readers"
-        }
-      ],
+    "shelves_check": {
+      "type": "interaction",
+      "narration": "Level the working table on checked floor. A sliding book is becoming a very short story. Nobody enters the unfinished replacement chamber after retreat.",
       "cast": [
         {
           "figure": "entities/yeti",
           "name": "Yeti builder"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the reading table.",
+        "actionLabel": "Set the table down",
+        "objectLabel": "reading table"
+      },
+      "onSuccess": {
+        "goto": "slab_route",
+        "narration": "The notes have a steady working place."
+      },
+      "onFailure": {
+        "goto": "slab_route",
+        "narration": "The notes have a steady working place."
+      },
+      "onAssisted": {
+        "goto": "slab_route",
+        "narration": "The notes have a steady working place."
+      }
+    },
+    "slab_route": {
+      "type": "story",
+      "narration": "A resting slab used by the wyrm stays with the wyrm. If your prepared slab is unused, it can become a low step for readers; loose new snow is left where it was shaped.",
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "choices": [
+        {
+          "id": "recover",
+          "label": "Recover the unused slab for a reader step",
+          "goto": "reader_step",
+          "icon": "hand",
+          "when": {
+            "flag": "nest_slab_unused"
+          }
+        },
+        {
+          "id": "leave",
+          "label": "Leave the hollow undisturbed",
+          "goto": "readers",
+          "icon": "hand"
+        }
+      ]
+    },
+    "reader_step": {
+      "type": "interaction",
+      "narration": "Support the unused slab while the builder brings it back along the checked lane and sets a low step beside the notes. It is loose new ice, not a piece carved from the old wall.",
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the unused slab for the low step.",
+        "actionLabel": "Set the reader step",
+        "supportLabel": "Support the step"
+      },
+      "onSuccess": {
+        "goto": "readers",
+        "narration": "A low step now helps readers reach their notes.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_reader_step",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "readers",
+        "narration": "A low step now helps readers reach their notes.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_reader_step",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "readers",
+        "narration": "A low step now helps readers reach their notes.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "nest_reader_step",
+            "value": true
+          }
+        ]
+      }
     },
     "readers": {
       "type": "choice_point",
-      "narration": "The first readers wait in the old room with their notes stacked against their chests. A corner of paper trembles whenever someone breathes on it. They need a clear route to their working tables, away from the nest. How will you show them the lane your party has prepared?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Walk the clear lane before inviting them along",
-          "icon": "hand",
-          "goto": "readers_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Post a builder at each blind corner",
-          "icon": "hand",
-          "goto": "readers_2"
-        }
-      ],
+      "narration": "The readers wait with their notes in the old room. You can show the signal round you remembered, or place builders at visible corners and pass the bundles. Bring every reader to the furniture you actually prepared.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1426,70 +1368,39 @@
       "variants": [
         {
           "when": {
+            "notFlag": "nest_signal_read"
+          },
+          "replace": true,
+          "text": "The readers wait with their notes in the old room. Your builder will lead the visible-marker route. Pass the bundles from mitten to mitten until the readers reach their working place."
+        },
+        {
+          "when": {
             "flag": "wyrm_nest_kept"
           },
           "text": "Today the lane stays inside the old room. You must get the notes past the crowded benches to the extra table."
         }
+      ],
+      "choices": [
+        {
+          "id": "signals",
+          "label": "Show the remembered builder signals",
+          "goto": "readers_check",
+          "icon": "hand",
+          "when": {
+            "flag": "nest_signal_read"
+          }
+        },
+        {
+          "id": "markers",
+          "label": "Pass notes along the visible builder markers",
+          "goto": "readers_markers",
+          "icon": "hand"
+        }
       ]
-    },
-    "readers_1": {
-      "type": "story",
-      "narration": "You follow the marked lane all the way. At the last turn you check back, making sure the route is visible from reader height.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "readers_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/memory_reader",
-          "name": "Memory readers",
-          "count": 2
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "readers_2": {
-      "type": "story",
-      "narration": "You place the builders where a reader can see the next mitten. The signals are far easier to follow than the builders' first attempt at arrows.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "readers_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/memory_reader",
-          "name": "Memory readers",
-          "count": 2
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
     },
     "readers_check": {
       "type": "interaction",
-      "onSuccess": {
-        "goto": "readers_clear",
-        "narration": "The readers follow the rhythm through the cleared lane."
-      },
-      "onFailure": {
-        "goto": "readers_changed",
-        "narration": "The first rhythm is too fast for the readers carrying notes."
-      },
+      "narration": "Echo the builder signals while the readers watch from the safe lane. The round you saw was wait, clear, wait, finish; you may ask for help rather than guess.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1502,42 +1413,80 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "narration": "Show the readers a quiet walking rhythm. No shouted instructions beside a nesting wyrm, please. Even the books seem to be whispering.",
       "interaction": {
-        "kind": "sequence",
-        "cue": "Set a quiet walking rhythm: look, step, pause.",
-        "actionLabel": "Try our order",
+        "kind": "memory",
+        "cue": "Show the checked signal round to the readers.",
+        "actionLabel": "Show what we saw",
         "options": [
           {
-            "id": "step0",
-            "label": "Look at the path",
-            "icon": "hand"
+            "id": "clear",
+            "label": "Both palms open",
+            "icon": "eye"
           },
           {
-            "id": "step1",
-            "label": "Take one soft step",
-            "icon": "hand"
+            "id": "wait",
+            "label": "Mitten raised",
+            "icon": "eye"
           },
           {
-            "id": "step2",
-            "label": "Pause and listen",
-            "icon": "hand"
+            "id": "finish",
+            "label": "Hands lowered",
+            "icon": "eye"
           }
         ],
         "answer": [
-          "step0",
-          "step1",
-          "step2"
+          "wait",
+          "clear",
+          "wait",
+          "finish"
         ],
-        "clues": [
-          "Look before moving.",
-          "The soft step comes between looking and listening.",
-          "Finish by pausing to listen."
-        ]
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "readers_clear",
+        "narration": "The readers follow the checked round to their working place."
+      },
+      "onFailure": {
+        "goto": "readers_markers",
+        "narration": "Use the visible builder markers and shared bundles instead of repeating a missed round."
+      },
+      "onAssisted": {
+        "goto": "readers_markers",
+        "narration": "Use the visible builder markers and shared bundles instead of repeating a missed round."
+      }
+    },
+    "readers_markers": {
+      "type": "interaction",
+      "narration": "Pass the heavy bundles along builders who can see the next mitten. The route remains inside the old room if the doorway stayed occupied.",
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the note bundles along the visible markers.",
+        "actionLabel": "Pass the notes",
+        "objectLabel": "memory notes"
+      },
+      "onSuccess": {
+        "goto": "readers_clear",
+        "narration": "The readers and every bundle reach their working place."
+      },
+      "onFailure": {
+        "goto": "readers_clear",
+        "narration": "The readers and every bundle reach their working place."
       },
       "onAssisted": {
         "goto": "readers_clear",
-        "narration": "The readers follow the rhythm through the cleared lane."
+        "narration": "The readers and every bundle reach their working place."
       }
     },
     "readers_clear": {
@@ -1552,9 +1501,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "quiet"
+          "label": "Agree on quiet neighbor rules",
+          "goto": "quiet",
+          "icon": "hand"
         }
       ],
       "cast": [
@@ -1578,23 +1527,9 @@
         }
       ]
     },
-    "readers_changed": {
-      "type": "story",
-      "narration": "You slow the rhythm and share the heavy bundles of notes. The readers reach their working place without crossing the nest.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "nest_people_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "quiet"
-        }
-      ],
+    "quiet": {
+      "type": "interaction",
+      "narration": "Choose one useful agreement for readers and builders. Nobody promises that a wild wyrm will obey a sign. The new rule is for the people holding the chisels.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1607,247 +1542,44 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "variants": [
-        {
-          "when": {
-            "flag": "wyrm_nest_kept"
+      "interaction": {
+        "kind": "play",
+        "cue": "Help people share this glacier.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "tools",
+            "label": "Keep the tools padded",
+            "icon": "hand",
+            "reaction": "The builder re-hats the largest chisel."
           },
-          "text": "You bring the last notes to the extra table in the old room. The builders still have a whole new chamber to finish."
-        }
-      ]
-    },
-    "quiet": {
-      "type": "choice_point",
-      "narration": "The elder joins your party and repeats the warning from the memory ice: do not shout near the old layers. This room has solved a small problem; the mountain still holds things nobody understands. What will you leave for the next visitors?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "A picture of the quiet route and the nest boundary",
-          "icon": "hand",
-          "goto": "quiet_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "A simple note asking visitors to lower their voices",
-          "icon": "hand",
-          "goto": "quiet_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "quiet_1": {
-      "type": "story",
-      "narration": "You draw the benches and the safe lane. You leave the oldest ice blank, because blank is more honest than an invented answer.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "neighbors"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "wyrm_route_diagram"
-        }
-      ]
-    },
-    "quiet_2": {
-      "type": "story",
-      "narration": "You write the quiet request beside a drawing of a mitten. The builder adds a tiny hat to the picture of the chisel.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "neighbors"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "neighbors": {
-      "type": "choice_point",
-      "narration": "The builders will keep watching the nest and the sheltered hollow. Your work here should tell them what to do next, not pretend the wyrm has vanished from the mountain.",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Ask them to leave the shelter approach open",
-          "icon": "hand",
-          "goto": "neighbors_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Ask them to keep the readers' lane clear each morning",
-          "icon": "hand",
-          "goto": "neighbors_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "neighbors_1": {
-      "type": "story",
-      "narration": "The builders mark the approach on the wall plan. They will check it quietly before carrying tools that way.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "departure"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "neighbors_2": {
-      "type": "story",
-      "narration": "A builder takes the first watch. She moves her own lunch bag off the marked lane before you can point at it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "departure"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        },
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "departure": {
-      "type": "choice_point",
-      "narration": "The builders trade rescue signals with griffins at the Cairnstep, the mountain pass. That route can carry your news toward the sky. The path behind you returns to the memory readers. How will you prepare to leave?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Send the rescue partners a clear route report",
-          "icon": "hand",
-          "goto": "departure_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Carry the updated wall plan back to the readers",
-          "icon": "hand",
-          "goto": "departure_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest",
-      "variants": [
-        {
-          "when": {
-            "flag": "wyrm_route_diagram"
+          {
+            "id": "space",
+            "label": "Keep the nest margin visible",
+            "icon": "hand",
+            "reaction": "Readers can see where not to stand."
           },
-          "text": "A new visitor follows your bench diagram to the safe lane. The builder can use your picture while keeping her voice low."
-        },
-        {
-          "when": {
-            "notFlag": "wyrm_route_diagram"
-          },
-          "text": "A new visitor sees your mitten sign and lowers their voice before the turn. The builder answers with a silent wave."
-        }
-      ]
-    },
-    "departure_1": {
-      "type": "story",
-      "narration": "You explain which lane is safe and where the wyrm now rests. The builder repeats the report before lifting the signal cloth.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "ending"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
-    },
-    "departure_2": {
-      "type": "story",
-      "narration": "You copy the safe marks onto a fresh page. The original plan stays with the people who are building the room.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "ending"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "entities/yeti",
-          "name": "Yeti builder"
-        }
-      ],
-      "art": "scenes/riftlight/wyrm-nest"
+          {
+            "id": "notes",
+            "label": "Keep notes off the walking lane",
+            "icon": "hand",
+            "reaction": "The smallest reader carries the last loose page."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "ending",
+        "narration": "The readers can work without anyone testing the old ice."
+      },
+      "onFailure": {
+        "goto": "ending",
+        "narration": "The readers can work without anyone testing the old ice."
+      },
+      "onAssisted": {
+        "goto": "ending",
+        "narration": "The readers can work without anyone testing the old ice."
+      }
     },
     "ending": {
       "type": "story",
@@ -1866,6 +1598,36 @@
             "flag": "wyrm_nest_kept"
           },
           "text": "The new chamber must wait. Today the readers share their old room with the extra table, and the builders give up their free morning to finish the move."
+        },
+        {
+          "when": {
+            "flag": "nest_reader_step"
+          },
+          "text": "The unused resting slab has become a low reader step. Nothing was taken from beneath the wyrm."
+        },
+        {
+          "when": {
+            "flag": "nest_portable_kit"
+          },
+          "text": "The folding kit is now a working table, in the room the readers can actually use."
+        },
+        {
+          "when": {
+            "flag": "nest_shelf_built"
+          },
+          "text": "The shelf kit stands as a low shelf on the checked floor; the readers can reach it without climbing."
+        },
+        {
+          "when": {
+            "flag": "nest_pattern_read"
+          },
+          "text": "Your nest diagram records the tail pattern your party observed."
+        },
+        {
+          "when": {
+            "notFlag": "nest_pattern_read"
+          },
+          "text": "The builder-checked nest margin stays labeled as a helped observation."
         }
       ],
       "cast": [
@@ -1879,14 +1641,97 @@
   },
   "presentation": {
     "interactions": {
+      "watch_check": {
+        "props": [
+          "snow-mound"
+        ]
+      },
+      "boundary": {
+        "props": [
+          "relay-plank",
+          "wind-blanket"
+        ]
+      },
+      "table_kit": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "shelf_kit": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "hollow_view": {
+        "props": [
+          "snow-mound"
+        ]
+      },
+      "hollow_help": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "hollow_check": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "bed_snow": {
+        "props": [
+          "snow-mound"
+        ]
+      },
+      "bed_slab": {
+        "props": [
+          "ice-knob"
+        ]
+      },
+      "lanes": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "signal": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "shelf_build": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "unpack_shelf": {
+        "props": [
+          "relay-plank"
+        ]
+      },
       "shelves_check": {
         "props": [
           "relay-plank"
         ]
       },
+      "reader_step": {
+        "props": [
+          "ice-knob"
+        ]
+      },
       "readers_check": {
         "props": [
-          "prop_stepping_stones"
+          "wind-banner"
+        ]
+      },
+      "readers_markers": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "quiet": {
+        "props": [
+          "clue-scrap",
+          "wind-blanket"
         ]
       }
     }
