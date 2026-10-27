@@ -4,6 +4,8 @@ Dated 2026-10-27. Engineering status, not legal advice.
 
 ## Done
 
+- Operator identity and contact published on the page (see item 1 under Not done).
+
 - A public `/privacy` page (`screens/PrivacyScreen.tsx`, words in `screens/privacy-policy.ts`),
   linked from the start screens (`HomeScreen`, `SharedHome`) so it can be read before anyone joins
   or hosts. A lazy chunk, so first paint is unchanged.
@@ -17,8 +19,9 @@ Dated 2026-10-27. Engineering status, not legal advice.
 
 ## Not done
 
-1. **Operator name and contact** (`screens/operator.ts`) are empty. The page says so plainly.
-   Fill them in before launch (#526).
+1. **Operator name and contact** (`screens/operator.ts`) are set to Allen Helton and
+   allenheltondev@gmail.com, as the owner gave them on 2026-10-27. Confirm this is the address you
+   want public, and whether a legal entity should be named instead (#526).
 2. **Direct notice and consent.** Nothing asks a parent before a child's first write. This waits
    on the #522 decision (option A, B or C). The page says plainly that no such step exists yet.
 3. **Parental access, deletion and revocation procedure.** A signed-in grown-up can delete a kid or
