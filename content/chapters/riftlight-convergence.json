@@ -5,7 +5,7 @@
   "title": "The Maps Come Together",
   "biome": "glacier_of_origins",
   "music": "riftlight-theme",
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 30,
   "xpAward": 650,
   "entry": "arrival",
   "plate": {
@@ -58,9 +58,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "accounts"
+          "label": "Continue",
+          "goto": "accounts",
+          "icon": "hand"
         }
       ],
       "cast": [
@@ -81,267 +81,438 @@
     },
     "accounts": {
       "type": "choice_point",
-      "narration": "Orin makes space on the sled for the discoveries you brought. \"Show us the part you actually saw.\" Seren arrives with her chime. Pip waves his tail and lays down loose pages; Bram catches one before it blows away. Your friends are listening. How will you begin comparing places that no longer match the maps?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Describe what you saw before drawing any joining lines",
-          "icon": "hand",
-          "goto": "accounts_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Mark where people live now before comparing old traces",
-          "icon": "hand",
-          "goto": "accounts_2"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
+      "narration": "Orin makes room for the accounts you actually brought. Seren Wisp, the kitsune teacher, brings her chime; Pip catches a page with his tail and pretends he meant to. Choose a comparison your road supports, or ask Orin to guide your two checked pages. Nothing here requires taking a memory or a stone.",
       "cast": [
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
         },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ]
-    },
-    "accounts_1": {
-      "type": "story",
-      "narration": "You put observations on separate pages. Orin writes a question beside every guess. Pip asks whether a very confident guess still needs one. \"Especially then,\" Orin says.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "measure"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "accounts_2": {
-      "type": "story",
-      "narration": "You begin with today's homes and paths. Olivia watches the busy places appear on the paper. The map is much less empty than her first sketch.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "measure"
-        }
-      ],
-      "cast": [
         {
           "figure": "cast/lady_olivia",
           "name": "Lady Olivia"
         },
         {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/convergence-ledge"
+      "art": "scenes/riftlight/convergence-ledge",
+      "choices": [
+        {
+          "id": "guided",
+          "label": "Let Orin guide our two checked accounts",
+          "goto": "accounts_guided",
+          "icon": "hand"
+        },
+        {
+          "id": "paths_coast",
+          "label": "Compare the memory-ice account and bridge drawing",
+          "goto": "compare_paths_coast",
+          "icon": "hand",
+          "requiresFlag": "fragment_paths_learned",
+          "when": {
+            "flag": "fragment_coast_learned"
+          }
+        },
+        {
+          "id": "paths_sky",
+          "label": "Compare the memory-ice account and island record",
+          "goto": "compare_paths_sky",
+          "icon": "hand",
+          "requiresFlag": "fragment_paths_learned",
+          "when": {
+            "flag": "fragment_sky_learned"
+          }
+        },
+        {
+          "id": "coast_sky",
+          "label": "Compare the bridge drawing and island record",
+          "goto": "compare_coast_sky",
+          "icon": "hand",
+          "requiresFlag": "fragment_coast_learned",
+          "when": {
+            "flag": "fragment_sky_learned"
+          }
+        }
+      ]
+    },
+    "accounts_guided": {
+      "type": "interaction",
+      "narration": "Hold the first checked page flat while Orin places the other beside it. Name which edges you actually saw and leave the missing stretches blank. This is a guided comparison, not an independent new reading.",
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the two checked pages apart for Orin.",
+        "actionLabel": "Compare the checked edges",
+        "supportLabel": "Hold the first page"
+      },
+      "onSuccess": {
+        "goto": "measure",
+        "narration": "Orin labels the guided comparison without inventing a third account."
+      },
+      "onFailure": {
+        "goto": "measure",
+        "narration": "Orin labels the guided comparison without inventing a third account."
+      },
+      "onAssisted": {
+        "goto": "measure",
+        "narration": "Orin labels the guided comparison without inventing a third account."
+      }
+    },
+    "compare_paths_coast": {
+      "type": "interaction",
+      "narration": "Follow the marked river-copy as Orin slides the covered paper layers. The copy came from the memory readers; your bridge drawing shows a different present place. These are drawings on the sled, not objects moved out of those places.",
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Follow the marked river-copy through the paper layers.",
+        "actionLabel": "Point out the marked copy",
+        "covers": [
+          "Ice-account sheet",
+          "Bridge drawing",
+          "Present-map sheet"
+        ],
+        "start": 0,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "stepMs": 1500
+      },
+      "onSuccess": {
+        "goto": "measure",
+        "narration": "You identify the marked copy and keep the two sources separate."
+      },
+      "onFailure": {
+        "goto": "measure",
+        "narration": "Orin uncovers the marked copy and labels the comparison as helped."
+      },
+      "onAssisted": {
+        "goto": "measure",
+        "narration": "Orin uncovers the marked copy and labels the comparison as helped."
+      }
+    },
+    "compare_paths_sky": {
+      "type": "interaction",
+      "narration": "Orin points to a river curve, a copied boundary notch and the blank between them. Watch his four pointing marks, then echo them without drawing a joining line. Your island record and the memory readers' account remain separate sources.",
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the pointing marks, then echo them.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "notch",
+            "label": "Copied boundary notch",
+            "icon": "eye"
+          },
+          {
+            "id": "blank",
+            "label": "Unobserved gap",
+            "icon": "eye"
+          },
+          {
+            "id": "curve",
+            "label": "River curve",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "curve",
+          "blank",
+          "notch",
+          "blank"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "measure",
+        "narration": "You distinguish the copied marks from the unobserved gap."
+      },
+      "onFailure": {
+        "goto": "measure",
+        "narration": "Orin repeats the pointing round and labels the comparison as helped."
+      },
+      "onAssisted": {
+        "goto": "measure",
+        "narration": "Orin repeats the pointing round and labels the comparison as helped."
+      }
+    },
+    "compare_coast_sky": {
+      "type": "interaction",
+      "narration": "Move the bridge-copy edge beside the copied island carving while Orin holds their scales steady. Stop at the checked marks; the gap between them stays unclaimed.",
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Align the checked copied edges.",
+        "actionLabel": "Set the comparison edge",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "measure",
+        "narration": "The two checked edges can be compared without stretching their scales."
+      },
+      "onFailure": {
+        "goto": "measure",
+        "narration": "The scale slipped. Orin restores the broad comparison and marks the fine alignment as unchecked."
+      },
+      "onAssisted": {
+        "goto": "measure",
+        "narration": "The scale slipped. Orin restores the broad comparison and marks the fine alignment as unchecked."
+      }
     },
     "measure": {
       "type": "choice_point",
-      "narration": "Orin lines up two outlines, then moves them apart. A river bend, a carved boundary and a remembered shore can look alike without being the same thing. \"Maps are much more agreeable when you do not ask them questions,\" he says. Which shapes will you check before deciding where the accounts match?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Trace the shapes on separate loose sheets",
-          "icon": "hand",
-          "goto": "measure_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Use string to compare bends and distances",
-          "icon": "hand",
-          "goto": "measure_2"
-        }
-      ],
+      "narration": "Two accounts are ready. Loose sheets can be weighted with stones, leaving the felt-wrapped prop free for your holding lesson later. A string measure uses that prop to pin its end; you must retrieve it before using it in the lesson. Which setup will you play?",
       "cast": [
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
         },
         {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "measure_1": {
-      "type": "story",
-      "narration": "You trace only the lines your party actually learned. The separate pages can be moved without rubbing out the present map beneath them.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "measure_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "measure_2": {
-      "type": "story",
-      "narration": "You lay string along the known bends. Pip holds the end without putting a claw through the paper. That is his second attempt.",
+      "art": "scenes/riftlight/convergence-ledge",
       "choices": [
         {
-          "id": "continue",
-          "label": "Go on",
+          "id": "sheets",
+          "label": "Level the separate pages under smooth weights",
+          "goto": "measure_sheets",
           "icon": "hand",
-          "goto": "measure_check"
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "converge_prop_free",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "line",
+          "label": "Guide the string measure onto its reference mark",
+          "goto": "measure_line",
+          "icon": "hand",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "converge_prop_free",
+              "value": false
+            }
+          ]
         }
-      ],
+      ]
+    },
+    "measure_sheets": {
+      "type": "interaction",
+      "narration": "Level the loose sheets under smooth weights. Orin moves his boot off the paper first. He is learning.",
       "cast": [
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
         },
         {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
         }
       ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "measure_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Match the observed shapes without filling in the missing stretches.",
+      "art": "scenes/riftlight/convergence-ledge",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the separate comparison sheets.",
+        "actionLabel": "Set the weighted pages",
+        "objectLabel": "comparison sheets"
+      },
       "onSuccess": {
-        "goto": "measure_clear",
-        "narration": "Two of the old outlines meet without forcing their scale."
+        "goto": "evidence",
+        "narration": "The checked outlines are ready. The felt-wrapped prop stays free.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_accounts_done",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "measure_changed",
-        "narration": "One copied bend looks longer when the pages overlap."
+        "goto": "evidence",
+        "narration": "The checked outlines are ready. The felt-wrapped prop stays free.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_accounts_done",
+            "value": true
+          }
+        ]
       },
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
+      "onAssisted": {
+        "goto": "evidence",
+        "narration": "The checked outlines are ready. The felt-wrapped prop stays free.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_accounts_done",
+            "value": true
+          }
+        ]
+      }
     },
-    "measure_clear": {
-      "type": "story",
-      "narration": "The matching parts are marked. Gaps stay gaps; Orin refuses to join them with a confident thumb.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "converge_accounts_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "evidence"
-        }
-      ],
+    "measure_line": {
+      "type": "interaction",
+      "narration": "Guide the string to the reference mark while the felt-wrapped prop pins its far end. Nobody ties it around a traveler.",
       "cast": [
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
         },
         {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "measure_changed": {
-      "type": "story",
-      "narration": "You separate the pages again and compare only the clear bends. Orin marks the mismatch instead of stretching the evidence.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "converge_accounts_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "evidence"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
         },
         {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
         }
       ],
-      "art": "scenes/riftlight/convergence-ledge"
+      "art": "scenes/riftlight/convergence-ledge",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Guide the string to its reference mark.",
+        "actionLabel": "Mark the measured span",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "evidence",
+        "narration": "The string records the checked span; its prop stays in use.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_accounts_done",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "evidence",
+        "narration": "Bram checks the broad span after the slip. Fine distances stay unclaimed; the prop still pins the string.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_accounts_done",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "evidence",
+        "narration": "Bram checks the broad span after the slip. Fine distances stay unclaimed; the prop still pins the string.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_accounts_done",
+            "value": true
+          }
+        ]
+      }
     },
     "evidence": {
-      "type": "choice_point",
-      "narration": "Orin asks what makes the comparison yours to use. What you learned on the road is knowledge, not something taken from the people who helped you. How will you keep that clear?",
+      "type": "story",
+      "narration": "Orin labels the places your party actually visited. Checked observations and the help you received stay on the page together. A very confident guess still gets a question mark.",
       "choices": [
         {
-          "id": "plan_1",
-          "label": "Label each account with the place it came from",
-          "icon": "hand",
-          "goto": "evidence_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Separate what you checked from what someone helped explain",
-          "icon": "hand",
-          "goto": "evidence_2"
+          "id": "continue",
+          "label": "Continue",
+          "goto": "pull",
+          "icon": "hand"
         }
       ],
       "cast": [
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
         },
         {
           "figure": "cast/pip_thistledown",
@@ -370,463 +541,154 @@
         }
       ]
     },
-    "evidence_1": {
-      "type": "story",
-      "narration": "You name only the places your party visited and describe what remained there. The paper holds your account, not a stolen mountain.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "pull"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "evidence_2": {
-      "type": "story",
-      "narration": "You mark your own tests and the help you received. Orin keeps both, without turning an assisted reading into a test you passed alone.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "pull"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
     "pull": {
-      "type": "choice_point",
-      "narration": "The chime on the sled answers a distant tremble in the ice. Snow grains slide toward a deep glacier passage, then stop. Your Listening Chime tests readiness and a way back. Bram lays a spare board in the sheltered corner. How will you compare the pull?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Place loose snow on a marked board",
-          "icon": "hand",
-          "goto": "pull_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Hang a short plumb line out of the wind",
-          "icon": "hand",
-          "goto": "pull_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "pull_1": {
-      "type": "story",
-      "narration": "You mark a line on a board and watch the grains slide across it. Bram steadies the board. The snow moves even while the sled stays still.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "pull_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "pull_2": {
-      "type": "story",
-      "narration": "You shelter the line with your body and compare its swing with the chime. Pip moves his tail away before anyone blames it for the result.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "pull_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "pull_check": {
       "type": "interaction",
-      "onSuccess": {
-        "goto": "pull_clear",
-        "narration": "The markers agree on a pull toward the deep passage."
-      },
-      "onFailure": {
-        "goto": "pull_changed",
-        "narration": "A gust reaches one marker before the tremble ends."
-      },
+      "narration": "Snow grains slide toward the deep passage. Hold Bram's measuring board still while a friend marks the grains. Your Listening Chime tests readiness and an open way back; it cannot tell an opening where to go. Pip moves his tail out of the experiment.",
       "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
         {
           "figure": "cast/bram_lock",
           "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "narration": "Keep the measuring board and line steady while a friend marks the moving snow. Bram holds his breath. Pip moves his tail away. Nobody wants a tail in the measurements.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the measure steady while your friend marks the snow.",
-        "supportLabel": "Steady the measure",
-        "actionLabel": "Mark the moving snow"
+        "cue": "Hold the measuring board while a friend marks the pull.",
+        "actionLabel": "Mark the moving snow",
+        "supportLabel": "Steady the board"
       },
-      "onAssisted": {
-        "goto": "pull_clear",
-        "narration": "The markers agree on a pull toward the deep passage."
-      }
-    },
-    "pull_clear": {
-      "type": "story",
-      "narration": "The grains point toward the deep passage. The travelers mark that direction on the present map.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "clear_path"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "pull_changed": {
-      "type": "story",
-      "narration": "You discard the wind-caught reading and use the sheltered board with Bram. Its grains still slide toward the passage. The discarded count stays crossed out.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "clear_path"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "clear_path": {
-      "type": "choice_point",
-      "narration": "Bram wants the ledge kept clear while the travelers work. He can shift the sled with you or hold the loose pages while your party moves the benches. Which will you clear first?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Move the sled away from the working edge",
-          "icon": "hand",
-          "goto": "clear_path_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Move the benches out of the walking lane",
-          "icon": "hand",
-          "goto": "clear_path_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "clear_path_1": {
-      "type": "story",
-      "narration": "You move it toward the shelter. Orin briefly tries to lift his weighted corner without moving his foot, then solves his own experiment.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "clear_path_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "clear_path_2": {
-      "type": "story",
-      "narration": "You stack them beside the shelter, leaving a broad clear lane. Bram tests the lane with his shoulders before calling it wide enough.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "clear_path_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "clear_path_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Move the work area back without blocking the retreat lane.",
       "onSuccess": {
-        "goto": "clear_path_clear",
-        "narration": "The lane is clear from sled to shelter."
+        "goto": "clear_path",
+        "narration": "The sheltered grains mark a pull toward the deep passage."
       },
       "onFailure": {
-        "goto": "clear_path_changed",
-        "narration": "A bench foot catches on the sled runner."
+        "goto": "clear_path",
+        "narration": "The sheltered grains mark a pull toward the deep passage."
       },
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
+      "onAssisted": {
+        "goto": "clear_path",
+        "narration": "The sheltered grains mark a pull toward the deep passage."
+      }
     },
-    "clear_path_clear": {
-      "type": "story",
-      "narration": "Everyone can reach shelter without climbing over the map.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "signals"
-        }
-      ],
+    "clear_path": {
+      "type": "interaction",
+      "narration": "Pass the loose benches back from the working edge. Bram checks the lane with his shoulders. The sled and the map must not become a climbing course when everyone needs shelter.",
       "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "clear_path_changed": {
-      "type": "story",
-      "narration": "You lower the bench and move one piece at a time. Bram holds the runner clear. The lane opens after the extra work.",
-      "choices": [
+        },
         {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "signals"
-        }
-      ],
-      "cast": [
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
         {
           "figure": "cast/bram_lock",
           "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
         }
       ],
-      "art": "scenes/riftlight/convergence-ledge"
+      "art": "scenes/riftlight/convergence-ledge",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the benches out of the retreat lane.",
+        "actionLabel": "Pass the bench",
+        "objectLabel": "loose bench"
+      },
+      "onSuccess": {
+        "goto": "signals",
+        "narration": "A clear lane now runs from the map to shelter."
+      },
+      "onFailure": {
+        "goto": "signals",
+        "narration": "A clear lane now runs from the map to shelter."
+      },
+      "onAssisted": {
+        "goto": "signals",
+        "narration": "A clear lane now runs from the map to shelter."
+      }
     },
     "signals": {
-      "type": "choice_point",
-      "narration": "Seren wants a signal everybody can use if an opening appears. Her tools let her read what most people cannot see, but a raised hand is visible to everyone. Which signal will your party practice?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Raise a hand for wait and point to shelter for retreat",
-          "icon": "hand",
-          "goto": "signals_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Set a broad cloth at the safe boundary",
-          "icon": "hand",
-          "goto": "signals_2"
-        }
-      ],
+      "type": "interaction",
+      "narration": "Seren shows wait, shelter, wait. Watch the signals and echo them before the experiment. Pip checks that his wings do not hide the hand from the back row.",
       "cast": [
         {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
         },
         {
           "figure": "cast/lady_olivia",
           "name": "Lady Olivia"
         },
         {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
         }
       ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "signals_1": {
-      "type": "story",
-      "narration": "You repeat both signals around the ledge. Olivia copies them too. Pip checks that his wings do not hide the hand from the back of the shelter.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "signals_2": {
-      "type": "story",
-      "narration": "You stretch a cloth where everyone can see it. Crossing back behind it means stop working, even if the map has just become fascinating.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
+      "art": "scenes/riftlight/convergence-ledge",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the safe-lane signals, then echo them.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "shelter",
+            "label": "Point to shelter",
+            "icon": "eye"
+          },
+          {
+            "id": "wait",
+            "label": "Raised hand",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "wait",
+          "shelter",
+          "wait"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "rest",
+        "narration": "Your party can lead the checked signal round.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_signals_read",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest",
+        "narration": "Bram will lead visible signals from the clear lane. Your record names that help.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_signals_read",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "rest",
+        "narration": "Bram will lead visible signals from the clear lane. Your record names that help.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_signals_read",
+            "value": false
+          }
+        ]
+      }
     },
     "rest": {
       "type": "rest",
@@ -834,49 +696,16 @@
       "heal": 2,
       "choices": [
         {
-          "id": "rest",
-          "label": "Rest here, then carry on",
-          "icon": "hand",
-          "goto": "proposal"
-        },
-        {
-          "id": "watch",
-          "label": "Rest while watching the path",
-          "icon": "hand",
-          "goto": "rest_watch"
+          "id": "continue",
+          "label": "Continue",
+          "goto": "proposal",
+          "icon": "hand"
         }
       ],
       "cast": [
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "rest_watch": {
-      "type": "story",
-      "narration": "Bram takes the path watch while you sit beside the sled. Seren tops up your cup. Pip replaces his missing apple paperweight with a bootlace knot.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "proposal"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
         },
         {
           "figure": "cast/pip_thistledown",
@@ -886,23 +715,13 @@
       "art": "scenes/riftlight/convergence-ledge"
     },
     "proposal": {
-      "type": "choice_point",
-      "narration": "Olivia looks toward the deep passage. \"If we can call one small opening, we could study the pull close by.\" Orin asks for more observations first. Bram puts a hand on the clear lane. What will your party say before Olivia acts?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Ask her to wait until everyone is behind the boundary",
-          "icon": "hand",
-          "goto": "proposal_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Ask what she will do if it behaves differently",
-          "icon": "hand",
-          "goto": "proposal_2"
-        }
-      ],
+      "type": "interaction",
+      "narration": "Olivia wants to call one small opening near the pull. Orin asks for more observations; Bram keeps the retreat clear. Give one condition the people must meet before anyone approaches. Olivia still believes she can choose what she calls.",
       "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
         {
           "figure": "cast/lady_olivia",
           "name": "Lady Olivia"
@@ -910,67 +729,47 @@
         {
           "figure": "cast/bram_lock",
           "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
         }
       ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "proposal_1": {
-      "type": "story",
-      "narration": "Bram moves the loose gear back while you make the request. Olivia agrees to keep the working edge clear. She still believes she can choose what she calls.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "summoning"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
-    },
-    "proposal_2": {
-      "type": "story",
-      "narration": "Olivia pauses, then says she will stop before anyone crosses. Pip repeats that promise. Seren moves the chime where everyone can hear it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "summoning"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge"
+      "art": "scenes/riftlight/convergence-ledge",
+      "interaction": {
+        "kind": "play",
+        "cue": "Agree on the people's boundary before the test.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "wait",
+            "label": "Keep everyone behind the line",
+            "icon": "hand",
+            "reaction": "Bram moves the last loose gear back."
+          },
+          {
+            "id": "stop",
+            "label": "Agree on a stop signal",
+            "icon": "hand",
+            "reaction": "Olivia agrees to stop before anyone crosses."
+          },
+          {
+            "id": "watch",
+            "label": "Keep someone watching the way back",
+            "icon": "hand",
+            "reaction": "Seren takes a clear view of the retreat lane."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "summoning",
+        "narration": "The people have a boundary and a way back."
+      },
+      "onFailure": {
+        "goto": "summoning",
+        "narration": "The people have a boundary and a way back."
+      },
+      "onAssisted": {
+        "goto": "summoning",
+        "narration": "The people have a boundary and a way back."
+      }
     },
     "summoning": {
       "type": "story",
@@ -978,9 +777,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "decision"
+          "label": "Continue",
+          "goto": "decision",
+          "icon": "hand"
         }
       ],
       "cast": [
@@ -1063,9 +862,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "steady"
+          "label": "Continue",
+          "goto": "bram_clear",
+          "icon": "hand"
         }
       ],
       "cast": [
@@ -1107,9 +906,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "steady"
+          "label": "Continue",
+          "goto": "olivia_watch",
+          "icon": "hand"
         }
       ],
       "cast": [
@@ -1150,9 +949,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "steady"
+          "label": "Continue",
+          "goto": "orin_account",
+          "icon": "hand"
         }
       ],
       "cast": [
@@ -1172,188 +971,256 @@
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
     },
-    "steady": {
-      "type": "choice_point",
-      "narration": "The opening remains after Olivia has stopped. Wind lifts loose snow toward it. Bram holds the retreat lane while Seren points out a loose screen catching the gust. What will your party secure?",
-      "choices": [
+    "bram_clear": {
+      "type": "interaction",
+      "narration": "Pass the loose gear behind Bram's line while he brings Olivia back. Your party follows the choice you made; nobody grabs her or corners her against the opening.",
+      "cast": [
         {
-          "id": "plan_1",
-          "label": "Lower the screen so it cannot pull anyone forward",
-          "icon": "hand",
-          "goto": "steady_1"
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
         },
         {
-          "id": "plan_2",
-          "label": "Pin the loose gear below the safe boundary",
-          "icon": "hand",
-          "goto": "steady_2"
-        }
-      ],
-      "cast": [
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
         {
           "figure": "cast/bram_lock",
           "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "steady_1": {
-      "type": "story",
-      "narration": "You lower it from the sheltered side. The screen stops trying to become a sail, which improves everybody's opinion of it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "steady_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "steady_2": {
-      "type": "story",
-      "narration": "You fold the cloth and lay the sound benches across its loose edge. The map stays on the sheltered sled.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "steady_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "steady_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Secure the wind-caught gear without moving anyone across the mark.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the loose gear behind the boundary.",
+        "actionLabel": "Pass the gear",
+        "objectLabel": "loose camp gear"
+      },
       "onSuccess": {
-        "goto": "steady_clear",
-        "narration": "The gear settles behind the boundary."
+        "goto": "count",
+        "narration": "Everyone and the gear are clear of the pull.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_people_done",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "steady_changed",
-        "narration": "A loose fold slips free of the first bench."
+        "goto": "count",
+        "narration": "Everyone and the gear are clear of the pull.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_people_done",
+            "value": true
+          }
+        ]
       },
-      "cast": [
+      "onAssisted": {
+        "goto": "count",
+        "narration": "Everyone and the gear are clear of the pull.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_people_done",
+            "value": true
+          }
+        ]
+      },
+      "variants": [
         {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
+          "when": {
+            "flag": "converge_signals_read"
+          },
+          "text": "Your checked retreat signals help Bram guide the party."
         },
         {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
+          "when": {
+            "notFlag": "converge_signals_read"
+          },
+          "text": "Bram leads the visible retreat signals; the account credits his help."
         }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
+      ]
     },
-    "steady_clear": {
-      "type": "story",
-      "narration": "Everyone stands clear of the opening, with nothing pulling at their hands.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "converge_people_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "count"
-        }
-      ],
+    "olivia_watch": {
+      "type": "interaction",
+      "narration": "Olivia stops feeding the opening. Mark its next clear view from the working ground without crossing. Pip stays with your party; Bram holds the retreat lane.",
       "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
         {
           "figure": "cast/bram_lock",
           "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
+      "interaction": {
+        "kind": "timing",
+        "cue": "Observe the stopped opening during its clear interval.",
+        "actionLabel": "Mark the stopped view",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "steady_check",
+        "narration": "You record what remained after the gesture stopped.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_stopped_view",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "steady_check",
+        "narration": "The view narrowed before your mark. Leave it unclaimed and secure the gear; do not move closer.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_stopped_view",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "steady_check",
+        "narration": "The view narrowed before your mark. Leave it unclaimed and secure the gear; do not move closer.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_stopped_view",
+            "value": false
+          }
+        ]
+      }
     },
-    "steady_changed": {
-      "type": "story",
-      "narration": "You let the fold go instead of chasing it. The sturdy bench holds the rest, and Bram brings everyone behind the boundary.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "converge_people_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "count"
-        }
-      ],
+    "steady_check": {
+      "type": "interaction",
+      "narration": "Support the loose screen while Bram pins its edge from the safe lane. Olivia and Pip draw back with you before anyone compares the chime.",
       "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
         {
           "figure": "cast/bram_lock",
           "name": "Bram Lock"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the wind-caught screen from the safe lane.",
+        "actionLabel": "Pin the screen edge",
+        "supportLabel": "Hold the screen edge"
+      },
+      "onSuccess": {
+        "goto": "count",
+        "narration": "The people and gear are behind the safe line.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_people_done",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "count",
+        "narration": "The people and gear are behind the safe line.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_people_done",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "count",
+        "narration": "The people and gear are behind the safe line.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_people_done",
+            "value": true
+          }
+        ]
+      }
+    },
+    "orin_account": {
+      "type": "interaction",
+      "narration": "Orin has the chime account you shared beside the buried bridge. Choose which checked limit helps him talk Olivia back. The opening is not required to obey anybody's request.",
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "interaction": {
+        "kind": "play",
+        "cue": "Help Orin use the shared chime account.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "wait",
+            "label": "Waiting gave us a clearer reading",
+            "icon": "hand",
+            "reaction": "Orin asks Olivia to let this opening answer first."
+          },
+          {
+            "id": "back",
+            "label": "An echo checked an open way back",
+            "icon": "hand",
+            "reaction": "Orin points to the walking route you already have."
+          },
+          {
+            "id": "rules",
+            "label": "A clear note never chose a destination",
+            "icon": "hand",
+            "reaction": "Olivia lowers her hand and listens."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "bram_clear",
+        "narration": "Olivia agrees to step behind the line with you."
+      },
+      "onFailure": {
+        "goto": "bram_clear",
+        "narration": "Olivia agrees to step behind the line with you."
+      },
+      "onAssisted": {
+        "goto": "bram_clear",
+        "narration": "Olivia agrees to step behind the line with you."
+      }
     },
     "count": {
-      "type": "choice_point",
-      "narration": "The screen cord flaps. The chime note wavers. Seren catches the cord and the note changes. She lets it go; the note changes back. \"The cord,\" she says. \"Watch what happens when we hold that still.\" It is ordinary gear, close enough to reach from the marked ground. How will you compare the held cord with the loose one?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Hold the cord still, then let it move while nobody crosses",
-          "icon": "hand",
-          "goto": "count_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Have Seren hold the cord while you listen from shelter",
-          "icon": "hand",
-          "goto": "count_2"
-        }
-      ],
+      "type": "story",
+      "narration": "A screen cord flaps and the chime note wavers. Seren holds that ordinary cord still; the note changes. She lets it move and the note changes back. \"The cord,\" she says. \"We will change that, and listen to the separate chime.\" Nobody crosses the experimental opening.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1369,74 +1236,18 @@
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "count_1": {
-      "type": "story",
-      "narration": "You hold, release and watch from the safe mark. The chime answers differently. Olivia records both results rather than naming either a command.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "count_check"
+          "label": "Continue",
+          "goto": "count_check",
+          "icon": "hand"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "count_2": {
-      "type": "story",
-      "narration": "Seren steadies it while your party listens. Pip repeats the sounds so the people at the back hear them too. The opening does not move to a new place.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "count_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
+      ]
     },
     "count_check": {
       "type": "interaction",
-      "onSuccess": {
-        "goto": "count_clear",
-        "narration": "The change repeats when the same cord is held still."
-      },
-      "onFailure": {
-        "goto": "count_changed",
-        "narration": "A gust moves the cord during the second count."
-      },
+      "narration": "Hold the screen cord still while a friend notes the chime's answer. The control moves the cord, not the chime. Solo heroes can support it on Seren's fixed hook.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1452,30 +1263,28 @@
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady",
-      "narration": "Seren points to the ordinary cord hanging from the screen. Hold that cord still while a friend listens to the chime, then let it swing and listen again. The changing note tests this condition; it is not permission to cross.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold the screen cord while your friend compares the chime note.",
-        "supportLabel": "Hold the screen cord",
-        "actionLabel": "Compare the chime note"
+        "cue": "Hold the screen cord while a friend records the chime note.",
+        "actionLabel": "Record the held-cord note",
+        "supportLabel": "Hold the screen cord"
+      },
+      "onSuccess": {
+        "goto": "cord_release",
+        "narration": "The held-cord answer is recorded. Now compare the released cord."
+      },
+      "onFailure": {
+        "goto": "cord_release",
+        "narration": "The held-cord answer is recorded. Now compare the released cord."
       },
       "onAssisted": {
-        "goto": "count_clear",
-        "narration": "The change repeats when the same cord is held still."
+        "goto": "cord_release",
+        "narration": "The held-cord answer is recorded. Now compare the released cord."
       }
     },
-    "count_clear": {
-      "type": "story",
-      "narration": "The condition is clear enough to hold. It affects readiness; it does not promise a different destination or a different way back.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "lesson"
-        }
-      ],
+    "cord_release": {
+      "type": "interaction",
+      "narration": "Release the cord from behind the line and compare the note during the clear listening interval. The opening's destination does not change.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1491,19 +1300,51 @@
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
+      "interaction": {
+        "kind": "timing",
+        "cue": "Release the screen cord and compare the note.",
+        "actionLabel": "Release the screen cord",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "lesson",
+        "narration": "The note wavers again with the cord loose. Holding it changed a condition, not an opening's rule.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_cord_compared",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "cord_help",
+        "narration": "A gust hid the comparison. Shelter the listening position while Seren demonstrates the released cord.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_cord_compared",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "cord_help",
+        "narration": "A gust hid the comparison. Shelter the listening position while Seren demonstrates the released cord.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_cord_compared",
+            "value": false
+          }
+        ]
+      }
     },
-    "count_changed": {
-      "type": "story",
-      "narration": "You shelter the cord and let Seren repeat the test. You keep her checked count separate from your gust-spoiled one.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "lesson"
-        }
-      ],
+    "cord_help": {
+      "type": "interaction",
+      "narration": "Pass the loose wind cover to Bram at the sheltered listening position. Seren releases the cord and lets everyone hear the checked comparison. Your record credits her demonstration.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1519,293 +1360,33 @@
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass wind cover to the listening position.",
+        "actionLabel": "Pass the wind cover",
+        "objectLabel": "wind cover"
+      },
+      "onSuccess": {
+        "goto": "lesson",
+        "narration": "You have a checked, helped comparison without repeating the gust-spoiled test."
+      },
+      "onFailure": {
+        "goto": "lesson",
+        "narration": "You have a checked, helped comparison without repeating the gust-spoiled test."
+      },
+      "onAssisted": {
+        "goto": "lesson",
+        "narration": "You have a checked, helped comparison without repeating the gust-spoiled test."
+      }
     },
     "lesson": {
       "type": "choice_point",
-      "narration": "Seren explains the next skill through the cord. \"You can hold a condition. You cannot tell a one-way opening to be two-way, or give a once-only crossing a second use.\" How will your party practice? Seren sets a short wooden prop wrapped in felt beside the cord. It can support the marked point while you learn the rhythm.",
-      "choices": [
+      "narration": "Seren calls the lesson Manipulate: hold an existing condition, not change a one-way rule or grant a second use. Practice by handing the padded grip from helper to helper, or by balancing the felt prop at the cord's mark. A prop still pinning your string measure must first be brought back.",
+      "cast": [
         {
-          "id": "plan_1",
-          "label": "Take turns holding the cord steady while the others watch",
-          "icon": "hand",
-          "goto": "lesson_1"
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         },
-        {
-          "id": "plan_2",
-          "label": "Use a padded prop to keep the cord at the marked point",
-          "icon": "hand",
-          "goto": "lesson_2"
-        },
-        {
-          "id": "plan_3",
-          "label": "Let a starweaver hold the condition with Seren",
-          "icon": "hand",
-          "goto": "lesson_3",
-          "requiresClass": "starweaver"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "lesson_1": {
-      "type": "story",
-      "narration": "You hold the condition as a team. Seren checks that every seated hero has a turn at the work. Nobody calls a new opening into being.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "lesson_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "lesson_2": {
-      "type": "story",
-      "narration": "You set the prop, then watch for slack while Seren tests the note. A tiny knitted cover stops the prop scratching the screen.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "lesson_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "lesson_3": {
-      "type": "story",
-      "narration": "A starweaver practices holding the condition while the rest of the party checks the cord and the note. Seren corrects the moment it slackens, then lets the hero lead.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "lesson_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "lesson_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "checkKind": "doing",
-      "prompt": "Keep the shared holding rhythm steady until everyone has checked the safe mark.",
-      "onSuccess": {
-        "goto": "lesson_clear",
-        "narration": "The condition stays held for the whole practice."
-      },
-      "onFailure": {
-        "goto": "lesson_changed",
-        "narration": "The rhythm falters before the last signal."
-      },
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "lesson_clear": {
-      "type": "story",
-      "narration": "Seren calls the lesson Manipulate: hold a condition long enough for the group, never change the opening's nature.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "converge_skill_done"
-        },
-        {
-          "type": "setFlag",
-          "flag": "manipulate_learned"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "release"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "lesson_changed": {
-      "type": "story",
-      "narration": "You finish with the padded prop while Seren guides the rhythm. She calls the lesson Manipulate, holding a condition together rather than changing any rule.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "converge_skill_done"
-        },
-        {
-          "type": "setFlag",
-          "flag": "manipulate_learned"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "release"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "release": {
-      "type": "choice_point",
-      "narration": "Nobody needs to cross this experimental opening. The deep passage already has a walking route. How will you finish the test safely?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Release the cord with everyone behind the mark",
-          "icon": "hand",
-          "goto": "release_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Leave the prop while Seren moves everyone clear",
-          "icon": "hand",
-          "goto": "release_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "release_1": {
-      "type": "story",
-      "narration": "You let the cord move from the sheltered side. The note goes sour again. Seren records that result and keeps the boundary in place.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "account"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "release_2": {
-      "type": "story",
-      "narration": "Seren takes the prop out only after the people and loose gear are behind the boundary. The opening remains an object to watch, not a shortcut to trust.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "account"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "account": {
-      "type": "choice_point",
-      "narration": "Olivia closes her notebook, then opens it to add one sentence. She summoned an opening. She did not choose its rules. Orin waits instead of writing for her. Your party saw both parts. How will you record the experiment so the next person understands what happened?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Record the surprise and the safe retreat",
-          "icon": "hand",
-          "goto": "account_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Record the held condition and the rules it did not change",
-          "icon": "hand",
-          "goto": "account_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        }
-      ],
-      "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "account_1": {
-      "type": "story",
-      "narration": "You write what the opening did and where everyone stood. Olivia reads the line without crossing it out. Pip copies the retreat signal beside it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "path"
-        }
-      ],
-      "cast": [
         {
           "figure": "cast/lady_olivia",
           "name": "Lady Olivia"
@@ -1816,109 +1397,294 @@
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "account_2": {
-      "type": "story",
-      "narration": "You draw the cord and its prop. Seren labels only what the test proved. Bram adds the safe boundary as a very thick line.",
       "choices": [
         {
-          "id": "continue",
-          "label": "Go on",
+          "id": "team",
+          "label": "Pass the holding grip through the team",
+          "goto": "lesson_team",
+          "icon": "hand"
+        },
+        {
+          "id": "prop",
+          "label": "Use our free felt prop",
+          "goto": "lesson_prop",
           "icon": "hand",
-          "goto": "path"
+          "when": {
+            "flag": "converge_prop_free"
+          }
+        },
+        {
+          "id": "retrieve",
+          "label": "Retrieve the prop from our string measure",
+          "goto": "retrieve_prop",
+          "icon": "hand",
+          "when": {
+            "notFlag": "converge_prop_free"
+          }
+        },
+        {
+          "id": "starweaver",
+          "label": "Practice with our starweaver and Seren",
+          "goto": "lesson_attuned",
+          "icon": "hand",
+          "requiresClass": "starweaver"
         }
-      ],
+      ]
+    },
+    "lesson_team": {
+      "type": "interaction",
+      "narration": "Pass the padded holding grip while the next helper takes the marked position. Seren watches the cord; the paper record already preserves the string measurement. Nobody calls a new opening into being.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
           "name": "Seren Wisp"
         },
         {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the holding grip without losing the marked position.",
+        "actionLabel": "Pass the padded grip",
+        "objectLabel": "padded holding grip"
+      },
+      "onSuccess": {
+        "goto": "lesson_clear",
+        "narration": "Every helper has practiced the shared holding job."
+      },
+      "onFailure": {
+        "goto": "lesson_clear",
+        "narration": "Every helper has practiced the shared holding job."
+      },
+      "onAssisted": {
+        "goto": "lesson_clear",
+        "narration": "Every helper has practiced the shared holding job."
+      }
     },
-    "path": {
-      "type": "choice_point",
-      "narration": "The old outlines agree in places, and the pull leads farther into this glacier. Orin will go with you by the ordinary passage. The maps show what has moved; the people living here show what needs protecting. What will you take into the investigation?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Carry checked accounts and leave the uncertain joins blank",
-          "icon": "hand",
-          "goto": "path_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Carry the present map beside the old outlines",
-          "icon": "hand",
-          "goto": "path_2"
-        }
-      ],
+    "retrieve_prop": {
+      "type": "interaction",
+      "narration": "Pass the felt prop back from the string board. Orin keeps your checked measurement on paper; the measuring string can now be packed.",
       "cast": [
         {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         },
         {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the used measuring prop back for the lesson.",
+        "actionLabel": "Pass the felt prop",
+        "objectLabel": "felt-wrapped prop"
+      },
+      "onSuccess": {
+        "goto": "lesson_prop",
+        "narration": "The prop is free after the extra handling job.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_prop_free",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "lesson_prop",
+        "narration": "The prop is free after the extra handling job.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_prop_free",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "lesson_prop",
+        "narration": "The prop is free after the extra handling job.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "converge_prop_free",
+            "value": true
+          }
+        ]
+      }
     },
-    "path_1": {
+    "lesson_prop": {
+      "type": "interaction",
+      "narration": "Balance the felt-wrapped prop at the cord's marked point. Seren checks the note while the party watches for slack. The tiny knitted cover keeps the prop from scratching the screen.",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the padded prop at the marked cord.",
+        "actionLabel": "Set the holding prop",
+        "objectLabel": "felt-wrapped prop"
+      },
+      "onSuccess": {
+        "goto": "lesson_clear",
+        "narration": "The prop holds the observed condition for the group."
+      },
+      "onFailure": {
+        "goto": "lesson_clear",
+        "narration": "The prop holds the observed condition for the group."
+      },
+      "onAssisted": {
+        "goto": "lesson_clear",
+        "narration": "The prop holds the observed condition for the group."
+      }
+    },
+    "lesson_attuned": {
       "type": "story",
-      "narration": "You fold the accounts with their sources showing. Orin brings the present map too, boot finally removed from its corner.",
+      "narration": "Your starweaver holds the observed condition with Seren while the party checks the cord and note. This replaces the separate grip-passing or prop-setting job. It does not change the destination or permit a crossing.",
+      "cast": [
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "ending"
+          "label": "Continue",
+          "goto": "lesson_clear",
+          "icon": "hand"
         }
-      ],
+      ]
+    },
+    "lesson_clear": {
+      "type": "story",
+      "narration": "You have practiced Manipulate: hold a condition long enough for the group while the opening keeps its own rules. Seren releases the cord only after everyone is behind the mark. The sour note returns; the ordinary walking passage stays your route.",
       "cast": [
         {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         },
         {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
-    },
-    "path_2": {
-      "type": "story",
-      "narration": "You put today's homes on top where you can see them first. Bram checks the walking lane before anyone lifts the sled.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "converge_skill_done",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "manipulate_learned",
+          "value": true
+        }
+      ],
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "ending"
+          "label": "Continue",
+          "goto": "account",
+          "icon": "hand"
         }
-      ],
+      ]
+    },
+    "account": {
+      "type": "interaction",
+      "narration": "Make the experiment useful to the next watcher. Choose one checked result to add; guesses stay questions. Olivia adds her own sentence: she called an opening, but did not choose its rules.",
       "cast": [
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
         },
         {
-          "figure": "cast/bram_lock",
-          "name": "Bram Lock"
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
+      "interaction": {
+        "kind": "play",
+        "cue": "Leave an honest experiment account.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "cord",
+            "label": "Draw the held and released cord",
+            "icon": "hand",
+            "reaction": "Seren labels the changed condition."
+          },
+          {
+            "id": "lane",
+            "label": "Draw where everyone withdrew",
+            "icon": "hand",
+            "reaction": "Bram thickens the safe boundary line."
+          },
+          {
+            "id": "limit",
+            "label": "Leave the unknown destination blank",
+            "icon": "hand",
+            "reaction": "Orin puts a question beside the blank, then another beside Pip's confident doodle."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "ending",
+        "narration": "Your account names what changed and what did not."
+      },
+      "onFailure": {
+        "goto": "ending",
+        "narration": "Your account names what changed and what did not."
+      },
+      "onAssisted": {
+        "goto": "ending",
+        "narration": "Your account names what changed and what did not."
+      }
     },
     "ending": {
       "type": "story",
@@ -1926,9 +1692,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "finish"
+          "label": "Continue",
+          "goto": "finish",
+          "icon": "hand"
         }
       ],
       "variants": [
@@ -1951,6 +1717,25 @@
             "notFlag": "olivia_trusted"
           },
           "text": "Olivia closes her notebook and chooses her own work. \"I still think we can do more,\" she says. She leaves by the open walking path, free to disagree."
+        },
+        {
+          "when": {
+            "flag": "converge_cord_compared"
+          },
+          "text": "Your party recorded the held-and-released cord comparison."
+        },
+        {
+          "when": {
+            "notFlag": "converge_cord_compared"
+          },
+          "text": "The cord comparison is credited to Seren's checked demonstration."
+        },
+        {
+          "when": {
+            "flag": "olivia_continued",
+            "notFlag": "converge_stopped_view"
+          },
+          "text": "Your glimpse after the summoning stopped remains unclaimed; nobody fills it in from a guess."
         }
       ],
       "cast": [
@@ -1979,15 +1764,122 @@
   },
   "presentation": {
     "interactions": {
-      "pull_check": {
+      "accounts_guided": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "compare_paths_coast": {
+        "props": [
+          "clue-scrap"
+        ],
+        "coverIcons": [
+          "prop_playing_card",
+          "prop_playing_card",
+          "prop_playing_card"
+        ]
+      },
+      "compare_paths_sky": {
+        "props": [
+          "clue-scrap",
+          "carved-stone"
+        ]
+      },
+      "compare_coast_sky": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "measure_sheets": {
+        "props": [
+          "clue-scrap",
+          "toss-pebble"
+        ]
+      },
+      "measure_line": {
         "props": [
           "count-cord"
+        ]
+      },
+      "pull": {
+        "props": [
+          "count-cord",
+          "relay-plank"
+        ]
+      },
+      "clear_path": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "signals": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "proposal": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "bram_clear": {
+        "props": [
+          "relay-sack"
+        ]
+      },
+      "olivia_watch": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "steady_check": {
+        "props": [
+          "wind-blanket",
+          "rope-loop"
+        ]
+      },
+      "orin_account": {
+        "props": [
+          "note-low",
+          "clue-scrap"
         ]
       },
       "count_check": {
         "props": [
           "rope-loop",
           "note-low"
+        ]
+      },
+      "cord_release": {
+        "props": [
+          "rope-loop",
+          "note-middle"
+        ]
+      },
+      "cord_help": {
+        "props": [
+          "wind-blanket"
+        ]
+      },
+      "lesson_team": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "retrieve_prop": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "lesson_prop": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "account": {
+        "props": [
+          "clue-scrap"
         ]
       }
     }
