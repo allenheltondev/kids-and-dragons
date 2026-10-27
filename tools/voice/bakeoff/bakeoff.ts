@@ -46,6 +46,8 @@ interface ClipMeta {
   /** Gemini clips: the cleaner version that cleaned them (true is version 1), with the raw audio kept at `<key>.raw.wav`. */
   cleaned?: boolean | number;
   removedMs?: number;
+  /** The line ends on a sound the cleaner kept (a laugh, a sigh): what `npm run voice:clean` must assume too. */
+  endsOnSound?: boolean;
 }
 
 /**
@@ -62,10 +64,11 @@ function ensureCleaned(ws: Workspace, job: Job, meta: ClipMeta): ClipMeta {
   if (source === null) return meta;
   const wav = readWav16(fs.readFileSync(source));
   if (wav === null) return meta;
-  const cleaned = cleanPcm16(wav.pcm, wav.rate, { endsOnSound: jobEndsOnSound(job) });
+  const ending = jobEndsOnSound(job);
+  const cleaned = cleanPcm16(wav.pcm, wav.rate, { endsOnSound: ending });
   if (source === file) fs.writeFileSync(rawFile, pcmToWav(wav.pcm, wav.rate));
   fs.writeFileSync(file, pcmToWav(cleaned.pcm, wav.rate));
-  const next: ClipMeta = { ...meta, cleaned: CLEANER_VERSION, removedMs: cleaned.removed.reduce((sum, r) => sum + r.endMs - r.startMs, 0) };
+  const next: ClipMeta = { ...meta, cleaned: CLEANER_VERSION, removedMs: cleaned.removed.reduce((sum, r) => sum + r.endMs - r.startMs, 0), ...(ending ? { endsOnSound: true } : {}) };
   fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.json`), JSON.stringify(next));
   return next;
 }
@@ -193,7 +196,7 @@ export async function renderJobs(jobs: readonly Job[], ws: Workspace, keys: Keys
         renderMs: Date.now() - started,
         bytes: audio.bytes.length,
         at: new Date().toISOString(),
-        ...(audio.raw ? { cleaned: CLEANER_VERSION, removedMs: audio.removedMs ?? 0 } : {}),
+        ...(audio.raw ? { cleaned: CLEANER_VERSION, removedMs: audio.removedMs ?? 0, ...(jobEndsOnSound(job) ? { endsOnSound: true } : {}) } : {}),
       };
       fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.json`), JSON.stringify(meta));
       outcome.rendered += 1;

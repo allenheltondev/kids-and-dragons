@@ -7,7 +7,9 @@
  *   npm run voice:clean -- <key or file.wav>  # one clip, with its last second frame by frame
  *
  * It reads the raw copies (`<key>.raw.wav`) and changes nothing: the page
- * cleans clips itself. Paste the output of one clip that still sounds noisy,
+ * cleans clips itself. A clip whose line ends on a sound (a laugh, a sigh) is
+ * cleaned as the page cleans it, keeping that sound, from its `<key>.json`; a
+ * file with no metadata beside it is cleaned as a line ending on a word. Paste the output of one clip that still sounds noisy,
  * and the frames show what the noise looks like to the cleaner.
  */
 
@@ -60,9 +62,13 @@ for (const file of files) {
   const peak = Math.max(1e-9, rms.reduce((a, b) => (b > a ? b : a), 0));
   let lastSpeech = -1;
   for (let f = frames - 1; f >= 0 && lastSpeech < 0; f -= 1) if (rms[f]! >= peak * 10 ** (CLEAN_DEFAULTS.speechDb / 20) && zcr[f]! < CLEAN_DEFAULTS.noiseZcr) lastSpeech = f;
-  const { removed } = cleanPcm16(wav.pcm, wav.rate);
+  const metaFile = file.replace(/(\.raw)?\.wav$/, ".json");
+  const meta = fs.existsSync(metaFile) ? (JSON.parse(fs.readFileSync(metaFile, "utf8")) as { endsOnSound?: boolean }) : null;
+  const endsOnSound = meta?.endsOnSound === true;
+  const { removed } = cleanPcm16(wav.pcm, wav.rate, { endsOnSound });
   const name = path.basename(file).replace(/\.raw\.wav$/, "");
-  console.log(`${name}: ${String(frames * 10)}ms, speech ends at ${lastSpeech < 0 ? "?" : `${String((lastSpeech + 1) * 10)}ms`}, cuts ${removed.length ? removed.map((r) => `${String(r.startMs)}-${String(r.endMs)}ms`).join(", ") : "nothing"}`);
+  const context = meta === null ? " (no metadata: cleaned as a line ending on a word)" : endsOnSound ? " (the line ends on a sound, which is kept)" : "";
+  console.log(`${name}${context}: ${String(frames * 10)}ms, speech ends at ${lastSpeech < 0 ? "?" : `${String((lastSpeech + 1) * 10)}ms`}, cuts ${removed.length ? removed.map((r) => `${String(r.startMs)}-${String(r.endMs)}ms`).join(", ") : "nothing"}`);
   if (files.length === 1) {
     console.log("\n    ms     dB    zcr   (dB from the loudest frame; zcr over 0.3 is noise, not voice)");
     for (let f = Math.max(0, frames - 100); f < frames; f += 1) {
