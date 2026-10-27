@@ -49,6 +49,14 @@ import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
 import { handKeeper } from "./handlers/keeper.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
+import {
+  householdTimingReport,
+  parseTimingControl,
+  setTiming,
+  TIMING_BODY,
+  timingReportCsv,
+  type TimingControl,
+} from "./handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
@@ -161,6 +169,11 @@ async function main(): Promise<void> {
      */
     playtest: true,
     ...(push ? { push: push.config } : {}),
+    // Session timing (#511): a developer's own runs are playtests; `KAD_TIMING=family`
+    // is for a real family sitting at this server, and `off` keeps nothing.
+    ...(process.env.KAD_TIMING === "off"
+      ? {}
+      : { timing: { source: process.env.KAD_TIMING === "family" ? ("family" as const) : ("playtest" as const) } }),
   };
 
   const app = express();
@@ -452,6 +465,10 @@ async function main(): Promise<void> {
     (body) => (typeof body.quiet === "boolean" ? null : "expected { quiet: true | false }"),
     (code, principal, body, deps) => setQuiet({ code, principal, quiet: body.quiet as boolean }, deps),
   ));
+  app.post("/api/room/:code/timing", hostControl(
+    (body) => (parseTimingControl(body) ? null : TIMING_BODY),
+    (code, principal, body, deps) => setTiming({ code, principal, control: parseTimingControl(body) as TimingControl }, deps),
+  ));
   app.post("/api/room/:code/close", hostControl(
     () => null,
     (code, principal, _body, deps) => closeRoom({ code, principal }, deps),
@@ -701,6 +718,18 @@ async function main(): Promise<void> {
     if (outcome === "malformed") return sendError(res, 400, "ILLEGAL", "not a crash report");
     if (outcome === "refused") return reportsSlowDown(res, base);
     res.status(204).end();
+  });
+
+  // How long this household's chapters really took (#511, handlers/timing.ts).
+  app.get("/api/timing", async (req: Request, res: Response) => {
+    const deps = await withRuntime(base, res);
+    if (!deps) return;
+    const kid = await resolveKid(req, base);
+    if (!kid) return sendError(res, 401, "FORBIDDEN", "the timing report needs this device's token");
+    const result = await householdTimingReport(kid.householdId, deps);
+    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
+    if (req.query.format === "csv") return res.type("text/csv").send(timingReportCsv(result.value));
+    res.json(result.value);
   });
 
   // What this phone can study between games (see handlers/journal.ts).

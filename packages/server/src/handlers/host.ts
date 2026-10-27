@@ -20,7 +20,7 @@
  * puts it on the run's event log, and what makes every screen see it at once.
  */
 
-import { idleOpenRoom, type RunState } from "@kad/shared";
+import { idleOpenRoom, type RunState, type TimingNote } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
@@ -77,6 +77,12 @@ export async function commitRoomChange(
      * after a lost race, so it names whoever is the founder on the retry.
      */
     unfound?: () => Promise<{ householdId: string; deviceId: string } | undefined>;
+    /**
+     * The session-clock note this change owes (#511), asked once `change` has
+     * run on each attempt. Absent when nobody keeps time or the change is not
+     * a timing moment.
+     */
+    timing?: () => TimingNote | undefined;
   } = {},
 ): Promise<HandlerResult<{ seq: number; state: RunState; changed: boolean }>> {
   for (let attempt = 1; ; attempt++) {
@@ -91,12 +97,14 @@ export async function commitRoomChange(
     const unfound = options.unfound ? await options.unfound() : undefined;
     const nowMs = deps.now();
     const next: RunState = { ...changed, seq: state.seq + 1, updatedAt: iso(nowMs) };
+    const timing = options.timing?.();
     const event: EventRecord = {
       seq: next.seq,
       runId: next.runId,
       patch: diff(state, next),
       at: iso(nowMs),
       playerId: actor,
+      ...(timing ? { timing } : {}),
     };
     if (
       await deps.repo.commit({
@@ -219,7 +227,7 @@ export async function closeRoom(
     input.principal.playerId,
     (state) => (state.closed ? null : { ...state, closed: true }),
     deps,
-    { closing: true },
+    { closing: true, timing: () => (deps.timing ? { kind: "close" } : undefined) },
   );
   if (!result.ok) return result;
   await deps.repo.deleteRoom(hosted.value.code);

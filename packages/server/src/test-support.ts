@@ -184,6 +184,8 @@ export interface HarnessOptions {
    * could not tell a gate that works from one that is missing.
    */
   playtest?: boolean;
+  /** Keeps session timing (#511) as this source. Off by default, as in every synthetic run. */
+  timing?: "family" | "playtest";
 }
 
 export function makeHarness(options: HarnessOptions = {}): TestHarness {
@@ -208,6 +210,7 @@ export function makeHarness(options: HarnessOptions = {}): TestHarness {
       random: options.random ?? (() => seeded.next()),
       now: clock.now,
       playtest: options.playtest ?? false,
+      ...(options.timing ? { timing: { source: options.timing } } : {}),
     },
   };
 }

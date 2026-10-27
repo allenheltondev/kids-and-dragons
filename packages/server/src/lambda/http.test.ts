@@ -2099,6 +2099,8 @@ const SHARED = [
   // Host controls (#263, handlers/host.ts).
   { path: "/api/room/:code/lock", method: "POST", probe: "/api/room/ABCD/lock" },
   { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
+  // The session clock: pause, resume, note, off (#511, handlers/timing.ts).
+  { path: "/api/room/:code/timing", method: "POST", probe: "/api/room/ABCD/timing" },
   { path: "/api/room/:code/close", method: "POST", probe: "/api/room/ABCD/close" },
   // Stop for today, and keep going another day (#259, handlers/save.ts).
   { path: "/api/room/:code/stop", method: "POST", probe: "/api/room/ABCD/stop" },
@@ -2123,6 +2125,7 @@ const SHARED = [
   { path: "/api/heroes", method: "GET", probe: "/api/heroes" },
   // What a phone can study between games (handlers/journal.ts).
   { path: "/api/journal", method: "GET", probe: "/api/journal" },
+  { path: "/api/timing", method: "GET", probe: "/api/timing" },
   // What a kid picked for her own page (#299, handlers/profile.ts).
   { path: "/api/profile/flair", method: "POST", probe: "/api/profile/flair" },
   { path: "/api/auth/link", method: "POST", probe: "/api/auth/link" },

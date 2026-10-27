@@ -82,6 +82,7 @@ import {
   type ChapterSettlement,
   type StartedAttempt,
 } from "./progression.ts";
+import { timingNoteFor } from "./timing.ts";
 
 /** Far above any intent a client builds (a hero's creation is the largest). */
 const MAX_LOGGED_INTENT_CHARS = 4096;
@@ -240,6 +241,8 @@ export async function applyAction(
   // The journey visit a graph campaign's chapter plays (#194), stamped on the
   // run below so its completion settles against exactly that visit.
   let journeyVisit: { node: NodeId; visit: number } | null = null;
+  // The household had already played this chapter (session timing, #511).
+  let revisit = false;
   if (input.intent.type === "START_CHAPTER" && chapter) {
     const road = await roadTo(chapter, auth.run.householdId, seatedParty(state), deps);
     if ("refusal" in road) {
@@ -264,6 +267,7 @@ export async function applyAction(
       campaignAttemptId = joined.attemptId;
       startedAttempt = joined.startedAttempt;
       journeyVisit = road.visit ?? null;
+      revisit = (road.visit?.visit ?? 1) > 1 || Boolean(road.attempt && (road.attempt.everCompleted || road.attempt.status === "complete"));
     }
   }
 
@@ -496,6 +500,8 @@ export async function applyAction(
     const campaign = result.state.campaign ? { ...result.state.campaign } : result.state.campaign;
     if (campaign) delete campaign.ended;
     const stamped: RunState = { ...result.state, campaignAttemptId, campaign };
+    // A pause belongs to the sitting it was made in (#511).
+    delete stamped.timingPaused;
     // Only a graph campaign's run carries a visit; an ordered start leaves the
     // key absent (and clears one a graph chapter earlier in this room left).
     if (journeyVisit) stamped.journeyVisit = journeyVisit;
@@ -586,6 +592,11 @@ export async function applyAction(
   );
   if (finds) next.fieldGuide = finds.book;
 
+  const timing = timingNoteFor(
+    { before: state, after: next, chapter: chapter ?? undefined, started: input.intent.type === "START_CHAPTER", finished: finishedChapter, revisit },
+    deps,
+  );
+
   const patch = diff(state, next);
 
   /*
@@ -610,6 +621,7 @@ export async function applyAction(
     patch,
     ...(result.presentation ? { presentation: result.presentation } : {}),
     ...(progression ? { progression } : {}),
+    ...(timing ? { timing } : {}),
     at: iso(nowMs),
     playerId: input.playerId,
     // Kept for the log's own sake, while it is the size of a real intent.
