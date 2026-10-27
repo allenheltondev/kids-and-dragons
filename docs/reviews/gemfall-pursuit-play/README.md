@@ -78,3 +78,10 @@ Removed the ungated `quiet_practice` duplicate rather than charging an invented 
 The unchanged `scene_returning_cart_practice` is reached after successful or assisted practice. A save already waiting there retains its `practiced` flag and goes straight to tea, without replaying the activity. New regression cases contrast the offered choices, flags, bead rewards and later prepared-test access for success, a supported miss and assistance at one/two/four seats. Three additional serialized-save cases preserve the old result scene and onward choice.
 
 Review verification: 391 tests pass across route, settlement, flow, interaction, compatibility and all 53 full-server campaign playthroughs; typecheck, validation and continuity pass. The shortest static estimate remains 38.3–39.1 minutes; typical moves from 40.9–42.1 to 41–42.4, with 40–41 modeled scenes. This remains uncalibrated and does not establish the thirty-minute family target. No artwork or presentation changed.
+
+
+## CI follow-up: exhaustive prerequisite proof budget
+
+CI run `40600896454` on review-fix commit `917fd393` had one failing unit test: `riftlight-route-prerequisites.test.ts` exceeded its explicit 20-second timeout under V8 coverage. The combined required status failed as a consequence. That run passed the build, type/content/art checks, every end-to-end shard, production end-to-end, load smoke and staging deployment.
+
+This proof walks every Riftlight chapter twice through the real engine and then checks incoming graph prerequisites and deliberately invalid bypasses. Its individual limit is now 60 seconds to accommodate coverage and concurrent workers. All proof assertions, chapter data, worker settings and committed coverage thresholds remain unchanged. The isolated proof passes with V8 instrumentation (11.75 seconds total locally). The temporary benchmark configuration omitted whole-project coverage thresholds because a single selected proof cannot establish whole-project coverage; it was removed, and CI retains the normal ratchet. A fresh CI run must validate this commit.
