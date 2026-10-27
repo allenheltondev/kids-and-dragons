@@ -434,7 +434,7 @@
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-returning-pebble",
+      "art": "scenes/riftlight/bone-yard-ruins",
       "interaction": {
         "kind": "tracking",
         "cue": "Follow the marked pebble hiding place through the shifting stones.",
