@@ -3,7 +3,5 @@
   "gemfall-01/scene_long_bridge/Long Bridge": "scene introduces the name itself ('the far side of the Long Bridge'); the prologue lamp aside is optional",
   "gemfall-01/scene_long_bridge/Old Wick": "scene introduces the name itself: the label names the lamplighters' path as Old Wick's; the prologue lamp aside is optional",
   "gemfall-04a/scene_east_bank/Eastern Plains": "scene names the plains as the party reaches them; 3A's endings mention them only in passing",
-  "gemfall-04c/check_forms/Form": "scene introduces the name itself ('Fill in Form 9'); only a retry of the forms queue has shown it before",
-  "gemfall-04c/scene_rumor_fire/Wild Road": "a rumour names the Wild Road in passing; chapter 2's rumour board names the roads, but a party that skipped the board hears it here first",
-  "gemfall-04c/scene_signposts/Gemfall": "world word for the event itself ('maps to the Gemfall'), glossed by the sentence; earlier chapters use it lowercase or not at all"
+  "gemfall-04c/scene_rumor_fire/Wild Road": "a rumour names the Wild Road in passing; chapter 2's rumour board names the roads, but a party that skipped the board hears it here first"
 }
