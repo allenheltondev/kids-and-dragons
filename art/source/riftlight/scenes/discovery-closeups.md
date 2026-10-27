@@ -1,0 +1,27 @@
+# Discovery close-up illustrations
+
+Generated with the built-in image generation tool. Source PNGs are retained here; the game uses opaque 1920 x 1080 WebP deliveries, quality 88. These are supporting inspection views, not exact diagrams of the controls or answers.
+
+## Memory ice
+
+Source: `reading-room-memory.png`. Delivery: `assets/scenes/riftlight/reading-room-memory.webp`. Style reference: `assets/scenes/riftlight/reading-room.webp`.
+
+Shown only during the first observation and second-view tests. The ice remains a solid wall, the reflection obscures a bend, and no date, cause or completed comparison appears. Room conversations keep their wide scene.
+
+Final generation prompt:
+
+Use case: illustration-story. Asset type: landscape 16:9 chapter inspection illustration for a children's fantasy game. Generate a NEW companion close-up, using the supplied Reading Room painting as a STYLE and setting reference only. Hand-painted luminous storybook art, crisp readable shapes, icy blues with small warm amber reflections. Scene: a newly exposed pale face of memory ice inside the glacier reading room. Fill most of the frame with thick translucent blue ice. INSIDE the ice is a quiet, slightly dreamlike remembered view: a winding glacial river between recognizable angular ridges, one fork-shaped ridge and two differently shaped rocks. This is an image preserved within solid ice, NOT a doorway or opening one could walk through, not a live river flooding the library. A cloudy overlapping ice layer and a diagonal soft reflection partly obscure one river bend; fixed mountain silhouettes remain discernible through it. The memory is naturally intriguing and readable at tablet size, but the reflection does not trace the exact same line as the river. A modest wooden flake-catching cradle and one edge of the marked viewing floor at the bottom establish how to inspect from outside the ice; tiny amber glow from a background alcove ties to the reference. Close three-quarter view, solid wall boundaries visible. Keep key ice details in the middle/upper half, lower portion calm for existing game UI. No people, no carved writing, no captions, no arrows, no numbering, no ordered symbols, no before/after map, no date or cause, no hidden creature or villain. Do not paint the controls, answer pattern, or a completed comparison. Cozy wonder, not scary.
+
+## Mooring stone
+
+Source: `island-mooring-stone.png`. Delivery: `assets/scenes/riftlight/island-mooring-stone.webp`. Style reference: `assets/scenes/riftlight/island-due-back.webp`.
+
+Shown on the island during stone preparation, copying, orientation and comparison. The carving stays worn regardless of how complete the party's separate copy becomes. No present-day ridge view or interpreted joined-land diagram is included. The background was refined to remove distant islands that could offer an unintended comparison before the test.
+
+Initial generation prompt:
+
+Use case: illustration-story. Asset type: landscape 16:9 chapter inspection illustration for a children's fantasy game. Generate a NEW companion close-up using the supplied Island Due Back painting as a STYLE/lighting/palette reference only. Warm painterly storybook fantasy, sunlit pale weathered stone, green grass, cream clouds and blue sky. Scene: on firm grass on the returning floating island, an old freestanding mooring stone fills the center of the frame. A single round hole near its top is the empty eye: sky is visible through it, with a shallow worn rope groove leading toward the top. Below that hole is a broad old carved face bearing exactly three low raised irregular ridge-like shapes, spaced apart, with shallow rounded branching grooves between them. A smoothed worn patch interrupts a meeting of two grooves; a later, sharper narrow irregular crack crosses these softer old marks at a different angle. Make the different edge textures readable for a child inspecting the stone, yet leave the worn meeting ambiguous. These are unlabelled weathered marks, not an obvious labeled map or complete outline of joined continents. Show the stone standing intact in grass, not a detached tablet; its base and a small clean tool-resting spot are visible. Beside the base place a soft brush, one blank folded sheet, and a plain short measuring stalk, all resting without touching the carving. No rubbing, no scratched new marks, no chips removed. Background is soft distant cloud and grass, with NO present-day ridge comparison, NO matching landscape skyline, NO revealed historical reconstruction. Front three-quarter close-up with little perspective distortion; main hole and carving in upper/middle frame, quiet lower foreground for existing game UI. No characters, letters, numbers, arrows, labels, UI, answer sequence, dates, or cause. Calm inviting mystery.
+
+Final refinement prompt:
+
+Edit this illustration only to remove every distant floating island and distant landform from the background. Replace those background landforms with soft uninterrupted cream-white clouds and blue sky. Preserve the mooring stone, its single eye hole, three weathered raised marks, worn grooves, sharp crack, grass, brush, folded blank paper, measuring stalk, sunlight, painting style and framing. No new symbols or objects. The background must not provide a present-day ridge arrangement to compare with the carving; this is an inspection image before players interpret the clue.

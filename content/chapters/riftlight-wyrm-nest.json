@@ -71,7 +71,7 @@
     },
     "listen": {
       "type": "choice_point",
-      "narration": "The builder raises a quiet hand. Every scrape makes the wyrm tighten around the doorway. How will you approach without making the trouble louder?",
+      "narration": "A tool scrapes. The frost wyrm tightens around the doorway and pulls the bench farther under its chin. The builder raises a quiet hand. \"That used to be our best bench.\" Every new scrape makes the doorway smaller. How will you approach without adding to the noise?",
       "choices": [
         {
           "id": "plan_1",
@@ -576,7 +576,7 @@
     },
     "bed": {
       "type": "choice_point",
-      "narration": "The hollow has hard snow and no bench pillow. If you try moving the wyrm, it needs a place to settle. If you drive it off instead, the hollow will still leave it shelter away from the readers.",
+      "narration": "The hollow is sheltered, but its floor is hard snow. The wyrm has already demonstrated strong opinions about pillows. You can prepare a softer place for it there. Even if you choose to drive it from the doorway, the hollow will offer shelter away from the readers. How will you make it ready?",
       "choices": [
         {
           "id": "plan_1",
@@ -924,7 +924,7 @@
     },
     "offer": {
       "type": "choice_point",
-      "narration": "You are ready to make space. Drive the wyrm away from the doorway, or hold the hollow's approach long enough for it to follow into shelter. Both happen on the board; the wyrm may resist. Which plan will you start with?",
+      "narration": "The withdrawal lane is clear. The hollow is ready. The wyrm lifts its head from the bench and watches you. On the board, you can drive it away from the doorway, or hold the hollow's approach while it finds the shelter. It may resist either plan. Which job will your party take into the encounter?",
       "choices": [
         {
           "id": "plan_1",
@@ -1195,7 +1195,6 @@
     },
     "tools_check": {
       "type": "check",
-      "tags": ["search"],
       "stat": "clever",
       "tn": 12,
       "roller": "party",
@@ -1329,11 +1328,7 @@
       "art": "scenes/riftlight/wyrm-nest"
     },
     "shelves_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Set the furniture level on the marked sound floor.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "shelves_clear",
         "narration": "The furniture stays level when the builder tests its edge."
@@ -1348,7 +1343,18 @@
           "name": "Yeti builder"
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "narration": "Level the reading furniture on the marked sound floor. One book keeps sliding off. It is becoming a very short story.",
+      "interaction": {
+        "kind": "balance",
+        "objectLabel": "reading furniture",
+        "cue": "Raise or lower your side until the load is level.",
+        "actionLabel": "Carry it together"
+      },
+      "onAssisted": {
+        "goto": "shelves_clear",
+        "narration": "The furniture stays level when the builder tests its edge."
+      }
     },
     "shelves_clear": {
       "type": "story",
@@ -1390,7 +1396,7 @@
     },
     "readers": {
       "type": "choice_point",
-      "narration": "The first readers wait beside their notes in the old reading room. They need a clear lane to their working tables, well away from the nest. How will you guide them?",
+      "narration": "The first readers wait in the old room with their notes stacked against their chests. A corner of paper trembles whenever someone breathes on it. They need a clear route to their working tables, away from the nest. How will you show them the lane your party has prepared?",
       "choices": [
         {
           "id": "plan_1",
@@ -1475,12 +1481,7 @@
       "art": "scenes/riftlight/wyrm-nest"
     },
     "readers_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "checkKind": "doing",
-      "prompt": "Lead a quiet walking rhythm so readers can follow without a loud call.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "readers_clear",
         "narration": "The readers follow the rhythm through the cleared lane."
@@ -1500,7 +1501,44 @@
           "count": 2
         }
       ],
-      "art": "scenes/riftlight/wyrm-nest"
+      "art": "scenes/riftlight/wyrm-nest",
+      "narration": "Show the readers a quiet walking rhythm. No shouted instructions beside a nesting wyrm, please. Even the books seem to be whispering.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Set a quiet walking rhythm: look, step, pause.",
+        "actionLabel": "Try our order",
+        "options": [
+          {
+            "id": "step0",
+            "label": "Look at the path",
+            "icon": "hand"
+          },
+          {
+            "id": "step1",
+            "label": "Take one soft step",
+            "icon": "hand"
+          },
+          {
+            "id": "step2",
+            "label": "Pause and listen",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "step0",
+          "step1",
+          "step2"
+        ],
+        "clues": [
+          "Look before moving.",
+          "The soft step comes between looking and listening.",
+          "Finish by pausing to listen."
+        ]
+      },
+      "onAssisted": {
+        "goto": "readers_clear",
+        "narration": "The readers follow the rhythm through the cleared lane."
+      }
     },
     "readers_clear": {
       "type": "story",
@@ -1813,7 +1851,7 @@
     },
     "ending": {
       "type": "story",
-      "narration": "The readers have space to work, the wyrm has space to rest, and the old ice has been left quiet. A builder hangs the chisel hats beside the doorway. The glacier is a changed place when you leave it, because of something your party chose and did.",
+      "narration": "The readers have room for their notes. The wyrm has room to rest. The old ice stays quiet. A builder hangs the chisel hats beside the doorway and adds one last reminder: no scraping near the neighbor. You leave a glacier where people and wyrm have more room because your party made it.",
       "choices": [],
       "outcome": "success",
       "variants": [
@@ -1837,6 +1875,20 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "shelves_check": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "readers_check": {
+        "props": [
+          "prop_stepping_stones"
+        ]
+      }
     }
   }
 }

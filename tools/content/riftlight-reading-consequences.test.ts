@@ -1,5 +1,5 @@
 import { expect, it } from "vitest";
-import { chapters, send, start } from "./riftlight-test-support.ts";
+import { chapters, finishInteraction, send, start } from "./riftlight-test-support.ts";
 
 const chapter = chapters.get("riftlight-reading-room")!;
 
@@ -36,6 +36,9 @@ it.each([
       state = send(state, { type: "CHOOSE", choiceId: id }, chapter);
     } else if (state.prompt?.kind === "roll") {
       state = send(state, { type: "ROLL" }, chapter, route.face);
+    } else if (state.prompt?.kind === "interaction") {
+      const canMiss = ["timing", "precision", "tracking", "memory", "sequence"].includes(state.prompt.spec.kind);
+      state = finishInteraction(state, chapter, canMiss && route.face === 1 ? "failure" : "success");
     } else state = send(state, { type: "ADVANCE" }, chapter);
   }
   expect(state.flags.memory_independent_reading).toBe(route.independent);

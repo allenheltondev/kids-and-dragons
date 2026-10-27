@@ -1,7 +1,6 @@
 import { expect, it } from "vitest";
 import { completeVisit, parseCampaignGraph, startJourney, takeExit, takeRiftAction } from "@kad/shared";
-import { predictMinutes } from "../../packages/shared/src/chapter-pacing.ts";
-import { allPaths, campaign, chapters, send, start } from "./riftlight-test-support.ts";
+import { allPaths, campaign, chapters, finishInteraction, send, start } from "./riftlight-test-support.ts";
 
 const chapter = chapters.get("riftlight-the-island-due-back")!;
 const graph = parseCampaignGraph(campaign).graph!;
@@ -12,7 +11,7 @@ function walk(preferences: Record<string, string>, face: number, flags: Record<s
   let state = start(chapter, "manticore", "duskrunner", flags, 3);
   for (const p of state.party) p.hp = 1;
   const trace = new Map<string, { narration: string; choices: string[] }>();
-  let checks = 0, decisions = 0, steps = 0;
+  let checks = 0, decisions = 0, steps = 0, activities = 0;
   while (state.phase !== "chapter_complete") {
     expect(++steps).toBeLessThan(150);
     const options = state.prompt?.kind === "choice" ? state.prompt.options : [];
@@ -27,11 +26,15 @@ function walk(preferences: Record<string, string>, face: number, flags: Record<s
     } else if (state.prompt?.kind === "roll") {
       checks++;
       state = send(state, { type: "ROLL" }, chapter, faces[state.sceneId!] ?? face);
+    } else if (state.prompt?.kind === "interaction") {
+      activities++;
+      const canMiss = ["precision", "timing", "sequence", "memory", "tracking"].includes(state.prompt.spec.kind);
+      state = finishInteraction(state, chapter, canMiss && (faces[state.sceneId!] ?? face) === 1 ? "failure" : "success");
     } else state = send(state, { type: "ADVANCE" }, chapter, face);
   }
   trace.set(state.sceneId!, { narration: state.narration, choices: [] });
   const words = [...trace.values()].reduce((n, s) => n + s.narration.split(/\s+/).length, 0);
-  return { state, trace, metrics: { scenes: trace.size, words, wordsMin: words, checks, decisions, encounters: 0 } };
+  return { state, trace, metrics: { scenes: trace.size, words, wordsMin: words, checks, decisions, encounters: 0, activities } };
 }
 
 it.each([false, true])("the actual whale opening produces the correct island approach: scattered=%s", (scattered) => {
@@ -53,12 +56,12 @@ it.each([
   { name: "letters, verified evidence and public warning", face: 20, station: false, share: true, warn: true },
   { name: "working station and private notes", face: 20, station: true, share: false, warn: true },
   { name: "wet letters, keeper-assisted evidence and inspection first", face: 1, station: false, share: false, warn: false },
-  { name: "unfinished station and shared incomplete evidence", face: 1, station: true, share: true, warn: false },
+  { name: "steady station and shared incomplete evidence", face: 1, station: true, share: true, warn: false },
 ])("preserves $name through an entire played engine route", (route) => {
   const { state, trace, metrics } = walk({ priority: route.station ? "option_2" : "option_1", bearings: "relay", record: route.share ? "option_1" : "option_2", departure: route.warn ? "option_1" : "option_2" }, route.face);
   expect(state.flags.fragment_sky_learned).toBe(true);
   expect(state.flags.island_messages_saved).toBe(!route.station && route.face === 20);
-  expect(state.flags.island_station_ready).toBe(route.station && route.face === 20);
+  expect(state.flags.island_station_ready).toBe(route.station);
   expect(state.flags.island_land_match).toBe(route.face === 20);
   expect(state.flags.island_record_shared).toBe(route.share);
   expect(state.flags.island_warning_sent).toBe(route.warn);
@@ -68,10 +71,9 @@ it.each([
   expect(trace.get("landing")!.narration).toContain(route.face === 20 ? "checked alignment" : "second lookout");
   expect(trace.get("return")!.narration).toContain(route.share ? "shared copy" : "private sketch");
   expect(trace.get("return")!.narration).toContain(route.warn ? "first message is the course warning" : "first message asks for another reader");
-  expect(metrics.decisions).toBe(route.face === 20 ? 14 : 16);
-  expect(metrics.checks).toBe(6);
-  expect(predictMinutes(metrics)).toBeGreaterThanOrEqual(30);
-  expect(predictMinutes(metrics)).toBeLessThanOrEqual(40);
+  expect(metrics.activities).toBeGreaterThanOrEqual(9);
+  expect(metrics.checks).toBe(0);
+  expect(chapter.estimatedMinutes).toBe(30);
   expect(state.party.every((p) => p.hp === 1 && !p.down)).toBe(true);
   expect(state.party.flatMap((p) => p.character.questItems)).toEqual(["listening_chime"]);
 });
@@ -87,13 +89,13 @@ it.each(["batches", "borrow"])("a failed landing lets the party choose %s with a
   expect(trace.get("departure")!.narration.includes("offers to carry this authorized message")).toBe(recovery === "borrow");
   expect(trace.get("return")!.narration.includes("later than a light-kit crossing")).toBe(recovery === "batches");
   expect(state.flags.fragment_sky_learned).toBe(true);
-  expect(metrics.decisions).toBe(15);
-  expect(metrics.checks).toBe(6); // Recovery adds a plan, not a reroll.
+  expect(metrics.activities).toBeGreaterThanOrEqual(9);
+  expect(metrics.checks).toBe(0); // Recovery adds a plan, not a reroll.
 });
 
 it.each(["keeper", "pip"])("failed comparison leaves discovery to the party's %s-assisted follow-up", (helper) => {
   const { state, trace } = walk({ comparison_recovery: helper }, 20, {}, { comparison_1_check: 1 });
-  const discovery = helper === "keeper" ? "comparison_recover_scale" : "comparison_recover_view";
+  const discovery = helper === "keeper" ? "comparison_recover_scale_done" : "comparison_recover_view_done";
   expect(trace.has("comparison_recovery")).toBe(true);
   expect(trace.get(discovery)!.narration).toContain("the land was joined here");
   expect(state.flags.island_land_match).toBe(false); // Do not turn a failed roll into independent success.

@@ -1,14 +1,18 @@
 import { expect, it } from "vitest";
 import { completeVisit, enterScene, parseCampaignGraph, startJourney, takeExit } from "@kad/shared";
-import { allPaths, campaign, chapters, context, send, start } from "./riftlight-test-support.ts";
+import { allPaths, campaign, chapters, context, finishInteraction, send, start } from "./riftlight-test-support.ts";
 
-it("the valley records the route actually used, including changed plans after a failed check", () => {
+it("the valley records the interactive route actually used, including a played backup after a miss", () => {
   const c = chapters.get("riftlight-the-wrong-valley")!;
-  for (const option of [1, 2]) for (const face of [1, 20]) {
-    const high = face === 20 ? option === 2 : option === 1;
+  for (const option of [1, 2]) for (const outcome of ["success", "failure", "assisted"] as const) {
+    const high = outcome !== "failure" ? option === 2 : option === 1;
     const initial = start(c, "manticore", "duskrunner", { valley_crossed_high: !high });
-    const checking = enterScene(initial, `crossing_choice_${option}_check`, context(c, face)).state;
-    const result = send(checking, { type: "ROLL" }, c, face);
+    let result = enterScene(initial, `crossing_choice_${option}_check`, context(c)).state;
+    result = finishInteraction(result, c, outcome);
+    if (outcome === "failure") {
+      expect(result.sceneId).toBe(option === 1 ? "high_recovery" : "low_recovery");
+      result = finishInteraction(result, c);
+    }
     expect(result.flags.valley_crossed_high).toBe(high);
     expect(result.narration).toContain(high ? "high rock reach" : "supported low shelf");
   }

@@ -1,0 +1,9 @@
+# Stone Counters route overview
+
+Generated with the built-in image generation tool. Style reference: `assets/scenes/riftlight/stone-counters.webp`. Source painting retained alongside this file; shipped as opaque 1920 x 1080 WebP, quality 88.
+
+Shown only as the water cart arrives and at `cart_plan`, before either ramp or carrying work changes the scene. Existing art remains on outcome scenes. Reviewed for readable route separation, cart, hollow and stone; no solution or text baked into the painting.
+
+## Final prompt
+
+Use case: illustration-story. Asset type: wide 16:9 children's fantasy adventure scene, Stone Counters route overview. Create a new companion illustration matching the supplied reference's warm hand-painted storybook look, orange-red foothills, golden grass and friendly proportions. Show the same tall weathered counting stone carved with a mountain throwing sparks, standing beside its separate empty oval footprint in pale grass. Make the layout exceptionally readable for children: a lower dirt cart road bends tightly around the standing stone; a visibly separate higher footpath curves up the hillside. A simple two-wheeled wooden cart with sealed clay water jars waits on the approach, before the obstructed turn. A narrow dry drainage groove crosses the grass near the hollow, not a river. A small stack of unused planks and coiled rope sits beside the cart. Two small pale-green dragonling keepers with dark green spines and orange wing membranes inspect the routes, one comically leaning sideways to see whether the cart will fit. No bridge, no completed ramp, no placed warning sign, no arrows, no labels or text, no revealed solution, no UI. Slightly elevated three-quarter view so both routes and the empty footprint are clearly visible at tablet size. Keep a calm open foreground and enough separation that the cart, stone, hollow and routes do not overlap. Preserve cozy curiosity, no danger or frightening elements.

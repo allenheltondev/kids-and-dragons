@@ -6,7 +6,7 @@
   "title": "The Island Due Back",
   "biome": "sky_islands",
   "music": "riftlight-paths",
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "arrival",
   "plate": {
@@ -58,7 +58,7 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "Beyond the whales' turning place, a kitsune keeper stands beside a lookout bell. Pip Thistledown, the manticore scout, holds the bell rope clear of his tail. A low, flat island is appearing beneath the cloud. On the grass lie a folded landing board, signal cloths and a wooden box of song slips. \"That one is due back,\" the keeper says. \"We have sung for its return since before I was born. I expected more time to get the board out.\" Pip takes a breath. \"What needs doing first?\"",
+      "narration": "Beyond the whales' turning place, a kitsune keeper stands beside a lookout bell. Pip Thistledown, the manticore scout, holds its rope clear of his tail. A flat island appears beneath the cloud. Beside you wait a folded landing board, signal cloths and a wooden box of song slips. \"Help us meet that island,\" says the keeper. \"It is due back. I expected more time to get the board out.\"",
       "choices": [
         {
           "id": "continue",
@@ -112,6 +112,11 @@
           "type": "setFlag",
           "flag": "island_relay_delayed",
           "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "island_light_kit",
+          "value": false
         }
       ],
       "variants": [
@@ -141,68 +146,48 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "return_song": {
-      "type": "choice_point",
-      "narration": "The keeper opens the box of song slips. Each slip carries a line and the marks for its tune; together they describe the island expected after a long circuit. The oldest line says \"a flat brow, a notch, a stone with an empty eye.\" Pip looks from the slips to the shape beneath the cloud. The keeper offers to sing the line again while you look, or let you arrange the slips on the ground. \"A song can tell us what to look for. It cannot make this the right island.\" How will you test the welcome?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Sing the signs while Pip points them out",
-          "icon": "hand",
-          "goto": "return_song_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Lay out the signs and leave unknown ones blank",
-          "icon": "hand",
-          "goto": "return_song_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "return_song_1": {
-      "type": "story",
-      "narration": "You take one sign at a time. Pip finds a low brow, then the notch. A round hole through a standing stone is still hidden by mist. You leave that part of the song unanswered. The keeper smiles at the silence. \"We can wait for a thing we have not seen.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "sightings"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "return_song_2": {
-      "type": "story",
-      "narration": "You set the slips in order and put a pebble beside the two shapes you can see. The empty-eye stone stays unmarked. Pip tries to add a pebble for it, catches himself and puts the pebble back in his pocket. \"Two signs. One question,\" he says.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "sightings"
-        }
-      ],
+      "type": "interaction",
+      "narration": "The keeper opens the song box. She taps a different shape on each slip as the welcome tune moves between them. Watch the song-shape pattern, then echo it while Pip searches beneath the cloud. \"A song with directions,\" he says. \"Much harder to lose than my map.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the welcome's shape pattern, then echo it.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "eye",
+            "label": "Stone with an empty eye",
+            "icon": "eye"
+          },
+          {
+            "id": "brow",
+            "label": "Flat brow",
+            "icon": "eye"
+          },
+          {
+            "id": "notch",
+            "label": "Notch",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "brow",
+          "notch",
+          "eye"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "sightings",
+        "narration": "The keeper sings the shapes while your party checks the approaching outline."
+      },
+      "onFailure": {
+        "goto": "sightings",
+        "narration": "The keeper holds the song slips open as a reference. You compare the shapes together instead of claiming to know the welcome by heart."
+      },
+      "onAssisted": {
+        "goto": "sightings",
+        "narration": "The keeper sings the shapes while your party checks the approaching outline."
+      },
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -217,7 +202,7 @@
     },
     "sightings": {
       "type": "choice_point",
-      "narration": "A notch on the approaching island slides past a distant cloud break. The keeper pushes two short sighting sticks into firm grass, well away from the edge. She needs to know which side of the lookout the island will pass before anyone lays out the landing board. The nearest cloud is moving too; a single glance could make the island seem to turn. You can compare the notch from both sticks or watch its movement against a fixed corner of the lookout roof. Which view will you trust enough to test?",
+      "narration": "A notch on the approaching island slides past a distant cloud break. The keeper plants two sighting sticks beside the lookout. \"The clouds move too. Check the notch against the roof corner, or follow it through the cloud banks.\" Which sighting will you test?",
       "choices": [
         {
           "id": "option_1",
@@ -256,7 +241,7 @@
     },
     "sightings_1": {
       "type": "story",
-      "narration": "You and Pip take the two sticks. Each calls only when the notch lines up, while the keeper counts the beats between calls. Nobody walks backward toward the edge. You repeat the sighting rather than change a report to make both agree.",
+      "narration": "Use the fixed roof corner to check when the moving notch passes it. Pip keeps yesterday's sketch out of the way.",
       "choices": [
         {
           "id": "continue",
@@ -278,16 +263,24 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "sightings_1_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Compare the notch from two fixed viewpoints. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
+      "narration": "Track the approaching island from the marked ground. Use the fixed lookout corner or follow the notch through the moving cloud; a drifting cloud alone is no landmark.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Mark the notch as it passes the fixed roof corner.",
+        "actionLabel": "Mark the island's approach",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
       "onSuccess": {
         "goto": "sightings_1_done"
       },
       "onFailure": {
         "goto": "sightings_1_changed"
+      },
+      "onAssisted": {
+        "goto": "sightings_1_done"
       },
       "cast": [
         {
@@ -361,7 +354,7 @@
     },
     "sightings_2": {
       "type": "story",
-      "narration": "Pip holds a string upright beside the roof corner. You watch from the marked grass and call when the notch passes it. The keeper listens to a second count before moving any equipment. The roof gives a fixed edge even when the clouds change shape.",
+      "narration": "Follow the same notch through the moving cloud banks. The keeper points out its shape before the cloud hides it.",
       "choices": [
         {
           "id": "continue",
@@ -383,16 +376,42 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "sightings_2_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Time the notch against the lookout roof. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
+      "narration": "Track the approaching island from the marked ground. Use the fixed lookout corner or follow the notch through the moving cloud; a drifting cloud alone is no landmark.",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Follow the marked notch-view through the cloud banks.",
+        "actionLabel": "Locate the notch",
+        "covers": [
+          "Near cloud",
+          "Round cloud",
+          "High cloud"
+        ],
+        "start": 2,
+        "swaps": [
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "stepMs": 1400
+      },
       "onSuccess": {
         "goto": "sightings_2_done"
       },
       "onFailure": {
         "goto": "sightings_2_changed"
+      },
+      "onAssisted": {
+        "goto": "sightings_2_done"
       },
       "cast": [
         {
@@ -466,7 +485,7 @@
     },
     "priority": {
       "type": "choice_point",
-      "narration": "A gust lifts the corner of the song box and sets it rattling. At the same time, a messenger's loose shoulder bag slides down the grassy slope toward a low fence. A keeper has hold of the messenger; nobody is falling. The bag carries sealed letters for moving addresses. The open lookout has the song slips and the cloth you will need for signals. Two keepers can cover whichever job you leave them, but they cannot finish both before the next gust. Your party can recover the letters or make the signal station ready. Which work do you take?",
+      "narration": "A gust rattles the song box. A messenger's letter bag slides toward the low fence; a keeper has hold of the messenger herself. Your team can recover the sealed letters or ready the signal station. The other job must wait. Dry letters preserve a messenger departure; a ready station can send a temple signal. Which comes first?",
       "choices": [
         {
           "id": "option_1",
@@ -499,7 +518,7 @@
     },
     "priority_1": {
       "type": "story",
-      "narration": "You tell the keeper to cover the song box. Pip watches the bag lodge against a fence post and points out a path across the slope. The messenger asks you to leave the letters sealed. You agree. Saving a letter does not make its contents yours to read.",
+      "narration": "The messenger points out her bag's strong strap. The other keepers cover the song slips while your party goes to the fence.",
       "choices": [
         {
           "id": "continue",
@@ -526,7 +545,7 @@
     },
     "priority_2": {
       "type": "story",
-      "narration": "You ask the messenger to help the other keeper reach the bag. Your party stays at the lookout. Pip puts both paws on the song box while the keeper brings a cover and spare cloth ties. She needs the slips dry and the signals loose enough to lift.",
+      "narration": "Your party takes the signal frame. The messenger stays with a keeper while her low bag waits for recovery.",
       "choices": [
         {
           "id": "continue",
@@ -553,7 +572,7 @@
     },
     "letters": {
       "type": "choice_point",
-      "narration": "The messenger bag hangs against the inside of the low fence. Its strap catches whenever the gust pulls it outward. From the firm path above, you can reach it with a loop on a long pole; or you can pass a line along the fence and draw it sideways to a gate. The keeper holds the slope clear. Nobody needs to climb beyond the fence or fly into the wind. The messenger points to a stout seam on the bag. \"That part can take a pull. The flap cannot.\" Which way will you bring it in?",
+      "narration": "The mailbag catches inside the fence. Reach its strong strap with a looped pole, or pass a hauling line toward the gate. The messenger points at the flap. \"Not that bit. That bit is mostly wishes.\" Which way will you bring it in?",
       "choices": [
         {
           "id": "option_1",
@@ -593,7 +612,7 @@
     },
     "letters_1": {
       "type": "story",
-      "narration": "You open the loop wider than the strap and let the gust settle before lowering it. Pip keeps the pole from swinging across anyone's face. The messenger calls when the stout seam faces the path. Your party can take turns without putting more weight on the fence.",
+      "narration": "Reach the looped pole from the dry path. Aim at the strap the messenger pointed out, not the loose flap.",
       "choices": [
         {
           "id": "continue",
@@ -619,11 +638,7 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "letters_1_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Lift the strap with a looped pole. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "letters_1_done"
       },
@@ -644,7 +659,19 @@
           "name": "Letter messenger"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-due-back",
+      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled holiday.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap when the marker reaches the gold.",
+        "actionLabel": "Catch the mail strap",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 4500
+      },
+      "onAssisted": {
+        "goto": "letters_1_done"
+      }
     },
     "letters_1_done": {
       "type": "story",
@@ -654,7 +681,7 @@
           "id": "continue",
           "label": "Go on with this result",
           "icon": "hand",
-          "goto": "signal_plan"
+          "goto": "camp"
         }
       ],
       "onEnter": [
@@ -688,7 +715,7 @@
           "id": "continue",
           "label": "Go on with this result",
           "icon": "hand",
-          "goto": "signal_plan"
+          "goto": "camp"
         }
       ],
       "onEnter": [
@@ -716,7 +743,7 @@
     },
     "letters_2": {
       "type": "story",
-      "narration": "You pass the line through the gate rather than over the outer edge. Pip guides it under a low rail. The messenger shows you how to support the bag from beneath so the paper inside does not take the strain. Your party pulls only on her count.",
+      "narration": "Pass a hauling line along the inside fence toward the gate. The messenger can draw the bag sideways from there.",
       "choices": [
         {
           "id": "continue",
@@ -742,16 +769,22 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "letters_2_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Draw the bag sideways along the fence. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
+      "narration": "Pass the hauling line along the inside of the fence. The messenger draws the bag toward the gate while the keeper holds the slope clear.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the hauling line toward the fence gate.",
+        "actionLabel": "Pass the hauling line",
+        "objectLabel": "Mailbag hauling line"
+      },
       "onSuccess": {
         "goto": "letters_2_done"
       },
       "onFailure": {
         "goto": "letters_2_changed"
+      },
+      "onAssisted": {
+        "goto": "letters_2_done"
       },
       "cast": [
         {
@@ -777,7 +810,7 @@
           "id": "continue",
           "label": "Go on with this result",
           "icon": "hand",
-          "goto": "signal_plan"
+          "goto": "camp"
         }
       ],
       "onEnter": [
@@ -811,7 +844,7 @@
           "id": "continue",
           "label": "Go on with this result",
           "icon": "hand",
-          "goto": "signal_plan"
+          "goto": "camp"
         }
       ],
       "onEnter": [
@@ -838,68 +871,25 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "station": {
-      "type": "choice_point",
-      "narration": "The song slips flutter inside their open box. Beside it stands a low signal frame with two cloths tied at the bottom; one tie has worked loose. The keeper can hold the cover while you secure the frame, or pin the cloth while you move the box under the lookout roof. The frame carries warnings, not the weight of an island. It must turn freely enough for another keeper to read both cloths. Pip tests his grip and waits for your plan. Which part will you settle first?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Brace the frame while the keeper fixes its ties",
-          "icon": "hand",
-          "goto": "station_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Move the box under cover and retie from shelter",
-          "icon": "hand",
-          "goto": "station_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "station_1": {
-      "type": "story",
-      "narration": "You stand on the landward side of the frame and steady its feet. The keeper replaces the loose tie without binding the turning arm. Pip holds the cover over the box. Your party calls a halt whenever a gust makes someone shift their stance.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "station_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "station_1_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Brace the frame while the keeper fixes its ties. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
+      "narration": "The signal frame rocks in the wet grass. Level its weighted feet while the keeper covers the song box. The frame must turn freely for both cloths to show. A working frame will let you prepare a temple signal instead of packing a longer hand relay.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the signal frame before securing its feet.",
+        "actionLabel": "Secure the station",
+        "objectLabel": "Signal frame"
+      },
       "onSuccess": {
-        "goto": "station_1_done"
+        "goto": "station_1_done",
+        "narration": "The frame stands level. Both cloths turn freely."
       },
       "onFailure": {
-        "goto": "station_1_changed"
+        "goto": "station_1_changed",
+        "narration": "A foot slides. You lower the frame and keep the song slips dry; messages will need a hand relay."
+      },
+      "onAssisted": {
+        "goto": "station_1_done",
+        "narration": "The frame stands level. Both cloths turn freely."
       },
       "cast": [
         {
@@ -921,7 +911,7 @@
           "id": "continue",
           "label": "Go on with this result",
           "icon": "hand",
-          "goto": "signal_plan"
+          "goto": "camp"
         }
       ],
       "onEnter": [
@@ -951,114 +941,7 @@
           "id": "continue",
           "label": "Go on with this result",
           "icon": "hand",
-          "goto": "signal_plan"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "island_station_ready",
-          "value": false
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "station_2": {
-      "type": "story",
-      "narration": "You pass the box hand to hand beneath the lookout roof. Pip holds the cloth still while you copy the keeper's knot on the loose tie. You check that it releases as well as holds; a cloth trapped against its frame cannot carry a useful warning.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "station_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "station_2_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Move the box under cover and retie from shelter. Choose who leads; everyone can help from the marked ground.",
-      "onSuccess": {
-        "goto": "station_2_done"
-      },
-      "onFailure": {
-        "goto": "station_2_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "station_2_done": {
-      "type": "story",
-      "narration": "The box is dry under the roof and both cloths lift cleanly. The keeper checks your knot and turns the frame toward the neighboring temple lookout. Someone there raises a small answering cloth. The station is ready before the island has finished coming into view.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "signal_plan"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "island_station_ready",
-          "value": true
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "station_2_changed": {
-      "type": "story",
-      "narration": "The wet tie tightens around the turning arm. You lower the cloth instead of tearing it free. The keeper covers the slips and starts loosening the knot. Hand-carried signals remain possible, but the station needs repair before anyone can rely on it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "signal_plan"
+          "goto": "camp"
         }
       ],
       "onEnter": [
@@ -1082,7 +965,7 @@
     },
     "signal_plan": {
       "type": "choice_point",
-      "narration": "The keeper lays a white cloth and a striped cloth on the grass. White means \"watch this approach\"; striped means \"stop and wait.\" Pip volunteers to stand at the far end of the marked ground, where he can see the island and your party. He can repeat each signal so you know it reached him, or watch continuously while the keeper calls the changes. The keeper makes both signs slowly before asking you to use them. Neither sign orders the island around. They tell people when to move. Which arrangement will you practice?",
+      "narration": "The keeper lays out the cloths: white means watch; striped means stop. Pip can repeat your signal so you know it reached him, or keep watching the island while the keeper calls. Repeating will help with the later bearing; continuous watching follows the notch. Which job will you practice?",
       "choices": [
         {
           "id": "option_1",
@@ -1110,23 +993,47 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "signal_plan_1": {
-      "type": "story",
-      "narration": "Pip lifts the same cloth only after he sees yours. You wait for his answer, then take one step along the grass. The keeper changes to striped. Everyone stops. Repeating the sign uses a little time now, but it catches a cloth hidden by a shoulder before a crossing depends on it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "bearings"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "island_signal_repeated",
-          "value": true
-        }
-      ],
+      "type": "interaction",
+      "narration": "Pass the striped stop signal along the marked ground. Pip repeats it only after it reaches him. The keeper waits for that echo before anyone uses the board.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the stop signal, then pass it to the next watcher.",
+        "actionLabel": "Pass the stop signal",
+        "objectLabel": "Repeated stop signal"
+      },
+      "onSuccess": {
+        "goto": "bearings",
+        "narration": "Every watcher echoes the stop before the next move.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_signal_repeated",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "bearings",
+        "narration": "Every watcher echoes the stop before the next move.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_signal_repeated",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "bearings",
+        "narration": "Every watcher echoes the stop before the next move.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_signal_repeated",
+            "value": true
+          }
+        ]
+      },
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1140,23 +1047,67 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "signal_plan_2": {
-      "type": "story",
-      "narration": "Pip keeps both eyes on the island while the keeper calls each change from beside you. You practice a step, a halt and a return. You have one lookout devoted to movement, though anyone who misses a call must stop and ask again. The keeper refuses to count silence as agreement.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "bearings"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "island_signal_repeated",
-          "value": false
-        }
-      ],
+      "type": "interaction",
+      "narration": "Keep watching the island's notch through the cloud while the keeper gives the cloth calls. You gain one continuous view rather than a repeated signal; the normal measuring interval will still apply.",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Follow the notch-view without changing watchers.",
+        "actionLabel": "Point out the notch",
+        "covers": [
+          "Low cloud",
+          "Middle cloud",
+          "Tall cloud"
+        ],
+        "start": 1,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ]
+        ],
+        "stepMs": 1400
+      },
+      "onSuccess": {
+        "goto": "bearings",
+        "narration": "The keeper has a continuous sighting while she calls the cloths.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_signal_repeated",
+            "value": false
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "bearings",
+        "narration": "The keeper takes over the hidden sighting. You will use her second lookout for any unfinished measure.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_signal_repeated",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "bearings",
+        "narration": "The keeper has a continuous sighting while she calls the cloths.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_signal_repeated",
+            "value": false
+          }
+        ]
+      },
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1171,7 +1122,7 @@
     },
     "bearings": {
       "type": "choice_point",
-      "narration": "The returning island clears the cloud with a flat shelf facing the lookout. A round hole through its standing stone gives the song its third sign: the empty eye. Between the islands, strips of mist reveal the gap widening and narrowing. The keeper has a short landing board with side ropes, long enough only when the shelves draw close. She will lay it down after two matching observations, and lift it if they disagree. Do you measure the gap with the board's painted marks or call the two shelves' closest points in rhythm?",
+      "narration": "The returning island clears the cloud with its flat shelf and stone's empty eye. The landing board fits only while the shelves are close. Compare its painted marks with the gap, or follow the shelves' movement. Your repeated signal, if practiced, gives a wider measuring interval. How will you check the approach?",
       "choices": [
         {
           "id": "option_1",
@@ -1209,7 +1160,7 @@
     },
     "bearings_1": {
       "type": "story",
-      "narration": "You keep the board on your own grass and use its painted lengths as a sighting scale. Pip signals from the far mark on the lookout ground. The keeper repeats your measure aloud before making the next one. Nobody tests the distance by stepping into it.",
+      "narration": "Compare the gap with the board's painted limit. Call the close interval from the lookout; the keeper will repeat the measure.",
       "choices": [
         {
           "id": "continue",
@@ -1231,11 +1182,7 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "bearings_1_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Compare the gap with the board's painted marks. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "bearings_1_done"
       },
@@ -1252,7 +1199,19 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-due-back",
+      "narration": "Watch the two shelves from the lookout. Wait for their closest point, then call your measure. The keeper will repeat it before laying down the board. Nobody steps into the gap to test it.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap in the gold when the shelves line up.",
+        "actionLabel": "Call the measure",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onAssisted": {
+        "goto": "bearings_1_done"
+      }
     },
     "bearings_1_done": {
       "type": "story",
@@ -1326,7 +1285,7 @@
     },
     "bearings_2": {
       "type": "story",
-      "narration": "Pip calls from his lookout mark while you watch the near shelf. The keeper keeps a beat with one finger on the board. You call only when the two edges hold their closest alignment for a full beat. A fast shout does not lengthen the board.",
+      "narration": "Follow the shelf edge through the mist. Keep the same shelf in view while the keeper checks the gap.",
       "choices": [
         {
           "id": "continue",
@@ -1348,11 +1307,7 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "bearings_2_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Call the shelves' closest points together. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "bearings_2_done"
       },
@@ -1369,7 +1324,19 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-due-back",
+      "narration": "Watch the two shelves from the lookout. Wait for their closest point, then call your measure. The keeper will repeat it before laying down the board. Nobody steps into the gap to test it.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap in the gold when the shelves line up.",
+        "actionLabel": "Call the measure",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onAssisted": {
+        "goto": "bearings_2_done"
+      }
     },
     "bearings_2_done": {
       "type": "story",
@@ -1443,7 +1410,7 @@
     },
     "bearings_relay": {
       "type": "story",
-      "narration": "Pip repeats your cloth before the next measure. A gust hides your first sign; because you wait for his answer, nobody mistakes it for permission. The keeper gives you the board scale and asks for the same two observations. Your preparation makes the communication clearer, while the gap still needs checking.",
+      "narration": "Use the repeated signal you practiced. The keeper's echoed call makes the close interval easier to follow.",
       "choices": [
         {
           "id": "continue",
@@ -1465,11 +1432,7 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "bearings_relay_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Compare the gap with the board's painted marks. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "bearings_1_done"
       },
@@ -1486,11 +1449,23 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-due-back",
+      "narration": "Watch the two shelves from the lookout. Wait for their closest point, then call your measure. The keeper will repeat it before laying down the board. Nobody steps into the gap to test it.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap in the gold when the shelves line up.",
+        "actionLabel": "Call the measure",
+        "target": 0.5,
+        "width": 0.55,
+        "periodMs": 5000
+      },
+      "onAssisted": {
+        "goto": "bearings_1_done"
+      }
     },
     "landing": {
       "type": "choice_point",
-      "narration": "The keeper lays the landing board across the close shelves. Side ropes stand at hand height. A second keeper crosses first to secure the far side. Nobody is asked to hold either island still. Pip checks that the striped stop cloth is visible from both ends. Your party will cross one at a time with the keepers watching the changing gap. A gust presses the empty board sideways. You can steady its near foot while the keeper secures it, or check the side ropes and guide the first steps. Which job do you take? The shelves are traveling alongside one another for now. The keepers will watch the gap throughout the visit and call you back before lifting the board.",
+      "narration": "The keeper lays the board between the close shelves. A second keeper secures the far rope. You can center the near foot, or level the loaded board before following its side ropes. The keepers will watch the gap throughout your visit and call you back. Which job will you take?",
       "choices": [
         {
           "id": "option_1",
@@ -1517,13 +1492,13 @@
           "when": {
             "flag": "island_approach_verified"
           },
-          "text": "Pip has your checked alignment ready for the return. He can repeat it while the keeper watches for a change."
+          "text": "Pip keeps your checked alignment ready for the return."
         },
         {
           "when": {
             "notFlag": "island_approach_verified"
           },
-          "text": "The keeper assigns a second lookout to the return gap because your own estimate was unfinished. Pip repeats her calls rather than presenting them as your measurement."
+          "text": "Your estimate is unfinished; the second lookout will call the return gap."
         }
       ],
       "cast": [
@@ -1540,7 +1515,7 @@
     },
     "landing_1": {
       "type": "story",
-      "narration": "You work from the near grass. The keeper secures the board's foot to its own small landing stake; she leaves room to lift it free if the islands separate. Pip waits for the white cloth before calling anyone forward. The stake carries the board, not the drifting land.",
+      "narration": "Watch the near foot while the keeper takes the tie. Center it before the party crosses with its kit.",
       "choices": [
         {
           "id": "continue",
@@ -1562,16 +1537,24 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "landing_1_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Steady the board while its foot is secured. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
+      "narration": "The keeper secures the board foot while you watch its movement on the near shelf. Wait for its centered interval before she tightens the tie. Nobody crosses until the foot is fixed.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Secure the board foot in its centered interval.",
+        "actionLabel": "Secure the board foot",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
       "onSuccess": {
         "goto": "landing_1_done"
       },
       "onFailure": {
         "goto": "landing_1_changed"
+      },
+      "onAssisted": {
+        "goto": "landing_1_done"
       },
       "cast": [
         {
@@ -1633,7 +1616,7 @@
     },
     "landing_2": {
       "type": "story",
-      "narration": "You follow the side ropes from knot to knot while still on the near shelf. The keeper checks the far ends. Pip watches the stop cloth, and your party practices a halt before the first person steps onto the board. Wings and tails get room without changing the walking route.",
+      "narration": "Level the loaded board while the keeper checks the side ropes. Follow her call across the steady span.",
       "choices": [
         {
           "id": "continue",
@@ -1655,16 +1638,22 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "landing_2_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Check the side ropes and guide careful steps. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
+      "narration": "Keep the board level while the second keeper secures the far-side rope. Your party follows the checked side ropes across once the board is steady.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the board before crossing with the kit.",
+        "actionLabel": "Cross the level board",
+        "objectLabel": "Landing board"
+      },
       "onSuccess": {
         "goto": "landing_2_done"
       },
       "onFailure": {
         "goto": "landing_2_changed"
+      },
+      "onAssisted": {
+        "goto": "landing_2_done"
       },
       "cast": [
         {
@@ -1725,22 +1714,46 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "stone_care": {
-      "type": "choice_point",
-      "narration": "On the returning island, the standing stone has a round hole and a broad carved face. The keeper calls it an old mooring stone: ropes once ran through the eye, but nobody proposes tying today's islands together with it. Dry grass lies over its foot. Shallow grooves cross the face in branching lines, with three raised shapes between them. Pip reaches for a loose stalk, then waits. The keeper has a soft brush and a blank sheet. \"We came to welcome it. We can look without taking it apart.\" What do you protect before reading?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Keep people off the carved face and mark a viewing place",
-          "icon": "hand",
-          "goto": "stone_care_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Make a clean place for tools and loose grass",
-          "icon": "hand",
-          "goto": "stone_care_2"
-        }
-      ],
+      "type": "interaction",
+      "narration": "On the returning island, a round hole looks through an old standing stone. Grooves wind between three raised shapes below it. Pip crouches to move his shadow away. Choose a small job to prepare the reading place without touching a worn line.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Prepare a place to read the stone.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "feet",
+            "label": "Mark where readers can stand",
+            "icon": "hand",
+            "reaction": "Boots stay back from the worn stone face."
+          },
+          {
+            "id": "grass",
+            "label": "Move loose grass away from the tool place",
+            "icon": "hand",
+            "reaction": "The brush and sheet have a clean resting place."
+          },
+          {
+            "id": "shade",
+            "label": "Move your shadow off the grooves",
+            "icon": "hand",
+            "reaction": "Pip shifts sideways until the old lines are visible."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "carving",
+        "narration": "The stone and the reading place are ready for a closer look."
+      },
+      "onFailure": {
+        "goto": "carving",
+        "narration": "The stone and the reading place are ready for a closer look."
+      },
+      "onAssisted": {
+        "goto": "carving",
+        "narration": "The stone and the reading place are ready for a closer look."
+      },
       "onEnter": [
         {
           "type": "setFlag",
@@ -1757,57 +1770,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "stone_care_1": {
-      "type": "story",
-      "narration": "You lay the blank sheet on grass and mark where people may stand. Pip bends a tall stalk to make the line visible, leaving its root in place. The keeper moves a loose carrying sack away from the grooves. Nothing rests on the stone while you read.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "carving"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "stone_care_2": {
-      "type": "story",
-      "narration": "You spread the blank sheet on firm grass for the brush and the loose stalks. Pip checks each stalk before setting it down so no tool gets buried in the pile. The keeper keeps everyone on one side of the stone while its shallow marks come into view.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "carving"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "carving": {
       "type": "choice_point",
-      "narration": "The shallow grooves are hard to separate from the grass shadows. The keeper offers the soft brush for loose dust, or the blank sheet to hold beside the stone as a shade. Neither method scratches a line or makes a rubbing across a worn surface. Two grooves almost meet beneath the eye; a crack runs past them at another angle. If you copy the crack as a road, the rest of the drawing will tell a different story. How will you make a record that leaves uncertain marks visibly uncertain?",
+      "narration": "The shallow grooves are hard to separate from grass shadows. Brush loose dust, or hold a sheet as shade. Rounded carved edges cross a sharp later crack; keep uncertain parts dotted. A complete kit adds a broad copying frame. A borrowed pocket kit leaves that wider support behind. Which tool will you use?",
       "choices": [
         {
           "id": "option_1",
@@ -1820,6 +1787,15 @@
           "label": "Shade the face and copy it from the side",
           "icon": "hand",
           "goto": "carving_2"
+        },
+        {
+          "id": "frame",
+          "label": "Use our broad copying frame",
+          "icon": "hand",
+          "goto": "carving_frame",
+          "when": {
+            "notFlag": "island_light_kit"
+          }
         }
       ],
       "cast": [
@@ -1832,11 +1808,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "carving_1": {
       "type": "story",
-      "narration": "You move the brush across a small patch while the keeper watches for flaking stone. Pip holds the drawing upright beside the face. You mark a gap wherever the brush cannot safely clear the groove. The keeper asks you to include that gap in the copy rather than improve the old carving.",
+      "narration": "Brush loose dust beside the rounded grooves. Leave the sharp crack and any uncertain meeting point out of the solid copied line.",
       "choices": [
         {
           "id": "continue",
@@ -1855,18 +1831,26 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "carving_1_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Brush loose dust and copy only clear grooves. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
+      "narration": "Guide the soft brush across the loose dust beside a carved groove. Keep clear of the sharp crack. Record only the rounded edges you can distinguish.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Trace the clear carved edge, leaving the crack alone.",
+        "actionLabel": "Record the carved edge",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
       "onSuccess": {
         "goto": "carving_1_done"
       },
       "onFailure": {
+        "goto": "carving_1_changed"
+      },
+      "onAssisted": {
         "goto": "carving_1_changed"
       },
       "cast": [
@@ -1879,7 +1863,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "carving_1_done": {
       "type": "story",
@@ -1909,7 +1893,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "carving_1_changed": {
       "type": "story",
@@ -1939,11 +1923,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "carving_2": {
       "type": "story",
-      "narration": "You and Pip hold the sheet beside the stone so it shades the glare without rubbing the surface. The keeper watches the old grooves from the side. You change the sheet's angle slowly, checking that a moving shadow does not become a copied mark.",
+      "narration": "Hold a sheet beside the stone to shade its face. The keeper points out rounded grooves while Pip copies them.",
       "choices": [
         {
           "id": "continue",
@@ -1962,18 +1946,24 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "carving_2_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Shade the face and copy it from the side. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
+      "narration": "Hold the sheet as a shade while the keeper points out rounded grooves and the sharper crack. Keep the shade steady as Pip copies the visible distinction.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold a steady shade beside the old stone.",
+        "actionLabel": "Copy the clear grooves",
+        "supportLabel": "Support the shading sheet"
+      },
       "onSuccess": {
         "goto": "carving_2_done"
       },
       "onFailure": {
+        "goto": "carving_2_changed"
+      },
+      "onAssisted": {
         "goto": "carving_2_changed"
       },
       "cast": [
@@ -1986,7 +1976,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "carving_2_done": {
       "type": "story",
@@ -2016,7 +2006,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "carving_2_changed": {
       "type": "story",
@@ -2046,25 +2036,55 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "orientation": {
-      "type": "choice_point",
-      "narration": "The keeper sets a present-day lookout sketch beside your copy. Three separate ridges show through the cloud below. The stone has three raised marks with grooves between them. Its rope groove gives the carved face a fixed top. Pip can hold the papers upright or call the visible ridges from the viewing mark. How will you compare without turning the copy to force a fit?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Keep the old rope groove at the top of both copies",
-          "icon": "hand",
-          "goto": "orientation_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Have Pip name each visible ridge from the viewing mark",
-          "icon": "hand",
-          "goto": "orientation_2"
-        }
-      ],
+      "type": "interaction",
+      "narration": "Three ridges show through the cloud below. Three raised marks sit on the stone. Keep the old rope groove at the top, then line up the lookout sketch and your copy without rotating either to force a match. Pip turns his head instead. \"Very inconvenient for my theory.\"",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Set up the comparison before interpreting the lines.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "compare",
+            "label": "Compare the fixed ridge marks",
+            "icon": "eye"
+          },
+          {
+            "id": "top",
+            "label": "Find the rope groove at the top",
+            "icon": "eye"
+          },
+          {
+            "id": "align",
+            "label": "Hold both pages upright",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "top",
+          "align",
+          "compare"
+        ],
+        "clues": [
+          "Find the fixed top before orienting the pages.",
+          "Hold both pages upright before comparing their marks.",
+          "The ridge comparison comes after orientation."
+        ]
+      },
+      "onSuccess": {
+        "goto": "comparison",
+        "narration": "Your pages have a fixed top. Now test which marks and spaces agree."
+      },
+      "onFailure": {
+        "goto": "comparison",
+        "narration": "The keeper points out the old rope groove and helps hold the pages upright. The interpretation is still your next job."
+      },
+      "onAssisted": {
+        "goto": "comparison",
+        "narration": "Your pages have a fixed top. Now test which marks and spaces agree."
+      },
       "onEnter": [
         {
           "type": "setFlag",
@@ -2081,57 +2101,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "orientation_1": {
-      "type": "story",
-      "narration": "You mark a small top arrow on the copy and Pip keeps it beside the stone. The keeper turns the lookout sketch to its own marked direction. A ridge that does not agree stays visible as a problem. Nobody folds the paper to bring the channels together.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "comparison"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "orientation_2": {
-      "type": "story",
-      "narration": "Pip stands at the mark and describes the left ridge, the notch and the broad back of the third. You point to each shape on the upright copy. The keeper checks from beside him. Cloud covers the lowest ground, so nobody claims to have seen what lies under it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "comparison"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison": {
       "type": "choice_point",
-      "narration": "Three raised marks appear on your copy beside the present lookout sketch. The sketch shows three separate ridges. Between the old marks, shallow grooves bend and meet; a worn patch interrupts one line. Are these the same places, and what does the space between them show? The keeper holds the papers still. Pip offers his grass measuring stalk. Choose a comparison before deciding what the old lines mean.",
+      "narration": "Three raised marks appear on your copy beside today's three-ridge sketch. Grooves bend between the old marks, interrupted by a worn patch. Compare the ridge spacing or the channel's order. A clear copied join gives a wider scale target. Test the match before deciding what the spaces mean.",
       "choices": [
         {
           "id": "option_1",
@@ -2160,13 +2134,13 @@
           "when": {
             "flag": "island_carving_clear"
           },
-          "text": "Your copy separates the carved join from the later crack. The keeper can ask another reader to inspect that distinction directly."
+          "text": "Your clear copy distinguishes the carved join from the crack."
         },
         {
           "when": {
             "notFlag": "island_carving_clear"
           },
-          "text": "Your meeting point remains dotted. The keeper sets the present lookout sketch beside it, leaving that gap for your party to work around."
+          "text": "The uncertain meeting point remains dotted on your copy."
         }
       ],
       "cast": [
@@ -2179,11 +2153,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_1": {
       "type": "story",
-      "narration": "You keep the top arrow fixed and measure the spaces with a grass stalk. Pip compares ratios rather than the size of the paper. The keeper asks you to point out a fourth shape if you think one exists. There are only three clear matches; you do not invent another.",
+      "narration": "Keep both pages upright. Compare the ridge spaces with your stalk scale, leaving the worn patch untouched.",
       "choices": [
         {
           "id": "continue",
@@ -2202,18 +2176,26 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_1_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Compare the order and spacing of the three ridges. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
+      "narration": "Compare the spacing of the three ridge marks with the lookout sketch. Place the scale at the clear measuring interval. Do not fill the worn patch to make it fit.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Match the scale to the checked ridge spacing.",
+        "actionLabel": "Check the ridge spacing",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
       "onSuccess": {
         "goto": "comparison_1_done"
       },
       "onFailure": {
+        "goto": "comparison_1_changed"
+      },
+      "onAssisted": {
         "goto": "comparison_1_changed"
       },
       "cast": [
@@ -2226,11 +2208,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_1_done": {
       "type": "story",
-      "narration": "Your stalk marks fit the three ridge spaces without turning the paper. Now you follow the surface carved between them: it continues where the present sketch has gaps. \"There is ground all the way across!\" Pip says. Your comparison shows that the land was joined here. You keep the measurements beside the copy. The date and cause stay blank.",
+      "narration": "The ridge spaces fit without turning the paper. Between them, the carved surface continues across today's gaps. \"So the land was joined here,\" Pip says. You keep the checked measurements and leave the date and cause blank.",
       "choices": [
         {
           "id": "continue",
@@ -2256,7 +2238,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_1_changed": {
       "type": "story",
@@ -2286,11 +2268,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_2": {
       "type": "story",
-      "narration": "You follow one clear groove above the paper while Pip keeps the raised marks fixed. The keeper checks that you have not turned the copy. At the worn patch you stop; the next clear stretch must fit the same order before you connect anything.",
+      "narration": "Keep the fixed top in view while following the channel past each ridge. Do not let the reflection turn the paper for you.",
       "choices": [
         {
           "id": "continue",
@@ -2309,18 +2291,46 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_2_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Follow the channel past each fixed ridge. Choose who leads; everyone can help from the marked ground.",
+      "type": "interaction",
+      "narration": "Follow the channel past the three fixed ridge marks. Watch the ridge-order pattern before the cloudy reflection covers it, then echo the order without inventing the missing bend.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the fixed-ridge pattern, then echo it.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "notch",
+            "label": "Notched ridge",
+            "icon": "eye"
+          },
+          {
+            "id": "flat",
+            "label": "Flat ridge",
+            "icon": "eye"
+          },
+          {
+            "id": "fork",
+            "label": "Forked ridge",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "fork",
+          "notch",
+          "flat"
+        ],
+        "stepMs": 1300
+      },
       "onSuccess": {
         "goto": "comparison_2_done"
       },
       "onFailure": {
+        "goto": "comparison_2_changed"
+      },
+      "onAssisted": {
         "goto": "comparison_2_changed"
       },
       "cast": [
@@ -2333,11 +2343,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_2_done": {
       "type": "story",
-      "narration": "Your finger follows the groove past all three fixed ridge marks. The carved surface continues between them; today's lookout sketch separates those same heights. Your tracing shows that the land was joined here. Pip puts a finger in each present-day gap, then lifts them to reveal the difference. You record the clear route and leave the worn patch dotted.",
+      "narration": "The fixed ridges appear in the same order in both views. The old surface continues between them where today's sketch has gaps: the land was joined here. Your checked order stays beside the copy. Its date and cause remain unknown.",
       "choices": [
         {
           "id": "continue",
@@ -2363,7 +2373,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_2_changed": {
       "type": "story",
@@ -2393,71 +2403,49 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "alternative": {
-      "type": "choice_point",
-      "narration": "Pip looks from the stone to the lookout sketch. \"The land was joined here. But when?\" Neither the stone nor the return song gives a date for that view. The keeper asks what you would need to test next. Challenge whether the marks describe land, or ask what could date the change.",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Could this be a pattern instead of a view?",
-          "icon": "hand",
-          "goto": "alternative_1"
-        },
-        {
-          "id": "option_2",
-          "label": "What would let us date or explain this change?",
-          "icon": "hand",
-          "goto": "alternative_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "alternative_1": {
-      "type": "story",
-      "narration": "You ask the keeper to show where decoration ends and a claim about land begins. She points to the three matching ridges and the channel between them. That local fit gives you a reason to compare; it does not supply the missing age or explain why the islands move.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "record"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "alternative_2": {
-      "type": "story",
-      "narration": "The keeper asks for a dated account from the same place and another view to compare. Neither is present on the stone. Pip writes those needs beneath the drawing. The party leaves with a clear clue and a clear limit, rather than a date borrowed from the song of return.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on with this result",
-          "icon": "hand",
-          "goto": "record"
-        }
-      ],
+      "type": "interaction",
+      "narration": "Pip looks from the stone to the lookout sketch. \"The land was joined here. But when?\" The stone and song give no date. Leave a question that would help another reader test what you found, without inventing who moved the land.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Choose a useful next question.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "date",
+            "label": "What could date the carving?",
+            "icon": "hand",
+            "reaction": "The date stays open beside the copied shapes."
+          },
+          {
+            "id": "test",
+            "label": "Could another view challenge the match?",
+            "icon": "hand",
+            "reaction": "The keeper marks a comparison another reader can test."
+          },
+          {
+            "id": "cause",
+            "label": "What could explain the change?",
+            "icon": "hand",
+            "reaction": "The cause remains unknown. The observation stays on the page."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "record",
+        "narration": "Your observation and unanswered questions remain separate."
+      },
+      "onFailure": {
+        "goto": "record",
+        "narration": "Your observation and unanswered questions remain separate."
+      },
+      "onAssisted": {
+        "goto": "record",
+        "narration": "Your observation and unanswered questions remain separate."
+      },
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -2472,7 +2460,7 @@
     },
     "record": {
       "type": "choice_point",
-      "narration": "The keeper asks permission to keep a copy of your observations. She will leave the stone where it stands and take no chip, token or rubbing from it. Your sketch can travel with you whether or not she gets a second one. Pip holds the pencil over a blank credit line. A shared copy will let other lookout keepers challenge the match; a private account will stay in your party's hands. Either way, the keeper will use her own observations for public warnings. What may she copy from your work?",
+      "narration": "The keeper asks permission to keep a copy of your observations. Your sketch can stay private or help other readers test the match. The stone stays here either way. What may she copy?",
       "choices": [
         {
           "id": "option_1",
@@ -2485,6 +2473,16 @@
           "label": "Keep the party's account private",
           "icon": "hand",
           "goto": "record_2"
+        },
+        {
+          "id": "whale_report",
+          "label": "Deliver the route report we promised the whale keeper",
+          "icon": "hand",
+          "goto": "whale_report",
+          "when": {
+            "flag": "sky_followup_promised",
+            "notFlag": "whale_report_delivered"
+          }
         }
       ],
       "variants": [
@@ -2492,13 +2490,20 @@
           "when": {
             "flag": "island_land_match"
           },
-          "text": "Your own comparison succeeded. If you share it, the keeper will credit the party's test and retain the measurements or ridge order that supports it."
+          "text": "Your independent comparison succeeded; a shared copy will credit its test."
         },
         {
           "when": {
             "notFlag": "island_land_match"
           },
-          "text": "Your first comparison was unfinished. The shared account can credit the follow-up your party made with help, while keeping the failed measure or missing turn visible."
+          "text": "A shared copy will credit the follow-up your party made with help. The unfinished test stays marked."
+        },
+        {
+          "when": {
+            "flag": "sky_followup_promised",
+            "notFlag": "whale_report_delivered"
+          },
+          "text": "The promised whale report can be delivered separately from your stone sketch."
         }
       ],
       "cast": [
@@ -2515,7 +2520,7 @@
     },
     "record_1": {
       "type": "story",
-      "narration": "You let the keeper copy the observations and write who supplied each part. Pip keeps the blanks and dotted marks in both copies. No old maker's name or date is added. A later reader can question your work without being told that the party solved every line.",
+      "narration": "You authorize a shared copy with its credit, missing detail and helped work marked. Pip keeps your original page beside it.",
       "choices": [
         {
           "id": "continue",
@@ -2545,7 +2550,7 @@
     },
     "record_2": {
       "type": "story",
-      "narration": "You keep the sketch with your party. The keeper closes her copying sheet and thanks you for helping on the island. She retains her own observations and does not retell your private account as permission to publish it. Pip leaves the unused credit line blank.",
+      "narration": "Your sketch stays with your party. The keeper accepts that choice and keeps her own public-warning observations separate.",
       "choices": [
         {
           "id": "continue",
@@ -2575,7 +2580,7 @@
     },
     "departure": {
       "type": "choice_point",
-      "narration": "The returning island continues past the lookout instead of stopping. Farther along its course, a temple island lifts a line of roofs above the cloud. The keeper checks the gap and prepares the landing board for the return; there is time for everyone to walk back under her signals. Pip points to the moving island's direction. \"They should know it is coming.\" The keeper agrees. She can send a course warning now or use the first message for an invitation to inspect the old stone. Neither message needs your private sketch. Which goes first?",
+      "narration": "The temple roofs appear through the cloud ahead. The island is still moving toward them. \"They should know,\" says Pip. Choose the first message: a course warning or an invitation to inspect the stone. Neither needs your private sketch. You will dispatch it after returning to the lookout.",
       "choices": [
         {
           "id": "option_1",
@@ -2596,20 +2601,26 @@
             "flag": "island_messages_saved",
             "notFlag": "island_relay_delayed"
           },
-          "text": "The messenger's dry bag is ready. She offers to carry this authorized message on her next clear departure; saving her letters has preserved that option."
+          "text": "The messenger offers to carry this authorized message with her dry letters."
         },
         {
           "when": {
             "flag": "island_station_ready",
             "notFlag": "island_relay_delayed"
           },
-          "text": "The signal frame you prepared is already answering the temple lookout. The keeper can send a short course warning without waiting for the hand relay."
+          "text": "Your ready station has a temple dispatch slot."
         },
         {
           "when": {
             "flag": "island_relay_delayed"
           },
-          "text": "Your batch-carrying plan keeps the messenger relay waiting for the return. Choose the first message now; it will leave after your party finishes bringing the kit back."
+          "text": "The relay will leave after your party finishes returning the kit."
+        },
+        {
+          "when": {
+            "flag": "whale_report_delivered"
+          },
+          "text": "The whale report you promised is delivered and helps the next watcher. Your separate stone sketch was not included."
         }
       ],
       "cast": [
@@ -2626,13 +2637,13 @@
     },
     "departure_1": {
       "type": "story",
-      "narration": "You ask for a warning with the island's observed direction and the places still hidden by cloud. The keeper leaves the unknown speed blank until her next sighting. Pip repeats the striped wait sign for travelers at the lookout. An invitation can follow after the temple has time to prepare.",
+      "narration": "You choose the course warning first. The keeper prepares its direction and timing without adding a private sketch.",
       "choices": [
         {
           "id": "continue",
           "label": "Go on with this result",
           "icon": "hand",
-          "goto": "return",
+          "goto": "return_load",
           "effects": [
             {
               "type": "setFlag",
@@ -2656,13 +2667,13 @@
     },
     "departure_2": {
       "type": "story",
-      "narration": "You ask for a second reader to inspect the old face independently. The keeper sends that invitation with a note that the island is still moving. Her routine course report will follow on the next relay; your first message does not claim that the temple has already been warned.",
+      "narration": "You choose an invitation for another reader first. The course warning must wait for the next relay.",
       "choices": [
         {
           "id": "continue",
           "label": "Go on with this result",
           "icon": "hand",
-          "goto": "return",
+          "goto": "return_load",
           "effects": [
             {
               "type": "setFlag",
@@ -2686,7 +2697,7 @@
     },
     "return": {
       "type": "story",
-      "narration": "The keepers check the landing board again and guide your party back across while the shelves are still close. They lift the board after the last helper steps onto grass. You put the keeper's brush back in her kit; your sketch stays with your party. The returning island moves on without a rope trying to hold it. Pip watches the stone's empty eye vanish into cloud. Your party has seen an old local view in which land between three familiar ridges was joined. Its date and cause remain unknown. There is enough to compare with another discovery, and more work ahead along the island's course.",
+      "narration": "Your party and kit are back. The keepers lift the board; the island moves on freely. Pip watches the stone's empty eye vanish into cloud. Your checked clue shows land between these ridges was once joined. Its date and cause remain unknown.",
       "choices": [
         {
           "id": "continue",
@@ -2700,56 +2711,56 @@
           "when": {
             "flag": "island_warning_sent"
           },
-          "text": "The first message is the course warning. The keeper marks when it left and waits for an answer before claiming the temple has received it."
+          "text": "The first message is the course warning. The keeper logs its departure and waits for a reply."
         },
         {
           "when": {
             "notFlag": "island_warning_sent"
           },
-          "text": "The first message asks for another reader. The keeper marks the course warning for the next relay; nobody claims your invitation has already prepared the temple."
+          "text": "The first message asks for another reader. The course warning waits for the next relay."
         },
         {
           "when": {
             "flag": "island_messages_saved",
             "notFlag": "island_relay_delayed"
           },
-          "text": "The messenger sets off with her sealed letters dry. She carries only the message you authorized, not a copy of private notes."
+          "text": "The messenger carries her dry letters and only the message you authorized."
         },
         {
           "when": {
             "flag": "island_station_ready"
           },
-          "text": "The station cloths lift freely as the keeper sends the next sign. The song slips stay dry beneath the roof."
+          "text": "The station cloths lift freely; its song slips remain dry."
         },
         {
           "when": {
             "flag": "island_land_match"
           },
-          "text": "Pip asks your party to repeat the test it completed before he adds its result to his own notes."
+          "text": "Your independent test stays credited in the account."
         },
         {
           "when": {
             "notFlag": "island_land_match"
           },
-          "text": "Pip records the follow-up your party made with help. The first unfinished test remains marked beside the discovery."
+          "text": "The account credits the follow-up your party made with help, beside the first unfinished test."
         },
         {
           "when": {
             "flag": "island_record_shared"
           },
-          "text": "The keeper stores the shared copy with its credit and limits. She makes no promise that it explains the rest of the realm."
+          "text": "The keeper stores your shared copy with its credit and limits."
         },
         {
           "when": {
             "notFlag": "island_record_shared"
           },
-          "text": "Your private sketch stays with your party. The keeper files only her own observations."
+          "text": "Your private sketch stays with your party. The keeper files her own observations."
         },
         {
           "when": {
             "flag": "island_relay_delayed"
           },
-          "text": "Your party finishes the last batch of carrying before the waiting messenger relay can leave. The keeper sends your chosen first message now, later than a light-kit crossing would have allowed."
+          "text": "The extra kit relay leaves later than a light-kit crossing. Its delay stays in the log."
         }
       ],
       "onEnter": [
@@ -2772,7 +2783,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "The lookout bell rings once as the next watcher takes the rope. Your party rests on the grass with the board safely stowed. The old mooring stone gives your party a clue about the land below. It is knowledge to compare, not a piece broken off the island. Beyond the cloud, the moving island is still heading toward the temple route. You may return to the whales' turning place or pause this development preview here.",
+      "narration": "The board is stowed and the next watcher takes the bell rope. Your party rests on the grass. The old stone has given you a clue about the land below, and the moving island carries the original onward toward the temple route. You keep what you learned. The island keeps its stone. You can pause at the lookout or return to the whales' turning place before following the temple route.",
       "choices": [],
       "heal": 0,
       "outcome": "success",
@@ -2787,39 +2798,15 @@
     },
     "landing_brace": {
       "type": "story",
-      "narration": "A thornguard uses brace from the near grass while the keeper secures the board foot. Pip watches the stop cloth. The qualified hero supplies support; whoever can best judge the load may lead. The board still has to be secured, and the islands remain free to drift.",
+      "narration": "Your thornguard uses a skill called Brace to hold the board foot while the keeper secures its tie. The foot stays centered while she fastens the tie. The keepers still watch the gap as your party follows the side ropes across; no one is holding the islands in place.",
       "choices": [
         {
           "id": "continue",
           "label": "Go on with this result",
           "icon": "hand",
-          "goto": "landing_brace_check"
+          "goto": "landing_1_done"
         }
       ],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Lookout keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/island-due-back"
-    },
-    "landing_brace_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Have a thornguard brace the landing board. The qualified hero helps; choose who leads the team check.",
-      "onSuccess": {
-        "goto": "landing_1_done"
-      },
-      "onFailure": {
-        "goto": "landing_1_changed"
-      },
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -2834,7 +2821,7 @@
     },
     "letters_runner": {
       "type": "story",
-      "narration": "A duskrunner threads the recovery loop through the strap from the firm path. Pip steadies the pole. The qualified hero supplies the quick hands while your best roller leads the lift. Nobody climbs beyond the fence, and the sealed letters stay closed.",
+      "narration": "A duskrunner threads the recovery loop through the strap from the firm path. Pip steadies the pole. Their quick hands steady the pole, giving you a wider target for the lift. Nobody climbs beyond the fence, and the sealed letters stay closed.",
       "choices": [
         {
           "id": "continue",
@@ -2860,11 +2847,7 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "letters_runner_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Have a duskrunner secure the bag strap. The qualified hero helps; choose who leads the team check.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "letters_1_done"
       },
@@ -2885,7 +2868,19 @@
           "name": "Letter messenger"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-due-back",
+      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled holiday.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap when the marker reaches the gold.",
+        "actionLabel": "Catch the mail strap",
+        "target": 0.5,
+        "width": 0.55,
+        "periodMs": 4500
+      },
+      "onAssisted": {
+        "goto": "letters_1_done"
+      }
     },
     "sightings_whales": {
       "type": "story",
@@ -2911,16 +2906,24 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "sightings_whales_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Confirm the sighting using the whales' turning note. Choose who compares the fixed views.",
+      "type": "interaction",
+      "narration": "The whales you guided give the keeper a place to look. Wait for the notch to clear that patch of cloud, then check it against the fixed roof corner. The song helps the sighting; it cannot move the island.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Check the notch in the whale-indicated clear interval.",
+        "actionLabel": "Check the approach",
+        "target": 0.5,
+        "width": 0.6,
+        "periodMs": 6000
+      },
       "onSuccess": {
         "goto": "sightings_1_done"
       },
       "onFailure": {
         "goto": "sightings_1_changed"
+      },
+      "onAssisted": {
+        "goto": "sightings_1_done"
       },
       "cast": [
         {
@@ -2936,7 +2939,7 @@
     },
     "comparison_clear": {
       "type": "story",
-      "narration": "You point out the rounded carved join and the sharp crack that your copy kept separate. The keeper holds the present lookout sketch upright while Pip checks the three ridges. The clearer record removes one uncertainty, but the local match still needs testing.",
+      "narration": "Your clear copy distinguishes the old join from the crack. Use it for a wider scale check against the present sketch.",
       "choices": [
         {
           "id": "continue",
@@ -2955,18 +2958,26 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_clear_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Use the clearly recorded carved join. The qualified hero helps; choose who leads the team check.",
+      "type": "interaction",
+      "narration": "Your clear copy separates the old join from the later crack. That gives a wider interval for placing the scale; you still need to test it against the lookout sketch.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Compare the clearly copied join with the present sketch.",
+        "actionLabel": "Test the clear join",
+        "target": 0.5,
+        "width": 0.6,
+        "periodMs": 6000
+      },
       "onSuccess": {
         "goto": "comparison_1_done"
       },
       "onFailure": {
+        "goto": "comparison_1_changed"
+      },
+      "onAssisted": {
         "goto": "comparison_1_changed"
       },
       "cast": [
@@ -2979,11 +2990,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_recovery": {
       "type": "choice_point",
-      "narration": "Two clear marks remain on either side of the worn patch. Ask the keeper to hold a scale while you match their spacing, or ask Pip to point out the same two heights from the viewing mark while you trace around them. Both methods leave the worn part unanswered. Who will help your party test the clear parts?",
+      "narration": "Two clear marks remain beside the worn patch. Compare them with the keeper holding a scale, or with Pip pointing from the viewing mark. The missing middle stays unanswered. Who will help your follow-up?",
       "choices": [
         {
           "id": "keeper",
@@ -3008,19 +3019,29 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_recover_scale": {
-      "type": "story",
-      "narration": "You place the stalk across the two clear marks while the keeper holds the scale. They fit the two outer ridges. Your finger follows the carved surface between them: the land was joined here, where today's sketch has gaps. The keeper asks you to show Pip. You can, while leaving the worn middle mark dotted.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with what you found",
-          "icon": "hand",
-          "goto": "alternative"
-        }
-      ],
+      "type": "interaction",
+      "narration": "Your first measure stays unfinished. Support the keeper's scale for a different comparison of the clear outer marks. Leave the worn middle dotted.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the scale while the keeper checks the clear outer marks.",
+        "actionLabel": "Compare the outer marks",
+        "supportLabel": "Support the measuring scale"
+      },
+      "onSuccess": {
+        "goto": "comparison_recover_scale_done",
+        "narration": "The helped comparison is ready for your party to interpret."
+      },
+      "onFailure": {
+        "goto": "comparison_recover_scale_done",
+        "narration": "Pip and the keeper hold the fixed reference together. You complete the helped comparison without filling the worn middle."
+      },
+      "onAssisted": {
+        "goto": "comparison_recover_scale_done",
+        "narration": "The helped comparison is ready for your party to interpret."
+      },
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3031,19 +3052,55 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "comparison_recover_view": {
-      "type": "story",
-      "narration": "Pip points from the viewing mark while your party follows the two clear outer heights on the copy. The surface carved between them continues across today's gaps: the land was joined here. You show the keeper the difference you noticed. Your first tracing is still unfinished, and its missing bend stays dotted.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with what you found",
-          "icon": "hand",
-          "goto": "alternative"
-        }
-      ],
+      "type": "interaction",
+      "narration": "Your first tracing stays unfinished. Share Pip's fixed view and the clear outer marks for a different comparison. Leave the worn middle dotted.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Compare two clear heights without using the worn middle.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "compare",
+            "label": "Compare the two clear heights",
+            "icon": "eye"
+          },
+          {
+            "id": "view",
+            "label": "Pip points from the viewing mark",
+            "icon": "eye"
+          },
+          {
+            "id": "trace",
+            "label": "Trace the clear outer marks",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "view",
+          "trace",
+          "compare"
+        ],
+        "clues": [
+          "Pip must point from the fixed viewing mark first.",
+          "Trace the clear outer marks before comparing their heights.",
+          "Leave the worn middle out of this follow-up."
+        ]
+      },
+      "onSuccess": {
+        "goto": "comparison_recover_view_done",
+        "narration": "The helped comparison is ready for your party to interpret."
+      },
+      "onFailure": {
+        "goto": "comparison_recover_view_done",
+        "narration": "Pip and the keeper hold the fixed reference together. You complete the helped comparison without filling the worn middle."
+      },
+      "onAssisted": {
+        "goto": "comparison_recover_view_done",
+        "narration": "The helped comparison is ready for your party to interpret."
+      },
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3054,11 +3111,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
     },
     "landing_recovery": {
       "type": "choice_point",
-      "narration": "The keeper can lend a pocket brush and spare a sheet if you leave the bulky equipment here. Or your party can carry everything in small batches, helping with a longer hand relay before any messenger leaves. The keepers will check the board each time. Which cost do you accept?",
+      "narration": "The keeper has a checked crossing, but your bulky kit is awkward in this wind. Borrow her pocket brush and sheet to keep the message relay's place; you will leave your broad copying frame behind. Or pass your complete kit in batches: more carrying, but the full frame comes with you and the message relay must wait. Which cost will you take?",
       "choices": [
         {
           "id": "batches",
@@ -3086,23 +3143,62 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "landing_batches": {
-      "type": "story",
-      "narration": "You pass small loads along the grass, then cross on the keeper's checked alignment. Pip waits with each batch. The complete kit reaches the island, but the messenger relay must wait until everyone returns. You have chosen extra carrying work over borrowing tools. The keepers help carry too; even a prepared signal frame must wait for its sender.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with what you found",
-          "icon": "hand",
-          "goto": "stone_care"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "island_relay_delayed",
-          "value": true
-        }
-      ],
+      "type": "interaction",
+      "narration": "Pass the complete kit in small loads along the checked board. Its broad frame will come with you. The extra carrying keeps your message relay waiting for the return.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass each small load to the next helper.",
+        "actionLabel": "Pass the kit batch",
+        "objectLabel": "Island kit batch"
+      },
+      "onSuccess": {
+        "goto": "stone_care",
+        "narration": "The complete kit reaches the island. Its larger tools remain available, but the message relay will leave later.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_relay_delayed",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "island_light_kit",
+            "value": false
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "stone_care",
+        "narration": "The complete kit reaches the island. Its larger tools remain available, but the message relay will leave later.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_relay_delayed",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "island_light_kit",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "stone_care",
+        "narration": "The complete kit reaches the island. Its larger tools remain available, but the message relay will leave later.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_relay_delayed",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "island_light_kit",
+            "value": false
+          }
+        ]
+      },
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -3116,21 +3212,208 @@
       "art": "scenes/riftlight/island-due-back"
     },
     "landing_borrow": {
+      "type": "interaction",
+      "narration": "Level the keeper's pocket tray, borrow its brush and sheet, then cross on her checked alignment. The small kit preserves the message slot. Your broad copying frame stays behind.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the small borrowed tray before crossing.",
+        "actionLabel": "Carry the small kit",
+        "objectLabel": "Borrowed pocket kit"
+      },
+      "onSuccess": {
+        "goto": "stone_care",
+        "narration": "The small kit is across. The message relay keeps its place; the broad copying frame stays behind.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_relay_delayed",
+            "value": false
+          },
+          {
+            "type": "setFlag",
+            "flag": "island_light_kit",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "stone_care",
+        "narration": "The small kit is across. The message relay keeps its place; the broad copying frame stays behind.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_relay_delayed",
+            "value": false
+          },
+          {
+            "type": "setFlag",
+            "flag": "island_light_kit",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "stone_care",
+        "narration": "The small kit is across. The message relay keeps its place; the broad copying frame stays behind.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "island_relay_delayed",
+            "value": false
+          },
+          {
+            "type": "setFlag",
+            "flag": "island_light_kit",
+            "value": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back"
+    },
+    "whale_report": {
+      "type": "interaction",
+      "narration": "Pass the whale-route page to the lookout keeper, checking its landmarks along the way. This delivers the report you promised. Your separate stone sketch stays private until you choose otherwise.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the route report, check a landmark, and pass it on.",
+        "actionLabel": "Pass the route report",
+        "objectLabel": "whale-route report"
+      },
+      "onSuccess": {
+        "goto": "record",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_report_delivered"
+          }
+        ],
+        "narration": "You have kept your promise to pass on the whale-route observations. Now decide separately what to do with the stone sketch."
+      },
+      "onFailure": {
+        "goto": "record",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_report_delivered"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "record",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "whale_report_delivered"
+          }
+        ]
+      },
+      "variants": [
+        {
+          "when": {
+            "flag": "whales_guided"
+          },
+          "text": "Your report says the whales followed the clear lane and left the paired openings ready."
+        },
+        {
+          "when": {
+            "flag": "whales_scattered"
+          },
+          "text": "Your report says the early opening scattered the whales. The keeper marks that the familiar whale signs may be missing."
+        }
+      ]
+    },
+    "camp": {
+      "type": "rest",
+      "narration": "The keeper brings ginger tea to the lookout roof while your party rests. Pip tries to weigh down a song slip with his cup, then remembers that he wants the tea. Outside, the island keeps its slow course. The landing board and signal cloths are ready for the next job.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "heal": 0,
+      "choices": [
+        {
+          "id": "rest",
+          "label": "Rest, then practice the signals",
+          "icon": "hand",
+          "goto": "signal_plan"
+        },
+        {
+          "id": "watch",
+          "label": "Rest while watching the island",
+          "icon": "hand",
+          "goto": "signal_plan"
+        }
+      ]
+    },
+    "carving_frame": {
+      "type": "interaction",
+      "narration": "Your complete kit includes a broad frame that steadies the sheet beside the stone. Record the rounded carved edge without turning the sharp crack into a road.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-mooring-stone",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Copy the groove within the broad frame.",
+        "actionLabel": "Copy with the frame",
+        "target": 0.5,
+        "width": 0.6,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "carving_1_done"
+      },
+      "onFailure": {
+        "goto": "carving_1_changed"
+      },
+      "onAssisted": {
+        "goto": "carving_1_changed"
+      }
+    },
+    "comparison_recover_scale_done": {
       "type": "story",
-      "narration": "You stack the bulky kit under the lookout roof. The keeper lends her pocket brush and gives you a folded sheet. You will return the brush before leaving. With hands free for the side ropes, your party crosses on the checked alignment. The message relay can keep its place.",
+      "narration": "With the keeper holding the scale, your outer marks fit the two ridges. The carved surface between them continues across today's gaps: the land was joined here. This is your helped follow-up. The worn middle stays dotted.",
       "choices": [
         {
           "id": "continue",
           "label": "Continue with what you found",
           "icon": "hand",
-          "goto": "stone_care"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "island_relay_delayed",
-          "value": false
+          "goto": "alternative"
         }
       ],
       "cast": [
@@ -3143,7 +3426,539 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/island-due-back"
+      "art": "scenes/riftlight/island-mooring-stone"
+    },
+    "comparison_recover_view_done": {
+      "type": "story",
+      "narration": "Pip supplies the fixed viewpoint while you trace the clear outer heights. The old surface continues across today's gaps: the land was joined here. You show the keeper the match. Your first tracing and its missing bend remain unfinished.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue with what you found",
+          "icon": "hand",
+          "goto": "alternative"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-mooring-stone"
+    },
+    "return_load": {
+      "type": "choice_point",
+      "narration": "The return gap is checked. Help pass the crew kit back, or take the light crossing if you borrowed a pocket kit. Any batch carrying must finish before its waiting message relay can leave.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "choices": [
+        {
+          "id": "crew",
+          "label": "Help pass the crew kit back, then cross",
+          "icon": "hand",
+          "goto": "return_kit"
+        },
+        {
+          "id": "light",
+          "label": "Return with the borrowed pocket kit",
+          "icon": "hand",
+          "goto": "return_light",
+          "when": {
+            "flag": "island_light_kit"
+          }
+        }
+      ]
+    },
+    "return_kit": {
+      "type": "interaction",
+      "narration": "Pass small kit loads to the lookout helpers while the keepers watch the gap. Follow the side ropes back when the receiving keeper calls. The island keeps moving freely.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the kit load to the next lookout helper.",
+        "actionLabel": "Pass the returning kit",
+        "objectLabel": "Returning crew kit"
+      },
+      "onSuccess": {
+        "goto": "dispatch",
+        "narration": "The last kit load and your whole party reach the lookout."
+      },
+      "onFailure": {
+        "goto": "dispatch",
+        "narration": "The last kit load and your whole party reach the lookout."
+      },
+      "onAssisted": {
+        "goto": "dispatch",
+        "narration": "The last kit load and your whole party reach the lookout."
+      }
+    },
+    "return_light": {
+      "type": "interaction",
+      "narration": "The pocket brush and folded sheet leave your hands free for the side ropes. Keep the board supported as the last helper returns with the light tray.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Steady the return board for the light kit.",
+        "actionLabel": "Finish the light return",
+        "supportLabel": "Support the return board"
+      },
+      "onSuccess": {
+        "goto": "dispatch",
+        "narration": "Your party returns with the pocket kit. You give the brush back to its keeper."
+      },
+      "onFailure": {
+        "goto": "dispatch",
+        "narration": "Your party returns with the pocket kit. You give the brush back to its keeper."
+      },
+      "onAssisted": {
+        "goto": "dispatch",
+        "narration": "Your party returns with the pocket kit. You give the brush back to its keeper."
+      }
+    },
+    "dispatch": {
+      "type": "choice_point",
+      "narration": "You are back at the lookout with the authorized temple message. Prepare a hand relay, or use the station or messenger whose slot you preserved. The private stone sketch stays separate.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "choices": [
+        {
+          "id": "hand",
+          "label": "Prepare and pass the authorized hand-relay message",
+          "icon": "hand",
+          "goto": "message_pack"
+        },
+        {
+          "id": "station",
+          "label": "Use the station we prepared",
+          "icon": "hand",
+          "goto": "message_frame",
+          "when": {
+            "flag": "island_station_ready",
+            "notFlag": "island_relay_delayed"
+          }
+        },
+        {
+          "id": "messenger",
+          "label": "Give the authorized message to the ready messenger",
+          "icon": "hand",
+          "goto": "message_messenger",
+          "when": {
+            "flag": "island_messages_saved",
+            "notFlag": "island_relay_delayed"
+          }
+        }
+      ]
+    },
+    "message_pack": {
+      "type": "interaction",
+      "narration": "A hand relay needs a clear packet even if another helper could carry it. Put the lookout sender, temple destination and authorized message together so each watcher knows exactly what may be passed.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Prepare the hand relay's dispatch.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "message",
+            "label": "Authorized message",
+            "icon": "eye"
+          },
+          {
+            "id": "sender",
+            "label": "Lookout sender",
+            "icon": "eye"
+          },
+          {
+            "id": "temple",
+            "label": "Temple destination",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "sender",
+          "temple",
+          "message"
+        ],
+        "clues": [
+          "Name who is sending before choosing a destination.",
+          "The temple destination goes before the message it should receive.",
+          "Include only the message your party authorized."
+        ]
+      },
+      "onSuccess": {
+        "goto": "message_hand",
+        "narration": "The relay has its sender, destination and authorized message."
+      },
+      "onFailure": {
+        "goto": "message_hand",
+        "narration": "The keeper checks the packet with you. Its private-sketch space stays empty."
+      },
+      "onAssisted": {
+        "goto": "message_hand",
+        "narration": "The relay has its sender, destination and authorized message."
+      }
+    },
+    "message_hand": {
+      "type": "interaction",
+      "narration": "Pass the authorized packet along the lookout's waiting line. The keeper logs when it leaves rather than claiming an answer has already arrived.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch and pass the authorized temple packet.",
+        "actionLabel": "Pass the temple packet",
+        "objectLabel": "Authorized temple packet"
+      },
+      "onSuccess": {
+        "goto": "return",
+        "narration": "The hand-relay packet leaves with only the authorized message."
+      },
+      "onFailure": {
+        "goto": "return",
+        "narration": "The hand-relay packet leaves with only the authorized message."
+      },
+      "onAssisted": {
+        "goto": "return",
+        "narration": "The hand-relay packet leaves with only the authorized message."
+      }
+    },
+    "message_frame": {
+      "type": "interaction",
+      "narration": "Your ready station still has its dispatch slot. Pass the cloth message to the next lookout watcher while the keeper confirms its meaning. The flag does not carry a private drawing.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the station cloth while the keeper reads the message.",
+        "actionLabel": "Confirm the station dispatch",
+        "supportLabel": "Support the signal cloth"
+      },
+      "onSuccess": {
+        "goto": "return",
+        "narration": "The keeper logs the station dispatch and waits for a reply."
+      },
+      "onFailure": {
+        "goto": "return",
+        "narration": "The keeper logs the station dispatch and waits for a reply."
+      },
+      "onAssisted": {
+        "goto": "return",
+        "narration": "The keeper logs the station dispatch and waits for a reply."
+      }
+    },
+    "message_messenger": {
+      "type": "interaction",
+      "narration": "The dry letter bag and saved departure slot are ready. Pass the authorized temple message to the messenger, leaving the stone sketch with its chosen owner.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Lookout keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/island-due-back",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass only the authorized message to the messenger.",
+        "actionLabel": "Pass the messenger packet",
+        "objectLabel": "Authorized messenger packet"
+      },
+      "onSuccess": {
+        "goto": "return",
+        "narration": "The messenger takes the authorized message with her dry letters."
+      },
+      "onFailure": {
+        "goto": "return",
+        "narration": "The messenger takes the authorized message with her dry letters."
+      },
+      "onAssisted": {
+        "goto": "return",
+        "narration": "The messenger takes the authorized message with her dry letters."
+      }
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "return_song": {
+        "props": [
+          "note-low",
+          "note-middle",
+          "note-high"
+        ]
+      },
+      "sightings_1_check": {
+        "props": [
+          "carved-stone"
+        ]
+      },
+      "sightings_2_check": {
+        "props": [
+          "carved-stone"
+        ],
+        "coverIcons": [
+          "prop_playing_card",
+          "prop_playing_card",
+          "prop_playing_card"
+        ]
+      },
+      "bearings_1_check": {
+        "props": [
+          "carved-stone"
+        ]
+      },
+      "bearings_2_check": {
+        "props": [
+          "carved-stone"
+        ]
+      },
+      "bearings_relay_check": {
+        "props": [
+          "carved-stone"
+        ]
+      },
+      "sightings_whales_check": {
+        "props": [
+          "carved-stone"
+        ]
+      },
+      "letters_1_check": {
+        "props": [
+          "prop_letters",
+          "rope-loop"
+        ]
+      },
+      "letters_2_check": {
+        "props": [
+          "prop_letters",
+          "rope-loop"
+        ]
+      },
+      "letters_runner_check": {
+        "props": [
+          "prop_letters",
+          "rope-loop"
+        ]
+      },
+      "station": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "signal_plan_1": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "signal_plan_2": {
+        "props": [
+          "wind-banner"
+        ],
+        "coverIcons": [
+          "prop_playing_card",
+          "prop_playing_card",
+          "prop_playing_card"
+        ]
+      },
+      "message_frame": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "landing_1_check": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "landing_2_check": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "landing_batches": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "landing_borrow": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "return_kit": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "return_light": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "stone_care": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "carving_1_check": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "orientation": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "comparison_1_check": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "comparison_2_check": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "comparison_clear_check": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "comparison_recover_scale": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "comparison_recover_view": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "carving_frame": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "alternative": {
+        "props": [
+          "carved-stone",
+          "clue-scrap"
+        ]
+      },
+      "carving_2_check": {
+        "props": [
+          "kite-shade"
+        ]
+      },
+      "whale_report": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "message_pack": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "message_hand": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "message_messenger": {
+        "props": [
+          "clue-scrap"
+        ]
+      }
     }
   }
 }

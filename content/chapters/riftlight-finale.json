@@ -253,7 +253,7 @@
     "voices": {
       "type": "choice_point",
       "rift": "steady",
-      "narration": "The figure at the map looks toward a river glimpsed through the tear. \"Why is the river on the wrong side of the mountain?\" he asks. He sounds puzzled. The old map is full of lines that meet differently from the paths you know. How will you answer from the marked ground?",
+      "narration": "The tall figure looks from his old map to a river visible through the tear. \"Why is it on that side of the mountain?\" His finger follows a line on the page. Beyond it, whole stretches of ground slide past. He sounds puzzled. The people living on that ground would have other words for it. What will you tell him from behind the boundary?",
       "choices": [
         {
           "id": "plan_1",
@@ -346,7 +346,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "Corvane lays a hand beside the tear. He has called it here, but a fresh branch of it opens somewhere he did not point. \"That is not the color I asked for.\" Seren raises the wait signal. What will your party show him before working on the land?",
+      "narration": "Corvane lays a hand beside the tear. A fresh branch opens somewhere he did not point. \"That is not the color I asked for.\" Seren raises the wait signal. You have seen this problem before: calling an opening does not mean choosing its rules. What will you show Corvane about the people and places on today's map?",
       "choices": [
         {
           "id": "plan_1",
@@ -439,7 +439,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "A gust lifts the corner of Corvane's old map toward the seam. Orin asks to move it onto sound ice. Corvane lets go of that corner and holds the other while you choose a safe place. How will you protect it?",
+      "narration": "Corvane's map snaps upward in a gust. He catches one corner; Orin reaches for the other from sound ice. The old map matters to Corvane, even while you work to stop its pull on today's homes. Where will you put it so everyone can keep looking without standing beside the seam?",
       "choices": [
         {
           "id": "plan_1",
@@ -515,7 +515,7 @@
       "art": "scenes/riftlight/glacier-deep-ice"
     },
     "map_shelter_check": {
-      "type": "check",
+      "type": "interaction",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -532,10 +532,6 @@
         }
       ],
       "rift": "steady",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Set the old map clear of the gust without reaching over the seam.",
       "onSuccess": {
         "goto": "map_shelter_clear",
         "narration": "The loose corner settles on the sound shelf."
@@ -544,7 +540,38 @@
         "goto": "map_shelter_changed",
         "narration": "A spray of slush reaches the loose corner before you secure it."
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "narration": "Protect the two maps from the wind. Everyone choose a job. Corvane watches closely. His old map has already tried to become a kite.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Everyone help protect the maps.",
+        "actionLabel": "Check the maps together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "blanket",
+            "label": "Hold the blanket edge",
+            "icon": "hand",
+            "reaction": "You hold the blanket clear of the drawings. The lines stay visible."
+          },
+          {
+            "id": "blocks",
+            "label": "Set smooth blocks on the corners",
+            "icon": "hand",
+            "reaction": "The blocks pin the corners. The map gives up its flying career."
+          },
+          {
+            "id": "ribbon",
+            "label": "Untangle the ribbon",
+            "icon": "hand",
+            "reaction": "Corvane lifts his hand so you can free the ribbon. It curls neatly beside the map."
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "map_shelter_clear",
+        "narration": "The loose corner settles on the sound shelf."
+      }
     },
     "map_shelter_clear": {
       "type": "story",
@@ -1144,7 +1171,7 @@
       "art": "scenes/riftlight/glacier-deep-ice"
     },
     "first_anchor_check": {
-      "type": "check",
+      "type": "interaction",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -1161,10 +1188,6 @@
         }
       ],
       "rift": "steady",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Match the second checked place to today's land without moving the first marker.",
       "onSuccess": {
         "goto": "first_anchor_clear",
         "narration": "Both present outlines stay fixed while the torn edge folds back."
@@ -1173,7 +1196,18 @@
         "goto": "first_anchor_changed",
         "narration": "A curling page covers one of the marked present paths."
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "narration": "Hold the first account flat while a friend traces the second place on the present map. Keep the two pages apart. Corvane watches the paths his old map left out.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold one page while your friend traces the other place.",
+        "supportLabel": "Hold the page flat",
+        "actionLabel": "Trace the second place"
+      },
+      "onAssisted": {
+        "goto": "first_anchor_clear",
+        "narration": "Both present outlines stay fixed while the torn edge folds back."
+      }
     },
     "first_anchor_clear": {
       "type": "story",
@@ -1710,7 +1744,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "Corvane sees the ground answer the present map. \"Those stones are mine. I set them there.\" Then, more quietly: \"It listens to you?\" You have a moment to prepare before he tries to keep the last seam open.",
+      "narration": "The present map holds against the pull. Corvane stares. \"Those stones are mine. I set them there.\" Then his voice drops. \"It listens to you?\" Crawlers gather by the last seam. He reaches for it before you can answer. There is a moment to ready your party before he tries to keep it open.",
       "choices": [
         {
           "id": "plan_1",
@@ -2207,7 +2241,7 @@
     },
     "help_him": {
       "type": "choice_point",
-      "narration": "The watcher brings a blanket large enough for Corvane. His mustache has come loose from its ribbon. He looks tired rather than grand. What will your party offer first?",
+      "narration": "The watcher brings a blanket large enough for Corvane. His mustache has escaped its faded ribbon, and he cannot find where the knot went. For a moment he stops looking like an emperor and looks like someone who has been cold for a very long time. What will your party offer first?",
       "choices": [
         {
           "id": "plan_1",
@@ -2297,7 +2331,7 @@
     },
     "home_now": {
       "type": "choice_point",
-      "narration": "Beyond the closed seam, the land has stopped moving. Corvane asks where his river went. Orin lays the present map beside his old one again. What will you show him?",
+      "narration": "Beyond the closed seam, the land has stopped moving. Corvane puts a finger on his old river. \"Then where did it go?\" Orin lays today's map beside it. There are paths and homes where the old lines would run. What will you show him about the world that grew while he was in the ice?",
       "choices": [
         {
           "id": "plan_1",
@@ -3061,6 +3095,21 @@
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "map_shelter_check": {
+        "props": [
+          "clue-scrap",
+          "wind-blanket"
+        ]
+      },
+      "first_anchor_check": {
+        "props": [
+          "clue-scrap"
+        ]
+      }
     }
   }
 }

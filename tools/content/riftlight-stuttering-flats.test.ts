@@ -22,7 +22,7 @@ it("puts the rescue on an interactive spine with a rest and no repeated checks",
   for (const { shortest } of pacingReport(chapter).scenarios) {
     expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
     expect(shortest!.decisions).toBeGreaterThanOrEqual(14);
-    expect(shortest!.checks).toBe(6);
+    expect(shortest!.checks).toBe(4);
   }
 });
 
