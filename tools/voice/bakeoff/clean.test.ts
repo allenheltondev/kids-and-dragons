@@ -85,6 +85,14 @@ describe("cleaning Gemini audio", () => {
     expect(out.readInt16LE(out.length - 2)).toBe(0);
   });
 
+  it("handles a long recording without overflowing", () => {
+    // Ninety minutes is 540,000 ten-millisecond frames, past what a spread call takes. A low sample
+    // rate keeps the buffer small; the frame count is what matters.
+    const rate = 800;
+    const long = Buffer.alloc(rate * 60 * 90 * 2);
+    expect(() => cleanPcm16(long, rate)).not.toThrow();
+  });
+
   it("reads back the WAVs the harness writes", () => {
     const pcm = build([{ kind: "voice", ms: 50 }]);
     expect(readWav16(pcmToWav(pcm, RATE))).toEqual({ pcm, rate: RATE });

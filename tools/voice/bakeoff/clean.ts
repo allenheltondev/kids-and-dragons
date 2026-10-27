@@ -87,7 +87,9 @@ export function cleanPcm16(pcm: Buffer, rate: number, options: CleanOptions = CL
     rms[f] = Math.sqrt(energy / (end - start));
     zcr[f] = crossings / Math.max(1, end - start - 1);
   }
-  const peak = Math.max(...rms);
+  // A loop, not Math.max(...rms): one argument per 10ms frame would overflow the call on a long recording.
+  let peak = 0;
+  for (const value of rms) if (value > peak) peak = value;
   const floor = Math.max(peak * 10 ** (options.silenceDb / 20), 1e-4);
   const loud = Array.from(rms, (value) => value >= floor);
 
