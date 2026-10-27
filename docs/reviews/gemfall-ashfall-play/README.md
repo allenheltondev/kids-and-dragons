@@ -45,7 +45,7 @@ The immutable fixture comes from pre-wave `8081432b`. All **seven shipped check 
 
 Old/new content trees loaded through the real loader match ending, road and setback digests. Fresh-save fight play-on matches after normalizing only generated hero IDs. The fixed pre-epic save replay passes independently.
 
-There are 53 chapter route/art/legacy cases and nine server settlement cases, the latter exercising all 36 old-ally/new-ally/purpose combinations. Routes cover successful, missed and assisted comparisons/calls, missing preparation, old-roll/flyer access, all four purpose responses, Table Stone leave/take and actual priority-scene placement. Settlement checks keep the road and motive, select exactly one ally/pursuit/clock, and do not persist local preparation.
+There are 65 chapter route/art/legacy cases and nine server settlement cases, the latter exercising all 36 old-ally/new-ally/purpose combinations. Routes cover successful, missed and assisted comparisons/calls, missing preparation, old-roll/flyer access, all four purpose responses, Table Stone leave/take and actual priority-scene placement. Settlement checks keep the road and motive, select exactly one ally/pursuit/clock, and do not persist local preparation.
 
 `miss-supported` uses genuinely incorrect memory/sequence/tracking answers, including palindromic patterns. Cooperation and free contribution activities cannot produce a failing player action; these complete successfully in that mixed profile. Their defensive `onFailure` graph edges are not claimed as executable failure coverage. Premature completion tests assert no preparation or council completion. The seven legacy rolls still exercise both outcomes.
 
@@ -67,3 +67,11 @@ The isolated solo preview stages one chapter as index 1 for capture; shipped ord
 ## Prior-PR CI follow-up
 
 While this wave ran, #531's staging job failed before deploying: its separate test run timed out at the 04C shortest-path assertion. That gate unnecessarily calculated 500 typical random walks per scenario even though it only inspected shortest paths. Commit `1e8d127d` skips the unused walks, retaining every assertion and scenario. All 112 interactivity assertions passed on both the opening and Ashfall content in about a second. The isolated fix was pushed to #531, without Ashfall content. Its new CI must complete; this is not a claim that staging is green.
+
+## Review clarification: the shorter late route
+
+The everyone-contributes council is intentionally limited to the successful indoor citadel route. After a lost crab fight and failed gate recovery, `scene_shut_out` is the shorter setback route: Pellam reads the full revelation through the hatch, explicitly asks the party to hear one another, then presents the original four purpose responses directly. The vote is untimed, but this route does **not** enforce an individual contribution through an interaction widget. This preserves a save already waiting at that decision and avoids extending a compound-loss ending with the indoor ceremony.
+
+Twelve route-specific cases cover every purpose at one/two/four seats. They assert the council is absent, all four choices are offered after the full reveal and discussion prompt, the selected pursuit is retained (including Return on silence), and the late clock/setback remains. Each also serializes the pending `scene_shut_out` vote and resumes it directly to its existing ending. No chapter data changed in this review clarification.
+
+The review follow-up passed all 85 Ashfall route, settlement and compatibility tests, plus typecheck. The earlier full-suite counts above predate these twelve added cases. CI must recheck the pushed revision.
