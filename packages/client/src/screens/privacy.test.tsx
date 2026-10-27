@@ -99,7 +99,10 @@ describe("what it must never claim again", () => {
     const automatic = PRIVACY_SECTIONS.find((s) => s.id === "automatic")!.bullets!.join(" ");
     expect(automatic).toMatch(/how long chapters take/i);
     expect(automatic).toMatch(/add these up/i);
-    expect(automatic).toMatch(/180 days/);
+    // The table sets an expiry, and its cleanup follows some days later: say expire, not an exact-day deletion.
+    expect(automatic).toMatch(/expire after 180 days/);
+    expect(automatic).toMatch(/normally deletes expired records in the days that follow/);
+    expect(automatic).not.toMatch(/deleted after 180 days/i);
     const why = PRIVACY_SECTIONS.find((s) => s.id === "why")!.paragraphs!.join(" ");
     expect(why).toMatch(/our own, of how long chapters take/i);
   });

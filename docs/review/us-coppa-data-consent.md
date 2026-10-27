@@ -8,7 +8,10 @@ Third-party recipients for each row are in [us-third-party-flows.md](./us-third-
 
 ## Unresolved legal assumptions (read first)
 
-1. **Rule citations are unverified.** The eCFR (`www.ecfr.gov`) is not reachable from the session
+1. **Most rule citations are unverified.** The owner's review of #532 supplied short excerpts of
+   16 CFR 312.4(a), 312.4(d) and 312.10, checked against the eCFR as of 2026-10-23; those are
+   reflected in [us-privacy-policy-status.md](./us-privacy-policy-status.md). Everything else here is
+   still unchecked. The eCFR (`www.ecfr.gov`) is not reachable from the session
    that wrote this, so no rule text was read. Section numbers below come from the structure of
    16 CFR Part 312 as the author knows it and from the FTC pages linked in #522. The rule was
    amended in 2025; sections may have been renumbered or reworded. **Every citation must be
