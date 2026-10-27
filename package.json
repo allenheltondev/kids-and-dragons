@@ -47,6 +47,7 @@
     "voice:cost": "tsx tools/voice/cost.ts",
     "voice:bakeoff": "tsx tools/voice/bakeoff/run.ts",
     "voice:cast": "tsx tools/voice/cast/build.ts",
+    "voice:clean": "tsx tools/voice/bakeoff/clean-report.ts",
     "load": "tsx tools/load/run.ts",
     "perf:bundle": "tsx tools/perf/bundle-budget.ts",
     "art:inventory": "node tools/art/inventory.ts",

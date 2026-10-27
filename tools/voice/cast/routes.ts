@@ -73,6 +73,13 @@ export function auditionSample(id: string, entry: CastEntry, index: number): Sam
   return { id: `cast-${id}-${String(index)}`, tier: "cast", title: entry.name, tests: "", address: line.address, source: line.text, lines: [{ by: id, text: line.text }], speakers: [id] };
 }
 
+/** How a character is described to the voice model: name and notes, then a person's direction if they gave one. */
+export function describe(entry: CastEntry): string {
+  const who = `${entry.name}: ${entry.who}`;
+  const stop = (text: string): string => (/[.!?]$/.test(text.trim()) ? text : `${text}.`);
+  return entry.direction ? `${stop(who)} Direction: ${stop(entry.direction)}` : who;
+}
+
 /** The sheet as the planner's cast: each character described by name and notes, with their voice and accent. */
 export function sheetCast(sheet: CastSheet, base: CastFile): CastFile {
   return {
@@ -81,7 +88,7 @@ export function sheetCast(sheet: CastSheet, base: CastFile): CastFile {
     speakers: Object.fromEntries(
       Object.entries(sheet.speakers).map(([id, entry]) => [
         id,
-        { describe: `${entry.name}: ${entry.who}`, ...(entry.accent ? { accent: entry.accent } : {}), gemini: { voice: entry.gemini.voice } },
+        { describe: describe(entry), ...(entry.accent ? { accent: entry.accent } : {}), gemini: { voice: entry.gemini.voice } },
       ]),
     ),
   };
@@ -282,6 +289,18 @@ export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
             entry.gemini = { voice: nextVoice(sheet.speakers, id) };
             moved = { from, to: entry.gemini.voice };
           }
+        }
+        if (body.direction !== undefined) {
+          const direction = String(body.direction).replace(/\s+/g, " ").trim().slice(0, 600);
+          if (direction) entry.direction = direction;
+          else delete entry.direction;
+        }
+        if (body.who !== undefined) {
+          // Everyone else's "who" is rebuilt from their chapters and canon: change it there, on their profile.
+          if (entry.kind !== "narrator" && entry.kind !== "party") return { status: 400, body: { error: `${entry.name}'s description comes from their voice notes in canon: edit those, or add a direction` } };
+          const who = String(body.who).replace(/\s+/g, " ").trim().slice(0, 1200);
+          if (!who) return { status: 400, body: { error: "the description can't be blank" } };
+          entry.who = who;
         }
         if (body.accent !== undefined) {
           const accent = String(body.accent).slice(0, 200).trim();
