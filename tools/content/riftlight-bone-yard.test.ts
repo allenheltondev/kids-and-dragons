@@ -20,8 +20,8 @@ it("supports an objective victory and a distinct retreat without a campaign setb
   expect(fight.environment!.objectives![0]).toMatchObject({ kind: "close", endsFight: true, turns: 3 });
   expect(fight.onVictory.goto).not.toBe(fight.onDefeat.goto);
   for (const { shortest } of pacingReport(chapter).scenarios) {
-    expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
-    expect(shortest!.decisions).toBeGreaterThanOrEqual(14);
+    expect(shortest!.checks).toBe(0);
+    expect(shortest!.longestReadingRun).toBeLessThanOrEqual(3);
     expect(shortest!.encounters).toBe(1);
   }
 });
