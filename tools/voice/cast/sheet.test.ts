@@ -11,7 +11,8 @@ import { describe, expect, it } from "vitest";
 import type { Pricing } from "../cost-model.ts";
 import { GEMINI_VOICES, type CastFile, type Fetch } from "../bakeoff/providers.ts";
 import { auditionLines, createCastRoutes, sheetCast, STAND_IN } from "./routes.ts";
-import { assignVoices, attributeQuotes, buildSheet, collectCharacters, genderOf, NARRATOR_VOICE, quotesFor, traitsOf, voiceClashes, type CastSheet, type ChapterLike } from "./sheet.ts";
+import { reviewJson, reviewMarkdown } from "./review.ts";
+import { assignVoices, attributeQuotes, buildSheet, collectCharacters, decide, GEMINI_VOICE_TRAITS, genderOf, NARRATOR_VOICE, noteHints, quotesFor, rejectedVoices, traitsOf, voiceClashes, type CastSheet, type ChapterLike } from "./sheet.ts";
 
 const ROOT = path.resolve(import.meta.dirname, "..", "..", "..");
 const SHEET = path.join(ROOT, "content", "voice", "cast.json");
@@ -128,6 +129,62 @@ describe("voices", () => {
   });
 });
 
+describe("approving and rejecting", () => {
+  const make = (): CastSheet => {
+    const chapters: ChapterLike[] = [{ id: "c", voiceGuide: { npcVoices: { gran: "an old grandmother; she knits", kid: "a small boy; he bounces", baker: "a baker; she hums" } } }];
+    return buildSheet({ chapters, individuals: [], narration: [] }, null);
+  };
+
+  it("reads plain words in a rejection as what the next voice needs", () => {
+    expect(noteHints(["too old, needs to be younger"])).toMatchObject({ want: expect.arrayContaining(["young"]), avoid: ["old"] });
+    expect(noteHints(["should be a woman's voice"]).gender).toBe("f");
+    expect(noteHints(["deeper please"]).want).toContain("big");
+    expect(noteHints(["fine, just not this one"])).toEqual({ gender: null, want: [], avoid: [] });
+  });
+
+  it("rejecting keeps the voice and the notes, and moves to a fitting voice never tried before", () => {
+    const sheet = make();
+    const first = sheet.speakers.gran!.gemini.voice;
+    const entry = decide(sheet, "gran", "rejected", "too squeaky, she should sound older and softer", "gemini-3.8-flash-tts", "2026-10-27T00:00:00Z");
+    expect(entry.history).toEqual([{ decision: "rejected", voice: first, notes: "too squeaky, she should sound older and softer", model: "gemini-3.8-flash-tts", at: "2026-10-27T00:00:00Z" }]);
+    expect(entry.status).toBe("provisional");
+    expect(entry.gemini.voice).not.toBe(first);
+    expect(GEMINI_VOICE_TRAITS[entry.gemini.voice]!.gender).toBe("f");
+    // Reject again and again: never back to a voice already turned down, never clashing in the chapter.
+    for (let i = 0; i < 5; i += 1) decide(sheet, "gran", "rejected", "no", undefined);
+    expect([...rejectedVoices(sheet.speakers.gran!)]).not.toContain(sheet.speakers.gran!.gemini.voice);
+    expect(voiceClashes(sheet)).toEqual([]);
+  });
+
+  it("approving pins the voice, and a rebuild keeps every decision", () => {
+    const sheet = make();
+    decide(sheet, "kid", "rejected", "too deep", undefined);
+    const kidVoice = sheet.speakers.kid!.gemini.voice;
+    decide(sheet, "baker", "approved", "perfect", undefined);
+    const chapters: ChapterLike[] = [{ id: "c", voiceGuide: { npcVoices: { gran: "an old grandmother; she knits", kid: "a small boy; he bounces", baker: "a baker; she hums" } } }];
+    const again = buildSheet({ chapters, individuals: [], narration: [] }, sheet);
+    expect(again.speakers.baker).toEqual(sheet.speakers.baker);
+    expect(again.speakers.kid!.history).toEqual(sheet.speakers.kid!.history);
+    expect(again.speakers.kid!.gemini.voice).toBe(kidVoice);
+  });
+
+  it("reports the review for people and for tools", () => {
+    const sheet = make();
+    const gran = sheet.speakers.gran!.gemini.voice;
+    decide(sheet, "gran", "rejected", "too young", undefined, "2026-10-27T00:00:00Z");
+    decide(sheet, "baker", "approved", "warm and right", undefined, "2026-10-27T00:00:00Z");
+    const md = reviewMarkdown(sheet, "2026-10-27T00:00:00Z");
+    expect(md).toContain("## Approved (1)");
+    expect(md).toContain("| warm and right |");
+    expect(md).toContain(`- ${gran}: "too young", 2026-10-27`);
+    expect(md).toContain("## Voices rejected most");
+    const json = reviewJson(sheet, "2026-10-27T00:00:00Z");
+    expect(json.summary).toMatchObject({ approved: 1, rejectedNowRetrying: 1 });
+    expect(json.rejectedVoices).toEqual({ [gran]: 1 });
+    expect(json.speakers.find((s) => s.id === "gran")!.history[0]!.notes).toBe("too young");
+  });
+});
+
 describe("the committed sheet", () => {
   const sheet = JSON.parse(fs.readFileSync(SHEET, "utf8")) as CastSheet;
 
@@ -198,6 +255,19 @@ describe("the cast page's routes", () => {
     const saved = JSON.parse(fs.readFileSync(sheetPath, "utf8")) as CastSheet;
     expect(saved.speakers.wick).toMatchObject({ gemini: { voice: "Algenib" }, status: "approved", notes: "gravelly" });
     expect((await handle("/api/cast/save", { id: "wick", voice: "Bob" }, {}))!.status).toBe(400);
+  });
+
+  it("records decisions and serves the review", async () => {
+    const { handle, sheetPath } = setup();
+    expect((await handle("/api/cast/decide", { id: "wick", decision: "maybe" }, {}))!.status).toBe(400);
+    const rejected = await handle("/api/cast/decide", { id: "wick", decision: "rejected", notes: "too young, needs gravel", model: "gemini-3.8-flash-tts" }, {});
+    expect(rejected!.status).toBe(200);
+    const saved = JSON.parse(fs.readFileSync(sheetPath, "utf8")) as CastSheet;
+    expect(saved.speakers.wick!.history![0]).toMatchObject({ decision: "rejected", voice: "Charon", notes: "too young, needs gravel" });
+    expect(saved.speakers.wick!.gemini.voice).not.toBe("Charon");
+    const review = (await handle("/api/cast/review", {}, {}))!.body as { markdown: string; json: { summary: { rejectedNowRetrying: number } } };
+    expect(review.markdown).toContain('Charon: "too young, needs gravel"');
+    expect(review.json.summary.rejectedNowRetrying).toBe(1);
   });
 
   it("builds the planner's cast from the sheet", () => {

@@ -66,6 +66,11 @@ main { max-width: 1400px; margin: 0 auto; padding: 16px; display: grid; grid-tem
 .line button { padding: 3px 8px; font-size: 13px; }
 .standin { font-size: 12px; color: var(--accent); }
 .err { color: var(--bad); font-size: 12px; overflow-wrap: anywhere; }
+.history { display: grid; gap: 2px; font-size: 13px; }
+.history .rejected { color: var(--bad); }
+.history .approved { color: var(--ok); }
+button.reject { color: var(--bad); border-color: var(--bad); }
+button.reject:disabled { color: inherit; border-color: var(--line); }
 textarea { width: 100%; min-height: 38px; font-size: 13px; background: var(--bg); }
 label.inline { display: flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
 </style>
@@ -84,6 +89,8 @@ label.inline { display: flex; gap: 6px; align-items: center; font-size: 13px; co
       <option value="">Everyone</option>
       <option value="provisional">Still provisional</option>
       <option value="approved">Approved</option>
+      <option value="rejected">Rejected, waiting to be heard again</option>
+      <option value="untouched">Not reviewed yet</option>
       <option value="clash">Sharing a voice in a chapter</option>
       <option value="standin">No line from the game yet</option>
       <option value="silent">Doesn't speak</option>
@@ -97,6 +104,8 @@ label.inline { display: flex; gap: 6px; align-items: center; font-size: 13px; co
     <select id="model" aria-label="Gemini model"></select>
     <input id="key" type="password" placeholder="Gemini API key" aria-label="Gemini API key" autocomplete="off" spellcheck="false">
     <button id="renderAll" type="button" class="primary">Render all shown</button>
+    <button id="exportMd" type="button">Download review (Markdown)</button>
+    <button id="exportJson" type="button">Download review (JSON)</button>
     <span class="hint" id="budget"></span>
   </div>
 </header>
@@ -179,6 +188,8 @@ label.inline { display: flex; gap: 6px; align-items: center; font-size: 13px; co
         switch (prefs.filter) {
           case "provisional": return e.status === "provisional";
           case "approved": return e.status === "approved";
+          case "rejected": return e.status !== "approved" && !!e.history && e.history.length > 0 && e.history[e.history.length - 1].decision === "rejected";
+          case "untouched": return e.status !== "approved" && !(e.history && e.history.length);
           case "clash": return (clashes[id] || []).length > 0;
           case "standin": return e.speaks && e.lines.length === 0;
           case "silent": return !e.speaks;
@@ -223,6 +234,32 @@ label.inline { display: flex; gap: 6px; align-items: center; font-size: 13px; co
     }
   }
 
+  async function decide(id, decision, notes) {
+    try {
+      const json = await call("/api/cast/decide", { id, decision, notes, model: prefs.model });
+      data.speakers[id] = json.entry;
+      clashes = json.clashes;
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  async function download(kind) {
+    try {
+      const review = await call("/api/cast/review", {});
+      const text = kind === "json" ? JSON.stringify(review.json, null, 2) : review.markdown;
+      const name = "voice-cast-review-" + new Date().toISOString().slice(0, 10) + (kind === "json" ? ".json" : ".md");
+      const a = el("a", { href: URL.createObjectURL(new Blob([text], { type: kind === "json" ? "application/json" : "text/markdown" })), download: name });
+      document.body.append(a);
+      a.click();
+      a.remove();
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+  document.getElementById("exportMd").addEventListener("click", () => download("md"));
+  document.getElementById("exportJson").addEventListener("click", () => download("json"));
+
   async function renderLine(id, line) {
     const json = await call("/api/cast/render", { id, line, model: prefs.model });
     (cells[id] ||= [])[line] = json.cell;
@@ -236,14 +273,30 @@ label.inline { display: flex; gap: 6px; align-items: center; font-size: 13px; co
     voice.value = entry.gemini.voice;
     voice.addEventListener("change", async () => { await save(id, { voice: voice.value }); await refresh(); });
     const count = uses()[entry.gemini.voice] || 1;
-    const approve = el("button", { type: "button", class: entry.status === "approved" ? "approved" : "" }, entry.status === "approved" ? "Approved" : "Approve this voice");
-    approve.addEventListener("click", async () => { await save(id, { status: entry.status === "approved" ? "provisional" : "approved" }); draw(); });
     const accent = el("input", { value: entry.accent || "", placeholder: "Accent: " + data.accent, "aria-label": entry.name + " accent" });
     accent.addEventListener("change", async () => { await save(id, { accent: accent.value }); await refresh(); });
-    const notes = el("textarea", { placeholder: "Notes", "aria-label": entry.name + " notes" });
-    notes.value = entry.notes || "";
-    let timer = 0;
-    notes.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(() => save(id, { notes: notes.value }), 600); });
+
+    // A decision and the words that go with it: kept in the character's history and the review.
+    const approved = entry.status === "approved";
+    const notes = el("textarea", { placeholder: approved ? "Notes (to reopen, say why)" : "Why it works, or what's wrong (too old, needs more bounce, should be a woman's voice…)", "aria-label": entry.name + " decision notes" });
+    const approve = el("button", { type: "button", class: approved ? "approved" : "" }, approved ? "Approved: reopen" : "Approve " + entry.gemini.voice);
+    const reject = el("button", { type: "button", class: "reject", disabled: true, title: "Say what's wrong first: it steers the next voice" }, "Reject, try another voice");
+    reject.hidden = approved;
+    notes.addEventListener("input", () => { reject.disabled = notes.value.trim() === ""; });
+    approve.addEventListener("click", async () => {
+      if (approved) await save(id, { status: "provisional" });
+      else await decide(id, "approved", notes.value);
+      draw();
+    });
+    reject.addEventListener("click", async () => {
+      reject.disabled = true;
+      await decide(id, "rejected", notes.value);
+      await refresh();
+      const card = document.getElementById("cast-" + id);
+      if (card) card.scrollIntoView({ block: "nearest" });
+    });
+    const history = el("div", { class: "history" }, (entry.history || []).map((d) =>
+      el("div", { class: d.decision }, (d.decision === "approved" ? "Approved " : "Rejected ") + d.voice + (d.notes ? ': "' + d.notes + '"' : "") + " · " + d.at.slice(0, 10))));
 
     const audition = el("div", { class: "lines" }, lines.map((line, i) => {
       const cell = (cells[id] || [])[i];
@@ -279,8 +332,10 @@ label.inline { display: flex; gap: 6px; align-items: center; font-size: 13px; co
       el("div", { class: "row" }, voice, el("span", { class: "hint" }, count > 1 ? "also on " + (count - 1) + " other" + (count === 2 ? "" : "s") : "only them")),
       mine.map((clash) => el("div", { class: "clash" }, "Same voice as " + clash.with.map((other) => (data.speakers[other] || { name: other }).name).join(", ") + " in " + clash.chapter)),
       lines.length ? audition : el("div", { class: "hint" }, "Nothing to audition: they don't speak."),
-      el("div", { class: "row" }, approve, accent),
-      notes);
+      history,
+      notes,
+      el("div", { class: "row" }, approve, reject),
+      accent);
   }
 
   function redraw(id) {
@@ -296,7 +351,8 @@ label.inline { display: flex; gap: 6px; align-items: center; font-size: 13px; co
     stop();
     const list = shown();
     const all = Object.values(data.speakers);
-    document.getElementById("meta").textContent = all.length + " speakers · " + all.filter((e) => e.status === "approved").length + " approved · " + Object.values(clashes).filter((c) => c.length).length + " sharing a voice · showing " + list.length;
+    const retrying = all.filter((e) => e.status !== "approved" && e.history && e.history.length && e.history[e.history.length - 1].decision === "rejected").length;
+    document.getElementById("meta").textContent = all.length + " speakers · " + all.filter((e) => e.status === "approved").length + " approved · " + retrying + " rejected, to hear again · " + Object.values(clashes).filter((c) => c.length).length + " sharing a voice · showing " + list.length;
     document.getElementById("cards").replaceChildren(...list.map(([id, entry]) => card(id, entry)));
     drawBudget();
   }
