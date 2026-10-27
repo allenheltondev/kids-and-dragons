@@ -48,15 +48,9 @@ import { admitNewPhone, bindNewPhone, createRoom, findRoom, joinRoom, settleRoom
 import { setVisitors } from "./handlers/visitors.ts";
 import { removePlayer } from "./handlers/remove.ts";
 import { handKeeper } from "./handlers/keeper.ts";
+import { MemoryTimingStore } from "./store/timing-store.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "./handlers/host.ts";
-import {
-  householdTimingReport,
-  parseTimingControl,
-  setTiming,
-  TIMING_BODY,
-  timingReportCsv,
-  type TimingControl,
-} from "./handlers/timing.ts";
+import { localTimingReport, parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "./handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "./handlers/save.ts";
 import { listHeroes } from "./handlers/heroes.ts";
 import { getJournal } from "./handlers/journal.ts";
@@ -173,7 +167,12 @@ async function main(): Promise<void> {
     // is for a real family sitting at this server, and `off` keeps nothing.
     ...(process.env.KAD_TIMING === "off"
       ? {}
-      : { timing: { source: process.env.KAD_TIMING === "family" ? ("family" as const) : ("playtest" as const) } }),
+      : {
+          timing: {
+            source: process.env.KAD_TIMING === "family" ? ("family" as const) : ("playtest" as const),
+            store: new MemoryTimingStore(),
+          },
+        }),
   };
 
   const app = express();
@@ -720,16 +719,12 @@ async function main(): Promise<void> {
     res.status(204).end();
   });
 
-  // How long this household's chapters really took (#511, handlers/timing.ts).
-  app.get("/api/timing", async (req: Request, res: Response) => {
+  // What this process has recorded of session timing (#511): the dev server has no AWS
+  // table to export from, so an operator reads it here. Prod has no twin on purpose.
+  app.get("/api/dev/timing", async (_req: Request, res: Response) => {
     const deps = await withRuntime(base, res);
     if (!deps) return;
-    const kid = await resolveKid(req, base);
-    if (!kid) return sendError(res, 401, "FORBIDDEN", "the timing report needs this device's token");
-    const result = await householdTimingReport(kid.householdId, deps);
-    if (!result.ok) return sendError(res, statusFor(result.error), result.error.code, result.error.message);
-    if (req.query.format === "csv") return res.type("text/csv").send(timingReportCsv(result.value));
-    res.json(result.value);
+    res.json(await localTimingReport(deps));
   });
 
   // What this phone can study between games (see handlers/journal.ts).

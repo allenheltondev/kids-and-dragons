@@ -53,7 +53,7 @@ import { claimIsLive, releaseClaim, standing, rewrite } from "./claim.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { commitRoomChange, hostedRoom, isClosed, type HostPrincipal } from "./host.ts";
 import { expectedIndex, UNDER_WAY } from "./progression.ts";
-import { resumedTimingNote } from "./timing.ts";
+import { recordTiming, resumedTimingNote } from "./timing.ts";
 
 /** Longest recap, in characters: a sentence an adult can read in one breath. */
 const RECAP_MAX = 140;
@@ -328,8 +328,6 @@ export async function resumeGame(
       patch: diff(room, next),
       at: iso(nowMs),
       playerId: input.playerId,
-      // The sitting this one picks up, so the report reads one attempt, not two (#511).
-      ...(timing ? { timing } : {}),
     };
     const committed = await deps.repo.commit({
       runId: next.runId,
@@ -345,6 +343,8 @@ export async function resumeGame(
         runId: event.runId,
         patch: event.patch,
       });
+      // The sitting this one picks up, so the report reads one attempt, not two (#511).
+      await recordTiming(deps, { runId: next.runId, chapterId: next.chapterId, seq: next.seq, at: event.at }, timing);
       await spend(found.record, deps);
       await alignRun(run.id, found.state.campaignId, deps);
       return ok({ seq: next.seq });

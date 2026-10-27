@@ -1,54 +1,48 @@
 /**
- * Family-session timing (#511): what the server writes down, the operator's
- * controls, and the report. The clock policy and the numbers themselves are
- * `packages/shared/src/session-timing.ts`; this is the part that touches the
- * store.
+ * Family-session timing (#511): what the server writes down and the operator's
+ * controls. The clock policy and the numbers themselves are
+ * `packages/shared/src/session-timing.ts`; the rows live in a table of their
+ * own (`store/timing-store.ts`).
  *
- * Timing is derived from the run's event log, which already carries a
- * server-stamped `at` on every committed step. A step that opens, advances or
- * ends a chapter also carries a small `TimingNote` (`EventRecord.timing`), so
- * the note lands in the same conditional write as the state it describes: a
- * lost race, a retried request or a second phone cannot leave a note without
- * its step, or a step twice.
+ * A step that opens, advances, pauses or ends a chapter yields a `TimingNote`.
+ * Once the step has landed, the note is written as a mark (run, seq, server
+ * time, chapter) to the timing table, keyed so that a retry is the same row.
+ * It is not in the game's commit: a failed write is retried and logged, and
+ * never fails a turn. Server timestamps only, so a reload, a reconnect, a
+ * restart, a duplicate tap or a second phone cannot change what was recorded.
  *
  * **Nothing is recorded unless the entry point says whose play it is.**
  * `HandlerDeps.timing` is absent in the tests, the load tool and the seeded
  * playthroughs, which therefore leave no timing at all, so a synthetic run can
- * never be mistaken for a family. The Lambda sets `family`; the dev server
- * sets `playtest` unless `KAD_TIMING=family`. The report keeps the two apart.
+ * never be mistaken for a family. The Lambda sets `family` (unless the stack
+ * turns it off); the dev server sets `playtest` unless `KAD_TIMING=family`.
+ * The report keeps the two apart.
  *
- * **What is kept** (see the docs/session-timing.md data note): the chapter and
- * its content revision, how many were seated, whether it was a revisit or a
- * resume, the scenes and when they opened, pauses, the recoveries and assisted
- * routes taken, the road flags carried, the outcome, and one short note the
- * operator typed. No names, chat or audio. It lives and dies with the run's
- * event log, so deleting a household deletes it.
+ * **What is kept** (docs/session-timing.md): the chapter and its content
+ * revision, how many were seated, whether it was a revisit or a resume, the
+ * scenes and when they opened, pauses, the recoveries and assisted routes
+ * taken, the road flags carried, the outcome, and one short note an operator
+ * typed. No names, chat, audio, household or player ids. Marks expire.
  */
 
 import { createHash } from "node:crypto";
 import {
-  aggregateTimings,
   carriedRouteFlags,
   cleanNote,
   isPracticeCampaign,
-  sittingsFromEvents,
-  timingCsv,
-  TIMING_POLICY,
+  timingReportFromMarks,
   type Chapter,
   type RunState,
   type Scene,
   type StepResult,
-  type TimingReport,
   type TimingNote,
+  type TimingReport,
 } from "@kad/shared";
-import type { EventRecord } from "../store/repository.ts";
 import { fail, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
 import { commitRoomChange, hostedRoom, type HostPrincipal } from "./host.ts";
 
-/** How many of a household's most recent runs a report reads. */
-const REPORT_RUNS = 40;
-/** Events read per run: a chapter is a few hundred at most. */
-const REPORT_EVENTS = 2000;
+/** Attempts at a mark's write before it is given up on and logged. */
+const RECORD_ATTEMPTS = 3;
 
 const revisions = new WeakMap<Chapter, string>();
 
@@ -215,32 +209,43 @@ export async function setTiming(input: SetTimingInput, deps: HandlerDeps): Promi
 }
 
 // ---------------------------------------------------------------------------
-// The report
+// Writing and reading marks
 
-/** All of one household's sittings, from the event logs of its most recent runs. */
-export async function householdTimingReport(
-  householdId: string,
-  deps: Pick<HandlerDeps, "repo" | "now" | "timing">,
-): Promise<HandlerResult<TimingReport>> {
-  const runs = (await deps.repo.listRuns(householdId)).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  const nowMs = deps.now();
-  const read = runs.slice(0, REPORT_RUNS);
-  const logs = await Promise.all(read.map(async (run) => ({ run, events: await deps.repo.listEvents(run.id, 0, REPORT_EVENTS) })));
-  const sittings = logs.flatMap(({ run, events }) => sittingsFromEvents(run.id, events as EventRecord[], nowMs));
-  sittings.sort((a, b) => b.startedAt.localeCompare(a.startedAt));
-  return ok({
-    enabled: deps.timing !== undefined,
-    source: deps.timing?.source ?? null,
-    policy: TIMING_POLICY,
-    generatedAt: new Date(nowMs).toISOString(),
-    sittings,
-    aggregates: aggregateTimings(sittings),
-    truncated: runs.length > read.length,
-  });
+/** Where a note came from: the step that produced it. */
+export interface TimingStep {
+  runId: string;
+  /** The chapter the run was in. A start names its own. */
+  chapterId: string | null;
+  seq: number;
+  /** The event's server time. */
+  at: string;
 }
 
-export function timingReportCsv(report: TimingReport): string {
-  return timingCsv(report.sittings);
+/**
+ * Writes one note as a mark, after the step it describes has landed. Retried,
+ * then logged: telemetry never fails a turn, and a lost mark is a gap the
+ * report tolerates (docs/session-timing.md, "Not covered").
+ */
+export async function recordTiming(
+  deps: Pick<HandlerDeps, "timing">,
+  step: TimingStep,
+  note: TimingNote | undefined,
+): Promise<void> {
+  const timing = deps.timing;
+  const chapterId = note?.kind === "start" ? note.chapterId : step.chapterId;
+  if (!timing || !note || !chapterId) return;
+  const mark = { runId: step.runId, chapterId, seq: step.seq, at: step.at, timing: note };
+  for (let attempt = 1; ; attempt++) {
+    try {
+      await timing.store.put(mark);
+      return;
+    } catch (err) {
+      if (attempt >= RECORD_ATTEMPTS) {
+        console.error(`timing: lost a ${note.kind} mark for ${step.runId} #${String(step.seq)}:`, err);
+        return;
+      }
+    }
+  }
 }
 
 /**
@@ -252,23 +257,29 @@ export function timingReportCsv(report: TimingReport): string {
 export async function resumedTimingNote(
   stoppedRunId: string,
   resumed: RunState,
-  deps: Pick<HandlerDeps, "repo" | "timing" | "content">,
+  deps: Pick<HandlerDeps, "timing" | "content">,
 ): Promise<TimingNote | undefined> {
-  const source = deps.timing?.source;
+  const timing = deps.timing;
   const chapter = resumed.chapterId ? deps.content.chapter(resumed.chapterId) : null;
-  if (!source || !chapter || !resumed.sceneId || !resumed.sceneType) return undefined;
-  const events = await deps.repo.listEvents(stoppedRunId, 0, REPORT_EVENTS);
-  const origin = [...events].reverse().find((e) => e.timing?.kind === "start");
-  if (!origin || origin.timing?.kind !== "start") return undefined;
+  if (!timing || !chapter || !resumed.sceneId || !resumed.sceneType) return undefined;
+  const marks = await timing.store.runMarks(chapter.id, stoppedRunId);
+  const origin = [...marks].reverse().find((m) => m.timing.kind === "start");
+  if (!origin || origin.timing.kind !== "start") return undefined;
   return {
     ...origin.timing,
-    source,
+    source: timing.source,
     partySize: resumed.party.length,
     revision: chapterRevision(chapter),
     resumedFrom: `${stoppedRunId}:${origin.seq}`,
     scene: resumed.sceneId,
     type: resumed.sceneType,
   };
+}
+
+/** Everything this process has recorded, as a report: the dev server's view, since it has no AWS table to export. */
+export async function localTimingReport(deps: Pick<HandlerDeps, "timing" | "now">): Promise<TimingReport> {
+  const marks = deps.timing ? await deps.timing.store.allMarks() : [];
+  return timingReportFromMarks(marks, deps.now(), deps.timing?.source ?? null);
 }
 
 export const TIMING_BODY = 'expected { action: "pause" | "resume" | "on" | "off" } or { action: "note", text }';

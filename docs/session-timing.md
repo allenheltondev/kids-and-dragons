@@ -7,11 +7,14 @@ nothing that names a child.
 
 ## What is recorded
 
-Timing is derived from each run's event log, which already carries a server-stamped time on every
-committed step. An event that opens, advances, pauses or ends a chapter also carries a small
-`TimingNote` (`EventRecord.timing`), written in the same conditional commit as the state it
-describes. So a lost race, a retried request, a second phone, a reload or a server restart cannot
-leave a note without its step, or count a step twice.
+A step that opens, advances, pauses or ends a chapter yields a small `TimingNote`. Once the step has
+landed, the server writes it as a **mark** to a table of its own, `kad-timing-<stage>` (not the
+game's): `PK = CH#<chapterId>`, `SK = <runId>#<seq>`, plus the server's time for that step and a TTL.
+The key is the run and seq, so a retried write, a duplicate tap, a second phone, a reload or a
+restart writes the same row and counts once. Only the server's clock is used.
+
+The mark is written after the step commits, not inside it. A failed write is retried three times,
+logged, and never fails the turn; the cost is a gap, not a wrong number (see "Not covered").
 
 | Note | When | Carries |
 |---|---|---|
@@ -65,8 +68,9 @@ be labelled a family observation.
 
 - Deployed Lambda: `family`, **on by default**. The stack parameter `SessionTiming=off`
   (`KAD_TIMING=off scripts/deploy.sh`) records nothing.
-- Dev server: `playtest` by default (a developer's own runs); `KAD_TIMING=family` for a real family
-  sitting at your machine; `KAD_TIMING=off` for none.
+- Dev server: `playtest` by default (a developer's own runs, kept in memory); `KAD_TIMING=family`
+  for a real family sitting at your machine; `KAD_TIMING=off` for none. `GET /api/dev/timing` shows
+  what that process has recorded; production has no such route and exports from its table instead.
 
 The report keeps `family` and `playtest` apart and `content:timing` prints playtests only with
 `--include-playtest`, under their own heading.
@@ -86,15 +90,14 @@ seq, and play is never blocked. Pause is the way to keep a meal or a dead wifi o
 
 ## Reading it
 
-- **Across every household, from your machine** (needs AWS credentials for the stack, via the CLI's
-  profile or environment): `npm run timing:export -- --stage prod --out timing.json`. It does a
-  read-only, projected scan of `kad-<stage>` (`--table`/`--region` override), rebuilds every run's
-  sittings with the same code the server uses, and writes the report; `--csv` writes one row per
-  sitting. It holds no household ids, player ids or names. A scan reads the whole table, so run it
-  when you want an answer, not on a loop. Then `npm run content:timing -- timing.json`.
+- **From a deployed stack, with your AWS credentials** (the CLI's profile or environment):
+  `npm run timing:export -- --stage prod --out timing.json`. It reads the stack's timing table only,
+  never the game's: with `--chapter <id>` it is one query on that chapter's partition, without it a
+  scan of a table that holds nothing but telemetry. It rebuilds every sitting with the same code the
+  server uses and writes the report; `--csv` writes one row per sitting; `--table`/`--region`
+  override. The rows hold no household, player or name. The IAM needed is read access to
+  `kad-timing-<stage>` and nothing else.
 
-- `GET /api/timing`: JSON for the device's household (its 40 most recent runs): `sittings`, and
-  `aggregates` per chapter and revision. `?format=csv` gives one row per sitting for a spreadsheet.
 - `npm run content:timing -- <export.json> [--include-playtest] [--scenes N] [--json]`: per chapter and
   revision, the observed median and middle half of active minutes against the planned minutes and the
   30-minute budget, minutes by kind of play (story and choices, activities, fights), attempts by kind,
@@ -107,11 +110,13 @@ scene is dull or fun, and nothing here infers engagement.
 
 ## Retention and deletion
 
-There is no shared analytics. The notes live on the run's event log, so they last exactly as long as
-the household's runs do and go when the household is deleted (a guest household's seven days, an
-owner's retention window, or "delete household"). Nothing is sent anywhere else. Before any
-cross-household aggregation is built, it needs its own retention rule and a way to delete a
-household's contribution; this feature does not decide that for it.
+Marks expire 180 days after they are written (the table's TTL, `TIMING_RETENTION_DAYS`). They hold a
+random run id, a chapter, a seq, a server time and a note, with **no household or player id**, so
+deleting a household, a hero or a kid leaves nothing of theirs behind here and needs no hook. The
+table is separate from the game's so an operator can be given read access to it alone, and so a heavy
+export cannot compete with play. It is not retained on stack delete: it is telemetry and can be lost.
+Nothing is sent anywhere else. Any cross-household analytics beyond this operator export needs its own
+retention decision first.
 
 ## Not covered
 
@@ -119,5 +124,9 @@ household's contribution; this feature does not decide that for it.
 - The time a family spends in a plate or recap is inside the first scene, flagged `prefaced`.
 - The time between a `note` or a pause and "now" on a table that closes its tab is unknowable and is
   counted as idle or abandoned, never as play.
+- A mark is written after its step commits, so a failed write (after retries) loses it: a missing step
+  folds two scenes into one, a missing start drops the sitting, a missing end makes it read as
+  abandoned. The loss is logged (`timing: lost a ... mark`). A sitting recorded before the table was
+  deployed, or with timing off, is simply absent.
 - Time is attributed to the scene that was open when the previous event happened. A step that does not
   change the scene (a vote tick, a ready toggle) is not an event of its own.

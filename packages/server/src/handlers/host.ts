@@ -25,6 +25,7 @@ import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { recordTiming } from "./timing.ts";
 
 /**
  * The device asking and who is holding it: a phone's own device token, or a
@@ -66,7 +67,7 @@ export async function commitRoomChange(
   actor: string,
   /** May read (a removal relocks the lobby, #283); it is re-run on every retry. */
   change: (state: RunState) => RunState | null | Promise<RunState | null>,
-  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel" | "timing">,
   options: {
     closing?: boolean;
     /** Moves the household's founder in the same transaction (#272, `CommitInput.founder`). */
@@ -104,7 +105,6 @@ export async function commitRoomChange(
       patch: diff(state, next),
       at: iso(nowMs),
       playerId: actor,
-      ...(timing ? { timing } : {}),
     };
     if (
       await deps.repo.commit({
@@ -122,6 +122,7 @@ export async function commitRoomChange(
         runId: event.runId,
         patch: event.patch,
       });
+      await recordTiming(deps, { runId: next.runId, chapterId: next.chapterId, seq: next.seq, at: event.at }, timing);
       return ok({ seq: next.seq, state: next, changed: true });
     }
     if (attempt >= COMMIT_ATTEMPTS) {

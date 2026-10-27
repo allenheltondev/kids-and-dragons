@@ -25,7 +25,6 @@ import type {
   RoomMode,
   RunState,
   ServerMessage,
-  TimingNote,
 } from "@kad/shared";
 
 /**
@@ -317,12 +316,6 @@ export interface EventRecord extends Omit<ServerMessage, "discovered"> {
   at: string;
   playerId?: string;
   intent?: ClientIntent;
-  /**
-   * What this event says about the session clock (#511, handlers/timing.ts):
-   * written in the same conditional commit as the state it describes, and
-   * present only on the events that open, advance, pause or end a chapter.
-   */
-  timing?: TimingNote;
 }
 
 /**

@@ -41,14 +41,7 @@ import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
 import { handKeeper } from "../handlers/keeper.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
-import {
-  householdTimingReport,
-  parseTimingControl,
-  setTiming,
-  TIMING_BODY,
-  timingReportCsv,
-  type TimingControl,
-} from "../handlers/timing.ts";
+import { parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "../handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
@@ -235,7 +228,6 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
   if (req.method === "GET" && req.path === "/api/state") return (deps) => getStateRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/heroes") return (deps) => getHeroes(req, deps);
   if (req.method === "GET" && req.path === "/api/journal") return (deps) => getJournalRoute(req, deps);
-  if (req.method === "GET" && req.path === "/api/timing") return (deps) => getTimingRoute(req, deps);
   if (req.method === "POST" && req.path === "/api/profile/flair") return (deps) => postFlairRoute(req, deps);
   if (req.method === "GET" && req.path === "/api/household/players") return (deps) => getSharedPlayers(req, deps);
   // "It's your turn" while the app is in the background (#466).
@@ -586,26 +578,6 @@ async function postTiming(req: Req, deps: HandlerDeps, code: string) {
   return postHostControl(req, deps, code, control ? null : TIMING_BODY, (principal) =>
     setTiming({ code, principal, control: control as TimingControl }, deps),
   );
-}
-
-/**
- * How long this household's chapters really took (#511): JSON, or CSV with
- * `?format=csv`. The device token names the household; nothing in it names a
- * kid.
- */
-async function getTimingRoute(req: Req, deps: HandlerDeps) {
-  const kid = await resolveKid(req, deps);
-  if (!kid) return error(401, "FORBIDDEN", "the timing report needs this device's token");
-  const result = await householdTimingReport(kid.householdId, deps);
-  if (!result.ok) return fromError(result.error);
-  if (req.query.format === "csv") {
-    return {
-      statusCode: 200,
-      headers: { "content-type": "text/csv; charset=utf-8", "cache-control": "no-store" },
-      body: timingReportCsv(result.value),
-    };
-  }
-  return json(200, result.value, kid.principal);
 }
 
 /** The host turning quiet mode on for the room, or off again (#260). */

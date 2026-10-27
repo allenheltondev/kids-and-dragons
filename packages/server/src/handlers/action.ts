@@ -82,7 +82,7 @@ import {
   type ChapterSettlement,
   type StartedAttempt,
 } from "./progression.ts";
-import { timingNoteFor } from "./timing.ts";
+import { recordTiming, timingNoteFor } from "./timing.ts";
 
 /** Far above any intent a client builds (a hero's creation is the largest). */
 const MAX_LOGGED_INTENT_CHARS = 4096;
@@ -621,7 +621,6 @@ export async function applyAction(
     patch,
     ...(result.presentation ? { presentation: result.presentation } : {}),
     ...(progression ? { progression } : {}),
-    ...(timing ? { timing } : {}),
     at: iso(nowMs),
     playerId: input.playerId,
     // Kept for the log's own sake, while it is the size of a real intent.
@@ -690,6 +689,10 @@ export async function applyAction(
    */
   const discovered = await recordStepFinds(finds, deps);
 
+  // The session clock's mark (#511), written alongside the broadcast and
+  // awaited with the other after-commit work. It cannot fail the turn.
+  const recording = recordTiming(deps, { runId: input.runId, chapterId: next.chapterId, seq: nextSeq, at: event.at }, timing);
+
   const message = {
     kind: "patch" as const,
     seq: event.seq,
@@ -724,6 +727,7 @@ export async function applyAction(
   }
 
   if (renewal) await renewal;
+  await recording;
 
   // A question this step opened for somebody (#466): the job is decided here,
   // from the two states already in hand, and handed to the push sender, off

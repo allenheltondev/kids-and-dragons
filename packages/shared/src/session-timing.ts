@@ -103,6 +103,16 @@ export interface TimingEvent {
   timing?: TimingNote;
 }
 
+/**
+ * One timing note as the timing table keeps it: the event it came from
+ * (`runId`, `seq`, `at`), the chapter the run was in, and the note itself.
+ */
+export interface TimingMark extends TimingEvent {
+  runId: string;
+  chapterId: string;
+  timing: TimingNote;
+}
+
 export type SittingStatus = "in_progress" | "completed" | "closed" | "saved" | "abandoned";
 
 export interface SceneTiming {
@@ -190,6 +200,29 @@ export function sittingsFromEvents(runId: string, events: readonly TimingEvent[]
     else groups[groups.length - 1]?.push(entry);
   }
   return groups.map((group) => summarize(runId, group, nowMs));
+}
+
+/** Sittings from marks read in any order, across runs and chapters, newest first. */
+export function sittingsFromMarks(marks: readonly TimingMark[], nowMs: number): SittingSummary[] {
+  const byRun = new Map<string, TimingEvent[]>();
+  for (const m of marks) byRun.set(m.runId, [...(byRun.get(m.runId) ?? []), { seq: m.seq, at: m.at, timing: m.timing }]);
+  return [...byRun]
+    .flatMap(([runId, events]) => sittingsFromEvents(runId, events, nowMs))
+    .sort((a, b) => b.startedAt.localeCompare(a.startedAt));
+}
+
+/** The report for a set of marks, in the shape the export and the author tool read. */
+export function timingReportFromMarks(marks: readonly TimingMark[], nowMs: number, source: TimingSource | null): TimingReport {
+  const sittings = sittingsFromMarks(marks, nowMs);
+  return {
+    enabled: true,
+    source,
+    policy: TIMING_POLICY,
+    generatedAt: new Date(nowMs).toISOString(),
+    sittings,
+    aggregates: aggregateTimings(sittings),
+    truncated: false,
+  };
 }
 
 function summarize(runId: string, group: Array<{ seq: number; ms: number; note: TimingNote }>, nowMs: number): SittingSummary {
