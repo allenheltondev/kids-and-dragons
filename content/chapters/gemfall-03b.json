@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_wild"
   },
-  "estimatedMinutes": 46,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_poling_in",
   "plate": {
@@ -69,7 +69,7 @@
         "npc.frogfolk",
         "creature.will_o_wisp"
       ],
-      "narration": "Marda's rumor board said the frogfolk still ferry the ones they like, and a frogfolk ferrywoman called Gullet likes you. She poles you into the Whispering Marsh. Tonight's job: ride through the marsh and find a way out. Gullet carves a notch in her pole for every new wisp, and this week she ran out of pole and started on her hat. Behind ribbons hung with tiny bells, brand-new wisps bob about like they can't find their slippers. \"Too many new ones,\" says Gullet. \"Ask the boggarts why. They live on an island out here and keep every lost thing.\"",
+      "narration": "Marda's rumor board said the frogfolk still ferry the ones they like. A ferrywoman called Gullet likes you. Tonight, ride through the Whispering Marsh and find a way out. New wisps crowd behind bell ribbons. Gullet counts them by notching her hat. \"Too many,\" she hums. \"Ask the boggarts. They keep lost things on their island.\"",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -165,7 +165,7 @@
     },
     "scene_poling_in_pole_on": {
       "type": "story",
-      "narration": "\"Gems?\" Gullet hums a long, low hum. \"Boggarts. Boggarts know lost things, and gems are the most lost things there are this season.\" She swings the raft toward the boggarts' island, down channels that are mostly lily pads. A frog on a lily pad salutes as you pass. Nobody knows why. Gullet salutes back, just in case.",
+      "narration": "\"Gems are the most lost things this season,\" Gullet hums, steering toward the boggarts' island. A frog salutes from a lily pad. She salutes back, just in case.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -184,7 +184,7 @@
     },
     "scene_ribbon_line": {
       "type": "story",
-      "narration": "Halfway to the boggarts, a ribbon hung with tiny bells is strung right across the channel. Gullet's cousins, the ribbon crew, are untying it to move it further out, because there are more new wisps than yesterday. The one in charge wears three hats, stacked. \"Under it, or help them move it,\" Gullet hums. \"Never through it.\"",
+      "narration": "Gullet's cousins are moving a bell ribbon across the channel. Their leader wears three hats. Help move it and earn a dry crossing later, or duck under and handle the weir yourselves. \"Never through it,\" Gullet says. \"The hats tried.\"",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -203,9 +203,9 @@
       "choices": [
         {
           "id": "duck",
-          "label": "Duck under the ribbon without ringing a single bell",
+          "label": "Wait for the bell ribbon to lift, then duck under",
           "icon": "quick",
-          "goto": "check_ribbon_duck"
+          "goto": "interaction_ribbon_duck"
         },
         {
           "id": "help",
@@ -268,7 +268,7 @@
     },
     "scene_ribbon_line_help": {
       "type": "story",
-      "narration": "You hold the long ribbon pole steady while the cousins retie the line three raft-lengths further out. The one in three hats counts the new wisps under her breath, reaches a number, and stops counting out loud. \"Good hands,\" she croaks. \"We'll remember those hands.\" Then she lifts the ribbon high so your raft glides under without a jingle.",
+      "narration": "You hold the pole while the cousins retie their bell ribbon. \"Good hands,\" croaks the one in three hats. \"We will carry you across the weir later.\" She lifts the ribbon for your raft.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -324,7 +324,7 @@
       "discovers": [
         "npc.boggart"
       ],
-      "narration": "On a mud island stacked with lost things (odd mittens, a teapot lid, nine umbrellas) sits a boggart called Nan Rummage, sorting. There is a bag on her lap, and the bag is humming. She does not look up. \"Buy nothing, sell nothing,\" she tells a mitten. \"Trade, maybe. Sideways.\"",
+      "narration": "A boggart called Nan Rummage sorts lost things on an island: mittens, umbrellas, a teapot lid. A bag hums in her lap. \"Trade, maybe,\" she tells a mitten. She wants an unusual sound, if you can work out which one.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -397,7 +397,7 @@
     "scene_boggart_clue": {
       "type": "story",
       "priority": 1,
-      "narration": "Nan Rummage opens the bag a crack. Inside is a chip of fallen gem, no bigger than a tooth, humming one long, low note. \"Lost things all hum,\" she tells the teapot lid. \"This one hums like the old Gate out in the still water. The Hollow Gate. Same note. Exactly.\" Then, to an umbrella: \"Not that I said.\"",
+      "narration": "Nan opens her bag. A gem chip hums one low note. \"Like the old Gate in the still water,\" she tells a teapot lid. \"The Hollow Gate. Exactly the same.\" Then, to an umbrella: \"Not that I said.\"",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -502,7 +502,7 @@
     },
     "scene_boggart_clue_lost": {
       "type": "story",
-      "narration": "\"Found lately?\" Nan perks right up and tells the teapot lid. Nine umbrellas. One left boot. A good brown hat with a buckle. \"And three prospectors,\" she adds. \"Went into a barge. Came out again, eventually. Sitting on a tussock now, north of here, sulking. Not my sort of lost thing. Too loud.\"",
+      "narration": "Nan tells the teapot lid what she found: umbrellas, a brown hat, and three prospectors. \"Barge spat them out. Sitting north of here on a tussock. Too loud for my collection.\"",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -526,7 +526,7 @@
     },
     "scene_toll_reeds": {
       "type": "story",
-      "narration": "Past the island the channel squeezes into a tunnel of tall reeds, and every reed is tied in a knot. Gullet stops. \"Toll reeds,\" she hums. \"They let you by for a little something. Always have. Greedy this season.\" A reed pokes hopefully at your pocket. Another is already holding somebody's spoon, and looks very pleased about it.",
+      "narration": "Knotted reeds block the channel. Gullet stops her raft. \"Another toll,\" she hums. A reed holds out its tip like a waiting hand. The knots tremble whenever somebody speaks.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -663,7 +663,7 @@
     },
     "scene_barge": {
       "type": "story",
-      "narration": "Around the next bend, half-sunk in the reeds, sits a gem barge with ABANDONED painted on the side in big, helpful letters. One gem sits on its deck, humming the boggart's note. There are prospector footprints in the mud going toward it, and, oddly, none coming back.",
+      "narration": "A barge sits in the reeds. ABANDONED, says its very helpful sign. One gem hums on deck. Prospector footprints lead toward it. None come back. Gullet stops an arm's length from the bank.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -672,6 +672,12 @@
         }
       ],
       "choices": [
+        {
+          "id": "inspect",
+          "label": "Test the barge's act together from the bank",
+          "icon": "eye",
+          "goto": "interaction_barge_audience"
+        },
         {
           "id": "grab",
           "label": "Climb aboard and grab the gem",
@@ -1008,7 +1014,7 @@
     },
     "scene_fog_bank": {
       "type": "story",
-      "narration": "The fog closes in so thick you can't see the end of Gullet's pole. Somewhere ahead the channel splits, and somewhere ahead are old stumps that would very much like to meet a raft. Gullet slows right down. \"Need eyes,\" she hums. \"Or ears. I'm not picky.\" A heron stands in the fog nearby, looking as lost as you are.",
+      "narration": "Fog hides the channel fork and its stumps. Gullet needs a direction. Follow a gap from the bow to check a broad landing, risk the high pole, or steer by the bells behind you. A mosslight jar can reveal the landing too.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1019,9 +1025,9 @@
       "choices": [
         {
           "id": "lookout",
-          "label": "Climb the lantern pole and call out the stumps",
+          "label": "Follow a clear channel marker from the bow",
           "icon": "eye",
-          "goto": "check_fog_lookout"
+          "goto": "interaction_fog_lookout"
         },
         {
           "id": "listen",
@@ -1047,6 +1053,12 @@
               "flag": "steered_through_the_fog"
             }
           ]
+        },
+        {
+          "id": "climb",
+          "label": "Risk the wobbly high pole for a quick look",
+          "icon": "quick",
+          "goto": "check_fog_lookout"
         }
       ]
     },
@@ -1086,7 +1098,7 @@
     },
     "scene_fog_bank_listen": {
       "type": "story",
-      "narration": "You close your eyes. Far behind you, the ribbon bells are jingling as wisps brush past them. Keep the jingling at your backs and you are in the main channel. Gullet steers by your pointing fingers without a word, and the stumps slide by, one at a time, like sleepy cows. Then, ahead in the fog, a new sound: somebody grumbling.",
+      "narration": "Keep the ribbon bells behind you: that is the main channel. Gullet follows your pointing fingers around the stumps. Ahead, somebody grumbles. The fog still hides the island's landing.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1105,7 +1117,7 @@
     },
     "scene_fog_bank_light": {
       "type": "story",
-      "narration": "You open the mosslight jar just a crack. Soft green light spills out and pushes the fog back a raft's length on every side, like a polite cat clearing a table. The stumps are suddenly very obvious, and rather embarrassed about it. Gullet nods. You close the jar again before the light all leaks out. Ahead, someone is grumbling.",
+      "narration": "You crack the mosslight jar open. The fog clears for a raft's length. You check a broad landing beside an island, then close the jar. Somebody on the island is grumbling.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1120,11 +1132,18 @@
           "icon": "lantern",
           "goto": "interaction_stumps"
         }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "fog_landing_checked",
+          "value": true
+        }
       ]
     },
     "scene_tussock": {
       "type": "story",
-      "narration": "On a tussock in the fog stand three prospectors, muddy to the eyebrows. \"A barge ate us,\" says the tallest, gloomily. \"Spat us out. Kept our gems. Kept my good hat.\" Their raft is long gone, and the tussock is slowly sinking, so all three are standing on one foot to make it last. Nobody gets left on a tussock. Not on Gullet's watch.",
+      "narration": "Three muddy prospectors balance on a sinking tussock. \"Barge kept my good hat,\" says the tallest. Bring them aboard for help at the road cart, or guide them home through the shallows. A checked landing avoids the wobbly boarding.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1135,9 +1154,9 @@
       "choices": [
         {
           "id": "haul",
-          "label": "Pole over and haul them aboard",
+          "label": "Balance the raft while they climb aboard",
           "icon": "might",
-          "goto": "check_tussock_haul"
+          "goto": "interaction_tussock_balance"
         },
         {
           "id": "shallows",
@@ -1158,6 +1177,19 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "quick_haul",
+          "label": "Risk hauling everyone aboard at once",
+          "icon": "might",
+          "goto": "check_tussock_haul"
+        },
+        {
+          "id": "checked_landing",
+          "label": "Use the broad landing you checked",
+          "icon": "map",
+          "goto": "scene_tussock_landing",
+          "requiresFlag": "fog_landing_checked"
         }
       ]
     },
@@ -1223,7 +1255,7 @@
     },
     "scene_tussock_shallows": {
       "type": "story",
-      "narration": "You point out the shallow, sandy bits, pale under the water. The prospectors wade off one careful foot at a time, toward the lanterns of the ribbon crew. \"We're going home,\" calls the tallest. \"The rush can keep it. And my hat.\" Gullet watches until all three lanterns wave back from the ribbon line, then nods and poles on.",
+      "narration": "You point out the sandy shallows. The prospectors wade toward the ribbon crew and wave from safety. \"Going home!\" calls the tallest. \"The rush can keep my hat.\" They will not be waiting at the road cart.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1242,7 +1274,7 @@
     },
     "scene_wisp_lead": {
       "type": "story",
-      "narration": "A single wisp drifts out of the fog and hangs in front of you, blinking hopefully, like a dog holding a ball. Then it bobs away between the reeds and stops, to see if you'll follow.",
+      "narration": "A wisp bobs ahead, then waits like a dog with a ball. Follow patiently, hurry after it, or try saying please.",
       "cast": [
         {
           "figure": "entities/will_o_wisp"
@@ -1292,7 +1324,7 @@
     },
     "scene_wisp_lead_please": {
       "type": "story",
-      "narration": "\"Please,\" you say. The wisp stops dead. Nobody has ever said please to a wisp. It goes pink, then gold, then a flustered sort of white, and bobs in a little circle as if it does not know where to put itself. Then it comes back and hangs right in front of you, glowing, waiting to show you.",
+      "narration": "\"Please.\" The wisp goes pink, then gold. Nobody has asked it politely before. It returns and glows in front of your face, ready to share a memory.",
       "cast": [
         {
           "figure": "entities/will_o_wisp"
@@ -1377,7 +1409,7 @@
     },
     "scene_old_steps": {
       "type": "story",
-      "narration": "The water between you and the huge gray shape is so still it looks like glass. A line of flat stones crosses it, too square to be stones. They are steps, very old ones, sunk long ago, and every one is worn smooth in the middle. A frog sits on the third step, and it has clearly decided it is not moving for anybody.",
+      "narration": "Ancient steps cross the still water toward the huge gray shape. Their middles are worn smooth. A frog occupies the third step with the confidence of someone who has reserved it.",
       "choices": [
         {
           "id": "wade",
@@ -1422,7 +1454,7 @@
     },
     "scene_old_steps_frog": {
       "type": "story",
-      "narration": "You ask the frog, very politely, if you might pass. It thinks about it for a long time. Then it hops onto your head and settles there like a small, damp green hat, and does not move again for the whole crossing. Back on the raft, Gullet nods her approval. Frogfolk respect a good hat.",
+      "narration": "Asked politely, the frog hops onto your head. You cross the steps wearing it. Gullet approves. Frogfolk respect a good hat.",
       "choices": [
         {
           "id": "on",
@@ -1445,7 +1477,7 @@
         "location.hollow_gate"
       ],
       "art": "scenes/gemfall/hollow-gate",
-      "narration": "The Hollow Gate stands in the still water, older than anything you have ever stood next to. Older than the marsh. Older than the mountain's name. Its runes glow brighter than anyone alive has seen them, and every reed around it is tied in a knot. It does not open. It does not look like it has ever opened.",
+      "narration": "The Hollow Gate stands in the still water, older than the marsh or the mountain's name. Its runes glow. Every reed around it is knotted. It does not open. It does not look as if it ever has.",
       "choices": [
         {
           "id": "listen",
@@ -1471,7 +1503,7 @@
       "type": "story",
       "priority": 2,
       "art": "scenes/gemfall/hollow-gate",
-      "narration": "You stand very still. The runes are humming one long, low note. The boggart's note. The barge's note. Not just like it. The same. What that means, the Gate does not say. Is it a door? A warning? Something else? It just keeps humming, the way it has hummed since before anyone was here to hear it.",
+      "narration": "The runes hum the boggart's note. The barge's note. Exactly the same. A door? A warning? Something else? The Gate offers no explanation. It keeps humming.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1547,20 +1579,20 @@
     },
     "choice_gate_record": {
       "type": "choice_point",
-      "narration": "Before you go, somebody says what everybody is thinking: nobody back home is going to believe this. The Gate does not mind whether it is believed. It just hums. But you are the only people here tonight to see it like this, and that feels like a job. How will you remember it? Everybody vote.",
+      "narration": "How will you remember the Gate? A braced rubbing keeps a checked shape for your account. Practicing a shared note prepares you for the frogfolk's crossing song, but makes no paper record. You can also count the reeds, or risk a quick freehand rubbing. Nothing here explains what the Gate is.",
       "art": "scenes/gemfall/hollow-gate",
       "choices": [
         {
           "id": "rubbing",
-          "label": "Take a charcoal rubbing of one rune",
+          "label": "Brace the paper and take a checked rubbing",
           "icon": "scroll",
-          "goto": "check_gate_rubbing"
+          "goto": "interaction_gate_rubbing"
         },
         {
           "id": "hum",
-          "label": "Hum its note back to it",
+          "label": "Practice a shared note for the frogfolk crossing",
           "icon": "note",
-          "goto": "check_gate_hum"
+          "goto": "interaction_gate_hum"
         },
         {
           "id": "count",
@@ -1574,6 +1606,12 @@
           "icon": "note",
           "requiresClass": "songkeeper",
           "goto": "check_gate_hum"
+        },
+        {
+          "id": "quick_rubbing",
+          "label": "Try a quick freehand rubbing; risk a thumbprint",
+          "icon": "scroll",
+          "goto": "check_gate_rubbing"
         }
       ]
     },
@@ -1623,7 +1661,7 @@
     },
     "scene_nan_washtub": {
       "type": "story",
-      "narration": "A washtub comes bumping across the still water, and in it, rowing with a soup ladle, is Nan Rummage. \"Lost things drift here,\" she tells the ladle. \"Always have. More lately.\" She fishes out a mitten, then a spoon, then a very surprised fish, which she puts back. Then she peers at your boots, sideways, waiting to be asked something.",
+      "narration": "Nan rows a washtub toward you with a soup ladle. \"Lost things drift here. More lately,\" she tells it. She fishes out a spoon and a surprised fish, puts the fish back, and waits for your question.",
       "cast": [
         {
           "figure": "cast/nan_rummage",
@@ -1649,7 +1687,7 @@
     },
     "scene_nan_washtub_north": {
       "type": "story",
-      "narration": "\"The trees?\" Nan tells the ladle. \"The trees are keeping lost things too. Piles of them. Picky about it, though. They don't take mittens.\" She sniffs, as if this is very poor taste. \"They take the humming kind.\" Then she rows off backwards into the fog, still talking to the ladle, and is gone.",
+      "narration": "\"The trees keep lost things too,\" Nan tells the ladle. \"Not mittens. Humming things.\" She sniffs at their poor taste, then rows backward into the fog.",
       "cast": [
         {
           "figure": "cast/nan_rummage",
@@ -1669,7 +1707,7 @@
     },
     "scene_nan_washtub_road": {
       "type": "story",
-      "narration": "\"The roads?\" Nan tells the spoon. \"Everybody's lost on the roads. Hundreds of them. Every one going the same way, and none of them knows they're lost.\" She chuckles, a sound like a drawer full of buttons. \"Loud, though. Lovely and loud.\" Then she rows off backwards into the fog, and is gone.",
+      "narration": "\"Everybody on the roads is going the same way,\" Nan tells a spoon. \"None knows they are lost. Lovely and loud, though.\" She rows backward into the fog.",
       "cast": [
         {
           "figure": "cast/nan_rummage",
@@ -1690,7 +1728,7 @@
     "choice_exit": {
       "type": "choice_point",
       "art": "scenes/gemfall/hollow-gate",
-      "narration": "Past the Gate the marsh splits two ways. North, the reeds thin toward the west branch of the river and a dark line of trees. Northeast, you can hear wagon wheels, shouting, and somebody selling sausages: the rush roads, where all the stones are going. Everybody vote.",
+      "narration": "Choose your real road. North, the frogfolk weir leads to the Enchanted Woods. Northeast, wheels and a sausage seller announce the rush road. Any helpers you earned can help at their own crossing; they cannot choose the road for you.",
       "choices": [
         {
           "id": "north",
@@ -1720,7 +1758,7 @@
     },
     "scene_reed_edge": {
       "type": "story",
-      "narration": "The reeds thin, the mud firms up, and there it is: the rush road, loud with wheels. Right at the marsh's edge, a sausage cart is stuck to its axles, and the sausage seller is pushing, pulling, and shouting at the mud. \"Free sausages,\" she pants, \"to anybody who gets me out!\" Behind her a queue of wagons waits, and a goose honks for all of them.",
+      "narration": "At the rush road, a sausage cart is stuck to its axles. \"Free sausages for help!\" pants the seller. A wagon queue waits behind her. A goose honks on behalf of everyone.",
       "choices": [
         {
           "id": "push",
@@ -1774,7 +1812,7 @@
     },
     "scene_reed_edge_reeds": {
       "type": "story",
-      "narration": "You lay armfuls of reeds under the wheels, thick as a carpet. The cart rolls out smooth as a sled, and the sausage seller stares at you as if you have just invented wheels. \"Marsh folk!\" she shouts. \"Clever marsh folk!\" She hands out sausages, and tells everybody in the queue about you, for quite a long time.",
+      "narration": "You carpet the mud with reeds. The cart rolls free. \"Clever marsh folk!\" shouts the seller, handing over supper. The goose takes credit.",
       "choices": [
         {
           "id": "on",
@@ -1793,7 +1831,7 @@
     },
     "scene_reed_edge_prospectors": {
       "type": "story",
-      "narration": "\"Hey! Tussock people!\" The three prospectors you hauled out of the marsh are halfway up the queue. They come running, still damp, and the tallest one shouts, \"We owe these folks!\" Six prospector hands and all of yours push, and the cart shoots out of the mud so fast the sausage seller has to chase it. Sausages for everybody, and an extra one for the tall one.",
+      "narration": "\"Tussock people!\" Your rescued prospectors run from the queue to push. The cart shoots free. The seller chases it, then returns with supper for everyone. The tallest prospector gets an extra sausage.",
       "choices": [
         {
           "id": "on",
@@ -1827,9 +1865,9 @@
       "choices": [
         {
           "id": "ceremony",
-          "label": "Cross with the frogfolk, with all the ceremony",
+          "label": "Wait for the frogfolk's beat, then pole across",
           "icon": "note",
-          "goto": "check_ford_song"
+          "goto": "interaction_weir_song"
         },
         {
           "id": "hop",
@@ -1843,6 +1881,19 @@
           "icon": "hand",
           "requiresFlag": "helped_ribbon_crew",
           "goto": "scene_west_branch_crew"
+        },
+        {
+          "id": "practiced",
+          "label": "Use the shared beat you practiced at the Gate",
+          "icon": "note",
+          "goto": "interaction_weir_practiced",
+          "requiresFlag": "gate_beat_practiced"
+        },
+        {
+          "id": "improvise",
+          "label": "Risk an improvised crossing song",
+          "icon": "quick",
+          "goto": "check_ford_song"
         }
       ]
     },
@@ -1943,7 +1994,40 @@
           "value": true
         }
       ],
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "gate_record_checked",
+            "notFlag": "gate_record_helped"
+          },
+          "text": "Your checked rubbing records the rune's shape. Its meaning is still a question."
+        },
+        {
+          "when": {
+            "flag": "gate_record_helped"
+          },
+          "text": "Your rubbing was checked with Gullet's help. You will say so when you show it."
+        },
+        {
+          "when": {
+            "flag": "gate_beat_practiced"
+          },
+          "text": "You carry the shared beat in memory, without a paper rubbing. The Gate never told you what it was."
+        },
+        {
+          "when": {
+            "flag": "gate_beat_helped"
+          },
+          "text": "Gullet helped hold your practice beat together."
+        },
+        {
+          "when": {
+            "flag": "mimic_helped"
+          },
+          "text": "Gullet helped check the pretend barge. Your account includes her part."
+        }
+      ]
     },
     "ending_swept_west": {
       "type": "rest",
@@ -1959,7 +2043,40 @@
           "value": true
         }
       ],
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "gate_record_checked",
+            "notFlag": "gate_record_helped"
+          },
+          "text": "Your checked rubbing records the rune's shape. Its meaning is still a question."
+        },
+        {
+          "when": {
+            "flag": "gate_record_helped"
+          },
+          "text": "Your rubbing was checked with Gullet's help. You will say so when you show it."
+        },
+        {
+          "when": {
+            "flag": "gate_beat_practiced"
+          },
+          "text": "You carry the shared beat in memory, without a paper rubbing. The Gate never told you what it was."
+        },
+        {
+          "when": {
+            "flag": "gate_beat_helped"
+          },
+          "text": "Gullet helped hold your practice beat together."
+        },
+        {
+          "when": {
+            "flag": "mimic_helped"
+          },
+          "text": "Gullet helped check the pretend barge. Your account includes her part."
+        }
+      ]
     },
     "ending_walked_over": {
       "type": "rest",
@@ -1977,7 +2094,40 @@
           "value": true
         }
       ],
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "gate_record_checked",
+            "notFlag": "gate_record_helped"
+          },
+          "text": "Your checked rubbing records the rune's shape. Its meaning is still a question."
+        },
+        {
+          "when": {
+            "flag": "gate_record_helped"
+          },
+          "text": "Your rubbing was checked with Gullet's help. You will say so when you show it."
+        },
+        {
+          "when": {
+            "flag": "gate_beat_practiced"
+          },
+          "text": "You carry the shared beat in memory, without a paper rubbing. The Gate never told you what it was."
+        },
+        {
+          "when": {
+            "flag": "gate_beat_helped"
+          },
+          "text": "Gullet helped hold your practice beat together."
+        },
+        {
+          "when": {
+            "flag": "mimic_helped"
+          },
+          "text": "Gullet helped check the pretend barge. Your account includes her part."
+        }
+      ]
     },
     "ending_marsh_kept_secrets": {
       "type": "rest",
@@ -2334,6 +2484,489 @@
         }
       ],
       "art": "scenes/gemfall/marsh-steps-crabs"
+    },
+    "interaction_ribbon_duck": {
+      "type": "interaction",
+      "narration": "The ribbon rises as the cousins shift their poles. Wait for a clear gap, then duck. The cousin in three hats has folded herself almost flat. The hats have not.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Duck when the marker is in the clear gap.",
+        "actionLabel": "Duck under",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "interaction_wisp_crowd",
+        "narration": "Everybody folds flat as a pancake. Not one jingle. On the far side of the ribbon, the new wisps bob up and down in a slow, polite round of applause, and the cousin in three hats tips all three."
+      },
+      "onFailure": {
+        "goto": "interaction_wisp_crowd",
+        "narration": "Jingle. Jingle-jingle. Every bell on the line goes off at once. The new wisps all crowd to the ribbon to see who rang, and the ribbon crew, all together, say \"Tsk.\" Gullet poles away very fast, pretending she has never met you."
+      },
+      "onAssisted": {
+        "goto": "interaction_wisp_crowd",
+        "narration": "The cousin holds the ribbon high while you duck. You pass with help, but have not earned the crew's later ferry favor."
+      },
+      "art": "scenes/gemfall/toll-reeds-tunnel",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        },
+        {
+          "figure": "cast/gullets_cousin",
+          "name": "Gullet's Cousins"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "count": 3
+        }
+      ]
+    },
+    "interaction_fog_lookout": {
+      "type": "interaction",
+      "narration": "Gullet points out a patch of clear water between three drifting reed clumps. Follow that patch as the reeds slide past. Keep its final position in mind: that is where the raft can turn. The heron is watching you. It has offered no useful advice.",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Follow the clear-water glow. Choose its final position.",
+        "actionLabel": "Point out the channel",
+        "covers": [
+          "Left of the bow",
+          "Straight ahead",
+          "Right of the bow"
+        ],
+        "start": 1,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "stepMs": 1600
+      },
+      "onSuccess": {
+        "goto": "interaction_stumps",
+        "narration": "You call the open channel. Gullet follows it and spots a broad landing beside the grumbling island. That landing will make boarding easier.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "steered_through_the_fog",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "fog_landing_checked",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_stumps",
+        "narration": "That gap closes in reeds. Gullet feels along the channel with her pole instead. You reach the grumbling by the narrow, muddy side of its island.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "steered_through_the_fog",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "fog_route_helped",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "interaction_stumps",
+        "narration": "Gullet points with her pole as you follow the gap. Together you check the broad landing beside the grumbling island.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "steered_through_the_fog",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "fog_landing_checked",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "fog_route_helped",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/fog-raft-lantern",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ]
+    },
+    "interaction_tussock_balance": {
+      "type": "interaction",
+      "narration": "The prospectors climb one at a time. Keep the raft level as each wet boot lands. The tallest insists his hat was heavier than this. Nobody believes him, but everyone is very polite.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Raise or lower your side to keep the raft marker in the middle.",
+        "actionLabel": "Bring them aboard",
+        "objectLabel": "The loaded raft"
+      },
+      "onSuccess": {
+        "goto": "scene_wisp_lead",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rescued_prospectors",
+            "value": true
+          },
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "roller"
+          }
+        ],
+        "narration": "One heave, two heaves, and all three slide aboard like wet sacks of flour. The raft rides very low. Gullet drops them at a frogfolk landing where a path leads northeast toward the roads, and the tallest one gives you a squashed honeycake. \"For the rescue. Sorry about the squash.\""
+      },
+      "onFailure": {
+        "goto": "scene_wisp_lead",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rescued_prospectors",
+            "value": true
+          }
+        ],
+        "narration": "You grab the tallest one, he grabs you, and you both go in with a splash. The other two climb aboard over the top of you, saying sorry the whole way. Everybody ends up on the raft, equally wet, which feels fair. Gullet drops them at a landing with a path toward the northeast roads."
+      },
+      "onAssisted": {
+        "goto": "scene_wisp_lead",
+        "narration": "Gullet braces the raft with her pole while you balance the load. The prospectors climb aboard with help, then leave at the northeast landing. Their squashed honeycake survives the journey.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rescued_prospectors",
+            "value": true
+          },
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "roller"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/fog-raft-lantern",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ]
+    },
+    "scene_tussock_landing": {
+      "type": "story",
+      "narration": "You bring the raft alongside the broad landing you checked. The prospectors step aboard instead of leaping. Gullet drops them by the northeast road, and the tallest hands over a squashed honeycake. \"Not a splash,\" he says. His boots make three splashes as he walks away.",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "rescued_prospectors",
+          "value": true
+        },
+        {
+          "type": "grantItem",
+          "itemId": "honeycake",
+          "to": "roller"
+        }
+      ],
+      "choices": [
+        {
+          "id": "on",
+          "label": "Pole on with the rescue finished",
+          "icon": "hand",
+          "goto": "scene_wisp_lead"
+        }
+      ],
+      "art": "scenes/gemfall/fog-raft-lantern"
+    },
+    "interaction_gate_rubbing": {
+      "type": "interaction",
+      "narration": "The paper wants to curl. The charcoal wants to roll. Hold the sheet flat while a friend rubs the rune. Alone, use the flat stone to hold it. The frog watches your thumb with professional interest.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the paper flat while the acting hero rubs the rune.",
+        "actionLabel": "Rub the rune",
+        "supportLabel": "Hold the paper"
+      },
+      "onSuccess": {
+        "goto": "scene_nan_washtub",
+        "narration": "The shape is clear, and you check it against the rune before rolling the paper. This is what you saw, not an answer about what it means.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "gate_record_checked",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_nan_washtub",
+        "narration": "A very detailed thumbprint fills the paper. You keep it, but cannot call it a checked rune."
+      },
+      "onAssisted": {
+        "goto": "scene_nan_washtub",
+        "narration": "Gullet pins the curl with her pole while you rub and compare. The shape is checked with her help. Its meaning remains a mystery.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "gate_record_checked",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "gate_record_helped",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/hollow-gate"
+    },
+    "interaction_gate_hum": {
+      "type": "interaction",
+      "narration": "Choose a sound to add to the group's practice. Hum, tap a knee, or breathe a steady beat. The frog supplies a loud final croak, whether invited or not. This is practice for keeping together, not a test of who sings best.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Each connected hero adds a sound to the shared practice.",
+        "actionLabel": "Finish practicing",
+        "options": [
+          {
+            "id": "hum",
+            "label": "Hum a low note",
+            "icon": "note",
+            "reaction": "A low hum joins the shared beat."
+          },
+          {
+            "id": "tap",
+            "label": "Tap the beat on a knee",
+            "icon": "hand",
+            "reaction": "Tap, tap. A steady beat holds the sounds together."
+          },
+          {
+            "id": "breathe",
+            "label": "Breathe with the beat",
+            "icon": "heart",
+            "reaction": "A slow breath leaves room for the next sound."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_nan_washtub",
+        "narration": "You have practiced keeping a beat together. If you choose the frogfolk weir, this gives you a wider moment to move. The Gate keeps its own counsel.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "gate_beat_practiced",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_nan_washtub",
+        "narration": "The frog supplies the beat, and you practice together.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "gate_beat_practiced",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "scene_nan_washtub",
+        "narration": "Gullet hums underneath your sounds. You practice the shared beat with help, ready for the weir.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "gate_beat_practiced",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "gate_beat_helped",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/hollow-gate"
+    },
+    "interaction_weir_song": {
+      "type": "interaction",
+      "narration": "Gullet's cousins stamp their poles against the weir. Wait for the short gap between their stamps before moving. One cousin's hats bounce on every beat. None of them agrees on the height.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Pole across when the marker is inside the gold beat.",
+        "actionLabel": "Pole across",
+        "target": 0.5,
+        "width": 0.24,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "ending_forded_clean",
+        "narration": "Your poles land together. The raft clears the weir and reaches the north bank dry."
+      },
+      "onFailure": {
+        "goto": "ending_swept_west",
+        "narration": "Your poles land across the beat. The raft wobbles, and the branch carries you west toward the flooded paths."
+      },
+      "onAssisted": {
+        "goto": "ending_forded_clean",
+        "narration": "Gullet calls each move while the cousins brace the weir. With their help, the raft reaches the north bank dry."
+      },
+      "art": "scenes/gemfall/fog-raft-lantern",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        },
+        {
+          "figure": "cast/gullets_cousin",
+          "name": "Gullet's Cousins"
+        }
+      ]
+    },
+    "interaction_weir_practiced": {
+      "type": "interaction",
+      "narration": "Gullet's cousins stamp their poles against the weir. Your practiced beat gives you a longer moment to move together. One cousin's hats bounce on every beat. None of them agrees on the height.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Pole across when the marker is inside the gold beat.",
+        "actionLabel": "Pole across",
+        "target": 0.5,
+        "width": 0.5,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "ending_forded_clean",
+        "narration": "Your poles land together. The raft clears the weir and reaches the north bank dry."
+      },
+      "onFailure": {
+        "goto": "ending_swept_west",
+        "narration": "Your poles land across the beat. The raft wobbles, and the branch carries you west toward the flooded paths."
+      },
+      "onAssisted": {
+        "goto": "ending_forded_clean",
+        "narration": "Gullet calls each move while the cousins brace the weir. With their help, the raft reaches the north bank dry."
+      },
+      "art": "scenes/gemfall/fog-raft-lantern",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        },
+        {
+          "figure": "cast/gullets_cousin",
+          "name": "Gullet's Cousins"
+        }
+      ]
+    },
+    "interaction_barge_audience": {
+      "type": "interaction",
+      "narration": "Stay on the bank and help test the act. Barges do not blink, breathe, or twitch their ropes. Tell the table what you are watching, then try a test. The sign ABANDONED is looking increasingly nervous.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Each hero tests one suspicious part from the bank.",
+        "actionLabel": "Name the pretend barge",
+        "options": [
+          {
+            "id": "blink",
+            "label": "Challenge a barnacle to a staring contest",
+            "icon": "eye",
+            "reaction": "The barnacle blinks first. It has eyelashes."
+          },
+          {
+            "id": "breath",
+            "label": "Count the deck's slow breaths",
+            "icon": "ear",
+            "reaction": "The whole deck rises, then holds its breath."
+          },
+          {
+            "id": "rope",
+            "label": "Ask the rope to wag",
+            "icon": "hand",
+            "reaction": "The rope twitches. It is a tail, having a difficult day."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_act_closed",
+        "narration": "\"Mire mimic,\" you agree. Exposed by its audience, the barge unfolds and slinks into the reeds. You never had to step onto it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "named_the_mimic",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_act_closed",
+        "narration": "Gullet points out a blinking barnacle. Together you name the mire mimic, which leaves in embarrassment.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "named_the_mimic",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "scene_act_closed",
+        "narration": "Gullet helps compare what you saw. Together you name the mire mimic. It leaves the stage with a wounded sigh.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "named_the_mimic",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "mimic_helped",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/toll-reeds-tunnel",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ]
     }
   },
   "voiceGuide": {
@@ -2372,6 +3005,35 @@
       "interaction_reed_gap": {
         "props": [
           "prop_reed_gate"
+        ]
+      },
+      "interaction_fog_lookout": {
+        "props": [],
+        "coverIcons": [
+          "prop_reed_gate",
+          "prop_reed_gate",
+          "prop_reed_gate"
+        ]
+      },
+      "interaction_tussock_balance": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_gate_rubbing": {
+        "props": [
+          "prop_word_scroll",
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_weir_song": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_weir_practiced": {
+        "props": [
+          "prop_rope_pole"
         ]
       }
     }
