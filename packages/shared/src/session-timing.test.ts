@@ -8,6 +8,9 @@ import {
   IDLE_GAP_CAP_MS,
   sampleLabel,
   sittingsFromEvents,
+  sittingsFromMarks,
+  timingReportFromMarks,
+  type TimingMark,
   timingCsv,
   type TimingEvent,
   type TimingNote,
@@ -248,5 +251,27 @@ describe("timingCsv", () => {
     expect(head?.split(",")).toHaveLength(27);
     expect(row).toContain('"\'=HYPERLINK(""x""), hi"');
     expect(row).toContain("a b");
+  });
+});
+
+describe("marks from a table", () => {
+  const mark = (runId: string, seq: number, ms: number, timing: TimingNote): TimingMark => ({ runId, chapterId: "riftlight-01", seq, at: at(ms), timing });
+
+  it("rebuilds each run's sittings from marks in any order, across runs", () => {
+    const marks = [
+      mark("B", 2, 10 * MIN, { kind: "end", outcome: "success", routes: [] }),
+      mark("A", 1, 0, start()),
+      mark("B", 1, 5 * MIN, start({ partySize: 1 })),
+      mark("A", 2, 3 * MIN, { kind: "end", outcome: "setback", routes: [] }),
+    ];
+    const sittings = sittingsFromMarks(marks, T0 + 60 * MIN);
+    expect(sittings.map((s) => [s.id, s.partySize, s.outcome])).toEqual([["B:1", 1, "success"], ["A:1", 2, "setback"]]);
+  });
+
+  it("answers in the shape the export and the author tool read", () => {
+    const report = timingReportFromMarks([mark("A", 1, 0, start())], T0 + MIN, "family");
+    expect(report).toMatchObject({ enabled: true, source: "family", truncated: false });
+    expect(report.aggregates[0]).toMatchObject({ chapterId: "riftlight-01", attempts: 1 });
+    expect(JSON.stringify(report)).not.toMatch(/household|player/i);
   });
 });

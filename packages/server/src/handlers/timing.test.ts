@@ -6,9 +6,10 @@
  */
 
 import path from "node:path";
-import { applyIntent, classPlaceWaitingOn, createRunState, keepClassIntent, makeRng, type ClientIntent, type RunState } from "@kad/shared";
-import { describe, expect, it } from "vitest";
+import { timingCsv, applyIntent, classPlaceWaitingOn, createRunState, keepClassIntent, makeRng, type ClientIntent, type RunState } from "@kad/shared";
+import { describe, expect, it, vi } from "vitest";
 import { loadContent } from "../content/loader.ts";
+import { MemoryTimingStore } from "../store/timing-store.ts";
 import type { Engine } from "../engine/port.ts";
 import { makeHarness, seedHousehold } from "../test-support.ts";
 import { applyAction } from "./action.ts";
@@ -17,12 +18,11 @@ import { createRoom, joinRoom } from "./room.ts";
 import { resumeGame, stopForToday } from "./save.ts";
 import {
   chapterRevision,
-  householdTimingReport,
+  localTimingReport,
   parseTimingControl,
   setTiming,
   stepResult,
   timingNoteFor,
-  timingReportCsv,
   type TimingControl,
 } from "./timing.ts";
 
@@ -107,11 +107,7 @@ async function play(h: Household, seats: Seat[], steps: number, gap = MIN) {
 const host = (h: Household) => h.players[0]!.principal;
 const control = (h: Household, code: string, c: TimingControl, who = 0) =>
   setTiming({ code, principal: h.players[who]!.principal, control: c }, h.harness.deps);
-const report = async (h: Household) => {
-  const r = await householdTimingReport(h.householdId, h.harness.deps);
-  if (!r.ok) throw new Error(JSON.stringify(r));
-  return r.value;
-};
+const report = (h: Household) => localTimingReport(h.harness.deps);
 
 describe("session timing (#511)", () => {
   it("records nothing unless the entry point says whose play it is", async () => {
@@ -219,7 +215,7 @@ describe("session timing (#511)", () => {
     await control(h, e.code, { action: "note", text: "needed help\n understanding the clue" });
     await control(h, e.code, { action: "note", text: "wanted another turn" });
     expect((await report(h)).sittings[0]!.note).toBe("wanted another turn");
-    expect(timingReportCsv(await report(h))).toContain("wanted another turn");
+    expect(timingCsv((await report(h)).sittings)).toContain("wanted another turn");
   });
 
   it("leaves a stretch unrecorded when the host turns timing off, and records nothing for it", async () => {
@@ -259,22 +255,48 @@ describe("session timing (#511)", () => {
     expect(aggregates[0]).toMatchObject({ attempts: 1, kinds: { fresh: 0, revisit: 0, resumed: 1 } });
   });
 
-  it("reads a restart the same: the report is only the persisted log", async () => {
+  it("writes a mark idempotently, so a retried write or a restart reads the same", async () => {
     const h = await household();
     const e = await evening(h);
     await play(h, [e.one, e.two], 3);
-    const fresh = makeHarness({ engine: realEngine, content, timing: "family", clock: h.harness.clock });
-    fresh.deps.repo = h.harness.repo;
-    const a = await householdTimingReport(h.householdId, h.harness.deps);
-    const b = await householdTimingReport(h.householdId, fresh.deps);
-    expect(b).toEqual(a);
+    const before = await report(h);
+    for (const mark of await h.harness.timingStore.allMarks()) await h.harness.timingStore.put(mark);
+    expect(await report(h)).toEqual(before);
+  });
+
+  it("retries a failed write, and never fails a turn when it cannot be written", async () => {
+    const h = await household();
+    const e = await evening(h);
+    const put = vi.spyOn(h.harness.timingStore, "put");
+    put.mockRejectedValueOnce(new Error("throttled"));
+    await play(h, [e.one, e.two], 1);
+    // The second attempt landed: the step is there.
+    expect((await report(h)).sittings[0]?.steps).toBe(1);
+
+    const lost = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    put.mockRejectedValue(new Error("table gone"));
+    const seq = (await e.one.state()).seq;
+    await play(h, [e.one, e.two], 6);
+    // The turn landed even though its mark could not be written, and the loss was logged.
+    expect((await e.one.state()).seq).toBeGreaterThan(seq);
+    expect(lost).toHaveBeenCalled();
+    lost.mockRestore();
+  });
+
+  it("keeps only the chapter, run, seq and note: no household, player or name", async () => {
+    const h = await household();
+    const e = await evening(h);
+    await play(h, [e.one, e.two], 2);
+    await control(h, e.code, { action: "note", text: "wanted another turn" });
+    const text = JSON.stringify(await h.harness.timingStore.allMarks());
+    for (const secret of [h.householdId, "p_1", "p_2", "Pip", "Bo", "Player 1"]) expect(text).not.toContain(secret);
   });
 });
 
 describe("timingNoteFor", () => {
   const chapter = content.chapter("gemfall-01")!;
   const base = { phase: "scene", sceneId: "a", sceneType: "story", chapterId: "gemfall-01", campaignId: GEMFALL, flags: {}, party: [{}, {}, {}] } as unknown as RunState;
-  const deps = { timing: { source: "family" as const }, content };
+  const deps = { timing: { source: "family" as const, store: new MemoryTimingStore() }, content };
 
   it("notes a scene change, an ending, and nothing for a tap that moved no scene", () => {
     const step = timingNoteFor({ before: base, after: { ...base, sceneId: "b", sceneType: "check" } as RunState, chapter, started: false, finished: false, revisit: false }, deps);

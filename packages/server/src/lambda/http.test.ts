@@ -2125,7 +2125,6 @@ const SHARED = [
   { path: "/api/heroes", method: "GET", probe: "/api/heroes" },
   // What a phone can study between games (handlers/journal.ts).
   { path: "/api/journal", method: "GET", probe: "/api/journal" },
-  { path: "/api/timing", method: "GET", probe: "/api/timing" },
   // What a kid picked for her own page (#299, handlers/profile.ts).
   { path: "/api/profile/flair", method: "POST", probe: "/api/profile/flair" },
   { path: "/api/auth/link", method: "POST", probe: "/api/auth/link" },
@@ -2165,6 +2164,8 @@ const PROD_ONLY = [
 
 /** The reverse: local-only, and deliberately so. */
 const DEV_ONLY = [
+  // What the dev server has recorded of session timing (#511). Prod exports from its table instead.
+  { path: "/api/dev/timing", method: "GET" },
   // The SSE stand-in for the AppSync Events channel. In prod the client
   // subscribes to AppSync directly and never asks the API for a stream.
   { path: "/events/:code", method: "GET" },
