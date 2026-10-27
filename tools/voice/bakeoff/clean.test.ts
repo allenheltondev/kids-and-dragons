@@ -123,9 +123,12 @@ describe("in the harness", () => {
     expect(clip.raw).toBe(`clips/${job!.key}.raw.wav`);
     expect(clip.removedMs).toBeGreaterThan(0);
     expect(fs.readFileSync(path.join(outDir, clip.raw!)).equals(pcmToWav(dirty, RATE))).toBe(true);
+    // A new URL for the cleaned audio, so a browser that cached the noisy file cannot replay it.
+    expect(clip.file).toBe(`clips/${job!.key}.wav?cleaned=1`);
     // Done once: the next read finds it cleaned and leaves it be.
-    const before = fs.readFileSync(path.join(outDir, clip.file));
+    const onDisk = path.join(outDir, "clips", `${job!.key}.wav`);
+    const before = fs.readFileSync(onDisk);
     cellOf(engine, sample, 1, ws);
-    expect(fs.readFileSync(path.join(outDir, clip.file)).equals(before)).toBe(true);
+    expect(fs.readFileSync(onDisk).equals(before)).toBe(true);
   });
 });

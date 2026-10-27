@@ -137,7 +137,9 @@ export function cellOf(engine: Engine, sample: Sample, takes: number, ws: Worksp
         }
         const meta = ensureCleaned(ws, job, found);
         clips.push({
-          file: `clips/${job.key}.${meta.ext}`,
+          // A cleaned clip gets its own URL: the server tells browsers to keep clips for a year, and one
+          // that played the uncleaned file under the same name would go on playing it.
+          file: `clips/${job.key}.${meta.ext}${meta.cleaned ? "?cleaned=1" : ""}`,
           lines: job.lines,
           chars: meta.chars,
           renderMs: meta.renderMs,
