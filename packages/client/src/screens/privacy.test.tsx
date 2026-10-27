@@ -42,9 +42,13 @@ describe("the /privacy route", () => {
 });
 
 describe("reaching it", () => {
-  it("is a link on the start screen, before anyone joins or hosts", () => {
-    render(<HomeScreen />);
-    fireEvent.click(screen.getByRole("button", { name: /privacy: what we collect/i }));
+  it("is a quiet footer link on the start screen, before anyone joins or hosts", () => {
+    const { container } = render(<HomeScreen />);
+    const link = screen.getByRole("button", { name: /^privacy$/i });
+    // A footer under the page's body, not a card or a line among the buttons.
+    expect(link.closest("footer.home__footer")).not.toBeNull();
+    expect(container.querySelector(".home__inner > footer.home__footer")).not.toBeNull();
+    fireEvent.click(link);
     expect(window.location.pathname).toBe("/privacy");
   });
 });

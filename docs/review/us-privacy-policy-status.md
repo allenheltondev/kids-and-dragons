@@ -50,6 +50,14 @@ Dated 2026-10-27. Engineering status, not legal advice.
    screens. Children also enter names at a direct room link (`/p/<code>`), the creation flow and a
    family tablet's kid picker, and none links to it. Review each point where a child types a name
    and put the link beside it. Not done.
+   **Decision 2026-10-27 (owner):** the link is a small, quiet "Privacy" footer at the bottom of
+   the start screens, not a visible line among the buttons, because it is there only because it has
+   to be. The footer keeps the secondary text colour and a full-height tap target. **Risk to put to
+   counsel:** as the author understands the notice rule, the link must also be *clear and
+   prominent* (unchecked here; the review's excerpt quotes only the proximity sentence). A small
+   footer may not satisfy that for a service aimed at children, and it is not near the places
+   children type names. If counsel says it does not, the fix is to make it more visible at those
+   places, not to revert this.
 9. **Launch blockers this page does not fix.** Publishing `/privacy` is not proof of compliance.
    Still open: the parental consent and collection boundary (#522), verifiable consent and direct
    notice (#523), a procedure for parents to review, delete or stop collection (#523), and an

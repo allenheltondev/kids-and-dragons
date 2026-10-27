@@ -422,6 +422,35 @@
   color: var(--color-text, #f4f1ff);
 }
 
+/* The privacy link (#523): a footer under everything, small and plain. It is
+   there because it has to be, so it asks for no attention; the colour stays the
+   secondary text colour so it still reads, and the target keeps its full height. */
+.home__footer {
+  display: flex;
+  justify-content: center;
+  margin-block-start: var(--space-2, 0.5em);
+}
+
+.home__footer-link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding: var(--space-1, 0.25em) var(--space-3, 0.75em);
+  border: 0;
+  background: none;
+  color: var(--color-text-muted, #b7b0d8);
+  font: inherit;
+  font-size: var(--font-size-xs, 0.75em);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.home__footer-link:hover,
+.home__footer-link:focus-visible {
+  color: var(--color-text, #f4f1ff);
+  text-decoration: underline;
+}
+
 /* --- AccountScreen (`/account`): the same cards, under a plain title ----- */
 
 .account__title {
