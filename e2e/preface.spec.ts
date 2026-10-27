@@ -142,7 +142,7 @@ test.describe("the words around a chapter (#357)", () => {
         await route.continue();
       });
       await tv.goto(`/tv/${code}`);
-      await tv.getByRole("button", { name: "Turn read-aloud on" }).click();
+      await expect(tv.getByRole("button", { name: "Turn read-aloud off" })).toBeVisible();
 
       const kid = await device(browser, { viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, storageState: phoneStorage(table.phones[0]!) });
       await kid.goto(`/p/${code}`);
@@ -295,7 +295,7 @@ test.describe("the words around a chapter (#357)", () => {
     const code = table.code;
     const tv = await device(browser, { viewport: { width: 1280, height: 720 }, serviceWorkers: "block", storageState: tvStorage(table) });
     await tv.goto(`/tv/${code}`);
-    await tv.getByRole("button", { name: "Turn read-aloud on" }).click();
+    await expect(tv.getByRole("button", { name: "Turn read-aloud off" })).toBeVisible();
     // Slower than PREFACE_WAIT_MS (2.5s): the table is never kept waiting for a recap.
     await tv.route("**/content/chapters/**", async (route) => {
       await new Promise((done) => setTimeout(done, 5000));

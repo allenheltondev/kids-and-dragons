@@ -42,6 +42,8 @@
     "audio:briefs": "tsx tools/audio/briefs.ts",
     "audio:preview": "tsx tools/audio/procedural-preview.ts",
     "audio:install": "tsx tools/audio/procedural-install.ts",
+    "voice:cost": "tsx tools/voice/cost.ts",
+    "voice:bakeoff": "tsx tools/voice/bakeoff/run.ts",
     "load": "tsx tools/load/run.ts",
     "perf:bundle": "tsx tools/perf/bundle-budget.ts",
     "art:inventory": "node tools/art/inventory.ts",

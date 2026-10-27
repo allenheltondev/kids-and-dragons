@@ -86,9 +86,7 @@ test.describe("read-aloud", () => {
     await createCharacter(controller, "unicorn", "Sparklehoof");
     await expect(controller.getByRole("button", { name: /wait, not yet/i })).toBeVisible();
 
-    // Off by default: no switch pressed, nothing asked of the browser's voice.
-    await expect(tv.getByRole("button", { name: "Turn read-aloud on" })).toHaveAttribute("aria-pressed", "false");
-    await tv.getByRole("button", { name: "Turn read-aloud on" }).click();
+    // The TV is the room's narrator, so it reads aloud with nothing tapped.
     await expect(tv.getByRole("button", { name: "Turn read-aloud off" })).toHaveAttribute("aria-pressed", "true");
 
     await controller.getByRole("button", { name: /begin the adventure/i }).click(TAP);
