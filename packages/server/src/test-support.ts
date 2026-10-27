@@ -26,6 +26,7 @@ import type {
   WorldMap,
 } from "@kad/shared";
 import { LocalSseChannel } from "./channel/room-channel.ts";
+import { MemoryTimingStore } from "./store/timing-store.ts";
 import type { ContentStore } from "./content/loader.ts";
 import type { ApplyIntentResult, Engine, EngineContext, IntentInput } from "./engine/port.ts";
 import type { HandlerDeps } from "./handlers/deps.ts";
@@ -170,6 +171,8 @@ export interface TestHarness {
   channel: LocalSseChannel;
   identity: DevIdentity;
   clock: TestClock;
+  /** Where session timing (#511) is recorded when the harness is asked to keep it. */
+  timingStore: MemoryTimingStore;
 }
 
 export interface HarnessOptions {
@@ -184,6 +187,8 @@ export interface HarnessOptions {
    * could not tell a gate that works from one that is missing.
    */
   playtest?: boolean;
+  /** Keeps session timing (#511) as this source. Off by default, as in every synthetic run. */
+  timing?: "family" | "playtest";
 }
 
 export function makeHarness(options: HarnessOptions = {}): TestHarness {
@@ -192,12 +197,14 @@ export function makeHarness(options: HarnessOptions = {}): TestHarness {
   const channel = new LocalSseChannel();
   const identity = new DevIdentity(repo, clock.now);
   const seeded = makeRng("test-room-codes");
+  const timingStore = new MemoryTimingStore();
 
   return {
     repo,
     channel,
     identity,
     clock,
+    timingStore,
     deps: {
       repo,
       channel,
@@ -208,6 +215,7 @@ export function makeHarness(options: HarnessOptions = {}): TestHarness {
       random: options.random ?? (() => seeded.next()),
       now: clock.now,
       playtest: options.playtest ?? false,
+      ...(options.timing ? { timing: { source: options.timing, store: timingStore } } : {}),
     },
   };
 }

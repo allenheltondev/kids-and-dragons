@@ -12,6 +12,7 @@
  * cost a network round trip on every single request.
  */
 
+import { DynamoTimingStore } from "../store/timing-store.ts";
 import { CognitoJwtVerifier } from "aws-jwt-verify";
 import { AppSyncEventsChannel } from "../channel/appsync-events-channel.ts";
 import { loadContent, type ContentStore } from "../content/loader.ts";
@@ -52,6 +53,8 @@ async function build(): Promise<HandlerDeps> {
   const shared = await loadSharedRuntime();
   const loaded = await content();
   const push = await pushFromEnv();
+  // Session timing (#511): its own table, on unless the stack says off. No table named, nothing kept.
+  const timingTable = process.env.KAD_TIMING === "off" ? undefined : process.env.TIMING_TABLE_NAME;
 
   return {
     repo,
@@ -77,6 +80,9 @@ async function build(): Promise<HandlerDeps> {
      */
     playtest: false,
     ...(push ? { push } : {}),
+    // Family-session timing (#511); the dev server labels its own runs `playtest`,
+    // so the two never share a source.
+    ...(timingTable ? { timing: { source: "family" as const, store: new DynamoTimingStore({ tableName: timingTable }) } } : {}),
   };
 }
 

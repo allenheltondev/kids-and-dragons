@@ -2099,6 +2099,8 @@ const SHARED = [
   // Host controls (#263, handlers/host.ts).
   { path: "/api/room/:code/lock", method: "POST", probe: "/api/room/ABCD/lock" },
   { path: "/api/room/:code/quiet", method: "POST", probe: "/api/room/ABCD/quiet" },
+  // The session clock: pause, resume, note, off (#511, handlers/timing.ts).
+  { path: "/api/room/:code/timing", method: "POST", probe: "/api/room/ABCD/timing" },
   { path: "/api/room/:code/close", method: "POST", probe: "/api/room/ABCD/close" },
   // Stop for today, and keep going another day (#259, handlers/save.ts).
   { path: "/api/room/:code/stop", method: "POST", probe: "/api/room/ABCD/stop" },
@@ -2162,6 +2164,8 @@ const PROD_ONLY = [
 
 /** The reverse: local-only, and deliberately so. */
 const DEV_ONLY = [
+  // What the dev server has recorded of session timing (#511). Prod exports from its table instead.
+  { path: "/api/dev/timing", method: "GET" },
   // The SSE stand-in for the AppSync Events channel. In prod the client
   // subscribes to AppSync directly and never asks the API for a stream.
   { path: "/events/:code", method: "GET" },

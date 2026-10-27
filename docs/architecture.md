@@ -115,6 +115,10 @@ Single DynamoDB table, `kad`. Composite key `PK` / `SK`, one GSI (`GSI1PK` / `GS
 | Forget job | `FORGET#<playerId>` | `META` | A kid being deleted (#252): her nicknames, her heroes' names, the tables still to clean, and how to finish the delete that wrote it. Written before any of her rows go, rewritten with the tables a scrub could not clean, removed when none are left. In GSI1's `FORGET` partition, so the sweeper finishes what is owed. |
 | Push subscription | `PUSH#<playerId>` | `DEVICE#<deviceId>` | One of a kid's own phones that takes "It's your turn" pushes (#466, §4.6 "Push"): the push service's endpoint for that browser and the two keys that encrypt for it. One per phone, keyed by the kid like a visit, so a move carries nothing. Forgotten when the push service says it is gone, when the phone is no longer hers, when the switch goes off, and with her or her home. |
 
+**Session timing (#511) is not in this table.** Operator telemetry, how long real sittings take, lives in
+a second table, `kad-timing-<stage>`: `PK = CH#<chapterId>`, `SK = <runId>#<seq>`, a TTL of 180 days, and no
+household or player id on any row. See [session-timing.md](./session-timing.md).
+
 GSI1 does five jobs, all of them lookups that would otherwise be scans:
 
 | `GSI1PK` | `GSI1SK` | On | Answers |

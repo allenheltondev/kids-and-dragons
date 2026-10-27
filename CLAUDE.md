@@ -14,6 +14,8 @@ contract; where a schema disagrees with them, the schema is wrong.
 - `npm run content:graph` — a chapter's scene graph, with its gates labeled
 - `npm run content:cast` — scenes whose words name someone the chapter casts elsewhere but whose own `cast` leaves them off (reports, never gates)
 - `npm run content:pacing` — shortest and typical path through each chapter, and its predicted minutes (reports, never gates)
+- `npm run content:timing -- <export.json>` — how long real family sittings took, per chapter and revision, against the 30-minute budget ([docs/session-timing.md](docs/session-timing.md); observed, never mixed with the predictions above)
+- `npm run timing:export -- --stage prod --out timing.json` — pulls every household's observed timing from a deployed stack using your AWS credentials, for `content:timing`
 
 ## Writing for the game
 
