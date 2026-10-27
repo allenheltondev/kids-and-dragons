@@ -41,7 +41,7 @@ export function slowScenes(agg: Pick<ChapterAggregate, "scenes">, limit = 5): Sc
 }
 
 export function renderTimingReport(
-  report: Pick<TimingReport, "aggregates" | "generatedAt" | "truncated" | "policy">,
+  report: Pick<TimingReport, "aggregates" | "generatedAt" | "truncated" | "policy"> & Partial<Pick<TimingReport, "crossRevision">>,
   planned: readonly PlannedChapter[],
   options: TimingRenderOptions = {},
 ): string {
@@ -73,6 +73,9 @@ export function renderTimingReport(
         `    active min: median ${min(agg.freshActiveMs?.median)}, middle half ${spread(agg.freshActiveMs)}`,
         `    wall min:   median ${min(agg.freshWallMs?.median)}`,
         `    ${budgetVerdict(agg, budget)}`,
+        ...(agg.crossRevision > 0
+          ? [`  ${String(agg.crossRevision)} more played partly on another text of this chapter: kept out of every figure here, listed below`]
+          : []),
         `  attempts ${String(agg.attempts)}: fresh ${String(agg.kinds.fresh)}, revisit ${String(agg.kinds.revisit)}, resumed ${String(agg.kinds.resumed)}; completed ${String(agg.completed)}, left unfinished ${String(agg.abandoned)}`,
         `  revisits kept apart: median ${min(agg.revisitActiveMs?.median)} min (n=${String(agg.revisitActiveMs?.n ?? 0)}); resumed: median ${min(agg.resumedActiveMs?.median)} min (n=${String(agg.resumedActiveMs?.n ?? 0)})`,
         `  median minutes by kind of play: story and choices ${min(agg.bucketMedianMs.narration)}, activities ${min(agg.bucketMedianMs.activity)}, fights ${min(agg.bucketMedianMs.encounter)}`,
@@ -91,6 +94,16 @@ export function renderTimingReport(
         lines.push("  grown-up notes:");
         for (const note of agg.notes.slice(0, 8)) lines.push(`    - ${note}`);
       }
+    }
+  }
+  const spanned = (report.crossRevision ?? []).filter((c) => sources.includes(c.source));
+  if (spanned.length > 0) {
+    lines.push("", "== Played across an edit (stopped on one text of the chapter, finished on another) ==");
+    lines.push("  Counted in no revision's figures. Total time and fate only; the revisions are in the order played.");
+    for (const c of spanned) {
+      lines.push(
+        `  ${c.chapterId} (${c.source}): ${c.revisions.join(" -> ")}; ${c.completed ? `finished${c.outcome === "setback" ? " (setback)" : ""}` : c.status.replace("_", " ")}, ${min(c.activeMs)} min active over ${String(c.sittings)} sittings`,
+      );
     }
   }
   return `${lines.join("\n")}\n`;

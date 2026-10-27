@@ -56,7 +56,12 @@ disk.
 
 A **sitting** is one chapter in one room. A stopped game picked up in another room is a chain of
 sittings (`resumedFrom`) read as one **resumed** attempt. A chapter the household had already
-finished is a **revisit**. A graph campaign's second visit to a place is a revisit too. Fresh
+finished is a **revisit**. A graph campaign's second visit to a place is a revisit too. Attempts are chained
+**before** they are grouped by content revision. A game stopped on one text of a chapter, the chapter
+edited, and the game picked up on the new text is one **cross-revision** attempt: it belongs to no
+revision's figures (neither text produced its duration), but its total time and fate are kept in the
+report's `crossRevision` list, counted on each revision it touched, and printed by `content:timing`
+under "Played across an edit". Fresh
 attempts, revisits and resumes are counted and reported apart; only completed **fresh** attempts
 make the headline figure. The practice (`first-steps`) is never timed.
 

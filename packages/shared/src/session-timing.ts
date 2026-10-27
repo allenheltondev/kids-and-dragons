@@ -221,6 +221,7 @@ export function timingReportFromMarks(marks: readonly TimingMark[], nowMs: numbe
     generatedAt: new Date(nowMs).toISOString(),
     sittings,
     aggregates: aggregateTimings(sittings),
+    crossRevision: crossRevisionAttempts(sittings),
     truncated: false,
   };
 }
@@ -482,26 +483,96 @@ export interface ChapterAggregate {
   assistedAttempts: number;
   sample: SampleSize;
   sampleLabel: string;
+  /** Attempts played partly on this revision and partly on another: counted here, in no distribution (see `CrossRevisionAttempt`). */
+  crossRevision: number;
   /** Slowest scenes by median active time, from completed fresh attempts. */
   scenes: SceneAggregate[];
   notes: string[];
 }
 
 /**
- * Groups sittings by chapter and content revision (never mixing the two) and
- * source (family observations are never pooled with playtests). Distributions
- * are over completed fresh attempts; the others are counted and kept apart.
+ * An attempt whose sittings were played on more than one content revision: a
+ * game stopped, the chapter edited, and the game picked up on the new text.
+ * No revision's figure describes it, so it is kept out of every revision's
+ * distribution, but its total time and fate are kept here and counted on each
+ * revision it touched (`ChapterAggregate.crossRevision`).
+ */
+export interface CrossRevisionAttempt {
+  /** The first sitting's id. */
+  id: string;
+  source: TimingSource;
+  chapterId: string;
+  /** Every revision it was played on, in the order played. */
+  revisions: string[];
+  status: SittingStatus;
+  completed: boolean;
+  outcome: "success" | "setback" | null;
+  activeMs: number;
+  wallMs: number;
+  sittings: number;
+}
+
+/**
+ * Attempts are chained first, across revisions, because a resume carries the
+ * new revision and points back at a sitting on the old one. Then each chain
+ * goes to the one revision it was played on, or, when it spans several, to the
+ * cross-revision list.
+ */
+function chainAttempts(sittings: readonly SittingSummary[]): {
+  byRevision: Map<string, Attempt[]>;
+  crossRevision: CrossRevisionAttempt[];
+} {
+  const chapters = new Map<string, SittingSummary[]>();
+  for (const x of sittings) {
+    const key = `${x.source}\u0000${x.chapterId}`;
+    chapters.set(key, [...(chapters.get(key) ?? []), x]);
+  }
+  const byRevision = new Map<string, Attempt[]>();
+  const crossRevision: CrossRevisionAttempt[] = [];
+  for (const group of chapters.values()) {
+    for (const attempt of attemptsOf(group)) {
+      const first = attempt.sittings[0] as SittingSummary;
+      const revisions = [...new Set(attempt.sittings.map((x) => x.revision))];
+      if (revisions.length > 1) {
+        crossRevision.push({
+          id: attempt.id,
+          source: first.source,
+          chapterId: first.chapterId,
+          revisions,
+          status: attempt.status,
+          completed: attempt.completed,
+          outcome: attempt.outcome,
+          activeMs: attempt.activeMs,
+          wallMs: attempt.wallMs,
+          sittings: attempt.sittings.length,
+        });
+        continue;
+      }
+      const key = `${first.source}\u0000${first.chapterId}\u0000${first.revision}`;
+      byRevision.set(key, [...(byRevision.get(key) ?? []), attempt]);
+    }
+  }
+  return { byRevision, crossRevision };
+}
+
+/** Attempts that spanned a content revision, apart from every revision's figures. */
+export function crossRevisionAttempts(sittings: readonly SittingSummary[]): CrossRevisionAttempt[] {
+  return chainAttempts(sittings).crossRevision;
+}
+
+/**
+ * Groups attempts by chapter and content revision (never mixing the two) and
+ * source (family observations are never pooled with playtests). Attempts are
+ * chained before they are grouped, so a stop and a resume across an edit are
+ * one attempt, reported as cross-revision rather than split or dropped.
+ * Distributions are over completed fresh attempts; the others are counted and
+ * kept apart.
  */
 export function aggregateTimings(sittings: readonly SittingSummary[]): ChapterAggregate[] {
-  const groups = new Map<string, SittingSummary[]>();
-  for (const x of sittings) {
-    const key = `${x.source}\u0000${x.chapterId}\u0000${x.revision}`;
-    groups.set(key, [...(groups.get(key) ?? []), x]);
-  }
+  const { byRevision, crossRevision } = chainAttempts(sittings);
   const out: ChapterAggregate[] = [];
-  for (const group of groups.values()) {
-    const head = group[0] as SittingSummary;
-    const attempts = attemptsOf(group);
+  for (const attempts of byRevision.values()) {
+    const head = (attempts[0] as Attempt).sittings[0] as SittingSummary;
     const done = (kind: AttemptKind): Attempt[] => attempts.filter((a) => a.completed && a.kind === kind);
     const fresh = done("fresh");
     const perScene = new Map<string, { type: SceneType; bucket: TimingBucket; values: number[] }>();
@@ -574,7 +645,10 @@ export function aggregateTimings(sittings: readonly SittingSummary[]): ChapterAg
       sample: sampleSize(fresh.length),
       sampleLabel: sampleLabel(fresh.length),
       scenes,
-      notes: group.flatMap((x) => (x.note ? [x.note] : [])),
+      crossRevision: crossRevision.filter(
+        (c) => c.source === head.source && c.chapterId === head.chapterId && c.revisions.includes(head.revision),
+      ).length,
+      notes: attempts.flatMap((a) => a.sittings.flatMap((x) => (x.note ? [x.note] : []))),
     });
   }
   return out.sort((a, b) => a.chapterId.localeCompare(b.chapterId) || a.revision.localeCompare(b.revision));
@@ -667,6 +741,8 @@ export interface TimingReport {
   sittings: SittingSummary[];
   /** Per chapter and content revision; never mixes revisions or sources. */
   aggregates: ChapterAggregate[];
+  /** Attempts played across a content revision, kept out of every aggregate's distribution. */
+  crossRevision: CrossRevisionAttempt[];
   /** True when the household has more runs than a report reads. */
   truncated: boolean;
 }
