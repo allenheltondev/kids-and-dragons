@@ -1,5 +1,5 @@
 {
-  "$comment": "Who speaks with which voice, for each provider (docs/voice-bakeoff.md). `describe` is the character in a sentence: it goes into Gemini's style prompt, and is what to listen for on every engine. ElevenLabs ids are premade voices (named beside each id); swap in Voice Library picks freely, and an id your account cannot use shows as a failed cell, never a failed run. Gemini names are its prebuilt voices. `party` is the heroes speaking (\"you say\"); it reads in the narrator's voice by default so no child is cast as a stranger's voice.",
+  "$comment": "Who speaks with which voice, for each provider (docs/voice-bakeoff.md). `describe` is the character in a sentence: it goes into Gemini's style (3.8) or audio profile (3.1), and is what to listen for on every engine. ElevenLabs ids are premade voices (named beside each id); swap in Voice Library picks freely, and an id your account cannot use shows as a failed cell, never a failed run. Gemini names are its prebuilt voices. `party` is the heroes speaking (\"you say\"); it reads in the narrator's voice by default so no child is cast as a stranger's voice.",
   "speakers": {
     "narrator": {
       "describe": "A warm grown-up storyteller reading to eight-year-olds: unhurried, smiling, a little spooky on the quiet bits, never scary.",
@@ -93,13 +93,26 @@
     }
   },
   "delivery": {
-    "$comment": "The closed delivery vocabulary (docs/voice-narration-plan.md §3), as a bracketed audio tag (ElevenLabs v3/v4 and Gemini 3.1+ both read them) or, for a Gemini column set to instructions, a sentence in its style prompt. Models without tags (ElevenLabs v2, Flash) ignore delivery, which is part of what the bake-off shows.",
-    "whisper": { "tag": "[whispers]", "gemini": "Whisper, but clearly enough to be heard across a room" },
-    "excited": { "tag": "[excited]", "gemini": "Say it excitedly" },
-    "shout": { "tag": "[shouting]", "gemini": "Shout it, comically flustered, not angry" },
-    "gentle": { "tag": "[softly]", "gemini": "Say it gently and slowly" },
-    "grave": { "tag": "[slowly]", "gemini": "Say it slowly and gravely, deep and kind" },
-    "chorus": { "tag": "[in unison]", "gemini": "Say it like a group speaking together, slightly out of step" },
-    "kindly": { "tag": "[warmly]", "gemini": "Say it warmly and kindly, as if it were nothing at all" }
+    "$comment": "Sustained delivery for a whole line: the closed vocabulary of docs/voice-narration-plan.md §3. `tag` is the bracketed audio tag ElevenLabs v3/v4 and Gemini 3.1 read in the text; `style` is how the line should sound, in words, which Gemini 3.8 takes in its speechMetadata.style field and Gemini 3.1 in its director's notes. Models with neither (ElevenLabs v2, Flash) ignore delivery, which is part of what the bake-off shows.",
+    "whisper": { "tag": "[whispers]", "style": "whispering, but clearly enough to be heard across a room" },
+    "excited": { "tag": "[excited]", "style": "excited and delighted" },
+    "shout": { "tag": "[shouting]", "style": "shouting, comically flustered, never angry" },
+    "gentle": { "tag": "[softly]", "style": "gentle and slow" },
+    "grave": { "tag": "[slowly]", "style": "slow and grave, deep and kind" },
+    "chorus": { "tag": "[in unison]", "style": "a group speaking together, slightly out of step" },
+    "kindly": { "tag": "[warmly]", "style": "warm and kind, as if it were nothing at all" }
+  },
+  "beats": {
+    "$comment": "Point-in-time events inside a line, written <sigh> or <long pause> in a script's text and never shown on screen. Each provider family writes them its own way: `eleven` for ElevenLabs v3/v4 (bracketed tags; no SSML), `elevenClassic` for v2 and Flash (SSML breaks for pauses, nothing else), `gemini` for Gemini 3.8 (angle-bracket vocal tags, the only text it does not speak aloud), `geminiPrompt` for Gemini 3.1 (bracketed tags). null means the family has no way to say it, and the beat is left out. Sources and the unverified ones are in docs/voice-bakeoff.md.",
+    "pause": { "eleven": "[pause]", "elevenClassic": "<break time=\"0.6s\" />", "gemini": "<short pause>", "geminiPrompt": "[short pause]" },
+    "long pause": { "eleven": "[long pause]", "elevenClassic": "<break time=\"1.4s\" />", "gemini": "<long pause>", "geminiPrompt": "[long pause]" },
+    "sigh": { "eleven": "[sighs]", "elevenClassic": null, "gemini": "<sigh>", "geminiPrompt": "[sigh]" },
+    "laugh": { "eleven": "[laughs]", "elevenClassic": null, "gemini": "<laugh>", "geminiPrompt": "[laughs]" },
+    "chuckle": { "eleven": "[chuckles]", "elevenClassic": null, "gemini": "<chuckle>", "geminiPrompt": "[chuckles]" },
+    "giggle": { "eleven": "[giggles]", "elevenClassic": null, "gemini": "<giggle>", "geminiPrompt": "[giggles]" },
+    "gasp": { "eleven": "[gasps]", "elevenClassic": null, "gemini": "<gasp>", "geminiPrompt": "[gasp]" },
+    "breath": { "eleven": "[inhales]", "elevenClassic": null, "gemini": "<breath>", "geminiPrompt": "[breath]" },
+    "gulp": { "eleven": "[gulps]", "elevenClassic": null, "gemini": null, "geminiPrompt": "[gulps]" },
+    "yawn": { "eleven": "[yawns]", "elevenClassic": null, "gemini": "<yawn>", "geminiPrompt": "[yawns]" }
   }
 }

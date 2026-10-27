@@ -12,8 +12,8 @@ import type { AddressInfo } from "node:net";
 import { afterEach, describe, expect, it } from "vitest";
 import type { Pricing } from "../cost-model.ts";
 import { cellOf, estimate, runBakeoff, type BatchOptions, type Workspace } from "./bakeoff.ts";
-import { engineOf, listModels, listVoices, pcmToWav, plan, send, type CastFile, type EngineConfig, type Fetch, type Job, type ModelInfo } from "./providers.ts";
-import { contentLines, fillSampleTokens, readSampleFile, resolveSamples, type Sample } from "./samples.ts";
+import { engineOf, familyOf, listModels, listVoices, pcmToWav, plan, send, spoken, type CastFile, type EngineConfig, type Fetch, type Job, type ModelInfo } from "./providers.ts";
+import { beatsIn, contentLines, fillSampleTokens, readSampleFile, resolveSamples, withoutBeats, type Sample } from "./samples.ts";
 import { castWith, createBakeoffServer } from "./server.ts";
 
 const HERE = import.meta.dirname;
@@ -53,8 +53,17 @@ describe("the samples", () => {
         expect(cast.speakers[by]?.elevenlabs?.voiceId, `${sample.id}: ${by}`).toBeTruthy();
         expect(cast.speakers[by]?.gemini?.voice, `${sample.id}: ${by}`).toBeTruthy();
       }
-      for (const line of sample.lines) if (line.delivery) expect(cast.delivery[line.delivery]?.tag, `${sample.id}: ${line.delivery}`).toBeTruthy();
+      for (const line of sample.lines) {
+        if (line.delivery) expect(cast.delivery[line.delivery], `${sample.id}: ${line.delivery}`).toMatchObject({ tag: expect.any(String), style: expect.any(String) });
+        for (const beat of beatsIn(line.text)) expect(cast.beats[beat], `${sample.id}: <${beat}>`).toBeDefined();
+      }
     }
+  });
+
+  it("use beats, which never count against the words on screen", () => {
+    const used = new Set(samples.flatMap((s) => s.lines.flatMap((line) => beatsIn(line.text))));
+    expect([...used].sort()).toEqual(["breath", "chuckle", "gasp", "laugh", "long pause", "pause", "sigh"]);
+    expect(withoutBeats("\"Help,\" <pause>")).toBe("\"Help,\"");
   });
 
   it("fill tokens the way the engine does", () => {
@@ -83,8 +92,17 @@ describe("the models and presets", () => {
       const model = catalog.find((m) => m.provider === preset.provider && m.model === preset.model);
       expect(model, preset.model).toBeDefined();
       if (preset.mode === "dialogue") expect(model!.dialogue, preset.model).toBe(true);
-      if (preset.delivery === "tag") expect(model!.tags, preset.model).toBe(true);
+      if (preset.delivery === "instruction") expect(model!.instruction, preset.model).toBe(true);
     }
+  });
+
+  it("knows which family writes expression which way", () => {
+    expect(familyOf({ provider: "elevenlabs", model: "eleven_v4" })).toBe("eleven");
+    expect(familyOf({ provider: "elevenlabs", model: "eleven_flash_v2_5" })).toBe("elevenClassic");
+    expect(familyOf({ provider: "gemini", model: "gemini-3.8-flash-lite-tts" })).toBe("gemini");
+    expect(familyOf({ provider: "gemini", model: "gemini-4.0-flash-tts" })).toBe("gemini");
+    expect(familyOf({ provider: "gemini", model: "gemini-3.1-flash-tts-preview" })).toBe("geminiPrompt");
+    expect(familyOf({ provider: "gemini", model: "gemini-2.5-flash-preview-tts" })).toBe("geminiPrompt");
   });
 
   it("names a column by everything that changes its sound", () => {
@@ -115,38 +133,75 @@ describe("the requests", () => {
     expect(two!.key).not.toBe(one!.key);
   });
 
-  it("ElevenLabs v2 sends the neighboring lines as context and no tags", () => {
-    const [, second] = jobs(column("elevenlabs", "eleven_multilingual_v2", "lines", "none", true), faun);
+  it("ElevenLabs v2 sends the neighboring lines as context, and pauses as SSML breaks", () => {
+    const [, second] = jobs(column("elevenlabs", "eleven_multilingual_v2", "lines", "tag", true), faun);
     const body = second!.request.body as Record<string, string>;
     expect(body.text).toBe("\"Wagons,\"");
     expect(body.previous_text).toBe(faun.lines[0]!.text);
     expect(body.next_text?.startsWith("she whispers.")).toBe(true);
+    expect(body.next_text).not.toContain("<chuckle>");
+    const [pause] = jobs(column("elevenlabs", "eleven_multilingual_v2", "lines", "tag"), byId("closer-look"));
+    expect((pause!.request.body as { text: string }).text).toBe("You lean in for a closer look, <break time=\"1.4s\" /> and the closer look opens its mouth.");
   });
 
-  it("Gemini with tags: the tag in the words, the character in the prompt", () => {
+  it("writes each beat the way each family takes it, or leaves it out", () => {
+    const keeper = byId("seal-keeper");
+    const line = keeper.lines[4]!; // <breath> "Everyone who climbs…", grave
+    expect(line.text.startsWith("<breath>")).toBe(true);
+    expect(spoken(column("elevenlabs", "eleven_v4"), cast, line)).toBe("[slowly] [inhales] \"Everyone who climbs my mountain brings me stones,\"");
+    expect(spoken(column("elevenlabs", "eleven_flash_v2_5"), cast, line)).toBe("\"Everyone who climbs my mountain brings me stones,\"");
+    expect(spoken(column("gemini", "gemini-3.8-flash-tts"), cast, line)).toBe("<breath> \"Everyone who climbs my mountain brings me stones,\"");
+    // Gemini 3.1: never two tags side by side, so the delivery and the beat become one direction.
+    expect(spoken(column("gemini", "gemini-3.1-flash-tts-preview"), cast, line)).toBe("[slowly, then breath] \"Everyone who climbs my mountain brings me stones,\"");
+    expect(spoken(column("elevenlabs", "eleven_v4", "lines", "none"), cast, line)).toBe("\"Everyone who climbs my mountain brings me stones,\"");
+  });
+
+  it("Gemini 3.8: only the words and vocal tags in the text; the character and delivery in speechMetadata.style", () => {
     const [, whisper] = jobs(column("gemini", "gemini-3.8-flash-tts"), faun);
     expect(whisper!.request.url).toBe("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash-tts:generateContent");
-    const body = whisper!.request.body as { contents: { parts: { text: string }[] }[]; generationConfig: { responseModalities: string[]; speechConfig: unknown } };
+    const body = whisper!.request.body as { contents: { parts: { text: string; speechMetadata?: { style: string } }[] }[]; generationConfig: { responseModalities: string[]; speechConfig: unknown } };
     expect(body.generationConfig.responseModalities).toEqual(["AUDIO"]);
     expect(body.generationConfig.speechConfig).toEqual({ voiceConfig: { prebuiltVoiceConfig: { voiceName: "Achernar" } } });
-    const prompt = body.contents[0]!.parts[0]!.text;
-    expect(prompt).toContain(cast.speakers.faun!.describe);
-    expect(prompt.endsWith("[whispers] \"Wagons,\"")).toBe(true);
-    expect(prompt).not.toContain("Whisper, but");
+    const part = body.contents[0]!.parts[0]!;
+    // 3.8 speaks every word it is sent: no brackets, no preamble.
+    expect(part.text).toBe("\"Wagons,\"");
+    expect(part.speechMetadata!.style).toContain(cast.speakers.faun!.describe);
+    expect(part.speechMetadata!.style).toContain("whispering, but clearly");
+    const [, , , , , chuckle] = jobs(column("gemini", "gemini-3.8-flash-tts"), faun);
+    expect((chuckle!.request.body as typeof body).contents[0]!.parts[0]!.text).toContain("though. <chuckle> It only");
+    const [plain] = jobs(column("gemini", "gemini-3.8-flash-tts", "lines", "none"), faun);
+    expect((plain!.request.body as typeof body).contents[0]!.parts[0]!.speechMetadata).toBeUndefined();
   });
 
-  it("Gemini with instructions: the delivery in the prompt, the words bare", () => {
-    const [, whisper] = jobs(column("gemini", "gemini-3.8-flash-tts", "lines", "instruction"), faun);
-    const prompt = (whisper!.request.body as { contents: { parts: { text: string }[] }[] }).contents[0]!.parts[0]!.text;
-    expect(prompt).toContain("Whisper, but clearly");
-    expect(prompt.endsWith("\n\n\"Wagons,\"")).toBe(true);
+  it("Gemini 3.1: the documented prompt, with tags in the transcript or the delivery in director's notes", () => {
+    const [, tagged] = jobs(column("gemini", "gemini-3.1-flash-tts-preview"), faun);
+    const tagPrompt = (tagged!.request.body as { contents: { parts: { text: string }[] }[] }).contents[0]!.parts[0]!.text;
+    expect(tagPrompt).toMatch(/^Synthesize speech for the transcript below\./);
+    expect(tagPrompt).toContain("# AUDIO PROFILE: Faun\n" + cast.speakers.faun!.describe);
+    expect(tagPrompt).toContain("## THE SCENE");
+    expect(tagPrompt.endsWith("## TRANSCRIPT\n[whispers] \"Wagons,\"")).toBe(true);
+
+    const [, noted] = jobs(column("gemini", "gemini-3.1-flash-tts-preview", "lines", "instruction"), faun);
+    const notePrompt = (noted!.request.body as { contents: { parts: { text: string }[] }[] }).contents[0]!.parts[0]!.text;
+    expect(notePrompt).toContain("- Faun, line 1: whispering, but clearly");
+    expect(notePrompt.endsWith("## TRANSCRIPT\n\"Wagons,\"")).toBe(true);
+  });
+
+  it("refuses director's notes on Gemini 3.8, which would read them aloud", () => {
+    const refused = plan(column("gemini", "gemini-3.8-flash-tts", "lines", "instruction"), cast, faun, 1);
+    expect((refused as { reason: string }).reason).toMatch(/would read them aloud/);
   });
 
   it("Gemini's two-speaker mode takes a two-voice sample whole, and says why it cannot take more", () => {
     const [whole] = jobs(column("gemini", "gemini-3.8-flash-tts", "dialogue"), faun);
-    const config = (whole!.request.body as { generationConfig: { speechConfig: { multiSpeakerVoiceConfig: { speakerVoiceConfigs: { speaker: string }[] } } } })
-      .generationConfig.speechConfig.multiSpeakerVoiceConfig.speakerVoiceConfigs;
-    expect(config.map((c) => c.speaker)).toEqual(["Narrator", "Faun"]);
+    const body = whole!.request.body as {
+      contents: { parts: { text: string; speechMetadata: { speaker: string; style?: string } }[] }[];
+      generationConfig: { speechConfig: { multiSpeakerVoiceConfig: { speakerVoiceConfigs: { speaker: string }[] } } };
+    };
+    expect(body.generationConfig.speechConfig.multiSpeakerVoiceConfig.speakerVoiceConfigs.map((c) => c.speaker)).toEqual(["Narrator", "Faun"]);
+    // One part per turn, each naming its speaker and carrying its own style.
+    expect(body.contents[0]!.parts.map((p) => p.speechMetadata.speaker)).toEqual(["Narrator", "Faun", "Narrator", "Faun", "Narrator", "Faun"]);
+    expect(body.contents[0]!.parts[1]!.text).toBe("\"Wagons,\"");
     const refused = plan(column("gemini", "gemini-3.8-flash-tts", "dialogue"), cast, byId("rumor-fire"), 1);
     expect(Array.isArray(refused)).toBe(false);
     expect((refused as { reason: string }).reason).toMatch(/takes two voices/);

@@ -1,5 +1,5 @@
 {
-  "$comment": "The bake-off set (docs/voice-bakeoff.md): real lines from the game, from simple to hard. `address` points at the authored words (tools/voice/inventory.ts); the harness reads them from content/ at run time, so a sample is never a stale copy. `script` splits the words into who says them, and must join back to exactly the authored text (bakeoff.test.ts checks). A sample with no script is the narrator's alone. `tokens` fills {party} (a party size) and {facets} (a count). `group` marks samples that share a speaker, to hear whether that voice holds across separate renders.",
+  "$comment": "The bake-off set (docs/voice-bakeoff.md): real lines from the game, from simple to hard. `address` points at the authored words (tools/voice/inventory.ts); the harness reads them from content/ at run time, so a sample is never a stale copy. `script` splits the words into who says them, and must join back to exactly the authored text (bakeoff.test.ts checks). A sample with no script is the narrator's alone. A script line may carry beats, `<sigh>` or `<long pause>` (cast.json → beats), which are never on screen: the join check leaves them out, and each provider writes them its own way. `tokens` fills {party} (a party size) and {facets} (a count). `group` marks samples that share a speaker, to hear whether that voice holds across separate renders.",
   "tiers": {
     "1-simple": "One narrator, plain sentences. Pace, warmth and comic timing.",
     "2-tokens": "Words the engine fills at run time, and names the engine has never seen.",
@@ -12,15 +12,21 @@
       "id": "hedge-wall",
       "tier": "1-simple",
       "title": "The first line of the reference chapter",
-      "tests": "The voice the whole game opens on: warm, a little spooky, never scary.",
-      "address": "bramblewood-01/scene_hedge_wall/narration"
+      "tests": "The voice the whole game opens on: warm, a little spooky, never scary. A beat before the joke.",
+      "address": "bramblewood-01/scene_hedge_wall/narration",
+      "script": [
+        { "by": "narrator", "text": "The path ends at a wall of thorns twice your height. Somewhere on the other side, something is humming a little tune, <pause> and it is definitely not a bird." }
+      ]
     },
     {
       "id": "closer-look",
       "tier": "1-simple",
       "title": "A one-line joke",
-      "tests": "Comic timing: the pause before the punchline.",
-      "address": "gemfall-03b/check_name/onFailure/narration"
+      "tests": "Comic timing: a long pause written into the line, before the punchline.",
+      "address": "gemfall-03b/check_name/onFailure/narration",
+      "script": [
+        { "by": "narrator", "text": "You lean in for a closer look, <long pause> and the closer look opens its mouth." }
+      ]
     },
     {
       "id": "check-prompt",
@@ -75,12 +81,12 @@
       "id": "pib-gift",
       "tier": "3-one-voice",
       "title": "Pib again, two chapters later",
-      "tests": "The same Pib as pib-intro, rendered separately. Then the vote prompt.",
+      "tests": "The same Pib as pib-intro, rendered separately, with a reluctant sigh. Then the vote prompt.",
       "address": "gemfall-02/choice_pib_gift/narration",
       "group": "pib",
       "script": [
         { "by": "narrator", "text": "Inside the hedges, Pib trots up the lane beside you, narrating every leaf on the way. At the door of an inn with very tall doors they stop and dig in the big satchel. Out come three things you did not ask for." },
-        { "by": "pib", "text": "\"I can only spare one,\"" },
+        { "by": "pib", "text": "<sigh> \"I can only spare one,\"" },
         { "by": "narrator", "text": "says Pib." },
         { "by": "pib", "text": "\"The hedge says you should choose it together.\"" },
         { "by": "narrator", "text": "Which one? Everybody vote." }
@@ -90,7 +96,7 @@
       "id": "faun-whisper",
       "tier": "3-one-voice",
       "title": "The faun whispers, then doesn't",
-      "tests": "A whisper that can still be heard across a living room, then a normal voice.",
+      "tests": "A whisper that can still be heard across a living room, then a normal voice that chuckles at its own joke.",
       "address": "gemfall-02/scene_song_stops_ask/narration",
       "script": [
         { "by": "narrator", "text": "You tap the faun on the shoulder. She jumps, notices her wet hoof, and turns the flute off." },
@@ -98,18 +104,18 @@
         { "by": "narrator", "text": "she whispers." },
         { "by": "faun", "text": "\"Rush wagons, heading for the pumpkins.\"", "delivery": "whisper" },
         { "by": "narrator", "text": "Then, because you asked so nicely, she pulls a spare reed whistle out of her hat." },
-        { "by": "faun", "text": "\"For when you need everybody to hear you. Just one loud note, though. It only has the one.\"" }
+        { "by": "faun", "text": "\"For when you need everybody to hear you. Just one loud note, though. <chuckle> It only has the one.\"" }
       ]
     },
     {
       "id": "quill-squawk",
       "tier": "3-one-voice",
       "title": "A griffin postmaster at her wits' end",
-      "tests": "A shout that is funny, not startling, at TV volume.",
+      "tests": "A gasp, then a shout that is funny, not startling, at TV volume.",
       "address": "gemfall-01/scene_griffin_post/narration",
       "script": [
         { "by": "narrator", "text": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins queue on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with spectacles on a chain, is losing count." },
-        { "by": "quill", "text": "\"Hands!\"", "delivery": "shout" },
+        { "by": "quill", "text": "<gasp> \"Hands!\"", "delivery": "shout" },
         { "by": "narrator", "text": "she squawks." },
         { "by": "quill", "text": "\"Anybody with hands!\"", "delivery": "shout" }
       ]
@@ -134,18 +140,18 @@
       "id": "seal-keeper",
       "tier": "4-ensemble",
       "title": "The party speaks to a dragon",
-      "tests": "The party's own words (who voices \"you say\"?), and a huge, gentle dragon learning a word.",
+      "tests": "The party's own words (who voices \"you say\"?), a written silence, and a huge, gentle dragon taking a breath and trying out a word.",
       "address": "gemfall-08/scene_keeper_came_to_help/narration",
       "script": [
         { "by": "party", "text": "\"We didn't bring any,\"" },
         { "by": "narrator", "text": "you say." },
         { "by": "party", "text": "\"We came to help.\"" },
-        { "by": "narrator", "text": "The Seal-Keeper is quiet for a very long time. Then it lowers its huge head until its eye is level with yours." },
-        { "by": "seal_keeper", "text": "\"Everyone who climbs my mountain brings me stones,\"", "delivery": "grave" },
+        { "by": "narrator", "text": "The Seal-Keeper is quiet for a very long time. <long pause> Then it lowers its huge head until its eye is level with yours." },
+        { "by": "seal_keeper", "text": "<breath> \"Everyone who climbs my mountain brings me stones,\"", "delivery": "grave" },
         { "by": "narrator", "text": "it says." },
         { "by": "seal_keeper", "text": "\"Or excuses for stones. Nobody has ever brought me nothing on purpose.\"", "delivery": "grave" },
         { "by": "narrator", "text": "An embermoth crawls off its nose and onto your shoulder." },
-        { "by": "seal_keeper", "text": "\"Help,\"", "delivery": "gentle" },
+        { "by": "seal_keeper", "text": "\"Help,\" <pause>", "delivery": "gentle" },
         { "by": "narrator", "text": "says the dragon, trying out the word." },
         { "by": "seal_keeper", "text": "\"Yes. I could use some of that.\"", "delivery": "gentle" }
       ]
@@ -164,14 +170,14 @@
         { "by": "narrator", "text": "they all answer, slightly out of step." },
         { "by": "sheeple_a", "text": "\"In the grass.\"" },
         { "by": "sheeple_b", "text": "\"We all saw them.\"" },
-        { "by": "sheeple_middle", "text": "\"Because one of us did.\"" }
+        { "by": "sheeple_middle", "text": "<pause> \"Because one of us did.\"" }
       ]
     },
     {
       "id": "rumor-fire",
       "tier": "4-ensemble",
       "title": "Travelers swapping news",
-      "tests": "Two travelers who must sound like different people, then everybody at once.",
+      "tests": "Two travelers who must sound like different people, one laughing at their own story, then everybody at once.",
       "address": "gemfall-04c/scene_rumor_fire/narration",
       "script": [
         { "by": "narrator", "text": "At the noon stop, a ring of travelers is swapping news, and the news has clearly been swapped a great many times." },
@@ -180,7 +186,7 @@
         { "by": "traveler_a", "text": "\"a troll charges you a story instead of a coin.\"" },
         { "by": "traveler_b", "text": "\"On the Wild Road,\"" },
         { "by": "narrator", "text": "says another," },
-        { "by": "traveler_b", "text": "\"the marsh steals your boots and gives back different boots.\"" },
+        { "by": "traveler_b", "text": "\"the marsh steals your boots and gives back different boots.\" <laugh>" },
         { "by": "narrator", "text": "Everybody turns to you." },
         { "by": "travelers", "text": "\"What's your news?\"", "delivery": "chorus" }
       ]
@@ -189,7 +195,7 @@
       "id": "hessa-soup",
       "tier": "4-ensemble",
       "title": "Hessa Wren, kind and a little wrong",
-      "tests": "A filled-in party, a sign in capitals, and a kindly voice saying something unsettling.",
+      "tests": "A filled-in party, a sign in capitals, and a kindly voice taking a breath before saying something unsettling.",
       "address": "gemfall-06/scene_soup_tent/narration",
       "tokens": { "party": 2 },
       "script": [
@@ -198,7 +204,7 @@
         { "by": "narrator", "text": "says Hessa." },
         { "by": "hessa", "text": "\"The masks are for singing to the mountain.\"" },
         { "by": "narrator", "text": "Then she leans in." },
-        { "by": "hessa", "text": "\"The world's laws are broken,\"", "delivery": "kindly" },
+        { "by": "hessa", "text": "<breath> \"The world's laws are broken,\"", "delivery": "kindly" },
         { "by": "narrator", "text": "she says kindly, as if she were telling you it might rain." },
         { "by": "hessa", "text": "\"There's a seal on the mountain, like a lid on a pot. It isn't protecting anyone. It's a cage on the cure.\"", "delivery": "kindly" }
       ]

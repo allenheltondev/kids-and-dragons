@@ -1,23 +1,23 @@
 {
-  "$comment": "What the bake-off can compare (docs/voice-bakeoff.md). `models` is the researched list (checked 2026-10-27, sources in the doc). The page's model picker shows it before a key is entered, then the provider's own live list once one is. `tags`: takes bracketed audio tags ([whispers]); `context`: takes previous_text/next_text; `dialogue`: has a one-request multi-speaker mode. `presets` are the columns a fresh page starts with, and what the command line renders. `fake` makes tones so the page can be tried with no keys.",
+  "$comment": "What the bake-off can compare (docs/voice-bakeoff.md). `models` is the researched list (checked 2026-10-27, sources in the doc). The page's model picker shows it before a key is entered, then the provider's own live list once one is. `tags`: has inline expression (bracketed audio tags on ElevenLabs v3+ and Gemini 3.1, angle-bracket vocal tags plus a style field on Gemini 3.8); `context`: takes previous_text/next_text; `dialogue`: has a one-request multi-speaker mode; `instruction`: takes delivery as director's notes in a prompt (Gemini 3.1; 3.8 would read them aloud). `presets` are the columns a fresh page starts with, and what the command line renders. `fake` makes tones so the page can be tried with no keys.",
   "models": [
-    { "provider": "elevenlabs", "model": "eleven_v4", "label": "Eleven v4", "about": "Newest. Built for expressive long-form narration; follows audio tags.", "tags": true },
+    { "provider": "elevenlabs", "model": "eleven_v4", "label": "Eleven v4", "about": "Newest. Built for expressive long-form narration; follows free-form audio tags ([sighs], [whispers], [long pause]). No SSML.", "tags": true },
     { "provider": "elevenlabs", "model": "eleven_v4_turbo", "label": "Eleven v4 Turbo", "about": "v4 for real-time use, at half the price.", "tags": true },
     { "provider": "elevenlabs", "model": "eleven_v3", "label": "Eleven v3", "about": "Previous generation. The text-to-dialogue default.", "tags": true, "dialogue": true },
-    { "provider": "elevenlabs", "model": "eleven_multilingual_v2", "label": "Multilingual v2", "about": "Steady and proven. No audio tags; takes neighboring lines as context.", "context": true },
-    { "provider": "elevenlabs", "model": "eleven_flash_v2_5", "label": "Flash v2.5", "about": "Lowest latency and cost. No audio tags.", "context": true },
-    { "provider": "gemini", "model": "gemini-3.8-flash-tts", "label": "Gemini 3.8 Flash TTS", "about": "Newest Flash TTS. Audio tags and style prompts; two-speaker mode.", "tags": true, "dialogue": true },
+    { "provider": "elevenlabs", "model": "eleven_multilingual_v2", "label": "Multilingual v2", "about": "Steady and proven. No audio tags: pauses go in as SSML breaks, and it takes neighboring lines as context.", "context": true },
+    { "provider": "elevenlabs", "model": "eleven_flash_v2_5", "label": "Flash v2.5", "about": "Lowest latency and cost. No audio tags: pauses go in as SSML breaks.", "context": true },
+    { "provider": "gemini", "model": "gemini-3.8-flash-tts", "label": "Gemini 3.8 Flash TTS", "about": "Newest Flash TTS. Speaks every word it is sent, so style rides in speechMetadata and beats in <angle brackets>. Two-speaker mode.", "tags": true, "dialogue": true },
     { "provider": "gemini", "model": "gemini-3.8-flash-lite-tts", "label": "Gemini 3.8 Flash-Lite TTS", "about": "Cheaper 3.8, same API.", "tags": true, "dialogue": true },
-    { "provider": "gemini", "model": "gemini-3.1-flash-tts-preview", "label": "Gemini 3.1 Flash TTS (preview)", "about": "The first Gemini TTS with audio tags.", "tags": true, "dialogue": true },
+    { "provider": "gemini", "model": "gemini-3.1-flash-tts-preview", "label": "Gemini 3.1 Flash TTS (preview)", "about": "The first Gemini TTS with audio tags: [bracketed] tags under an audio profile and director's notes.", "tags": true, "dialogue": true, "instruction": true },
     { "provider": "fake", "model": "tone", "label": "Fake tones", "about": "No key, no voice: a tone as long as the words. For trying the page.", "dialogue": true }
   ],
   "presets": [
     { "provider": "elevenlabs", "model": "eleven_v4", "mode": "lines", "delivery": "tag" },
     { "provider": "elevenlabs", "model": "eleven_v3", "mode": "dialogue", "delivery": "tag" },
-    { "provider": "elevenlabs", "model": "eleven_multilingual_v2", "mode": "lines", "delivery": "none", "context": true },
+    { "provider": "elevenlabs", "model": "eleven_multilingual_v2", "mode": "lines", "delivery": "tag", "context": true },
     { "provider": "gemini", "model": "gemini-3.8-flash-tts", "mode": "lines", "delivery": "tag" },
-    { "provider": "gemini", "model": "gemini-3.8-flash-tts", "mode": "lines", "delivery": "instruction" },
     { "provider": "gemini", "model": "gemini-3.8-flash-tts", "mode": "dialogue", "delivery": "tag" },
-    { "provider": "gemini", "model": "gemini-3.8-flash-lite-tts", "mode": "lines", "delivery": "tag" }
+    { "provider": "gemini", "model": "gemini-3.8-flash-lite-tts", "mode": "lines", "delivery": "tag" },
+    { "provider": "gemini", "model": "gemini-3.1-flash-tts-preview", "mode": "lines", "delivery": "tag" }
   ]
 }

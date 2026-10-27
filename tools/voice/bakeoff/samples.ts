@@ -15,8 +15,22 @@ import { inventory, type VoiceLine } from "../inventory.ts";
 
 export interface ScriptLine {
   by: string;
+  /** The words, with any beats (`<sigh>`, `<long pause>`) where they fall. */
   text: string;
   delivery?: string;
+}
+
+/** A beat in a script line: a point-in-time sound or silence, never on screen. */
+export const BEAT = /<([a-z][a-z ]*)>/g;
+
+/** The words without their beats: what the screen shows. */
+export function withoutBeats(text: string): string {
+  return text.replace(BEAT, " ").replace(/\s+/g, " ").trim();
+}
+
+/** Every beat a line uses, by name. */
+export function beatsIn(text: string): string[] {
+  return [...text.matchAll(BEAT)].map((match) => match[1]!);
 }
 
 export interface SampleSpec {
@@ -94,7 +108,7 @@ export function resolveSamples(file: SampleFile, lines: ReadonlyMap<string, Voic
       continue;
     }
     const script = spec.script ?? [{ by: "narrator", text: line.text }];
-    if (squash(script.map((part) => part.text).join(" ")) !== squash(line.text)) {
+    if (squash(script.map((part) => withoutBeats(part.text)).join(" ")) !== squash(line.text)) {
       problems.push(`${spec.id}: the script no longer joins to the words at ${spec.address}. Re-cut it from:\n    ${line.text}`);
       continue;
     }
