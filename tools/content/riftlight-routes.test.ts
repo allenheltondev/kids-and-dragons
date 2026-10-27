@@ -31,7 +31,7 @@ it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: ev
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { glacier_rift_woken: true }).visited) visited.add(scene);
   }
   if (chapter.id === "riftlight-convergence") {
-    for (const scene of allPaths(chapter, "manticore", "duskrunner", { orin_chime_shared: true, olivia_trusted: true }).visited) visited.add(scene);
+    for (const scene of allPaths(chapter, "manticore", "duskrunner", { orin_chime_shared: true, olivia_trusted: true, fragment_paths_learned: true, fragment_coast_learned: true, fragment_sky_learned: true }).visited) visited.add(scene);
   }
   if (chapter.id === "riftlight-finale") {
     for (const scene of allPaths(chapter, "manticore", "duskrunner", {
