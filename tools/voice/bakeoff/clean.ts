@@ -12,9 +12,11 @@
  *     and is followed by silence, and silences it, with short fades so the
  *     cut makes no click of its own;
  *  3. ends the clip where the speech ends: after the last voiced sound it
- *     keeps only a word's own loud tail (an "s", a "t"), and silences the
- *     rest, however long, loud or quiet it is, and whether or not silence
- *     separates it from the word;
+ *     keeps only a word's own loud tail (an "s", a "t", which live in the
+ *     high frequencies), and silences the rest, however long, loud or quiet
+ *     it is, whether or not silence separates it from the word, and whether
+ *     or not it is as loud as the word (static spreads across every
+ *     frequency, which is how it is told from an "s");
  *  4. gates the quiet hiss in pauses, well under any speech;
  *  5. fades the clip's very start and end.
  *
@@ -27,7 +29,7 @@
  */
 
 /** Bumped whenever cleaning changes, so clips cleaned the old way are cleaned again from their raw audio. */
-export const CLEANER_VERSION = 2;
+export const CLEANER_VERSION = 3;
 
 export interface CleanOptions {
   /** Longest island that can be a burst. Real breaths and gasps run longer. */
@@ -36,6 +38,12 @@ export interface CleanOptions {
   maxTailMs: number;
   /** A word's tail is loud: above this, relative to the loudest frame. Hiss and bursts are quieter. */
   tailDb: number;
+  /**
+   * A word's "s" lives in the highs; static is spread across every frequency.
+   * A noisy tail frame with more than this share of its energy under about
+   * 1.5 kHz is static, and the tail ends there.
+   */
+  fricativeLowShare: number;
   /** Speech: above this, relative to the loudest frame, and voiced (under noiseZcr). */
   speechDb: number;
   /** Pauses quieter than this, relative to the loudest frame, are hiss and are gated to silence. */
@@ -58,8 +66,9 @@ export const CLEAN_DEFAULTS: CleanOptions = {
   minGapAfterMs: 100,
   noiseZcr: 0.3,
   silenceDb: -40,
-  maxTailMs: 200,
+  maxTailMs: 150,
   tailDb: -32,
+  fricativeLowShare: 0.1,
   speechDb: -30,
   gateDb: -40,
   minGateMs: 50,
@@ -80,6 +89,8 @@ const FRAME_MS = 10;
 const FADE_MS = 6;
 /** The end of a line fades out over a little longer, so a cut tail sounds like the word ending. */
 const TAIL_FADE_MS = 25;
+/** Where "low" ends, for telling a word's "s" from static. */
+const LOW_HZ = 1500;
 
 function toFloats(pcm: Buffer): Float32Array {
   const samples = new Float32Array(Math.floor(pcm.length / 2));
@@ -113,17 +124,26 @@ export function cleanPcm16(pcm: Buffer, rate: number, context: CleanContext = {}
   const frames = Math.ceil(samples.length / frame);
   const rms = new Float32Array(frames);
   const zcr = new Float32Array(frames);
+  // How much of each frame's energy is low, through a one-pole low-pass at LOW_HZ: white static
+  // keeps about a fifth there, a word's "s" a few percent.
+  const low = new Float32Array(frames);
+  const pole = 1 - Math.exp((-2 * Math.PI * LOW_HZ) / rate);
+  let smoothed = 0;
   for (let f = 0; f < frames; f += 1) {
     const start = f * frame;
     const end = Math.min(samples.length, start + frame);
     let energy = 0;
+    let lowEnergy = 0;
     let crossings = 0;
     for (let i = start; i < end; i += 1) {
       energy += samples[i]! * samples[i]!;
+      smoothed += pole * (samples[i]! - smoothed);
+      lowEnergy += smoothed * smoothed;
       if (i > start && Math.sign(samples[i]!) !== Math.sign(samples[i - 1]!)) crossings += 1;
     }
     rms[f] = Math.sqrt(energy / (end - start));
     zcr[f] = crossings / Math.max(1, end - start - 1);
+    low[f] = energy > 0 ? lowEnergy / energy : 0;
   }
   // A loop, not Math.max(...rms): one argument per 10ms frame would overflow the call on a long recording.
   let peak = 0;
@@ -179,7 +199,9 @@ export function cleanPcm16(pcm: Buffer, rate: number, context: CleanContext = {}
   if (lastSpeech >= 0 && !context.endsOnSound) {
     let cut = lastSpeech + 1;
     const tailFrames = Math.round(options.maxTailMs / FRAME_MS);
-    while (cut < frames && cut - lastSpeech - 1 < tailFrames && above(cut, options.tailDb)) cut += 1;
+    // Loud, and either still voiced or shaped like a fricative: static straight off the word stops it.
+    const wordTail = (f: number): boolean => above(f, options.tailDb) && (zcr[f]! < options.noiseZcr || low[f]! < options.fricativeLowShare);
+    while (cut < frames && cut - lastSpeech - 1 < tailFrames && wordTail(cut)) cut += 1;
     // Only worth a cut if something audible is left after it.
     let audible = false;
     for (let f = cut; f < frames && !audible; f += 1) audible = audibleNow(f);
