@@ -9384,536 +9384,275 @@
         "arrival": {
           "requires": [],
           "introduces": {
-            "skupper_guide": "On the Saltrot mudflats, an opening in the air blinks away and comes back. Through it lies snow. A snowhorn goat stands belly-deep in mud beside it, chewing a reed with great disappointment. Your Skupper guide from the Saltrot bank waves her fins in greeting, then points to the rising tide. \"Bring that goat home before the opening closes. I can find firm mud. I cannot make a goat like it.\"",
-            "stranded_goat": "A snowhorn goat",
-            "blinking_gap": "an opening in the air blinks"
+            "flats_goat": "A snowhorn goat stands belly-deep in mud beside it"
           }
         },
         "observe": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_goat"
           ],
-          "introduces": {}
+          "introduces": {
+            "flats_gap": "The opening returns narrower each time."
+          }
         },
-        "observe_1": {
+        "observe_pattern": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "observe_2": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "observe_check": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "observe_clear": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "observe_changed": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_goat"
           ],
           "introduces": {}
         },
         "sound": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_goat"
           ],
-          "introduces": {}
-        },
-        "sound_1": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "sound_2": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
+          "introduces": {
+            "flats_chime": "Your Listening Chime is the one the glacier travelers gave you."
+          }
         },
         "ground": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_gap",
+            "flats_chime"
+          ],
+          "introduces": {
+            "flats_route": "The short mud dip needs your stiff mat laid underfoot."
+          }
+        },
+        "lay_mat": {
+          "requires": [
+            "flats_gap",
+            "flats_chime"
           ],
           "introduces": {}
         },
-        "ground_1": {
+        "shell_route": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_gap",
+            "flats_chime"
           ],
           "introduces": {}
         },
-        "ground_2": {
+        "shell_markers": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "ground_check": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "ground_clear": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "ground_changed": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_gap",
+            "flats_chime"
           ],
           "introduces": {}
         },
         "approach": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_route"
+          ],
+          "introduces": {
+            "flats_calm": "The goat tries to eat the rescue line."
+          }
+        },
+        "calm_goat": {
+          "requires": [
+            "flats_route"
           ],
           "introduces": {}
         },
-        "approach_1": {
+        "songkeeper_calm": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "approach_2": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "approach_3": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_route"
           ],
           "introduces": {}
         },
         "sling": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_route"
           ],
-          "introduces": {}
-        },
-        "sling_1": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "sling_2": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "sling_check": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "sling_clear": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "sling_changed": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
+          "introduces": {
+            "flats_sling": "The broad reed sling spreads the pull under the goat."
+          }
         },
         "lift": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_sling"
           ],
           "introduces": {}
         },
-        "lift_1": {
+        "loosen_mud": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_sling"
           ],
           "introduces": {}
         },
-        "lift_2": {
+        "mud_recovery": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_sling"
           ],
           "introduces": {}
         },
-        "lift_3": {
+        "bigfoot_rim": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_sling"
           ],
           "introduces": {}
         },
-        "lift_check": {
+        "lift_balance": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "lift_clear": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "lift_changed": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_sling"
           ],
           "introduces": {}
         },
         "dry_patch": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_sling"
+          ],
+          "introduces": {
+            "flats_leg": "The goat is out, but cold mud clings to one stiff leg."
+          }
+        },
+        "warm_goat": {
+          "requires": [
+            "flats_sling"
           ],
           "introduces": {}
         },
-        "dry_patch_1": {
+        "mended_goat": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "dry_patch_2": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "dry_patch_3": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_sling"
           ],
           "introduces": {}
         },
         "rest": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "rest_watch": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_sling"
           ],
           "introduces": {}
         },
         "glimpse": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_leg"
           ],
-          "introduces": {}
-        },
-        "glimpse_1": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "glimpse_2": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
+          "introduces": {
+            "flats_herder": "a yeti herder waves from the snow"
+          }
         },
         "signal": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_leg"
+          ],
+          "introduces": {
+            "flats_signals": "The snowy landing is clear."
+          }
+        },
+        "signal_visual": {
+          "requires": [
+            "flats_herder",
+            "flats_signals"
           ],
           "introduces": {}
         },
-        "signal_1": {
+        "signal_relay": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "signal_2": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "signal_check": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "signal_clear": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "signal_changed": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_herder",
+            "flats_signals"
           ],
           "introduces": {}
         },
         "crossing": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_herder",
+            "flats_signals"
+          ],
+          "introduces": {
+            "flats_crossing": "The goat can follow the sling into the herder's waiting hands."
+          }
+        },
+        "crossing_sling": {
+          "requires": [
+            "flats_crossing"
           ],
           "introduces": {}
         },
-        "crossing_1": {
+        "crossing_checked": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_crossing"
           ],
           "introduces": {}
         },
-        "crossing_2": {
+        "crossing_mended": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_crossing"
           ],
           "introduces": {}
         },
-        "crossing_check": {
+        "crossing_recovery": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_crossing"
+          ],
+          "introduces": {}
+        },
+        "crossing_ramp": {
+          "requires": [
+            "flats_crossing"
+          ],
+          "introduces": {}
+        },
+        "ramp_return": {
+          "requires": [
+            "flats_crossing"
           ],
           "introduces": {}
         },
         "crossing_clear": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_crossing"
           ],
           "introduces": {}
         },
         "crossing_changed": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_crossing"
           ],
           "introduces": {}
         },
         "last_blink": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "last_blink_1": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "last_blink_2": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_crossing"
           ],
           "introduces": {}
         },
         "record": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_herder"
+          ],
+          "introduces": {
+            "flats_warning": "Your guide has a driftwood warning board."
+          }
+        },
+        "warning_picture": {
+          "requires": [
+            "flats_warning"
           ],
           "introduces": {}
         },
-        "record_1": {
+        "warning_bank": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "record_2": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_warning"
           ],
           "introduces": {}
         },
         "credit": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "credit_1": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "credit_2": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_warning"
           ],
           "introduces": {}
         },
         "next": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_warning"
           ],
-          "introduces": {}
-        },
-        "next_1": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
-        },
-        "next_2": {
-          "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
-          ],
-          "introduces": {}
+          "introduces": {
+            "flats_next": "The guide points out a trail to the Bone Yard"
+          }
         },
         "ending": {
           "requires": [
-            "skupper_guide",
-            "stranded_goat",
-            "blinking_gap"
+            "flats_warning"
           ],
           "introduces": {}
         }
@@ -9925,585 +9664,298 @@
         "arrival": {
           "requires": [],
           "introduces": {
-            "bone_crawlers": "Small bone crawlers",
-            "yard_guide": "At the edge of the Bone Yard, your Skupper guide from the flats stops in a brackish pool. Beyond her, broken stone walls have appeared among enormous old bones. Small bone crawlers crowd the fresh shimmer around the walls. \"Clear a safe way past those ruins,\" she says. \"Take nothing. Here, anything taken comes back. I will watch from water that suits my fins.\" One crawler is trying to fit its whole body under a pebble.",
-            "yard_rule": "anything taken comes back",
-            "yard_ruins": "broken stone walls"
+            "bones_place": "At the edge of the Bone Yard"
           }
         },
         "limit": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_place"
+          ],
+          "introduces": {
+            "bones_kit": "She lends a marked plank and a return line."
+          }
+        },
+        "pack_mats": {
+          "requires": [
+            "bones_place"
           ],
           "introduces": {}
         },
-        "limit_1": {
+        "leave_mats": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "limit_2": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_place"
           ],
           "introduces": {}
         },
         "survey": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_place"
+          ],
+          "introduces": {
+            "bones_routes": "The short passage runs behind a leaning wall."
+          }
+        },
+        "survey_window": {
+          "requires": [
+            "bones_kit",
+            "bones_routes"
           ],
           "introduces": {}
         },
-        "survey_1": {
+        "survey_result": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "survey_2": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "survey_check": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "survey_clear": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "survey_changed": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_kit",
+            "bones_routes"
           ],
           "introduces": {}
         },
         "markers": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_kit",
+            "bones_routes"
+          ],
+          "introduces": {
+            "bones_return": "Lay your own return line"
+          }
+        },
+        "lay_line": {
+          "requires": [
+            "bones_return"
           ],
           "introduces": {}
         },
-        "markers_1": {
+        "learn_arches": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "markers_2": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_return"
           ],
           "introduces": {}
         },
         "test": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_return"
           ],
-          "introduces": {}
+          "introduces": {
+            "bones_rule": "A yard pebble rolls back uphill over the boundary."
+          }
         },
-        "test_1": {
+        "returning_pebble": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "test_2": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_rule"
           ],
           "introduces": {}
         },
         "vibration": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_rule"
           ],
-          "introduces": {}
-        },
-        "vibration_1": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "vibration_2": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "vibration_check": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "vibration_clear": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "vibration_changed": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
+          "introduces": {
+            "bones_magic": "Fresh magic pulses from the tear."
+          }
         },
         "support": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_magic",
+            "bones_kit"
+          ],
+          "introduces": {
+            "bones_support": "A low brace will keep the leaning wall settled"
+          }
+        },
+        "stone_support": {
+          "requires": [
+            "bones_magic",
+            "bones_kit"
           ],
           "introduces": {}
         },
-        "support_1": {
+        "plank_support": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_magic",
+            "bones_kit"
           ],
           "introduces": {}
         },
-        "support_2": {
+        "braced_support": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "support_check": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "support_clear": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "support_changed": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_magic",
+            "bones_kit"
           ],
           "introduces": {}
         },
         "rest": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "rest_watch": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_magic",
+            "bones_kit"
           ],
           "introduces": {}
         },
         "plan": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_support"
           ],
-          "introduces": {}
+          "introduces": {
+            "bones_plan": "The tear keeps drawing fresh magic and crawlers."
+          }
         },
         "plan_1": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_support"
           ],
           "introduces": {}
         },
-        "plan_2": {
+        "seam_marks": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_support"
+          ],
+          "introduces": {}
+        },
+        "seam_marks_mats": {
+          "requires": [
+            "bones_support"
+          ],
+          "introduces": {}
+        },
+        "lay_board_mats": {
+          "requires": [
+            "bones_support"
+          ],
+          "introduces": {}
+        },
+        "mat_plan": {
+          "requires": [
+            "bones_support"
           ],
           "introduces": {}
         },
         "fight": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "cleared": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "rescued": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "inventory": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "inventory_1": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "inventory_2": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "unbrace": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "unbrace_1": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "unbrace_2": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "unbrace_check": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "unbrace_clear": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "unbrace_changed": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "exit_strip": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "exit_strip_1": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "exit_strip_2": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "exit_strip_check": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "exit_strip_clear": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "exit_strip_changed": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "boundary": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "boundary_1": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "boundary_2": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "boundary_check": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "boundary_clear": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "boundary_changed": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "report": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "report_1": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "report_2": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "handoff": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "handoff_1": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "handoff_2": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
-          ],
-          "introduces": {}
-        },
-        "ending": {
-          "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_support"
           ],
           "introduces": {}
         },
         "fight_seam": {
           "requires": [
-            "bone_crawlers",
-            "yard_guide",
-            "yard_rule",
-            "yard_ruins"
+            "bones_support"
+          ],
+          "introduces": {}
+        },
+        "fight_mats": {
+          "requires": [
+            "bones_support"
+          ],
+          "introduces": {}
+        },
+        "fight_seam_mats": {
+          "requires": [
+            "bones_support"
+          ],
+          "introduces": {}
+        },
+        "cleared": {
+          "requires": [
+            "bones_support"
+          ],
+          "introduces": {}
+        },
+        "rescued": {
+          "requires": [
+            "bones_support"
+          ],
+          "introduces": {}
+        },
+        "inventory": {
+          "requires": [
+            "bones_plan"
+          ],
+          "introduces": {
+            "bones_owned_gear": "A carved chip lies beside the path."
+          }
+        },
+        "unbrace": {
+          "requires": [
+            "bones_owned_gear"
+          ],
+          "introduces": {
+            "bones_reclaim": "Loose gear can come back now."
+          }
+        },
+        "replace_plank": {
+          "requires": [
+            "bones_owned_gear"
+          ],
+          "introduces": {}
+        },
+        "recover_mats": {
+          "requires": [
+            "bones_owned_gear"
+          ],
+          "introduces": {}
+        },
+        "gather_loose": {
+          "requires": [
+            "bones_owned_gear"
+          ],
+          "introduces": {}
+        },
+        "exit_strip": {
+          "requires": [
+            "bones_owned_gear"
+          ],
+          "introduces": {
+            "bones_exit": "The boundary pool shines beyond the arches."
+          }
+        },
+        "outer_rim": {
+          "requires": [
+            "bones_exit"
+          ],
+          "introduces": {}
+        },
+        "return_line": {
+          "requires": [
+            "bones_exit"
+          ],
+          "introduces": {}
+        },
+        "boundary": {
+          "requires": [
+            "bones_exit"
+          ],
+          "introduces": {
+            "bones_boundary": "A crumb falls from a muddy sole"
+          }
+        },
+        "report": {
+          "requires": [
+            "bones_boundary"
+          ],
+          "introduces": {
+            "bones_warning": "The guide opens her warning board."
+          }
+        },
+        "handoff": {
+          "requires": [
+            "bones_warning"
+          ],
+          "introduces": {
+            "bones_handoff": "An earlier note from Orin asks the Riftseekers"
+          }
+        },
+        "relay_account": {
+          "requires": [
+            "bones_warning"
+          ],
+          "introduces": {}
+        },
+        "keep_account": {
+          "requires": [
+            "bones_warning"
+          ],
+          "introduces": {}
+        },
+        "ending": {
+          "requires": [
+            "bones_warning"
           ],
           "introduces": {}
         }

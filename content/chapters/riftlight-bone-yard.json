@@ -5,7 +5,7 @@
   "title": "The Borrowed Ruins",
   "biome": "bone_yard",
   "music": "riftlight-coast",
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "arrival",
   "plate": {
@@ -22,7 +22,7 @@
       },
       {
         "id": "bones_passage",
-        "label": "Clear the passage",
+        "label": "Get past the blocked passage",
         "flag": "bones_passage_done"
       },
       {
@@ -72,21 +72,46 @@
     },
     "limit": {
       "type": "choice_point",
-      "narration": "The guide points out the boundary. Her pool is outside it; the displaced ruins are inside. She lends you a plank from her landing. You keep one mat and your rescue line, and tie bright loops to every piece of your own gear. What will you do with the spare mats?",
+      "narration": "The guide points out the boundary. Her pool is outside it; the ruins are inside. She lends a marked plank and a return line. Carry her spare mats as well and you can cover one loose-stone patch during the encounter, but you must carry and recover them. Leave them here for a lighter approach with no covered board patch. Which kit will you take?",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "plan_1",
-          "label": "Carry the spare mats too",
+          "id": "carry",
+          "label": "Carry the spare mats for board protection",
           "icon": "hand",
-          "goto": "limit_1"
+          "goto": "pack_mats",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bone_spares_carried",
+              "value": true
+            }
+          ]
         },
         {
-          "id": "plan_2",
-          "label": "Leave spare gear with the guide",
+          "id": "light",
+          "label": "Leave spare mats with the guide",
           "icon": "hand",
-          "goto": "limit_2"
+          "goto": "leave_mats",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bone_spares_carried",
+              "value": false
+            }
+          ]
         }
-      ],
+      ]
+    },
+    "pack_mats": {
+      "type": "interaction",
+      "narration": "Level the spare-mat bundle before bringing it along the narrow marked approach. A bright loop shows which gear belongs to the guide, not the yard.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -94,132 +119,28 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "limit_1": {
-      "type": "story",
-      "narration": "You carry the spare mats too, all marked with loops. A loose shell stays on the ground. A shell is not yours just because it would make a good cup.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "survey"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "limit_2": {
-      "type": "story",
-      "narration": "You leave the spare mats across two reeds by the guide. You carry the marked plank, one mat and the rescue line. Her pool has become a very damp cloakroom.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "survey"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "survey": {
-      "type": "choice_point",
-      "narration": "A leaning wall blocks the short passage. The long way curves around a deep hollow. Crawlers gather by a tear beside the wall, their backs clicking like pebbles in a cup. The guide watches from her pool. \"Shorter is only helpful if it stays a passage.\" Where will you look for a way through?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Check the wall from the open side",
-          "icon": "hand",
-          "goto": "survey_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Check the rim of the hollow",
-          "icon": "hand",
-          "goto": "survey_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        },
-        {
-          "figure": "entities/bone_crawler",
-          "count": 3
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "survey_1": {
-      "type": "story",
-      "narration": "You follow the wall without leaning on it. At its foot, loose stones tremble whenever the tear brightens. One stone rattles like a tooth in a cup.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "survey_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "survey_2": {
-      "type": "story",
-      "narration": "You stay back from the hollow and follow the firm rim. A broken arch gives a view of the blocked path without stepping under the wall.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "survey_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "survey_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Trace an open route around the shifting stones without entering the hollow.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the spare-mat bundle for carrying.",
+        "actionLabel": "Carry the spare mats",
+        "objectLabel": "Spare-mat bundle"
+      },
       "onSuccess": {
-        "goto": "survey_clear",
-        "narration": "You find firm ground beside the leaning wall."
+        "goto": "survey",
+        "narration": "The spare mats come with you. The guide keeps their empty tie at her pool."
       },
       "onFailure": {
-        "goto": "survey_changed",
-        "narration": "A loose stone rolls into the hollow; you stop before following it."
+        "goto": "survey",
+        "narration": "The spare mats come with you. The guide keeps their empty tie at her pool."
       },
+      "onAssisted": {
+        "goto": "survey",
+        "narration": "The spare mats come with you. The guide keeps their empty tie at her pool."
+      }
+    },
+    "leave_mats": {
+      "type": "interaction",
+      "narration": "Pass the spare mats back to the guide's pool. You keep the marked plank and line; your lighter kit will need to work around both loose-stone patches.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -227,25 +148,47 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the spare mats back to the guide.",
+        "actionLabel": "Pass the spare mats",
+        "objectLabel": "Spare mats for the guide"
+      },
+      "onSuccess": {
+        "goto": "survey",
+        "narration": "The spare mats stay dry outside the boundary."
+      },
+      "onFailure": {
+        "goto": "survey",
+        "narration": "The spare mats stay dry outside the boundary."
+      },
+      "onAssisted": {
+        "goto": "survey",
+        "narration": "The spare mats stay dry outside the boundary."
+      }
     },
-    "survey_clear": {
+    "survey": {
       "type": "story",
-      "narration": "You mark a safe strip that reaches the passage and returns to the boundary.",
-      "onEnter": [
+      "narration": "The short passage runs behind a leaning wall. The wide rim bends around a hollow. Fresh magic draws crawlers to a tear near the wall. Check the moving shadow from this safe marker before choosing your working ground.",
+      "cast": [
         {
-          "type": "setFlag",
-          "flag": "bones_route_done"
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
+      "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Continue",
           "icon": "hand",
-          "goto": "markers"
+          "goto": "survey_window"
         }
-      ],
+      ]
+    },
+    "survey_window": {
+      "type": "interaction",
+      "narration": "Wait until the leaning wall's shadow clears the firm strip. The guide watches from her pool and calls the wider rim if your first view is hidden.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -253,51 +196,109 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "interaction": {
+        "kind": "timing",
+        "cue": "Mark the firm strip during the clear view.",
+        "actionLabel": "Mark the safe strip",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "survey_result",
+        "narration": "Your marks show the short passage and a wider rim backup.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_route_done",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "survey_result",
+        "narration": "The shadow hides the short strip. The guide points out the wide rim first; you mark both from the outer bank.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_route_done",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "survey_result",
+        "narration": "Your marks show the short passage and a wider rim backup.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_route_done",
+            "value": true
+          }
+        ]
+      }
     },
-    "survey_changed": {
+    "survey_result": {
       "type": "story",
-      "narration": "You use the longer rim, marking every turn from firm ground. The route reaches the same passage by a wider curve.",
-      "onEnter": [
+      "narration": "Both routes are on the page. The wall may block the short one again, so the rim must stay recognizable. One crawler tries to look enormous on a very small pebble.",
+      "cast": [
         {
-          "type": "setFlag",
-          "flag": "bones_route_done"
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
+      "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Continue",
           "icon": "hand",
           "goto": "markers"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      ]
     },
     "markers": {
       "type": "choice_point",
-      "narration": "The guide cannot leave her pool to mark the turns. From the path, your party can see her raised crest above the reeds. How will you make the way back clear?",
+      "narration": "Lay your own return line for a quick way back through a cleared passage, or memorize the arches with the guide. A retreat would leave the short line behind; her outer-rim signs work even then. Which return aid will you prepare?",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "plan_1",
-          "label": "Lay your own line along the firm strip",
+          "id": "line",
+          "label": "Lay a marked line along the short passage",
           "icon": "hand",
-          "goto": "markers_1"
+          "goto": "lay_line",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bone_line_laid",
+              "value": true
+            }
+          ]
         },
         {
-          "id": "plan_2",
-          "label": "Use sight lines between broken arches",
+          "id": "arches",
+          "label": "Learn the outer arches with the guide",
           "icon": "hand",
-          "goto": "markers_2"
+          "goto": "learn_arches",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bone_line_laid",
+              "value": false
+            }
+          ]
         }
-      ],
+      ]
+    },
+    "lay_line": {
+      "type": "interaction",
+      "narration": "Pass your marked line along the safe strip. Keep it outside the crawling shimmer and leave a loose end near the pool.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -305,227 +306,28 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "markers_1": {
-      "type": "story",
-      "narration": "The line stays on the surface, with loose bends around the ruins. You keep every end clear of the crawler swarm.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "test"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "markers_2": {
-      "type": "story",
-      "narration": "You choose arches visible from each turn. At the last one, the guide raises her crest twice to show she can still see you.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "test"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "test": {
-      "type": "choice_point",
-      "narration": "A pebble slides across the boundary and rolls back uphill. The guide leaves it alone. \"Anything taken comes back. Even if it makes you look silly.\" How will you check your route without collecting evidence?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Draw the wall positions from outside the boundary",
-          "icon": "hand",
-          "goto": "test_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Describe the route while the guide repeats it",
-          "icon": "hand",
-          "goto": "test_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "test_1": {
-      "type": "story",
-      "narration": "You sketch where the arches stand. The sketch is on paper you brought; every stone stays where you found it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "vibration"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "test_2": {
-      "type": "story",
-      "narration": "You call each turn. The guide repeats it and scratches a map in the mud outside the boundary. Her tail accidentally adds a pond.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "vibration"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "vibration": {
-      "type": "choice_point",
-      "narration": "Fresh magic pulses from the tear. The crawlers all turn at once. One bumps the next and has to untangle its legs. You can test whether movement draws them aside by tapping your own loose plank or shaking your empty line. Which will you try from the marked path?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Tap your plank beside the open path",
-          "icon": "hand",
-          "goto": "vibration_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Shake the line away from the leaning wall",
-          "icon": "hand",
-          "goto": "vibration_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        },
-        {
-          "figure": "entities/bone_crawler",
-          "count": 3
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "vibration_1": {
-      "type": "story",
-      "narration": "You keep your feet on the marked strip and tap. The nearest crawler pauses, then returns to the shimmer. You have learned what it wants.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "vibration_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        },
-        {
-          "figure": "entities/bone_crawler"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "vibration_2": {
-      "type": "story",
-      "narration": "The line moves like a very thin snake. A crawler watches, then squeezes back under the wall toward the magic. Its priorities are clear.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "vibration_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        },
-        {
-          "figure": "entities/bone_crawler"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "vibration_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Retrieve your test gear before the next pulse draws crawlers across it.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the marked return line along the strip.",
+        "actionLabel": "Pass the route line",
+        "objectLabel": "Marked return line"
+      },
       "onSuccess": {
-        "goto": "vibration_clear",
-        "narration": "You pull the gear clear of the swarm."
+        "goto": "test",
+        "narration": "Your line marks the short return. The guide still watches the wider rim."
       },
       "onFailure": {
-        "goto": "vibration_changed",
-        "narration": "A crawler pins the line under one small foot."
+        "goto": "test",
+        "narration": "Your line marks the short return. The guide still watches the wider rim."
       },
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        },
-        {
-          "figure": "entities/bone_crawler"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "onAssisted": {
+        "goto": "test",
+        "narration": "Your line marks the short return. The guide still watches the wider rim."
+      }
     },
-    "vibration_clear": {
-      "type": "story",
-      "narration": "Your test gear is back on the safe strip. Distracting the crawlers will take more than waving lunch-shaped rope.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "support"
-        }
-      ],
+    "learn_arches": {
+      "type": "interaction",
+      "narration": "The guide points out three arches on the outer route. Watch her landmark pattern before her raised crest disappears behind the reeds.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -533,138 +335,276 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the outer-arch route, then echo it.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "flat",
+            "label": "Flat-topped arch",
+            "icon": "eye"
+          },
+          {
+            "id": "split",
+            "label": "Split arch",
+            "icon": "eye"
+          },
+          {
+            "id": "low",
+            "label": "Low arch",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "split",
+          "low",
+          "flat"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "test",
+        "narration": "You can point out the outer rim's three landmarks."
+      },
+      "onFailure": {
+        "goto": "test",
+        "narration": "The guide repeats the outer landmarks with her crest signals. She will guide the rim if you need it."
+      },
+      "onAssisted": {
+        "goto": "test",
+        "narration": "You can point out the outer rim's three landmarks."
+      }
     },
-    "vibration_changed": {
-      "type": "story",
-      "narration": "You slacken the line instead of tugging the crawler. When it lifts its foot toward the shimmer, the line slides free.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "support"
-        }
-      ],
+    "test": {
+      "type": "interaction",
+      "narration": "A yard pebble rolls back uphill over the boundary. Your marked plank stays where you set it. The guide raises a fin. \"The yard is very particular about whose things are whose.\" Choose a small test without pocketing anything.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
           "name": "Skupper guide"
-        },
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-returning-pebble",
+      "interaction": {
+        "kind": "play",
+        "cue": "Compare the yard's things with your own gear.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "pebble",
+            "label": "Nudge the loose yard pebble toward the line",
+            "icon": "hand",
+            "reaction": "The pebble rolls back uphill to its hollow."
+          },
+          {
+            "id": "plank",
+            "label": "Set your marked plank across the boundary",
+            "icon": "hand",
+            "reaction": "Your own plank stays put. The yard does not claim it."
+          },
+          {
+            "id": "draw",
+            "label": "Draw where the pebble returned",
+            "icon": "hand",
+            "reaction": "The guide checks your drawing from her pool."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "returning_pebble",
+        "narration": "The yard's pebble returns to its own place. Your gear is a different responsibility."
+      },
+      "onFailure": {
+        "goto": "returning_pebble",
+        "narration": "The yard's pebble returns to its own place. Your gear is a different responsibility."
+      },
+      "onAssisted": {
+        "goto": "returning_pebble",
+        "narration": "The yard's pebble returns to its own place. Your gear is a different responsibility."
+      }
+    },
+    "returning_pebble": {
+      "type": "interaction",
+      "narration": "The returning pebble disappears behind three loose stones. Follow its marked hiding place as the stones shift, then point out where it settled without picking it up.",
+      "cast": [
         {
-          "figure": "entities/bone_crawler"
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-returning-pebble",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Follow the marked pebble hiding place through the shifting stones.",
+        "actionLabel": "Point out the returned pebble",
+        "covers": [
+          "Left stone",
+          "Middle stone",
+          "Right stone"
+        ],
+        "start": 0,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "stepMs": 1400
+      },
+      "onSuccess": {
+        "goto": "vibration",
+        "narration": "You locate the pebble in its old hollow. No specimen goes into a pack."
+      },
+      "onFailure": {
+        "goto": "vibration",
+        "narration": "The guide points out the pebble after it settles. You correct the drawing instead of collecting it."
+      },
+      "onAssisted": {
+        "goto": "vibration",
+        "narration": "You locate the pebble in its old hollow. No specimen goes into a pack."
+      }
+    },
+    "vibration": {
+      "type": "interaction",
+      "narration": "Fresh magic pulses from the tear. The crawlers all turn toward it; one bumps the next and tangles its legs. Tap your own plank between pulses to compare their response from the marked path.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap the plank in the quiet interval between pulses.",
+        "actionLabel": "Tap your own plank",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "support",
+        "narration": "The crawlers turn at the fresh magic, then pause at your plank tap. You can plan around their path."
+      },
+      "onFailure": {
+        "goto": "support",
+        "narration": "Your tap overlaps the pulse. The guide calls the next quiet interval so you can distinguish the two reactions."
+      },
+      "onAssisted": {
+        "goto": "support",
+        "narration": "The crawlers turn at the fresh magic, then pause at your plank tap. You can plan around their path."
+      }
     },
     "support": {
       "type": "choice_point",
-      "narration": "The leaning wall rocks inward. Your party can brace its foot with a stone already lying here, or wedge your plank under the low edge and recover it afterward. Neither plan requires carrying anything out.",
+      "narration": "A low brace will keep the leaning wall settled while you work. Roll a fallen yard stone into place and leave your plank free, or wedge the marked plank under the edge and recover it afterward. Caught gear must stay if you retreat. What will support the wall?",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "plan_1",
-          "label": "Roll a fallen stone against the wall foot",
+          "id": "stone",
+          "label": "Set a fallen stone and keep our plank free",
           "icon": "hand",
-          "goto": "support_1"
+          "goto": "stone_support",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bone_plank_used",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "bone_plank_recoverable",
+              "value": false
+            }
+          ]
         },
         {
-          "id": "plan_2",
-          "label": "Wedge your marked plank under the low edge",
+          "id": "plank",
+          "label": "Use the marked plank; recover it after the encounter",
           "icon": "hand",
-          "goto": "support_2"
-        }
-      ],
-      "cast": [
+          "goto": "plank_support",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bone_plank_used",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "bone_plank_recoverable",
+              "value": true
+            }
+          ]
+        },
         {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "support_1": {
-      "type": "story",
-      "narration": "You roll the stone along the ground. It stays inside the boundary, at the foot of the wall. The crawlers briefly make room, then come back.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
+          "id": "brace",
+          "label": "Have our thornguard brace while a stone is settled",
           "icon": "hand",
-          "goto": "support_check"
+          "goto": "braced_support",
+          "requiresClass": "thornguard",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bone_plank_used",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "bone_plank_recoverable",
+              "value": false
+            }
+          ]
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      ]
     },
-    "support_2": {
-      "type": "story",
-      "narration": "You slide the bright-looped plank in from the safe strip. It holds the wall just long enough to inspect the tear behind it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "support_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "support_check": {
+    "stone_support": {
       "type": "interaction",
+      "narration": "Roll a fallen stone against the wall's foot from the open side. Balance it low and leave it inside the yard; the marked plank stays with your gear.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Settle the low stone brace evenly.",
+        "actionLabel": "Set the stone brace",
+        "objectLabel": "Low yard-stone brace"
+      },
       "onSuccess": {
-        "goto": "support_clear",
-        "narration": "The wall settles onto the brace."
+        "goto": "rest",
+        "narration": "The wall rests on its own fallen stone. Your plank is free."
       },
       "onFailure": {
-        "goto": "support_changed",
-        "narration": "The first brace tips and you pull back together."
-      },
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady",
-      "narration": "The support needs two jobs at once: keep it still and fix the brace. Pick your jobs. A loose bit of rope taps against the board.",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Hold the support while your friend secures it.",
-        "supportLabel": "Hold the support",
-        "actionLabel": "Secure the brace"
+        "goto": "rest",
+        "narration": "The wall rests on its own fallen stone. Your plank is free."
       },
       "onAssisted": {
-        "goto": "support_clear",
-        "narration": "The wall settles onto the brace."
+        "goto": "rest",
+        "narration": "The wall rests on its own fallen stone. Your plank is free."
       }
     },
-    "support_clear": {
-      "type": "story",
-      "narration": "There is a narrow passage behind the wall, with open ground beyond the tear.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
+    "plank_support": {
+      "type": "interaction",
+      "narration": "Hold the marked plank while the guide calls its position from the pool. Wedge it low, leaving its bright recovery loop visible.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -672,19 +612,28 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the marked plank while the wedge settles.",
+        "actionLabel": "Set the plank brace",
+        "supportLabel": "Hold the marked plank"
+      },
+      "onSuccess": {
+        "goto": "rest",
+        "narration": "The plank holds the edge. Its later recovery will need a replacement support."
+      },
+      "onFailure": {
+        "goto": "rest",
+        "narration": "The plank holds the edge. Its later recovery will need a replacement support."
+      },
+      "onAssisted": {
+        "goto": "rest",
+        "narration": "The plank holds the edge. Its later recovery will need a replacement support."
+      }
     },
-    "support_changed": {
+    "braced_support": {
       "type": "story",
-      "narration": "You use two low supports instead of one tall wedge. The wall settles; your shoulders will remember the extra work.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
+      "narration": "Your thornguard uses a skill called Brace to hold the wall while a fallen stone is settled low. That saves the balancing job. The yard stone stays inside; your marked plank stays free.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -692,7 +641,14 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "hand",
+          "goto": "rest"
+        }
+      ]
     },
     "rest": {
       "type": "rest",
@@ -701,33 +657,13 @@
       "choices": [
         {
           "id": "rest",
-          "label": "Rest here, then carry on",
+          "label": "Rest at the pool, then choose the encounter plan",
           "icon": "hand",
           "goto": "plan"
         },
         {
           "id": "watch",
-          "label": "Rest while watching the path",
-          "icon": "hand",
-          "goto": "rest_watch"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
-    },
-    "rest_watch": {
-      "type": "story",
-      "narration": "You watch from beside the pool while eating a seaweed roll. The guide keeps her lunch box from drifting into the yard. Even lunch must obey the boundary.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
+          "label": "Rest while watching the crawler path",
           "icon": "hand",
           "goto": "plan"
         }
@@ -743,21 +679,7 @@
     },
     "plan": {
       "type": "choice_point",
-      "narration": "The tear feeds fresh magic beside the passage. Your Listening Chime, the glacier travelers' chime, gives an echo while the tear is steady. You can drive the crawlers away from the passage, or close the tear from the marked stones. Closing it takes several turns beside the seam; the crawlers will still be there.",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Clear the crawlers from the passage",
-          "icon": "hand",
-          "goto": "plan_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Hold the marked stones and close the tear",
-          "icon": "hand",
-          "goto": "plan_2"
-        }
-      ],
+      "narration": "The tear keeps drawing fresh magic and crawlers. Clear the passage on open ground, or prepare the closing stones so the seam takes two working turns instead of three. If you carried spare mats, take an extra placement job to cover the northern loose-stone patch. The southern patch and crawlers will remain.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -765,7 +687,29 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "choices": [
+        {
+          "id": "clear",
+          "label": "Clear the passage on open ground",
+          "icon": "hand",
+          "goto": "plan_1"
+        },
+        {
+          "id": "seam",
+          "label": "Prepare the closing points before the encounter",
+          "icon": "hand",
+          "goto": "seam_marks"
+        },
+        {
+          "id": "mats",
+          "label": "Place our carried mats over one board hazard",
+          "icon": "hand",
+          "goto": "lay_board_mats",
+          "when": {
+            "flag": "bone_spares_carried"
+          }
+        }
+      ]
     },
     "plan_1": {
       "type": "story",
@@ -787,17 +731,9 @@
       "art": "scenes/riftlight/bone-yard-ruins",
       "rift": "steady"
     },
-    "plan_2": {
-      "type": "story",
-      "narration": "You pick the nearest firm stones beside the seam. Your party will take turns working there while keeping the crawlers off. You mark the nearest closing points before the crawlers spread. This preparation shortens the work at the seam.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "fight_seam"
-        }
-      ],
+    "seam_marks": {
+      "type": "interaction",
+      "narration": "Share the positions beside the seam before the crawlers spread. The nearest closing stone comes first; finish at the point where your chime's echo can be checked. Your Listening Chime is the glacier travelers' chime: it tests readiness and a way back, not permission to change a rift's rules.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -805,7 +741,195 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "rift": "steady"
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Plan the closing-point approach from the marked strip.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "echo",
+            "label": "Echo-checking point",
+            "icon": "eye"
+          },
+          {
+            "id": "near",
+            "label": "Nearest closing stone",
+            "icon": "eye"
+          },
+          {
+            "id": "ledge",
+            "label": "Firm side ledge",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "near",
+          "ledge",
+          "echo"
+        ],
+        "clues": [
+          "Begin at the nearest closing stone.",
+          "The firm side ledge comes between that stone and the echo check.",
+          "Finish by checking the echo point."
+        ]
+      },
+      "onSuccess": {
+        "goto": "fight_seam",
+        "narration": "The marked approach shortens the seam work to two turns; the encounter still has to be played."
+      },
+      "onFailure": {
+        "goto": "fight_seam",
+        "narration": "The guide corrects the point order from the pool. The approach is marked before you enter; enemies and remaining hazards are still there."
+      },
+      "onAssisted": {
+        "goto": "fight_seam",
+        "narration": "The marked approach shortens the seam work to two turns; the encounter still has to be played."
+      }
+    },
+    "seam_marks_mats": {
+      "type": "interaction",
+      "narration": "Share the positions beside the seam before the crawlers spread. The nearest closing stone comes first; finish at the point where your chime's echo can be checked. Your Listening Chime is the glacier travelers' chime: it tests readiness and a way back, not permission to change a rift's rules.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Plan the closing-point approach from the marked strip.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "echo",
+            "label": "Echo-checking point",
+            "icon": "eye"
+          },
+          {
+            "id": "near",
+            "label": "Nearest closing stone",
+            "icon": "eye"
+          },
+          {
+            "id": "ledge",
+            "label": "Firm side ledge",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "near",
+          "ledge",
+          "echo"
+        ],
+        "clues": [
+          "Begin at the nearest closing stone.",
+          "The firm side ledge comes between that stone and the echo check.",
+          "Finish by checking the echo point."
+        ]
+      },
+      "onSuccess": {
+        "goto": "fight_seam_mats",
+        "narration": "The marked approach shortens the seam work to two turns; the encounter still has to be played."
+      },
+      "onFailure": {
+        "goto": "fight_seam_mats",
+        "narration": "The guide corrects the point order from the pool. The approach is marked before you enter; enemies and remaining hazards are still there."
+      },
+      "onAssisted": {
+        "goto": "fight_seam_mats",
+        "narration": "The marked approach shortens the seam work to two turns; the encounter still has to be played."
+      }
+    },
+    "lay_board_mats": {
+      "type": "interaction",
+      "narration": "Set the carried mats over the northern loose-stone patch while your friends support the outer edge. This covers that one hazard tile, not the southern patch or the crawlers.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the mats while the northern patch is covered.",
+        "actionLabel": "Cover the northern patch",
+        "supportLabel": "Hold the carried mats"
+      },
+      "onSuccess": {
+        "goto": "mat_plan",
+        "narration": "The northern loose-stone patch is covered. Those mats will need retrieving afterward.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bone_mats_used",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bone_mats_recoverable",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "mat_plan",
+        "narration": "The northern loose-stone patch is covered. Those mats will need retrieving afterward.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bone_mats_used",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bone_mats_recoverable",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "mat_plan",
+        "narration": "The northern loose-stone patch is covered. Those mats will need retrieving afterward.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bone_mats_used",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "bone_mats_recoverable",
+            "value": true
+          }
+        ]
+      }
+    },
+    "mat_plan": {
+      "type": "choice_point",
+      "narration": "Your mats cover the northern patch. The southern loose stones can still bite. Clear the passage now, or also mark the seam approach to shorten its objective. Which encounter plan will you use?",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "choices": [
+        {
+          "id": "clear",
+          "label": "Clear the passage with one patch covered",
+          "icon": "hand",
+          "goto": "fight_mats"
+        },
+        {
+          "id": "seam",
+          "label": "Mark the seam approach as well",
+          "icon": "hand",
+          "goto": "seam_marks_mats"
+        }
+      ]
     },
     "fight": {
       "type": "encounter",
@@ -847,6 +971,205 @@
               "y": 3
             },
             "turns": 3,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "bone_rift_closed"
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "cleared"
+      },
+      "onDefeat": {
+        "goto": "rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bone_retreat"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "fight_seam": {
+      "type": "encounter",
+      "map": "riftlight_bone_yard",
+      "narration": "Your marks show where to fold the tear shut. End two turns beside it to close it, or drive the crawlers away. Shifting stones still bite at anyone who stops on them.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "loose_stones",
+            "kind": "rift",
+            "label": "Shifting loose stones",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "close_seam",
+            "kind": "close",
+            "label": "Close the fresh tear",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 2,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "bone_rift_closed"
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "cleared"
+      },
+      "onDefeat": {
+        "goto": "rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bone_retreat"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "fight_mats": {
+      "type": "encounter",
+      "map": "riftlight_bone_yard",
+      "narration": "Your carried mats cover the northern loose-stone patch. The southern patch still shifts, and the crawlers crowd the passage. Close the seam by ending three turns beside it, or drive the crawlers clear.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "loose_stones",
+            "kind": "rift",
+            "label": "Shifting loose stones",
+            "tiles": [
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "close_seam",
+            "kind": "close",
+            "label": "Close the fresh tear",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 3,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "bone_rift_closed"
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "cleared"
+      },
+      "onDefeat": {
+        "goto": "rescued",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "bone_retreat"
+          }
+        ]
+      },
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "fight_seam_mats": {
+      "type": "encounter",
+      "map": "riftlight_bone_yard",
+      "narration": "Your carried mats cover the northern loose-stone patch. The southern patch still shifts, and the crawlers crowd the passage. Close the seam by ending two turns beside it, or drive the crawlers clear.",
+      "enemies": [
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "loose_stones",
+            "kind": "rift",
+            "label": "Shifting loose stones",
+            "tiles": [
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1
+          }
+        ],
+        "objectives": [
+          {
+            "id": "close_seam",
+            "kind": "close",
+            "label": "Close the fresh tear",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 2,
             "endsFight": true,
             "effects": [
               {
@@ -918,7 +1241,13 @@
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "bones_passage_done"
+          "flag": "bone_plank_recoverable",
+          "value": false
+        },
+        {
+          "type": "setFlag",
+          "flag": "bone_mats_recoverable",
+          "value": false
         }
       ],
       "choices": [
@@ -942,149 +1271,8 @@
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "inventory": {
-      "type": "choice_point",
-      "narration": "A carved chip lies against the path, just the right size for a pocket. Nearby, a pebble rolls back uphill into the ruins. The guide raises one fin from her pool. \"It will make its own way home. Your pocket is merely a delay.\" Before leaving, what will you do with what is in your hands?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Leave the chip and draw its shape",
-          "icon": "hand",
-          "goto": "inventory_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Leave it untouched and describe the carving",
-          "icon": "hand",
-          "goto": "inventory_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "inventory_1": {
-      "type": "story",
-      "narration": "You leave the chip touching the ground and draw it from the safe strip. The page is yours. The chip is not.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "unbrace"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "inventory_2": {
-      "type": "story",
-      "narration": "You look without moving it. The carving is too worn to explain the ruins. You write down only what you can see.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "unbrace"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "unbrace": {
-      "type": "choice_point",
-      "narration": "Your brace is still beside the wall. Loose stones have settled against it, and a bright loop on your gear has caught between them. You need to recover your marked gear while leaving the ruins standing. How will you do it?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Recover loose gear without moving the supports",
-          "icon": "hand",
-          "goto": "unbrace_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Keep clear and retrieve only the loose gear",
-          "icon": "hand",
-          "goto": "unbrace_2"
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "bone_retreat"
-          },
-          "text": "The crawlers block the wall. Any gear caught there must stay; you can gather only the free mat and line from the outer strip."
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "unbrace_1": {
-      "type": "story",
-      "narration": "You check the supports from the safe strip. Anything still holding the wall stays there; your loose marked gear comes away first.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "unbrace_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "unbrace_2": {
-      "type": "story",
-      "narration": "You leave any trapped gear where it supports the wall. Your party gathers the free line and loops from the marked strip. Nobody goes under loose stones for a piece of gear.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "unbrace_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "unbrace_check": {
       "type": "interaction",
-      "onSuccess": {
-        "goto": "unbrace_clear",
-        "narration": "The wall stays still while you retrieve the free gear."
-      },
-      "onFailure": {
-        "goto": "unbrace_changed",
-        "narration": "Dust spills from a crack when the line moves."
-      },
+      "narration": "A carved chip lies beside the path. It would fit a pocket. The guide points to the returning pebble. \"Your pocket is merely a delay.\" Check the difference between your bright-marked gear and the yard's things before leaving.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1092,447 +1280,608 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "narration": "Anything holding the wall stays in place. Pass the loose marked gear back along the safe strip, one friend at a time. The wall does not get to borrow all your tools.",
       "interaction": {
-        "kind": "relay",
-        "cue": "Catch the loose gear and pass it back along the safe strip.",
-        "actionLabel": "Pass the gear",
-        "objectLabel": "loose marked gear"
+        "kind": "play",
+        "cue": "Leave the yard's things where they belong.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "draw",
+            "label": "Draw the chip without taking it",
+            "icon": "hand",
+            "reaction": "The chip stays in the yard. Your drawing records its shape."
+          },
+          {
+            "id": "loop",
+            "label": "Point out the bright loops on your own gear",
+            "icon": "hand",
+            "reaction": "The guide can distinguish her kit from the yard stones."
+          },
+          {
+            "id": "sole",
+            "label": "Brush a stone crumb from your sole toward the yard",
+            "icon": "hand",
+            "reaction": "The crumb rolls home. Your boot feels less interesting."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "unbrace",
+        "narration": "Your hands and packs hold your own gear, not a hidden stone prize."
+      },
+      "onFailure": {
+        "goto": "unbrace",
+        "narration": "Your hands and packs hold your own gear, not a hidden stone prize."
       },
       "onAssisted": {
-        "goto": "unbrace_clear",
-        "narration": "The wall stays still while you retrieve the free gear."
+        "goto": "unbrace",
+        "narration": "Your hands and packs hold your own gear, not a hidden stone prize."
       }
     },
-    "unbrace_clear": {
-      "type": "story",
-      "narration": "Every piece you recover carries a bright loop. Nothing found here joins it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "exit_strip"
-        }
-      ],
+    "unbrace": {
+      "type": "choice_point",
+      "narration": "Loose gear can come back now. A caught plank needs a replacement stone before removal; used mats need unfastening. You may recover accessible supports, or leave caught gear in place and gather only what is loose. A retreat blocks those inner recoveries.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "variants": [
+        {
+          "when": {
+            "flag": "bone_retreat"
+          },
+          "text": "The crawlers block the wall and covered patch. Caught gear stays inside; the guide directs you onto the longer rim."
+        }
+      ],
+      "choices": [
+        {
+          "id": "loose",
+          "label": "Gather loose gear and leave caught supports",
+          "icon": "hand",
+          "goto": "gather_loose"
+        },
+        {
+          "id": "plank",
+          "label": "Replace the support and recover our marked plank",
+          "icon": "hand",
+          "goto": "replace_plank",
+          "when": {
+            "flag": "bone_plank_recoverable",
+            "notFlag": "bone_plank_recovered"
+          }
+        },
+        {
+          "id": "mats",
+          "label": "Unfasten and recover our used mats",
+          "icon": "hand",
+          "goto": "recover_mats",
+          "when": {
+            "flag": "bone_mats_recoverable",
+            "notFlag": "bone_mats_recovered"
+          }
+        }
+      ]
     },
-    "unbrace_changed": {
-      "type": "story",
-      "narration": "You stop pulling. One bright loop stays caught under loose stones; the rest comes away. Nobody will return under the wall to save a scrap.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "exit_strip"
-        }
-      ],
+    "replace_plank": {
+      "type": "interaction",
+      "narration": "Balance a fallen yard stone beneath the supported edge before sliding your marked plank free. Leave the replacement stone inside the boundary.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Settle the replacement stone before freeing the plank.",
+        "actionLabel": "Recover the marked plank",
+        "objectLabel": "Replacement support stone"
+      },
+      "onSuccess": {
+        "goto": "unbrace",
+        "narration": "The wall stays supported on its own stone. Your marked plank is free.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bone_plank_recovered",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "unbrace",
+        "narration": "The wall stays supported on its own stone. Your marked plank is free.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bone_plank_recovered",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "unbrace",
+        "narration": "The wall stays supported on its own stone. Your marked plank is free.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bone_plank_recovered",
+            "value": true
+          }
+        ]
+      }
+    },
+    "recover_mats": {
+      "type": "interaction",
+      "narration": "Keep the mat edge supported while another helper releases its bright ties. The passage is clear enough to reach them; leave every yard stone on the ground.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the used mat while its ties are released.",
+        "actionLabel": "Free the used mats",
+        "supportLabel": "Hold the mat edge"
+      },
+      "onSuccess": {
+        "goto": "unbrace",
+        "narration": "The mats are untied and ready to bring outside.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bone_mats_recovered",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "unbrace",
+        "narration": "The mats are untied and ready to bring outside.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bone_mats_recovered",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "unbrace",
+        "narration": "The mats are untied and ready to bring outside.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bone_mats_recovered",
+            "value": true
+          }
+        ]
+      }
+    },
+    "gather_loose": {
+      "type": "interaction",
+      "narration": "Pass your loose line, free plank and any recovered mats along the outer strip. Nothing caught under a blocked support is pulled after you.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the loose marked gear along the strip.",
+        "actionLabel": "Pass the loose gear",
+        "objectLabel": "Loose bright-marked gear"
+      },
+      "onSuccess": {
+        "goto": "exit_strip",
+        "narration": "Your loose kit is together. Choose the route that is actually open."
+      },
+      "onFailure": {
+        "goto": "exit_strip",
+        "narration": "Your loose kit is together. Choose the route that is actually open."
+      },
+      "onAssisted": {
+        "goto": "exit_strip",
+        "narration": "Your loose kit is together. Choose the route that is actually open."
+      }
     },
     "exit_strip": {
       "type": "choice_point",
-      "narration": "The boundary pool shines beyond the arches. The guide raises her crest. Which marks will you follow on the way back?",
+      "narration": "The boundary pool shines beyond the arches. The guide raises her crest. Follow her outer-rim instructions, or collect your short return line if the passage stayed clear.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "variants": [
+        {
+          "when": {
+            "flag": "bone_retreat"
+          },
+          "text": "The crawlers still hold the short passage. The longer route is the way past it; a line behind them does not make it open."
+        }
+      ],
       "choices": [
         {
-          "id": "plan_1",
-          "label": "Follow your marked return route",
+          "id": "guide",
+          "label": "Follow the guide's outer-rim landmarks",
           "icon": "hand",
-          "goto": "exit_strip_1"
+          "goto": "outer_rim"
         },
         {
-          "id": "plan_2",
-          "label": "Follow the guide's crest signals",
+          "id": "line",
+          "label": "Follow and gather our short return line",
           "icon": "hand",
-          "goto": "exit_strip_2"
-        }
-      ],
-      "variants": [
-        {
+          "goto": "return_line",
           "when": {
-            "flag": "bone_retreat"
+            "flag": "bone_line_laid",
+            "notFlag": "bone_retreat"
+          }
+        }
+      ]
+    },
+    "outer_rim": {
+      "type": "interaction",
+      "narration": "Share the guide's calls to follow the arches around the hollow. Keep the boundary pool as the final landmark; you are taking the actual wide route, not reporting an inner victory.",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Follow the outer landmarks toward the pool.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "pool",
+            "label": "Boundary pool",
+            "icon": "eye"
           },
-          "text": "The crawlers still block the short passage. Your marked return route bends out along the wide rim instead. The guide signals that longer route; your shoulders still ache from the retreat."
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "exit_strip_1": {
-      "type": "story",
-      "narration": "You check each turn before stepping. The last arch frames the guide like a very damp portrait.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "exit_strip_check"
-        }
-      ],
-      "variants": [
-        {
-          "when": {
-            "flag": "bone_retreat"
+          {
+            "id": "low",
+            "label": "Low arch",
+            "icon": "eye"
           },
-          "text": "You follow the marks around the wide rim, well clear of the blocked passage. It is a long walk back to the pool."
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "exit_strip_2": {
-      "type": "story",
-      "narration": "You take the wide curve in sight of the guide. She shifts along her pool to keep you in view without crossing dry ground.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "exit_strip_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "exit_strip_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Carry only your own loose gear along the firm return path.",
+          {
+            "id": "split",
+            "label": "Split arch",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "split",
+          "low",
+          "pool"
+        ],
+        "clues": [
+          "Start at the split arch nearest the inner approach.",
+          "The low arch lies between the split arch and the pool.",
+          "Finish outside at the boundary pool."
+        ]
+      },
       "onSuccess": {
-        "goto": "exit_strip_clear",
-        "narration": "The last turn brings you out beside the pool."
+        "goto": "boundary",
+        "narration": "Your party reaches the pool by the outer rim.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_passage_done",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "exit_strip_changed",
-        "narration": "A gust catches your empty mat against a stone."
+        "goto": "boundary",
+        "narration": "The guide repeats the crest calls until the outer rim is clear to follow. Your party reaches her pool.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_passage_done",
+            "value": true
+          }
+        ]
       },
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "onAssisted": {
+        "goto": "boundary",
+        "narration": "Your party reaches the pool by the outer rim.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_passage_done",
+            "value": true
+          }
+        ]
+      }
     },
-    "exit_strip_clear": {
-      "type": "story",
-      "narration": "Your party is outside the yard, with the ruins behind you.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "boundary"
-        }
-      ],
+    "return_line": {
+      "type": "interaction",
+      "narration": "Hold the marked line while your friends gather its loose length from the cleared passage. It ends at the guide's pool outside the yard.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "exit_strip_changed": {
-      "type": "story",
-      "narration": "You let the mat settle, step back along the clear strip and fold it before carrying on. The guide waits with the patience of someone born beside tides.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "boundary"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the line as the party gathers it outside.",
+        "actionLabel": "Gather the short return line",
+        "supportLabel": "Hold the return line"
+      },
+      "onSuccess": {
+        "goto": "boundary",
+        "narration": "The clear short passage brings the party and its line back to the pool.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_passage_done",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "boundary",
+        "narration": "The clear short passage brings the party and its line back to the pool.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_passage_done",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "boundary",
+        "narration": "The clear short passage brings the party and its line back to the pool.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bones_passage_done",
+            "value": true
+          }
+        ]
+      }
     },
     "boundary": {
-      "type": "choice_point",
-      "narration": "At the boundary, a crumb of stone falls from a muddy sole and rolls toward the ruins. Your guide says, \"Check the other foot too.\" How will you finish the check?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Brush every sole toward the yard",
-          "icon": "hand",
-          "goto": "boundary_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Unfold every mat above the boundary line",
-          "icon": "hand",
-          "goto": "boundary_2"
-        }
-      ],
+      "type": "interaction",
+      "narration": "A crumb falls from a muddy sole and rolls uphill toward the ruins. \"Other foot too,\" says the guide. Leave the yard's tiny hitchhikers behind before closing the packs.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "boundary_1": {
-      "type": "story",
-      "narration": "You brush the grit back across the boundary. It rolls toward the arches. Your boots leave with only their own very familiar holes.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "boundary_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "boundary_2": {
-      "type": "story",
-      "narration": "You open the folds over the yard. A trapped chip drops and trundles home. The guide watches it go: \"Better walker than some tourists.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "boundary_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "boundary_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Check the gear for caught chips without collecting anything new.",
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "play",
+        "cue": "Check boots and marked gear at the boundary.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "boots",
+            "label": "Brush boot soles toward the yard",
+            "icon": "hand",
+            "reaction": "The last stone crumbs roll back inside."
+          },
+          {
+            "id": "mats",
+            "label": "Unfold the returned mats above the line",
+            "icon": "hand",
+            "reaction": "Loose grit drops on the yard side."
+          },
+          {
+            "id": "packs",
+            "label": "Check that the packs hold only your own kit",
+            "icon": "hand",
+            "reaction": "Bright loops and empty pockets agree with your account."
+          }
+        ]
+      },
       "onSuccess": {
-        "goto": "boundary_clear",
-        "narration": "No borrowed stone remains in the gear."
+        "goto": "report",
+        "narration": "No stone, bone or hidden prize goes out with your party."
       },
       "onFailure": {
-        "goto": "boundary_changed",
-        "narration": "A tiny chip makes a determined rattle inside a fold."
+        "goto": "report",
+        "narration": "No stone, bone or hidden prize goes out with your party."
       },
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "boundary_clear": {
-      "type": "story",
-      "narration": "The guide checks your empty palms. Everything belonging to the yard stays there.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "report"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "boundary_changed": {
-      "type": "story",
-      "narration": "You open the fold over the boundary. The chip rolls back of its own accord. You close the empty fold and leave it empty.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "report"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "onAssisted": {
+        "goto": "report",
+        "narration": "No stone, bone or hidden prize goes out with your party."
+      }
     },
     "report": {
-      "type": "choice_point",
-      "narration": "The guide is ready to scratch a warning on her board. \"Tell me what a traveler needs before their boots go in.\" You saw the displaced walls and the way the yard returns its things. You did not learn whose enormous bones lie here, or who moved the ruins. Which checked fact will lead your warning?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Record the safe route and the crawler swarm",
-          "icon": "hand",
-          "goto": "report_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Record how the fresh tear drew the crawlers",
-          "icon": "hand",
-          "goto": "report_2"
-        }
-      ],
+      "type": "interaction",
+      "narration": "The guide opens her warning board. Arrange the facts a traveler can use: the changing inner path, the checked outer backup, and the boundary that returns its own things. Whose enormous old bones lie here remains unknown.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "report_1": {
-      "type": "story",
-      "narration": "You draw the firm strip, with a warning that it must be checked again next tide. The bones keep their unanswered names.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "handoff"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "report_2": {
-      "type": "story",
-      "narration": "You describe the pulsing seam and the swarm. You write down only what you saw. Who made the opening? You do not know.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "handoff"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Build a useful route warning from what you checked.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "return",
+            "label": "Yard objects return at the boundary",
+            "icon": "eye"
+          },
+          {
+            "id": "inner",
+            "label": "Check the inner passage",
+            "icon": "eye"
+          },
+          {
+            "id": "outer",
+            "label": "Use the outer backup if blocked",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "inner",
+          "outer",
+          "return"
+        ],
+        "clues": [
+          "Begin by checking whether the inner passage is open.",
+          "The outer backup follows if the inner way is blocked.",
+          "At the final boundary, yard objects must stay inside."
+        ]
+      },
+      "onSuccess": {
+        "goto": "handoff",
+        "narration": "The guide has a warning about checked routes and the boundary rule, without a made-up history."
+      },
+      "onFailure": {
+        "goto": "handoff",
+        "narration": "The guide checks the warning against your route and corrects its order. The bones' age and owners stay unknown."
+      },
+      "onAssisted": {
+        "goto": "handoff",
+        "narration": "The guide has a warning about checked routes and the boundary rule, without a made-up history."
+      }
     },
     "handoff": {
       "type": "choice_point",
-      "narration": "Your guide points back toward the Saltrot landing and its ways upriver or through the openings. She opens a folded message Orin entrusted to her at the landing. It asks your Riftseeker friends to compare their sightings at the glacier when enough clues agree. How will you send your account?",
+      "narration": "The guide has her own route warning. An earlier note from Orin asks the Riftseekers to compare sightings at the glacier. You can authorize her to relay your written account too, or keep your copy for the next meeting. Which will you do?",
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins",
       "choices": [
         {
-          "id": "plan_1",
-          "label": "Ask the guide to relay your route warning",
+          "id": "relay",
+          "label": "Authorize the guide to relay our account",
           "icon": "hand",
-          "goto": "handoff_1"
+          "goto": "relay_account",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bone_account_shared",
+              "value": true
+            }
+          ]
         },
         {
-          "id": "plan_2",
-          "label": "Keep a copy to share when you meet the travelers",
+          "id": "keep",
+          "label": "Keep our written copy for a later meeting",
           "icon": "hand",
-          "goto": "handoff_2"
+          "goto": "keep_account",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "bone_account_shared",
+              "value": false
+            }
+          ]
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Skupper guide"
-        }
-      ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      ]
     },
-    "handoff_1": {
-      "type": "story",
-      "narration": "You read the message together before she passes it along the pools. Your account says what happened and leaves guesses out.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "ending"
-        }
-      ],
+    "relay_account": {
+      "type": "interaction",
+      "narration": "Pass the account to the guide at her pool. It names the route you used and any gear left behind; it does not name who moved the ruins.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the authorized route account to the guide.",
+        "actionLabel": "Hand over the account",
+        "objectLabel": "Authorized Bone Yard account"
+      },
+      "onSuccess": {
+        "goto": "ending",
+        "narration": "The guide accepts the copy you chose to share."
+      },
+      "onFailure": {
+        "goto": "ending",
+        "narration": "The guide accepts the copy you chose to share."
+      },
+      "onAssisted": {
+        "goto": "ending",
+        "narration": "The guide accepts the copy you chose to share."
+      }
     },
-    "handoff_2": {
-      "type": "story",
-      "narration": "You fold your own page into your own bag. The guide grins. Paper from your bag is fine to take home.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "ending"
-        }
-      ],
+    "keep_account": {
+      "type": "interaction",
+      "narration": "Choose a true detail to add to your own copy while the guide keeps her separate warning. You do not have to hand over your page to help travelers.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
           "name": "Skupper guide"
         }
       ],
-      "art": "scenes/riftlight/bone-yard-ruins"
+      "art": "scenes/riftlight/bone-yard-ruins",
+      "interaction": {
+        "kind": "play",
+        "cue": "Keep a checked detail in your own account.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "route",
+            "label": "Mark the route actually used",
+            "icon": "hand",
+            "reaction": "The page keeps the actual route, not a borrowed victory."
+          },
+          {
+            "id": "rule",
+            "label": "Record the returning-object rule",
+            "icon": "hand",
+            "reaction": "The note records the observation without pretending to explain its cause."
+          },
+          {
+            "id": "gear",
+            "label": "List any supports left inside",
+            "icon": "hand",
+            "reaction": "The kit list keeps any real loss visible."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "ending",
+        "narration": "Your written page stays with the party. The guide keeps her own checked warning."
+      },
+      "onFailure": {
+        "goto": "ending",
+        "narration": "Your written page stays with the party. The guide keeps her own checked warning."
+      },
+      "onAssisted": {
+        "goto": "ending",
+        "narration": "Your written page stays with the party. The guide keeps her own checked warning."
+      }
     },
     "ending": {
       "type": "story",
-      "narration": "Your party leaves the Bone Yard with no stone, bone or hidden prize. The guide has a usable warning, and travelers still need to check the route each time. Behind you the crawlers settle among the displaced walls. In front of you lies the Saltrot, with more than one way onward. The guide raises her crest toward the river. Old Ossley, the river boatman, will return upriver on the next tide. At the boundary, the guide checked the tidal channel back to his landing. Your report tells him when the boat can leave the flats for the upriver run.",
+      "narration": "Your party leaves the Bone Yard with no stone, bone or hidden prize. The guide keeps a checked warning. Old Ossley, the river boatman, will return upriver on the next tide; the guide has checked the tidal channel to his landing. More than one road lies ahead.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1546,7 +1895,45 @@
           "when": {
             "flag": "bone_retreat"
           },
-          "text": "The short passage is still theirs. Your account marks the longer route you used instead."
+          "text": "The short passage stays blocked. Your account records the longer rim route you actually used."
+        },
+        {
+          "when": {
+            "flag": "bone_plank_recovered"
+          },
+          "text": "The marked plank came back after a yard stone replaced its support."
+        },
+        {
+          "when": {
+            "flag": "bone_plank_used",
+            "notFlag": "bone_plank_recovered"
+          },
+          "text": "The marked plank stays inside as a caught support. The guide cannot count it among her returned gear."
+        },
+        {
+          "when": {
+            "flag": "bone_mats_recovered"
+          },
+          "text": "The used mats are back outside after the unfastening work."
+        },
+        {
+          "when": {
+            "flag": "bone_mats_used",
+            "notFlag": "bone_mats_recovered"
+          },
+          "text": "The used spare mats stay inside. They are not silently returned to the guide's kit."
+        },
+        {
+          "when": {
+            "flag": "bone_account_shared"
+          },
+          "text": "Your authorized account goes into the guide's relay."
+        },
+        {
+          "when": {
+            "notFlag": "bone_account_shared"
+          },
+          "text": "Your written copy stays private; the guide relays only her own warning."
         }
       ],
       "cast": [
@@ -1556,89 +1943,129 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins"
-    },
-    "fight_seam": {
-      "type": "encounter",
-      "map": "riftlight_bone_yard",
-      "narration": "Your marks show where to fold the tear shut. End two turns beside it to close it, or drive the crawlers away. Shifting stones still bite at anyone who stops on them.",
-      "enemies": [
-        {
-          "id": "crawler",
-          "creature": "bone_crawler",
-          "count": 2
-        }
-      ],
-      "environment": {
-        "hazards": [
-          {
-            "id": "loose_stones",
-            "kind": "rift",
-            "label": "Shifting loose stones",
-            "tiles": [
-              {
-                "x": 5,
-                "y": 2
-              },
-              {
-                "x": 4,
-                "y": 5
-              }
-            ],
-            "damage": 1
-          }
-        ],
-        "objectives": [
-          {
-            "id": "close_seam",
-            "kind": "close",
-            "label": "Close the fresh tear",
-            "at": {
-              "x": 6,
-              "y": 3
-            },
-            "turns": 2,
-            "endsFight": true,
-            "effects": [
-              {
-                "type": "setFlag",
-                "flag": "bone_rift_closed"
-              }
-            ]
-          }
-        ]
-      },
-      "onVictory": {
-        "goto": "cleared"
-      },
-      "onDefeat": {
-        "goto": "rescued",
-        "effects": [
-          {
-            "type": "heal",
-            "amount": 3,
-            "to": "party"
-          },
-          {
-            "type": "setFlag",
-            "flag": "bone_retreat"
-          }
-        ]
-      },
-      "art": "scenes/riftlight/bone-yard-ruins"
     }
   },
   "presentation": {
     "interactions": {
-      "support_check": {
+      "pack_mats": {
         "props": [
-          "relay-plank",
+          "relay-plank"
+        ]
+      },
+      "leave_mats": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "lay_board_mats": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "recover_mats": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "vibration": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "plank_support": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "gather_loose": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "survey_window": {
+        "props": [
+          "notched-stone"
+        ]
+      },
+      "learn_arches": {
+        "props": [
+          "notched-stone"
+        ]
+      },
+      "outer_rim": {
+        "props": [
+          "notched-stone"
+        ]
+      },
+      "lay_line": {
+        "props": [
           "rope-loop"
         ]
       },
-      "unbrace_check": {
+      "return_line": {
         "props": [
-          "relay-plank",
           "rope-loop"
+        ]
+      },
+      "test": {
+        "props": [
+          "toss-pebble",
+          "relay-plank"
+        ]
+      },
+      "returning_pebble": {
+        "props": [
+          "toss-pebble"
+        ],
+        "coverIcons": [
+          "notched-stone",
+          "carved-stone",
+          "prop_rock"
+        ]
+      },
+      "stone_support": {
+        "props": [
+          "prop_rock"
+        ]
+      },
+      "replace_plank": {
+        "props": [
+          "prop_rock"
+        ]
+      },
+      "seam_marks": {
+        "props": [
+          "count-cord"
+        ]
+      },
+      "seam_marks_mats": {
+        "props": [
+          "count-cord"
+        ]
+      },
+      "inventory": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "boundary": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "report": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "relay_account": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "keep_account": {
+        "props": [
+          "clue-scrap"
         ]
       }
     }
