@@ -22,7 +22,6 @@ import type {
   JoinRoomResponse,
   FlairChoice,
   JournalResponse,
-  TimingReport,
   KidProfileView,
   OrganizerDevicesResponse,
   OrganizerHouseholdsResponse,
@@ -177,7 +176,7 @@ export interface SharedPlayersLoad extends SharedDevicePlayersResponse {
 }
 
 /** What the host may do to its room (#263, #267). */
-export type HostControl = "remove" | "keeper" | "lock" | "quiet" | "close" | "stop" | "timing";
+export type HostControl = "remove" | "keeper" | "lock" | "quiet" | "close" | "stop";
 
 /**
  * How the host proves it is the host: a phone's (or TV's) own device token,
@@ -203,8 +202,6 @@ export interface Api {
    * (`{ playerId }`), lock it to new joins (`{ locked }`), or close it.
    */
   hostControl(code: string, control: HostControl, body: Record<string, unknown>, auth: HostAuth): Promise<void>;
-  /** How long this household's chapters really took (#511), as the host proves itself. */
-  loadTiming(auth: HostAuth): Promise<TimingReport>;
   postAction(body: ActionRequest, token: string): Promise<ActionResponse>;
   /** An unconfirmed tap, relayed to the room's screens (`IntentPreview`). */
   postPreview(preview: IntentPreview | null, context: string | null, token: string): Promise<void>;
@@ -486,13 +483,6 @@ export const api: Api = {
       },
       body: JSON.stringify({}),
       ...(timeoutMs !== undefined ? { timeoutMs } : {}),
-    });
-  },
-
-  loadTiming(auth) {
-    return request<TimingReport>("/api/timing", {
-      headers: "deviceToken" in auth ? { "x-kad-device-token": auth.deviceToken } : { "x-kad-shared-token": auth.sharedToken },
-      ...("sessionToken" in auth && auth.sessionToken ? { token: auth.sessionToken } : {}),
     });
   },
 

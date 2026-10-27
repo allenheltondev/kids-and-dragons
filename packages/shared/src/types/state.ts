@@ -558,7 +558,7 @@ export interface RunState {
    */
   quiet?: true;
   /**
-   * The host paused the session clock (#511): a meal, bedtime, a dead wifi.
+   * An operator paused the session clock (#511): a meal, a dead wifi. Never shown to players.
    * Play is never blocked; only the time is left out of the timing report.
    * Cleared when a chapter starts. Absent is the normal case.
    */

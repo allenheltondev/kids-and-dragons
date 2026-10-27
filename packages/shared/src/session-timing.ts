@@ -11,7 +11,7 @@
  *
  * **What is recorded.** The server annotates events with a small `TimingNote`
  * (`EventRecord.timing`): the chapter starting (with its context), each step
- * (the scene now open), pause, resume, a grown-up's note, the chapter ending,
+ * (the scene now open), pause, resume, a operator's note, the chapter ending,
  * and the room closing or stopping. No names, no chat, no audio; the only
  * party fact is how many were seated.
  *
@@ -27,7 +27,7 @@
  *     and a screen left open all look the same to the server: silence. Silence
  *     past the cap is reported as idle, never guessed back into play, and
  *     counted in `idleGaps`.
- *  4. A grown-up's pause excludes everything until the matching resume
+ *  4. A operator's pause excludes everything until the matching resume
  *     (`pausedMs`). Steps taken while paused are counted
  *     (`stepsWhilePaused`) but never add active time. Turning timing off
  *     excludes time the same way, as `unrecordedMs`.
@@ -59,7 +59,7 @@ export const CHAPTER_BUDGET_MINUTES = 30;
 /** Fewer attempts than this are "too few"; fewer than `ENOUGH_SAMPLE` are "preliminary". */
 export const FEW_SAMPLE = 3;
 export const ENOUGH_SAMPLE = 8;
-/** Longest grown-up note, in characters. */
+/** Longest operator note, in characters. */
 export const TIMING_NOTE_MAX = 140;
 
 export type TimingSource = "family" | "playtest";
@@ -153,7 +153,7 @@ export function timingBucket(type: SceneType): TimingBucket {
   return "narration";
 }
 
-/** A grown-up's note, trimmed to what the log keeps; null when nothing is left. */
+/** A operator's note, trimmed to what the log keeps; null when nothing is left. */
 export function cleanNote(raw: unknown): string | null {
   if (typeof raw !== "string") return null;
   // eslint-disable-next-line no-control-regex

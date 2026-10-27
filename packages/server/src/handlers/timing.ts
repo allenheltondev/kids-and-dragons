@@ -1,5 +1,5 @@
 /**
- * Family-session timing (#511): what the server writes down, the grown-up's
+ * Family-session timing (#511): what the server writes down, the operator's
  * controls, and the report. The clock policy and the numbers themselves are
  * `packages/shared/src/session-timing.ts`; this is the part that touches the
  * store.
@@ -21,7 +21,7 @@
  * its content revision, how many were seated, whether it was a revisit or a
  * resume, the scenes and when they opened, pauses, the recoveries and assisted
  * routes taken, the road flags carried, the outcome, and one short note the
- * grown-up typed. No names, chat or audio. It lives and dies with the run's
+ * operator typed. No names, chat or audio. It lives and dies with the run's
  * event log, so deleting a household deletes it.
  */
 
@@ -159,7 +159,7 @@ export interface SetTimingInput {
 }
 
 /**
- * The grown-up's controls: pause and resume the clock for a meal, bedtime or a
+ * The operator's controls: pause and resume the clock for a meal, bedtime or a
  * dead wifi; leave timing off (and on again); add one short note to the
  * chapter. Each is one committed change, so it is idempotent (pausing a
  * paused clock writes nothing), ordered by seq against every phone's input,
