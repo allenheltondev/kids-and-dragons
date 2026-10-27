@@ -7,8 +7,13 @@ accent: the game is for American children.
 
 ```
 npm run voice:cast                  # build or refresh content/voice/cast.json from the content
-npm run voice:bakeoff -- --serve    # then open http://127.0.0.1:5199/cast
+npm run voice:bakeoff -- --serve    # then open http://127.0.0.1:5199/cast/profile
 ```
+
+Two pages show the sheet:
+
+- **`/cast/profile`:** one character at a time, to review the cast start to finish.
+- **`/cast`:** every card at once, to search and filter.
 
 ## The sheet: `content/voice/cast.json`
 
@@ -20,6 +25,10 @@ One entry per speaker, keyed by id:
 | `kind` | `narrator`, `party`, `character`, `group` (a flock, a crew) or `creature` |
 | `who` | how they sound, from the chapter's `voiceGuide.npcVoices` and canon's `speech_register` |
 | `pronouns` | canon's, or the ones the narration's own speech tags use for them ("…," she says) |
+| `gender`, `genderFrom` | `female`, `male`, `nonbinary` or `unknown`, and where that came from: `canon`, `narration` (the speech tags), `notes` (words like "grandmother"), `person` (set on the profile page) or `none`. Nonbinary and unknown can take either a woman's or a man's voice |
+| `figure` | the figure the scenes draw them with (`cast/coralie_fenn`, or `entities/faun` for someone drawn as any faun) |
+| `canon` | their canon individual (`individual.pib`), when canon has them |
+| `voiceNotes` | which chapters' `voiceGuide.npcVoices` describe them, and under which key |
 | `chapters` | every chapter they appear in, so one person keeps one voice across the game |
 | `gemini.voice` | one of Gemini's 30 prebuilt voices |
 | `accent` | set only to override the sheet-wide `accent` (General American) |
@@ -66,22 +75,78 @@ genders there are as best known, so check them by ear). Recurring characters are
 
 - Two speakers never share a voice in any chapter.
 - Nobody else gets the narrator's voice (Sulafat), since the narrator is in every chapter.
-- A rebuild never moves a voice: an approved entry is left exactly as it was, and a provisional
-  one keeps its voice while its chapters and lines are refreshed. Run it again after writing a
-  chapter, and only the new people are placed.
+- A rebuild never moves a voice. A person's decisions (status, voice, a gender they set, accent,
+  notes, history) carry over, and everything the content says is refreshed for everyone. Run it
+  again after writing a chapter, and only the new people are placed.
 
 `npm run voice:cast -- --check` reports without writing, and exits 1 if any chapter has two
 speakers on one voice.
 
 The first build: 207 speakers, 127 with lines from the game, no voice clashes.
 
-## The cast page: `/cast`
+## Profiles, one at a time: `/cast/profile`
 
-Served by the bake-off server, so it uses the same Gemini key (pasted once on either page), the
+It opens on the first character still waiting, in the order the sheet is best reviewed in: the
+narrator, the party, then whoever appears in the most chapters. The header keeps count:
+**37 left** of 207, with a progress bar.
+
+Each profile has:
+
+- **The player, under their picture:**
+  - their voice;
+  - the line it's on, with **‹ ›** to change lines;
+  - one big **Play** button (**Render and play** the first time a line is heard in this voice);
+  - a progress bar;
+  - **Play all**, to hear every line in turn.
+
+  The lines further down share the same player.
+- **Their picture:** the figure the scenes draw them with, from `assets/`. The empty margin is
+  trimmed, so a teapot-sized sprite fills the frame. Someone drawn as any faun or centaur says so,
+  and someone with no painting gets their initial.
+- **About them:**
+  - their **gender**, with where it came from;
+  - pronouns, their people, height, home and role (from canon and the art manifest);
+  - how they look (the art brief, `docs/briefs/story-cast-art.md`);
+  - other names, whether they speak, and their chapters.
+
+  Changing the gender saves it as yours. If the current voice no longer fits (a man's voice for
+  someone now marked female), they move to the best voice that does, unless the voice was
+  approved. **use the content's** hands the gender back to the content.
+- **Voice notes in canon:** every chapter's voice note for them, and for canon individuals the
+  fields of `canon/individuals.yaml` (who they are, how they look, how they talk, pronouns).
+  **Edit** any of them and **Save to canon**:
+  - the edit is written to that file, changing that one value and nothing else in it;
+  - the sheet is rebuilt, so the voice model hears the new words, and every decision is kept;
+  - a Gemfall chapter is marked pinned. `gemfall-compat.test.ts` hashes Gemfall's files, so a
+    commit with an edit there must re-take those hashes and say why (its header says how).
+- **Voice and model:**
+  - the voice, with a warning if it doesn't match their gender, and any clash in a chapter;
+  - their accent;
+  - **what the model is told** besides the words: the exact Gemini 3.8 style, or the Gemini 3.1
+    prompt, for the model picked in the header.
+- **Hear them:** every audition line in full, each with its own **Play**, and where it comes
+  from. **Say it** has them say anything you type (up to 400
+  characters, Cmd/Ctrl+Enter). Everything is cached like any other line, so it costs once.
+- **The decision bar**, always on screen:
+  - **Accept and next** approves the voice (with the note, if any) and moves straight on to the
+    next character still waiting.
+  - **Reject, try another voice** needs a note, as on the cards page, and stays on the character
+    with their new voice.
+  - **Skip** moves on without deciding.
+
+Keys, when you're not typing: **A** accept and next, **J** or **→** skip, **K** or **←** back,
+**P** or **space** play or stop the line, **[** and **]** change lines. **Jump to…** finds anyone by name. **only those still
+waiting** makes Prev and Skip pass over approved characters. **play the first line on arrival**
+plays each character as they open. Each line is rendered once, at a fraction of a cent.
+
+## Every card: `/cast`
+
+Served by the bake-off server, so it uses the same Gemini key (pasted once on any of the pages), the
 same clip cache and the same session spending cap.
 
 - **One card per speaker:** who they are, their chapters, their voice (with Google's word for it
-  and whether it reads as a woman's or a man's), and how many others share it.
+  and whether it reads as a woman's or a man's), how many others share it, and a link to their
+  profile.
 - **Auditions:** **Render** and **Play** each audition line. A speaker with no line in the game
   yet gets a stand-in line, marked as such. Someone who doesn't speak gets none.
 - **Clash warnings:** a red line names anyone who shares this voice in a chapter.
