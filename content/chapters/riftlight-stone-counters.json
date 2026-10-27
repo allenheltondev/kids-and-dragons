@@ -6,7 +6,7 @@
   "title": "The Stone That Moved",
   "biome": "red_sky_foothills",
   "music": "riftlight-paths",
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "stone",
   "plate": {
@@ -14,7 +14,7 @@
     "narration": "In the Red Sky Foothills, a broad stone stands beside a pale hollow in the grass. The stone is still. The hollow is empty. There is plenty here to look at carefully."
   },
   "goal": {
-    "text": "Help the stone keepers after their big stone moves overnight.",
+    "text": "Find what moved and get the neighbors safely past the stone.",
     "steps": [
       {
         "id": "check_hollow",
@@ -35,16 +35,30 @@
   },
   "scenes": {
     "stone": {
+      "art": "scenes/riftlight/stone-counters",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "type": "story",
-      "narration": "Three dragonlings count marks cut into a boundary stone. A pale hollow lies several steps away. \"It stood there yesterday,\" says one keeper. A young manticore introduces himself as Pip Thistledown, a Riftseeker scouting the stones. \"The grass underneath is still flat.\"",
+      "narration": "Three dragonling keepers stare at a stone beside an empty hollow. \"Our counting stone moved overnight,\" says one. \"Now the water cart cannot make its turn. Help us find what moved and get the neighbors safely past it.\" Pip Thistledown, a young manticore Riftseeker, measures the hollow with his tail. A keeper hands him a cord. \"Try something that does not twitch.\"",
       "choices": [
         {
           "id": "look",
-          "label": "Compare the hollow and the stone",
+          "label": "Start with the empty hollow",
           "icon": "hand",
           "goto": "marks"
         }
-      ],
+      ]
+    },
+    "marks": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -55,30 +69,16 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters"
-    },
-    "marks": {
       "type": "story",
-      "narration": "The keeper traces a carved mountain throwing sparks. \"An eruption. These stones were here before our people kept them. Our counts disagree about when it happened.\" Pip measures the hollow. The stone fits it exactly; nobody has found drag marks.",
+      "narration": "The stone carries a carved mountain throwing sparks. \"An eruption,\" says a keeper. \"Our oldest counts disagree about when it happened.\" One stroke is chipped. Nobody fills it in. The empty hollow fits the stone, but there are no drag marks between them. Pip writes that down before his tail can add any.",
       "choices": [
         {
-          "id": "note",
-          "label": "Record the marks without choosing a date",
+          "id": "continue",
+          "label": "Compare the ground and the old drawings",
           "icon": "hand",
           "goto": "lesson"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters"
+      ]
     },
     "lesson": {
       "type": "story",
@@ -119,118 +119,8 @@
       ],
       "art": "scenes/riftlight/stone-counters"
     },
-    "motion": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Beside the stone, a fold in the air narrows. Its edges creep inward while you watch. Seren holds two fingers apart, then brings them together. \"That movement means it is running out of time. We can study it from here. Nobody has to cross.\"",
-      "choices": [
-        {
-          "id": "measure",
-          "label": "Mark its width on Pip's slate",
-          "icon": "hand",
-          "goto": "measure"
-        },
-        {
-          "id": "sound",
-          "label": "Compare its hum with the listening chime",
-          "icon": "hand",
-          "goto": "sound"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters"
-    },
-    "measure": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Pip holds the slate while you mark the gap. Before he finishes the next line, the opening is narrower. The keeper moves the counting circle clear of it. Your marks show which way it is changing.",
-      "choices": [
-        {
-          "id": "finish",
-          "label": "Leave the rift room to shrink",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters"
-    },
-    "sound": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You hold the listening chime near the fold without touching it. The beats crowd together as the opening narrows. Seren copies the rhythm beside Pip's measurements. The keeper moves the counting circle clear.",
-      "choices": [
-        {
-          "id": "finish",
-          "label": "Leave the rift room to shrink",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters"
-    },
-    "rest": {
-      "type": "rest",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The keepers lay a cord around the moved stone. Pip gives them the measurements so tomorrow's count has a starting point. The road to the river crossing called Ashspan Bridge remains open. The shrinking fold is an optional crossing; you can also pause here.",
-      "heal": 0,
-      "choices": [],
-      "outcome": "success",
-      "art": "scenes/riftlight/stone-counters"
-    },
     "footprint": {
-      "type": "choice_point",
-      "narration": "Pip lays his measuring cord beside the empty hollow. The nearest keeper thinks a cart dragged the stone; another says the ground moved with it. Neither wants a guess written into the count. The hollow has a crisp edge on one side and a crumbled edge on the other. Beyond it, grass stands upright between patches that were pressed flat. You have enough daylight to examine the ground before more feet blur it. What should you compare first?",
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -241,190 +131,76 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Follow the ground between hollow and stone",
-          "icon": "hand",
-          "goto": "footprint_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Compare the base with the empty hollow",
-          "icon": "hand",
-          "goto": "footprint_2"
-        }
-      ]
-    },
-    "footprint_1": {
-      "type": "story",
-      "narration": "You walk outside the pressed grass and ask Pip to hold the cord at each end. If a cart crossed here, its wheels should have crossed the standing grass too. You mark where a wheel mark ought to be, rather than drawing one you cannot see.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "footprint_1_check"
-        }
-      ]
-    },
-    "footprint_1_check": {
-      "type": "check",
-      "tags": ["search"],
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Follow the ground between hollow and stone. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "Each keeper remembers the stone from a different place. One saw the forked rock behind it; another saw the ridge over its top. Share the clues to put three landmarks in order from the road. When everyone points together, Pip draws a line through the map. \"That stone is definitely not where we left it.\"",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Put the landmarks in order, starting at the road.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "ridge",
+            "label": "High ridge",
+            "icon": "eye"
+          },
+          {
+            "id": "hollow",
+            "label": "Empty hollow",
+            "icon": "eye"
+          },
+          {
+            "id": "fork",
+            "label": "Forked rock",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "fork",
+          "hollow",
+          "ridge"
+        ],
+        "clues": [
+          "The forked rock is the first landmark beside the road.",
+          "The empty hollow lies between the forked rock and the ridge.",
+          "The ridge is farthest from the road."
+        ]
+      },
       "onSuccess": {
-        "goto": "footprint_1_done",
+        "goto": "grass_test",
+        "narration": "Your matching sight lines fix where the stone stood yesterday.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "measured_the_empty_hollow"
+            "flag": "measured_the_empty_hollow",
+            "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "footprint_1_changed",
+        "goto": "grass_test",
+        "narration": "The keepers each point from their old drawing place. You fix the order together, then mark yesterday's position.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "measured_the_empty_hollow"
-          }
-        ]
-      }
-    },
-    "footprint_1_done": {
-      "type": "story",
-      "narration": "Your comparison holds. The base fits the hollow, and the grass between has no wheel marks. Pip draws both observations, leaving the cause blank. The keeper who suggested a cart crosses out the little wheels on her own sketch.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "witness"
-        }
-      ]
-    },
-    "footprint_1_changed": {
-      "type": "story",
-      "narration": "A boot slips into the crumbled edge before you finish. Pip marks that part as disturbed by your party. The opposite edge still matches the base, and a keeper shows you untouched standing grass beyond your bootprint. You record only the parts you can still check.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "witness"
-        }
-      ]
-    },
-    "footprint_2": {
-      "type": "story",
-      "narration": "You ask the keepers to point out the side of the stone they remember facing the road. Pip stretches the cord around the hollow while you compare corners. A match would tell you where the stone stood, even if it cannot explain how it moved.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "footprint_2_check"
-        }
-      ]
-    },
-    "footprint_2_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Compare the base with the empty hollow. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "onSuccess": {
-        "goto": "footprint_2_done",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "measured_the_empty_hollow"
+            "flag": "measured_the_empty_hollow",
+            "value": true
           }
         ]
       },
-      "onFailure": {
-        "goto": "footprint_2_changed",
+      "onAssisted": {
+        "goto": "grass_test",
+        "narration": "Your matching sight lines fix where the stone stood yesterday.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "measured_the_empty_hollow"
+            "flag": "measured_the_empty_hollow",
+            "value": true
           }
         ]
       }
     },
-    "footprint_2_done": {
-      "type": "story",
-      "narration": "Your comparison holds. The base fits the hollow, and the grass between has no wheel marks. Pip draws both observations, leaving the cause blank. The keeper who suggested a cart crosses out the little wheels on her own sketch.",
+    "grass_test": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -435,19 +211,31 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "witness"
-        }
-      ]
+      "type": "interaction",
+      "narration": "A gust combs the grass between stone and hollow. When it drops, you can see the pressed blades underneath. Call the quiet moment so a friend can trace the undisturbed strip. A dragged stone should have scraped it. There is no scrape. Pip opens his mouth, then writes \"no scrape\" instead of guessing what did it.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap in the gold when the grass lies still.",
+        "actionLabel": "Mark the still grass",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "views",
+        "narration": "The grass between the two places is untouched. Something changed without dragging the stone along that strip."
+      },
+      "onFailure": {
+        "goto": "views",
+        "narration": "The gust hides your first look. A keeper holds a windbreak while you check again. The grass is untouched; there is no dragged track."
+      },
+      "onAssisted": {
+        "goto": "views",
+        "narration": "The grass between the two places is untouched. Something changed without dragging the stone along that strip."
+      }
     },
-    "footprint_2_changed": {
-      "type": "story",
-      "narration": "A boot slips into the crumbled edge before you finish. Pip marks that part as disturbed by your party. The opposite edge still matches the base, and a keeper shows you untouched standing grass beyond your bootprint. You record only the parts you can still check.",
+    "views": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -458,214 +246,148 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "The keepers show two drawings, made from the road and the ridge. Watch the marks from the road view, then copy that view while Pip holds the other sheet beside it. A rock hidden from one place appears from the other. \"Two honest drawings,\" says the keeper. \"One very inconvenient stone.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the road view, then copy its four marks.",
+        "actionLabel": "Copy the marks",
+        "options": [
+          {
+            "id": "ridge",
+            "label": "Ridge",
+            "icon": "eye"
+          },
+          {
+            "id": "fork",
+            "label": "Forked rock",
+            "icon": "eye"
+          },
+          {
+            "id": "stone",
+            "label": "Counting stone",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "fork",
+          "stone",
+          "ridge",
+          "stone"
+        ],
+        "stepMs": 1200
+      },
+      "onSuccess": {
+        "goto": "witness_result",
+        "narration": "You can explain why the drawings differ without erasing either keeper's record."
+      },
+      "onFailure": {
+        "goto": "witness_result",
+        "narration": "One mark lands in the wrong place. You compare it with the keeper's drawing and correct it. Both viewpoints remain in the record."
+      },
+      "onAssisted": {
+        "goto": "witness_result",
+        "narration": "You can explain why the drawings differ without erasing either keeper's record."
+      }
+    },
+    "witness_result": {
+      "art": "scenes/riftlight/stone-counters-routes",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "type": "story",
+      "narration": "Together you mark the old hollow and today's stone. The drawings disagree about the view, not about whose work to trust. The eruption date is still uncertain. Wheels squeak on the road: the water cart has arrived. Its owner studies the new turn, then the jars. \"Please tell me one of those is the thing you can move back.\"",
       "choices": [
         {
-          "id": "continue",
-          "label": "Work with this result",
+          "id": "cart",
+          "label": "Help the water cart",
           "icon": "hand",
-          "goto": "witness"
+          "goto": "cart_plan"
         }
       ]
     },
-    "witness": {
+    "cart_plan": {
+      "art": "scenes/riftlight/stone-counters-routes",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "type": "choice_point",
-      "narration": "A keeper brings two counting slates from a cloth bag. One shows the stone by a forked rock; the other shows it below a low ridge. Both drawings might describe the hollow from different places. The keepers begin arguing over whose count should be erased. Pip holds the cord still and waits for you. Erasing a drawing would settle the argument quickly, but could also remove the clue that explains it. How will you compare their views?",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "narration": "The moved stone blocks the cart's old turn. Keep the jars aboard and build a short ramp around it: you will balance a heavy load, but the cart can use the ramp again. Or leave the cart above the turn and carry the jars along the high path: more passing, less weight near the hollow. The empty cart will still need guiding. Which plan suits your team?",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Ask each keeper to stand where they drew",
+          "id": "ramp",
+          "label": "Build a reusable ramp for the loaded cart",
           "icon": "hand",
-          "goto": "witness_1"
+          "goto": "ramp_setup",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stone_ramp_used",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "stone_jars_carried",
+              "value": false
+            }
+          ]
         },
         {
-          "id": "option_2",
-          "label": "Lay both slates along the same sight line",
+          "id": "carry",
+          "label": "Pass the jars along the high path",
           "icon": "hand",
-          "goto": "witness_2"
-        }
-      ]
-    },
-    "witness_1": {
-      "type": "story",
-      "narration": "You leave both slates intact. Each keeper chooses a place and points toward the hollow. Your party moves between their viewpoints, checking the forked rock against the ridge. Pip draws two small standing marks so another visitor can repeat the comparison.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
+          "goto": "jar_relay",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stone_jars_carried",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "stone_ramp_used",
+              "value": false
+            }
+          ]
         },
         {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
+          "id": "brace",
+          "label": "Have our thornguard brace the ramp",
           "icon": "hand",
-          "goto": "count"
-        }
-      ]
-    },
-    "witness_2": {
-      "type": "story",
-      "narration": "You rest the slates on a flat rock and turn them until their ridge lines agree. The keepers point out which marks were added later. You keep their additions visible instead of rubbing them away. Pip notes that the drawings do not use the same viewpoint.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "count"
-        }
-      ]
-    },
-    "count": {
-      "type": "choice_point",
-      "narration": "The two views can both be true. From the ridge the forked rock hides behind the stone; from the road it stands beside it. The keepers agree to label viewpoints on future drawings. Their eruption counts still disagree. A chipped mark may be one long stroke or two shorter ones, and nobody here saw the eruption itself. One keeper asks you to choose the official count before her neighbors arrive. What can you honestly give her?",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters-evidence",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Record both readings and the chipped mark",
-          "icon": "hand",
-          "goto": "count_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Separate the marks you can count from the uncertain ones",
-          "icon": "hand",
-          "goto": "count_2"
-        }
-      ]
-    },
-    "count_1": {
-      "type": "story",
-      "narration": "You draw the break in the mark large enough to see. Under it you keep both possible counts. The keeper sighs at the untidy page, then admits it will stop the next visitor mistaking a damaged stroke for a certain date.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters-evidence",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "road_load"
-        }
-      ]
-    },
-    "count_2": {
-      "type": "story",
-      "narration": "You count the whole strokes together and circle the damaged section without a number. Pip copies the circle. The keeper can now tell her neighbors exactly which part is agreed, and which part needs another source. Nobody has to pretend the eruption date is settled.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters-evidence",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "road_load"
-        }
-      ]
-    },
-    "road_load": {
-      "type": "choice_point",
-      "narration": "A small handcart waits on the road above the stone. Its dragonling owner has brought water jars for the counting circle, but the familiar turn now points toward the empty hollow. One wheel is resting against a loose pebble. The owner asks for a route wide enough to use again tomorrow, not just a push through today. The keepers have cord and a pair of short boards beside their bag. Which approach will you prepare?",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Build a board ramp around the loose turn",
-          "icon": "hand",
-          "goto": "road_load_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Unload the jars and guide the empty cart first",
-          "icon": "hand",
-          "goto": "road_load_2"
-        },
-        {
-          "id": "assist",
-          "label": "Use brace to steady the cart ramp",
-          "icon": "hand",
-          "goto": "road_load_assisted",
+          "goto": "braced_ramp",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stone_ramp_used",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "stone_jars_carried",
+              "value": false
+            }
+          ],
           "requiresClass": "thornguard"
         }
       ]
     },
-    "road_load_1": {
-      "type": "story",
-      "narration": "You ask the owner to keep the cart still while your party sets the boards on firm ground. Pip checks both wheel tracks with the cord. You will move the jars only after someone has tested the boards without the cart on them.",
+    "ramp_setup": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
@@ -675,52 +397,30 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "road_load_1_check"
-        }
-      ]
-    },
-    "road_load_1_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Build a board ramp around the loose turn. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "The keeper lays two short boards on sound ground around the turn. Hold them while a friend threads cord beneath the ends. Pip checks the wheel tracks. He starts to draw a proud little flag on the ramp. The cart owner clears her throat. He adds the other wheel track first.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the ramp while your friend secures the cord.",
+        "supportLabel": "Hold the boards",
+        "actionLabel": "Tie the ramp"
+      },
       "onSuccess": {
-        "goto": "road_load_1_done"
+        "goto": "cart_balance",
+        "narration": "The ramp stays solid. Now bring the loaded cart across it."
       },
       "onFailure": {
-        "goto": "road_load_1_changed"
+        "goto": "cart_balance",
+        "narration": "The ramp stays solid. Now bring the loaded cart across it."
+      },
+      "onAssisted": {
+        "goto": "cart_balance",
+        "narration": "The ramp stays solid. Now bring the loaded cart across it."
       }
     },
-    "road_load_1_done": {
-      "type": "story",
-      "narration": "The cart rolls through without tipping. You stop it on level ground and help replace the jars. The owner takes a second look at the route, then points out the turn she will use tomorrow. Your work has made a repeatable path.",
+    "braced_ramp": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
@@ -730,24 +430,20 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "story",
+      "narration": "Your thornguard braces the boards against the sound stones. The cord can be secured without everyone holding a board, so your team skips the extra support job. The cart owner pats a jar. \"Your turn to be steady.\"",
       "choices": [
         {
-          "id": "continue",
-          "label": "Work with this result",
+          "id": "cart",
+          "label": "Balance the loaded cart",
           "icon": "hand",
-          "goto": "warning"
+          "goto": "cart_balance"
         }
       ]
     },
-    "road_load_1_changed": {
-      "type": "story",
-      "narration": "One board shifts or a wheel catches before the cart reaches the turn. You stop while everyone is still on firm ground. The owner carries the jars with you along the upper bank instead. Pip marks the blocked turn so tomorrow's delivery will not repeat the attempt. You take the empty cart around by the longer bank route and leave the shifted turn closed.",
+    "cart_balance": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
@@ -757,79 +453,30 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "warning"
-        }
-      ]
-    },
-    "road_load_2": {
-      "type": "story",
-      "narration": "You make a safe place for the jars on the upper bank. The owner hands them down one at a time. With the weight removed, your party can turn the cart through the new route and learn which part needs a warning marker.",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "road_load_2_check"
-        }
-      ]
-    },
-    "road_load_2_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Unload the jars and guide the empty cart first. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "Each side of the cart rises or dips as the jars shift. Level it before moving across your ramp. One lid rattles like a tiny bell. The owner walks beside the wheel while Pip keeps his tail firmly out of the spokes. The water belongs in the jars until it reaches the keepers.",
+      "interaction": {
+        "kind": "balance",
+        "objectLabel": "water cart",
+        "cue": "Raise or lower your side until the loaded cart is level.",
+        "actionLabel": "Bring the cart across"
+      },
       "onSuccess": {
-        "goto": "road_load_2_done"
+        "goto": "water_delivered",
+        "narration": "The loaded cart rolls over the new ramp. The owner can use this turn again tomorrow."
       },
       "onFailure": {
-        "goto": "road_load_2_changed"
+        "goto": "water_delivered",
+        "narration": "The loaded cart rolls over the new ramp. The owner can use this turn again tomorrow."
+      },
+      "onAssisted": {
+        "goto": "water_delivered",
+        "narration": "The loaded cart rolls over the new ramp. The owner can use this turn again tomorrow."
       }
     },
-    "road_load_2_done": {
-      "type": "story",
-      "narration": "The cart rolls through without tipping. You stop it on level ground and help replace the jars. The owner takes a second look at the route, then points out the turn she will use tomorrow. Your work has made a repeatable path.",
+    "jar_relay": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
@@ -839,24 +486,30 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "warning"
-        }
-      ]
+      "type": "interaction",
+      "narration": "Pass the sealed water jars along the high path. Each friend catches before passing on; the owner waits at the counting circle to receive them. One keeper calls the order. Pip volunteers to carry two jars at once, looks at his tail, and decides that one is already a full conversation.",
+      "interaction": {
+        "kind": "relay",
+        "objectLabel": "sealed water jar",
+        "cue": "Catch the water jar, then pass it to the next friend.",
+        "actionLabel": "Pass the jar"
+      },
+      "onSuccess": {
+        "goto": "empty_cart",
+        "narration": "The jars reach the counting circle without using the fragile turn. You still have an empty cart to bring down."
+      },
+      "onFailure": {
+        "goto": "empty_cart",
+        "narration": "The jars reach the counting circle without using the fragile turn. You still have an empty cart to bring down."
+      },
+      "onAssisted": {
+        "goto": "empty_cart",
+        "narration": "The jars reach the counting circle without using the fragile turn. You still have an empty cart to bring down."
+      }
     },
-    "road_load_2_changed": {
-      "type": "story",
-      "narration": "One board shifts or a wheel catches before the cart reaches the turn. You stop while everyone is still on firm ground. The owner carries the jars with you along the upper bank instead. Pip marks the blocked turn so tomorrow's delivery will not repeat the attempt. You take the empty cart around by the longer bank route and leave the shifted turn closed.",
+    "empty_cart": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
@@ -866,24 +519,32 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "warning"
-        }
-      ]
+      "type": "interaction",
+      "narration": "With the jars off, the cart is light enough to turn around the hollow. Guide its front wheel between two sound stones. The owner holds the handles and waits for your call. An empty jar would make an excellent wheel chock, Pip suggests. \"It would make an empty jar in pieces,\" she replies.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap in the gold to guide the wheel through the clear gap.",
+        "actionLabel": "Guide the wheel",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "water_delivered",
+        "narration": "The empty cart reaches the circle. For the next delivery, the jars will need this passing line again."
+      },
+      "onFailure": {
+        "goto": "water_delivered",
+        "narration": "The wheel catches a loose pebble. You stop, move the pebble and guide it through together. The jar-passing route will be needed again."
+      },
+      "onAssisted": {
+        "goto": "water_delivered",
+        "narration": "The empty cart reaches the circle. For the next delivery, the jars will need this passing line again."
+      }
     },
-    "warning": {
-      "type": "choice_point",
-      "narration": "The water reaches the counting circle. The owner offers one of the short boards as a warning sign, but the road has two approaches. From below, travelers see the hollow late. From above, they see the stone and may assume the old turn still works. The keepers can maintain only one large sign until they bring more wood. You have loose stones for a smaller marker as well. Where will the clearest warning go?",
+    "water_delivered": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
@@ -893,36 +554,27 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "story",
+      "narration": "Water reaches the counting circle. The keepers fill their cups before returning to the mystery. Pip drinks, counts the cups, and carefully does not count the party. The owner asks for one more useful thing: a warning that will stop the next traveler trusting the old turn.",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Put the large sign below, where the hollow is hidden",
+          "id": "rest",
+          "label": "Take a drink and plan the warning",
           "icon": "hand",
-          "goto": "warning_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Put the large sign above, where carts need room to turn",
-          "icon": "hand",
-          "goto": "warning_2"
+          "goto": "camp"
         }
       ],
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "brought_water_to_the_circle"
+          "flag": "brought_water_to_the_circle",
+          "value": true
         }
       ]
     },
-    "warning_1": {
-      "type": "story",
-      "narration": "You set the board before the blind rise and arrange loose stones along the upper turn. The owner walks up from below to test whether the board appears early enough. She stops before the hollow without needing anyone to call out.",
+    "camp": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
@@ -932,24 +584,27 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "rest",
+      "heal": 0,
+      "narration": "You rest on a low stone while the owner parks the cart. A keeper shares apple slices. Pip uses one to hold his drawing flat, takes a bite, then wonders where his paperweight went. Two neighbors are due: a walker from below the blind rise, and a cart from the upper road. Both will need the new turn explained.",
       "choices": [
         {
-          "id": "continue",
-          "label": "See what follows",
+          "id": "plan",
+          "label": "Plan the warning together",
           "icon": "hand",
-          "goto": "runoff"
+          "goto": "warning"
+        },
+        {
+          "id": "joke",
+          "label": "Help Pip find a better paperweight",
+          "icon": "hand",
+          "goto": "paperweight"
         }
       ]
     },
-    "warning_2": {
-      "type": "story",
-      "narration": "You leave enough road between the board and the new turn for a cart to stop. Below the rise, the keepers build a small stone arrow pointing onto firm ground. Pip tests both approaches on foot before anybody moves the sign again.",
+    "paperweight": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
@@ -959,48 +614,332 @@
           "name": "Pip Thistledown"
         }
       ],
+      "type": "interaction",
+      "narration": "Pip holds the flapping page with one paw and the remains of his apple with the other. The keepers have seen this before. Each friend can help solve the extremely local problem of keeping a drawing on a rock.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Choose a way to help Pip keep his drawing still.",
+        "actionLabel": "Back to the road problem",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "rock",
+            "label": "Offer a small clean pebble",
+            "icon": "hand",
+            "reaction": "Pip puts the pebble on the corner. \"A paperweight that does not become lunch. Excellent.\""
+          },
+          {
+            "id": "fold",
+            "label": "Fold the empty edge under the slate",
+            "icon": "hand",
+            "reaction": "The page stays flat. Pip gives the folded corner a suspicious look, then nods."
+          },
+          {
+            "id": "hold",
+            "label": "Hold the corner while he finishes",
+            "icon": "hand",
+            "reaction": "Pip finishes the line and thanks you. His tail tries to help. You move it off the ink."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "warning",
+        "narration": "With the drawing safely weighted, you can deal with the actual road."
+      },
+      "onFailure": {
+        "goto": "warning",
+        "narration": "With the drawing safely weighted, you can deal with the actual road."
+      },
+      "onAssisted": {
+        "goto": "warning",
+        "narration": "With the drawing safely weighted, you can deal with the actual road."
+      }
+    },
+    "warning": {
       "art": "scenes/riftlight/stone-counters",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "type": "choice_point",
+      "narration": "There is one large board for a warning and loose stones for a smaller marker. Put the big sign below the blind rise and walkers will stop in time; your team will need to guide the upper cart. Put it above the turn and carts will have room to brake; your team must meet the walker below. Both neighbors are coming. Which approach should the large sign protect?",
       "choices": [
         {
-          "id": "continue",
-          "label": "See what follows",
+          "id": "lower",
+          "label": "Warn the walkers below; we will guide the cart",
+          "icon": "hand",
+          "goto": "lower_sign",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stone_sign_lower",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "upper",
+          "label": "Warn the carts above; we will meet the walker",
+          "icon": "hand",
+          "goto": "upper_sign",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stone_sign_lower",
+              "value": false
+            }
+          ]
+        }
+      ]
+    },
+    "lower_sign": {
+      "art": "scenes/riftlight/stone-counters",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "type": "interaction",
+      "narration": "Carry the large warning down the dry path and pass its cord around the lower posts. From below, the board appears before the hollow. The keeper checks it at a walker's height. Above you, wheels begin to rattle. The smaller marker cannot stop that driver by itself; that is your team's next job.",
+      "interaction": {
+        "kind": "relay",
+        "objectLabel": "warning cord",
+        "cue": "Catch and pass the cord around the lower warning posts.",
+        "actionLabel": "Pass the warning cord"
+      },
+      "onSuccess": {
+        "goto": "upper_cart",
+        "narration": "The walker sees the large warning and waits safely below. Your team heads up to guide the approaching cart."
+      },
+      "onFailure": {
+        "goto": "upper_cart",
+        "narration": "The walker sees the large warning and waits safely below. Your team heads up to guide the approaching cart."
+      },
+      "onAssisted": {
+        "goto": "upper_cart",
+        "narration": "The walker sees the large warning and waits safely below. Your team heads up to guide the approaching cart."
+      }
+    },
+    "upper_sign": {
+      "art": "scenes/riftlight/stone-counters",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "type": "interaction",
+      "narration": "Set the board well before the upper turn, leaving room for a cart to stop. Hold it while a friend ties the second corner. The cart driver spots it and brakes. Below the blind rise, a walking neighbor waves at the little stone arrow. She cannot see the hollow from there; you will need to show her.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the upper sign while your friend ties it.",
+        "supportLabel": "Hold the sign",
+        "actionLabel": "Tie the corner"
+      },
+      "onSuccess": {
+        "goto": "lower_neighbor",
+        "narration": "The cart driver waits above the turn. Your team goes down to meet the walker."
+      },
+      "onFailure": {
+        "goto": "lower_neighbor",
+        "narration": "The cart driver waits above the turn. Your team goes down to meet the walker."
+      },
+      "onAssisted": {
+        "goto": "lower_neighbor",
+        "narration": "The cart driver waits above the turn. Your team goes down to meet the walker."
+      }
+    },
+    "upper_cart": {
+      "art": "scenes/riftlight/stone-counters",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "type": "interaction",
+      "narration": "Your big sign is protecting the walker below. Here, the cart driver needs your signal to take the new turn. Wait until the front wheel reaches the keeper's white marker, then call it. Pip holds his tail out as an arrow. It points three different ways. You use your hand instead.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Tap in the gold when the wheel reaches the turning marker.",
+        "actionLabel": "Signal the turn",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "neighbor_result",
+        "narration": "The driver follows your turn and stops at the circle. The unguarded approach needed your help, just as you planned."
+      },
+      "onFailure": {
+        "goto": "neighbor_result",
+        "narration": "You call early. The driver stops while the keeper resets the marker, then follows your clearer signal. Your team has shown where an extra upper warning is needed."
+      },
+      "onAssisted": {
+        "goto": "neighbor_result",
+        "narration": "The driver follows your turn and stops at the circle. The unguarded approach needed your help, just as you planned."
+      }
+    },
+    "lower_neighbor": {
+      "art": "scenes/riftlight/stone-counters",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "type": "interaction",
+      "narration": "The cart is safely stopped by your upper sign. Walk the neighbor past the blind rise using the route you actually checked: wait by the forked rock, go around the high side of the hollow, then join the counting circle. Share your landmarks so she can follow without guessing what is behind the rise.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Give the walker the route from below.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "circle",
+            "label": "Counting circle",
+            "icon": "eye"
+          },
+          {
+            "id": "hollow",
+            "label": "High side of the hollow",
+            "icon": "eye"
+          },
+          {
+            "id": "fork",
+            "label": "Wait at the forked rock",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "fork",
+          "hollow",
+          "circle"
+        ],
+        "clues": [
+          "The forked rock is the waiting place before the blind rise.",
+          "Go around the hollow after waiting, before joining the keepers.",
+          "Finish at the counting circle."
+        ]
+      },
+      "onSuccess": {
+        "goto": "neighbor_result",
+        "narration": "The neighbor reaches the circle and can repeat the new route. The small lower marker needed your help, as you planned."
+      },
+      "onFailure": {
+        "goto": "neighbor_result",
+        "narration": "The neighbor points out a confusing instruction. You walk the checked route with her and correct it. The smaller lower marker still needs an extra warning."
+      },
+      "onAssisted": {
+        "goto": "neighbor_result",
+        "narration": "The neighbor reaches the circle and can repeat the new route. The small lower marker needed your help, as you planned."
+      }
+    },
+    "neighbor_result": {
+      "art": "scenes/riftlight/stone-counters",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "type": "story",
+      "narration": "Both neighbors are at the counting circle. Your one large sign helped one approach; your team helped the other. The owner marks where another board is needed tomorrow. Pip asks the neighbors to explain the turn back to him. They can. Then a thin trickle begins running down the ridge toward the empty hollow.",
+      "choices": [
+        {
+          "id": "water",
+          "label": "See where the new water is going",
           "icon": "hand",
           "goto": "runoff"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "walked_the_neighbor_through",
+          "value": true
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "flag": "stone_sign_lower"
+          },
+          "text": "The lower approach has the big warning. The upper approach still needs a larger sign for carts arriving without your team."
+        },
+        {
+          "when": {
+            "notFlag": "stone_sign_lower"
+          },
+          "text": "The upper approach has the big warning. Walkers below the blind rise will still need a larger sign of their own."
         }
       ]
     },
     "runoff": {
+      "art": "scenes/riftlight/stone-counters",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "type": "choice_point",
-      "narration": "A trickle from the ridge begins filling the low side of the hollow. A keeper worries that muddy water will erase the crisp edge before tomorrow's count. Another worries that diverting it will wash over the new cart route. They show you a shallow natural groove beside the road and an unused patch of gravel below the ridge. Neither route runs toward a home or burrow. You can protect the evidence without sending the problem onto a neighbor. Which outlet will you test?",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "narration": "The trickle will wash away the sharp edge that helped you measure the hollow. You can aim a small drain into the empty gravel and try to preserve that edge. Or spread loose gravel across the wet patch: a steadier road surface, but the fine footprint will be covered and your drawing must rely on the landmarks you already checked. Which work should last after you leave?",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Guide a little water into the natural groove",
+          "id": "drain",
+          "label": "Protect the footprint with a small drain",
           "icon": "hand",
-          "goto": "runoff_1"
+          "goto": "drain"
         },
         {
-          "id": "option_2",
-          "label": "Spread the trickle across the empty gravel",
+          "id": "gravel",
+          "label": "Strengthen the wet road; preserve a simpler drawing",
           "icon": "hand",
-          "goto": "runoff_2"
+          "goto": "gravel",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "stone_hollow_clear",
+              "value": false
+            }
+          ]
         }
       ]
     },
-    "runoff_1": {
-      "type": "story",
-      "narration": "You open only a finger-wide gap in the loose soil. Pip watches the cart route while you watch the groove. You agree to close the gap at once if the trickle crosses the wheel tracks. The keepers keep the rest of the hollow untouched.",
+    "drain": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -1011,43 +950,52 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "runoff_1_check"
-        }
-      ]
-    },
-    "runoff_1_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Guide a little water into the natural groove. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "From the dry side, use a narrow board to guide the trickle into the empty gravel. Aim past the hollow's sharp edge. Pip follows the water with his pencil, then remembers pencils are not boats. He catches it just before a tiny voyage begins.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap in the gold to guide the trickle past the hollow.",
+        "actionLabel": "Set the small drain",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
       "onSuccess": {
-        "goto": "runoff_1_done"
+        "goto": "evidence_decision",
+        "narration": "The fine edge stays visible. Your page can include its exact outline.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "stone_hollow_clear",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "runoff_1_changed"
+        "goto": "evidence_decision",
+        "narration": "The first trickle washes a corner before you settle the drain. The road stays clear, but your page must leave that fine edge uncertain.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "stone_hollow_clear",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "evidence_decision",
+        "narration": "The fine edge stays visible. Your page can include its exact outline.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "stone_hollow_clear",
+            "value": true
+          }
+        ]
       }
     },
-    "runoff_1_done": {
-      "type": "story",
-      "narration": "The small test sends the trickle onto unused ground. You stop widening the outlet as soon as the hollow is clear. Pip draws the outlet beside the warning marks, and the keepers agree who will check it after the next rain.",
+    "gravel": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -1058,89 +1006,29 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "visit"
-        }
-      ]
-    },
-    "runoff_1_changed": {
-      "type": "story",
-      "narration": "The test carries a ribbon of muddy water toward the route. You close it before it reaches the wheel tracks. The keepers cover the fragile edge with one board instead. The hollow stays partly wet, and tomorrow's drawing will say which section was covered.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "visit"
-        }
-      ]
-    },
-    "runoff_2": {
-      "type": "story",
-      "narration": "You lay a loose fan of small stones above the gravel patch. The water will have room to spread rather than cut a fresh channel. Pip stands where he can see the hollow and the road, ready to call if either begins washing out.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "runoff_2_check"
-        }
-      ]
-    },
-    "runoff_2_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Spread the trickle across the empty gravel. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "Level the shallow gravel tray before spreading its load over the wet patch. The owner tests the new road surface from the dry side. It holds. The fragile outline is now underneath it. \"Better wheels,\" says the keeper. \"A simpler drawing. We chose both parts of that.\"",
+      "interaction": {
+        "kind": "balance",
+        "objectLabel": "gravel tray",
+        "cue": "Level the gravel tray before spreading the load.",
+        "actionLabel": "Spread the gravel"
+      },
       "onSuccess": {
-        "goto": "runoff_2_done"
+        "goto": "evidence_decision",
+        "narration": "The road surface is steadier. Your record will use the checked landmarks rather than an uncovered fine edge."
       },
       "onFailure": {
-        "goto": "runoff_2_changed"
+        "goto": "evidence_decision",
+        "narration": "The road surface is steadier. Your record will use the checked landmarks rather than an uncovered fine edge."
+      },
+      "onAssisted": {
+        "goto": "evidence_decision",
+        "narration": "The road surface is steadier. Your record will use the checked landmarks rather than an uncovered fine edge."
       }
     },
-    "runoff_2_done": {
-      "type": "story",
-      "narration": "The small test sends the trickle onto unused ground. You stop widening the outlet as soon as the hollow is clear. Pip draws the outlet beside the warning marks, and the keepers agree who will check it after the next rain.",
+    "evidence_decision": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -1151,132 +1039,28 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "visit"
-        }
-      ]
-    },
-    "runoff_2_changed": {
-      "type": "story",
-      "narration": "The test carries a ribbon of muddy water toward the route. You close it before it reaches the wheel tracks. The keepers cover the fragile edge with one board instead. The hollow stays partly wet, and tomorrow's drawing will say which section was covered.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "visit"
-        }
-      ]
-    },
-    "visit": {
       "type": "choice_point",
-      "narration": "Two more dragonling neighbors arrive and stop at your warning. One wants to move the boundary stone back immediately. The other wants to leave it untouched until someone understands the change. The keepers will not hand that decision to visitors, but they do ask you to explain what you found without starting another argument. Pip offers the cord or the slates. Which demonstration would let the neighbors check your work for themselves?",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Dragonling neighbors",
-          "count": 2
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "narration": "You have the old drawings, today's measurements and whatever the water left visible. Make the traveling page match that evidence. The stone fits its old hollow. The grass has no dragged track. None of this supplies a date for the eruption. Pip leaves the uncertain stroke dotted and offers you the pencil.",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Use the cord to show the matching hollow",
+          "id": "exact",
+          "label": "Copy the sharp edge we preserved",
           "icon": "hand",
-          "goto": "visit_1"
+          "goto": "exact_copy",
+          "when": {
+            "flag": "stone_hollow_clear"
+          }
         },
         {
-          "id": "option_2",
-          "label": "Let the neighbors repeat the two viewpoints",
+          "id": "landmarks",
+          "label": "Build a careful landmark sketch",
           "icon": "hand",
-          "goto": "visit_2"
+          "goto": "landmark_copy"
         }
       ]
     },
-    "visit_1": {
-      "type": "story",
-      "narration": "You invite a neighbor to hold each end while Pip shows the matching corners. You point to the standing grass without telling anyone what moved the stone. The neighbors can disagree about what to do next while agreeing that the empty place fits.",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Dragonling neighbors",
-          "count": 2
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
+    "exact_copy": {
       "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "supply"
-        }
-      ]
-    },
-    "visit_2": {
-      "type": "story",
-      "narration": "You give each neighbor a slate and stand back. They find the ridge and road marks Pip drew, then compare the forked rock from both. When they exchange places, both drawings still work. The argument shifts from whose picture is wrong to what should happen tomorrow.",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Dragonling neighbors",
-          "count": 2
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "supply"
-        }
-      ]
-    },
-    "supply": {
-      "type": "choice_point",
-      "narration": "A gust lifts the corner of Pip's loose drawing. He catches it against the stone, but his little slate slides down a shallow gravel slope. It stops against a root above the runoff. Nobody is hanging over a drop. Pip asks you to retrieve it without trampling the untouched grass or sending gravel into the outlet. The owner still has the measuring cord, and the keepers know a longer route along the ridge. What will you try?",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -1287,72 +1071,52 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Lower the cord around the slate from firm ground",
-          "icon": "hand",
-          "goto": "supply_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Take the longer ridge route and approach from below",
-          "icon": "hand",
-          "goto": "supply_2"
-        }
-      ]
-    },
-    "supply_1": {
-      "type": "story",
-      "narration": "You make a wide loop and ask a friend to keep the free end steady. Pip points out the part of the slope that must stay untouched. Your first pull will be a small test, so a snag cannot send the slate tumbling.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "supply_1_check"
-        }
-      ]
-    },
-    "supply_1_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Lower the cord around the slate from firm ground. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "Copy the visible outline before packing the cord. Watch the keeper's marks, then place the same marks on the drawing. The chipped corner stays dotted even on a precise page. The keeper checks that you copied her uncertainty too. Pip asks whether a very small question mark needs a very small hat.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the outline marks, then copy them.",
+        "actionLabel": "Copy the marks",
+        "options": [
+          {
+            "id": "dot",
+            "label": "Dotted corner",
+            "icon": "eye"
+          },
+          {
+            "id": "curve",
+            "label": "Curved edge",
+            "icon": "eye"
+          },
+          {
+            "id": "line",
+            "label": "Straight edge",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "line",
+          "curve",
+          "dot",
+          "curve"
+        ],
+        "stepMs": 1200
+      },
       "onSuccess": {
-        "goto": "supply_1_done"
+        "goto": "motion",
+        "narration": "The exact visible outline and its uncertain corner travel together."
       },
       "onFailure": {
-        "goto": "supply_1_changed"
+        "goto": "motion",
+        "narration": "You compare the copy against the still-visible edge and correct the mismatched mark. The uncertain corner remains dotted."
+      },
+      "onAssisted": {
+        "goto": "motion",
+        "narration": "The exact visible outline and its uncertain corner travel together."
       }
     },
-    "supply_1_done": {
-      "type": "story",
-      "narration": "The slate comes back with its drawing readable. Pip wipes the edge on his cloak and makes a copy before putting it away. The keepers laugh when he ties the empty corner of the cloth bag too, just in case.",
+    "landmark_copy": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -1363,90 +1127,55 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "agreement"
-        }
-      ]
-    },
-    "supply_1_changed": {
-      "type": "story",
-      "narration": "A little gravel slides before you can lift the slate. You stop and let it settle. A keeper uses the board to block the runoff while Pip comes around by the ridge. The slate comes back muddy at one corner; you redraw that part from the cord measurements together.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "agreement"
-        }
-      ]
-    },
-    "supply_2": {
-      "type": "story",
-      "narration": "You leave one friend beside Pip to point out the slate. The rest of the party follows the keeper's firm footholds around the slope. From below you can lift the slate rather than drag it through the grass and runoff.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "supply_2_check"
-        }
-      ]
-    },
-    "supply_2_check": {
-      "type": "check",
-      "tags": ["climb"],
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Take the longer ridge route and approach from below. Choose who leads; everyone can help.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "Build a record from things the group already checked: the forked rock, the old hollow, then today's stone. The washed or covered fine edge stays blank. Each friend supplies a landmark. The keeper writes \"from the road\" above the drawing so another viewpoint cannot turn into another argument.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Build the road-view record from the near landmark to today's stone.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "stone",
+            "label": "Today's counting stone",
+            "icon": "eye"
+          },
+          {
+            "id": "fork",
+            "label": "Forked rock",
+            "icon": "eye"
+          },
+          {
+            "id": "hollow",
+            "label": "Old hollow",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "fork",
+          "hollow",
+          "stone"
+        ],
+        "clues": [
+          "Start with the forked rock beside the road.",
+          "The old hollow comes between the forked rock and today's stone.",
+          "Today's stone is the final point in this drawing."
+        ]
+      },
       "onSuccess": {
-        "goto": "supply_2_done"
+        "goto": "motion",
+        "narration": "Your landmark drawing is useful without restoring a fine edge you no longer have."
       },
       "onFailure": {
-        "goto": "supply_2_changed"
+        "goto": "motion",
+        "narration": "The keepers point from the road one landmark at a time. You fix the order and keep the missing fine edge blank."
+      },
+      "onAssisted": {
+        "goto": "motion",
+        "narration": "Your landmark drawing is useful without restoring a fine edge you no longer have."
       }
     },
-    "supply_2_done": {
-      "type": "story",
-      "narration": "The slate comes back with its drawing readable. Pip wipes the edge on his cloak and makes a copy before putting it away. The keepers laugh when he ties the empty corner of the cloth bag too, just in case.",
+    "motion": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -1457,801 +1186,135 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "agreement"
-        }
-      ]
-    },
-    "supply_2_changed": {
-      "type": "story",
-      "narration": "A little gravel slides before you can lift the slate. You stop and let it settle. A keeper uses the board to block the runoff while Pip comes around by the ridge. The slate comes back muddy at one corner; you redraw that part from the cord measurements together.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "agreement"
-        }
-      ]
-    },
-    "agreement": {
       "type": "choice_point",
-      "narration": "The keepers have enough observations to plan another count. They need someone to watch the road and someone to compare the hollow after rain, but each task takes time away from counting the old marks. The cart owner offers one morning, not every morning. Pip cannot promise the Riftseekers will stay. You can help them divide the work without making promises for absent people. Which plan will you suggest for the first day?",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "narration": "Beside the stone, a fold in the air is narrowing. Seren holds two fingers apart, then brings them closer. \"We should show late travelers what that means.\" You can copy its changing width, or a starweaver can use a skill called Attune to compare its hum. Nobody needs to cross it to learn that its remaining time is shrinking.",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Pair a route watcher with a stone counter",
+          "id": "measure",
+          "label": "Remember how its width changes",
           "icon": "hand",
-          "goto": "agreement_1"
+          "goto": "motion_memory"
         },
         {
-          "id": "option_2",
-          "label": "Make the morning delivery the shared check",
+          "id": "attune",
+          "label": "Have our starweaver compare its changing hum",
           "icon": "hand",
-          "goto": "agreement_2"
-        }
-      ]
-    },
-    "agreement_1": {
-      "type": "story",
-      "narration": "You suggest one keeper takes the first road watch while another checks the hollow. They exchange jobs at the next count, so both learn the work. The cart owner chooses the morning delivery as the moment to test the warning signs again.",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "motion_test"
-        }
-      ]
-    },
-    "agreement_2": {
-      "type": "story",
-      "narration": "You suggest the cart owner calls the keepers before turning off the road. They compare the route, hollow and signs together once, then return to counting. If the road changes before that visit, the signs tell travelers to wait on firm ground.",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "motion_test"
-        }
-      ]
-    },
-    "motion_test": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Beside the stone, a narrow fold bends the air. Seren asks you to compare your road work with the narrowing fold. The road can be marked and repaired. The fold follows a limit you did not choose. Its edges creep closer while everyone stands outside it. She puts two pebbles far apart on a board and asks how the keepers should warn someone arriving late. Pip will record your demonstration. You can teach the motion without making anyone cross or naming what lies beyond. How will you show it?",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Move the pebbles inward to copy the edges",
-          "icon": "hand",
-          "goto": "motion_test_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Compare the fold against one fixed cord loop",
-          "icon": "hand",
-          "goto": "motion_test_2"
-        },
-        {
-          "id": "assist",
-          "label": "Use attune to compare the narrowing hum",
-          "icon": "hand",
-          "goto": "motion_test_assisted",
+          "goto": "motion_attuned",
           "requiresClass": "starweaver"
         }
       ]
     },
-    "motion_test_1": {
-      "type": "story",
+    "motion_memory": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
         }
       ],
-      "rift": "steady",
-      "narration": "You ask one keeper to watch the real fold and another to copy its width on the board. The gap between the pebbles becomes smaller after each look. Pip writes the order of observations, rather than inventing a countdown that nobody measured.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "motion_test_1_check"
-        }
-      ]
-    },
-    "motion_test_1_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Move the pebbles inward to copy the edges. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "Pip marks the fold's width each time Seren taps the slate. For two taps it stays wide; then it narrows, then narrows again. Watch and copy that pattern. A keeper lays a little cord circle beside the marks. \"This is the waiting place. It is not an invitation to jump.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the width marks, then copy the change.",
+        "actionLabel": "Copy the marks",
+        "options": [
+          {
+            "id": "narrow",
+            "label": "Narrow",
+            "icon": "eye"
+          },
+          {
+            "id": "wide",
+            "label": "Wide",
+            "icon": "eye"
+          },
+          {
+            "id": "middle",
+            "label": "Middle",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "wide",
+          "wide",
+          "middle",
+          "narrow"
+        ],
+        "stepMs": 1200
+      },
       "onSuccess": {
-        "goto": "motion_test_1_done"
+        "goto": "stone_priority",
+        "narration": "Your marks show time running out, not where the opening goes."
       },
       "onFailure": {
-        "goto": "motion_test_1_changed"
+        "goto": "stone_priority",
+        "narration": "Seren repeats the observations slowly and you correct the marks. The opening is shrinking; the destination remains unknown."
+      },
+      "onAssisted": {
+        "goto": "stone_priority",
+        "narration": "Your marks show time running out, not where the opening goes."
       }
     },
-    "motion_test_1_done": {
-      "type": "story",
+    "motion_attuned": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
         }
       ],
-      "rift": "steady",
-      "narration": "The keepers repeat your demonstration in their own words. A late neighbor stops outside the cord and asks about the road instead. Seren nods. Your warning has offered a safe choice without pretending to control the opening.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "departure_plan"
-        }
-      ]
-    },
-    "motion_test_1_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Your first demonstration sounds like a promise that there is time to spare. Seren asks you to remove that promise. You try again with the visible narrowing only. The keeper repeats it back and chooses the road. Pip records the corrected explanation, including the uncertainty.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "departure_plan"
-        }
-      ]
-    },
-    "motion_test_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You hold the loop steady while Seren points to where the fold's edges used to be. Each new look leaves more empty space inside the loop. Pip notes that the warning is the change itself; the keepers cannot promise how long a visitor has.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "motion_test_2_check"
-        }
-      ]
-    },
-    "motion_test_2_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Compare the fold against one fixed cord loop. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "Your starweaver answers the fold's hum with Attune while the party watches its edges. The steady answering note gives you a wider target for matching the next pulse. A friend can make the call. The sound helps with timing; it does not change the opening's rules.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Use the answering note to match the pulse in the wider gold band.",
+        "actionLabel": "Match the narrowing pulse",
+        "target": 0.5,
+        "width": 0.6,
+        "periodMs": 5000
+      },
       "onSuccess": {
-        "goto": "motion_test_2_done"
+        "goto": "stone_priority",
+        "narration": "The answered pulse and the visible narrowing agree. The opening is running out of time."
       },
       "onFailure": {
-        "goto": "motion_test_2_changed"
-      }
-    },
-    "motion_test_2_done": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The keepers repeat your demonstration in their own words. A late neighbor stops outside the cord and asks about the road instead. Seren nods. Your warning has offered a safe choice without pretending to control the opening.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "departure_plan"
-        }
-      ]
-    },
-    "motion_test_2_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Your first demonstration sounds like a promise that there is time to spare. Seren asks you to remove that promise. You try again with the visible narrowing only. The keeper repeats it back and chooses the road. Pip records the corrected explanation, including the uncertainty.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "departure_plan"
-        }
-      ]
-    },
-    "departure_plan": {
-      "type": "choice_point",
-      "narration": "The neighboring stone keepers ask what visitors should carry away from this place. One worries that the moved boundary will become a tale about careless dragonlings. Another worries that uncertainty will stop anyone using the road. Pip offers space on his final page for one short message beside the drawings. You can be clear about the changed route without naming a culprit or claiming the old eruption count is solved. What should a traveler hear first?",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Lead with the safe route and where to stop",
-          "icon": "hand",
-          "goto": "departure_plan_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Lead with what changed and what is still uncertain",
-          "icon": "hand",
-          "goto": "departure_plan_2"
-        }
-      ]
-    },
-    "departure_plan_1": {
-      "type": "story",
-      "narration": "You dictate the new turn, the warning board and the firm waiting place. Below it, Pip records that the stone moved and the reason remains unknown. The keepers can now show a traveler what to do before starting a longer discussion about the carvings.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "handover"
-        }
-      ]
-    },
-    "departure_plan_2": {
-      "type": "story",
-      "narration": "You dictate the matching hollow, missing drag marks and disputed stroke. Beside those observations, Pip draws the safe road. The keepers agree to show the whole page rather than turn the uncertainty into a warning against every unfamiliar traveler.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "handover"
-        }
-      ]
-    },
-    "handover": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Neighbor"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Before you leave, the keepers ask you to walk through the plan once without help. The cart waits above the turn, the fragile edge of the hollow is marked, and Pip has copies of the drawings. A neighbor plays a traveler who has never visited before. She deliberately approaches from the harder direction and asks what to do next. You can discover a weak instruction now while everyone is here to fix it. Which part will you test with her?",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Guide the pretend traveler from the hidden approach",
-          "icon": "hand",
-          "goto": "handover_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Ask the pretend traveler to guide the empty cart",
-          "icon": "hand",
-          "goto": "handover_2"
-        }
-      ]
-    },
-    "handover_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Neighbor"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You stay beside the neighbor and let her find the warning herself before explaining it. When she hesitates, you ask which mark she missed. Pip adjusts the arrow on the slate to match what she actually saw. The keepers keep the old version to explain the correction.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "handover_1_check"
-        }
-      ]
-    },
-    "handover_1_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Neighbor"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Guide the pretend traveler from the hidden approach. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/stone-counters",
-      "onSuccess": {
-        "goto": "handover_1_done",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "walked_the_neighbor_through"
-          }
-        ]
+        "goto": "stone_priority",
+        "narration": "You miss one pulse. Seren helps you compare the next with its edges. It is still narrowing; the answer does not change its rules."
       },
-      "onFailure": {
-        "goto": "handover_1_changed",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "walked_the_neighbor_through"
-          }
-        ]
+      "onAssisted": {
+        "goto": "stone_priority",
+        "narration": "The answered pulse and the visible narrowing agree. The opening is running out of time."
       }
-    },
-    "handover_1_done": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Neighbor"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The neighbor reaches the waiting place and explains both choices: use the marked road, or examine the shrinking fold without expecting its rules to bend. The keepers take charge of the cord and signs. Your party can leave without leaving the work unfinished.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "stone_priority"
-        }
-      ]
-    },
-    "handover_1_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Neighbor"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The neighbor follows one mark too far before asking for help. You stop the rehearsal, move that marker into view and walk it again together. The second attempt reaches the waiting place. The keepers thank you for testing an instruction instead of defending it.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "stone_priority"
-        }
-      ]
-    },
-    "handover_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Neighbor"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You let the neighbor choose where to stop the empty cart. The owner shows where a loaded wheel needs more space, and your party shifts the small marker back. The road remains usable, and the keepers now know the instruction that needed changing.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "handover_2_check"
-        }
-      ]
-    },
-    "handover_2_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Neighbor"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Ask the pretend traveler to guide the empty cart. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/stone-counters",
-      "onSuccess": {
-        "goto": "handover_2_done",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "walked_the_neighbor_through"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "handover_2_changed",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "walked_the_neighbor_through"
-          }
-        ]
-      }
-    },
-    "handover_2_done": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Neighbor"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The neighbor reaches the waiting place and explains both choices: use the marked road, or examine the shrinking fold without expecting its rules to bend. The keepers take charge of the cord and signs. Your party can leave without leaving the work unfinished.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "stone_priority"
-        }
-      ]
-    },
-    "handover_2_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Neighbor"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The neighbor follows one mark too far before asking for help. You stop the rehearsal, move that marker into view and walk it again together. The second attempt reaches the waiting place. The keepers thank you for testing an instruction instead of defending it.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "stone_priority"
-        }
-      ]
     },
     "stone_priority": {
+      "art": "scenes/riftlight/stone-counters",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
       "type": "choice_point",
-      "narration": "Pip has room for one large drawing on the page he will show the next Riftseekers he meets. The keepers keep both full records here, so neither piece of work will be lost. A large road drawing could help travelers reach the counting circle safely. A large carving drawing could help someone compare a second old stone. You are choosing which question to carry forward first, not which facts to erase. What should lead the traveling page?",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "narration": "Pip can give one drawing the largest space on his traveling page. A road plan will be useful at the next changed crossing; an old-mark drawing preserves the uncertain count for comparison with another stone. The keepers retain both full records here. Choose which work your party will finish and carry forward first.",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Lead with the repaired route and warning plan",
+          "id": "route",
+          "label": "Finish the traveling road plan",
           "icon": "hand",
-          "goto": "stone_priority_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Lead with the old marks and unresolved count",
-          "icon": "hand",
-          "goto": "stone_priority_2"
-        }
-      ]
-    },
-    "stone_priority_1": {
-      "type": "story",
-      "narration": "You give the safe turn the largest space and put the uncertain carving beside it. Pip says he will ask travelers to check the route before comparing distant stones. The keepers keep the full carving page here, ready for someone who comes to study it.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "motion",
+          "goto": "route_copy",
           "effects": [
             {
               "type": "setFlag",
@@ -2259,29 +1322,12 @@
               "value": true
             }
           ]
-        }
-      ]
-    },
-    "stone_priority_2": {
-      "type": "story",
-      "narration": "You give the damaged stroke and both viewpoints the largest space. Pip says he will look for another record before choosing a count. The safe turn remains plainly marked at the bottom, and the keepers keep the full route plan beside their water jars.",
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
         },
         {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
+          "id": "carving",
+          "label": "Finish the old-mark comparison page",
           "icon": "hand",
-          "goto": "motion",
+          "goto": "carving_copy",
           "effects": [
             {
               "type": "setFlag",
@@ -2292,14 +1338,9 @@
         }
       ]
     },
-    "road_load_assisted": {
-      "type": "story",
-      "narration": "A thornguard steadies the ramp with brace while the party checks the wheel tracks and keeps the jars on firm ground. The strongest helper can lead the careful push; nobody needs to pretend they supplied another hero's ability.",
+    "route_copy": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
@@ -2309,100 +1350,138 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work together using that help",
-          "icon": "hand",
-          "goto": "road_load_assisted_check"
-        }
-      ]
-    },
-    "road_load_assisted_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Use brace to steady the cart ramp. The qualified hero assists; choose who leads the team check.",
-      "cast": [
-        {
-          "figure": "cast/adult_dragonling",
-          "name": "Cart owner"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "Pass the route drawing around the group before handing it to Pip. Each friend points out one landmark or warning before passing it on. The owner keeps the local copy for tomorrow's delivery. Pip puts the traveling page on top of his notebook. This one will be ready to use when the next road disagrees with the map.",
+      "interaction": {
+        "kind": "relay",
+        "objectLabel": "traveling road drawing",
+        "cue": "Catch the drawing, check its route, and pass it on.",
+        "actionLabel": "Pass the checked drawing"
+      },
       "onSuccess": {
-        "goto": "road_load_1_done"
+        "goto": "rest",
+        "narration": "The traveling road plan is ready. Pip can offer it as a starting point at another changed crossing."
       },
       "onFailure": {
-        "goto": "road_load_1_changed"
+        "goto": "rest",
+        "narration": "The traveling road plan is ready. Pip can offer it as a starting point at another changed crossing."
+      },
+      "onAssisted": {
+        "goto": "rest",
+        "narration": "The traveling road plan is ready. Pip can offer it as a starting point at another changed crossing."
       }
     },
-    "motion_test_assisted": {
-      "type": "story",
+    "carving_copy": {
+      "art": "scenes/riftlight/stone-counters",
       "cast": [
         {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
         },
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
         }
       ],
-      "rift": "steady",
-      "narration": "A starweaver answers the hum using the attune lesson. The rest of the party watches the physical narrowing. You compare sound and motion without changing the fold's rules or announcing anyone's private reading. Another hero can help explain the warning to the keepers.",
-      "art": "scenes/riftlight/stone-counters",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work together using that help",
-          "icon": "hand",
-          "goto": "motion_test_assisted_check"
-        }
-      ]
-    },
-    "motion_test_assisted_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Use attune to compare the narrowing hum. The qualified hero assists; choose who leads the team check.",
-      "art": "scenes/riftlight/stone-counters",
+      "type": "interaction",
+      "narration": "Watch the keeper copy the old marks: long stroke, short stroke, uncertain chip, short stroke. Copy the pattern without turning the chip into a made-up number. The eruption still has no agreed date. Pip puts a large dotted box beside the page. \"For the bit we do not know. It may need a bigger notebook.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Copy the marks, keeping the chip uncertain.",
+        "actionLabel": "Copy the marks",
+        "options": [
+          {
+            "id": "chip",
+            "label": "Uncertain chip",
+            "icon": "eye"
+          },
+          {
+            "id": "short",
+            "label": "Short stroke",
+            "icon": "eye"
+          },
+          {
+            "id": "long",
+            "label": "Long stroke",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "long",
+          "short",
+          "chip",
+          "short"
+        ],
+        "stepMs": 1200
+      },
       "onSuccess": {
-        "goto": "motion_test_1_done"
+        "goto": "rest",
+        "narration": "The traveling page preserves the old marks and their uncertainty. The road plan stays with the local keepers."
       },
       "onFailure": {
-        "goto": "motion_test_1_changed"
+        "goto": "rest",
+        "narration": "You compare the page with the original and correct it. The chipped mark stays uncertain, and the road plan stays with the local keepers."
+      },
+      "onAssisted": {
+        "goto": "rest",
+        "narration": "The traveling page preserves the old marks and their uncertainty. The road plan stays with the local keepers."
       }
+    },
+    "rest": {
+      "art": "scenes/riftlight/stone-counters",
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "type": "rest",
+      "heal": 0,
+      "narration": "The water jars stand beside full cups. The old hollow and today's stone are recorded, with no invented eruption date. Both neighbors can explain the new turn. Pip packs the traveling page and thanks your team. The road to Ashspan Bridge is open. The narrowing fold is another possible way onward; if you take the road instead, its remaining chance will pass.",
+      "choices": [],
+      "outcome": "success",
+      "variants": [
+        {
+          "when": {
+            "flag": "stone_sign_lower"
+          },
+          "text": "Your large sign warns walkers below the rise. The keepers will add a larger upper sign for the next carts."
+        },
+        {
+          "when": {
+            "notFlag": "stone_sign_lower"
+          },
+          "text": "Your large sign stops carts above the turn. The keepers will add a larger lower warning for walkers."
+        },
+        {
+          "when": {
+            "flag": "stone_ramp_used"
+          },
+          "text": "The reusable ramp remains for tomorrow's water delivery."
+        },
+        {
+          "when": {
+            "flag": "stone_jars_carried"
+          },
+          "text": "Tomorrow's jars will need the high-path passing line again; the cart route has not become a loaded ramp."
+        },
+        {
+          "when": {
+            "flag": "stone_hollow_clear"
+          },
+          "text": "The original fine edge remains available for another measurement."
+        },
+        {
+          "when": {
+            "notFlag": "stone_hollow_clear"
+          },
+          "text": "The fine edge is no longer clear. The checked landmarks remain on the page; the missing detail stays missing."
+        }
+      ]
     }
   },
   "voiceGuide": {
@@ -2418,5 +1497,122 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "interactions": {
+      "ramp_setup": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "cart_balance": {
+        "props": [
+          "relay-oil-jar",
+          "relay-plank"
+        ]
+      },
+      "jar_relay": {
+        "props": [
+          "relay-oil-jar"
+        ]
+      },
+      "empty_cart": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "lower_sign": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "upper_sign": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "drain": {
+        "props": [
+          "water-surge",
+          "relay-plank"
+        ]
+      },
+      "gravel": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "motion_attuned": {
+        "props": [
+          "note-low"
+        ]
+      },
+      "footprint": {
+        "props": [
+          "carved-stone",
+          "prop_stepping_stones"
+        ]
+      },
+      "views": {
+        "props": [
+          "carved-stone",
+          "prop_stepping_stones"
+        ]
+      },
+      "lower_neighbor": {
+        "props": [
+          "carved-stone",
+          "prop_stepping_stones"
+        ]
+      },
+      "landmark_copy": {
+        "props": [
+          "carved-stone",
+          "prop_stepping_stones"
+        ]
+      },
+      "grass_test": {
+        "props": [
+          "prop_tall_grass"
+        ]
+      },
+      "paperweight": {
+        "props": [
+          "clue-scrap",
+          "toss-pebble"
+        ]
+      },
+      "upper_cart": {
+        "props": [
+          "prop_wagon_wheels"
+        ]
+      },
+      "exact_copy": {
+        "props": [
+          "clue-scrap",
+          "carved-stone"
+        ]
+      },
+      "motion_memory": {
+        "props": [
+          "clue-scrap",
+          "carved-stone"
+        ]
+      },
+      "route_copy": {
+        "props": [
+          "clue-scrap",
+          "carved-stone"
+        ]
+      },
+      "carving_copy": {
+        "props": [
+          "clue-scrap",
+          "carved-stone"
+        ]
+      }
+    }
   }
 }

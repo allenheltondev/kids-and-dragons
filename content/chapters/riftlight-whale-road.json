@@ -6,7 +6,7 @@
   "title": "The Whales' Turning Place",
   "biome": "sky_islands",
   "music": "riftlight-paths",
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "whales",
   "plate": {
@@ -47,7 +47,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "Cloud whales turn slowly above a grassy island. Their long fins sweep the mist. Two folds hang over empty ground, pulsing at exactly the same moment. Each time they pulse, the whales turn back. A kitsune keeper keeps travelers behind a rope.",
+      "narration": "Cloud whales sweep their long fins through the mist above a grassy island. Two folds pulse together. Each pulse sends the whales circling back. A kitsune keeper lifts a rope to stop the waiting travelers. \"Help me ready the island before those folds open. We need a clear lane and a signal everyone understands.\" A whale's enormous eye passes overhead. The keeper smooths her whiskers. \"They have been watching us make a mess of this all morning.\"",
       "choices": [
         {
           "id": "watch",
@@ -82,141 +82,9 @@
       ],
       "art": "scenes/riftlight/whale-road"
     },
-    "guide": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You leave a broad lane across the grass. The keeper sings a low note; you answer only when the nearest whale faces the lane. Nobody climbs aboard. One whale turns, then the others follow its slow sweep into clear sky.",
-      "choices": [
-        {
-          "id": "finish",
-          "label": "Wait until the last whale is clear",
-          "icon": "hand",
-          "goto": "gentle"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road"
-    },
-    "gentle": {
-      "type": "rest",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "open",
-      "narration": "The last tail slips beyond the folds. Both openings spread at once and hold steady. The keeper lowers the rope. \"Now they can travel without circling us.\" Olivia closes her notebook. The pair is ready to cross, or you can pause on the island.",
-      "heal": 0,
-      "choices": [],
-      "outcome": "success",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "whales_guided",
-          "value": true
-        }
-      ],
-      "art": "scenes/riftlight/whale-road-cleared"
-    },
-    "offer": {
-      "type": "rest",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Olivia waits beside the rope. Nothing has opened yet. At the rift, Lady Olivia's way will wake the pair early and scatter the whales. You can still choose to guide them clear instead. The keeper leaves the broad lane open.",
-      "heal": 0,
-      "choices": [],
-      "outcome": "success",
-      "art": "scenes/riftlight/whale-road"
-    },
-    "opening_decision": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The keepers are ready at the warning rope. Olivia waits beside the folds. Your party can finish the gentle invitation from the clear lane, or hear her early-opening offer at the rift. You have recorded what each choice costs. What do you decide?",
-      "choices": [
-        {
-          "id": "guide",
-          "label": "Guide the whales clear first",
-          "icon": "hand",
-          "goto": "guide"
-        },
-        {
-          "id": "consider",
-          "label": "Hear the shortcut before deciding at the rift",
-          "icon": "hand",
-          "goto": "offer"
-        }
-      ],
-      "art": "scenes/riftlight/whale-road"
-    },
     "sky_map": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The keeper spreads a cloth map between two flat stones. It shows yesterday's stepping islands and the old walking lane. Today that lane ends at a gap. The cloud whales circle outside the island, turning whenever the folds pulse. Lady Olivia waits while you look. Nobody can safely work beside the folds without knowing where the ground now ends. The keeper offers a piece of chalk and a length of rope. Which part of the changed approach will you check first?",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Mark the edge from the old walking lane",
-          "icon": "hand",
-          "goto": "sky_map_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Trace a new approach from the shelter side",
-          "icon": "hand",
-          "goto": "sky_map_2"
-        }
-      ]
-    },
-    "sky_map_1": {
       "type": "story",
+      "narration": "The keeper unfolds a cloth map. Yesterday's lane runs straight into today's sky. She has a rock marker, a waiting rope and a broad grass lane to arrange before anyone approaches the folds. Share the keeper's clues to lay out the approach. Olivia holds a corner before the wind can improve the map again.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -227,20 +95,19 @@
           "name": "Lady Olivia"
         }
       ],
-      "rift": "steady",
-      "narration": "You follow the lane only as far as firm grass. One friend stays beside the map while another points out the real edge. You mark the last safe stopping place on the cloth. The keeper can compare a familiar route with the view that changed.",
       "art": "scenes/riftlight/whale-road",
       "choices": [
         {
           "id": "continue",
-          "label": "Put your plan into action",
+          "label": "Continue",
           "icon": "hand",
-          "goto": "sky_map_1_check"
+          "goto": "route_layout"
         }
       ]
     },
-    "sky_map_1_check": {
-      "type": "check",
+    "route_layout": {
+      "type": "interaction",
+      "narration": "Start inland and work toward the folds. The waiting place must leave the turning lane empty.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -251,200 +118,55 @@
           "name": "Lady Olivia"
         }
       ],
-      "rift": "steady",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Mark the edge from the old walking lane. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Arrange the approach from inland to the folds.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "lane",
+            "label": "Open turning lane",
+            "icon": "eye"
+          },
+          {
+            "id": "rock",
+            "label": "Inland rock marker",
+            "icon": "eye"
+          },
+          {
+            "id": "rope",
+            "label": "Waiting rope",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "rock",
+          "rope",
+          "lane"
+        ],
+        "clues": [
+          "Travelers meet the inland rock marker first.",
+          "The waiting rope goes between the rock marker and the turning lane.",
+          "Only the open lane belongs closest to the folds."
+        ]
+      },
       "onSuccess": {
-        "goto": "sky_map_1_done"
+        "goto": "whale_listen",
+        "narration": "The keeper walks the route herself. The waiting rope leaves the whole turning lane clear."
       },
       "onFailure": {
-        "goto": "sky_map_1_changed"
-      }
-    },
-    "sky_map_1_done": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Your map agrees with the ground when the keeper walks it herself. She moves the waiting rope to the new stopping place. Visitors have room to turn around without approaching the edge, and your party has a clear working area.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "whale_listen"
-        }
-      ]
-    },
-    "sky_map_1_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "A curve on the map makes the new lane look wider than it is. The keeper catches it during the walking check. You redraw the curve together, leaving the first line crossed out. The correction costs a little chalk, not a traveler's footing.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "whale_listen"
-        }
-      ]
-    },
-    "sky_map_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You begin beside the keeper rather than at the broken lane. Your party walks the broadest grass and checks where the rock narrows. You leave the rope coiled until the whole approach is visible. The old map gets a second route, clearly marked as new.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "sky_map_2_check"
-        }
-      ]
-    },
-    "sky_map_2_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Trace a new approach from the shelter side. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/whale-road",
-      "onSuccess": {
-        "goto": "sky_map_2_done"
+        "goto": "whale_listen",
+        "narration": "The keeper walks your plan and catches a crowded turn. You move the rope inland together. The lane is clear before anyone waits there."
       },
-      "onFailure": {
-        "goto": "sky_map_2_changed"
+      "onAssisted": {
+        "goto": "whale_listen",
+        "narration": "The keeper walks the route herself. The waiting rope leaves the whole turning lane clear."
       }
-    },
-    "sky_map_2_done": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Your map agrees with the ground when the keeper walks it herself. She moves the waiting rope to the new stopping place. Visitors have room to turn around without approaching the edge, and your party has a clear working area.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "whale_listen"
-        }
-      ]
-    },
-    "sky_map_2_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "A curve on the map makes the new lane look wider than it is. The keeper catches it during the walking check. You redraw the curve together, leaving the first line crossed out. The correction costs a little chalk, not a traveler's footing.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "whale_listen"
-        }
-      ]
     },
     "whale_listen": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The nearest whale gives a long low note, then falls quiet as the folds pulse. A smaller whale answers from farther out. The keeper warns against calling over them: she uses their pauses to judge when they are listening. Olivia wants to know whether the sound follows the pulse or the turn. You can help compare the order without sending a command. Nobody here claims to speak every whale song. What will your party listen for together?",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Let one friend track the song and another the turns",
-          "icon": "hand",
-          "goto": "whale_listen_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Watch one whale through a whole circle",
-          "icon": "hand",
-          "goto": "whale_listen_2"
-        }
-      ]
-    },
-    "whale_listen_1": {
       "type": "story",
+      "narration": "A smaller whale with a notched fin vanishes into moving banks of mist. The keeper points out where it went. \"Follow that one. We need to know whether it comes around to our lane.\" Watch the marked mist bank as the banks trade places.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -453,26 +175,21 @@
         {
           "figure": "cast/lady_olivia",
           "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
         }
       ],
-      "rift": "steady",
-      "narration": "You divide the observations. One friend follows the long note with a raised hand; another points when the whales change direction. The keeper watches the folds. You compare the three accounts only after a full circle, so one person's guess cannot lead the others.",
       "art": "scenes/riftlight/whale-road",
       "choices": [
         {
           "id": "continue",
-          "label": "See what follows",
+          "label": "Continue",
           "icon": "hand",
-          "goto": "keeper_lesson"
+          "goto": "follow_whale"
         }
       ]
     },
-    "whale_listen_2": {
-      "type": "story",
+    "follow_whale": {
+      "type": "interaction",
+      "narration": "Keep track of the notched-fin whale behind the moving mist banks. You are watching from behind the rope.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -481,26 +198,129 @@
         {
           "figure": "cast/lady_olivia",
           "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
         }
       ],
-      "rift": "steady",
-      "narration": "You agree which whale to follow before it moves behind the mist. The keeper points out its notched cloud ridge. Your party stays quiet until it returns. Olivia draws the positions while you describe only the sounds and turns you actually observed.",
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Follow the marked mist bank, then choose where the whale is hidden.",
+        "actionLabel": "Point out the whale",
+        "covers": [
+          "Thin mist",
+          "Round mist",
+          "Tall mist"
+        ],
+        "start": 1,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "stepMs": 1400
+      },
+      "onSuccess": {
+        "goto": "song_watch",
+        "narration": "The notched fin comes out where you pointed. Now you can watch that whale through a whole turn."
+      },
+      "onFailure": {
+        "goto": "keeper_points",
+        "narration": "The whale comes out on the other side. You keep your place behind the rope instead of following a guess."
+      },
+      "onAssisted": {
+        "goto": "song_watch",
+        "narration": "The notched fin comes out where you pointed. Now you can watch that whale through a whole turn."
+      }
+    },
+    "keeper_points": {
+      "type": "story",
+      "narration": "The keeper points to the notch as the fin clears the mist. \"There. Same whale, new view.\" You watch it together until it faces the lane. Its eye is almost as large as Olivia's notebook.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
       "art": "scenes/riftlight/whale-road",
       "choices": [
         {
           "id": "continue",
-          "label": "See what follows",
+          "label": "Continue",
           "icon": "hand",
-          "goto": "keeper_lesson"
+          "goto": "song_watch"
         }
       ]
+    },
+    "song_watch": {
+      "type": "interaction",
+      "narration": "The keeper demonstrates what the whale does. Watch the observation pattern and remember it before it fades.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the whale observation pattern, then echo it.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "quiet",
+            "label": "Silence",
+            "icon": "eye"
+          },
+          {
+            "id": "fin",
+            "label": "Fin tilts",
+            "icon": "eye"
+          },
+          {
+            "id": "call",
+            "label": "Low call",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "call",
+          "fin",
+          "quiet"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "keeper_lesson",
+        "narration": "You distinguish the call, the turn and the pause. The keeper offers a way to answer."
+      },
+      "onFailure": {
+        "goto": "keeper_lesson",
+        "narration": "The keeper repeats her account slowly and points out the pause. You learn what to look for without pretending you heard every sound."
+      },
+      "onAssisted": {
+        "goto": "keeper_lesson",
+        "narration": "You distinguish the call, the turn and the pause. The keeper offers a way to answer."
+      }
     },
     "keeper_lesson": {
       "type": "choice_point",
+      "narration": "The keeper can teach a quiet note or a slow arm signal. The note lets you time an invitation when a whale faces the lane. The arm signal lets your friends hold a visible greeting while another keeper watches its response. Both leave the whale free to turn away. Which greeting will you practice?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -509,403 +329,55 @@
         {
           "figure": "cast/lady_olivia",
           "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
         }
       ],
-      "rift": "steady",
-      "narration": "The keeper brings a small reed whistle from her pouch and blows one gentle note toward an empty patch of sky. She waits through the answer before offering it to your party. The nearest whale turns an eye toward her, then resumes its circle. \"An invitation, not a leash,\" she says. \"They need room to refuse.\" You can practice answering without changing the whales' course yet. Which signal will your party learn to give consistently?",
       "art": "scenes/riftlight/whale-road",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Practice one shared note followed by silence",
+          "id": "note",
+          "label": "Learn the quiet answering note",
           "icon": "hand",
-          "goto": "keeper_lesson_1"
+          "goto": "note_practice",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "whale_signal_sung",
+              "value": true
+            }
+          ]
         },
         {
-          "id": "option_2",
-          "label": "Practice the keeper's slow arm signal from the safe bank",
+          "id": "arms",
+          "label": "Learn the slow arm signal",
           "icon": "hand",
-          "goto": "keeper_lesson_2"
+          "goto": "arm_practice",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "whale_signal_sung",
+              "value": false
+            }
+          ]
         },
         {
-          "id": "assist",
-          "label": "Let a songkeeper lead the quiet answering note",
+          "id": "songkeeper",
+          "label": "Let our songkeeper lead the note",
           "icon": "hand",
-          "goto": "keeper_lesson_assisted",
-          "requiresClass": "songkeeper"
-        }
-      ]
-    },
-    "keeper_lesson_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You agree who will start and how everyone else will know when to stop. The keeper holds up a paw during the silence. Your party watches the whale rather than hurrying to fill the gap. A songkeeper can lead the breath, but anyone can listen and answer.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "keeper_lesson_1_check"
-        }
-      ]
-    },
-    "keeper_lesson_1_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Practice one shared note followed by silence. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/whale-road",
-      "onSuccess": {
-        "goto": "keeper_lesson_1_done"
-      },
-      "onFailure": {
-        "goto": "keeper_lesson_1_changed"
-      }
-    },
-    "keeper_lesson_1_done": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Your invitation stays quiet and consistent. The whale looks toward the working area without leaving its circle. The keeper lowers her paw and lets the silence last. You have learned a signal you can use later without treating attention as permission to command.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "olivia_question"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "practiced_the_whale_signal"
-        }
-      ]
-    },
-    "keeper_lesson_1_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Two signals overlap and the whale turns away. You stop together instead of calling louder. The keeper has your party practice facing one another until only one signal begins at a time. When you look up again, the whale is still circling safely outside.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "olivia_question"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "practiced_the_whale_signal"
-        }
-      ]
-    },
-    "keeper_lesson_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You stand where the whale can see the keeper and mirror her slow signal, leaving the whistle with her. One friend watches the edge so the others can concentrate. A clear pause gives the whale time to choose whether to respond.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "keeper_lesson_2_check"
-        }
-      ]
-    },
-    "keeper_lesson_2_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Practice the keeper's slow arm signal from the safe bank. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/whale-road",
-      "onSuccess": {
-        "goto": "keeper_lesson_2_done"
-      },
-      "onFailure": {
-        "goto": "keeper_lesson_2_changed"
-      }
-    },
-    "keeper_lesson_2_done": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Your invitation stays quiet and consistent. The whale looks toward the working area without leaving its circle. The keeper lowers her paw and lets the silence last. You have learned a signal you can use later without treating attention as permission to command.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "olivia_question"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "practiced_the_whale_signal"
-        }
-      ]
-    },
-    "keeper_lesson_2_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Two signals overlap and the whale turns away. You stop together instead of calling louder. The keeper has your party practice facing one another until only one signal begins at a time. When you look up again, the whale is still circling safely outside.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "olivia_question"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "practiced_the_whale_signal"
-        }
-      ]
-    },
-    "olivia_question": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Olivia asks to compare your map with her notebook. She has drawn the two folds with a line between them. \"If this works, people could cross without waiting for a ship,\" she says. The keeper asks who would lose their path if the whales scatter. Olivia has not written that part down. You can press her to make the cost concrete before anyone chooses the early opening. Which question should she answer first?",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Ask who depends on the whales finding their route",
-          "icon": "hand",
-          "goto": "olivia_question_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Ask what she will do if the whales scatter",
-          "icon": "hand",
-          "goto": "olivia_question_2"
-        }
-      ]
-    },
-    "olivia_question_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You ask the keeper to describe what she can observe. She points to islands her neighbors find by following the whales' direction. Olivia writes that beside her shortcut. A crossing that helps one traveler can still make another journey harder. The decision remains yours.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "wind_flags"
-        }
-      ]
-    },
-    "olivia_question_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You ask Olivia to name the first repair she could actually attempt. She offers her map and time to help watch for the whales again, then admits she cannot promise their return. You keep that limit beside the promise of a faster crossing.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "wind_flags"
-        }
-      ]
-    },
-    "wind_flags": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        }
-      ],
-      "rift": "steady",
-      "narration": "A change in wind presses the grass flat along one edge of the working area. The keeper has two cloth strips tied to sticks. One can mark wind over the lane; the other can show a visitor where to stop. If they stand too close together, both will flap the same way and hide the difference between a gust and a signal. You can set them without stepping off firm ground. Where will you put the wind marker?",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Place it beside the exposed side of the lane",
-          "icon": "hand",
-          "goto": "wind_flags_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Place it near the shelter and compare the grass beyond",
-          "icon": "hand",
-          "goto": "wind_flags_2"
-        },
-        {
-          "id": "assist",
-          "label": "Carry the wind strip into place on wings",
-          "icon": "hand",
-          "goto": "wind_flags_assisted",
-          "requiresSpecies": [
-            "griffin",
-            "dragonling"
+          "goto": "songkeeper_practice",
+          "requiresClass": "songkeeper",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "whale_signal_sung",
+              "value": true
+            }
           ]
         }
       ]
     },
-    "wind_flags_1": {
-      "type": "story",
+    "note_practice": {
+      "type": "interaction",
+      "narration": "The keeper raises a paw for the whale's listening pause. Offer one soft note in that pause, then let the answer come. \"Hello,\" she says. \"Not a request for breakfast.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -916,45 +388,45 @@
           "name": "Lady Olivia"
         }
       ],
-      "rift": "steady",
-      "narration": "You ask a friend to hold the stop marker while the rest of the party follows the lane to its exposed side. You test a place with room to turn back. The keeper watches both strips from the shelter and tells you when she can distinguish them.",
       "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "wind_flags_1_check"
-        }
-      ]
-    },
-    "wind_flags_1_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Place it beside the exposed side of the lane. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Offer the note while the marker is in the listening pause.",
+        "actionLabel": "Offer one note",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
       "onSuccess": {
-        "goto": "wind_flags_1_done"
+        "goto": "lesson_result",
+        "narration": "A soft answering breath rolls back from the mist.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced_the_whale_signal",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "wind_flags_1_changed"
+        "goto": "slow_greeting",
+        "narration": "Your note overlaps the whale's. You stop and let the keeper show a slower greeting."
+      },
+      "onAssisted": {
+        "goto": "lesson_result",
+        "narration": "A soft answering breath rolls back from the mist.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced_the_whale_signal",
+            "value": true
+          }
+        ]
       }
     },
-    "wind_flags_1_done": {
-      "type": "story",
+    "songkeeper_practice": {
+      "type": "interaction",
+      "narration": "The keeper raises a paw for the whale's listening pause. Offer one soft note in that pause, then let the answer come. \"Hello,\" she says. \"Not a request for breakfast.\" Your songkeeper can carry the note across a wider part of the pause.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -965,93 +437,45 @@
           "name": "Lady Olivia"
         }
       ],
-      "rift": "steady",
-      "narration": "Both markers can be read from the shelter. A gust pulls the wind strip straight while the stop marker remains easy to recognize. The keeper practices calling a pause before anyone approaches the folds. The working lane has a warning that does not depend on rift colors.",
       "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "signal_pair"
-        }
-      ]
-    },
-    "wind_flags_1_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "A sudden gust folds one strip around its stick. Your party waits on firm ground, then lowers it instead of reaching farther out. You choose a shorter stick and test it again. The marker is less impressive, but the keeper can free it herself if it tangles.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "signal_pair"
-        }
-      ]
-    },
-    "wind_flags_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You choose a firm place the keeper can reach without help. Your party compares the strip with the grass at the exposed edge. Olivia marks on the map that the shelter signal may be quieter than the wind over the lane. Visitors will know the limit.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "wind_flags_2_check"
-        }
-      ]
-    },
-    "wind_flags_2_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Place it near the shelter and compare the grass beyond. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Offer the note while the marker is in the listening pause.",
+        "actionLabel": "Offer one note",
+        "target": 0.5,
+        "width": 0.6,
+        "periodMs": 6000
+      },
       "onSuccess": {
-        "goto": "wind_flags_2_done"
+        "goto": "lesson_result",
+        "narration": "A soft answering breath rolls back from the mist.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced_the_whale_signal",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "wind_flags_2_changed"
+        "goto": "slow_greeting",
+        "narration": "Your note overlaps the whale's. You stop and let the keeper show a slower greeting."
+      },
+      "onAssisted": {
+        "goto": "lesson_result",
+        "narration": "A soft answering breath rolls back from the mist.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced_the_whale_signal",
+            "value": true
+          }
+        ]
       }
     },
-    "wind_flags_2_done": {
-      "type": "story",
+    "arm_practice": {
+      "type": "interaction",
+      "narration": "Hold the keeper's low, open-arm greeting while your acting friend watches the whale. Solo heroes can rest the signal arm on the padded post.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1062,148 +486,127 @@
           "name": "Lady Olivia"
         }
       ],
-      "rift": "steady",
-      "narration": "Both markers can be read from the shelter. A gust pulls the wind strip straight while the stop marker remains easy to recognize. The keeper practices calling a pause before anyone approaches the folds. The working lane has a warning that does not depend on rift colors.",
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Keep the greeting steady while the keeper watches.",
+        "actionLabel": "Watch for the answer",
+        "supportLabel": "Support the signal arm"
+      },
+      "onSuccess": {
+        "goto": "lesson_result",
+        "narration": "The whale turns one eye toward the steady greeting.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced_the_whale_signal",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "lesson_result",
+        "narration": "The whale turns one eye toward the steady greeting.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced_the_whale_signal",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "lesson_result",
+        "narration": "The whale turns one eye toward the steady greeting.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced_the_whale_signal",
+            "value": true
+          }
+        ]
+      }
+    },
+    "slow_greeting": {
+      "type": "interaction",
+      "narration": "The keeper leads the greeting herself. Keep her reed whistle case level while she leaves a long pause. You can hear the difference now.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Settle the whistle case level before the keeper begins.",
+        "actionLabel": "Ready the greeting",
+        "objectLabel": "Reed whistle case"
+      },
+      "onSuccess": {
+        "goto": "lesson_result",
+        "narration": "The keeper leads a quiet answer and your party follows her cue.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced_the_whale_signal",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "lesson_result",
+        "narration": "The keeper leads a quiet answer and your party follows her cue.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced_the_whale_signal",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "lesson_result",
+        "narration": "The keeper leads a quiet answer and your party follows her cue.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced_the_whale_signal",
+            "value": true
+          }
+        ]
+      }
+    },
+    "lesson_result": {
+      "type": "story",
+      "narration": "The whale resumes its circle. You have a greeting, not a leash. Olivia sketches its fin, then has to move her notebook when a rolled shelter cloth starts sliding past her hoof.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
       "art": "scenes/riftlight/whale-road",
       "choices": [
         {
           "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "signal_pair"
-        }
-      ]
-    },
-    "wind_flags_2_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "A sudden gust folds one strip around its stick. Your party waits on firm ground, then lowers it instead of reaching farther out. You choose a shorter stick and test it again. The marker is less impressive, but the keeper can free it herself if it tangles.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "signal_pair"
-        }
-      ]
-    },
-    "signal_pair": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "From behind the waiting rope, the folds narrow and widen together. Olivia taps the beat on her closed notebook; the keeper asks her to stop so the party can check it without being led. Two friends can each watch one opening, or everyone can compare the air against fixed landmarks. You need evidence that the pulses match, not a guess that they lead to the same place. How will you test the timing?",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Have separate watchers signal each pulse",
-          "icon": "hand",
-          "goto": "signal_pair_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Compare each fold with a fixed marker",
-          "icon": "hand",
-          "goto": "signal_pair_2"
-        }
-      ]
-    },
-    "signal_pair_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Each watcher faces one fold and raises a hand when its edge moves. A third friend watches the two hands. You repeat the observation after changing places. The keeper counts only the pulses everyone saw, leaving any hidden by mist off the page.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "loose_kit"
-        }
-      ]
-    },
-    "signal_pair_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You choose one rock behind each opening and watch when the distortion crosses its edge. Olivia draws the two rock shapes in her notebook. Your party compares several pulses rather than trusting one movement that could have been a gust of mist.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
+          "label": "Continue",
           "icon": "hand",
           "goto": "loose_kit"
         }
       ]
     },
     "loose_kit": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        }
-      ],
-      "rift": "steady",
-      "narration": "A rolled shelter cloth begins sliding along the grass. Its cord has slipped from the keeper's bag, and the next gust could carry it into the lane. Nobody is on the cloth or trapped beneath it. The keeper needs it to keep the waiting place dry, but she tells you to leave it if it reaches the edge. Your party has the coiled rope and room to approach from the shelter. How will you secure it?",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Catch the loose cord from the shelter side",
-          "icon": "hand",
-          "goto": "loose_kit_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Lay the rope across its path and let the cloth catch",
-          "icon": "hand",
-          "goto": "loose_kit_2"
-        }
-      ]
-    },
-    "loose_kit_1": {
-      "type": "story",
+      "type": "interaction",
+      "narration": "From the shelter side, aim a hooked cord at the cloth's trailing loop. The keeper has a pole ready if it rolls beyond your reach.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1214,190 +617,31 @@
           "name": "Lady Olivia"
         }
       ],
-      "rift": "steady",
-      "narration": "One friend stays beside the rope while another approaches on firm grass. You aim for the trailing cord rather than jumping onto the cloth. A duskrunner can lead the quick approach, but the keeper keeps the same stopping rule for every hero.",
       "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "loose_kit_1_check"
-        }
-      ]
-    },
-    "loose_kit_1_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Catch the loose cord from the shelter side. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Catch the cloth loop from the shelter side.",
+        "actionLabel": "Hook the loop",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
       "onSuccess": {
-        "goto": "loose_kit_1_done"
+        "goto": "waiting_place",
+        "narration": "The hook catches. You tie the recovered cloth down beside the keeper."
       },
       "onFailure": {
-        "goto": "loose_kit_1_changed"
-      }
-    },
-    "loose_kit_1_done": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The cloth stops well before the lane. You carry it back to the keeper and tie its cord to the bag with a loop she can undo. She tests the loop herself. The shelter can be made ready without asking the whales or the rifts to solve a loose knot.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "waiting_place"
-        }
-      ]
-    },
-    "loose_kit_1_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The cloth rolls past the first catch. You stop at the agreed line. The keeper uses a short pole from her shelter to hook its cord farther inland, and your party helps pull from firm ground. You retie it together and move the loose gear away from the wind.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "waiting_place"
-        }
-      ]
-    },
-    "loose_kit_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You stretch the rope low between two friends, leaving plenty of space before the lane. The keeper watches the cloth while you keep the rope clear of your feet. You will lower it if a gust pulls too hard instead of chasing the bundle.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "loose_kit_2_check"
-        }
-      ]
-    },
-    "loose_kit_2_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Lay the rope across its path and let the cloth catch. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/whale-road",
-      "onSuccess": {
-        "goto": "loose_kit_2_done"
+        "goto": "waiting_place",
+        "narration": "The hook misses. The keeper catches the cloth with her pole farther inland, and you bring it back together."
       },
-      "onFailure": {
-        "goto": "loose_kit_2_changed"
+      "onAssisted": {
+        "goto": "waiting_place",
+        "narration": "The hook catches. You tie the recovered cloth down beside the keeper."
       }
-    },
-    "loose_kit_2_done": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The cloth stops well before the lane. You carry it back to the keeper and tie its cord to the bag with a loop she can undo. She tests the loop herself. The shelter can be made ready without asking the whales or the rifts to solve a loose knot.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "waiting_place"
-        }
-      ]
-    },
-    "loose_kit_2_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The cloth rolls past the first catch. You stop at the agreed line. The keeper uses a short pole from her shelter to hook its cord farther inland, and your party helps pull from firm ground. You retie it together and move the loose gear away from the wind.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "waiting_place"
-        }
-      ]
     },
     "waiting_place": {
       "type": "choice_point",
+      "narration": "There is one shelter cloth. Put it behind the rock and the waiting travelers stay out of the wind, but a watcher must pass signals around the blind turn. Put it at the open viewpoint and the watchers see both folds, but the cloth will need bracing in the gusts. Which work will your party prepare for?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1408,26 +652,39 @@
           "name": "Lady Olivia"
         }
       ],
-      "rift": "steady",
-      "narration": "With the cloth safe, the keeper asks where visitors should wait while a whale is turning. One grassy pocket offers a better view but less shelter. Another stays out of the wind but cannot see both folds. The map has room for a waiting place and a watcher, so nobody needs to crowd the lane. Olivia volunteers to take one watch before she leaves. How will your party arrange the first group?",
       "art": "scenes/riftlight/whale-road",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Use the sheltered pocket with a separate watcher",
+          "id": "shelter",
+          "label": "Keep visitors sheltered; relay signals around the rock",
           "icon": "hand",
-          "goto": "waiting_place_1"
+          "goto": "shelter_setup",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "whale_open_view",
+              "value": false
+            }
+          ]
         },
         {
-          "id": "option_2",
-          "label": "Use the open pocket and keep groups small",
+          "id": "view",
+          "label": "Keep both folds in view; brace the exposed cloth",
           "icon": "hand",
-          "goto": "waiting_place_2"
+          "goto": "view_setup",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "whale_open_view",
+              "value": true
+            }
+          ]
         }
       ]
     },
-    "waiting_place_1": {
-      "type": "story",
+    "shelter_setup": {
+      "type": "interaction",
+      "narration": "Stretch the cloth behind the rock while the keeper checks the waiting rope. Leave the signal path clear around the blind turn.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1438,147 +695,148 @@
           "name": "Lady Olivia"
         }
       ],
-      "rift": "steady",
-      "narration": "You set the cloth in the lee of a rock and ask the watcher to signal from beside the lane. The keeper practices passing a pause back to the waiting place. Visitors can rest without treating a poor view as permission to wander forward.",
       "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "whale_choice"
-        }
-      ]
-    },
-    "waiting_place_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You mark a broad boundary around the place with the best view. The keeper decides how many visitors fit without crowding the route, and the rest wait farther inland. Olivia takes the first outer watch so the keeper can test the handover.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "whale_choice"
-        }
-      ]
-    },
-    "whale_choice": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The smallest whale turns toward the island, then hesitates as the pair pulses again. The keeper asks you to leave it room rather than surround it with signals. Your new waiting place and lane give you two safe ways to help: widen the invitation by moving the loose gear, or quiet the working area and let the whale choose its next turn. Neither means the whole group has been guided clear yet. Which change will you try first?",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Widen the clear grass beside the lane",
-          "icon": "hand",
-          "goto": "whale_choice_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Make the working area quiet for a full circle",
-          "icon": "hand",
-          "goto": "whale_choice_2"
-        }
-      ]
-    },
-    "whale_choice_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You move bags and the coiled spare rope away from the path. A friend watches the whale while the others carry the gear; nobody stands beneath its turning fin. The invitation now points across open ground instead of between busy travelers.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "whale_choice_1_check"
-        }
-      ]
-    },
-    "whale_choice_1_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Widen the clear grass beside the lane. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the cloth while the keeper fastens it.",
+        "actionLabel": "Fasten the shelter",
+        "supportLabel": "Hold the cloth edge"
+      },
       "onSuccess": {
-        "goto": "whale_choice_1_done",
+        "goto": "site_ready",
+        "narration": "The visitors have a dry lee. A watcher will need to carry each signal around the rock."
+      },
+      "onFailure": {
+        "goto": "site_ready",
+        "narration": "The visitors have a dry lee. A watcher will need to carry each signal around the rock."
+      },
+      "onAssisted": {
+        "goto": "site_ready",
+        "narration": "The visitors have a dry lee. A watcher will need to carry each signal around the rock."
+      }
+    },
+    "view_setup": {
+      "type": "interaction",
+      "narration": "The wind pushes at the cloth. Set its two weighted poles evenly before opening the waiting place. Olivia's mane is attempting to join the flags.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the two cloth poles against the wind.",
+        "actionLabel": "Set the poles",
+        "objectLabel": "Shelter cloth poles"
+      },
+      "onSuccess": {
+        "goto": "site_ready",
+        "narration": "Both folds are visible from the waiting place. The braced poles hold the cloth."
+      },
+      "onFailure": {
+        "goto": "site_ready",
+        "narration": "Both folds are visible from the waiting place. The braced poles hold the cloth."
+      },
+      "onAssisted": {
+        "goto": "site_ready",
+        "narration": "Both folds are visible from the waiting place. The braced poles hold the cloth."
+      }
+    },
+    "site_ready": {
+      "type": "story",
+      "narration": "The keeper checks your waiting place and takes the first watch. A little whale turns toward the open lane, then hesitates as the folds pulse. Its fin stirs the empty grass. Give it room to finish that turn.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road",
+      "variants": [
+        {
+          "when": {
+            "flag": "whale_open_view"
+          },
+          "text": "From the viewpoint, Olivia can see the whole turn."
+        },
+        {
+          "when": {
+            "notFlag": "whale_open_view"
+          },
+          "text": "Behind the rock, the keeper carries the first sighting back to the sheltered travelers."
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "hand",
+          "goto": "little_turn"
+        }
+      ]
+    },
+    "little_turn": {
+      "type": "interaction",
+      "narration": "Wait for the fin to point across the clear grass, then offer the keeper's invitation. The whale decides whether to use the space.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Wait for the fin-facing interval before inviting the turn.",
+        "actionLabel": "Offer the lane",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "small_whale_result",
+        "narration": "The small whale turns into the space and swings back toward its family.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "made_room_for_the_whale"
+            "flag": "made_room_for_the_whale",
+            "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "whale_choice_1_changed",
+        "goto": "quiet_wait",
+        "narration": "The whale turns away from the overlapping signals. You lower them and leave the lane open."
+      },
+      "onAssisted": {
+        "goto": "small_whale_result",
+        "narration": "The small whale turns into the space and swings back toward its family.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "made_room_for_the_whale"
+            "flag": "made_room_for_the_whale",
+            "value": true
           }
         ]
       }
     },
-    "whale_choice_1_done": {
-      "type": "story",
+    "quiet_wait": {
+      "type": "interaction",
+      "narration": "The keeper asks for one quiet circle. Choose how you will help the waiting place stay calm while the whale looks again.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1587,124 +845,72 @@
         {
           "figure": "cast/lady_olivia",
           "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
         }
       ],
-      "rift": "steady",
-      "narration": "The smaller whale comes closer, looks toward the keeper and turns along the open side of the island. It rejoins the others before the next pulse. The keeper smiles without raising another signal. You have found an approach the whale chose to accept.",
       "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "route_compare"
-        }
-      ]
-    },
-    "whale_choice_1_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The whale turns farther out instead. Your party keeps the invitation open and does not pursue it. The keeper notes where it refused to approach, then shifts the planned lane away from that space. The refusal has given you useful information without becoming a fight.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "route_compare"
-        }
-      ]
-    },
-    "whale_choice_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You ask Olivia to close her notebook and let the keeper lower the whistle. Your party sits behind the rope, watching through one entire circle without calling. A whale can approach or leave without having its next movement answered by a crowd.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "whale_choice_2_check"
-        }
-      ]
-    },
-    "whale_choice_2_check": {
-      "type": "check",
-      "tags": ["sneak"],
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Make the working area quiet for a full circle. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "play",
+        "cue": "Make room for a quiet circle.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "hands",
+            "label": "Rest your hands",
+            "icon": "hand",
+            "reaction": "Hands settle. The signals stop overlapping."
+          },
+          {
+            "id": "gear",
+            "label": "Tuck loose gear behind the rope",
+            "icon": "hand",
+            "reaction": "The lane stays empty for the whale."
+          },
+          {
+            "id": "watch",
+            "label": "Watch without calling",
+            "icon": "hand",
+            "reaction": "The keeper points out the small fin as it returns."
+          }
+        ]
+      },
       "onSuccess": {
-        "goto": "whale_choice_2_done",
+        "goto": "small_whale_result",
+        "narration": "With the calls quiet, the small whale finds the open turning space.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "made_room_for_the_whale"
+            "flag": "made_room_for_the_whale",
+            "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "whale_choice_2_changed",
+        "goto": "small_whale_result",
+        "narration": "With the calls quiet, the small whale finds the open turning space.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "made_room_for_the_whale"
+            "flag": "made_room_for_the_whale",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "small_whale_result",
+        "narration": "With the calls quiet, the small whale finds the open turning space.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "made_room_for_the_whale",
+            "value": true
           }
         ]
       }
     },
-    "whale_choice_2_done": {
-      "type": "story",
+    "small_whale_result": {
+      "type": "rest",
+      "narration": "The small whale has room, but the whole group is still circling. The keeper brings warm barley cakes to your chosen waiting place. Olivia watches a crumb take flight, then eats the next one quickly. A new kitsune keeper arrives to take over; she needs to learn your signals before you decide about the folds.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1715,123 +921,22 @@
           "name": "Lady Olivia"
         },
         {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
+          "figure": "cast/new_island_keeper",
+          "name": "New keeper"
         }
       ],
-      "rift": "steady",
-      "narration": "The smaller whale comes closer, looks toward the keeper and turns along the open side of the island. It rejoins the others before the next pulse. The keeper smiles without raising another signal. You have found an approach the whale chose to accept.",
       "art": "scenes/riftlight/whale-road",
+      "heal": 0,
       "choices": [
         {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "route_compare"
-        }
-      ]
-    },
-    "whale_choice_2_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The whale turns farther out instead. Your party keeps the invitation open and does not pursue it. The keeper notes where it refused to approach, then shifts the planned lane away from that space. The refusal has given you useful information without becoming a fight.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "route_compare"
-        }
-      ]
-    },
-    "route_compare": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The keeper lays your observations beside Olivia's shortcut drawing. The two folds keep their matched beat. Your map now shows ground, wind, waiting places and the whales' refused approach. Olivia says she can use the held note to open the pair early. The keeper says the party can instead finish guiding from the open side. Both choices still require travelers to approach safely. What must be written beside the crossing before anyone commits?",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Write the immediate benefit and immediate cost together",
-          "icon": "hand",
-          "goto": "route_compare_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Write the limits of each promise",
-          "icon": "hand",
-          "goto": "route_compare_2"
-        }
-      ]
-    },
-    "route_compare_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You put the faster opening and the scattered whales on the same line. Below it you record the slower guiding plan and its clear lane. Olivia keeps the page in view. Nobody can describe only the benefit while asking another person to accept the cost.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
+          "id": "rest",
+          "label": "Rest, then show the new keeper",
           "icon": "hand",
           "goto": "handoff_sky"
-        }
-      ]
-    },
-    "route_compare_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You record that Olivia cannot promise the whales' return, and the keeper cannot promise a particular island will stay where it is. You also record the safe lane both have checked. The choice can now be made without pretending uncertainty belongs only to the other plan.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
+          "id": "watch",
+          "label": "Rest while watching one more circle",
           "icon": "hand",
           "goto": "handoff_sky"
         }
@@ -1839,407 +944,248 @@
     },
     "handoff_sky": {
       "type": "choice_point",
+      "narration": "The new keeper has not seen your work. The first keeper shows the two cloths: white means watch this approach; striped means stop and wait. The newcomer needs to pass a stop signal from the watcher to the waiting travelers. Anyone can rehearse the relay around the rock. With an open viewpoint, you can instead teach her to watch the cloth signals directly. Which handover will you demonstrate?",
       "cast": [
         {
           "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
           "figure": "cast/lady_olivia",
           "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "New keeper"
         }
       ],
-      "rift": "steady",
-      "narration": "A second kitsune keeper arrives from the shelter. She has heard none of the discussion and asks how she will know when to let travelers approach. The first keeper gives her the map rather than a string of shouted instructions. Your party can rehearse the pause and approach signals while the whales keep circling outside. This handover will matter whichever rift decision you make. Which instruction should the newcomer demonstrate before taking the watch?",
       "art": "scenes/riftlight/whale-road",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Have her stop an imaginary group at the warning",
+          "id": "relay",
+          "label": "Rehearse the watcher-to-waiting-place relay",
           "icon": "hand",
-          "goto": "handoff_sky_1"
+          "goto": "signal_relay"
         },
         {
-          "id": "option_2",
-          "label": "Have her call the watcher back when the wind changes",
+          "id": "direct",
+          "label": "Use our open view to recognize signals directly",
           "icon": "hand",
-          "goto": "handoff_sky_2"
+          "goto": "signal_memory",
+          "when": {
+            "flag": "whale_open_view"
+          }
         }
       ]
     },
-    "handoff_sky_1": {
-      "type": "story",
+    "signal_relay": {
+      "type": "interaction",
+      "narration": "Pass the watcher's stop message along the waiting line. The new keeper receives it at the rock and echoes it toward the travelers.",
       "cast": [
         {
           "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
           "figure": "cast/lady_olivia",
           "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You play travelers coming from the shelter and let the new keeper choose when to call a pause. Olivia plays the person asking to hurry. Your party waits for a clear invitation rather than treating a confident voice as permission. The keeper checks how much room remains.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "handoff_sky_1_check"
-        }
-      ]
-    },
-    "handoff_sky_1_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
         },
         {
           "figure": "cast/new_island_keeper",
           "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
         }
       ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Have her stop an imaginary group at the warning. Choose who leads; everyone can help.",
       "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the stop message and pass it to the next watcher.",
+        "actionLabel": "Pass the stop message",
+        "objectLabel": "Watcher's stop message"
+      },
       "onSuccess": {
-        "goto": "handoff_sky_1_done",
+        "goto": "keeper_echo",
+        "narration": "The stop message reaches the waiting place without anyone entering the lane."
+      },
+      "onFailure": {
+        "goto": "keeper_echo",
+        "narration": "The stop message reaches the waiting place without anyone entering the lane."
+      },
+      "onAssisted": {
+        "goto": "keeper_echo",
+        "narration": "The stop message reaches the waiting place without anyone entering the lane."
+      }
+    },
+    "signal_memory": {
+      "type": "interaction",
+      "narration": "From your exposed viewpoint, show the new keeper the cloth changes. She must remember the stop and waiting signs when the watcher turns away.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "New keeper"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the cloth pattern, then echo it.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "wait",
+            "label": "Hold at the rope",
+            "icon": "eye"
+          },
+          {
+            "id": "stop",
+            "label": "Striped stop cloth",
+            "icon": "eye"
+          },
+          {
+            "id": "watch",
+            "label": "White watching cloth",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "watch",
+          "stop",
+          "wait"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "keeper_echo",
+        "narration": "The new keeper recognizes the changing cloths from the open viewpoint."
+      },
+      "onFailure": {
+        "goto": "signal_relay",
+        "narration": "The new keeper mixes up two cloths. You switch to the watcher relay so every stop gets passed aloud."
+      },
+      "onAssisted": {
+        "goto": "keeper_echo",
+        "narration": "The new keeper recognizes the changing cloths from the open viewpoint."
+      }
+    },
+    "keeper_echo": {
+      "type": "interaction",
+      "narration": "The first keeper copies your route onto a fresh sheet while the new keeper takes the watch. Share the jobs needed to stop a visitor safely, without treating a whale's turn as permission to step past the rope.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "New keeper"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Put the handover jobs in a usable order.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "echo",
+            "label": "Waiting keeper repeats stop",
+            "icon": "eye"
+          },
+          {
+            "id": "watch",
+            "label": "Watcher sees the striped cloth",
+            "icon": "eye"
+          },
+          {
+            "id": "hold",
+            "label": "Visitors stay behind the rope",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "watch",
+          "echo",
+          "hold"
+        ],
+        "clues": [
+          "The watcher must see the striped cloth before passing its meaning.",
+          "The waiting keeper repeats the stop before asking visitors to hold.",
+          "Travelers finish behind the rope."
+        ]
+      },
+      "onSuccess": {
+        "goto": "sky_repair",
+        "narration": "The new keeper stops the practice visitor herself. She can take over the watch.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "taught_the_new_keeper"
+            "flag": "taught_the_new_keeper",
+            "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "handoff_sky_1_changed",
+        "goto": "sky_repair",
+        "narration": "The keepers demonstrate one clear stop together. The newcomer repeats it and takes the watch.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "taught_the_new_keeper"
-          }
-        ]
-      }
-    },
-    "handoff_sky_1_done": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The newcomer calls the signal early and the party can repeat it without help. She notices Olivia waiting too and laughs. The keeper now has another person who understands the whole approach, rather than one person carrying every instruction.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "sky_record"
-        }
-      ]
-    },
-    "handoff_sky_1_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The first signal reaches only half the pretend group. You stop the rehearsal and move the watcher's mark into view. On the second attempt everyone sees it. The newcomer keeps the corrected map, and the first keeper knows which signal to check again tomorrow.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "sky_record"
-        }
-      ]
-    },
-    "handoff_sky_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You place one friend at the watcher's mark and let the new keeper read the wind strip. The first keeper stays close enough to help. When the strip pulls straight, your friend returns along the marked lane instead of taking the shorter route across untested grass.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put your plan into action",
-          "icon": "hand",
-          "goto": "handoff_sky_2_check"
-        }
-      ]
-    },
-    "handoff_sky_2_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Have her call the watcher back when the wind changes. Choose who leads; everyone can help.",
-      "art": "scenes/riftlight/whale-road",
-      "onSuccess": {
-        "goto": "handoff_sky_2_done",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "taught_the_new_keeper"
+            "flag": "taught_the_new_keeper",
+            "value": true
           }
         ]
       },
-      "onFailure": {
-        "goto": "handoff_sky_2_changed",
+      "onAssisted": {
+        "goto": "sky_repair",
+        "narration": "The new keeper stops the practice visitor herself. She can take over the watch.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "taught_the_new_keeper"
+            "flag": "taught_the_new_keeper",
+            "value": true
           }
         ]
       }
-    },
-    "handoff_sky_2_done": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The newcomer calls the signal early and the party can repeat it without help. She notices Olivia waiting too and laughs. The keeper now has another person who understands the whole approach, rather than one person carrying every instruction.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "sky_record"
-        }
-      ]
-    },
-    "handoff_sky_2_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The first signal reaches only half the pretend group. You stop the rehearsal and move the watcher's mark into view. On the second attempt everyone sees it. The newcomer keeps the corrected map, and the first keeper knows which signal to check again tomorrow.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work with this result",
-          "icon": "hand",
-          "goto": "sky_record"
-        }
-      ]
-    },
-    "sky_record": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Your party has done the work needed to make the approaches safe. The cloud whales still circle beyond the island; none has been mounted, trapped or ordered through a fold. Olivia asks to keep one copy of the route, and the keepers ask for the other. Pip is not here to copy it for you. You can divide the final task between your own friends before deciding how to open the pair. Which record should carry the main explanation?",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Give the keepers a route drawing and Olivia the observations",
-          "icon": "hand",
-          "goto": "sky_record_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Give both the same short map and list of limits",
-          "icon": "hand",
-          "goto": "sky_record_2"
-        }
-      ]
-    },
-    "sky_record_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You make the keepers' copy usable from the shelter, with the waiting place and wind marker large enough to find. Olivia gets the separate song and pulse observations. Both pages say what was observed and what is still a proposal. You read the differences aloud together.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "sky_repair"
-        }
-      ]
-    },
-    "sky_record_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You copy only the agreed route, signals and limits onto both pages. The keepers keep their whale notes separately; Olivia keeps her proposed shortcut separately. Your party checks that neither copy presents an unchosen plan as something the others already agreed to do.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "sky_repair"
-        }
-      ]
     },
     "sky_repair": {
       "type": "choice_point",
+      "narration": "The keepers have their route copy. Olivia keeps the song observations. If your party meets the lookout keepers farther along this route, you can carry a report of what happens to the whales. It is a promise to bring news, not to make the whales return. Will you take that follow-up job?",
       "cast": [
         {
           "figure": "cast/island_keeper",
           "name": "Kitsune keeper"
         },
         {
-          "figure": "cast/new_island_keeper",
-          "name": "New keeper"
-        },
-        {
           "figure": "cast/lady_olivia",
           "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "New keeper"
         }
       ],
-      "rift": "steady",
-      "narration": "Olivia and the keepers have both named a consequence that could outlast your visit. If the whales scatter, the island neighbors may lose a familiar sign of where another island lies. Even if the whales leave gently, the old walking lane still needs watching. Your party cannot promise to stay forever or bring the whales back on command. You can offer a practical next step that fits the route you have just mapped. What will you agree to carry forward?",
       "art": "scenes/riftlight/whale-road",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Offer to pass the route and whale observations to travelers",
+          "id": "report",
+          "label": "Promise to bring a whale-route report",
           "icon": "hand",
           "goto": "sky_repair_1"
         },
         {
-          "id": "option_2",
-          "label": "Leave the records without promising another task",
+          "id": "local",
+          "label": "Leave today's copies here without promising a report",
           "icon": "hand",
           "goto": "sky_repair_2"
         }
@@ -2315,8 +1261,84 @@
         }
       ]
     },
-    "keeper_lesson_assisted": {
-      "type": "story",
+    "opening_decision": {
+      "type": "choice_point",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
+      "rift": "steady",
+      "narration": "The waiting rope is set. The lane is clear. Olivia looks from her notebook to the circling whales. You can finish the gentle invitation and wait for them to move, or hear her offer to wake the folds early. That shortcut would scatter the whales and disrupt the island neighbors' familiar route. Nobody else will choose for your party. What do you decide?",
+      "choices": [
+        {
+          "id": "guide",
+          "label": "Guide the whales clear first",
+          "icon": "hand",
+          "goto": "guide"
+        },
+        {
+          "id": "consider",
+          "label": "Hear the shortcut before deciding at the rift",
+          "icon": "hand",
+          "goto": "offer"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road"
+    },
+    "gentle": {
+      "type": "rest",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
+      "rift": "open",
+      "narration": "The last tail slips beyond the folds. Both openings spread at once and hold steady. The keeper lowers the rope. \"Now they can travel without circling us.\" Olivia closes her notebook. The pair is ready to cross, or you can pause on the island.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "whales_guided",
+          "value": true
+        }
+      ],
+      "art": "scenes/riftlight/whale-road-cleared"
+    },
+    "offer": {
+      "type": "rest",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        }
+      ],
+      "rift": "steady",
+      "narration": "Olivia waits beside the rope. Nothing has opened yet. At the rift, Lady Olivia's way will wake the pair early and scatter the whales. You can still choose to guide them clear instead. The keeper leaves the broad lane open.",
+      "heal": 0,
+      "choices": [],
+      "outcome": "success",
+      "art": "scenes/riftlight/whale-road"
+    },
+    "guide": {
+      "type": "choice_point",
+      "narration": "The keeper waits beside the open lane. Your party can relay her invitation from watcher to watcher. Your practiced greeting also offers another way: time the quiet note yourself, or hold the slow arm signal while she watches the whales. The whales must choose their own turn. How will you help them clear the folds?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -2327,99 +1349,234 @@
           "name": "Lady Olivia"
         },
         {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
+          "figure": "cast/new_island_keeper",
+          "name": "New keeper"
         }
       ],
-      "rift": "steady",
-      "narration": "A songkeeper leads the shared breath while the party practices the pause. The keeper waits for the whale's own answer. Everyone can help hold the silence, and the hero who best reads the whale can lead the check. The song is an invitation, never a command.",
+      "art": "scenes/riftlight/whale-road",
+      "choices": [
+        {
+          "id": "keeper",
+          "label": "Relay the keeper's invitation",
+          "icon": "hand",
+          "goto": "guide_relay"
+        },
+        {
+          "id": "note",
+          "label": "Time our practiced quiet note",
+          "icon": "hand",
+          "goto": "guide_note",
+          "when": {
+            "flag": "whale_signal_sung"
+          }
+        },
+        {
+          "id": "arms",
+          "label": "Hold our practiced arm greeting",
+          "icon": "hand",
+          "goto": "guide_arms",
+          "when": {
+            "notFlag": "whale_signal_sung"
+          }
+        }
+      ]
+    },
+    "guide_relay": {
+      "type": "interaction",
+      "narration": "The keeper waits for the leading fin to face the lane. Carry her quiet invitation along the watcher line without adding another call.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "New keeper"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the keeper's invitation toward the clear lane.",
+        "actionLabel": "Pass the invitation",
+        "objectLabel": "Quiet whale invitation"
+      },
+      "onSuccess": {
+        "goto": "last_tail",
+        "narration": "The leading whale turns. The others follow its sweep into clear sky."
+      },
+      "onFailure": {
+        "goto": "last_tail",
+        "narration": "The leading whale turns. The others follow its sweep into clear sky."
+      },
+      "onAssisted": {
+        "goto": "last_tail",
+        "narration": "The leading whale turns. The others follow its sweep into clear sky."
+      }
+    },
+    "guide_note": {
+      "type": "interaction",
+      "narration": "Wait for the leading fin to face the open lane. Offer the note in that listening interval, then leave the whale space to answer.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "New keeper"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Offer the note in the fin-facing interval.",
+        "actionLabel": "Invite the turn",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "last_tail",
+        "narration": "The leading whale answers your note and turns. The others follow."
+      },
+      "onFailure": {
+        "goto": "guide_wait",
+        "narration": "The whale turns away from the mistimed note. You stop calling; the keeper will lead the next invitation."
+      },
+      "onAssisted": {
+        "goto": "last_tail",
+        "narration": "The leading whale answers your note and turns. The others follow."
+      }
+    },
+    "guide_arms": {
+      "type": "interaction",
+      "narration": "Hold the low arm greeting where the leading whale can see it. The keeper watches its fin while your friends steady the signal.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "New keeper"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Keep the arm greeting steady until the keeper sees a turn.",
+        "actionLabel": "Watch the leading fin",
+        "supportLabel": "Support the greeting arm"
+      },
+      "onSuccess": {
+        "goto": "last_tail",
+        "narration": "The leading fin tilts toward the greeting. The group follows the new curve."
+      },
+      "onFailure": {
+        "goto": "last_tail",
+        "narration": "The leading fin tilts toward the greeting. The group follows the new curve."
+      },
+      "onAssisted": {
+        "goto": "last_tail",
+        "narration": "The leading fin tilts toward the greeting. The group follows the new curve."
+      }
+    },
+    "guide_wait": {
+      "type": "interaction",
+      "narration": "The keeper leads one last quiet invitation. Help the waiting travelers leave the lane clear while she watches for an answer.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "New keeper"
+        }
+      ],
+      "art": "scenes/riftlight/whale-road",
+      "interaction": {
+        "kind": "play",
+        "cue": "Give the whales room to answer.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "quiet",
+            "label": "Keep the waiting line quiet",
+            "icon": "hand",
+            "reaction": "Only the keeper's low note carries."
+          },
+          {
+            "id": "space",
+            "label": "Clear a loose bag from the rope",
+            "icon": "hand",
+            "reaction": "The turning lane stays wide."
+          },
+          {
+            "id": "watch",
+            "label": "Point out the leading fin",
+            "icon": "hand",
+            "reaction": "The keeper waits until it faces the lane."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "last_tail",
+        "narration": "The keeper's invitation reaches the listening whale. It turns, and its family follows."
+      },
+      "onFailure": {
+        "goto": "last_tail",
+        "narration": "The keeper's invitation reaches the listening whale. It turns, and its family follows."
+      },
+      "onAssisted": {
+        "goto": "last_tail",
+        "narration": "The keeper's invitation reaches the listening whale. It turns, and its family follows."
+      }
+    },
+    "last_tail": {
+      "type": "story",
+      "narration": "The smallest whale takes its own enormous time. At last its tail clears the folds. The keeper lowers her whistle. Olivia has stopped drawing long enough to watch the sky.",
+      "cast": [
+        {
+          "figure": "cast/island_keeper",
+          "name": "Kitsune keeper"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/new_island_keeper",
+          "name": "New keeper"
+        }
+      ],
       "art": "scenes/riftlight/whale-road",
       "choices": [
         {
           "id": "continue",
-          "label": "Work together using that help",
+          "label": "Continue",
           "icon": "hand",
-          "goto": "keeper_lesson_assisted_check"
+          "goto": "gentle"
         }
       ]
-    },
-    "keeper_lesson_assisted_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        },
-        {
-          "figure": "entities/cloud_whale",
-          "name": "Cloud whale"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Let a songkeeper lead the quiet answering note. The qualified hero assists; choose who leads the team check.",
-      "art": "scenes/riftlight/whale-road",
-      "onSuccess": {
-        "goto": "keeper_lesson_1_done"
-      },
-      "onFailure": {
-        "goto": "keeper_lesson_1_changed"
-      }
-    },
-    "wind_flags_assisted": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "narration": "A winged friend carries the strip above firm grass while the party keeps the lane clear. You stay within the marked working area rather than treating flight as permission to explore the void. The most nimble helper can handle the strip once its stick reaches the ground.",
-      "art": "scenes/riftlight/whale-road",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work together using that help",
-          "icon": "hand",
-          "goto": "wind_flags_assisted_check"
-        }
-      ]
-    },
-    "wind_flags_assisted_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/island_keeper",
-          "name": "Kitsune keeper"
-        },
-        {
-          "figure": "cast/lady_olivia",
-          "name": "Lady Olivia"
-        }
-      ],
-      "rift": "steady",
-      "stat": "quick",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Carry the wind strip into place on wings. The qualified hero assists; choose who leads the team check.",
-      "art": "scenes/riftlight/whale-road",
-      "onSuccess": {
-        "goto": "wind_flags_1_done"
-      },
-      "onFailure": {
-        "goto": "wind_flags_1_changed"
-      }
     }
   },
   "voiceGuide": {
@@ -2435,5 +1592,113 @@
       "Legend Dragon"
     ],
     "npcVoices": {}
+  },
+  "presentation": {
+    "interactions": {
+      "route_layout": {
+        "props": [
+          "cloud-whale"
+        ]
+      },
+      "follow_whale": {
+        "props": [
+          "cloud-whale"
+        ],
+        "coverIcons": [
+          "prop_playing_card",
+          "prop_playing_card",
+          "prop_playing_card"
+        ]
+      },
+      "song_watch": {
+        "props": [
+          "cloud-whale"
+        ]
+      },
+      "little_turn": {
+        "props": [
+          "cloud-whale"
+        ]
+      },
+      "guide_wait": {
+        "props": [
+          "cloud-whale"
+        ]
+      },
+      "note_practice": {
+        "props": [
+          "note-low"
+        ]
+      },
+      "songkeeper_practice": {
+        "props": [
+          "note-low"
+        ]
+      },
+      "guide_note": {
+        "props": [
+          "note-low"
+        ]
+      },
+      "arm_practice": {
+        "props": [
+          "wind-blanket",
+          "rope-loop"
+        ]
+      },
+      "shelter_setup": {
+        "props": [
+          "wind-blanket",
+          "rope-loop"
+        ]
+      },
+      "view_setup": {
+        "props": [
+          "wind-blanket",
+          "rope-loop"
+        ]
+      },
+      "guide_arms": {
+        "props": [
+          "wind-blanket",
+          "rope-loop"
+        ]
+      },
+      "slow_greeting": {
+        "props": [
+          "ring-case"
+        ]
+      },
+      "loose_kit": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "signal_relay": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "signal_memory": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "keeper_echo": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "guide_relay": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "quiet_wait": {
+        "props": [
+          "kite-shade"
+        ]
+      }
+    }
   }
 }

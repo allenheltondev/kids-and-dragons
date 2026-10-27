@@ -6,7 +6,7 @@
   "title": "The River Takes Another Valley",
   "biome": "glacier_of_origins",
   "music": "riftlight-paths",
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "arrival",
   "plate": {
@@ -36,7 +36,7 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "Pip Thistledown, a young manticore scout, follows the road north with your party. Beyond the last stone keepers, the ground rises toward the glacier. Meltwater sounds where his sketch shows a dry valley. The familiar path ahead is cut in two. A yeti on the near bank holds up a walking staff, asking you to stop on the high ground before coming closer. Pip shuts his notebook. \"We should look before we trust the old line.\"",
+      "narration": "Pip Thistledown, a young manticore scout, stops so suddenly that his notebook bumps his nose. Water is roaring through a valley his sketch shows dry. The road toward the glacier ends at the new stream. A yeti worker raises a staff from the high bank. \"Stay up there! Help me warn the next traveler, then get us and our tools across.\" Pip shuts the notebook. \"The road has made changes without telling the map.\"",
       "choices": [
         {
           "id": "continue",
@@ -73,7 +73,7 @@
     },
     "look_again": {
       "type": "choice_point",
-      "narration": "Pip stops beside an old route marker, a dark stone with a fork-shaped chip. The path below it used to reach a narrow melt channel. Today that place is dry, and water is pouring between two ridges farther west. A yeti route worker waits on a broad shelf above the new flow. A bundle of tools lies on the opposite bank. Before anyone heads toward the worker, your party needs to tell a changed landmark from a changed river. What will you compare first?",
+      "narration": "An old route marker has a fork-shaped chip. That has not changed. Below it, the old melt channel lies dry while water pours between two ridges farther west. A yeti route worker waits above the new flow; a tool bundle sits on the opposite bank. Pip turns his sketch the right way up, then checks it once more. What will you compare to find out what moved?",
       "choices": [
         {
           "id": "option_1",
@@ -86,6 +86,15 @@
           "label": "Trace the dry channel from firm ground",
           "icon": "hand",
           "goto": "look_again_2"
+        },
+        {
+          "id": "road_plan",
+          "label": "Use the traveling road plan to check the changed landmarks",
+          "icon": "eye",
+          "goto": "road_plan",
+          "when": {
+            "flag": "stone_route_priority"
+          }
         }
       ],
       "cast": [
@@ -123,77 +132,6 @@
       ],
       "art": "scenes/riftlight/wrong-valley"
     },
-    "look_again_1_check": {
-      "type": "check",
-      "tags": ["search"],
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Compare the marker with both ridges. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "look_again_1_done"
-      },
-      "onFailure": {
-        "goto": "look_again_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "look_again_1_done": {
-      "type": "story",
-      "narration": "The marker and ridges still agree with the drawing. The water has taken another valley between them. Pip puts his finger on the blank space west of the old channel. You have a changed route to investigate, rather than a reason to throw away every familiar landmark.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "worker_signal"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "look_again_1_changed": {
-      "type": "story",
-      "narration": "A curl of snow hides one ridge and your first comparison points the wrong way. You wait for the gust to pass and compare the chipped marker again. The correction leaves the same conclusion: the landmarks agree, but the water between them has changed its course.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "worker_signal"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
     "look_again_2": {
       "type": "story",
       "narration": "You follow the visible bed only along its firm upper edge. Pip watches where it joins the valley ahead. Your party marks the last place water has recently passed without stepping into the new stream or assuming the dry stones will stay dry.",
@@ -205,6 +143,30 @@
           "goto": "look_again_2_check"
         }
       ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley"
+    },
+    "look_again_1_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Compare the marker with both ridges. Choose who leads while the others help.",
+      "onSuccess": {
+        "goto": "look_again_1_done"
+      },
+      "onFailure": {
+        "goto": "look_again_1_changed"
+      },
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -241,6 +203,52 @@
       ],
       "art": "scenes/riftlight/wrong-valley"
     },
+    "look_again_1_done": {
+      "type": "story",
+      "narration": "The marker and ridges still agree with the drawing. The water has taken another valley between them. Pip puts his finger on the blank space west of the old channel. You have a changed route to investigate, rather than a reason to throw away every familiar landmark.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue with this result",
+          "icon": "hand",
+          "goto": "worksite"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley"
+    },
+    "look_again_1_changed": {
+      "type": "story",
+      "narration": "A curl of snow hides one ridge and your first comparison points the wrong way. You wait for the gust to pass and compare the chipped marker again. The correction leaves the same conclusion: the landmarks agree, but the water between them has changed its course.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue with this result",
+          "icon": "hand",
+          "goto": "worksite"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley"
+    },
     "look_again_2_done": {
       "type": "story",
       "narration": "The marker and ridges still agree with the drawing. The water has taken another valley between them. Pip puts his finger on the blank space west of the old channel. You have a changed route to investigate, rather than a reason to throw away every familiar landmark.",
@@ -249,7 +257,7 @@
           "id": "continue",
           "label": "Continue with this result",
           "icon": "hand",
-          "goto": "worker_signal"
+          "goto": "worksite"
         }
       ],
       "cast": [
@@ -272,7 +280,7 @@
           "id": "continue",
           "label": "Continue with this result",
           "icon": "hand",
-          "goto": "worker_signal"
+          "goto": "worksite"
         }
       ],
       "cast": [
@@ -287,21 +295,15 @@
       ],
       "art": "scenes/riftlight/wrong-valley"
     },
-    "worker_signal": {
-      "type": "choice_point",
-      "narration": "The yeti worker raises a walking staff and points at the broad shelf beside them. A dark wet seam crosses the short route to it. The worker does not wave you forward. Pip starts to call a question, then remembers how sound carries over the ice. You can reach the shelf by a longer rock path or ask the worker to point out a waiting place from where you stand. Neither requires a jump over the seam. How will you approach?",
+    "road_plan": {
+      "type": "story",
+      "narration": "Your party chose to carry the road plan from the stone keepers. Pip opens its measured landmarks beside the changed valley. You already have a way to distinguish a moved route from a missing marker; the worker only needs you to test the new view against it.",
       "choices": [
         {
-          "id": "option_1",
-          "label": "Take the longer rock path at the worker's pace",
-          "icon": "hand",
-          "goto": "worker_signal_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Use quiet hand signals to agree where to wait",
-          "icon": "hand",
-          "goto": "worker_signal_2"
+          "id": "compare",
+          "label": "Compare the new view with our road plan",
+          "icon": "eye",
+          "goto": "road_plan_check"
         }
       ],
       "cast": [
@@ -316,140 +318,60 @@
       ],
       "art": "scenes/riftlight/wrong-valley"
     },
-    "worker_signal_1": {
+    "road_plan_check": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "roller": "party",
+      "prompt": "Use your checked road-plan landmarks to compare the new route.",
+      "onSuccess": {
+        "goto": "look_again_1_done"
+      },
+      "onFailure": {
+        "goto": "look_again_1_changed"
+      },
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley"
+    },
+    "worksite": {
       "type": "story",
-      "narration": "You point to the rock path and wait for the worker to nod before moving. Pip stays with the slowest friend. At each turn you check that the next foothold is rock rather than snow over a gap. The worker has time to put the staff down and meet you.",
+      "narration": "A yeti route worker meets you on the near bank. Across the changed stream, a second worker waits on a low shelf beside tools and an unlit lantern. A high path leads from that shelf toward the reading rooms. The near worker has two ropes and a carrying board. \"One job before you cross: lift the tools high, or prepare her upper handline. We will need the other if the water changes.\" Pip studies both valleys.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
       "choices": [
         {
           "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "two_jobs"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "worker_signal_2": {
-      "type": "story",
-      "narration": "You hold up an open hand and point to the broadest ground near your party. The worker points to its upper edge, then takes the rock path toward you. Nobody has to make the doubtful seam into a shortcut merely to begin a conversation.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "two_jobs"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "two_jobs": {
-      "type": "choice_point",
-      "narration": "The worker introduces herself as one of the yetis who checks paths between the glacier reading rooms. Her packed food and spare rope are already on this bank. Across the new stream, a tool bundle rests beside an unlit trail lantern. Both can be recovered later, but the lantern marks a path other visitors may still follow. A second worker is due along that path. She asks your party which warning should be dealt with first. What is the immediate danger?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Make the old approach stop before the new water",
-          "icon": "hand",
-          "goto": "two_jobs_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Signal the far approach from the broad shelf",
-          "icon": "hand",
-          "goto": "two_jobs_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "two_jobs_1": {
-      "type": "story",
-      "narration": "You ask Pip to carry a clear stop signal back to the last safe turn while the party remains with the worker. She lends him a strip of dark cloth from her pack. Visitors can stop on firm ground before they try to reach a lantern on the wrong bank.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
+          "label": "Continue",
           "icon": "hand",
           "goto": "test_flow"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "two_jobs_2": {
-      "type": "story",
-      "narration": "You help the worker lift her staff where it is visible above the flow. A friend keeps watch on the old path while Pip compares the lantern's position with the ridge. If someone appears across the stream, you can show the waiting place before asking them to cross.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "test_flow"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
+      ]
     },
     "test_flow": {
-      "type": "choice_point",
-      "narration": "The worker places three loose stones on a board to stand for the two banks and a central rock. She has not checked that rock since the water arrived. Mist keeps hiding its low side. Your party can measure the flow past it or look along the bank for a wider, shallower reach. A fast answer would help the coming visitor, but a guessed crossing would put them in the stream. Which test will give you something you can use?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Time floating twigs past the central rock",
-          "icon": "hand",
-          "goto": "test_flow_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Survey the wider reach from two dry viewpoints",
-          "icon": "hand",
-          "goto": "test_flow_2"
-        }
-      ],
+      "type": "interaction",
+      "narration": "The worker drops a small twig into the new stream. From the dry bank, judge where it passes the central rock. The slow pocket can carry a line; no hero will stand in it.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -458,162 +380,58 @@
         {
           "figure": "cast/route_worker_yeti",
           "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "test_flow_1": {
-      "type": "story",
-      "narration": "You collect loose twigs from the worker's pack and drop them from firm ground. Two friends watch separate points while Pip follows the path downstream. You do not reach into the flow to rescue a twig. The worker counts only trials everyone could see.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "test_flow_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
         },
         {
           "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
+          "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "test_flow_1_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Time floating twigs past the central rock. Choose who leads while the others help.",
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Mark the twig's passage through the calm pocket.",
+        "actionLabel": "Mark the calm pocket",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
       "onSuccess": {
-        "goto": "test_flow_1_done",
+        "goto": "flow_result",
+        "narration": "You mark a calm pocket behind the central rock.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "tested_the_rushing_water"
+            "flag": "tested_the_rushing_water",
+            "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "test_flow_1_changed",
+        "goto": "flow_result",
+        "narration": "Spray hides the twig. The worker tests again with her marked pole from the bank and shows the calm pocket.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "tested_the_rushing_water"
+            "flag": "tested_the_rushing_water",
+            "value": true
           }
         ]
       },
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "test_flow_1_done": {
-      "type": "story",
-      "narration": "The tests show a short calm pocket behind the central rock and a rougher run beyond it. You mark the pocket as a place for a rope to rest, not a place for a hero to stand. The wider reach has a firm approach for an alternative route.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "bundle_plan"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "test_flow_1_changed": {
-      "type": "story",
-      "narration": "Spray hides the result halfway through. You refuse to call the missing part safe. The worker shows you a higher viewpoint where the bank is firm, and you make a smaller plan from what can be seen there. The uncertain central rock stays off the walking route.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "bundle_plan"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "test_flow_2": {
-      "type": "story",
-      "narration": "You stay on the bank and compare the exposed stones from above and below. Pip marks where spray hides the bed. Your party asks the worker which parts were checked before the change, keeping those older checks separate from anything you can verify now.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "test_flow_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "test_flow_2_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Survey the wider reach from two dry viewpoints. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "test_flow_2_done",
+      "onAssisted": {
+        "goto": "flow_result",
+        "narration": "You mark a calm pocket behind the central rock.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "tested_the_rushing_water"
+            "flag": "tested_the_rushing_water",
+            "value": true
           }
         ]
-      },
-      "onFailure": {
-        "goto": "test_flow_2_changed",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "tested_the_rushing_water"
-          }
-        ]
-      },
+      }
+    },
+    "flow_result": {
+      "type": "story",
+      "narration": "The calm pocket leads to a low shelf crossing. A longer high rock reach avoids it. Neither is a promise that the water will stay here. The workers pass a guide rope across the calm pocket and test it from both banks. The far worker lights her lantern and lifts it to show she can see you, then waits for your plan.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -622,73 +440,25 @@
         {
           "figure": "cast/route_worker_yeti",
           "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "test_flow_2_done": {
-      "type": "story",
-      "narration": "The tests show a short calm pocket behind the central rock and a rougher run beyond it. You mark the pocket as a place for a rope to rest, not a place for a hero to stand. The wider reach has a firm approach for an alternative route.",
+      "art": "scenes/riftlight/wrong-valley",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue with this result",
+          "label": "Continue",
           "icon": "hand",
           "goto": "bundle_plan"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "test_flow_2_changed": {
-      "type": "story",
-      "narration": "Spray hides the result halfway through. You refuse to call the missing part safe. The worker shows you a higher viewpoint where the bank is firm, and you make a smaller plan from what can be seen there. The uncertain central rock stays off the walking route.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "bundle_plan"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
+      ]
     },
     "bundle_plan": {
       "type": "choice_point",
-      "narration": "The second worker arrives on the far path and stops beside the lantern. She can see your signal and has room to wait. The tool bundle is beside her, but she has no spare line long enough for the stream. Your worker offers two coils of rope from her pack and a broad carrying board. Your party can prepare to move the tools first or leave them with the far worker while securing a route for people. What will help the two workers most?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Prepare a line for the tool bundle first",
-          "icon": "hand",
-          "goto": "bundle_plan_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Secure a waiting and crossing plan before moving tools",
-          "icon": "hand",
-          "goto": "bundle_plan_2"
-        }
-      ],
+      "narration": "There is time for one preparation before your party crosses. Lift the tools to a high rack and they will stay dry, but the far worker will still need help finding the upper handline if the water changes. Rig that handline first and she can withdraw herself; her tools will stay low until you can recover them. Which job comes first?",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -703,19 +473,87 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "bundle_plan_1": {
-      "type": "story",
-      "narration": "You ask the far worker to keep the bundle well back from the water until the line is ready. The near worker coils the loose end on firm ground. Pip helps your party check that pulling the tools cannot pull a waiting hero toward the bank.",
+      "art": "scenes/riftlight/wrong-valley",
       "choices": [
         {
-          "id": "continue",
-          "label": "See what follows",
+          "id": "tools",
+          "label": "Lift the tools high; help the worker later",
           "icon": "hand",
-          "goto": "anchor"
+          "goto": "tools_hoist",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "valley_prepared_tools",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "valley_tools_dry",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "people",
+          "label": "Rig the worker's upper handline; recover tools later",
+          "icon": "hand",
+          "goto": "people_line",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "valley_prepared_tools",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "valley_tools_dry",
+              "value": false
+            }
+          ]
+        },
+        {
+          "id": "duskrunner",
+          "label": "Have our duskrunner guide the tools onto the high rack",
+          "icon": "hand",
+          "goto": "tools_hoist_assisted",
+          "requiresClass": "duskrunner",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "valley_prepared_tools",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "valley_tools_dry",
+              "value": true
+            }
+          ]
+        },
+        {
+          "id": "thornguard",
+          "label": "Have our thornguard brace the upper handline",
+          "icon": "hand",
+          "goto": "people_braced",
+          "requiresClass": "thornguard",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "valley_prepared_tools",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "valley_tools_dry",
+              "value": false
+            }
+          ]
         }
-      ],
+      ]
+    },
+    "tools_hoist": {
+      "type": "interaction",
+      "narration": "The far worker puts the tool bundle on the board. Guide her hauling line toward the rack above the wet seam. The rack is broad; its approach is awkward.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -730,114 +568,31 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "bundle_plan_2": {
-      "type": "story",
-      "narration": "You leave the bundle with the far worker and mark where people should stand on both sides. Your worker agrees to keep her food and second rope ready as backup. The tools can wait while everyone learns which signal means stop and which means proceed.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "anchor"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "anchor": {
-      "type": "choice_point",
-      "narration": "A firm rock projects from the upper bank beside the worker. It could hold the near end of a guide rope, but thin ice hides its base. Farther back, two sound rocks give a longer line with less convenient reach. The worker asks your party to choose where it can safely take weight. A thornguard can help steady the carrying board, but no ability will make an unchecked anchor sound. Which support will you test?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Clear a small view of the projecting rock's base",
-          "icon": "hand",
-          "goto": "anchor_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Use the two higher rocks with a longer guide line",
-          "icon": "hand",
-          "goto": "anchor_2"
-        },
-        {
-          "id": "assist",
-          "label": "Use brace to steady the carrying board",
-          "icon": "hand",
-          "goto": "anchor_assisted",
-          "requiresClass": "thornguard"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "anchor_1": {
-      "type": "story",
-      "narration": "You work from the firm side and lift only loose surface snow with the board's edge. A friend holds the spare line away from the stream. The worker watches for movement at the base, ready to stop before the anchor is asked to hold anybody.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "anchor_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "anchor_1_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Clear a small view of the projecting rock's base. Choose who leads while the others help.",
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Guide the board toward the high rack.",
+        "actionLabel": "Set down the tools",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
       "onSuccess": {
-        "goto": "anchor_1_done"
+        "goto": "tools_tie",
+        "narration": "The board lands on the rack. The tools are above the waterline."
       },
       "onFailure": {
-        "goto": "anchor_1_changed"
+        "goto": "tools_steps",
+        "narration": "A strap catches below the rack. The far worker holds it on the shelf while you prepare the slower lift."
       },
+      "onAssisted": {
+        "goto": "tools_tie",
+        "narration": "The board lands on the rack. The tools are above the waterline."
+      }
+    },
+    "tools_hoist_assisted": {
+      "type": "interaction",
+      "narration": "The far worker puts the tool bundle on the board. Guide her hauling line toward the rack above the wet seam. The rack is broad; its approach is awkward. Your duskrunner keeps the straps clear, giving the board a wider landing.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -852,101 +607,31 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "anchor_1_done": {
-      "type": "story",
-      "narration": "The support stays steady under the careful test. You stop adding weight once the worker can judge the line. She marks the tested arrangement on Pip's drawing and keeps the spare rope free. Nobody treats a successful test as permission to rush the crossing.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "signals"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "anchor_1_changed": {
-      "type": "story",
-      "narration": "The first arrangement shifts under the board. You stop before anyone puts weight on it. The worker moves the support back onto the rock path and helps your party rebuild the turn. The shorter reach is abandoned; the longer line has a clear, checked route.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "signals"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "anchor_2": {
-      "type": "story",
-      "narration": "You take the rope back to the rock path and lay out a wide turn between the two supports. Pip keeps the spare coil clear of your feet. Your party tests the arrangement with the board first so a catch can be noticed without anyone being on the line.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "anchor_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "anchor_2_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Use the two higher rocks with a longer guide line. Choose who leads while the others help.",
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Guide the board toward the high rack.",
+        "actionLabel": "Set down the tools",
+        "target": 0.5,
+        "width": 0.6,
+        "periodMs": 6000
+      },
       "onSuccess": {
-        "goto": "anchor_2_done"
+        "goto": "tools_tie",
+        "narration": "The board lands on the rack. The tools are above the waterline."
       },
       "onFailure": {
-        "goto": "anchor_2_changed"
+        "goto": "tools_steps",
+        "narration": "A strap catches below the rack. The far worker holds it on the shelf while you prepare the slower lift."
       },
+      "onAssisted": {
+        "goto": "tools_tie",
+        "narration": "The board lands on the rack. The tools are above the waterline."
+      }
+    },
+    "tools_steps": {
+      "type": "interaction",
+      "narration": "The far worker takes the board up the checked stone steps. Keep its load level from your line while she raises each end onto the rack.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -961,46 +646,130 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the tool board before the worker lifts it.",
+        "actionLabel": "Lift to the rack",
+        "objectLabel": "Tool carrying board"
+      },
+      "onSuccess": {
+        "goto": "tools_tie",
+        "narration": "The slow lift puts every tool on the high rack."
+      },
+      "onFailure": {
+        "goto": "tools_tie",
+        "narration": "The slow lift puts every tool on the high rack."
+      },
+      "onAssisted": {
+        "goto": "tools_tie",
+        "narration": "The slow lift puts every tool on the high rack."
+      }
     },
-    "anchor_2_done": {
+    "tools_tie": {
+      "type": "interaction",
+      "narration": "Pass the loose end of the retaining line along the near bank. The far worker uses the returned length to secure the rack. Her upper handline still needs preparing later.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the retaining line along the bank.",
+        "actionLabel": "Pass the line",
+        "objectLabel": "Rack retaining line"
+      },
+      "onSuccess": {
+        "goto": "signals",
+        "narration": "The tools are secured high. The far worker still has the low shelf as her working place."
+      },
+      "onFailure": {
+        "goto": "signals",
+        "narration": "The tools are secured high. The far worker still has the low shelf as her working place."
+      },
+      "onAssisted": {
+        "goto": "signals",
+        "narration": "The tools are secured high. The far worker still has the low shelf as her working place."
+      }
+    },
+    "people_line": {
+      "type": "interaction",
+      "narration": "From the near bank, support the guide board while the far worker fixes a handline between her low shelf and the high path. The tool bundle waits beside her lantern.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Steady the board while the worker fixes the upper handline.",
+        "actionLabel": "Fix the upper line",
+        "supportLabel": "Support the guide board"
+      },
+      "onSuccess": {
+        "goto": "people_signal",
+        "narration": "The upper handline is fixed. The tools are still on the low shelf."
+      },
+      "onFailure": {
+        "goto": "people_signal",
+        "narration": "The upper handline is fixed. The tools are still on the low shelf."
+      },
+      "onAssisted": {
+        "goto": "people_signal",
+        "narration": "The upper handline is fixed. The tools are still on the low shelf."
+      }
+    },
+    "people_braced": {
       "type": "story",
-      "narration": "The support stays steady under the careful test. You stop adding weight once the worker can judge the line. She marks the tested arrangement on Pip's drawing and keeps the spare rope free. Nobody treats a successful test as permission to rush the crossing.",
+      "narration": "Your thornguard uses a skill called Brace to hold the guide board in place. The far worker can fix her upper handline without the party doing the board-support task. Her tool bundle remains on the low shelf.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
       "choices": [
         {
           "id": "continue",
-          "label": "Continue with this result",
+          "label": "Continue",
           "icon": "hand",
-          "goto": "signals"
+          "goto": "people_signal"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
+      ]
     },
-    "anchor_2_changed": {
-      "type": "story",
-      "narration": "The first arrangement shifts under the board. You stop before anyone puts weight on it. The worker moves the support back onto the rock path and helps your party rebuild the turn. The shorter reach is abandoned; the longer line has a clear, checked route.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "signals"
-        }
-      ],
+    "people_signal": {
+      "type": "interaction",
+      "narration": "Wait for the worker to reach the top of her new handline, then raise the lantern to confirm the route. Her return path is ready; the tools will need collecting later.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1015,25 +784,31 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Confirm when the worker reaches the high-path interval.",
+        "actionLabel": "Confirm the upper path",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "signals",
+        "narration": "The worker reaches the high path and returns to her watch, with the handline ready behind her."
+      },
+      "onFailure": {
+        "goto": "signals",
+        "narration": "The lantern signal comes early. The worker waits, then points out the checked upper path herself before returning to watch."
+      },
+      "onAssisted": {
+        "goto": "signals",
+        "narration": "The worker reaches the high path and returns to her watch, with the handline ready behind her."
+      }
     },
     "signals": {
-      "type": "choice_point",
-      "narration": "The far worker lifts the lantern to ask whether she should move. Your worker shakes her head and looks to your party. Spray can hide a spoken instruction, and both workers have tools to carry. Pip suggests three simple signals, but a sign that means start to one person might mean stop to another. You can rehearse while everyone is still on firm ground. How will the far worker show that she understood rather than merely saw you?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Have each bank repeat the signal before anyone moves",
-          "icon": "hand",
-          "goto": "signals_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Make stopping the one signal anyone can give",
-          "icon": "hand",
-          "goto": "signals_2"
-        }
-      ],
+      "type": "interaction",
+      "narration": "The workers demonstrate their crossing signs: lantern up for wait, staff sideways for stop, a hand toward the path for proceed. Watch their practice pattern, then show it back. Pip tries to hold a pencil and signal at once. The pencil loses.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1048,141 +823,51 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "signals_1": {
-      "type": "story",
-      "narration": "You show stop, wait and proceed one at a time. The far worker repeats each with the lantern before putting it back on the rock. Pip watches both banks and corrects a mixed-up gesture during the rehearsal. The rope stays slack until everyone agrees.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "tools_return"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "signals_2": {
-      "type": "story",
-      "narration": "You agree on a broad stop signal and let the workers choose one clear invitation to proceed. A friend practices interrupting the invitation from the near bank. Both workers stop at once. A small doubt can now halt the plan without needing a louder voice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "tools_return"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "tools_return": {
-      "type": "choice_point",
-      "narration": "With the signals understood, the far worker ties the tool bundle to the end of the carrying line. It is not tied to her body. Your party must guide the bundle over the water without letting its loose straps catch. One worker watches the far edge and the other stands beside the near anchor. You can keep the bundle low along the guide rope or use the broad board to hold its straps together. Which method will you try?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Guide the bundle steadily along the rope",
-          "icon": "hand",
-          "goto": "tools_return_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Make a broad sling with the carrying board",
-          "icon": "hand",
-          "goto": "tools_return_2"
-        },
-        {
-          "id": "assist",
-          "label": "Have a duskrunner secure the loose straps",
-          "icon": "hand",
-          "goto": "tools_return_assisted",
-          "requiresClass": "duskrunner"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "tools_return_1": {
-      "type": "story",
-      "narration": "You ask the far worker to tuck in every strap before the pull begins. One friend pulls from firm ground while another keeps the returning coil out of the stream. Pip watches the central rock and gives the stop signal as soon as the bundle approaches a snag.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "tools_return_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "tools_return_1_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Guide the bundle steadily along the rope. Choose who leads while the others help.",
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the workers' signal pattern, then echo it.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "proceed",
+            "label": "Hand toward the path",
+            "icon": "eye"
+          },
+          {
+            "id": "wait",
+            "label": "Raised lantern",
+            "icon": "eye"
+          },
+          {
+            "id": "stop",
+            "label": "Sideways staff",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "wait",
+          "stop",
+          "proceed"
+        ],
+        "stepMs": 1300
+      },
       "onSuccess": {
-        "goto": "tools_return_1_done"
+        "goto": "camp",
+        "narration": "Both workers can distinguish stop, wait and proceed."
       },
       "onFailure": {
-        "goto": "tools_return_1_changed"
+        "goto": "camp",
+        "narration": "The workers slow the demonstration and repeat the signs aloud. Nobody starts across until the meanings are shared."
       },
+      "onAssisted": {
+        "goto": "camp",
+        "narration": "Both workers can distinguish stop, wait and proceed."
+      }
+    },
+    "camp": {
+      "type": "rest",
+      "narration": "The near worker shares warm tea from a flask while everyone rests on the upper bank. Pip draws two river lines and puts his eraser away. The far worker watches from the low shelf. Your preparation is ready, and the party still needs to reach the far path together.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1197,243 +882,59 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "tools_return_1_done": {
-      "type": "story",
-      "narration": "The bundle reaches the near bank with every tool still packed. You set it well above the wet seam and untie the hauling line. The far worker now has free hands for the crossing, and the guide rope can be checked without a load hanging from it.",
+      "art": "scenes/riftlight/wrong-valley",
+      "heal": 0,
       "choices": [
         {
-          "id": "continue",
-          "label": "Continue with this result",
+          "id": "rest",
+          "label": "Rest, then choose the crossing",
+          "icon": "hand",
+          "goto": "crossing_choice"
+        },
+        {
+          "id": "watch",
+          "label": "Rest while checking both routes",
           "icon": "hand",
           "goto": "crossing_choice"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "tools_return_1_changed": {
-      "type": "story",
-      "narration": "A strap catches before the bundle is halfway across. You give the stop signal and take the strain off the line. The far worker draws it back to firm ground, repacks the strap and passes the tools by the higher rock reach with your worker guiding. Nothing is left dangling.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "crossing_choice"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "tools_return_2": {
-      "type": "story",
-      "narration": "You fasten the bundle against the board and leave its handles visible. The workers check the knot from their own sides. Your party can bring the whole shape across without guessing where a loose tool ends. The spare rope remains available if the board catches.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "tools_return_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "tools_return_2_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Make a broad sling with the carrying board. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "tools_return_2_done"
-      },
-      "onFailure": {
-        "goto": "tools_return_2_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "tools_return_2_done": {
-      "type": "story",
-      "narration": "The bundle reaches the near bank with every tool still packed. You set it well above the wet seam and untie the hauling line. The far worker now has free hands for the crossing, and the guide rope can be checked without a load hanging from it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "crossing_choice"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "tools_return_2_changed": {
-      "type": "story",
-      "narration": "A strap catches before the bundle is halfway across. You give the stop signal and take the strain off the line. The far worker draws it back to firm ground, repacks the strap and passes the tools by the higher rock reach with your worker guiding. Nothing is left dangling.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "crossing_choice"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
+      ]
     },
     "crossing_choice": {
       "type": "choice_point",
-      "narration": "The worker shows you two ways to reach the far path and the reading rooms beyond it. The prepared rope line gives a short supported crossing along a low shelf. The higher rock reach takes longer and needs careful footing, but avoids the low ice. Both are checked routes with a spare plan if conditions change. Pip asks which one the party wants to attempt together. You will not split the group or leave a friend to manage alone. Which way will you take?",
+      "narration": "The low shelf has a guide rope and a calm pocket. The high rock reach takes longer but stays above the low ice. If your chosen route shifts, the workers will help you use the other one. You will play that changed crossing, not repeat the same attempt. Which route will your party try?",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
       "choices": [
         {
           "id": "option_1",
-          "label": "Cross together using the supported low shelf",
+          "label": "Cross by the supported low shelf",
           "icon": "hand",
-          "goto": "crossing_choice_1"
+          "goto": "crossing_choice_1_check"
         },
         {
           "id": "option_2",
-          "label": "Take the longer route over the high rock reach",
+          "label": "Cross by the high rock reach",
           "icon": "hand",
-          "goto": "crossing_choice_2"
+          "goto": "crossing_choice_2_check"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "crossing_choice_1": {
-      "type": "story",
-      "narration": "You leave the tools on firm ground and check the guide line before the first hero moves. The workers agree who will watch each bank. Pip waits until every friend knows where to stop. If the low shelf shifts, the higher rock reach remains the way to finish.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "crossing_choice_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
+      ]
     },
     "crossing_choice_1_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Cross together using the supported low shelf. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "crossing_choice_1_done"
-      },
-      "onFailure": {
-        "goto": "crossing_choice_1_changed"
-      },
+      "type": "interaction",
+      "narration": "Wait for the worker's clear interval before moving along the supported low shelf. Everyone follows the same checked route.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1448,7 +949,210 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Take the low-shelf step in the clear interval.",
+        "actionLabel": "Take the supported step",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "crossing_choice_1_done",
+        "narration": "Your party reaches the far path along the supported low shelf.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_crossed_high",
+            "value": false
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "high_recovery",
+        "narration": "The low shelf shifts. You return to the near bank before taking the high rock reach together."
+      },
+      "onAssisted": {
+        "goto": "crossing_choice_1_done",
+        "narration": "Your party reaches the far path along the supported low shelf.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_crossed_high",
+            "value": false
+          }
+        ]
+      }
+    },
+    "crossing_choice_2_check": {
+      "type": "interaction",
+      "narration": "The worker points out the next checked foothold on the high rock reach. Wait for her clear interval before taking it. The low guide line stays available if this approach shifts.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Move across the high reach during the worker's clear interval.",
+        "actionLabel": "Take the high step",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "crossing_choice_2_done",
+        "narration": "Your party reaches the far path by the high rock reach.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_crossed_high",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "low_recovery",
+        "narration": "A foothold shifts before you commit. The worker redirects you to the supported low shelf."
+      },
+      "onAssisted": {
+        "goto": "crossing_choice_2_done",
+        "narration": "Your party reaches the far path by the high rock reach.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_crossed_high",
+            "value": true
+          }
+        ]
+      }
+    },
+    "high_recovery": {
+      "type": "interaction",
+      "narration": "Keep the high guide line steady while your party follows the worker's longer rock route. This is the way the party actually finishes.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Steady the guide line for the high rock reach.",
+        "actionLabel": "Finish on the high reach",
+        "supportLabel": "Support the high line"
+      },
+      "onSuccess": {
+        "goto": "crossing_choice_2_done",
+        "narration": "Your changed plan gets everyone across by the high rock reach.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_crossed_high",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "crossing_choice_2_done",
+        "narration": "Your changed plan gets everyone across by the high rock reach.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_crossed_high",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "crossing_choice_2_done",
+        "narration": "Your changed plan gets everyone across by the high rock reach.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_crossed_high",
+            "value": true
+          }
+        ]
+      }
+    },
+    "low_recovery": {
+      "type": "interaction",
+      "narration": "The workers hold the low crossing steady while your party follows the supported shelf. The checked backup replaces the shifted high foothold.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Keep the guide board level for the low-shelf crossing.",
+        "actionLabel": "Finish on the low shelf",
+        "objectLabel": "Low-shelf guide board"
+      },
+      "onSuccess": {
+        "goto": "crossing_choice_1_done",
+        "narration": "Your changed plan gets everyone across along the supported low shelf.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_crossed_high",
+            "value": false
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "crossing_choice_1_done",
+        "narration": "Your changed plan gets everyone across along the supported low shelf.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_crossed_high",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "crossing_choice_1_done",
+        "narration": "Your changed plan gets everyone across along the supported low shelf.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_crossed_high",
+            "value": false
+          }
+        ]
+      }
     },
     "crossing_choice_1_done": {
       "type": "story",
@@ -1484,96 +1188,6 @@
         }
       ]
     },
-    "crossing_choice_1_changed": {
-      "type": "story",
-      "narration": "The first step shows a change in the chosen route. Everyone stops at the agreed place while the workers keep the backup ready. Your party returns to firm ground, then crosses by the other checked route together. A changed plan gets everyone across; nobody has to win a second roll. You finish by the high rock reach.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "river_turn"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "valley_crossed_high",
-          "value": true
-        }
-      ]
-    },
-    "crossing_choice_2": {
-      "type": "story",
-      "narration": "You coil the hauling line and leave the guide rope ready as backup. The worker points out the footholds she has checked. Your party moves at the slowest friend's pace, with Pip keeping the group together. No one is asked to jump across an unseen gap.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "crossing_choice_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "crossing_choice_2_check": {
-      "type": "check",
-      "tags": ["climb"],
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Take the longer route over the high rock reach. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "crossing_choice_2_done"
-      },
-      "onFailure": {
-        "goto": "crossing_choice_2_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
     "crossing_choice_2_done": {
       "type": "story",
       "narration": "The chosen route holds and the party reaches the far path together. The workers wait until the last friend is on firm ground before lifting the stop signal. Pip checks every face, then gives the all-clear. Your crossing plan has worked without leaving anyone behind. You finish by the high rock reach.",
@@ -1608,57 +1222,9 @@
         }
       ]
     },
-    "crossing_choice_2_changed": {
-      "type": "story",
-      "narration": "The first step shows a change in the chosen route. Everyone stops at the agreed place while the workers keep the backup ready. Your party returns to firm ground, then crosses by the other checked route together. A changed plan gets everyone across; nobody has to win a second roll. You finish along the supported low shelf.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "river_turn"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "valley_crossed_high",
-          "value": false
-        }
-      ]
-    },
     "river_turn": {
-      "type": "choice_point",
-      "narration": "From the far path, the ridges look familiar but the stream points down the valley your earlier map left dry. Pip asks whether he should erase the old watercourse. The workers refuse to promise that the new flow will last. A wet seam is already growing near the old channel. Your party has seen a change, not a permanent new map of the realm. How should the drawing preserve both the old route and what happened today?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Keep the old channel and add the observed new course",
-          "icon": "hand",
-          "goto": "river_turn_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Make a separate crossing sketch instead of erasing the map",
-          "icon": "hand",
-          "goto": "river_turn_2"
-        }
-      ],
+      "type": "story",
+      "narration": "From the far path, you can see both valleys. Water noses into the old bed while the western stream grows quieter. Pip puts down his eraser. \"It is changing back.\" Watch the order of the visible changes before the workers need your help.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1677,21 +1243,22 @@
       "onEnter": [
         {
           "type": "setFlag",
-          "flag": "reached_the_far_path"
+          "flag": "reached_the_far_path",
+          "value": true
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "hand",
+          "goto": "return_observation"
         }
       ]
     },
-    "river_turn_1": {
-      "type": "story",
-      "narration": "You give each course its own line and mark the place where your party stood. Pip writes that the new line was observed during this crossing. The workers can compare another visit without mistaking today's record for a promise that the water will always run here.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "return_water"
-        }
-      ],
+    "return_observation": {
+      "type": "interaction",
+      "narration": "The worker points to the changing water. Watch the observation pattern for the western stream, old bed and quiet western channel. Remember which changed first.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1706,52 +1273,72 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "river_turn_2": {
-      "type": "story",
-      "narration": "You keep the earlier map intact and draw a second page with the ridges, guide line and high reach. Pip puts both pages together. Anyone using them will have to look at the valley again, just as your party did, before choosing a crossing.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "return_water"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the water-change pattern, then echo it.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "quiet",
+            "label": "Western channel quiet",
+            "icon": "eye"
+          },
+          {
+            "id": "west",
+            "label": "Western stream falls",
+            "icon": "eye"
+          },
+          {
+            "id": "old",
+            "label": "Old bed fills",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "west",
+          "old",
+          "quiet"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "return_water",
+        "narration": "You keep the whole visible sequence in order.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_return_observed",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "return_water",
+        "narration": "Spray hides the middle change. You keep the before-and-after landmarks and leave that moment blank.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_return_observed",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "return_water",
+        "narration": "You keep the whole visible sequence in order.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_return_observed",
+            "value": true
+          }
+        ]
+      }
     },
     "return_water": {
       "type": "choice_point",
-      "narration": "A narrow tongue of water begins creeping along the old bed behind you. The stream in the western valley falls quieter. The workers stop moving the tools and ask everyone to stay on the upper path. There is time to lift the guide rope and lantern from their low positions, but not to make a wall across either channel. Your party can help the workers withdraw the equipment without pretending to direct where the river goes. What should come up first?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Lift the low guide rope before the old bed fills",
-          "icon": "hand",
-          "goto": "return_water_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Move the lantern and waiting marker to the upper path",
-          "icon": "hand",
-          "goto": "return_water_2"
-        }
-      ],
+      "narration": "The old bed is filling. Your party is on the far high path; the workers are ready to withdraw. The job you prepared determines what still needs help below. You can take that job, or let the workers finish it while your party helps move their repair gear afterward.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1766,19 +1353,47 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "return_water_1": {
-      "type": "story",
-      "narration": "You keep all the heroes on firm ground and pull the loose rope back from above. One worker watches the rising tongue of water while Pip keeps the coil from spreading across the path. The far worker stands ready to leave the lantern if its footing changes.",
+      "art": "scenes/riftlight/wrong-valley",
       "choices": [
         {
-          "id": "continue",
-          "label": "Put the plan into action",
+          "id": "workers",
+          "label": "Let the workers finish; help with repair gear",
           "icon": "hand",
-          "goto": "return_water_1_check"
+          "goto": "workers_takeover"
+        },
+        {
+          "id": "worker",
+          "label": "Our tools are high: guide the worker to the upper path",
+          "icon": "hand",
+          "goto": "worker_beacon",
+          "when": {
+            "flag": "valley_prepared_tools"
+          }
+        },
+        {
+          "id": "tools",
+          "label": "Her handline is ready: recover the low tool bundle",
+          "icon": "hand",
+          "goto": "tool_recover",
+          "when": {
+            "notFlag": "valley_prepared_tools"
+          }
+        },
+        {
+          "id": "quick_tools",
+          "label": "Use our duskrunner to free the low bundle's straps",
+          "icon": "hand",
+          "goto": "tool_recover_assisted",
+          "requiresClass": "duskrunner",
+          "when": {
+            "notFlag": "valley_prepared_tools"
+          }
         }
-      ],
+      ]
+    },
+    "worker_beacon": {
+      "type": "interaction",
+      "narration": "The tools are high, but the far worker still needs a clear route off her low watch. Pass the lantern directions along the high path while the other worker readies a line. She follows the lit landmarks to you.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1793,20 +1408,50 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "return_water_1_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Lift the low guide rope before the old bed fills. Choose who leads while the others help.",
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the upper-path directions to the worker.",
+        "actionLabel": "Pass the lantern directions",
+        "objectLabel": "Upper-path lantern directions"
+      },
       "onSuccess": {
-        "goto": "return_water_1_done"
+        "goto": "tell_together",
+        "narration": "The worker follows the lights onto the high path. The tools remain dry on their rack.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_worker_guided",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "return_water_1_changed"
+        "goto": "tell_together",
+        "narration": "The worker follows the lights onto the high path. The tools remain dry on their rack.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_worker_guided",
+            "value": true
+          }
+        ]
       },
+      "onAssisted": {
+        "goto": "tell_together",
+        "narration": "The worker follows the lights onto the high path. The tools remain dry on their rack.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_worker_guided",
+            "value": true
+          }
+        ]
+      }
+    },
+    "tool_recover": {
+      "type": "interaction",
+      "narration": "The far worker uses the upper handline you prepared and joins you. From the high path, guide a hook toward her low bundle's hauling loop.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1821,101 +1466,52 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "return_water_1_done": {
-      "type": "story",
-      "narration": "The equipment reaches the upper path before the water covers the low shelf. You leave both channels clear. The workers look from one valley to the other while Pip marks the change in order. Your party has helped people adapt without claiming to have turned the river back.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "tell_together"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "return_water_1_changed": {
-      "type": "story",
-      "narration": "Water reaches one low marker before it can be lifted. Your party leaves it and withdraws to the upper path. The workers keep the useful rope and lantern, then place a fresh warning higher up. Pip records the abandoned marker so nobody follows it as an invitation.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "tell_together"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "return_water_2": {
-      "type": "story",
-      "narration": "You help the far worker carry the lantern clear of the returning water and set it beside a broad stopping place. Pip keeps watch on the low rope while the other worker draws it in. The new warning will point to firm ground whichever channel fills next.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "return_water_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "return_water_2_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Move the lantern and waiting marker to the upper path. Choose who leads while the others help.",
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Catch the bundle loop from the high path.",
+        "actionLabel": "Catch the tool loop",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
       "onSuccess": {
-        "goto": "return_water_2_done"
+        "goto": "tell_together",
+        "narration": "The bundle clears the returning water. Its tools are dry.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_tools_dry",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "return_water_2_changed"
+        "goto": "wet_tools",
+        "narration": "The water reaches the bundle before the hook catches. The worker draws it onto the high step with her spare line. Everyone stays above the channel.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_tools_dry",
+            "value": false
+          }
+        ]
       },
+      "onAssisted": {
+        "goto": "tell_together",
+        "narration": "The bundle clears the returning water. Its tools are dry.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_tools_dry",
+            "value": true
+          }
+        ]
+      }
+    },
+    "tool_recover_assisted": {
+      "type": "interaction",
+      "narration": "The far worker uses the upper handline you prepared and joins you. From the high path, guide a hook toward her low bundle's hauling loop. Your duskrunner keeps the loose straps clear, widening the catch.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1930,46 +1526,130 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Catch the bundle loop from the high path.",
+        "actionLabel": "Catch the tool loop",
+        "target": 0.5,
+        "width": 0.6,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "tell_together",
+        "narration": "The bundle clears the returning water. Its tools are dry.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_tools_dry",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "wet_tools",
+        "narration": "The water reaches the bundle before the hook catches. The worker draws it onto the high step with her spare line. Everyone stays above the channel.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_tools_dry",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "tell_together",
+        "narration": "The bundle clears the returning water. Its tools are dry.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_tools_dry",
+            "value": true
+          }
+        ]
+      }
     },
-    "return_water_2_done": {
+    "wet_tools": {
+      "type": "interaction",
+      "narration": "The recovered tools are wet. Keep the carrying board level while the workers lay the blades out to dry. The repair will take their afternoon; do not report a dry recovery.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the board for the wet tools.",
+        "actionLabel": "Set out the tools",
+        "objectLabel": "Wet-tool drying board"
+      },
+      "onSuccess": {
+        "goto": "tell_together",
+        "narration": "The workers set aside the wet kit for cleaning. It will need care before another shift."
+      },
+      "onFailure": {
+        "goto": "tell_together",
+        "narration": "The workers set aside the wet kit for cleaning. It will need care before another shift."
+      },
+      "onAssisted": {
+        "goto": "tell_together",
+        "narration": "The workers set aside the wet kit for cleaning. It will need care before another shift."
+      }
+    },
+    "workers_takeover": {
       "type": "story",
-      "narration": "The equipment reaches the upper path before the water covers the low shelf. You leave both channels clear. The workers look from one valley to the other while Pip marks the change in order. Your party has helped people adapt without claiming to have turned the river back.",
+      "narration": "Your party stays on the upper path while the workers finish the low recovery together. Their spare line and a second trip get everyone and the bundle out. They ask you to move the repair gear to the reading-room path.",
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley",
+      "variants": [
+        {
+          "when": {
+            "flag": "valley_prepared_tools"
+          },
+          "text": "The tools stay dry on the rack while the workers guide the last low watch out."
+        },
+        {
+          "when": {
+            "notFlag": "valley_prepared_tools"
+          },
+          "text": "The low bundle gets wet before the workers draw it in. The kit needs cleaning."
+        }
+      ],
       "choices": [
         {
           "id": "continue",
-          "label": "Continue with this result",
+          "label": "Continue",
           "icon": "hand",
-          "goto": "tell_together"
+          "goto": "repair_gear"
         }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
+      ]
     },
-    "return_water_2_changed": {
-      "type": "story",
-      "narration": "Water reaches one low marker before it can be lifted. Your party leaves it and withdraws to the upper path. The workers keep the useful rope and lantern, then place a fresh warning higher up. Pip records the abandoned marker so nobody follows it as an invitation.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "tell_together"
-        }
-      ],
+    "repair_gear": {
+      "type": "interaction",
+      "narration": "The workers have used their spare line. Pass the replacement cord and drying cloths along the high path to their repair bundle before leaving.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1984,25 +1664,50 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the repair supplies along the high path.",
+        "actionLabel": "Pass the repair kit",
+        "objectLabel": "Replacement cord and drying cloths"
+      },
+      "onSuccess": {
+        "goto": "tell_together",
+        "narration": "The repair supplies are ready. The workers take over the crossing watch.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_workers_finished",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "tell_together",
+        "narration": "The repair supplies are ready. The workers take over the crossing watch.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_workers_finished",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "tell_together",
+        "narration": "The repair supplies are ready. The workers take over the crossing watch.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_workers_finished",
+            "value": true
+          }
+        ]
+      }
     },
     "tell_together": {
       "type": "choice_point",
-      "narration": "The water now runs again along the older bed. The western course still glistens between the ridges, showing where it briefly passed. Your worker asks each witness for the sequence before the two workers compare their own accounts. A strong voice could easily make everyone copy its version. Pip offers to write, but he waits for your plan. How can the group preserve differences that might matter to the reading-room keepers?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Let each bank describe the change before comparing notes",
-          "icon": "hand",
-          "goto": "tell_together_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Have one friend draw while another points to landmarks",
-          "icon": "hand",
-          "goto": "tell_together_2"
-        }
-      ],
+      "narration": "The river runs in its older bed again. The western course still glistens. Pip opens the page to record the crossing and return. You can use the landmarks everyone saw. If you caught the whole return sequence, you can also lead a moving-water reconstruction. Which account will you prepare?",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -2017,19 +1722,28 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
+      "art": "scenes/riftlight/wrong-valley",
+      "choices": [
+        {
+          "id": "landmarks",
+          "label": "Rebuild the known events around fixed landmarks",
+          "icon": "hand",
+          "goto": "record_landmarks"
+        },
+        {
+          "id": "sequence",
+          "label": "Use the complete return sequence we watched",
+          "icon": "hand",
+          "goto": "record_return",
+          "when": {
+            "flag": "valley_return_observed"
+          }
+        }
+      ]
     },
-    "tell_together_1": {
-      "type": "story",
-      "narration": "You ask the near and far workers for their own order of signals, crossing and returning water. Your party speaks last, from the path you actually took. Pip marks where the views agree and where spray hid a moment. Nobody fills that gap with a guess.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "next_witness"
-        }
-      ],
+    "record_landmarks": {
+      "type": "interaction",
+      "narration": "Share the known events without filling the spray-hidden moments. The changed stream was already there when you arrived; your crossing came before it returned to its older bed.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -2044,19 +1758,76 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Arrange the events everyone can place.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "old",
+            "label": "River back in old bed",
+            "icon": "eye"
+          },
+          {
+            "id": "new",
+            "label": "Water in the dry valley",
+            "icon": "eye"
+          },
+          {
+            "id": "cross",
+            "label": "Party reaches far path",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "new",
+          "cross",
+          "old"
+        ],
+        "clues": [
+          "The water was already in the dry valley when the party arrived.",
+          "The party reached the far path before the river returned.",
+          "The river back in its old bed is the final event."
+        ]
+      },
+      "onSuccess": {
+        "goto": "last_check",
+        "narration": "Pip records both river lines and the known order. Any hidden moment stays blank.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_record_detailed",
+            "value": false
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "last_check",
+        "narration": "The workers place the crossing between the two observed river courses. Pip records the corrected order, leaving the hidden moments blank.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_record_detailed",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "last_check",
+        "narration": "Pip records both river lines and the known order. Any hidden moment stays blank.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_record_detailed",
+            "value": false
+          }
+        ]
+      }
     },
-    "tell_together_2": {
-      "type": "story",
-      "narration": "You rebuild the sequence on the page from the marker and ridges rather than from whoever speaks fastest. The workers point out the moments they could not see. Pip leaves those parts dotted. The complete group can agree on a change without claiming one perfect view.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "next_witness"
-        }
-      ],
+    "record_return": {
+      "type": "interaction",
+      "narration": "Your party watched the complete return. Give the workers the sequence while each of you points out a checked part of the view. Nobody needs to invent why it happened.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -2071,112 +1842,70 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "next_witness": {
-      "type": "choice_point",
-      "narration": "The worker offers to take your account to an elder yeti at a nearby reading room. A newly exposed piece of memory ice has also shown a river leaving by another valley, but she will not explain what she has not read herself. You can ask to see it with her or send the account ahead while making your own careful approach. Both routes follow the upper path you have checked. What should the elder receive first?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Bring the crossing witnesses and their separate accounts",
-          "icon": "hand",
-          "goto": "next_witness_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Send a clear sketch ahead with the returning worker",
-          "icon": "hand",
-          "goto": "next_witness_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "next_witness_1": {
-      "type": "story",
-      "narration": "You ask both workers whether they want to come. One will carry the tools onward; the other agrees to walk with your party. Pip keeps both accounts visible. The elder will be able to ask which view belongs to which bank instead of receiving one voice pretending to be everyone.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "last_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "next_witness_2": {
-      "type": "story",
-      "narration": "You give the worker a copy showing the ridges and sequence, with the uncertain moments left dotted. Your party keeps the original and follows the upper path. Pip notes who carried the copy so a later disagreement can begin by checking the pages rather than blaming a messenger.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "last_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "play",
+        "cue": "Contribute a checked observation to the account.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "west",
+            "label": "Show where the western stream fell",
+            "icon": "hand",
+            "reaction": "The worker marks the falling western stream."
+          },
+          {
+            "id": "old",
+            "label": "Show where the old bed filled",
+            "icon": "hand",
+            "reaction": "Pip marks the returning water beside the old channel."
+          },
+          {
+            "id": "quiet",
+            "label": "Show the quiet western course",
+            "icon": "hand",
+            "reaction": "The wet western line stays on the page for comparison."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "last_check",
+        "narration": "The account includes the complete observed return as well as the two course outlines.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_record_detailed",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "last_check",
+        "narration": "The account includes the complete observed return as well as the two course outlines.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_record_detailed",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "last_check",
+        "narration": "The account includes the complete observed return as well as the two course outlines.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "valley_record_detailed",
+            "value": true
+          }
+        ]
+      }
     },
     "last_check": {
-      "type": "choice_point",
-      "narration": "Before leaving the crossing, the workers ask your party to test the upper warning as if you had just arrived. The river looks ordinary again from one direction. The abandoned low approach could tempt a traveler who never saw it change. Pip plays that traveler while you stand beside the new lantern. Your work is only useful if it still makes sense when the strange moment has passed. Which instruction should he be able to repeat in his own words?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Repeat where to stop and which ground was checked",
-          "icon": "hand",
-          "goto": "last_check_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Repeat what must be looked at again on the next visit",
-          "icon": "hand",
-          "goto": "last_check_2"
-        }
-      ],
+      "type": "interaction",
+      "narration": "Pip pretends to be the next traveler. He stops when your party points out the upper warning. Choose a useful instruction to leave with the lantern. The workers are checking whether the instructions are clear.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -2191,253 +1920,70 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "last_check_1": {
-      "type": "story",
-      "narration": "You let Pip approach without hints until he reaches the new warning. He points out the upper waiting place and both former crossing options. Your party corrects any instruction that sounds like a permanent guarantee. The workers keep the version he can actually follow.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "last_check_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "last_check_1_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Repeat where to stop and which ground was checked. Choose who leads while the others help.",
+      "art": "scenes/riftlight/wrong-valley",
+      "interaction": {
+        "kind": "play",
+        "cue": "Leave a useful warning for the next traveler.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "stop",
+            "label": "Show the upper stopping place",
+            "icon": "hand",
+            "reaction": "Pip stops at the lantern, well above the old bed."
+          },
+          {
+            "id": "look",
+            "label": "Point out both river channels",
+            "icon": "hand",
+            "reaction": "The worker checks both channels before offering a route."
+          },
+          {
+            "id": "ask",
+            "label": "Show where to find the route worker",
+            "icon": "hand",
+            "reaction": "The next traveler has someone to ask when the view changes."
+          }
+        ]
+      },
       "onSuccess": {
-        "goto": "last_check_1_done",
+        "goto": "rest",
+        "narration": "The workers can maintain the upper warning after your party leaves.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "tested_the_upper_warning"
+            "flag": "tested_the_upper_warning",
+            "value": true
           }
         ]
       },
       "onFailure": {
-        "goto": "last_check_1_changed",
+        "goto": "rest",
+        "narration": "The workers can maintain the upper warning after your party leaves.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "tested_the_upper_warning"
+            "flag": "tested_the_upper_warning",
+            "value": true
           }
         ]
       },
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "last_check_1_done": {
-      "type": "story",
-      "narration": "Pip stops well above the low bed and explains what changed without claiming the party caused it. The workers take over the warning. They can maintain a useful route after your party leaves, and you can carry the witnessed change toward the reading room.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "last_check_1_changed": {
-      "type": "story",
-      "narration": "Pip follows one part of the old approach before the warning makes sense. You halt the rehearsal and shift the lantern into view. On the next walk he stops on the upper path. The workers thank you for correcting the warning while correction is easy.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "last_check_2": {
-      "type": "story",
-      "narration": "You ask Pip to identify the marker, both ridges and the two channel beds. He compares the view with your drawing before offering a route. The workers add one short reminder to the lantern: stop on the upper path and look before following yesterday's water.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "last_check_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "last_check_2_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Repeat what must be looked at again on the next visit. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "last_check_2_done",
+      "onAssisted": {
+        "goto": "rest",
+        "narration": "The workers can maintain the upper warning after your party leaves.",
         "effects": [
           {
             "type": "setFlag",
-            "flag": "tested_the_upper_warning"
+            "flag": "tested_the_upper_warning",
+            "value": true
           }
         ]
-      },
-      "onFailure": {
-        "goto": "last_check_2_changed",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "tested_the_upper_warning"
-          }
-        ]
-      },
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "last_check_2_done": {
-      "type": "story",
-      "narration": "Pip stops well above the low bed and explains what changed without claiming the party caused it. The workers take over the warning. They can maintain a useful route after your party leaves, and you can carry the witnessed change toward the reading room.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "last_check_2_changed": {
-      "type": "story",
-      "narration": "Pip follows one part of the old approach before the warning makes sense. You halt the rehearsal and shift the lantern into view. On the next walk he stops on the upper path. The workers thank you for correcting the warning while correction is easy.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
+      }
     },
     "rest": {
       "type": "rest",
-      "narration": "The workers keep the lantern on the upper path. Your party has crossed, and the river has returned to its older bed after briefly running down the other valley. Pip carries the sequence rather than an explanation for its cause. The yeti worker points to the reading-room path. \"An elder is looking at a memory. We should compare what was seen.\" You can continue toward the memory ice or return by the upper road.",
+      "narration": "The river runs in its older bed again. A wet ribbon in the western valley shows where it briefly went instead. Everyone is across, and the workers keep their lantern on the upper path. Pip closes the sketch with both river lines and the order of the change recorded. \"An elder at the reading room has seen something like this in memory ice,\" says the worker. \"Bring your account. She will want to compare it.\" You can follow the upper path to her or return by the upper road.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -2462,117 +2008,45 @@
           "name": "Far worker"
         }
       ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "anchor_assisted": {
-      "type": "story",
-      "narration": "A thornguard steadies the carrying board with brace while your party tests the anchor from firm ground. The worker watches the rock, not the strongest hero's confidence. Whoever can best judge the load may lead the check; the ability supplies support without making uncertain ice sound.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
       "art": "scenes/riftlight/wrong-valley",
-      "choices": [
+      "variants": [
         {
-          "id": "continue",
-          "label": "Work together using that help",
-          "icon": "hand",
-          "goto": "anchor_assisted_check"
+          "when": {
+            "flag": "valley_prepared_tools"
+          },
+          "text": "The high-rack preparation kept the tools dry. The worker's late withdrawal was the job left to finish."
+        },
+        {
+          "when": {
+            "notFlag": "valley_prepared_tools"
+          },
+          "text": "The early upper handline let the worker withdraw herself. The low tool bundle was the job left to finish."
+        },
+        {
+          "when": {
+            "flag": "valley_tools_dry"
+          },
+          "text": "The kit is dry and ready for its next shift."
+        },
+        {
+          "when": {
+            "notFlag": "valley_tools_dry"
+          },
+          "text": "The workers must clean and dry the wet kit before their next shift."
+        },
+        {
+          "when": {
+            "flag": "valley_record_detailed"
+          },
+          "text": "The complete watched return sequence goes with the two river outlines."
+        },
+        {
+          "when": {
+            "notFlag": "valley_record_detailed"
+          },
+          "text": "The page preserves the checked landmarks and known order, without inventing the missing detail."
         }
       ]
-    },
-    "anchor_assisted_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Use brace to steady the carrying board. The qualified hero assists; choose who leads the team check.",
-      "onSuccess": {
-        "goto": "anchor_1_done"
-      },
-      "onFailure": {
-        "goto": "anchor_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
-    },
-    "tools_return_assisted": {
-      "type": "story",
-      "narration": "A duskrunner works from the safe bank to secure the bundle's loose straps before the haul. The workers hold their signals while your party prepares the line. The most nimble friend can lead the pull; nobody has to stand on the doubtful central rock.",
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work together using that help",
-          "icon": "hand",
-          "goto": "tools_return_assisted_check"
-        }
-      ]
-    },
-    "tools_return_assisted_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Have a duskrunner secure the loose straps. The qualified hero assists; choose who leads the team check.",
-      "onSuccess": {
-        "goto": "tools_return_1_done"
-      },
-      "onFailure": {
-        "goto": "tools_return_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Route worker"
-        },
-        {
-          "figure": "cast/route_worker_yeti",
-          "name": "Far worker"
-        }
-      ],
-      "art": "scenes/riftlight/wrong-valley"
     }
   },
   "voiceGuide": {
@@ -2590,6 +2064,126 @@
     "npcVoices": {
       "Pip Thistledown": "Manticore scout. Eager but learns to separate observation from guess; never knows an unseen event.",
       "Yeti keepers": "Slow, enormous and gentle. Deliberate before answering. Offer a safe method and leave unknown history unknown."
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "test_flow": {
+        "props": [
+          "water-surge"
+        ]
+      },
+      "return_observation": {
+        "props": [
+          "water-surge"
+        ]
+      },
+      "tools_hoist": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "tools_hoist_assisted": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "tools_steps": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "tools_tie": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "people_line": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "high_recovery": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "low_recovery": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "tool_recover": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "tool_recover_assisted": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "wet_tools": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "repair_gear": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "people_signal": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "signals": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "crossing_choice_1_check": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "crossing_choice_2_check": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "worker_beacon": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "record_landmarks": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "record_return": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "last_check": {
+        "props": [
+          "clue-scrap"
+        ]
+      }
     }
   }
 }
