@@ -48,8 +48,8 @@ Dated 2026-10-27. Engineering status, not legal advice.
 8. **Link proximity.** 312.4(d) says "The link must be in close proximity to the requests for
    information in each such area" (same source). The policy is linked only from the two start
    screens. Children also enter names at a direct room link (`/p/<code>`), the creation flow and a
-   family tablet's kid picker, and none links to it. Review each point where a child types a name
-   and put the link beside it. Not done.
+   family tablet's kid picker, and none links to it. The owner has chosen to keep the link to the
+   start screens (see below), so this item is now a question for counsel, not a to-do.
    **Decision 2026-10-27 (owner):** the link is a small, quiet "Privacy" footer at the bottom of
    the start screens, not a visible line among the buttons, because it is there only because it has
    to be. The footer keeps the secondary text colour and a full-height tap target. **Risk to put to
@@ -58,6 +58,11 @@ Dated 2026-10-27. Engineering status, not legal advice.
    footer may not satisfy that for a service aimed at children, and it is not near the places
    children type names. If counsel says it does not, the fix is to make it more visible at those
    places, not to revert this.
+   **Scope, 2026-10-27 (owner):** the link lives on the start screens only, not in gameplay,
+   hero creation or the room screens. The consequence to put to counsel: a child who arrives by a
+   direct room link (`/p/<code>`) or a family tablet's saved page never sees the start screen, so
+   reaches name entry with no link at all. Today's other entry points to the policy are the
+   "What we store" links in the sign-in panel and the organizer screen.
 9. **Launch blockers this page does not fix.** Publishing `/privacy` is not proof of compliance.
    Still open: the parental consent and collection boundary (#522), verifiable consent and direct
    notice (#523), a procedure for parents to review, delete or stop collection (#523), and an
