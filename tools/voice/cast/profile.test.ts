@@ -37,6 +37,11 @@ individuals:
     canon_constraints: >-
       Never opens the hedge for strangers.
 
+  - id: individual.nell
+    title: "Nell"
+    speech_register: >-
+      Brisk and kind.
+
   - id: individual.marda
     title: "Marda"
     pronouns: "she/her"
@@ -61,8 +66,9 @@ function fakeRepo(): string {
         scenes: {
           s1: scene('Pip waves. "Hello there, heroes," they say.', [{ figure: "cast/pip", name: "Pip" }]),
           s2: scene('"Mind the step," says Gruff. "It bites."', [{ figure: "entities/troll", name: "Gruff" }]),
+          s3: scene('Nell waves you over. "Welcome in," she says.', [{ figure: "cast/nell", name: "Nell" }]),
         },
-        voiceGuide: { npcVoices: { pip: "a bramble sprite the size of a teapot; earnest", gruff: "a bridge troll; deep and slow", wisp: "a shy wisp" } },
+        voiceGuide: { npcVoices: { pip: "a bramble sprite the size of a teapot; earnest", gruff: "a bridge troll; deep and slow", wisp: "a shy wisp", nell: "a baker" } },
       },
       null,
       2,
@@ -110,6 +116,22 @@ describe("a character's gender", () => {
     await handle("/api/cast/save", { id: "gruff", gender: "auto" }, {});
     expect(rebuildSheet(root, sheetPath).speakers.gruff).toMatchObject({ gender: "unknown", genderFrom: "none" });
     expect((await handle("/api/cast/save", { id: "gruff", gender: "robot" }, {}))!.status).toBe(400);
+  });
+
+  it("handed back to the content, credits the narration when that is where a canon individual's pronouns came from", async () => {
+    const root = fakeRepo();
+    const sheetPath = path.join(root, "content", "voice", "cast.json");
+    const sheet = rebuildSheet(root, sheetPath);
+    // In canon, but canon gives no pronouns: the narration's "she says" does.
+    expect(sheet.speakers.nell).toMatchObject({ canon: "individual.nell", pronouns: "she/her", pronounsFrom: "narration", gender: "female", genderFrom: "narration" });
+    const { handle } = routes(root, sheetPath);
+    await handle("/api/cast/save", { id: "nell", gender: "male" }, {});
+    const reply = await handle("/api/cast/save", { id: "nell", gender: "auto" }, {});
+    expect((reply!.body as { entry: object }).entry).toMatchObject({ gender: "female", genderFrom: "narration" });
+    // And canon's own pronouns are credited to canon.
+    await handle("/api/cast/save", { id: "pip", gender: "female" }, {});
+    const pip = await handle("/api/cast/save", { id: "pip", gender: "auto" }, {});
+    expect((pip!.body as { entry: object }).entry).toMatchObject({ gender: "nonbinary", genderFrom: "canon" });
   });
 
   it("leaves an approved voice where it is when the gender changes", async () => {
@@ -182,10 +204,11 @@ describe("editing the canon", () => {
     expect(text).toContain("    speech_register: >-\n      Earnest. Over-explains everything twice, then offers you a honeycake you\n      did not ask for and looks hurt if you say no.\n    canon_constraints:");
     const doc = yaml.load(text) as { individuals: Record<string, unknown>[] };
     expect(doc.individuals[0]).toMatchObject({ canon_constraints: "Never opens the hedge for strangers.", short_description: "A sprite the size of a teapot." });
-    expect(doc.individuals[1]).toMatchObject({ id: "individual.marda", speech_register: "Unhurried." });
+    const marda = (d: typeof doc) => d.individuals.find((person) => person.id === "individual.marda");
+    expect(marda(doc)).toMatchObject({ speech_register: "Unhurried." });
     // The last field of the last individual too.
     editIndividual(root, file, "individual.marda", "speech_register", "Unhurried, and never repeats herself.");
-    expect((yaml.load(fs.readFileSync(file, "utf8")) as typeof doc).individuals[1]!.speech_register).toBe("Unhurried, and never repeats herself.");
+    expect(marda(yaml.load(fs.readFileSync(file, "utf8")) as typeof doc)!.speech_register).toBe("Unhurried, and never repeats herself.");
     editIndividual(root, file, "individual.marda", "pronouns", "they/them");
     expect(fs.readFileSync(file, "utf8")).toContain('    pronouns: "they/them"\n');
     expect(() => editIndividual(root, file, "individual.marda", "pronouns", "whoever")).toThrow(CanonEditError);

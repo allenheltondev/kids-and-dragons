@@ -265,7 +265,9 @@ export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
           if (body.gender === "auto") {
             delete entry.gender;
             delete entry.genderFrom;
-            Object.assign(entry, derivedGender(entry, entry.canon ? "canon" : "narration"));
+            // Back to what the content says, credited to where the pronouns really came from: a canon
+            // individual's pronouns can still be the narration's, when canon gives none.
+            Object.assign(entry, derivedGender(entry, entry.pronounsFrom ?? "narration"));
           } else if (GENDERS.includes(body.gender as Gender)) {
             entry.gender = body.gender as Gender;
             entry.genderFrom = "person";
