@@ -25,6 +25,12 @@ Rendering every sample on all seven recommended columns comes to about $1.64. Th
 refuses any render that would take the session past its spending cap: $5 by default, raised
 from the page or with `--max-dollars`.
 
+**Models with no price.** A model from your key's live list that `pricing.json` has no price for
+is never treated as free. Its column asks for a rate you approve (dollars per 1,000 characters),
+and won't render until it has one; the cap still applies at that rate. The command line refuses
+an unpriced column outright. Either way, the lasting fix is to add the model to
+`tools/voice/pricing.json` with its `apiModel`.
+
 **Keys:** they go from the page to the bake-off server on your computer, and from there to the
 provider. They're never written to disk.
 
