@@ -65,7 +65,7 @@ export const PRIVACY_SECTIONS: readonly PolicySection[] = [
       "When someone tries a wrong room code, we count it against their network address for about half an hour, so nobody can guess their way into a game.",
       "When the game breaks, it sends one short crash report: what kind of failure, which version, which page and whether it was a phone, tablet or TV. It never includes what the error said, so nothing a kid typed is in it.",
       "Our servers keep request logs to run the game. We have not yet confirmed how long our hosting provider keeps logs and backups, and we will not state a period here until we have.",
-      "To learn how long chapters take, we record the time of each chapter's steps against a random run id. There are no names in it.",
+      "To learn how long chapters take, we record the time of each chapter's steps against a random run id, with no names in it. We add these up ourselves, across families, to see how long each chapter takes. They are deleted after 180 days.",
       "The game sets no cookies. Your phone's own storage holds a sign-in token for that phone, settings such as read-aloud, and a copy of your adventure book.",
     ],
   },
@@ -74,7 +74,7 @@ export const PRIVACY_SECTIONS: readonly PolicySection[] = [
     title: "Why, and what we do not do",
     paragraphs: [
       "We use this to run the game, remember a party between sittings, keep it secure, fix what breaks and measure how long chapters take.",
-      "We do not sell it, show ads, run trackers or analytics, or build profiles to market to anyone. No AI model is called while a table plays; the stories are written ahead of time, and nothing a kid types or does in a game is sent to one.",
+      "We do not sell it, show ads, use third-party analytics or advertising trackers, or build profiles to market to anyone. The only measuring we do is our own, of how long chapters take, described above. No AI model is called while a table plays; the stories are written ahead of time, and nothing a kid types or does in a game is sent to one.",
     ],
   },
   {

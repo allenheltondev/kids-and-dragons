@@ -36,3 +36,16 @@ Dated 2026-10-27. Engineering status, not legal advice.
 5. **Browser read-aloud** is described as possibly sending text to the browser's maker, because
    that is unverified (see [us-third-party-flows.md](./us-third-party-flows.md) §4).
 6. Review of the page's wording by someone qualified.
+7. **Full operator contact.** The notice names the operator and an email only. The owner's review
+   of #532 cites the FTC COPPA FAQ (C.2, 16 CFR 312.4(d), cited by the reviewer and **not checked
+   here**) as also expecting a mailing address and a telephone number. Before a public U.S. launch,
+   add suitable *business* contact details to `screens/operator.ts` and `PrivacyScreen.tsx`, not a
+   residential address. Until then the page is incomplete.
+8. **Link proximity.** The policy is linked only from the two start screens. Children also enter
+   names at places that link does not cover: a direct room link (`/p/<code>`), the creation flow
+   and a family tablet's kid picker. Per the same review (FTC FAQ C.6, also unchecked here), review
+   where a link or notice must sit at every point where a child types a name. Not done.
+9. **Launch blockers this page does not fix.** Publishing `/privacy` is not proof of compliance.
+   Still open: the parental consent and collection boundary (#522), verifiable consent and direct
+   notice (#523), a procedure for parents to review, delete or stop collection (#523), and an
+   enforced retention schedule (#524). Retained child data cannot stay indefinite.
