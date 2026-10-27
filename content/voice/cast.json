@@ -1887,10 +1887,6 @@
         {
           "text": "Come to the fire.",
           "address": "gemfall-04a/scene_leave_stone/narration"
-        },
-        {
-          "text": "Ask the road-wardens. The centaurs at the waystation up the road stitch every road onto their sashes. If anybody can see why the roads bend, they can. After the cubs' nap, I'll send you there.",
-          "address": "gemfall-04a/scene_pride_camp/narration"
         }
       ],
       "speaks": true,
@@ -2016,10 +2012,6 @@
         {
           "text": "Hole-digging wages. Do not tell the Brassbuckles.",
           "address": "gemfall-04a/interaction_post_hole/onAssisted/narration"
-        },
-        {
-          "text": "We used to move these once in a lifetime.",
-          "address": "gemfall-04a/scene_moving_marker_ask_where/narration"
         }
       ],
       "speaks": true,
@@ -2057,8 +2049,8 @@
           "address": "gemfall-04a/interaction_plates/narration"
         },
         {
-          "text": "The recipe, is grass, and fire-pepper, and patience.",
-          "address": "gemfall-04a/scene_granny_cake_recipe/narration"
+          "text": "For later. Something normal.",
+          "address": "gemfall-04a/interaction_plates/onSuccess/narration"
         }
       ],
       "speaks": true,
@@ -2106,12 +2098,7 @@
       "gemini": {
         "voice": "Schedar"
       },
-      "lines": [
-        {
-          "text": "Before you see the worst of it, tell me why you came.",
-          "address": "gemfall-04b/scene_sitting_beech/narration"
-        }
-      ],
+      "lines": [],
       "speaks": true,
       "status": "provisional"
     },
@@ -2264,8 +2251,8 @@
           "address": "gemfall-04b/check_runner_path/onSuccess/narration"
         },
         {
-          "text": "Third time today. MossHome runner. Bigfoot town, up north. Can't stop. Never stop. Can't get through, either.",
-          "address": "gemfall-04b/scene_runner_path/narration"
+          "text": "Not one wrong knot! I will tell the record.",
+          "address": "gemfall-05b/interaction_cord_knots/onSuccess/narration"
         }
       ],
       "speaks": true,
@@ -4764,6 +4751,10 @@
         "voice": "Gacrux"
       },
       "lines": [
+        {
+          "text": "The cubs dream of humming near gem wagons.",
+          "address": "gemfall-04a/scene_pride_camp/narration"
+        },
         {
           "text": "We'll wait here. We always wait here.",
           "address": "gemfall-04a/rest_waystation_with_escort/narration"

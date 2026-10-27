@@ -1,0 +1,491 @@
+{
+  "gemfall-04a": {
+    "check_greeting": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Wave first, slowly and kindly, the way the road peoples do",
+      "cast": [
+        {
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_granny_cake",
+        "narration": "Palm open, slow, from far off. The elder looks delighted, and waves you all the way up to the fire.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "pride_friends",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_granny_cake",
+        "narration": "Everybody waves at once with both arms, like people drowning in grass. The elder blinks, decides you meant well, and lets you sit at the edge of camp."
+      },
+      "art": "scenes/gemfall/sefa-ridge-camp",
+      "checkKind": "doing"
+    },
+    "check_old_riddle": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 16,
+      "prompt": "Answer the riddle nobody has solved in sixty years",
+      "cast": [
+        {
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_cub_nap",
+        "narration": "You say your answer. The whole pride goes silent. Then Sefa writes it down very carefully, and two cubs sprint off to tell everybody. You will be famous at both ends of the bridge, and argued about forever.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "owlfeather_clasp",
+            "to": "roller"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_cub_nap",
+        "narration": "You guess \"a teapot.\" It is not a teapot. Several famous careers have ended on that riddle, so you are in very good company."
+      },
+      "art": "scenes/gemfall/sefa-ridge-camp"
+    },
+    "check_wolves": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Throw supper far enough that the pack takes the easy meal",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf",
+          "count": 3
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_wolf_fire",
+        "narration": "The supper lands in the grass and the pack pours after it. When they come back they are full, and they lie down on the far side of the fire like big glowing dogs."
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "They take the supper. Then they come back for the fire."
+      },
+      "art": "scenes/gemfall/abandoned-caravan-rest"
+    },
+    "check_race": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "The fastest of you races a relay centaur to the next pride post",
+      "cast": [
+        {
+          "figure": "cast/bracken_swiftmile",
+          "name": "Bracken"
+        }
+      ],
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_pride_road",
+        "narration": "You run like the wind, and the wind is impressed. You touch the post one breath before Bracken does, mostly because she was laughing too hard to run properly. \"Fair's fair,\" she says, and tells you all the relay news for free: on every road in the realm, the stones are humming."
+      },
+      "onFailure": {
+        "goto": "scene_pride_road",
+        "narration": "Bracken is a centaur. She reaches the post, reads her letters, eats an apple, and waves you in. \"Not bad for two legs,\" she says kindly, and tells you the relay news anyway: on every road in the realm, the stones are humming."
+      },
+      "art": "scenes/gemfall/pride-marker-road"
+    },
+    "check_cake": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Finish a slice of Granny Ash's spiced grass-cake",
+      "cast": [
+        {
+          "figure": "cast/granny_ash",
+          "name": "Granny Ash"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_plates",
+        "narration": "Bite. Chew. Your eyes water. Your ears go hot. Bite. Chew. You swallow the last crumb, and the whole pride roars. Granny Ash pats your head and announces to the ridge that you are family now, and nobody is allowed to argue.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "pride_friends",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_plates",
+        "narration": "Bite, chew, and steam comes out of your ears. Actual steam. You have to stop halfway and drink a whole bucket of water. Granny Ash is delighted. She has never seen anyone steam before, and she tells everybody, all evening."
+      },
+      "art": "scenes/gemfall/sefa-ridge-camp"
+    },
+    "check_lullaby": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Everybody sing two manticore cubs to sleep over the hum",
+      "cast": [
+        {
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_moving_marker",
+        "narration": "You sing the slowest, softest song you know, and then you sing it again. The cubs' eyes go heavy. One by one they flop over into a warm furry pile, purring, and Elder Sefa mouths a silent thank you over the top of them."
+      },
+      "onFailure": {
+        "goto": "scene_moving_marker",
+        "narration": "Everybody starts singing a different song at once. It is so awful that the cubs laugh until they are worn out, and fall asleep in a heap, still giggling. Elder Sefa says that counts."
+      },
+      "art": "scenes/gemfall/sefa-ridge-camp"
+    },
+    "check_marker_post": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everybody take a corner of a pride marker post and carry it to its new hole",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "interaction_post_hole",
+        "narration": "You heave the post up between you and march it out to the new spot, further from the caravan road. It arrives at the hole without a wobble, tuft and all."
+      },
+      "onFailure": {
+        "goto": "interaction_post_hole",
+        "narration": "The post is heavier than it looks, and it looks very heavy. You wobble all the way there, and it ends up leaning against the hole like a tired giraffe."
+      },
+      "art": "scenes/gemfall/pride-marker-road"
+    },
+    "check_moth": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Cup an embermoth in your hands without squashing it",
+      "cast": [
+        {
+          "figure": "entities/embermoth",
+          "count": 4
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_lost_moths",
+        "narration": "You cup one, as gently as a bubble. It is shivering. Embermoths love warm and love the mountain, and this one is flying away from both. You hold it till it stops shaking, then let it go, south, with all the others."
+      },
+      "onFailure": {
+        "goto": "interaction_lost_moths",
+        "narration": "You miss. You miss again. On the third try an embermoth lands on your nose all by itself, glows very brightly, and makes you sneeze. Then it hurries south after the others, away from the mountain, as fast as it can go."
+      },
+      "art": "scenes/gemfall/pride-stone-crater"
+    },
+    "check_jackalopes": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Everybody crawl through a wall of jackalopes without stepping on anybody",
+      "cast": [
+        {
+          "figure": "entities/jackalope",
+          "count": 3
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_wolf_sign",
+        "narration": "Hands, knees, hands, knees, and \"excuse me\" fifty times. Not one toe is stepped on. When you come out the far side, every jackalope turns its head to watch you go, the way you watch someone walk into a cold sea."
+      },
+      "onFailure": {
+        "goto": "scene_wolf_sign",
+        "narration": "Hands, knees, and then somebody puts a hand on a tail. One jackalope squeaks, and all fifty jump at once, straight up, like popcorn, and land again in exactly the same places. You crawl the rest of the way pink with embarrassment."
+      },
+      "art": "scenes/gemfall/pride-stone-crater"
+    },
+    "check_wolf_prints": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Track a cinder wolf through leaning grass",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_widest_bend",
+        "narration": "The prints go around, and around, in a wide careful circle, and never once step toward the middle. Even a cinder wolf, which loves anything hot, has walked the long way around. The circle leads you, at last, to the very middle of the bend."
+      },
+      "onFailure": {
+        "goto": "scene_widest_bend",
+        "narration": "You follow the prints around and around until you realize you are following your own boot prints, following the wolf's. Embarrassing. You give up and walk straight in, and find the very middle of the bend all on your own."
+      },
+      "art": "scenes/gemfall/pride-stone-crater"
+    }
+  },
+  "gemfall-04b": {
+    "check_runner_path": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Work out where a folded-up path has gone",
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ],
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_roll_call",
+        "narration": "All the ferns along one side are leaning the same way, like people pointing. You follow them, and there's the path, only a little way over, sulking behind a holly bush. The runner whoops. \"MossHome is north!\" she calls, jogging off. \"Come and see us! Bring your feet!\""
+      },
+      "onFailure": {
+        "goto": "scene_roll_call",
+        "narration": "You find a path. It is the wrong one, and it walks you in a neat circle back to the runner, who has found the right one herself while you were gone and is jogging in place, laughing. \"Happens to everybody this season,\" she puffs, and jogs away north."
+      }
+    },
+    "check_roll_call_truth": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Name everything you carry, honestly, even the embarrassing bits",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_sapling_rhyme",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "told_forest_truth",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "answered_roll_call"
+          }
+        ],
+        "narration": "You empty your pockets onto a stump and name everything out loud, even the squashed cookie, even the stone if you have one. The trees rustle warmly, the way grown-ups do when you own up first. A path opens, wide and sunny, and the forest seems to make a little note about you."
+      },
+      "onFailure": {
+        "goto": "interaction_sapling_rhyme",
+        "narration": "You name everything, very honestly, and then a frog climbs out of somebody's hood. Nobody knew it was there. It has been there since the river. The trees rustle about this for a long time, and you are fairly sure they are laughing. The frog hops off. A path opens, eventually.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "answered_roll_call"
+          }
+        ]
+      }
+    },
+    "check_ask_trees": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Ask the forest, politely, what it is objecting to",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_forest_objects",
+        "narration": "Something tall creaks, and leans, and leans some more, until it's close enough to whisper."
+      },
+      "onFailure": {
+        "goto": "scene_hedge",
+        "narration": "The trees rustle something long and complicated. It might be an answer. It might be a soup recipe. You walk past the same embarrassed toadstool three times before a path lets you through, and on the far side somebody is shouting at a hedge."
+      },
+      "cast": [
+        {
+          "figure": "entities/boughkin"
+        }
+      ],
+      "discovers": [
+        "npc.boughkin"
+      ]
+    },
+    "check_hedge_pull": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everybody grab a boot and heave the prospectors out of a hedge that does not want to let go",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "interaction_hedge_gate",
+        "narration": "You grab a boot each and heave. Out they pop like corks, one, two, three. But their coats stay in the hedge, and so does everything in the pockets. The gems sink into the leaves, humming, and are gone. The prospectors pat their shirts, then stare at the hedge, then run."
+      },
+      "onFailure": {
+        "goto": "interaction_hedge_gate",
+        "narration": "You heave. The hedge heaves back, and now it is holding your sleeves too. In a panic, the biggest prospector empties his pockets on the ground, and the moment the gems touch the moss, roots curl around them and pull them under. The hedge lets everybody go at once, as if nothing happened."
+      }
+    },
+    "check_watch_herd": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Watch the herd long enough to see the pattern",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_read_herd",
+        "narration": "You sit so still a beetle walks across your boot. And then you see it."
+      },
+      "onFailure": {
+        "goto": "interaction_herd_friends",
+        "narration": "A mosshorn wanders over, inspects you thoroughly, sneezes on you, and leaves. That, apparently, was the whole conversation. You walk on, and soon your boots find a bare gray patch where nothing grows at all."
+      }
+    },
+    "check_gray_patch_press": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Press the humming crumb down into the moss, gently, the way you'd tuck in a blanket",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_spring_cup",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "greened_a_patch",
+            "value": true
+          }
+        ],
+        "narration": "You press it down, gently, and the moss takes it like a pocket closing. The hum goes muffled, then quiet. And right in the middle of the gray ring, one bright green shoot pokes up and unrolls. A very small mend. Somebody nearby, with ears, has noticed."
+      },
+      "onFailure": {
+        "goto": "interaction_spring_cup",
+        "narration": "You press it down. It pops back up. You press it again. It pops up again, like a cork in a bath. On the third try you give up and plant a stick beside it as a flag, so whoever mends these things can find it. Somebody nearby, with ears, has noticed that too."
+      },
+      "checkKind": "doing"
+    },
+    "check_mend": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Everybody hum with the unicorns, hands flat on the moss, while it remembers its color",
+      "cast": [
+        {
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
+        },
+        {
+          "figure": "characters/unicorn"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_finding",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_mend",
+            "value": true
+          }
+        ],
+        "narration": "Green creeps back from the middle, like a spill going backwards. The flowers turn around one by one to face the sun."
+      },
+      "onFailure": {
+        "goto": "scene_finding",
+        "narration": "You hum, and the moss goes green, then gray, then a sort of hopeful beige. The unicorns finish it themselves, very kindly, while you hold their saddlebags."
+      },
+      "checkKind": "doing"
+    },
+    "check_calf_call": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Hoot like a mosshorn, long and low, so the herd comes for its calf",
+      "cast": [
+        {
+          "figure": "entities/mosshorn",
+          "size": "small"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_sitting_beech",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "herd_thanks_us",
+            "value": true
+          }
+        ],
+        "narration": "You hoot, long and low. Far off, something hoots back. Out of the trees comes the strawberry-patch mosshorn and the whole herd behind it. The calf trots home, and the big mosshorn lowers its whole garden of antlers to you, very slowly, which is how mosshorns say thank you."
+      },
+      "onFailure": {
+        "goto": "scene_sitting_beech",
+        "narration": "Your hoot comes out like a goose with hiccups. The calf looks at you, embarrassed on your behalf, and hoots properly itself. The herd answers at once and comes to fetch it. As it trots home, the calf looks back at you with deep pity. You have been out-hooted by a baby."
+      },
+      "checkKind": "doing"
+    },
+    "check_noisy": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Everybody make so many sounds at once that the echo hunter cannot follow any of them",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_glade_heart",
+        "narration": "Clapping, stamping, a pot lid, somebody yodeling. The echo hunter's frills flatten in dismay, and it backs down its crack to wait for some peace and quiet."
+      },
+      "onFailure": {
+        "goto": "encounter_echo",
+        "narration": "You manage one sound, very loudly, over and over. That is exactly the kind it likes."
+      }
+    },
+    "check_silent": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 16,
+      "prompt": "Cross the glade without making a single sound",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_glade_heart",
+        "narration": "Not a twig. Not a breath. The hunter tilts its head, puzzled, and hears nothing at all."
+      },
+      "onFailure": {
+        "goto": "encounter_echo",
+        "narration": "A twig. A snap. A pale head turns."
+      }
+    },
+    "check_way_back": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 16,
+      "prompt": "Find the hidden way back to the worst glade",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_glade_heart",
+        "narration": "You follow the gray patches the mosshorns won't graze, and they lead you straight back. Late and scuffed, but there."
+      },
+      "onFailure": {
+        "goto": "ending_shown_the_door",
+        "narration": "The gray patches lead you in a circle, and then into a hedge, and then past an embarrassed-looking toadstool, twice. The forest has decided where you are going, and it is not the glade."
+      }
+    }
+  }
+}

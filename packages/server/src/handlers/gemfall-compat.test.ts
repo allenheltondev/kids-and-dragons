@@ -285,6 +285,9 @@ const DIGESTS: PreEpicSave["digests"] = {
 // shipped checks, terminal effects and encounter numbers remain intact. Old/new
 // probes matched endings, roads and setbacks, plus fresh-save play-on after
 // normalizing hero ids. Fixed legacy-save and gameplay digests remain unchanged.
+// Re-pinned for the owner-authorized Pride Roads / forest play-design wave.
+// All 21 shipped roll scenes remain identical; before/after campaign probes
+// preserve ending, road and setback digests and resumed fight behavior.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
   "chapters/gemfall-01.json": "67a4b9a4d8a8be313734b201acc02cd8a26a164f22f7b4df2330ef15fd74b8f8",
@@ -292,8 +295,8 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-03a.json": "d6201dc9591b54b0c5c3cdb2b976e79320323b5a014f7dbca65e52c602f43f74",
   "chapters/gemfall-03b.json": "47fcd09e1e8976970e599324e6b8a0d49915b5963ddcb99e58a7c8e014333111",
   "chapters/gemfall-03c.json": "536fed5cd8c29e696f1857eb35addf13159f1791ad1e04a940ea3d5f567f8c00",
-  "chapters/gemfall-04a.json": "6d1e1a8ef06254db10a1a189ea32c7a4afe10632870b695616e610a621ea63c3",
-  "chapters/gemfall-04b.json": "762bd6e4e84f7ed0cef6de70116d3be5cf2f15d7165078a7ba1b9244a3ded2b3",
+  "chapters/gemfall-04a.json": "14c8edd54d29064f06fb3039942d4e27bd18bf5c846c43e8cc43951b4570eea4",
+  "chapters/gemfall-04b.json": "c38a1dc13c537f3ac036e744411e025dd50e6c44990d54ed3cae9b618fb0374c",
   "chapters/gemfall-04c.json": "cc7204b9456910cf495398d9fa5f901639edbf1d4ec9043517ca09c263838258",
   "chapters/gemfall-05a.json": "1d4dd137c4e28869a3efe90673d824bd9a7a586b56b263e7c9c309a8ecec4fc7",
   "chapters/gemfall-05b.json": "bdbfcc8598c34b9e6dd1d7816d0290f9940aa26ce146a0ccb3536e3fbb2e632d",
