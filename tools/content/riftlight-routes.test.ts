@@ -19,7 +19,11 @@ it.each([...chapters.values()].filter((chapter) => chapter.index >= 4))("$id: ev
   for (const [species, cls] of [["kitsune", "starweaver"], ["bigfoot", "thornguard"], ["unicorn", "songkeeper"], ["griffin", "duskrunner"], ["manticore", "duskrunner"]] as const) {
     for (const scene of allPaths(chapter, species, cls).visited) visited.add(scene);
   }
+  if (chapter.id === "riftlight-the-wrong-valley") {
+    for (const scene of allPaths(chapter, "manticore", "duskrunner", { stone_route_priority: true }).visited) visited.add(scene);
+  }
   if (chapter.id === "riftlight-the-island-due-back") {
+    for (const scene of allPaths(chapter, "manticore", "duskrunner", { sky_followup_promised: true, whales_guided: true }).visited) visited.add(scene);
     for (const scene of allPaths(chapter, "manticore", "duskrunner", { whales_guided: true }).visited) visited.add(scene);
   }
   if (chapter.id === "riftlight-hidden-glacier-rift") {

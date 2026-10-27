@@ -1154,7 +1154,10 @@
     "scenes/gemfall/bell-code-hut",
     "scenes/gemfall/washed-out-step-cart",
     "scenes/gemfall/warden-post-tin",
-    "scenes/gemfall/warm-rock-chimney"
+    "scenes/gemfall/warm-rock-chimney",
+    "scenes/riftlight/stone-counters-routes",
+    "scenes/riftlight/reading-room-memory",
+    "scenes/riftlight/island-mooring-stone"
   ],
   "$campaignArtComment": "Key art for the lobby's adventure cards (packages/client/src/screens/CampaignArt.tsx): one opaque 16:9 painting per campaign at assets/campaigns/<id>.webp. Until a campaign's file lands, a scene from its story stands in. verify.py checks the size of any that exist and refuses an undeclared file.",
   "campaignArt": {

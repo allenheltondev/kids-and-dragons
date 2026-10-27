@@ -81,7 +81,7 @@
     },
     "accounts": {
       "type": "choice_point",
-      "narration": "Your party has reached this ledge with discoveries from more than one place. Orin leaves blank paper beside his map instead of filling the blanks for you. How will you begin the comparison? Seren joins you with her chime. Pip brings the loose pages and greets you with a wave of his tail. Your friends are ready to listen.",
+      "narration": "Orin makes space on the sled for the discoveries you brought. \"Show us the part you actually saw.\" Seren arrives with her chime. Pip waves his tail and lays down loose pages; Bram catches one before it blows away. Your friends are listening. How will you begin comparing places that no longer match the maps?",
       "choices": [
         {
           "id": "plan_1",
@@ -164,7 +164,7 @@
     },
     "measure": {
       "type": "choice_point",
-      "narration": "The accounts show ground arranged differently from the paths people use today. A line may belong to a river, a carved boundary or a remembered shore. You must compare shape without pretending every account says the same thing.",
+      "narration": "Orin lines up two outlines, then moves them apart. A river bend, a carved boundary and a remembered shore can look alike without being the same thing. \"Maps are much more agreeable when you do not ask them questions,\" he says. Which shapes will you check before deciding where the accounts match?",
       "choices": [
         {
           "id": "plan_1",
@@ -504,11 +504,7 @@
       "art": "scenes/riftlight/convergence-ledge"
     },
     "pull_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Hold the markers steady through the next tremble.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "pull_clear",
         "narration": "The markers agree on a pull toward the deep passage."
@@ -531,7 +527,18 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/convergence-ledge"
+      "art": "scenes/riftlight/convergence-ledge",
+      "narration": "Keep the measuring board and line steady while a friend marks the moving snow. Bram holds his breath. Pip moves his tail away. Nobody wants a tail in the measurements.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the measure steady while your friend marks the snow.",
+        "supportLabel": "Steady the measure",
+        "actionLabel": "Mark the moving snow"
+      },
+      "onAssisted": {
+        "goto": "pull_clear",
+        "narration": "The markers agree on a pull toward the deep passage."
+      }
     },
     "pull_clear": {
       "type": "story",
@@ -967,7 +974,7 @@
     },
     "summoning": {
       "type": "story",
-      "narration": "Olivia begins one summoning. A new opening unfolds above the empty snow, showing wind and moving grit. It stops widening, but does not answer her next gesture. Olivia looks twice at its light. \"That is not what I expected.\" The chime gives a sour note. Bram reaches toward her working hand. \"Enough. Step back before we learn this the hard way.\" Pip starts toward Olivia, then looks at your party.",
+      "narration": "Olivia lifts her working hand. An opening unfolds above the empty snow: wind, moving grit, a light she studies twice. She gestures again. It stops widening, but does nothing else she asked. The chime sounds sour. Bram reaches toward her hand. \"Enough. Step back.\" Pip starts toward Olivia, then looks at you. The opening is real. So is the choice about what happens next.",
       "choices": [
         {
           "id": "continue",
@@ -1332,7 +1339,7 @@
     },
     "count": {
       "type": "choice_point",
-      "narration": "The chime note changes when a hanging cord on the screen is held still. Seren notices and asks for a test. The cord is ordinary expedition gear. Which test will keep the condition separate from the opening's rules?",
+      "narration": "The screen cord flaps. The chime note wavers. Seren catches the cord and the note changes. She lets it go; the note changes back. \"The cord,\" she says. \"Watch what happens when we hold that still.\" It is ordinary gear, close enough to reach from the marked ground. How will you compare the held cord with the loose one?",
       "choices": [
         {
           "id": "plan_1",
@@ -1421,11 +1428,7 @@
       "rift": "steady"
     },
     "count_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Compare the held and released cord without treating a single note as permission to cross.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "count_clear",
         "narration": "The change repeats when the same cord is held still."
@@ -1449,7 +1452,18 @@
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "rift": "steady"
+      "rift": "steady",
+      "narration": "Seren points to the ordinary cord hanging from the screen. Hold that cord still while a friend listens to the chime, then let it swing and listen again. The changing note tests this condition; it is not permission to cross.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the screen cord while your friend compares the chime note.",
+        "supportLabel": "Hold the screen cord",
+        "actionLabel": "Compare the chime note"
+      },
+      "onAssisted": {
+        "goto": "count_clear",
+        "narration": "The change repeats when the same cord is held still."
+      }
     },
     "count_clear": {
       "type": "story",
@@ -1752,7 +1766,7 @@
     },
     "account": {
       "type": "choice_point",
-      "narration": "Olivia closes her notebook. She did summon an opening. She did not choose how it behaved. Orin asks the party to record both facts, without putting a victory or a villain into the margin.",
+      "narration": "Olivia closes her notebook, then opens it to add one sentence. She summoned an opening. She did not choose its rules. Orin waits instead of writing for her. Your party saw both parts. How will you record the experiment so the next person understands what happened?",
       "choices": [
         {
           "id": "plan_1",

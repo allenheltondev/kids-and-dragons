@@ -6,7 +6,7 @@
   "title": "The River in the Memory Ice",
   "biome": "glacier_of_origins",
   "music": "riftlight-paths",
-  "estimatedMinutes": 35,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "arrival",
   "goal": {
@@ -41,7 +41,7 @@
   "scenes": {
     "arrival": {
       "type": "story",
-      "narration": "An elder yeti welcomes your party at a room cut into the glacier. Small catalog shelves stand beside a broad marked floor. Pip lays the changed-crossing account on a low stone table. The elder listens to the whole report before pointing toward a newly exposed face of ice. \"We have looked at that memory three times. We should compare the looks, not hurry the answer.\" She invites everyone to warm their hands before choosing a place to stand.",
+      "narration": "An elder yeti welcomes you into a room cut from the glacier. Pip lays your crossing account on a low table. Behind it, water moves inside a pale face of ice. It is a remembered river. \"Help us compare that view with the river you crossed,\" says the elder. \"We have inspected it three times and filed it three different ways.\" She makes room beside the warm cups. Pip keeps his tail well away from the tea.",
       "choices": [
         {
           "id": "continue",
@@ -114,215 +114,52 @@
       ]
     },
     "quiet_rule": {
-      "type": "choice_point",
-      "narration": "The elder sets a cup of warm tea on a flat stone and waits until every hero is inside the marked waiting space. Beyond it, a pale face of memory ice has been newly uncovered. \"Do not shout near the old ice; you do not know what you might wake.\" She offers no name for what she means. Your party can ask how to work quietly before approaching, rather than testing the warning. What should the room's stop signal be?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Agree on a raised hand that everyone can see",
-          "icon": "hand",
-          "goto": "quiet_rule_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Agree that any friend may quietly call a pause",
-          "icon": "hand",
-          "goto": "quiet_rule_2"
-        },
-        {
-          "id": "assist",
-          "label": "Let a songkeeper lead a quiet pause signal",
-          "icon": "hand",
-          "goto": "quiet_rule_assisted",
-          "requiresClass": "songkeeper"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "quiet_rule_1": {
-      "type": "story",
-      "narration": "You practice the signal while still beside the warm cup. Pip stands where he can see the whole group. Each hero repeats the stop before lowering a hand. The elder checks the places from which a small friend might be hidden behind a larger one.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "quiet_rule_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "quiet_rule_1_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Agree on a raised hand that everyone can see. Choose who leads while the others help.",
+      "type": "interaction",
+      "narration": "The elder sets a cup of tea beside the marked floor. \"Do not shout near the old ice; you do not know what you might wake.\" Agree on the quiet approach before the first look. Pip puts his notebook down so his paws are free to signal.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Arrange the quiet approach.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "look",
+            "label": "Look from the marked floor",
+            "icon": "eye"
+          },
+          {
+            "id": "wait",
+            "label": "Wait at the cup",
+            "icon": "eye"
+          },
+          {
+            "id": "signal",
+            "label": "Agree on a raised-hand pause",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "wait",
+          "signal",
+          "look"
+        ],
+        "clues": [
+          "Start by waiting at the warm cup.",
+          "Agree on the pause signal before approaching the view.",
+          "Finish by looking from the marked floor."
+        ]
+      },
       "onSuccess": {
-        "goto": "quiet_rule_1_done"
+        "goto": "witness_first",
+        "narration": "Everyone can signal a pause without shouting."
       },
       "onFailure": {
-        "goto": "quiet_rule_1_changed"
+        "goto": "witness_first",
+        "narration": "The elder demonstrates the pause and your party repeats it before approaching."
       },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "quiet_rule_1_done": {
-      "type": "story",
-      "narration": "The whole group stops at the first signal, including Pip. The elder nods once and moves the cup away from the walking lane. You have a room rule everyone can use before there is anything surprising to look at.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "witness_first"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "quiet_rule_1_changed": {
-      "type": "story",
-      "narration": "One friend cannot see the signal or hear the first quiet word. You change where the group stands and try the instruction facing one another. Everyone can repeat it before the elder leads you forward. Nothing in the old ice is tested by a shout.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "witness_first"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "quiet_rule_2": {
-      "type": "story",
-      "narration": "You choose one short word and practice it at speaking level. The elder shows how a low voice carries across the floor without shouting. Your party stops together when the quietest friend says it, so permission to pause does not belong only to the loudest hero.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "quiet_rule_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "quiet_rule_2_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Agree that any friend may quietly call a pause. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "quiet_rule_2_done"
+      "onAssisted": {
+        "goto": "witness_first",
+        "narration": "Everyone can signal a pause without shouting."
       },
-      "onFailure": {
-        "goto": "quiet_rule_2_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "quiet_rule_2_done": {
-      "type": "story",
-      "narration": "The whole group stops at the first signal, including Pip. The elder nods once and moves the cup away from the walking lane. You have a room rule everyone can use before there is anything surprising to look at.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "witness_first"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "quiet_rule_2_changed": {
-      "type": "story",
-      "narration": "One friend cannot see the signal or hear the first quiet word. You change where the group stands and try the instruction facing one another. Everyone can repeat it before the elder leads you forward. Nothing in the old ice is tested by a shout.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "witness_first"
-        }
-      ],
       "cast": [
         {
           "figure": "cast/yeti_elder",
@@ -337,7 +174,7 @@
     },
     "witness_first": {
       "type": "choice_point",
-      "narration": "The route worker gives the elder a drawing of the two valleys. Pip keeps your party's copy beside it. The elder does not begin by telling you what the memory means. She asks which parts were seen from the near bank, which from the far bank, and which were hidden by spray. The river outside has already changed again, so a good account needs its limits as well as its conclusion. How should your party start the comparison?",
+      "narration": "The route worker gives the elder a drawing of the two valleys. Pip keeps your crossing sketch beside it. Start with each bank's own view, or point out the fixed landmarks together. Leave the spray-hidden moments blank. How will you begin?",
       "choices": [
         {
           "id": "option_1",
@@ -411,76 +248,52 @@
       "art": "scenes/riftlight/reading-room"
     },
     "catalog_cards": {
-      "type": "choice_point",
-      "narration": "Three small catalog cards rest beside the ice. Each describes the same newly exposed memory from a different inspection. The elder says the yetis have re-cataloged it three times. Pip starts to arrange the cards as dates; she gently turns them sideways. The order of inspecting a memory is not the age of what it shows. Your party can preserve useful differences without making the cards into a timeline they cannot prove. How will you keep them together?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Group them by the viewpoint each keeper recorded",
-          "icon": "hand",
-          "goto": "catalog_cards_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Keep the inspection order and leave the memory undated",
-          "icon": "hand",
-          "goto": "catalog_cards_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "catalog_cards_1": {
-      "type": "story",
-      "narration": "You look for the descriptions of ridge and river on each card. A friend reads the viewpoint aloud while another places the matching drawing beside it. The elder keeps the original cards separate. Your arrangement helps someone repeat a look rather than claiming when the river first changed.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "listening_floor"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "catalog_cards_2": {
-      "type": "story",
-      "narration": "You ask the elder to show which inspection happened first and copy only that sequence. Pip leaves a wide blank where a year might otherwise have gone. Each card still belongs to a visit, but no visit is mistaken for the date of the remembered scene.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "listening_floor"
-        }
-      ],
+      "type": "interaction",
+      "narration": "The elder lays out three cards for the same memory. One has a standing-place mark, one a ridge sketch, one the moving-water account. Pip lines them up as dates. \"Three visits,\" says the elder. \"The river did not leave us a birthday.\" Connect the cards so another reader can find the view.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Build a route through the inspection cards.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "water",
+            "label": "Water account",
+            "icon": "eye"
+          },
+          {
+            "id": "place",
+            "label": "Standing-place card",
+            "icon": "eye"
+          },
+          {
+            "id": "ridge",
+            "label": "Ridge sketch",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "place",
+          "ridge",
+          "water"
+        ],
+        "clues": [
+          "Find the standing place before checking what can be seen there.",
+          "Compare the ridge sketch before using the moving-water account.",
+          "The water account is the final comparison."
+        ]
+      },
+      "onSuccess": {
+        "goto": "listening_floor",
+        "narration": "The cards form a route to the view, without assigning a date to the river."
+      },
+      "onFailure": {
+        "goto": "listening_floor",
+        "narration": "The elder helps link the cards to the standing place. The inspection dates stay separate from the age of the view."
+      },
+      "onAssisted": {
+        "goto": "listening_floor",
+        "narration": "The cards form a route to the view, without assigning a date to the river."
+      },
       "cast": [
         {
           "figure": "cast/yeti_elder",
@@ -498,64 +311,19 @@
       "art": "scenes/riftlight/reading-room"
     },
     "listening_floor": {
-      "type": "choice_point",
-      "narration": "A faint low song travels through the floor from a hall elsewhere in the ice. The elder pauses to let your party feel it through still feet. It is not a command that makes a memory give up an answer. Yetis sing here while they work and keep their voices low. Pip asks whether he should hum along or stay silent. Your party can choose a respectful way to settle before reading without claiming to know an old song's missing words. What will you do?",
+      "type": "rest",
+      "narration": "A faint low song travels through the floor from a hall elsewhere in the ice. Your party rests beside the warm cups. Pip feels the note through his paws. \"My toes are humming.\" The elder shows you the two marked places from which readers can watch the memory.",
+      "heal": 0,
       "choices": [
         {
-          "id": "option_1",
-          "label": "Listen through a full phrase before offering a quiet answer",
-          "icon": "hand",
-          "goto": "listening_floor_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Stay silent and follow the elder's slow approach",
-          "icon": "hand",
-          "goto": "listening_floor_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "listening_floor_1": {
-      "type": "story",
-      "narration": "You stand together until the low phrase ends. A songkeeper may help the party find a comfortable breath, but the elder invites everyone to listen. You offer one soft note only after there is space for it, leaving the old words unguessed.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
+          "id": "rest",
+          "label": "Rest, then prepare a reading place",
           "icon": "hand",
           "goto": "support_ice"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
         },
         {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "listening_floor_2": {
-      "type": "story",
-      "narration": "You let the song continue without adding to it. Pip closes his notebook while you cross the marked floor. The elder waits at each turn for the last friend. Silence becomes an active choice to make room for another people's work, not a test anyone can fail.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
+          "id": "listen",
+          "label": "Rest while listening to the floor",
           "icon": "hand",
           "goto": "support_ice"
         }
@@ -574,19 +342,33 @@
     },
     "support_ice": {
       "type": "choice_point",
-      "narration": "The memory face remains part of the glacier. A shallow wooden cradle below it catches loose surface flakes, keeping them off the place where visitors stand. One corner has settled into soft snow since the room was opened. The elder wants it supported before anyone leans close to the ice. There are sound wedges beside the cradle and room to reach from the marked floor. Your party can steady the corner or move the standing place farther back. Which arrangement will you try?",
+      "narration": "The close reading place needs a settled cradle to catch flakes. Support it for a clearer viewing window; your papers will stay near meltwater. Or prepare the farther dry table: a cloudier view, but no paper rescue later. Which will you ready?",
       "choices": [
         {
           "id": "option_1",
-          "label": "Set the wedges while friends steady the cradle",
+          "label": "Support the close view; keep an eye on the papers",
           "icon": "hand",
-          "goto": "support_ice_1"
+          "goto": "support_ice_1",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "memory_close_view",
+              "value": true
+            }
+          ]
         },
         {
           "id": "option_2",
-          "label": "Shift the viewing place back from the soft corner",
+          "label": "Prepare a dry table at the farther view",
           "icon": "hand",
-          "goto": "support_ice_2"
+          "goto": "support_ice_2",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "memory_close_view",
+              "value": false
+            }
+          ]
         }
       ],
       "cast": [
@@ -625,11 +407,7 @@
       "art": "scenes/riftlight/reading-room"
     },
     "support_ice_1_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Set the wedges while friends steady the cradle. Choose who leads while the others help.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "support_ice_1_done"
       },
@@ -646,7 +424,17 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "narration": "A support shifts beside the ice. Hold it while a friend secures the tie. A tiny crack ticks above you. Everyone stops chatting.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the support while your friend secures it.",
+        "supportLabel": "Hold the support",
+        "actionLabel": "Secure the tie"
+      },
+      "onAssisted": {
+        "goto": "support_ice_1_done"
+      }
     },
     "support_ice_1_done": {
       "type": "story",
@@ -718,16 +506,22 @@
       "art": "scenes/riftlight/reading-room"
     },
     "support_ice_2_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Shift the viewing place back from the soft corner. Choose who leads while the others help.",
+      "type": "interaction",
+      "narration": "Level the broad dry table at the farther marked viewpoint. The keeper puts the blank slips well away from meltwater. The distant memory still has a cloudy layer to work around.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the dry reading table.",
+        "actionLabel": "Set the dry table",
+        "objectLabel": "Dry reading table"
+      },
       "onSuccess": {
         "goto": "support_ice_2_done"
       },
       "onFailure": {
         "goto": "support_ice_2_changed"
+      },
+      "onAssisted": {
+        "goto": "support_ice_2_done"
       },
       "cast": [
         {
@@ -743,7 +537,7 @@
     },
     "support_ice_2_done": {
       "type": "story",
-      "narration": "The cradle and standing place stay steady under the elder's gentle test. She removes the loose snow around the wedges so the next visitor can see how the support works. Your party can begin looking without balancing on something that was never meant to bear it.",
+      "narration": "The farther reading table is level and dry. Papers can stay here without a meltwater rescue. You will use landmarks and separate accounts to check the cloudier view.",
       "choices": [
         {
           "id": "continue",
@@ -766,7 +560,7 @@
     },
     "support_ice_2_changed": {
       "type": "story",
-      "narration": "The corner shifts before you finish. Everyone steps back to the marked floor while the elder supports it with a sound board. Your party helps move the standing place farther away. You will read from there, with the uncertain corner clearly marked out of bounds.",
+      "narration": "The elder steadies the farther table with a spare wedge. It is dry and ready. The cloudy view still needs careful comparison.",
       "choices": [
         {
           "id": "continue",
@@ -789,7 +583,7 @@
     },
     "first_memory": {
       "type": "choice_point",
-      "narration": "Within the pale ice, a small moving view becomes clear. Water leaves the glacier between two familiar ridges and runs down the valley that was dry on Pip's earlier drawing. No person in the remembered view names the river, and no date appears beside it. The elder asks the party to watch one complete passage before explaining. Your task is to notice what the ice actually shows, including what it does not show. How will you divide that first quiet look?",
+      "narration": "The pale ice clears. A remembered river moves between familiar ridges into the valley your earlier sketch left dry. Divide the water and ridge watching, or follow one fixed landmark together. The first plan gives you separate notes to compare later. Which will you try?",
       "choices": [
         {
           "id": "option_1",
@@ -814,7 +608,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/reading-room-memory",
       "onEnter": [
         {
           "type": "setFlag",
@@ -830,7 +624,7 @@
           "id": "continue",
           "label": "See what follows",
           "icon": "hand",
-          "goto": "second_view",
+          "goto": "memory_observation",
           "effects": [
             {
               "type": "setFlag",
@@ -850,7 +644,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room-memory"
     },
     "first_memory_2": {
       "type": "story",
@@ -860,7 +654,7 @@
           "id": "continue",
           "label": "See what follows",
           "icon": "hand",
-          "goto": "second_view",
+          "goto": "memory_observation",
           "effects": [
             {
               "type": "setFlag",
@@ -880,11 +674,11 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room-memory"
     },
     "second_view": {
       "type": "choice_point",
-      "narration": "The elder leads you to a second marked viewpoint, still on the safe floor. A cloudy layer inside the ice partly overlaps the remembered river. From here, a reflection could make a bend seem to run in another direction. Your party has one drawing from outside and one first account from the memory face. Before deciding that they agree, you can check the fixed ridges again or compare the order in which the water passes visible rocks. Which check would challenge your first impression?",
+      "narration": "The elder leads you to a second marked viewpoint, still on the safe floor. A reflection slides across the river. Track the fixed ridge, remember the rock passage, or use preparation that gives your team another test. Which will challenge your first impression?",
       "choices": [
         {
           "id": "option_1",
@@ -906,6 +700,25 @@
           "when": {
             "flag": "memory_split_observers"
           }
+        },
+        {
+          "id": "close",
+          "label": "Use our prepared close-view window",
+          "icon": "hand",
+          "goto": "close_view",
+          "when": {
+            "flag": "memory_close_view"
+          }
+        },
+        {
+          "id": "attune",
+          "label": "Have our starweaver follow the close-view pulse",
+          "icon": "hand",
+          "goto": "close_view_attuned",
+          "when": {
+            "flag": "memory_close_view"
+          },
+          "requiresClass": "starweaver"
         }
       ],
       "cast": [
@@ -918,7 +731,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room-memory"
     },
     "second_view_1": {
       "type": "story",
@@ -941,18 +754,44 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room-memory"
     },
     "second_view_1_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Keep the ridges fixed while comparing both views. Choose who leads while the others help.",
+      "type": "interaction",
+      "narration": "A reflection slides across the remembered ridge. Keep track of the marked ridge view as the cloudy layers trade places, then choose its final position.",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Follow the marked ridge view through the moving cloudy layers.",
+        "actionLabel": "Point out the ridge",
+        "covers": [
+          "Near layer",
+          "Middle layer",
+          "Far layer"
+        ],
+        "start": 0,
+        "swaps": [
+          [
+            0,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "stepMs": 1400
+      },
       "onSuccess": {
         "goto": "second_view_1_done"
       },
       "onFailure": {
+        "goto": "second_view_1_changed"
+      },
+      "onAssisted": {
         "goto": "second_view_1_changed"
       },
       "cast": [
@@ -965,7 +804,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room-memory"
     },
     "second_view_1_done": {
       "type": "story",
@@ -988,7 +827,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/reading-room-memory",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1028,7 +867,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/reading-room-memory",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1068,18 +907,46 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room-memory"
     },
     "second_view_2_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Trace the passage past three visible rocks. Choose who leads while the others help.",
+      "type": "interaction",
+      "narration": "The river passes three rocks in the moving view. Watch their order, then record it without asking the elder to choose the bend for you.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the rock passage, then echo it.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "flat",
+            "label": "Flat rock",
+            "icon": "eye"
+          },
+          {
+            "id": "round",
+            "label": "Round rock",
+            "icon": "eye"
+          },
+          {
+            "id": "split",
+            "label": "Split rock",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "round",
+          "split",
+          "flat"
+        ],
+        "stepMs": 1300
+      },
       "onSuccess": {
         "goto": "second_view_2_done"
       },
       "onFailure": {
+        "goto": "second_view_2_changed"
+      },
+      "onAssisted": {
         "goto": "second_view_2_changed"
       },
       "cast": [
@@ -1092,7 +959,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room-memory"
     },
     "second_view_2_done": {
       "type": "story",
@@ -1115,7 +982,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/reading-room-memory",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1155,7 +1022,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/reading-room-memory",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1176,7 +1043,7 @@
     },
     "what_matches": {
       "type": "choice_point",
-      "narration": "The outside drawing and the memory account lie together on the elder's stone table. Your party watched the river briefly take that valley today; the ice preserves a view of it leaving there at another time. The elder asks which agreement is solid and which questions remain open. Neither page tells you why land has been moving. Pip leaves his pencil on the table so the next sentence is chosen by the party rather than by the person holding the pencil. Which agreement should lead the note?",
+      "narration": "The outside drawing and memory account lie on the elder's table. Both show the river in that other valley. Choose what the evidence supports: cite your independent test, ask the elder to sign her co-reading, or keep the claim limited to visible landmarks.",
       "choices": [
         {
           "id": "option_1",
@@ -1246,13 +1113,13 @@
           "when": {
             "flag": "memory_independent_reading"
           },
-          "text": "The elder waits for your observers to choose whether to put their own checked direction in the account."
+          "text": "Your independent observers may cite the direction they checked."
         },
         {
           "when": {
             "notFlag": "memory_independent_reading"
           },
-          "text": "Your middle bend is still blank. The elder can sign a co-reading, or you can keep the account limited to the visible landmarks."
+          "text": "The middle bend stays blank. Ask for a signed co-reading or limit the account to visible landmarks."
         }
       ]
     },
@@ -1325,7 +1192,7 @@
     },
     "catalog_test": {
       "type": "choice_point",
-      "narration": "A younger yeti keeper brings a fresh catalog slip and asks where the new account belongs. She can file it with the outside crossing report, with the memory's earlier inspections, or cross-reference both. A wrong place would not destroy the memory, but could make the next visitor miss half the evidence. The elder asks your party to find one clear route through the records from a question someone might really bring. Where should the younger keeper begin the test?",
+      "narration": "A younger yeti keeper brings a fresh catalog slip. She needs a route from a visitor's question to the checked view. Start with the crossing report or the remembered river. The elder's signed reference, if you requested it, offers another route to test.",
       "choices": [
         {
           "id": "option_1",
@@ -1370,19 +1237,19 @@
             "flag": "memory_account_cited",
             "notFlag": "memory_rock_sequence"
           },
-          "text": "The younger keeper must be able to find both of your standing positions from the ridge-profile account."
+          "text": "The ridge account must show both standing places."
         },
         {
           "when": {
             "flag": "memory_account_cited"
           },
-          "text": "She is testing whether another reader can reach your cited evidence without your party pointing to it."
+          "text": "The keeper must reach your cited evidence without hints."
         },
         {
           "when": {
             "flag": "memory_keeper_endorsed"
           },
-          "text": "The elder supplies her signed cross-reference for the co-reading. You may use it to make the keeper's first filing test easier."
+          "text": "Your elder-signed reference supplies a co-reader and a route, not a date."
         }
       ]
     },
@@ -1414,15 +1281,47 @@
       "art": "scenes/riftlight/reading-room"
     },
     "catalog_test_1_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Begin with a visitor asking about the changed crossing. Choose who leads while the others help.",
+      "type": "interaction",
+      "narration": "The younger keeper follows your reference from a real visitor's question. Share the links needed to reach the checked viewpoint, keeping the inspection date apart from the remembered river.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Link the visitor question to the evidence.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "view",
+            "label": "Checked viewpoint",
+            "icon": "eye"
+          },
+          {
+            "id": "question",
+            "label": "Visitor question",
+            "icon": "eye"
+          },
+          {
+            "id": "card",
+            "label": "Catalog cross-reference",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "question",
+          "card",
+          "view"
+        ],
+        "clues": [
+          "Start with what the visitor asks.",
+          "The catalog cross-reference connects the question to a viewpoint.",
+          "Finish at the checked viewpoint, not at a guessed date."
+        ]
+      },
       "onSuccess": {
         "goto": "catalog_test_1_done"
       },
       "onFailure": {
+        "goto": "catalog_test_1_changed"
+      },
+      "onAssisted": {
         "goto": "catalog_test_1_changed"
       },
       "cast": [
@@ -1537,15 +1436,47 @@
       "art": "scenes/riftlight/reading-room"
     },
     "catalog_test_2_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Begin with a visitor asking about the old river view. Choose who leads while the others help.",
+      "type": "interaction",
+      "narration": "The younger keeper follows your reference from a real visitor's question. Share the links needed to reach the checked viewpoint, keeping the inspection date apart from the remembered river.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Link the visitor question to the evidence.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "view",
+            "label": "Checked viewpoint",
+            "icon": "eye"
+          },
+          {
+            "id": "question",
+            "label": "Visitor question",
+            "icon": "eye"
+          },
+          {
+            "id": "card",
+            "label": "Catalog cross-reference",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "question",
+          "card",
+          "view"
+        ],
+        "clues": [
+          "Start with what the visitor asks.",
+          "The catalog cross-reference connects the question to a viewpoint.",
+          "Finish at the checked viewpoint, not at a guessed date."
+        ]
+      },
       "onSuccess": {
         "goto": "catalog_test_2_done"
       },
       "onFailure": {
+        "goto": "catalog_test_2_changed"
+      },
+      "onAssisted": {
         "goto": "catalog_test_2_changed"
       },
       "cast": [
@@ -1634,29 +1565,22 @@
     },
     "sliding_tray": {
       "type": "choice_point",
-      "narration": "While the younger keeper puts the catalog slip away, a shallow tray begins sliding on a patch of meltwater beside the work table. It holds spare blank slips and a little chalk, not a piece of memory ice. The tray is still on the safe side of the marked floor. Nobody needs to run toward the old wall or shout. Your party can stop its path or lift the papers from above. Which small rescue will leave the standing area clear?",
+      "narration": "A shallow tray holds blank slips and chalk. Near the close view, meltwater has started it sliding toward the table edge. You can catch its rim from the marked floor. If your party prepared the farther dry table, the slips are already safe there and you can pass them straight to the keeper. What will you do?",
       "choices": [
         {
           "id": "option_1",
-          "label": "Catch the tray against the table from the safe side",
+          "label": "Catch the tray before it reaches the edge",
           "icon": "hand",
           "goto": "sliding_tray_1"
         },
         {
-          "id": "option_2",
-          "label": "Lift the slips while a friend blocks the tray's path",
+          "id": "dry",
+          "label": "Use our dry table and hand the slips over",
           "icon": "hand",
-          "goto": "sliding_tray_2"
-        },
-        {
-          "id": "assist",
-          "label": "Use a wing as a barrier beside the marked floor",
-          "icon": "hand",
-          "goto": "sliding_tray_assisted",
-          "requiresSpecies": [
-            "griffin",
-            "dragonling"
-          ]
+          "goto": "dry_slips",
+          "when": {
+            "notFlag": "memory_close_view"
+          }
         }
       ],
       "cast": [
@@ -1709,11 +1633,7 @@
       "art": "scenes/riftlight/reading-room"
     },
     "sliding_tray_1_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Catch the tray against the table from the safe side. Choose who leads while the others help.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "sliding_tray_1_done"
       },
@@ -1734,7 +1654,17 @@
           "name": "Younger keeper"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "narration": "The reading tray tilts. Slips creep toward its edge. Level it together before the notes become a very small avalanche.",
+      "interaction": {
+        "kind": "balance",
+        "objectLabel": "reading tray",
+        "cue": "Raise or lower your side until the load is level.",
+        "actionLabel": "Carry it together"
+      },
+      "onAssisted": {
+        "goto": "sliding_tray_1_done"
+      }
     },
     "sliding_tray_1_done": {
       "type": "story",
@@ -1764,115 +1694,6 @@
       "art": "scenes/riftlight/reading-room"
     },
     "sliding_tray_1_changed": {
-      "type": "story",
-      "narration": "The tray bumps the table before you catch it. Two blank slips become wet, so the younger keeper sets them aside to dry. The written accounts stay on the upper stone. Your party moves the tray away from the meltwater and keeps the warning boundary where it was.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "compare_accounts"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "sliding_tray_2": {
-      "type": "story",
-      "narration": "You leave the sliding tray low and reach for the dry slips first. Pip brings the empty cloth used to wrap the outside drawing. Another friend stops the tray from turning toward the walking lane. No one tries to catch a falling sheet by crossing the boundary.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "sliding_tray_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "sliding_tray_2_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Lift the slips while a friend blocks the tray's path. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "sliding_tray_2_done"
-      },
-      "onFailure": {
-        "goto": "sliding_tray_2_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "sliding_tray_2_done": {
-      "type": "story",
-      "narration": "The slips and chalk return to the table without anyone leaving the safe floor. The younger keeper dries the tray and marks the meltwater patch. Pip checks the record pages one more time, then laughs softly at how carefully everyone is keeping even the blank paper.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "compare_accounts"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "sliding_tray_2_changed": {
       "type": "story",
       "narration": "The tray bumps the table before you catch it. Two blank slips become wet, so the younger keeper sets them aside to dry. The written accounts stay on the upper stone. Your party moves the tray away from the meltwater and keeps the warning boundary where it was.",
       "choices": [
@@ -1983,76 +1804,46 @@
       "art": "scenes/riftlight/reading-room"
     },
     "claim_limit": {
-      "type": "choice_point",
-      "narration": "Before the younger keeper copies the final sentence, the elder asks what it must not claim. A remembered river course does not name who changed it, and today's crossing does not date the ice. Pip suggests writing those limits beside the clue so the next traveler does not inherit a larger story than the party actually found. You can choose the question that should remain open most clearly, while leaving the others open too. Which limit should be easiest to spot?",
-      "choices": [
-        {
-          "id": "option_1",
-          "label": "Make the unknown cause explicit",
-          "icon": "hand",
-          "goto": "claim_limit_1"
-        },
-        {
-          "id": "option_2",
-          "label": "Make the unknown age explicit",
-          "icon": "hand",
-          "goto": "claim_limit_2"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "claim_limit_1": {
-      "type": "story",
-      "narration": "You put the confirmed course first, followed by a short statement that its cause is not known. The worker adds her account of today's return to the older bed separately. Nobody gives the ice a voice naming a culprit, and no blank becomes an excuse to accuse a neighbor.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "record_choice"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "claim_limit_2": {
-      "type": "story",
-      "narration": "You put the matched landmarks first and leave the memory without a year. The younger keeper lists the three inspection visits on another line. A reader can now distinguish the age of an observation from the time at which someone wrote it down.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "See what follows",
-          "icon": "hand",
-          "goto": "record_choice"
-        }
-      ],
+      "type": "interaction",
+      "narration": "Pip reads the draft. The matched river is there. Its age and cause are still blank. \"A blank is easier to fix than a confident mistake,\" says the elder. Choose a useful unanswered question to leave beside the clue.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Leave a question for the next investigation.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "date",
+            "label": "What could date this view?",
+            "icon": "hand",
+            "reaction": "The date stays open beside the checked observation."
+          },
+          {
+            "id": "cause",
+            "label": "What moved the land?",
+            "icon": "hand",
+            "reaction": "The cause stays unanswered; nobody invents one."
+          },
+          {
+            "id": "compare",
+            "label": "Where else can we compare this river?",
+            "icon": "hand",
+            "reaction": "The next comparison goes beside the clue, not in place of it."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "record_choice",
+        "narration": "The account separates the observed river from its unanswered questions."
+      },
+      "onFailure": {
+        "goto": "record_choice",
+        "narration": "The account separates the observed river from its unanswered questions."
+      },
+      "onAssisted": {
+        "goto": "record_choice",
+        "narration": "The account separates the observed river from its unanswered questions."
+      },
       "cast": [
         {
           "figure": "cast/yeti_elder",
@@ -2071,7 +1862,7 @@
     },
     "record_choice": {
       "type": "choice_point",
-      "narration": "The elder offers to keep a copy of your party's finished comparison beside the memory catalog. You may also keep your own drawing without carrying ice or taking an object from the room. A shared copy could help later visitors check the same view; a private page lets you choose when to explain your work. The elder will keep the original memory safe either way. What would your party like her to do with its own written account?",
+      "narration": "The elder offers to keep a copy of your party's finished comparison. Keep it private or share it with the catalog. A filing route that passed its test can become a posted guide; a corrected route needs a guiding keeper. What will you authorize?",
       "choices": [
         {
           "id": "option_1",
@@ -2131,13 +1922,13 @@
           "when": {
             "flag": "memory_catalog_clear"
           },
-          "text": "Your filing path passed an independent test. You may also publish a guide that lets visitors find the view without waiting for a keeper."
+          "text": "Your filing route passed its independent test and may be posted."
         },
         {
           "when": {
             "notFlag": "memory_catalog_clear"
           },
-          "text": "The corrected filing path still needs a keeper. If you share a copy, the younger keeper will guide its next reader; it will not be posted as a guide for use alone."
+          "text": "The corrected filing route still needs a keeper."
         }
       ]
     },
@@ -2211,19 +2002,32 @@
     },
     "teach_back": {
       "type": "choice_point",
-      "narration": "An arriving yeti visitor waits at the warm cup, just as your party did. The elder asks whether you would like to explain the safe view while she watches. This is a chance to find a confusing instruction before the next reading. The visitor has seen neither the crossing nor the memory and does not know Pip's drawing. Your party must give enough guidance to look, without handing over a grand history the ice has not shown. How will you begin?",
+      "narration": "An arriving yeti visitor waits at the warm cup. Show the room's own landmarks, or use the guide or copy you chose to share. The newcomer needs a safe way to look. Private notes stay with their owner.",
       "choices": [
         {
           "id": "option_1",
-          "label": "Start with the quiet rule and fixed landmarks",
+          "label": "Walk the newcomer through the room's own landmarks",
           "icon": "hand",
-          "goto": "teach_back_1"
+          "goto": "teach_live"
         },
         {
-          "id": "option_2",
-          "label": "Ask the visitor to separate a view from an explanation",
+          "id": "posted",
+          "label": "Let the newcomer try our posted guide",
           "icon": "hand",
-          "goto": "teach_back_2"
+          "goto": "teach_posted",
+          "when": {
+            "flag": "memory_guide_published"
+          }
+        },
+        {
+          "id": "staff",
+          "label": "Hand our shared copy to the guiding keeper",
+          "icon": "hand",
+          "goto": "teach_staff",
+          "when": {
+            "flag": "memory_notes_shared",
+            "notFlag": "memory_guide_published"
+          }
         }
       ],
       "cast": [
@@ -2246,274 +2050,32 @@
           "when": {
             "flag": "memory_guide_published"
           },
-          "text": "The newcomer finds your posted guide and reaches the safe standing mark before the keeper needs to lead them. The younger keeper lets your party see that it works for someone new."
+          "text": "The newcomer takes your posted guide and tries its route while the keeper watches."
         },
         {
           "when": {
             "flag": "memory_notes_shared",
             "notFlag": "memory_catalog_clear"
           },
-          "text": "The younger keeper brings the newcomer from her seat with the assisted copy. Your earlier filing difficulty is now part of her instructions, not silently erased."
+          "text": "The keeper has your assisted copy ready and will accompany this reading."
         },
         {
           "when": {
             "notFlag": "memory_notes_shared"
           },
-          "text": "Your private account stays with your party. The elder uses the room's own observations for the newcomer and asks you only to demonstrate a safe way to look."
+          "text": "Your private page stays in your pack. Use the room's own observations."
         },
         {
           "when": {
             "flag": "memory_account_cited"
           },
-          "text": "Pip asks the newcomer to find the evidence your observers cited before accepting the direction. Your party's own check remains visible in the lesson."
+          "text": "Your cited evidence must stay visible in the demonstration."
         }
       ]
     },
-    "teach_back_1": {
-      "type": "story",
-      "narration": "You show where to stand and how to call a pause. Then you let the visitor find the two ridges before describing the water. Pip keeps the map steady instead of pointing to a conclusion. The elder waits to hear the visitor's own account of what becomes visible.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "teach_back_1_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "teach_back_1_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Start with the quiet rule and fixed landmarks. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "teach_back_1_done",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "showed_the_newcomer"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "teach_back_1_changed",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "showed_the_newcomer"
-          }
-        ]
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "teach_back_1_done": {
-      "type": "story",
-      "narration": "The visitor describes a river leaving by the other valley and asks when it happened. Your party answers that the view does not give a date. The elder nods. A useful clue has been passed on without turning one fragment into the history of the whole glacier.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "teach_back_1_changed": {
-      "type": "story",
-      "narration": "The visitor first repeats your words rather than describing the ice. You step back and let the elder give them a longer quiet look. Their next account names the ridges and water separately. Your party corrects its introduction so another reader can make an observation of their own.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "teach_back_2": {
-      "type": "story",
-      "narration": "You give the visitor the safe standing place and ask what can actually be seen there. Your party listens before comparing it with today's crossing. Pip keeps the undated memory and the inspected route on separate pages. The elder is ready to correct any instruction that invites a shout.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Put the plan into action",
-          "icon": "hand",
-          "goto": "teach_back_2_check"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "teach_back_2_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Ask the visitor to separate a view from an explanation. Choose who leads while the others help.",
-      "onSuccess": {
-        "goto": "teach_back_2_done",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "showed_the_newcomer"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "teach_back_2_changed",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "showed_the_newcomer"
-          }
-        ]
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "teach_back_2_done": {
-      "type": "story",
-      "narration": "The visitor describes a river leaving by the other valley and asks when it happened. Your party answers that the view does not give a date. The elder nods. A useful clue has been passed on without turning one fragment into the history of the whole glacier.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "teach_back_2_changed": {
-      "type": "story",
-      "narration": "The visitor first repeats your words rather than describing the ice. You step back and let the elder give them a longer quiet look. Their next account names the ridges and water separately. Your party corrects its introduction so another reader can make an observation of their own.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Continue with this result",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/newcomer_yeti",
-          "name": "Newcomer"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
     "rest": {
       "type": "rest",
-      "narration": "The ice has shown a river leaving the glacier by the other valley, matching the brief course your party witnessed outside. Its age and cause remain unanswered. You keep a drawing and a checked observation, not a piece of the glacier or a complete old map. The elder repeats her warning about the old ice without naming what might wake. Pip closes the pages carefully. The party can return to the workers by the upper path or pause here before following the next part of the northern strand.",
+      "narration": "Your river crossing and the memory agree on another valley. The date and cause remain unanswered. Pip checks that the drawing, rather than his tea-stained scrap, is in the traveling pages. You can rest, return to the workers by the upper path, or follow the northern strand farther into the glacier.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -2540,7 +2102,7 @@
           "when": {
             "flag": "memory_guide_published"
           },
-          "text": "Behind you, the posted guide lets another visitor find the memory without waiting for a keeper. The younger keeper credits your party for the usable route."
+          "text": "Your posted guide remains available. The younger keeper checks how each new visitor uses it and offers help when needed."
         },
         {
           "when": {
@@ -2554,110 +2116,26 @@
             "notFlag": "memory_notes_shared"
           },
           "text": "No copy of your private account is filed. The elder accepts your decision and keeps her own observations separate."
+        },
+        {
+          "when": {
+            "flag": "memory_visitor_independent"
+          },
+          "text": "The visitor you watched reached the view without a keeper supplying the route."
+        },
+        {
+          "when": {
+            "flag": "memory_close_view"
+          },
+          "text": "The close cradle remains ready for the next careful observation."
+        },
+        {
+          "when": {
+            "notFlag": "memory_close_view"
+          },
+          "text": "The dry reading table keeps the next stack of slips away from meltwater."
         }
       ]
-    },
-    "quiet_rule_assisted": {
-      "type": "story",
-      "narration": "A songkeeper helps the party practice the quiet pause at a comfortable breath. The elder listens from the marked floor and gives the least confident friend room to call it. Another hero can lead the check of whether everyone understood. The song does not command the old ice.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work together using that help",
-          "icon": "hand",
-          "goto": "quiet_rule_assisted_check"
-        }
-      ]
-    },
-    "quiet_rule_assisted_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Let a songkeeper lead a quiet pause signal. The qualified hero assists; choose who leads the team check.",
-      "onSuccess": {
-        "goto": "quiet_rule_1_done"
-      },
-      "onFailure": {
-        "goto": "quiet_rule_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
-    },
-    "sliding_tray_assisted": {
-      "type": "story",
-      "narration": "A winged friend holds a broad wing beside the safe walking space to keep blank slips from drifting toward the boundary. Your party stays on the floor, not in flight among the ice shelves. The most nimble helper can collect the tray while the wing supplies a quiet barrier.",
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Work together using that help",
-          "icon": "hand",
-          "goto": "sliding_tray_assisted_check"
-        }
-      ]
-    },
-    "sliding_tray_assisted_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Use a wing as a barrier beside the marked floor. The qualified hero assists; choose who leads the team check.",
-      "onSuccess": {
-        "goto": "sliding_tray_1_done"
-      },
-      "onFailure": {
-        "goto": "sliding_tray_1_changed"
-      },
-      "cast": [
-        {
-          "figure": "cast/yeti_elder",
-          "name": "Reading-room elder"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        },
-        {
-          "figure": "cast/younger_keeper",
-          "name": "Younger keeper"
-        }
-      ],
-      "art": "scenes/riftlight/reading-room"
     },
     "second_view_prepared": {
       "type": "story",
@@ -2672,7 +2150,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room",
+      "art": "scenes/riftlight/reading-room-memory",
       "choices": [
         {
           "id": "continue",
@@ -2683,15 +2161,47 @@
       ]
     },
     "second_view_prepared_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Use the two independent accounts to check the reflected river view.",
+      "type": "interaction",
+      "narration": "You kept the ridge and water accounts separate. Share them now to reconstruct the course; Pip holds his own page so it cannot quietly copy yours.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Combine the separate observations.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "bend",
+            "label": "Round bend",
+            "icon": "eye"
+          },
+          {
+            "id": "fork",
+            "label": "Forked ridge",
+            "icon": "eye"
+          },
+          {
+            "id": "flat",
+            "label": "Flat rock",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "fork",
+          "bend",
+          "flat"
+        ],
+        "clues": [
+          "The ridge observer saw the fork before the bend.",
+          "The water observer saw the bend before the flat rock.",
+          "Both accounts place the flat rock last."
+        ]
+      },
       "onSuccess": {
         "goto": "second_view_1_done"
       },
       "onFailure": {
+        "goto": "second_view_1_changed"
+      },
+      "onAssisted": {
         "goto": "second_view_1_changed"
       },
       "cast": [
@@ -2704,7 +2214,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room-memory"
     },
     "what_matches_keeper": {
       "type": "story",
@@ -2778,15 +2288,43 @@
       ]
     },
     "catalog_endorsed_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "roller": "party",
-      "prompt": "Test the signed cross-reference without guiding the new reader.",
+      "type": "interaction",
+      "narration": "The elder's signed reference helps the younger keeper find her seat and the checked view. Pass it to the keeper who will use it; its signature names a co-reader, not a date.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the signed reference route, then echo it.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "view",
+            "label": "Checked view",
+            "icon": "eye"
+          },
+          {
+            "id": "seat",
+            "label": "Keeper seat",
+            "icon": "eye"
+          },
+          {
+            "id": "card",
+            "label": "Signed card",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "card",
+          "seat",
+          "view"
+        ],
+        "stepMs": 1300
+      },
       "onSuccess": {
         "goto": "catalog_test_1_done"
       },
       "onFailure": {
+        "goto": "catalog_test_1_changed"
+      },
+      "onAssisted": {
         "goto": "catalog_test_1_changed"
       },
       "cast": [
@@ -2882,6 +2420,345 @@
           ]
         }
       ]
+    },
+    "memory_observation": {
+      "type": "interaction",
+      "narration": "Water moves inside the ice, past a forked ridge and two rocks. Watch the displayed river pattern. Your own boots remain on the room's floor while the remembered water passes.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the river pass the landmarks, then echo its course.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "flat",
+            "label": "Flat rock",
+            "icon": "eye"
+          },
+          {
+            "id": "fork",
+            "label": "Forked ridge",
+            "icon": "eye"
+          },
+          {
+            "id": "round",
+            "label": "Round rock",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "fork",
+          "round",
+          "flat"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "second_view",
+        "narration": "Pip keeps the observation beside the crossing sketch. Now test it from the other viewpoint."
+      },
+      "onFailure": {
+        "goto": "second_view",
+        "narration": "You mark the hidden moment rather than guessing. The second viewpoint will test what you can still check."
+      },
+      "onAssisted": {
+        "goto": "second_view",
+        "narration": "Pip keeps the observation beside the crossing sketch. Now test it from the other viewpoint."
+      }
+    },
+    "close_view": {
+      "type": "interaction",
+      "narration": "Your settled cradle makes the close marked place usable. Wait for the reflection to move clear of the ridge before recording the view.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Record the ridge during the clear interval.",
+        "actionLabel": "Record the clear view",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "second_view_1_done"
+      },
+      "onFailure": {
+        "goto": "second_view_1_changed"
+      },
+      "onAssisted": {
+        "goto": "second_view_1_changed"
+      }
+    },
+    "close_view_attuned": {
+      "type": "interaction",
+      "narration": "Your settled cradle makes the close marked place usable. Wait for the reflection to move clear of the ridge before recording the view. Your starweaver uses a skill called Attune to follow the clear interval across a wider part of its pulse.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room-memory",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Record the ridge during the clear interval.",
+        "actionLabel": "Record the clear view",
+        "target": 0.5,
+        "width": 0.6,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "second_view_1_done"
+      },
+      "onFailure": {
+        "goto": "second_view_1_changed"
+      },
+      "onAssisted": {
+        "goto": "second_view_1_changed"
+      }
+    },
+    "dry_slips": {
+      "type": "interaction",
+      "narration": "Your dry-table choice kept the slips away from the meltwater. Pass the blank stack along to the younger keeper; no chase across the reading floor is needed.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the dry blank slips to the keeper.",
+        "actionLabel": "Pass the dry slips",
+        "objectLabel": "Dry blank catalog slips"
+      },
+      "onSuccess": {
+        "goto": "compare_accounts",
+        "narration": "The keeper has clean slips ready for the record."
+      },
+      "onFailure": {
+        "goto": "compare_accounts",
+        "narration": "The keeper has clean slips ready for the record."
+      },
+      "onAssisted": {
+        "goto": "compare_accounts",
+        "narration": "The keeper has clean slips ready for the record."
+      }
+    },
+    "teach_live": {
+      "type": "interaction",
+      "narration": "The elder uses the room's own landmarks while your party steadies the viewing sheet for the newcomer. Private notes remain in your pack unless you chose to share them.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the viewing sheet for the newcomer.",
+        "actionLabel": "Show the safe viewpoint",
+        "supportLabel": "Hold the viewing sheet"
+      },
+      "onSuccess": {
+        "goto": "rest",
+        "narration": "The newcomer finds the safe view with your party's live help.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_newcomer",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest",
+        "narration": "The newcomer finds the safe view with your party's live help.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_newcomer",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "rest",
+        "narration": "The newcomer finds the safe view with your party's live help.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_newcomer",
+            "value": true
+          }
+        ]
+      }
+    },
+    "teach_posted": {
+      "type": "interaction",
+      "narration": "The newcomer follows the posted guide. Watch the route-marker pattern, then show where the reader should go without a keeper supplying the answer.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the guide route, then echo it.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "view",
+            "label": "Marked viewpoint",
+            "icon": "eye"
+          },
+          {
+            "id": "cup",
+            "label": "Warm cup",
+            "icon": "eye"
+          },
+          {
+            "id": "card",
+            "label": "Guide card",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "cup",
+          "card",
+          "view"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "rest",
+        "narration": "The newcomer finds the view using the posted guide.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_newcomer",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "memory_visitor_independent",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "teach_staff",
+        "narration": "The newcomer loses a marker. The younger keeper steps in to guide this reading; publication has not made every reader independent."
+      },
+      "onAssisted": {
+        "goto": "teach_staff",
+        "narration": "The newcomer loses a marker. The younger keeper steps in to guide this reading; publication has not made every reader independent."
+      }
+    },
+    "teach_staff": {
+      "type": "interaction",
+      "narration": "Pass the shared copy to the younger keeper, with the places needing help marked. She accompanies the newcomer to the safe view instead of presenting assisted work as independent.",
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/newcomer_yeti",
+          "name": "Newcomer"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the shared instructions to the guiding keeper.",
+        "actionLabel": "Hand over the guided copy",
+        "objectLabel": "Keeper-guided reading copy"
+      },
+      "onSuccess": {
+        "goto": "rest",
+        "narration": "The keeper guides the newcomer using the authorized shared copy.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_newcomer",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest",
+        "narration": "The keeper guides the newcomer using the authorized shared copy.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_newcomer",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "rest",
+        "narration": "The keeper guides the newcomer using the authorized shared copy.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "showed_the_newcomer",
+            "value": true
+          }
+        ]
+      }
     }
   },
   "voiceGuide": {

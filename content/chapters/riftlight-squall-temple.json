@@ -205,7 +205,7 @@
     },
     "people": {
       "type": "choice_point",
-      "narration": "The keepers are carrying cushions and folded screens. The broad doorway is safe, but a loose screen keeps catching the wind. How will you open a clear lane?",
+      "narration": "A folded screen balloons in the wind and plants itself across the broad doorway. A keeper tries to see around it while carrying a stack of cushions. \"The screen would like to come in first!\" Behind the screen, the hall is safe. How will you clear a lane for the people?",
       "choices": [
         {
           "id": "plan_1",
@@ -267,12 +267,7 @@
       "art": "scenes/riftlight/temple-island-squall"
     },
     "people_check": {
-      "type": "check",
-      "tags": ["force"],
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Keep the doorway clear while the last bulky screen goes inside.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "people_clear",
         "narration": "The screen fits without catching its edge."
@@ -287,7 +282,18 @@
           "name": "Temple keeper"
         }
       ],
-      "art": "scenes/riftlight/temple-island-squall"
+      "art": "scenes/riftlight/temple-island-squall",
+      "narration": "The last screen barely fits through the doorway. Raise or lower your side to level it before carrying it inside. The wind has strong opinions about the screen.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Raise or lower your side until the screen is level.",
+        "actionLabel": "Carry the screen inside",
+        "objectLabel": "folded screen"
+      },
+      "onAssisted": {
+        "goto": "people_clear",
+        "narration": "The screen fits without catching its edge."
+      }
     },
     "people_clear": {
       "type": "story",
@@ -710,11 +716,7 @@
       "art": "scenes/riftlight/temple-island-squall"
     },
     "shelter_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Hold the shelter steady while its loose edge is secured.",
+      "type": "interaction",
       "onSuccess": {
         "goto": "shelter_clear",
         "narration": "The shelter takes the gust without flapping free."
@@ -729,7 +731,18 @@
           "name": "Temple keeper"
         }
       ],
-      "art": "scenes/riftlight/temple-island-squall"
+      "art": "scenes/riftlight/temple-island-squall",
+      "narration": "The shelter's loose edge snaps in the wind. Hold it while a friend secures it. Inside, someone puts a cup under the newest drip.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the shelter while your friend secures the edge.",
+        "supportLabel": "Hold the shelter",
+        "actionLabel": "Secure the edge"
+      },
+      "onAssisted": {
+        "goto": "shelter_clear",
+        "narration": "The shelter takes the gust without flapping free."
+      }
     },
     "shelter_clear": {
       "type": "story",
@@ -827,7 +840,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "Bone crawlers are clustering where fresh magic spills from the opening. They have no quarrel with the cushions; they are simply between you and the work. How will you keep their path away from the people?",
+      "narration": "Bone crawlers crowd the fresh magic on the landing. One scrambles onto a cushion, slides off and tries again. The keepers need a clear path past them. From behind the fence, how will you draw the crawlers' movement away from the people?",
       "choices": [
         {
           "id": "plan_1",
@@ -893,7 +906,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "The island's low edge is approaching the posts. You can work the ropes to turn its edge away, or hold the sheltered corner while it settles beside the temple. Both need time on the board with the crawlers. Which result will you work toward?",
+      "narration": "The drifting island's low edge comes into view beside the mooring posts. Ropes pull taut in the keepers' paws. On the board, your party can turn that edge away, or hold the sheltered corner while the island settles alongside. The crawlers are still between you and the work. Which result will you work toward?",
       "choices": [
         {
           "id": "push",
@@ -1187,7 +1200,7 @@
     },
     "roof": {
       "type": "choice_point",
-      "narration": "Rain runs down the stone roof into a blocked gutter above the hall. The people are safe inside, but their dry floor will not stay dry unless the water can drain. How will you clear it from the sheltered side?",
+      "narration": "Drip. Drip. A keeper moves a cushion. The drip finds the next cushion. Rain is backing up behind a blocked gutter above the hall. Everyone is under cover, but the dry floor needs your help. How will you clear the gutter from the sheltered side?",
       "choices": [
         {
           "id": "plan_1",
@@ -1496,7 +1509,7 @@
     },
     "record": {
       "type": "choice_point",
-      "narration": "The keeper records what happened beside the old island songs. She asks for the result your party actually reached, with no borrowed victory in it.",
+      "narration": "The keeper opens the log beside the old island songs. A raindrop lands exactly where she meant to begin. She moves the book. \"Tell me what happened. Tomorrow's crew needs the real landing.\" Which result will your party put on the page?",
       "choices": [
         {
           "id": "plan_1",
