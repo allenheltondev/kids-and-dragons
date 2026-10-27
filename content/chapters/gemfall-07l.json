@@ -131,7 +131,7 @@
     },
     "choice_the_rule": {
       "type": "choice_point",
-      "narration": "The wardens will not sit with the masks, and the masks will not sit with the wardens. So the old door on its two barrels is your table now, right in the middle of the Pinch. It wobbles, and a folded sock goes under the short leg. A table between two sides needs one rule, chalked on top. Only one, or nobody will remember it. Wardens and masks drift over to see what you write. What is the rule?",
+      "narration": "Your door-table stands between the wardens and the masked choir. Pick one rule. Tonight it can help them meet: quiet voices make room for questions; visible faces let them work side by side; sharing gives them a reason to pass something across. Only one rule will fit in Pellam's enormous chalk letters.",
       "choices": [
         {
           "id": "no_shouting",
@@ -1226,9 +1226,16 @@
         },
         {
           "id": "practice",
-          "label": "Practice on a small stone instead",
+          "label": "Practice a small hum; a warden takes the cart",
           "icon": "note",
-          "goto": "scene_returning_cart_practice",
+          "goto": "interaction_small_hum"
+        },
+        {
+          "id": "both",
+          "label": "Push one-handed and practice with the other",
+          "icon": "bigfoot",
+          "goto": "scene_returning_cart_both",
+          "requiresSpecies": "bigfoot",
           "effects": [
             {
               "type": "setFlag",
@@ -1238,11 +1245,10 @@
           ]
         },
         {
-          "id": "both",
-          "label": "Push one-handed and practice with the other",
-          "icon": "bigfoot",
-          "goto": "scene_returning_cart_both",
-          "requiresSpecies": "bigfoot",
+          "id": "quiet_practice",
+          "label": "Spend the afternoon practicing quietly",
+          "icon": "note",
+          "goto": "scene_returning_cart_practice",
           "effects": [
             {
               "type": "setFlag",
@@ -1498,6 +1504,27 @@
       ],
       "narration": "Late at night, Pellam comes to your table alone, with no ledger under his arm for once. He sits down carefully on the steady side. \"One question,\" he says quietly. \"Where does the choir sing at night? I only want to know.\" Across the road, a mask's fire crackles, and somebody over there is very still.",
       "choices": [
+        {
+          "id": "rule_bring_one",
+          "label": "Sharing: pass the soup across",
+          "icon": "party",
+          "goto": "interaction_shared_soup",
+          "requiresFlag": "rule_bring_one"
+        },
+        {
+          "id": "rule_masks_up",
+          "label": "Faces showing: welcome a helper from each camp",
+          "icon": "party",
+          "goto": "interaction_open_table",
+          "requiresFlag": "rule_masks_up"
+        },
+        {
+          "id": "rule_no_shouting",
+          "label": "Quiet voices: hear a question from every hero",
+          "icon": "party",
+          "goto": "interaction_quiet_council",
+          "requiresFlag": "rule_no_shouting"
+        },
         {
           "id": "tell",
           "label": "Tell him",
@@ -1969,34 +1996,34 @@
           "label": "Open the wardens' ledger you carried, page by page",
           "icon": "scroll",
           "requiresItem": "tether_ledger",
-          "goto": "check_hold"
+          "goto": "interaction_ledger_limits"
         },
         {
           "id": "chord",
           "label": "Hum the choir's three notes",
           "icon": "note",
           "requiresItem": "tether_chord",
-          "goto": "check_hold"
+          "goto": "interaction_chord_hold"
         },
         {
           "id": "practiced",
           "label": "You practiced on a small stone. You know the feeling.",
           "icon": "note",
-          "goto": "check_hold",
+          "goto": "interaction_practiced_hold",
           "requiresFlag": "practiced"
         },
         {
           "id": "two_helpers",
           "label": "A warden and a mask hold on with you",
           "icon": "party",
-          "goto": "check_hold",
+          "goto": "scene_helpers_brace",
           "requiresFlag": "two_helpers"
         },
         {
           "id": "table_works",
           "label": "Pellam and Hessa both nod to you to begin",
           "icon": "heart",
-          "goto": "check_hold",
+          "goto": "scene_visitors_brace",
           "requiresFlag": "table_works"
         },
         {
@@ -2600,6 +2627,384 @@
         }
       ],
       "art": "scenes/gemfall/pinch-box-crawlers"
+    },
+    "interaction_quiet_council": {
+      "type": "interaction",
+      "narration": "You point to NOBODY SHOUTS. Pellam invites Hessa over to ask her directly. Each hero can offer a question, a worry or a hope. Hessa puts her ladle down so she can listen properly.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Add a question, worry or hope before the visitors answer.",
+        "actionLabel": "Hear the answers",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "question",
+            "label": "Ask what each side needs",
+            "icon": "scroll",
+            "reaction": "Pellam needs safe limits. Hessa needs somebody to hear the choir."
+          },
+          {
+            "id": "worry",
+            "label": "Name a worry about control",
+            "icon": "heart",
+            "reaction": "Hessa agrees that a held note must also be allowed to stop."
+          },
+          {
+            "id": "hope",
+            "label": "Share a hope for working together",
+            "icon": "note",
+            "reaction": "Pellam asks Hessa to stand beside him at tomorrow's test."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "rest_under_the_table",
+        "narration": "They answer each other, quietly. Tomorrow you can ask them to brace the wagon together.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "table_works",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_under_the_table",
+        "narration": "They keep talking with you between them."
+      },
+      "onAssisted": {
+        "goto": "rest_under_the_table",
+        "narration": "You take turns asking; the visitors listen and agree to help together.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "table_works",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/pinch-door-table",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ]
+    },
+    "interaction_open_table": {
+      "type": "interaction",
+      "narration": "You point at FACES SHOWING. Hessa lifts her mask. Pellam moves his ledger. Hold the wobbly door steady while they make room for a helper from each camp. Hessa has freckles. Pellam has soup on his sleeve.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Steady the table while a warden and a singer make room.",
+        "actionLabel": "Make room",
+        "supportLabel": "Steady the door"
+      },
+      "onSuccess": {
+        "goto": "rest_under_the_table",
+        "narration": "A warden and a singer agree to stand beside you tomorrow. The table has done its job.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "two_helpers",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_under_the_table",
+        "narration": "The visitors steady the door and welcome a helper from each camp."
+      },
+      "onAssisted": {
+        "goto": "rest_under_the_table",
+        "narration": "Pellam props the short corner. Both camps promise a helper.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "two_helpers",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/pinch-door-table",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ]
+    },
+    "interaction_shared_soup": {
+      "type": "interaction",
+      "narration": "You point at BRING ONE THING TO SHARE. Hessa brings soup. Pellam brings mugs, including one marked NOT SOUP. Pass a serving across without making anybody leave the table.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the serving, then pass it across the table.",
+        "actionLabel": "Pass the soup",
+        "objectLabel": "A mug of soup"
+      },
+      "onSuccess": {
+        "goto": "rest_under_the_table",
+        "narration": "They stay to talk. Tomorrow they will help brace the wagon together. Pellam turns his mug around.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "table_works",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_under_the_table",
+        "narration": "The visitors share what remains and stay to talk."
+      },
+      "onAssisted": {
+        "goto": "rest_under_the_table",
+        "narration": "Together you pass the soup across. Both visitors agree to help at the bend.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "table_works",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/warden-fire-tea",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ]
+    },
+    "interaction_small_hum": {
+      "type": "interaction",
+      "narration": "A passing warden takes the cart. You find a quiet rock and rest a little humming stone between your hands. Wait for the calm middle of its pulse. The first time it goes quiet, a nearby goat checks whether its ears still work.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap at the calm middle of the hum.",
+        "actionLabel": "Hold the small hum",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "interaction_tea_cups",
+        "narration": "For half a breath the hum rests. Remember that feeling: it will give you a wider opening at the wagon.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_tea_cups",
+        "narration": "The hum slips away. The cart still reaches the cairn, and your other instruments can help tomorrow."
+      },
+      "onAssisted": {
+        "goto": "interaction_tea_cups",
+        "narration": "A singer hums under your note until it settles. You know the feeling now.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "practiced",
+            "value": true
+          }
+        ]
+      }
+    },
+    "interaction_practiced_hold": {
+      "type": "interaction",
+      "narration": "You recognize the calm place inside the wagon's hum. It is larger than the practice stone, but it has the same pulse. The mules wait with their earmuffs half off.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Tap at the calm middle, just as you practiced.",
+        "actionLabel": "Hold the wagon hum",
+        "target": 0.5,
+        "width": 0.5,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "The hum rests for one long breath. You let it return gently."
+      },
+      "onFailure": {
+        "goto": "scene_tether_slips",
+        "narration": "The pulse slips past your hands. The masks take the wagon up the side track."
+      },
+      "onAssisted": {
+        "goto": "scene_tether_holds",
+        "narration": "A singer helps you find the calm place. The hum rests, then returns gently."
+      },
+      "art": "scenes/gemfall/caravan-bells-hairpin"
+    },
+    "interaction_ledger_limits": {
+      "type": "interaction",
+      "narration": "The borrowed ledger shows how to hold a hum without squeezing it harder: listen first, hold for one breath, then release. Pellam has underlined RELEASE so hard the next page has a dent.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Set the safe limits in order: listen, hold, release.",
+        "actionLabel": "Use the ledger",
+        "options": [
+          {
+            "id": "listen",
+            "label": "Listen for the hum",
+            "icon": "ear"
+          },
+          {
+            "id": "hold",
+            "label": "Hold for one breath",
+            "icon": "hand"
+          },
+          {
+            "id": "release",
+            "label": "Release gently",
+            "icon": "note"
+          }
+        ],
+        "answer": [
+          "listen",
+          "hold",
+          "release"
+        ],
+        "clues": [
+          "Listen before touching the hum.",
+          "Hold for one breath only.",
+          "Release comes last. A tether must be able to let go."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "You follow the safe limits. One breath of quiet, then a gentle release."
+      },
+      "onFailure": {
+        "goto": "scene_tether_slips",
+        "narration": "The steps tangle and the hum breaks free. The masks drive the wagon up the side track."
+      },
+      "onAssisted": {
+        "goto": "scene_tether_holds",
+        "narration": "Pellam reads the limits while you work. The hum rests for one breath."
+      },
+      "art": "scenes/gemfall/caravan-bells-hairpin",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ]
+    },
+    "interaction_chord_hold": {
+      "type": "interaction",
+      "narration": "Hessa sounds the choir's three notes: middle, low, high, middle. Echo them toward the wagon so the stone has a note to rest against. One mule hums the low part, badly.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Echo middle, low, high, middle after the notes glow.",
+        "actionLabel": "Hold with the chord",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "low",
+            "label": "Low",
+            "icon": "glyph_note_low"
+          },
+          {
+            "id": "middle",
+            "label": "Middle",
+            "icon": "glyph_note_middle"
+          },
+          {
+            "id": "high",
+            "label": "High",
+            "icon": "glyph_note_high"
+          }
+        ],
+        "answer": [
+          "middle",
+          "low",
+          "high",
+          "middle"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "Your chord meets the stone's note. For one breath the hillside is quiet."
+      },
+      "onFailure": {
+        "goto": "scene_tether_slips",
+        "narration": "The chord wobbles and the hum escapes. The masks drive the wagon up the side track."
+      },
+      "onAssisted": {
+        "goto": "scene_tether_holds",
+        "narration": "The choir sings under your notes. The hum settles for one breath."
+      },
+      "art": "scenes/gemfall/choir-warmup-masks",
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ]
+    },
+    "interaction_tether_team": {
+      "type": "interaction",
+      "narration": "A warden blocks the wheel. A singer steadies the side. They have agreed to help: brace the wagon together while you quiet its stone. Nobody has to hold the whole hillside alone.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Brace together while the stone is held for one breath.",
+        "actionLabel": "Hold together",
+        "supportLabel": "Brace the wagon"
+      },
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "The wagon stands steady. You hold the hum for one breath, then let it return. Both helpers remember to breathe too."
+      },
+      "onFailure": {
+        "goto": "scene_tether_holds",
+        "narration": "The helpers set another wheel block. Together you finish the one-breath test."
+      },
+      "onAssisted": {
+        "goto": "scene_tether_holds",
+        "narration": "Both helpers brace with you. The hum rests for one breath."
+      },
+      "art": "scenes/gemfall/caravan-bells-hairpin"
+    },
+    "scene_helpers_brace": {
+      "type": "story",
+      "narration": "The warden and singer you invited step beside the wagon. One brings a wheel block; the other brings a steady note. They wait for your signal.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Brace the wagon together",
+          "icon": "hand",
+          "goto": "interaction_tether_team"
+        }
+      ]
+    },
+    "scene_visitors_brace": {
+      "type": "story",
+      "narration": "Pellam and Hessa keep their promise. They bring a helper from each camp and show where to brace the wagon. Pellam logs the wheel block as SHARED.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Brace the wagon together",
+          "icon": "hand",
+          "goto": "interaction_tether_team"
+        }
+      ]
     }
   },
   "voiceGuide": {
@@ -2645,6 +3050,37 @@
       "interaction_box_slide": {
         "props": [
           "prop_box_stack"
+        ]
+      },
+      "interaction_open_table": {
+        "props": [
+          "prop_door_barrels"
+        ]
+      },
+      "interaction_shared_soup": {
+        "props": [
+          "prop_soup_bowl"
+        ]
+      },
+      "interaction_small_hum": {
+        "props": [
+          "prop_humming_stone"
+        ]
+      },
+      "interaction_practiced_hold": {
+        "props": [
+          "prop_humming_stone"
+        ]
+      },
+      "interaction_ledger_limits": {
+        "props": [
+          "prop_word_scroll"
+        ]
+      },
+      "interaction_tether_team": {
+        "props": [
+          "prop_wagon_wheels",
+          "prop_humming_stone"
         ]
       }
     }
