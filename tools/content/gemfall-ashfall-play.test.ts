@@ -176,3 +176,24 @@ it.each([ashfall])("$id still resumes every shipped roll prompt to its original 
     }
   }
 });
+
+it.each(sizes.flatMap(size=>["restore","hoard","leash","refuse"].map(purpose=>({size,purpose}))))
+ ("Ashfall late route: $size seats / $purpose intentionally votes without the indoor council",({size,purpose})=>{
+ const {state,trace}=walk(ashfall,size,{...picks,scene_crab:"fight",scene_shut_out:purpose},"success",20,true,{},"manticore","duskrunner",false,{interaction_gate_call:"miss-supported"});
+ expect(trace.has("interaction_purpose_council")).toBe(false);
+ const decision=trace.get("scene_shut_out")!;
+ expect(decision.narration).toContain("seal holds a titan asleep");
+ expect(decision.narration).toContain("Take time to hear one another before answering.");
+ if(decision.prompt?.kind!=="choice")throw Error("late purpose vote");
+ expect(decision.prompt.options.map(o=>o.id)).toEqual(["restore","hoard","leash","refuse"]);
+ const expected=purpose==="refuse"?"pursuit_restore":`pursuit_${purpose}`;
+ expect(["pursuit_restore","pursuit_hoard","pursuit_leash"].filter(f=>state.flags[f])).toEqual([expected]);
+ expect(state.flags.clock_late).toBe(true);expect(state.chapterOutcome).toBe("setback");
+ // A serialized save already waiting at the original decision still chooses
+ // directly; introducing a mandatory new council here would change that contract.
+ let resumed=JSON.parse(JSON.stringify(decision)) as RunState;
+ resumed=send(resumed,{type:"CHOOSE",choiceId:purpose},ashfall);
+ resumed=send(resumed,{type:"CHOOSE",choiceId:"on"},ashfall);
+ expect(resumed.sceneId).toBe("rest_end_shut_out");
+ expect(resumed.flags[expected]).toBe(true);expect(resumed.chapterOutcome).toBe("setback");
+});
