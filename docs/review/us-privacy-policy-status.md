@@ -4,6 +4,9 @@ Dated 2026-10-27. Engineering status, not legal advice.
 
 ## Done
 
+- Timing records are described as set to expire after 180 days, with the database's cleanup following
+  in the days after, not as deleted on day 180 (DynamoDB TTL is asynchronous). Other TTL rows are
+  read-gated (a room past its expiry reads as absent), so only the timing marks carry this lag in the copy.
 - Operator identity and contact published on the page (see item 1 under Not done).
 
 - A public `/privacy` page (`screens/PrivacyScreen.tsx`, words in `screens/privacy-policy.ts`),
@@ -36,16 +39,21 @@ Dated 2026-10-27. Engineering status, not legal advice.
 5. **Browser read-aloud** is described as possibly sending text to the browser's maker, because
    that is unverified (see [us-third-party-flows.md](./us-third-party-flows.md) §4).
 6. Review of the page's wording by someone qualified.
-7. **Full operator contact.** The notice names the operator and an email only. The owner's review
-   of #532 cites the FTC COPPA FAQ (C.2, 16 CFR 312.4(d), cited by the reviewer and **not checked
-   here**) as also expecting a mailing address and a telephone number. Before a public U.S. launch,
-   add suitable *business* contact details to `screens/operator.ts` and `PrivacyScreen.tsx`, not a
-   residential address. Until then the page is incomplete.
-8. **Link proximity.** The policy is linked only from the two start screens. Children also enter
-   names at places that link does not cover: a direct room link (`/p/<code>`), the creation flow
-   and a family tablet's kid picker. Per the same review (FTC FAQ C.6, also unchecked here), review
-   where a link or notice must sit at every point where a child types a name. Not done.
+7. **Full operator contact.** The notice names the operator and an email only. 16 CFR 312.4(d)(1)
+   asks for "The name, address, telephone number, and email address" of operators (excerpt supplied
+   by the owner's review of #532, who checked it against the current eCFR; not re-checked by the
+   author of this note). Before a public U.S. launch, add suitable *business* contact details to
+   `screens/operator.ts` and `PrivacyScreen.tsx`, not a residential address. Until then the page is
+   incomplete.
+8. **Link proximity.** 312.4(d) says "The link must be in close proximity to the requests for
+   information in each such area" (same source). The policy is linked only from the two start
+   screens. Children also enter names at a direct room link (`/p/<code>`), the creation flow and a
+   family tablet's kid picker, and none links to it. Review each point where a child types a name
+   and put the link beside it. Not done.
 9. **Launch blockers this page does not fix.** Publishing `/privacy` is not proof of compliance.
    Still open: the parental consent and collection boundary (#522), verifiable consent and direct
    notice (#523), a procedure for parents to review, delete or stop collection (#523), and an
-   enforced retention schedule (#524). Retained child data cannot stay indefinite.
+   enforced retention schedule (#524). 312.10: "Personal information collected online from a child
+   may not be retained indefinitely." 312.4(a): "provide notice and obtain verifiable parental consent
+   prior to collecting, using, or disclosing personal information from children." (Excerpts as
+   supplied by the owner's review.) Exceptions and consent methods still need qualified counsel.

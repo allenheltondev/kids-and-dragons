@@ -65,7 +65,7 @@ export const PRIVACY_SECTIONS: readonly PolicySection[] = [
       "When someone tries a wrong room code, we count it against their network address for about half an hour, so nobody can guess their way into a game.",
       "When the game breaks, it sends one short crash report: what kind of failure, which version, which page and whether it was a phone, tablet or TV. It never includes what the error said, so nothing a kid typed is in it.",
       "Our servers keep request logs to run the game. We have not yet confirmed how long our hosting provider keeps logs and backups, and we will not state a period here until we have.",
-      "To learn how long chapters take, we record the time of each chapter's steps against a random run id, with no names in it. We add these up ourselves, across families, to see how long each chapter takes. They are deleted after 180 days.",
+      "To learn how long chapters take, we record the time of each chapter's steps against a random run id, with no names in it. We add these up ourselves, across families, to see how long each chapter takes. We set these records to expire after 180 days, and our database normally deletes expired records in the days that follow.",
       "The game sets no cookies. Your phone's own storage holds a sign-in token for that phone, settings such as read-aloud, and a copy of your adventure book.",
     ],
   },
