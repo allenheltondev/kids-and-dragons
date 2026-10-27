@@ -1,0 +1,520 @@
+{
+  "gemfall-03c": {
+    "check_catch_chips": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Everybody scoop up the rolling gem chips before the crowd does",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_number_pebble",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "drover_knows_us",
+            "value": true
+          }
+        ],
+        "narration": "You dive, scoop and pass, scoop and pass, and every chip is back in the pannier before a single pocket gets one. The drover counts them twice, then booms a thank you so loud the horses jump. He will remember your faces."
+      },
+      "onFailure": {
+        "goto": "scene_number_pebble",
+        "narration": "You scoop up a whole double handful, very proudly, and give the drover three chips and a great deal of gravel. He laughs so hard his hat falls off. By the time he finds it, the crowd has pocketed the rest."
+      },
+      "art": "scenes/gemfall/caravan-road-ruts"
+    },
+    "check_run_message": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Run a message down a two-day queue, with the fastest of you in front",
+      "cast": [
+        {
+          "figure": "cast/relay_runner",
+          "name": "Relay Runner"
+        }
+      ],
+      "roller": "best",
+      "onSuccess": {
+        "goto": "choice_tolls",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "roller"
+          }
+        ],
+        "narration": "You weave through wagons, goats and campfires, and slap the note into the lead drover's hand. He reads it, nods, and slows the crossing to a careful walk. When you get back, the runner tosses you a brave whistle. \"The relay remembers,\" she says."
+      },
+      "onFailure": {
+        "goto": "choice_tolls",
+        "narration": "You run as fast as you can and hand the note to the wrong drover, who reads it out loud to absolutely everybody. That, it turns out, works just as well. By lunchtime the whole queue knows the river is rising."
+      },
+      "art": "scenes/gemfall/ford-queue-market"
+    },
+    "check_unmire": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everybody heave a gem wagon out of the mud",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_dusk_wolves",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "unmired_wagon",
+            "value": true
+          },
+          {
+            "type": "grantItem",
+            "itemId": "brave_whistle",
+            "to": "roller"
+          },
+          {
+            "type": "setFlag",
+            "flag": "helped_in_the_queue"
+          }
+        ],
+        "narration": "One, two, THREE, and the wagon comes out with a noise like a giant boot leaving a puddle. The drover gives you a brave whistle and calls you \"mudlarks\", which is a compliment."
+      },
+      "onFailure": {
+        "goto": "scene_dusk_wolves",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1
+          },
+          {
+            "type": "setFlag",
+            "flag": "helped_in_the_queue"
+          }
+        ],
+        "narration": "The wagon comes out in the end, but only after everyone has sat down in the mud at least once. You will be finding mud in your ears until next week."
+      },
+      "art": "scenes/gemfall/caravan-road-ruts"
+    },
+    "check_markers": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Put the markers back in the right order",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_markers_restored",
+        "narration": "Post by post, you walk the line back into order, reading the worn numbers with your thumbs where the paint has gone. The last marker goes in with a thump, and the whole line points, straight and plain, at the one safe way down to the ford.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_in_the_queue"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_dusk_wolves",
+        "narration": "You put them all back up, beautifully, in the wrong order. A centaur runner gallops past, stops, laughs, and fixes them in about four seconds.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_in_the_queue"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/caravan-road-ruts"
+    },
+    "check_answer": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Tell Mother Thrum what you actually want, and mean it",
+      "cast": [
+        {
+          "figure": "cast/mother_thrum",
+          "name": "Mother Thrum"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_charm_walk",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "facet_ford"
+          },
+          {
+            "type": "setFlag",
+            "flag": "got_the_ford_stone",
+            "value": true
+          }
+        ],
+        "narration": "Mother Thrum listens all the way to the end, then hands you the sock with the stone in it. \"That's the Ford Stone. Take it somewhere it stops ringing,\" she says. \"I'd like some sleep.\""
+      },
+      "onFailure": {
+        "goto": "scene_charm_walk",
+        "narration": "You say something about gems and glory, and Mother Thrum's charms all go quiet at once, which feels like an answer. \"Not yet,\" she says kindly. \"Ask yourself again at the mountain.\""
+      },
+      "art": "scenes/gemfall/ford-witch-stall"
+    },
+    "check_listen_charm": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Hold the charm to wagon after wagon and listen for a different note",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_witch_fire",
+        "narration": "Wagon after wagon, gem after gem, and the note never changes. Not higher. Not lower. Big gems and tiny chips all sing the very same note, as if they all came from one place. One very, very old place."
+      },
+      "onFailure": {
+        "goto": "rest_witch_fire",
+        "narration": "So many wagons, so much singing, that the notes blur together in your head like a choir with a cold. You will have to listen again somewhere quieter. Still, you are sure of one thing: every gem is singing."
+      },
+      "art": "scenes/gemfall/queue-dusk-camp"
+    },
+    "check_ford": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Keep your footing in the ford",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "end_forded",
+        "narration": "Step, wait, step. The water pushes and pulls and you do not let it. The lead drover sings the last line of the verse just as your boots hit the north bank."
+      },
+      "onFailure": {
+        "goto": "scene_surge",
+        "narration": "Halfway across, somebody behind you shouts, and then everybody behind you shouts, and the water that was pushing at your knees is suddenly pushing at your waist."
+      },
+      "art": "scenes/gemfall/west-branch-ford"
+    },
+    "check_ford_easy": {
+      "type": "check",
+      "stat": "heart",
+      "checkKind": "doing",
+      "tn": 8,
+      "prompt": "Link arms and wade across together, nice and steady",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "end_forded",
+        "narration": "With friends on every side, the ford is just very wet walking. Somebody up on a wagon starts clapping as you reach the north bank."
+      },
+      "onFailure": {
+        "goto": "scene_surge",
+        "narration": "You are nearly across, with friends on every side, when a yell goes up behind you and the whole river seems to lurch at once."
+      },
+      "art": "scenes/gemfall/west-branch-ford"
+    },
+    "check_drake_toll": {
+      "type": "check",
+      "stat": "heart",
+      "checkKind": "doing",
+      "tn": 8,
+      "prompt": "Fish the floating loaves out of the river and toss each drake its share",
+      "cast": [
+        {
+          "figure": "entities/river_drake",
+          "count": 2
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "end_forded",
+        "narration": "The drakes take the bread like a toll collector takes coins, and one of them even nudges the wagon back onto its wheels with its nose. Drovers haul you up the north bank by your collars."
+      },
+      "onFailure": {
+        "goto": "end_marsh_west",
+        "narration": "One drake takes the bread. The other one wanted the bread you were holding, and it bumps you, very gently, into the deep part."
+      },
+      "art": "scenes/gemfall/west-branch-ford"
+    }
+  },
+  "gemfall-04c": {
+    "check_jackalope_race": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Race a jackalope to the mile marker",
+      "cast": [
+        {
+          "figure": "entities/jackalope"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_empty_stretch",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "raced_jackalope",
+            "value": true
+          }
+        ],
+        "narration": "You run like the wind and lose by one ear, which is the best anybody has done all season. The jackalope looks you over with new respect and thumps once. That means friends. It lopes along beside you for the next mile, showing off."
+      },
+      "onFailure": {
+        "goto": "scene_empty_stretch",
+        "narration": "You run like the wind. The jackalope runs like a much faster wind, then sits at the mile marker cleaning its antlers until you catch up. It thumps once anyway, as if to say: nice try. Then it is off to race a cart."
+      },
+      "art": "scenes/gemfall/north-rush-road"
+    },
+    "check_jackalopes": {
+      "type": "check",
+      "discovers": [
+        "creature.jackalope"
+      ],
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Count the jackalopes and find where they stop",
+      "cast": [
+        {
+          "figure": "entities/jackalope",
+          "count": 3
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_silence_follows",
+        "narration": "You count forty-one, forty-two, forty-three, and then none. Not one. The last jackalope sits exactly at the edge of the silence like the period at the end of a sentence, and you can draw the line from where you stand."
+      },
+      "onFailure": {
+        "goto": "scene_downbound",
+        "narration": "You get to forty-one jackalopes, and then one of them sits up and stares at you until you lose count. It has won. You do not know what, but it has definitely won."
+      },
+      "art": "scenes/gemfall/quiet-road-stretch"
+    },
+    "check_push_mule": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everybody push a mule that has decided not to move",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "rest_soup_tents",
+        "narration": "You heave, and the gem sack slips off the mule's back in the struggle. The moment it hits the ground, the mule leaps up, fresh as morning, and trots three steps away from it. \"She'll carry anything,\" says the owner, amazed. \"Anything but that, it seems.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "moved_the_mule"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_soup_tents",
+        "narration": "You push. The mule leans. The mule wins, and you sit down in the road in a heap. From down there you notice the mule is not glaring at you at all. It is glaring at the gem sack on its own back. Its owner sees it too, and slowly takes the sack off.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "moved_the_mule"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/downbound-wagon-auction"
+    },
+    "check_haul_posts": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everybody carry marker posts for a centaur road crew",
+      "cast": [
+        {
+          "figure": "cast/road_boss",
+          "name": "Road Boss"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "interaction_last_post",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_road_crew",
+            "value": true
+          }
+        ],
+        "narration": "You carry posts until your arms feel like noodles, and you plant every one straight. The road boss looks down the new curve and nods. \"Good work. The relay will sing about this,\" she says, and she does not sound like she is joking."
+      },
+      "onFailure": {
+        "goto": "interaction_last_post",
+        "narration": "You carry a post backward and plant it upside down, so the arrow points at the sky. The crew decides this is very funny and leaves it there, as a joke for the next runner. The road boss thanks you anyway, still chuckling."
+      },
+      "art": "scenes/gemfall/north-road-detour"
+    },
+    "check_argue": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 16,
+      "prompt": "Out-arithmetic a Skywarden",
+      "cast": [
+        {
+          "figure": "cast/holloway",
+          "name": "Sergeant Holloway"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_gate",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "met_the_wardens",
+            "value": true
+          }
+        ],
+        "narration": "You find a mistake in the sergeant's sums. Sergeant Holloway checks it twice, corrects it, and pays you back two coppers with deep respect."
+      },
+      "onFailure": {
+        "goto": "interaction_gate",
+        "narration": "Sergeant Holloway listens to your whole argument, writes it down in the ledger under 'Complaints, Polite', and charges you the fixed rate anyway."
+      },
+      "art": "scenes/gemfall/warden-supply-stop"
+    },
+    "check_read_signs": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "The best reader reads the signs and sorts the honest from the nonsense",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_depot",
+        "narration": "Most of the signs are nonsense. But a few old, weathered ones, nailed up by the relay, all agree about one thing: the road north bends away from every place a stone came down. You follow the honest arrows straight to the depot."
+      },
+      "onFailure": {
+        "goto": "scene_depot",
+        "narration": "You follow the most convincing sign for half an hour and arrive at a pig farm. The pigs are friendly. The farmer points you back toward the depot, and politely waits until you are out of sight before he laughs."
+      },
+      "art": "scenes/gemfall/north-signpost-fork"
+    },
+    "check_forms": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Fill in Form 9 with no smudges, in the right order",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_strongbox",
+        "narration": "Clerk Pennywhistle holds your form up to the lamp, finds no smudges, and looks as if he might cry with happiness. He stamps it four times."
+      },
+      "onFailure": {
+        "goto": "scene_box_ten",
+        "narration": "You fill in Form 9. It needed Form 7B first. Clerk Pennywhistle is very sorry. The queue behind you is not."
+      },
+      "art": "scenes/gemfall/rush-depot",
+      "cast": [
+        {
+          "figure": "cast/clerk_pennywhistle",
+          "name": "Clerk Pennywhistle"
+        }
+      ]
+    },
+    "check_tall_tale": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell a tall tale the whole ring believes",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_bell_courier",
+        "narration": "You tell them you rode a river drake across the ford, sideways, wearing a hat. By the end the whole ring believes you, and three people are already retelling it with a bigger hat. By nightfall, the hat has feathers."
+      },
+      "onFailure": {
+        "goto": "scene_bell_courier",
+        "narration": "You start well, but you mix up the drake with the river, and the river with your aunt. The ring laughs kindly and decides your aunt must be a river. That rumor will be all over the Plains by Tuesday."
+      },
+      "art": "scenes/gemfall/north-noon-stop"
+    },
+    "check_ring_pattern": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Ring a bell pattern exactly right",
+      "cast": [
+        {
+          "figure": "cast/bell_courier",
+          "name": "Bell Courier"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_pony",
+        "narration": "Ding, ding, pause, ding. You get it exactly right, and far away to the south, very faintly, another bell rings it back. The courier beams. \"You'd make a grandmother one day,\" she says, which is the biggest compliment she knows."
+      },
+      "onFailure": {
+        "goto": "interaction_pony",
+        "narration": "Ding, pause, ding, ding, ding. The courier goes pink. \"That one means the cake is ready,\" she whispers. Far to the south, a whole camp sits down hopefully to wait for cake. She takes the bell back, giggling, and rings it properly."
+      },
+      "art": "scenes/gemfall/north-rush-road"
+    },
+    "check_sing": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Sing a route-song verse in front of everybody",
+      "cast": [
+        {
+          "figure": "cast/old_corran",
+          "name": "Old Corran"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_verses",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "sang_a_verse",
+            "value": true
+          }
+        ],
+        "narration": "Your voice wobbles once and then holds. The whole campfire sings the chorus back at you, and Old Corran thumps the ground with a hoof."
+      },
+      "onFailure": {
+        "goto": "interaction_verses",
+        "narration": "You sing the wrong verse, the one about a bridge three hundred miles away. Old Corran gently sings the right one over the top, and nobody minds at all."
+      },
+      "art": "scenes/gemfall/relay-route-fire"
+    },
+    "check_ash_wind": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Link arms, lean into the ash wind and keep walking",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_road_bend",
+        "narration": "You link arms and march on through the glitter. It is like walking through warm gray snow. By the time the wind passes, you are gray from head to toe and look like a row of statues, and the bend in the road is just ahead."
+      },
+      "onFailure": {
+        "goto": "scene_road_bend",
+        "narration": "The wind shoves you sideways into a hedge, one after another, like bowling pins. It is warm in the hedge, so you wait it out there, sneezing ash. When it passes you climb out, grayer and wiser, and the bend in the road is just ahead."
+      },
+      "art": "scenes/gemfall/road-bend-grass"
+    },
+    "check_sneak": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Creep through the long grass without a rustle",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "end_foothills_in_sight",
+        "narration": "Not one blade of grass rustles. One wolf lifts its nose, sniffs, and goes back to pacing.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "passed_the_bend"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "A jackalope pops out of the grass right in front of you, shouts its little jackalope shout, and every wolf turns your way."
+      },
+      "art": "scenes/gemfall/road-bend-grass"
+    }
+  }
+}
