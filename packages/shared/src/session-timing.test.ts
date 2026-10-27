@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   ABANDON_AFTER_MS,
   aggregateTimings,
+  crossRevisionAttempts,
   attemptsOf,
   budgetVerdict,
   cleanNote,
@@ -273,5 +274,68 @@ describe("marks from a table", () => {
     expect(report).toMatchObject({ enabled: true, source: "family", truncated: false });
     expect(report.aggregates[0]).toMatchObject({ chapterId: "riftlight-01", attempts: 1 });
     expect(JSON.stringify(report)).not.toMatch(/household|player/i);
+  });
+});
+
+describe("an attempt played across a content revision", () => {
+  const sit = (runId: string, revision: string, over: Partial<Extract<TimingNote, { kind: "start" }>>, tail: TimingNote, ms = 4 * MIN) =>
+    sittingsFromEvents(
+      runId,
+      [
+        { seq: 1, at: at(0), timing: start({ revision, ...over }) },
+        { seq: 2, at: at(ms), timing: tail },
+      ],
+      T0 + 600 * MIN,
+    )[0]!;
+  const fresh = (runId: string, revision: string) => sit(runId, revision, {}, { kind: "end", outcome: "success", routes: [] });
+
+  // Stopped on text "aaaa", the chapter edited, picked up on "bbbb" and finished.
+  const stopped = sit("old", "aaaa", {}, { kind: "stop" });
+  const resumed = sit("new", "bbbb", { resumedFrom: stopped.id }, { kind: "end", outcome: "success", routes: [] }, 3 * MIN);
+
+  it("chains the stop and the resume first, so the whole attempt is neither split nor dropped", () => {
+    const [chain] = crossRevisionAttempts([stopped, resumed]);
+    expect(chain).toMatchObject({
+      id: stopped.id,
+      revisions: ["aaaa", "bbbb"],
+      status: "completed",
+      completed: true,
+      outcome: "success",
+      sittings: 2,
+      activeMs: 7 * MIN,
+    });
+  });
+
+  it("keeps it out of every revision's distribution, and says so on each revision it touched", () => {
+    const rows = aggregateTimings([fresh("x", "aaaa"), fresh("y", "bbbb"), stopped, resumed]);
+    const a = rows.find((r) => r.revision === "aaaa")!;
+    const b = rows.find((r) => r.revision === "bbbb")!;
+    // Only the single-revision attempts count; the spanning one is on neither's resumed total.
+    expect(a).toMatchObject({ attempts: 1, crossRevision: 1 });
+    expect(b).toMatchObject({ attempts: 1, crossRevision: 1 });
+    expect(a.kinds.resumed + b.kinds.resumed).toBe(0);
+    expect(a.freshActiveMs?.n).toBe(1);
+  });
+
+  it("still reports a revision whose only attempts spanned an edit, as a cross-revision attempt", () => {
+    expect(aggregateTimings([stopped, resumed])).toEqual([]);
+    const report = timingReportFromMarks(
+      [
+        { runId: "old", chapterId: "riftlight-01", seq: 1, at: at(0), timing: start({ revision: "aaaa" }) },
+        { runId: "old", chapterId: "riftlight-01", seq: 2, at: at(4 * MIN), timing: { kind: "stop" } },
+        { runId: "new", chapterId: "riftlight-01", seq: 1, at: at(0), timing: start({ revision: "bbbb", resumedFrom: "old:1" }) },
+        { runId: "new", chapterId: "riftlight-01", seq: 2, at: at(3 * MIN), timing: { kind: "end", outcome: "success", routes: [] } },
+      ],
+      T0 + 600 * MIN,
+      "family",
+    );
+    expect(report.crossRevision).toHaveLength(1);
+    expect(report.crossRevision[0]).toMatchObject({ completed: true, activeMs: 7 * MIN });
+  });
+
+  it("does not treat a resume on the same revision as cross-revision", () => {
+    const same = sit("new2", "aaaa", { resumedFrom: stopped.id }, { kind: "end", outcome: "success", routes: [] }, 3 * MIN);
+    expect(crossRevisionAttempts([stopped, same])).toEqual([]);
+    expect(aggregateTimings([stopped, same])[0]).toMatchObject({ attempts: 1, crossRevision: 0, kinds: { fresh: 0, revisit: 0, resumed: 1 } });
   });
 });

@@ -51,3 +51,15 @@ describe("renderTimingReport", () => {
     expect(renderTimingReport(report([]), planned)).toContain("none yet");
   });
 });
+
+describe("played across an edit", () => {
+  it("lists a stop-and-resume across revisions apart from every figure", () => {
+    const base = report(sitting("r1", "family", "aaaa"));
+    const text = renderTimingReport(
+      { ...base, crossRevision: [{ id: "old:1", source: "family", chapterId: "riftlight-01", revisions: ["aaaa", "bbbb"], status: "completed", completed: true, outcome: "success", activeMs: 25 * MIN, wallMs: 25 * MIN, sittings: 2 }] },
+      planned,
+    );
+    expect(text).toContain("Played across an edit");
+    expect(text).toContain("riftlight-01 (family): aaaa -> bbbb; finished, 25.0 min active over 2 sittings");
+  });
+});

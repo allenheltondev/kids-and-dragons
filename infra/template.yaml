@@ -94,11 +94,12 @@ Parameters:
     Default: "on"
     AllowedValues: ["off", "on"]
     Description: >-
-      Family-session timing (#511): the API stamps each chapter's opening,
-      steps, pauses and ending on the run's event log and a household can
-      export how long its chapters really took. On by default and operator-only:
-      nothing is shown at the table. Set "off" to record nothing. No names, chat
-      or audio are kept, and it is deleted with the household
+      Family-session timing (#511): the API records each chapter's opening,
+      steps, pauses and ending as marks in their own table (kad-timing-<stage>),
+      so an operator can export how long chapters really took. On by default and
+      operator-only: nothing is shown at the table. Set "off" to record nothing.
+      No names, chat or audio are kept. Marks carry no household or player id, so
+      they are not tied to any household's deletion; they expire after 180 days
       (docs/session-timing.md).
 
   PushContact:
