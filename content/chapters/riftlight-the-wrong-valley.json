@@ -2065,5 +2065,125 @@
       "Pip Thistledown": "Manticore scout. Eager but learns to separate observation from guess; never knows an unseen event.",
       "Yeti keepers": "Slow, enormous and gentle. Deliberate before answering. Offer a safe method and leave unknown history unknown."
     }
+  },
+  "presentation": {
+    "interactions": {
+      "test_flow": {
+        "props": [
+          "water-surge"
+        ]
+      },
+      "return_observation": {
+        "props": [
+          "water-surge"
+        ]
+      },
+      "tools_hoist": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "tools_hoist_assisted": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "tools_steps": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "tools_tie": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "people_line": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "high_recovery": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "low_recovery": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "tool_recover": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "tool_recover_assisted": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "wet_tools": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "repair_gear": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "people_signal": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "signals": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "crossing_choice_1_check": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "crossing_choice_2_check": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "worker_beacon": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "record_landmarks": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "record_return": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "last_check": {
+        "props": [
+          "clue-scrap"
+        ]
+      }
+    }
   }
 }

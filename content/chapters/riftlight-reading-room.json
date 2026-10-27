@@ -2777,5 +2777,109 @@
       "Pip Thistledown": "Manticore scout. Eager but learns to separate observation from guess; never knows an unseen event.",
       "Yeti keepers": "Slow, enormous and gentle. Deliberate before answering. Offer a safe method and leave unknown history unknown."
     }
+  },
+  "presentation": {
+    "interactions": {
+      "quiet_rule": {
+        "props": [
+          "prop_word_scroll"
+        ]
+      },
+      "catalog_cards": {
+        "props": [
+          "prop_word_scroll"
+        ]
+      },
+      "catalog_test_1_check": {
+        "props": [
+          "prop_word_scroll"
+        ]
+      },
+      "catalog_test_2_check": {
+        "props": [
+          "prop_word_scroll"
+        ]
+      },
+      "catalog_endorsed_check": {
+        "props": [
+          "prop_word_scroll"
+        ]
+      },
+      "dry_slips": {
+        "props": [
+          "prop_word_scroll"
+        ]
+      },
+      "teach_posted": {
+        "props": [
+          "prop_word_scroll"
+        ]
+      },
+      "teach_staff": {
+        "props": [
+          "prop_word_scroll"
+        ]
+      },
+      "support_ice_1_check": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "support_ice_2_check": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "sliding_tray_1_check": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "claim_limit": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "second_view_prepared_check": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "memory_observation": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "second_view_2_check": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "close_view": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "close_view_attuned": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "teach_live": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "second_view_1_check": {
+        "props": [
+          "ice-knob"
+        ],
+        "coverIcons": [
+          "prop_playing_card",
+          "prop_playing_card",
+          "prop_playing_card"
+        ]
+      }
+    }
   }
 }

@@ -1957,34 +1957,24 @@
           "relay-plank"
         ]
       },
-      "test": {
-        "props": [
-          "toss-pebble"
-        ]
-      },
-      "stone_support": {
-        "props": [
-          "toss-pebble"
-        ]
-      },
-      "plank_support": {
-        "props": [
-          "rope-loop"
-        ]
-      },
       "lay_board_mats": {
         "props": [
-          "rope-loop"
-        ]
-      },
-      "replace_plank": {
-        "props": [
-          "toss-pebble"
+          "relay-plank"
         ]
       },
       "recover_mats": {
         "props": [
-          "rope-loop"
+          "relay-plank"
+        ]
+      },
+      "vibration": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "plank_support": {
+        "props": [
+          "relay-plank"
         ]
       },
       "gather_loose": {
@@ -1992,9 +1982,75 @@
           "relay-plank"
         ]
       },
+      "survey_window": {
+        "props": [
+          "notched-stone"
+        ]
+      },
+      "learn_arches": {
+        "props": [
+          "notched-stone"
+        ]
+      },
+      "outer_rim": {
+        "props": [
+          "notched-stone"
+        ]
+      },
+      "lay_line": {
+        "props": [
+          "rope-loop"
+        ]
+      },
       "return_line": {
         "props": [
           "rope-loop"
+        ]
+      },
+      "test": {
+        "props": [
+          "toss-pebble",
+          "relay-plank"
+        ]
+      },
+      "returning_pebble": {
+        "props": [
+          "toss-pebble"
+        ],
+        "coverIcons": [
+          "notched-stone",
+          "carved-stone",
+          "prop_rock"
+        ]
+      },
+      "stone_support": {
+        "props": [
+          "prop_rock"
+        ]
+      },
+      "replace_plank": {
+        "props": [
+          "prop_rock"
+        ]
+      },
+      "seam_marks": {
+        "props": [
+          "count-cord"
+        ]
+      },
+      "seam_marks_mats": {
+        "props": [
+          "count-cord"
+        ]
+      },
+      "inventory": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "boundary": {
+        "props": [
+          "clue-scrap"
         ]
       },
       "report": {
@@ -2010,16 +2066,6 @@
       "keep_account": {
         "props": [
           "clue-scrap"
-        ]
-      },
-      "returning_pebble": {
-        "props": [
-          "toss-pebble"
-        ],
-        "coverIcons": [
-          "notched-stone",
-          "carved-stone",
-          "prop_rock"
         ]
       }
     }

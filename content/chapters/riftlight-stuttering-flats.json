@@ -1820,6 +1820,57 @@
         "props": [
           "rope-loop"
         ]
+      },
+      "observe_pattern": {
+        "props": [
+          "snow-mound",
+          "shell-cockle"
+        ]
+      },
+      "sound": {
+        "props": [
+          "note-low"
+        ]
+      },
+      "loosen_mud": {
+        "props": [
+          "goat-brush"
+        ]
+      },
+      "mud_recovery": {
+        "props": [
+          "prop_brass_cup"
+        ]
+      },
+      "lift_balance": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "crossing_sling": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "crossing_checked": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "crossing_mended": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "signal_relay": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "credit": {
+        "props": [
+          "clue-scrap"
+        ]
       }
     }
   }

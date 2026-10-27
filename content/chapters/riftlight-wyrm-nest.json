@@ -1876,5 +1876,19 @@
       ],
       "art": "scenes/riftlight/wyrm-nest"
     }
+  },
+  "presentation": {
+    "interactions": {
+      "shelves_check": {
+        "props": [
+          "relay-plank"
+        ]
+      },
+      "readers_check": {
+        "props": [
+          "prop_stepping_stones"
+        ]
+      }
+    }
   }
 }
