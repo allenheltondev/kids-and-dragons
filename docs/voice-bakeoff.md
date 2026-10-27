@@ -205,20 +205,33 @@ A column is a model plus two choices, and each choice is worth hearing on its ow
   Gemini 3.8 has no director's-notes option: it would read the notes aloud. A column asking for
   it says so in every cell.
 
-The recommended seven columns, all expressive:
+The recommended seven columns, all expressive, Gemini first (the provider the game is leaning
+toward):
 
-1. Eleven v4
-2. Eleven v3 as one dialogue request
-3. Multilingual v2 with context (pauses only)
-4. Gemini 3.8 Flash
-5. Gemini 3.8 Flash as one two-voice request
-6. Gemini 3.8 Flash-Lite
-7. Gemini 3.1 Flash, to hear the old tag style against 3.8's style field
+1. Gemini 3.8 Flash
+2. Gemini 3.8 Flash as one two-voice request
+3. Gemini 3.8 Flash-Lite
+4. Gemini 3.1 Flash, to hear the old tag style against 3.8's style field
+5. Eleven v4
+6. Eleven v3 as one dialogue request
+7. Multilingual v2 with context (pauses only)
 
 Adding a *plain words* column for a model beside its expressive one is the quickest way to hear
 what the expression adds.
 
 **Restore recommended columns** brings them back.
+
+## Accent
+
+Everyone speaks American: the game is for American children. `cast.json` → `accent`
+("General American…") goes into every Gemini 3.8 style and Gemini 3.1 audio profile, and a speaker
+can override it with their own `accent`. ElevenLabs voices carry their accent with them, so the
+bake-off's ElevenLabs voices are all American premade ones (Brian, Bill, Eric, Chris, Roger,
+Aria, Laura, Jessica, Sarah, Matilda, Will, Liam, River). The Cast panel's account list shows each
+voice's own accent label.
+
+The whole game's cast, with a voice each, is the [cast voice sheet](./voice-cast.md), on `/cast`
+in the same server.
 
 ## Cast: who voices whom
 
