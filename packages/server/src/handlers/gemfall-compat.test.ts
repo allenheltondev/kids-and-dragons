@@ -299,7 +299,7 @@ const DIGESTS: PreEpicSave["digests"] = {
 // play-on after generated hero-id normalization; fixed legacy save unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
-  "chapters/gemfall-01.json": "3ae023f2caa6b20c8cc547ec92a0da0588c0c5393a28b80efaf897490cd57e1a",
+  "chapters/gemfall-01.json": "fbf4c3bd06198c0e4c7e0d34d8b70fe5ba61cf74a531b1eb4014b529ba14a821",
   "chapters/gemfall-02.json": "216eec64c75e9ced6987f9884f934f31202e8c63a890b5787a4ec53fbf78a780",
   "chapters/gemfall-03a.json": "d6201dc9591b54b0c5c3cdb2b976e79320323b5a014f7dbca65e52c602f43f74",
   "chapters/gemfall-03b.json": "47fcd09e1e8976970e599324e6b8a0d49915b5963ddcb99e58a7c8e014333111",
