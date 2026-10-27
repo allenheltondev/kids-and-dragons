@@ -124,7 +124,7 @@ claim it mattered.
 1. **03A + 03B:** toll/river and marsh/fog; see [first-wave.md](first-wave.md).
 2. **03C + 04C:** queue priorities and the north road's signs/forms/signals;
    see the [implementation and verification](../gemfall-ford-road-play/README.md).
-3. **04A + 04B:** regional behavior, observation and intervention.
+3. **04A + 04B:** regional behavior, observation and intervention. Implemented in the [third-wave review](../gemfall-pride-forest-play/README.md): marker brace versus checked line, prepared sash clues, herd-map recovery, and mending versus woodland chorus.
 4. **05A/B/C:** all three routes to the Outline of Truth and disclosure.
 5. **01 + 02:** thirty-minute opening/onboarding pass, preserving the art pilot.
 6. **06:** evidence and purpose, with a separate reveal/continuity review.
