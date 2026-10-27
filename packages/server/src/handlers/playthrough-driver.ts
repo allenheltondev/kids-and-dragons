@@ -531,6 +531,17 @@ export async function playCampaign(
           const response = await send(playerId, { type: "COMBAT_ACTION", abilityId: attack.abilityId, targetId });
           if (response.ok) continue;
         }
+        // A fallen friend can occupy the only attack position at a narrow
+        // crossing. Use the real help-up action instead of ending turns forever
+        // behind them (opening-wave seeds 12, 15 and 19 expose this at the mimics).
+        if (!encounter.actionTaken) {
+          const fallen = encounter.combatants.filter(c => c.side === "party" && c.down).map(c => c.id);
+          const help = legalActions(encounter, ctx).find(a => a.abilityId === "help_up" && a.targets.some(id => fallen.includes(id)));
+          if (help) {
+            await must(playerId, { type: "COMBAT_ACTION", abilityId: help.abilityId, targetId: help.targets.find(id => fallen.includes(id))! });
+            continue;
+          }
+        }
         // Walk toward the nearest standing enemy, then end the turn.
         const moves = legalMoves(encounter);
         const goals = enemies.map((id) => positionOf(encounter, id)).filter((p) => p !== null);

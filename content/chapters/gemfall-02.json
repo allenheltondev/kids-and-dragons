@@ -5,7 +5,7 @@
   "index": 2,
   "title": "Green Roads North",
   "biome": "sunward_fields",
-  "estimatedMinutes": 45,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_song_stops",
   "plate": {
@@ -77,7 +77,7 @@
       "discovers": [
         "npc.faun"
       ],
-      "narration": "Hesper Longstride's caravan rolls north through the Sunward Fields toward Bramblewood. There the road to Mount Red Sky splits three ways, and you must choose your road north. The caravan cook pushes a supper bundle into your pack, \"for the road, travelers.\" In every field the fauns are singing their work-songs. Then, halfway through a verse, every song stops at once. A faun with an irrigation flute freezes so suddenly that the flute keeps watering her hoof. A stopped song means somebody has seen something worth stopping for.",
+      "narration": "Travel the Sunward Fields and choose your road north at Bramblewood. Hesper's cook packs a supper bundle for you. Fauns sing in every field, then every song stops. An irrigation flute keeps watering its owner's hoof. Something has their attention.",
       "choices": [
         {
           "id": "look",
@@ -138,7 +138,7 @@
     },
     "scene_trampled_field": {
       "type": "story",
-      "narration": "The road ahead is jammed with gem wagons, so a rush caravan has decided to drive straight through a field of pumpkins that nobody has harvested yet. A faun foreman called Hob Thistledown waves his hat at you. \"Help us turn them,\" he says, \"before they make soup of the whole season!\"",
+      "narration": "Rush wagons are turning through unpicked pumpkins to dodge a traffic jam. Foreman Hob Thistledown waves his hat. \"Help turn them! Before the whole season is soup!\"",
       "cast": [
         {
           "figure": "cast/hob",
@@ -255,7 +255,7 @@
     },
     "scene_walk_rows": {
       "type": "story",
-      "narration": "You walk the rows instead of through them, hopping between pumpkins like stepping stones, and find a cart track around the edge of the field. Something tiny in an acorn helmet pats your boot, very approvingly, and is gone before you can look properly.",
+      "narration": "You follow the rows to a cart track around the field. Something in an acorn helmet pats your boot approvingly. It is gone when you look down.",
       "cast": [
         {
           "figure": "cast/hob",
@@ -280,7 +280,7 @@
     },
     "scene_caravan_turned": {
       "type": "story",
-      "narration": "The rush caravan rumbles off around the field, grumbling. The fauns start singing again from exactly where they stopped, and Hob adds a new verse with your names in it. He presses a warm honeycake into your hands. \"For the road,\" he says. \"It's getting crowded out there, all the way to Bramblewood.\"",
+      "narration": "The wagons take the edge track. Hob restarts the song with your names in it and gives you honeycake. \"Crowded all the way to Bramblewood now.\"",
       "cast": [
         {
           "figure": "cast/hob",
@@ -318,7 +318,7 @@
     },
     "scene_caravan_turned_onward": {
       "type": "story",
-      "narration": "Hob walks you to the crossroads, telling you the life story of every pumpkin on the way. The biggest one is called Gerald. At the crossroads he stops and sniffs. \"Eggs,\" he says, and his face goes serious. \"Listen. Whatever the rush is paying for eggs today, a neighbor should not have to.\" Then he waves his hat until he is just a dot.",
+      "narration": "Hob tells you the life story of each pumpkin. The biggest is Gerald. At the crossroads he sniffs. \"Eggs. Whatever rush folk pay, neighbors should not have to.\"",
       "cast": [
         {
           "figure": "cast/hob",
@@ -354,7 +354,7 @@
     },
     "scene_egg_stall": {
       "type": "story",
-      "narration": "At the crossroads, a faun is selling eggs from a cart. Her price board has been rubbed out and written higher so many times it is mostly smudge. Every rush wagon that rolls past leans out, pays whatever she says, and takes the lot. At the back, a faun dad with three small kids is counting coins that are not enough for one egg anymore. A hen on the cart looks offended by all of it.",
+      "narration": "The egg seller raises her board's prices for passing rush wagons. Behind them, a faun dad counts too few coins. His children wait. The hen looks offended by the whole arrangement.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -365,7 +365,7 @@
           "id": "fair",
           "label": "Help her work out a fair price",
           "icon": "clever",
-          "goto": "check_egg_price"
+          "goto": "interaction_egg_prices"
         },
         {
           "id": "buy",
@@ -411,6 +411,12 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "quick_sums",
+          "label": "Risk doing the price sums before checking the board",
+          "goto": "check_egg_price",
+          "icon": "hand"
         }
       ]
     },
@@ -443,7 +449,7 @@
     },
     "scene_egg_price_fair": {
       "type": "story",
-      "narration": "The new board says RUSH PRICE in big letters and NEIGHBOR PRICE in small ones. The rush buyers grumble and pay, because they are in a hurry. The faun dad buys a whole dozen at the neighbor price. The egg faun chalks your names in the corner of the board, so the next wagon knows exactly who to blame.",
+      "narration": "RUSH PRICE. NEIGHBOR PRICE. The dad buys his dozen; rush buyers pay for their hurry. The seller chalks your names on the board so everyone knows whom to blame.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -566,7 +572,7 @@
       "discovers": [
         "creature.jackalope"
       ],
-      "narration": "Next, the road is full of jackalopes. Hundreds of them. Usually they race the wagons and win, but today they are just sitting, packed in tight on the open road, every ear pointed the same way: inland, toward the long grass. A jackalope only crowds the road when something on the other side of the grass is worth being able to see coming. Up on the low ridge above the road, a flock of sheeple stands in one woolly knot, all staring the same way.",
+      "narration": "Jackalopes pack the road, ears toward the long grass. They usually race wagons. Today they want to see what is coming. On a ridge, a woolly knot of sheeple watches too.",
       "cast": [
         {
           "figure": "entities/jackalope",
@@ -673,7 +679,7 @@
     "scene_flock_copies": {
       "art": "scenes/gemfall/sheeple-ridge",
       "type": "story",
-      "narration": "Thirty pairs of eyes see a lot more than one pair. Down in the long grass are two cinder wolves, and they are not hunting. They are shivering, and they have been staring at the caravan's sausage wagon since breakfast. When you stand up to go, three sheeple in seven-brimmed hats stand up too. They follow you down the ridge at a very polite distance, and they stop whenever you stop.",
+      "narration": "Following your gaze, the flock spots two cold cinder wolves watching the sausage wagon. Three sheeple follow you downhill, stopping whenever you stop. Their seven-brimmed hats almost fit through the gate.",
       "choices": [
         {
           "id": "down",
@@ -716,7 +722,7 @@
       "discovers": [
         "creature.cinder_wolf"
       ],
-      "narration": "In the dust by the long grass are big paw prints, and the prints are still warm. Caught on a thistle is a tuft of charcoal fur with a faint glow under it. Cinder wolves, mountain wolves, all the way down here in the farm country. Two of them are lying in the grass, shivering, watching the caravan's sausage wagon the way you might watch a birthday cake.",
+      "narration": "Warm prints and glowing charcoal fur: cinder wolves, far from the mountain. Two lie shivering in the grass. They watch the sausage wagon like a birthday cake.",
       "cast": [
         {
           "figure": "entities/cinder_wolf",
@@ -805,7 +811,7 @@
     },
     "scene_plank_bridge": {
       "type": "story",
-      "narration": "Late in the afternoon the road crosses an irrigation canal on a little plank bridge. Or it did. A rush wagon too heavy for it has cracked the middle plank right through, and the fauns on the far bank cannot bring their hay carts home. \"Help us, please!\" calls one. \"If the hay isn't home by dark, the goats will eat the barn door.\" One of them is throwing hay bales across, one at a time. Most land in the water. A duck is riding one, looking very pleased with itself.",
+      "narration": "A rush wagon has cracked the canal bridge. Hay carts wait on the far bank. Repair the beam and learn the fauns' long brace, or pass their hay across and earn the hay crew's help. Both crews know the tall hedges ahead. A duck is already riding a floating bale.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -816,7 +822,7 @@
           "id": "beam",
           "label": "Heave a new beam into place",
           "icon": "might",
-          "goto": "check_bridge_beam"
+          "goto": "interaction_bridge_load"
         },
         {
           "id": "carry",
@@ -858,6 +864,12 @@
           "icon": "shield",
           "requiresClass": "thornguard",
           "goto": "check_bridge_beam"
+        },
+        {
+          "id": "quick_beam",
+          "label": "Risk heaving the beam without leveling the load",
+          "goto": "check_bridge_beam",
+          "icon": "hand"
         }
       ]
     },
@@ -890,7 +902,7 @@
     },
     "scene_bridge_mended": {
       "type": "story",
-      "narration": "The fauns roll every hay cart home over your bridge, singing the whole way. One of them carves a little pumpkin on the new beam, for luck. Down in the long grass beside the canal, something tiny in an acorn helmet stands up, salutes you very smartly, and disappears.",
+      "narration": "The hay carts roll home over the new beam. A faun carves a lucky pumpkin on it. A tiny acorn-helmeted guard salutes from the grass.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -913,7 +925,7 @@
     },
     "scene_bridge_ferry": {
       "type": "story",
-      "narration": "The fauns tie a rope to each end of the floating beam, and just like that, the canal has a ferry. They pull the hay across one cart at a time, cheering every trip. The duck rides along on every single one. \"Better than a bridge,\" says a faun. \"A bridge never goes anywhere.\"",
+      "narration": "The fauns rope the floating beam to both banks. Now it is a ferry. Every hay cart crosses. The duck rides every trip. \"Bridges never go anywhere,\" says a delighted faun.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -936,7 +948,7 @@
     },
     "scene_plank_bridge_carry": {
       "type": "story",
-      "narration": "You wade in and carry the hay across, one bale each, over and over. It takes ages. Everybody sneezes. By the end the far bank is empty, the near bank is stacked high, and everybody looks like a scarecrow. A jackalope hops past wearing a little hat of hay and does not seem to know.",
+      "narration": "You choose to save the hay without rebuilding the bridge. The farmers form a line across the shallow ford. Their brushes and willing hands can help with the hedges later. Everyone sneezes before the first bale even moves.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -947,7 +959,7 @@
           "id": "on",
           "label": "On down the road",
           "icon": "travel",
-          "goto": "scene_mimic_ditch"
+          "goto": "interaction_hay_line"
         }
       ],
       "onEnter": [
@@ -1009,7 +1021,7 @@
       "discovers": [
         "creature.embermoth"
       ],
-      "narration": "At sunset a cloud of embermoths drifts overhead, thousands of them, glowing like slow sparks. One lands on your soup and will not get out. But the cloud is drifting south, toward the sea and away from the mountain, which is the wrong way entirely.",
+      "narration": "Embermoths drift south at sunset, away from the mountain. One lands in your soup. It is warm and wrong-way-bound, like thousands of others overhead.",
       "cast": [
         {
           "figure": "entities/embermoth",
@@ -1224,7 +1236,7 @@
       "discovers": [
         "npc.harvest_sprite"
       ],
-      "narration": "In the morning Hesper Longstride stops the caravan by the last farm before Bramblewood. \"My wagons turn off here,\" she says. \"You walk the rest, and choose your own road north. Good luck, travelers.\" She nods once, like a gate closing, and the lanterns roll away. By the farm there is one corner row nobody has picked. Every farmer knows to leave the corner rows, and nobody says why. Today the row is guarded. Four harvest sprites in acorn-cup helmets stand to attention, and every time a pea-pod trumpet toots, four new ones march in to take their places.",
+      "narration": "Hesper turns her caravan aside at the last farm. \"Choose your own road at Bramblewood. Good luck.\" Beside the lane, harvest sprites guard an unpicked corner row. Acorn helmets turn at every pea-pod trumpet call.",
       "cast": [
         {
           "figure": "entities/harvest_sprite",
@@ -1273,7 +1285,7 @@
     },
     "scene_corner_row_salute": {
       "type": "story",
-      "narration": "You march up the row and salute. The four guards salute back so hard that one of them falls over. Then the whole rotation is introduced to you, one sprite at a time, with their rank, their favorite vegetable, and how many medals they have. It takes a while. At last they step aside, very proudly, so you can see what they are guarding.",
+      "narration": "You salute. One sprite salutes so hard it falls over. Introductions include every rank and favorite vegetable. Then the guards show you the middle of the row.",
       "cast": [
         {
           "figure": "entities/harvest_sprite",
@@ -1291,7 +1303,7 @@
     },
     "scene_corner_row_wave": {
       "type": "story",
-      "narration": "You wave. Every sprite in the row waves back at once. \"The bridge ones!\" one of them shouts. \"The bridge ones are here!\" A pea-pod trumpet plays a little fanfare. Two sprites carry a tiny bench out of the cabbages so you can sit down, even though it is much too small for anyone. Then they lead you to the middle of the row.",
+      "narration": "\"The bridge ones!\" Tiny trumpets play. The sprites offer a bench much too small for you, then proudly show you what they guard.",
       "cast": [
         {
           "figure": "entities/harvest_sprite",
@@ -1309,7 +1321,7 @@
     },
     "choice_harvest_stone": {
       "type": "choice_point",
-      "narration": "In the middle of the row sits a green-gold stone the size of a hen's egg. Somebody has pinned a tiny woven medal on it that says BEST. It fell from the sky into the sprites' row, and they have decided that makes it theirs, very seriously. What do we do?",
+      "narration": "A green-gold sky-stone rests in the row, wearing a woven BEST medal. The sprites say it belongs here. Trade, earn permission, leave it, or take it against their wishes. They will remember.",
       "cast": [
         {
           "figure": "entities/harvest_sprite",
@@ -1561,7 +1573,7 @@
     },
     "scene_signpost": {
       "type": "story",
-      "narration": "On the last stretch to Bramblewood, a town that lives inside a ring of tall hedges, the road splits three ways, and the signpost at the fork has so many signs nailed to it that it looks like a hedgehog. GEMS THIS WAY. NO, THIS WAY. BRAMBLEWOOD (PROBABLY). SHORTCUT!!! The rush has written its hopes on every board. The real sign is somewhere underneath. A jackalope sits on the very top, enjoying the view.",
+      "narration": "Outside Bramblewood's tall hedges, signs cover signs: GEMS! SHORTCUT! NO, THIS WAY! A jackalope enjoys the top. The real sign is underneath the rush's hopes.",
       "cast": [
         {
           "figure": "entities/jackalope"
@@ -1620,7 +1632,7 @@
     },
     "scene_signpost_found": {
       "type": "story",
-      "narration": "The real sign says BRAMBLEWOOD on one arm and FIELDS on the other. The third arm has no words at all, only a carved row of corn with one corner left empty. Nobody knows what that means. You lean the rush's signs neatly against the post, so nobody's hopes get stepped on, and take the Bramblewood road. It is quiet and green, with hardly a wagon on it.",
+      "narration": "The old sign names Bramblewood and the fields. Another arm shows corn with one corner empty. You take the quiet Bramblewood lane and leave the loose signs in a tidy pile.",
       "choices": [
         {
           "id": "on",
@@ -1649,7 +1661,7 @@
     },
     "scene_signpost_ruts": {
       "type": "story",
-      "narration": "The wagon ruts are deep and easy to follow. Everybody went this way. Absolutely everybody. The ruts lead you up one hill and down another and straight into the back of a very large crowd, outside a very tall hedge. You have found Bramblewood. So has everyone else.",
+      "narration": "Every wagon went this way. So do you. The ruts lead straight into a crowd outside the tall hedges. You found Bramblewood. So did everybody else.",
       "choices": [
         {
           "id": "on",
@@ -1713,7 +1725,7 @@
           "id": "honest",
           "label": "Tell Pib honestly why we've come",
           "icon": "heart",
-          "goto": "check_hedge"
+          "goto": "interaction_hedge_request"
         },
         {
           "id": "help_pib",
@@ -1765,6 +1777,26 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "bridge_brace",
+          "label": "Use the bridge crew's brace while Pib frees a branch",
+          "goto": "interaction_hedge_brace",
+          "icon": "hand",
+          "requiresFlag": "bridge_mended"
+        },
+        {
+          "id": "hay_brushes",
+          "label": "Ask the hay crew to help with Pib's thorn brushes",
+          "goto": "scene_hay_crew_hedge",
+          "icon": "hand",
+          "requiresFlag": "hay_crew_helped"
+        },
+        {
+          "id": "quick_speech",
+          "label": "Risk a quick speech over the shouting crowd",
+          "goto": "check_hedge",
+          "icon": "hand"
         }
       ]
     },
@@ -1860,7 +1892,7 @@
     },
     "scene_long_path": {
       "type": "story",
-      "narration": "Pib sighs and offers you a thorn-cleaning brush you did not ask for. \"Let's try again. Properly.\" You say sorry to the hedge. The hedge accepts, slowly: the path it opens winds back and forth eleven times, and by the time you reach the other end the mob outside has shouted itself hoarse.",
+      "narration": "Pib offers a thorn brush. You apologize to the hedge. It opens an eleven-bend path while it thinks your answer over. By the end, the crowd has shouted itself hoarse.",
       "cast": [
         {
           "figure": "cast/pib",
@@ -1998,7 +2030,7 @@
         "individual.marda_thorn",
         "npc.centaur"
       ],
-      "narration": "Marda Thorn's inn has doors wide enough for a centaur, and Marda still ducks under them out of habit. She brings stew and does not hurry you. Everyone in the common room is arguing: crystal deposits here, a blocked road there, tremors where there shouldn't be any. Nobody agrees on anything except that the rumor board is where you decide.",
+      "narration": "Centaur innkeeper Marda Thorn brings stew and gives you time to eat. Three tables argue about roads north. The rumor board waits under a lamp. Marda ducks through her enormous door out of habit.",
       "cast": [
         {
           "figure": "cast/marda_thorn",
@@ -2070,7 +2102,7 @@
     },
     "choice_common_room": {
       "type": "choice_point",
-      "narration": "After supper the common room gets louder. Three tables are arguing louder than all the rest. At the window, a frogfolk ferrier with reeds in her hat. By the hearth, a centaur relay runner, muddy to the knees. By the door, a dusty rush drover eating three dinners at once. You can only listen properly to one table. Which one? Everybody vote.",
+      "narration": "You can hear one table properly: a frogfolk ferrier by the window, a muddy relay runner at the hearth, or a rush drover eating three dinners by the door. Choose whose road news to hear.",
       "cast": [
         {
           "figure": "cast/marda_thorn",
@@ -2177,7 +2209,7 @@
     },
     "choice_rumour_board": {
       "type": "choice_point",
-      "narration": "Marda's rumor board is notes pinned on top of notes, and three fresh ones are underlined twice. They are the same three roads the dock folk were trading rumors about back at the Exchange. EAST: The crossing queue is moving again! NORTH: Rush road jammed but MOVING. Fall in and be carried! WEST: Frogfolk still ferrying them they like. \"The north road's shorter,\" says Marda. \"Shorter isn't quicker.\" Which way? Everybody vote.",
+      "narration": "The board offers the same three roads you heard about at the Exchange. East: a river crossing. North: the packed rush. West: frogfolk ferries through the marsh. \"Shorter is not quicker,\" says Marda. Which road will you take?",
       "cast": [
         {
           "figure": "cast/marda_thorn",
@@ -2250,7 +2282,15 @@
         }
       ],
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "farm_help_used"
+          },
+          "text": "The job at the canal brought help all the way to the hedge."
+        }
+      ]
     },
     "end_rush": {
       "type": "rest",
@@ -2263,7 +2303,15 @@
         }
       ],
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "farm_help_used"
+          },
+          "text": "The job at the canal brought help all the way to the hedge."
+        }
+      ]
     },
     "end_wild": {
       "type": "rest",
@@ -2276,11 +2324,19 @@
         }
       ],
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "farm_help_used"
+          },
+          "text": "The job at the canal brought help all the way to the hedge."
+        }
+      ]
     },
     "interaction_egg_baskets": {
       "type": "interaction",
-      "narration": "Word has spread. Every neighbor for a mile has come with a basket, and the egg faun is counting eggs into them as fast as her hooves allow. \"Pass them down, pass them down!\" she sings. The hen on the cart is supervising.",
+      "narration": "Neighbors arrive with baskets. Catch and pass the eggs down the line while the seller counts them out. The hen supervises every shell.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -2530,7 +2586,7 @@
     },
     "interaction_moth_bells": {
       "type": "interaction",
-      "narration": "The big cloud has gone south, but a few stragglers have dropped out of it and landed on the wagon bells. They glow on one bell, then another, in turn. \"They're asking for a lullaby,\" says the caravan cook, with her ladle in the air. \"Ring it back in the same order and they'll let us sleep.\"",
+      "narration": "Straggler moths glow on the wagon bells in a pattern. Echo their lullaby. The cook waits with her ladle raised. She would like to go to bed too.",
       "cast": [
         {
           "figure": "entities/embermoth",
@@ -2620,6 +2676,284 @@
         ]
       },
       "art": "scenes/gemfall/stuck-wagon-lane"
+    },
+    "interaction_egg_prices": {
+      "type": "interaction",
+      "narration": "The egg seller shows her costs and the neighbor's old price. Work through the board together: check the cost, keep the neighbor price, then put the rush price on its own line. The hen stands on the chalk so nobody can raise everything at once.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share the price clues and build the two-price board.",
+        "actionLabel": "Finish the fair-price board",
+        "options": [
+          {
+            "id": "rush",
+            "label": "Add the separate rush price",
+            "icon": "coin"
+          },
+          {
+            "id": "cost",
+            "label": "Check what the eggs cost",
+            "icon": "scroll"
+          },
+          {
+            "id": "neighbor",
+            "label": "Keep the neighbor price",
+            "icon": "heart"
+          }
+        ],
+        "answer": [
+          "cost",
+          "neighbor",
+          "rush"
+        ],
+        "clues": [
+          "Check the cost before setting either price.",
+          "Keep the neighbor price after checking the cost.",
+          "Put the separate rush price on the board last."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_egg_price_fair",
+        "narration": "You do the sums on the back of the price board. Two prices, you decide: one for the rush, and one for neighbors. The egg faun reads it twice and laughs out loud.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "fair_prices",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_egg_price_muddle",
+        "narration": "You do the sums three times and get three different answers. The last one says an egg costs one duck. The hen does not like that at all."
+      },
+      "onAssisted": {
+        "goto": "scene_egg_price_fair",
+        "narration": "The egg seller checks each line beside you. Together you finish the two-price board.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "fair_prices",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/egg-stall-baskets"
+    },
+    "interaction_bridge_load": {
+      "type": "interaction",
+      "narration": "The fauns show you how to level a long beam before carrying it. Raise or lower your side, then set it into the canal bridge. They offer to lend that brace again if the tall hedges need work. The duck inspects both banks.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the beam, then carry it into the bridge supports.",
+        "actionLabel": "Set the bridge beam",
+        "objectLabel": "The replacement bridge beam"
+      },
+      "onSuccess": {
+        "goto": "scene_bridge_mended",
+        "narration": "Heave. Shove. Thump. The new beam drops into place with a sound like a door shutting. The first hay cart rolls over, and the bridge does not even creak.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_mended",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_bridge_ferry",
+        "narration": "Heave. Shove. Splash. The beam slides off the bank and into the canal, and floats there. The fauns look at it. Then they look at each other."
+      },
+      "onAssisted": {
+        "goto": "scene_bridge_mended",
+        "narration": "A faun steadies one end while you level the beam. Together you set it in place.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "bridge_mended",
+            "value": true
+          }
+        ]
+      }
+    },
+    "interaction_hay_line": {
+      "type": "interaction",
+      "narration": "Catch each bale and pass it toward the barn. Alone, send it to the waiting farmer. The hay crew promises to join you at the hedges once the last cart is home. The duck would like another turn.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the hay bale and pass it toward the barn.",
+        "actionLabel": "Pass the hay",
+        "objectLabel": "A dry hay bale"
+      },
+      "onSuccess": {
+        "goto": "scene_mimic_ditch",
+        "narration": "The hay reaches the barn. The farmers pack their thorn brushes to help you at the hedges.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "hay_crew_helped",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_mimic_ditch",
+        "narration": "The farmers catch the slipping bale. They finish the last cart while you go on."
+      },
+      "onAssisted": {
+        "goto": "scene_mimic_ditch",
+        "narration": "A farmer fills a gap beside you. Together you get the hay home, and the crew brings its brushes.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "hay_crew_helped",
+            "value": true
+          }
+        ]
+      }
+    },
+    "interaction_hedge_brace": {
+      "type": "interaction",
+      "narration": "Pib agrees to a path, but one branch has caught another. The bridge crew lends its long brace. Hold it steady while Pib frees the knot and the acting hero guides the branch aside. Alone, use the prop post.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the borrowed brace while the branch is guided aside.",
+        "actionLabel": "Guide the branch",
+        "supportLabel": "Hold the long brace"
+      },
+      "onSuccess": {
+        "goto": "choice_pib_gift",
+        "narration": "Pib frees the branch and the hedge opens. The fauns collect their brace afterward.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "let_in_properly",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "farm_help_used",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_long_path",
+        "narration": "The branch slips back gently. Pib leads you along the longer path while the hedge untangles itself."
+      },
+      "onAssisted": {
+        "goto": "choice_pib_gift",
+        "narration": "Pib props the brace beside you. Together you free the branch, then return the borrowed brace.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "let_in_properly",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "farm_help_used",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/hedge-knit-gate",
+      "cast": [
+        {
+          "figure": "cast/pib",
+          "name": "Pib",
+          "size": "tiny"
+        }
+      ]
+    },
+    "scene_hay_crew_hedge": {
+      "type": "story",
+      "narration": "The hay crew arrives with its long-handled brushes. Pib directs the work, leaf by leaf, while you keep the cuttings clear. Nobody needs to reach through the thorns. A small path opens, and the farmers wave you through.",
+      "art": "scenes/gemfall/hedge-knit-gate",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Go on",
+          "icon": "boot",
+          "goto": "choice_pib_gift"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "let_in_properly",
+          "value": true
+        },
+        {
+          "type": "setFlag",
+          "flag": "farm_help_used",
+          "value": true
+        }
+      ]
+    },
+    "interaction_hedge_request": {
+      "type": "interaction",
+      "narration": "Pib makes a quiet space by the hedge. Each hero asks to come in, says why you are traveling, or offers to help. The hedge waits for the whole answer. One leaf leans closer than the others.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Each hero helps ask the hedge politely.",
+        "actionLabel": "Finish asking the hedge",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "ask",
+            "label": "Ask to come in",
+            "icon": "heart",
+            "reaction": "Your request gets a thoughtful rustle."
+          },
+          {
+            "id": "reason",
+            "label": "Explain why I am traveling",
+            "icon": "map",
+            "reaction": "The hedge listens without interrupting your answer."
+          },
+          {
+            "id": "help",
+            "label": "Offer Pib some help",
+            "icon": "hand",
+            "reaction": "Pib names a small job, and the listening leaf leans closer."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "choice_pib_gift",
+        "narration": "Pib repeats your request gently. The hedge opens a path at your height.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "let_in_properly",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_long_path",
+        "narration": "You mean it, but it comes out sounding like a speech. The hedge has heard a lot of speeches this week."
+      },
+      "onAssisted": {
+        "goto": "choice_pib_gift",
+        "narration": "Pib helps you ask one part at a time. Together you find words the hedge will listen to.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "let_in_properly",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/hedge-knit-gate",
+      "cast": [
+        {
+          "figure": "cast/pib",
+          "name": "Pib",
+          "size": "tiny"
+        }
+      ]
     }
   },
   "voiceGuide": {
@@ -2667,6 +3001,31 @@
           "prop_straw_hat",
           "prop_straw_hat",
           "prop_straw_hat"
+        ]
+      },
+      "interaction_egg_prices": {
+        "props": [
+          "prop_letters"
+        ]
+      },
+      "interaction_bridge_load": {
+        "props": [
+          "prop_plank"
+        ]
+      },
+      "interaction_hay_line": {
+        "props": [
+          "relay-hay"
+        ]
+      },
+      "interaction_hedge_brace": {
+        "props": [
+          "prop_plank"
+        ]
+      },
+      "interaction_hedge_request": {
+        "props": [
+          "prop_fern"
         ]
       }
     }

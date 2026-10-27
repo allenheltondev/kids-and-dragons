@@ -292,10 +292,15 @@ const DIGESTS: PreEpicSave["digests"] = {
 // Preserve all 29 shipped checks, disclosure flags, terminal effects and fight
 // numbers. Old/new probes match ending, road and setback digests, plus resumed
 // fight play after generated hero-id normalization. Fixed legacy save stays pinned.
+// Re-pinned for the owner-authorized opening/onboarding play wave: shared
+// introductions, checked mail bags and farm-work hedge payoffs. All 20 old
+// checks, campaign commitments and terminal effects remain intact. Old/new
+// content loaded through the real loader preserves campaign digests and fight
+// play-on after generated hero-id normalization; fixed legacy save unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
-  "chapters/gemfall-01.json": "67a4b9a4d8a8be313734b201acc02cd8a26a164f22f7b4df2330ef15fd74b8f8",
-  "chapters/gemfall-02.json": "ab26cdedc0b4af9f0153e75829ba49220c40e323bf6d739309cdfc82c101911e",
+  "chapters/gemfall-01.json": "3ae023f2caa6b20c8cc547ec92a0da0588c0c5393a28b80efaf897490cd57e1a",
+  "chapters/gemfall-02.json": "216eec64c75e9ced6987f9884f934f31202e8c63a890b5787a4ec53fbf78a780",
   "chapters/gemfall-03a.json": "d6201dc9591b54b0c5c3cdb2b976e79320323b5a014f7dbca65e52c602f43f74",
   "chapters/gemfall-03b.json": "47fcd09e1e8976970e599324e6b8a0d49915b5963ddcb99e58a7c8e014333111",
   "chapters/gemfall-03c.json": "536fed5cd8c29e696f1857eb35addf13159f1791ad1e04a940ea3d5f567f8c00",
