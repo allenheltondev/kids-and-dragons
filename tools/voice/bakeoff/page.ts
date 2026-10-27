@@ -22,6 +22,10 @@ export interface ClipRef {
   lines: number[];
   chars: number;
   renderMs: number | null;
+  /** Gemini: the uncleaned audio, for the page's raw toggle. */
+  raw?: string;
+  /** Gemini: milliseconds of end-of-turn noise the cleaning silenced. */
+  removedMs?: number;
 }
 
 export interface Take {
@@ -147,7 +151,9 @@ details summary { cursor: pointer; font-weight: 600; }
   <h1>Voice bake-off</h1>
   <span class="meta" id="meta"></span>
   <div class="tools">
+    <a id="castLink" href="/cast" hidden>Cast voice sheet</a>
     <select id="tier" aria-label="Show tier"><option value="">All tiers</option></select>
+    <button id="raw" type="button" title="Play Gemini clips exactly as the API sent them, before the end-of-turn noise is cleaned">Gemini raw</button>
     <button id="blind" type="button">Blind</button>
     <button id="scores" type="button">Scores</button>
     <button id="export" type="button">Export ratings</button>
@@ -170,7 +176,7 @@ details summary { cursor: pointer; font-weight: 600; }
   const PROVIDERS = { elevenlabs: "ElevenLabs", gemini: "Gemini", fake: "Fake (no key)" };
 
   const load = (store, key) => { try { return JSON.parse(store.getItem(key) || "null"); } catch { return null; } };
-  const state = Object.assign({ blind: false, salt: Math.random().toString(36).slice(2), ratings: {}, revealed: {}, columns: null, takes: 1, cast: {}, remember: false }, load(localStorage, STORE) || {});
+  const state = Object.assign({ blind: false, salt: Math.random().toString(36).slice(2), ratings: {}, revealed: {}, columns: null, takes: 1, cast: {}, remember: false, raw: false }, load(localStorage, STORE) || {});
   const save = () => { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch {} };
   // Keys live for this tab only unless "Remember" is ticked; either way they go nowhere but the local server.
   const keys = load(sessionStorage, KEYS) || load(localStorage, KEYS) || { elevenlabs: "", gemini: "" };
@@ -470,7 +476,7 @@ details summary { cursor: pointer; font-weight: 600; }
       if (i >= clips.length) { stop(); return; }
       const clip = clips[i++];
       clip.lines.forEach((line) => script.children[line] && script.children[line].classList.add("now"));
-      audio.src = clip.file;
+      audio.src = state.raw && clip.raw ? clip.raw : clip.file;
       audio.play().catch(() => stop());
     };
     // A short breath between lines, as the game would leave between clips.
@@ -500,9 +506,11 @@ details summary { cursor: pointer; font-weight: 600; }
       }
       const chars = t.clips.reduce((s, c) => s + c.chars, 0);
       const ms = t.clips.reduce((s, c) => s + (c.renderMs || 0), 0);
+      const quieted = t.clips.reduce((s, c) => s + (c.removedMs || 0), 0);
+      const cleanedNote = t.clips.some((c) => c.raw) ? (quieted ? " · silenced " + quieted + "ms of end noise" : " · no end noise found") + (state.raw ? " (playing raw)" : "") : "";
       stats.textContent = t.pending
         ? (t.clips.length ? t.clips.length + " of its requests rendered" : "Not rendered yet.")
-        : chars + " chars · " + t.clips.length + (t.clips.length === 1 ? " request" : " requests") + (ms ? " · rendered in " + (ms / 1000).toFixed(1) + "s" : "");
+        : chars + " chars · " + t.clips.length + (t.clips.length === 1 ? " request" : " requests") + (ms ? " · rendered in " + (ms / 1000).toFixed(1) + "s" : "") + cleanedNote;
     };
     playButton.addEventListener("click", () => play(takes[take].clips, box, script, playButton));
     if (renderButton) renderButton.addEventListener("click", async () => {
@@ -594,6 +602,7 @@ details summary { cursor: pointer; font-weight: 600; }
   function draw() {
     stop();
     document.getElementById("blind").classList.toggle("on", state.blind);
+    document.getElementById("raw").classList.toggle("on", state.raw);
     document.getElementById("meta").textContent = data.samples.length + " samples · " + data.engines.length + " columns" + (live ? "" : " · rendered " + new Date(data.generated).toLocaleString());
     drawSetup();
     const root = document.getElementById("samples");
@@ -608,6 +617,7 @@ details summary { cursor: pointer; font-weight: 600; }
   }
 
   document.getElementById("blind").addEventListener("click", () => { state.blind = !state.blind; state.revealed = {}; save(); draw(); });
+  document.getElementById("raw").addEventListener("click", () => { state.raw = !state.raw; save(); draw(); });
   document.getElementById("scores").addEventListener("click", (e) => {
     const box = document.getElementById("summary");
     box.hidden = !box.hidden;
@@ -622,6 +632,7 @@ details summary { cursor: pointer; font-weight: 600; }
     a.remove();
   });
 
+  document.getElementById("castLink").hidden = !live;
   draw();
   if (live) {
     refresh().catch((error) => alert(error.message));
