@@ -26,8 +26,10 @@ leave a note without its step, or count a step twice.
 Never kept: names, chat, audio, device ids, or anything a child typed. The party size is a count.
 A note is free text typed by the operator, so keep names out of it.
 
-**The content revision** is a short hash of the chapter's JSON (`chapterRevision`). Any edit makes a
-new revision, and the report never mixes two. `content:timing` marks which revision is the text on
+**The content revision** is a short hash of the chapter's whole JSON (`chapterRevision`), stamped on
+every sitting when the chapter starts. Any edit to the story makes a new revision, a typo included,
+and the report never mixes two; `content:timing` says which revision matches the file on disk and
+which are older text. `content:timing` marks which revision is the text on
 disk.
 
 ## The clock policy
@@ -61,8 +63,8 @@ make the headline figure. The practice (`first-steps`) is never timed.
 which is what tests, the load tool and seeded playthroughs get. A synthetic run can therefore never
 be labelled a family observation.
 
-- Deployed Lambda: `family`, only when the stack parameter `SessionTiming=on` (`KAD_TIMING=on` when
-  running `scripts/deploy.sh`). The default is off.
+- Deployed Lambda: `family`, **on by default**. The stack parameter `SessionTiming=off`
+  (`KAD_TIMING=off scripts/deploy.sh`) records nothing.
 - Dev server: `playtest` by default (a developer's own runs); `KAD_TIMING=family` for a real family
   sitting at your machine; `KAD_TIMING=off` for none.
 
@@ -83,6 +85,13 @@ seq, and play is never blocked. Pause is the way to keep a meal or a dead wifi o
 `timingOff`) as `quiet` is, so it rides the same patch, but nothing reads it for display.
 
 ## Reading it
+
+- **Across every household, from your machine** (needs AWS credentials for the stack, via the CLI's
+  profile or environment): `npm run timing:export -- --stage prod --out timing.json`. It does a
+  read-only, projected scan of `kad-<stage>` (`--table`/`--region` override), rebuilds every run's
+  sittings with the same code the server uses, and writes the report; `--csv` writes one row per
+  sitting. It holds no household ids, player ids or names. A scan reads the whole table, so run it
+  when you want an answer, not on a loop. Then `npm run content:timing -- timing.json`.
 
 - `GET /api/timing`: JSON for the device's household (its 40 most recent runs): `sittings`, and
   `aggregates` per chapter and revision. `?format=csv` gives one row per sitting for a spreadsheet.

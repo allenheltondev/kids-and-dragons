@@ -91,14 +91,15 @@ Parameters:
 
   SessionTiming:
     Type: String
-    Default: "off"
+    Default: "on"
     AllowedValues: ["off", "on"]
     Description: >-
       Family-session timing (#511): the API stamps each chapter's opening,
       steps, pauses and ending on the run's event log and a household can
-      export how long its chapters really took. Off by default: nothing is
-      recorded. No names, chat or audio are kept, and it is deleted with the
-      household (docs/session-timing.md).
+      export how long its chapters really took. On by default and operator-only:
+      nothing is shown at the table. Set "off" to record nothing. No names, chat
+      or audio are kept, and it is deleted with the household
+      (docs/session-timing.md).
 
   PushContact:
     Type: String
@@ -491,7 +492,7 @@ Resources:
           KAD_PUSH: !Ref PushNotifications
           KAD_PUSH_SUBJECT: !Ref PushContact
           PUSH_KEY_PARAMETER: !Sub "/kad/${StageName}/push-vapid-keys"
-          # Family-session timing (#511): off unless the stack says on.
+          # Family-session timing (#511): on unless the stack says off.
           KAD_TIMING: !Ref SessionTiming
           # Where each step's push job goes, by an asynchronous invoke: the API
           # never sends a push itself (lambda/push-dispatch.ts).
