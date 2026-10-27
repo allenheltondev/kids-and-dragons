@@ -546,7 +546,7 @@ function checkItems(rep, file, items) {
 }
 
 /** Every branch key a scene may carry — an environmental fight's two extra endings (#201) included. */
-const BRANCH_KEYS = ["onSuccess", "onFailure", "onVictory", "onDefeat", "onEscape", "onTimeout"];
+const BRANCH_KEYS = ["onSuccess", "onFailure", "onAssisted", "onVictory", "onDefeat", "onEscape", "onTimeout"];
 
 /** Every scene id this scene can transition to, with the JSON pointer that named it. */
 function outgoing(scene, sceneId) {

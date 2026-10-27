@@ -1,0 +1,689 @@
+{
+  "gemfall-03a": {
+    "check_markers": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Put the mile markers back in the right order",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_fennick",
+        "narration": "Mile one, mile two, mile three, all the way to the river. A centaur gallops up, counts them twice, and looks like she might cry with relief.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "restored_markers",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_kettle_camp",
+        "narration": "Every marker goes back in. MILE 7 goes back in between MILE 2 and MILE 3, so the road now runs backwards for a bit. A centaur thunders past, groans, and fixes it without stopping. No guide for you today."
+      },
+      "art": "scenes/gemfall/east-road-markers"
+    },
+    "check_rivals": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 16,
+      "prompt": "Find the fresh brass-hat knots in the queue rope",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_rivals_caught",
+        "narration": "You point out that the rope has fresh knots, the knots are brass-hat knots, and one of them still has a brass hat caught in it."
+      },
+      "onFailure": {
+        "goto": "scene_skip_passes",
+        "narration": "The Brassbuckles smile, tip their six matching hats, and are somehow forty places ahead of you. Nobody saw anything. Everybody saw everything."
+      },
+      "cast": [
+        {
+          "figure": "cast/brassbuckle_scout",
+          "name": "Brassbuckle scout"
+        },
+        {
+          "figure": "cast/brassbuckle_recordkeeper",
+          "name": "Brassbuckle recordkeeper"
+        }
+      ],
+      "art": "scenes/gemfall/stone-crossing-queue"
+    },
+    "check_drake": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Haggle with a river drake who has done this before",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_drake_deal",
+        "narration": "You offer a song, a shiny button, and a really excellent fish story. The drake weighs all three, decides it has been treated like a professional, and nudges the humming gem across the shelf."
+      },
+      "onFailure": {
+        "goto": "scene_night_rope",
+        "narration": "The drake listens to your offer, then raises its rates. Then it raises them again, just to watch your face. The humming gem stays exactly where it is."
+      },
+      "art": "scenes/gemfall/drake-rock-shelf"
+    },
+    "check_crossing": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Step from drowned stone to drowned stone across the last stretch",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_east_landing",
+        "narration": "Slip, wobble, step, step, step. The river grabs at your ankles, grumbles, and lets go. You stand on the east bank with boots that are, astonishingly, dry, in the middle of a traffic jam."
+      },
+      "onFailure": {
+        "goto": "scene_swept",
+        "narration": "One stone is not where it was yesterday. The river decides it wants you more than the bank does, and everybody goes in together with a splash that startles a heron into next week."
+      },
+      "art": "scenes/gemfall/drowned-crossing-bank"
+    },
+    "check_crossing_easy": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Hold on tight through the last fast stretch",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_east_landing",
+        "narration": "The current tugs, and sulks, and lets you go. Your boots touch the east bank and they are, astonishingly, dry."
+      },
+      "onFailure": {
+        "goto": "scene_swept",
+        "narration": "Right at the fastest bit, a drake's wake rolls by, and the river decides it wants you more than the bank does. Everybody goes in together with a splash that startles a heron into next week."
+      },
+      "art": "scenes/gemfall/drowned-crossing-bank"
+    },
+    "check_crawlers": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Fool a bone crawler swarm with something that glitters",
+      "cast": [
+        {
+          "figure": "entities/bone_crawler",
+          "count": 5
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_wet_end",
+        "narration": "You fling a wet, glinting spoon down the beach. Every crawler turns at once and pours after it like a rattling carpet. Somewhere behind you, you hear them start arranging it in a spiral."
+      },
+      "onFailure": {
+        "goto": "encounter_crawlers",
+        "narration": "The spoon glitters. Your packs hum. The crawlers are not stupid. They clatter around the spoon and keep coming."
+      },
+      "art": "scenes/gemfall/river-mouth-shore"
+    },
+    "check_crawlers_leave": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 8,
+      "prompt": "Stomp off the beach looking as big as you possibly can",
+      "cast": [
+        {
+          "figure": "entities/bone_crawler",
+          "count": 5
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_wet_end",
+        "narration": "Arms up, elbows out, stomping like giants. The crawlers decide you are far too large to bother with and scuttle back to their spirals, muttering."
+      },
+      "onFailure": {
+        "goto": "encounter_crawlers",
+        "narration": "Somebody stomps into a rock pool, sits down very suddenly, and is no longer the biggest thing on the beach. The crawlers notice."
+      },
+      "art": "scenes/gemfall/river-mouth-shore"
+    },
+    "check_kettle": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell the campers which sinkhole each painted sign steers wagons around, before the kettle whistles",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_pot",
+        "narration": "You explain that the signs steer wagons around the new sinkholes and away from the river's fast bits. The campers go pink, stand every sign back up by the road, and pour you tea to say sorry. It is excellent tea."
+      },
+      "onFailure": {
+        "goto": "interaction_pot",
+        "narration": "The campers nod, and nod, and say \"oh, absolutely,\" and then set the kettle back down on NOT THAT WAY. You leave them arguing about which way that way is."
+      },
+      "art": "scenes/gemfall/east-road-markers"
+    },
+    "check_wagon": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Everybody heave a loaded wagon out of a rut",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "interaction_planks",
+        "narration": "One, two, HEAVE! The wagon pops out of the rut like a cork from a bottle. The driver says he was just about to do that himself, and gives you a honeycake for your trouble anyway.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_planks",
+        "narration": "One, two, HEAVE! Nothing. Again! Nothing. The mule sighs, leans into its harness, and pulls the whole wagon out by itself, looking at you as if you were luggage."
+      },
+      "art": "scenes/gemfall/east-road-markers"
+    },
+    "check_heron": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Learn the crossing by watching a heron fish it",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_queue",
+        "narration": "Left foot, right foot, never the middle. The heron only ever steps on the upstream edge of the stones, where they are only half under. You learn its line by heart. The heron notices you learning it and looks deeply offended.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "heron_line",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_queue",
+        "narration": "The heron catches you staring. It stares back. It is much better at staring than you are, and by the time you blink it has flown off with a fish, and you have learned nothing at all except humility."
+      }
+    },
+    "check_small_print": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Read the tiny writing on a SKIP-A-STORY pass",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_hats",
+        "narration": "You squint. In letters the size of ants it says: VALID ON DAYS WHEN THE RIVER RUNS UPHILL. You read it out loud. The whole queue laughs, and the Brassbuckle sells exactly no passes at all. She tips her hat to you, quite sportingly."
+      },
+      "onFailure": {
+        "goto": "interaction_hats",
+        "narration": "The print is so small it might just be ants. One of the letters walks away. You hand the pass back politely, and the Brassbuckle moves on down the line, selling briskly."
+      },
+      "art": "scenes/gemfall/stone-crossing-queue"
+    },
+    "check_night_rope": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Everybody grab the Brassbuckles' rope before the river does",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_wake_fee",
+        "narration": "You grab the rope just as the river grabs the first Brassbuckle. Everybody pulls. Out he pops, soaked, minus his hat, and says thank you so quietly you nearly miss it. All six creep back to their places in the queue and stay there."
+      },
+      "onFailure": {
+        "goto": "scene_wake_fee",
+        "narration": "The rope zips through your hands, but the Brassbuckles grab it too, and everybody ends up in one dripping heap on the bank. One brass hat sails off downstream, spinning. Nobody says anything. Everybody goes back to bed."
+      },
+      "art": "scenes/gemfall/stone-crossing-queue"
+    },
+    "check_wake_joke": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Make a river drake laugh",
+      "cast": [
+        {
+          "figure": "entities/river_drake"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crossing_bank",
+        "narration": "\"What do you call a fish with no eyes? A fsh.\" A long silence. Then the water bubbles and bubbles: the drake is laughing so hard it has to come up for air. It taps the slate with its tail. PAID."
+      },
+      "onFailure": {
+        "goto": "scene_crossing_bank",
+        "narration": "You tell your best joke. The drake looks at you. You explain the joke. The drake looks at you harder. Then it writes NOTED on the slate, which is somehow worse than not laughing, and sinks out of sight."
+      },
+      "art": "scenes/gemfall/drowned-crossing-bank"
+    },
+    "check_spirals": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Trace each bone-chip spiral with a finger and find what it curls around",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_crawlers",
+        "narration": "The spirals are not random. Each one curls around a bare patch where something humming must have lain, and every chip leans away from it, like grass in a wind. Even the beach flinches from the stones. Your packs hum. Somewhere up the beach, something rattles."
+      },
+      "onFailure": {
+        "goto": "scene_crawlers",
+        "narration": "You count spirals until you lose count, and start again, and lose count again. The heron watches you do it three times, cannot bear it, and flies off. Somewhere up the beach, something rattles."
+      },
+      "art": "scenes/gemfall/river-mouth-shore"
+    }
+  },
+  "gemfall-03b": {
+    "check_ribbon_duck": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Duck under the bell ribbon without making a jingle",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        },
+        {
+          "figure": "cast/gullets_cousin",
+          "name": "Gullet's Cousins"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "count": 3
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "interaction_wisp_crowd",
+        "narration": "Everybody folds flat as a pancake. Not one jingle. On the far side of the ribbon, the new wisps bob up and down in a slow, polite round of applause, and the cousin in three hats tips all three."
+      },
+      "onFailure": {
+        "goto": "interaction_wisp_crowd",
+        "narration": "Jingle. Jingle-jingle. Every bell on the line goes off at once. The new wisps all crowd to the ribbon to see who rang, and the ribbon crew, all together, say \"Tsk.\" Gullet poles away very fast, pretending she has never met you."
+      }
+    },
+    "check_trade": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Poke through her piles and find the one lost thing Nan Rummage hasn't got",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        },
+        {
+          "figure": "cast/nan_rummage",
+          "name": "Nan Rummage",
+          "size": "small"
+        }
+      ],
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_boggart_clue",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "mosslight_jar",
+            "to": "roller"
+          }
+        ],
+        "narration": "It's the squeak your left boot makes. She wants the squeak. You give her a good long one, and she writes it down, delighted, and throws in a jar of mosslight she found last spring."
+      },
+      "onFailure": {
+        "goto": "scene_boggart_clue",
+        "narration": "You offer a button, a pebble and half a sandwich. Wrong, wrong, and she eats the sandwich anyway. In the end she takes your best whistle-tune by humming it back at you until you give up, and calls it even."
+      }
+    },
+    "check_toll_story": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Tell the toll reeds a story good enough to pay your way",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_reed_gap",
+        "narration": "You tell them about the time a goose chased you all the way around a market. The reeds lean in. At the bit with the cabbage they actually gasp. One by one they untie themselves to hear better, and by the end there is a clear channel and a lot of rustling that might be clapping.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "passed_the_toll_reeds"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_reed_gap",
+        "narration": "You start well, then forget whether it was a goose or a duck, and then whether it happened to you at all. The reeds get bored. One slips the lace out of your boot as payment, and the channel opens with a sniff. That boot flaps for the rest of the day.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "passed_the_toll_reeds"
+          }
+        ]
+      }
+    },
+    "check_name": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 16,
+      "prompt": "Spot what's wrong with this barge, and say what it really is",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_act_closed",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "named_the_mimic",
+            "value": true
+          }
+        ],
+        "narration": "The barge has eyelashes. Barges do not have eyelashes. \"You're a mire mimic,\" you say, and the whole barge sighs, unfolds into something long and muddy and embarrassed, and slides off into the reeds."
+      },
+      "onFailure": {
+        "goto": "encounter_mimic",
+        "narration": "You lean in for a closer look, and the closer look opens its mouth."
+      }
+    },
+    "check_stamp": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Stamp the bank hard enough to shake a mimic off its patch",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_act_closed",
+        "narration": "You stamp, and stamp, and do a sort of stamping dance, and the barge starts to wobble. Then it stands up, on legs, and stalks off into the reeds, muttering about the state of modern audiences."
+      },
+      "onFailure": {
+        "goto": "encounter_mimic",
+        "narration": "The bank shakes. So does the barge. Then the barge turns around and looks at you, and it is not pleased."
+      }
+    },
+    "check_find_way": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Find your way back to the main channel in the dark",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_reed_raft",
+        "narration": "You follow the sound of humming and a bobbing, notched hat. Gullet hauls you onto her raft and says nothing at all about the mud."
+      },
+      "onFailure": {
+        "goto": "ending_marsh_kept_secrets",
+        "narration": "Every channel looks like every other channel, and the wisps keep swapping them around when you blink. By the time you give up and sit down on a tussock, the moon has set and the marsh has decided to keep you a little longer."
+      }
+    },
+    "check_fog_lookout": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Shin up the wobbly lantern pole and call out every stump in time",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_stumps",
+        "narration": "\"Stump left! Stump right! Heron!\" You call them all, and Gullet threads the raft through like a needle through cloth. From the top of the pole you spot something else, too: a little island ahead, with people standing on it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "steered_through_the_fog"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_stumps",
+        "narration": "The pole wobbles, then leans, then lays you gently down in the reeds. From down there you can see under the fog perfectly, so you call out the stumps lying on your back. It works. It is just not very dignified. Then you hear grumbling ahead.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "steered_through_the_fog"
+          }
+        ]
+      }
+    },
+    "check_tussock_haul": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Haul three soggy prospectors onto a raft without tipping it over",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_wisp_lead",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rescued_prospectors",
+            "value": true
+          },
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "roller"
+          }
+        ],
+        "narration": "One heave, two heaves, and all three slide aboard like wet sacks of flour. The raft rides very low. Gullet drops them at a frogfolk landing where a path leads northeast toward the roads, and the tallest one gives you a squashed honeycake. \"For the rescue. Sorry about the squash.\""
+      },
+      "onFailure": {
+        "goto": "scene_wisp_lead",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "rescued_prospectors",
+            "value": true
+          }
+        ],
+        "narration": "You grab the tallest one, he grabs you, and you both go in with a splash. The other two climb aboard over the top of you, saying sorry the whole way. Everybody ends up on the raft, equally wet, which feels fair. Gullet drops them at a landing with a path toward the northeast roads."
+      }
+    },
+    "check_patience": {
+      "type": "check",
+      "stat": "heart",
+      "checkKind": "doing",
+      "tn": 8,
+      "prompt": "Walk with the wisp, not after it, however slowly it goes",
+      "cast": [
+        {
+          "figure": "entities/will_o_wisp"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_wisp_sight",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "wisp_showed_us",
+            "value": true
+          }
+        ],
+        "narration": "It is slow. It is very, very slow. But it keeps looking back to check you're still there, and every time you are, it glows a little brighter."
+      },
+      "onFailure": {
+        "goto": "scene_wisp_trap",
+        "narration": "Somebody sighs. The wisp hears it, takes offense, and takes a shortcut."
+      }
+    },
+    "check_steps_wade": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Wade across the still water without slipping on the old steps",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_hollow_gate",
+        "narration": "Slow and steady, step by step. The water doesn't even ripple. It is like walking across a mirror, and in the mirror the sky is full of falling red sparks. You look up. It isn't. You look down. It is. You decide to stop looking down.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossed_the_old_steps"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_hollow_gate",
+        "narration": "Somebody slips on the fourth step and sits down in the water with a great flat SPLOSH. It isn't deep. It is just extremely wet. The ripples run all the way to the gray shape and come back again, slowly, as if something over there gave them a gentle push home.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crossed_the_old_steps"
+          }
+        ]
+      }
+    },
+    "check_gate_rubbing": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Take a clean rubbing of a glowing rune without smudging it",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_nan_washtub",
+        "narration": "Paper flat, charcoal sideways, gentle as anything. The rune comes up black on white, curly and careful, like handwriting from somebody who meant every line. You roll it up. It doesn't hum. It is only paper. Somehow that makes it more important to keep."
+      },
+      "onFailure": {
+        "goto": "scene_nan_washtub",
+        "narration": "The paper is damp, and the charcoal is damper, and what comes out is a very detailed picture of your own thumb. You keep it anyway. It is, after all, a thumb that has touched the Hollow Gate, and not many thumbs can say that."
+      }
+    },
+    "check_gate_hum": {
+      "type": "check",
+      "stat": "heart",
+      "checkKind": "doing",
+      "tn": 12,
+      "prompt": "Hum the Gate's note back to it, all on the same note",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_nan_washtub",
+        "narration": "You hum. For one long breath your note and the Gate's note are the same note, and every knotted reed around you shivers at once. Nothing opens. Nothing changes. But you could swear the hum is a little softer afterwards, like a kettle that has been taken off the boil."
+      },
+      "onFailure": {
+        "goto": "scene_nan_washtub",
+        "narration": "You hum, and the notes wobble all over the place, and a frog on the old steps corrects you, loudly, with the right one. The Gate ignores the whole performance magnificently. You will remember that frog for the rest of your lives."
+      }
+    },
+    "check_cart_push": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Push a sausage cart out of marsh mud",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "ending_walked_over",
+        "narration": "One, two, three, HEAVE. The cart pops out of the mud like a cork from a bottle, and the sausage seller hands out sausages hot off the griddle. The whole queue cheers, and the goose is beside itself. Nobody has ever been welcomed onto a road this loudly.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "ending_walked_over",
+        "narration": "You heave. The cart doesn't. Then three wagon drivers jump down to help, and the goose supervises, and between everybody it squelches free. The sausage seller gives everybody half a sausage each, which is the rush's idea of fair.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "check_ford_song": {
+      "type": "check",
+      "stat": "heart",
+      "checkKind": "doing",
+      "tn": 8,
+      "prompt": "Pole and stamp in time with the frogfolk's crossing song",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        },
+        {
+          "figure": "cast/gullets_cousin",
+          "name": "Gullet's Cousins"
+        }
+      ],
+      "roller": "all",
+      "onSuccess": {
+        "goto": "ending_forded_clean",
+        "narration": "You sing badly but exactly in time, which is the part that counts."
+      },
+      "onFailure": {
+        "goto": "ending_swept_west",
+        "narration": "Somebody sneezes on the wrong beat. The raft wobbles, and the river takes its chance."
+      }
+    },
+    "check_ford_hop": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Hop the weir stones across the west branch",
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        },
+        {
+          "figure": "cast/gullets_cousin",
+          "name": "Gullet's Cousins"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "ending_forded_clean",
+        "narration": "Stone, stone, pole, stone, and a big jump at the end. Nobody even gets a sock wet."
+      },
+      "onFailure": {
+        "goto": "ending_swept_west",
+        "narration": "The fourth stone turns out to be a frog. It moves."
+      }
+    }
+  }
+}

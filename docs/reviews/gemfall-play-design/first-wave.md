@@ -1,6 +1,8 @@
 # First Gemfall wave: 03A and 03B
 
-This is a design brief, not implemented content. It follows the
+This is the original design brief. The first implementation and its remaining
+timing limits are recorded in the [wave review](../gemfall-road-marsh-play/README.md).
+It follows the
 [campaign audit](audit.md) and uses the chapter-cohesion skill. Each chapter targets
 approximately thirty minutes; current declared estimates are 42 and 46 minutes.
 Observed family timing is unmeasured.
