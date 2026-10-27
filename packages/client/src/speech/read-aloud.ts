@@ -3,9 +3,11 @@
  *
  * The switch is per device and remembered in localStorage, because it belongs to
  * whoever is holding the screen, not to the household or the room: in Party Mode
- * the TV and each phone decide for themselves. Off by default, and off means no
- * speaker is installed, so `speak()` is the no-op it always was and nothing else
- * in the game changes.
+ * the TV and each phone decide for themselves. The shared screen (the TV) reads
+ * aloud by default, because it is the room's narrator; every other device is off
+ * by default. Once somebody flips the switch, that choice is remembered and wins
+ * over the default on that device. Off means no speaker is installed, so
+ * `speak()` is the no-op it always was and nothing else in the game changes.
  *
  * Who speaks what (the Party Mode decision, also in docs/read-aloud.md):
  *  - the TV reads the narration, roll prompts and hand-offs (NarrationPanel);
@@ -29,11 +31,13 @@ export function readAloudSupported(): boolean {
 
 // Straight to localStorage (in try/catch, as private mode throws): importing the store's persistence
 // helper would tie this lazy module to the entry chunk and cost first-paint bytes for one string.
-function loadStored(): boolean {
+// Null when nobody on this device has chosen yet, so the surface's default applies.
+function loadStored(): boolean | null {
   try {
-    return localStorage.getItem(READ_ALOUD_KEY) === "1";
+    const stored = localStorage.getItem(READ_ALOUD_KEY);
+    return stored === "1" ? true : stored === "0" ? false : null;
   } catch {
-    return false;
+    return null;
   }
 }
 
@@ -41,7 +45,7 @@ interface ReadAloudState {
   on: boolean;
 }
 
-const useStore = create<ReadAloudState>(() => ({ on: loadStored() && readAloudSupported() }));
+const useStore = create<ReadAloudState>(() => ({ on: (loadStored() ?? false) && readAloudSupported() }));
 
 type SpeakerModule = typeof import("./synth-speaker");
 let engine: Promise<ReturnType<SpeakerModule["createSynthSpeaker"]>> | null = null;
@@ -85,9 +89,16 @@ export function setReadAloud(on: boolean): void {
   apply(next);
 }
 
-/** Starts the stored preference. Called once, at boot. */
-export function startReadAloud(): void {
-  apply(useStore.getState().on);
+/**
+ * Starts the stored preference, or this surface's default when nobody has chosen:
+ * `defaultOn` is true on the shared screen. Called at boot and again when the
+ * device becomes (or stops being) the TV. The default is not written down, so
+ * only a real flip of the switch is remembered.
+ */
+export function startReadAloud(defaultOn = false): void {
+  const on = (loadStored() ?? defaultOn) && readAloudSupported();
+  useStore.setState({ on });
+  apply(on);
 }
 
 export function useReadAloud(): { supported: boolean; on: boolean; setOn: (on: boolean) => void } {

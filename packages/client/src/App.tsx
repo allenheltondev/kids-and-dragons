@@ -148,10 +148,10 @@ export function App(): React.JSX.Element {
     void loadContent();
   }, [loadContent]);
 
-  // This device's read-aloud switch, if it was left on (#261).
+  // This device's read-aloud switch (#261): as it was left, or on by default on the TV.
   useEffect(() => {
-    void loadSpeech().then((module) => module.startReadAloud()).catch(() => undefined);
-  }, []);
+    void loadSpeech().then((module) => module.startReadAloud(tv)).catch(() => undefined);
+  }, [tv]);
 
   // A TV remote's arrows (display/remote-focus.ts): always on the shared screen; on the start
   // screen, where a TV hosts its room before it is one, only once a remote shows itself (an arrow

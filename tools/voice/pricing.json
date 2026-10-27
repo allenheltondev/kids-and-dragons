@@ -1,0 +1,142 @@
+{
+  "$comment": "Rates `npm run voice:cost` prices against. Edit this file when a provider changes its prices; nothing else holds a number. `checked` is when a person last looked, and `confirmed: false` means the rate came from a third-party summary, not the provider's own page. Confirm those on the provider's pricing page before committing money. A rate with `from`/`until` applies only on those dates (inclusive); `voice:cost --on YYYY-MM-DD` picks the day. `apiModel` is the provider's model id, which is how the bake-off finds a model's price.",
+  "checked": "2026-10-27",
+  "speech": {
+    "$comment": "Per-token providers bill the audio they return, so their cost depends on how fast the voice reads. 14 characters a second is an unhurried storyteller reading to an eight-year-old (about 150 words a minute). Gemini counts 25 audio tokens a second.",
+    "charsPerSecond": 14,
+    "charsPerTextToken": 4,
+    "promptTokensPerRequest": 60
+  },
+  "models": [
+    {
+      "id": "elevenlabs-v4",
+      "provider": "elevenlabs",
+      "apiModel": "eleven_v4",
+      "label": "ElevenLabs v4",
+      "billing": "characters",
+      "rates": [
+        {
+          "perThousandChars": 0.08
+        }
+      ],
+      "confirmed": false,
+      "source": "https://www.glbgpt.com/hub/eleven-v4-pricing/ (October 2026 summaries of the ElevenAPI price list; v4 Turbo is half of v4)"
+    },
+    {
+      "id": "elevenlabs-v4-turbo",
+      "provider": "elevenlabs",
+      "apiModel": "eleven_v4_turbo",
+      "label": "ElevenLabs v4 Turbo",
+      "billing": "characters",
+      "rates": [
+        {
+          "perThousandChars": 0.04
+        }
+      ],
+      "confirmed": false,
+      "source": "https://www.glbgpt.com/hub/eleven-v4-pricing/ (October 2026 summaries of the ElevenAPI price list; v4 Turbo is half of v4)"
+    },
+    {
+      "id": "elevenlabs-v3",
+      "provider": "elevenlabs",
+      "apiModel": "eleven_v3",
+      "label": "ElevenLabs v3",
+      "billing": "characters",
+      "rates": [
+        {
+          "perThousandChars": 0.1
+        }
+      ],
+      "confirmed": false,
+      "source": "https://developer.puter.com/tutorials/elevenlabs-api-pricing/ (API pay-as-you-go; plan overage reported between $0.10 and $0.30 per 1k)"
+    },
+    {
+      "id": "elevenlabs-multilingual-v2",
+      "provider": "elevenlabs",
+      "apiModel": "eleven_multilingual_v2",
+      "label": "ElevenLabs Multilingual v2",
+      "billing": "characters",
+      "rates": [
+        {
+          "perThousandChars": 0.1
+        }
+      ],
+      "confirmed": false,
+      "source": "https://developer.puter.com/tutorials/elevenlabs-api-pricing/"
+    },
+    {
+      "id": "elevenlabs-flash-v2.5",
+      "provider": "elevenlabs",
+      "apiModel": "eleven_flash_v2_5",
+      "label": "ElevenLabs Flash v2.5",
+      "billing": "characters",
+      "rates": [
+        {
+          "perThousandChars": 0.05
+        }
+      ],
+      "confirmed": false,
+      "source": "https://developer.puter.com/tutorials/elevenlabs-api-pricing/"
+    },
+    {
+      "id": "gemini-3.8-flash-tts",
+      "provider": "gemini",
+      "apiModel": "gemini-3.8-flash-tts",
+      "label": "Gemini 3.8 Flash TTS",
+      "billing": "tokens",
+      "rates": [
+        {
+          "until": "2026-12-31",
+          "inputPerMillion": 1.0,
+          "outputPerMillion": 9.0
+        },
+        {
+          "from": "2027-01-01",
+          "inputPerMillion": 1.0,
+          "outputPerMillion": 18.0
+        }
+      ],
+      "batchDiscount": 0.5,
+      "confirmed": false,
+      "source": "https://cloud.google.com/text-to-speech/pricing as summarized by search; the text input rate is assumed equal to 3.1 Flash TTS"
+    },
+    {
+      "id": "gemini-3.8-flash-lite-tts",
+      "provider": "gemini",
+      "apiModel": "gemini-3.8-flash-lite-tts",
+      "label": "Gemini 3.8 Flash-Lite TTS",
+      "billing": "tokens",
+      "rates": [
+        {
+          "until": "2026-12-31",
+          "inputPerMillion": 0.5,
+          "outputPerMillion": 6.0
+        },
+        {
+          "from": "2027-01-01",
+          "inputPerMillion": 0.5,
+          "outputPerMillion": 12.0
+        }
+      ],
+      "batchDiscount": 0.5,
+      "confirmed": false,
+      "source": "https://cloud.google.com/text-to-speech/pricing as summarized by search; the text input rate is assumed equal to 2.5 Flash TTS"
+    },
+    {
+      "id": "gemini-3.1-flash-tts",
+      "provider": "gemini",
+      "apiModel": "gemini-3.1-flash-tts-preview",
+      "label": "Gemini 3.1 Flash TTS (preview)",
+      "billing": "tokens",
+      "rates": [
+        {
+          "inputPerMillion": 1.0,
+          "outputPerMillion": 20.0
+        }
+      ],
+      "batchDiscount": 0.5,
+      "confirmed": false,
+      "source": "https://cloud.google.com/text-to-speech/pricing"
+    }
+  ]
+}

@@ -6,7 +6,9 @@ This is how it reaches a voice.
 ## What it does
 
 - A switch (speech-bubble icon, top right, left of sound) turns read-aloud on or off **for this
-  device**. It is remembered in `localStorage` (`kad.readaloud`) and is **off by default**. A browser
+  device**. It is remembered in `localStorage` (`kad.readaloud`). The **TV (`/tv/…`) is on by
+  default**, because it is the room's narrator. Every other device is **off by default**. Once
+  somebody flips the switch on a device, that choice wins over the default there. A browser
   without `SpeechSynthesis` gets no switch.
 - Off means no speaker is installed: `speak()` is the no-op it always was, and no speaker icons are
   drawn. Nothing else about the game changes.

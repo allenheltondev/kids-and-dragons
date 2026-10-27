@@ -2,7 +2,7 @@
  * The chapter's goal (#356), end to end: always on the TV and the phones, ticking by itself.
  *
  * The owner's requirement is the whole test: nobody taps or clicks to see the goal or to see
- * it change. So nothing here clicks on the TV beyond turning read-aloud on, and the phone is
+ * it change. So nothing here clicks on the TV at all (read-aloud is on there by default), and the phone is
  * only used to make the hero, begin and ready up for the fight. The story is moved with the dev playtest jump (PLAYTEST_GOTO), which runs
  * the scene's real `onEnter`, so a step ticks because the engine set its flag and the
  * patch reached every screen, exactly as at the table.
@@ -116,8 +116,8 @@ test.describe("the chapter's goal (#356)", () => {
     await tv.getByRole("button", { name: /open the lobby here/i }).click();
     await expect(tv).toHaveURL(/\/tv\/[A-Z]{4}$/, TAP);
     const code = new URL(tv.url()).pathname.split("/").pop() ?? "";
-    // Read-aloud on, as a family that wants the story read would have it.
-    await tv.getByRole("button", { name: "Turn read-aloud on" }).click();
+    // Read-aloud is on by default on the TV.
+    await expect(tv.getByRole("button", { name: "Turn read-aloud off" })).toBeVisible(TAP);
 
     // The phone's settings ask for reduced motion: its tick keeps the gold and drops the pop.
     const kid = await context(browser, { viewport: { width: 390, height: 800 }, hasTouch: true, isMobile: true, reducedMotion: "reduce" });

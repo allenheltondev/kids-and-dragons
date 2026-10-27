@@ -1,0 +1,228 @@
+{
+  "$comment": "The bake-off set (docs/voice-bakeoff.md): real lines from the game, from simple to hard. `address` points at the authored words (tools/voice/inventory.ts); the harness reads them from content/ at run time, so a sample is never a stale copy. `script` splits the words into who says them, and must join back to exactly the authored text (bakeoff.test.ts checks). A sample with no script is the narrator's alone. A script line may carry beats, `<sigh>` or `<long pause>` (cast.json → beats), which are never on screen: the join check leaves them out, and each provider writes them its own way. `tokens` fills {party} (a party size) and {facets} (a count). `group` marks samples that share a speaker, to hear whether that voice holds across separate renders.",
+  "tiers": {
+    "1-simple": "One narrator, plain sentences. Pace, warmth and comic timing.",
+    "2-tokens": "Words the engine fills at run time, and names the engine has never seen.",
+    "3-one-voice": "The narrator plus one character, with a delivery to get right.",
+    "4-ensemble": "Three or more voices, crowds speaking together, the party speaking.",
+    "5-long": "A long passage with two characters: does each voice hold to the end?"
+  },
+  "samples": [
+    {
+      "id": "hedge-wall",
+      "tier": "1-simple",
+      "title": "The first line of the reference chapter",
+      "tests": "The voice the whole game opens on: warm, a little spooky, never scary. A beat before the joke.",
+      "address": "bramblewood-01/scene_hedge_wall/narration",
+      "script": [
+        { "by": "narrator", "text": "The path ends at a wall of thorns twice your height. Somewhere on the other side, something is humming a little tune, <pause> and it is definitely not a bird." }
+      ]
+    },
+    {
+      "id": "closer-look",
+      "tier": "1-simple",
+      "title": "A one-line joke",
+      "tests": "Comic timing: a long pause written into the line, before the punchline.",
+      "address": "gemfall-03b/check_name/onFailure/narration",
+      "script": [
+        { "by": "narrator", "text": "You lean in for a closer look, <long pause> and the closer look opens its mouth." }
+      ]
+    },
+    {
+      "id": "check-prompt",
+      "tier": "1-simple",
+      "title": "A roll prompt",
+      "tests": "A short instruction, read as an invitation rather than an order.",
+      "address": "bramblewood-01/check_hum/prompt"
+    },
+    {
+      "id": "facets-token",
+      "tier": "2-tokens",
+      "title": "A filled-in count of great stones",
+      "tests": "A number word dropped into the middle of a sentence still sounds natural.",
+      "address": "gemfall-08/scene_restore_begin/variants/1",
+      "tokens": { "facets": 3 }
+    },
+    {
+      "id": "party-token",
+      "tier": "2-tokens",
+      "title": "A filled-in party",
+      "tests": "\"all four of you\" lands as the emotional end of the line.",
+      "address": "gemfall-08/scene_seal_chamber/variants/0",
+      "tokens": { "party": 4 }
+    },
+    {
+      "id": "north-gate",
+      "tier": "2-tokens",
+      "title": "Names, and a merfolk's goodbye",
+      "tests": "Made-up names (Tobble, Madame Fenn, the Outfitters' Steps) and one cheerful shout.",
+      "address": "gemfall-01/scene_north_gate_wave/narration",
+      "script": [
+        { "by": "narrator", "text": "You wave, and the Exchange waves back. Tobble sings a goodbye verse from the Outfitters' Steps, three keys too high. Madame Fenn's barrel rolls along the quay to keep up." },
+        { "by": "madame_fenn", "text": "\"Bring me back something shiny, darlings!\"", "delivery": "excited" },
+        { "by": "narrator", "text": "High on the lighthouse, the great lamp winks twice, as if it knows something." }
+      ]
+    },
+    {
+      "id": "pib-intro",
+      "tier": "3-one-voice",
+      "title": "Pib introduces themself",
+      "tests": "A tiny, earnest sprite who over-explains. The speech tag in the middle of a sentence.",
+      "address": "bramblewood-01/scene_pib/narration",
+      "group": "pib",
+      "script": [
+        { "by": "pib", "text": "\"I'm Pib,\"" },
+        { "by": "narrator", "text": "says the sprite," },
+        { "by": "pib", "text": "\"and somebody took the Hollow Crown out of the old shrine, and now the wood hums all night and nobody can sleep.\"" },
+        { "by": "narrator", "text": "Pib hands you half a map, drawn in berry juice, and gives you the acorn too, because Pib is generous." }
+      ]
+    },
+    {
+      "id": "pib-gift",
+      "tier": "3-one-voice",
+      "title": "Pib again, two chapters later",
+      "tests": "The same Pib as pib-intro, rendered separately, with a reluctant sigh. Then the vote prompt.",
+      "address": "gemfall-02/choice_pib_gift/narration",
+      "group": "pib",
+      "script": [
+        { "by": "narrator", "text": "Inside the hedges, Pib trots up the lane beside you, narrating every leaf on the way. At the door of an inn with very tall doors they stop and dig in the big satchel. Out come three things you did not ask for." },
+        { "by": "pib", "text": "<sigh> \"I can only spare one,\"" },
+        { "by": "narrator", "text": "says Pib." },
+        { "by": "pib", "text": "\"The hedge says you should choose it together.\"" },
+        { "by": "narrator", "text": "Which one? Everybody vote." }
+      ]
+    },
+    {
+      "id": "faun-whisper",
+      "tier": "3-one-voice",
+      "title": "The faun whispers, then doesn't",
+      "tests": "A whisper that can still be heard across a living room, then a normal voice that chuckles at its own joke.",
+      "address": "gemfall-02/scene_song_stops_ask/narration",
+      "script": [
+        { "by": "narrator", "text": "You tap the faun on the shoulder. She jumps, notices her wet hoof, and turns the flute off." },
+        { "by": "faun", "text": "\"Wagons,\"", "delivery": "whisper" },
+        { "by": "narrator", "text": "she whispers." },
+        { "by": "faun", "text": "\"Rush wagons, heading for the pumpkins.\"", "delivery": "whisper" },
+        { "by": "narrator", "text": "Then, because you asked so nicely, she pulls a spare reed whistle out of her hat." },
+        { "by": "faun", "text": "\"For when you need everybody to hear you. Just one loud note, though. <chuckle> It only has the one.\"" }
+      ]
+    },
+    {
+      "id": "quill-squawk",
+      "tier": "3-one-voice",
+      "title": "A griffin postmaster at her wits' end",
+      "tests": "A gasp, then a shout that is funny, not startling, at TV volume.",
+      "address": "gemfall-01/scene_griffin_post/narration",
+      "script": [
+        { "by": "narrator", "text": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins queue on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with spectacles on a chain, is losing count." },
+        { "by": "quill", "text": "<gasp> \"Hands!\"", "delivery": "shout" },
+        { "by": "narrator", "text": "she squawks." },
+        { "by": "quill", "text": "\"Anybody with hands!\"", "delivery": "shout" }
+      ]
+    },
+    {
+      "id": "pib-hedge-mob",
+      "tier": "4-ensemble",
+      "title": "A shouting mob, and Pib not letting them in",
+      "tests": "A crowd shouting together, then Pib, then a question handed to the party.",
+      "address": "gemfall-02/scene_hedge_mob/narration",
+      "group": "pib",
+      "script": [
+        { "by": "narrator", "text": "Outside Bramblewood's tall hedges, a mob of treasure hunters is camped and shouting," },
+        { "by": "mob", "text": "\"Open up! Let us through!\"", "delivery": "chorus" },
+        { "by": "narrator", "text": "The hedges are not listening. Along the wall, a small thorny sprite with a satchel too big for them is trimming one leaf at a time and narrating it." },
+        { "by": "pib", "text": "\"I'm Pib,\"" },
+        { "by": "narrator", "text": "they say." },
+        { "by": "pib", "text": "\"I can't let them in. The hedges don't listen to people who haven't asked properly. What about you?\"" }
+      ]
+    },
+    {
+      "id": "seal-keeper",
+      "tier": "4-ensemble",
+      "title": "The party speaks to a dragon",
+      "tests": "The party's own words (who voices \"you say\"?), a written silence, and a huge, gentle dragon taking a breath and trying out a word.",
+      "address": "gemfall-08/scene_keeper_came_to_help/narration",
+      "script": [
+        { "by": "party", "text": "\"We didn't bring any,\"" },
+        { "by": "narrator", "text": "you say." },
+        { "by": "party", "text": "\"We came to help.\"" },
+        { "by": "narrator", "text": "The Seal-Keeper is quiet for a very long time. <long pause> Then it lowers its huge head until its eye is level with yours." },
+        { "by": "seal_keeper", "text": "<breath> \"Everyone who climbs my mountain brings me stones,\"", "delivery": "grave" },
+        { "by": "narrator", "text": "it says." },
+        { "by": "seal_keeper", "text": "\"Or excuses for stones. Nobody has ever brought me nothing on purpose.\"", "delivery": "grave" },
+        { "by": "narrator", "text": "An embermoth crawls off its nose and onto your shoulder." },
+        { "by": "seal_keeper", "text": "\"Help,\" <pause>", "delivery": "gentle" },
+        { "by": "narrator", "text": "says the dragon, trying out the word." },
+        { "by": "seal_keeper", "text": "\"Yes. I could use some of that.\"", "delivery": "gentle" }
+      ]
+    },
+    {
+      "id": "sheeple-ridge",
+      "tier": "4-ensemble",
+      "title": "Thirty sheeple, one opinion",
+      "tests": "A flock answering together, slightly out of step, then single sheeple finishing each other's thoughts.",
+      "address": "gemfall-02/scene_flock_ridge/narration",
+      "script": [
+        { "by": "narrator", "text": "On the low ridge above the road, about thirty sheeple are standing in one tight woolly knot. Every one of them is wearing the same felted hat with seven brims. When you walk up, nobody says anything for a whole minute, because each sheeple is waiting for another one to say hello first. Then twenty of them say hello at once." },
+        { "by": "sheeple_middle", "text": "\"What do we think?\"" },
+        { "by": "narrator", "text": "asks the one in the middle." },
+        { "by": "sheeple", "text": "\"We think wolves,\"", "delivery": "chorus" },
+        { "by": "narrator", "text": "they all answer, slightly out of step." },
+        { "by": "sheeple_a", "text": "\"In the grass.\"" },
+        { "by": "sheeple_b", "text": "\"We all saw them.\"" },
+        { "by": "sheeple_middle", "text": "<pause> \"Because one of us did.\"" }
+      ]
+    },
+    {
+      "id": "rumor-fire",
+      "tier": "4-ensemble",
+      "title": "Travelers swapping news",
+      "tests": "Two travelers who must sound like different people, one laughing at their own story, then everybody at once.",
+      "address": "gemfall-04c/scene_rumor_fire/narration",
+      "script": [
+        { "by": "narrator", "text": "At the noon stop, a ring of travelers is swapping news, and the news has clearly been swapped a great many times." },
+        { "by": "traveler_a", "text": "\"On the River Road,\"" },
+        { "by": "narrator", "text": "says one," },
+        { "by": "traveler_a", "text": "\"a troll charges you a story instead of a coin.\"" },
+        { "by": "traveler_b", "text": "\"On the Wild Road,\"" },
+        { "by": "narrator", "text": "says another," },
+        { "by": "traveler_b", "text": "\"the marsh steals your boots and gives back different boots.\" <laugh>" },
+        { "by": "narrator", "text": "Everybody turns to you." },
+        { "by": "travelers", "text": "\"What's your news?\"", "delivery": "chorus" }
+      ]
+    },
+    {
+      "id": "hessa-soup",
+      "tier": "4-ensemble",
+      "title": "Hessa Wren, kind and a little wrong",
+      "tests": "A filled-in party, a sign in capitals, and a kindly voice taking a breath before saying something unsettling.",
+      "address": "gemfall-06/scene_soup_tent/narration",
+      "tokens": { "party": 2 },
+      "script": [
+        { "by": "narrator", "text": "At the top of the road is a soup tent with a sign: FREE, NO QUESTIONS. A woman called Hessa Wren ladles a bowl for {party}, asks for names, and remembers them. Behind her, helpers in painted bark masks stir the pots and hum one low note, all together." },
+        { "by": "hessa", "text": "\"My friends from the Deep Hollow,\"" },
+        { "by": "narrator", "text": "says Hessa." },
+        { "by": "hessa", "text": "\"The masks are for singing to the mountain.\"" },
+        { "by": "narrator", "text": "Then she leans in." },
+        { "by": "hessa", "text": "<breath> \"The world's laws are broken,\"", "delivery": "kindly" },
+        { "by": "narrator", "text": "she says kindly, as if she were telling you it might rain." },
+        { "by": "hessa", "text": "\"There's a seal on the mountain, like a lid on a pot. It isn't protecting anyone. It's a cage on the cure.\"", "delivery": "kindly" }
+      ]
+    },
+    {
+      "id": "riftseekers-route",
+      "tier": "5-long",
+      "title": "Two guides, three roads",
+      "tests": "Seven hundred characters of directions: two voices that stay themselves, and a listener who can still follow.",
+      "address": "riftlight-riftseekers-departure/route/narration",
+      "script": [
+        { "by": "narrator", "text": "Orin points below the ice shelf, where melt channels join into a broad river." },
+        { "by": "orin", "text": "\"The Great River starts here. Stay on this bank. The shelf above the headwaters leads toward Frostfang. Test the ice. If it gives, let the river carry you to a place you can get out. Do not fight it under the shelf.\"" },
+        { "by": "narrator", "text": "Seren points toward the hall." },
+        { "by": "seren", "text": "\"Or study the seam that answered your song. Look for signs of openings around the glacier. Learning what they need might help you find a way home.\"" },
+        { "by": "narrator", "text": "Orin traces a longer road above the bank." },
+        { "by": "orin", "text": "\"Or follow these markers to a ferry at a place called Ashspan Bridge. It takes longer, but it stays off the ice. From the bridge, an upper bank road goes back north to Frostfang Shore.\"" }
+      ]
+    }
+  ]
+}
