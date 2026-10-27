@@ -98,7 +98,15 @@ Each profile has:
   - the line it's on, with **‹ ›** to change lines;
   - one big **Play** button (**Render and play** the first time a line is heard in this voice);
   - a progress bar;
-  - **Play all**, to hear every line in turn.
+  - **Play all**, to hear every line in turn;
+  - **New take**, to render the same words again. Gemini has no seed, so each take reads a little
+    differently. It's one more call, up to five takes, and **back to take N** returns to an
+    earlier one.
+
+  **When anything changes what is sent** (the voice, accent, direction, or the narrator's
+  description), the button turns back into **Render and play**, with a note that this line hasn't
+  been heard in these words yet. One click renders the new version and plays it. The old clips
+  stay cached, so changing back is free.
 
   The lines further down share the same player.
 - **Their picture:** the figure the scenes draw them with, from `assets/`. The empty margin is

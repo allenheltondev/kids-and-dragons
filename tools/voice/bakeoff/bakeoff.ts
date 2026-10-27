@@ -220,6 +220,25 @@ export async function renderCell(engine: Engine, sample: Sample, takes: number, 
   return cellOf(engine, sample, takes, ws);
 }
 
+/**
+ * One take of one sample, alone: what it would cost, and rendering it. A new
+ * take is one more call, not every take before it that is not on disk (those
+ * may be in words that have since changed).
+ */
+export function estimateTake(engine: Engine, sample: Sample, take: number, ws: Workspace): Estimate {
+  const jobs = plan(engine, ws.cast, sample, take);
+  const todo = isUnsupported(jobs) ? [] : jobs.filter((job) => clipMeta(ws, job.key) === null);
+  const chars = todo.reduce((sum, job) => sum + job.chars, 0);
+  return { engine: engine.id, requests: todo.length, chars, cached: (isUnsupported(jobs) ? 0 : jobs.length) - todo.length, dollars: priceOf(engine, chars, todo.length, ws) };
+}
+
+/** Renders one take of one sample, and returns the cell through that take. */
+export async function renderTake(engine: Engine, sample: Sample, take: number, ws: Workspace, keys: Keys, fetch: Fetch): Promise<Cell> {
+  const jobs = plan(engine, ws.cast, sample, take);
+  if (!isUnsupported(jobs)) await renderJobs(jobs, ws, keys, fetch, 3);
+  return cellOf(engine, sample, take, ws);
+}
+
 export function resultsOf(engines: readonly Engine[], samples: readonly Sample[], tiers: Record<string, string>, takes: number, ws: Workspace): Results {
   const errors = readErrors(ws);
   const cells: Results["cells"] = {};

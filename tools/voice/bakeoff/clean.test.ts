@@ -16,7 +16,8 @@ import { engineOf, pcmToWav, plan, send, type CastFile, type Fetch, type Job } f
 import { contentLines, readSampleFile, resolveSamples } from "./samples.ts";
 
 const RATE = 24000;
-type Piece = { kind: "voice" | "noise" | "silence"; ms: number; amp?: number };
+/** "noise" is white static, spread across every frequency; "ess" is a word's "s", high-passed hiss. */
+type Piece = { kind: "voice" | "noise" | "ess" | "silence"; ms: number; amp?: number };
 
 function build(pieces: Piece[], dc = 0): Buffer {
   let seed = 12345;
@@ -27,8 +28,17 @@ function build(pieces: Piece[], dc = 0): Buffer {
   const samples: number[] = [];
   for (const piece of pieces) {
     const n = Math.round((RATE * piece.ms) / 1000);
+    let [a, b] = [random(), random()];
     for (let i = 0; i < n; i += 1) {
-      const value = piece.kind === "voice" ? Math.sin((2 * Math.PI * 180 * i) / RATE) * (piece.amp ?? 0.5) : piece.kind === "noise" ? random() * 2 * (piece.amp ?? 0.15) : 0;
+      let value = 0;
+      if (piece.kind === "voice") value = Math.sin((2 * Math.PI * 180 * i) / RATE) * (piece.amp ?? 0.5);
+      else if (piece.kind === "noise") value = random() * 2 * (piece.amp ?? 0.15);
+      else if (piece.kind === "ess") {
+        // The second difference of white noise: nearly all of its energy is high, like a real "s".
+        const c = random();
+        value = (c - 2 * b + a) * (piece.amp ?? 0.15);
+        [a, b] = [b, c];
+      }
       samples.push(value + dc);
     }
   }
@@ -68,8 +78,19 @@ describe("cleaning Gemini audio", () => {
     expect(cleanPcm16(breath, RATE).removed).toEqual([]);
     const sigh = build([{ kind: "voice", ms: 600 }, { kind: "silence", ms: 200 }, { kind: "noise", ms: 500 }, { kind: "silence", ms: 300 }, { kind: "voice", ms: 600 }]);
     expect(cleanPcm16(sigh, RATE).removed).toEqual([]);
-    const ess = build([{ kind: "voice", ms: 600 }, { kind: "noise", ms: 120 }, { kind: "silence", ms: 300 }]);
+    const ess = build([{ kind: "voice", ms: 600 }, { kind: "ess", ms: 120 }, { kind: "silence", ms: 300 }]);
     expect(cleanPcm16(ess, RATE).removed).toEqual([]);
+  });
+
+  it("cuts static straight off the last word, even as loud as an s, and keeps the s before it", () => {
+    // The word, its "s", then a scratch of white static with no silence between: what was still heard.
+    const pcm = build([{ kind: "voice", ms: 600 }, { kind: "ess", ms: 80 }, { kind: "noise", ms: 150, amp: 0.15 }, { kind: "silence", ms: 200 }]);
+    const { pcm: out, removed } = cleanPcm16(pcm, RATE);
+    expect(removed).toHaveLength(1);
+    expect(removed[0]!.startMs).toBeGreaterThanOrEqual(670);
+    expect(removed[0]!.startMs).toBeLessThanOrEqual(690);
+    expect(rmsOf(out, 720, 830)).toBeLessThan(1e-4);
+    expect(rmsOf(out, 610, 660)).toBeCloseTo(rmsOf(pcm, 610, 660), 2);
   });
 
   it("keeps a sound the line ends on when the script ends on one, and cuts it when it doesn't", () => {
