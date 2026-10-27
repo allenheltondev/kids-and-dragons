@@ -20,11 +20,12 @@
  * puts it on the run's event log, and what makes every screen see it at once.
  */
 
-import { idleOpenRoom, type RunState } from "@kad/shared";
+import { idleOpenRoom, type RunState, type TimingNote } from "@kad/shared";
 import type { DeviceIdentity } from "../identity.ts";
 import type { EventRecord, RoomRecord } from "../store/repository.ts";
 import { diff } from "../json-patch.ts";
 import { fail, iso, ok, type HandlerDeps, type HandlerResult } from "./deps.ts";
+import { recordTiming } from "./timing.ts";
 
 /**
  * The device asking and who is holding it: a phone's own device token, or a
@@ -66,7 +67,7 @@ export async function commitRoomChange(
   actor: string,
   /** May read (a removal relocks the lobby, #283); it is re-run on every retry. */
   change: (state: RunState) => RunState | null | Promise<RunState | null>,
-  deps: Pick<HandlerDeps, "repo" | "now" | "channel">,
+  deps: Pick<HandlerDeps, "repo" | "now" | "channel" | "timing">,
   options: {
     closing?: boolean;
     /** Moves the household's founder in the same transaction (#272, `CommitInput.founder`). */
@@ -77,6 +78,12 @@ export async function commitRoomChange(
      * after a lost race, so it names whoever is the founder on the retry.
      */
     unfound?: () => Promise<{ householdId: string; deviceId: string } | undefined>;
+    /**
+     * The session-clock note this change owes (#511), asked once `change` has
+     * run on each attempt. Absent when nobody keeps time or the change is not
+     * a timing moment.
+     */
+    timing?: () => TimingNote | undefined;
   } = {},
 ): Promise<HandlerResult<{ seq: number; state: RunState; changed: boolean }>> {
   for (let attempt = 1; ; attempt++) {
@@ -91,6 +98,7 @@ export async function commitRoomChange(
     const unfound = options.unfound ? await options.unfound() : undefined;
     const nowMs = deps.now();
     const next: RunState = { ...changed, seq: state.seq + 1, updatedAt: iso(nowMs) };
+    const timing = options.timing?.();
     const event: EventRecord = {
       seq: next.seq,
       runId: next.runId,
@@ -114,6 +122,7 @@ export async function commitRoomChange(
         runId: event.runId,
         patch: event.patch,
       });
+      await recordTiming(deps, { runId: next.runId, chapterId: next.chapterId, seq: next.seq, at: event.at }, timing);
       return ok({ seq: next.seq, state: next, changed: true });
     }
     if (attempt >= COMMIT_ATTEMPTS) {
@@ -219,7 +228,7 @@ export async function closeRoom(
     input.principal.playerId,
     (state) => (state.closed ? null : { ...state, closed: true }),
     deps,
-    { closing: true },
+    { closing: true, timing: () => (deps.timing ? { kind: "close" } : undefined) },
   );
   if (!result.ok) return result;
   await deps.repo.deleteRoom(hosted.value.code);

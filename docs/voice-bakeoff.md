@@ -157,29 +157,49 @@ turn of speech ends. It's most audible on two-speaker requests, which have a tur
 every line. It's in the raw API audio, not in AI Studio's player, which gates it away before you
 hear it. Earlier models have a similar end-of-clip static in forum reports.
 
-The harness cleans Gemini audio the same way (`tools/voice/bakeoff/clean.ts`):
+The harness cleans Gemini audio the same way (`tools/voice/bakeoff/clean.ts`, version 2):
 
 - It removes any DC offset, which turns a drop to silence into a click.
-- It silences a short, noise-like burst that comes after speech and before a silence or the end
-  of the clip, with short fades so the cut makes no click of its own.
+- **It ends each clip where the speech ends.** After the last voiced sound, it keeps only a word's
+  own loud tail (a final "s" or "t", up to 200ms), then fades over 25ms and silences the rest. That
+  covers noise however long it runs, however quiet it is, and whether or not silence separates it
+  from the word.
+- It silences a noise-like burst of up to 300ms between turns, after speech and at least 100ms
+  before the next sound.
+- It gates hiss in the pauses: anything quieter than 40 dB under the loudest moment, for 50ms or
+  more, goes to true silence.
 - It fades every clip's first and last few milliseconds, so a playlist of clips never clicks
   between them.
 
 What it keeps:
 
 - a breath just before the next line, since speech follows it closely;
-- a sigh or a laugh, which run longer than a burst;
-- a word's own "s", which is attached to the word with no silence between.
+- a sigh or a laugh in the middle of a line, which runs longer than a burst;
+- a word's own "s", which is loud and attached to the word;
+- **a sound a line ends on**, when the script says it does ("…different boots." `<laugh>`). Without
+  that tag at the end, a trailing laugh or sigh is cut with the noise.
 
 The raw audio is kept beside each cleaned clip (`<key>.raw.wav`). **Gemini raw** in the page's
-header plays the raw files instead, for an A/B listen. Each cell says how much it silenced
-("silenced 120ms of end noise"). Clips rendered before the cleaning existed are cleaned the next
-time the page or a run reads them, with nothing re-sent and nothing paid. A cleaned clip is served
-under a new URL (`?cleaned=1`), so a browser that cached the noisy file can't keep replaying it.
+header plays the raw files instead, for an A/B listen. Each cell says how much it silenced.
 
-The thresholds come from the reports, not from measuring this game's clips. A clip where the
-noise is still there, or where something real was cut, is the way to tune them: its `.raw.wav`
-is the test case.
+**Re-cleaning:**
+- A clip cleaned by an older version is cleaned again from its raw copy the next time a page reads
+  it, with nothing re-sent and nothing paid.
+- Clips rendered before cleaning existed are cleaned the same way.
+- The URL carries the version (`?cleaned=2`), so a browser that cached an older file can't keep
+  replaying it.
+
+The thresholds are from forum reports and synthetic tests, not from measuring this game's clips.
+If a clip still sounds noisy, run:
+
+```
+npm run voice:clean                 # every raw Gemini clip: where speech ends, and what is cut
+npm run voice:clean -- <clip key>   # one clip's last second, 10ms at a time: loudness and noisiness
+```
+
+It cleans each clip as the page did, so a line that ends on a sound keeps it there too (from the
+clip's `.json`). Its output is enough to tune the cleaner from: paste it into a session. The clip key is the file
+name in `art/review/voice-bakeoff/clips/`, or the clip's URL on the page.
 
 Sources:
 - [gemini-3.8-flash-tts trailing static at sentence and turn boundaries](https://discuss.ai.google.dev/t/gemini-3-8-flash-tts-trailing-static-scratch-noise-artifact-at-sentence-turn-boundaries/185861)

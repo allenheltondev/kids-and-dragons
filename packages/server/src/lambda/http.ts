@@ -41,6 +41,7 @@ import { setVisitors } from "../handlers/visitors.ts";
 import { removePlayer } from "../handlers/remove.ts";
 import { handKeeper } from "../handlers/keeper.ts";
 import { closeRoom, lockRoom, setQuiet, type HostPrincipal } from "../handlers/host.ts";
+import { parseTimingControl, setTiming, TIMING_BODY, type TimingControl } from "../handlers/timing.ts";
 import { releaseSavedHero, resumeGame, stopForToday } from "../handlers/save.ts";
 import { listHeroes } from "../handlers/heroes.ts";
 import { getJournal } from "../handlers/journal.ts";
@@ -202,6 +203,11 @@ function matchRoute(req: Req, rt: HttpRuntime): Route | null {
     if (quiet?.[1]) {
       const code = quiet[1].toUpperCase();
       return (deps) => postQuiet(req, deps, code);
+    }
+    const timing = /^\/api\/room\/([A-Za-z]{4})\/timing$/.exec(req.path);
+    if (timing?.[1]) {
+      const code = timing[1].toUpperCase();
+      return (deps) => postTiming(req, deps, code);
     }
     const close = /^\/api\/room\/([A-Za-z]{4})\/close$/.exec(req.path);
     if (close?.[1]) {
@@ -564,6 +570,14 @@ async function postVisitors(req: Req, deps: HandlerDeps, rt: HttpRuntime, code: 
   const missed = !result.ok && result.error.code === "NOT_FOUND" && result.error.message.startsWith("no open room");
   if (!missed) await lookup.hit();
   return result.ok ? json(200, result.value) : fromError(result.error);
+}
+
+/** The host pausing, resuming, noting or switching off the session clock (#511). */
+async function postTiming(req: Req, deps: HandlerDeps, code: string) {
+  const control = parseTimingControl(req.body);
+  return postHostControl(req, deps, code, control ? null : TIMING_BODY, (principal) =>
+    setTiming({ code, principal, control: control as TimingControl }, deps),
+  );
 }
 
 /** The host turning quiet mode on for the room, or off again (#260). */

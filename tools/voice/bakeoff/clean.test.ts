@@ -5,11 +5,12 @@
  * must stay is everything a performance means.
  */
 
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { cleanPcm16, readWav16 } from "./clean.ts";
+import { CLEANER_VERSION, cleanPcm16, endsOnSound, readWav16 } from "./clean.ts";
 import { cellOf } from "./bakeoff.ts";
 import { engineOf, pcmToWav, plan, send, type CastFile, type Fetch, type Job } from "./providers.ts";
 import { contentLines, readSampleFile, resolveSamples } from "./samples.ts";
@@ -62,13 +63,56 @@ describe("cleaning Gemini audio", () => {
     expect(removed).toHaveLength(1);
   });
 
-  it("keeps a breath before the next line, a long sigh, and a word's own s", () => {
+  it("keeps a breath before the next line, a long sigh mid-line, and a word's own s", () => {
     const breath = build([{ kind: "voice", ms: 600 }, { kind: "silence", ms: 300 }, { kind: "noise", ms: 150 }, { kind: "silence", ms: 60 }, { kind: "voice", ms: 600 }]);
     expect(cleanPcm16(breath, RATE).removed).toEqual([]);
-    const sigh = build([{ kind: "voice", ms: 600 }, { kind: "silence", ms: 200 }, { kind: "noise", ms: 500 }, { kind: "silence", ms: 300 }]);
+    const sigh = build([{ kind: "voice", ms: 600 }, { kind: "silence", ms: 200 }, { kind: "noise", ms: 500 }, { kind: "silence", ms: 300 }, { kind: "voice", ms: 600 }]);
     expect(cleanPcm16(sigh, RATE).removed).toEqual([]);
     const ess = build([{ kind: "voice", ms: 600 }, { kind: "noise", ms: 120 }, { kind: "silence", ms: 300 }]);
     expect(cleanPcm16(ess, RATE).removed).toEqual([]);
+  });
+
+  it("keeps a sound the line ends on when the script ends on one, and cuts it when it doesn't", () => {
+    const sighing = build([{ kind: "voice", ms: 600 }, { kind: "silence", ms: 200 }, { kind: "noise", ms: 500 }, { kind: "silence", ms: 300 }]);
+    expect(cleanPcm16(sighing, RATE, { endsOnSound: true }).removed).toEqual([]);
+    expect(cleanPcm16(sighing, RATE).removed).toHaveLength(1);
+    expect(endsOnSound('"…the marsh gives back different boots." <laugh>')).toBe(true);
+    expect(endsOnSound("you should choose it together. [sighs]")).toBe(true);
+    expect(endsOnSound("<sigh> I can only spare one.")).toBe(false);
+    expect(endsOnSound("Wait. <long pause>")).toBe(false);
+  });
+
+  it("ends the clip where the speech ends: long bursts, quiet hiss and noise straight off the word", () => {
+    // "Silent" here is under -80 dB: what is left is the DC removal's steady offset, which makes no sound.
+    const end = (pcm: Buffer) => {
+      const { pcm: out } = cleanPcm16(pcm, RATE);
+      return { out, last: rmsOf(out, 1250, 1600) };
+    };
+    // A burst longer than the old 180ms limit.
+    expect(end(build([{ kind: "voice", ms: 1000 }, { kind: "silence", ms: 50 }, { kind: "noise", ms: 280 }, { kind: "silence", ms: 270 }])).last).toBeLessThan(1e-4);
+    // Hiss too quiet to count as sound before (about -42 dB under the speech), all the way to the end.
+    const hiss = build([{ kind: "voice", ms: 1000 }, { kind: "noise", ms: 600, amp: 0.0048 }]);
+    expect(rmsOf(hiss, 1250, 1600)).toBeGreaterThan(0.002);
+    expect(end(hiss).last).toBeLessThan(1e-4);
+    // Noise straight off the last word with no silence between, quieter than a real "s".
+    const attached = end(build([{ kind: "voice", ms: 1000 }, { kind: "noise", ms: 600, amp: 0.02 }]));
+    expect(attached.last).toBeLessThan(1e-4);
+    expect(rmsOf(attached.out, 200, 900)).toBeGreaterThan(0.3);
+  });
+
+  it("gates quiet hiss in the pauses, and leaves quiet speech alone", () => {
+    const pcm = build([{ kind: "voice", ms: 600 }, { kind: "noise", ms: 300, amp: 0.004 }, { kind: "voice", ms: 600 }]);
+    const { pcm: out } = cleanPcm16(pcm, RATE);
+    expect(rmsOf(out, 650, 850)).toBeLessThan(1e-4);
+    expect(rmsOf(out, 1000, 1400)).toBeCloseTo(rmsOf(pcm, 1000, 1400), 3);
+  });
+
+  it("silences a burst between two turns of a dialogue", () => {
+    const pcm = build([{ kind: "voice", ms: 800 }, { kind: "silence", ms: 40 }, { kind: "noise", ms: 120 }, { kind: "silence", ms: 120 }, { kind: "voice", ms: 800 }]);
+    const { pcm: out, removed } = cleanPcm16(pcm, RATE);
+    expect(removed.some((r) => r.startMs >= 830 && r.endMs <= 970)).toBe(true);
+    expect(rmsOf(out, 850, 950)).toBeLessThan(1e-4);
+    expect(rmsOf(out, 1200, 1800)).toBeCloseTo(rmsOf(pcm, 1200, 1800), 3);
   });
 
   it("never touches the first sound in a clip, and keeps quiet speech", () => {
@@ -132,11 +176,46 @@ describe("in the harness", () => {
     expect(clip.removedMs).toBeGreaterThan(0);
     expect(fs.readFileSync(path.join(outDir, clip.raw!)).equals(pcmToWav(dirty, RATE))).toBe(true);
     // A new URL for the cleaned audio, so a browser that cached the noisy file cannot replay it.
-    expect(clip.file).toBe(`clips/${job!.key}.wav?cleaned=1`);
+    expect(clip.file).toBe(`clips/${job!.key}.wav?cleaned=${String(CLEANER_VERSION)}`);
     // Done once: the next read finds it cleaned and leaves it be.
     const onDisk = path.join(outDir, "clips", `${job!.key}.wav`);
     const before = fs.readFileSync(onDisk);
     cellOf(engine, sample, 1, ws);
     expect(fs.readFileSync(onDisk).equals(before)).toBe(true);
+  });
+
+  it("cleans a clip again, from its raw audio, when the cleaner has changed since", () => {
+    const outDir = fs.mkdtempSync(path.join(os.tmpdir(), "bakeoff-reclean-"));
+    fs.mkdirSync(path.join(outDir, "clips"));
+    const clips = path.join(outDir, "clips");
+    // Cleaned by version 1, which left quiet hiss at the end; the raw copy is beside it.
+    const hissy = build([{ kind: "voice", ms: 900 }, { kind: "noise", ms: 500, amp: 0.0048 }]);
+    fs.writeFileSync(path.join(clips, `${job!.key}.wav`), pcmToWav(hissy, RATE));
+    fs.writeFileSync(path.join(clips, `${job!.key}.raw.wav`), pcmToWav(hissy, RATE));
+    fs.writeFileSync(path.join(clips, `${job!.key}.json`), JSON.stringify({ ext: "wav", chars: 10, renderMs: 5, bytes: 1, at: "then", cleaned: true, removedMs: 0 }));
+    const ws = { outDir, cast, pricing: { checked: "", speech: { charsPerSecond: 14, charsPerTextToken: 4, promptTokensPerRequest: 0 }, models: [] }, today: "2026-10-27" };
+    const clip = cellOf(engine, sample, 1, ws).takes![0]!.clips[0]!;
+    expect(clip.file).toBe(`clips/${job!.key}.wav?cleaned=${String(CLEANER_VERSION)}`);
+    expect(clip.removedMs).toBeGreaterThan(0);
+    const cleaned = readWav16(fs.readFileSync(path.join(clips, `${job!.key}.wav`)))!;
+    expect(rmsOf(cleaned.pcm, 1000, 1400)).toBeLessThan(1e-4);
+    // The raw copy is still the raw audio.
+    expect(fs.readFileSync(path.join(clips, `${job!.key}.raw.wav`)).equals(pcmToWav(hissy, RATE))).toBe(true);
+  });
+});
+
+describe("npm run voice:clean", () => {
+  it("cleans a clip as the page did: keeping the sound a line ends on, when its metadata says so", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "clean-report-"));
+    const sighing = pcmToWav(build([{ kind: "voice", ms: 600 }, { kind: "silence", ms: 200 }, { kind: "noise", ms: 500 }, { kind: "silence", ms: 300 }]), RATE);
+    const report = (name: string, meta?: object): string => {
+      fs.writeFileSync(path.join(dir, `${name}.raw.wav`), sighing);
+      if (meta) fs.writeFileSync(path.join(dir, `${name}.json`), JSON.stringify(meta));
+      const tsx = path.join(import.meta.dirname, "..", "..", "..", "node_modules", ".bin", "tsx");
+      return execFileSync(tsx, [path.join(import.meta.dirname, "clean-report.ts"), path.join(dir, `${name}.raw.wav`)], { encoding: "utf8" }).split("\n")[0]!;
+    };
+    expect(report("laughs", { ext: "wav", cleaned: 2, endsOnSound: true })).toMatch(/the line ends on a sound, which is kept\): .*cuts nothing$/);
+    expect(report("words", { ext: "wav", cleaned: 2 })).toMatch(/^words: .*cuts 600-1600ms$/);
+    expect(report("bare")).toMatch(/no metadata: cleaned as a line ending on a word/);
   });
 });
