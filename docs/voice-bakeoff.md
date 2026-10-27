@@ -197,7 +197,8 @@ npm run voice:clean                 # every raw Gemini clip: where speech ends, 
 npm run voice:clean -- <clip key>   # one clip's last second, 10ms at a time: loudness and noisiness
 ```
 
-Its output is enough to tune the cleaner from: paste it into a session. The clip key is the file
+It cleans each clip as the page did, so a line that ends on a sound keeps it there too (from the
+clip's `.json`). Its output is enough to tune the cleaner from: paste it into a session. The clip key is the file
 name in `art/review/voice-bakeoff/clips/`, or the clip's URL on the page.
 
 Sources:

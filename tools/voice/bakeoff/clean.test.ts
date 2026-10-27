@@ -5,6 +5,7 @@
  * must stay is everything a performance means.
  */
 
+import { execFileSync } from "node:child_process";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -200,5 +201,21 @@ describe("in the harness", () => {
     expect(rmsOf(cleaned.pcm, 1000, 1400)).toBeLessThan(1e-4);
     // The raw copy is still the raw audio.
     expect(fs.readFileSync(path.join(clips, `${job!.key}.raw.wav`)).equals(pcmToWav(hissy, RATE))).toBe(true);
+  });
+});
+
+describe("npm run voice:clean", () => {
+  it("cleans a clip as the page did: keeping the sound a line ends on, when its metadata says so", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "clean-report-"));
+    const sighing = pcmToWav(build([{ kind: "voice", ms: 600 }, { kind: "silence", ms: 200 }, { kind: "noise", ms: 500 }, { kind: "silence", ms: 300 }]), RATE);
+    const report = (name: string, meta?: object): string => {
+      fs.writeFileSync(path.join(dir, `${name}.raw.wav`), sighing);
+      if (meta) fs.writeFileSync(path.join(dir, `${name}.json`), JSON.stringify(meta));
+      const tsx = path.join(import.meta.dirname, "..", "..", "..", "node_modules", ".bin", "tsx");
+      return execFileSync(tsx, [path.join(import.meta.dirname, "clean-report.ts"), path.join(dir, `${name}.raw.wav`)], { encoding: "utf8" }).split("\n")[0]!;
+    };
+    expect(report("laughs", { ext: "wav", cleaned: 2, endsOnSound: true })).toMatch(/the line ends on a sound, which is kept\): .*cuts nothing$/);
+    expect(report("words", { ext: "wav", cleaned: 2 })).toMatch(/^words: .*cuts 600-1600ms$/);
+    expect(report("bare")).toMatch(/no metadata: cleaned as a line ending on a word/);
   });
 });
