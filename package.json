@@ -21,6 +21,8 @@
     "content:continuity": "node tools/content/continuity.mjs",
     "content:balance": "tsx tools/content/balance.ts",
     "content:pacing": "tsx tools/content/pacing.ts",
+    "content:timing": "tsx tools/content/timing.ts",
+    "timing:export": "tsx tools/content/timing-export.ts",
     "pwa:screenshots": "tsx tools/pwa/screenshots.ts",
     "content:cast": "node tools/content/cast-gaps.mjs",
     "content:cast:mentions": "node tools/content/cast-report.mjs",

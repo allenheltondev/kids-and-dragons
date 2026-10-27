@@ -89,6 +89,19 @@ Parameters:
       the SecureString /kad/<stage>/push-vapid-keys on first use (as it does
       the token signing key) and needs PushContact.
 
+  SessionTiming:
+    Type: String
+    Default: "on"
+    AllowedValues: ["off", "on"]
+    Description: >-
+      Family-session timing (#511): the API records each chapter's opening,
+      steps, pauses and ending as marks in their own table (kad-timing-<stage>),
+      so an operator can export how long chapters really took. On by default and
+      operator-only: nothing is shown at the table. Set "off" to record nothing.
+      No names, chat or audio are kept. Marks carry no household or player id, so
+      they are not tied to any household's deletion; they expire after 180 days
+      (docs/session-timing.md).
+
   PushContact:
     Type: String
     Default: ""
@@ -138,6 +151,29 @@ Resources:
   # ---------------------------------------------------------------------------
   # Data — architecture §3
   # ---------------------------------------------------------------------------
+
+  # Session timing (#511): operator telemetry, kept apart from the game's table so it has its own
+  # retention, its own IAM and no way to compete with play. Rows are random run ids, a chapter, a
+  # seq, a server time and a timing note: no household, player or name (store/timing-store.ts).
+  # Marks expire after TIMING_RETENTION_DAYS. Expendable by design, so nothing is retained on delete.
+  TimingTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "kad-timing-${StageName}"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      TimeToLiveSpecification:
+        AttributeName: ttl
+        Enabled: true
 
   Table:
     Type: AWS::DynamoDB::Table
@@ -480,12 +516,23 @@ Resources:
           KAD_PUSH: !Ref PushNotifications
           KAD_PUSH_SUBJECT: !Ref PushContact
           PUSH_KEY_PARAMETER: !Sub "/kad/${StageName}/push-vapid-keys"
+          # Family-session timing (#511): on unless the stack says off.
+          KAD_TIMING: !Ref SessionTiming
+          TIMING_TABLE_NAME: !Ref TimingTable
           # Where each step's push job goes, by an asynchronous invoke: the API
           # never sends a push itself (lambda/push-dispatch.ts).
           PUSH_SENDER_FUNCTION: !Ref PushSenderFunction
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref Table
+        # Session timing (#511): write a mark, and read a stopped run's start to chain a
+        # resume. Nothing else, and never the game's table through this statement.
+        - Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:PutItem
+                - dynamodb:Query
+              Resource: !GetAtt TimingTable.Arn
         - Statement:
             - Effect: Allow
               # The one principal that may create the signing key, on the one
@@ -878,6 +925,10 @@ Outputs:
 
   TableName:
     Value: !Ref Table
+
+  TimingTableName:
+    Description: Session timing (#511). Export with npm run timing:export.
+    Value: !Ref TimingTable
 
   UserPoolId:
     Value: !Ref UserPool
