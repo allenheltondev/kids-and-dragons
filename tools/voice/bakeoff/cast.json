@@ -93,13 +93,13 @@
     }
   },
   "delivery": {
-    "$comment": "The closed delivery vocabulary (docs/voice-narration-plan.md §3), per provider: an ElevenLabs v3 audio tag, a Gemini style instruction. Models without tags (ElevenLabs v2) ignore delivery, which is part of what the bake-off shows.",
-    "whisper": { "elevenlabsTag": "[whispers]", "gemini": "Whisper, but clearly enough to be heard across a room" },
-    "excited": { "elevenlabsTag": "[excited]", "gemini": "Say it excitedly" },
-    "shout": { "elevenlabsTag": "[shouting]", "gemini": "Shout it, comically flustered, not angry" },
-    "gentle": { "elevenlabsTag": "[softly]", "gemini": "Say it gently and slowly" },
-    "grave": { "elevenlabsTag": "[slowly]", "gemini": "Say it slowly and gravely, deep and kind" },
-    "chorus": { "elevenlabsTag": "[together]", "gemini": "Say it like a group speaking together, slightly out of step" },
-    "kindly": { "elevenlabsTag": "[warmly]", "gemini": "Say it warmly and kindly, as if it were nothing at all" }
+    "$comment": "The closed delivery vocabulary (docs/voice-narration-plan.md §3), as a bracketed audio tag (ElevenLabs v3/v4 and Gemini 3.1+ both read them) or, for a Gemini column set to instructions, a sentence in its style prompt. Models without tags (ElevenLabs v2, Flash) ignore delivery, which is part of what the bake-off shows.",
+    "whisper": { "tag": "[whispers]", "gemini": "Whisper, but clearly enough to be heard across a room" },
+    "excited": { "tag": "[excited]", "gemini": "Say it excitedly" },
+    "shout": { "tag": "[shouting]", "gemini": "Shout it, comically flustered, not angry" },
+    "gentle": { "tag": "[softly]", "gemini": "Say it gently and slowly" },
+    "grave": { "tag": "[slowly]", "gemini": "Say it slowly and gravely, deep and kind" },
+    "chorus": { "tag": "[in unison]", "gemini": "Say it like a group speaking together, slightly out of step" },
+    "kindly": { "tag": "[warmly]", "gemini": "Say it warmly and kindly, as if it were nothing at all" }
   }
 }

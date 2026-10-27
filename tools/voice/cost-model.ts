@@ -27,9 +27,10 @@ export interface TokenRate {
   outputPerMillion: number;
 }
 
+/** `apiModel` is the provider's own model id, which is how the voice bake-off finds a model's price. */
 export type PricedModel =
-  | { id: string; provider: string; label: string; billing: "characters"; rates: CharacterRate[]; confirmed: boolean; source: string }
-  | { id: string; provider: string; label: string; billing: "tokens"; rates: TokenRate[]; batchDiscount?: number; confirmed: boolean; source: string };
+  | { id: string; provider: string; apiModel?: string; label: string; billing: "characters"; rates: CharacterRate[]; confirmed: boolean; source: string }
+  | { id: string; provider: string; apiModel?: string; label: string; billing: "tokens"; rates: TokenRate[]; batchDiscount?: number; confirmed: boolean; source: string };
 
 export interface Pricing {
   checked: string;

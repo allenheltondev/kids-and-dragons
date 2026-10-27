@@ -1,70 +1,23 @@
 {
-  "$comment": "The engines the bake-off compares (docs/voice-bakeoff.md). `mode: lines` renders each script line as its own request in its speaker's voice, and the page plays them in order, which is how the game would play them. `mode: dialogue` sends the whole sample in one request to the provider's own multi-speaker endpoint. `pricing` names a model in ../pricing.json for the estimate. `model` ids are the providers' API names: confirm the Gemini 3.8 ones in Google's model list before the first paid run; a wrong id fails its cells, not the run. `fake` makes tones so the page can be tried with no keys.",
-  "engines": [
-    {
-      "id": "elevenlabs-v3",
-      "label": "ElevenLabs v3",
-      "provider": "elevenlabs",
-      "model": "eleven_v3",
-      "mode": "lines",
-      "pricing": "elevenlabs-v3",
-      "tags": true,
-      "settings": { "stability": 0.5, "similarity_boost": 0.75, "style": 0.3, "use_speaker_boost": true },
-      "seed": 1201
-    },
-    {
-      "id": "elevenlabs-v3-dialogue",
-      "label": "ElevenLabs v3 (dialogue)",
-      "provider": "elevenlabs",
-      "model": "eleven_v3",
-      "mode": "dialogue",
-      "pricing": "elevenlabs-v3",
-      "tags": true,
-      "settings": { "stability": 0.5 },
-      "seed": 1201
-    },
-    {
-      "id": "elevenlabs-v2",
-      "label": "ElevenLabs Multilingual v2",
-      "provider": "elevenlabs",
-      "model": "eleven_multilingual_v2",
-      "mode": "lines",
-      "pricing": "elevenlabs-multilingual-v2",
-      "context": true,
-      "settings": { "stability": 0.55, "similarity_boost": 0.8, "style": 0.2, "use_speaker_boost": true },
-      "seed": 1201
-    },
-    {
-      "id": "gemini-3.8-flash",
-      "label": "Gemini 3.8 Flash TTS",
-      "provider": "gemini",
-      "model": "gemini-3.8-flash-tts",
-      "mode": "lines",
-      "pricing": "gemini-3.8-flash-tts"
-    },
-    {
-      "id": "gemini-3.8-flash-dialogue",
-      "label": "Gemini 3.8 Flash TTS (two-speaker)",
-      "provider": "gemini",
-      "model": "gemini-3.8-flash-tts",
-      "mode": "dialogue",
-      "pricing": "gemini-3.8-flash-tts"
-    },
-    {
-      "id": "gemini-3.8-flash-lite",
-      "label": "Gemini 3.8 Flash-Lite TTS",
-      "provider": "gemini",
-      "model": "gemini-3.8-flash-lite-tts",
-      "mode": "lines",
-      "pricing": "gemini-3.8-flash-lite-tts"
-    },
-    {
-      "id": "fake",
-      "label": "Fake (tones, no key)",
-      "provider": "fake",
-      "model": "tone",
-      "mode": "lines",
-      "default": false
-    }
+  "$comment": "What the bake-off can compare (docs/voice-bakeoff.md). `models` is the researched list (checked 2026-10-27, sources in the doc). The page's model picker shows it before a key is entered, then the provider's own live list once one is. `tags`: takes bracketed audio tags ([whispers]); `context`: takes previous_text/next_text; `dialogue`: has a one-request multi-speaker mode. `presets` are the columns a fresh page starts with, and what the command line renders. `fake` makes tones so the page can be tried with no keys.",
+  "models": [
+    { "provider": "elevenlabs", "model": "eleven_v4", "label": "Eleven v4", "about": "Newest. Built for expressive long-form narration; follows audio tags.", "tags": true },
+    { "provider": "elevenlabs", "model": "eleven_v4_turbo", "label": "Eleven v4 Turbo", "about": "v4 for real-time use, at half the price.", "tags": true },
+    { "provider": "elevenlabs", "model": "eleven_v3", "label": "Eleven v3", "about": "Previous generation. The text-to-dialogue default.", "tags": true, "dialogue": true },
+    { "provider": "elevenlabs", "model": "eleven_multilingual_v2", "label": "Multilingual v2", "about": "Steady and proven. No audio tags; takes neighboring lines as context.", "context": true },
+    { "provider": "elevenlabs", "model": "eleven_flash_v2_5", "label": "Flash v2.5", "about": "Lowest latency and cost. No audio tags.", "context": true },
+    { "provider": "gemini", "model": "gemini-3.8-flash-tts", "label": "Gemini 3.8 Flash TTS", "about": "Newest Flash TTS. Audio tags and style prompts; two-speaker mode.", "tags": true, "dialogue": true },
+    { "provider": "gemini", "model": "gemini-3.8-flash-lite-tts", "label": "Gemini 3.8 Flash-Lite TTS", "about": "Cheaper 3.8, same API.", "tags": true, "dialogue": true },
+    { "provider": "gemini", "model": "gemini-3.1-flash-tts-preview", "label": "Gemini 3.1 Flash TTS (preview)", "about": "The first Gemini TTS with audio tags.", "tags": true, "dialogue": true },
+    { "provider": "fake", "model": "tone", "label": "Fake tones", "about": "No key, no voice: a tone as long as the words. For trying the page.", "dialogue": true }
+  ],
+  "presets": [
+    { "provider": "elevenlabs", "model": "eleven_v4", "mode": "lines", "delivery": "tag" },
+    { "provider": "elevenlabs", "model": "eleven_v3", "mode": "dialogue", "delivery": "tag" },
+    { "provider": "elevenlabs", "model": "eleven_multilingual_v2", "mode": "lines", "delivery": "none", "context": true },
+    { "provider": "gemini", "model": "gemini-3.8-flash-tts", "mode": "lines", "delivery": "tag" },
+    { "provider": "gemini", "model": "gemini-3.8-flash-tts", "mode": "lines", "delivery": "instruction" },
+    { "provider": "gemini", "model": "gemini-3.8-flash-tts", "mode": "dialogue", "delivery": "tag" },
+    { "provider": "gemini", "model": "gemini-3.8-flash-lite-tts", "mode": "lines", "delivery": "tag" }
   ]
 }

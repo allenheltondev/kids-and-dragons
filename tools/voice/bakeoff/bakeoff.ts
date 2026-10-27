@@ -1,13 +1,13 @@
 /**
- * The bake-off run, as a function the CLI and the tests share
- * (docs/voice-bakeoff.md): plan every request, price the ones not already
- * cached, refuse to start over budget, render what is missing, then write
- * results.json and the listening page.
+ * The bake-off's moving parts, shared by the command line and the live page's
+ * server (docs/voice-bakeoff.md): price a column, render one cell, and build
+ * what the page shows from what is already on disk.
  *
  * Clips are cached by request (providers.ts): `clips/<key>.<ext>` plus a small
  * `<key>.json` with how it went. A request that has been rendered is never
- * sent again, so re-running after adding one sample, one engine or one take
- * costs exactly that sample, engine or take.
+ * sent again, so adding one sample, one column or one take costs exactly that
+ * sample, column or take. The last failure of each request is kept in
+ * `errors.json`, so a cell can say why it is empty; a success clears it.
  */
 
 import fs from "node:fs";
@@ -17,41 +17,23 @@ import { renderPage, type Cell, type ClipRef, type Results } from "./page.ts";
 import { plan, send, type CastFile, type Engine, type Fetch, type Job, type Keys, type Unsupported } from "./providers.ts";
 import type { Sample } from "./samples.ts";
 
-export interface BakeoffOptions {
+export interface Workspace {
   outDir: string;
-  /** Every engine in engines.json; the page shows any of them that has clips. */
-  engines: Engine[];
-  /** The engines to render now. */
-  selected: string[];
-  samples: Sample[];
-  tiers: Record<string, string>;
   cast: CastFile;
   pricing: Pricing;
-  takes: number;
-  maxDollars: number;
-  dryRun: boolean;
-  concurrency: number;
-  keys: Keys;
-  fetch: Fetch;
+  /** YYYY-MM-DD, for dated prices. */
   today: string;
-  log: (line: string) => void;
 }
 
-export interface EstimateRow {
+export interface Estimate {
   engine: string;
+  /** Requests still to send. */
   requests: number;
   chars: number;
-  dollars: number | null;
-}
-
-export interface BakeoffOutcome {
-  estimate: EstimateRow[];
-  dollars: number;
-  rendered: number;
+  /** Requests already on disk: free. */
   cached: number;
-  failed: number;
-  refused?: string;
-  page?: string;
+  /** Null when pricing.json has no price for this model. */
+  dollars: number | null;
 }
 
 interface ClipMeta {
@@ -62,16 +44,82 @@ interface ClipMeta {
   at: string;
 }
 
+const clipsOf = (ws: Workspace): string => path.join(ws.outDir, "clips");
+
 function isUnsupported(value: Job[] | Unsupported): value is Unsupported {
   return !Array.isArray(value);
 }
 
-function clipMeta(dir: string, key: string): ClipMeta | null {
+function clipMeta(ws: Workspace, key: string): ClipMeta | null {
   try {
-    return JSON.parse(fs.readFileSync(path.join(dir, `${key}.json`), "utf8")) as ClipMeta;
+    return JSON.parse(fs.readFileSync(path.join(clipsOf(ws), `${key}.json`), "utf8")) as ClipMeta;
   } catch {
     return null;
   }
+}
+
+function readErrors(ws: Workspace): Record<string, string> {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(ws.outDir, "errors.json"), "utf8")) as Record<string, string>;
+  } catch {
+    return {};
+  }
+}
+
+function writeErrors(ws: Workspace, errors: Record<string, string>): void {
+  for (const key of Object.keys(errors)) if (clipMeta(ws, key) !== null) delete errors[key];
+  fs.writeFileSync(path.join(ws.outDir, "errors.json"), JSON.stringify(errors, null, 2));
+}
+
+/** What a column would cost on this model, from pricing.json; 0 for the fake engine. */
+export function priceOf(engine: Engine, chars: number, requests: number, ws: Workspace): number | null {
+  if (engine.provider === "fake") return 0;
+  const model = ws.pricing.models.find((m) => m.provider === engine.provider && m.apiModel === engine.model);
+  if (model === undefined) return null;
+  return quote(model, { chars, requests }, ws.pricing.speech, ws.today)?.dollars ?? null;
+}
+
+/** The distinct requests a column makes over these samples and takes. */
+function jobsFor(engine: Engine, samples: readonly Sample[], takes: number, cast: CastFile): Job[] {
+  const seen = new Map<string, Job>();
+  for (const sample of samples) {
+    for (let take = 1; take <= takes; take += 1) {
+      const planned = plan(engine, cast, sample, take);
+      if (isUnsupported(planned)) continue;
+      for (const job of planned) if (!seen.has(job.key)) seen.set(job.key, job);
+    }
+  }
+  return [...seen.values()];
+}
+
+export function estimate(engine: Engine, samples: readonly Sample[], takes: number, ws: Workspace): Estimate {
+  const jobs = jobsFor(engine, samples, takes, ws.cast);
+  const todo = jobs.filter((job) => clipMeta(ws, job.key) === null);
+  const chars = todo.reduce((sum, job) => sum + job.chars, 0);
+  return { engine: engine.id, requests: todo.length, chars, cached: jobs.length - todo.length, dollars: priceOf(engine, chars, todo.length, ws) };
+}
+
+/** A sample's cell for one column, from what is on disk. Renders nothing. */
+export function cellOf(engine: Engine, sample: Sample, takes: number, ws: Workspace, errors = readErrors(ws)): Cell {
+  const first = plan(engine, ws.cast, sample, 1);
+  if (isUnsupported(first)) return { unsupported: first.reason };
+  const all = Array.from({ length: takes }, (_, i) => (i === 0 ? first : (plan(engine, ws.cast, sample, i + 1) as Job[])));
+  return {
+    takes: all.map((jobs) => {
+      const clips: ClipRef[] = [];
+      let error: string | undefined;
+      for (const job of jobs) {
+        const meta = clipMeta(ws, job.key);
+        if (meta === null) {
+          error ??= errors[job.key];
+          continue;
+        }
+        clips.push({ file: `clips/${job.key}.${meta.ext}`, lines: job.lines, chars: meta.chars, renderMs: meta.renderMs });
+      }
+      if (clips.length === jobs.length) return { clips };
+      return { clips, ...(error !== undefined ? { error } : {}), pending: true };
+    }),
+  };
 }
 
 async function pool<T>(items: readonly T[], size: number, work: (item: T) => Promise<void>): Promise<void> {
@@ -85,123 +133,117 @@ async function pool<T>(items: readonly T[], size: number, work: (item: T) => Pro
   await Promise.all(runners);
 }
 
-export async function runBakeoff(options: BakeoffOptions): Promise<BakeoffOutcome> {
-  const clips = path.join(options.outDir, "clips");
-  fs.mkdirSync(clips, { recursive: true });
+export interface RenderOutcome {
+  rendered: number;
+  failed: number;
+  errors: string[];
+}
 
-  // Every job for every engine, so the page can show what earlier runs rendered too.
-  const plans = new Map<string, Map<string, (Job[] | Unsupported)[]>>();
-  for (const engine of options.engines) {
-    const bySample = new Map<string, (Job[] | Unsupported)[]>();
-    for (const sample of options.samples) {
-      bySample.set(sample.id, Array.from({ length: options.takes }, (_, i) => plan(engine, options.cast, sample, i + 1)));
+/** Sends whichever of these jobs are not on disk yet. Failures are recorded, never thrown. */
+export async function renderJobs(jobs: readonly Job[], ws: Workspace, keys: Keys, fetch: Fetch, concurrency: number, onDone?: (done: number, of: number) => void): Promise<RenderOutcome> {
+  fs.mkdirSync(clipsOf(ws), { recursive: true });
+  const todo = jobs.filter((job) => clipMeta(ws, job.key) === null);
+  const errors = readErrors(ws);
+  const outcome: RenderOutcome = { rendered: 0, failed: 0, errors: [] };
+  let done = 0;
+  await pool(todo, concurrency, async (job) => {
+    const started = Date.now();
+    try {
+      const audio = await send(job, keys, fetch);
+      fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.${audio.ext}`), audio.bytes);
+      const meta: ClipMeta = { ext: audio.ext, chars: job.chars, renderMs: Date.now() - started, bytes: audio.bytes.length, at: new Date().toISOString() };
+      fs.writeFileSync(path.join(clipsOf(ws), `${job.key}.json`), JSON.stringify(meta));
+      outcome.rendered += 1;
+    } catch (error) {
+      const message = (error as Error).message;
+      errors[job.key] = message;
+      outcome.failed += 1;
+      if (!outcome.errors.includes(message)) outcome.errors.push(message);
     }
-    plans.set(engine.id, bySample);
-  }
-
-  const todo: Job[] = [];
-  let cached = 0;
-  for (const id of options.selected) {
-    const seen = new Set<string>();
-    for (const takes of plans.get(id)?.values() ?? []) {
-      for (const take of takes) {
-        if (isUnsupported(take)) continue;
-        for (const job of take) {
-          if (seen.has(job.key)) continue;
-          seen.add(job.key);
-          if (clipMeta(clips, job.key) !== null) cached += 1;
-          else todo.push(job);
-        }
-      }
-    }
-  }
-
-  const estimate: EstimateRow[] = options.selected.map((id) => {
-    const engine = options.engines.find((e) => e.id === id)!;
-    const jobs = todo.filter((job) => job.engine === id);
-    const chars = jobs.reduce((sum, job) => sum + job.chars, 0);
-    const model = options.pricing.models.find((m) => m.id === engine.pricing);
-    const priced = engine.provider === "fake" ? 0 : model ? (quote(model, { chars, requests: jobs.length }, options.pricing.speech, options.today)?.dollars ?? null) : null;
-    return { engine: id, requests: jobs.length, chars, dollars: priced };
+    done += 1;
+    onDone?.(done, todo.length);
   });
-  const dollars = estimate.reduce((sum, row) => sum + (row.dollars ?? 0), 0);
-  for (const row of estimate) {
-    const price = row.dollars === null ? "no price in pricing.json" : `about $${row.dollars.toFixed(2)}`;
-    options.log(`  ${row.engine.padEnd(28)} ${String(row.requests).padStart(4)} requests ${String(row.chars).padStart(7)} chars  ${price}`);
-  }
-  options.log(`  ${"total".padEnd(28)} ${String(todo.length).padStart(4)} requests, about $${dollars.toFixed(2)} (${String(cached)} already cached, free)`);
+  writeErrors(ws, errors);
+  return outcome;
+}
 
-  const outcome: BakeoffOutcome = { estimate, dollars, rendered: 0, cached, failed: 0 };
+/** Renders one sample's cell for one column (every take), and returns it. */
+export async function renderCell(engine: Engine, sample: Sample, takes: number, ws: Workspace, keys: Keys, fetch: Fetch, concurrency = 3): Promise<Cell> {
+  const jobs = jobsFor(engine, [sample], takes, ws.cast);
+  await renderJobs(jobs, ws, keys, fetch, concurrency);
+  return cellOf(engine, sample, takes, ws);
+}
+
+export function resultsOf(engines: readonly Engine[], samples: readonly Sample[], tiers: Record<string, string>, takes: number, ws: Workspace): Results {
+  const errors = readErrors(ws);
+  const cells: Results["cells"] = {};
+  for (const engine of engines) {
+    cells[engine.id] = Object.fromEntries(samples.map((sample) => [sample.id, cellOf(engine, sample, takes, ws, errors)]));
+  }
+  return {
+    generated: new Date().toISOString(),
+    tiers,
+    samples: [...samples],
+    engines: engines.map((e) => ({ id: e.id, label: e.label, provider: e.provider, model: e.model, mode: e.mode, delivery: e.delivery, context: e.context === true })),
+    cells,
+  };
+}
+
+export interface BatchOptions {
+  ws: Workspace;
+  engines: Engine[];
+  samples: Sample[];
+  tiers: Record<string, string>;
+  takes: number;
+  maxDollars: number;
+  dryRun: boolean;
+  concurrency: number;
+  keys: Keys;
+  fetch: Fetch;
+  log: (line: string) => void;
+}
+
+export interface BatchOutcome {
+  estimate: Estimate[];
+  dollars: number;
+  rendered: number;
+  cached: number;
+  failed: number;
+  refused?: string;
+  page?: string;
+}
+
+/** The command line's run: price every column, refuse over the cap, render, write the static page. */
+export async function runBakeoff(options: BatchOptions): Promise<BatchOutcome> {
+  const { ws } = options;
+  fs.mkdirSync(clipsOf(ws), { recursive: true });
+  const estimates = options.engines.map((engine) => estimate(engine, options.samples, options.takes, ws));
+  const dollars = estimates.reduce((sum, row) => sum + (row.dollars ?? 0), 0);
+  const cached = estimates.reduce((sum, row) => sum + row.cached, 0);
+  for (const row of estimates) {
+    const price = row.dollars === null ? "no price in pricing.json" : `about $${row.dollars.toFixed(2)}`;
+    options.log(`  ${row.engine.padEnd(52)} ${String(row.requests).padStart(4)} requests ${String(row.chars).padStart(7)} chars  ${price}`);
+  }
+  options.log(`  ${"total".padEnd(52)} ${String(estimates.reduce((s, r) => s + r.requests, 0)).padStart(4)} requests, about $${dollars.toFixed(2)} (${String(cached)} already cached, free)`);
+
+  const outcome: BatchOutcome = { estimate: estimates, dollars, rendered: 0, cached, failed: 0 };
   if (dollars > options.maxDollars) {
     outcome.refused = `That is over the $${options.maxDollars.toFixed(2)} cap. Narrow it with --engines, --samples or --tier, or raise --max-dollars.`;
     return outcome;
   }
   if (options.dryRun) return outcome;
 
-  const errors = new Map<string, string>();
-  let done = 0;
-  await pool(todo, options.concurrency, async (job) => {
-    const started = Date.now();
-    try {
-      const audio = await send(job, options.keys, options.fetch);
-      fs.writeFileSync(path.join(clips, `${job.key}.${audio.ext}`), audio.bytes);
-      const meta: ClipMeta = { ext: audio.ext, chars: job.chars, renderMs: Date.now() - started, bytes: audio.bytes.length, at: new Date().toISOString() };
-      fs.writeFileSync(path.join(clips, `${job.key}.json`), JSON.stringify(meta));
-      outcome.rendered += 1;
-    } catch (error) {
-      errors.set(job.key, (error as Error).message);
-      outcome.failed += 1;
-    }
-    done += 1;
-    if (done === todo.length || done % Math.max(10, Math.ceil(todo.length / 4)) === 0) options.log(`  rendered ${String(done)}/${String(todo.length)}`);
+  const jobs = options.engines.flatMap((engine) => jobsFor(engine, options.samples, options.takes, ws.cast));
+  const step = Math.max(10, Math.ceil(jobs.length / 4));
+  const result = await renderJobs(jobs, ws, options.keys, options.fetch, options.concurrency, (done, of) => {
+    if (done === of || done % step === 0) options.log(`  rendered ${String(done)}/${String(of)}`);
   });
+  outcome.rendered = result.rendered;
+  outcome.failed = result.failed;
 
-  // Last run's failures, kept so the page can say why a cell is empty; a success clears them.
-  const errorFile = path.join(options.outDir, "errors.json");
-  const lastErrors = fs.existsSync(errorFile) ? (JSON.parse(fs.readFileSync(errorFile, "utf8")) as Record<string, string>) : {};
-  for (const [key, message] of errors) lastErrors[key] = message;
-  for (const key of Object.keys(lastErrors)) if (clipMeta(clips, key) !== null) delete lastErrors[key];
-  fs.writeFileSync(errorFile, JSON.stringify(lastErrors, null, 2));
-
-  const cells: Results["cells"] = {};
-  const shown: Results["engines"] = [];
-  for (const engine of options.engines) {
-    const bySample: Record<string, Cell> = {};
-    let any = false;
-    for (const sample of options.samples) {
-      const takes = plans.get(engine.id)?.get(sample.id) ?? [];
-      const first = takes[0];
-      if (first !== undefined && isUnsupported(first)) {
-        bySample[sample.id] = { unsupported: first.reason };
-        continue;
-      }
-      const rendered = takes.map((take) => {
-        const jobs = take as Job[];
-        const refs: ClipRef[] = [];
-        let error: string | undefined;
-        for (const job of jobs) {
-          const meta = clipMeta(clips, job.key);
-          if (meta === null) {
-            error ??= lastErrors[job.key] ?? undefined;
-            continue;
-          }
-          refs.push({ file: `clips/${job.key}.${meta.ext}`, lines: job.lines, chars: meta.chars, renderMs: meta.renderMs });
-        }
-        const complete = refs.length === jobs.length;
-        return { complete, clips: refs, ...(complete ? {} : { error: error ?? "Not rendered yet." }) };
-      });
-      if (rendered.some((take) => take.clips.length > 0 || take.error !== "Not rendered yet.")) any = true;
-      bySample[sample.id] = { takes: rendered.map(({ complete: _complete, ...take }) => take) };
-    }
-    if (any || options.selected.includes(engine.id)) {
-      cells[engine.id] = bySample;
-      shown.push({ id: engine.id, label: engine.label, provider: engine.provider, model: engine.model, mode: engine.mode });
-    }
-  }
-
-  const results: Results = { generated: new Date().toISOString(), tiers: options.tiers, samples: options.samples, engines: shown, cells };
-  fs.writeFileSync(path.join(options.outDir, "results.json"), JSON.stringify(results, null, 2));
-  const page = path.join(options.outDir, "index.html");
+  const results = resultsOf(options.engines, options.samples, options.tiers, options.takes, ws);
+  fs.writeFileSync(path.join(ws.outDir, "results.json"), JSON.stringify(results, null, 2));
+  const page = path.join(ws.outDir, "index.html");
   fs.writeFileSync(page, renderPage(results));
   outcome.page = page;
   return outcome;

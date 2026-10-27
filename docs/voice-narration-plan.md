@@ -340,7 +340,7 @@ with caching is possible later, but it's a privacy decision first and an enginee
 Both are plausible. The plan doesn't depend on which, because of the adapter and the
 provider-neutral voice bank. Decide with the **bake-off** (`npm run voice:bakeoff`,
 [voice-bakeoff.md](./voice-bakeoff.md)): 16 real lines from five chapters, from a single narrator
-up to a five-voice flock, rendered by every engine and rated blind side by side, scored on:
+up to a five-voice flock, rendered by every engine and rated blind side by side. `voice:bakeoff -- --serve` opens it as a live page: paste the keys, pick models, press Render. Scored on:
 
 1. **Consistency.** Does Pib sound like Pib across 20 lines rendered on different days? This is
    the requirement that matters most. Pinned voice ids, settings and seeds favor ElevenLabs.
@@ -364,6 +364,8 @@ The whole game, choice labels excluded, ×1.25 for retakes, priced 2026-10-27:
 
 | Model | Whole game | Gemfall | Riftlight | Fits the $75 first run? |
 |---|---|---|---|---|
+| ElevenLabs v4 | $107.94 | $59.56 | $46.71 | no: one campaign at a time |
+| ElevenLabs v4 Turbo | $53.97 | $29.78 | $23.36 | yes |
 | ElevenLabs v3 / Multilingual v2 | $134.93 | $74.45 | $58.39 | no: one campaign at a time |
 | ElevenLabs Flash v2.5 | $67.46 | $37.22 | $29.20 | yes |
 | Gemini 3.8 Flash TTS | $22.78 | $12.56 | $9.86 | yes, 3× over |
@@ -377,14 +379,15 @@ change the numbers:
 - **Gemini 3.8 doubles on 2027-01-01** ($9 → $18 per million audio tokens for Flash). A first
   render before then is half the price: `voice:cost -- --on 2027-01-15` shows the difference.
   `--batch` prices Gemini's batch discount.
-- **ElevenLabs' rate depends on the plan.** $0.10 per thousand characters is the pay-as-you-go API
-  rate; plan overage has been quoted anywhere from $0.10 to $0.30.
+- **ElevenLabs' rate depends on the model and the plan.** Eleven v4 (its newest, built for
+  long-form narration) is quoted at $0.08 per thousand characters and v4 Turbo at $0.04, below
+  v3's $0.10. Plan overage has been quoted anywhere from $0.10 to $0.30.
 
 **Budget: $75 cap on the first run.** `voice:generate` will take `--max-dollars 75` and stop before
 the request that would cross it, priced with the same model. On Gemini 3.8 Flash the cap covers
-the whole game with room for a second pass. On ElevenLabs v3 it covers one campaign at a time
-(Gemfall alone is $74), so the first run would be Hollow Crown, First Steps and help ($2.09), plus
-either Riftlight or most of Gemfall.
+the whole game with room for a second pass, and on ElevenLabs v4 Turbo the whole game once. On
+ElevenLabs v4 it covers Gemfall ($59.56) or Riftlight ($46.71) with the small campaigns, and on v3
+one campaign at a time (Gemfall alone is $74).
 
 ---
 
