@@ -92,6 +92,14 @@ narrator, the party, then whoever appears in the most chapters. The header keeps
 
 Each profile has:
 
+- **The player, under their picture:**
+  - their voice;
+  - the line it's on, with **‹ ›** to change lines;
+  - one big **Play** button (**Render and play** the first time a line is heard in this voice);
+  - a progress bar;
+  - **Play all**, to hear every line in turn.
+
+  The lines further down share the same player.
 - **Their picture:** the figure the scenes draw them with, from `assets/`. The empty margin is
   trimmed, so a teapot-sized sprite fills the frame. Someone drawn as any faun or centaur says so,
   and someone with no painting gets their initial.
@@ -116,8 +124,8 @@ Each profile has:
   - their accent;
   - **what the model is told** besides the words: the exact Gemini 3.8 style, or the Gemini 3.1
     prompt, for the model picked in the header.
-- **Hear them:** each audition line has one **Play** button, which renders the line first if it
-  has never been heard in this voice. **Say it** has them say anything you type (up to 400
+- **Hear them:** every audition line in full, each with its own **Play**, and where it comes
+  from. **Say it** has them say anything you type (up to 400
   characters, Cmd/Ctrl+Enter). Everything is cached like any other line, so it costs once.
 - **The decision bar**, always on screen:
   - **Accept and next** approves the voice (with the note, if any) and moves straight on to the
@@ -127,7 +135,7 @@ Each profile has:
   - **Skip** moves on without deciding.
 
 Keys, when you're not typing: **A** accept and next, **J** or **→** skip, **K** or **←** back,
-**P** or **space** play the first line. **Jump to…** finds anyone by name. **only those still
+**P** or **space** play or stop the line, **[** and **]** change lines. **Jump to…** finds anyone by name. **only those still
 waiting** makes Prev and Skip pass over approved characters. **play the first line on arrival**
 plays each character as they open. Each line is rendered once, at a fraction of a cent.
 
