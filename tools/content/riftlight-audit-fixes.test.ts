@@ -5,10 +5,15 @@ import { chapters, context, finishInteraction, send, start } from "./riftlight-t
 it("the convergence interaction holds the screen cord and listens to the chime", () => {
   const c = chapters.get("riftlight-convergence")!;
   expect(c.scenes.count_check).toMatchObject({ type: "interaction", interaction: {
-    kind: "cooperate", supportLabel: "Hold the screen cord", actionLabel: "Compare the chime note",
+    kind: "cooperate", supportLabel: "Hold the screen cord", actionLabel: "Record the held-cord note",
   } });
   const opened = enterScene(start(c, "manticore", "duskrunner"), "count_check", context(c)).state;
-  expect(finishInteraction(opened, c).sceneId).toBe("count_clear");
+  const held = finishInteraction(opened, c);
+  expect(held.sceneId).toBe("cord_release");
+  expect(c.scenes.cord_release).toMatchObject({ type: "interaction", interaction: { actionLabel: "Release the screen cord" } });
+  const compared = finishInteraction(held, c);
+  expect(compared.sceneId).toBe("lesson");
+  expect(compared.flags.converge_cord_compared).toBe(true);
 });
 
 it("a promised whale report can actually be delivered without publishing the stone sketch", () => {

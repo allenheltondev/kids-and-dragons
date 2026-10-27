@@ -5,7 +5,7 @@
   "title": "The Glacier Remembers",
   "biome": "glacier_of_origins",
   "music": "riftlight-finale",
-  "estimatedMinutes": 40,
+  "estimatedMinutes": 30,
   "xpAward": 140,
   "entry": "arrival",
   "goal": {
@@ -54,9 +54,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "retreat"
+          "label": "Continue",
+          "goto": "retreat",
+          "icon": "hand"
         }
       ],
       "cast": [
@@ -87,6 +87,7 @@
     },
     "retreat": {
       "type": "choice_point",
+      "narration": "The walking passage gives you a broad way back. Choose a handline to gather people by touch if you fall back, or bright cloth marks to follow by sight. Loose edges stay outside both routes. Neither line goes around a traveler.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -97,26 +98,39 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "narration": "The way back is a broad ice shelf beside the walking passage. Loose snow hides its edge. Before anyone approaches the tear, how will you mark the retreat?",
+      "art": "scenes/riftlight/glacier-deep-ice",
       "choices": [
         {
-          "id": "plan_1",
-          "label": "Lay your line along the solid inside wall",
+          "id": "line",
+          "label": "Pass a handline along the inside wall",
+          "goto": "retreat_line",
           "icon": "hand",
-          "goto": "retreat_1"
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "final_line_route",
+              "value": true
+            }
+          ]
         },
         {
-          "id": "plan_2",
-          "label": "Set broad cloth marks along the sheltered side",
+          "id": "marks",
+          "label": "Observe and place the cloth route marks",
+          "goto": "retreat_marks",
           "icon": "hand",
-          "goto": "retreat_2"
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "final_line_route",
+              "value": false
+            }
+          ]
         }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      ]
     },
-    "retreat_1": {
-      "type": "story",
+    "retreat_line": {
+      "type": "interaction",
+      "narration": "Pass the guide line beside the solid inside wall. Orin fixes the sheltered end under a folded blanket. His boot has been excused from paperweight duty.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -127,71 +141,50 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "narration": "You run the line beside the wall with no loop around anyone. Orin weights its sheltered end with the folded sled blanket, finally finding something lighter than his boot.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "retreat_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "retreat_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You set the marks where they can be seen from the tear. Seren checks each from the height of the smallest traveler before agreeing the route is clear.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "retreat_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "retreat_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "stat": "clever",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Check a continuous solid route from the great opening back to the passage.",
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the guide line along the inside wall.",
+        "actionLabel": "Pass the handline",
+        "objectLabel": "retreat handline"
+      },
       "onSuccess": {
-        "goto": "retreat_clear",
-        "narration": "The inside wall gives a clear route all the way back."
+        "goto": "voices",
+        "narration": "The handline marks a continuous checked route.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_route_done",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "retreat_changed",
-        "narration": "A drift covers a narrow crack beside the first mark."
+        "goto": "voices",
+        "narration": "The handline marks a continuous checked route.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_route_done",
+            "value": true
+          }
+        ]
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "onAssisted": {
+        "goto": "voices",
+        "narration": "The handline marks a continuous checked route.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_route_done",
+            "value": true
+          }
+        ]
+      }
     },
-    "retreat_clear": {
-      "type": "story",
+    "retreat_marks": {
+      "type": "interaction",
+      "narration": "Watch Seren point out wall, rib, passage, wall. Echo the route marks before placing the cloths. A missed pattern gets a watcher-led route, not a guessed edge.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -202,26 +195,78 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "narration": "The safe route is marked on sound ice. The loose edge remains outside it.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "final_route_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "voices"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the safe-route marks, then echo them.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "passage",
+            "label": "Walking passage",
+            "icon": "eye"
+          },
+          {
+            "id": "wall",
+            "label": "Inside wall",
+            "icon": "eye"
+          },
+          {
+            "id": "rib",
+            "label": "Solid ice rib",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "wall",
+          "rib",
+          "passage",
+          "wall"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "voices",
+        "narration": "Your checked cloth sequence marks the route back.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_route_done",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "final_marks_read",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "retreat_help",
+        "narration": "Seren will lead the marker placement from checked ground.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_marks_read",
+            "value": false
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "retreat_help",
+        "narration": "Seren will lead the marker placement from checked ground.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_marks_read",
+            "value": false
+          }
+        ]
+      }
     },
-    "retreat_changed": {
-      "type": "story",
+    "retreat_help": {
+      "type": "interaction",
+      "narration": "Pass the cloths to Seren along the inside wall. She checks each position from traveler height; the record names her route help.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -232,71 +277,99 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "narration": "You move the marks inward and leave a wider margin beside the crack. Seren checks the whole route before anyone advances.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "final_route_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "voices"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the cloth markers to Seren.",
+        "actionLabel": "Pass the route cloth",
+        "objectLabel": "route cloth"
+      },
+      "onSuccess": {
+        "goto": "voices",
+        "narration": "The watcher-led cloth route is checked.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_route_done",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "voices",
+        "narration": "The watcher-led cloth route is checked.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_route_done",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "voices",
+        "narration": "The watcher-led cloth route is checked.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_route_done",
+            "value": true
+          }
+        ]
+      }
     },
     "voices": {
-      "type": "choice_point",
-      "rift": "steady",
-      "narration": "The tall figure looks from his old map to a river visible through the tear. \"Why is it on that side of the mountain?\" His finger follows a line on the page. Beyond it, whole stretches of ground slide past. He sounds puzzled. The people living on that ground would have other words for it. What will you tell him from behind the boundary?",
-      "choices": [
+      "type": "interaction",
+      "narration": "The tall figure looks from an old river on his map to a river through the tear. \"Why is it on that side of the mountain?\" From behind the boundary, choose a way to make today's people visible to him.",
+      "cast": [
         {
-          "id": "plan_1",
-          "label": "Tell him people have homes beside that river now",
-          "icon": "hand",
-          "goto": "voices_1"
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
         },
         {
-          "id": "plan_2",
-          "label": "Ask him to look at the present map beside his",
-          "icon": "hand",
-          "goto": "voices_2"
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "voices_1": {
-      "type": "story",
-      "rift": "steady",
-      "narration": "You describe the living places your party knows. The figure looks from your account to the map, as if one of them must have been copied upside down.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "reveal"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "voices_2": {
-      "type": "story",
-      "rift": "steady",
-      "narration": "Orin lays the present map flat on the sound ice. The figure leans toward it without stepping nearer your party. His long mustache brushes one corner.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "reveal"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "play",
+        "cue": "Answer the puzzled map-holder from safe ground.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "homes",
+            "label": "Name homes beside the present river",
+            "icon": "hand",
+            "reaction": "He looks beyond the river line for the first time."
+          },
+          {
+            "id": "map",
+            "label": "Ask Orin to show the present map",
+            "icon": "hand",
+            "reaction": "He leans toward the page without stepping nearer your party."
+          },
+          {
+            "id": "people",
+            "label": "Point out people steadying one another",
+            "icon": "hand",
+            "reaction": "He follows your hand toward the living shore."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "reveal",
+        "narration": "The figure steps where you can see him clearly."
+      },
+      "onFailure": {
+        "goto": "reveal",
+        "narration": "The figure steps where you can see him clearly."
+      },
+      "onAssisted": {
+        "goto": "reveal",
+        "narration": "The figure steps where you can see him clearly."
+      }
     },
     "reveal": {
       "type": "story",
@@ -305,9 +378,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "present"
+          "label": "Continue",
+          "goto": "map_shelter",
+          "icon": "hand"
         }
       ],
       "priority": 1,
@@ -328,101 +401,9 @@
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
     },
-    "present": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Corvane lays a hand beside the tear. A fresh branch opens somewhere he did not point. \"That is not the color I asked for.\" Seren raises the wait signal. You have seen this problem before: calling an opening does not mean choosing its rules. What will you show Corvane about the people and places on today's map?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Point out the people trying to keep their footing",
-          "icon": "hand",
-          "goto": "present_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Put today's homes above the old river lines",
-          "icon": "hand",
-          "goto": "present_2"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "present_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You point through a clear part of the tear. A distant roof tilts while people steady one another beside it. Corvane follows your hand and stops looking at the river alone.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "map_shelter"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "present_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You slide the present map over the old outlines, without touching his map. Corvane sees a house where his finger expected an empty bank.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "map_shelter"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
     "map_shelter": {
       "type": "choice_point",
+      "narration": "Corvane's old map snaps upward in a gust. Keep it in a dry case, or spread it beside today's map where he can compare both at once. The open page needs a careful corner catch; a miss can blur fine old marks. The case protects those marks, but must be unpacked for a later side-by-side conversation.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -438,26 +419,39 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "narration": "Corvane's map snaps upward in a gust. He catches one corner; Orin reaches for the other from sound ice. The old map matters to Corvane, even while you work to stop its pull on today's homes. Where will you put it so everyone can keep looking without standing beside the seam?",
+      "art": "scenes/riftlight/glacier-deep-ice",
       "choices": [
         {
-          "id": "plan_1",
-          "label": "Lay the loose corner under a folded dry blanket",
+          "id": "case",
+          "label": "Pass the old map into the dry case",
+          "goto": "map_case",
           "icon": "hand",
-          "goto": "map_shelter_1"
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "final_map_covered",
+              "value": true
+            }
+          ]
         },
         {
-          "id": "plan_2",
-          "label": "Weight the map on the dry shelf beside the present map",
+          "id": "open",
+          "label": "Catch the old map corner beside the present map",
+          "goto": "map_shelter_check",
           "icon": "hand",
-          "goto": "map_shelter_2"
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "final_map_covered",
+              "value": false
+            }
+          ]
         }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      ]
     },
-    "map_shelter_1": {
-      "type": "story",
+    "map_case": {
+      "type": "interaction",
+      "narration": "Corvane releases the loose corner so you can pass the old map into the case from sound ice. His faded ribbon follows it. The present map remains open for your anchoring work.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -473,49 +467,29 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "narration": "You lower the blanket from the sound side. Corvane watches the old river lines disappear under wool, then lifts his hand clear before you move it.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "map_shelter_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "map_shelter_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You use smooth blocks already on the shelf. The two maps lie side by side without either being rubbed away. Corvane untangles his ribbon from one corner.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "map_shelter_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the old map into its dry case.",
+        "actionLabel": "Pass the map case",
+        "objectLabel": "old map case"
+      },
+      "onSuccess": {
+        "goto": "remember",
+        "narration": "The old map is protected; the present map stays available."
+      },
+      "onFailure": {
+        "goto": "remember",
+        "narration": "The old map is protected; the present map stays available."
+      },
+      "onAssisted": {
+        "goto": "remember",
+        "narration": "The old map is protected; the present map stays available."
+      }
     },
     "map_shelter_check": {
       "type": "interaction",
+      "narration": "Guide the old map's loose corner under a smooth weight beside the present map. Corvane frees his ribbon before anyone sets the stone. His map has applied for a flying license.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -531,76 +505,34 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Catch the old map corner inside the dry interval.",
+        "actionLabel": "Pin the old map corner",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
       "onSuccess": {
-        "goto": "map_shelter_clear",
-        "narration": "The loose corner settles on the sound shelf."
+        "goto": "remember",
+        "narration": "Both maps stay visible on sound ice."
       },
       "onFailure": {
         "goto": "map_shelter_changed",
-        "narration": "A spray of slush reaches the loose corner before you secure it."
-      },
-      "art": "scenes/riftlight/glacier-deep-ice",
-      "narration": "Protect the two maps from the wind. Everyone choose a job. Corvane watches closely. His old map has already tried to become a kite.",
-      "interaction": {
-        "kind": "play",
-        "cue": "Everyone help protect the maps.",
-        "actionLabel": "Check the maps together",
-        "participation": "everyone",
-        "options": [
+        "narration": "Slush reaches the old map corner before the weight settles.",
+        "effects": [
           {
-            "id": "blanket",
-            "label": "Hold the blanket edge",
-            "icon": "hand",
-            "reaction": "You hold the blanket clear of the drawings. The lines stay visible."
-          },
-          {
-            "id": "blocks",
-            "label": "Set smooth blocks on the corners",
-            "icon": "hand",
-            "reaction": "The blocks pin the corners. The map gives up its flying career."
-          },
-          {
-            "id": "ribbon",
-            "label": "Untangle the ribbon",
-            "icon": "hand",
-            "reaction": "Corvane lifts his hand so you can free the ribbon. It curls neatly beside the map."
+            "type": "setFlag",
+            "flag": "final_map_wet",
+            "value": true
           }
         ]
       },
       "onAssisted": {
-        "goto": "map_shelter_clear",
-        "narration": "The loose corner settles on the sound shelf."
+        "goto": "remember",
+        "narration": "Orin helps settle the corner dry. Both maps remain visible."
       }
-    },
-    "map_shelter_clear": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Corvane's map is safe outside the working lane. Keeping the present world does not require losing his account of the old one.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "test_pull"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
     },
     "map_shelter_changed": {
       "type": "story",
@@ -630,198 +562,16 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "test_pull"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "test_pull": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The pull reaches the loose edge of your shelf. You can brace a low ice block against the line or hold a flat board along the safe boundary. Both will show where the ground starts moving.",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Brace the low block from the inside wall",
-          "icon": "hand",
-          "goto": "test_pull_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Set the board across the marked sound ice",
-          "icon": "hand",
-          "goto": "test_pull_2"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "test_pull_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You work from the sheltered side and leave the marked route free. The block has a nose-shaped bump; Orin gives it a very serious job.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "test_pull_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "test_pull_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You place the board without leaning over the loose edge. Seren holds the wait cloth where Corvane can see it too.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "test_pull_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "test_pull_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Hold the boundary marker on sound ice through the next pull.",
-      "onSuccess": {
-        "goto": "test_pull_clear",
-        "narration": "The marker stays steady while loose snow slides past."
-      },
-      "onFailure": {
-        "goto": "test_pull_changed",
-        "narration": "The loose snow lifts the first marker out of place."
-      },
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "test_pull_clear": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You can see which ground needs holding and which edge everyone must leave alone.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "remember"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "test_pull_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You let the loose marker go and move the sound one farther inward. The safe strip is narrower, but nobody follows the drifting snow.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "remember"
+          "label": "Continue",
+          "goto": "remember",
+          "icon": "hand"
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
     },
     "remember": {
       "type": "choice_point",
+      "narration": "Your two checked accounts show places as they lie now, with people living there. Choose one you actually learned to lead the first anchor, or have Orin guide your checked notes. The original memories and stones remain with their keepers.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -837,341 +587,40 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "narration": "Your accounts are knowledge of places, not objects taken from them. They show how the land lies now, with people living on it. What will you use to begin anchoring the present?",
+      "art": "scenes/riftlight/glacier-deep-ice",
       "choices": [
         {
           "id": "plan_1",
-          "label": "Lay the two checked accounts beside the present map",
-          "icon": "hand",
-          "goto": "remember_1"
+          "label": "Have Orin guide the first checked account",
+          "goto": "remember_guided",
+          "icon": "hand"
         },
         {
           "id": "plan_2",
-          "label": "Recall the river course shown in the memory ice",
+          "label": "Recall the river view from the memory readers",
+          "goto": "remember_paths",
           "icon": "hand",
-          "goto": "remember_2",
           "requiresFlag": "fragment_paths_learned"
         },
         {
           "id": "plan_3",
-          "label": "Recall the buried bridge and its dry channel",
+          "label": "Follow the buried-bridge drawing",
+          "goto": "remember_coast",
           "icon": "hand",
-          "goto": "remember_3",
           "requiresFlag": "fragment_coast_learned"
         },
         {
           "id": "plan_4",
-          "label": "Recall the returning island's carved mooring stone",
+          "label": "Trace the copied island-carving edge",
+          "goto": "remember_sky",
           "icon": "hand",
-          "goto": "remember_4",
           "requiresFlag": "fragment_sky_learned"
         }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      ]
     },
-    "remember_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You set down your own notes and speak the places they describe. Orin checks that the present paths are still visible between them.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "remember_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "remember_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You recall the river the yetis showed, then name the route people use now. The memory stayed in its reading room; you carried what you learned.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "remember_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "remember_3": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You describe the bridge left on its bank, with no river beneath it. Then you describe the living channels of the Saltrot. No stone was taken to do this.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "remember_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "remember_4": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You describe the carving left on the returning island. Then you describe the islands and the homes between them now. The stone itself stayed with its keepers.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "remember_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "remember_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "checkKind": "doing",
-      "prompt": "Hold the present map steady against the pull while you name the places it shows.",
-      "onSuccess": {
-        "goto": "remember_clear",
-        "narration": "The nearest piece of sliding ground slows beside the present outline."
-      },
-      "onFailure": {
-        "goto": "remember_changed",
-        "narration": "The first account is lost beneath the sound of moving ice."
-      },
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "remember_clear": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The land answers the place you remember as it lies now. One branch of the tear folds inward.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "first_anchor"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "remember_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Orin holds the map while you move closer together on the safe strip and finish the account. The land slows beside its present outline. You did not have to shout into the old ice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "first_anchor"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "first_anchor": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The first fold has slowed, but another stretch of ground is still moving. Your other checked discovery gives a different place to hold. How will you keep the two accounts from becoming one muddled story?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Have Orin hold the first page while you name the other place",
-          "icon": "hand",
-          "goto": "first_anchor_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Lay one page at each side of the present map",
-          "icon": "hand",
-          "goto": "first_anchor_2"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "first_anchor_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Orin holds the finished account flat. You describe a different place your party learned and show its present position. The two pages stay separate.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "first_anchor_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "first_anchor_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You set the accounts apart, then trace the space people travel between them now. Corvane watches the lines that his old map left out.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "first_anchor_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "first_anchor_check": {
+    "remember_guided": {
       "type": "interaction",
+      "narration": "Hold the first checked account while Orin points to its present place. The other checked page waits apart. You are beginning one anchor, not claiming a third discovery.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -1187,26 +636,259 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "onSuccess": {
-        "goto": "first_anchor_clear",
-        "narration": "Both present outlines stay fixed while the torn edge folds back."
-      },
-      "onFailure": {
-        "goto": "first_anchor_changed",
-        "narration": "A curling page covers one of the marked present paths."
-      },
       "art": "scenes/riftlight/glacier-deep-ice",
-      "narration": "Hold the first account flat while a friend traces the second place on the present map. Keep the two pages apart. Corvane watches the paths his old map left out.",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Hold one page while your friend traces the other place.",
-        "supportLabel": "Hold the page flat",
-        "actionLabel": "Trace the second place"
+        "cue": "Hold the first checked page for Orin.",
+        "actionLabel": "Name the present place",
+        "supportLabel": "Hold the first account"
+      },
+      "onSuccess": {
+        "goto": "first_anchor",
+        "narration": "One present outline slows the sliding ground."
+      },
+      "onFailure": {
+        "goto": "first_anchor",
+        "narration": "One present outline slows the sliding ground."
+      },
+      "onAssisted": {
+        "goto": "first_anchor",
+        "narration": "One present outline slows the sliding ground."
+      }
+    },
+    "remember_paths": {
+      "type": "interaction",
+      "narration": "Watch Orin point to the copied river, the present path and the gap you never observed. Echo the pointing round without filling that gap. The memory stayed with the readers in their old ice.",
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Echo the checked river-account pointing round.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "river",
+            "label": "Copied river",
+            "icon": "eye"
+          },
+          {
+            "id": "gap",
+            "label": "Unobserved gap",
+            "icon": "eye"
+          },
+          {
+            "id": "path",
+            "label": "Present path",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "river",
+          "gap",
+          "path",
+          "river"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "first_anchor",
+        "narration": "The remembered account steadies its present outline."
+      },
+      "onFailure": {
+        "goto": "anchor_help",
+        "narration": "Keep the page where Orin can check the account with you."
+      },
+      "onAssisted": {
+        "goto": "anchor_help",
+        "narration": "Keep the page where Orin can check the account with you."
+      }
+    },
+    "remember_coast": {
+      "type": "interaction",
+      "narration": "Follow your marked bridge drawing as Orin separates it from the covered present-map sheets. The bridge stone stayed on its bank; your copy is what you use here.",
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Follow the marked bridge drawing through the sheets.",
+        "actionLabel": "Point out the bridge copy",
+        "covers": [
+          "Near sheet",
+          "Middle sheet",
+          "Far sheet"
+        ],
+        "start": 1,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "stepMs": 1500
+      },
+      "onSuccess": {
+        "goto": "first_anchor",
+        "narration": "The checked bridge account steadies its present outline."
+      },
+      "onFailure": {
+        "goto": "anchor_help",
+        "narration": "Orin uncovers the bridge copy and helps check its present place."
+      },
+      "onAssisted": {
+        "goto": "anchor_help",
+        "narration": "Orin uncovers the bridge copy and helps check its present place."
+      }
+    },
+    "remember_sky": {
+      "type": "interaction",
+      "narration": "Guide the copied boundary edge beside the present island outline. Use only the groove your party checked; the original mooring stone stayed on the island.",
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Align the checked copied boundary edge.",
+        "actionLabel": "Set the island account",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "first_anchor",
+        "narration": "The checked island account steadies its present outline."
+      },
+      "onFailure": {
+        "goto": "anchor_help",
+        "narration": "The fine edge slipped. Orin helps use the broad checked outline."
+      },
+      "onAssisted": {
+        "goto": "anchor_help",
+        "narration": "The fine edge slipped. Orin helps use the broad checked outline."
+      }
+    },
+    "anchor_help": {
+      "type": "interaction",
+      "narration": "Support the checked page while Orin names the present place with you. The account is helped, not invented. No missing stretch is repaired by saying it louder.",
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the account for Orin's check.",
+        "actionLabel": "Finish the helped anchor",
+        "supportLabel": "Hold the checked page"
+      },
+      "onSuccess": {
+        "goto": "first_anchor",
+        "narration": "The checked present outline holds after the extra help."
+      },
+      "onFailure": {
+        "goto": "first_anchor",
+        "narration": "The checked present outline holds after the extra help."
+      },
+      "onAssisted": {
+        "goto": "first_anchor",
+        "narration": "The checked present outline holds after the extra help."
+      }
+    },
+    "first_anchor": {
+      "type": "interaction",
+      "narration": "Keep that first page steady while a friend traces a different checked place on the present map. The two accounts stay apart. Corvane watches homes and walking paths his old map left out.",
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the first page while a friend traces the other checked place.",
+        "actionLabel": "Trace the second place",
+        "supportLabel": "Hold the first anchor page"
+      },
+      "onSuccess": {
+        "goto": "first_anchor_clear",
+        "narration": "The two present outlines hold while two parts of the opening fold inward."
+      },
+      "onFailure": {
+        "goto": "first_anchor_clear",
+        "narration": "The two present outlines hold while two parts of the opening fold inward."
       },
       "onAssisted": {
         "goto": "first_anchor_clear",
-        "narration": "Both present outlines stay fixed while the torn edge folds back."
+        "narration": "The two present outlines hold while two parts of the opening fold inward."
       }
     },
     "first_anchor_clear": {
@@ -1237,44 +919,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "rest"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "first_anchor_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You pin the page flat from the sheltered side and leave the unclear corner out. The two checked places hold; the last seam still strains.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "final_anchor_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "rest"
+          "label": "Continue",
+          "goto": "rest",
+          "icon": "hand"
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
@@ -1282,6 +929,11 @@
     "rest": {
       "type": "rest",
       "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
@@ -1296,80 +948,17 @@
       "heal": 2,
       "choices": [
         {
-          "id": "rest",
-          "label": "Rest here, then carry on",
-          "icon": "hand",
-          "goto": "shelter"
-        },
-        {
-          "id": "watch",
-          "label": "Rest while watching the path",
-          "icon": "hand",
-          "goto": "rest_watch"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "rest_watch": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You rest with your cup beside the ice rib while Seren watches the moving ground. Orin finds the apple ring under his folded map and gives it a very doubtful look.",
-      "choices": [
-        {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "shelter"
+          "label": "Continue",
+          "goto": "shelter",
+          "icon": "hand"
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
     },
     "shelter": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "Behind the sound ice rib, a yeti watcher has set down warm broth and spare blankets. She will keep the retreat route open, not step into the tear. What will you ask her to watch?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Keep the first cloth marker visible from the passage",
-          "icon": "hand",
-          "goto": "shelter_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Check that the narrow safe strip stays clear",
-          "icon": "hand",
-          "goto": "shelter_2"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "shelter_1": {
       "type": "story",
+      "narration": "Behind a solid ice rib, a yeti watcher has warm broth, a lamp and spare blankets. She will keep the retreat open, not enter the tear. Seren shows the ridge brace inside the safe line. Holding that ridge steadies a condition; it cannot change a destination. Your party must choose where to spend its preparation.",
       "cast": [
         {
           "figure": "cast/yeti_watcher",
@@ -1384,138 +973,19 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "narration": "The watcher moves the blanket pile below the marker. The broth ladle has frozen into a surprisingly dignified salute.",
+      "art": "scenes/riftlight/glacier-deep-ice",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "watcher_lane"
+          "label": "Continue",
+          "goto": "hold_condition",
+          "icon": "hand"
         }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "shelter_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The watcher tests the inside edge and stays beside the path. Seren repeats the signal that will bring everyone back.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "watcher_lane"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "watcher_lane": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The watcher needs one clear sign if the working lane must be emptied. Orin and Seren will help everyone along it, including Corvane if he will come. What will your party practice?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Point from the last seam to the waiting lamp",
-          "icon": "hand",
-          "goto": "watcher_lane_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Pass the retreat signal along the marked line",
-          "icon": "hand",
-          "goto": "watcher_lane_2"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "watcher_lane_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You repeat the path with the watcher from sound ground. The lamp stays where it can guide a tired traveler, rather than decorate the most impressive ice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "hold_condition"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "watcher_lane_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You send the signal from the working side to the watcher. She answers from shelter and makes room beneath the blankets for a very large guest.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "hold_condition"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      ]
     },
     "hold_condition": {
       "type": "choice_point",
+      "narration": "Fit the ridge brace now to shorten the board's closing job from four working turns to three, or set a broad rescue-lamp station to widen the recovery interval if you lose the fight. You have time to prepare one. Both leave a checked way back. A starweaver can fit the brace with Seren without the separate balancing job.",
       "cast": [
         {
           "figure": "cast/yeti_watcher",
@@ -1530,33 +1000,68 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "narration": "The last seam pulses near a hanging ridge of new ice. Seren shows how its pressure eases when the ridge is held still. This is the kind of condition you learned to hold at the ledge. How will you set the support?",
+      "art": "scenes/riftlight/glacier-deep-ice",
       "choices": [
         {
-          "id": "plan_1",
-          "label": "Brace the ridge with the padded board",
+          "id": "brace",
+          "label": "Level the ridge brace for a shorter board job",
+          "goto": "hold_condition_check",
           "icon": "hand",
-          "goto": "hold_condition_1"
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "final_brace_ready",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "final_rescue_ready",
+              "value": false
+            }
+          ]
         },
         {
-          "id": "plan_2",
-          "label": "Take turns holding the marked brace point",
+          "id": "rescue",
+          "label": "Set the wider rescue-lamp station",
+          "goto": "rescue_station",
           "icon": "hand",
-          "goto": "hold_condition_2"
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "final_brace_ready",
+              "value": false
+            },
+            {
+              "type": "setFlag",
+              "flag": "final_rescue_ready",
+              "value": false
+            }
+          ]
         },
         {
-          "id": "plan_3",
-          "label": "Have a starweaver hold the condition with the party",
-          "icon": "hand",
+          "id": "starweaver",
+          "label": "Have our starweaver hold the ridge with Seren",
           "goto": "hold_condition_3",
-          "requiresClass": "starweaver"
+          "icon": "hand",
+          "requiresClass": "starweaver",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "final_brace_ready",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "final_rescue_ready",
+              "value": false
+            }
+          ]
         }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      ]
     },
-    "hold_condition_1": {
-      "type": "story",
+    "hold_condition_check": {
+      "type": "interaction",
+      "narration": "Level the padded brace against the marked ridge point from sound ice. The retreat line stays separate. Seren checks the condition before the party approaches the board.",
       "cast": [
         {
           "figure": "cast/yeti_watcher",
@@ -1571,48 +1076,50 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "narration": "You work from the sound side and leave the top edge alone. The padding keeps the board from splitting against the ice.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "hold_condition_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "hold_condition_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You set the party's rhythm before leaning into the brace. Seren watches the seam while the watcher keeps the retreat path free.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "hold_condition_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the ridge brace at its marked point.",
+        "actionLabel": "Set the ridge brace",
+        "objectLabel": "padded ridge brace"
+      },
+      "onSuccess": {
+        "goto": "anchors",
+        "narration": "The fitted brace offers a three-turn close on the board.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_brace_ready",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "anchors",
+        "narration": "The fitted brace offers a three-turn close on the board.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_brace_ready",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "anchors",
+        "narration": "The fitted brace offers a three-turn close on the board.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_brace_ready",
+            "value": true
+          }
+        ]
+      }
     },
     "hold_condition_3": {
       "type": "story",
+      "narration": "Your starweaver holds the ridge condition while Seren checks the marked point. The party can skip the separate brace-balancing job. The prepared three-turn close is available on the board; the seam keeps its own rules.",
       "cast": [
         {
           "figure": "cast/yeti_watcher",
@@ -1627,20 +1134,19 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "narration": "A starweaver holds the condition while the party braces the sound ice. Seren watches for slack. The seam keeps its own destination and rules.",
+      "art": "scenes/riftlight/glacier-deep-ice",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "hold_condition_check"
+          "label": "Continue",
+          "goto": "anchors",
+          "icon": "hand"
         }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      ]
     },
-    "hold_condition_check": {
-      "type": "check",
+    "rescue_station": {
+      "type": "interaction",
+      "narration": "Pass the lamp and broad sight markers to the watcher inside the ice rib. The wider view will help a later recovery attempt; it does not close the seam or remove a crawler.",
       "cast": [
         {
           "figure": "cast/yeti_watcher",
@@ -1655,169 +1161,46 @@
           "name": "Seren Wisp"
         }
       ],
-      "rift": "steady",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "prompt": "Hold the ridge condition without shifting the marked retreat line.",
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the rescue-lamp kit to the watcher.",
+        "actionLabel": "Pass the rescue kit",
+        "objectLabel": "rescue lamp kit"
+      },
       "onSuccess": {
-        "goto": "hold_condition_clear",
-        "narration": "The seam steadies for the whole working count."
+        "goto": "anchors",
+        "narration": "The broad rescue station is prepared.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_rescue_ready",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
-        "goto": "hold_condition_changed",
-        "narration": "The ridge shudders before the count is finished."
+        "goto": "anchors",
+        "narration": "The broad rescue station is prepared.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_rescue_ready",
+            "value": true
+          }
+        ]
       },
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "hold_condition_clear": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You can work beside the last seam without feeding a new opening. Nobody has changed what it is.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "warning"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "hold_condition_changed": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You lower the brace and reset it farther inside the sound rib. Seren holds the condition while you finish from the safer point. The loose outer edge stays unused.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "warning"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "warning": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The present map holds against the pull. Corvane stares. \"Those stones are mine. I set them there.\" Then his voice drops. \"It listens to you?\" Crawlers gather by the last seam. He reaches for it before you can answer. There is a moment to ready your party before he tries to keep it open.",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Show him the retreat line and ask him to step clear",
-          "icon": "hand",
-          "goto": "warning_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Tell him you will close the seam, then keep the route open",
-          "icon": "hand",
-          "goto": "warning_2"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "warning_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You leave room beside the line for him too. He looks toward it, then puts his hand back beside the seam. \"I only want to go home.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "anchors"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "warning_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You make the boundary clear without surrounding him. He gathers the old map to his chest and stands beside the last opening.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "anchors"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "onAssisted": {
+        "goto": "anchors",
+        "narration": "The broad rescue station is prepared.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_rescue_ready",
+            "value": true
+          }
+        ]
+      }
     },
     "anchors": {
       "type": "choice_point",
@@ -1897,9 +1280,18 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
+          "label": "Play the ordinary four-turn close",
+          "goto": "fight_standard",
+          "icon": "hand"
+        },
+        {
+          "id": "braced",
+          "label": "Use our prepared three-turn brace",
+          "goto": "fight_standard_braced",
           "icon": "hand",
-          "goto": "fight_standard"
+          "when": {
+            "flag": "final_brace_ready"
+          }
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
@@ -1922,19 +1314,13 @@
         }
       ],
       "rift": "steady",
-      "narration": "You set the third checked account beside the other two. A third present place answers. The great opening folds down to a thin seam, and one crawler slips back to its own ground. Corvane braces himself against the sound ice.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "third_anchor_used"
-        }
-      ],
+      "narration": "The third checked account is ready beside the other two. Work its support into the present map before the encounter. It is another place you learned, not an object taken from it.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "fight_weakened"
+          "label": "Continue",
+          "goto": "third_account",
+          "icon": "hand"
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
@@ -1942,19 +1328,13 @@
     "wyrm_plan": {
       "type": "story",
       "rift": "steady",
-      "narration": "At the outer ice rib, the wyrm answers the builder's low signal. It curls against the loose ice outside your working lane, holding that edge in place. A third anchor settles; one crawler slips back through the folding tear. The wyrm stays with the ice as your party takes the marked working lane.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "third_anchor_used"
-        }
-      ],
+      "narration": "The allied wyrm waits with its builder at the outer ice rib. Help give the low signal and keep the loose edge clear so it can brace outside the working lane.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "fight_weakened"
+          "label": "Continue",
+          "goto": "wyrm_support",
+          "icon": "hand"
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice",
@@ -1983,22 +1363,309 @@
         }
       ],
       "rift": "steady",
-      "narration": "Olivia joins the brace from the safe side. \"A condition,\" she says, \"not a command.\" She holds with your party, and the land settles under a third anchor. One crawler slips back to its own ground as the opening folds thin.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "third_anchor_used"
-        }
-      ],
+      "narration": "Olivia offers her help from the safe brace point. \"A condition,\" she says, \"not a command.\" Work from Seren's observed hold-and-ease signals; Olivia will follow your checked call.",
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "fight_weakened"
+          "label": "Continue",
+          "goto": "olivia_support",
+          "icon": "hand"
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "third_account": {
+      "type": "interaction",
+      "narration": "Share the final support jobs: identify the unused checked account, name its present place, then hold that separate page while the opening narrows. Orin's clues keep a repeat of the same place from counting twice.",
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Build the third-account support plan.",
+        "actionLabel": "Try our plan",
+        "options": [
+          {
+            "id": "hold",
+            "label": "Hold its separate page",
+            "icon": "eye"
+          },
+          {
+            "id": "source",
+            "label": "Identify the unused checked account",
+            "icon": "eye"
+          },
+          {
+            "id": "present",
+            "label": "Name its present place",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "source",
+          "present",
+          "hold"
+        ],
+        "clues": [
+          "Find the unused account before pointing to its present place.",
+          "Name the present place after identifying its source.",
+          "Only then hold that separate page as the extra support."
+        ]
+      },
+      "onSuccess": {
+        "goto": "support_ready",
+        "narration": "The third present place answers. The tear narrows; one crawler slips home.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "support_ready",
+        "narration": "Orin corrects the plan before you use the third checked account. The extra support is helped, not another discovery.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "support_ready",
+        "narration": "The third present place answers. The tear narrows; one crawler slips home.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": true
+          }
+        ]
+      }
+    },
+    "wyrm_support": {
+      "type": "interaction",
+      "narration": "Hold the builder's signal cloth steady while she calls the wyrm. It curls against the loose outer ice, outside your party's working lane. Nobody orders it into the tear.",
+      "cast": [
+        {
+          "figure": "cast/allied_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the builder's signal cloth at the outer rib.",
+        "actionLabel": "Give the checked brace signal",
+        "supportLabel": "Hold the signal cloth"
+      },
+      "onSuccess": {
+        "goto": "support_ready",
+        "narration": "The wyrm braces the outer edge. The tear narrows; one crawler slips home.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "support_ready",
+        "narration": "The wyrm braces the outer edge. The tear narrows; one crawler slips home.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "support_ready",
+        "narration": "The wyrm braces the outer edge. The tear narrows; one crawler slips home.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": true
+          }
+        ]
+      }
+    },
+    "olivia_support": {
+      "type": "interaction",
+      "narration": "Seren demonstrates hold, ease, hold. Echo that round for Olivia from the marked brace. If it is missed, Seren will lead instead of making Olivia follow a guess.",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Echo the brace signals for Olivia.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "ease",
+            "label": "Ease the brace",
+            "icon": "eye"
+          },
+          {
+            "id": "hold",
+            "label": "Hold the condition",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "hold",
+          "ease",
+          "hold"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "support_ready",
+        "narration": "Olivia follows the checked round. The tear narrows; one crawler slips home.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "olivia_help",
+        "narration": "Keep the brace steady while Seren leads the signals."
+      },
+      "onAssisted": {
+        "goto": "olivia_help",
+        "narration": "Keep the brace steady while Seren leads the signals."
+      }
+    },
+    "olivia_help": {
+      "type": "interaction",
+      "narration": "Support the marked brace while Seren gives Olivia the visible hold-and-ease calls. The support still works; the account credits Seren's lead.",
+      "cast": [
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the brace for Seren's calls.",
+        "actionLabel": "Finish the supported hold",
+        "supportLabel": "Hold the padded brace"
+      },
+      "onSuccess": {
+        "goto": "support_ready",
+        "narration": "Olivia and Seren finish the extra support. One crawler slips home.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "support_ready",
+        "narration": "Olivia and Seren finish the extra support. One crawler slips home.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "support_ready",
+        "narration": "Olivia and Seren finish the extra support. One crawler slips home.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": true
+          }
+        ]
+      }
+    },
+    "support_ready": {
+      "type": "story",
+      "narration": "The extra support has narrowed the tear. Corvane has less room to pull and one fewer crawler remains. Only this one support is used; other allies and accounts are not silently stacked.",
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Play the ordinary four-turn close",
+          "goto": "fight_weakened",
+          "icon": "hand"
+        },
+        {
+          "id": "braced",
+          "label": "Use our prepared three-turn brace",
+          "goto": "fight_weakened_braced",
+          "icon": "hand",
+          "when": {
+            "flag": "final_brace_ready"
+          }
+        }
+      ]
     },
     "fight_standard": {
       "type": "encounter",
@@ -2055,6 +1722,101 @@
               "y": 3
             },
             "turns": 4,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "final_condition_closed"
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "spent",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "loss_recover",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "final_fell_back"
+          },
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": false
+          }
+        ]
+      }
+    },
+    "fight_standard_braced": {
+      "type": "encounter",
+      "map": "riftlight_finale",
+      "narration": "Corvane fights to keep the last seam open. Displaced bone crawlers crowd its fresh magic. Drive them back, or end three turns beside the ridge brace to close the seam. The marked retreat route stays behind you. Nobody needs to stand in the pulling tear.",
+      "enemies": [
+        {
+          "id": "corvane",
+          "name": "Emperor Corvane",
+          "count": 1,
+          "hp": 24,
+          "guard": 15,
+          "quick": 0,
+          "steps": 3,
+          "attack": 4,
+          "art": "cast/deep-ice-figure"
+        },
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 2
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "pulling_seam",
+            "kind": "rift",
+            "label": "Pull of the last seam",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1,
+            "push": {
+              "direction": "west",
+              "tiles": 1
+            }
+          }
+        ],
+        "objectives": [
+          {
+            "id": "last_seam",
+            "kind": "close",
+            "label": "Hold the ridge and close the last seam",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 3,
             "endsFight": true,
             "effects": [
               {
@@ -2190,6 +1952,101 @@
         ]
       }
     },
+    "fight_weakened_braced": {
+      "type": "encounter",
+      "map": "riftlight_finale",
+      "narration": "Corvane fights to keep the last seam open. Displaced bone crawlers crowd its fresh magic. Drive them back, or end three turns beside the ridge brace to close the seam. The marked retreat route stays behind you. Nobody needs to stand in the pulling tear.",
+      "enemies": [
+        {
+          "id": "corvane",
+          "name": "Emperor Corvane",
+          "count": 1,
+          "hp": 18,
+          "guard": 15,
+          "quick": 0,
+          "steps": 3,
+          "attack": 4,
+          "art": "cast/deep-ice-figure"
+        },
+        {
+          "id": "crawler",
+          "creature": "bone_crawler",
+          "count": 1
+        }
+      ],
+      "environment": {
+        "hazards": [
+          {
+            "id": "pulling_seam",
+            "kind": "rift",
+            "label": "Pull of the last seam",
+            "tiles": [
+              {
+                "x": 5,
+                "y": 2
+              },
+              {
+                "x": 4,
+                "y": 5
+              }
+            ],
+            "damage": 1,
+            "push": {
+              "direction": "west",
+              "tiles": 1
+            }
+          }
+        ],
+        "objectives": [
+          {
+            "id": "last_seam",
+            "kind": "close",
+            "label": "Hold the ridge and close the last seam",
+            "at": {
+              "x": 6,
+              "y": 3
+            },
+            "turns": 3,
+            "endsFight": true,
+            "effects": [
+              {
+                "type": "setFlag",
+                "flag": "final_condition_closed"
+              }
+            ]
+          }
+        ]
+      },
+      "onVictory": {
+        "goto": "spent",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "onDefeat": {
+        "goto": "loss_recover",
+        "effects": [
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          },
+          {
+            "type": "setFlag",
+            "flag": "final_fell_back"
+          },
+          {
+            "type": "setFlag",
+            "flag": "third_anchor_used",
+            "value": false
+          }
+        ]
+      }
+    },
     "spent": {
       "type": "story",
       "cast": [
@@ -2218,9 +2075,9 @@
       "choices": [
         {
           "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "help_him"
+          "label": "Continue",
+          "goto": "help_him",
+          "icon": "hand"
         }
       ],
       "variants": [
@@ -2240,22 +2097,8 @@
       "art": "scenes/riftlight/glacier-deep-ice"
     },
     "help_him": {
-      "type": "choice_point",
-      "narration": "The watcher brings a blanket large enough for Corvane. His mustache has escaped its faded ribbon, and he cannot find where the knot went. For a moment he stops looking like an emperor and looks like someone who has been cold for a very long time. What will your party offer first?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Set the blanket beside him and leave space to stand",
-          "icon": "hand",
-          "goto": "help_him_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Show him the sound path to the waiting yetis",
-          "icon": "hand",
-          "goto": "help_him_2"
-        }
-      ],
+      "type": "interaction",
+      "narration": "The watcher brings a blanket large enough for Corvane. His mustache has escaped its ribbon, and he looks like someone who has been cold for a very long time. Offer help without wrapping or moving him without asking.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -2271,81 +2114,49 @@
           "name": "Yeti watcher"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "help_him_1": {
-      "type": "story",
-      "narration": "You set it within reach instead of wrapping him without asking. He takes it and gathers the old map under one edge.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "home_now"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "help_him_2": {
-      "type": "story",
-      "narration": "You point out the same safe path marked for everyone. He follows the cloth marks slowly, with the watcher beside him.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "home_now"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/deep-ice-figure",
-          "name": "Corvane",
-          "size": "very_large"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "play",
+        "cue": "Offer Corvane a choice of help.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "blanket",
+            "label": "Set the blanket within his reach",
+            "icon": "hand",
+            "reaction": "He takes the blanket and gathers it around his shoulders."
+          },
+          {
+            "id": "path",
+            "label": "Show the checked walking path",
+            "icon": "hand",
+            "reaction": "The watcher waits for him to choose to stand."
+          },
+          {
+            "id": "ribbon",
+            "label": "Offer to untangle the ribbon",
+            "icon": "hand",
+            "reaction": "He holds out the loose end instead of reaching toward the closed seam."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "home_now",
+        "narration": "The watcher keeps the same safe path open for everyone."
+      },
+      "onFailure": {
+        "goto": "home_now",
+        "narration": "The watcher keeps the same safe path open for everyone."
+      },
+      "onAssisted": {
+        "goto": "home_now",
+        "narration": "The watcher keeps the same safe path open for everyone."
+      }
     },
     "home_now": {
       "type": "choice_point",
-      "narration": "Beyond the closed seam, the land has stopped moving. Corvane puts a finger on his old river. \"Then where did it go?\" Orin lays today's map beside it. There are paths and homes where the old lines would run. What will you show him about the world that grew while he was in the ice?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Show the present river and the homes along it",
-          "icon": "hand",
-          "goto": "home_now_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Let the watcher describe the valley she lives in",
-          "icon": "hand",
-          "goto": "home_now_2"
-        }
-      ],
+      "narration": "The land has stopped moving. Corvane asks where his river went. The watcher can describe her valley from memory, or you can set the two maps beside each other. A cased old map must be unpacked first; a wet corner still has missing fine marks.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -2369,19 +2180,37 @@
           },
           "text": "Some places have already shifted. You mark what still needs checking instead of promising that the whole map is right."
         }
+      ],
+      "choices": [
+        {
+          "id": "watcher",
+          "label": "Ask the watcher about her present valley",
+          "goto": "home_watcher",
+          "icon": "hand"
+        },
+        {
+          "id": "case",
+          "label": "Unpack the old map for comparison",
+          "goto": "unpack_map",
+          "icon": "hand",
+          "when": {
+            "flag": "final_map_covered"
+          }
+        },
+        {
+          "id": "map",
+          "label": "Compare the open maps",
+          "goto": "home_maps",
+          "icon": "hand",
+          "when": {
+            "notFlag": "final_map_covered"
+          }
+        }
       ]
     },
-    "home_now_1": {
-      "type": "story",
-      "narration": "You point out the bends and the places your party helped. Corvane follows the line with one finger, stopping where a home now stands.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "fate"
-        }
-      ],
+    "unpack_map": {
+      "type": "interaction",
+      "narration": "Pass the old case to the sound table while Corvane opens it himself. The dry old drawing can now sit beside the present map. The case did its job and does not need to be rescued again.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -2397,19 +2226,29 @@
           "name": "Yeti watcher"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the old map case to the sound table.",
+        "actionLabel": "Pass the dry map case",
+        "objectLabel": "old map case"
+      },
+      "onSuccess": {
+        "goto": "home_maps",
+        "narration": "The old and present maps can be compared side by side."
+      },
+      "onFailure": {
+        "goto": "home_maps",
+        "narration": "The old and present maps can be compared side by side."
+      },
+      "onAssisted": {
+        "goto": "home_maps",
+        "narration": "The old and present maps can be compared side by side."
+      }
     },
-    "home_now_2": {
-      "type": "story",
-      "narration": "The watcher names her walking path and the room where yetis read memories held in old ice. Corvane listens without moving any lines on either map.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "fate"
-        }
-      ],
+    "home_maps": {
+      "type": "interaction",
+      "narration": "Place a broad pointer beside the present river and the homes along it. Corvane follows the line without moving it. Fine old marks blurred by slush remain blank; this conversation cannot restore them.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -2425,7 +2264,83 @@
           "name": "Yeti watcher"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Level the two maps on the sound table.",
+        "actionLabel": "Set the maps side by side",
+        "objectLabel": "map table"
+      },
+      "onSuccess": {
+        "goto": "fate",
+        "narration": "The old map keeps its history; the present map keeps its homes."
+      },
+      "onFailure": {
+        "goto": "fate",
+        "narration": "The old map keeps its history; the present map keeps its homes."
+      },
+      "onAssisted": {
+        "goto": "fate",
+        "narration": "The old map keeps its history; the present map keeps its homes."
+      }
+    },
+    "home_watcher": {
+      "type": "interaction",
+      "narration": "The watcher names her walking path and the room where yetis read memories in old ice. Choose a useful question for Corvane to hear about the living valley. Nobody redraws a route they have not checked.",
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "play",
+        "cue": "Make room for the watcher's present-world account.",
+        "actionLabel": "Finish together",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "path",
+            "label": "Ask where people walk now",
+            "icon": "hand",
+            "reaction": "The watcher starts with the ordinary path outside her door."
+          },
+          {
+            "id": "room",
+            "label": "Ask who uses the reading room",
+            "icon": "hand",
+            "reaction": "She describes the readers carrying their own notes."
+          },
+          {
+            "id": "home",
+            "label": "Ask what needs keeping safe",
+            "icon": "hand",
+            "reaction": "Corvane listens to names his old map never held."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "fate",
+        "narration": "The watcher finishes her account. Corvane leaves the map lines alone."
+      },
+      "onFailure": {
+        "goto": "fate",
+        "narration": "The watcher finishes her account. Corvane leaves the map lines alone."
+      },
+      "onAssisted": {
+        "goto": "fate",
+        "narration": "The watcher finishes her account. Corvane leaves the map lines alone."
+      }
     },
     "fate": {
       "type": "choice_point",
@@ -2479,6 +2394,10 @@
           "size": "very_large"
         },
         {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
           "figure": "cast/yeti_watcher",
           "name": "Yeti watcher"
         }
@@ -2515,6 +2434,10 @@
           "figure": "cast/deep-ice-figure",
           "name": "Corvane",
           "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
         },
         {
           "figure": "cast/yeti_watcher",
@@ -2693,135 +2616,6 @@
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
     },
-    "loss_recover": {
-      "type": "story",
-      "narration": "Your party falls back. Orin and Seren follow your practiced retreat signal and bring everyone to the yeti watcher shelter. She opens the blankets and shares her broth. Corvane has already pulled some places into a jumble. The two maps no longer quite fit. Any extra support has spent its strength in the pull. The last seam still pulls. You have one different way to stop it: use the pause you observed and hold the ridge from the rescue lane.",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "final_people_done"
-        }
-      ],
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "loss_watch"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "loss_watch": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The watcher checks everyone beneath the blankets while Orin and Seren prepare to help from the rescue lane. Beyond the marks, Corvane still holds his map beside the seam. Which part of your practiced retreat will guide the new attempt?",
-      "choices": [
-        {
-          "id": "plan_1",
-          "label": "Keep the shelter lamp in sight through the next pull",
-          "icon": "hand",
-          "goto": "loss_watch_1"
-        },
-        {
-          "id": "plan_2",
-          "label": "Use the route marks and the release signal from Seren",
-          "icon": "hand",
-          "goto": "loss_watch_2"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "loss_watch_1": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You place the shelter lamp at the first safe marker, where the brace team can see it. Orin will keep that light clear while Seren watches the ridge.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "loss_anchor_plan"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice",
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "final_recovery_lamp"
-        }
-      ]
-    },
-    "loss_watch_2": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You repeat the retreat marks and the release signal with Seren. The watcher answers from shelter. Orin will keep the map and the people behind the line.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "loss_anchor_plan"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
     "rivers_wander": {
       "type": "story",
       "narration": "The Riftseekers spread out to watch the changed routes. Some lands remain jumbled for now; the party's work still brought everyone safely out. In the glacier records, this account is called Rivers Wander. Orin folds the useless joining lines under the new page. \"Then we learn the new map.\" The watcher opens the ordinary door onto tomorrow.",
@@ -2910,164 +2704,6 @@
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
     },
-    "loss_anchor_plan": {
-      "type": "choice_point",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "The pull pauses just as it did beside your boundary marker. The ridge brace still stands inside the safe line. Orin can guide the map from the rescue lane while Seren holds the condition. How will you use that pause?",
-      "choices": [
-        {
-          "id": "brace",
-          "label": "Set the padded brace during the pause",
-          "icon": "hand",
-          "goto": "loss_anchor_brace"
-        },
-        {
-          "id": "rhythm",
-          "label": "Hold a steady rhythm while Seren guides the brace",
-          "icon": "hand",
-          "goto": "loss_anchor_rhythm"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice",
-      "variants": [
-        {
-          "when": {
-            "flag": "final_recovery_lamp"
-          },
-          "text": "The shelter lamp marks your safe limit. You can watch its light instead of leaning into the opening to see the edge."
-        },
-        {
-          "when": {
-            "notFlag": "final_recovery_lamp"
-          },
-          "text": "The route marks and the release signal from Seren tell you when to ease the brace and draw back. Nobody needs to stand inside the opening."
-        }
-      ]
-    },
-    "loss_anchor_brace": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You slide the padded board against the ridge as the pull eases. Orin guides the present map from behind you. Seren calls the moment to hold; the watcher keeps the retreat open.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "loss_anchor_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "loss_anchor_rhythm": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "narration": "You keep the practiced rhythm and lean into the brace from safe ice. Seren watches for the pause and holds the condition with you. Orin stays on the rescue lane with the map.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Go on",
-          "icon": "hand",
-          "goto": "loss_anchor_check"
-        }
-      ],
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
-    "loss_anchor_check": {
-      "type": "check",
-      "cast": [
-        {
-          "figure": "cast/yeti_watcher",
-          "name": "Yeti watcher"
-        },
-        {
-          "figure": "cast/orin_vale",
-          "name": "Orin Vale"
-        },
-        {
-          "figure": "cast/seren_wisp",
-          "name": "Seren Wisp"
-        }
-      ],
-      "rift": "steady",
-      "stat": "heart",
-      "tn": 12,
-      "roller": "party",
-      "checkKind": "doing",
-      "prompt": "Hold the ridge brace steady through the pause while Orin and Seren guide the last fold closed.",
-      "onSuccess": {
-        "goto": "spent",
-        "narration": "The brace holds. The last seam folds shut before Corvane can pull again. The land stops moving; some places have already shifted.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "final_condition_closed"
-          },
-          {
-            "type": "heal",
-            "amount": 3,
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "loss_second_failed",
-        "narration": "The ridge slips before the fold can close. Seren gives the release signal and you draw back to the watcher.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "final_battle_lost"
-          },
-          {
-            "type": "heal",
-            "amount": 3,
-            "to": "party"
-          }
-        ]
-      },
-      "art": "scenes/riftlight/glacier-deep-ice"
-    },
     "loss_second_failed": {
       "type": "story",
       "cast": [
@@ -3095,19 +2731,662 @@
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "loss_recover": {
+      "type": "story",
+      "narration": "Your party falls back to the watcher behind the ice rib. Orin and Seren bring everyone clear; the watcher opens her blankets and broth. Some places have already shifted. Any extra support has spent its strength, and the last seam still pulls. From the rescue lane you have one different attempt left: use the pause in the pull to set the ridge brace. You can ask for an untimed helping hand.",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "final_people_done"
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "goto": "loss_watch",
+          "icon": "hand"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "loss_watch": {
+      "type": "choice_point",
+      "narration": "Everyone is safe with the watcher. Before the different brace attempt, mark the crew's working limit on the rescue lane. Your prepared handline or checked cloths can help; the watcher's lamp is always available. Nobody returns to the board fight.",
+      "cast": [
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "choices": [
+        {
+          "id": "plan_1",
+          "label": "Gather everyone by the watcher's lamp",
+          "goto": "loss_lamp",
+          "icon": "hand"
+        },
+        {
+          "id": "line",
+          "label": "Support the brace crew with our prepared handline",
+          "goto": "loss_line",
+          "icon": "hand",
+          "when": {
+            "flag": "final_line_route"
+          }
+        },
+        {
+          "id": "marks",
+          "label": "Show the brace station from our checked cloth marks",
+          "goto": "loss_marks",
+          "icon": "hand",
+          "when": {
+            "flag": "final_marks_read"
+          }
+        }
+      ]
+    },
+    "loss_lamp": {
+      "type": "interaction",
+      "narration": "Pass the watcher's lamp from the passage to the first safe station. Orin keeps the map behind it while Seren watches for the pull's pause.",
+      "cast": [
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Pass the shelter lamp to the safe station.",
+        "actionLabel": "Pass the shelter lamp",
+        "objectLabel": "shelter lamp"
+      },
+      "onSuccess": {
+        "goto": "loss_anchor_plan",
+        "narration": "The lamp marks the rescue-lane limit.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_recovery_lamp",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "loss_anchor_plan",
+        "narration": "The lamp marks the rescue-lane limit.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_recovery_lamp",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "loss_anchor_plan",
+        "narration": "The lamp marks the rescue-lane limit.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_recovery_lamp",
+            "value": true
+          }
+        ]
+      }
+    },
+    "loss_line": {
+      "type": "interaction",
+      "narration": "Support the prepared handline beside the inside wall while Seren checks the brace crew's working limit from the watcher's shelter. No loop goes around anyone, and nobody steps into the opening.",
+      "cast": [
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the prepared handline from sound ice.",
+        "actionLabel": "Mark the crew's safe limit",
+        "supportLabel": "Support the handline"
+      },
+      "onSuccess": {
+        "goto": "loss_anchor_plan",
+        "narration": "The handline marks the brace crew's safe working limit."
+      },
+      "onFailure": {
+        "goto": "loss_anchor_plan",
+        "narration": "The handline marks the brace crew's safe working limit."
+      },
+      "onAssisted": {
+        "goto": "loss_anchor_plan",
+        "narration": "The handline marks the brace crew's safe working limit."
+      }
+    },
+    "loss_marks": {
+      "type": "interaction",
+      "narration": "Echo the route marks you checked: wall, rib, passage, wall. Use them to show the watcher which safe station the brace crew will use. A missed pattern uses her lamp instead of a guessed work point.",
+      "cast": [
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Echo the checked cloth route to the watcher.",
+        "actionLabel": "Show what we saw",
+        "options": [
+          {
+            "id": "wall",
+            "label": "Inside wall",
+            "icon": "eye"
+          },
+          {
+            "id": "passage",
+            "label": "Walking passage",
+            "icon": "eye"
+          },
+          {
+            "id": "rib",
+            "label": "Solid ice rib",
+            "icon": "eye"
+          }
+        ],
+        "answer": [
+          "wall",
+          "rib",
+          "passage",
+          "wall"
+        ],
+        "stepMs": 1300
+      },
+      "onSuccess": {
+        "goto": "loss_anchor_plan",
+        "narration": "The watcher can see the checked brace station from shelter."
+      },
+      "onFailure": {
+        "goto": "loss_lamp",
+        "narration": "Use the watcher-led lamp route rather than a guessed cloth sequence."
+      },
+      "onAssisted": {
+        "goto": "loss_lamp",
+        "narration": "Use the watcher-led lamp route rather than a guessed cloth sequence."
+      }
+    },
+    "loss_anchor_plan": {
+      "type": "choice_point",
+      "narration": "The pull pauses beside the ridge. Orin guides the present map from the rescue lane; Seren helps hold the condition. Set the brace in the ordinary pause, or use the broad lamp interval if you prepared that rescue station. This attempt can close the seam or leave more lands shifted. Assistance is available before committing.",
+      "cast": [
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "choices": [
+        {
+          "id": "brace",
+          "label": "Set the padded brace in the ordinary pause",
+          "goto": "loss_anchor_check",
+          "icon": "hand"
+        },
+        {
+          "id": "supported",
+          "label": "Use our prepared broad rescue interval",
+          "goto": "loss_anchor_supported",
+          "icon": "hand",
+          "when": {
+            "flag": "final_rescue_ready"
+          }
+        },
+        {
+          "id": "reserve",
+          "label": "Use our reserve team's supported hold",
+          "goto": "loss_anchor_reserved",
+          "icon": "hand",
+          "when": {
+            "flag": "final_reserve_lane"
+          }
+        }
+      ]
+    },
+    "loss_anchor_check": {
+      "type": "interaction",
+      "narration": "Set the padded ridge brace from the rescue lane during the pause. The ordinary target is narrower; the prepared rescue station gives a broader view. An untimed helping hand lets Seren guide the brace with you.",
+      "cast": [
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Set the ridge brace during the safe pause.",
+        "actionLabel": "Set the recovery brace",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "spent",
+        "narration": "The brace holds and the seam folds shut. Some places have already shifted.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_condition_closed",
+            "value": true
+          },
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "loss_second_failed",
+        "narration": "The ridge slips. Seren calls release and everyone draws back to the watcher.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_battle_lost",
+            "value": true
+          },
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "spent",
+        "narration": "The brace holds and the seam folds shut. Some places have already shifted.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_condition_closed",
+            "value": true
+          },
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "loss_anchor_supported": {
+      "type": "interaction",
+      "narration": "Set the padded ridge brace from the rescue lane during the pause. The ordinary target is narrower; the prepared rescue station gives a broader view. An untimed helping hand lets Seren guide the brace with you.",
+      "cast": [
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Set the ridge brace during the safe pause.",
+        "actionLabel": "Set the recovery brace",
+        "target": 0.5,
+        "width": 0.6,
+        "periodMs": 6000
+      },
+      "onSuccess": {
+        "goto": "spent",
+        "narration": "The brace holds and the seam folds shut. Some places have already shifted.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_condition_closed",
+            "value": true
+          },
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "loss_second_failed",
+        "narration": "The ridge slips. Seren calls release and everyone draws back to the watcher.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_battle_lost",
+            "value": true
+          },
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "spent",
+        "narration": "The brace holds and the seam folds shut. Some places have already shifted.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_condition_closed",
+            "value": true
+          },
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
+    },
+    "loss_anchor_reserved": {
+      "type": "interaction",
+      "narration": "Orin and Seren stayed on the rescue lane as your reserve team. Hold their padded support steady while they set the ridge together from sound ice. This is a supported closing job, not another board fight or a timed guess.",
+      "cast": [
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Support the reserve team's padded brace.",
+        "actionLabel": "Close with the reserve team",
+        "supportLabel": "Hold the support"
+      },
+      "onSuccess": {
+        "goto": "spent",
+        "narration": "The brace holds and the seam folds shut. Some places have already shifted.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_condition_closed",
+            "value": true
+          },
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "spent",
+        "narration": "The brace holds and the seam folds shut. Some places have already shifted.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_condition_closed",
+            "value": true
+          },
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "spent",
+        "narration": "The brace holds and the seam folds shut. Some places have already shifted.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "final_condition_closed",
+            "value": true
+          },
+          {
+            "type": "heal",
+            "amount": 3,
+            "to": "party"
+          }
+        ]
+      }
     }
   },
   "presentation": {
     "interactions": {
+      "retreat_line": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "retreat_marks": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "retreat_help": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "voices": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "map_case": {
+        "props": [
+          "ring-case",
+          "clue-scrap"
+        ]
+      },
       "map_shelter_check": {
         "props": [
           "clue-scrap",
+          "toss-pebble"
+        ]
+      },
+      "remember_guided": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "remember_paths": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "remember_coast": {
+        "props": [
+          "clue-scrap"
+        ],
+        "coverIcons": [
+          "prop_playing_card",
+          "prop_playing_card",
+          "prop_playing_card"
+        ]
+      },
+      "remember_sky": {
+        "props": [
+          "clue-scrap",
+          "carved-stone"
+        ]
+      },
+      "anchor_help": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "first_anchor": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "hold_condition_check": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "rescue_station": {
+        "props": [
+          "hanging-lamp",
+          "wind-banner"
+        ]
+      },
+      "third_account": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "wyrm_support": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "olivia_support": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "olivia_help": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "help_him": {
+        "props": [
           "wind-blanket"
         ]
       },
-      "first_anchor_check": {
+      "unpack_map": {
+        "props": [
+          "ring-case"
+        ]
+      },
+      "home_maps": {
         "props": [
           "clue-scrap"
+        ]
+      },
+      "home_watcher": {
+        "props": [
+          "clue-scrap"
+        ]
+      },
+      "loss_lamp": {
+        "props": [
+          "hanging-lamp"
+        ]
+      },
+      "loss_line": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "loss_marks": {
+        "props": [
+          "wind-banner"
+        ]
+      },
+      "loss_anchor_check": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "loss_anchor_supported": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
+        ]
+      },
+      "loss_anchor_reserved": {
+        "props": [
+          "relay-plank",
+          "rope-loop"
         ]
       }
     }

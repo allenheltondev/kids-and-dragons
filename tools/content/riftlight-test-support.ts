@@ -237,10 +237,11 @@ export function finishInteraction(state: RunState, chapter: Chapter, outcome: "s
         act({ action: "answer", answer: [String(outcome === "failure" ? (at + 1) % spec.covers.length : at)] });
         break;
       }
+      // Reversing a palindrome is still correct; change one symbol for a real miss.
       case "memory":
         elapsedMs = spec.answer.length * spec.stepMs + 1;
-        act({ action: "answer", answer: outcome === "failure" ? [...spec.answer].reverse() : spec.answer }); break;
-      case "sequence": act({ action: "answer", answer: outcome === "failure" ? [...spec.answer].reverse() : spec.answer }); break;
+        act({ action: "answer", answer: outcome === "failure" ? [spec.options.find(o => o.id !== spec.answer[0])!.id, ...spec.answer.slice(1)] : spec.answer }); break;
+      case "sequence": act({ action: "answer", answer: outcome === "failure" ? [spec.options.find(o => o.id !== spec.answer[0])!.id, ...spec.answer.slice(1)] : spec.answer }); break;
       case "cooperate":
         for (const m of current.party.filter(m => m.connected && (m.playerId !== actor || current.party.length === 1))) act({ action: "support", mode: "prop" }, m.playerId);
         act({ action: "complete" }); break;

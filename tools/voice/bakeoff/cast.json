@@ -1,14 +1,15 @@
 {
-  "$comment": "Who speaks with which voice, for each provider (docs/voice-bakeoff.md). `describe` is the character in a sentence: it goes into Gemini's style (3.8) or audio profile (3.1), and is what to listen for on every engine. ElevenLabs ids are premade voices (named beside each id); swap in Voice Library picks freely, and an id your account cannot use shows as a failed cell, never a failed run. Gemini names are its prebuilt voices. `party` is the heroes speaking (\"you say\"); it reads in the narrator's voice by default so no child is cast as a stranger's voice.",
+  "accent": "General American, the way a warm American storyteller reads aloud",
+  "$comment": "Who speaks with which voice, for each provider (docs/voice-bakeoff.md). `describe` is the character in a sentence: it goes into Gemini's style (3.8) or audio profile (3.1), and is what to listen for on every engine. ElevenLabs ids are premade voices (named beside each id); swap in Voice Library picks freely, and an id your account cannot use shows as a failed cell, never a failed run. Gemini names are its prebuilt voices. `party` is the heroes speaking (\"you say\"); it reads in the narrator's voice by default so no child is cast as a stranger's voice. Everyone speaks with `accent` (American: the game is for American children); Gemini is told it in each style, and the ElevenLabs voices are American premade voices, since an ElevenLabs voice's accent is the voice's own.",
   "speakers": {
     "narrator": {
       "describe": "A warm grown-up storyteller reading to eight-year-olds: unhurried, smiling, a little spooky on the quiet bits, never scary.",
-      "elevenlabs": { "voiceId": "JBFqnCBsd6RMkjVDRZzb", "name": "George" },
+      "elevenlabs": { "voiceId": "nPczCjzI2devNBz1zQrb", "name": "Brian" },
       "gemini": { "voice": "Sulafat" }
     },
     "party": {
       "describe": "The heroes themselves, read by the storyteller.",
-      "elevenlabs": { "voiceId": "JBFqnCBsd6RMkjVDRZzb", "name": "George" },
+      "elevenlabs": { "voiceId": "nPczCjzI2devNBz1zQrb", "name": "Brian" },
       "gemini": { "voice": "Sulafat" }
     },
     "pib": {
@@ -18,7 +19,7 @@
     },
     "mob": {
       "describe": "A crowd of impatient treasure hunters shouting together.",
-      "elevenlabs": { "voiceId": "N2lVS1w4EtoT3dr4eOWO", "name": "Callum" },
+      "elevenlabs": { "voiceId": "cjVigY5qzO86Huf0OWal", "name": "Eric" },
       "gemini": { "voice": "Fenrir" }
     },
     "faun": {
@@ -28,17 +29,17 @@
     },
     "quill": {
       "describe": "A griffin postmaster in spectacles, flustered and squawky, far too busy.",
-      "elevenlabs": { "voiceId": "XB0fDUnXU5powFXDhCwa", "name": "Charlotte" },
-      "gemini": { "voice": "Sadachbia" }
+      "elevenlabs": { "voiceId": "9BWtsMINqrJLrRacOk9x", "name": "Aria" },
+      "gemini": { "voice": "Zephyr" }
     },
     "madame_fenn": {
       "describe": "A theatrical merfolk trader in a barrel on wheels who calls everyone darling.",
-      "elevenlabs": { "voiceId": "pFZP5JQG7iQjIQuC4Bku", "name": "Lily" },
+      "elevenlabs": { "voiceId": "FGY2WhTYpPnrIDTdsKH5", "name": "Laura" },
       "gemini": { "voice": "Laomedeia" }
     },
     "seal_keeper": {
       "describe": "An enormous ancient dragon with a slow, deep, kind voice, surprised by kindness.",
-      "elevenlabs": { "voiceId": "nPczCjzI2devNBz1zQrb", "name": "Brian" },
+      "elevenlabs": { "voiceId": "pqHfZKP75CyOSz4ZXj8A", "name": "Bill" },
       "gemini": { "voice": "Algenib" }
     },
     "sheeple": {
@@ -48,7 +49,7 @@
     },
     "sheeple_middle": {
       "describe": "The sheeple in the middle of the flock: earnest, a bit slow, very sure of the group.",
-      "elevenlabs": { "voiceId": "IKne3meq5aSn9XLyUdCD", "name": "Charlie" },
+      "elevenlabs": { "voiceId": "iP95p4xoKVk53GoZ742B", "name": "Chris" },
       "gemini": { "voice": "Zubenelgenubi" }
     },
     "sheeple_a": {
@@ -63,7 +64,7 @@
     },
     "traveler_a": {
       "describe": "A chatty traveler at a roadside fire, enjoying the gossip.",
-      "elevenlabs": { "voiceId": "onwK4e9ZLuTAKqWW03F9", "name": "Daniel" },
+      "elevenlabs": { "voiceId": "CwhRBWXzGAHq8TQ4Fs17", "name": "Roger" },
       "gemini": { "voice": "Charon" }
     },
     "traveler_b": {
@@ -83,8 +84,8 @@
     },
     "orin": {
       "describe": "Orin, a steady older guide on the ice, practical and calm.",
-      "elevenlabs": { "voiceId": "onwK4e9ZLuTAKqWW03F9", "name": "Daniel" },
-      "gemini": { "voice": "Gacrux" }
+      "elevenlabs": { "voiceId": "CwhRBWXzGAHq8TQ4Fs17", "name": "Roger" },
+      "gemini": { "voice": "Schedar" }
     },
     "seren": {
       "describe": "Seren, a curious young scholar, thoughtful and hopeful.",

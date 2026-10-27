@@ -71,9 +71,20 @@ const keys = keysFromEnv();
 const fetch = globalThis.fetch as unknown as Fetch;
 
 if (values.serve) {
-  const { server } = createBakeoffServer({ ws, samples: all, tiers: file.tiers, catalog, presets, envKeys: keys, fetch, maxDollars });
+  // The cast page (/cast) reads and writes the sheet `npm run voice:cast` builds.
+  const sheetPath = path.join(ROOT, "content", "voice", "cast.json");
+  const chapterCampaigns = Object.fromEntries(
+    fs.readdirSync(path.join(ROOT, "content", "chapters")).filter((name) => name.endsWith(".json")).map((name) => {
+      const chapter = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "chapters", name), "utf8")) as { id: string; campaignId?: string };
+      return [chapter.id, chapter.campaignId ?? "none"];
+    }),
+  );
+  const cast = fs.existsSync(sheetPath) ? { sheetPath, chapterCampaigns } : undefined;
+  if (!cast) console.log("No cast sheet yet: run `npm run voice:cast` to build one, then restart for the /cast page.");
+  const { server } = createBakeoffServer({ ws, samples: all, tiers: file.tiers, catalog, presets, envKeys: keys, fetch, maxDollars, cast });
   server.listen(port, "127.0.0.1", () => {
     console.log(`Voice bake-off: http://127.0.0.1:${String(port)}/`);
+    if (cast) console.log(`Cast voice sheet: http://127.0.0.1:${String(port)}/cast`);
     console.log(`Paste keys on the page${keys.elevenlabs || keys.gemini ? " (keys from your shell are already in use)" : ""}. Spending cap $${maxDollars.toFixed(2)} this session; raise it on the page.`);
     console.log("Ctrl-C to stop. Clips stay cached in " + path.join(ws.outDir, "clips"));
   });
