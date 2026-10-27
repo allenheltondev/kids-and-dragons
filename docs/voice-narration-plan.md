@@ -1,6 +1,6 @@
 # Voice narration plan (ElevenLabs or Gemini TTS)
 
-**Status: plan, nothing built.** This covers recorded, multi-voice narration: a narrator plus a
+**Status: plan. Built so far: `npm run voice:cost` (§9) and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
 consistent voice for each cast member. It also covers the pipeline that turns authored text into
 audio linked to that text, knows what needs (re)generating, and caches hard at every layer.
 
@@ -22,12 +22,12 @@ It builds on what already ships and replaces none of it:
 | Authored narration strings | 4,411 (918k characters) |
 | Choice labels | 4,044 (112k characters) |
 | Check prompts, goal/variant text, hints | ~104k characters |
-| **Total voiceable text** | **~1.13M characters**, roughly 20 hours of speech |
+| **Total voiceable text** | **1.05M characters** without choice labels (1.15M with), about 21 hours at a storyteller's pace (`npm run voice:cost`) |
 | Scenes that already quote someone speaking | 1,170 (36%) |
 | Tokens in authored text | `{facets}` ×59, `{party}` ×3 |
 
 At 32 kbps mono Opus that's about 300 MB of audio, around 7 MB per chapter. That's too much for
-git (`assets/` is already 581 MB, without LFS). It decides where clips live (see Caching).
+git (`assets/` is already 581 MB, without LFS). Clips go in the site bucket instead (see Caching).
 
 Three facts about the engine shape the design:
 
@@ -116,7 +116,8 @@ provider config for each provider:
 **`content/voice/cast.json`**: who speaks with which voice. Keys are speaker ids that already
 exist:
 
-- `narrator`, with an optional override per campaign (`narrator@riftlight`).
+- `narrator`: **one narrator voice for the whole game**, every campaign, plate, prologue and help
+  line. There is no override per campaign.
 - canon individuals: `individual.pib`. **One voice everywhere they appear, across campaigns.**
   This is the consistency guarantee: a speaker's voice is decided once, here.
 - chapter-scoped characters: `bramblewood-01:wisp` (the `npcVoices` keys).
@@ -269,7 +270,7 @@ What follows from that:
 3. Encode with the existing `tools/audio/encode.ts` path (ffmpeg → Opus/WebM, mono). Voice gets a
    loudness target of its own (around -16 LUFS) and trimmed leading/trailing silence, so playlists
    don't have gaps.
-4. Upload to the clip store under `voice/<key[0:2]>/<key>.webm`, then write the manifest entry.
+4. Upload to the site bucket under `voice/<key[0:2]>/<key>.webm`, then write the manifest entry.
    The upload is idempotent: a key that already exists is skipped without calling the provider.
    **That check is the generation cache.**
 
@@ -280,8 +281,8 @@ What follows from that:
 | Layer | Mechanism |
 |---|---|
 | **Generation** | content-addressed clip store: a key that exists is never rendered again, across branches, machines and CI |
-| **Storage** | an S3 bucket (`kad-voice-clips`), not git. Clips are immutable, so dev and prod can share it safely |
-| **CDN** | `deploy.sh` syncs `voice/` with `public,max-age=31536000,immutable`, like `/bundle`. The 300 s `assets/` policy doesn't apply, since a changed line has a new URL |
+| **Storage** | the existing site bucket (the one `deploy.sh` syncs `assets/` into), under its own top-level `voice/` prefix, not git. **Not under `assets/`**: deploy runs `aws s3 sync assets … --delete`, which would delete every clip that isn't in the repo. Clips are immutable, so a re-render never overwrites one |
+| **CDN** | `voice:generate` uploads each clip with `public,max-age=31536000,immutable`, like `/bundle`. Deploy never syncs or deletes `voice/`. The 300 s `assets/` policy doesn't apply, since a changed line has a new URL. CloudFront already serves the bucket, so no new behavior is needed unless `/voice/*` wants its own cache policy |
 | **Service worker** | a new `voice` strategy in `sw/policy.ts`: cache-first, no fingerprint lookup needed (the URL is the hash), in its own `kad-voice-v1` cache with an LRU cap (around 150 MB) |
 | **Prefetch** | when a scene opens, the speaking device fetches the clips for this scene and for every `goto` one step ahead (the choices, both check branches). In a 30-scene chapter that's a handful of small files, and nobody waits on a click |
 | **Offline** | Travel Mode can "Keep this chapter's voices" (around 7 MB), precached from the manifest |
@@ -312,6 +313,10 @@ What follows from that:
 - **Playback through the existing audio engine** (`packages/client/src/audio/`), not an
   `<audio>` tag. Music ducks around 10 dB while a voice plays and comes back afterwards. Cues
   still fire over it.
+- **On by default on the TV (built).** The shared screen reads aloud unless somebody has
+  switched it off on that device. Turning it off (or back on) is remembered in `localStorage`
+  (`kad.readaloud`) and beats the default. Phones stay off by default. See
+  [read-aloud.md](./read-aloud.md).
 - **Who speaks:** unchanged. The TV in Party Mode, the phone in Travel Mode. Phones in Party Mode
   keep the device voice for their own choice labels. Labels can come later; it means phones
   downloading clips.
@@ -341,13 +346,44 @@ voices) rendered both ways, scored on:
    Gemini voices are steered by a style prompt, which may drift more. Measure it, don't assume.
 2. **Character range** from a small bank (sprite, yeti, rhyming wisp, narrator).
 3. **Alignment/timestamps.** Native, or does it need the forced-alignment pass?
-4. **Cost** for the 1.13M characters plus re-renders. `voice:status` prices it; run the real
-   numbers against current pricing at spike time.
+4. **Cost.** `npm run voice:cost` prices it (below).
 5. **Delivery controls** (whisper, excited) and pronunciation-dictionary support.
 6. **Terms** for a kids' product, and whether generated audio can be stored and redistributed.
 
-Gemini's current TTS lineup and limits (including any "3.8 Flash TTS" model) should be confirmed
-at spike time. These capabilities move faster than this document.
+### What it costs: `npm run voice:cost`
+
+This counts every line the game would record (`tools/voice/inventory.ts`, the same list the
+generator will use) and prices it with each model in `tools/voice/pricing.json`. It calls no API.
+Each distinct text is counted once (one narrator reads them all), `{party}`/`{facets}` lines are
+counted once per value, and retakes are padded in (`--retakes`, default ×1.25). Gemini bills
+audio tokens (25 a second), so its price depends on reading speed: 14 characters a second, set
+in `pricing.json`.
+
+The whole game, choice labels excluded, ×1.25 for retakes, priced 2026-10-27:
+
+| Model | Whole game | Gemfall | Riftlight | Fits the $75 first run? |
+|---|---|---|---|---|
+| ElevenLabs v3 / Multilingual v2 | $134.93 | $74.45 | $58.39 | no: one campaign at a time |
+| ElevenLabs Flash v2.5 | $67.46 | $37.22 | $29.20 | yes |
+| Gemini 3.8 Flash TTS | $22.78 | $12.56 | $9.86 | yes, 3× over |
+| Gemini 3.8 Flash-Lite TTS | $15.00 | $8.27 | $6.50 | yes |
+| Gemini 3.1 Flash TTS | $49.28 | $27.18 | $21.33 | yes |
+
+Every rate is marked unconfirmed in `pricing.json`. They came from third-party summaries,
+because the provider pages couldn't be fetched from here. Check them before spending. Two things
+change the numbers:
+
+- **Gemini 3.8 doubles on 2027-01-01** ($9 → $18 per million audio tokens for Flash). A first
+  render before then is half the price: `voice:cost -- --on 2027-01-15` shows the difference.
+  `--batch` prices Gemini's batch discount.
+- **ElevenLabs' rate depends on the plan.** $0.10 per thousand characters is the pay-as-you-go API
+  rate; plan overage has been quoted anywhere from $0.10 to $0.30.
+
+**Budget: $75 cap on the first run.** `voice:generate` will take `--max-dollars 75` and stop before
+the request that would cross it, priced with the same model. On Gemini 3.8 Flash the cap covers
+the whole game with room for a second pass. On ElevenLabs v3 it covers one campaign at a time
+(Gemfall alone is $74), so the first run would be Hollow Crown, First Steps and help ($2.09), plus
+either Riftlight or most of Gemfall.
 
 ---
 
@@ -361,23 +397,26 @@ Each phase ships on its own and leaves the game working.
 | 1 | **Addresses & inventory** | line addresses, `voice:extract`, classification report, `narrationParts` on `RunState` (Gemfall digests checked first) | every spoken line in the game has an address and a kind |
 | 2 | **Voices** | `voices.json`, `cast.json`, `lexicon.json`, schema + validation, casting for all named NPCs | every speaker in every chapter is cast |
 | 3 | **Scripts** | sidecar schema, the join-equals-source validator, `voice:script` drafting | bramblewood-01 and first-steps-01 scripted and reviewed |
-| 4 | **Pipeline & cache** | provider adapter, `voice:generate`, clip store bucket, manifests, `voice:status`, `voice:verify` in CI | changing one word regenerates one clip, and status says so first |
+| 4 | **Pipeline & cache** | provider adapter, `voice:generate` (with `--max-dollars`), clips in the site bucket's `voice/` prefix, manifests, `voice:status`, `voice:verify` in CI | changing one word regenerates one clip, and status says so first |
 | 5 | **Client** | `clip-speaker`, ducking, prefetch, SW `voice` strategy, CDN policy, device-voice fallback | bramblewood-01 plays fully voiced on a TV, and a 404 falls back cleanly |
 | 6 | **Review & lock** | `voice:review` page, approvals, `voice.lock.json` | a regenerated take never replaces an approved one silently |
 | 7 | **Dialogue pass** | `content:dialogue` report, house-rule additions to content/README and CLAUDE.md, chapter-by-chapter rewrites | the dialogue target met on the reference chapters, then campaign by campaign |
-| 8 | **Full render** | campaigns rendered and reviewed in the phase-3 order | `voice:status` clean for a whole campaign |
+| 8 | **Full render** | campaigns rendered and reviewed in the phase-3 order, first run capped at $75 | `voice:status` clean for a whole campaign |
 | 9 | **Stretch** | word-highlight follow-along, cast pulse, offline chapter packs, voiced choice labels on phones | — |
 
 Phases 2–3 and the dialogue writing (7) can run alongside 4–5. The writing doesn't need the
 pipeline, and rewriting before the full render (8) avoids paying to render text twice.
 
-## Decisions for you
+## Decided (2026-10-27)
 
-1. **Provider:** decided by the phase-0 bake-off, or call it now?
-2. **Default:** once a chapter is fully voiced, does the TV read aloud by default? It's off by
-   default today, per device.
-3. **Names:** confirm that player names never go to a TTS provider (my recommendation).
-4. **Budget:** a cap per render run (`--max-chars`) and a total for the first full render.
-5. **Storage:** a new S3 bucket for clips, or a `voice/` prefix in the site bucket?
-6. **Narrators:** one narrator voice for every campaign, or one per campaign (e.g. a different
-   storyteller for Riftlight)?
+- **The TV reads aloud by default**, with the switch to turn it off remembered per device. Built.
+- **Budget:** $75 cap for the first render run (`--max-dollars 75`).
+- **Storage:** clips go in the existing site bucket, under a `voice/` prefix next to `assets/`
+  (not inside it, so deploy's `--delete` never touches them).
+- **One narrator voice** for the whole game.
+- **Provider:** choose after `voice:cost` and the phase-0 bake-off.
+
+## Still open
+
+1. **Names:** confirm that player names never go to a TTS provider (my recommendation).
+2. **Provider:** the bake-off decides, with the costs above in hand.
