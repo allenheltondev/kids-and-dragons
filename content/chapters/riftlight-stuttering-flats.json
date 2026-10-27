@@ -1788,6 +1788,7 @@
       },
       "sling": {
         "props": [
+          "wind-blanket",
           "rope-loop"
         ]
       },
@@ -1803,6 +1804,7 @@
       },
       "crossing_recovery": {
         "props": [
+          "wind-blanket",
           "rope-loop"
         ]
       },
@@ -1844,21 +1846,25 @@
       },
       "lift_balance": {
         "props": [
+          "wind-blanket",
           "rope-loop"
         ]
       },
       "crossing_sling": {
         "props": [
+          "wind-blanket",
           "rope-loop"
         ]
       },
       "crossing_checked": {
         "props": [
+          "wind-blanket",
           "rope-loop"
         ]
       },
       "crossing_mended": {
         "props": [
+          "wind-blanket",
           "rope-loop"
         ]
       },
