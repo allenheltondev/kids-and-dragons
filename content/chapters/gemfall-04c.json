@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_rush"
   },
-  "estimatedMinutes": 44,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_north_roads",
   "plate": {
@@ -77,7 +77,7 @@
   "scenes": {
     "scene_north_roads": {
       "type": "story",
-      "narration": "North of the west branch, the road splits into two lanes. The upbound lane is the rush going up: wagons, picks, and people singing. The downbound lane is the rush coming back: slower, quieter, carrying a lot less than it set out with. Everybody is talking at once, and folk say the road keeps track of all of it. Follow the rush up the north road, and find out what the road remembers.",
+      "narration": "Follow the rush up the north road and find out what the road remembers. Upbound wagons carry picks. Downbound wagons carry tired people and fewer stones. The road has two lanes and a great deal to say about both.",
       "choices": [
         {
           "id": "fall_in",
@@ -104,7 +104,7 @@
     },
     "scene_north_roads_fall_in": {
       "type": "story",
-      "narration": "You fall in between a wagon full of picks and a wagon full of pickles. Nobody knows you, nobody minds you, and everybody is singing a different song. A man with a parrot tells you the Gemfall is two days north. The parrot says three. They argue about it for a mile.",
+      "narration": "You fall in between a wagon of picks and a wagon of pickles. Nobody asks questions. The pickle seller offers you one on a stick. It is bigger than the stick.",
       "choices": [
         {
           "id": "on",
@@ -158,7 +158,7 @@
           "count": 3
         }
       ],
-      "narration": "Out on the open road, jackalopes are everywhere: little antlered hares racing the wagons for fun, and winning. One of them lopes alongside you, looks you up and down, and thumps the road twice with a back foot. On the Plains, everybody knows what that means. It is a challenge.",
+      "narration": "Jackalopes, little antlered hares, race the wagons for fun. One thumps beside you and points its nose at a mile marker. Race it, cheer from the road, or take to the air if you can.",
       "choices": [
         {
           "id": "race",
@@ -225,7 +225,7 @@
           "count": 3
         }
       ],
-      "narration": "You cheer the wagon horses on, and the horses try their very best. The jackalope wins by a mile, turns around, and runs the whole race again backwards, just to make a point. The drivers laugh. \"That's the Plains,\" one says. \"The jackalopes always win. Always. Everywhere.\"",
+      "narration": "You cheer the horses. The jackalope wins by a mile, turns around, and races them back. The horses decline to discuss it.",
       "choices": [
         {
           "id": "on",
@@ -256,7 +256,7 @@
     },
     "scene_empty_stretch": {
       "type": "story",
-      "narration": "Plains folk say an empty stretch of good road is a message, and jackalopes are the punctuation. Normally they are everywhere, racing wagons and winning. But for a whole mile around the big gem depot up ahead, the warrens have gone completely silent, and the road feels like a sentence with the end missing.",
+      "narration": "A whole mile has no jackalopes. Not one thump. Count where they stop, follow a racer if it stayed with you, or carry on through the silence. The birds have stopped fussing too.",
       "choices": [
         {
           "id": "count",
@@ -307,7 +307,7 @@
     },
     "scene_empty_stretch_keep_walking": {
       "type": "story",
-      "narration": "You keep walking. The mile is very quiet: no thumps, no rustles, not one antler in the grass. Even the wagon drivers stop singing. Somebody's horse keeps looking back over its shoulder, as if it has heard something you cannot.",
+      "narration": "No thumps. No antlers. Even the birds whisper. You reach the downbound lane without checking where the silence began.",
       "choices": [
         {
           "id": "on",
@@ -366,7 +366,7 @@
     },
     "scene_downbound": {
       "type": "story",
-      "narration": "On the downbound lane, a sold-out prospector called Ma Ruddle is watching her own wagon being auctioned. \"I don't care about the wagon,\" she says. \"I've lost my nephew Tib in this crowd. Small. Orange hat. Talks to horses.\"",
+      "narration": "A prospector called Ma Ruddle watches her wagon being auctioned. \"Never mind the wagon. I've lost my nephew Tib. Small. Orange hat. Talks to horses.\" Find him and she can hand you the depot papers she saved.",
       "choices": [
         {
           "id": "work_crowd",
@@ -504,7 +504,7 @@
     },
     "scene_tib_found": {
       "type": "story",
-      "narration": "Tib is found, still holding a long conversation with a pony. Ma Ruddle hugs him so hard his hat falls off. Then she pulls a folded paper from her boot. \"Bill of sale for the stone I left at the depot. I'm going home. You have it.\"",
+      "narration": "Tib is explaining something to a pony. Ma Ruddle hugs him, then gives you a honeycake and a folded bill of sale. \"For the stone I left at the depot. I'm going home. You have it.\"",
       "onEnter": [
         {
           "type": "setFlag",
@@ -548,7 +548,7 @@
     },
     "scene_stubborn_mule": {
       "type": "story",
-      "narration": "Farther down the downbound lane, nobody is moving at all. A mule has sat down in the middle of the road with a gem sack on its back, and it will not get up. Its owner is pleading, the wagons behind are shouting, and the mule is calmly chewing a daisy, as if none of this is its problem.",
+      "narration": "A mule blocks the downbound lane, calmly chewing a daisy. Its owner pleads. The wagons shout. A gem sack hums on its back. Push the mule, remove the sack, or listen to what it feels.",
       "choices": [
         {
           "id": "push",
@@ -609,7 +609,7 @@
     },
     "scene_stubborn_mule_unload": {
       "type": "story",
-      "narration": "You lift the gem sack off. The mule springs up at once, brays a thank you, and trots off with its ears high. The sack hums in your arms all the way to some big tents by the roadside, where you hand it back to its very puzzled owner. Your arms ache. The mule waves its ears at you from the roadside.",
+      "narration": "You lift off the gem sack. The mule springs up and steps away from it. \"Anything but that,\" mutters the owner. You carry the sack to his wagon, away from the mule.",
       "choices": [
         {
           "id": "on",
@@ -647,7 +647,7 @@
     },
     "rest_soup_tents": {
       "type": "rest",
-      "narration": "Beside the downbound lane, people in dark robes with little humming crystals on strings have put up rest tents, with DEEP HOLLOW stitched small on the flaps: three of them, with cots and blankets and hot bowls for anyone the rush has dropped. The ladler is called Wend, and Wend has all your names by the second bowl, and says them as if they had always been known.",
+      "narration": "Dark-robed helpers serve soup beside the road. Their humming crystals shiver at gem wagons. A ladler named Wend offers warmth and a place to rest. \"Kindness first.\" If you have heard it before, it sounds exactly the same.",
       "heal": 2,
       "choices": [
         {
@@ -682,7 +682,7 @@
     },
     "rest_soup_tents_rest_go": {
       "type": "story",
-      "narration": "You thank everybody, fold your blankets, and get back on the road. Wend waves you off with the ladle. \"Come back any time,\" Wend calls. \"We'll still be here. We're always here now.\" Behind you, the robed folk are putting up a fourth tent.",
+      "narration": "You thank the helpers and fold your blankets. Wend waves with the ladle. A crystal bumps it and hums. Back to the road.",
       "choices": [
         {
           "id": "on",
@@ -810,13 +810,13 @@
           "name": "Road Boss"
         }
       ],
-      "narration": "Up ahead, a crew of centaurs is moving the road. Not mending it: moving it. They pull up old marker posts and plant new ones in a long curve through the grass, around a scorched hollow where a fallen stone once lay. \"Third detour this month,\" puffs the road boss, a post on each shoulder. \"Lend a hand?\"",
+      "narration": "A centaur crew is moving the road around a scorched hollow. The road boss offers two jobs: help carry posts and the crew will help you through tonight's ash wind, or study the detour with her so you can bypass the confusing sign puzzle ahead. Everyone can help raise the final post.",
       "choices": [
         {
           "id": "haul",
-          "label": "Haul marker posts with the crew",
+          "label": "Pass the marker posts down the new road line",
           "icon": "might",
-          "goto": "check_haul_posts"
+          "goto": "interaction_post_line"
         },
         {
           "id": "ask_why",
@@ -837,6 +837,12 @@
           "icon": "wing",
           "goto": "scene_road_crew_fly",
           "requiresSpecies": "griffin"
+        },
+        {
+          "id": "heave_posts",
+          "label": "Risk a quick shoulder carry for the crew",
+          "icon": "might",
+          "goto": "check_haul_posts"
         }
       ],
       "art": "scenes/gemfall/north-road-detour"
@@ -878,7 +884,7 @@
           "name": "Road Boss"
         }
       ],
-      "narration": "The road boss leans on a post. \"A stone fell here, the red night. Since then nothing will walk past this hollow. Not horses, not hares. The grass won't even lean toward it. So the road goes around. A road always goes where the walking goes.\" She glances at your packs, and then away.",
+      "narration": "\"Nothing will pass the hollow where the stone fell,\" says the road boss. She walks you through the detour: old bridge, pond, depot barn. You check that order against her route card. It will get you past the nonsense signs ahead. She still needs help with the final post.",
       "choices": [
         {
           "id": "on",
@@ -887,7 +893,14 @@
           "goto": "interaction_last_post"
         }
       ],
-      "art": "scenes/gemfall/north-road-detour"
+      "art": "scenes/gemfall/north-road-detour",
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "road_detour_checked",
+          "value": true
+        }
+      ]
     },
     "scene_road_crew_charm": {
       "type": "story",
@@ -932,7 +945,7 @@
       "discovers": [
         "faction.skywardens"
       ],
-      "narration": "A Skywarden supply patrol has stopped the road: silver and violet armor, very neat ledgers. Sergeant Holloway is requisitioning food at fixed rates for Redspire, the wardens' citadel up in the foothills. Everybody around you is calling it theft. Sergeant Holloway is calling it arithmetic.",
+      "narration": "A Skywarden patrol has stopped the road. Sergeant Holloway wants two coins at a fixed rate for Redspire, the wardens' citadel. You can pay, argue the arithmetic, or balance the supply tray to earn passage without coins. Holloway has written WORKS INSTEAD on a spare form. It has its own box.",
       "cast": [
         {
           "figure": "cast/holloway",
@@ -940,6 +953,12 @@
         }
       ],
       "choices": [
+        {
+          "id": "work_passage",
+          "label": "Level the ration tray to earn passage without coins",
+          "icon": "hand",
+          "goto": "interaction_warden_tray"
+        },
         {
           "id": "pay",
           "label": "Pay the fixed rate and wish them well",
@@ -1054,7 +1073,7 @@
     },
     "scene_signposts": {
       "type": "story",
-      "narration": "Where the road forks, somebody has nailed up forty signs that all say GEMS THIS WAY, and they all point different ways. Under them, a man in a velvet coat is selling maps to the Gemfall. \"Lost? Course you are, with signs like these. One copper buys you a map straight to the depot! Guaranteed accurate, or your money back from my cousin,\" he says, \"who has left.\"",
+      "narration": "Forty arrows promise GEMS THIS WAY. None agrees. A velvet-coated seller offers a guaranteed map, refundable by his cousin, who has left. Use the relay clues, buy the map, or follow a detour you already checked.",
       "choices": [
         {
           "id": "buy_map",
@@ -1075,9 +1094,9 @@
         },
         {
           "id": "read_signs",
-          "label": "Work out which signs are honest",
+          "label": "Share the relay clues and build the route to the depot",
           "icon": "clever",
-          "goto": "check_read_signs"
+          "goto": "interaction_relay_signs"
         },
         {
           "id": "outsell",
@@ -1085,6 +1104,19 @@
           "icon": "spark",
           "goto": "scene_signposts_outsell",
           "requiresSpecies": "kitsune"
+        },
+        {
+          "id": "guess_signs",
+          "label": "Risk following the most convincing old sign",
+          "icon": "clever",
+          "goto": "check_read_signs"
+        },
+        {
+          "id": "checked_detour",
+          "label": "Follow the detour you checked with the road boss",
+          "icon": "map",
+          "goto": "scene_signposts_checked",
+          "requiresFlag": "road_detour_checked"
         }
       ],
       "art": "scenes/gemfall/north-signpost-fork"
@@ -1107,7 +1139,7 @@
     },
     "scene_signposts_buy_map": {
       "type": "story",
-      "narration": "You buy a map. It is beautifully drawn. It is also, when you turn it the right way up, a drawing of a duck. By the time you notice, the velvet coat has moved to a different fork. You keep the duck anyway. It is a very good duck.",
+      "narration": "One coin buys a beautiful drawing of the seller's pig farm. A centaur points you to the real depot. The map remains a very good picture of pigs.",
       "choices": [
         {
           "id": "on",
@@ -1133,7 +1165,7 @@
     },
     "scene_depot": {
       "type": "story",
-      "narration": "The biggest rush depot on the north roads is a barn full of strongboxes, and one of them is ringing like a bell. Behind the counter sits Clerk Pennywhistle, who has a queue, a stamp, and a form for absolutely everything, including a form for asking about forms. The ringing stone is in strongbox number nine.",
+      "narration": "Clerk Pennywhistle runs a depot barn full of strongboxes. Number nine rings like a dinner bell. Use Ma Ruddle's bill, make a shared claim, risk a quick Form 9, or leave the stone. The clerk has a form for deciding which form.",
       "choices": [
         {
           "id": "bill",
@@ -1144,15 +1176,21 @@
         },
         {
           "id": "forms",
-          "label": "Queue up and fill in the forms properly",
+          "label": "Make the claim together with the clerk's help",
           "icon": "scroll",
-          "goto": "check_forms"
+          "goto": "interaction_form_nine"
         },
         {
           "id": "leave",
           "label": "Leave it in the strongbox and head on",
           "icon": "arrow",
           "goto": "scene_depot_leave"
+        },
+        {
+          "id": "quick_forms",
+          "label": "Risk a quick Form 9 without the clerk's help",
+          "icon": "scroll",
+          "goto": "check_forms"
         }
       ],
       "art": "scenes/gemfall/rush-depot",
@@ -1193,7 +1231,7 @@
     },
     "scene_strongbox": {
       "type": "story",
-      "narration": "Clerk Pennywhistle unlocks strongbox number nine, lifts out a gem that rings like a dinner bell, and writes your names in the depot ledger in lovely handwriting. \"The Depot Stone,\" he reads off the tag. \"Sold. Please keep it away from my pens.\"",
+      "narration": "Pennywhistle opens strongbox nine. \"The Depot Stone. Sold.\" He writes your names and hands over the ringing gem. \"Keep it away from my pens.\" One pen has already rolled under his stool.",
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -1223,7 +1261,7 @@
     },
     "scene_depot_leave": {
       "type": "story",
-      "narration": "You leave the ringing stone in strongbox number nine. Clerk Pennywhistle looks enormously relieved and stamps something to celebrate. As you go out, the strongbox rings after you, one long note, and every pen on his counter rattles in its pot.",
+      "narration": "You leave the ringing stone in box nine. Pennywhistle relaxes and ticks UNCLAIMED. Behind him, another box gives a loud thump.",
       "choices": [
         {
           "id": "on",
@@ -1285,7 +1323,7 @@
     },
     "scene_rumor_fire_true_news": {
       "type": "story",
-      "narration": "You tell them plainly: every gem on the road hums the same note. The ring goes quiet. Then an old woman says, \"My nephew on the River Road said a troll told him the very same.\" A boy says, \"My cousin heard it from a boggart.\" Three roads, one note. Nobody says anything for a while.",
+      "narration": "Every gem hums the same note, you tell them. An old woman nods. \"Noticed that,\" she says. A nearby wagon hums as if voting.",
       "choices": [
         {
           "id": "on",
@@ -1330,13 +1368,13 @@
           "name": "Bell Courier"
         }
       ],
-      "narration": "Toward evening, a small dragonling on a fat pony comes trotting down from the north, ringing a hand bell in a pattern: ding, ding, pause, ding. She stops to let the pony drink, puffing. \"News from the boundary stones,\" she says. \"Can't stop long. Got to ring it all the way to the river.\"",
+      "narration": "A dragonling courier trots down from the north on a pony. Her bell rings ding, ding, pause, ding. \"Boundary news. Must reach the river.\" Let her rest while you echo it, ask the news, or offer a familiar answer.",
       "choices": [
         {
           "id": "ring_for_her",
-          "label": "Offer to ring the pattern while she rests",
+          "label": "Watch the pattern, then ring it while she rests",
           "icon": "note",
-          "goto": "check_ring_pattern"
+          "goto": "interaction_courier_pattern"
         },
         {
           "id": "ask_news",
@@ -1350,6 +1388,12 @@
           "icon": "flame",
           "goto": "scene_bell_courier_ring_back",
           "requiresSpecies": "dragonling"
+        },
+        {
+          "id": "improvise_bell",
+          "label": "Risk ringing the pattern from a quick hearing",
+          "icon": "note",
+          "goto": "check_ring_pattern"
         }
       ],
       "art": "scenes/gemfall/north-rush-road"
@@ -1384,7 +1428,7 @@
           "name": "Bell Courier"
         }
       ],
-      "narration": "\"The grandmothers are turning pry bars back at the boundary stones,\" she says. \"Whole wagonloads. And they say anybody carrying a stone that hums should come and see them first.\" She looks hard at your packs. \"Like yours.\" Then she is back on the pony, bell going, before you can ask her how she knew.",
+      "narration": "\"The grandmothers are turning back pry bars at the boundary stones,\" says the courier. \"Whole wagons of them. Not spoons. Spoons are fine.\" Her pony nudges you for attention.",
       "choices": [
         {
           "id": "on",
@@ -1419,7 +1463,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "At night the centaur relay gathers at the biggest campfire to sing the route-songs: one verse for every landmark, the dangers in the chorus. This season the songs have new verses every night, faster than anyone can learn them. A centaur called Old Corran passes you the next line.",
+      "narration": "At the relay campfire, centaurs sing one verse per landmark. New detours mean new verses. A centaur called Old Corran offers you a line. Sing, listen, or hear the crew's verse if you helped them.",
       "cast": [
         {
           "figure": "cast/old_corran",
@@ -1493,7 +1537,7 @@
           "name": "Old Corran"
         }
       ],
-      "narration": "You sit very still and listen. Old Corran sings slowly, so you can follow. Verse after verse, landmark after landmark, and in every new verse the road bends away from somewhere. Away, and away, and away again. You begin to hear a shape in it.",
+      "narration": "Old Corran sings slowly. Landmark after landmark, the road bends away from places where stones fell. Listen for the whole shape before the chorus returns.",
       "choices": [
         {
           "id": "on",
@@ -1512,7 +1556,7 @@
           "name": "Old Corran"
         }
       ],
-      "narration": "Halfway through, the road crew from the detour come cantering in, and the road boss sings a brand new verse: about travelers who hauled marker posts and never once complained, much. It is about you. The whole campfire sings the chorus back. The road remembers.",
+      "narration": "The road crew joins the fire. Their new verse describes travelers passing marker posts down a curve. It is about you. Old Corran makes the chorus rhyme with \"noodles.\" Nobody asks how.",
       "choices": [
         {
           "id": "on",
@@ -1555,13 +1599,13 @@
     },
     "scene_ash_wind": {
       "type": "choice_point",
-      "narration": "Walking north under the stars, a warm wind blows down from the mountain, full of gray ash as soft as moth dust. It glitters in your lantern light. Every gem in every pack on the road starts humming louder, all at once, as if the wind has said something they all agree with. Everybody vote.",
+      "narration": "Warm gray ash blows down from the mountain. Packs hum louder. Balance the shared load through it, shelter behind a patrol wagon, or call the road crew if you helped them. The ash is soft. It is also getting everywhere.",
       "choices": [
         {
           "id": "push_on",
-          "label": "Pull up your collars and push on",
+          "label": "Balance the shared pack load through the ash wind",
           "icon": "might",
-          "goto": "check_ash_wind"
+          "goto": "interaction_ash_load"
         },
         {
           "id": "shelter",
@@ -1575,6 +1619,19 @@
           "icon": "wing",
           "goto": "scene_ash_wind_fly_above",
           "requiresSpecies": "griffin"
+        },
+        {
+          "id": "lean_fast",
+          "label": "Risk marching straight into the wind",
+          "icon": "might",
+          "goto": "check_ash_wind"
+        },
+        {
+          "id": "crew_screen",
+          "label": "Call the road crew you helped to shelter the crossing",
+          "icon": "party",
+          "goto": "interaction_crew_screen",
+          "requiresFlag": "helped_road_crew"
         }
       ],
       "art": "scenes/gemfall/road-bend-grass"
@@ -1603,7 +1660,7 @@
           "name": "Sergeant Holloway"
         }
       ],
-      "narration": "You duck behind a Skywarden supply wagon and find Sergeant Holloway already there, writing by lantern. \"Ash wind,\" says the sergeant. \"Third this week. Wind from the mountain means the mountain is busy.\" Holloway writes BUSY, underlines it twice, and offers you a very dry cracker.",
+      "narration": "Sergeant Holloway is already behind the supply wagon. \"Third ash wind this week,\" the sergeant says, writing BUSY under MOUNTAIN. Wait in its shelter. The offered cracker is extremely dry.",
       "choices": [
         {
           "id": "on",
@@ -1632,7 +1689,7 @@
       "discovers": [
         "creature.cinder_wolf"
       ],
-      "narration": "Plains folk say never camp where the road bends, because the road knows something. At the bend, a pack of cinder wolves is pacing back and forth across the road, glowing faintly, between you and tonight's camp.",
+      "narration": "Cinder wolves pace across the bend before tonight's camp. They glow faintly. Wait quietly, risk sneaking through the grass, or drive them off. The plains rule says not to camp at a bend. They seem to agree.",
       "cast": [
         {
           "figure": "entities/cinder_wolf",
@@ -1722,7 +1779,7 @@
           "count": 3
         }
       ],
-      "narration": "You sit down in the road and wait, very quietly. The wolves pace, and pace, and then one by one they lift their noses toward the mountain and trot off north into the dark, glowing like a string of lanterns going home. Not one of them comes anywhere near your packs.",
+      "narration": "You wait. One by one, the wolves lift their noses toward the mountain and trot north. You make camp beyond the bend. Waiting was a decision too.",
       "choices": [
         {
           "id": "on",
@@ -1743,7 +1800,46 @@
       "type": "rest",
       "narration": "You make camp past the bend, where it is safe. To the north, in the morning light, you can see the red foothills, and the line where the rush is heading. The bark strip of verses is in your pack, and you know now what the whole road is quietly saying: it is not the eruption the land is flinching from. It is the stones.",
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "road_crew_sheltered"
+          },
+          "text": "The crew you helped sheltered your wind crossing and took its screen onward. No borrowed screen remains in your packs."
+        },
+        {
+          "when": {
+            "flag": "road_worked_passage"
+          },
+          "text": "You earned the patrol passage by working, without spending its two-coin rate."
+        },
+        {
+          "when": {
+            "flag": "road_signs_corrected"
+          },
+          "text": "The pig farmer corrected your route. A hoofprint is not a relay landmark."
+        },
+        {
+          "when": {
+            "flag": "road_signs_helped"
+          },
+          "text": "A relay runner helped check your sign route."
+        },
+        {
+          "when": {
+            "flag": "road_claim_shared",
+            "notFlag": "road_claim_helped"
+          },
+          "text": "The depot claim records everyone's contribution."
+        },
+        {
+          "when": {
+            "flag": "road_claim_helped"
+          },
+          "text": "Pennywhistle helped record the depot claim. You remember the help as well as the stamp."
+        }
+      ]
     },
     "end_scattered": {
       "type": "rest",
@@ -1756,7 +1852,46 @@
       ],
       "heal": 3,
       "choices": [],
-      "outcome": "setback"
+      "outcome": "setback",
+      "variants": [
+        {
+          "when": {
+            "flag": "road_crew_sheltered"
+          },
+          "text": "The crew you helped sheltered your wind crossing and took its screen onward. No borrowed screen remains in your packs."
+        },
+        {
+          "when": {
+            "flag": "road_worked_passage"
+          },
+          "text": "You earned the patrol passage by working, without spending its two-coin rate."
+        },
+        {
+          "when": {
+            "flag": "road_signs_corrected"
+          },
+          "text": "The pig farmer corrected your route. A hoofprint is not a relay landmark."
+        },
+        {
+          "when": {
+            "flag": "road_signs_helped"
+          },
+          "text": "A relay runner helped check your sign route."
+        },
+        {
+          "when": {
+            "flag": "road_claim_shared",
+            "notFlag": "road_claim_helped"
+          },
+          "text": "The depot claim records everyone's contribution."
+        },
+        {
+          "when": {
+            "flag": "road_claim_helped"
+          },
+          "text": "Pennywhistle helped record the depot claim. You remember the help as well as the stamp."
+        }
+      ]
     },
     "interaction_last_post": {
       "type": "interaction",
@@ -1834,7 +1969,7 @@
     },
     "scene_box_ten": {
       "type": "story",
-      "narration": "Behind you, something goes thump. Thump. THUMP. Strongbox number ten has hopped off its shelf on three short gray legs, and it is eating a ledger. Strongbox number eleven is trying to follow it. \"Ten has been empty since spring!\" cries Clerk Pennywhistle, hugging his pens. \"They are mire mimics! They have eaten the whole morning's paperwork and half my stamps! Please, please, get them out of my barn!\"",
+      "narration": "Strongbox ten grows three legs and starts eating a ledger. Eleven tries to follow. \"Mire mimics!\" cries Pennywhistle. \"Ten has been empty since spring!\" Drive them out before they eat the stamps.",
       "cast": [
         {
           "figure": "entities/mire_mimic",
@@ -1889,7 +2024,7 @@
     },
     "scene_boxes_gone": {
       "type": "story",
-      "narration": "The mimics wobble, sulk and slink away down the road, looking exactly like two very ordinary rocks. Clerk Pennywhistle sinks onto his stool and wipes his forehead with a clean form. \"A thousand thanks,\" he says, and digs in the lost-property drawer. \"Take this. It has been lost since the spring, and so, I think, has everyone's patience.\" It is a small brass whistle.",
+      "narration": "The mimics slink away disguised as rocks. Pennywhistle thanks you and finds a brass whistle in lost property. \"Lost since spring,\" he says. \"So has my patience.\"",
       "cast": [
         {
           "figure": "cast/clerk_pennywhistle",
@@ -1908,7 +2043,7 @@
     },
     "scene_boxes_sulking": {
       "type": "story",
-      "narration": "The boxes burp you out of the yard in a puff of ink. Clerk Pennywhistle slams a ledger down on their lids, and the whole queue sits on top of it until the boxes give up, sulk, and shuffle off. Somebody hands you hot tea. Nobody gets a lost-property whistle tonight, but the pens are safe.",
+      "narration": "The boxes burp you out in a puff of ink. Pennywhistle slams a ledger on their lids. The queue sits on it until they shuffle away. Hot tea follows. No lost-property whistle this time.",
       "cast": [
         {
           "figure": "cast/clerk_pennywhistle",
@@ -2042,6 +2177,391 @@
         }
       ],
       "art": "scenes/gemfall/relay-route-fire"
+    },
+    "interaction_post_line": {
+      "type": "interaction",
+      "narration": "The crew forms a line along the new curve. Catch and pass each marker post. Alone, pass it straight to the road boss. Nobody plants an arrow in the sky this way, although one centaur says it might be useful for griffins.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the marker post, then pass it along the curve.",
+        "actionLabel": "Pass the post",
+        "objectLabel": "A new road marker"
+      },
+      "onSuccess": {
+        "goto": "interaction_last_post",
+        "narration": "The posts reach the right places. The road boss offers the crew's help if the mountain wind catches you tonight.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_road_crew",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_last_post",
+        "narration": "You carry a post backward and plant it upside down, so the arrow points at the sky. The crew decides this is very funny and leaves it there, as a joke for the next runner. The road boss thanks you anyway, still chuckling."
+      },
+      "onAssisted": {
+        "goto": "interaction_last_post",
+        "narration": "The road boss takes a place in your line. Together you deliver the posts. Her crew will help if the ash wind catches you.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_road_crew",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/north-road-detour",
+      "cast": [
+        {
+          "figure": "cast/road_boss",
+          "name": "Road Boss"
+        }
+      ]
+    },
+    "interaction_warden_tray": {
+      "type": "interaction",
+      "narration": "Holloway's water tray leans toward the road. Lift or lower your side until the marker is centered, then set it beside the patrol cups. \"Every drop accounted for,\" the sergeant says. The goat has already claimed a cup.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Raise or lower your side until the supply tray is level.",
+        "actionLabel": "Set the tray down",
+        "objectLabel": "The patrol's water tray"
+      },
+      "onSuccess": {
+        "goto": "interaction_gate",
+        "narration": "The water tray settles level. Holloway stamps WORKED, POLITE. Your help pays for passage; no coins leave your purse.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "met_the_wardens",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "road_worked_passage",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_gate",
+        "narration": "Water slops over the side. Holloway steadies the tray, accepts the work, and waves you through without a coin charge.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "met_the_wardens",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "road_worked_passage",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "interaction_gate",
+        "narration": "Holloway steadies a corner while you balance the tray. WORKED WITH HELP, POLITE goes in the ledger. Passage costs no coins.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "met_the_wardens",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "road_worked_passage",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/warden-supply-stop",
+      "cast": [
+        {
+          "figure": "cast/holloway",
+          "name": "Sergeant Holloway"
+        }
+      ]
+    },
+    "interaction_relay_signs": {
+      "type": "interaction",
+      "narration": "Forty signs promise GEMS THIS WAY. Three old relay notices give actual landmarks. Share their clues, then put the landmarks in travel order. The map seller promises a shortcut through his cousin's pig farm. His cousin has left.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share the clues. Choose the route landmarks in travel order.",
+        "actionLabel": "Follow the relay route",
+        "options": [
+          {
+            "id": "barn",
+            "label": "Depot barn",
+            "icon": "travel"
+          },
+          {
+            "id": "pond",
+            "label": "Pond",
+            "icon": "glyph_pond"
+          },
+          {
+            "id": "bridge",
+            "label": "Old bridge",
+            "icon": "glyph_bridge"
+          }
+        ],
+        "answer": [
+          "bridge",
+          "pond",
+          "barn"
+        ],
+        "clues": [
+          "Cross the old bridge before reaching the pond.",
+          "The depot barn is after the pond.",
+          "The barn is the last landmark. Ignore the shiny GEM signs."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_depot",
+        "narration": "Bridge, pond, barn. You follow the checked route to the depot. Behind you, the map seller quietly adds a bridge to his pig drawing."
+      },
+      "onFailure": {
+        "goto": "scene_signposts_pigs",
+        "narration": "You reach the pig farm. The farmer compares the notices with you and points out which landmark came first.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "road_signs_corrected",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "scene_depot",
+        "narration": "A relay runner helps you compare the clues. Together you follow bridge, pond, barn to the depot.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "road_signs_helped",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/north-signpost-fork"
+    },
+    "scene_signposts_checked": {
+      "type": "story",
+      "narration": "Old bridge, pond, depot barn. You follow the route you checked with the road boss. The shiny GEM signs lose their argument. You reach the depot without needing to sort them again.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Enter the depot",
+          "icon": "hand",
+          "goto": "scene_depot"
+        }
+      ],
+      "art": "scenes/gemfall/north-signpost-fork"
+    },
+    "scene_signposts_pigs": {
+      "type": "story",
+      "narration": "The farmer draws bridge, pond, barn in the mud. A pig adds one hoofprint. \"That bit is optional,\" says the farmer. Your corrected route reaches the depot; you will not call the first guess a checked map.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Follow the corrected route",
+          "icon": "hand",
+          "goto": "scene_depot"
+        }
+      ],
+      "art": "scenes/gemfall/north-signpost-fork"
+    },
+    "interaction_form_nine": {
+      "type": "interaction",
+      "narration": "Clerk Pennywhistle opens the claim book at STRONGBOX 9. Say your name and why you want the stone aloud, then choose your mark. The clerk handles the form order. Your job is an honest claim, not perfect handwriting.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Each hero says their claim aloud and adds a mark.",
+        "actionLabel": "File the shared claim",
+        "options": [
+          {
+            "id": "name",
+            "label": "Write my name carefully",
+            "icon": "scroll",
+            "reaction": "Pennywhistle gives the name a neat tick."
+          },
+          {
+            "id": "print",
+            "label": "Leave a paw, hoof or handprint",
+            "icon": "hand",
+            "reaction": "Pennywhistle stamps beside the print. \"Traditional,\" he says."
+          },
+          {
+            "id": "dictate",
+            "label": "Ask the clerk to write for me",
+            "icon": "ear",
+            "reaction": "Pennywhistle reads the words back before adding a tick."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_strongbox",
+        "narration": "The clerk reads your claim back and stamps it. Everyone has contributed. The stone in box nine is ready to collect.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "road_claim_shared",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_box_ten",
+        "narration": "The clerk puts the unfinished claim aside as a box begins to jump."
+      },
+      "onAssisted": {
+        "goto": "scene_strongbox",
+        "narration": "Pennywhistle helps record your words and checks the claim with you. The stamp lands on box nine's form.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "road_claim_shared",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "road_claim_helped",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/rush-depot",
+      "cast": [
+        {
+          "figure": "cast/clerk_pennywhistle",
+          "name": "Clerk Pennywhistle"
+        }
+      ]
+    },
+    "interaction_courier_pattern": {
+      "type": "interaction",
+      "narration": "The courier rings ding, ding, pause, ding. Watch the bell marks, then echo them. A pause belongs in the message too. \"Without it,\" she pants, \"people start looking for cake.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch, then echo ding, ding, pause, ding.",
+        "actionLabel": "Send the bell message",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "ding",
+            "label": "Ding",
+            "icon": "note"
+          },
+          {
+            "id": "pause",
+            "label": "Pause",
+            "icon": "glyph_wait"
+          }
+        ],
+        "answer": [
+          "ding",
+          "ding",
+          "pause",
+          "ding"
+        ]
+      },
+      "onSuccess": {
+        "goto": "interaction_pony",
+        "narration": "Ding, ding, pause, ding. You get it exactly right, and far away to the south, very faintly, another bell rings it back. The courier beams. \"You'd make a grandmother one day,\" she says, which is the biggest compliment she knows."
+      },
+      "onFailure": {
+        "goto": "interaction_pony",
+        "narration": "Ding, pause, ding, ding, ding. The courier goes pink. \"That one means the cake is ready,\" she whispers. Far to the south, a whole camp sits down hopefully to wait for cake. She takes the bell back, giggling, and rings it properly."
+      },
+      "onAssisted": {
+        "goto": "interaction_pony",
+        "narration": "The courier points to each mark while you ring. The southern bell answers the right message, with her help. No cake is promised."
+      },
+      "art": "scenes/gemfall/north-rush-road",
+      "cast": [
+        {
+          "figure": "cast/bell_courier",
+          "name": "Bell Courier"
+        }
+      ]
+    },
+    "interaction_ash_load": {
+      "type": "interaction",
+      "narration": "Link up around the shared pack load. Raise or lower your side until the marker is in the middle, then walk together. Ash gathers on everyone's shoulders. You are becoming a very untidy statue.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Raise or lower your side to level the shared load.",
+        "actionLabel": "Walk through together",
+        "objectLabel": "The shared pack load"
+      },
+      "onSuccess": {
+        "goto": "scene_road_bend",
+        "narration": "You link arms and march on through the glitter. It is like walking through warm gray snow. By the time the wind passes, you are gray from head to toe and look like a row of statues, and the bend in the road is just ahead."
+      },
+      "onFailure": {
+        "goto": "scene_road_bend",
+        "narration": "The wind shoves you sideways into a hedge, one after another, like bowling pins. It is warm in the hedge, so you wait it out there, sneezing ash. When it passes you climb out, grayer and wiser, and the bend in the road is just ahead."
+      },
+      "onAssisted": {
+        "goto": "scene_road_bend",
+        "narration": "Holloway braces the downwind end while you balance the load. You reach the bend gray with ash, with help rather than an independent crossing."
+      },
+      "art": "scenes/gemfall/road-bend-grass"
+    },
+    "interaction_crew_screen": {
+      "type": "interaction",
+      "narration": "The crew you helped catches up with its supply wagon. The road boss parks it across the wind. Hold the screen steady while the acting hero guides everyone around its sheltered side. The boss keeps the screen afterward; it belongs to the crew.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Brace the wind screen while the acting hero guides the crossing.",
+        "actionLabel": "Guide the sheltered crossing",
+        "supportLabel": "Brace the screen"
+      },
+      "onSuccess": {
+        "goto": "scene_road_bend",
+        "narration": "Everyone passes in the wagon's shelter. The crew packs its screen and waves you on. Hauling its posts earned this help.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "road_crew_sheltered",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_road_bend",
+        "narration": "The screen flaps loose. The crew shelters everyone behind the wagon until the gust passes, then packs its own gear.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "road_crew_sheltered",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "scene_road_bend",
+        "narration": "The road boss anchors the screen beside you. Together you guide everyone through the sheltered gap. Her crew packs the screen afterward.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "road_crew_sheltered",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/road-bend-grass",
+      "cast": [
+        {
+          "figure": "cast/road_boss",
+          "name": "Road Boss"
+        }
+      ]
     }
   },
   "voiceGuide": {
@@ -2091,6 +2611,41 @@
           "prop_pickle_wagon",
           "prop_hay_wagon",
           "prop_mule_cart"
+        ]
+      },
+      "interaction_post_line": {
+        "props": [
+          "prop_post_ropes"
+        ]
+      },
+      "interaction_warden_tray": {
+        "props": [
+          "prop_water_tray"
+        ]
+      },
+      "interaction_relay_signs": {
+        "props": [
+          "prop_letters"
+        ]
+      },
+      "interaction_form_nine": {
+        "props": [
+          "prop_letters"
+        ]
+      },
+      "interaction_courier_pattern": {
+        "props": [
+          "wind-bells"
+        ]
+      },
+      "interaction_ash_load": {
+        "props": [
+          "relay-sack"
+        ]
+      },
+      "interaction_crew_screen": {
+        "props": [
+          "wind-blanket"
         ]
       }
     }
