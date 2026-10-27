@@ -53,3 +53,9 @@ No new art commissions are needed. Existing environments, cast figures, grass/fe
 - [Mending — TV](interaction_mending_circle-tv.png) and [phone](interaction_mending_circle-phone.png): elder unicorn, moss prop, support action and solo prop alternative are visible.
 
 The phone captures show the actual Your turn controls. All four captures were inspected; ordinary household saves were not used.
+
+## Checks run
+
+After integrating current main: 548 targeted tests passed across Gemfall content/play, fixed legacy-save compatibility, voice cast/bakeoff and session timing; typecheck passed across all packages. Validation: 117 passed with four pre-existing Riftlight warnings. Continuity: five allowlisted candidates, no new or stale entries.
+
+The broader local suite recorded 10,060 passed, 11 skipped and six failed tests (six failing files, including a dev-server cleanup-hook timeout). Three failures were Windows CRLF readers/comparisons: authoring-guide fenced examples, profile-field introspection and generated figure sizes. Re-running those suites against the exact LF Git blobs passed all 22 tests, then the original local bytes were restored. The remaining failures are Windows process launch/shutdown behavior: `npx` and `.bin/tsx` ENOENT in traits/voice-clean CLI tests, and dev-server SIGTERM save/cleanup. These unrelated files were not changed. The full run began before the main integration; the targeted and typecheck results above were run after it. CI is still needed for the complete final branch on its normal host.
