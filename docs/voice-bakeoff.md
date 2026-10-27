@@ -157,13 +157,18 @@ turn of speech ends. It's most audible on two-speaker requests, which have a tur
 every line. It's in the raw API audio, not in AI Studio's player, which gates it away before you
 hear it. Earlier models have a similar end-of-clip static in forum reports.
 
-The harness cleans Gemini audio the same way (`tools/voice/bakeoff/clean.ts`, version 2):
+The harness cleans Gemini audio the same way (`tools/voice/bakeoff/clean.ts`, version 3):
 
 - It removes any DC offset, which turns a drop to silence into a click.
 - **It ends each clip where the speech ends.** After the last voiced sound, it keeps only a word's
-  own loud tail (a final "s" or "t", up to 200ms), then fades over 25ms and silences the rest. That
+  own loud tail (a final "s" or "t", up to 150ms), then fades over 25ms and silences the rest. That
   covers noise however long it runs, however quiet it is, and whether or not silence separates it
   from the word.
+- **It tells an "s" from static by where its energy is.** An "s" lives almost entirely in the high
+  frequencies: only a few percent of it is under about 1.5 kHz. White static keeps about a fifth
+  there. A noisy tail frame with more than 10% of its energy that low is static, even when it's as
+  loud as the word, and the tail ends there. Version 2 kept up to 200ms of any loud noise straight
+  off the word, which is where the shorter scratch it left came from.
 - It silences a noise-like burst of up to 300ms between turns, after speech and at least 100ms
   before the next sound.
 - It gates hiss in the pauses: anything quieter than 40 dB under the loudest moment, for 50ms or
@@ -186,7 +191,7 @@ header plays the raw files instead, for an A/B listen. Each cell says how much i
 - A clip cleaned by an older version is cleaned again from its raw copy the next time a page reads
   it, with nothing re-sent and nothing paid.
 - Clips rendered before cleaning existed are cleaned the same way.
-- The URL carries the version (`?cleaned=2`), so a browser that cached an older file can't keep
+- The URL carries the version (`?cleaned=3`), so a browser that cached an older file can't keep
   replaying it.
 
 The thresholds are from forum reports and synthetic tests, not from measuring this game's clips.
