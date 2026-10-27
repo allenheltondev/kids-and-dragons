@@ -61,6 +61,7 @@ main { max-width: 1200px; margin: 0 auto; padding: 16px 16px 200px; display: gri
 .panel { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 10px; min-width: 0; }
 .panel h2 { font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0; }
 .portrait { position: sticky; top: 120px; }
+@media (max-height: 940px) { .portrait { position: static; } }
 @media (max-width: 820px) { .portrait { position: static; } .stage { max-width: 260px; width: 100%; justify-self: center; } header { position: static; } }
 .stage { aspect-ratio: 1; border-radius: 10px; background: radial-gradient(circle at 50% 40%, var(--card), var(--stage)); display: grid; place-items: center; overflow: hidden; }
 .stage img, .stage canvas { width: 100%; height: 100%; object-fit: contain; }
@@ -96,6 +97,19 @@ main { max-width: 1200px; margin: 0 auto; padding: 16px 16px 200px; display: gri
 .decide textarea { width: 100%; min-height: 40px; height: 40px; resize: vertical; }
 .toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: 110px; z-index: 4; background: var(--ink); color: var(--bg); padding: 8px 14px; border-radius: 8px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s; max-width: calc(100% - 32px); }
 .toast.on { opacity: 1; }
+.listen { display: grid; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+.listen .voice { font-size: 13px; color: var(--muted); }
+.listen .voice strong { color: var(--ink); }
+.listen .pick { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; text-align: center; font-size: 13px; color: var(--muted); }
+.listen .pick button { padding: 2px 12px; }
+.listen .words { font-size: 14px; min-height: 3em; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.listen .words.standin { color: var(--accent); }
+.listen .big { width: 100%; padding: 12px; font-size: 17px; font-weight: 600; background: var(--accent); color: #fff; border-color: var(--accent); border-radius: 10px; }
+.listen .big.playing { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.listen .all { width: 100%; }
+.progress { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; }
+.progress > span { display: block; height: 100%; width: 0; background: var(--accent); }
+.listen .time { font: 12px ui-monospace, monospace; color: var(--muted); display: flex; justify-content: space-between; }
 .done { grid-column: 1 / -1; text-align: center; padding: 60px 16px; }
 label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 13px; color: var(--muted); }
 </style>
@@ -228,24 +242,79 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
 
   // ---- Playback ----
   let player = null;
-  function stop() {
+  let picked = 0; // the audition line the player under the picture is on
+  let playingAll = false;
+  function halt() {
     if (!player) return;
     player.audio.pause();
     player.row.classList.remove("now");
     player.button.textContent = player.label;
     player = null;
+    syncListen();
   }
+  // A stop from the page also ends "play all".
+  function stop() { playingAll = false; halt(); }
   function play(file, row, button) {
     const same = player && player.row === row;
-    stop();
-    if (same) return;
+    if (same) return stop();
+    halt();
     // Clip links are relative to the server's root, and this page lives a level down.
     const audio = new Audio(/^(\\/|[a-z]+:)/.test(file) ? file : "/" + file);
     player = { audio, row, button, label: button.textContent };
     row.classList.add("now");
     button.textContent = "■ Stop";
-    audio.addEventListener("ended", stop);
+    audio.addEventListener("timeupdate", syncListen);
+    audio.addEventListener("loadedmetadata", syncListen);
+    audio.addEventListener("ended", () => {
+      const line = row.dataset.line === undefined ? null : Number(row.dataset.line);
+      halt();
+      if (playingAll && line !== null && line + 1 < (data.auditions[current] || []).length) listen(line + 1);
+      else playingAll = false;
+      syncListen();
+    });
     audio.play().catch(stop);
+    syncListen();
+  }
+
+  // Plays (or stops) one audition line, from the player under the picture or the line itself.
+  async function listen(i) {
+    const row = document.querySelector('.line[data-line="' + i + '"]');
+    if (!row || !current) return;
+    picked = i;
+    const big = document.getElementById("listenPlay");
+    const needsRender = !clipOf((cells[current] || [])[i]);
+    if (needsRender && big) { big.disabled = true; big.textContent = "Rendering…"; }
+    await playLine(current, i, row, row.querySelector("button"));
+    if (big) big.disabled = false;
+    syncListen();
+  }
+
+  const clock = (t) => !isFinite(t) ? "0:00" : Math.floor(t / 60) + ":" + String(Math.floor(t % 60)).padStart(2, "0");
+  function syncListen() {
+    const box = document.getElementById("listen");
+    if (!box || !current) return;
+    const lines = data.auditions[current] || [];
+    if (!lines.length) return;
+    const line = lines[picked];
+    const on = player && player.row.dataset.line === String(picked) ? player : null;
+    box.querySelector(".count").textContent = "Line " + (picked + 1) + " of " + lines.length;
+    const words = box.querySelector(".words");
+    words.textContent = line.text;
+    words.classList.toggle("standin", !!line.standIn);
+    words.title = line.standIn ? "A stand-in line, not from the game" : line.address;
+    const big = document.getElementById("listenPlay");
+    if (!big.disabled) {
+      big.textContent = on ? "■ Stop" : clipOf((cells[current] || [])[picked]) ? "▶ Play line " + (picked + 1) : "▶ Render and play";
+      big.classList.toggle("playing", !!on);
+    }
+    const all = document.getElementById("listenAll");
+    all.textContent = playingAll ? "■ Stop playing all" : "▶▶ Play all " + lines.length + " lines";
+    all.hidden = lines.length < 2;
+    const t = on ? on.audio.currentTime : 0;
+    const d = on ? on.audio.duration : 0;
+    box.querySelector(".progress > span").style.width = d ? Math.min(100, (t / d) * 100) + "%" : "0";
+    box.querySelector(".time").replaceChildren(el("span", {}, clock(t)), el("span", {}, d ? clock(d) : ""));
+    for (const button of box.querySelectorAll(".pick button")) button.disabled = lines.length < 2;
   }
   const clipOf = (cell) => { const take = cell && cell.takes && cell.takes[0]; return take && !take.pending && take.clips[0] ? take.clips[0].file : null; };
   const errorOf = (cell) => { const take = cell && cell.takes && cell.takes[0]; return take && take.error; };
@@ -416,7 +485,40 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       profile.image ? null : el("div", { class: "hint" }, "No painting of them yet."),
       profile.imageIsGeneric ? el("div", { class: "hint" }, "Drawn as any " + (profile.facts.basis || "one of their people") + ": they have no figure of their own.") : null,
       el("p", { class: "name" }, entry.name, " ", status),
-      el("div", { class: "hint" }, entry.kind + " · " + id));
+      el("div", { class: "hint" }, entry.kind + " · " + id),
+      listenBox(id, entry));
+  }
+
+  // The player under the picture: the voice, one line at a time, and a big button to hear it.
+  function listenBox(id, entry) {
+    const lines = data.auditions[id] || [];
+    const info = voiceInfo[entry.gemini.voice];
+    const voice = el("div", { class: "voice" }, "Voice: ", el("strong", {}, entry.gemini.voice), info ? " · " + info.about + (info.gender ? ", " + (info.gender === "f" ? "woman" : "man") : "") : "");
+    if (!lines.length) return el("div", { class: "listen", id: "listen" }, voice, el("div", { class: "hint" }, "They don't speak, so there's nothing to hear."));
+    const prev = el("button", { type: "button", "aria-label": "Previous line", title: "Previous line ([)" }, "‹");
+    const next = el("button", { type: "button", "aria-label": "Next line", title: "Next line (])" }, "›");
+    const move = (by) => { const was = player && player.row.dataset.line === String(picked); stop(); picked = (picked + by + lines.length) % lines.length; syncListen(); if (was) listen(picked); };
+    prev.addEventListener("click", () => move(-1));
+    next.addEventListener("click", () => move(1));
+    const big = el("button", { type: "button", class: "big", id: "listenPlay", title: "P or space" }, "▶ Play");
+    big.addEventListener("click", () => { playingAll = false; listen(picked); });
+    const all = el("button", { type: "button", class: "all", id: "listenAll" }, "▶▶ Play all");
+    all.addEventListener("click", () => {
+      if (playingAll) return stop();
+      stop();
+      playingAll = true;
+      picked = 0;
+      listen(0);
+      syncListen();
+    });
+    return el("div", { class: "listen", id: "listen" },
+      voice,
+      el("div", { class: "pick" }, prev, el("span", { class: "count" }), next),
+      el("div", { class: "words" }),
+      big,
+      el("div", { class: "progress", "aria-hidden": "true" }, el("span")),
+      el("div", { class: "time" }),
+      all);
   }
 
   function about(id, entry, profile) {
@@ -478,9 +580,9 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
   function hearPanel(id, entry) {
     const lines = data.auditions[id] || [];
     const rows = lines.map((line, i) => {
-      const row = el("div", { class: "line" });
+      const row = el("div", { class: "line", "data-line": String(i) });
       const button = el("button", { type: "button", class: clipOf((cells[id] || [])[i]) ? "" : "primary" }, "▶ Play");
-      button.addEventListener("click", () => playLine(id, i, row, button));
+      button.addEventListener("click", () => { playingAll = false; listen(i); });
       row.append(button, el("div", {},
         el("div", {}, line.text),
         line.standIn ? el("div", { class: "standin" }, "Stand-in line, not from the game") : el("div", { class: "from" }, line.address),
@@ -533,6 +635,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       el("div", { style: "display:grid;gap:16px;min-width:0" }, about(id, entry, profile), canonPanel(id, entry, profile), modelPanel(id, entry), hearPanel(id, entry), historyPanel(entry)));
     decideBar(id, entry);
     drawHeader();
+    syncListen();
   }
 
   function drawDone() {
@@ -567,15 +670,16 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
   }
 
   function autoPlay() {
-    const row = document.querySelector(".line");
-    const button = row && row.querySelector("button");
-    if (button && !row.classList.contains("say")) button.click();
+    playingAll = false;
+    listen(picked);
   }
 
   function open(id, push = true) {
     current = id;
     said = { text: "", cell: null };
     told = null;
+    picked = 0;
+    playingAll = false;
     if (push) history.pushState({ id }, "", "/cast/profile?id=" + encodeURIComponent(id));
     draw();
     window.scrollTo({ top: 0 });
@@ -593,6 +697,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     else if (event.key === "j" || event.key === "ArrowRight") { event.preventDefault(); document.getElementById("next").click(); }
     else if (event.key === "k" || event.key === "ArrowLeft") { event.preventDefault(); document.getElementById("prev").click(); }
     else if (event.key === "p" || event.key === " ") { event.preventDefault(); autoPlay(); }
+    else if (event.key === "[" || event.key === "]") { event.preventDefault(); const lines = (data.auditions[current] || []).length; if (lines > 1) { stop(); picked = (picked + (event.key === "]" ? 1 : -1) + lines) % lines; syncListen(); } }
   });
 
   (async () => {
