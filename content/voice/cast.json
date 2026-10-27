@@ -2172,16 +2172,12 @@
       },
       "lines": [
         {
-          "text": "Rising. Then falling. All day. In time with the mountain's grumbles. Never seen that before.",
-          "address": "gemfall-05b/scene_falls_stair/narration"
-        },
-        {
-          "text": "For whoever you're telling. Tell them the water knows too.",
-          "address": "gemfall-05b/scene_falls_stair_count/narration"
-        },
-        {
           "text": "You're the soggy ones! The whole forest heard about you!",
           "address": "gemfall-05b/scene_falls_stair_dripping/narration"
+        },
+        {
+          "text": "Proper work.",
+          "address": "gemfall-05b/check_falls_logs/onSuccess/narration"
         }
       ],
       "speaks": true,
@@ -2926,8 +2922,8 @@
           "address": "gemfall-05b/choice_elders_close/narration"
         },
         {
-          "text": "Somebody walked through all of those this week. Somebody with marsh mud on.",
-          "address": "gemfall-05b/scene_archive_table_newest/narration"
+          "text": "Don't tell me your road. Show me. Every path that moved under your boots.",
+          "address": "gemfall-05b/check_archive_door/narration"
         }
       ],
       "speaks": true,
@@ -2984,10 +2980,6 @@
         {
           "text": "Still good advice. There are wolves up there today.",
           "address": "gemfall-05b/check_hut_pages/onSuccess/narration"
-        },
-        {
-          "text": "Visitors' book. Everybody who goes up, signs, so I know who to go looking for if they don't come down. Been kept since before MossHome had a name.",
-          "address": "gemfall-05b/scene_halfway_hut/narration"
         },
         {
           "text": "Busy mountain.",
@@ -3111,8 +3103,8 @@
           "address": "gemfall-07h/scene_echo_quiet/narration"
         },
         {
-          "text": "That's a lot of humming for one little family. The tally house will want to see you. Don't wander off.",
-          "address": "gemfall-05c/scene_inspection_open_packs/narration"
+          "text": "You're the weather people. Everybody's talking about you.",
+          "address": "gemfall-07h/scene_price_board_ask/narration"
         }
       ],
       "speaks": true,
@@ -3188,8 +3180,8 @@
           "address": "gemfall-05c/scene_shortcut/narration"
         },
         {
-          "text": "There is a way, through the hills. The Shortcut. My family has argued about it for nine generations. Nobody has ever walked it.",
-          "address": "gemfall-05c/scene_centaur_whisper/narration"
+          "text": "Corran's new verses bend around the falls, and they bend around the Shortcut too. It's in the song. It's been in the song all along.",
+          "address": "gemfall-05c/scene_centaur_whisper_show_bark/narration"
         }
       ],
       "speaks": true,
@@ -4977,12 +4969,12 @@
           "address": "gemfall-05b/check_chair_sit/onFailure/narration"
         },
         {
-          "text": "The paths flinched like this once before. Long, long ago.",
-          "address": "gemfall-05b/scene_knot_cords/narration"
-        },
-        {
           "text": "Oh. Oh, come in. Wipe your feet. Wipe them twice.",
           "address": "gemfall-05b/check_archive_door/onSuccess/narration"
+        },
+        {
+          "text": "North. That's all it wants.",
+          "address": "gemfall-05b/scene_pile_visit_carry/narration"
         }
       ],
       "speaks": true,
@@ -5004,12 +4996,7 @@
       "gemini": {
         "voice": "Despina"
       },
-      "lines": [
-        {
-          "text": "The world's rules are broken. Whatever sleeps under that mountain could fix them. We're collecting, to help it wake.",
-          "address": "gemfall-05b/scene_soup_tent/narration"
-        }
-      ],
+      "lines": [],
       "speaks": true,
       "status": "provisional"
     },
@@ -5031,12 +5018,8 @@
       },
       "lines": [
         {
-          "text": "Lanterns. That's one of the caves on the list. Nobody goes there. Nobody.",
+          "text": "On the list. Nobody gathers there.",
           "address": "gemfall-05c/scene_night_lights/narration"
-        },
-        {
-          "text": "Moths leaving. Every night this month.",
-          "address": "gemfall-05c/scene_moths_leaving/narration"
         }
       ],
       "speaks": true,
