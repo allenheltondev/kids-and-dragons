@@ -65,6 +65,29 @@ describe("read-aloud switch", () => {
     expect(spoken).toEqual(["Once upon a time."]);
   });
 
+  it("is on by default on the TV, without writing that down", async () => {
+    const { startReadAloud, READ_ALOUD_KEY } = await load();
+    startReadAloud(true);
+    await waitFor(() => expect(getSpeaker()).not.toBeNull());
+    expect(localStorage.getItem(READ_ALOUD_KEY)).toBeNull();
+  });
+
+  it("remembers the TV being switched off, over its default", async () => {
+    const first = await load();
+    first.startReadAloud(true);
+    await waitFor(() => expect(getSpeaker()).not.toBeNull());
+    first.setReadAloud(false);
+    expect(localStorage.getItem(first.READ_ALOUD_KEY)).toBe("0");
+
+    // A reload: fresh modules, the same localStorage.
+    currentShared?.setSpeaker(null);
+    vi.resetModules();
+    const { startReadAloud } = await load();
+    startReadAloud(true);
+    await new Promise((r) => setTimeout(r, 20));
+    expect(getSpeaker()).toBeNull();
+  });
+
   it("comes back on after a reload when it was left on", async () => {
     localStorage.setItem("kad.readaloud", "1");
     const { startReadAloud } = await load();
