@@ -495,6 +495,13 @@ function PersonalHome(): ReactElement {
         </div>
       </div>
 
+      {/* The privacy policy (#523), where it can be read before joining or hosting. */}
+      <div className="home__host-toggle home__guide">
+        <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "privacy" })}>
+          Privacy: what we collect, and why
+        </button>
+      </div>
+
       <LazySignInFlow />
     </main>
   );

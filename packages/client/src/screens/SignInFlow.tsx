@@ -141,10 +141,10 @@ export function OfferStep({
          * one character and for three — the party is 1–3 people and a sentence
          * that needs a plural branch will eventually get the branch wrong.
          */}
-        Right now they only live on this phone, and only while you keep playing: <b>seven days</b>{" "}
-        after your last adventure, they&rsquo;re forgotten
-        {fieldGuide ? <>, along with your Field Guide</> : null}. Add an email and they stay for
-        good, levels, items and all.
+        Right now they&rsquo;re saved on our servers for this phone, and only while you keep playing:{" "}
+        <b>seven days</b> after your last adventure, they&rsquo;re deleted
+        {fieldGuide ? <>, along with your Field Guide</> : null}. Add an email and they&rsquo;re kept, levels, items
+        and all, until you delete them.
       </p>
       <ul className="keepsake__party">
         {motes.map((mote) => (

@@ -39,9 +39,8 @@ sweeper (`lambda/sweep.ts`, `GuestSweepSchedule`, runs every 24 hours) deletes t
 
 ## What a family would see if this is adopted
 
-- A kept household that nobody plays in for a year is deleted, with its heroes. They are warned
-  about 30 days before, by email, if a grown-up email is on file. **The email is a new use of that
-  address; decide whether the policy allows it.**
+- A kept household that nobody plays in for a year is deleted, with its heroes. **There is no
+  warning email** (declined 2026-10-27), so the public pages must say this clearly.
 - The "until I delete them" choice goes away.
 - Nothing changes for a household that is playing.
 
@@ -81,4 +80,8 @@ Not done. When the numbers are approved:
 
 | Date | Decision | By |
 | --- | --- | --- |
-| 2026-10-27 | Proposed only. Numbers above await approval. | Owner to decide |
+| 2026-10-27 | Proposed the schedule above. | Claude |
+| 2026-10-27 | Approved: 365 days idle as the kept-household default, with the owner able to shorten it. | Owner |
+| 2026-10-27 | Approved: trim finished runs' event logs (30 days after the run ends), after checking what reads old events. | Owner |
+| 2026-10-27 | Declined for now: the pre-deletion email. Households are deleted without warning, so the policy must say so plainly. | Owner |
+| 2026-10-27 | Not yet decided: the other rows (push 90 days, timing 180 or 90, logs 30 days). | Owner |
