@@ -492,13 +492,13 @@ function PersonalHome(): ReactElement {
               {signInAvailable ? "Grown-ups: sign in, or move a hero to another device" : "Move a hero to another device"}
             </button>
           </div>
-          {/* The privacy policy (#523): shown whether joining or hosting, so it can be read before either. */}
-          <div className="home__host-toggle home__guide">
-            <button type="button" className="home__link kad-focusable" onClick={() => navigate({ name: "privacy" })}>
-              Privacy: what we collect, and why
-            </button>
-          </div>
         </div>
+        {/* The privacy policy (#523): a quiet footer under the body, there whether joining or hosting. */}
+        <footer className="home__footer">
+          <button type="button" className="home__footer-link kad-focusable" onClick={() => navigate({ name: "privacy" })}>
+            Privacy
+          </button>
+        </footer>
       </div>
 
       <LazySignInFlow />
