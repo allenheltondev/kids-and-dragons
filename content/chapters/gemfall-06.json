@@ -3540,7 +3540,7 @@
         }
       ],
       "art": "scenes/gemfall/facet-table",
-      "type": "choice_point",
+      "type": "story",
       "narration": "Let the wardens read the logs, and stop them to ask questions. Each hero chooses something to check or offers a road observation. Pellam finds the oldest page under a newer page labeled READ THIS FIRST. He is offended on behalf of both pages.",
       "choices": [
         {

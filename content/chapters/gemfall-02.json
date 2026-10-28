@@ -2850,7 +2850,7 @@
         }
       ],
       "art": "scenes/gemfall/hedge-knit-gate",
-      "type": "choice_point",
+      "type": "story",
       "narration": "Pib makes a quiet space by the hedge. Each hero asks to come in, says why you are traveling, or offers to help. The hedge waits for the whole answer. One leaf leans closer than the others.",
       "choices": [
         {

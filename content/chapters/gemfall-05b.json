@@ -2033,7 +2033,7 @@
     },
     "interaction_camp": {
       "art": "scenes/gemfall/foothills-rim-camp",
-      "type": "choice_point",
+      "type": "story",
       "narration": "The flat rock at the edge of the foothills is bare and a little cold, and the sun is nearly gone. A camp will not make itself. Everybody does a piece of it.",
       "choices": [
         {

@@ -2055,7 +2055,7 @@
         }
       ],
       "art": "scenes/gemfall/north-rush-road",
-      "type": "choice_point",
+      "type": "story",
       "narration": "While the courier gulps water, her fat pony nudges your elbow. Her name is Dumpling, and she is hot, itchy and sulky. \"She wants a fuss,\" says the courier, with her mouth full. \"Any fuss will do. She is not picky, except about carrots.\"",
       "choices": [
         {

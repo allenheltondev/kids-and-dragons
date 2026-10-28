@@ -2183,7 +2183,7 @@
         }
       ],
       "art": "scenes/gemfall/wisp-raft-crowd",
-      "type": "choice_point",
+      "type": "story",
       "narration": "Past the ribbon, a crowd of the new wisps has followed your raft, bumping it like puppies. \"Keep them busy till the island!\" calls the cousin in three hats. \"Bored wisps tie knots in things. Last week they tied my hats together.\" She tosses a handful of coins onto the raft as a down payment.",
       "choices": [
         {
@@ -2705,7 +2705,7 @@
     },
     "interaction_gate_hum": {
       "art": "scenes/gemfall/hollow-gate",
-      "type": "choice_point",
+      "type": "story",
       "narration": "Choose a sound to add to the group's practice. Hum, tap a knee, or breathe a steady beat. The frog supplies a loud final croak, whether invited or not. This is practice for keeping together, not a test of who sings best.",
       "choices": [
         {
@@ -2815,7 +2815,7 @@
         }
       ],
       "art": "scenes/gemfall/toll-reeds-tunnel",
-      "type": "choice_point",
+      "type": "story",
       "narration": "Stay on the bank and help test the act. Barges do not blink, breathe, or twitch their ropes. Tell the table what you are watching, then try a test. The sign ABANDONED is looking increasingly nervous.",
       "choices": [
         {

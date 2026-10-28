@@ -1943,7 +1943,7 @@
     },
     "interaction_lost_moths": {
       "art": "scenes/gemfall/pride-stone-crater",
-      "type": "choice_point",
+      "type": "story",
       "narration": "The glowing river has gone, but a handful of little moths got left behind. They huddle in the grass, flickering, too scared to fly south by themselves.",
       "choices": [
         {
@@ -2061,7 +2061,7 @@
         }
       ],
       "art": "scenes/gemfall/sefa-ridge-camp",
-      "type": "choice_point",
+      "type": "story",
       "narration": "The cubs need a soft sound. Each hero adds a hum, a gentle beat or a sleepy word. Make it aloud if you like. Sefa keeps the cubs' tails from drumming on the bowls. That part is harder than it looks.",
       "choices": [
         {

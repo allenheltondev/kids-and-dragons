@@ -63,9 +63,17 @@ The four-reading-beat stretches in 01 (provisions to the inn) and 07h (checkpoin
 
 ## Validation and remaining playtesting
 
-- Final full suite: **10,693 passed, 15 skipped, six failed**, plus the dev-server cleanup timeout. All Gemfall tests pass. The six failures reproduce in the original checkout: generated figure-size CRLF comparison, Windows npx/tsx executable lookup, authoring-guide fenced-example extraction, dev-server saved-location/cleanup and profile-field extraction assuming LF endings. None are suppressed.
+- Initial revision full suite: **10,693 passed, 15 skipped, six failed**, plus the dev-server cleanup timeout. All Gemfall tests pass. The six failures reproduce in the original checkout: generated figure-size CRLF comparison, Windows npx/tsx executable lookup, authoring-guide fenced-example extraction, dev-server saved-location/cleanup and profile-field extraction assuming LF endings. None are suppressed.
 - Type checking passes after installing the current main branch's locked dependencies locally. Content validation passes (117 passes, four existing warnings); continuity reports zero new/stale findings. Graph proofs regenerate and staged diff checks pass.
 - The focused Gemfall interaction, route, save-contract and compatibility run passes 902 tests; the separate story-balance/full-server-playthrough run passes 61. Those runs overlap on eight story-balance tests; the combined coverage is 955 tests and is included in the full run.
 - The final run includes the updated Seal-Keeper cast assertion for all three new verdict replies. Campaign ending, road, setback and resumed-save digests remain unchanged.
 
 No family enjoyment or duration measurements were collected. Plan roughly thirty minutes around travel/discovery, a complication, debate and resolution; retain the existing forty-five-minute pursuit targets. Time the actual movements with families rather than adding chores or artificial waits.
+
+## PR review follow-up: casual conversation participation
+
+Fifteen low-stakes conversations now use `story` with branching choices. The current story-turn holder selects a response, and the character reply also continues without waiting for every phone. The purpose, quiet and verdict councils remain collective `choice_point` votes. Destinations, rewards, outcome effects and archived interactions are unchanged.
+
+The regression tests submit a single real `applyIntent(CHOOSE)` at a four-hero table for all eighteen conversations. Casual choices immediately enter their reply and continue with one phone; council choices record one vote and remain pending. These tests bypass `send()`, which would automatically cast everyone's votes and hide the regression. Existing reply tests now cover both story choices and councils.
+
+Follow-up validation: all **973 Gemfall tests pass** across 19 files, including real-server playthroughs and the unchanged campaign compatibility digests. Type checking, content validation (117 passes, four existing warnings), continuity (zero new/stale findings) and diff checks pass. The static pacing report was rerun; it cannot measure the time saved by removing compulsory all-phone stops. The full-suite result above belongs to the initial revision.
