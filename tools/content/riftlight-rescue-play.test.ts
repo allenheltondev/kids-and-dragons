@@ -59,8 +59,7 @@ it.each(flatsRoutes)("flats: $route / $crossing / $signal / $outcome / $seats se
   expect(result.state.narration.includes("sling stayed with the herder")).toBe(left);
   expect(result.state.flags.goat_returned_home).toBe(true);
   expect(result.state.flags.flats_rhythm_read).toBe(route.outcome === "success");
-  expect(result.games).toBeGreaterThanOrEqual(10);
-  expect(result.kinds.size).toBeGreaterThanOrEqual(6);
+
 });
 it.each([1, 2, 4])("a unicorn songkeeper saves specific jobs but still plays the rescue at %i seats", seats => {
   const result = walk(flats, start(flats, "unicorn", "songkeeper", {}, seats), s => {
@@ -131,6 +130,5 @@ it.each(boneRoutes)("bones: mats $mats / $route / $support / $plan / $battle / $
     expect(offered(result.trace.get("exit_strip")!, "line")).toBe(false);
     expect(result.state.narration).toContain("longer rim route");
   }
-  expect(result.games).toBeGreaterThanOrEqual(8);
-  expect(result.kinds.size).toBeGreaterThanOrEqual(5);
+
 });

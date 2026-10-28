@@ -388,20 +388,7 @@
       "art": "scenes/riftlight/departure-loaded-sledge"
     },
     "instruments": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "roller": "best",
-      "narration": "Orin opens the case of little brass instruments. Frost has crept into every hinge. A horn whines. A tiny trumpet will not move at all. \"The best ears should find the flat one,\" he says, \"and the best fingers should fix it. I have no idea who has which.\"",
-      "prompt": "Find the flat note, then loosen the frozen hinge.",
-      "onSuccess": {
-        "goto": "corner_hunt",
-        "narration": "The flat one is the little trumpet. A drop of warm tea in its hinge, a twist, and it sings true. Orin holds it to his ear like a shell. \"Better than new,\" he tells Seren. Seren says that is not possible, and smiles."
-      },
-      "onFailure": {
-        "goto": "corner_hunt",
-        "narration": "You find the flat one, but the hinge fights back, and the trumpet honks like an angry goose. Olivia laughs so hard she has to sit on a trunk. Orin packs it anyway. \"It still counts as an alarm.\""
-      },
+      "narration": "Orin opens the case of little brass instruments. Frost has crept into every hinge. A horn whines. A tiny trumpet will not move at all. \"The best ears should find the flat one,\" he says, \"and the best fingers should fix it. I have no idea who has which.\" The flat one is the little trumpet. A drop of warm tea in its hinge, a twist, and it sings true. Orin holds it to his ear like a shell. \"Better than new,\" he tells Seren. Seren says that is not possible, and smiles.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -416,30 +403,35 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "corner_hunt"
+        }
+      ]
     },
     "corner_hunt": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "roller": "party",
-      "narration": "Orin pats his coat, his bag, his hat. \"My map is still pinned under the load,\" he says. \"If it tears, the pass tears with it.\" He looks at you hopefully. Trunks are heavy, and paper is not.",
-      "prompt": "Slide the map out from under the trunks without tearing a corner.",
-      "onSuccess": {
-        "goto": "lead",
-        "narration": "Slip, slide, free. The map comes out whole and flat. Orin hugs it, then remembers himself and only pats it. \"Thank you. I would have drawn the pass in the wrong place forever.\""
-      },
-      "onFailure": {
-        "goto": "lead",
-        "narration": "One corner catches and tears with a small sad sound. Orin tapes it with a cheerful frown. \"Now it has a missing corner,\" he says. \"More room for new roads.\""
-      },
+      "narration": "Orin pats his coat, his bag, his hat. \"My map is still pinned under the load,\" he says. \"If it tears, the pass tears with it.\" He looks at you hopefully. Trunks are heavy, and paper is not. Slip, slide, free. The map comes out whole and flat. Orin hugs it, then remembers himself and only pats it. \"Thank you. I would have drawn the pass in the wrong place forever.\"",
       "cast": [
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "lead"
+        }
+      ]
     },
     "lead": {
       "type": "story",
@@ -1558,20 +1550,7 @@
       "art": "scenes/riftlight/departure-chime-rest"
     },
     "trial_all": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "roller": "all",
-      "narration": "Seren shuffles the rings behind her back, then strikes one. Olivia flaps the blanket harder. Orin plays his squeaky note with great pride.",
-      "prompt": "Everyone listens, then points: which one rang sour?",
-      "onSuccess": {
-        "goto": "prep",
-        "narration": "Every finger points the same way. Seren strikes the ring again to check, and the sour note proves you right. Olivia salutes with the blanket."
-      },
-      "onFailure": {
-        "goto": "prep",
-        "narration": "Fingers point everywhere at once. Seren strikes the ring again, slowly, until the sour note comes through plain. \"Rifts do not mind slow ears,\" she says kindly. \"They mind ears that do not listen.\""
-      },
+      "narration": "Seren shuffles the rings behind her back, then strikes one. Olivia flaps the blanket harder. Orin plays his squeaky note with great pride. Every finger points the same way. Seren strikes the ring again to check, and the sour note proves you right. Olivia salutes with the blanket.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1586,7 +1565,16 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "prep"
+        }
+      ]
     },
     "prep": {
       "type": "choice_point",
@@ -1638,11 +1626,7 @@
       "art": "scenes/riftlight/singing-hall-camp"
     },
     "prep_ice": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "roller": "party",
-      "narration": "Orin lays a slab of old ice on the snow. \"Thick ice rings when you tap it,\" he says. \"Thin ice thuds.\" He hands you a stone. \"Stamp, tap, listen.\"",
+      "narration": "Orin lays a slab of old ice on the snow. \"Thick ice rings when you tap it,\" he says. \"Thin ice thuds.\" He hands you a stone. \"Stamp, tap, listen.\" Ring, ring, thud! You find the thin spot with one tap. Orin cheers very quietly, so as not to wake the ice.",
       "variants": [
         {
           "when": {
@@ -1651,170 +1635,106 @@
           "text": " You remember the dark patch you saw from the ledge. It will probably thud."
         }
       ],
-      "prompt": "Stamp and tap the slab to find the thin spot before it finds you.",
-      "onSuccess": {
-        "goto": "parting",
-        "narration": "Ring, ring, thud! You find the thin spot with one tap. Orin cheers very quietly, so as not to wake the ice.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "got_ready_for_the_road"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "parting",
-        "narration": "Your stone goes through the slab with a surprised crunch. Orin gently pulls your boot out. \"Now you know what thud feels like. Better here than on the shelf.\"",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "got_ready_for_the_road"
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "parting",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "got_ready_for_the_road"
+            }
+          ]
+        }
+      ]
     },
     "prep_seam": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "roller": "best",
-      "narration": "Seren leads you along the glacier wall behind the hall and presses an ear to the ice. \"Listen for a tick,\" she says. \"Listen for a hum. Listen for a quiet that is too tidy.\"",
-      "prompt": "Walk the wall and find the place that sounds different from the rest.",
-      "onSuccess": {
-        "goto": "parting",
-        "narration": "You find the spot where the sealed seam's hum is clearest and mark it with a pebble. Seren nods. \"A hum that holds still can be learned.\"",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "got_ready_for_the_road"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "parting",
-        "narration": "Every stretch sounds the same, and the wind fills your ears. Seren nods anyway. \"Wind is a rude neighbor. We can mark the seam by its frost instead.\"",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "got_ready_for_the_road"
-          }
-        ]
-      },
+      "narration": "Seren leads you along the glacier wall behind the hall and presses an ear to the ice. \"Listen for a tick,\" she says. \"Listen for a hum. Listen for a quiet that is too tidy.\" You find the spot where the sealed seam's hum is clearest and mark it with a pebble. Seren nods. \"A hum that holds still can be learned.\"",
       "cast": [
         {
           "figure": "cast/seren_wisp",
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "parting",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "got_ready_for_the_road"
+            }
+          ]
+        }
+      ]
     },
     "prep_jar": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "roller": "best",
-      "narration": "With the mosslight jar held up, the glacier wall glows from inside, as if the ice were a lantern. Frost patterns bloom across it like ferns.",
-      "prompt": "Read the frost patterns for a line that goes somewhere.",
-      "onSuccess": {
-        "goto": "parting",
-        "narration": "One frost line runs straight to the sealed seam and stops. \"Look at that,\" says Seren. \"The ice remembers where the seam is.\"",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "got_ready_for_the_road"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "parting",
-        "narration": "The light makes a hundred shiny shapes and no line at all. Seren smiles. \"Light shows you things. You still have to know which things.\"",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "got_ready_for_the_road"
-          }
-        ]
-      },
+      "narration": "With the mosslight jar held up, the glacier wall glows from inside, as if the ice were a lantern. Frost patterns bloom across it like ferns. One frost line runs straight to the sealed seam and stops. \"Look at that,\" says Seren. \"The ice remembers where the seam is.\"",
       "cast": [
         {
           "figure": "cast/seren_wisp",
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/glacier-deep-ice"
+      "art": "scenes/riftlight/glacier-deep-ice",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "parting",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "got_ready_for_the_road"
+            }
+          ]
+        }
+      ]
     },
     "prep_bank": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "roller": "party",
-      "narration": "A line of little stone markers runs away along the bank, each one a neat heap. Some have tipped over in the wind.",
-      "prompt": "Walk the first markers of the long bank road and stack any that have fallen.",
-      "onSuccess": {
-        "goto": "parting",
-        "narration": "Every marker stands straight again, and the road to the bridge looks friendlier. Orin ticks something off in his notebook.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "got_ready_for_the_road"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "parting",
-        "narration": "One marker tumbles twice and settles crooked. Orin approves. \"A crooked marker still points.\"",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "got_ready_for_the_road"
-          }
-        ]
-      },
+      "narration": "A line of little stone markers runs away along the bank, each one a neat heap. Some have tipped over in the wind. Every marker stands straight again, and the road to the bridge looks friendlier. Orin ticks something off in his notebook.",
       "cast": [
         {
           "figure": "cast/orin_vale",
           "name": "Orin Vale"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "parting",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "got_ready_for_the_road"
+            }
+          ]
+        }
+      ]
     },
     "prep_dash": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "tags": [
-        "sneak"
-      ],
-      "roller": "best",
-      "narration": "A duskrunner's feet know the quiet way. One of you takes off along the bank road, light and fast, while the others watch from the sledge.",
-      "prompt": "Run the first stretch of the bank road and come back with what you saw.",
-      "onSuccess": {
-        "goto": "parting",
-        "narration": "You come back breathless, with the road clear in your head: no gaps, no drifts, only a goat on a rock. Orin writes down \"goat on rock.\"",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "got_ready_for_the_road"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "parting",
-        "narration": "You run too far, then too fast, and arrive back in a puff of snow. Seren pats you down. \"You saw the road. Next time, see it slower.\"",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "got_ready_for_the_road"
-          }
-        ]
-      },
+      "narration": "A duskrunner's feet know the quiet way. One of you takes off along the bank road, light and fast, while the others watch from the sledge. You come back breathless, with the road clear in your head: no gaps, no drifts, only a goat on a rock. Orin writes down \"goat on rock.\"",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1825,7 +1745,22 @@
           "name": "Seren Wisp"
         }
       ],
-      "art": "scenes/riftlight/singing-hall-camp"
+      "art": "scenes/riftlight/singing-hall-camp",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "parting",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "got_ready_for_the_road"
+            }
+          ]
+        }
+      ]
     },
     "parting": {
       "type": "story",

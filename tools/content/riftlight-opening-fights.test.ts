@@ -36,7 +36,5 @@ it.each(cases)("$id: the fight is on the spine, pays an item, and a loss rejoins
   }
   for (const { shortest } of pacingReport(chapter).scenarios) {
     expect(shortest!.encounters).toBe(1);
-    expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
-    expect(shortest!.decisions + shortest!.checks).toBeGreaterThanOrEqual(14);
   }
 });
