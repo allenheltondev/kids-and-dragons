@@ -1,6 +1,6 @@
 # Voice narration plan (ElevenLabs or Gemini TTS)
 
-**Status: plan. Built so far: `npm run voice:cost` (§9), the phase-0 bake-off harness `npm run voice:bakeoff` ([voice-bakeoff.md](./voice-bakeoff.md)), the cast voice sheet `npm run voice:cast` and its `/cast` page ([voice-cast.md](./voice-cast.md)), and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
+**Status: plan. Built so far: `npm run voice:cost` (§9), the script sidecar schema and join-equals-source check in `content:validate` (§3), `npm run voice:extract`, the line inventory (§1, phase 1 minus `narrationParts`), the phase-0 bake-off harness `npm run voice:bakeoff` ([voice-bakeoff.md](./voice-bakeoff.md)), the cast voice sheet `npm run voice:cast` and its `/cast` page ([voice-cast.md](./voice-cast.md)), and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
 consistent voice for each cast member. It also covers the pipeline that turns authored text into
 audio linked to that text, knows what needs (re)generating, and caches hard at every layer.
 
@@ -113,17 +113,14 @@ provider config for each provider:
 }
 ```
 
-**`content/voice/cast.json`**: who speaks with which voice. Keys are speaker ids that already
-exist:
-
-- `narrator`: **one narrator voice for the whole game**, every campaign, plate, prologue and help
-  line. There is no override per campaign.
-- canon individuals: `individual.pib`. **One voice everywhere they appear, across campaigns.**
-  This is the consistency guarantee: a speaker's voice is decided once, here.
-- chapter-scoped characters: `bramblewood-01:wisp` (the `npcVoices` keys).
-- peoples, for unnamed speakers: `npc.harvest_sprite`, "a yeti fishmonger". Each draws from a small
-  pool with a deterministic pick (hash of speaker id), so the same unnamed captain sounds the same
-  on every visit, and two different yetis in one scene can be told apart.
+**`content/voice/cast.json`**: who speaks with which voice. This is the cast voice sheet
+([voice-cast.md](./voice-cast.md)) and it is the source of truth for speaker ids. Each key under
+`speakers` is the id a script's `by` uses: `narrator`, `party`, and one id per speaker as the
+sheet already names them (`pib`, `wisp`, `door_voice`; groups such as `sprites`; creatures such as
+`drake`). Where a speaker is a canon individual the entry carries `canon: "individual.pib"`, so the
+voice is decided once and holds across campaigns and chapters. Chapter `voiceGuide.npcVoices` keys
+are recorded as `voiceNotes` and `aliases`. Peoples and unnamed speakers draw from a small pool with a
+deterministic pick (hash of speaker id), so the same unnamed captain sounds the same on every visit.
 
 Rules the validator enforces: every speaker a script uses is cast. Every voice cast exists and has
 a config for the active provider. No two named speakers in one scene share a voice.
@@ -366,17 +363,17 @@ counted once per value, and retakes are padded in (`--retakes`, default ×1.25).
 audio tokens (25 a second), so its price depends on reading speed: 14 characters a second, set
 in `pricing.json`.
 
-The whole game, choice labels excluded, ×1.25 for retakes, priced 2026-10-27:
+The whole game, choice labels excluded, ×1.25 for retakes, `{facets}` expanded 0–14 (every great stone the content can hand out), priced 2026-10-28:
 
 | Model | Whole game | Gemfall | Riftlight | Fits the $75 first run? |
 |---|---|---|---|---|
-| ElevenLabs v4 | $107.94 | $59.56 | $46.71 | no: one campaign at a time |
-| ElevenLabs v4 Turbo | $53.97 | $29.78 | $23.36 | yes |
-| ElevenLabs v3 / Multilingual v2 | $134.93 | $74.45 | $58.39 | no: one campaign at a time |
-| ElevenLabs Flash v2.5 | $67.46 | $37.22 | $29.20 | yes |
-| Gemini 3.8 Flash TTS | $22.78 | $12.56 | $9.86 | yes, 3× over |
-| Gemini 3.8 Flash-Lite TTS | $15.00 | $8.27 | $6.50 | yes |
-| Gemini 3.1 Flash TTS | $49.28 | $27.18 | $21.33 | yes |
+| ElevenLabs v4 | $114.45 | $66.33 | $46.45 | no: one campaign at a time |
+| ElevenLabs v4 Turbo | $57.22 | $33.16 | $23.23 | yes |
+| ElevenLabs v3 / Multilingual v2 | $143.06 | $82.91 | $58.07 | no: Gemfall alone is over |
+| ElevenLabs Flash v2.5 | $71.53 | $41.45 | $29.03 | yes |
+| Gemini 3.8 Flash TTS | $24.18 | $14.01 | $9.81 | yes, 3× over |
+| Gemini 3.8 Flash-Lite TTS | $15.92 | $9.22 | $6.46 | yes |
+| Gemini 3.1 Flash TTS | $52.28 | $30.29 | $21.22 | yes |
 
 Every rate is marked unconfirmed in `pricing.json`. They came from third-party summaries,
 because the provider pages couldn't be fetched from here. Check them before spending. Two things
@@ -392,8 +389,8 @@ change the numbers:
 **Budget: $75 cap on the first run.** `voice:generate` will take `--max-dollars 75` and stop before
 the request that would cross it, priced with the same model. On Gemini 3.8 Flash the cap covers
 the whole game with room for a second pass, and on ElevenLabs v4 Turbo the whole game once. On
-ElevenLabs v4 it covers Gemfall ($59.56) or Riftlight ($46.71) with the small campaigns, and on v3
-one campaign at a time (Gemfall alone is $74).
+ElevenLabs v4 it covers Gemfall ($66.33) or Riftlight ($46.45) with the small campaigns, and on v3
+Riftlight but not Gemfall ($82.91).
 
 ---
 
@@ -429,9 +426,5 @@ pipeline, and rewriting before the full render (8) avoids paying to render text 
 - **Storage:** clips go in the existing site bucket, under a `voice/` prefix next to `assets/`
   (not inside it, so deploy's `--delete` never touches them).
 - **One narrator voice** for the whole game.
-- **Provider:** choose after `voice:cost` and the phase-0 bake-off.
-
-## Still open
-
-1. **Names:** confirm that player names never go to a TTS provider (my recommendation).
-2. **Provider:** the bake-off decides, with the costs above in hand.
+- **Names:** text on screen can say a player's name; audio always says "hero", from the recorded voice and the device voice alike. A name never reaches any speaker or provider; every name-bearing surface gets a sweep (section 8).
+- **Provider and model:** Gemini 3.8 Flash TTS (`gemini-3.8-flash-tts`), decided by the owner. ElevenLabs stays in the bake-off for comparison only.
