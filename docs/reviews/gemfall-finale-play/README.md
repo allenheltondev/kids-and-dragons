@@ -47,6 +47,8 @@ The draft's 55-minute declaration and 39–52-minute planning envelope were not 
 | Typical longest reading run | 2 | 2 |
 | Shortest composed words | 2552–2970 | 2340–2758 |
 
+**Outstanding design acceptance: [issue #536](https://github.com/allenheltondev/kids-and-dragons/issues/536)** tracks structural consolidation of mandatory approach beats and efficient/engaged 1/2/4-seat family calibration. Code approval of this PR does not close that issue or accept the duration target.
+
 **The thirty-minute duration is not established.** The static model excludes some flag-gated shortcuts and authored interaction time. It also includes synthetic repeated voting and dice estimates. These limits do not justify subtracting guessed minutes. Optional dragon/gallery combat and four-player reflection can make the sitting substantially longer. Use the [revision-aware session tracker](../../session-timing.md) to time efficient and engaged routes before claiming the target is met; further compression may be needed. No household timing was fetched, and no playtest fun or timing result is claimed.
 
 ## Verification and legacy saves
