@@ -2048,7 +2048,7 @@
     },
     "interaction_forest_inventory": {
       "art": "scenes/gemfall/fern-spring-glade",
-      "type": "choice_point",
+      "type": "story",
       "narration": "Say what your hero carries aloud, then choose how to add it to the roll call. The trees wait. A squirrel checks behind its own ears. Nobody here is being graded on how brave an answer sounds.",
       "choices": [
         {

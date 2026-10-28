@@ -2,10 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import { createHash } from "node:crypto";
 import { expect, it } from "vitest";
-import { validateChapter } from "@kad/shared";
+import { applyIntent, validateChapter } from "@kad/shared";
 import type { Chapter, RunState } from "@kad/shared";
 import { SIZES, act, landed, miss, open, promptOf, solve } from "./interaction-play.ts";
-import { send } from "./riftlight-test-support.ts";
+import { context, send } from "./riftlight-test-support.ts";
 
 const root = path.resolve(import.meta.dirname, "../..");
 const read = <T>(file: string): T => JSON.parse(fs.readFileSync(path.join(root, file), "utf8"));
@@ -53,7 +53,7 @@ it.each(SIZES)("saved retired activities still finish, retry and accept help at 
 it.each(SIZES)("ordinary responses show their reply before applying the conversation result at %i seats", size => {
   for (const { chapter, id, scene } of retired) {
     const current = chapter.scenes[id]!;
-    if (current.type !== "choice_point") continue;
+    if (!("choices" in current) || current.choices.length < 2) continue;
     for (const choice of current.choices) {
       let state = open(chapter, id, size);
       state = send(state, { type: "CHOOSE", choiceId: choice.id }, chapter);
@@ -75,4 +75,44 @@ it("rejects archives without a replacement scene or a valid continuation", () =>
   const broken = structuredClone(chapter);
   broken.resumeInteractions![id]!.onSuccess.goto = "missing_scene";
   expect(validateChapter(broken).some(issue => issue.code === "BAD_INTERACTION")).toBe(true);
+});
+
+const councils = new Set([
+  "interaction_purpose_council", "interaction_quiet_council", "interaction_verdict_council",
+]);
+const conversations = retired.filter(({ chapter, id }) => {
+  const scene = chapter.scenes[id]!;
+  return "choices" in scene && scene.choices.length > 1;
+});
+
+it.each(conversations)("$chapter.id/$id only requires collective voting for a council", ({ chapter, id }) => {
+  const state = open(chapter, id, 4);
+  const prompt = state.prompt;
+  expect(prompt?.kind).toBe("choice");
+  if (prompt?.kind !== "choice") throw new Error("Expected a conversation");
+  const playerId = prompt.forPlayerIds[0]!;
+  const choice = prompt.options[0]!;
+  const result = applyIntent(state, { playerId, intent: { type: "CHOOSE", choiceId: choice.id } }, context(chapter));
+  expect(result.error).toBeUndefined();
+  if (councils.has(id)) {
+    expect(prompt.vote).toBe(true);
+    expect(prompt.forPlayerIds).toHaveLength(4);
+    expect(result.state.sceneId).toBe(id);
+    expect(result.state.prompt?.kind === "choice" && result.state.prompt.votes).toEqual({ [playerId]: choice.id });
+  } else {
+    expect(prompt.vote).toBe(false);
+    expect(prompt.forPlayerIds).toEqual([playerId]);
+    const scene = chapter.scenes[id]!;
+    if (!("choices" in scene)) throw new Error("Expected story choices");
+    expect(result.state.sceneId).toBe(scene.choices.find(option => option.id === choice.id)!.goto);
+    // The character reply also continues with one phone, without a group vote.
+    const reply = result.state.prompt;
+    if (reply?.kind !== "choice") throw new Error("Expected a reply continuation");
+    expect(reply.vote).toBe(false);
+    const next = applyIntent(result.state, {
+      playerId: reply.forPlayerIds[0]!, intent: { type: "CHOOSE", choiceId: "continue" },
+    }, context(chapter));
+    expect(next.error).toBeUndefined();
+    expect(next.state.sceneId).not.toBe(result.state.sceneId);
+  }
 });

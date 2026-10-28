@@ -318,20 +318,23 @@ const DIGESTS: PreEpicSave["digests"] = {
 // Re-pinned for the owner-requested Gemfall pacing pass: routine activities
 // become story or conversation. Original activities remain in resumeInteractions
 // for saved prompts; endings, roads, setbacks and resumed-save digests stay pinned.
+// Re-pinned for the PR #559 participation fix: fifteen casual conversations
+// use story-turn choices; the three councils retain collective votes.
+// Original archived activities and campaign gameplay digests remain unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
-  "chapters/gemfall-01.json": "7343c9e32049a5348413619c73a941775b4496d455ebcab6612e9397f6d6e47b",
-  "chapters/gemfall-02.json": "3ab063b28ba7bbdf8c4f056d33d1018201de5c739504ea04faadb1f34834595b",
+  "chapters/gemfall-01.json": "ead855ba63d4977e6230eea7e0a32b3c3a9fb38b124257d6eece9767f8e97d04",
+  "chapters/gemfall-02.json": "502c39836ea54cc8202217bb71561581ffea0b44e18fdf4f2a0ea753165aec87",
   "chapters/gemfall-03a.json": "f9097f101020b428530773a10cf9cf41077478d9df4652ced4650ee90ea90f90",
-  "chapters/gemfall-03b.json": "0d3d7b79dcefe6a20dea62f01f0efef521d0a2e84572eb9bc5982c87c6c0cb7e",
-  "chapters/gemfall-03c.json": "be26cfa9ac7266ac2e0d3c811f8f0103f434d6ef2f4df8f39947aa349f616eb9",
-  "chapters/gemfall-04a.json": "35eda701ffd97f9990906e846fa2f8635cec501bacfe0eef4959926e7ff3ce4c",
-  "chapters/gemfall-04b.json": "4c8448d43b82a4ed849cbdc7e10ce888d3637a60920d75a3d589496ffa37128d",
-  "chapters/gemfall-04c.json": "654ddf5a65ece8a505dfbbdae29435e064f8aebf3c0a765ab1747c53e372d800",
-  "chapters/gemfall-05a.json": "c9e8fd9a230202834eb157a1485bbed59cf2f054e8ad866342a1714606a835cd",
-  "chapters/gemfall-05b.json": "c76452e62ca6ffd5963d2c5ff2a7c15510cd6c4e93ee36c2f1f47b85b6c1a6d5",
-  "chapters/gemfall-05c.json": "4ab835430a46a4d5d7d5371a8782170651116d89c590817b79da621dd262f8c6",
-  "chapters/gemfall-06.json": "24f7e2be5647d9fc01aee6bcf5c3311cb086d5330d6bea2fbd88a957b98ebc3d",
+  "chapters/gemfall-03b.json": "121d7ffe5a1315a01df4a30a5e31a9d674efc58e8a3f03438cc5c3a67d9f8216",
+  "chapters/gemfall-03c.json": "af44171eb85df98f22641ee4d8521425675e47f8c5ca97cdef3c53dffde013d1",
+  "chapters/gemfall-04a.json": "b187b9cb22a231676bfb49d2fa229b48cb918e66ebece1b1a1acccb5d7a6f7cd",
+  "chapters/gemfall-04b.json": "8f7f75d4d2f2d775d199248fdcf60d5eb1fdef452c434372eee51b2929a984bf",
+  "chapters/gemfall-04c.json": "229a6267038b25663c81dd07624646d8d712989bb5fc47b225ba29361b42d416",
+  "chapters/gemfall-05a.json": "c5733bbe8de41d3b61fb4073644bc218a6b76be5ef3e0fce93fc4831396d08d7",
+  "chapters/gemfall-05b.json": "2c8536c63ac9aee84871f69f4629121522c8e5ea13b2d9e592662b7586d7602c",
+  "chapters/gemfall-05c.json": "59c0fa347008f65fe09ca837fbd622b5f3a1ec0c13677ac7b4bfe8c63983298e",
+  "chapters/gemfall-06.json": "fa8e5b77db45b1b4cc6c0926a2aeb33546eec9c0144519f5e976a659d775f8f7",
   "chapters/gemfall-07h.json": "7152fee8fc8ca2d3e304bb0f517d70303531b6d0ec99e1a6dc9df4164033fb34",
   "chapters/gemfall-07l.json": "db2cb16f89a93da74465b4f1abe2f422e9ac3efb113e67269b03512801c92976",
   "chapters/gemfall-07r.json": "d848dc83fc5c4698fa77e0782cf3fa9b75a66d6d0f09295bf26a30dd56eb53ff",

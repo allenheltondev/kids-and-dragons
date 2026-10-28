@@ -2192,7 +2192,7 @@
         }
       ],
       "art": "scenes/gemfall/bridge-engineers-tent",
-      "type": "choice_point",
+      "type": "story",
       "narration": "Put what you noticed beside the crack survey. Say one observation aloud, or ask Brask to read one of her measurements. Each hero adds a piece. Brask moves her tea before the chalk arrives. Experience has taught her this.",
       "choices": [
         {

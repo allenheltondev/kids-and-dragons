@@ -2372,7 +2372,7 @@
     },
     "interaction_dawn_warmup": {
       "art": "scenes/gemfall/west-branch-ford",
-      "type": "choice_point",
+      "type": "story",
       "narration": "Morning is cold enough to make every boot creak. Before anyone heads down to the ford, the waiting travelers turn warming up into a game. Stamp, stretch and shake the sleep out of your fingers.",
       "choices": [
         {

@@ -2999,7 +2999,7 @@
         }
       ],
       "art": "scenes/gemfall/empty-chair-tavern",
-      "type": "choice_point",
+      "type": "story",
       "narration": "Flint makes room beside the hearth. Each hero tells a little of the red night, or adds a sound to the story. Take your time. Flint has put his nightcap over the bidding bell.",
       "choices": [
         {

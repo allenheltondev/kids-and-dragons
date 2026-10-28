@@ -2081,7 +2081,7 @@
         }
       ],
       "art": "scenes/gemfall/bell-cart-stones",
-      "type": "choice_point",
+      "type": "story",
       "narration": "Lay out what your hero carries and say what each thing is for. The grandmother checks beside you. One sock has been mistaken for a digging tool. It is a particularly stiff sock.",
       "choices": [
         {
@@ -2406,7 +2406,7 @@
         }
       ],
       "art": "scenes/gemfall/bell-cart-stones",
-      "type": "choice_point",
+      "type": "story",
       "narration": "The grandmothers make a place beside the cart for your account. Each hero shares something witnessed here, or asks for one of the tallies to be read. You do not have to outshout the feathered hat. The hat is running out of breath.",
       "choices": [
         {
