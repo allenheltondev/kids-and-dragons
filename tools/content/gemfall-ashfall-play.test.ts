@@ -92,7 +92,7 @@ function walk(chapter: Chapter, size: number, picks: Record<string, string>, out
 
 const picks={scene_arrival:"walk_up",scene_doorstep:"talk",scene_moths:"follow",scene_wolves:"wait",scene_claim_boulder:"share",scene_soup_tent:"just_soup",rest_warm_stones:"morning",scene_morning_bells:"learn",scene_crab:"dunmore",scene_crab_thanks:"straight_up",scene_citadel_gate:"follow",scene_citadel_gate_desk:"ask_why",scene_truth_table:"work_it_out",scene_whole_truth:"take_stone",scene_acceptable_losses:"hear_plan",scene_whole_truth_window:"bells",scene_ledger:"plainly",scene_who_to_tell:"wardens",scene_what_for:"restore",scene_gate_recovery:"ring",scene_shut_out:"restore"};
 it.each(sizes.flatMap(size=>outcomes.map(outcome=>({size,outcome}))))
- ("Ashfall: $size seats / $outcome compares evidence before the reveal and hears every hero",({size,outcome})=>{
+ ("Ashfall: $size seats / $outcome compares evidence before the reveal and resolves a conversation without a game",({size,outcome})=>{
  const {state,trace,interactionOutcomes}=walk(ashfall,size,picks,outcome);
  expect(trace.has("interaction_truth_timeline")).toBe(true);
  expect(trace.has("interaction_purpose_council")).toBe(true);
@@ -101,7 +101,8 @@ it.each(sizes.flatMap(size=>outcomes.map(outcome=>({size,outcome}))))
  expect(state.flags.truth_helped===true).toBe(outcome!=="success");
  expect(state.flags.truth_compared===true).toBe(outcome!=="miss-supported");
  expect(interactionOutcomes.get("interaction_truth_timeline")).toBe(outcome==="miss-supported"?"failure":outcome);
- expect(interactionOutcomes.get("interaction_purpose_council")).toBe(outcome==="assisted"?"assisted":"success");
+ expect(trace.has("interaction_purpose_council_response_protect")).toBe(true);
+ expect(state.flags.said_what_for).toBe(true);
  expect(state.flags.clock_steady).toBe(true);expect(state.flags.pursuit_restore).toBe(true);
  expect(trace.get("scene_whole_truth")!.narration).toContain("seal holds a titan asleep");
  expect(state.chapterOutcome).toBe("success");
@@ -147,7 +148,7 @@ it.each(sizes)("Ashfall: the old bell roll and the flyer job both earn the recov
  }
 });
 it.each(sizes)("Ashfall: unfinished support and discussion do not grant completion at %i seats",size=>{
- for(const id of ["interaction_doorstep","interaction_purpose_council"]){
+ for(const id of ["interaction_doorstep"]){
  let state=enterScene(initial(ashfall,size),id,context(ashfall)).state;const actor=promptOf(state).actorId;
  expect(miss(ashfall,state)).toBeNull();state=act(ashfall,state,{action:"start",relaxed:false},actor);
  const result=applyIntent(state,{playerId:actor,intent:{type:"INTERACT",openedSeq:promptOf(state).openedSeq,attempt:promptOf(state).attempt,action:"complete"}},context(ashfall));

@@ -1894,47 +1894,30 @@
       ]
     },
     "interaction_last_post": {
-      "type": "interaction",
-      "narration": "At the end of the new curve lies the last marker post, the tall one, as heavy as a barn door. \"One to steer, the rest to hold the ropes,\" says the road boss, tossing you a coil. \"Straight up, mind. A crooked post sends the whole relay the wrong way.\"",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends hold the ropes tight while someone steers the post upright.",
-        "actionLabel": "Steer the post up",
-        "supportLabel": "Hold the ropes"
-      },
-      "onSuccess": {
-        "goto": "scene_warden_patrol",
-        "narration": "The post goes up straight as a candle. The road boss stamps it in and grins. \"The relay will find that in the dark,\" she says, and presses a jar of glowing moss into your hands for the night road.",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "mosslight_jar",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_warden_patrol",
-        "narration": "The post wobbles, leans, and settles at a jaunty angle. The road boss tilts her head at it. \"Adds character,\" she decides, and leaves it exactly there."
-      },
-      "onAssisted": {
-        "goto": "scene_warden_patrol",
-        "narration": "The road boss takes a rope herself, and the post goes up straight as a candle. \"The relay will find that in the dark,\" she says, and presses a jar of glowing moss into your hands for the night road.",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "mosslight_jar",
-            "to": "party"
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/road_boss",
           "name": "Road Boss"
         }
       ],
-      "art": "scenes/gemfall/north-road-detour"
+      "art": "scenes/gemfall/north-road-detour",
+      "type": "story",
+      "narration": "The last marker reaches the end of your passing line. The road boss takes a rope while you guide it into its new hole. Your crew has already done the hard carrying; now she helps finish the job. The post goes up straight as a candle. The road boss stamps it in and grins. \"The relay will find that in the dark,\" she says, and presses a jar of glowing moss into your hands for the night road.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_warden_patrol",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "mosslight_jar",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "interaction_gate": {
       "type": "interaction",
@@ -2061,59 +2044,6 @@
       "art": "scenes/gemfall/depot-barn-strongboxes"
     },
     "interaction_pony": {
-      "type": "interaction",
-      "narration": "While the courier gulps water, her fat pony nudges your elbow. Her name is Dumpling, and she is hot, itchy and sulky. \"She wants a fuss,\" says the courier, with her mouth full. \"Any fuss will do. She is not picky, except about carrots.\"",
-      "interaction": {
-        "kind": "play",
-        "participation": "any",
-        "cue": "Make a fuss of Dumpling until she stops sulking.",
-        "actionLabel": "Fuss over Dumpling",
-        "options": [
-          {
-            "id": "brush",
-            "label": "Brush her mane",
-            "icon": "play_mane_brush",
-            "reaction": "Dumpling leans into the brush and groans with joy."
-          },
-          {
-            "id": "water",
-            "label": "Pour her a bucket of water",
-            "icon": "play_water_bucket",
-            "reaction": "Dumpling slurps until the bucket is just a shiny bottom."
-          },
-          {
-            "id": "hum",
-            "label": "Hum her a tune",
-            "icon": "play_hum_tune",
-            "reaction": "Dumpling's tail swishes in time."
-          }
-        ],
-        "stages": [
-          "Dumpling's ears twitch.",
-          "She stops sulking.",
-          "She blows a happy raspberry."
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_relay_sing",
-        "narration": "Dumpling blows a happy raspberry all over your sleeve. The courier laughs so hard she nearly drops the bell. \"Nobody does that on the first try,\" she says, and tips three coppers into your hand. \"Courier's tip. Do not tell the grandmothers.\" Then she is off down the road, ringing, and you follow the sound of singing to the relay campfire.",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_relay_sing",
-        "narration": "Dumpling blows a happy raspberry all over your sleeve. The courier laughs so hard she nearly drops the bell. \"Nobody does that on the first try,\" she says, and tips three coppers into your hand. \"Courier's tip. Do not tell the grandmothers.\" Then she is off down the road, ringing, and you follow the sound of singing to the relay campfire.",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/bell_courier",
@@ -2124,7 +2054,29 @@
           "name": "Dumpling"
         }
       ],
-      "art": "scenes/gemfall/north-rush-road"
+      "art": "scenes/gemfall/north-rush-road",
+      "type": "choice_point",
+      "narration": "While the courier gulps water, her fat pony nudges your elbow. Her name is Dumpling, and she is hot, itchy and sulky. \"She wants a fuss,\" says the courier, with her mouth full. \"Any fuss will do. She is not picky, except about carrots.\"",
+      "choices": [
+        {
+          "id": "brush",
+          "label": "Brush her mane",
+          "icon": "play_mane_brush",
+          "goto": "interaction_pony_response_brush"
+        },
+        {
+          "id": "water",
+          "label": "Pour her a bucket of water",
+          "icon": "play_water_bucket",
+          "goto": "interaction_pony_response_water"
+        },
+        {
+          "id": "hum",
+          "label": "Hum her a tune",
+          "icon": "play_hum_tune",
+          "goto": "interaction_pony_response_hum"
+        }
+      ]
     },
     "interaction_verses": {
       "type": "interaction",
@@ -2222,67 +2174,33 @@
       ]
     },
     "interaction_warden_tray": {
-      "type": "interaction",
-      "narration": "Holloway's water tray leans toward the road. Lift or lower your side until the marker is centered, then set it beside the patrol cups. \"Every drop accounted for,\" the sergeant says. The goat has already claimed a cup.",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Raise or lower your side until the supply tray is level.",
-        "actionLabel": "Set the tray down",
-        "objectLabel": "The patrol's water tray"
-      },
-      "onSuccess": {
-        "goto": "interaction_gate",
-        "narration": "The water tray settles level. Holloway stamps WORKED, POLITE. Your help pays for passage; no coins leave your purse.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "met_the_wardens",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "road_worked_passage",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "interaction_gate",
-        "narration": "Water slops over the side. Holloway steadies the tray, accepts the work, and waves you through without a coin charge.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "met_the_wardens",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "road_worked_passage",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "interaction_gate",
-        "narration": "Holloway steadies a corner while you balance the tray. WORKED WITH HELP, POLITE goes in the ledger. Passage costs no coins.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "met_the_wardens",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "road_worked_passage",
-            "value": true
-          }
-        ]
-      },
-      "art": "scenes/gemfall/warden-supply-stop",
       "cast": [
         {
           "figure": "cast/holloway",
           "name": "Sergeant Holloway"
+        }
+      ],
+      "art": "scenes/gemfall/warden-supply-stop",
+      "type": "story",
+      "narration": "You set Holloway's water tray beside the patrol cups. A warden takes its far edge. \"Every drop accounted for,\" he says. The patrol goat drinks before he can start counting. The water tray settles level. Holloway stamps WORKED, POLITE. Your help pays for passage; no coins leave your purse.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "interaction_gate",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "met_the_wardens",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "road_worked_passage",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -2562,6 +2480,93 @@
           "name": "Road Boss"
         }
       ]
+    },
+    "interaction_pony_response_brush": {
+      "type": "story",
+      "narration": "Dumpling leans into the brush and groans with joy. Dumpling blows a happy raspberry all over your sleeve. The courier laughs so hard she nearly drops the bell. \"Nobody does that on the first try,\" she says, and tips three coppers into your hand. \"Courier's tip. Do not tell the grandmothers.\" Then she is off down the road, ringing, and you follow the sound of singing to the relay campfire.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_relay_sing",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/bell_courier",
+          "name": "Bell Courier"
+        },
+        {
+          "figure": "entities/pony",
+          "name": "Dumpling"
+        }
+      ],
+      "art": "scenes/gemfall/north-rush-road"
+    },
+    "interaction_pony_response_water": {
+      "type": "story",
+      "narration": "Dumpling slurps until the bucket is just a shiny bottom. Dumpling blows a happy raspberry all over your sleeve. The courier laughs so hard she nearly drops the bell. \"Nobody does that on the first try,\" she says, and tips three coppers into your hand. \"Courier's tip. Do not tell the grandmothers.\" Then she is off down the road, ringing, and you follow the sound of singing to the relay campfire.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_relay_sing",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/bell_courier",
+          "name": "Bell Courier"
+        },
+        {
+          "figure": "entities/pony",
+          "name": "Dumpling"
+        }
+      ],
+      "art": "scenes/gemfall/north-rush-road"
+    },
+    "interaction_pony_response_hum": {
+      "type": "story",
+      "narration": "Dumpling's tail swishes in time. Dumpling blows a happy raspberry all over your sleeve. The courier laughs so hard she nearly drops the bell. \"Nobody does that on the first try,\" she says, and tips three coppers into your hand. \"Courier's tip. Do not tell the grandmothers.\" Then she is off down the road, ringing, and you follow the sound of singing to the relay campfire.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_relay_sing",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/bell_courier",
+          "name": "Bell Courier"
+        },
+        {
+          "figure": "entities/pony",
+          "name": "Dumpling"
+        }
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     }
   },
   "voiceGuide": {
@@ -2590,11 +2595,6 @@
   },
   "presentation": {
     "interactions": {
-      "interaction_last_post": {
-        "props": [
-          "prop_post_ropes"
-        ]
-      },
       "check_relay": {
         "props": [
           "prop_word_scroll"
@@ -2616,11 +2616,6 @@
       "interaction_post_line": {
         "props": [
           "prop_post_ropes"
-        ]
-      },
-      "interaction_warden_tray": {
-        "props": [
-          "prop_water_tray"
         ]
       },
       "interaction_relay_signs": {
@@ -2648,6 +2643,182 @@
           "wind-blanket"
         ]
       }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_last_post": {
+      "type": "interaction",
+      "narration": "At the end of the new curve lies the last marker post, the tall one, as heavy as a barn door. \"One to steer, the rest to hold the ropes,\" says the road boss, tossing you a coil. \"Straight up, mind. A crooked post sends the whole relay the wrong way.\"",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends hold the ropes tight while someone steers the post upright.",
+        "actionLabel": "Steer the post up",
+        "supportLabel": "Hold the ropes"
+      },
+      "onSuccess": {
+        "goto": "scene_warden_patrol",
+        "narration": "The post goes up straight as a candle. The road boss stamps it in and grins. \"The relay will find that in the dark,\" she says, and presses a jar of glowing moss into your hands for the night road.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "mosslight_jar",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_warden_patrol",
+        "narration": "The post wobbles, leans, and settles at a jaunty angle. The road boss tilts her head at it. \"Adds character,\" she decides, and leaves it exactly there."
+      },
+      "onAssisted": {
+        "goto": "scene_warden_patrol",
+        "narration": "The road boss takes a rope herself, and the post goes up straight as a candle. \"The relay will find that in the dark,\" she says, and presses a jar of glowing moss into your hands for the night road.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "mosslight_jar",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/road_boss",
+          "name": "Road Boss"
+        }
+      ],
+      "art": "scenes/gemfall/north-road-detour"
+    },
+    "interaction_warden_tray": {
+      "type": "interaction",
+      "narration": "Holloway's water tray leans toward the road. Lift or lower your side until the marker is centered, then set it beside the patrol cups. \"Every drop accounted for,\" the sergeant says. The goat has already claimed a cup.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Raise or lower your side until the supply tray is level.",
+        "actionLabel": "Set the tray down",
+        "objectLabel": "The patrol's water tray"
+      },
+      "onSuccess": {
+        "goto": "interaction_gate",
+        "narration": "The water tray settles level. Holloway stamps WORKED, POLITE. Your help pays for passage; no coins leave your purse.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "met_the_wardens",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "road_worked_passage",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_gate",
+        "narration": "Water slops over the side. Holloway steadies the tray, accepts the work, and waves you through without a coin charge.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "met_the_wardens",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "road_worked_passage",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "interaction_gate",
+        "narration": "Holloway steadies a corner while you balance the tray. WORKED WITH HELP, POLITE goes in the ledger. Passage costs no coins.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "met_the_wardens",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "road_worked_passage",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/warden-supply-stop",
+      "cast": [
+        {
+          "figure": "cast/holloway",
+          "name": "Sergeant Holloway"
+        }
+      ]
+    },
+    "interaction_pony": {
+      "type": "interaction",
+      "narration": "While the courier gulps water, her fat pony nudges your elbow. Her name is Dumpling, and she is hot, itchy and sulky. \"She wants a fuss,\" says the courier, with her mouth full. \"Any fuss will do. She is not picky, except about carrots.\"",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Make a fuss of Dumpling until she stops sulking.",
+        "actionLabel": "Fuss over Dumpling",
+        "options": [
+          {
+            "id": "brush",
+            "label": "Brush her mane",
+            "icon": "play_mane_brush",
+            "reaction": "Dumpling leans into the brush and groans with joy."
+          },
+          {
+            "id": "water",
+            "label": "Pour her a bucket of water",
+            "icon": "play_water_bucket",
+            "reaction": "Dumpling slurps until the bucket is just a shiny bottom."
+          },
+          {
+            "id": "hum",
+            "label": "Hum her a tune",
+            "icon": "play_hum_tune",
+            "reaction": "Dumpling's tail swishes in time."
+          }
+        ],
+        "stages": [
+          "Dumpling's ears twitch.",
+          "She stops sulking.",
+          "She blows a happy raspberry."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_relay_sing",
+        "narration": "Dumpling blows a happy raspberry all over your sleeve. The courier laughs so hard she nearly drops the bell. \"Nobody does that on the first try,\" she says, and tips three coppers into your hand. \"Courier's tip. Do not tell the grandmothers.\" Then she is off down the road, ringing, and you follow the sound of singing to the relay campfire.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_relay_sing",
+        "narration": "Dumpling blows a happy raspberry all over your sleeve. The courier laughs so hard she nearly drops the bell. \"Nobody does that on the first try,\" she says, and tips three coppers into your hand. \"Courier's tip. Do not tell the grandmothers.\" Then she is off down the road, ringing, and you follow the sound of singing to the relay campfire.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/bell_courier",
+          "name": "Bell Courier"
+        },
+        {
+          "figure": "entities/pony",
+          "name": "Dumpling"
+        }
+      ],
+      "art": "scenes/gemfall/north-rush-road"
     }
   }
 }

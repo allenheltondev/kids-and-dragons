@@ -121,8 +121,8 @@ it.each(sizes.flatMap(size=>["pursuit_restore","pursuit_hoard","pursuit_leash"].
  state=enterScene(initial(finale,size,{[pursuit]:true}),"scene_keystone",context(finale)).state;
  expect(offered(state,"collectors")).toBe(pursuit==="pursuit_hoard");expect(offered(state,"take")).toBe(true);
 });
-it.each(sizes)("Finale %i seats cannot complete a council or brace without participation",size=>{
- for(const id of ["interaction_verdict_council","interaction_restore_brace","interaction_leash_transfer"]){
+it.each(sizes)("Finale %i seats cannot complete a brace without participation",size=>{
+ for(const id of ["interaction_restore_brace","interaction_leash_transfer"]){
  let state=enterScene(initial(finale,size),id,context(finale)).state;const actor=promptOf(state).actorId;
  state=act(finale,state,{action:"start",relaxed:false},actor);
  const result=applyIntent(state,{playerId:actor,intent:{type:"INTERACT",openedSeq:promptOf(state).openedSeq,attempt:promptOf(state).attempt,action:"complete"}},context(finale));
@@ -172,17 +172,14 @@ it.each(sizes)("Finale %i: failed Keystone closes taking it, without closing oth
  expect(state.party.every(p=>!p.character.questItems.includes("facet_keystone"))).toBe(true);
 });
 
-it.each(sizes)("Finale verdict %i: one hero cannot submit for silent connected friends",size=>{
+it.each(sizes)("Finale verdict %i: discussion offers replies without a participation game",size=>{
  let state=enterScene(initial(finale,size),"interaction_verdict_council",context(finale)).state;
- const prompt=promptOf(state),actor=prompt.actorId;
- state=act(finale,state,{action:"start",relaxed:false},actor);
- state=act(finale,state,{action:"play",optionId:"choice"},actor);
- const pending=promptOf(state);
- const attempt=applyIntent(state,{playerId:actor,intent:{type:"INTERACT",openedSeq:pending.openedSeq,attempt:pending.attempt,action:"complete"}},context(finale));
- if(size===1)expect(attempt.error).toBeUndefined();
- else{
- expect(attempt.error).toBeDefined();expect(promptOf(attempt.state).outcome).toBeUndefined();
- for(const friend of prompt.playerIds.filter(id=>id!==actor))state=act(finale,state,{action:"play",optionId:"helped"},friend);
- state=act(finale,state,{action:"complete"},actor);expect(promptOf(state).outcome).toBe("success");
- }
+ expect(state.prompt?.kind).toBe("choice");
+ expect(state.flags.dragon_satisfied).not.toBe(true);
+ state=send(state,{type:"CHOOSE",choiceId:"helped"},finale);
+ expect(state.narration).toBeTruthy();
+ expect(state.flags.dragon_satisfied).not.toBe(true);
+ state=send(state,{type:"CHOOSE",choiceId:"continue"},finale);
+ expect(state.sceneId).toBe("scene_seal_cracks");
+ expect(state.flags.dragon_satisfied).toBe(true);
 });

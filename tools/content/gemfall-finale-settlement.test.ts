@@ -9,7 +9,7 @@ it.each(['restore','hoard','leash'].flatMap(pursuit=>['restore','destroy','leash
  await h.harness.repo.putCampaignProgress({householdId:h.householdId,campaignId:'gemfall',status:'active',setbacks:0,lastIndex:7,routeFlags:{route_wild:true,[`pursuit_${pursuit}`]:true,clock_steady:true,told_wardens:true,motive_curiosity:true},coins:7,updatedAt:'2026-10-27T12:00:00Z'});
  const t=await evening(h);expect(await t.begin()).toBe('gemfall-08');
  async function help(){let s=await t.state();if(s.prompt?.kind!=='interaction')throw Error('activity');await t.must({type:'INTERACT',openedSeq:s.prompt.openedSeq,attempt:s.prompt.attempt,action:'assist'});s=await t.state();if(s.prompt?.kind!=='interaction')throw Error('result');await t.must({type:'INTERACT',openedSeq:s.prompt.openedSeq,attempt:s.prompt.attempt,action:'continue'});}
- await t.goto('scene_verdict');await t.choose('each_voice');await help();expect((await t.state()).flags.dragon_satisfied).toBe(true);
+ await t.goto('scene_verdict');await t.choose('each_voice');await t.choose('carried');await t.choose('continue');expect((await t.state()).flags.dragon_satisfied).toBe(true);
  await t.goto('scene_seal_chamber');const vote=await t.state();if(vote.prompt?.kind!=='choice')throw Error('vote');expect(vote.prompt.options.map(o=>o.id)).toEqual(['restore','destroy','leash','keystone']);
  await t.choose(philosophy);
  if(philosophy==='restore'){await t.choose('brace_together');await help();await t.choose('gems');await t.choose('on');await t.choose('front');}

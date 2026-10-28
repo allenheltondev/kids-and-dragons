@@ -2358,127 +2358,71 @@
       "art": "scenes/gemfall/ford-queue-market"
     },
     "interaction_evening_echo": {
-      "type": "interaction",
-      "narration": "The camp settles into evening. At the last fire before the remedy stalls, travelers tap a little welcome on their bowls: tap, tap, rest, tap. Listen, then tap it back so the next fire can hear.",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Listen, then repeat the welcome in order.",
-        "actionLabel": "Tap the welcome",
-        "stepMs": 1300,
-        "options": [
-          {
-            "id": "tap",
-            "label": "Tap",
-            "icon": "note"
-          },
-          {
-            "id": "rest",
-            "label": "Rest",
-            "icon": "hand"
-          }
-        ],
-        "answer": [
-          "tap",
-          "tap",
-          "rest",
-          "tap"
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_witch_stall"
-      },
-      "onFailure": {
-        "goto": "scene_witch_stall"
-      },
-      "art": "scenes/gemfall/ford-witch-stall"
+      "art": "scenes/gemfall/ford-witch-stall",
+      "type": "story",
+      "narration": "As camp settles, travelers tap a welcome on their bowls: tap, tap, rest, tap. You listen, or join in aloud. Around the last fire, the road finally stops asking everyone to hurry.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_witch_stall"
+        }
+      ]
     },
     "interaction_dawn_warmup": {
-      "type": "interaction",
+      "art": "scenes/gemfall/west-branch-ford",
+      "type": "choice_point",
       "narration": "Morning is cold enough to make every boot creak. Before anyone heads down to the ford, the waiting travelers turn warming up into a game. Stamp, stretch and shake the sleep out of your fingers.",
-      "interaction": {
-        "kind": "play",
-        "participation": "any",
-        "cue": "Warm up for the crossing.",
-        "actionLabel": "Warm up!",
-        "options": [
-          {
-            "id": "stamp",
-            "label": "Stamp your boots",
-            "icon": "boot",
-            "reaction": "The cold mud thumps back."
-          },
-          {
-            "id": "stretch",
-            "label": "Reach for the sky",
-            "icon": "hand",
-            "reaction": "Sleepy travelers stretch beside you."
-          },
-          {
-            "id": "shake",
-            "label": "Shake out your fingers",
-            "icon": "spark",
-            "reaction": "Somebody wiggles all ten fingers at the river."
-          }
-        ],
-        "stages": [
-          "Wake your boots.",
-          "Wake your shoulders.",
-          "Wake your fingers."
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_reed_crabs"
-      },
-      "onFailure": {
-        "goto": "scene_reed_crabs"
-      },
-      "art": "scenes/gemfall/west-branch-ford"
+      "choices": [
+        {
+          "id": "stamp",
+          "label": "Stamp your boots",
+          "icon": "boot",
+          "goto": "interaction_dawn_warmup_response_stamp"
+        },
+        {
+          "id": "stretch",
+          "label": "Reach for the sky",
+          "icon": "hand",
+          "goto": "interaction_dawn_warmup_response_stretch"
+        },
+        {
+          "id": "shake",
+          "label": "Shake out your fingers",
+          "icon": "spark",
+          "goto": "interaction_dawn_warmup_response_shake"
+        }
+      ]
     },
     "interaction_chip_line": {
-      "type": "interaction",
-      "narration": "The chips roll toward the rut. Catch the pannier at your place, then pass it along while the drover gathers the spill. Alone, catch and hand it straight to him. The dog has volunteered to count. Nobody has accepted.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the pannier, then pass it along the line.",
-        "actionLabel": "Pass the pannier",
-        "objectLabel": "The gem-chip pannier"
-      },
-      "onSuccess": {
-        "goto": "scene_number_pebble",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "drover_knows_us",
-            "value": true
-          }
-        ],
-        "narration": "You dive, scoop and pass, scoop and pass, and every chip is back in the pannier before a single pocket gets one. The drover counts them twice, then booms a thank you so loud the horses jump. He will remember your faces."
-      },
-      "onFailure": {
-        "goto": "scene_number_pebble",
-        "narration": "You scoop up a whole double handful, very proudly, and give the drover three chips and a great deal of gravel. He laughs so hard his hat falls off. By the time he finds it, the crowd has pocketed the rest."
-      },
-      "onAssisted": {
-        "goto": "scene_number_pebble",
-        "narration": "The drover anchors the end of your line. Together you catch the spill before it reaches the crowd. He remembers the help, including his own part.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "drover_knows_us",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "ford_chip_helped",
-            "value": true
-          }
-        ]
-      },
-      "art": "scenes/gemfall/caravan-road-ruts",
       "cast": [
         {
           "figure": "entities/centaur",
           "name": "Lead Drover"
+        }
+      ],
+      "art": "scenes/gemfall/caravan-road-ruts",
+      "type": "story",
+      "narration": "You catch the pannier while the drover gathers his scattered chips. The crowd makes room for your hands. He counts the last handful himself before anyone moves on, then booms a thank you so loud the horses jump. He will remember your faces.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_number_pebble",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "drover_knows_us",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "ford_chip_helped",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -2695,6 +2639,45 @@
           "name": "Lead Drover"
         }
       ]
+    },
+    "interaction_dawn_warmup_response_stamp": {
+      "type": "story",
+      "narration": "The cold mud thumps back.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_reed_crabs"
+        }
+      ],
+      "art": "scenes/gemfall/west-branch-ford"
+    },
+    "interaction_dawn_warmup_response_stretch": {
+      "type": "story",
+      "narration": "Sleepy travelers stretch beside you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_reed_crabs"
+        }
+      ],
+      "art": "scenes/gemfall/west-branch-ford"
+    },
+    "interaction_dawn_warmup_response_shake": {
+      "type": "story",
+      "narration": "Somebody wiggles all ten fingers at the river.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_reed_crabs"
+        }
+      ],
+      "art": "scenes/gemfall/west-branch-ford"
     }
   },
   "voiceGuide": {
@@ -2742,11 +2725,6 @@
           "prop_playing_card"
         ]
       },
-      "interaction_chip_line": {
-        "props": [
-          "relay-sack"
-        ]
-      },
       "interaction_wagon_level": {
         "props": [
           "prop_wagon_wheel_rut"
@@ -2762,6 +2740,133 @@
           "prop_plank"
         ]
       }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_chip_line": {
+      "type": "interaction",
+      "narration": "The chips roll toward the rut. Catch the pannier at your place, then pass it along while the drover gathers the spill. Alone, catch and hand it straight to him. The dog has volunteered to count. Nobody has accepted.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the pannier, then pass it along the line.",
+        "actionLabel": "Pass the pannier",
+        "objectLabel": "The gem-chip pannier"
+      },
+      "onSuccess": {
+        "goto": "scene_number_pebble",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "drover_knows_us",
+            "value": true
+          }
+        ],
+        "narration": "You dive, scoop and pass, scoop and pass, and every chip is back in the pannier before a single pocket gets one. The drover counts them twice, then booms a thank you so loud the horses jump. He will remember your faces."
+      },
+      "onFailure": {
+        "goto": "scene_number_pebble",
+        "narration": "You scoop up a whole double handful, very proudly, and give the drover three chips and a great deal of gravel. He laughs so hard his hat falls off. By the time he finds it, the crowd has pocketed the rest."
+      },
+      "onAssisted": {
+        "goto": "scene_number_pebble",
+        "narration": "The drover anchors the end of your line. Together you catch the spill before it reaches the crowd. He remembers the help, including his own part.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "drover_knows_us",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "ford_chip_helped",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/caravan-road-ruts",
+      "cast": [
+        {
+          "figure": "entities/centaur",
+          "name": "Lead Drover"
+        }
+      ]
+    },
+    "interaction_evening_echo": {
+      "type": "interaction",
+      "narration": "The camp settles into evening. At the last fire before the remedy stalls, travelers tap a little welcome on their bowls: tap, tap, rest, tap. Listen, then tap it back so the next fire can hear.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Listen, then repeat the welcome in order.",
+        "actionLabel": "Tap the welcome",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "tap",
+            "label": "Tap",
+            "icon": "note"
+          },
+          {
+            "id": "rest",
+            "label": "Rest",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "tap",
+          "tap",
+          "rest",
+          "tap"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_witch_stall"
+      },
+      "onFailure": {
+        "goto": "scene_witch_stall"
+      },
+      "art": "scenes/gemfall/ford-witch-stall"
+    },
+    "interaction_dawn_warmup": {
+      "type": "interaction",
+      "narration": "Morning is cold enough to make every boot creak. Before anyone heads down to the ford, the waiting travelers turn warming up into a game. Stamp, stretch and shake the sleep out of your fingers.",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Warm up for the crossing.",
+        "actionLabel": "Warm up!",
+        "options": [
+          {
+            "id": "stamp",
+            "label": "Stamp your boots",
+            "icon": "boot",
+            "reaction": "The cold mud thumps back."
+          },
+          {
+            "id": "stretch",
+            "label": "Reach for the sky",
+            "icon": "hand",
+            "reaction": "Sleepy travelers stretch beside you."
+          },
+          {
+            "id": "shake",
+            "label": "Shake out your fingers",
+            "icon": "spark",
+            "reaction": "Somebody wiggles all ten fingers at the river."
+          }
+        ],
+        "stages": [
+          "Wake your boots.",
+          "Wake your shoulders.",
+          "Wake your fingers."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_reed_crabs"
+      },
+      "onFailure": {
+        "goto": "scene_reed_crabs"
+      },
+      "art": "scenes/gemfall/west-branch-ford"
     }
   }
 }

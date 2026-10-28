@@ -154,7 +154,7 @@ it.each(sizes)("Tether %i: missed practice does not invent preparation or remove
  expect(state.flags.practiced).not.toBe(true);expect(offered(trace.get("choice_the_test")!,"practiced")).toBe(false);expect(trace.has("check_hold_hard")).toBe(true);
 });
 it.each(sizes)("Incomplete team work at %i seats never grants the stone or clock",size=>{
- for(const [chapter,id] of [[returning,"interaction_return_handover"],[tether,"interaction_tether_team"],[tether,"interaction_quiet_council"]] as const){
+ for(const [chapter,id] of [[returning,"interaction_return_handover"],[tether,"interaction_tether_team"]] as const){
  let state=enterScene(initial(chapter,size),id,context(chapter)).state;const actor=promptOf(state).actorId;
  state=act(chapter,state,{action:"start",relaxed:false},actor);
  const result=applyIntent(state,{playerId:actor,intent:{type:"INTERACT",openedSeq:promptOf(state).openedSeq,attempt:promptOf(state).attempt,action:"complete"}},context(chapter));

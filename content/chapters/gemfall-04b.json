@@ -1762,55 +1762,22 @@
       ]
     },
     "interaction_sapling_rhyme": {
-      "type": "interaction",
-      "narration": "The path is open, but one more ring of trees is not finished with you. A row of saplings, none taller than a boot, rustles a little rhyme, leaf by leaf. Then they all go quiet and turn toward you. They are learning to take attendance, and they would like to hear it said back, in the right order.",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the saplings rustle, then rustle it back in the same order.",
-        "actionLabel": "Rustle it back",
-        "stepMs": 1300,
-        "options": [
-          {
-            "id": "fern",
-            "label": "Fern",
-            "icon": "glyph_fern"
-          },
-          {
-            "id": "acorn",
-            "label": "Acorn",
-            "icon": "acorn"
-          },
-          {
-            "id": "bluebell",
-            "label": "Bluebell",
-            "icon": "glyph_bluebell"
-          }
-        ],
-        "answer": [
-          "fern",
-          "acorn",
-          "bluebell",
-          "acorn"
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_attendance",
-        "narration": "Fern, acorn, bluebell, acorn. The saplings shake from top to toe, as pleased as anything. The tallest one bows so low it tips over, and the others have to help it up. A path winks open between them."
-      },
-      "onFailure": {
-        "goto": "scene_attendance",
-        "narration": "You get the fern right, and then everything else tumbles out in a heap. The saplings giggle and rustle it back for you, slowly, so you can hear how it goes. Fern, acorn, bluebell, acorn. A path winks open between them, and one sapling follows you for a few steps, still rustling."
-      },
-      "onAssisted": {
-        "goto": "scene_attendance",
-        "narration": "The saplings rustle the rhyme once more, nice and slow, and this time you say it back in time with them. Fern, acorn, bluebell, acorn. A path winks open between them."
-      },
       "cast": [
         {
           "figure": "entities/boughkin"
         }
       ],
-      "art": "scenes/gemfall/sapling-ring"
+      "art": "scenes/gemfall/sapling-ring",
+      "type": "story",
+      "narration": "The saplings rustle their little rhyme as you pass: fern, acorn, bluebell, acorn. Their tallest bows so low that a neighbor has to help it up. A path winks open between them, and they wave you through.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_attendance"
+        }
+      ]
     },
     "interaction_hedge_gate": {
       "type": "interaction",
@@ -1897,46 +1864,29 @@
       "art": "scenes/gemfall/gray-moss-patch"
     },
     "interaction_spring_cup": {
-      "type": "interaction",
-      "narration": "A young unicorn trots out of the ferns. She looks at the gray patch, and then at your hands. \"The glade ahead is dry as toast,\" she says. \"The elders are mending it, and the moss wants spring water. A whole cup, carried flat. My hooves are no good with cups.\" She holds out a big curled leaf, brimming. \"Will you carry it?\"",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Everyone lift or lower your side until the water is flat, then carry the cup.",
-        "actionLabel": "Carry the cup",
-        "objectLabel": "A leaf cup of spring water"
-      },
-      "onSuccess": {
-        "goto": "scene_unicorns",
-        "narration": "Not a drop spills. \"Flat as a pond,\" the young unicorn breathes, and leads you the rest of the way to the small glade. At its edge she digs in her saddlebag. \"For later,\" she says, and presses a tiny bottle of sunbloom nectar into your hand.",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "sunbloom_draught",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_unicorns",
-        "narration": "The cup tips, and the water goes all down the front of the nearest boot. \"It is only a little wet,\" the young unicorn says, kindly, and fetches a second leaf from a fern. She leads you the rest of the way to the small glade, ears politely not laughing."
-      },
-      "onAssisted": {
-        "goto": "scene_unicorns",
-        "narration": "The young unicorn steadies one edge of the leaf with her nose, and the water lies flat. \"Flat as a pond,\" she breathes. She leads you the rest of the way to the small glade, and at its edge presses a tiny bottle of sunbloom nectar into your hand. \"For later.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "sunbloom_draught",
-            "to": "party"
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "characters/unicorn"
         }
       ],
-      "art": "scenes/gemfall/fern-spring-glade"
+      "art": "scenes/gemfall/fern-spring-glade",
+      "type": "story",
+      "narration": "A young unicorn comes out of the ferns with a leaf full of spring water. You carry it beside her toward the thirsty glade. She steadies one edge with her nose whenever the path dips. Not a drop spills. \"Flat as a pond,\" the young unicorn breathes, and leads you the rest of the way to the small glade. At its edge she digs in her saddlebag. \"For later,\" she says, and presses a tiny bottle of sunbloom nectar into your hand.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_unicorns",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "sunbloom_draught",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "interaction_calf_hide": {
       "type": "interaction",
@@ -2097,78 +2047,29 @@
       "art": "scenes/gemfall/brook-log-mimics"
     },
     "interaction_forest_inventory": {
-      "type": "interaction",
+      "art": "scenes/gemfall/fern-spring-glade",
+      "type": "choice_point",
       "narration": "Say what your hero carries aloud, then choose how to add it to the roll call. The trees wait. A squirrel checks behind its own ears. Nobody here is being graded on how brave an answer sounds.",
-      "interaction": {
-        "kind": "play",
-        "participation": "everyone",
-        "cue": "Each hero names their things and adds to the roll call.",
-        "actionLabel": "Finish the honest roll call",
-        "options": [
-          {
-            "id": "name",
-            "label": "Name the things I know",
-            "icon": "scroll",
-            "reaction": "The leaves rustle after your list."
-          },
-          {
-            "id": "check",
-            "label": "Check my pockets and hood",
-            "icon": "bag",
-            "reaction": "A fern helps lift the edge of a hood. Just in case."
-          },
-          {
-            "id": "help",
-            "label": "Ask a friend to help me check",
-            "icon": "hand",
-            "reaction": "The trees wait while the check is finished together."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "interaction_sapling_rhyme",
-        "narration": "Your checked account is heard. The forest opens a path and remembers that you offered it.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "told_forest_truth",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "answered_roll_call",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "interaction_sapling_rhyme",
-        "narration": "The trees finish the roll call beside you and open the path.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "answered_roll_call",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "interaction_sapling_rhyme",
-        "narration": "The trees prompt you through one pocket at a time. With their help, you check and name what you carry.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "told_forest_truth",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "answered_roll_call",
-            "value": true
-          }
-        ]
-      },
-      "art": "scenes/gemfall/fern-spring-glade"
+      "choices": [
+        {
+          "id": "name",
+          "label": "Name the things I know",
+          "icon": "scroll",
+          "goto": "interaction_forest_inventory_response_name"
+        },
+        {
+          "id": "check",
+          "label": "Check my pockets and hood",
+          "icon": "bag",
+          "goto": "interaction_forest_inventory_response_check"
+        },
+        {
+          "id": "help",
+          "label": "Ask a friend to help me check",
+          "icon": "hand",
+          "goto": "interaction_forest_inventory_response_help"
+        }
+      ]
     },
     "interaction_herd_map": {
       "type": "interaction",
@@ -2526,6 +2427,81 @@
         ]
       },
       "art": "scenes/gemfall/gray-moss-patch"
+    },
+    "interaction_forest_inventory_response_name": {
+      "type": "story",
+      "narration": "The leaves rustle after your list. Your checked account is heard. The forest opens a path and remembers that you offered it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "interaction_sapling_rhyme",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_forest_truth",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "answered_roll_call",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/gemfall/fern-spring-glade"
+    },
+    "interaction_forest_inventory_response_check": {
+      "type": "story",
+      "narration": "A fern helps lift the edge of a hood. Just in case. The trees prompt you through one pocket at a time. With their help, you check and name what you carry.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "interaction_sapling_rhyme",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_forest_truth",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "answered_roll_call",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/gemfall/fern-spring-glade"
+    },
+    "interaction_forest_inventory_response_help": {
+      "type": "story",
+      "narration": "The trees wait while the check is finished together. The trees prompt you through one pocket at a time. With their help, you check and name what you carry.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "interaction_sapling_rhyme",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "told_forest_truth",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "answered_roll_call",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/gemfall/fern-spring-glade"
     }
   },
   "voiceGuide": {
@@ -2555,22 +2531,12 @@
           "prop_hedge_latch"
         ]
       },
-      "interaction_spring_cup": {
-        "props": [
-          "prop_leaf_cup"
-        ]
-      },
       "interaction_calf_hide": {
         "props": [],
         "coverIcons": [
           "prop_fern",
           "prop_fern",
           "prop_fern"
-        ]
-      },
-      "interaction_forest_inventory": {
-        "props": [
-          "prop_letters"
         ]
       },
       "interaction_herd_map": {
@@ -2606,6 +2572,175 @@
           "prop_fern"
         ]
       }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_sapling_rhyme": {
+      "type": "interaction",
+      "narration": "The path is open, but one more ring of trees is not finished with you. A row of saplings, none taller than a boot, rustles a little rhyme, leaf by leaf. Then they all go quiet and turn toward you. They are learning to take attendance, and they would like to hear it said back, in the right order.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the saplings rustle, then rustle it back in the same order.",
+        "actionLabel": "Rustle it back",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "fern",
+            "label": "Fern",
+            "icon": "glyph_fern"
+          },
+          {
+            "id": "acorn",
+            "label": "Acorn",
+            "icon": "acorn"
+          },
+          {
+            "id": "bluebell",
+            "label": "Bluebell",
+            "icon": "glyph_bluebell"
+          }
+        ],
+        "answer": [
+          "fern",
+          "acorn",
+          "bluebell",
+          "acorn"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_attendance",
+        "narration": "Fern, acorn, bluebell, acorn. The saplings shake from top to toe, as pleased as anything. The tallest one bows so low it tips over, and the others have to help it up. A path winks open between them."
+      },
+      "onFailure": {
+        "goto": "scene_attendance",
+        "narration": "You get the fern right, and then everything else tumbles out in a heap. The saplings giggle and rustle it back for you, slowly, so you can hear how it goes. Fern, acorn, bluebell, acorn. A path winks open between them, and one sapling follows you for a few steps, still rustling."
+      },
+      "onAssisted": {
+        "goto": "scene_attendance",
+        "narration": "The saplings rustle the rhyme once more, nice and slow, and this time you say it back in time with them. Fern, acorn, bluebell, acorn. A path winks open between them."
+      },
+      "cast": [
+        {
+          "figure": "entities/boughkin"
+        }
+      ],
+      "art": "scenes/gemfall/sapling-ring"
+    },
+    "interaction_spring_cup": {
+      "type": "interaction",
+      "narration": "A young unicorn trots out of the ferns. She looks at the gray patch, and then at your hands. \"The glade ahead is dry as toast,\" she says. \"The elders are mending it, and the moss wants spring water. A whole cup, carried flat. My hooves are no good with cups.\" She holds out a big curled leaf, brimming. \"Will you carry it?\"",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Everyone lift or lower your side until the water is flat, then carry the cup.",
+        "actionLabel": "Carry the cup",
+        "objectLabel": "A leaf cup of spring water"
+      },
+      "onSuccess": {
+        "goto": "scene_unicorns",
+        "narration": "Not a drop spills. \"Flat as a pond,\" the young unicorn breathes, and leads you the rest of the way to the small glade. At its edge she digs in her saddlebag. \"For later,\" she says, and presses a tiny bottle of sunbloom nectar into your hand.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "sunbloom_draught",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_unicorns",
+        "narration": "The cup tips, and the water goes all down the front of the nearest boot. \"It is only a little wet,\" the young unicorn says, kindly, and fetches a second leaf from a fern. She leads you the rest of the way to the small glade, ears politely not laughing."
+      },
+      "onAssisted": {
+        "goto": "scene_unicorns",
+        "narration": "The young unicorn steadies one edge of the leaf with her nose, and the water lies flat. \"Flat as a pond,\" she breathes. She leads you the rest of the way to the small glade, and at its edge presses a tiny bottle of sunbloom nectar into your hand. \"For later.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "sunbloom_draught",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "characters/unicorn"
+        }
+      ],
+      "art": "scenes/gemfall/fern-spring-glade"
+    },
+    "interaction_forest_inventory": {
+      "type": "interaction",
+      "narration": "Say what your hero carries aloud, then choose how to add it to the roll call. The trees wait. A squirrel checks behind its own ears. Nobody here is being graded on how brave an answer sounds.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Each hero names their things and adds to the roll call.",
+        "actionLabel": "Finish the honest roll call",
+        "options": [
+          {
+            "id": "name",
+            "label": "Name the things I know",
+            "icon": "scroll",
+            "reaction": "The leaves rustle after your list."
+          },
+          {
+            "id": "check",
+            "label": "Check my pockets and hood",
+            "icon": "bag",
+            "reaction": "A fern helps lift the edge of a hood. Just in case."
+          },
+          {
+            "id": "help",
+            "label": "Ask a friend to help me check",
+            "icon": "hand",
+            "reaction": "The trees wait while the check is finished together."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "interaction_sapling_rhyme",
+        "narration": "Your checked account is heard. The forest opens a path and remembers that you offered it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "told_forest_truth",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "answered_roll_call",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_sapling_rhyme",
+        "narration": "The trees finish the roll call beside you and open the path.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "answered_roll_call",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "interaction_sapling_rhyme",
+        "narration": "The trees prompt you through one pocket at a time. With their help, you check and name what you carry.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "told_forest_truth",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "answered_roll_call",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/fern-spring-glade"
     }
   }
 }

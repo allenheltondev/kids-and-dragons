@@ -2167,59 +2167,6 @@
       "art": "scenes/gemfall/toll-reeds-tunnel"
     },
     "interaction_wisp_crowd": {
-      "type": "interaction",
-      "narration": "Past the ribbon, a crowd of the new wisps has followed your raft, bumping it like puppies. \"Keep them busy till the island!\" calls the cousin in three hats. \"Bored wisps tie knots in things. Last week they tied my hats together.\" She tosses a handful of coins onto the raft as a down payment.",
-      "interaction": {
-        "kind": "play",
-        "participation": "any",
-        "cue": "Do something friendly until the wisps settle down.",
-        "actionLabel": "Calm the wisps",
-        "options": [
-          {
-            "id": "hum",
-            "label": "Hum a lullaby",
-            "icon": "play_lullaby",
-            "reaction": "The wisps sway together, glowing slow and gold."
-          },
-          {
-            "id": "juggle",
-            "label": "Juggle three cattails",
-            "icon": "play_cattails",
-            "reaction": "The wisps follow the cattails with their whole bodies."
-          },
-          {
-            "id": "lantern",
-            "label": "Hold up a lantern for them to circle",
-            "icon": "play_lantern_held",
-            "reaction": "The wisps circle it, politely, like moths with manners."
-          }
-        ],
-        "stages": [
-          "A few wisps stop bumping the raft.",
-          "Most of the crowd is drifting along calmly.",
-          "Every wisp is glowing soft and sleepy."
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_boggart_isle",
-        "narration": "The wisps settle into a long, soft line behind the raft, glowing like a string of lanterns. The cousin in three hats gives you a nod and a tip. \"Three coins for the calm,\" she says. \"Don't tell the others.\"",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_boggart_isle",
-        "narration": "The wisps settle into a long, soft line behind the raft, glowing like a string of lanterns. The cousin in three hats gives you a nod and a tip. \"Three coins for the calm,\" she says. \"Don't tell the others.\"",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/gullet",
@@ -2235,7 +2182,29 @@
           "count": 3
         }
       ],
-      "art": "scenes/gemfall/wisp-raft-crowd"
+      "art": "scenes/gemfall/wisp-raft-crowd",
+      "type": "choice_point",
+      "narration": "Past the ribbon, a crowd of the new wisps has followed your raft, bumping it like puppies. \"Keep them busy till the island!\" calls the cousin in three hats. \"Bored wisps tie knots in things. Last week they tied my hats together.\" She tosses a handful of coins onto the raft as a down payment.",
+      "choices": [
+        {
+          "id": "hum",
+          "label": "Hum a lullaby",
+          "icon": "play_lullaby",
+          "goto": "interaction_wisp_crowd_response_hum"
+        },
+        {
+          "id": "juggle",
+          "label": "Juggle three cattails",
+          "icon": "play_cattails",
+          "goto": "interaction_wisp_crowd_response_juggle"
+        },
+        {
+          "id": "lantern",
+          "label": "Hold up a lantern for them to circle",
+          "icon": "play_lantern_held",
+          "goto": "interaction_wisp_crowd_response_lantern"
+        }
+      ]
     },
     "interaction_reed_gap": {
       "type": "interaction",
@@ -2270,40 +2239,6 @@
       "art": "scenes/gemfall/toll-reeds-tunnel"
     },
     "interaction_lantern": {
-      "type": "interaction",
-      "narration": "Back on the raft, the light is going and the fog is coming in. Gullet has one lantern lit, and it needs to get from the stern to the hook at the bow before the fog swallows the whole raft. \"Pass it along,\" she says. \"Slowly. Fog loves a flame that is hurrying.\"",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the lantern, then pass it down the raft.",
-        "actionLabel": "Pass the lantern",
-        "objectLabel": "A lit lantern"
-      },
-      "onSuccess": {
-        "goto": "rest_reed_raft",
-        "narration": "The lantern reaches the bow without so much as a flicker. Gullet hangs it on its hook, and the fog stops at the edge of its glow like a shy cat. \"Good hands,\" she says, and presses a jar of mosslight into your pack. \"Fog gets thick past here. Take it.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "mosslight_jar",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "rest_reed_raft",
-        "narration": "The lantern wobbles, flickers and goes out with a small pop. Gullet relights it with a sigh and carries it the last bit herself. \"Fog loves a hurrying flame,\" she says. She does not say I told you so, but her hat does."
-      },
-      "onAssisted": {
-        "goto": "rest_reed_raft",
-        "narration": "Gullet walks the lantern down the raft beside you, steady as a heron, and hangs it on its hook. The fog stops at the edge of its glow. She tucks a jar of mosslight into your pack for later.",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "mosslight_jar",
-            "to": "party"
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/gullet",
@@ -2311,7 +2246,24 @@
           "size": "small_to_medium"
         }
       ],
-      "art": "scenes/gemfall/fog-raft-lantern"
+      "art": "scenes/gemfall/fog-raft-lantern",
+      "type": "story",
+      "narration": "Gullet passes the lantern forward while you steady its hook. The fog closes around its little circle of light. For a moment nobody talks, and you can hear the raft moving through the reeds. The lantern reaches the bow without so much as a flicker. Gullet hangs it on its hook, and the fog stops at the edge of its glow like a shy cat. \"Good hands,\" she says, and presses a jar of mosslight into your pack. \"Fog gets thick past here. Take it.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_reed_raft",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "mosslight_jar",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "interaction_stumps": {
       "type": "interaction",
@@ -2752,73 +2704,35 @@
       "art": "scenes/gemfall/hollow-gate"
     },
     "interaction_gate_hum": {
-      "type": "interaction",
+      "art": "scenes/gemfall/hollow-gate",
+      "type": "choice_point",
       "narration": "Choose a sound to add to the group's practice. Hum, tap a knee, or breathe a steady beat. The frog supplies a loud final croak, whether invited or not. This is practice for keeping together, not a test of who sings best.",
-      "interaction": {
-        "kind": "play",
-        "participation": "everyone",
-        "cue": "Each connected hero adds a sound to the shared practice.",
-        "actionLabel": "Finish practicing",
-        "options": [
-          {
-            "id": "hum",
-            "label": "Hum a low note",
-            "icon": "note",
-            "reaction": "A low hum joins the shared beat."
-          },
-          {
-            "id": "tap",
-            "label": "Tap the beat on a knee",
-            "icon": "hand",
-            "reaction": "Tap, tap. A steady beat holds the sounds together."
-          },
-          {
-            "id": "breathe",
-            "label": "Breathe with the beat",
-            "icon": "heart",
-            "reaction": "A slow breath leaves room for the next sound."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_nan_washtub",
-        "narration": "You have practiced keeping a beat together. If you choose the frogfolk weir, this gives you a wider moment to move. The Gate keeps its own counsel.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "gate_beat_practiced",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_nan_washtub",
-        "narration": "The frog supplies the beat, and you practice together.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "gate_beat_practiced",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "scene_nan_washtub",
-        "narration": "Gullet hums underneath your sounds. You practice the shared beat with help, ready for the weir.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "gate_beat_practiced",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "gate_beat_helped",
-            "value": true
-          }
-        ]
-      },
-      "art": "scenes/gemfall/hollow-gate"
+      "choices": [
+        {
+          "id": "hum",
+          "label": "Hum a low note",
+          "icon": "note",
+          "goto": "interaction_gate_hum_response_hum"
+        },
+        {
+          "id": "tap",
+          "label": "Tap the beat on a knee",
+          "icon": "hand",
+          "goto": "interaction_gate_hum_response_tap"
+        },
+        {
+          "id": "breathe",
+          "label": "Breathe with the beat",
+          "icon": "heart",
+          "goto": "interaction_gate_hum_response_breathe"
+        },
+        {
+          "id": "help",
+          "label": "Ask Gullet to hold the note with us",
+          "icon": "hand",
+          "goto": "interaction_gate_hum_response_help"
+        }
+      ]
     },
     "interaction_weir_song": {
       "type": "interaction",
@@ -2891,6 +2805,594 @@
           "name": "Gullet's Cousins"
         }
       ]
+    },
+    "interaction_barge_audience": {
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "art": "scenes/gemfall/toll-reeds-tunnel",
+      "type": "choice_point",
+      "narration": "Stay on the bank and help test the act. Barges do not blink, breathe, or twitch their ropes. Tell the table what you are watching, then try a test. The sign ABANDONED is looking increasingly nervous.",
+      "choices": [
+        {
+          "id": "blink",
+          "label": "Challenge a barnacle to a staring contest",
+          "icon": "eye",
+          "goto": "interaction_barge_audience_response_blink"
+        },
+        {
+          "id": "breath",
+          "label": "Count the deck's slow breaths",
+          "icon": "ear",
+          "goto": "interaction_barge_audience_response_breath"
+        },
+        {
+          "id": "rope",
+          "label": "Ask the rope to wag",
+          "icon": "hand",
+          "goto": "interaction_barge_audience_response_rope"
+        },
+        {
+          "id": "help",
+          "label": "Ask Gullet to check the mimic clues with us",
+          "icon": "hand",
+          "goto": "interaction_barge_audience_response_help"
+        }
+      ]
+    },
+    "interaction_gate_hum_response_hum": {
+      "type": "story",
+      "narration": "A low hum joins the shared beat. You have practiced keeping a beat together. If you choose the frogfolk weir, this gives you a wider moment to move. The Gate keeps its own counsel.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_nan_washtub",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "gate_beat_practiced",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/gemfall/hollow-gate"
+    },
+    "interaction_gate_hum_response_tap": {
+      "type": "story",
+      "narration": "Tap, tap. A steady beat holds the sounds together. You have practiced keeping a beat together. If you choose the frogfolk weir, this gives you a wider moment to move. The Gate keeps its own counsel.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_nan_washtub",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "gate_beat_practiced",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/gemfall/hollow-gate"
+    },
+    "interaction_gate_hum_response_breathe": {
+      "type": "story",
+      "narration": "A slow breath leaves room for the next sound. You have practiced keeping a beat together. If you choose the frogfolk weir, this gives you a wider moment to move. The Gate keeps its own counsel.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_nan_washtub",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "gate_beat_practiced",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/gemfall/hollow-gate"
+    },
+    "interaction_wisp_crowd_response_hum": {
+      "type": "story",
+      "narration": "The wisps sway together, glowing slow and gold. The wisps settle into a long, soft line behind the raft, glowing like a string of lanterns. The cousin in three hats gives you a nod and a tip. \"Three coins for the calm,\" she says. \"Don't tell the others.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_boggart_isle",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        },
+        {
+          "figure": "cast/gullets_cousin",
+          "name": "Gullet's Cousins"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "count": 3
+        }
+      ],
+      "art": "scenes/gemfall/wisp-raft-crowd"
+    },
+    "interaction_wisp_crowd_response_juggle": {
+      "type": "story",
+      "narration": "The wisps follow the cattails with their whole bodies. The wisps settle into a long, soft line behind the raft, glowing like a string of lanterns. The cousin in three hats gives you a nod and a tip. \"Three coins for the calm,\" she says. \"Don't tell the others.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_boggart_isle",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        },
+        {
+          "figure": "cast/gullets_cousin",
+          "name": "Gullet's Cousins"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "count": 3
+        }
+      ],
+      "art": "scenes/gemfall/wisp-raft-crowd"
+    },
+    "interaction_wisp_crowd_response_lantern": {
+      "type": "story",
+      "narration": "The wisps circle it, politely, like moths with manners. The wisps settle into a long, soft line behind the raft, glowing like a string of lanterns. The cousin in three hats gives you a nod and a tip. \"Three coins for the calm,\" she says. \"Don't tell the others.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_boggart_isle",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        },
+        {
+          "figure": "cast/gullets_cousin",
+          "name": "Gullet's Cousins"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "count": 3
+        }
+      ],
+      "art": "scenes/gemfall/wisp-raft-crowd"
+    },
+    "interaction_barge_audience_response_blink": {
+      "type": "story",
+      "narration": "The barnacle blinks first. It has eyelashes. \"Mire mimic,\" you agree. Exposed by its audience, the barge unfolds and slinks into the reeds. You never had to step onto it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_act_closed",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "named_the_mimic",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "art": "scenes/gemfall/toll-reeds-tunnel"
+    },
+    "interaction_barge_audience_response_breath": {
+      "type": "story",
+      "narration": "The whole deck rises, then holds its breath. \"Mire mimic,\" you agree. Exposed by its audience, the barge unfolds and slinks into the reeds. You never had to step onto it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_act_closed",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "named_the_mimic",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "art": "scenes/gemfall/toll-reeds-tunnel"
+    },
+    "interaction_barge_audience_response_rope": {
+      "type": "story",
+      "narration": "The rope twitches. It is a tail, having a difficult day. \"Mire mimic,\" you agree. Exposed by its audience, the barge unfolds and slinks into the reeds. You never had to step onto it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_act_closed",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "named_the_mimic",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "art": "scenes/gemfall/toll-reeds-tunnel"
+    },
+    "interaction_gate_hum_response_help": {
+      "type": "story",
+      "narration": "Gullet hums underneath your sounds. You practice the shared beat with help, ready for the weir.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_nan_washtub",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "gate_beat_practiced",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "gate_beat_helped",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "art": "scenes/gemfall/hollow-gate"
+    },
+    "interaction_barge_audience_response_help": {
+      "type": "story",
+      "narration": "Gullet helps compare what you saw. Together you name the mire mimic. It leaves the stage with a wounded sigh.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_act_closed",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "named_the_mimic",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "mimic_helped",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "art": "scenes/gemfall/toll-reeds-tunnel"
+    }
+  },
+  "voiceGuide": {
+    "tone": "warm, foggy, a little spooky but never scary; the marsh knows something and won't say it",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "explaining what the Hollow Gate is"
+    ],
+    "npcVoices": {
+      "gullet": "frogfolk ferrywoman; unhurried, hums between sentences, never says the worrying thing out loud, very proud of her notched hat",
+      "nan_rummage": "a boggart; talks sideways to the lost things she is sorting, never answers the question you asked, adores a really good sound",
+      "wisp": "cannot speak; blinks, bobs, sulks and brightens, and is completely undone by the word please",
+      "mire_mimic": "never speaks; sighs like an actor who just read a bad review",
+      "gullets_cousins": "the frogfolk ribbon crew; loud, cheerful, all talk at once, the one in three stacked hats is in charge",
+      "prospectors": "three soggy prospectors; gloomy, dripping, very polite once rescued, the tallest one mourns his hat",
+      "sausage_seller": "a rush-road sausage seller stuck in the mud; out of breath, generous, shouts everything"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_stumps": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_reed_gap": {
+        "props": [
+          "prop_reed_gate"
+        ]
+      },
+      "interaction_fog_lookout": {
+        "props": [],
+        "coverIcons": [
+          "prop_reed_gate",
+          "prop_reed_gate",
+          "prop_reed_gate"
+        ]
+      },
+      "interaction_tussock_balance": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_gate_rubbing": {
+        "props": [
+          "prop_word_scroll",
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_weir_song": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_weir_practiced": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_lantern": {
+      "type": "interaction",
+      "narration": "Back on the raft, the light is going and the fog is coming in. Gullet has one lantern lit, and it needs to get from the stern to the hook at the bow before the fog swallows the whole raft. \"Pass it along,\" she says. \"Slowly. Fog loves a flame that is hurrying.\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the lantern, then pass it down the raft.",
+        "actionLabel": "Pass the lantern",
+        "objectLabel": "A lit lantern"
+      },
+      "onSuccess": {
+        "goto": "rest_reed_raft",
+        "narration": "The lantern reaches the bow without so much as a flicker. Gullet hangs it on its hook, and the fog stops at the edge of its glow like a shy cat. \"Good hands,\" she says, and presses a jar of mosslight into your pack. \"Fog gets thick past here. Take it.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "mosslight_jar",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_reed_raft",
+        "narration": "The lantern wobbles, flickers and goes out with a small pop. Gullet relights it with a sigh and carries it the last bit herself. \"Fog loves a hurrying flame,\" she says. She does not say I told you so, but her hat does."
+      },
+      "onAssisted": {
+        "goto": "rest_reed_raft",
+        "narration": "Gullet walks the lantern down the raft beside you, steady as a heron, and hangs it on its hook. The fog stops at the edge of its glow. She tucks a jar of mosslight into your pack for later.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "mosslight_jar",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        }
+      ],
+      "art": "scenes/gemfall/fog-raft-lantern"
+    },
+    "interaction_gate_hum": {
+      "type": "interaction",
+      "narration": "Choose a sound to add to the group's practice. Hum, tap a knee, or breathe a steady beat. The frog supplies a loud final croak, whether invited or not. This is practice for keeping together, not a test of who sings best.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Each connected hero adds a sound to the shared practice.",
+        "actionLabel": "Finish practicing",
+        "options": [
+          {
+            "id": "hum",
+            "label": "Hum a low note",
+            "icon": "note",
+            "reaction": "A low hum joins the shared beat."
+          },
+          {
+            "id": "tap",
+            "label": "Tap the beat on a knee",
+            "icon": "hand",
+            "reaction": "Tap, tap. A steady beat holds the sounds together."
+          },
+          {
+            "id": "breathe",
+            "label": "Breathe with the beat",
+            "icon": "heart",
+            "reaction": "A slow breath leaves room for the next sound."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_nan_washtub",
+        "narration": "You have practiced keeping a beat together. If you choose the frogfolk weir, this gives you a wider moment to move. The Gate keeps its own counsel.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "gate_beat_practiced",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_nan_washtub",
+        "narration": "The frog supplies the beat, and you practice together.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "gate_beat_practiced",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "scene_nan_washtub",
+        "narration": "Gullet hums underneath your sounds. You practice the shared beat with help, ready for the weir.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "gate_beat_practiced",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "gate_beat_helped",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/hollow-gate"
+    },
+    "interaction_wisp_crowd": {
+      "type": "interaction",
+      "narration": "Past the ribbon, a crowd of the new wisps has followed your raft, bumping it like puppies. \"Keep them busy till the island!\" calls the cousin in three hats. \"Bored wisps tie knots in things. Last week they tied my hats together.\" She tosses a handful of coins onto the raft as a down payment.",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Do something friendly until the wisps settle down.",
+        "actionLabel": "Calm the wisps",
+        "options": [
+          {
+            "id": "hum",
+            "label": "Hum a lullaby",
+            "icon": "play_lullaby",
+            "reaction": "The wisps sway together, glowing slow and gold."
+          },
+          {
+            "id": "juggle",
+            "label": "Juggle three cattails",
+            "icon": "play_cattails",
+            "reaction": "The wisps follow the cattails with their whole bodies."
+          },
+          {
+            "id": "lantern",
+            "label": "Hold up a lantern for them to circle",
+            "icon": "play_lantern_held",
+            "reaction": "The wisps circle it, politely, like moths with manners."
+          }
+        ],
+        "stages": [
+          "A few wisps stop bumping the raft.",
+          "Most of the crowd is drifting along calmly.",
+          "Every wisp is glowing soft and sleepy."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_boggart_isle",
+        "narration": "The wisps settle into a long, soft line behind the raft, glowing like a string of lanterns. The cousin in three hats gives you a nod and a tip. \"Three coins for the calm,\" she says. \"Don't tell the others.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_boggart_isle",
+        "narration": "The wisps settle into a long, soft line behind the raft, glowing like a string of lanterns. The cousin in three hats gives you a nod and a tip. \"Three coins for the calm,\" she says. \"Don't tell the others.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/gullet",
+          "name": "Gullet",
+          "size": "small_to_medium"
+        },
+        {
+          "figure": "cast/gullets_cousin",
+          "name": "Gullet's Cousins"
+        },
+        {
+          "figure": "entities/will_o_wisp",
+          "count": 3
+        }
+      ],
+      "art": "scenes/gemfall/wisp-raft-crowd"
     },
     "interaction_barge_audience": {
       "type": "interaction",
@@ -2967,75 +3469,6 @@
           "size": "small_to_medium"
         }
       ]
-    }
-  },
-  "voiceGuide": {
-    "tone": "warm, foggy, a little spooky but never scary; the marsh knows something and won't say it",
-    "vocabulary": "age-8",
-    "forbidden": [
-      "death",
-      "blood",
-      "permanent loss",
-      "weapons that wound",
-      "anyone being left behind",
-      "explaining what the Hollow Gate is"
-    ],
-    "npcVoices": {
-      "gullet": "frogfolk ferrywoman; unhurried, hums between sentences, never says the worrying thing out loud, very proud of her notched hat",
-      "nan_rummage": "a boggart; talks sideways to the lost things she is sorting, never answers the question you asked, adores a really good sound",
-      "wisp": "cannot speak; blinks, bobs, sulks and brightens, and is completely undone by the word please",
-      "mire_mimic": "never speaks; sighs like an actor who just read a bad review",
-      "gullets_cousins": "the frogfolk ribbon crew; loud, cheerful, all talk at once, the one in three stacked hats is in charge",
-      "prospectors": "three soggy prospectors; gloomy, dripping, very polite once rescued, the tallest one mourns his hat",
-      "sausage_seller": "a rush-road sausage seller stuck in the mud; out of breath, generous, shouts everything"
-    }
-  },
-  "presentation": {
-    "interactions": {
-      "interaction_stumps": {
-        "props": [
-          "prop_rope_pole"
-        ]
-      },
-      "interaction_lantern": {
-        "props": [
-          "prop_lantern"
-        ]
-      },
-      "interaction_reed_gap": {
-        "props": [
-          "prop_reed_gate"
-        ]
-      },
-      "interaction_fog_lookout": {
-        "props": [],
-        "coverIcons": [
-          "prop_reed_gate",
-          "prop_reed_gate",
-          "prop_reed_gate"
-        ]
-      },
-      "interaction_tussock_balance": {
-        "props": [
-          "prop_rope_pole"
-        ]
-      },
-      "interaction_gate_rubbing": {
-        "props": [
-          "prop_word_scroll",
-          "prop_rope_pole"
-        ]
-      },
-      "interaction_weir_song": {
-        "props": [
-          "prop_rope_pole"
-        ]
-      },
-      "interaction_weir_practiced": {
-        "props": [
-          "prop_rope_pole"
-        ]
-      }
     }
   }
 }
