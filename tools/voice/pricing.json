@@ -2,10 +2,11 @@
   "$comment": "Rates `npm run voice:cost` prices against. Edit this file when a provider changes its prices; nothing else holds a number. `checked` is when a person last looked, and `confirmed: false` means the rate came from a third-party summary, not the provider's own page. Confirm those on the provider's pricing page before committing money. A rate with `from`/`until` applies only on those dates (inclusive); `voice:cost --on YYYY-MM-DD` picks the day. `apiModel` is the provider's model id, which is how the bake-off finds a model's price.",
   "checked": "2026-10-28",
   "speech": {
-    "$comment": "Per-token providers bill the audio they return, so their cost depends on how fast the voice reads. 14 characters a second is an unhurried storyteller reading to an eight-year-old (about 150 words a minute). Gemini counts 25 audio tokens a second.",
+    "$comment": "Per-token providers bill the audio they return, so their cost depends on how fast the voice reads. 14 characters a second is an unhurried storyteller reading to an eight-year-old (about 150 words a minute). Gemini bills audio tokens, and Google estimates 25 to 32 of them for each second of speech: this uses the top of that range, so a budget cap and an estimate err on the safe side. `voice:cost --tokens-per-second 25` shows the low end. The staging smoke test should log the real count.",
     "charsPerSecond": 14,
     "charsPerTextToken": 4,
-    "promptTokensPerRequest": 60
+    "promptTokensPerRequest": 60,
+    "audioTokensPerSecond": 32
   },
   "models": [
     {

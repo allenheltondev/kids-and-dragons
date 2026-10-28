@@ -12,6 +12,8 @@ export interface SpeechAssumptions {
   charsPerSecond: number;
   charsPerTextToken: number;
   promptTokensPerRequest: number;
+  /** Audio tokens Gemini counts for each second it speaks (Google estimates 25 to 32). */
+  audioTokensPerSecond: number;
 }
 
 export interface CharacterRate {
@@ -62,9 +64,6 @@ export function audioSeconds(chars: number, speech: SpeechAssumptions): number {
   return chars / speech.charsPerSecond;
 }
 
-/** Gemini's audio tokens: 25 for each second it speaks. */
-export const AUDIO_TOKENS_PER_SECOND = 25;
-
 export function quote(model: PricedModel, work: Workload, speech: SpeechAssumptions, day: string, batch = false): Quote | null {
   const seconds = audioSeconds(work.chars, speech);
   if (model.billing === "characters") {
@@ -75,7 +74,7 @@ export function quote(model: PricedModel, work: Workload, speech: SpeechAssumpti
   const rate = rateOn(model.rates, day);
   if (rate === null) return null;
   const input = work.chars / speech.charsPerTextToken + work.requests * speech.promptTokensPerRequest;
-  const output = seconds * AUDIO_TOKENS_PER_SECOND;
+  const output = seconds * speech.audioTokensPerSecond;
   const full = (input * rate.inputPerMillion + output * rate.outputPerMillion) / 1_000_000;
   const discount = batch ? (model.batchDiscount ?? 1) : 1;
   return { model: model.id, label: model.label, dollars: full * discount, audioSeconds: seconds, confirmed: model.confirmed };
