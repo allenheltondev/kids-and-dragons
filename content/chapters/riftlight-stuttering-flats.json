@@ -151,7 +151,7 @@
       },
       "onFailure": {
         "goto": "sound",
-        "narration": "One blink escaped your count. The guide will call the clear views while your party handles the rescue.",
+        "narration": "One blink escaped your count. \"I will call the clear views,\" says the guide. \"You handle the rescue.\"",
         "effects": [
           {
             "type": "setFlag",
@@ -167,7 +167,7 @@
       },
       "onAssisted": {
         "goto": "sound",
-        "narration": "One blink escaped your count. The guide will call the clear views while your party handles the rescue.",
+        "narration": "One blink escaped your count. \"I will call the clear views,\" says the guide. \"You handle the rescue.\"",
         "effects": [
           {
             "type": "setFlag",
@@ -218,7 +218,7 @@
     },
     "ground": {
       "type": "choice_point",
-      "narration": "The short mud dip needs your stiff mat laid underfoot. That gets you to the goat directly, but the mat must stay on the approach; the goat will need its sling to cross. The longer shell-bank curve keeps the stiff mat free for a low ramp later. Which route will you prepare?",
+      "narration": "The short mud dip needs your stiff mat laid underfoot. That gets you to the goat directly, but the mat must stay on the approach; the goat will need its sling to cross. The longer shell-bank curve keeps the stiff mat free for a low ramp later. \"Which route will you prepare?\" asks the guide.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -400,7 +400,7 @@
     },
     "approach": {
       "type": "choice_point",
-      "narration": "The goat tries to eat the rescue line. Its front hooves are free, but the back pair are stuck. Your party can settle it with a quiet greeting, or let a songkeeper lead the calming hum while everyone readies the sling.",
+      "narration": "The goat tries to eat the rescue line. \"Front hooves free,\" says the guide. \"The back pair are stuck.\" Your party can settle it with a quiet greeting, or let a songkeeper lead the calming hum while everyone readies the sling.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -503,7 +503,7 @@
     },
     "sling": {
       "type": "interaction",
-      "narration": "The broad reed sling spreads the pull under the goat. Hold its sides while the guide slides the soft middle beneath it. Solo heroes can use her fixed poles as supports.",
+      "narration": "The broad reed sling spreads the pull under the goat. \"Hold the sides,\" says the guide, \"while I slide the soft middle under.\" Solo heroes can use her fixed poles as supports.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -535,7 +535,7 @@
     },
     "lift": {
       "type": "choice_point",
-      "narration": "The mud holds the goat like two stubborn boots. Loosen the packed rim before lifting, or ask a bigfoot to break that rim beside the hoof holes. The sling still needs a gentle, level lift either way.",
+      "narration": "\"The mud holds that goat like two stubborn boots,\" says the guide. Loosen the packed rim before lifting, or ask a bigfoot to break that rim beside the hoof holes. The sling still needs a gentle, level lift either way.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -807,7 +807,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "The guide leads you onto a raised shell bank while the goat waits safely in its sling. She opens her waterproof lunch basket: warm kelp cakes and a flask of broth. Steam curls over the shells. There is time to eat before the next crossing.",
+      "narration": "The guide leads you onto a raised shell bank while the goat waits safely in its sling. She opens her waterproof lunch basket: warm kelp cakes and a flask of broth. Steam curls over the shells. \"There is time to eat before the next crossing,\" she says.",
       "heal": 2,
       "choices": [
         {
@@ -827,7 +827,7 @@
     },
     "glimpse": {
       "type": "story",
-      "narration": "Through a full clear blink, a yeti herder waves from the snow. She recognizes the goat from her herd: an adult, not the kid you helped before. She clears a landing while your guide keeps everyone on the flats. The herder will receive the goat; your party will not cross.",
+      "narration": "Through a full clear blink, a yeti herder waves from the snow. She recognizes the goat from her herd: an adult, not the kid you helped before. She clears a landing while your guide keeps everyone on the flats. \"I will take the goat from here,\" the herder calls. \"You stay on the flats.\"",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1494,7 +1494,7 @@
     },
     "record": {
       "type": "choice_point",
-      "narration": "The tide smooths the hoof holes. Your guide has a driftwood warning board. A picture of the missing middle can warn against blinking gaps, or a bank drawing can lead travelers to the safe waiting place. Which warning will you leave?",
+      "narration": "The tide smooths the hoof holes. Your guide has a driftwood warning board. A picture of the missing middle can warn against blinking gaps, or a bank drawing can lead travelers to the safe waiting place. \"Which warning will you leave?\" she asks.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1580,7 +1580,7 @@
     },
     "credit": {
       "type": "choice_point",
-      "narration": "The guide asks what the next traveler should know about your rescue. Choose a true part of the teamwork while she finishes the warning.",
+      "narration": "\"What should the next traveler know about your rescue?\" asks the guide. Choose a true part of the teamwork while she finishes the warning.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1639,13 +1639,13 @@
           "when": {
             "flag": "flats_warning_pictures"
           },
-          "text": "Your picture warning catches a passing fisher. She stops at the missing middle and chooses the marked waiting spot."
+          "text": "Your picture warning catches a passing fisher. She stops at the missing middle. \"I will wait at the marked spot, then,\" she says."
         },
         {
           "when": {
             "notFlag": "flats_warning_pictures"
           },
-          "text": "A passing fisher follows your safe-bank drawing straight to the waiting spot. The guide nods: the new marker works."
+          "text": "A passing fisher follows your safe-bank drawing straight to the waiting spot. \"The new marker works,\" says the guide with a nod."
         }
       ]
     },

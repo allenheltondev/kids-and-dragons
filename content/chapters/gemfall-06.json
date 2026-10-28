@@ -288,7 +288,7 @@
       "discovers": [
         "creature.embermoth"
       ],
-      "narration": "Embermoths huddle on the cold side of a rock. One refuses to leave a prospector's soup. He has given up and is eating around it. The usual warm cracks lie empty.",
+      "narration": "Embermoths huddle on the cold side of a rock. One refuses to leave a prospector's soup. \"I give up,\" he says, and eats around it. The usual warm cracks lie empty.",
       "cast": [
         {
           "figure": "entities/embermoth",
@@ -408,7 +408,7 @@
       "discovers": [
         "creature.cinder_wolf"
       ],
-      "narration": "Cinder wolves heap themselves in the road like coals with ears. Cold and hungry, they ignore the wagons behind them. Every drover is shouting. None is getting anywhere.",
+      "narration": "Cinder wolves heap themselves in the road like coals with ears. Cold and hungry, they ignore the wagons behind them. \"Off the road, you silly coals!\" shouts the centaur drover. Every drover is shouting. None is getting anywhere.",
       "cast": [
         {
           "figure": "entities/cinder_wolf",
@@ -533,7 +533,7 @@
     },
     "scene_claim_boulder": {
       "type": "story",
-      "narration": "Two prospectors stand on one humming boulder, each with a flag. \"Mine.\" \"Mine.\" Bootlaces tie them to their claims. The watching crowd has brought snacks.",
+      "narration": "Two prospectors stand on one humming boulder, each with a flag. \"Mine,\" says the burrowfolk claimant. \"Mine,\" says the faun claimant. Bootlaces tie them to their claims. The watching crowd has brought snacks.",
       "choices": [
         {
           "id": "whose_first",
@@ -832,7 +832,7 @@
     },
     "rest_warm_stones": {
       "type": "rest",
-      "narration": "Dragonling neighbors offer warm sleeping-stones. Grandmother Tull rings the ordinary night bell. The unused bell, she says twice, is nothing to worry about. Rest and share your supplies.",
+      "narration": "Dragonling neighbors offer warm sleeping-stones. Grandmother Tull rings the ordinary night bell. \"The unused bell is nothing to worry about,\" she says, and then says it again. Rest and share your supplies.",
       "cast": [
         {
           "figure": "cast/grandmother_tull",
@@ -990,7 +990,7 @@
       "discovers": [
         "creature.glassback_crab"
       ],
-      "narration": "On the ridge, Dunmore raises his pick at a glittering heap. The heap has eyes and claws. A glassback crab rocks from side to side on its warm ground. Another watches from the next burrow. Dunmore really should check for curtains more often.",
+      "narration": "On the ridge, Dunmore raises his pick at a glittering heap. \"It hums!\" he says. The heap has eyes and claws. A glassback crab rocks from side to side on its warm ground. Another watches from the next burrow. Dunmore really should check for curtains more often.",
       "cast": [
         {
           "figure": "entities/glassback_crab"
@@ -1332,7 +1332,7 @@
           "name": "Skywardens"
         }
       ],
-      "narration": "ANYTHING THAT HUMS, LOG IT HERE. Pellam dips his pen by the desk. He waits politely, like a cat at a mouse hole. He can log the packs, explain the records, or recognize an existing tag.",
+      "narration": "ANYTHING THAT HUMS, LOG IT HERE. Pellam dips his pen by the desk. He waits politely, like a cat at a mouse hole. \"I can log your packs,\" he says, \"or explain the records, or check a tag that is already logged.\"",
       "choices": [
         {
           "id": "tip_out",
@@ -1777,7 +1777,7 @@
           "name": "Skywardens"
         }
       ],
-      "narration": "Pellam allows one cup of tea before the record. Three lights shine below: Hessa's moving lantern, the glittering camps, and the gathering towns' bells. Which do you watch?",
+      "narration": "\"One cup of tea before the record,\" says Pellam. Three lights shine below: Hessa's moving lantern, the glittering camps, and the gathering towns' bells. Which do you watch?",
       "choices": [
         {
           "id": "soup",
@@ -2181,7 +2181,7 @@
     "scene_who_to_tell": {
       "type": "story",
       "art": "scenes/gemfall/facet-table",
-      "narration": "Who should stand with you now: the wardens, the gathering grandmothers, or nobody else yet? You can keep the promise you made on the road, or choose a different audience after what you learned. Voss waits.",
+      "narration": "\"Who should stand with you now?\" asks Voss. \"The wardens, the gathering grandmothers, or nobody else yet?\" You can keep the promise you made on the road, or choose a different audience after what you learned. She waits.",
       "cast": [
         {
           "figure": "entities/skywardens",
@@ -2988,7 +2988,7 @@
     },
     "interaction_wagons": {
       "type": "interaction",
-      "narration": "A wagon wheel is stuck in a rut, blocking the road again. Hold it steady while the acting hero steers. The centaur drover will pull. Everybody behind you offers excellent advice.",
+      "narration": "A wagon wheel is stuck in a rut, blocking the road again. Hold it steady while the acting hero steers. \"I'll pull!\" says the centaur drover. Everybody behind you offers excellent advice.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Friends push the wagon while someone steers.",
@@ -3228,7 +3228,7 @@
       ],
       "art": "scenes/gemfall/pellam-tea-table",
       "type": "story",
-      "narration": "Pellam pours the promised tea while you make space at the table. Captain Voss takes the smallest cup and drinks without a word. For a little while, the only question is whether anyone wants more. Then Pellam turns to a fresh page.",
+      "narration": "Pellam pours the promised tea while you make space at the table. Captain Voss takes the smallest cup and drinks without a word. For a little while, the only question is Pellam's: \"More tea, anyone?\" Then Pellam turns to a fresh page.",
       "choices": [
         {
           "id": "continue",
@@ -3572,7 +3572,7 @@
       ],
       "art": "scenes/gemfall/pellam-tea-table",
       "type": "choice_point",
-      "narration": "Before choosing a road, hear every hero. Say what you hope to protect, what you still need to know, or what you are willing to try. You may ask for help finding words. Pellam puts his pen down. For once, the ledger can wait.",
+      "narration": "Before choosing a road, hear every hero. Say what you hope to protect, what you still need to know, or what you are willing to try. You may ask for help finding words. Pellam puts his pen down. \"For once,\" he says, \"the ledger can wait.\"",
       "choices": [
         {
           "id": "protect",

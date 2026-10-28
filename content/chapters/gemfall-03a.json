@@ -184,7 +184,7 @@
     },
     "scene_queue": {
       "type": "story",
-      "narration": "At Stone Crossing, giant flat stones cross the narrow river. The queue fills the road. Someone sells queue soup. Someone sells a map of the queue. Near the front, six brass hats are quietly moving the queue rope.",
+      "narration": "At Stone Crossing, giant flat stones cross the narrow river. The queue fills the road. Someone sells queue soup. Someone sells a map of the queue. Near the front, six brass hats are quietly moving the queue rope. \"Don't mind us,\" one says, smiling.",
       "choices": [
         {
           "id": "call_out",
@@ -289,7 +289,7 @@
       "discovers": [
         "npc.stone_troll"
       ],
-      "narration": "The toll-troll, Old Lintel, rests a mossy palm on the first stone. Every traveler owes a story or riddle. Take a moment to tell yours aloud. A bird begins a nest on his shoulder. He has plenty of time.",
+      "narration": "The toll-troll, Old Lintel, rests a mossy palm on the first stone. \"A story,\" he rumbles. \"Or a riddle.\" Every traveler owes one. Take a moment to tell yours aloud. A bird begins a nest on his shoulder. He has plenty of time.",
       "cast": [
         {
           "figure": "cast/old_lintel",
@@ -1247,7 +1247,7 @@
     },
     "scene_skip_passes": {
       "type": "story",
-      "narration": "The six brass hats call themselves the Brassbuckle Expedition. One strolls down the queue selling SKIP PASSES. The small print is tiny. Old Lintel takes stories at the front. He does not appear to be taking passes.",
+      "narration": "The six brass hats call themselves the Brassbuckle Expedition. One strolls down the queue selling SKIP PASSES. \"Skip the queue!\" he sings. The small print is tiny. Old Lintel takes stories at the front. He does not appear to be taking passes.",
       "choices": [
         {
           "id": "small_print",

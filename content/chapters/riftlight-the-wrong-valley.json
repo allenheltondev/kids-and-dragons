@@ -73,7 +73,7 @@
     },
     "look_again": {
       "type": "choice_point",
-      "narration": "An old route marker has a fork-shaped chip. That has not changed. Below it, the old melt channel lies dry while water pours between two ridges farther west. A yeti route worker waits above the new flow; a tool bundle sits on the opposite bank. Pip turns his sketch the right way up, then checks it once more. What will you compare to find out what moved?",
+      "narration": "An old route marker has a fork-shaped chip. That has not changed. Below it, the old melt channel lies dry while water pours between two ridges farther west. A yeti route worker waits above the new flow; a tool bundle sits on the opposite bank. Pip turns his sketch the right way up, then checks it once more. \"What should we compare to find out what moved?\" he asks.",
       "choices": [
         {
           "id": "option_1",
@@ -371,7 +371,7 @@
     },
     "test_flow": {
       "type": "interaction",
-      "narration": "The worker drops a small twig into the new stream. From the dry bank, judge where it passes the central rock. The slow pocket can carry a line; no hero will stand in it.",
+      "narration": "The worker drops a small twig into the new stream. From the dry bank, judge where it passes the central rock. \"The slow pocket can carry a line,\" says the worker. \"No hero will stand in it.\"",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -431,7 +431,7 @@
     },
     "flow_result": {
       "type": "story",
-      "narration": "The calm pocket leads to a low shelf crossing. A longer high rock reach avoids it. Neither is a promise that the water will stay here. The workers pass a guide rope across the calm pocket and test it from both banks. The far worker lights her lantern and lifts it to show she can see you, then waits for your plan.",
+      "narration": "The calm pocket leads to a low shelf crossing. A longer high rock reach avoids it. \"Neither one promises the water will stay here,\" says the worker. The workers pass a guide rope across the calm pocket and test it from both banks. The far worker lights her lantern and lifts it to show she can see you, then waits for your plan.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -835,7 +835,7 @@
     },
     "camp": {
       "type": "rest",
-      "narration": "The near worker shares warm tea from a flask while everyone rests on the upper bank. Pip draws two river lines and puts his eraser away. The far worker watches from the low shelf. Your preparation is ready, and the party still needs to reach the far path together.",
+      "narration": "The near worker shares warm tea from a flask while everyone rests on the upper bank. Pip draws two river lines and puts his eraser away. The far worker watches from the low shelf. \"Your preparation is ready,\" the near worker says slowly. \"Now we all reach the far path together.\"",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -869,7 +869,7 @@
     },
     "crossing_choice": {
       "type": "choice_point",
-      "narration": "The low shelf has a guide rope and a calm pocket. The high rock reach takes longer but stays above the low ice. If your chosen route shifts, the workers will help you use the other one. You will play that changed crossing, not repeat the same attempt. Which route will your party try?",
+      "narration": "The low shelf has a guide rope and a calm pocket. The high rock reach takes longer but stays above the low ice. \"If your route shifts,\" says the worker, \"we will help you use the other one.\" You will play that changed crossing, not repeat the same attempt. Which route will your party try?",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1226,7 +1226,7 @@
     },
     "return_observation": {
       "type": "check",
-      "narration": "The worker points to the changing water. Watch the observation pattern for the western stream, old bed and quiet western channel. Remember which changed first.",
+      "narration": "The worker points to the changing water. Watch the observation pattern for the western stream, old bed and quiet western channel. \"Remember which changes first,\" says the worker.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1616,7 +1616,7 @@
     },
     "tell_together": {
       "type": "choice_point",
-      "narration": "The river runs in its older bed again. The western course still glistens. Pip opens the page to record the crossing and return. You can use the landmarks everyone saw. If you caught the whole return sequence, you can also lead a moving-water reconstruction. Which account will you prepare?",
+      "narration": "The river runs in its older bed again. The western course still glistens. Pip opens the page. \"Time to record the crossing and the return,\" he says. You can use the landmarks everyone saw. If you caught the whole return sequence, you can also lead a moving-water reconstruction. Which account will you prepare?",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1725,7 +1725,7 @@
     },
     "last_check": {
       "type": "choice_point",
-      "narration": "Pip pretends to be the next traveler. He stops when your party points out the upper warning. Choose a useful instruction to leave with the lantern. The workers are checking whether the instructions are clear.",
+      "narration": "Pip pretends to be the next traveler. \"Hi, I am new,\" he says, and stops when your party points out the upper warning. Choose a useful instruction to leave with the lantern. The workers are checking whether the instructions are clear.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",

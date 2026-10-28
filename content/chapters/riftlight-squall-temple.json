@@ -82,7 +82,7 @@
     },
     "look": {
       "type": "interaction",
-      "narration": "From behind the low fence, watch the drifting island edge against the fixed bell tower. Mark the clear sighting interval. The bell rope has a tiny raincoat and is taking the weather very seriously.",
+      "narration": "\"From behind the low fence, watch the drifting island edge against the fixed bell tower,\" the keeper says. \"Mark the clear sighting interval.\" The bell rope has a tiny raincoat and is taking the weather very seriously.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -113,7 +113,7 @@
     },
     "people": {
       "type": "story",
-      "narration": "Everyone needs a dry lane into the hall. Your earlier warning, if sent, has already moved the heavy furniture; otherwise the folded screen still blocks the doorway. Check the actual yard before doing another carrying job.",
+      "narration": "\"Everyone needs a dry lane into the hall,\" says the keeper. Your earlier warning, if sent, has already moved the heavy furniture; otherwise the folded screen still blocks the doorway. Check the actual yard before doing another carrying job.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -251,7 +251,7 @@
     },
     "ready_lane": {
       "type": "choice_point",
-      "narration": "Check the yard together and help the last cushion carrier into the hall. Nobody stays outside to rescue a cushion. The keeper's very soft helmet comes inside too.",
+      "narration": "Check the yard together and help the last cushion carrier into the hall. \"Nobody stays outside to rescue a cushion,\" says the keeper. Her very soft helmet comes inside too.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -282,7 +282,7 @@
     },
     "messages": {
       "type": "story",
-      "narration": "The last keeper reaches the covered hall. The temple has shelter for everyone, even the bell rope's spare raincoat. Your party can now work on the landing while the keepers signal from inside. The temple's own griffin messenger shelters at the back of the hall, ready to carry travelers down to the Cairnstep once the wind clears.",
+      "narration": "The last keeper reaches the covered hall. \"There is shelter for everyone,\" the temple keeper says, \"even the bell rope's spare raincoat.\" Your party can now work on the landing while the keepers signal from inside. The temple's own griffin messenger shelters at the back of the hall, ready to carry travelers down to the Cairnstep once the wind clears.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -326,7 +326,7 @@
     },
     "gear": {
       "type": "choice_point",
-      "narration": "One team can prepare the long turning rope, shortening the push objective from three working turns to two, or fasten wind cover that removes the storm's Guard penalty from your party. The other job stays ordinary. Neither removes the crawlers or the crosswind tiles. Which advantage fits your plan?",
+      "narration": "One team can prepare the long turning rope, shortening the push objective from three working turns to two, or fasten wind cover that removes the storm's Guard penalty from your party. The other job stays ordinary. Neither removes the crawlers or the crosswind tiles. \"Which help fits your plan?\" asks the keeper.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -544,7 +544,7 @@
     },
     "signals": {
       "type": "interaction",
-      "narration": "The keeper raises a cloth for hold and lowers it for release. Watch her practice round before anyone takes the load. Shouted guesses would vanish into the squall.",
+      "narration": "The keeper raises a cloth for hold and lowers it for release. \"Watch my practice round before anyone takes the load,\" she says. Shouted guesses would vanish into the squall.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -612,7 +612,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "Inside the covered hall, the keepers pass around a basket of rice buns. You rest on cushions rescued from the rain. One cushion has a solemn embroidered bird with a bun crumb on its beak.",
+      "narration": "\"Rice buns for everyone,\" says the keeper, passing a basket around the covered hall. You rest on cushions rescued from the rain. One cushion has a solemn embroidered bird with a bun crumb on its beak.",
       "heal": 2,
       "choices": [
         {
@@ -638,7 +638,7 @@
     },
     "plan": {
       "type": "choice_point",
-      "narration": "The island's low edge comes alongside the posts. Choose the job your party will play on the board: turn it away, or hold the sheltered landing until it settles. Your preparation changes that encounter; it does not settle the island by itself.",
+      "narration": "The island's low edge comes alongside the posts. \"Turn it away, or hold the sheltered landing until it settles,\" says the keeper. Choose the job your party will play on the board. Your preparation changes that encounter; it does not settle the island by itself.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1306,7 +1306,7 @@
     },
     "boards_check": {
       "type": "interaction",
-      "narration": "Sight the near boards from the stone threshold. Rain may hide a shifted edge. A damaged outer landing remains closed even if you make a clear observation now.",
+      "narration": "Sight the near boards from the stone threshold. \"Rain can hide a shifted edge,\" the keeper warns. A damaged outer landing remains closed even if you make a clear observation now.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1358,7 +1358,7 @@
     },
     "roof": {
       "type": "choice_point",
-      "narration": "Drips are finding every dry cushion. Clear the leaf wad with the long pole from inside the fence, or level a basin under the loose gutter end. Both jobs stay below the roof and behind the checked edge.",
+      "narration": "\"Drips are finding every dry cushion,\" the keeper sighs. Clear the leaf wad with the long pole from inside the fence, or level a basin under the loose gutter end. Both jobs stay below the roof and behind the checked edge.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1472,7 +1472,7 @@
     },
     "repair": {
       "type": "choice_point",
-      "narration": "The next crew needs a real handover. You may leave your spare boards and line with the keeper, or recover the unused kit from checked ground. Your boundary marks stay in place either way.",
+      "narration": "\"The next crew needs a real handover,\" says the keeper. You may leave your spare boards and line with her, or recover the unused kit from checked ground. Your boundary marks stay in place either way.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1712,7 +1712,7 @@
     },
     "watch": {
       "type": "story",
-      "narration": "A boundary observation station is always useful. If you chose a signal account, you can instead use it to lead the cloth drill. Choose the job you will actually show the next watch.",
+      "narration": "\"A boundary watch station is always useful,\" says the keeper. If you chose a signal account, you can instead use it to lead the cloth drill. Choose the job you will actually show the next watch.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1936,7 +1936,7 @@
     },
     "finish": {
       "type": "story",
-      "narration": "The keeper closes the log before the pages can drink any more rain. Your party can rest, return to the lookout, or follow the griffin messenger down to the Cairnstep.",
+      "narration": "The keeper closes the log. \"Before the pages drink any more rain,\" she says. Your party can rest, return to the lookout, or follow the griffin messenger down to the Cairnstep.",
       "choices": [],
       "outcome": "success",
       "cast": [

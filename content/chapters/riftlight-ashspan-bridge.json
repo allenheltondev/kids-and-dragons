@@ -1016,7 +1016,7 @@
     },
     "jam_plan": {
       "type": "choice_point",
-      "narration": "The jam is a heap of logs, roots and one entire fence. Pull the wrong log and the rest may roll. What will you do about the jam?",
+      "narration": "The jam is a heap of logs, roots and one entire fence. \"Pull the wrong log,\" says Ossley, \"and the rest may roll.\" What will you do about the jam?",
       "choices": [
         {
           "id": "hook",
@@ -1240,7 +1240,7 @@
     },
     "beam_plan": {
       "type": "choice_point",
-      "narration": "The new beam must go up and into its notches, level, with nobody underneath. How will you raise it?",
+      "narration": "\"The new beam goes up into its notches,\" says Bryn. \"Level, and nobody underneath.\" How will you raise it?",
       "choices": [
         {
           "id": "lift",
@@ -1977,7 +1977,7 @@
     },
     "lash_plan": {
       "type": "choice_point",
-      "narration": "A deck stays only if it is tied down. The long ropes wait in a coil, the pegs in a bucket. How will you lash the planks?",
+      "narration": "\"A deck stays only if it is tied down,\" says Bryn. The long ropes wait in a coil, the pegs in a bucket. How will you lash the planks?",
       "choices": [
         {
           "id": "knots",
@@ -2174,7 +2174,7 @@
       ],
       "art": "scenes/riftlight/ashspan-mended-deck",
       "type": "story",
-      "narration": "You walk the finished deck with Bryn, stopping at each plank. She checks the fastenings before calling the waiting travelers.",
+      "narration": "You walk the finished deck with Bryn, stopping at each plank. \"Fastenings first,\" she says. \"Then I call the travelers.\"",
       "choices": [
         {
           "id": "continue",

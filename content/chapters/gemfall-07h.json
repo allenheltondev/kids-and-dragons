@@ -123,7 +123,7 @@
           "size": "small"
         }
       ],
-      "narration": "At the mouth of the Pinch stands a price board as tall as a house. A dragonling girl called Bryony is up a ladder with a stick of chalk, rubbing out numbers and writing bigger ones every time the ground shrugs. Every gem-buyer on the road is staring up at it. So is your pack, which has started humming along.",
+      "narration": "At the mouth of the Pinch stands a price board as tall as a house. A dragonling girl called Bryony is up a ladder with a stick of chalk. Every time the ground shrugs, she rubs out a number and writes a bigger one. \"Up again!\" she sings. Every gem-buyer on the road is staring up at it. So is your pack, which has started humming along.",
       "variants": [
         {
           "when": {
@@ -1308,7 +1308,7 @@
           "name": "Warden Clerk"
         }
       ],
-      "narration": "Halfway up the north road, the wardens have built a checkpoint overnight: a gate, a long table, and a clerk with two rubber stamps. Everything that hums goes into a numbered box. The queue is very long, and everybody in it is hiding stones in their hats.",
+      "narration": "Halfway up the north road, the wardens have built a checkpoint overnight: a gate, a long table, and a clerk with two rubber stamps. \"Everything that hums goes into a numbered box,\" says the clerk. Stamp, stamp. The queue is very long, and everybody in it is hiding stones in their hats.",
       "choices": [
         {
           "id": "declare",
@@ -1895,7 +1895,7 @@
           "name": "Professor Tidewell"
         }
       ],
-      "narration": "Everyone on the road is coming down, except one person going up: a selkie with ink on both elbows and a notebook flapping. It is the selkie scholar from the Exchange, the one who stood on a tavern table shouting that the gem-light fell upward. Professor Tidewell, says the name on her notebook. She stops dead. She listens to your packs like a doctor listening to a heartbeat.",
+      "narration": "Everyone on the road is coming down, except one person going up: a selkie with ink on both elbows and a notebook flapping. It is the selkie scholar from the Exchange, the one who stood on a tavern table shouting that the gem-light fell upward. Professor Tidewell, says the name on her notebook. \"Wait,\" she says, and stops dead. She listens to your packs like a doctor listening to a heartbeat.",
       "variants": [
         {
           "when": {
@@ -2957,7 +2957,7 @@
       ],
       "art": "scenes/gemfall/tidewell-knock-rock",
       "type": "story",
-      "narration": "Professor Tidewell knocks the mountain's pattern onto a rock, then writes it beside your notes. Thump, tap, tap, rumble. You listen together. She says you may be the second person in the world to hear it properly, then hands back her pencil. It was yours.",
+      "narration": "Professor Tidewell knocks the mountain's pattern onto a rock, then writes it beside your notes. Thump, tap, tap, rumble. You listen together. \"You may be the second person in the world to hear that properly,\" she says, and hands back her pencil. It was yours.",
       "choices": [
         {
           "id": "continue",

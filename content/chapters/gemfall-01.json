@@ -486,7 +486,7 @@
     },
     "choice_why_north": {
       "type": "choice_point",
-      "narration": "You find an empty chair at the noodle stall. Every table keeps one for whoever arrives next. Today, that is you. Why is your party going north?",
+      "narration": "You find an empty chair at Mortar's noodle stall. \"Every table keeps one for whoever comes next,\" the stone troll says. \"Today, that is you.\" Why is your party going north?",
       "cast": [
         {
           "figure": "cast/mortar",
@@ -728,7 +728,7 @@
       "discovers": [
         "npc.selkie"
       ],
-      "narration": "A selkie family steps ashore with everything they own. Rush prices make them go quiet. Up the hill, the Empty Chair inn has room for newcomers. The harbor plaques name selkie founders too. Everybody else hurries north.",
+      "narration": "A selkie family steps ashore with everything they own. Rush prices make them go quiet. \"Up the hill, the Empty Chair inn has room for newcomers,\" their grandmother says. The harbor plaques name selkie founders too. Everybody else hurries north.",
       "cast": [
         {
           "figure": "cast/selkie_grandmother",
@@ -1563,7 +1563,7 @@
       "discovers": [
         "npc.sheeple"
       ],
-      "narration": "At the Outfitters' Steps, Mrs. Tuft, a sheeple grocer, gives each northbound party one supply. Her price tags stick in her wool. Choose food to share, a healing draught, or light for dark roads. Her jars even come in jars.",
+      "narration": "At the Outfitters' Steps, Mrs. Tuft, a sheeple grocer, gives each northbound party one supply. Her price tags stick in her wool. \"Food to share, a healing draught, or light for dark roads,\" she says. \"Pick one.\" Her jars even come in jars.",
       "cast": [
         {
           "figure": "cast/mrs_tuft",
@@ -1724,7 +1724,7 @@
       "discovers": [
         "npc.faun"
       ],
-      "narration": "Cobbler Tobble Reedpipe sings the price of quickfoot laces. Each verse goes higher. By the top of the Outfitters' Steps, he squeaks. You can trade, buy if you have the coins, or save them.",
+      "narration": "Cobbler Tobble Reedpipe sings the price of quickfoot laces, \"Quick feet, sweet price!\" Each verse goes higher. By the top of the Outfitters' Steps, he squeaks. You can trade, buy if you have the coins, or save them.",
       "cast": [
         {
           "figure": "cast/tobble",
@@ -1968,7 +1968,7 @@
     },
     "scene_inn_full": {
       "type": "story",
-      "narration": "Innkeeper Flint has one cupboard bed and several bidders. His nightcap is much too small. Share a story, work for the bed, call on friends, or pay if you can. There is warm shelter to earn here.",
+      "narration": "Innkeeper Flint has one cupboard bed and several bidders. His nightcap is much too small. \"One warm bed,\" he rumbles, folding his arms. \"Earn it.\" Share a story, work for the bed, call on friends, or pay if you can.",
       "cast": [
         {
           "figure": "cast/innkeeper_flint",
@@ -2561,7 +2561,7 @@
     },
     "scene_north_gate": {
       "type": "story",
-      "narration": "The Leaving Bell hangs over the North Gate. Beyond it lie green fields and distant Mount Red Sky. Hesper pauses for your goodbye. There is no hurry in choosing how to leave.",
+      "narration": "The Leaving Bell hangs over the North Gate. Beyond it lie green fields and distant Mount Red Sky. Hesper pauses for your goodbye. \"No hurry,\" she says. \"Leave however you like.\"",
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2743,7 +2743,7 @@
       ],
       "art": "scenes/gemfall/caravan-yard",
       "type": "story",
-      "narration": "You stop the lantern pole while Hesper frees the washing line. The wagons wait. Long underwear floats onto a goat, which now looks like a very small caravan ghost. Hesper lifts the last peg from the hook, nods once, and sends the wagons on to the North Gate.",
+      "narration": "You stop the lantern pole while Hesper frees the washing line. The wagons wait. Long underwear floats onto a goat, which now looks like a very small caravan ghost. Hesper lifts the last peg from the hook and nods once. \"On to the North Gate,\" she says, and the wagons roll.",
       "choices": [
         {
           "id": "continue",

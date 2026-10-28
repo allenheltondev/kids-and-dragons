@@ -1251,7 +1251,7 @@
       ],
       "art": "scenes/riftlight/buried-bridge-dry-channel",
       "type": "choice_point",
-      "narration": "Orin can make one careful extra copy before you leave. Give it to the guide, and your group can help mark a public viewing point on the high bank. Send it with Orin, and other Riftseekers can compare the missing river with their own finds; the work area here will stay closed until someone returns. Your private chime readings stay private either way. Who needs this copy first?",
+      "narration": "\"I can make one careful extra copy before you leave,\" says Orin. Give it to the guide, and your group can help mark a public viewing point on the high bank. Send it with Orin, and other Riftseekers can compare the missing river with their own finds; the work area here will stay closed until someone returns. Your private chime readings stay private either way. Who needs this copy first?",
       "choices": [
         {
           "id": "local",
