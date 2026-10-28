@@ -7,16 +7,18 @@ transitions or require retries to fill time.
 
 | Act | What occupies the time | Planning budget |
 | --- | --- | --- |
-| Set up the expedition | Meet the guide and Orin, decide about chime sharing, solve the ground clues, choose and build a rail or sled | 7 minutes |
-| Investigate | Brush or mirror the arch, watch a tide pulse, track a sample pot, compare current tide with the old river evidence | 7 minutes |
+| Set up the expedition | Meet the guide and Orin, decide about chime sharing, find the firm shelf, choose and build a rail or sled | 7 minutes |
+| Investigate | Brush or mirror the arch, watch a tide pulse, compare the samples, compare current tide with the old river evidence | 7 minutes |
 | The tide arrives | Debate drawings versus path, use the chosen equipment, rebuild the route or reconstruct wet notes, review the cost | 8 minutes |
-| Leave something useful | Explain the old river; choose locals versus research; build and test the chosen handoff; pack up and hear the outcome | 8 minutes |
+| Leave something useful | Explain the old river; choose locals versus research; discuss and complete the chosen handoff; pack up and hear the outcome | 8 minutes |
 
-The shortest class-assisted routes still have ten activities and at least five
-mechanics. Other approaches include brush aiming or holding a mirror plank.
-The chapter uses shared clues, relay, balance, timing, tracking, memory,
-cooperation and playful contributions. The number of scenes is not a timer.
-The older dice-only pacing model does not estimate these activities' duration.
+The revision removes the ten-activity requirement. Construction, investigation
+and the equipment rescue retain direct play. Ground testing, sample comparison,
+reconstruction and the research handoff unfold as story; cleanup and the trial
+visit offer ordinary choices with replies. Watch whether these moments provide
+room for conversation instead of becoming a run of Continue taps. Do not add
+replacement games to fill the old budget. The budgets above remain proposals
+and need fresh measurement after this pacing change.
 
 ## Consequences to verify at the table
 
@@ -25,7 +27,7 @@ The older dice-only pacing model does not estimate these activities' duration.
 - Saving drawings keeps the original measurements but costs the path markers;
   the next task is rebuilding the high return route.
 - Protecting the path costs the detailed drawings; the next task is rebuilding
-  their main features from memory and checking the stones. Fine measurements
+  their main features by checking the stones. Fine measurements
   stay lost, including in the concluding narration.
 - A local copy opens a marked bank viewpoint, tested with Orin as a visitor.
   A research copy goes with Orin; the work area is closed until a later visit.

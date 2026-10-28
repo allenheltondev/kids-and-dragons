@@ -41,6 +41,7 @@ export * from "./session-timing.js";
 export * from "./story-plates.js";
 export * from "./story-so-far.js";
 export * from "./narration.js";
+export * from "./voice-clips.js";
 export * from "./routes.js";
 export * from "./campaign-graph.js";
 export * from "./journey.js";

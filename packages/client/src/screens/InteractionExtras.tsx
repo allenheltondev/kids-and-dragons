@@ -386,7 +386,7 @@ function Lever({ level, busy, onStep }: { level: number; busy: boolean; onStep: 
   const release = (target: number) => {
     setDrag(null);
     const steps = Math.round((target - level) * 4);
-    if (steps !== 0) { buzz(Math.min(60, 12 * Math.abs(steps))); onStep(steps > 0 ? "up" : "down", Math.abs(steps)); }
+    if (steps !== 0) { buzz(Math.min(60, 12 * Math.abs(steps))); void onStep(steps > 0 ? "up" : "down", Math.abs(steps)); }
   };
   return <div className="game-lever" data-lifting={shown > 0}>
     <div ref={track} className="game-lever__track" aria-hidden="true"
@@ -416,7 +416,9 @@ function useStickers(): [{ id: number; icon: string; x: number }[], (icon: strin
 
 export interface KindControlsProps {
   prompt: InteractionPrompt; playerId: string; connected: readonly string[]; mine: boolean;
-  now: number; busy: boolean; send: (action: InteractionAction) => Promise<boolean>;
+  now: number; busy: boolean;
+  /** Resolves false when the server refused the intent or it never arrived. */
+  send: (action: InteractionAction) => Promise<boolean>;
   answer: string[]; setAnswer: (update: (current: string[]) => string[]) => void;
   holding: boolean; setHolding: (holding: boolean) => void;
   /** Precision: where this phone's tap stopped the marker, for the board to freeze it. */

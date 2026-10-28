@@ -390,6 +390,37 @@ describe("each game has something to do with your hands", () => {
       expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "pass" }));
     } finally { vi.useRealTimers(); }
   });
+  it("throws only on letting go after an upward swipe, never while a finger rests or wobbles", () => {
+    const send = seed({ kind: "relay", cue: "Pass", actionLabel: "Pass it on", objectLabel: "the mat" }, { caughtBy: "p" });
+    render(<StoryInteractionControls />);
+    const stage = document.querySelector(".game-catcher__stage")!;
+    fireEvent.pointerDown(stage, { clientY: 300, pointerId: 1 });
+    fireEvent.pointerMove(stage, { clientY: 150, pointerId: 1 });
+    expect(document.querySelector(".game-catcher[data-thrown='true']")).toBeNull();
+    // Back down before letting go: the child changed their mind.
+    fireEvent.pointerUp(stage, { clientY: 290, pointerId: 1 });
+    expect(document.querySelector(".game-catcher[data-thrown='true']")).toBeNull();
+    expect(send).not.toHaveBeenCalledWith(expect.objectContaining({ action: "pass" }));
+  });
+  it("gives the thing back when a pass is refused or lost, so it can be thrown again", async () => {
+    vi.useFakeTimers();
+    try {
+      const send = seed({ kind: "relay", cue: "Pass", actionLabel: "Pass it on", objectLabel: "the mat" }, { caughtBy: "p" });
+      send.mockResolvedValueOnce(false);
+      render(<StoryInteractionControls />);
+      const button = screen.getByRole("button", { name: "Pass it on" }) as HTMLButtonElement;
+      fireEvent.click(button);
+      expect(button.disabled).toBe(true);
+      await act(async () => { vi.advanceTimersByTime(300); });
+      expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "pass" }));
+      expect(document.querySelector(".game-catcher[data-thrown='false']")).toBeTruthy();
+      expect(button.disabled).toBe(false);
+      // The second try goes through.
+      fireEvent.click(button);
+      await act(async () => { vi.advanceTimersByTime(300); });
+      expect(send.mock.calls.filter(([intent]) => (intent as { action?: string }).action === "pass")).toHaveLength(2);
+    } finally { vi.useRealTimers(); }
+  });
   it("shows where a relay thing is on the TV: in the air above the catcher, then in their hands", () => {
     const spec: InteractionSpec = { kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "the mat" };
     seed(spec);
@@ -403,8 +434,10 @@ describe("each game has something to do with your hands", () => {
     expect(caught.container.querySelector('.relay-world__flight[data-caught="false"]')).toBeNull();
     expect(caught.container.querySelector(".relay-world__flight img.relay-object")).toBeTruthy();
   });
-  it("sends the whole lever gesture atomically", () => {
+  it("sends the whole lever gesture atomically", async () => {
     const send = seed({ kind: "balance", cue: "Level", actionLabel: "Carry", objectLabel: "Basket" });
+    const pending: ((ok: boolean) => void)[] = [];
+    send.mockImplementation(() => new Promise<boolean>((resolve) => { pending.push(resolve); }));
     render(<StoryInteractionControls />);
     const track = document.querySelector(".game-lever__track") as HTMLElement;
     track.getBoundingClientRect = () => ({ top: 0, bottom: 100, height: 100, left: 0, right: 40, width: 40, x: 0, y: 0, toJSON: () => ({}) });
@@ -414,6 +447,8 @@ describe("each game has something to do with your hands", () => {
     expect(adjusts).toHaveLength(1);
     expect(adjusts[0]![0]).toMatchObject({ steps: 2 });
     expect(adjusts.every(([intent]) => (intent as { direction?: string }).direction === "up")).toBe(true);
+    await act(async () => { pending.shift()!(false); });
+    expect(send.mock.calls.filter(([intent]) => (intent as { action?: string }).action === "adjust")).toHaveLength(1);
   });
   it("stamps a word on a finished game, kind by kind, and never scolds a miss", async () => {
     const { stampFor } = await import("./game-feel");

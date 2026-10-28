@@ -1094,19 +1094,7 @@
       "art": "scenes/riftlight/frostfang-gravel-bar"
     },
     "fire_build": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Find dry wood, shelter the spark, and light a fire.",
-      "narration": "Wet wood will not light, but the inside of a log is often dry. You break the thickest pieces open. Out come little curls of dry wood, like shavings.",
-      "onSuccess": {
-        "goto": "rest_fire",
-        "narration": "A tiny flame catches, grows, and crackles. Every face turns toward it."
-      },
-      "onFailure": {
-        "goto": "rest_fire",
-        "narration": "The first spark fizzles, and so does the second. In the end you get a smoky, grumpy fire that warms you a little."
-      },
+      "narration": "Wet wood will not light, but the inside of a log is often dry. You break the thickest pieces open. Out come little curls of dry wood, like shavings. A tiny flame catches, grows, and crackles. Every face turns toward it.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1116,23 +1104,19 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_fire"
+        }
+      ]
     },
     "fire_huddle": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "prompt": "Rub the goats and each other dry, and share the warmth.",
-      "narration": "You do not need a fire to get warm. You press in close and rub everybody down with a handful of hay and your own sleeves.",
-      "checkKind": "doing",
-      "onSuccess": {
-        "goto": "rest_fire",
-        "narration": "Goats are surprisingly hot. Soon everyone is toasty, and the smallest goat is asleep on a boot."
-      },
-      "onFailure": {
-        "goto": "rest_fire",
-        "narration": "Everyone gets rubbed a bit dry and stays a bit damp. It is the thought that warms you."
-      },
+      "narration": "You do not need a fire to get warm. You press in close and rub everybody down with a handful of hay and your own sleeves. Goats are surprisingly hot. Soon everyone is toasty, and the smallest goat is asleep on a boot.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1142,22 +1126,19 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_fire"
+        }
+      ]
     },
     "fire_smash": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Use smash to split a log into dry kindling. The hero with smash helps; choose who leads.",
-      "narration": "A bigfoot can break a barrier or lift something enormous. One whack on a log, and out spill dry splinters from the middle.",
-      "onSuccess": {
-        "goto": "rest_fire",
-        "narration": "The log cracks open like a nut, and the dry heart of it lights at the first spark."
-      },
-      "onFailure": {
-        "goto": "rest_fire",
-        "narration": "The log splits into big, damp lumps. You get a smoky fire that warms you a little."
-      },
+      "narration": "A bigfoot can break a barrier or lift something enormous. One whack on a log, and out spill dry splinters from the middle. The log cracks open like a nut, and the dry heart of it lights at the first spark.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
@@ -1167,7 +1148,16 @@
           "figure": "entities/snowhorn_goat"
         }
       ],
-      "art": "scenes/riftlight/frostfang-gravel-bar"
+      "art": "scenes/riftlight/frostfang-gravel-bar",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_fire"
+        }
+      ]
     },
     "rest_fire": {
       "type": "rest",
@@ -1696,49 +1686,42 @@
       "art": "scenes/riftlight/cairnstep"
     },
     "safety_boulder": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Tie the handrail to the boulder with a knot that will hold a tired traveler.",
-      "narration": "The old boulder at the top of the ladder is as wide as a table and as steady as a hill. It has been waiting a very long time for someone to tie a rope to it.",
-      "onSuccess": {
-        "goto": "safety_done",
-        "narration": "The knot is round, fat and neat. Tamsin tugs it with all her weight and it does not budge."
-      },
-      "onFailure": {
-        "goto": "safety_done",
-        "narration": "The knot slips on the first tug. You tie it again, a bigger one this time, and it holds well enough for careful hands."
-      },
+      "narration": "The old boulder at the top of the ladder is as wide as a table and as steady as a hill. It has been waiting a very long time for someone to tie a rope to it. The knot is round, fat and neat. Tamsin tugs it with all her weight and it does not budge.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "safety_done"
+        }
+      ]
     },
     "safety_peg": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Everyone pull on the peg to make sure it will not slip.",
-      "narration": "You find a thick stick of driftwood and hammer it into a crack with a rock. Thunk, thunk, thunk. Then you tie the rope around it.",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "safety_done",
-        "narration": "The peg bites the crack and stays put, even when all of you hang off the rope. Tamsin looks impressed."
-      },
-      "onFailure": {
-        "goto": "safety_done",
-        "narration": "The peg creaks and shifts. You wedge in a second one beside it, and then it holds."
-      },
+      "narration": "You find a thick stick of driftwood and hammer it into a crack with a rock. Thunk, thunk, thunk. Then you tie the rope around it. The peg bites the crack and stays put, even when all of you hang off the rope. Tamsin looks impressed.",
       "cast": [
         {
           "figure": "cast/tamsin_river_keeper",
           "name": "Tamsin"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "safety_done"
+        }
+      ]
     },
     "safety_buy": {
       "type": "story",

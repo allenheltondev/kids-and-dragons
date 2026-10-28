@@ -17,6 +17,14 @@ describe("play:jump's command line", () => {
     expect(() => parse(["x", "--players", "5"])).toThrow(/1 to 4/);
     expect(() => parse(["x", "--wat"])).toThrow(/unknown option --wat/);
     expect(() => parse(["x", "--record"])).toThrow(/--record needs a value/);
+    // A zero or nonsense interval would never step the recorder forward.
+    expect(() => parse(["x", "--record", "1000", "--every", "0"])).toThrow(/--every/);
+    expect(() => parse(["x", "--every", "-5"])).toThrow(/--every/);
+    expect(() => parse(["x", "--every", "1.5"])).toThrow(/--every/);
+    expect(() => parse(["x", "--every", "soon"])).toThrow(/--every/);
+    expect(() => parse(["x", "--record", "-1"])).toThrow(/--record/);
+    expect(() => parse(["x", "--record", "Infinity"])).toThrow(/--record/);
+    expect(parse(["x", "--record", "0"]).record).toBe(0);
   });
   it("offers the nearest ids for a typo", () => {
     const scenes = ["sling", "sound", "lift", "loosen_mud", "lift_balance", "arrival"];
