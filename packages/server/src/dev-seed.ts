@@ -19,7 +19,7 @@
  * own specs, which do not use this.
  */
 
-import type { ClassId, ClientIntent, RoomMode, SpeciesId, Stats } from "@kad/shared";
+import type { ClassId, ClientIntent, FactValue, RoomMode, SpeciesId, Stats } from "@kad/shared";
 import { createGuestHousehold, vetTypedName, type BoundDevice } from "./handlers/account.ts";
 import { applyAction } from "./handlers/action.ts";
 import type { ActionError, HandlerDeps, HandlerResult } from "./handlers/deps.ts";
@@ -52,8 +52,18 @@ export interface SeedRequest {
   ready?: boolean;
   /** The first hero taps Begin (CONTINUE_CAMPAIGN on the room's campaign). Needs `ready`. */
   begin?: boolean;
-  /** Then the playtest jump to this scene (playtest.ts). Needs `begin`. */
+  /** Then the playtest jump to this scene (playtest.ts). Needs `begin` or `chapterId`. */
   sceneId?: string;
+  /**
+   * Start this chapter instead of the campaign's next one: any chapter of any campaign, out of
+   * order and unlocked (handlers/deps.ts `playtestStart`). It plays as a chapter of no attempt,
+   * so it settles nothing into the household's journey. Implies `begin`.
+   */
+  chapterId?: string;
+  /** Route flags the jumped-to chapter starts holding, as an earlier chapter would have set. */
+  flags?: Record<string, boolean>;
+  /** A graph campaign's world facts the chapter starts with (#220). */
+  facts?: Record<string, FactValue>;
 }
 
 /** What a browser would have stored had it done this itself (client store/persistence.ts). */
@@ -107,7 +117,13 @@ export function readSeedRequest(body: unknown): SeedRequest | string {
   // scene jump rides on begin); otherwise seedRoom would reach for a phone
   // that is not there.
   if (b.begin === true && b.heroes.length === 0) return "begin needs at least one hero to tap it";
-  if (b.sceneId !== undefined && (typeof b.sceneId !== "string" || b.begin !== true)) return "sceneId needs begin";
+  if (b.chapterId !== undefined && typeof b.chapterId !== "string") return "chapterId must be a chapter id";
+  if (b.chapterId !== undefined && b.ready === false) return "chapterId needs everyone ready";
+  if (b.chapterId !== undefined && (b.heroes as unknown[]).length === 0) return "chapterId needs at least one hero to start it";
+  if (b.flags !== undefined && (typeof b.flags !== "object" || b.flags === null || Object.values(b.flags).some((v) => typeof v !== "boolean"))) return "flags must map flag names to true or false";
+  if (b.facts !== undefined && (typeof b.facts !== "object" || b.facts === null || Object.values(b.facts).some((v) => typeof v !== "string" && typeof v !== "number" && typeof v !== "boolean"))) return "facts must map fact names to plain values";
+  if ((b.flags !== undefined || b.facts !== undefined) && b.chapterId === undefined) return "flags and facts need chapterId";
+  if (b.sceneId !== undefined && (typeof b.sceneId !== "string" || (b.begin !== true && b.chapterId === undefined))) return "sceneId needs begin or chapterId";
   return b as unknown as SeedRequest;
 }
 
@@ -200,11 +216,11 @@ export async function seedRoom(input: SeedRequest, deps: HandlerDeps): Promise<H
   if (!runId) return fail("NOT_FOUND", `no open room ${code}`);
 
   // The rest is what the phones send.
-  const send = async (phone: SeededPhone, intent: ClientIntent): Promise<HandlerResult<null>> => {
+  const send = async (phone: SeededPhone, intent: ClientIntent, via: HandlerDeps = deps): Promise<HandlerResult<null>> => {
     const seq = (await deps.repo.getState(runId))?.seq ?? 0;
     const response = await applyAction(
       { runId, playerId: phone.playerId, seq, intent, principal: { householdId: phone.householdId, playerId: phone.playerId } },
-      deps,
+      via,
     );
     if (response.ok) return { ok: true, value: null };
     return fail(response.error?.code ?? "ILLEGAL", `${intent.type} for ${phone.name}: ${response.error?.message ?? "refused"}`);
@@ -228,7 +244,19 @@ export async function seedRoom(input: SeedRequest, deps: HandlerDeps): Promise<H
       if (!ready.ok) return ready;
     }
   }
-  if (input.begin) {
+  if (input.chapterId) {
+    // A playtest start: the chapter asked for, whatever the campaign says is next. The same
+    // START_CHAPTER a phone sends, through the same handler, with the one start allowed.
+    const leader = phones[0]!;
+    if (!deps.content.chapter(input.chapterId)) return fail("NOT_FOUND", `unknown chapter "${input.chapterId}"`);
+    const forced: HandlerDeps = { ...deps, playtestStart: { chapterId: input.chapterId, flags: input.flags, facts: input.facts } };
+    const started = await send(leader, { type: "START_CHAPTER", chapterId: input.chapterId }, forced);
+    if (!started.ok) return started;
+    if (input.sceneId) {
+      const jumped = await send(leader, { type: "PLAYTEST_GOTO", sceneId: input.sceneId });
+      if (!jumped.ok) return jumped;
+    }
+  } else if (input.begin) {
     const leader = phones[0]!;
     const state = await deps.repo.getState(runId);
     const campaignId = state?.campaignId;

@@ -48,6 +48,18 @@ Results remain visible until a player continues. Branch effects apply exactly
 once on continuing. The acting hero may retry without spending resources. Every
 scene offers an untimed helping hand, using `onAssisted` or `onSuccess`.
 
+## Jump to any game
+
+`npm run play:jump -- <chapter> <scene>` seats a TV and phones at any scene of any
+chapter and writes one composite PNG of every screen to `test-results/playtest/`.
+`--start` taps "We’re ready" and shoots the game running; `--record 2000` captures
+every painted frame for two seconds as a strip of composites; `--open` leaves visible
+browsers up to play by hand. `--list riftlight-stuttering-flats` lists a chapter's
+scenes with each game's kind and cue. The start is a dev-server playtest start
+(`chapterId` on `POST /api/dev/seed`): out of campaign order, unlocked, with any
+`--flag` and `--fact`, and it settles nothing into a saved journey. Scripts can use
+`openTable()` from `tools/playtest/table.ts` directly to drive the phones.
+
 ## Try the prototypes
 
 Run `npm run dev:client` and open `http://localhost:5173/interactions.html`.

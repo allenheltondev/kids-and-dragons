@@ -802,6 +802,13 @@ async function roadTo(
     }
   | { refusal: string }
 > {
+  // A playtest start (deps.ts `playtestStart`, dev-seed.ts): any chapter, out of order and
+  // unlocked, with the flags and facts the developer asked for, and no attempt, so nothing it
+  // does reaches the household's journey. Only where the playtest cheats are allowed at all.
+  const forced = deps.playtest ? deps.playtestStart : undefined;
+  if (forced && forced.chapterId === chapter.id) {
+    return { flags: { ...(forced.flags ?? {}) }, ...(forced.facts ? { facts: { ...forced.facts } } : {}), campaign: false, attempt: null };
+  }
   const campaign = deps.content.campaign(chapter.campaignId);
   if (!campaign || !campaign.chapters.includes(chapter.id)) {
     return { flags: {}, campaign: false, attempt: null };
