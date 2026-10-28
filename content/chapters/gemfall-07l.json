@@ -2455,48 +2455,6 @@
       "art": "scenes/gemfall/choir-warmup-masks"
     },
     "interaction_tea_cups": {
-      "type": "interaction",
-      "narration": "As the sun goes down, Pellam waves a stack of tin mugs at you from the warden fires. \"Tea for the other side,\" he says, as if it were an ordinary sentence. \"From us. Hand to hand, please. Nobody has to cross anything.\" Far off across the dark strip of road, Hessa is holding out her empty hands.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the mug, then pass it along.",
-        "actionLabel": "Pass the mug",
-        "objectLabel": "A hot mug of tea"
-      },
-      "onSuccess": {
-        "goto": "scene_evening",
-        "narration": "Not a drop spills. At the far end Hessa takes the last mug, sniffs it, and sends a warm honeycake back down the line. Pellam counts three coins out of the camp's tea fund. \"Courier's pay,\" he says. \"I will log it as tea.\"",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          },
-          {
-            "type": "grantItem",
-            "itemId": "honeycake",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_evening",
-        "narration": "One mug slips, and a warden catches it with his boot. \"Hot boot,\" he says, bravely. Everyone laughs, on both sides of the road, at the same time, and the rest of the tea goes through."
-      },
-      "onAssisted": {
-        "goto": "scene_evening",
-        "narration": "Together you pass the mugs in a slow, steady row. Hessa takes the last one and sends a warm honeycake back down the line. Pellam counts three coins out of the tea fund. \"Courier's pay,\" he says.",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          },
-          {
-            "type": "grantItem",
-            "itemId": "honeycake",
-            "to": "party"
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/pellam",
@@ -2507,7 +2465,28 @@
           "name": "Hessa Wren"
         }
       ],
-      "art": "scenes/gemfall/warden-fire-tea"
+      "art": "scenes/gemfall/warden-fire-tea",
+      "type": "story",
+      "narration": "You carry the tea across with Pellam and Hessa's helpers. Each camp makes room for the other's mugs. A warden turns his cup around to hide the words NOT SOUP. Not a drop spills. At the far end Hessa takes the last mug, sniffs it, and sends a warm honeycake back down the line. Pellam counts three coins out of the camp's tea fund. \"Courier's pay,\" he says. \"I will log it as tea.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_evening",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            },
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "interaction_box_slide": {
       "type": "interaction",
@@ -2616,61 +2595,6 @@
       "art": "scenes/gemfall/pinch-box-crawlers"
     },
     "interaction_quiet_council": {
-      "type": "interaction",
-      "narration": "You point to NOBODY SHOUTS. Pellam invites Hessa over to ask her directly. Each hero can offer a question, a worry or a hope. Hessa puts her ladle down so she can listen properly.",
-      "interaction": {
-        "kind": "play",
-        "cue": "Add a question, worry or hope before the visitors answer.",
-        "actionLabel": "Hear the answers",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "question",
-            "label": "Ask what each side needs",
-            "icon": "scroll",
-            "reaction": "Pellam needs safe limits. Hessa needs somebody to hear the choir."
-          },
-          {
-            "id": "worry",
-            "label": "Name a worry about control",
-            "icon": "heart",
-            "reaction": "Hessa agrees that a held note must also be allowed to stop."
-          },
-          {
-            "id": "hope",
-            "label": "Share a hope for working together",
-            "icon": "note",
-            "reaction": "Pellam asks Hessa to stand beside him at tomorrow's test."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "rest_under_the_table",
-        "narration": "They answer each other, quietly. Tomorrow you can ask them to brace the wagon together.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "table_works",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "rest_under_the_table",
-        "narration": "They keep talking with you between them."
-      },
-      "onAssisted": {
-        "goto": "rest_under_the_table",
-        "narration": "You take turns asking; the visitors listen and agree to help together.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "table_works",
-            "value": true
-          }
-        ]
-      },
-      "art": "scenes/gemfall/pinch-door-table",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -2679,45 +2603,33 @@
         {
           "figure": "cast/hessa_wren",
           "name": "Hessa Wren"
+        }
+      ],
+      "art": "scenes/gemfall/pinch-door-table",
+      "type": "choice_point",
+      "narration": "You point to NOBODY SHOUTS. Pellam invites Hessa over to ask her directly. Each hero can offer a question, a worry or a hope. Hessa puts her ladle down so she can listen properly.",
+      "choices": [
+        {
+          "id": "question",
+          "label": "Ask what each side needs",
+          "icon": "scroll",
+          "goto": "interaction_quiet_council_response_question"
+        },
+        {
+          "id": "worry",
+          "label": "Name a worry about control",
+          "icon": "heart",
+          "goto": "interaction_quiet_council_response_worry"
+        },
+        {
+          "id": "hope",
+          "label": "Share a hope for working together",
+          "icon": "note",
+          "goto": "interaction_quiet_council_response_hope"
         }
       ]
     },
     "interaction_open_table": {
-      "type": "interaction",
-      "narration": "You point at FACES SHOWING. Hessa lifts her mask. Pellam moves his ledger. Hold the wobbly door steady while they make room for a helper from each camp. Hessa has freckles. Pellam has soup on his sleeve.",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Steady the table while a warden and a singer make room.",
-        "actionLabel": "Make room",
-        "supportLabel": "Steady the door"
-      },
-      "onSuccess": {
-        "goto": "rest_under_the_table",
-        "narration": "A warden and a singer agree to stand beside you tomorrow. The table has done its job.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "two_helpers",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "rest_under_the_table",
-        "narration": "The visitors steady the door and welcome a helper from each camp."
-      },
-      "onAssisted": {
-        "goto": "rest_under_the_table",
-        "narration": "Pellam props the short corner. Both camps promise a helper.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "two_helpers",
-            "value": true
-          }
-        ]
-      },
-      "art": "scenes/gemfall/pinch-door-table",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -2727,44 +2639,27 @@
           "figure": "cast/hessa_wren",
           "name": "Hessa Wren"
         }
+      ],
+      "art": "scenes/gemfall/pinch-door-table",
+      "type": "story",
+      "narration": "You point to FACES SHOWING. Hessa lifts her mask; Pellam shifts his ledger. They help steady the door-table while a helper from each camp sits down. A warden and a singer agree to stand beside you tomorrow. The table has done its job.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_under_the_table",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "two_helpers",
+              "value": true
+            }
+          ]
+        }
       ]
     },
     "interaction_shared_soup": {
-      "type": "interaction",
-      "narration": "You point at BRING ONE THING TO SHARE. Hessa brings soup. Pellam brings mugs, including one marked NOT SOUP. Pass a serving across without making anybody leave the table.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the serving, then pass it across the table.",
-        "actionLabel": "Pass the soup",
-        "objectLabel": "A mug of soup"
-      },
-      "onSuccess": {
-        "goto": "rest_under_the_table",
-        "narration": "They stay to talk. Tomorrow they will help brace the wagon together. Pellam turns his mug around.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "table_works",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "rest_under_the_table",
-        "narration": "The visitors share what remains and stay to talk."
-      },
-      "onAssisted": {
-        "goto": "rest_under_the_table",
-        "narration": "Together you pass the soup across. Both visitors agree to help at the bend.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "table_works",
-            "value": true
-          }
-        ]
-      },
-      "art": "scenes/gemfall/warden-fire-tea",
       "cast": [
         {
           "figure": "cast/pellam",
@@ -2773,6 +2668,24 @@
         {
           "figure": "cast/hessa_wren",
           "name": "Hessa Wren"
+        }
+      ],
+      "art": "scenes/gemfall/warden-fire-tea",
+      "type": "story",
+      "narration": "You point to BRING ONE THING TO SHARE. Hessa brings soup; Pellam brings mugs. Both visitors help serve across the table. Neither has to leave their camp to listen to the other. They stay to talk. Tomorrow they will help brace the wagon together. Pellam turns his mug around.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_under_the_table",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "table_works",
+              "value": true
+            }
+          ]
         }
       ]
     },
@@ -2992,6 +2905,96 @@
           "goto": "interaction_tether_team"
         }
       ]
+    },
+    "interaction_quiet_council_response_question": {
+      "type": "story",
+      "narration": "Pellam needs safe limits. Hessa needs somebody to hear the choir. They answer each other, quietly. Tomorrow you can ask them to brace the wagon together.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_under_the_table",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "table_works",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ],
+      "art": "scenes/gemfall/pinch-door-table"
+    },
+    "interaction_quiet_council_response_worry": {
+      "type": "story",
+      "narration": "Hessa agrees that a held note must also be allowed to stop. They answer each other, quietly. Tomorrow you can ask them to brace the wagon together.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_under_the_table",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "table_works",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ],
+      "art": "scenes/gemfall/pinch-door-table"
+    },
+    "interaction_quiet_council_response_hope": {
+      "type": "story",
+      "narration": "Pellam asks Hessa to stand beside him at tomorrow's test. They answer each other, quietly. Tomorrow you can ask them to brace the wagon together.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_under_the_table",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "table_works",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ],
+      "art": "scenes/gemfall/pinch-door-table"
     }
   },
   "voiceGuide": {
@@ -3029,24 +3032,9 @@
           "prop_door_barrels"
         ]
       },
-      "interaction_tea_cups": {
-        "props": [
-          "prop_tea_mug"
-        ]
-      },
       "interaction_box_slide": {
         "props": [
           "prop_box_stack"
-        ]
-      },
-      "interaction_open_table": {
-        "props": [
-          "prop_door_barrels"
-        ]
-      },
-      "interaction_shared_soup": {
-        "props": [
-          "prop_soup_bowl"
         ]
       },
       "interaction_small_hum": {
@@ -3070,6 +3058,224 @@
           "prop_humming_stone"
         ]
       }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_tea_cups": {
+      "type": "interaction",
+      "narration": "As the sun goes down, Pellam waves a stack of tin mugs at you from the warden fires. \"Tea for the other side,\" he says, as if it were an ordinary sentence. \"From us. Hand to hand, please. Nobody has to cross anything.\" Far off across the dark strip of road, Hessa is holding out her empty hands.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the mug, then pass it along.",
+        "actionLabel": "Pass the mug",
+        "objectLabel": "A hot mug of tea"
+      },
+      "onSuccess": {
+        "goto": "scene_evening",
+        "narration": "Not a drop spills. At the far end Hessa takes the last mug, sniffs it, and sends a warm honeycake back down the line. Pellam counts three coins out of the camp's tea fund. \"Courier's pay,\" he says. \"I will log it as tea.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          },
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_evening",
+        "narration": "One mug slips, and a warden catches it with his boot. \"Hot boot,\" he says, bravely. Everyone laughs, on both sides of the road, at the same time, and the rest of the tea goes through."
+      },
+      "onAssisted": {
+        "goto": "scene_evening",
+        "narration": "Together you pass the mugs in a slow, steady row. Hessa takes the last one and sends a warm honeycake back down the line. Pellam counts three coins out of the tea fund. \"Courier's pay,\" he says.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          },
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ],
+      "art": "scenes/gemfall/warden-fire-tea"
+    },
+    "interaction_shared_soup": {
+      "type": "interaction",
+      "narration": "You point at BRING ONE THING TO SHARE. Hessa brings soup. Pellam brings mugs, including one marked NOT SOUP. Pass a serving across without making anybody leave the table.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the serving, then pass it across the table.",
+        "actionLabel": "Pass the soup",
+        "objectLabel": "A mug of soup"
+      },
+      "onSuccess": {
+        "goto": "rest_under_the_table",
+        "narration": "They stay to talk. Tomorrow they will help brace the wagon together. Pellam turns his mug around.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "table_works",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_under_the_table",
+        "narration": "The visitors share what remains and stay to talk."
+      },
+      "onAssisted": {
+        "goto": "rest_under_the_table",
+        "narration": "Together you pass the soup across. Both visitors agree to help at the bend.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "table_works",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/warden-fire-tea",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ]
+    },
+    "interaction_open_table": {
+      "type": "interaction",
+      "narration": "You point at FACES SHOWING. Hessa lifts her mask. Pellam moves his ledger. Hold the wobbly door steady while they make room for a helper from each camp. Hessa has freckles. Pellam has soup on his sleeve.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Steady the table while a warden and a singer make room.",
+        "actionLabel": "Make room",
+        "supportLabel": "Steady the door"
+      },
+      "onSuccess": {
+        "goto": "rest_under_the_table",
+        "narration": "A warden and a singer agree to stand beside you tomorrow. The table has done its job.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "two_helpers",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_under_the_table",
+        "narration": "The visitors steady the door and welcome a helper from each camp."
+      },
+      "onAssisted": {
+        "goto": "rest_under_the_table",
+        "narration": "Pellam props the short corner. Both camps promise a helper.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "two_helpers",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/pinch-door-table",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ]
+    },
+    "interaction_quiet_council": {
+      "type": "interaction",
+      "narration": "You point to NOBODY SHOUTS. Pellam invites Hessa over to ask her directly. Each hero can offer a question, a worry or a hope. Hessa puts her ladle down so she can listen properly.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Add a question, worry or hope before the visitors answer.",
+        "actionLabel": "Hear the answers",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "question",
+            "label": "Ask what each side needs",
+            "icon": "scroll",
+            "reaction": "Pellam needs safe limits. Hessa needs somebody to hear the choir."
+          },
+          {
+            "id": "worry",
+            "label": "Name a worry about control",
+            "icon": "heart",
+            "reaction": "Hessa agrees that a held note must also be allowed to stop."
+          },
+          {
+            "id": "hope",
+            "label": "Share a hope for working together",
+            "icon": "note",
+            "reaction": "Pellam asks Hessa to stand beside him at tomorrow's test."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "rest_under_the_table",
+        "narration": "They answer each other, quietly. Tomorrow you can ask them to brace the wagon together.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "table_works",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_under_the_table",
+        "narration": "They keep talking with you between them."
+      },
+      "onAssisted": {
+        "goto": "rest_under_the_table",
+        "narration": "You take turns asking; the visitors listen and agree to help together.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "table_works",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/pinch-door-table",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ]
     }
   }
 }

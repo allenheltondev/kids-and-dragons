@@ -3032,47 +3032,30 @@
       "art": "scenes/gemfall/wagon-road-rut"
     },
     "interaction_soup_pots": {
-      "type": "interaction",
-      "narration": "Pass Hessa's heavy soup pot along to the tents with no supper. \"Many hands. No hurry.\" Every helper takes a handle. One prospector measures his bowl against the pot, hopefully.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the pot, then pass it on.",
-        "actionLabel": "Pass the pot",
-        "objectLabel": "A heavy pot of soup"
-      },
-      "onSuccess": {
-        "goto": "rest_warm_stones",
-        "narration": "The pot goes from hand to hand to hand, all the way to the edge of the camp, and not a drop is lost. A tired prospector takes a bowl in both hands and closes his eyes. Hessa wraps a supper in a cloth and tucks it into your pack. \"For the road,\" she says. It is a very nice supper.",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "supper_bundle",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "rest_warm_stones",
-        "narration": "The pot wobbles, and half the soup goes into a prospector's boots. He says it is the warmest his feet have been all week. Hessa laughs, and the pots go on."
-      },
-      "onAssisted": {
-        "goto": "rest_warm_stones",
-        "narration": "Hessa's helpers fill the gaps in the line, and the pot goes from hand to hand to the edge of the camp without a drop lost. Hessa wraps a supper in a cloth and tucks it into your pack. \"For the road,\" she says.",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "supper_bundle",
-            "to": "party"
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/hessa_wren",
           "name": "Hessa Wren"
         }
       ],
-      "art": "scenes/gemfall/hessa-soup-camp"
+      "art": "scenes/gemfall/hessa-soup-camp",
+      "type": "story",
+      "narration": "You join Hessa's helpers with the supper pots. They fill the gaps in the line and carry the hot handles beside you. At the last tent, a tired prospector cups a bowl and stops shivering. Hessa wraps a supper for your pack. \"For the road,\" she says.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_warm_stones",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "supper_bundle",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "scene_morning_bells_bought": {
       "type": "story",
@@ -3237,54 +3220,23 @@
       ]
     },
     "interaction_tea": {
-      "type": "interaction",
-      "narration": "Back at the table, Pellam keeps his word about the tea. The kettle is the size of a bucket, and the cups are the size of thimbles. \"Everybody helps with tea,\" he says. \"It is in the regulations. Page nine.\"",
-      "interaction": {
-        "kind": "play",
-        "participation": "any",
-        "cue": "Make the tea: pour it, stir it and share the shortbread.",
-        "actionLabel": "Make the tea",
-        "options": [
-          {
-            "id": "pour",
-            "label": "Pour the tea",
-            "icon": "play_pour_tea",
-            "reaction": "A thin gold stream fills a thimble cup without a drop spilled."
-          },
-          {
-            "id": "stir",
-            "label": "Stir it slowly",
-            "icon": "play_stir",
-            "reaction": "The tea swirls round and round, and a warden leans in to watch."
-          },
-          {
-            "id": "biscuit",
-            "label": "Pass the shortbread",
-            "icon": "play_shortbread",
-            "reaction": "Pellam takes one piece and logs it. Then he takes another piece and does not log it."
-          }
-        ],
-        "stages": [
-          "The kettle starts to steam.",
-          "The first cups are full.",
-          "Everybody has a cup and a piece of shortbread."
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_ledger",
-        "narration": "The tea is only slightly too hot. Captain Voss drinks hers in one go without a word, and puts the cup down very gently, which from her is a compliment. Pellam turns to a fresh page."
-      },
-      "onFailure": {
-        "goto": "scene_ledger",
-        "narration": "The tea is only slightly too hot. Captain Voss drinks hers in one go without a word, and puts the cup down very gently, which from her is a compliment. Pellam turns to a fresh page."
-      },
       "cast": [
         {
           "figure": "entities/skywardens",
           "name": "Skywardens"
         }
       ],
-      "art": "scenes/gemfall/pellam-tea-table"
+      "art": "scenes/gemfall/pellam-tea-table",
+      "type": "story",
+      "narration": "Pellam pours the promised tea while you make space at the table. Captain Voss takes the smallest cup and drinks without a word. For a little while, the only question is whether anyone wants more. Then Pellam turns to a fresh page.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_ledger"
+        }
+      ]
     },
     "interaction_doorstep": {
       "type": "interaction",
@@ -3581,6 +3533,334 @@
       ]
     },
     "interaction_watch_logs": {
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "art": "scenes/gemfall/facet-table",
+      "type": "story",
+      "narration": "Let the wardens read the logs, and stop them to ask questions. Each hero chooses something to check or offers a road observation. Pellam finds the oldest page under a newer page labeled READ THIS FIRST. He is offended on behalf of both pages.",
+      "choices": [
+        {
+          "id": "date",
+          "label": "Ask how old the matching note is",
+          "icon": "scroll",
+          "goto": "interaction_watch_logs_response_date"
+        },
+        {
+          "id": "road",
+          "label": "Describe a change on our road",
+          "icon": "map",
+          "goto": "interaction_watch_logs_response_road"
+        },
+        {
+          "id": "question",
+          "label": "Ask what the records cannot explain",
+          "icon": "ear",
+          "goto": "interaction_watch_logs_response_question"
+        }
+      ]
+    },
+    "interaction_purpose_council": {
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "art": "scenes/gemfall/pellam-tea-table",
+      "type": "choice_point",
+      "narration": "Before choosing a road, hear every hero. Say what you hope to protect, what you still need to know, or what you are willing to try. You may ask for help finding words. Pellam puts his pen down. For once, the ledger can wait.",
+      "choices": [
+        {
+          "id": "protect",
+          "label": "Say what I want to protect",
+          "icon": "heart",
+          "goto": "interaction_purpose_council_response_protect"
+        },
+        {
+          "id": "ask",
+          "label": "Ask what our plan might cost",
+          "icon": "ear",
+          "goto": "interaction_purpose_council_response_ask"
+        },
+        {
+          "id": "try",
+          "label": "Say what I am willing to try",
+          "icon": "hand",
+          "goto": "interaction_purpose_council_response_try"
+        }
+      ]
+    },
+    "interaction_watch_logs_response_date": {
+      "type": "story",
+      "narration": "Pellam points to the old date and reads it aloud. The wardens answer your questions and compare the dated records. Voss turns to their oldest explanation.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_whole_truth"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "art": "scenes/gemfall/facet-table"
+    },
+    "interaction_watch_logs_response_road": {
+      "type": "story",
+      "narration": "Voss sets your observation beside the watch records. The wardens answer your questions and compare the dated records. Voss turns to their oldest explanation.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_whole_truth"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "art": "scenes/gemfall/facet-table"
+    },
+    "interaction_watch_logs_response_question": {
+      "type": "story",
+      "narration": "Pellam separates the recorded facts from the questions still open. The wardens answer your questions and compare the dated records. Voss turns to their oldest explanation.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_whole_truth"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "art": "scenes/gemfall/facet-table"
+    },
+    "interaction_purpose_council_response_protect": {
+      "type": "story",
+      "narration": "The table listens to what you hope to keep safe. Everyone has had a turn. Now choose the party's next road together.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_what_for"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "art": "scenes/gemfall/pellam-tea-table"
+    },
+    "interaction_purpose_council_response_ask": {
+      "type": "story",
+      "narration": "Voss hears your question and leaves time for everyone to discuss it. Everyone has had a turn. Now choose the party's next road together.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_what_for"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "art": "scenes/gemfall/pellam-tea-table"
+    },
+    "interaction_purpose_council_response_try": {
+      "type": "story",
+      "narration": "Pellam listens without putting a choice beside your name. Everyone has had a turn. Now choose the party's next road together.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_what_for"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "art": "scenes/gemfall/pellam-tea-table"
+    }
+  },
+  "voiceGuide": {
+    "tone": "warm, a little spooky, the big reveal told plainly and kindly; grown-ups being rigid or certain, never cruel",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "explaining what the Hollow Gate is"
+    ],
+    "npcVoices": {
+      "hessa": "Hessa Wren, Deep Hollow Cult cell contact running a soup tent; warm, generous, remembers every name, completely certain the seal is a cage on the cure",
+      "captain": "Captain Orla Voss of the Skywardens; rigid, honest, never wastes a word, says 'acceptable losses' as calmly as ordering breakfast",
+      "pellam": "Pellam, warden clerk; writes everything down twice, proud that the best log entry is 'nothing', secretly kind",
+      "grandmother_tull": "Grandmother Tull, dragonling bell-keeper; brisk, cozy, says 'nothing to worry about' one time too many",
+      "dunmore": "Dunmore, a prospector with a pick and no sense; embarrassed easily, means well",
+      "claim_pair": "two prospectors sharing one humming boulder; stubborn, then sheepish, and hungry the whole time"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_wagons": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_moth_trail": {
+        "props": [],
+        "coverIcons": [
+          "prop_rock",
+          "prop_rock",
+          "prop_cracked_rock"
+        ]
+      },
+      "interaction_doorstep": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "interaction_morning_ring": {
+        "props": [
+          "prop_hand_bell"
+        ]
+      },
+      "interaction_gate_call": {
+        "props": [
+          "prop_hand_bell"
+        ]
+      },
+      "interaction_truth_timeline": {
+        "props": [
+          "prop_letters"
+        ]
+      }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_soup_pots": {
+      "type": "interaction",
+      "narration": "Pass Hessa's heavy soup pot along to the tents with no supper. \"Many hands. No hurry.\" Every helper takes a handle. One prospector measures his bowl against the pot, hopefully.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the pot, then pass it on.",
+        "actionLabel": "Pass the pot",
+        "objectLabel": "A heavy pot of soup"
+      },
+      "onSuccess": {
+        "goto": "rest_warm_stones",
+        "narration": "The pot goes from hand to hand to hand, all the way to the edge of the camp, and not a drop is lost. A tired prospector takes a bowl in both hands and closes his eyes. Hessa wraps a supper in a cloth and tucks it into your pack. \"For the road,\" she says. It is a very nice supper.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_warm_stones",
+        "narration": "The pot wobbles, and half the soup goes into a prospector's boots. He says it is the warmest his feet have been all week. Hessa laughs, and the pots go on."
+      },
+      "onAssisted": {
+        "goto": "rest_warm_stones",
+        "narration": "Hessa's helpers fill the gaps in the line, and the pot goes from hand to hand to the edge of the camp without a drop lost. Hessa wraps a supper in a cloth and tucks it into your pack. \"For the road,\" she says.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        }
+      ],
+      "art": "scenes/gemfall/hessa-soup-camp"
+    },
+    "interaction_tea": {
+      "type": "interaction",
+      "narration": "Back at the table, Pellam keeps his word about the tea. The kettle is the size of a bucket, and the cups are the size of thimbles. \"Everybody helps with tea,\" he says. \"It is in the regulations. Page nine.\"",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Make the tea: pour it, stir it and share the shortbread.",
+        "actionLabel": "Make the tea",
+        "options": [
+          {
+            "id": "pour",
+            "label": "Pour the tea",
+            "icon": "play_pour_tea",
+            "reaction": "A thin gold stream fills a thimble cup without a drop spilled."
+          },
+          {
+            "id": "stir",
+            "label": "Stir it slowly",
+            "icon": "play_stir",
+            "reaction": "The tea swirls round and round, and a warden leans in to watch."
+          },
+          {
+            "id": "biscuit",
+            "label": "Pass the shortbread",
+            "icon": "play_shortbread",
+            "reaction": "Pellam takes one piece and logs it. Then he takes another piece and does not log it."
+          }
+        ],
+        "stages": [
+          "The kettle starts to steam.",
+          "The first cups are full.",
+          "Everybody has a cup and a piece of shortbread."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_ledger",
+        "narration": "The tea is only slightly too hot. Captain Voss drinks hers in one go without a word, and puts the cup down very gently, which from her is a compliment. Pellam turns to a fresh page."
+      },
+      "onFailure": {
+        "goto": "scene_ledger",
+        "narration": "The tea is only slightly too hot. Captain Voss drinks hers in one go without a word, and puts the cup down very gently, which from her is a compliment. Pellam turns to a fresh page."
+      },
+      "cast": [
+        {
+          "figure": "entities/skywardens",
+          "name": "Skywardens"
+        }
+      ],
+      "art": "scenes/gemfall/pellam-tea-table"
+    },
+    "interaction_watch_logs": {
       "type": "interaction",
       "narration": "Let the wardens read the logs, and stop them to ask questions. Each hero chooses something to check or offers a road observation. Pellam finds the oldest page under a newer page labeled READ THIS FIRST. He is offended on behalf of both pages.",
       "interaction": {
@@ -3684,78 +3964,6 @@
           "name": "Skywardens"
         }
       ]
-    }
-  },
-  "voiceGuide": {
-    "tone": "warm, a little spooky, the big reveal told plainly and kindly; grown-ups being rigid or certain, never cruel",
-    "vocabulary": "age-8",
-    "forbidden": [
-      "death",
-      "blood",
-      "permanent loss",
-      "weapons that wound",
-      "anyone being left behind",
-      "explaining what the Hollow Gate is"
-    ],
-    "npcVoices": {
-      "hessa": "Hessa Wren, Deep Hollow Cult cell contact running a soup tent; warm, generous, remembers every name, completely certain the seal is a cage on the cure",
-      "captain": "Captain Orla Voss of the Skywardens; rigid, honest, never wastes a word, says 'acceptable losses' as calmly as ordering breakfast",
-      "pellam": "Pellam, warden clerk; writes everything down twice, proud that the best log entry is 'nothing', secretly kind",
-      "grandmother_tull": "Grandmother Tull, dragonling bell-keeper; brisk, cozy, says 'nothing to worry about' one time too many",
-      "dunmore": "Dunmore, a prospector with a pick and no sense; embarrassed easily, means well",
-      "claim_pair": "two prospectors sharing one humming boulder; stubborn, then sheepish, and hungry the whole time"
-    }
-  },
-  "presentation": {
-    "interactions": {
-      "interaction_wagons": {
-        "props": [
-          "prop_rope_pole"
-        ]
-      },
-      "interaction_soup_pots": {
-        "props": [
-          "prop_soup_pot"
-        ]
-      },
-      "interaction_moth_trail": {
-        "props": [],
-        "coverIcons": [
-          "prop_rock",
-          "prop_rock",
-          "prop_cracked_rock"
-        ]
-      },
-      "interaction_doorstep": {
-        "props": [
-          "rope-loop"
-        ]
-      },
-      "interaction_morning_ring": {
-        "props": [
-          "prop_hand_bell"
-        ]
-      },
-      "interaction_gate_call": {
-        "props": [
-          "prop_hand_bell"
-        ]
-      },
-      "interaction_truth_timeline": {
-        "props": [
-          "prop_letters"
-        ]
-      },
-      "interaction_watch_logs": {
-        "props": [
-          "prop_letters"
-        ]
-      },
-      "interaction_purpose_council": {
-        "props": [
-          "prop_tea_mug"
-        ]
-      }
     }
   }
 }

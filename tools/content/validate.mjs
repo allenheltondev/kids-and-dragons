@@ -717,6 +717,15 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
     }
   }
 
+  for (const [id, retired] of Object.entries(chapter.resumeInteractions ?? {})) {
+    if (!scenes[id] || scenes[id].type === "interaction") {
+      fail(`/resumeInteractions/${id}`, "retired activity must replace an existing non-interaction scene");
+    }
+    for (const [target] of outgoing(retired, id)) {
+      if (!ids.has(target)) fail(`/resumeInteractions/${id}`, `saved activity continues to unknown scene "${target}"`);
+    }
+  }
+
   // --- every goto names a scene that exists
   const edges = new Map();
   for (const [id, scene] of Object.entries(scenes)) {
@@ -827,6 +836,12 @@ function checkChapter(rep, file, chapter, items, rules, biomes, mapIds, bestiary
   }
   const flagsSet = new Set();
   const flagsRequired = [];
+  // A resumed activity may have set a legacy flag consumed by its ending.
+  for (const [id, retired] of Object.entries(chapter.resumeInteractions ?? {})) {
+    for (const [effect] of effectsOf(retired, id)) {
+      if (effect.type === "setFlag" && (effect.value ?? true) === true) flagsSet.add(effect.flag);
+    }
+  }
 
   for (const [id, scene] of Object.entries(scenes)) {
     for (const [effect, at] of effectsOf(scene, id)) {

@@ -1881,39 +1881,23 @@
       "art": "scenes/gemfall/river-mouth-shore"
     },
     "interaction_planks": {
-      "type": "interaction",
-      "narration": "The wagon is out, but the rut it leaves is deep as a bathtub, and a line of carts is already creeping up behind. \"Planks!\" cries the driver, pointing at a stack by the ditch. \"Fill the rut before the next fellow sinks! Hand them down, hand them down!\" So everyone lines up along the road, and the planks start to travel from hand to hand like a very slow train.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the plank, then pass it down the line.",
-        "actionLabel": "Pass the plank",
-        "objectLabel": "A long, heavy plank"
-      },
-      "onSuccess": {
-        "goto": "scene_river_view",
-        "narration": "The last plank drops into the rut, flat and snug. The first cart behind rolls over it without a single bump, and the driver presses a few coins into your hand. \"Plank money,\" he says gruffly. \"I was admiring the view, but I am also grateful.\"",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_river_view",
-        "narration": "One plank goes in sideways and sticks up like a drawbridge. The first cart behind goes over it with a bump and a bang. The driver sighs, stamps it flat and says it will do. \"It's a rut,\" he says. \"It has had worse.\""
-      },
-      "onAssisted": {
-        "goto": "scene_river_view",
-        "narration": "The driver takes the middle of the line himself, and the planks fly down it, hand to hand to hand. The rut fills flat and snug, and he presses a few coins into your hand. \"Plank money,\" he says gruffly. \"I was admiring the view, but I am also grateful.\"",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
-      "art": "scenes/gemfall/east-road-markers"
+      "art": "scenes/gemfall/east-road-markers",
+      "type": "story",
+      "narration": "With the wagon free, you and the driver lay planks across its deep rut. The carts behind stop honking long enough to help. Someone puts a kettle on the last plank to make sure it stays. The last plank drops into the rut, flat and snug. The first cart behind rolls over it without a single bump, and the driver presses a few coins into your hand. \"Plank money,\" he says gruffly. \"I was admiring the view, but I am also grateful.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_river_view",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ]
     },
     "interaction_hats": {
       "type": "interaction",
@@ -1983,8 +1967,6 @@
       "art": "scenes/gemfall/stone-crossing-queue"
     },
     "interaction_hum": {
-      "type": "interaction",
-      "narration": "Before you step away, Old Lintel rumbles one more thing. \"Hear the note first,\" he says. \"Then you will know it when it comes around again.\" He hums it, low enough to rattle the pebbles: low, high, middle, low. \"Now you,\" he says. \"Hum it back.\"",
       "cast": [
         {
           "figure": "cast/old_lintel",
@@ -1992,85 +1974,37 @@
           "size": "very_large"
         }
       ],
-      "interaction": {
-        "kind": "memory",
-        "cue": "Listen to the note, then hum it back in the same order.",
-        "actionLabel": "Hum it back",
-        "stepMs": 1200,
-        "options": [
-          {
-            "id": "low",
-            "label": "Low note",
-            "icon": "glyph_note_low"
-          },
-          {
-            "id": "middle",
-            "label": "Middle note",
-            "icon": "glyph_note_middle"
-          },
-          {
-            "id": "high",
-            "label": "High note",
-            "icon": "glyph_note_high"
-          }
-        ],
-        "answer": [
-          "low",
-          "high",
-          "middle",
-          "low"
-        ]
-      },
-      "onSuccess": {
-        "goto": "choice_camp_spot",
-        "narration": "You hum it back, low, high, middle, low, and under your boots the bridge hums with you, very faintly. Old Lintel's mossy face does something that might be a smile. \"There,\" he says. \"You will know it again.\" He puts his palm back on the stone and waves you toward the queue camp."
-      },
-      "onFailure": {
-        "goto": "choice_camp_spot",
-        "narration": "You hum a pretty tune. It is not the note. The bridge hums back, low and flat, as if politely correcting you. Old Lintel hums it once more, slower, and you get close enough. \"Close,\" he says. \"Close counts, for a first time.\" He puts his palm back on the stone and waves you toward the queue camp."
-      },
-      "onAssisted": {
-        "goto": "choice_camp_spot",
-        "narration": "Old Lintel hums along underneath you to hold the note up, low, high, middle, low, and the bridge hums with you, very faintly. \"There,\" he says. \"You will know it again.\" He puts his palm back on the stone and waves you toward the queue camp."
-      },
-      "art": "scenes/gemfall/lintel-toll-stone"
+      "art": "scenes/gemfall/lintel-toll-stone",
+      "type": "story",
+      "narration": "Old Lintel hums his low note and lets you listen until it settles in your ears. The ground seems to hum beneath it. \"Remember that,\" he says. \"Songs travel farther than queues.\" You hum it back, low, high, middle, low, and under your boots the bridge hums with you, very faintly. Old Lintel's mossy face does something that might be a smile. \"There,\" he says. \"You will know it again.\" He puts his palm back on the stone and waves you toward the queue camp.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "choice_camp_spot"
+        }
+      ]
     },
     "interaction_pot": {
-      "type": "interaction",
-      "narration": "You have barely gone three steps when behind you something goes HISSSS. The camp's supper pot, a copper pot as big as a barrel, is boiling over, and the cook is waving her ladle like a flag. \"Tip it off the fire before it scorches!\" she cries. \"One to tip, and everybody else to hold the pole!\" There is porridge in there for the whole camp.",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends hold the pole steady while someone tips the pot.",
-        "actionLabel": "Tip the pot",
-        "supportLabel": "Hold the pole steady"
-      },
-      "onSuccess": {
-        "goto": "scene_stuck_wagon",
-        "narration": "The pot tips slow and steady, and the porridge pours out in one fat brown ribbon into a row of waiting bowls. Not a drop in the fire. The cook mops her forehead with her sleeve and wraps a hot supper in a cloth for you. \"Better than the porridge at MILE 3,\" she says. \"That is not hard.\" Down the road, a wagon is stuck right across the way.",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "supper_bundle",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_stuck_wagon",
-        "narration": "The pole wobbles, and the pot tips too soon. Porridge slides down the side in one slow slop and lands in the fire. Hiss. The cook looks at it for a while. \"Crunchy,\" she says bravely. \"We call it crunchy.\" Down the road, a wagon is stuck right across the way."
-      },
-      "onAssisted": {
-        "goto": "scene_stuck_wagon",
-        "narration": "The cook grabs the pole herself, and together you tip the pot slow and steady. The porridge pours out in one fat brown ribbon into a row of waiting bowls, and she wraps a hot supper in a cloth for you. \"Better than the porridge at MILE 3,\" she says. \"That is not hard.\" Down the road, a wagon is stuck right across the way.",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "supper_bundle",
-            "to": "party"
-          }
-        ]
-      },
-      "art": "scenes/gemfall/east-road-markers"
+      "art": "scenes/gemfall/east-road-markers",
+      "type": "story",
+      "narration": "The cook calls you back to her enormous supper pot. Together you tip a fat brown ribbon of porridge into the waiting bowls. The queue can wait while everyone gets something warm. She wraps a hot supper for you. \"Better than the porridge at MILE 3,\" she says. \"That is not hard.\" Down the road, a wagon is stuck across the way.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_stuck_wagon",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "supper_bundle",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "scene_crab_dusk": {
       "type": "story",
@@ -2478,16 +2412,6 @@
   },
   "presentation": {
     "interactions": {
-      "interaction_pot": {
-        "props": [
-          "prop_rope_pole"
-        ]
-      },
-      "interaction_planks": {
-        "props": [
-          "prop_plank"
-        ]
-      },
       "interaction_hats": {
         "props": [],
         "coverIcons": [
@@ -2524,6 +2448,133 @@
           "rope-loop"
         ]
       }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_pot": {
+      "type": "interaction",
+      "narration": "You have barely gone three steps when behind you something goes HISSSS. The camp's supper pot, a copper pot as big as a barrel, is boiling over, and the cook is waving her ladle like a flag. \"Tip it off the fire before it scorches!\" she cries. \"One to tip, and everybody else to hold the pole!\" There is porridge in there for the whole camp.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends hold the pole steady while someone tips the pot.",
+        "actionLabel": "Tip the pot",
+        "supportLabel": "Hold the pole steady"
+      },
+      "onSuccess": {
+        "goto": "scene_stuck_wagon",
+        "narration": "The pot tips slow and steady, and the porridge pours out in one fat brown ribbon into a row of waiting bowls. Not a drop in the fire. The cook mops her forehead with her sleeve and wraps a hot supper in a cloth for you. \"Better than the porridge at MILE 3,\" she says. \"That is not hard.\" Down the road, a wagon is stuck right across the way.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_stuck_wagon",
+        "narration": "The pole wobbles, and the pot tips too soon. Porridge slides down the side in one slow slop and lands in the fire. Hiss. The cook looks at it for a while. \"Crunchy,\" she says bravely. \"We call it crunchy.\" Down the road, a wagon is stuck right across the way."
+      },
+      "onAssisted": {
+        "goto": "scene_stuck_wagon",
+        "narration": "The cook grabs the pole herself, and together you tip the pot slow and steady. The porridge pours out in one fat brown ribbon into a row of waiting bowls, and she wraps a hot supper in a cloth for you. \"Better than the porridge at MILE 3,\" she says. \"That is not hard.\" Down the road, a wagon is stuck right across the way.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/east-road-markers"
+    },
+    "interaction_planks": {
+      "type": "interaction",
+      "narration": "The wagon is out, but the rut it leaves is deep as a bathtub, and a line of carts is already creeping up behind. \"Planks!\" cries the driver, pointing at a stack by the ditch. \"Fill the rut before the next fellow sinks! Hand them down, hand them down!\" So everyone lines up along the road, and the planks start to travel from hand to hand like a very slow train.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the plank, then pass it down the line.",
+        "actionLabel": "Pass the plank",
+        "objectLabel": "A long, heavy plank"
+      },
+      "onSuccess": {
+        "goto": "scene_river_view",
+        "narration": "The last plank drops into the rut, flat and snug. The first cart behind rolls over it without a single bump, and the driver presses a few coins into your hand. \"Plank money,\" he says gruffly. \"I was admiring the view, but I am also grateful.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_river_view",
+        "narration": "One plank goes in sideways and sticks up like a drawbridge. The first cart behind goes over it with a bump and a bang. The driver sighs, stamps it flat and says it will do. \"It's a rut,\" he says. \"It has had worse.\""
+      },
+      "onAssisted": {
+        "goto": "scene_river_view",
+        "narration": "The driver takes the middle of the line himself, and the planks fly down it, hand to hand to hand. The rut fills flat and snug, and he presses a few coins into your hand. \"Plank money,\" he says gruffly. \"I was admiring the view, but I am also grateful.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "art": "scenes/gemfall/east-road-markers"
+    },
+    "interaction_hum": {
+      "type": "interaction",
+      "narration": "Before you step away, Old Lintel rumbles one more thing. \"Hear the note first,\" he says. \"Then you will know it when it comes around again.\" He hums it, low enough to rattle the pebbles: low, high, middle, low. \"Now you,\" he says. \"Hum it back.\"",
+      "cast": [
+        {
+          "figure": "cast/old_lintel",
+          "name": "Old Lintel",
+          "size": "very_large"
+        }
+      ],
+      "interaction": {
+        "kind": "memory",
+        "cue": "Listen to the note, then hum it back in the same order.",
+        "actionLabel": "Hum it back",
+        "stepMs": 1200,
+        "options": [
+          {
+            "id": "low",
+            "label": "Low note",
+            "icon": "glyph_note_low"
+          },
+          {
+            "id": "middle",
+            "label": "Middle note",
+            "icon": "glyph_note_middle"
+          },
+          {
+            "id": "high",
+            "label": "High note",
+            "icon": "glyph_note_high"
+          }
+        ],
+        "answer": [
+          "low",
+          "high",
+          "middle",
+          "low"
+        ]
+      },
+      "onSuccess": {
+        "goto": "choice_camp_spot",
+        "narration": "You hum it back, low, high, middle, low, and under your boots the bridge hums with you, very faintly. Old Lintel's mossy face does something that might be a smile. \"There,\" he says. \"You will know it again.\" He puts his palm back on the stone and waves you toward the queue camp."
+      },
+      "onFailure": {
+        "goto": "choice_camp_spot",
+        "narration": "You hum a pretty tune. It is not the note. The bridge hums back, low and flat, as if politely correcting you. Old Lintel hums it once more, slower, and you get close enough. \"Close,\" he says. \"Close counts, for a first time.\" He puts his palm back on the stone and waves you toward the queue camp."
+      },
+      "onAssisted": {
+        "goto": "choice_camp_spot",
+        "narration": "Old Lintel hums along underneath you to hold the note up, low, high, middle, low, and the bridge hums with you, very faintly. \"There,\" he says. \"You will know it again.\" He puts his palm back on the stone and waves you toward the queue camp."
+      },
+      "art": "scenes/gemfall/lintel-toll-stone"
     }
   }
 }

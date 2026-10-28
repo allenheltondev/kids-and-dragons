@@ -197,9 +197,21 @@ export function validateChapter(chapter: Chapter, catalog?: ItemCatalog): Chapte
     });
   }
 
+  // Retired activities are not fresh graph roots. They may only finish a
+  // prompt already saved at an existing, replaced scene id.
+  for (const [sceneId, retired] of Object.entries(chapter.resumeInteractions ?? {})) {
+    if (!scenes[sceneId] || scenes[sceneId]?.type === "interaction" || retired.type !== "interaction") {
+      issues.push({ severity: "error", code: "BAD_INTERACTION", sceneId,
+        message: `retired interaction "${sceneId}" must replace an existing non-interaction scene` });
+    }
+    for (const branch of [retired.onSuccess, retired.onFailure, retired.onAssisted].filter(Boolean)) {
+      if (!branch?.goto || !scenes[branch.goto]) issues.push({ severity: "error", code: "BAD_INTERACTION", sceneId,
+        message: `retired interaction "${sceneId}" has an unknown continuation` });
+    }
+  }
+
   // --- per scene ---------------------------------------------------------
-  for (const sceneId of ids) {
-    const scene = scenes[sceneId];
+  for (const [sceneId, scene] of [...Object.entries(scenes), ...Object.entries(chapter.resumeInteractions ?? {})]) {
     if (!scene) continue;
 
     // Branch completeness. A check with one arm strands the other outcome; an

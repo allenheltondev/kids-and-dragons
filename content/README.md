@@ -102,6 +102,13 @@ strings; narration still supports normal tokens and variants. Examples are in
 
 ## Content files
 
+When replacing a shipped activity with story or conversation, a chapter may keep
+the original `interaction` scene in `resumeInteractions`, keyed by its existing
+scene ID. Fresh entry always uses `scenes`; the archive only resolves an
+interaction prompt already persisted in a save. Preserve the original controls,
+branches and effects, and keep every continuation valid. Test serialized saves,
+real controls, retry, failure and assistance before removing an activity.
+
 Rules, items, campaigns, and chapters are JSON, not code. Adding content never requires a deploy of
 game code (roadmap, "Content as data"). Everything here is validated in CI by
 `npm run content:validate`, because **a malformed chapter must fail the build, never the play

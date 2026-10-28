@@ -992,6 +992,9 @@ export interface Chapter {
   xpAward: number;
   entry: SceneId;
   scenes: Record<SceneId, Scene>;
+  /** Retired activities, used only to finish an interaction prompt already in a save.
+   * Fresh entry always uses scenes; retain each original branch/effect unchanged. */
+  resumeInteractions?: Record<SceneId, InteractionScene>;
   /** Optional bonus objectives, spec §8.2. Absent is the normal case. */
   objectives?: ChapterObjective[];
   /**
