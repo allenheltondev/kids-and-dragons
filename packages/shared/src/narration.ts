@@ -31,7 +31,19 @@ export function composeNarration(
   variants: readonly NarrationVariant[] | undefined,
   party: ChoiceParty,
 ): string {
-  return composeNarrationPieces(base, variants, party).join(JOIN);
+  return composeNarrationPieces(base, variants, party)
+    .map((piece) => piece.text)
+    .join(JOIN);
+}
+
+/**
+ * One authored string `composeNarration` joins. `variant` is the index of the
+ * variant in the authored array it came from, absent for the base text, so a
+ * caller that knows where the base lives can say where every piece did.
+ */
+export interface NarrationPiece {
+  text: string;
+  variant?: number;
 }
 
 /**
@@ -42,45 +54,65 @@ export function composeNarrationPieces(
   base: string,
   variants: readonly NarrationVariant[] | undefined,
   party: ChoiceParty,
-): string[] {
-  if (!variants || variants.length === 0) return [base];
-  const start: string[] = [];
-  const end: string[] = [];
-  let replacement: NarrationVariant | undefined;
-  for (const variant of variants) {
-    if (!evaluateCondition(variant.when, party)) continue;
+): NarrationPiece[] {
+  if (!variants || variants.length === 0) return [{ text: base }];
+  const start: NarrationPiece[] = [];
+  const end: NarrationPiece[] = [];
+  let replacement: NarrationPiece | undefined;
+  variants.forEach((variant, index) => {
+    if (!evaluateCondition(variant.when, party)) return;
+    const piece = { text: variant.text, variant: index };
     if (variant.replace) {
-      replacement ??= variant;
-      continue;
+      replacement ??= piece;
+      return;
     }
-    (variant.at === "start" ? start : end).push(variant.text);
-  }
+    (variant.at === "start" ? start : end).push(piece);
+  });
   // A replacing variant takes the base's place, and sits there whatever its `at`.
-  const middle = replacement ? replacement.text : base;
-  return [...start, middle, ...end].filter((part) => part.trim().length > 0);
+  const middle = replacement ?? { text: base };
+  return [...start, middle, ...end].filter((piece) => piece.text.trim().length > 0);
 }
 
 /**
  * One composed piece of a scene's narration, as authored (tokens unfilled),
- * with the value of each token it carries: `{ line: "{party} hold on.",
- * token: { party: "3" } }`. A recorded clip is chosen by the line and its
- * token values; the engine writes these beside `RunState.narration`, from the
- * same pieces, so the two cannot disagree.
+ * with where it was authored and the value of each token it carries:
+ * `{ address: "ch/s1/variants/0", line: "{party} hold on.", token: { party: "3" } }`.
+ *
+ * The address is the line address of docs/voice-narration-plan.md §1, the key
+ * of the clip manifest and of the script sidecar. Identical words at two
+ * addresses (a success and an assisted branch that read the same) are two
+ * lines with two voices, so the text alone cannot choose a clip. A part with
+ * no address was composed at run time (a fight's spoils) and has no clip: the
+ * whole utterance goes to the device voice.
+ *
+ * The engine writes these beside `RunState.narration`, from the same pieces,
+ * so the two cannot disagree.
  */
 export interface NarrationPart {
+  address?: string;
   line: string;
   token?: Record<string, string>;
 }
 
+/** A piece with the address its words were authored at, if they were authored. */
+export interface AddressedPiece {
+  text: string;
+  address?: string;
+}
+
 /** The parts for `pieces`, each with the token values `fillTokens` would use. */
-export function narrationPartsOf(pieces: readonly string[], party: ChoiceParty): NarrationPart[] {
+export function narrationPartsOf(pieces: readonly AddressedPiece[], party: ChoiceParty): NarrationPart[] {
   return pieces
-    .filter((line) => line.trim().length > 0)
-    .map((line) => {
+    .filter((piece) => piece.text.trim().length > 0)
+    .map((piece) => {
       const token: Record<string, string> = {};
-      if (line.includes("{facets}")) token.facets = String(countPartyItems(party, "facet_*"));
-      if (line.includes("{party}")) token.party = String(party.members.length);
-      return Object.keys(token).length > 0 ? { line, token } : { line };
+      if (piece.text.includes("{facets}")) token.facets = String(countPartyItems(party, "facet_*"));
+      if (piece.text.includes("{party}")) token.party = String(party.members.length);
+      return {
+        ...(piece.address !== undefined ? { address: piece.address } : {}),
+        line: piece.text,
+        ...(Object.keys(token).length > 0 ? { token } : {}),
+      };
     });
 }
 
