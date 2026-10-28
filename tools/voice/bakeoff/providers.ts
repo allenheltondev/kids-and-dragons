@@ -109,15 +109,8 @@ const OUTPUT = "mp3_44100_128";
 const SCENE = "A storyteller and friends reading a picture book aloud to eight-year-olds in a cozy living room. Warm, a little spooky on the quiet bits, never scary.";
 const PROVIDER_NAMES: Record<Provider, string> = { elevenlabs: "ElevenLabs", gemini: "Gemini", fake: "Fake" };
 
-/** Gemini's prebuilt voices and the one word Google uses for each. */
-export const GEMINI_VOICES: readonly { id: string; about: string }[] = [
-  ["Zephyr", "bright"], ["Puck", "upbeat"], ["Charon", "informative"], ["Kore", "firm"], ["Fenrir", "excitable"],
-  ["Leda", "youthful"], ["Orus", "firm"], ["Aoede", "breezy"], ["Callirrhoe", "easy-going"], ["Autonoe", "bright"],
-  ["Enceladus", "breathy"], ["Iapetus", "clear"], ["Umbriel", "easy-going"], ["Algieba", "smooth"], ["Despina", "smooth"],
-  ["Erinome", "clear"], ["Algenib", "gravelly"], ["Rasalgethi", "informative"], ["Laomedeia", "upbeat"], ["Achernar", "soft"],
-  ["Alnilam", "firm"], ["Schedar", "even"], ["Gacrux", "mature"], ["Pulcherrima", "forward"], ["Achird", "friendly"],
-  ["Zubenelgenubi", "casual"], ["Vindemiatrix", "gentle"], ["Sadachbia", "lively"], ["Sadaltager", "knowledgeable"], ["Sulafat", "warm"],
-].map(([id, about]) => ({ id: id!, about: about! }));
+import { GEMINI_VOICES } from "../gemini-voices.ts";
+export { GEMINI_VOICES };
 
 /** ElevenLabs v3 and later: audio tags, no style slider, no previous_text. */
 const EXPRESSIVE = /^eleven_v([3-9]|\d{2,})(_|$)/;

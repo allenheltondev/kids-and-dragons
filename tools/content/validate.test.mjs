@@ -1666,3 +1666,48 @@ describe("voice scripts (docs/voice-narration-plan.md section 3)", () => {
     expect(result.code).toBe(0);
   });
 });
+
+describe("the cast voice sheet and the lexicon (#539)", () => {
+  const CAST = ["content", "voice", "cast.json"];
+  const LEXICON = ["content", "voice", "lexicon.json"];
+
+  function withCast(mutate) {
+    const dir = copyTree();
+    const cast = readJson(dir, ...CAST);
+    mutate(cast);
+    writeJson(dir, CAST, cast);
+    return validate(dir);
+  }
+
+  it("fails a voice that is not one of Gemini's", () => {
+    const result = withCast((cast) => {
+      cast.speakers.pib.gemini.voice = "Robotron";
+    });
+    expect(result.out).toMatch(/FAIL\s+content\/voice\/cast\.json/);
+    expect(result.code).not.toBe(0);
+  });
+
+  it("fails two speakers on one voice in a chapter", () => {
+    const result = withCast((cast) => {
+      cast.speakers.wisp.gemini.voice = cast.speakers.pib.gemini.voice;
+    });
+    expect(result.out).toContain("share the voice");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("fails anybody else on the narrator's voice", () => {
+    const result = withCast((cast) => {
+      cast.speakers.pib.gemini.voice = cast.speakers.narrator.gemini.voice;
+    });
+    expect(result.out).toContain("share the voice");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("fails a lexicon entry with nothing to say", () => {
+    const dir = copyTree();
+    writeJson(dir, LEXICON, { words: { Pib: { say: "" } } });
+    const result = validate(dir);
+    expect(result.out).toMatch(/FAIL\s+content\/voice\/lexicon\.json/);
+    expect(result.code).not.toBe(0);
+  });
+});

@@ -25,6 +25,16 @@ function readDirIfExists<T>(dir: string): Map<string, T> {
   return out;
 }
 
+/** content/voice/lexicon.json (schemas/voice-lexicon.schema.json). */
+export interface LexiconFile {
+  words: Record<string, { say: string; ipa?: string; note?: string; reviewed?: boolean }>;
+}
+
+/** The lexicon as `spokenForm` takes it: each word and what to say for it. */
+export function respellings(file: LexiconFile): Record<string, string> {
+  return Object.fromEntries(Object.entries(file.words).map(([word, entry]) => [word, entry.say]));
+}
+
 export const MANIFEST_DIR = path.join(CONTENT, "voice", "manifest");
 
 export interface World {
@@ -53,7 +63,7 @@ export function loadWorld(options: { withChoices?: boolean } = {}): World {
     scripts: readDirIfExists<ScriptFile>(path.join(CONTENT, "voice", "scripts")),
     manifests: readDirIfExists<Manifest>(MANIFEST_DIR),
     lock: readIfExists<Lock>(path.join(CONTENT, "voice", "voice.lock.json"), { approved: {} }),
-    lexicon: readIfExists<Record<string, string>>(path.join(CONTENT, "voice", "lexicon.json"), {}),
+    lexicon: respellings(readIfExists<LexiconFile>(path.join(CONTENT, "voice", "lexicon.json"), { words: {} })),
     tables: { delivery: tables.delivery, beats: tables.beats },
     groups,
   };

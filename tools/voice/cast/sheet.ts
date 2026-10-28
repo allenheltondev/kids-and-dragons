@@ -20,7 +20,7 @@
  * Pure: content in, sheet out. build.ts reads and writes the files.
  */
 
-import { GEMINI_VOICES } from "../bakeoff/providers.ts";
+import { GEMINI_VOICES } from "../gemini-voices.ts";
 
 /** Google's prebuilt Gemini voices: the word Google gives each, and whether it reads as a woman's or a man's voice. */
 export const GEMINI_VOICE_TRAITS: Record<string, { gender: "f" | "m"; traits: string[] }> = {
