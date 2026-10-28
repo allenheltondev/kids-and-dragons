@@ -1,47 +1,78 @@
-# Finale play, eighth wave (in progress)
+# Gemfall finale: answer together, then live with the answer
 
-This is the next authored wave from the [Gemfall play-design audit](../gemfall-play-design/audit.md). It is stacked on #534 (which includes #531 and #533). The base branch for this work is `917fd393`. **This is a draft first slice**, not a completed finale review.
+Eighth authored wave from the [campaign audit](../gemfall-play-design/audit.md), reviewed against the [chapter-cohesion skill](../../../.claude/skills/chapter-cohesion/SKILL.md). The draft's four new activities fit the intended direction, but its timing exception, empty-handed Restore route and verification were incomplete. This revision completes the local authored review, preserving the shipped endings and pursuit advantages. The upstream opening, Ashfall and pursuit PRs are merged; the branch includes current main and #534's CI proof-timeout fix.
 
-## Decision and play contract
+## Alignment audit and corrections
 
-The chapter's four philosophies stay available: Restore, Destroy, Control and Exploit (Keystone). The sleeping titan's question, the dragon encounter, the existing titan board, the rare loss endings, the pursuer's tether advantage and the collecting party's Keystone advantage are deliberately unchanged. The existing 27 check scenes are retained exactly, including their original target numbers, stats, conditions and effects, for resumed roll prompts.
+| Finding in the draft | Correction |
+| --- | --- |
+| Declared 55 minutes and planned 39–52, despite the family's approximately thirty-minute brief | Restore the declared target to 30, budget a thirty-minute sitting and shorten repeated approach/result prose. This is intent, not evidence of achieved timing; the model still predicts longer routes below. |
+| Carried-stone Restore gains an activity, but empty-handed families still only have old rolls | Add a cooperative brace specifically for empty-handed parties. Carried facets instead open matching by hum. Old rolls remain available, and every party can finish. |
+| Verdict tests only check entry, not whether one hero can submit for silent friends | Exercise premature completion after one contribution, then require every connected hero's contribution before ordinary completion at two/four seats. Solo completion and assistance remain supported. |
+| A generic carried-object response praises care regardless of what the player says | The dragon asks what changed because they carried it. Reflections are heard, not assigned an invented moral answer. |
+| New tests inherit Riftlight's auto-seeded chime | Remove the unrelated quest item from Gemfall fixtures; whole-route tests assert it is absent. |
+| New activities have mostly isolated tests; no local server/save evidence | Add complete one/two/four-seat routes, real supported misses, damage and resource assertions, philosophy closure/recovery tests, real-server settlement and old/new loader-based campaign probes. |
+| Wheel activity paints an unrelated board; handover crowds dragon and helpers' labels | Use an existing pry bar at the latch and a rope loop for the relay. Put the relay participants Voss and Pellam before the large Keeper in the cast layout, preserving the commissioned figure. Inspect all five activities on TV and phone. |
+| Cairn snack implies giving up an inventory item without a consuming effect | Make it explicitly pocket crumbs, a flavor contribution with no claimed item cost. |
 
-| Moment | New choice and real action | Consequence / alternative |
+The approach retains its route callbacks, faun's promise, wolf encounter, warden log, bell message, crab complication, moth rescue and last reflection. Shorter sentences reduce repeated elaboration; no new mandatory errand or timer was added. The opening activity now states the actual chapter goal before the first controls appear. The titan's question and the central priority-one revelation remain in the seal chamber.
+
+## Decisions and consequences
+
+| Moment | Real action / prior preparation | Result |
 | --- | --- | --- |
-| Seal-Keeper's verdict | Each player shares something carried, learned or chosen in an `everyone` contribution activity. | The Keeper listens and lets the whole party through; `dragon_satisfied` still records the favorable meeting. The original honest / Heart check and explicit fight choice remain available. An honest contribution no longer *requires* passing a persuasion roll. |
-| Restore | If the party carries at least one great facet, compare its hum, fit the matching stone, then steady the seal in a sequence activity. | Success/assistance reaches the last gap. A real wrong sequence reaches the same last gap with the old one-point nonlethal sting; the previous Clever and Might rolls remain alternative routes. Parties with no facets still have both old routes. |
-| Destroy | Feel for the wheel latch using a precision action. | Success/assistance turns the wheel gently. A supported miss still turns it with the Keeper's help and causes the same one-point nonlethal sting as the old latch roll. The old Might and Clever choices remain. |
-| Control: wardens told | If the party disclosed the truth to the wardens in chapter 06, Captain Voss arrives with a prepared line for a shared leash relay. | The previously earned `told_wardens` route now has a distinct task. The ordinary wardens call still uses the old `check_pass_leash` roll. The cage, oath and regret ending remain the same. |
+| Keeper's verdict | Each connected hero contributes a memory, helper or intended choice | Ordinary completion waits for everyone; success/assistance records the existing `dragon_satisfied` flag and admits the party. The original honest roll, earned surprise/gatherer responses and explicit fight remain. Assistance can resolve the council together; it does not enforce individual contributions. |
+| Restore with facets | Compare shared clues, then listen / fit / steady | Success/assistance reaches the last gap. An actual wrong sequence also moves forward, with the old one-point nonlethal sting on the resolving hero. |
+| Restore without facets | Brace loose pieces while the Keeper joins them | Cooperation and solo props supply an ungated-for-empty-hands practical job. A carried-stone party uses its own matching option instead. Original Clever/Might risks remain. |
+| Last gap | Give the rush gems, sing the lullaby, or honor the carried little stone | Existing final choices, Keeper response, quiet ending and epilogue remain. No die undoes an already completed matching/brace activity. |
+| Destroy | Release the moving latch with a precision action | Success/assistance turns the wheel; a miss proceeds with the Keeper's help and the existing nonlethal sting. Before voting, the party is told this ends the titan's song permanently. |
+| Prepared warden control | The carried `told_wardens` flag brings a relay line | Pass the leash into Voss's hands and reach the existing cage/oath ending. The ordinary warden handover retains its old risk. The new relay has no failing player action. |
+| Self / choir control | The declared Tether pursuit retains its easier old checks | A first failed hold offers release or a further risk. Release closes Control and preserves other philosophies; deliberately risking another failed hold reaches Broken Tether. |
+| Exploit | Collection pursuit retains its direct Keystone lift; others must pry | The crown is actually granted on success. A failed pry stings, closes Keystone and lets the party choose another philosophy. The Keeper's resulting burden is stated before taking it. No extra activity taxes the earned collection advantage. |
+| Late door recovery | Spend a carried facet to wedge the door, or use remaining time | The old consuming effect removes a real facet. A late, empty-handed party retains Last Ring. Lost stones do not reappear through the new activities. |
 
-No new persistent route flags were introduced. The verdict uses the existing local `dragon_satisfied` flag. The existing painted seal chamber and story props are reused; this slice has no new image files.
+All four philosophies are offered initially for every pursuit and inventory size. A failed and abandoned Control/Keystone route closes exactly as shipped. No new persistent flags, encounter numbers, terminal rewards or ending semantics changed. Existing motif/ally/road/clock readbacks remain. The final quest inventory continues to serve the shipped historical collection/recap convention; this pass does not delete those historical facet records after Restore. Actual costs verified here include damage, the door wedge, Keystone acquisition/refusal and the preparation-dependent risks.
 
-## Tests and compatibility
+Cooperation, relay and free contribution cannot produce a failing player action. Their defensive `onFailure` branches are not claimed as executable misses. The mixed miss profile uses genuine wrong sequence/memory/precision/timing actions and completes the other kinds. Assistance is an explicit alternative. Story decisions remain untimed.
 
-- The immutable fixture `tools/content/fixtures/gemfall-finale-legacy-checks.json` snapshots **all 27** pre-wave finale checks, with serialized low/high-roll resume cases at 1, 2 and 4 seats.
-- `tools/content/gemfall-finale-play.test.ts` exercises all four philosophy choices; solo/two/four-seat success and assistance; genuine sequence and precision misses; missing carried-stone and warden preparation; the original check alternatives; and existing art asset IDs.
-- The Gemfall file-hash pin has been deliberately updated only for chapter 08. The rest of the campaign file hashes and the established gameplay digests are unchanged.
-- New interactions do not insert mandatory errands before the seal-chamber vote. The whole-party verdict is offered as an alternative rather than replacing a saved check scene.
+## Timing: thirty-minute target, unresolved measurement
 
-These are authored/tests, **not observed family play**. GitHub CI, content validation, graph validation, continuity, full-server campaign routes and TV/phone captures must still be verified on the new head before this draft can be marked ready. No local test run is claimed.
+The draft's 55-minute declaration and 39–52-minute planning envelope were not an authorized exception to the user's target. The new **planned** budget is 6 minutes climbing and helping; 7 gallery and Keeper; 9 seal and philosophy; 8 result, recovery and goodbye. `estimatedMinutes: 30` records that intent only.
 
-## Finale-specific timing
+| Static diagnostic | Draft before this review | After |
+| --- | --- | --- |
+| Shortest predicted minutes | 46.6–47.1 | 45–45.4 |
+| Typical predicted minutes | 50.8–51.9 | 49.1–50.3 |
+| Shortest scenes / votes / checks / fights | 46 / 19 / 9 / 1 | 46 / 19 / 9 / 1 |
+| Typical longest reading run | 2 | 2 |
+| Shortest composed words | 2552–2970 | 2340–2758 |
 
-The original chapter declares 55 minutes. That number remains unchanged in this first slice. A provisional finale-session breakdown to test in a household is:
+**The thirty-minute duration is not established.** The static model excludes some flag-gated shortcuts and authored interaction time. It also includes synthetic repeated voting and dice estimates. These limits do not justify subtracting guessed minutes. Optional dragon/gallery combat and four-player reflection can make the sitting substantially longer. Use the [revision-aware session tracker](../../session-timing.md) to time efficient and engaged routes before claiming the target is met; further compression may be needed. No household timing was fetched, and no playtest fun or timing result is claimed.
 
-| Movement | Planning envelope |
-| --- | ---: |
-| Last climb, mountain signals and crossing | 12–15 min |
-| Gallery and Keeper's questions | 10–12 min |
-| Seal and titan encounter, if triggered | 7–12 min |
-| Philosophy-specific confrontation and goodbye | 10–13 min |
-| **Total before optional longer combat/discussion** | **39–52 min** |
+## Verification and legacy saves
 
-These numbers are **planning assumptions**, not measurements or revised runtime predictions. The optional dragon/titan fights and children's discussion can exceed that range. Use the [session timing tracker](../../session-timing.md) on real sittings. The ordinary 30-minute target is not silently applied to this intentionally large campaign finale.
+The immutable fixture retains all **27 original check definitions**, including IDs, prompts, stats, TNs, rollers, art, branches and effects. Low/high rolls resume serialized prompts at one/two/four seats. Only chapter 08's file hash is re-pinned; fixed legacy saves and gameplay digest constants remain unchanged.
 
-## Remaining work before calling wave eight complete
+Old/new trees loaded through the real loader match endings, roads and setback digests against pre-wave `d8296310`. Resumed fight play matches after normalizing only generated hero IDs. Content graph generation and merge/setback review completed. Structural setback lower bounds remain compound failures: lost dragon plus failed claw hold for Turned Back; lost gallery/race pressure plus failed last door for Last Ring; failed hold plus chosen failed haul/chord recovery for Broken Tether. Existing resource/time escape choices remain.
 
-1. Review the entry-to-chamber spine for repeated errands and compress reading/choice handoffs without dropping route callbacks, lore, encounters or the distinct late clock failures.
-2. Trace each ending and rare defeat using real server runs for solo/two/four-player parties, including assisted and missed new activities; compare route flags, XP and campaign completion to the pre-wave baseline.
-3. Run content validation, continuity, chapter pacing and chapter graph checks; record before/after shortest and typical readings separately from measured family time.
-4. Capture and inspect actual TV and phone layouts for all new activities. Ensure assistance is usable and no single hero can silently speak for the party in the collective verdict.
-5. Re-review branch after the three upstream PRs land; settle any compatibility or integration changes before merging this wave.
+The chapter suites exercise complete entry-to-ending story controls for all philosophies at one/two/four seats, successes, supported misses and assistance; carried and empty-handed Restore; all pursuit access/advantages; council participation; nonlethal damage on the resolving hero; real door-wedge consumption; failed Control release versus further risk; and failed Keystone closure. Combat branches in these walkers are enumerated. The separate 53-case real-server playthrough suite plays the unchanged boards, including empty and full collections.
+
+Twelve new real-server cases start each pursuit, use actual new verdict/philosophy controls and commit the reached ending. An unprepared failed Keystone route recovers through Destroy and still completes. The cases isolate the finale with playtest jumps; they do not replace complete-route tests. They assert campaign completion at beat eight, retained campaign flags/coins and no leaked local verdict flag.
+
+422 focused content/flow/interaction/save/voice tests pass; typecheck passes. Content validation: 117 passes with four existing Riftlight warnings. Continuity: four allowlisted candidates, no new or stale entries. Voice source metadata was rebuilt; all existing profile, assignment and review-history fields match main, with only derived chapter membership refreshed. Curated voice sample scripts pass unchanged. No paid voice generation occurred.
+
+The broad local run recorded **10,626 passing tests, 11 skipped and three failing tests**, plus the existing Windows dev-server cleanup-hook timeout. Two failures were the known Windows `npx` / `.bin/tsx` launch errors. The third exposed the old artwork appearance count (82); the five new Keeper activities make it 87. That assertion is updated, with every commissioned Keeper figure retained. After the correction, **497 targeted tests pass**, including all 53 server campaign playthroughs, content/flow/interactivity, save compatibility, voice samples and the artwork assertions. The three CRLF-sensitive inputs were tested using exact LF Git blobs and restored in `finally`; no unrelated normalization is committed. The full suite was not repeated after that count-only test correction. CI must validate the pushed head. Gemfall is ordered, so no graph-campaign proof artifact is changed.
+
+## Art and device review
+
+No new artwork is needed. Existing seal chamber, Keeper, Voss, Pellam, humming stone, stone board, pry bar and rope loop cover the jobs. The relay places Voss and Pellam before the large Keeper in the cast layout, so their names stay readable. All new art IDs and files are checked.
+
+Actual TV 1920×1080 and phone 390×844 captures were inspected:
+
+- [Council TV](interaction_verdict_council-tv.png) / [phone](interaction_verdict_council-phone.png).
+- [Carried-facet matching TV](interaction_restore_fit-tv.png) / [phone](interaction_restore_fit-phone.png).
+- [Empty-handed brace TV](interaction_restore_brace-tv.png) / [phone](interaction_restore_brace-phone.png).
+- [Wheel latch TV](interaction_wheel_latch-tv.png) / [phone](interaction_wheel_latch-phone.png).
+- [Prepared handover TV](interaction_leash_transfer-tv.png) / [phone](interaction_leash_transfer-phone.png).
+
+The isolated solo preview temporarily stages chapter 08 as index 1 for capture; shipped campaign order is unchanged. Phone captures show actual Your turn controls with ordinary scrolling; longer clue controls continue below the fold. Relaxed-mode screenshots show the wider precision window. Ordinary household saves were not used.
