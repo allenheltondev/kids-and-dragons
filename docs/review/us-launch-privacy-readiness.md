@@ -147,6 +147,7 @@ list, without a new review.
 | 2026-10-27 | No warning email before deletion for now. | Owner |
 | 2026-10-27 | Operator named on the privacy page as Allen Helton, allenheltondev@gmail.com. Business address and phone still owed. | Owner |
 | 2026-10-27 | Privacy link is a small "Privacy" footer on the two start screens only; none in gameplay. Risk recorded for counsel. | Owner |
+| 2026-10-28 | Widened: the same quiet link on every screen that is not gameplay and anywhere a kid can land directly (direct room link, hero creation, lobby, adventure book, account and guide pages, closed/removed screens). None in gameplay or on the TV. Prominence risk still for counsel. | Owner |
 | 2026-10-28 | Consent path (A, B or C), geo restriction, and ship/no-ship: **undecided.** | Owner to decide |
 
 ## Evidence of deployed configuration

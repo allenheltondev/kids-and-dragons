@@ -34,6 +34,7 @@ import { musicForScene } from "./audio/scene-audio";
 import { PhoneMagic } from "./ui/PhoneMagic";
 import { useDisplayDock } from "./ui/display-dock";
 import { ChunkBoundary, lazyChunk } from "./ui/ChunkBoundary";
+import { PrivacyFooter } from "./ui/PrivacyFooter";
 
 /*
  * The room — both shells and everything they compose: the player panel, the
@@ -374,6 +375,7 @@ function ClosedScreen(): React.JSX.Element {
           </ChunkBoundary>
         ) : null}
         <Button onClick={leave}>Back to the start</Button>
+        <PrivacyFooter />
       </div>
     </div>
   );
@@ -387,6 +389,7 @@ function RemovedScreen(): React.JSX.Element {
       <div className="kad-removed">
         <p>The person running this game took this phone out of it.</p>
         <Button onClick={leave}>Back to the start</Button>
+        <PrivacyFooter />
       </div>
     </div>
   );

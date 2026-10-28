@@ -29,6 +29,7 @@ import { EntryScene } from "./EntryScene";
 import "./shared.css";
 import "./HomeScreen.css";
 import "./SharedHome.css";
+import { PrivacyFooter } from "../ui/PrivacyFooter";
 
 
 /** Mirrors the server's `NEW_PLAYER_NAME_MAX`. */
@@ -371,11 +372,7 @@ export function SharedHome(): ReactElement {
           </div>
         </div>
         {/* The privacy policy (#523): a quiet footer under the body, there whether joining or hosting. */}
-        <footer className="home__footer">
-          <button type="button" className="home__footer-link kad-focusable" onClick={() => navigate({ name: "privacy" })}>
-            Privacy
-          </button>
-        </footer>
+        <PrivacyFooter />
       </div>
 
       <LazySignInFlow />

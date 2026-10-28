@@ -1,0 +1,25 @@
+/* The privacy link (#523) off the start screens: small and plain, there because it has to be.
+   The secondary text colour keeps it readable; the height is just enough to tap. */
+.privacy-footer {
+  display: flex;
+  justify-content: center;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+}
+
+.privacy-footer__link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.25rem;
+  padding: 0 var(--space-3, 0.75em);
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-xs, 0.75em);
+  text-decoration: none;
+}
+
+.privacy-footer__link:hover,
+.privacy-footer__link:focus-visible {
+  color: var(--color-text, #f4f1ff);
+  text-decoration: underline;
+}

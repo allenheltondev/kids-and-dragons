@@ -5,7 +5,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { useKeepsakeStore } from "../store/keepsake";
@@ -44,12 +44,14 @@ describe("the /privacy route", () => {
 describe("reaching it", () => {
   it("is a quiet footer link on the start screen, before anyone joins or hosts", () => {
     const { container } = render(<HomeScreen />);
-    const link = screen.getByRole("button", { name: /^privacy$/i });
+    const link = screen.getByRole("link", { name: /^privacy$/i });
     // A footer under the page's body, not a card or a line among the buttons.
-    expect(link.closest("footer.home__footer")).not.toBeNull();
-    expect(container.querySelector(".home__inner > footer.home__footer")).not.toBeNull();
-    fireEvent.click(link);
-    expect(window.location.pathname).toBe("/privacy");
+    expect(link.closest("footer.privacy-footer")).not.toBeNull();
+    expect(container.querySelector(".home__inner > footer.privacy-footer")).not.toBeNull();
+    // It opens the policy in a tab of its own, so a name or code already typed is not lost.
+    expect(link.getAttribute("href")).toBe("/privacy");
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toContain("noopener");
   });
 });
 
