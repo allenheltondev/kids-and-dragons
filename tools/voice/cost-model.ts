@@ -12,6 +12,8 @@ export interface SpeechAssumptions {
   charsPerSecond: number;
   charsPerTextToken: number;
   promptTokensPerRequest: number;
+  /** Audio tokens Gemini counts for each second it speaks (Google estimates 25 to 32). */
+  audioTokensPerSecond: number;
 }
 
 export interface CharacterRate {
@@ -58,12 +60,19 @@ export function rateOn<T extends { from?: string; until?: string }>(rates: reado
   return rates.find((rate) => (rate.from === undefined || rate.from <= day) && (rate.until === undefined || day <= rate.until)) ?? null;
 }
 
+/**
+ * `--tokens-per-second` as a number: finite and above zero, or null. `Infinity`
+ * and an overflow like `1e999` are above zero but would price everything at
+ * infinity, so they are refused too.
+ */
+export function parseTokensPerSecond(text: string): number | null {
+  const rate = Number(text);
+  return text.trim() !== "" && Number.isFinite(rate) && rate > 0 ? rate : null;
+}
+
 export function audioSeconds(chars: number, speech: SpeechAssumptions): number {
   return chars / speech.charsPerSecond;
 }
-
-/** Gemini's audio tokens: 25 for each second it speaks. */
-export const AUDIO_TOKENS_PER_SECOND = 25;
 
 export function quote(model: PricedModel, work: Workload, speech: SpeechAssumptions, day: string, batch = false): Quote | null {
   const seconds = audioSeconds(work.chars, speech);
@@ -75,7 +84,7 @@ export function quote(model: PricedModel, work: Workload, speech: SpeechAssumpti
   const rate = rateOn(model.rates, day);
   if (rate === null) return null;
   const input = work.chars / speech.charsPerTextToken + work.requests * speech.promptTokensPerRequest;
-  const output = seconds * AUDIO_TOKENS_PER_SECOND;
+  const output = seconds * speech.audioTokensPerSecond;
   const full = (input * rate.inputPerMillion + output * rate.outputPerMillion) / 1_000_000;
   const discount = batch ? (model.batchDiscount ?? 1) : 1;
   return { model: model.id, label: model.label, dollars: full * discount, audioSeconds: seconds, confirmed: model.confirmed };

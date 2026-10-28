@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from "vitest";
 import { billedChars, chapterLines, campaignLines, helpLines, quotedChars, rendersOf } from "./inventory";
-import { quote, rateOn, type PricedModel, type SpeechAssumptions } from "./cost-model";
+import { parseTokensPerSecond, quote, rateOn, type PricedModel, type SpeechAssumptions } from "./cost-model";
 
 const OPTIONS = { facetsMax: 6 };
 
@@ -100,7 +100,7 @@ describe("what gets voiced", () => {
 });
 
 describe("the API math", () => {
-  const speech: SpeechAssumptions = { charsPerSecond: 10, charsPerTextToken: 4, promptTokensPerRequest: 0 };
+  const speech: SpeechAssumptions = { charsPerSecond: 10, charsPerTextToken: 4, promptTokensPerRequest: 0, audioTokensPerSecond: 25 };
   const perChar: PricedModel = { id: "c", provider: "x", label: "C", billing: "characters", rates: [{ perThousandChars: 0.1 }], confirmed: true, source: "" };
   const perToken: PricedModel = {
     id: "t",
@@ -115,6 +115,14 @@ describe("the API math", () => {
     confirmed: true,
     source: "",
   };
+
+  it("prices more audio tokens a second higher, so a cap can use the top of Google's 25 to 32 range", () => {
+    const at = (audioTokensPerSecond: number) =>
+      quote(perToken, { chars: 1_000_000, requests: 0 }, { ...speech, audioTokensPerSecond }, "2026-10-27")?.dollars ?? 0;
+    // Input is a small share, so output (the audio) sets the price: 32 / 25 of it.
+    expect(at(32)).toBeGreaterThan(at(25));
+    expect(at(32) - 0.25).toBeCloseTo((at(25) - 0.25) * (32 / 25));
+  });
 
   it("bills characters by the thousand", () => {
     expect(quote(perChar, { chars: 50_000, requests: 10 }, speech, "2026-10-27")?.dollars).toBeCloseTo(5);
@@ -138,5 +146,18 @@ describe("the API math", () => {
 
   it("has no price on a day no rate covers", () => {
     expect(rateOn([{ from: "2027-01-01" }], "2026-10-27")).toBeNull();
+  });
+});
+
+describe("--tokens-per-second", () => {
+  it("takes a finite number above zero", () => {
+    expect(parseTokensPerSecond("25")).toBe(25);
+    expect(parseTokensPerSecond("28.5")).toBe(28.5);
+  });
+
+  it("refuses what would make every quote nonsense", () => {
+    for (const bad of ["Infinity", "-Infinity", "1e999", "NaN", "0", "-3", "", "  ", "abc"]) {
+      expect(parseTokensPerSecond(bad), bad).toBeNull();
+    }
   });
 });

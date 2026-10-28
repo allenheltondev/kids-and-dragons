@@ -1,11 +1,12 @@
 {
   "$comment": "Rates `npm run voice:cost` prices against. Edit this file when a provider changes its prices; nothing else holds a number. `checked` is when a person last looked, and `confirmed: false` means the rate came from a third-party summary, not the provider's own page. Confirm those on the provider's pricing page before committing money. A rate with `from`/`until` applies only on those dates (inclusive); `voice:cost --on YYYY-MM-DD` picks the day. `apiModel` is the provider's model id, which is how the bake-off finds a model's price.",
-  "checked": "2026-10-27",
+  "checked": "2026-10-28",
   "speech": {
-    "$comment": "Per-token providers bill the audio they return, so their cost depends on how fast the voice reads. 14 characters a second is an unhurried storyteller reading to an eight-year-old (about 150 words a minute). Gemini counts 25 audio tokens a second.",
+    "$comment": "Per-token providers bill the audio they return, so their cost depends on how fast the voice reads. 14 characters a second is an unhurried storyteller reading to an eight-year-old (about 150 words a minute). Gemini bills audio tokens, and Google estimates 25 to 32 of them for each second of speech: this uses the top of that range, so a budget cap and an estimate err on the safe side. `voice:cost --tokens-per-second 25` shows the low end. The staging smoke test should log the real count.",
     "charsPerSecond": 14,
     "charsPerTextToken": 4,
-    "promptTokensPerRequest": 60
+    "promptTokensPerRequest": 60,
+    "audioTokensPerSecond": 32
   },
   "models": [
     {
@@ -87,7 +88,7 @@
       "rates": [
         {
           "until": "2026-12-31",
-          "inputPerMillion": 1.0,
+          "inputPerMillion": 0.5,
           "outputPerMillion": 9.0
         },
         {
@@ -97,8 +98,8 @@
         }
       ],
       "batchDiscount": 0.5,
-      "confirmed": false,
-      "source": "https://cloud.google.com/text-to-speech/pricing as summarized by search; the text input rate is assumed equal to 3.1 Flash TTS"
+      "confirmed": true,
+      "source": "https://cloud.google.com/text-to-speech/pricing, read by the owner 2026-10-28: Gemini 3.8 Flash TTS (Preview) through December 31, 2026, $0.50 per 1M text input tokens, $9.00 per 1M audio output tokens, no free tier. The 2027-01-01 rates ($1.00 / $18.00) and the 50% batch price are on the Gemini API pricing page (https://ai.google.dev/gemini-api/docs/pricing) per the review of #558 and search, not read by the owner here"
     },
     {
       "id": "gemini-3.8-flash-lite-tts",
@@ -114,13 +115,13 @@
         },
         {
           "from": "2027-01-01",
-          "inputPerMillion": 0.5,
+          "inputPerMillion": 1.0,
           "outputPerMillion": 12.0
         }
       ],
       "batchDiscount": 0.5,
       "confirmed": false,
-      "source": "https://cloud.google.com/text-to-speech/pricing as summarized by search; the text input rate is assumed equal to 2.5 Flash TTS"
+      "source": "https://cloud.google.com/text-to-speech/pricing and https://ai.google.dev/gemini-api/docs/pricing as reported in the review of #558 and by search, not read by the owner: through 2026-12-31 $0.50 per 1M text input tokens and $6.00 per 1M audio output tokens; from 2027-01-01 $1.00 and $12.00"
     },
     {
       "id": "gemini-3.1-flash-tts",
