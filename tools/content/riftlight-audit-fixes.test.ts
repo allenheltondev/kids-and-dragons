@@ -25,8 +25,8 @@ it("a promised whale report can actually be delivered without publishing the sto
   expect(absent.prompt?.kind === "choice" && absent.prompt.options.some(q => q.id === "whale_report")).toBe(false);
   const offered = reportState(true);
   expect(offered.prompt?.kind === "choice" && offered.prompt.options.some(q => q.id === "whale_report")).toBe(true);
-  const game = send(offered, { type: "CHOOSE", choiceId: "whale_report" }, c);
-  const done = finishInteraction(game, c);
+  const handoff = send(offered, { type: "CHOOSE", choiceId: "whale_report" }, c);
+  const done = send(handoff, { type: "CHOOSE", choiceId: "continue" }, c);
   expect(done.flags.whale_report_delivered).toBe(true);
   expect(done.flags.island_record_shared).toBe(false);
   expect(done.prompt?.kind === "choice" && done.prompt.options.some(q => q.id === "whale_report")).toBe(false);

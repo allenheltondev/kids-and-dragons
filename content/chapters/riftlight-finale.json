@@ -319,7 +319,7 @@
       }
     },
     "voices": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "The tall figure looks from an old river on his map to a river through the tear. \"Why is it on that side of the mountain?\" From behind the boundary, choose a way to make today's people visible to him.",
       "cast": [
         {
@@ -332,44 +332,26 @@
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice",
-      "interaction": {
-        "kind": "play",
-        "cue": "Answer the puzzled map-holder from safe ground.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "homes",
-            "label": "Name homes beside the present river",
-            "icon": "hand",
-            "reaction": "He looks beyond the river line for the first time."
-          },
-          {
-            "id": "map",
-            "label": "Ask Orin to show the present map",
-            "icon": "hand",
-            "reaction": "He leans toward the page without stepping nearer your party."
-          },
-          {
-            "id": "people",
-            "label": "Point out people steadying one another",
-            "icon": "hand",
-            "reaction": "He follows your hand toward the living shore."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "reveal",
-        "narration": "The figure steps where you can see him clearly."
-      },
-      "onFailure": {
-        "goto": "reveal",
-        "narration": "The figure steps where you can see him clearly."
-      },
-      "onAssisted": {
-        "goto": "reveal",
-        "narration": "The figure steps where you can see him clearly."
-      }
+      "choices": [
+        {
+          "id": "homes",
+          "label": "Name homes beside the present river",
+          "icon": "hand",
+          "goto": "voices_response_homes"
+        },
+        {
+          "id": "map",
+          "label": "Ask Orin to show the present map",
+          "icon": "hand",
+          "goto": "voices_response_map"
+        },
+        {
+          "id": "people",
+          "label": "Point out people steadying one another",
+          "icon": "hand",
+          "goto": "voices_response_people"
+        }
+      ]
     },
     "reveal": {
       "type": "story",
@@ -450,8 +432,8 @@
       ]
     },
     "map_case": {
-      "type": "interaction",
-      "narration": "Corvane releases the loose corner so you can pass the old map into the case from sound ice. His faded ribbon follows it. The present map remains open for your anchoring work.",
+      "type": "story",
+      "narration": "Corvane releases the loose map corner. You slide the old drawing into its case from sound ice. His present map stays open beside it. He keeps one hand on the case for a moment, then lets you set it down.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -468,24 +450,14 @@
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the old map into its dry case.",
-        "actionLabel": "Pass the map case",
-        "objectLabel": "old map case"
-      },
-      "onSuccess": {
-        "goto": "remember",
-        "narration": "The old map is protected; the present map stays available."
-      },
-      "onFailure": {
-        "goto": "remember",
-        "narration": "The old map is protected; the present map stays available."
-      },
-      "onAssisted": {
-        "goto": "remember",
-        "narration": "The old map is protected; the present map stays available."
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "remember"
+        }
+      ]
     },
     "map_shelter_check": {
       "type": "interaction",
@@ -1375,8 +1347,8 @@
       "art": "scenes/riftlight/glacier-deep-ice"
     },
     "third_account": {
-      "type": "interaction",
-      "narration": "Share the final support jobs: identify the unused checked account, name its present place, then hold that separate page while the opening narrows. Orin's clues keep a repeat of the same place from counting twice.",
+      "type": "story",
+      "narration": "You name the unused checked account and point to its present place. Seren checks the match before anyone sets the support. The third account adds its own view; it does not replace either of the first two.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -1393,71 +1365,21 @@
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Build the third-account support plan.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "hold",
-            "label": "Hold its separate page",
-            "icon": "eye"
-          },
-          {
-            "id": "source",
-            "label": "Identify the unused checked account",
-            "icon": "eye"
-          },
-          {
-            "id": "present",
-            "label": "Name its present place",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "source",
-          "present",
-          "hold"
-        ],
-        "clues": [
-          "Find the unused account before pointing to its present place.",
-          "Name the present place after identifying its source.",
-          "Only then hold that separate page as the extra support."
-        ]
-      },
-      "onSuccess": {
-        "goto": "support_ready",
-        "narration": "The third present place answers. The tear narrows; one crawler slips home.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "third_anchor_used",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "support_ready",
-        "narration": "Orin corrects the plan before you use the third checked account. The extra support is helped, not another discovery.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "third_anchor_used",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "support_ready",
-        "narration": "The third present place answers. The tear narrows; one crawler slips home.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "third_anchor_used",
-            "value": true
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "support_ready",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "third_anchor_used",
+              "value": true
+            }
+          ]
+        }
+      ]
     },
     "wyrm_support": {
       "type": "interaction",
@@ -2097,7 +2019,7 @@
       "art": "scenes/riftlight/glacier-deep-ice"
     },
     "help_him": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "The watcher brings a blanket large enough for Corvane. His mustache has escaped its ribbon, and he looks like someone who has been cold for a very long time. Offer help without wrapping or moving him without asking.",
       "cast": [
         {
@@ -2115,44 +2037,26 @@
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice",
-      "interaction": {
-        "kind": "play",
-        "cue": "Offer Corvane a choice of help.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "blanket",
-            "label": "Set the blanket within his reach",
-            "icon": "hand",
-            "reaction": "He takes the blanket and gathers it around his shoulders."
-          },
-          {
-            "id": "path",
-            "label": "Show the checked walking path",
-            "icon": "hand",
-            "reaction": "The watcher waits for him to choose to stand."
-          },
-          {
-            "id": "ribbon",
-            "label": "Offer to untangle the ribbon",
-            "icon": "hand",
-            "reaction": "He holds out the loose end instead of reaching toward the closed seam."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "home_now",
-        "narration": "The watcher keeps the same safe path open for everyone."
-      },
-      "onFailure": {
-        "goto": "home_now",
-        "narration": "The watcher keeps the same safe path open for everyone."
-      },
-      "onAssisted": {
-        "goto": "home_now",
-        "narration": "The watcher keeps the same safe path open for everyone."
-      }
+      "choices": [
+        {
+          "id": "blanket",
+          "label": "Set the blanket within his reach",
+          "icon": "hand",
+          "goto": "help_him_response_blanket"
+        },
+        {
+          "id": "path",
+          "label": "Show the checked walking path",
+          "icon": "hand",
+          "goto": "help_him_response_path"
+        },
+        {
+          "id": "ribbon",
+          "label": "Offer to untangle the ribbon",
+          "icon": "hand",
+          "goto": "help_him_response_ribbon"
+        }
+      ]
     },
     "home_now": {
       "type": "choice_point",
@@ -2209,8 +2113,8 @@
       ]
     },
     "unpack_map": {
-      "type": "interaction",
-      "narration": "Pass the old case to the sound table while Corvane opens it himself. The dry old drawing can now sit beside the present map. The case did its job and does not need to be rescued again.",
+      "type": "story",
+      "narration": "Corvane opens the old case himself at the sound table. You leave room beside the present map. The dry old drawing can be read here without pulling anything through the tear. He smooths one corner with the back of his hand.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -2227,28 +2131,18 @@
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the old map case to the sound table.",
-        "actionLabel": "Pass the dry map case",
-        "objectLabel": "old map case"
-      },
-      "onSuccess": {
-        "goto": "home_maps",
-        "narration": "The old and present maps can be compared side by side."
-      },
-      "onFailure": {
-        "goto": "home_maps",
-        "narration": "The old and present maps can be compared side by side."
-      },
-      "onAssisted": {
-        "goto": "home_maps",
-        "narration": "The old and present maps can be compared side by side."
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "home_maps"
+        }
+      ]
     },
     "home_maps": {
-      "type": "interaction",
-      "narration": "Place a broad pointer beside the present river and the homes along it. Corvane follows the line without moving it. Fine old marks blurred by slush remain blank; this conversation cannot restore them.",
+      "type": "story",
+      "narration": "You place a broad pointer beside the present river and the homes along it. Corvane follows the line. His old drawing lies open nearby. For once he looks at the people's marks on the new map before checking the old one.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -2265,27 +2159,17 @@
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Level the two maps on the sound table.",
-        "actionLabel": "Set the maps side by side",
-        "objectLabel": "map table"
-      },
-      "onSuccess": {
-        "goto": "fate",
-        "narration": "The old map keeps its history; the present map keeps its homes."
-      },
-      "onFailure": {
-        "goto": "fate",
-        "narration": "The old map keeps its history; the present map keeps its homes."
-      },
-      "onAssisted": {
-        "goto": "fate",
-        "narration": "The old map keeps its history; the present map keeps its homes."
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "fate"
+        }
+      ]
     },
     "home_watcher": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "The watcher names her walking path and the room where yetis read memories in old ice. Choose a useful question for Corvane to hear about the living valley. Nobody redraws a route they have not checked.",
       "cast": [
         {
@@ -2303,44 +2187,26 @@
         }
       ],
       "art": "scenes/riftlight/glacier-deep-ice",
-      "interaction": {
-        "kind": "play",
-        "cue": "Make room for the watcher's present-world account.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "path",
-            "label": "Ask where people walk now",
-            "icon": "hand",
-            "reaction": "The watcher starts with the ordinary path outside her door."
-          },
-          {
-            "id": "room",
-            "label": "Ask who uses the reading room",
-            "icon": "hand",
-            "reaction": "She describes the readers carrying their own notes."
-          },
-          {
-            "id": "home",
-            "label": "Ask what needs keeping safe",
-            "icon": "hand",
-            "reaction": "Corvane listens to names his old map never held."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "fate",
-        "narration": "The watcher finishes her account. Corvane leaves the map lines alone."
-      },
-      "onFailure": {
-        "goto": "fate",
-        "narration": "The watcher finishes her account. Corvane leaves the map lines alone."
-      },
-      "onAssisted": {
-        "goto": "fate",
-        "narration": "The watcher finishes her account. Corvane leaves the map lines alone."
-      }
+      "choices": [
+        {
+          "id": "path",
+          "label": "Ask where people walk now",
+          "icon": "hand",
+          "goto": "home_watcher_response_path"
+        },
+        {
+          "id": "room",
+          "label": "Ask who uses the reading room",
+          "icon": "hand",
+          "goto": "home_watcher_response_room"
+        },
+        {
+          "id": "home",
+          "label": "Ask what needs keeping safe",
+          "icon": "hand",
+          "goto": "home_watcher_response_home"
+        }
+      ]
     },
     "fate": {
       "type": "choice_point",
@@ -3232,6 +3098,243 @@
           }
         ]
       }
+    },
+    "voices_response_homes": {
+      "type": "story",
+      "narration": "He looks beyond the river line for the first time. The figure steps where you can see him clearly.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "reveal"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "voices_response_map": {
+      "type": "story",
+      "narration": "He leans toward the page without stepping nearer your party. The figure steps where you can see him clearly.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "reveal"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "voices_response_people": {
+      "type": "story",
+      "narration": "He follows your hand toward the living shore. The figure steps where you can see him clearly.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "reveal"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/seren_wisp",
+          "name": "Seren Wisp"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "help_him_response_blanket": {
+      "type": "story",
+      "narration": "He takes the blanket and gathers it around his shoulders. The watcher keeps the same safe path open for everyone.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "home_now"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "help_him_response_path": {
+      "type": "story",
+      "narration": "The watcher waits for him to choose to stand. The watcher keeps the same safe path open for everyone.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "home_now"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "help_him_response_ribbon": {
+      "type": "story",
+      "narration": "He holds out the loose end instead of reaching toward the closed seam. The watcher keeps the same safe path open for everyone.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "home_now"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "home_watcher_response_path": {
+      "type": "story",
+      "narration": "The watcher starts with the ordinary path outside her door. The watcher finishes her account. Corvane leaves the map lines alone.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "fate"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "home_watcher_response_room": {
+      "type": "story",
+      "narration": "She describes the readers carrying their own notes. The watcher finishes her account. Corvane leaves the map lines alone.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "fate"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice"
+    },
+    "home_watcher_response_home": {
+      "type": "story",
+      "narration": "Corvane listens to names his old map never held. The watcher finishes her account. Corvane leaves the map lines alone.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "fate"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/deep-ice-figure",
+          "name": "Corvane",
+          "size": "very_large"
+        },
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/yeti_watcher",
+          "name": "Yeti watcher"
+        }
+      ],
+      "art": "scenes/riftlight/glacier-deep-ice"
     }
   },
   "presentation": {
@@ -3249,17 +3352,6 @@
       "retreat_help": {
         "props": [
           "wind-banner"
-        ]
-      },
-      "voices": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "map_case": {
-        "props": [
-          "ring-case",
-          "clue-scrap"
         ]
       },
       "map_shelter_check": {
@@ -3316,11 +3408,6 @@
           "wind-banner"
         ]
       },
-      "third_account": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
       "wyrm_support": {
         "props": [
           "wind-banner"
@@ -3334,26 +3421,6 @@
       "olivia_help": {
         "props": [
           "rope-loop"
-        ]
-      },
-      "help_him": {
-        "props": [
-          "wind-blanket"
-        ]
-      },
-      "unpack_map": {
-        "props": [
-          "ring-case"
-        ]
-      },
-      "home_maps": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "home_watcher": {
-        "props": [
-          "clue-scrap"
         ]
       },
       "loss_lamp": {

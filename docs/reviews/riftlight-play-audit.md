@@ -1,5 +1,7 @@
 # Riftlight play and readability audit
 
+**Superseded pacing design:** The activity-heavy revision below overcorrected the original roll repetition. See [the balance revision](riftlight-balance-revision.md) for the current changes and verification scope. The ten-activity bridge description and quota-based guardrails below document the earlier implementation, not current authoring advice.
+
 The likely match for the reported bridge chapter is **A Bridge Without a River**
 (`riftlight-buried-bridge`, index 5). The current Ashspan chapter is a short ferry
 visit with no dice checks; its existing local revisions were left intact.

@@ -1515,16 +1515,6 @@
       ]
     },
     "poles_a_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "prompt": "Drive each pole deep into the firm shells so it stands straight. Choose who leads; everyone can help.",
-      "onSuccess": {
-        "goto": "poles_done"
-      },
-      "onFailure": {
-        "goto": "poles_off"
-      },
       "art": "scenes/riftlight/stuttering-flats",
       "cast": [
         {
@@ -1535,19 +1525,19 @@
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
         }
+      ],
+      "type": "story",
+      "narration": "The guide leads you along the firm shells while you plant the poles. She tests each one before the group moves on. Tomorrow's travelers will be able to follow the line.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "poles_done"
+        }
       ]
     },
     "poles_b_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Tie the flags fast, before the next wave. Choose who leads; everyone can help.",
-      "onSuccess": {
-        "goto": "poles_done"
-      },
-      "onFailure": {
-        "goto": "poles_off"
-      },
       "art": "scenes/riftlight/stuttering-flats",
       "cast": [
         {
@@ -1557,6 +1547,16 @@
         {
           "figure": "cast/pip_thistledown",
           "name": "Pip Thistledown"
+        }
+      ],
+      "type": "story",
+      "narration": "You tie reed flags to the guide's poles. Pip checks them from the next shell-bank, then waves both arms. Even he can see where to go.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "poles_done"
         }
       ]
     },
@@ -1586,29 +1586,6 @@
     "poles_done": {
       "type": "story",
       "narration": "The poles stand in a long straight line, like a row of thin sentries. The guide walks it end to end with her eyes closed and not one wobble. \"Tomorrow, silt or no silt, anyone can follow this.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look upriver",
-          "icon": "hand",
-          "goto": "trail"
-        }
-      ],
-      "art": "scenes/riftlight/stuttering-flats",
-      "cast": [
-        {
-          "figure": "cast/saltrot_guide",
-          "name": "Saltrot guide"
-        },
-        {
-          "figure": "cast/pip_thistledown",
-          "name": "Pip Thistledown"
-        }
-      ]
-    },
-    "poles_off": {
-      "type": "story",
-      "narration": "Two poles lean, and one falls over with a plop. The guide straightens them with her fins, grumbling, but the line holds. \"Look again tomorrow,\" she says. \"Always look again.\"",
       "choices": [
         {
           "id": "continue",
