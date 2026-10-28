@@ -377,7 +377,7 @@
       }
     },
     "test": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "A yard pebble rolls back uphill over the boundary. Your marked plank stays where you set it. The guide raises a fin. \"The yard is very particular about whose things are whose.\" Choose a small test without pocketing anything.",
       "cast": [
         {
@@ -386,44 +386,26 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-returning-pebble",
-      "interaction": {
-        "kind": "play",
-        "cue": "Compare the yard's things with your own gear.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "pebble",
-            "label": "Nudge the loose yard pebble toward the line",
-            "icon": "hand",
-            "reaction": "The pebble rolls back uphill to its hollow."
-          },
-          {
-            "id": "plank",
-            "label": "Set your marked plank across the boundary",
-            "icon": "hand",
-            "reaction": "Your own plank stays put. The yard does not claim it."
-          },
-          {
-            "id": "draw",
-            "label": "Draw where the pebble returned",
-            "icon": "hand",
-            "reaction": "The guide checks your drawing from her pool."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "returning_pebble",
-        "narration": "The yard's pebble returns to its own place. Your gear is a different responsibility."
-      },
-      "onFailure": {
-        "goto": "returning_pebble",
-        "narration": "The yard's pebble returns to its own place. Your gear is a different responsibility."
-      },
-      "onAssisted": {
-        "goto": "returning_pebble",
-        "narration": "The yard's pebble returns to its own place. Your gear is a different responsibility."
-      }
+      "choices": [
+        {
+          "id": "pebble",
+          "label": "Nudge the loose yard pebble toward the line",
+          "icon": "hand",
+          "goto": "test_response_pebble"
+        },
+        {
+          "id": "plank",
+          "label": "Set your marked plank across the boundary",
+          "icon": "hand",
+          "goto": "test_response_plank"
+        },
+        {
+          "id": "draw",
+          "label": "Draw where the pebble returned",
+          "icon": "hand",
+          "goto": "test_response_draw"
+        }
+      ]
     },
     "returning_pebble": {
       "type": "interaction",
@@ -1271,7 +1253,7 @@
       "art": "scenes/riftlight/bone-yard-ruins"
     },
     "inventory": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "A carved chip lies beside the path. It would fit a pocket. The guide points to the returning pebble. \"Your pocket is merely a delay.\" Check the difference between your bright-marked gear and the yard's things before leaving.",
       "cast": [
         {
@@ -1280,44 +1262,26 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "play",
-        "cue": "Leave the yard's things where they belong.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "draw",
-            "label": "Draw the chip without taking it",
-            "icon": "hand",
-            "reaction": "The chip stays in the yard. Your drawing records its shape."
-          },
-          {
-            "id": "loop",
-            "label": "Point out the bright loops on your own gear",
-            "icon": "hand",
-            "reaction": "The guide can distinguish her kit from the yard stones."
-          },
-          {
-            "id": "sole",
-            "label": "Brush a stone crumb from your sole toward the yard",
-            "icon": "hand",
-            "reaction": "The crumb rolls home. Your boot feels less interesting."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "unbrace",
-        "narration": "Your hands and packs hold your own gear, not a hidden stone prize."
-      },
-      "onFailure": {
-        "goto": "unbrace",
-        "narration": "Your hands and packs hold your own gear, not a hidden stone prize."
-      },
-      "onAssisted": {
-        "goto": "unbrace",
-        "narration": "Your hands and packs hold your own gear, not a hidden stone prize."
-      }
+      "choices": [
+        {
+          "id": "draw",
+          "label": "Draw the chip without taking it",
+          "icon": "hand",
+          "goto": "inventory_response_draw"
+        },
+        {
+          "id": "loop",
+          "label": "Point out the bright loops on your own gear",
+          "icon": "hand",
+          "goto": "inventory_response_loop"
+        },
+        {
+          "id": "sole",
+          "label": "Brush a stone crumb from your sole toward the yard",
+          "icon": "hand",
+          "goto": "inventory_response_sole"
+        }
+      ]
     },
     "unbrace": {
       "type": "choice_point",
@@ -1659,7 +1623,7 @@
       }
     },
     "boundary": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "A crumb falls from a muddy sole and rolls uphill toward the ruins. \"Other foot too,\" says the guide. Leave the yard's tiny hitchhikers behind before closing the packs.",
       "cast": [
         {
@@ -1668,48 +1632,30 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "play",
-        "cue": "Check boots and marked gear at the boundary.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "boots",
-            "label": "Brush boot soles toward the yard",
-            "icon": "hand",
-            "reaction": "The last stone crumbs roll back inside."
-          },
-          {
-            "id": "mats",
-            "label": "Unfold the returned mats above the line",
-            "icon": "hand",
-            "reaction": "Loose grit drops on the yard side."
-          },
-          {
-            "id": "packs",
-            "label": "Check that the packs hold only your own kit",
-            "icon": "hand",
-            "reaction": "Bright loops and empty pockets agree with your account."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "report",
-        "narration": "No stone, bone or hidden prize goes out with your party."
-      },
-      "onFailure": {
-        "goto": "report",
-        "narration": "No stone, bone or hidden prize goes out with your party."
-      },
-      "onAssisted": {
-        "goto": "report",
-        "narration": "No stone, bone or hidden prize goes out with your party."
-      }
+      "choices": [
+        {
+          "id": "boots",
+          "label": "Brush boot soles toward the yard",
+          "icon": "hand",
+          "goto": "boundary_response_boots"
+        },
+        {
+          "id": "mats",
+          "label": "Unfold the returned mats above the line",
+          "icon": "hand",
+          "goto": "boundary_response_mats"
+        },
+        {
+          "id": "packs",
+          "label": "Check that the packs hold only your own kit",
+          "icon": "hand",
+          "goto": "boundary_response_packs"
+        }
+      ]
     },
     "report": {
-      "type": "interaction",
-      "narration": "The guide opens her warning board. Arrange the facts a traveler can use: the changing inner path, the checked outer backup, and the boundary that returns its own things. Whose enormous old bones lie here remains unknown.",
+      "type": "story",
+      "narration": "The guide opens her warning board. You describe the changing inner path, the firm outside route and the yard stones that stayed inside. She adds the gear you actually recovered or left behind. A useful warning needs the whole account, including the inconvenient bits.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1717,50 +1663,14 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Build a useful route warning from what you checked.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "return",
-            "label": "Yard objects return at the boundary",
-            "icon": "eye"
-          },
-          {
-            "id": "inner",
-            "label": "Check the inner passage",
-            "icon": "eye"
-          },
-          {
-            "id": "outer",
-            "label": "Use the outer backup if blocked",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "inner",
-          "outer",
-          "return"
-        ],
-        "clues": [
-          "Begin by checking whether the inner passage is open.",
-          "The outer backup follows if the inner way is blocked.",
-          "At the final boundary, yard objects must stay inside."
-        ]
-      },
-      "onSuccess": {
-        "goto": "handoff",
-        "narration": "The guide has a warning about checked routes and the boundary rule, without a made-up history."
-      },
-      "onFailure": {
-        "goto": "handoff",
-        "narration": "The guide checks the warning against your route and corrects its order. The bones' age and owners stay unknown."
-      },
-      "onAssisted": {
-        "goto": "handoff",
-        "narration": "The guide has a warning about checked routes and the boundary rule, without a made-up history."
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "handoff"
+        }
+      ]
     },
     "handoff": {
       "type": "choice_point",
@@ -1802,8 +1712,8 @@
       ]
     },
     "relay_account": {
-      "type": "interaction",
-      "narration": "Pass the account to the guide at her pool. It names the route you used and any gear left behind; it does not name who moved the ruins.",
+      "type": "story",
+      "narration": "You give the guide your checked account at her pool. It names your route and any gear left behind. She keeps it beside her warning board. Your record can travel, but it cannot bring a yard pebble along for proof.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1811,27 +1721,17 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the authorized route account to the guide.",
-        "actionLabel": "Hand over the account",
-        "objectLabel": "Authorized Bone Yard account"
-      },
-      "onSuccess": {
-        "goto": "ending",
-        "narration": "The guide accepts the copy you chose to share."
-      },
-      "onFailure": {
-        "goto": "ending",
-        "narration": "The guide accepts the copy you chose to share."
-      },
-      "onAssisted": {
-        "goto": "ending",
-        "narration": "The guide accepts the copy you chose to share."
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ]
     },
     "keep_account": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Choose a true detail to add to your own copy while the guide keeps her separate warning. You do not have to hand over your page to help travelers.",
       "cast": [
         {
@@ -1840,44 +1740,26 @@
         }
       ],
       "art": "scenes/riftlight/bone-yard-ruins",
-      "interaction": {
-        "kind": "play",
-        "cue": "Keep a checked detail in your own account.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "route",
-            "label": "Mark the route actually used",
-            "icon": "hand",
-            "reaction": "The page keeps the actual route, not a borrowed victory."
-          },
-          {
-            "id": "rule",
-            "label": "Record the returning-object rule",
-            "icon": "hand",
-            "reaction": "The note records the observation without pretending to explain its cause."
-          },
-          {
-            "id": "gear",
-            "label": "List any supports left inside",
-            "icon": "hand",
-            "reaction": "The kit list keeps any real loss visible."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "ending",
-        "narration": "Your written page stays with the party. The guide keeps her own checked warning."
-      },
-      "onFailure": {
-        "goto": "ending",
-        "narration": "Your written page stays with the party. The guide keeps her own checked warning."
-      },
-      "onAssisted": {
-        "goto": "ending",
-        "narration": "Your written page stays with the party. The guide keeps her own checked warning."
-      }
+      "choices": [
+        {
+          "id": "route",
+          "label": "Mark the route actually used",
+          "icon": "hand",
+          "goto": "keep_account_response_route"
+        },
+        {
+          "id": "rule",
+          "label": "Record the returning-object rule",
+          "icon": "hand",
+          "goto": "keep_account_response_rule"
+        },
+        {
+          "id": "gear",
+          "label": "List any supports left inside",
+          "icon": "hand",
+          "goto": "keep_account_response_gear"
+        }
+      ]
     },
     "ending": {
       "type": "story",
@@ -1934,6 +1816,234 @@
             "notFlag": "bone_account_shared"
           },
           "text": "Your written copy stays private; the guide relays only her own warning."
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "test_response_pebble": {
+      "type": "story",
+      "narration": "The pebble rolls back uphill to its hollow. The yard's pebble returns to its own place. Your gear is a different responsibility.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "returning_pebble"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-returning-pebble"
+    },
+    "test_response_plank": {
+      "type": "story",
+      "narration": "Your own plank stays put. The yard does not claim it. The yard's pebble returns to its own place. Your gear is a different responsibility.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "returning_pebble"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-returning-pebble"
+    },
+    "test_response_draw": {
+      "type": "story",
+      "narration": "The guide checks your drawing from her pool. The yard's pebble returns to its own place. Your gear is a different responsibility.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "returning_pebble"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-returning-pebble"
+    },
+    "inventory_response_draw": {
+      "type": "story",
+      "narration": "The chip stays in the yard. Your drawing records its shape. Your hands and packs hold your own gear, not a hidden stone prize.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "unbrace"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "inventory_response_loop": {
+      "type": "story",
+      "narration": "The guide can distinguish her kit from the yard stones. Your hands and packs hold your own gear, not a hidden stone prize.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "unbrace"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "inventory_response_sole": {
+      "type": "story",
+      "narration": "The crumb rolls home. Your boot feels less interesting. Your hands and packs hold your own gear, not a hidden stone prize.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "unbrace"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "boundary_response_boots": {
+      "type": "story",
+      "narration": "The last stone crumbs roll back inside. No stone, bone or hidden prize goes out with your party.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "report"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "boundary_response_mats": {
+      "type": "story",
+      "narration": "Loose grit drops on the yard side. No stone, bone or hidden prize goes out with your party.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "report"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "boundary_response_packs": {
+      "type": "story",
+      "narration": "Bright loops and empty pockets agree with your account. No stone, bone or hidden prize goes out with your party.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "report"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "keep_account_response_route": {
+      "type": "story",
+      "narration": "The page keeps the actual route, not a borrowed victory. Your written page stays with the party. The guide keeps her own checked warning.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "keep_account_response_rule": {
+      "type": "story",
+      "narration": "The note records the observation without pretending to explain its cause. Your written page stays with the party. The guide keeps her own checked warning.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Skupper guide"
+        }
+      ],
+      "art": "scenes/riftlight/bone-yard-ruins"
+    },
+    "keep_account_response_gear": {
+      "type": "story",
+      "narration": "The kit list keeps any real loss visible. Your written page stays with the party. The guide keeps her own checked warning.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
         }
       ],
       "cast": [
@@ -2007,12 +2117,6 @@
           "rope-loop"
         ]
       },
-      "test": {
-        "props": [
-          "toss-pebble",
-          "relay-plank"
-        ]
-      },
       "returning_pebble": {
         "props": [
           "toss-pebble"
@@ -2041,31 +2145,6 @@
       "seam_marks_mats": {
         "props": [
           "count-cord"
-        ]
-      },
-      "inventory": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "boundary": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "report": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "relay_account": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "keep_account": {
-        "props": [
-          "clue-scrap"
         ]
       }
     }

@@ -65,8 +65,7 @@ it.each(readingRoutes)("reading: close $close / $evidence / filed $filed / share
   expect(result.state.flags.memory_visitor_independent === true).toBe(route.share && route.filed);
   expect(result.state.flags.fragment_paths_learned).toBe(true);
   if (!route.share) expect(result.state.narration).toContain("No copy of your private account is filed");
-  expect(result.activities).toBeGreaterThanOrEqual(9);
-  expect(result.kinds.size).toBeGreaterThanOrEqual(4);
+
 });
 const island = chapters.get("riftlight-the-island-due-back")!;
 const islandRoutes = ["letters", "station"].flatMap(priority => ["borrow", "batches"].flatMap(kit =>
@@ -112,8 +111,7 @@ it.each(islandRoutes)("island: $priority / $kit / $evidence / share $share / $se
     if (id === reveal) break;
     expect(state.narration, id).not.toMatch(/land was joined|joined land|joined stretch|ground all the way across/i);
   }
-  expect(result.activities).toBeGreaterThanOrEqual(10);
-  expect(result.kinds.size).toBeGreaterThanOrEqual(5);
+
 });
 it("a published guide can need help on a later reading without inventing independent success", () => {
   const result = walk(room, start(room, "kitsune", "starweaver"), s => {

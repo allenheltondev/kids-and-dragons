@@ -47,6 +47,8 @@
     "audio:install": "tsx tools/audio/procedural-install.ts",
     "voice:cost": "tsx tools/voice/cost.ts",
     "voice:extract": "tsx tools/voice/extract.ts",
+    "voice:status": "tsx tools/voice/status.ts",
+    "voice:generate": "tsx tools/voice/generate.ts",
     "voice:bakeoff": "tsx tools/voice/bakeoff/run.ts",
     "voice:cast": "tsx tools/voice/cast/build.ts",
     "voice:clean": "tsx tools/voice/bakeoff/clean-report.ts",
@@ -69,6 +71,8 @@
     "riftlight:preview": "tsx tools/content/riftlight-preview.ts"
   },
   "devDependencies": {
+    "@aws-sdk/client-cloudformation": "^3.1158.0",
+    "@aws-sdk/client-s3": "^3.1158.0",
     "@playwright/test": "^1.64.1",
     "@testing-library/dom": "^10.4.2",
     "@testing-library/react": "^16.3.3",

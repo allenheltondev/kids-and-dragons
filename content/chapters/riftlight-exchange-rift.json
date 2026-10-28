@@ -1325,17 +1325,6 @@
       "rift": "steady"
     },
     "clear_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "Everyone spread out along the quay and wave people back from the crates. Shout, whistle, flap your hat, whatever it takes!",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "clear_quay"
-      },
-      "onFailure": {
-        "goto": "clear_crowd"
-      },
       "rift": "steady",
       "art": "scenes/gemfall/exchange-docks",
       "cast": [
@@ -1347,6 +1336,16 @@
         {
           "figure": "cast/soup_woman",
           "name": "Noodle seller"
+        }
+      ],
+      "type": "story",
+      "narration": "You and the dock workers lead the market crowd behind the stall rail. The noodle seller points the way with her ladle. Even the boy on the barrel comes down to help.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "clear_quay"
         }
       ]
     },
@@ -1363,27 +1362,6 @@
       ],
       "rift": "steady",
       "art": "scenes/riftlight/exchange-leaning-crates",
-      "cast": [
-        {
-          "figure": "cast/dock_worker",
-          "name": "Dock workers",
-          "count": 2
-        }
-      ]
-    },
-    "clear_crowd": {
-      "type": "story",
-      "narration": "The crowd does the opposite of leaving. Everyone leans in to see what the shouting is about, and a small boy sits on a barrel to watch. The dock workers have to shoo them back one by one, tutting. At last the quay is clear, and everyone is a little embarrassed. Beyond the crates, something small bleats.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Deal with the leaning stack",
-          "icon": "hand",
-          "goto": "crate_plan"
-        }
-      ],
-      "rift": "steady",
-      "art": "scenes/gemfall/exchange-docks",
       "cast": [
         {
           "figure": "cast/dock_worker",

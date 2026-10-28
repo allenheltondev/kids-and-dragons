@@ -51,6 +51,33 @@ ability bonuses the engine does not support. Use existing art, cast, music and
 rift presentation where they support the moment. Read the cue aloud as to an
 eight-year-old. Keep humor in actions and reactions; clarity comes first.
 
+## Balance the experience along actual routes
+
+Mark each story movement with its dominant experience: story, dice risk, a
+choice resolved without a game, a choice with hands-on play, or fighting.
+Review the shortest, engaged, assisted and recovery routes. Several widgets
+with brief result screens still feel like several games in succession. A vote
+that merely selects the next widget does not supply a discussion scene.
+
+Choose the chapter's character before its mechanics. A missing-river mystery
+can use investigation, a rescue priority and a quiet conclusion; a battle
+chapter needs preparation and aftermath around its fight. Neither needs every
+mode. Preserve existing meaningful risks instead of automatically converting
+checks into games; never add a roll that can undo earned game results.
+
+For each proposed game, ask what players gain from performing the controls.
+If it only confirms a fact already stated or makes everyone tap to finish
+packing, narrate it or let players choose how to respond. Use the saved space
+for a character's reaction, a discovery that changes the question, or a
+tradeoff that resolves without a score. Free expression can be an ordinary
+choice with a specific reply; it need not require every phone to contribute.
+
+Record the intended rhythm and why the retained challenges earn their place.
+Automated tests should protect costs, discoveries, choices, recovery and
+endings. Avoid minima for games or mechanic variety: those turned the first
+Riftlight pacing correction into another repetitive pattern. Counts may
+reveal clusters but cannot establish balance or enjoyment.
+
 ## Make decisions survive their result scenes
 
 For the chapter's important choices, record this mapping while designing:

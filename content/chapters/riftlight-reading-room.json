@@ -114,52 +114,8 @@
       ]
     },
     "quiet_rule": {
-      "type": "interaction",
-      "narration": "The elder sets a cup of tea beside the marked floor. \"Do not shout near the old ice; you do not know what you might wake.\" Agree on the quiet approach before the first look. Pip puts his notebook down so his paws are free to signal.",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Arrange the quiet approach.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "look",
-            "label": "Look from the marked floor",
-            "icon": "eye"
-          },
-          {
-            "id": "wait",
-            "label": "Wait at the cup",
-            "icon": "eye"
-          },
-          {
-            "id": "signal",
-            "label": "Agree on a raised-hand pause",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "wait",
-          "signal",
-          "look"
-        ],
-        "clues": [
-          "Start by waiting at the warm cup.",
-          "Agree on the pause signal before approaching the view.",
-          "Finish by looking from the marked floor."
-        ]
-      },
-      "onSuccess": {
-        "goto": "witness_first",
-        "narration": "Everyone can signal a pause without shouting."
-      },
-      "onFailure": {
-        "goto": "witness_first",
-        "narration": "The elder demonstrates the pause and your party repeats it before approaching."
-      },
-      "onAssisted": {
-        "goto": "witness_first",
-        "narration": "Everyone can signal a pause without shouting."
-      },
+      "type": "story",
+      "narration": "The elder sets down the tea. \"Do not shout near the old ice; you do not know what you might wake.\" You agree to raise a hand when you need a pause. Pip puts his notebook down so his paws are free. Somewhere inside the wall, remembered water keeps flowing.",
       "cast": [
         {
           "figure": "cast/yeti_elder",
@@ -170,7 +126,15 @@
           "name": "Pip Thistledown"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "witness_first"
+        }
+      ]
     },
     "witness_first": {
       "type": "choice_point",
@@ -248,52 +212,8 @@
       "art": "scenes/riftlight/reading-room"
     },
     "catalog_cards": {
-      "type": "interaction",
-      "narration": "The elder lays out three cards for the same memory. One has a standing-place mark, one a ridge sketch, one the moving-water account. Pip lines them up as dates. \"Three visits,\" says the elder. \"The river did not leave us a birthday.\" Connect the cards so another reader can find the view.",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Build a route through the inspection cards.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "water",
-            "label": "Water account",
-            "icon": "eye"
-          },
-          {
-            "id": "place",
-            "label": "Standing-place card",
-            "icon": "eye"
-          },
-          {
-            "id": "ridge",
-            "label": "Ridge sketch",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "place",
-          "ridge",
-          "water"
-        ],
-        "clues": [
-          "Find the standing place before checking what can be seen there.",
-          "Compare the ridge sketch before using the moving-water account.",
-          "The water account is the final comparison."
-        ]
-      },
-      "onSuccess": {
-        "goto": "listening_floor",
-        "narration": "The cards form a route to the view, without assigning a date to the river."
-      },
-      "onFailure": {
-        "goto": "listening_floor",
-        "narration": "The elder helps link the cards to the standing place. The inspection dates stay separate from the age of the view."
-      },
-      "onAssisted": {
-        "goto": "listening_floor",
-        "narration": "The cards form a route to the view, without assigning a date to the river."
-      },
+      "type": "story",
+      "narration": "The elder joins a standing-place card, a ridge sketch and a water account. Pip lines them up as dates. \"Three visits,\" the elder corrects him. \"The river did not leave us a birthday.\" These cards tell another reader where to look, not how old the river is.",
       "cast": [
         {
           "figure": "cast/yeti_elder",
@@ -308,7 +228,15 @@
           "name": "Younger keeper"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "listening_floor"
+        }
+      ]
     },
     "listening_floor": {
       "type": "rest",
@@ -1804,46 +1732,8 @@
       "art": "scenes/riftlight/reading-room"
     },
     "claim_limit": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Pip reads the draft. The matched river is there. Its age and cause are still blank. \"A blank is easier to fix than a confident mistake,\" says the elder. Choose a useful unanswered question to leave beside the clue.",
-      "interaction": {
-        "kind": "play",
-        "cue": "Leave a question for the next investigation.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "date",
-            "label": "What could date this view?",
-            "icon": "hand",
-            "reaction": "The date stays open beside the checked observation."
-          },
-          {
-            "id": "cause",
-            "label": "What moved the land?",
-            "icon": "hand",
-            "reaction": "The cause stays unanswered; nobody invents one."
-          },
-          {
-            "id": "compare",
-            "label": "Where else can we compare this river?",
-            "icon": "hand",
-            "reaction": "The next comparison goes beside the clue, not in place of it."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "record_choice",
-        "narration": "The account separates the observed river from its unanswered questions."
-      },
-      "onFailure": {
-        "goto": "record_choice",
-        "narration": "The account separates the observed river from its unanswered questions."
-      },
-      "onAssisted": {
-        "goto": "record_choice",
-        "narration": "The account separates the observed river from its unanswered questions."
-      },
       "cast": [
         {
           "figure": "cast/yeti_elder",
@@ -1858,7 +1748,27 @@
           "name": "Younger keeper"
         }
       ],
-      "art": "scenes/riftlight/reading-room"
+      "art": "scenes/riftlight/reading-room",
+      "choices": [
+        {
+          "id": "date",
+          "label": "What could date this view?",
+          "icon": "hand",
+          "goto": "claim_limit_response_date"
+        },
+        {
+          "id": "cause",
+          "label": "What moved the land?",
+          "icon": "hand",
+          "goto": "claim_limit_response_cause"
+        },
+        {
+          "id": "compare",
+          "label": "Where else can we compare this river?",
+          "icon": "hand",
+          "goto": "claim_limit_response_compare"
+        }
+      ]
     },
     "record_choice": {
       "type": "choice_point",
@@ -2541,8 +2451,8 @@
       }
     },
     "dry_slips": {
-      "type": "interaction",
-      "narration": "Your dry-table choice kept the slips away from the meltwater. Pass the blank stack along to the younger keeper; no chase across the reading floor is needed.",
+      "type": "story",
+      "narration": "Your dry-table choice has kept the slips away from meltwater. You hand the clean stack to the younger keeper. She sets one beside the crossing sketch. Pip regards the dry paper with the pride of someone who has previously invented wet paper.",
       "cast": [
         {
           "figure": "cast/yeti_elder",
@@ -2554,28 +2464,18 @@
         }
       ],
       "art": "scenes/riftlight/reading-room",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the dry blank slips to the keeper.",
-        "actionLabel": "Pass the dry slips",
-        "objectLabel": "Dry blank catalog slips"
-      },
-      "onSuccess": {
-        "goto": "compare_accounts",
-        "narration": "The keeper has clean slips ready for the record."
-      },
-      "onFailure": {
-        "goto": "compare_accounts",
-        "narration": "The keeper has clean slips ready for the record."
-      },
-      "onAssisted": {
-        "goto": "compare_accounts",
-        "narration": "The keeper has clean slips ready for the record."
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "compare_accounts"
+        }
+      ]
     },
     "teach_live": {
-      "type": "interaction",
-      "narration": "The elder uses the room's own landmarks while your party steadies the viewing sheet for the newcomer. Private notes remain in your pack unless you chose to share them.",
+      "type": "story",
+      "narration": "The newcomer stands beside you while the elder points out the room's landmarks. You show where you looked and where you stopped. Your private notes stay in your pack unless you chose to share them. The newcomer finds the safe view with your live help.",
       "cast": [
         {
           "figure": "cast/yeti_elder",
@@ -2591,45 +2491,21 @@
         }
       ],
       "art": "scenes/riftlight/reading-room",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Support the viewing sheet for the newcomer.",
-        "actionLabel": "Show the safe viewpoint",
-        "supportLabel": "Hold the viewing sheet"
-      },
-      "onSuccess": {
-        "goto": "rest",
-        "narration": "The newcomer finds the safe view with your party's live help.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "showed_the_newcomer",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "rest",
-        "narration": "The newcomer finds the safe view with your party's live help.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "showed_the_newcomer",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "rest",
-        "narration": "The newcomer finds the safe view with your party's live help.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "showed_the_newcomer",
-            "value": true
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "showed_the_newcomer",
+              "value": true
+            }
+          ]
+        }
+      ]
     },
     "teach_posted": {
       "type": "interaction",
@@ -2703,8 +2579,8 @@
       }
     },
     "teach_staff": {
-      "type": "interaction",
-      "narration": "Pass the shared copy to the younger keeper, with the places needing help marked. She accompanies the newcomer to the safe view instead of presenting assisted work as independent.",
+      "type": "story",
+      "narration": "You hand the authorized copy to the younger keeper, with the places needing help marked. She accompanies the newcomer to the safe view. Your account keeps that help visible; nobody has to pretend they worked alone.",
       "cast": [
         {
           "figure": "cast/yeti_elder",
@@ -2720,45 +2596,102 @@
         }
       ],
       "art": "scenes/riftlight/reading-room",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the shared instructions to the guiding keeper.",
-        "actionLabel": "Hand over the guided copy",
-        "objectLabel": "Keeper-guided reading copy"
-      },
-      "onSuccess": {
-        "goto": "rest",
-        "narration": "The keeper guides the newcomer using the authorized shared copy.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "showed_the_newcomer",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "rest",
-        "narration": "The keeper guides the newcomer using the authorized shared copy.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "showed_the_newcomer",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "rest",
-        "narration": "The keeper guides the newcomer using the authorized shared copy.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "showed_the_newcomer",
-            "value": true
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "showed_the_newcomer",
+              "value": true
+            }
+          ]
+        }
+      ]
+    },
+    "claim_limit_response_date": {
+      "type": "story",
+      "narration": "The date stays open beside the checked observation. The account separates the observed river from its unanswered questions.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "record_choice"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room"
+    },
+    "claim_limit_response_cause": {
+      "type": "story",
+      "narration": "The cause stays unanswered; nobody invents one. The account separates the observed river from its unanswered questions.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "record_choice"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room"
+    },
+    "claim_limit_response_compare": {
+      "type": "story",
+      "narration": "The next comparison goes beside the clue, not in place of it. The account separates the observed river from its unanswered questions.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "record_choice"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/yeti_elder",
+          "name": "Reading-room elder"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/younger_keeper",
+          "name": "Younger keeper"
+        }
+      ],
+      "art": "scenes/riftlight/reading-room"
     }
   },
   "voiceGuide": {
@@ -2780,16 +2713,6 @@
   },
   "presentation": {
     "interactions": {
-      "quiet_rule": {
-        "props": [
-          "prop_word_scroll"
-        ]
-      },
-      "catalog_cards": {
-        "props": [
-          "prop_word_scroll"
-        ]
-      },
       "catalog_test_1_check": {
         "props": [
           "prop_word_scroll"
@@ -2805,17 +2728,7 @@
           "prop_word_scroll"
         ]
       },
-      "dry_slips": {
-        "props": [
-          "prop_word_scroll"
-        ]
-      },
       "teach_posted": {
-        "props": [
-          "prop_word_scroll"
-        ]
-      },
-      "teach_staff": {
         "props": [
           "prop_word_scroll"
         ]
@@ -2833,11 +2746,6 @@
       "sliding_tray_1_check": {
         "props": [
           "relay-plank"
-        ]
-      },
-      "claim_limit": {
-        "props": [
-          "clue-scrap"
         ]
       },
       "second_view_prepared_check": {
@@ -2861,11 +2769,6 @@
         ]
       },
       "close_view_attuned": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "teach_live": {
         "props": [
           "clue-scrap"
         ]

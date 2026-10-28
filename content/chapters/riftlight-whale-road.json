@@ -106,8 +106,8 @@
       ]
     },
     "route_layout": {
-      "type": "interaction",
-      "narration": "Start inland and work toward the folds. The waiting place must leave the turning lane empty.",
+      "type": "story",
+      "narration": "The keeper spreads yesterday's map on the grass. Its whale lane points straight into empty sky. Together you put the waiting rope inland and leave the broad grass lane clear. Olivia erases yesterday's route. The smallest whale rolls overhead, watching the eraser.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -119,50 +119,14 @@
         }
       ],
       "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Arrange the approach from inland to the folds.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "lane",
-            "label": "Open turning lane",
-            "icon": "eye"
-          },
-          {
-            "id": "rock",
-            "label": "Inland rock marker",
-            "icon": "eye"
-          },
-          {
-            "id": "rope",
-            "label": "Waiting rope",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "rock",
-          "rope",
-          "lane"
-        ],
-        "clues": [
-          "Travelers meet the inland rock marker first.",
-          "The waiting rope goes between the rock marker and the turning lane.",
-          "Only the open lane belongs closest to the folds."
-        ]
-      },
-      "onSuccess": {
-        "goto": "whale_listen",
-        "narration": "The keeper walks the route herself. The waiting rope leaves the whole turning lane clear."
-      },
-      "onFailure": {
-        "goto": "whale_listen",
-        "narration": "The keeper walks your plan and catches a crowded turn. You move the rope inland together. The lane is clear before anyone waits there."
-      },
-      "onAssisted": {
-        "goto": "whale_listen",
-        "narration": "The keeper walks the route herself. The waiting rope leaves the whole turning lane clear."
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "whale_listen"
+        }
+      ]
     },
     "whale_listen": {
       "type": "story",
@@ -264,8 +228,8 @@
       ]
     },
     "song_watch": {
-      "type": "interaction",
-      "narration": "The keeper demonstrates what the whale does. Watch the observation pattern and remember it before it fades.",
+      "type": "story",
+      "narration": "The whale folds one fin, faces the lane, then leaves a quiet pause. The keeper raises her paw in that pause. \"That is when it listens.\" Its next note rumbles through the grass beneath your feet. Olivia stops writing until the sound has passed.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -277,46 +241,14 @@
         }
       ],
       "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the whale observation pattern, then echo it.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "quiet",
-            "label": "Silence",
-            "icon": "eye"
-          },
-          {
-            "id": "fin",
-            "label": "Fin tilts",
-            "icon": "eye"
-          },
-          {
-            "id": "call",
-            "label": "Low call",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "call",
-          "fin",
-          "quiet"
-        ],
-        "stepMs": 1300
-      },
-      "onSuccess": {
-        "goto": "keeper_lesson",
-        "narration": "You distinguish the call, the turn and the pause. The keeper offers a way to answer."
-      },
-      "onFailure": {
-        "goto": "keeper_lesson",
-        "narration": "The keeper repeats her account slowly and points out the pause. You learn what to look for without pretending you heard every sound."
-      },
-      "onAssisted": {
-        "goto": "keeper_lesson",
-        "narration": "You distinguish the call, the turn and the pause. The keeper offers a way to answer."
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "keeper_lesson"
+        }
+      ]
     },
     "keeper_lesson": {
       "type": "choice_point",
@@ -528,8 +460,8 @@
       }
     },
     "slow_greeting": {
-      "type": "interaction",
-      "narration": "The keeper leads the greeting herself. Keep her reed whistle case level while she leaves a long pause. You can hear the difference now.",
+      "type": "story",
+      "narration": "The keeper offers the greeting herself, leaving a long quiet pause. The whale answers. You listen beside her. Olivia lowers her pencil. \"I was about to fill that silence.\" The keeper smiles. \"It was already being used.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -541,45 +473,21 @@
         }
       ],
       "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Settle the whistle case level before the keeper begins.",
-        "actionLabel": "Ready the greeting",
-        "objectLabel": "Reed whistle case"
-      },
-      "onSuccess": {
-        "goto": "lesson_result",
-        "narration": "The keeper leads a quiet answer and your party follows her cue.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "practiced_the_whale_signal",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "lesson_result",
-        "narration": "The keeper leads a quiet answer and your party follows her cue.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "practiced_the_whale_signal",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "lesson_result",
-        "narration": "The keeper leads a quiet answer and your party follows her cue.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "practiced_the_whale_signal",
-            "value": true
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "lesson_result",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "practiced_the_whale_signal",
+              "value": true
+            }
+          ]
+        }
+      ]
     },
     "lesson_result": {
       "type": "story",
@@ -605,8 +513,8 @@
       ]
     },
     "loose_kit": {
-      "type": "interaction",
-      "narration": "From the shelter side, aim a hooked cord at the cloth's trailing loop. The keeper has a pole ready if it rolls beyond your reach.",
+      "type": "story",
+      "narration": "Olivia catches the rolling shelter cloth against her notebook. For a moment she is a unicorn wearing a very practical curtain. The keeper helps peel it away. You have one cloth and two places that need it.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -618,26 +526,14 @@
         }
       ],
       "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "precision",
-        "cue": "Catch the cloth loop from the shelter side.",
-        "actionLabel": "Hook the loop",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 6000
-      },
-      "onSuccess": {
-        "goto": "waiting_place",
-        "narration": "The hook catches. You tie the recovered cloth down beside the keeper."
-      },
-      "onFailure": {
-        "goto": "waiting_place",
-        "narration": "The hook misses. The keeper catches the cloth with her pole farther inland, and you bring it back together."
-      },
-      "onAssisted": {
-        "goto": "waiting_place",
-        "narration": "The hook catches. You tie the recovered cloth down beside the keeper."
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "waiting_place"
+        }
+      ]
     },
     "waiting_place": {
       "type": "choice_point",
@@ -1075,8 +971,8 @@
       }
     },
     "keeper_echo": {
-      "type": "interaction",
-      "narration": "The first keeper copies your route onto a fresh sheet while the new keeper takes the watch. Share the jobs needed to stop a visitor safely, without treating a whale's turn as permission to step past the rope.",
+      "type": "story",
+      "narration": "The new keeper repeats the stop signal, then points out the waiting place on your copied route. The first keeper checks it with her. A whale's turn is an invitation to watch; it is never permission for travelers to cross the rope. The keepers take the watch together.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1092,71 +988,21 @@
         }
       ],
       "art": "scenes/riftlight/whale-road",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Put the handover jobs in a usable order.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "echo",
-            "label": "Waiting keeper repeats stop",
-            "icon": "eye"
-          },
-          {
-            "id": "watch",
-            "label": "Watcher sees the striped cloth",
-            "icon": "eye"
-          },
-          {
-            "id": "hold",
-            "label": "Visitors stay behind the rope",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "watch",
-          "echo",
-          "hold"
-        ],
-        "clues": [
-          "The watcher must see the striped cloth before passing its meaning.",
-          "The waiting keeper repeats the stop before asking visitors to hold.",
-          "Travelers finish behind the rope."
-        ]
-      },
-      "onSuccess": {
-        "goto": "sky_repair",
-        "narration": "The new keeper stops the practice visitor herself. She can take over the watch.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "taught_the_new_keeper",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "sky_repair",
-        "narration": "The keepers demonstrate one clear stop together. The newcomer repeats it and takes the watch.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "taught_the_new_keeper",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "sky_repair",
-        "narration": "The new keeper stops the practice visitor herself. She can take over the watch.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "taught_the_new_keeper",
-            "value": true
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "sky_repair",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "taught_the_new_keeper",
+              "value": true
+            }
+          ]
+        }
+      ]
     },
     "sky_repair": {
       "type": "choice_point",
@@ -1595,11 +1441,6 @@
   },
   "presentation": {
     "interactions": {
-      "route_layout": {
-        "props": [
-          "cloud-whale"
-        ]
-      },
       "follow_whale": {
         "props": [
           "cloud-whale"
@@ -1608,11 +1449,6 @@
           "prop_playing_card",
           "prop_playing_card",
           "prop_playing_card"
-        ]
-      },
-      "song_watch": {
-        "props": [
-          "cloud-whale"
         ]
       },
       "little_turn": {
@@ -1664,27 +1500,12 @@
           "rope-loop"
         ]
       },
-      "slow_greeting": {
-        "props": [
-          "ring-case"
-        ]
-      },
-      "loose_kit": {
-        "props": [
-          "rope-loop"
-        ]
-      },
       "signal_relay": {
         "props": [
           "wind-banner"
         ]
       },
       "signal_memory": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "keeper_echo": {
         "props": [
           "wind-banner"
         ]

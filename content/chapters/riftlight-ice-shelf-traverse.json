@@ -74,74 +74,61 @@
       "art": "scenes/riftlight/shelf-icicles"
     },
     "knots": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "narration": "The rope is long enough for all of you, with a little left over for luck. You pass it around, and everyone ties on. Knots are serious business on ice. A knot that is almost right is the same as a knot that is wrong.",
-      "prompt": "Everyone ties their own knot, then tugs the knot beside theirs.",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "ring_thud",
-        "narration": "Every knot holds. The rope hums between you like a long, careful guitar string.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "line_ready"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "ring_thud",
-        "narration": "One knot slides loose and flaps like a tiny flag. You retie it, and the wind finds your ears while you work."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+      "narration": "The rope is long enough for all of you, with a little left over for luck. You pass it around, and everyone ties on. Knots are serious business on ice. A knot that is almost right is the same as a knot that is wrong. Every knot holds. The rope hums between you like a long, careful guitar string.",
+      "art": "scenes/riftlight/shelf-icicles",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "ring_thud",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "line_ready"
+            }
+          ]
+        }
+      ]
     },
     "coil": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "narration": "A coil that runs out free is worth more than a coil that tangles. You shake the rope out and start again.",
-      "prompt": "Coil the rope in wide loops that will run out without a snag.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "ring_thud",
-        "narration": "The loops sit in your hand like a sleeping snake. Any of you could throw them in a blink.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "line_ready"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "ring_thud",
-        "narration": "The rope tangles into a knot the size of a cabbage. You pick it loose one loop at a time."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+      "narration": "A coil that runs out free is worth more than a coil that tangles. You shake the rope out and start again. The loops sit in your hand like a sleeping snake. Any of you could throw them in a blink.",
+      "art": "scenes/riftlight/shelf-icicles",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "ring_thud",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "line_ready"
+            }
+          ]
+        }
+      ]
     },
     "beat": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "narration": "Rally is not only for the hurt. It is for the nervous, too. You take a breath and hum a low, slow tune.",
-      "prompt": "Hum a beat that keeps every boot landing at the same moment.",
-      "roller": "party",
-      "checkKind": "doing",
-      "onSuccess": {
-        "goto": "ring_thud",
-        "narration": "Step, step, hum. Soon even the Listening Chime swings in time. The line stays loose and easy.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "line_ready"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "ring_thud",
-        "narration": "Your beat is perfect. Everyone else's boots have ideas of their own. You settle for a gentler tune."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+      "narration": "Rally is not only for the hurt. It is for the nervous, too. You take a breath and hum a low, slow tune. Step, step, hum. Soon even the Listening Chime swings in time. The line stays loose and easy.",
+      "art": "scenes/riftlight/shelf-icicles",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "ring_thud",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "line_ready"
+            }
+          ]
+        }
+      ]
     },
     "ring_thud": {
       "type": "choice_point",
@@ -650,38 +637,30 @@
       "art": "scenes/riftlight/shelf-icicles"
     },
     "dash": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "narration": "Plink. Plink. Plink-plink. There is a rhythm to the drips, if you listen.",
-      "prompt": "Listen to the drips and find the gap in their rhythm.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "drip_run",
-        "narration": "Plink, plink, gap! You have the rhythm of the drips by heart."
-      },
-      "onFailure": {
-        "goto": "drip_run",
-        "narration": "An icicle snaps off and bonks the nearest hat while you listen. It stings, but now you know where the gaps are."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+      "narration": "Plink. Plink. Plink-plink. There is a rhythm to the drips, if you listen. Plink, plink, gap! You have the rhythm of the drips by heart.",
+      "art": "scenes/riftlight/shelf-icicles",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "drip_run"
+        }
+      ]
     },
     "knock": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "narration": "A snowball is just a small, round plan. You pack a few and look for the weak spot where each icicle meets the rock.",
-      "prompt": "Aim a snowball at the root of each long icicle, high on the wall.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "drip_run",
-        "narration": "Thwack. Crash. Tinkle. The long icicles fall in a glittering heap, and only small drips are left."
-      },
-      "onFailure": {
-        "goto": "drip_run",
-        "narration": "Your snowballs miss, and your arm tires. A few long ones are still hanging there, so you will have to be careful."
-      },
-      "art": "scenes/riftlight/shelf-icicles"
+      "narration": "A snowball is just a small, round plan. You pack a few and look for the weak spot where each icicle meets the rock. Thwack. Crash. Tinkle. The long icicles fall in a glittering heap, and only small drips are left.",
+      "art": "scenes/riftlight/shelf-icicles",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "drip_run"
+        }
+      ]
     },
     "gust": {
       "type": "choice_point",
@@ -1297,58 +1276,43 @@
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "first_light": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "narration": "The quickest of you steps out onto the line. The river looks very busy down below.",
-      "prompt": "Slip across the line to test it, light on your toes.",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "hold_line",
-        "narration": "Tip, tap, tip. The quick one reaches the far rock and waves both arms. The line has not even wobbled."
-      },
-      "onFailure": {
-        "goto": "hold_line",
-        "narration": "Halfway over, the line wobbles and squeaks. The quick one hugs it, shuffles the rest of the way and says a very small word that nobody will repeat."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "narration": "The quickest of you steps out onto the line. The river looks very busy down below. Tip, tap, tip. The quick one reaches the far rock and waves both arms. The line has not even wobbled.",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "hold_line"
+        }
+      ]
     },
     "first_strong": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "tags": [
-        "force"
-      ],
-      "narration": "The strongest of you takes the line in both hands. It is not far. It only feels far.",
-      "prompt": "Cross hand over hand, then tie the far end tight.",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "hold_line",
-        "narration": "Hand over hand, hand over hand. The far end is tied with a knot like a fist."
-      },
-      "onFailure": {
-        "goto": "hold_line",
-        "narration": "The far end slips twice before it takes the knot. It is tied with extra loops and a lot of grumbling, but it holds."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "narration": "The strongest of you takes the line in both hands. It is not far. It only feels far. Hand over hand, hand over hand. The far end is tied with a knot like a fist.",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "hold_line"
+        }
+      ]
     },
     "first_dart": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "narration": "You are always gone before the trouble arrives. You take a breath, and you go.",
-      "prompt": "Dash across the line before the ice notices, then tie the far end.",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "hold_line",
-        "narration": "Whoosh! The dash is over before the ice notices. The far end is tied, and the others hear a faint cheer."
-      },
-      "onFailure": {
-        "goto": "hold_line",
-        "narration": "The dash wobbles in the middle, but your speed carries you over. The far end is tied, a little crooked."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "narration": "You are always gone before the trouble arrives. You take a breath, and you go. Whoosh! The dash is over before the ice notices. The far end is tied, and the others hear a faint cheer.",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "hold_line"
+        }
+      ]
     },
     "gear": {
       "type": "choice_point",
@@ -1370,41 +1334,30 @@
       "art": "scenes/riftlight/ice-shelf-headwaters"
     },
     "gear_slide": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "narration": "A pack on a line is a bit like a sled on a hill, if you think of it the right way.",
-      "prompt": "Clip each pack to the line with a loop, so it slides to the far rock.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "level_line",
-        "narration": "The packs zoom along the line like little sleds. The last one arrives with a bump and a small, soggy clank."
-      },
-      "onFailure": {
-        "goto": "level_line",
-        "narration": "A loop jams halfway. Someone pulls it free with a hook of rope, and the pack arrives a little later, and a little damper."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "narration": "A pack on a line is a bit like a sled on a hill, if you think of it the right way. The packs zoom along the line like little sleds. The last one arrives with a bump and a small, soggy clank.",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "level_line"
+        }
+      ]
     },
     "gear_carry": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "tags": [
-        "force"
-      ],
-      "narration": "Every pack has its own weight, and its own opinion about it. You lift the first one onto your shoulders.",
-      "prompt": "Carry each pack over the line, one careful trip at a time.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "level_line",
-        "narration": "Step by wobbly step, every pack goes over. Somebody sings to a pack to keep it calm, and it works."
-      },
-      "onFailure": {
-        "goto": "level_line",
-        "narration": "A strap snaps, and a pack slides toward the edge. A quick hand snags it by the loop. It is knotted back together, and it goes over."
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "narration": "Every pack has its own weight, and its own opinion about it. You lift the first one onto your shoulders. Step by wobbly step, every pack goes over. Somebody sings to a pack to keep it calm, and it works.",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "level_line"
+        }
+      ]
     },
     "ready": {
       "type": "choice_point",
