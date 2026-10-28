@@ -129,7 +129,7 @@ claim it mattered.
 5. **01 + 02:** thirty-minute opening/onboarding pass, preserving the art pilot. Implemented in the [fifth-wave review](../gemfall-opening-play/README.md): checked mail rescue, shared introductions and farm-work hedge help. Timing remains a target requiring family calibration.
 6. **06:** evidence and purpose. Implemented in the [sixth-wave review](../gemfall-ashfall-play/README.md): dated evidence, learned-call gate recovery and a purpose council; reveal/continuity and persistent ally/pursuit/clock checks included. Timing still needs family calibration.
 7. **07R/H/L:** implemented in the [seventh-wave review](../gemfall-pursuit-play/README.md): earned return handovers, market clues and wagon tracking, table rules and playable tether instruments. Walk, clock economics and all shipped rolls remain. Timing needs family calibration.
-8. **08:** final philosophy/confrontation pass, after the upstream payoffs exist.
+8. **08:** authored finale pass completed in the [eighth-wave review](../gemfall-finale-play/README.md): collective verdict, carried/empty-handed restoration, latch release and prepared warden handover; full routes, consequences, save contracts and device review. The thirty-minute target remains open in [#536](https://github.com/allenheltondev/kids-and-dragons/issues/536), covering structural approach consolidation and efficient/engaged 1/2/4-seat family calibration.
 
 Ordinary targets are approximately thirty minutes, to be planned and tested rather
 than enforced by counting scenes. Review a finale-specific budget explicitly; do
