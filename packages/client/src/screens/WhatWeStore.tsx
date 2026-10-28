@@ -35,9 +35,11 @@ export function WhatWeStore({ onClose }: { onClose: () => void }): ReactElement 
           What we store
         </h2>
         <p className="stored__lede">
-          Kids &amp; Dragons keeps only what the game needs to remember your party. Kids never sign in and never type
-          anything personal: a grown-up who wants to keep a game signs in, and the kids are nicknames that grown-up
-          keeps. What there is belongs to one of three owners: the kid, her hero, and the table she plays at.
+          Kids &amp; Dragons keeps what the game needs to remember your party. Kids never sign in, but they do type a
+          nickname and a hero name. The game checks those for bad words, not for personal details, so please help kids
+          pick made-up names. A grown-up who wants to keep a game signs in with an email. What there is belongs to one
+          of three owners: the kid, her hero, and the table she plays at. The privacy page explains why we keep it and
+          who else handles it.
         </p>
 
         <section className="stored__section" aria-labelledby="stored-what">
