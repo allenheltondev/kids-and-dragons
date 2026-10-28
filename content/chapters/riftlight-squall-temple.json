@@ -250,7 +250,7 @@
       ]
     },
     "ready_lane": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Check the yard together and help the last cushion carrier into the hall. Nobody stays outside to rescue a cushion. The keeper's very soft helmet comes inside too.",
       "cast": [
         {
@@ -259,44 +259,26 @@
         }
       ],
       "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "play",
-        "cue": "Bring every keeper under cover.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "door",
-            "label": "Hold the lane clear",
-            "icon": "hand",
-            "reaction": "The last keeper reaches the hall."
-          },
-          {
-            "id": "count",
-            "label": "Count back the keepers together",
-            "icon": "hand",
-            "reaction": "The keeper confirms nobody is left outside."
-          },
-          {
-            "id": "cushion",
-            "label": "Take the bulky cushions",
-            "icon": "hand",
-            "reaction": "A cushion retires from duty as a very soft helmet."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "messages",
-        "narration": "Everyone is under the stone roof."
-      },
-      "onFailure": {
-        "goto": "messages",
-        "narration": "Everyone is under the stone roof."
-      },
-      "onAssisted": {
-        "goto": "messages",
-        "narration": "Everyone is under the stone roof."
-      }
+      "choices": [
+        {
+          "id": "door",
+          "label": "Hold the lane clear",
+          "icon": "hand",
+          "goto": "ready_lane_response_door"
+        },
+        {
+          "id": "count",
+          "label": "Count back the keepers together",
+          "icon": "hand",
+          "goto": "ready_lane_response_count"
+        },
+        {
+          "id": "cushion",
+          "label": "Take the bulky cushions",
+          "icon": "hand",
+          "goto": "ready_lane_response_cushion"
+        }
+      ]
     },
     "messages": {
       "type": "story",
@@ -1665,8 +1647,8 @@
       ]
     },
     "record_signals": {
-      "type": "interaction",
-      "narration": "Build an account of preparation, board work and the actual result. The keeper adds whether the island turned, settled or damaged the empty landing; no successful copying repairs it.",
+      "type": "story",
+      "narration": "You and the keeper record the preparation, board work and actual result. She adds the island's present position and any damaged outer landing. Checked cloth calls go on the page; places where a keeper led remain marked as helped work. Rain ticks against the hall window.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1674,50 +1656,6 @@
         }
       ],
       "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Arrange the work account for the keeper.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "result",
-            "label": "Actual landing result",
-            "icon": "eye"
-          },
-          {
-            "id": "prep",
-            "label": "The kit we prepared",
-            "icon": "eye"
-          },
-          {
-            "id": "board",
-            "label": "The board job we played",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "prep",
-          "board",
-          "result"
-        ],
-        "clues": [
-          "Begin with the prepared kit.",
-          "Board work follows preparation.",
-          "Finish with what happened to the landing, including damage."
-        ]
-      },
-      "onSuccess": {
-        "goto": "watch",
-        "narration": "The keeper has a work account to teach from."
-      },
-      "onFailure": {
-        "goto": "watch",
-        "narration": "The keeper corrects the work order and labels it a helped account."
-      },
-      "onAssisted": {
-        "goto": "watch",
-        "narration": "The keeper has a work account to teach from."
-      },
       "variants": [
         {
           "when": {
@@ -1730,6 +1668,14 @@
             "notFlag": "temple_signals_read"
           },
           "text": "The first cloth round was keeper-led. The log credits that help even if your later drill goes well."
+        }
+      ],
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "watch"
         }
       ]
     },
@@ -1840,7 +1786,7 @@
       }
     },
     "watch_help": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Help the keeper demonstrate the actual hold and release calls. The relief watch can see her cloth and practice without a loaded rope.",
       "cast": [
         {
@@ -1849,44 +1795,26 @@
         }
       ],
       "art": "scenes/riftlight/temple-island-squall",
-      "interaction": {
-        "kind": "play",
-        "cue": "Support the keeper-led signal drill.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "hold",
-            "label": "Keep the practice rope slack",
-            "icon": "hand",
-            "reaction": "Nobody loads the line during the drill."
-          },
-          {
-            "id": "cloth",
-            "label": "Keep the cloth in view",
-            "icon": "hand",
-            "reaction": "The relief watch follows the keeper."
-          },
-          {
-            "id": "account",
-            "label": "Name the helped signal round",
-            "icon": "hand",
-            "reaction": "The log credits the keeper-led demonstration."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "ending",
-        "narration": "The relief watch finishes its keeper-led practice."
-      },
-      "onFailure": {
-        "goto": "ending",
-        "narration": "The relief watch finishes its keeper-led practice."
-      },
-      "onAssisted": {
-        "goto": "ending",
-        "narration": "The relief watch finishes its keeper-led practice."
-      }
+      "choices": [
+        {
+          "id": "hold",
+          "label": "Keep the practice rope slack",
+          "icon": "hand",
+          "goto": "watch_help_response_hold"
+        },
+        {
+          "id": "cloth",
+          "label": "Keep the cloth in view",
+          "icon": "hand",
+          "goto": "watch_help_response_cloth"
+        },
+        {
+          "id": "account",
+          "label": "Name the helped signal round",
+          "icon": "hand",
+          "goto": "watch_help_response_account"
+        }
+      ]
     },
     "watch_map": {
       "type": "interaction",
@@ -2018,6 +1946,120 @@
         }
       ],
       "art": "scenes/riftlight/temple-island-squall"
+    },
+    "ready_lane_response_door": {
+      "type": "story",
+      "narration": "The last keeper reaches the hall. Everyone is under the stone roof.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "messages"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "ready_lane_response_count": {
+      "type": "story",
+      "narration": "The keeper confirms nobody is left outside. Everyone is under the stone roof.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "messages"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "ready_lane_response_cushion": {
+      "type": "story",
+      "narration": "A cushion retires from duty as a very soft helmet. Everyone is under the stone roof.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "messages"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "watch_help_response_hold": {
+      "type": "story",
+      "narration": "Nobody loads the line during the drill. The relief watch finishes its keeper-led practice.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "watch_help_response_cloth": {
+      "type": "story",
+      "narration": "The relief watch follows the keeper. The relief watch finishes its keeper-led practice.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
+    },
+    "watch_help_response_account": {
+      "type": "story",
+      "narration": "The log credits the keeper-led demonstration. The relief watch finishes its keeper-led practice.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/kitsune_temple_keeper",
+          "name": "Temple keeper"
+        }
+      ],
+      "art": "scenes/riftlight/temple-island-squall"
     }
   },
   "presentation": {
@@ -2036,11 +2078,6 @@
         "props": [
           "wind-blanket",
           "rope-loop"
-        ]
-      },
-      "ready_lane": {
-        "props": [
-          "wind-blanket"
         ]
       },
       "gear_rope": {
@@ -2097,11 +2134,6 @@
           "rope-loop"
         ]
       },
-      "record_signals": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
       "record_map": {
         "props": [
           "clue-scrap"
@@ -2110,12 +2142,6 @@
       "watch_signals": {
         "props": [
           "wind-banner"
-        ]
-      },
-      "watch_help": {
-        "props": [
-          "wind-banner",
-          "rope-loop"
         ]
       },
       "watch_map": {
