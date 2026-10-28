@@ -418,15 +418,6 @@
             "bleat": "something small bleats"
           }
         },
-        "clear_crowd": {
-          "requires": [
-            "noodle_stall",
-            "crates"
-          ],
-          "introduces": {
-            "bleat": "something small bleats"
-          }
-        },
         "crate_plan": {
           "requires": [
             "crates",
@@ -2738,13 +2729,6 @@
           ],
           "introduces": {}
         },
-        "post_off": {
-          "requires": [
-            "post",
-            "learned_note"
-          ],
-          "introduces": {}
-        },
         "warm": {
           "requires": [
             "lantern"
@@ -2867,12 +2851,6 @@
           ],
           "introduces": {}
         },
-        "seam_off": {
-          "requires": [
-            "seam"
-          ],
-          "introduces": {}
-        },
         "seam_echo": {
           "requires": [
             "seam"
@@ -2962,10 +2940,6 @@
           "introduces": {}
         },
         "cairn_done": {
-          "requires": [],
-          "introduces": {}
-        },
-        "cairn_off": {
           "requires": [],
           "introduces": {}
         },
@@ -4739,13 +4713,6 @@
           ],
           "introduces": {}
         },
-        "tie_loose": {
-          "requires": [
-            "stone_keeper",
-            "count_cord"
-          ],
-          "introduces": {}
-        },
         "sight_plan": {
           "requires": [
             "count_cord",
@@ -4772,15 +4739,6 @@
           "introduces": {}
         },
         "sight_found": {
-          "requires": [
-            "splash",
-            "stone_keeper"
-          ],
-          "introduces": {
-            "fourth_stone": "fourth stone from the bottom"
-          }
-        },
-        "sight_wobble": {
           "requires": [
             "splash",
             "stone_keeper"
@@ -5496,12 +5454,6 @@
           ],
           "introduces": {}
         },
-        "lashed_loose": {
-          "requires": [
-            "bryn"
-          ],
-          "introduces": {}
-        },
         "test_check": {
           "requires": [
             "bryn"
@@ -5509,13 +5461,6 @@
           "introduces": {}
         },
         "bridge_open": {
-          "requires": [
-            "bryn",
-            "ossley"
-          ],
-          "introduces": {}
-        },
-        "bridge_creak": {
           "requires": [
             "bryn",
             "ossley"
@@ -6197,15 +6142,6 @@
           ],
           "introduces": {}
         },
-        "bearing_blurred": {
-          "requires": [
-            "temple_keeper",
-            "seren",
-            "thimble",
-            "fenwick"
-          ],
-          "introduces": {}
-        },
         "route_vote": {
           "requires": [
             "temple_keeper",
@@ -6678,10 +6614,6 @@
           "introduces": {}
         },
         "poles_done": {
-          "requires": [],
-          "introduces": {}
-        },
-        "poles_off": {
           "requires": [],
           "introduces": {}
         },

@@ -28,8 +28,6 @@ it("the mimic fight is on every road to the ending, not a detour", () => {
   for (const id of endings) expect(seen.has(id), id).toBe(false);
   for (const { shortest } of pacingReport(chapter).scenarios) {
     expect(shortest!.encounters).toBe(1);
-    expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
-    expect(shortest!.decisions + shortest!.checks).toBeGreaterThanOrEqual(14);
   }
 });
 

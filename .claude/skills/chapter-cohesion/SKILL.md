@@ -100,6 +100,11 @@ Scene 1 says, in the story's own words, what the party is here to do tonight and
 
 ### 3. The spine offers varied play and consequential choices
 
+- For a campaign audit, list every chapter and its review status. Distinguish a count-only
+  screening from a route review. A chapter with few games can still repeat dice checks,
+  method-selection votes or tasks that only restate an earned result. Include those chapters
+  before calling the campaign review complete.
+
 - Before drafting, map the efficient and engaged routes by what players experience: story,
   a decision without a game, a dice risk, a decision leading to a game, or a fight. A short
   result paragraph or an equipment-selection vote between games does not necessarily give

@@ -158,33 +158,21 @@
       ]
     },
     "wind_warm": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Everyone wring out your wet things and flap them until the ice flakes off.",
-      "narration": "The wind finds every wet seam in your clothes. Your sleeves have started to crackle. The kid sneezes a tiny cloud. Nobody climbs a glacier with stiff fingers.",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "kid_burrow",
-        "narration": "The ice cracks off in crumbs. You are damp, not frozen, and the kid sneezes in triumph. The wind has less to bite now."
-      },
-      "onFailure": {
-        "goto": "kid_burrow",
-        "narration": "One sleeve freezes into a stiff tube, and it takes three tries to bend it. You get going, but your fingers ache.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          }
-        ]
-      },
+      "narration": "The wind finds every wet seam in your clothes. Your sleeves have started to crackle. The kid sneezes a tiny cloud. Nobody climbs a glacier with stiff fingers. The ice cracks off in crumbs. You are damp, not frozen, and the kid sneezes in triumph. The wind has less to bite now.",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
           "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
+        }
+      ],
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "kid_burrow"
         }
       ]
     },
@@ -789,20 +777,7 @@
       ]
     },
     "settle_count": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "prompt": "Whoever counts best names every goat by its bell.",
-      "narration": "Every goat has a different bell: a clank, a tink, a cowbell, a spoon on a pot. The herd keeps moving, and counting moving goats is like counting raindrops.",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "herd_play",
-        "narration": "Every bell is here, even the spoon one. The herder checks your count against hers and smiles. The goats calm down, because someone finally knows who they are."
-      },
-      "onFailure": {
-        "goto": "herd_play",
-        "narration": "You count one goat twice and one goat not at all, and the herder has to start over. The goats grumble, but the count comes out right in the end."
-      },
+      "narration": "Every goat has a different bell: a clank, a tink, a cowbell, a spoon on a pot. The herd keeps moving, and counting moving goats is like counting raindrops. Every bell is here, even the spoon one. The herder checks your count against hers and smiles. The goats calm down, because someone finally knows who they are.",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
@@ -816,24 +791,19 @@
         {
           "figure": "entities/snowhorn_goat"
         }
+      ],
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "herd_play"
+        }
       ]
     },
     "settle_brush": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "Everyone pick a goat and brush the ice from its wool.",
-      "narration": "Goat wool freezes into little ice beads that rattle when the goats walk. Each bead is cold on the goat and colder on you. The goats hold still for brushing, as long as you find the itchy spot.",
-      "roller": "all",
-      "checkKind": "doing",
-      "onSuccess": {
-        "goto": "herd_play",
-        "narration": "The beads come off in handfuls, and the goats lean into your hands. Soon the herd sounds like a rattle full of calm."
-      },
-      "onFailure": {
-        "goto": "herd_play",
-        "narration": "Some goats like the brush and some goats bite the brush. A mouthful of mitten later, everyone is mostly brushed."
-      },
+      "narration": "Goat wool freezes into little ice beads that rattle when the goats walk. Each bead is cold on the goat and colder on you. The goats hold still for brushing, as long as you find the itchy spot. The beads come off in handfuls, and the goats lean into your hands. Soon the herd sounds like a rattle full of calm.",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
@@ -846,6 +816,15 @@
         },
         {
           "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "herd_play"
         }
       ]
     },
@@ -876,19 +855,7 @@
       ]
     },
     "settle_lull": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "Use a lullaby to calm the herd. The songkeeper helps; choose who leads.",
-      "narration": "A songkeeper hums a slow tune that sounds like a blanket. The lead goat's ears droop. The spoon bell goes quiet.",
-      "onSuccess": {
-        "goto": "herd_play",
-        "narration": "The song rolls over the herd. One by one the goats stop stamping and follow the tune toward the herder."
-      },
-      "onFailure": {
-        "goto": "herd_play",
-        "narration": "The song is lovely, but the wind is loud. The goats settle anyway, slowly, with their eyes shut."
-      },
+      "narration": "A songkeeper hums a slow tune that sounds like a blanket. The lead goat's ears droop. The spoon bell goes quiet. The song rolls over the herd. One by one the goats stop stamping and follow the tune toward the herder.",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
@@ -901,6 +868,15 @@
         },
         {
           "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "herd_play"
         }
       ]
     },
@@ -1955,70 +1931,59 @@
       ]
     },
     "cairn_dig": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Everyone dig at the tin with both hands and heave.",
-      "narration": "The snow is packed hard, and the tin is frozen to the ground. The kid helps by digging, badly.",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "cairn_open",
-        "narration": "The tin pops out like a cork. Nobody falls over, which is lucky for the kid."
-      },
-      "onFailure": {
-        "goto": "cairn_open",
-        "narration": "The tin comes loose all at once and everyone sits down in the snow. Your hands sting, but the lid is free."
-      },
+      "narration": "The snow is packed hard, and the tin is frozen to the ground. The kid helps by digging, badly. The tin pops out like a cork. Nobody falls over, which is lucky for the kid.",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
           "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
+        }
+      ],
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "cairn_open"
         }
       ]
     },
     "cairn_pry": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "prompt": "Whoever is cleverest works out where the stick and the rope should go.",
-      "narration": "You slide the stick under one edge of the lid and loop the rope around it. Pulling is the easy part. Knowing where is the hard part.",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "cairn_open",
-        "narration": "You hook the rope under the lid and lean. It pops with a crack."
-      },
-      "onFailure": {
-        "goto": "cairn_open",
-        "narration": "The stick snaps. You use your fingernails instead, and the lid gives up in the end."
-      },
+      "narration": "You slide the stick under one edge of the lid and loop the rope around it. Pulling is the easy part. Knowing where is the hard part. You hook the rope under the lid and lean. It pops with a crack.",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
           "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
         }
+      ],
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "cairn_open"
+        }
       ]
     },
     "cairn_smash": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Use smash to crack the ice off the lid. The hero with smash helps; choose who leads.",
-      "narration": "A bigfoot can break a barrier with one good whack. The ice around the lid is thick, and the whack is thicker.",
-      "onSuccess": {
-        "goto": "cairn_open",
-        "narration": "One thump and the ice falls off in plates. The lid rattles loose."
-      },
-      "onFailure": {
-        "goto": "cairn_open",
-        "narration": "The first thump bounces off. The second makes the whole pile wobble, and you catch it just in time."
-      },
+      "narration": "A bigfoot can break a barrier with one good whack. The ice around the lid is thick, and the whack is thicker. One thump and the ice falls off in plates. The lid rattles loose.",
       "art": "scenes/riftlight/ice-shelf-headwaters",
       "cast": [
         {
           "figure": "cast/snowhorn_kid",
           "name": "Goat kid"
+        }
+      ],
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "cairn_open"
         }
       ]
     },

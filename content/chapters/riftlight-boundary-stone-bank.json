@@ -950,64 +950,61 @@
       "art": "scenes/riftlight/boundary-river-row"
     },
     "loop_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Whoever remembers the loop knot best ties it, and everyone else holds the cord taut.",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "tie_good"
-      },
-      "onFailure": {
-        "goto": "tie_loose"
-      },
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
+      "art": "scenes/riftlight/boundary-river-row",
+      "type": "story",
+      "narration": "The keeper shows the loop knot slowly. You tie the ends together, and she checks them before anyone lets go.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "tie_good"
+        }
+      ]
     },
     "hitch_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Wrap the cord round the ring twice and pull the hitch tight before the cord can creep. Choose who leads; everyone can help.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "tie_good"
-      },
-      "onFailure": {
-        "goto": "tie_loose"
-      },
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
+      "art": "scenes/riftlight/boundary-river-row",
+      "type": "story",
+      "narration": "You wrap each ring twice and pull the hitches snug. The keeper checks the loose ends with you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "tie_good"
+        }
+      ]
     },
     "flick_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "A duskrunner flicks a quick hitch round the high ring. Can you pull it snug before the cord slips?",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "tie_good"
-      },
-      "onFailure": {
-        "goto": "tie_loose"
-      },
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
+      "art": "scenes/riftlight/boundary-river-row",
+      "type": "story",
+      "narration": "Your duskrunner ties the high hitch while the keeper and your friends hold the cord.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "tie_good"
+        }
+      ]
     },
     "tie_good": {
       "type": "story",
@@ -1018,33 +1015,6 @@
           "label": "Look along the cord",
           "icon": "hand",
           "goto": "sight_plan"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
-    },
-    "tie_loose": {
-      "type": "story",
-      "narration": "The knot slides, and the whole cord sags. You tie it again, slower, with the keeper counting loops aloud, and a little crowd of ants watching from a rock. The second knot is ugly, but it holds. \"Ugly knots are the strongest,\" she says. \"Now we can see which of my stones has been telling fibs.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look along the cord",
-          "icon": "hand",
-          "goto": "sight_plan"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "damage",
-          "amount": 1,
-          "to": "party",
-          "nonlethal": true
         }
       ],
       "cast": [
@@ -1088,87 +1058,65 @@
       "art": "scenes/riftlight/boundary-river-row"
     },
     "sight_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Crouch low and look along the cord. Whoever sees best finds the stone that leans.",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "sight_found"
-      },
-      "onFailure": {
-        "goto": "sight_wobble"
-      },
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
+      "art": "scenes/riftlight/boundary-river-row",
+      "type": "story",
+      "narration": "You crouch beside the keeper and follow the cord with your eyes.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "sight_found"
+        }
+      ]
     },
     "pebble_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Hop up the row and set a pebble on every stone. The pebble that rolls off marks the stone that leans. Choose who leads; everyone can help.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "sight_found"
-      },
-      "onFailure": {
-        "goto": "sight_wobble"
-      },
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
+      "art": "scenes/riftlight/boundary-river-row",
+      "type": "story",
+      "narration": "You set pebbles on the stones while the keeper watches from the bottom of the row.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "sight_found"
+        }
+      ]
     },
     "star_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "prompt": "A star-line glows along the cord. Can you read which stone lies off it?",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "sight_found"
-      },
-      "onFailure": {
-        "goto": "sight_wobble"
-      },
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
           "name": "Stone keeper"
         }
       ],
-      "art": "scenes/riftlight/boundary-river-row"
+      "art": "scenes/riftlight/boundary-river-row",
+      "type": "story",
+      "narration": "Your starweaver draws a star-line along the cord. Everyone can see where the stone leans.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "sight_found"
+        }
+      ]
     },
     "sight_found": {
       "type": "story",
       "narration": "There! The fourth stone from the bottom leans out like a sleepy duck. Every other stone is straight as a ruler. The keeper chalks a big X on it. \"Thank you, Splash,\" she calls down the row, \"for being such a good example.\" Splash, being a stone, says nothing. But he looks smug.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Look at the fourth stone",
-          "icon": "hand",
-          "goto": "nudge_plan"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/dragonling_stone_keeper",
-          "name": "Stone keeper"
-        }
-      ],
-      "art": "scenes/riftlight/boundary-river-row"
-    },
-    "sight_wobble": {
-      "type": "story",
-      "narration": "The stones blur into nine, then ten. The keeper laughs, sends a pebble rolling down the row, and watches where it stops. It stops against the fourth stone from the bottom, which is leaning. She chalks a big X on it, and a second one on her own nose by mistake.",
       "choices": [
         {
           "id": "continue",
@@ -1620,17 +1568,7 @@
       "art": "scenes/riftlight/boundary-mountain-carving"
     },
     "runner_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "The runner is out of breath and out of words. Help her slow down enough to tell all of it. Choose who leads; everyone can help.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "runner_told"
-      },
-      "onFailure": {
-        "goto": "runner_short"
-      },
+      "type": "choice_point",
       "cast": [
         {
           "figure": "cast/dragonling_stone_keeper",
@@ -1641,7 +1579,22 @@
           "name": "Runner"
         }
       ],
-      "art": "scenes/riftlight/boundary-mountain-carving"
+      "art": "scenes/riftlight/boundary-mountain-carving",
+      "narration": "The runner needs a breath before another question. The keeper offers her a cup. You can sit with her for the whole account, or ask for the urgent news and let her rest. What would help her now?",
+      "choices": [
+        {
+          "id": "listen",
+          "label": "Sit with her and hear the whole account",
+          "icon": "ear",
+          "goto": "runner_told"
+        },
+        {
+          "id": "rest",
+          "label": "Ask for the urgent news, then give her quiet",
+          "icon": "rest",
+          "goto": "runner_short"
+        }
+      ]
     },
     "runner_told": {
       "type": "story",
@@ -1668,7 +1621,7 @@
     },
     "runner_short": {
       "type": "story",
-      "narration": "All the runner manages is, \"It moved! No marks!\" and then she flops down in the grass to breathe. It is enough. The keeper gives her a drink from the tin cup and a very serious pat. \"Run, run, run,\" the keeper says, \"and then sit, sit, sit. That is the proper order.\"",
+      "narration": "You ask only what the next travelers need to know. \"It moved! No marks!\" the runner says. You let her rest with the keeper's cup. \"Run, run, run,\" the keeper says, \"and then sit, sit, sit. That is the proper order.\"",
       "choices": [
         {
           "id": "continue",

@@ -2,9 +2,9 @@
 
 ## Finding and scope
 
-Reviewed all 23 Riftlight chapter files. The previous correction replaced repeated roll chains with repeated activity chains in twelve chapters. Tests required ten games across five mechanics on the bridge and similar floors elsewhere. Different widgets still produced the same repeated demand for a performance before the next story beat.
+Initially screened all 24 Riftlight chapter files. The previous correction replaced repeated roll chains with repeated activity chains in twelve chapters. Tests required ten games across five mechanics on the bridge and similar floors elsewhere. Different widgets still produced the same repeated demand for a performance before the next story beat.
 
-Revised those twelve chapters. The eleven opening/travel chapters retain their existing story, choices, dice risks and encounters; this review does not claim their pacing has been measured as ideal. No chapter must include all five modes or an equal share of each.
+Revised those twelve chapters. The other twelve opening/travel chapters were only screened in this pass. They have since received a detailed review and revisions in [the remaining-chapter review](riftlight-remaining-balance.md). Neither pass claims measured ideal pacing. No chapter must include all five modes or an equal share of each.
 
 ## Changes
 

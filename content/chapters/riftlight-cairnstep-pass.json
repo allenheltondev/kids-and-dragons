@@ -299,26 +299,23 @@
       "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "ridge_spot": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "The sharpest eyes match the drawing to the ridge, line by line, and call out where they stop agreeing.",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "compared",
-        "narration": "There! A step in the rock, where the drawing says smooth. You call it out, and Brask makes a neat pencil mark."
-      },
-      "onFailure": {
-        "goto": "compared",
-        "narration": "The lines blur together in the glare. Brask points out the step himself, with a wink. \"Snow is hard on eyes,\" he says."
-      },
       "cast": [
         {
           "figure": "cast/pass_keeper",
           "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "type": "story",
+      "narration": "There! A step in the rock, where the drawing says smooth. You call it out, and Brask makes a neat pencil mark.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "compared"
+        }
+      ]
     },
     "supplies": {
       "type": "story",
@@ -340,47 +337,42 @@
       "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "supplies_trace": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Follow the route on the page and find where the high shelf meets the cairns.",
-      "onSuccess": {
-        "goto": "compared",
-        "narration": "Your finger lands on the exact spot. Brask taps the same place with a claw. \"Yes. There.\""
-      },
-      "onFailure": {
-        "goto": "compared",
-        "narration": "You follow the line off the page and onto the rock. Brask turns the book right way up, gently, and shows you the spot."
-      },
       "cast": [
         {
           "figure": "cast/pass_keeper",
           "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "type": "story",
+      "narration": "Your finger lands on the exact spot. Brask taps the same place with a claw. \"Yes. There.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "compared"
+        }
+      ]
     },
     "ledger_sky": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "Use skyward or glide to read both pages from above. The hero with wings helps; choose who leads.",
-      "narration": "A griffin can fly up and see a whole ridge at once. A dragonling can glide up on a warm breath of wind. From the sky, the two drawings fit together like halves of a cracker.",
-      "onSuccess": {
-        "goto": "compared",
-        "narration": "From above, the step in the ridge is as plain as a nose. The flyer lands and points straight at it."
-      },
-      "onFailure": {
-        "goto": "compared",
-        "narration": "A gust bats the flyer around. They land with a crumpled page, but the answer is clear: there is a step in the ridge."
-      },
+      "narration": "A griffin can fly up and see a whole ridge at once. A dragonling can glide up on a warm breath of wind. From the sky, the two drawings fit together like halves of a cracker. From above, the step in the ridge is as plain as a nose. The flyer lands and points straight at it.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
           "name": "Brask"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "compared"
+        }
+      ]
     },
     "compared": {
       "type": "story",
@@ -559,19 +551,7 @@
       "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "pebble_page": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Hold the page flat in the wind while Pebble draws the step.",
-      "narration": "A wind keeps trying to carry the page away. You flatten it on a rock with a stone on each corner, and Pebble sharpens her pencil with her beak.",
-      "onSuccess": {
-        "goto": "pebble_done",
-        "narration": "The wind sulks and gives up. Pebble draws the step in three quick strokes."
-      },
-      "onFailure": {
-        "goto": "pebble_done",
-        "narration": "The page flaps and rips a corner. Pebble draws on the torn piece, and the step still comes out clear."
-      },
+      "narration": "A wind keeps trying to carry the page away. You flatten it on a rock with a stone on each corner, and Pebble sharpens her pencil with her beak. The wind sulks and gives up. Pebble draws the step in three quick strokes.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -583,22 +563,19 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "pebble_done"
+        }
+      ]
     },
     "pebble_mend": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "Use mend on Pebble's scraped wing. The hero with mend helps; choose who leads.",
-      "narration": "A unicorn has a gentle touch that makes a scrape stop stinging. It strokes Pebble's wing once, softly, and she holds very still.",
-      "onSuccess": {
-        "goto": "pebble_done",
-        "narration": "The scrape fades, and Pebble flexes her wing in wonder. \"It stopped hurting!\" She draws much better when nothing hurts."
-      },
-      "onFailure": {
-        "goto": "pebble_done",
-        "narration": "The sting fades, but she is still shaky. She draws slowly and carefully, with her beak scrunched."
-      },
+      "narration": "A unicorn has a gentle touch that makes a scrape stop stinging. It strokes Pebble's wing once, softly, and she holds very still. The scrape fades, and Pebble flexes her wing in wonder. \"It stopped hurting!\" She draws much better when nothing hurts.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -610,7 +587,16 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "pebble_done"
+        }
+      ]
     },
     "pebble_done": {
       "type": "story",
@@ -924,20 +910,7 @@
       "art": "scenes/riftlight/cairnstep-survey-slab"
     },
     "survey_shelf": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "Everyone take a stretch of the cord and pull it tight along the shelf together.",
-      "narration": "The cord is long and stiff with frost. Everyone takes a stretch and walks it out along the shelf, from cairn to cairn, until it sings in the wind like a harp.",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "survey_done",
-        "narration": "The cord hums, taut and true, from one end of the shelf to the other. Brask counts the knots and nods."
-      },
-      "onFailure": {
-        "goto": "survey_done",
-        "narration": "The cord sags in the middle and trips a boot. You untangle it, stretch it again, and count the knots twice."
-      },
+      "narration": "The cord is long and stiff with frost. Everyone takes a stretch and walks it out along the shelf, from cairn to cairn, until it sings in the wind like a harp. The cord hums, taut and true, from one end of the shelf to the other. Brask counts the knots and nods.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -949,22 +922,19 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "survey_done"
+        }
+      ]
     },
     "survey_pace": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Pace the width at every cairn and keep the count straight.",
-      "narration": "At each cairn, you pace from the cliff to the edge, counting out loud. Pebble counts too, but she counts in griffin, which has different numbers.",
-      "onSuccess": {
-        "goto": "survey_done",
-        "narration": "Your counts agree from cairn to cairn. The pass is wide as two goats at the narrowest, and wider elsewhere."
-      },
-      "onFailure": {
-        "goto": "survey_done",
-        "narration": "You lose count at the fourth cairn, and Pebble gets a different number. Brask averages you both with a smile."
-      },
+      "narration": "At each cairn, you pace from the cliff to the edge, counting out loud. Pebble counts too, but she counts in griffin, which has different numbers. Your counts agree from cairn to cairn. The pass is wide as two goats at the narrowest, and wider elsewhere.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -976,22 +946,19 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "survey_done"
+        }
+      ]
     },
     "survey_sky": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "Use skyward or glide to map the pass from above. The hero with wings helps; choose who leads.",
-      "narration": "A griffin can see a whole ridge at a glance. A dragonling can glide along it. From above, the pass is a long white ribbon, and the measuring is easy.",
-      "onSuccess": {
-        "goto": "survey_done",
-        "narration": "From above, the pass is a ribbon with a pinch in it. The flyer lands and draws the whole thing from memory."
-      },
-      "onFailure": {
-        "goto": "survey_done",
-        "narration": "The wind pushes the flyer sideways, so the map comes out a little bent. Brask straightens it with a ruler."
-      },
+      "narration": "A griffin can see a whole ridge at a glance. A dragonling can glide along it. From above, the pass is a long white ribbon, and the measuring is easy. From above, the pass is a ribbon with a pinch in it. The flyer lands and draws the whole thing from memory.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1003,7 +970,16 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep-survey-slab"
+      "art": "scenes/riftlight/cairnstep-survey-slab",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "survey_done"
+        }
+      ]
     },
     "survey_done": {
       "type": "story",
@@ -1836,19 +1812,7 @@
       "art": "scenes/riftlight/cairnstep"
     },
     "signal_wave": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Wave the signal flags big and slow, in the right order.",
-      "narration": "Brask hands you a flag on a stick. Big wave, little wave, circle, pause. It is like a dance with a very strict teacher. Across the sky, a tiny figure waits with a flag of its own.",
-      "onSuccess": {
-        "goto": "signal_back",
-        "narration": "Big wave, little wave, circle, pause. You do it so well that Brask whispers, \"Oh, nicely done.\""
-      },
-      "onFailure": {
-        "goto": "signal_back",
-        "narration": "You get the circle and the pause backward. Brask quietly fixes it for you, flag by flag."
-      },
+      "narration": "Brask hands you a flag on a stick. Big wave, little wave, circle, pause. It is like a dance with a very strict teacher. Across the sky, a tiny figure waits with a flag of its own. Big wave, little wave, circle, pause. You do it so well that Brask whispers, \"Oh, nicely done.\"",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1860,22 +1824,19 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "signal_back"
+        }
+      ]
     },
     "signal_whistle": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "Blow the whistle, then wave the news big and slow.",
-      "narration": "Pebble's whistle is small and brass and very loud. You take a deep breath, point it at the distant island, and blow.",
-      "onSuccess": {
-        "goto": "signal_back",
-        "narration": "The whistle cuts across the sky like a thrown spoon. A tiny figure on the island jumps and waves back at once."
-      },
-      "onFailure": {
-        "goto": "signal_back",
-        "narration": "The whistle squeaks. Across the sky, a tiny figure waves politely, and you wave the news anyway."
-      },
+      "narration": "Pebble's whistle is small and brass and very loud. You take a deep breath, point it at the distant island, and blow. The whistle cuts across the sky like a thrown spoon. A tiny figure on the island jumps and waves back at once.",
       "cast": [
         {
           "figure": "cast/pass_keeper",
@@ -1887,7 +1848,16 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "signal_back"
+        }
+      ]
     },
     "signal_back": {
       "type": "story",
@@ -1924,7 +1894,7 @@
     },
     "message": {
       "type": "rest",
-      "narration": "Brask closes the ledger and ties it with a ribbon. The pass shines below in the last light, a ribbon of stones with a safe line down its middle. \"You walked it,\" he says. \"That makes it a pass. Now it is in the book.\" He looks at the island and its flags. \"Our neighbors have trouble with their routes too. There are more places to investigate after this first visit. We can bring your whole party across to ask them, if you like.\"",
+      "narration": "Brask closes the ledger and ties it with a ribbon. The cairns stand clear in the last light. \"We know where the ridge moved,\" he says. \"And we have written what travelers should do about it.\" He looks at the island flags. \"Our neighbors have trouble with their routes too. We can bring your whole party across to ask them, if you like.\"",
       "heal": 2,
       "choices": [],
       "outcome": "success",
@@ -1939,7 +1909,27 @@
           "size": "small"
         }
       ],
-      "art": "scenes/riftlight/cairnstep"
+      "art": "scenes/riftlight/cairnstep",
+      "variants": [
+        {
+          "when": {
+            "flag": "marked_open"
+          },
+          "text": "Your open-pass notice sends the herders toward the new crossing. Pebble keeps the neck sketch beside the notice so they can see its narrowest part."
+        },
+        {
+          "when": {
+            "flag": "marked_warned"
+          },
+          "text": "Your warning stays with the pass notice. Brask will lead the herd across in small groups, with a watcher at the neck."
+        },
+        {
+          "when": {
+            "flag": "marked_closed"
+          },
+          "text": "Brask hangs your closed-pass notice at the approaches. The herd will keep its longer route while he watches how the new ridge weathers a storm."
+        }
+      ]
     }
   },
   "voiceGuide": {
