@@ -22,9 +22,12 @@ Dated 2026-10-27. Engineering status, not legal advice.
 
 ## Not done
 
-1. **Operator name and contact** (`screens/operator.ts`) are set to Allen Helton and
-   allenheltondev@gmail.com, as the owner gave them on 2026-10-27. Confirm this is the address you
-   want public, and whether a legal entity should be named instead (#526).
+1. **Operator name and contact** (`screens/operator.ts`): the operator is named as **Ready, Set,
+   Cloud!** (owner, 2026-10-28; it also holds the footer copyright, and a test keeps the two the
+   same) with the contact allenheltondev@gmail.com, which was given on 2026-10-27. Still owed: the
+   legal form of Ready, Set, Cloud! (company, DBA or sole proprietorship) to confirm it is the
+   right operator name (#526), and a business address, a phone number and ideally a business email
+   address, not a personal Gmail.
 2. **Direct notice and consent.** Nothing asks a parent before a child's first write. This waits
    on the #522 decision (option A, B or C). The page says plainly that no such step exists yet.
 3. **Parental access, deletion and revocation procedure.** A signed-in grown-up can delete a kid or
@@ -57,9 +60,7 @@ Dated 2026-10-27. Engineering status, not legal advice.
    nobody for anything. Tested end to end from a direct room link (`e2e/privacy-link.spec.ts`).
    The links sit in a full-width page footer strip with the grown-up's guide beside Privacy and a
    "© <year> Ready, Set, Cloud!" line under them (the phone's hero-creation and lobby screens keep
-   one line of links, for height). Note: the copyright names Ready, Set, Cloud! while the
-   privacy page names the operator as Allen Helton; the notice rule asks for the operator's
-   identity, so confirm which legal name should appear on the page (see #526).
+   one line of links, for height).
    **Still a risk for counsel:** the link is small and quiet by choice. The comment on #523 calls
    for a "prominent and clearly labeled" link and recommends a small link beside each name field;
    whether a quiet footer satisfies that is unanswered, and the fix if it does not is a more

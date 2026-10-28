@@ -12,7 +12,8 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { navigate, parseRoute, formatRoute } from "../router";
 import { HomeScreen } from "./HomeScreen";
 import PrivacyScreen, { OperatorLines } from "./PrivacyScreen";
-import { PrivacyFooter } from "../ui/PrivacyFooter";
+import { COPYRIGHT_HOLDER, PrivacyFooter } from "../ui/PrivacyFooter";
+import { OPERATOR } from "./operator";
 import { PRIVACY_LEDE, PRIVACY_SECTIONS } from "./privacy-policy";
 import { DELETING, ELSEWHERE, STORED } from "./what-we-store";
 
@@ -88,6 +89,17 @@ describe("what it says", () => {
     unmount();
     render(<OperatorLines name="Example Co" contact="privacy@example.test" />);
     expect(screen.getByRole("link", { name: "privacy@example.test" }).getAttribute("href")).toBe("mailto:privacy@example.test");
+  });
+
+  it("does not double the punctuation of a name that ends in one", () => {
+    const { container } = render(<OperatorLines name="Ready, Set, Cloud!" contact="privacy@example.test" />);
+    expect(container.textContent).toContain("is run by Ready, Set, Cloud! Write to");
+    expect(container.textContent).not.toContain("!.");
+  });
+
+  it("names the same party as the copyright line in the footer", () => {
+    expect(OPERATOR.name).toBe(COPYRIGHT_HOLDER);
+    expect(OPERATOR.contact).not.toBe("");
   });
 
   it("renders every section, with its title", () => {

@@ -145,7 +145,8 @@ list, without a new review.
 | 2026-10-27 | Kept households to be deleted 365 days after anyone last played; owner may shorten; no "never". Not yet enforced. | Owner |
 | 2026-10-27 | Trim finished runs' event logs 30 days after the run ends, after checking what reads them. Not yet built. | Owner |
 | 2026-10-27 | No warning email before deletion for now. | Owner |
-| 2026-10-27 | Operator named on the privacy page as Allen Helton, allenheltondev@gmail.com. Business address and phone still owed. | Owner |
+| 2026-10-27 | Operator contact on the privacy page: allenheltondev@gmail.com. Business address and phone still owed. | Owner |
+| 2026-10-28 | Operator named on the privacy page as Ready, Set, Cloud! (previously Allen Helton); also the footer's copyright holder. Legal form of the entity to confirm. | Owner |
 | 2026-10-27 | Privacy link is a small "Privacy" footer on the two start screens only; none in gameplay. Risk recorded for counsel. | Owner |
 | 2026-10-28 | Widened: the same quiet link on every screen that is not gameplay and anywhere a kid can land directly (direct room link, hero creation, lobby, adventure book, account and guide pages, closed/removed screens). None in gameplay or on the TV. Prominence risk still for counsel. | Owner |
 | 2026-10-28 | Consent path (A, B or C), geo restriction, and ship/no-ship: **undecided.** | Owner to decide |
@@ -165,7 +166,7 @@ here states what production does.
 - The service is reachable worldwide and is not screened outside the U.S.
 - The state-law research is secondary and partly contradictory; statutes and dockets were not read.
 - No incident-response or breach-notification process is written.
-- The operator is an individual named on a public page with no business address or phone.
+- The operator is named on a public page with no business address or phone, a personal Gmail as the contact, and an unconfirmed legal form.
 
 ## What would close #320
 
