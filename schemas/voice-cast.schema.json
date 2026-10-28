@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "voice-cast",
+  "title": "The cast voice sheet",
+  "description": "content/voice/cast.json (docs/voice-cast.md): who speaks with which voice. Built by `npm run voice:cast`; a person's decisions survive every rebuild. Fields the builder adds beyond these are allowed.",
+  "type": "object",
+  "required": [
+    "speakers"
+  ],
+  "properties": {
+    "$comment": {
+      "type": "string"
+    },
+    "accent": {
+      "type": "string",
+      "minLength": 1
+    },
+    "speakers": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "$ref": "#/$defs/speaker"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "speaker": {
+      "type": "object",
+      "required": [
+        "name",
+        "kind",
+        "gemini",
+        "status"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "narrator",
+            "party",
+            "character",
+            "group",
+            "creature"
+          ]
+        },
+        "who": {
+          "type": "string"
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "chapters": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "gemini": {
+          "type": "object",
+          "required": [
+            "voice"
+          ],
+          "properties": {
+            "voice": {
+              "enum": [
+                "Zephyr",
+                "Puck",
+                "Charon",
+                "Kore",
+                "Fenrir",
+                "Leda",
+                "Orus",
+                "Aoede",
+                "Callirrhoe",
+                "Autonoe",
+                "Enceladus",
+                "Iapetus",
+                "Umbriel",
+                "Algieba",
+                "Despina",
+                "Erinome",
+                "Algenib",
+                "Rasalgethi",
+                "Laomedeia",
+                "Achernar",
+                "Alnilam",
+                "Schedar",
+                "Gacrux",
+                "Pulcherrima",
+                "Achird",
+                "Zubenelgenubi",
+                "Vindemiatrix",
+                "Sadachbia",
+                "Sadaltager",
+                "Sulafat"
+              ]
+            }
+          },
+          "additionalProperties": true
+        },
+        "accent": {
+          "type": "string",
+          "minLength": 1
+        },
+        "direction": {
+          "type": "string"
+        },
+        "speaks": {
+          "type": "boolean"
+        },
+        "status": {
+          "enum": [
+            "provisional",
+            "approved"
+          ]
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}
