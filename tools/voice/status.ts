@@ -14,16 +14,14 @@
  *   npm run voice:status -- --with-choices     # also count choice labels
  */
 
-import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
-import { desiredClips, GEMINI, type CastSheet } from "./desired";
+import { GEMINI } from "./desired";
 import { dollars, quote, type Pricing, type PricedModel } from "./cost-model";
-import { inventory } from "./inventory";
-import { classify } from "./lines";
-import { CONTENT, loadContent, readJson, reachableFacets } from "./load";
-import { clipStatus, countByState, manifestName, toRender, type Lock, type Manifest, type Status } from "./manifest";
+import { readJson } from "./load";
+import { clipStatus, countByState, toRender, type Status } from "./manifest";
 import type { ScriptFile } from "./script";
+import { desire, loadWorld } from "./world";
 
 const { values } = parseArgs({
   options: {
@@ -34,19 +32,6 @@ const { values } = parseArgs({
   },
 });
 
-function readIfExists<T>(file: string, fallback: T): T {
-  return fs.existsSync(file) ? (readJson(file) as T) : fallback;
-}
-
-function readDirIfExists<T>(dir: string): Map<string, T> {
-  const out = new Map<string, T>();
-  if (!fs.existsSync(dir)) return out;
-  for (const name of fs.readdirSync(dir).filter((n) => n.endsWith(".json")).sort()) out.set(name.slice(0, -5), readJson(path.join(dir, name)) as T);
-  return out;
-}
-
-const content = loadContent();
-const facetsMax = reachableFacets(content);
 const pricing = readJson(path.join(import.meta.dirname, "pricing.json")) as unknown as Pricing;
 const model: PricedModel | undefined = pricing.models.find((m) => m.id === values.model);
 if (model === undefined) {
@@ -54,16 +39,8 @@ if (model === undefined) {
   process.exit(2);
 }
 
-const cast = readJson(path.join(CONTENT, "voice", "cast.json")) as unknown as CastSheet;
-const scripts = readDirIfExists<ScriptFile>(path.join(CONTENT, "voice", "scripts"));
-const manifests = readDirIfExists<Manifest>(path.join(CONTENT, "voice", "manifest"));
-const lock = readIfExists<Lock>(path.join(CONTENT, "voice", "voice.lock.json"), { approved: {} });
-const lexicon = readIfExists<Record<string, string>>(path.join(CONTENT, "voice", "lexicon.json"), {});
-
-const options = { facetsMax };
-const lines = classify(inventory(content, options), options).filter((line) => values["with-choices"] || line.kind !== "choice");
-const groups = new Map<string, typeof lines>();
-for (const line of lines) groups.set(manifestName(line), [...(groups.get(manifestName(line)) ?? []), line]);
+const world = loadWorld({ withChoices: values["with-choices"] });
+const { groups, facetsMax } = world;
 
 const wanted = values.chapter === undefined ? [...groups.keys()] : [values.chapter];
 if (values.chapter !== undefined && !groups.has(values.chapter)) {
@@ -73,13 +50,12 @@ if (values.chapter !== undefined && !groups.has(values.chapter)) {
 
 const provider = { provider: GEMINI.provider, model: model.id };
 const rows = wanted.map((name) => {
-  const group = groups.get(name) ?? [];
-  const desired = desiredClips(group, { cast, scripts, provider, lexicon });
-  const status: Status = clipStatus(desired, manifests.get(name) ?? {}, lock);
+  const desired = desire(world, name, provider);
+  const status: Status = clipStatus(desired, world.manifests.get(name) ?? {}, world.lock);
   const owed = toRender(status);
   const chars = owed.reduce((sum, row) => sum + row.chars, 0);
   const price = quote(model, { chars, requests: owed.length }, pricing.speech, new Date().toISOString().slice(0, 10));
-  const unreviewed = [...(scripts.get(name) ? Object.values(scripts.get(name) as ScriptFile) : [])].filter((e) => typeof e === "object" && e.reviewed === false).length;
+  const unreviewed = Object.values(world.scripts.get(name) ?? ({} as ScriptFile)).filter((e) => typeof e === "object" && e.reviewed === false).length;
   return { name, lines: status.lines, counts: countByState(status), orphaned: status.orphaned.length, deviceVoice: status.deviceVoice.length, unreviewed, chars, dollars: price?.dollars ?? null };
 });
 

@@ -150,3 +150,29 @@ describe("status", () => {
     expect(status.clips).toHaveLength(1);
   });
 });
+
+describe("the manifest after a run", () => {
+  const lengths = (keys: string[]) => new Map(keys.map((k) => [k, 1500]));
+  const desired = wanted([A, B]);
+  const keysOfLine = (address: string) => desired.lines.find((l) => l.address === address)!.segments.map((s) => s.key);
+
+  it("gives a line an entry once all its clips exist, with their lengths", async () => {
+    const { mergeManifest } = await import("./manifest");
+    const merged = mergeManifest({}, desired.lines, lengths(keysOfLine(A.address)));
+    expect(Object.keys(merged)).toEqual([A.address]);
+    expect(merged[A.address]?.[""]).toEqual([{ clip: keysOfLine(A.address)[0], ms: 1500 }]);
+  });
+
+  it("keeps entries already there, and only prune drops what nothing asks for", async () => {
+    const { mergeManifest } = await import("./manifest");
+    const old = { "ch-01/gone/narration": { "": [{ clip: "0".repeat(64), ms: 10 }] } };
+    expect(Object.keys(mergeManifest(old, desired.lines, new Map()))).toEqual(["ch-01/gone/narration"]);
+    expect(mergeManifest(old, desired.lines, new Map(), true)).toEqual({});
+  });
+
+  it("is sorted, so the file diffs cleanly", async () => {
+    const { mergeManifest } = await import("./manifest");
+    const merged = mergeManifest({}, [...desired.lines].reverse(), lengths([...keysOfLine(A.address), ...keysOfLine(B.address)]));
+    expect(Object.keys(merged)).toEqual([...Object.keys(merged)].sort());
+  });
+});
