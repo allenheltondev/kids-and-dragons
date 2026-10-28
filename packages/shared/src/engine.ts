@@ -117,7 +117,7 @@ import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 import { combatTurnAway, readyWithoutAway, swapOwnerAway } from "./away.js";
-import { composeNarration, fillTokens } from "./narration.js";
+import { composeNarrationPieces, fillTokens, narrationPartsOf, type NarrationPart } from "./narration.js";
 import { heardWith } from "./story-so-far.js";
 import { loadDie, readDie } from "./playtest.js";
 import type { CheckBuffOffer, RunBuff } from "./types/buffs.js";
@@ -1021,20 +1021,26 @@ interface Transition {
  * `{facets}` / `{party}` tokens filled. Evaluated against the party as it is
  * now — the caller runs this after the scene's `onEnter`.
  */
-function composeSceneNarration(draft: RunState, scene: Scene, transition?: Transition): string {
+function composeSceneNarration(
+  draft: RunState,
+  scene: Scene,
+  transition?: Transition,
+): { text: string; parts: NarrationPart[] } {
   const who = party(draft);
   const base =
     scene.type === "check" ? (scene.narration ?? scene.prompt) : (scene.narration ?? "");
-  const authored = scene.type === "encounter" ? base : composeNarration(base, scene.variants, who);
-  const branchLine = transition
-    ? [transition.lead, composeNarration(transition.narration ?? "", transition.variants, who)]
-        .filter((part): part is string => !!part)
-        .join("\n\n")
-    : "";
+  const authoredPieces = scene.type === "encounter" ? [base] : composeNarrationPieces(base, scene.variants, who);
+  const branchPieces = transition
+    ? [transition.lead, ...composeNarrationPieces(transition.narration ?? "", transition.variants, who)].filter(
+        (part): part is string => !!part,
+      )
+    : [];
+  const authored = authoredPieces.join("\n\n");
+  const branchLine = branchPieces.join("\n\n");
   // A branch's narration is the line that explains *how you got here*; showing
   // it above the destination's text is how it reads at the table.
   const whole = branchLine ? `${branchLine}\n\n${authored}`.trim() : authored;
-  return fillTokens(whole, who);
+  return { text: fillTokens(whole, who), parts: narrationPartsOf([...branchPieces, ...authoredPieces], who) };
 }
 
 function enterSceneDraft(
@@ -1109,7 +1115,9 @@ function enterSceneDraft(
   // Composed after `onEnter`, on purpose: variants and tokens read the party
   // as it is when the scene opens, so an item this scene grants counts (#159).
   // Stored rather than recomputed, so a reload mid-scene reads the same words.
-  draft.narration = composeSceneNarration(draft, scene, transition);
+  const composed = composeSceneNarration(draft, scene, transition);
+  draft.narration = composed.text;
+  draft.narrationParts = composed.parts;
   // A revelation that reads the bag keeps the bag it was heard with, once a chapter (#358).
   if (scene.type !== "encounter" && scene.priority === 1 && draft.revealHeld?.[sceneId] === undefined) {
     const held = heardWith(scene, party(draft));
@@ -2950,6 +2958,7 @@ function returnToLobby(draft: RunState): void {
   draft.sceneId = null;
   draft.sceneType = null;
   draft.narration = "";
+  delete draft.narrationParts;
   draft.art = null;
   draft.scenePriority = null;
   delete draft.hint;
