@@ -200,7 +200,7 @@ describe("narration parts", () => {
   ];
 
   it("joins back to composeNarration, whatever variants hold", () => {
-    for (const flags of [{}, { lit: true }]) {
+    for (const flags of [{}, { lit: true }] as Record<string, boolean>[]) {
       const party = partyOf(2, 0, flags);
       expect(composeNarrationPieces(BASE, variants, party).join("\n\n")).toBe(composeNarration(BASE, variants, party));
     }
