@@ -3,6 +3,10 @@ import path from "node:path";
 import { expect, it } from "vitest";
 import { campaign, chapters, allPaths } from "./riftlight-test-support.ts";
 
+// This is a whole-campaign proof: every chapter is walked twice through the
+// real engine, including class rooms, before checking inter-region bypasses.
+// CI exceeded 20 seconds under V8 coverage and four-worker contention (#534).
+// Keep all route assertions and allow this exhaustive test a bounded minute.
 it("proves regional prerequisites across every incoming graph route rather than assuming entry facts", () => {
   const contracts = JSON.parse(fs.readFileSync(path.resolve(import.meta.dirname, "../../docs/campaigns/continental-rift/continuity.json"), "utf8")).chapters as Record<string, { entryFacts: string[] }>;
   const graph = campaign.graph!;
@@ -83,4 +87,4 @@ it("proves regional prerequisites across every incoming graph route rather than 
     expect(bypass.incoming.get(node)!.has("orin")).toBe(false);
     expect(bypass.incoming.get(node)!.has("olivia")).toBe(false);
   }
-}, 60_000); // Walks every chapter twice through the real engine, class rooms included. About 17s on its own and V8 coverage slows it in CI, so 20s timed out on a busy runner.
+}, 60_000);

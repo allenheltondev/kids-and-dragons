@@ -157,9 +157,9 @@
       "choices": [
         {
           "id": "read",
-          "label": "Work out what the numbers are really saying",
+          "label": "Compare the buyers' chalk notes",
           "icon": "clever",
-          "goto": "check_price_board"
+          "goto": "interaction_price_clues"
         },
         {
           "id": "ask",
@@ -173,6 +173,12 @@
           "icon": "gem",
           "goto": "scene_price_board_sums",
           "requiresFlag": "motive_wealth"
+        },
+        {
+          "id": "quick_read",
+          "label": "Risk reading the changing prices at a glance",
+          "icon": "clever",
+          "goto": "check_price_board"
         }
       ]
     },
@@ -1591,7 +1597,13 @@
         },
         {
           "id": "high_rock",
-          "label": "Climb the high rock to look inside the wagons",
+          "label": "Watch which wagon carries the hum",
+          "icon": "eye",
+          "goto": "interaction_wagon_watch"
+        },
+        {
+          "id": "quick_scout",
+          "label": "Risk a quick climb for a look inside",
           "icon": "eye",
           "goto": "check_bend_approach"
         }
@@ -2036,11 +2048,11 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "That night a woman in a bark mask sits down at your fire and takes it off. It is Hessa, from the soup tent. \"We'll buy the lot,\" she says sweetly. \"Every stone. You'd be rich, and we'd break the seal properly, all at once, so it can be fixed properly.\" She sets out the money in little piles, and it is a lot of little piles.",
+      "narration": "That night a woman in a bark mask sits down at your fire and takes it off. It is Hessa, from the soup tent. \"We'll buy the lot,\" she says sweetly. \"Every stone. You'd be rich, and we'd break the seal properly, all at once, so it can be fixed properly.\" She sets out the money in little piles, and it is a lot of little piles. The thirty coins buy only the ordinary stones traded here. Selling helps her break the seal and makes the clock late. Returning those ordinary stones to the grandmothers steadies it. Either way, you still decide whether to climb or walk.",
       "choices": [
         {
           "id": "sell",
-          "label": "Sell",
+          "label": "Sell for 30 coins; fund the break and lose time",
           "icon": "gem",
           "goto": "scene_sold",
           "effects": [
@@ -2083,7 +2095,7 @@
         },
         {
           "id": "hand_back",
-          "label": "\"No. We're giving them back instead.\"",
+          "label": "Return the traded stones; steady the seal clock",
           "icon": "heart",
           "goto": "scene_handed_back",
           "effects": [
@@ -2113,6 +2125,17 @@
         {
           "figure": "cast/hessa_wren",
           "name": "Hessa Wren"
+        }
+      ],
+      "variants": [
+        {
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1
+            }
+          },
+          "text": "Your great facets are excluded from this sale. You keep those for the mountain."
         }
       ]
     },
@@ -2259,7 +2282,7 @@
     },
     "choice_tree_line": {
       "type": "choice_point",
-      "narration": "The tree line. Above it, the mountain, shaking in a slow, patient rhythm. Below it, the road south, and everybody else on it, running. There is not one embermoth left in the foothills. Up, or down?",
+      "narration": "The tree line. Above it, the mountain, shaking in a slow, patient rhythm. Below it, the road south, and everybody else on it, running. There is not one embermoth left in the foothills. Up, or down? Climbing leads to the Keeper and another chance to decide what the stones are for. Walking ends your journey here; the realm must face the mountain without you.",
       "choices": [
         {
           "id": "climb",
@@ -3087,6 +3110,131 @@
         }
       ],
       "art": "scenes/gemfall/echo-cutting"
+    },
+    "interaction_price_clues": {
+      "type": "interaction",
+      "narration": "Bryony saves three chalk notes before the prices change. Read them together: a loud hum scares buyers; scared buyers lower their offers; the lowest offer is on the loud wagon. What causes what? No sums required. Bryony has chalk on her nose and denies everything.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Arrange cause, response, then the clue about the wagon.",
+        "actionLabel": "Compare the notes",
+        "options": [
+          {
+            "id": "hum",
+            "label": "Loud humming",
+            "icon": "note"
+          },
+          {
+            "id": "fear",
+            "label": "Buyers lower offers",
+            "icon": "gem"
+          },
+          {
+            "id": "wagon",
+            "label": "Loud wagon is cheapest",
+            "icon": "travel"
+          }
+        ],
+        "answer": [
+          "hum",
+          "fear",
+          "wagon"
+        ],
+        "clues": [
+          "First the wagon hums loudly.",
+          "Buyers think the loud hum means a crack. They lower their offers.",
+          "The cheapest wagon is the loud one, not the quiet one."
+        ]
+      },
+      "onSuccess": {
+        "goto": "choice_the_race",
+        "narration": "You spot the bargain: loud does not mean broken. Remember that at the bend.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "loud_is_cheap",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_the_race",
+        "narration": "The notes get chalky. Bryony explains the warning, but the bargain column has changed before you copy it."
+      },
+      "onAssisted": {
+        "goto": "choice_the_race",
+        "narration": "Bryony reads the notes with you. You copy the loud-wagon price before it changes.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "loud_is_cheap",
+            "value": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/bryony",
+          "name": "Bryony"
+        }
+      ]
+    },
+    "interaction_wagon_watch": {
+      "type": "interaction",
+      "narration": "From the rock you see a glow under one of three wagon covers. Track it as the wagons change places at the bend. The lead mule looks up as if checking your homework.",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Watch the glowing load, then choose its final position.",
+        "actionLabel": "Mark the wagon",
+        "covers": [
+          "Left position",
+          "Middle position",
+          "Right position"
+        ],
+        "start": 1,
+        "swaps": [
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            0,
+            1
+          ]
+        ],
+        "stepMs": 1400
+      },
+      "onSuccess": {
+        "goto": "choice_the_bend",
+        "narration": "You mark the right stopping place. The master will find you beside the stone, ahead of the shouting.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "knows_middle_wagon",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_the_bend",
+        "narration": "The covers cross and you lose the glow. You can still make an offer or use another preparation."
+      },
+      "onAssisted": {
+        "goto": "choice_the_bend",
+        "narration": "A driver points out each wagon as it moves. You mark the right stopping place.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "knows_middle_wagon",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/hairpin-wagons"
     }
   },
   "voiceGuide": {
@@ -3134,6 +3282,21 @@
       "interaction_hairpin": {
         "props": [
           "prop_wagon_wheels"
+        ]
+      },
+      "interaction_price_clues": {
+        "props": [
+          "prop_word_scroll"
+        ]
+      },
+      "interaction_wagon_watch": {
+        "props": [
+          "prop_humming_stone"
+        ],
+        "coverIcons": [
+          "prop_pickle_wagon",
+          "prop_hay_wagon",
+          "prop_mule_cart"
         ]
       }
     }

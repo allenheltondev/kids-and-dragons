@@ -8,7 +8,7 @@
     "set": "road",
     "flag": "route_wild"
   },
-  "estimatedMinutes": 44,
+  "estimatedMinutes": 30,
   "xpAward": 90,
   "entry": "scene_tree_line",
   "plate": {
@@ -60,7 +60,7 @@
   "scenes": {
     "scene_tree_line": {
       "type": "story",
-      "narration": "The Enchanted Woods begin all at once, like a wall somebody painted green. As you step under the first branches, a fern unrolls, looks you up and down, and rolls itself back up. Somewhere in here, something is counting, and it has just reached you. Every road north runs through these trees, so before you go any further, you need to find out what the forest is counting, and why.",
+      "narration": "Find out what the forest is counting, and why. The Enchanted Woods begin like a green wall. A fern unrolls, inspects you, and rolls up again. Somewhere ahead, the counting has just reached your name.",
       "choices": [
         {
           "id": "walk_in",
@@ -92,7 +92,7 @@
     },
     "scene_tree_line_walk_in": {
       "type": "story",
-      "narration": "You just walk in, the plain way, under the first branches. A fern counts you. An acorn drops on the first head through, which is fairly clearly the forest's way of saying \"one\". Another acorn follows for every head after it, one each, counted. Then the whole forest goes quiet, the way a teacher goes quiet while writing something down.",
+      "narration": "You walk in. A root quietly closes the gap behind your boots. Not a trap, perhaps. More like a host shutting a door against a draft.",
       "choices": [
         {
           "id": "on",
@@ -169,7 +169,7 @@
     },
     "scene_runner_path": {
       "type": "story",
-      "narration": "A bigfoot runner comes jogging down the path toward you, a bundle of knotted cords over one shoulder. Right in front of her, the path folds itself up like a napkin and is gone. She keeps jogging in place, frowning at the ferns. \"Third time today,\" she puffs. \"MossHome runner. Bigfoot town, up north. Can't stop. Never stop. Can't get through, either.\"",
+      "narration": "A bigfoot jogs toward you with knotted cords. The path folds up in front of her. She jogs in place. \"MossHome runner,\" she puffs. \"Bigfoot town, north. Third missing path today. Cannot stop!\" Find the path or help with her bundle.",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -223,7 +223,7 @@
     },
     "scene_runner_path_carry": {
       "type": "story",
-      "narration": "You take a bundle of cords. It's heavier than it looks. Every knot, she puffs, is a path that has moved since the mountain went off. \"Archivists are tying the whole forest up in knots. Running out of cord.\" At the next bend the path unfolds for her at once. \"Forest likes records,\" she says, takes the bundle back, and jogs off north.",
+      "narration": "You carry a cord bundle to the bend. Every knot records a moved path. \"Forest likes records,\" says the runner, taking it back when the way opens. She jogs north, already tying another knot.",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -261,7 +261,7 @@
     },
     "scene_roll_call": {
       "type": "story",
-      "narration": "The path opens into a round clearing ringed by tall trees. As you step in, the leaves begin to rustle in turn, one tree after another, slow as a teacher taking attendance. They are calling names. A squirrel answers \"Here!\" and scampers off. A prospector answers, and the path behind him quietly shuts. Now the rustling is coming around to you.",
+      "narration": "Trees rustle names around a clearing. A squirrel answers \"Here!\" A prospector answers; the path behind him shuts. Your turn. Say here, check and name what you carry, or let a tuned charm answer if you actually have one.",
       "choices": [
         {
           "id": "here",
@@ -271,9 +271,9 @@
         },
         {
           "id": "truth",
-          "label": "Answer by saying out loud everything you carry",
+          "label": "Name what you carry together, with time to check",
           "icon": "heart",
-          "goto": "check_roll_call_truth"
+          "goto": "interaction_forest_inventory"
         },
         {
           "id": "charm",
@@ -281,6 +281,12 @@
           "icon": "note",
           "requiresItem": "charm_ford_witch",
           "goto": "scene_roll_call_charm"
+        },
+        {
+          "id": "quick_truth",
+          "label": "Risk a quick pocket list without checking every hood",
+          "goto": "check_roll_call_truth",
+          "icon": "heart"
         }
       ],
       "variants": [
@@ -324,7 +330,7 @@
     },
     "scene_roll_call_here": {
       "type": "story",
-      "narration": "\"Here!\" you shout. The trees rustle, satisfied. Then the rustling carries on, slowly, as if it is reading out what is in your packs: socks, crumbs, a spoon, a cookie you forgot about. Anything that hums gets a long, thoughtful rustle all of its own. At last, with the air of a teacher closing a book, a path opens.",
+      "narration": "\"Here!\" The trees count your packs too: socks, crumbs, anything that hums. At last a path opens, like a teacher closing a book. You answered, without offering a checked inventory of your own.",
       "choices": [
         {
           "id": "on",
@@ -392,7 +398,7 @@
     },
     "scene_attendance": {
       "type": "story",
-      "narration": "Deeper in, the paths start doing something strange. One opens in front of you like a door. Another closes behind a gang of prospectors with bulging pockets, and they walk straight into a hedge that wasn't there a second ago. The forest isn't checking who you are. It's checking what you carry.",
+      "narration": "Paths open before you and close behind prospectors with humming pockets. The prospectors walk into a hedge that was not there a moment ago. The forest is checking what people carry. Ask about it, or follow the opening path.",
       "choices": [
         {
           "id": "open_path",
@@ -491,7 +497,7 @@
     },
     "scene_hedge": {
       "type": "story",
-      "narration": "The prospectors who walked into the hedge are still in it. Not stuck, exactly. Held. The hedge has them by the coat-tails, very gently, and every time one wriggles it rustles \"tsk\". Their pockets bulge and hum. \"Let us out!\" shouts the biggest. \"We only took what fell!\" The hedge does not let go. And nobody gets left in a hedge.",
+      "narration": "The hedge holds the prospectors by their coats. \"We only took what fell!\" shouts one. Their pockets hum. Pull, ask them to empty the pockets, or speak quietly with a unicorn's horn. Nobody gets left in a hedge.",
       "choices": [
         {
           "id": "pull",
@@ -538,7 +544,7 @@
     },
     "scene_hedge_empty": {
       "type": "story",
-      "narration": "\"It isn't you it wants,\" you tell them. \"It's what you're carrying.\" They grumble. They argue. Then, one by one, they turn out their pockets. The gems roll into the moss, and roots curl around them like fingers and draw them down. The hedge lets go at once. The prospectors stare at the ground. \"It's taking them,\" one whispers. \"Where's it taking them?\"",
+      "narration": "The prospectors empty their humming pockets. The hedge releases their coats, one at a time. \"Oh,\" says the loudest. The hedge rustles a very satisfied tsk.",
       "choices": [
         {
           "id": "on",
@@ -572,7 +578,7 @@
       "discovers": [
         "creature.mosshorn"
       ],
-      "narration": "A herd of mosshorns grazes ahead, their antlers sprouting little gardens. One has a whole strawberry patch on its head and is clearly very proud of it. A prospector's cart rattles by with a sack of gems, and the entire herd steps away from it at once, like one long breath out.",
+      "narration": "Mosshorns graze ahead, antlers growing tiny gardens. One has strawberries. A gem cart passes; the whole herd steps away together. Check their safe edge for a useful map, read it with a creature's senses, or walk on.",
       "cast": [
         {
           "figure": "entities/mosshorn"
@@ -591,21 +597,27 @@
         },
         {
           "id": "watch",
-          "label": "Sit very still and watch them",
+          "label": "Follow where the herd refuses to graze",
           "icon": "leaf",
-          "goto": "check_watch_herd"
+          "goto": "interaction_herd_map"
         },
         {
           "id": "walk_on",
           "label": "Walk on past the herd",
           "icon": "forward",
           "goto": "scene_mosshorns_walk_on"
+        },
+        {
+          "id": "quick_watch",
+          "label": "Risk guessing the pattern from a quick look",
+          "goto": "check_watch_herd",
+          "icon": "eye"
         }
       ]
     },
     "scene_mosshorns_walk_on": {
       "type": "story",
-      "narration": "You walk on past the herd, keeping well back. The mosshorn with the strawberry patch watches you go, chewing. It steps a long way away from the prospector's cart, and only a little way from you, and then goes back to its strawberries. A little further on, the moss under your feet turns gray.",
+      "narration": "You pass without checking the pattern. A mosshorn follows for a little way, as if deciding whether you count as a friend.",
       "cast": [
         {
           "figure": "entities/mosshorn"
@@ -666,7 +678,7 @@
     },
     "scene_gray_patch": {
       "type": "story",
-      "narration": "In a bald gray patch, where nothing grows and no mosshorn will graze, a crumb of fallen stone glitters in the moss. It's no bigger than a pea, and it is humming, very small and very determined, like a bee in a jar. Around it the moss has gone gray in a perfect ring. A beetle walks the long way around.",
+      "narration": "A humming stone crumb sits in a gray ring of moss. A beetle walks around it. Pocket it and watch the paths, or press it into a soft place and try a small mend.",
       "choices": [
         {
           "id": "pocket",
@@ -676,15 +688,21 @@
         },
         {
           "id": "press",
-          "label": "Press it gently down into the moss",
+          "label": "Press the crumb into a soft spot in the moss",
           "icon": "leaf",
-          "goto": "check_gray_patch_press"
+          "goto": "interaction_small_mend"
+        },
+        {
+          "id": "quick_press",
+          "label": "Risk pressing it down before finding the soft spot",
+          "goto": "check_gray_patch_press",
+          "icon": "leaf"
         }
       ]
     },
     "scene_gray_patch_pocket": {
       "type": "story",
-      "narration": "You pick up the crumb. Ten steps ahead, the path you were about to take folds itself shut. Another one closes to your left. Then another. You look at the crumb. You put it back down. Every path opens again at once, like held breath let out. Well. Now you know exactly what the forest minds.",
+      "narration": "You lift the crumb. Paths shut. You put it back; they reopen. You leave it there. Now you know what the forest objects to, without pretending you mended the gray moss.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -729,7 +747,7 @@
       "discovers": [
         "character.unicorn"
       ],
-      "narration": "In a small glade the moss has gone the color of cold porridge, and every flower is facing the wrong way. Two unicorns stand in it, horns lowered, frowning the way unicorns frown, which is mostly with the ears. \"A stone fell here,\" says the older one. \"We are mending. Will you help?\"",
+      "narration": "Two unicorns tend a gray glade. \"We are mending,\" says the elder. Help hold the moss and learn a quiet way through it, or guard the edge and learn how the woodland sounds fit together. Either job helps; each prepares a different approach to the worst glade.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -743,9 +761,9 @@
       "choices": [
         {
           "id": "help",
-          "label": "Help them mend the glade",
+          "label": "Hold the moss steady while the mending hum travels",
           "icon": "heart",
-          "goto": "check_mend"
+          "goto": "interaction_mending_circle"
         },
         {
           "id": "guard",
@@ -780,6 +798,12 @@
               "value": true
             }
           ]
+        },
+        {
+          "id": "quick_mend",
+          "label": "Risk joining the hum without preparing the moss",
+          "goto": "check_mend",
+          "icon": "heart"
         }
       ]
     },
@@ -807,7 +831,7 @@
     },
     "scene_unicorns_guard": {
       "type": "story",
-      "narration": "You stand guard at the edge of the glade while the unicorns mend, horns low, humming. Nothing comes. A mosshorn peers in, sees you guarding, and backs out again, very respectfully. A squirrel tries to cross and you make it wait. By the time you turn around, the moss is green again, and the elder unicorn nods: a good guard is help too.",
+      "narration": "You guard the edge while the unicorns mend. Squirrels rustle; a branch taps; a bird answers. You learn to leave gaps for another sound, so no single beat can be followed. The woodland neighbors will join that mixed chorus at the worst glade.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -824,6 +848,13 @@
           "label": "Go back to the unicorns",
           "icon": "eye",
           "goto": "scene_finding"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "forest_guard_plan",
+          "value": true
         }
       ]
     },
@@ -925,7 +956,7 @@
     },
     "scene_finding_before": {
       "type": "story",
-      "narration": "You ask what she means. The elder unicorn has already said the important thing, and unicorns say important things once. Her ears frown. The younger unicorn leans over and whispers instead: \"She means old. Older than names. She won't say it twice.\" A pause. \"She didn't much like saying it once.\"",
+      "narration": "The elder touches the ground with one hoof. \"Before names,\" she says. She offers no explanation of where the stones came from. The worst glade is still waiting north of here.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -969,7 +1000,7 @@
     },
     "scene_finding_rest": {
       "type": "story",
-      "narration": "You say nothing at all, and just sit down at the edge of the mended glade. The elder unicorn looks at you sideways, and then, for the first time, she smiles. Unicorns like very much to be left alone with a good silence. The younger one lies down next to you, and the moss under you goes soft as a pillow.",
+      "narration": "You sit. The elder sits too. A flower turns toward you, then changes its mind and faces the sun. No more questions for the moment.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -991,7 +1022,7 @@
     },
     "rest_glade_edge": {
       "type": "rest",
-      "narration": "You rest where the moss is soft again. A mosshorn calf wanders over and falls asleep across everybody's feet, and nobody is allowed to move until it wakes up. Those are the rules. Everyone knows the rules.",
+      "narration": "Rest on the green moss. A calf falls asleep across your feet. Slide out carefully, or hum it a lullaby first so it learns to trust your company. The daisy between its ears folds for a nap too.",
       "cast": [
         {
           "figure": "entities/mosshorn",
@@ -1023,7 +1054,7 @@
     },
     "rest_glade_edge_on": {
       "type": "story",
-      "narration": "You slide out from under the calf as gently as anything. It wakes anyway, blinks, sneezes, and gets up on legs much too long for it. When you set off toward the worst glade, it comes too, wobbling along behind you and stopping to eat a flower every few steps. Nobody has the heart to send it back.",
+      "narration": "You slide your boots from under the calf. It wakes, notices your empty place and decides to follow. The daisy unfolds in surprise.",
       "cast": [
         {
           "figure": "entities/mosshorn",
@@ -1041,7 +1072,7 @@
     },
     "rest_glade_edge_lullaby": {
       "type": "story",
-      "narration": "You hum, soft and low. The calf snores in time. The unicorns hum too, under you, and for a while the whole glade hums along. When at last the calf wakes, it gets up, licks everybody's boots one after the other, very thoroughly, and decides you are its herd now. It follows you out of the glade, proud as a drum major.",
+      "narration": "You hum until the calf relaxes. When it wakes, it knows your tune. It follows without a worried snort. The herd will recognize that calm company.",
       "cast": [
         {
           "figure": "entities/mosshorn",
@@ -1059,7 +1090,7 @@
     },
     "scene_lost_calf": {
       "type": "story",
-      "narration": "Halfway to the worst glade, the calf is still following you, all knees and antler buds, with one daisy growing between its ears. Its herd is nowhere to be seen, and a calf this small should not be this far from its mother. It looks up at you as if you are the herd now. Then it sneezes, and the daisy wobbles.",
+      "narration": "The calf is still following, all knees and antler buds. Its herd is missing. Call them, balance a supported sling to carry it back, or let it lead if it trusts you. A sneeze makes its daisy wobble.",
       "cast": [
         {
           "figure": "entities/mosshorn",
@@ -1075,16 +1106,9 @@
         },
         {
           "id": "carry",
-          "label": "Carry it back the way you came",
+          "label": "Balance the calf's sling on the way back",
           "icon": "might",
-          "goto": "scene_lost_calf_carry",
-          "effects": [
-            {
-              "type": "setFlag",
-              "flag": "herd_thanks_us",
-              "value": true
-            }
-          ]
+          "goto": "interaction_calf_load"
         },
         {
           "id": "lead",
@@ -1133,7 +1157,7 @@
     },
     "scene_lost_calf_carry": {
       "type": "story",
-      "narration": "You carry the calf back the way you came. It is heavier than it looks, and it eats a little of your hair on the way. At the glade's edge, the herd is waiting. The calf's mother takes it back with a sniff that says \"and where have YOU been\", and then she lowers her antlers to you, slowly. Mosshorns remember.",
+      "narration": "You bring the calf back to the herd. It samples a little hair on the way. Its mother lowers her garden of antlers in thanks. The herd will help at the worst glade, from the safe edge.",
       "cast": [
         {
           "figure": "entities/mosshorn",
@@ -1146,6 +1170,13 @@
           "label": "Walk back toward the worst glade",
           "icon": "might",
           "goto": "scene_sitting_beech"
+        }
+      ],
+      "onEnter": [
+        {
+          "type": "setFlag",
+          "flag": "herd_thanks_us",
+          "value": true
         }
       ]
     },
@@ -1169,7 +1200,7 @@
     },
     "scene_sitting_beech": {
       "type": "choice_point",
-      "narration": "On the last stretch to the worst glade, a huge beech, fatter and mossier than any tree you have passed, has sat down across the path like a grandpa in an armchair, roots tucked under, with a beard of gray lichen. \"Before you see the worst of it,\" it whispers, very slowly, \"tell me why you came.\" A squirrel on its shoulder taps one foot, impatiently. What do you tell it? Everybody vote.",
+      "narration": "A huge beech has sat across the path, roots tucked under like a grandpa's feet. \"Why did you come?\" it whispers. A squirrel taps impatiently on its shoulder. Answer plainly, recall your checked roll call, or spend a coin to hurry the squirrel.",
       "choices": [
         {
           "id": "stones",
@@ -1269,7 +1300,7 @@
       "discovers": [
         "creature.echo_hunter"
       ],
-      "narration": "The worst glade is a hollow torn into the forest floor where a big stone landed, and the crash cracked the ground open into the dark. Something pale and frilled has climbed up out of the crack. It has no eyes at all, and it is listening very hard to the humming in the middle of the glade. Now it is listening to you.",
+      "narration": "The worst glade has a crack in its gray floor. A pale, eyeless echo hunter listens beside it. Risk noise or silence, use the moss work or woodland chorus you prepared, or ask a herd that actually owes you help.",
       "cast": [
         {
           "figure": "entities/echo_hunter"
@@ -1321,6 +1352,20 @@
           "label": "Stand your ground",
           "icon": "swords",
           "goto": "encounter_echo"
+        },
+        {
+          "id": "moss_strip",
+          "label": "Use the quiet moss work you learned with the unicorns",
+          "goto": "interaction_quiet_moss",
+          "icon": "leaf",
+          "requiresFlag": "helped_mend"
+        },
+        {
+          "id": "woodland_chorus",
+          "label": "Use the mixed woodland chorus you learned while guarding",
+          "goto": "interaction_guard_chorus",
+          "icon": "note",
+          "requiresFlag": "forest_guard_plan"
         }
       ]
     },
@@ -1424,7 +1469,7 @@
         "narration": "The hunter decides you are far too loud to be worth it and slides back down into the dark. The wisp loses interest and drifts off to bother a mosshorn."
       },
       "onDefeat": {
-        "goto": "check_way_back",
+        "goto": "scene_echo_recovery",
         "narration": "The echo hunter herds you out of the glade, nudge by patient nudge, all the way to a path that closes neatly behind you. When you turn around, the glade is gone."
       }
     },
@@ -1497,7 +1542,7 @@
     },
     "scene_mend_glade": {
       "type": "story",
-      "narration": "You kneel around the stone and press it, gently, down into the moss. It sinks like a pebble into honey. Green spreads out from the middle in a ring, and every flower in the glade turns around at once to look at you. The unicorns bow, ears and all.",
+      "narration": "You press the stone gently into the moss. Green spreads outward. The flowers turn, and the unicorns bow. The stone stays with the forest; it does not enter your pack.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -1519,7 +1564,7 @@
     },
     "scene_pocket_stone": {
       "type": "story",
-      "narration": "The Glade Stone is warm in your hand and loud in your pocket. Behind you, the glade goes quiet, the way a room goes quiet when somebody says the wrong thing. The unicorns don't say a word. One of them writes something down.",
+      "narration": "The Glade Stone hums in your pocket. The gray moss stays gray. The unicorns say nothing. One writes something down. You keep the stone and the forest keeps its opinion.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -1634,13 +1679,53 @@
         }
       ],
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "forest_moss_used"
+          },
+          "text": "The quiet strip used the mending work you learned."
+        },
+        {
+          "when": {
+            "flag": "forest_chorus_used"
+          },
+          "text": "Guarding the first glade prepared the woodland chorus."
+        },
+        {
+          "when": {
+            "flag": "forest_map_recovered"
+          },
+          "text": "Your checked herd map brought you back after the lost fight."
+        }
+      ]
     },
     "ending_marked_something": {
       "type": "rest",
       "narration": "You camp at the northern edge of the Woods, where the paths finally let you out. Just before dark, the MossHome runner jogs by on a path that stays put for once. \"MossHome's just north!\" she puffs, and does not stop. The Glade Stone hums in your pack all night. No mosshorns come anywhere near. The forest has taken attendance, and next to your name it has written something you can't quite read.",
       "heal": 4,
-      "choices": []
+      "choices": [],
+      "variants": [
+        {
+          "when": {
+            "flag": "forest_moss_used"
+          },
+          "text": "The quiet strip used the mending work you learned."
+        },
+        {
+          "when": {
+            "flag": "forest_chorus_used"
+          },
+          "text": "Guarding the first glade prepared the woodland chorus."
+        },
+        {
+          "when": {
+            "flag": "forest_map_recovered"
+          },
+          "text": "Your checked herd map brought you back after the lost fight."
+        }
+      ]
     },
     "ending_shown_the_door": {
       "type": "rest",
@@ -1654,7 +1739,27 @@
         }
       ],
       "choices": [],
-      "outcome": "setback"
+      "outcome": "setback",
+      "variants": [
+        {
+          "when": {
+            "flag": "forest_moss_used"
+          },
+          "text": "The quiet strip used the mending work you learned."
+        },
+        {
+          "when": {
+            "flag": "forest_chorus_used"
+          },
+          "text": "Guarding the first glade prepared the woodland chorus."
+        },
+        {
+          "when": {
+            "flag": "forest_map_recovered"
+          },
+          "text": "Your checked herd map brought you back after the lost fight."
+        }
+      ]
     },
     "interaction_sapling_rhyme": {
       "type": "interaction",
@@ -1907,7 +2012,7 @@
     },
     "scene_stepping_logs": {
       "type": "story",
-      "narration": "Past the beech, the path ends at a brook, and the brook is the only way into the worst glade. Two mossy logs lie across it side by side, like a bridge. On the bank stands a row of old boots, and every one of them is a left boot. Nobody has ever found the right ones. One log has a toadstool on it. The toadstool opens one small eye. These are not logs. They are mire mimics, and they are bored, and they would like a boot to nibble. They want you to step on them.",
+      "narration": "Two mossy logs cross the only brook into the worst glade. A row of left boots waits on the bank. A toadstool opens an eye. Mire mimics, pretending to be a bridge. They would like your right boots to complete the collection.",
       "cast": [
         {
           "figure": "entities/mire_mimic"
@@ -1957,7 +2062,7 @@
     },
     "scene_logs_cleared": {
       "type": "story",
-      "narration": "The mimics give up. They sigh, flop, and slither upstream like two enormous muddy slippers, and the brook is just a brook again. One of them coughs as it goes, and a honeycake rolls out of it onto the moss, still warm. \"Somebody's lunch,\" you think. It is yours now. Past the water, the trees lean away from something that hums.",
+      "narration": "The logs decide boots are not worth this trouble. They slide away, and the safe stones under the brook appear. You cross, leaving the unwanted left boots in a neat row.",
       "cast": [
         {
           "figure": "entities/mire_mimic"
@@ -1975,7 +2080,7 @@
     },
     "scene_logs_slipped": {
       "type": "story",
-      "narration": "The mimics roll you off the bridge with a splash and a slurp. The brook is only knee deep, and they are laughing too hard to chase anyone. A patient fern drapes itself over everybody like a towel, and the logs flop over and let you wade across. Nobody gets a honeycake tonight, but nobody is hurt, and the worst glade is right there past the water.",
+      "narration": "The logs roll you into the shallows. The runner points out stepping stones underneath while you recover. You cross with help. The left boots remain somebody else's problem.",
       "cast": [
         {
           "figure": "entities/mire_mimic"
@@ -1990,6 +2095,437 @@
         }
       ],
       "art": "scenes/gemfall/brook-log-mimics"
+    },
+    "interaction_forest_inventory": {
+      "type": "interaction",
+      "narration": "Say what your hero carries aloud, then choose how to add it to the roll call. The trees wait. A squirrel checks behind its own ears. Nobody here is being graded on how brave an answer sounds.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Each hero names their things and adds to the roll call.",
+        "actionLabel": "Finish the honest roll call",
+        "options": [
+          {
+            "id": "name",
+            "label": "Name the things I know",
+            "icon": "scroll",
+            "reaction": "The leaves rustle after your list."
+          },
+          {
+            "id": "check",
+            "label": "Check my pockets and hood",
+            "icon": "bag",
+            "reaction": "A fern helps lift the edge of a hood. Just in case."
+          },
+          {
+            "id": "help",
+            "label": "Ask a friend to help me check",
+            "icon": "hand",
+            "reaction": "The trees wait while the check is finished together."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "interaction_sapling_rhyme",
+        "narration": "Your checked account is heard. The forest opens a path and remembers that you offered it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "told_forest_truth",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "answered_roll_call",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_sapling_rhyme",
+        "narration": "The trees finish the roll call beside you and open the path.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "answered_roll_call",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "interaction_sapling_rhyme",
+        "narration": "The trees prompt you through one pocket at a time. With their help, you check and name what you carry.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "told_forest_truth",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "answered_roll_call",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/fern-spring-glade"
+    },
+    "interaction_herd_map": {
+      "type": "interaction",
+      "narration": "A hoof-glow marks the last safe grazing patch while the ferns sway. Follow it. Finding that edge gives you a map of the gray ground, useful if the worst glade hides its path later. The strawberry-antlered mosshorn watches your boots.",
+      "interaction": {
+        "kind": "tracking",
+        "cue": "Follow the hoof-glow and choose its final safe patch.",
+        "actionLabel": "Mark the safe edge",
+        "covers": [
+          "Left ferns",
+          "Middle ferns",
+          "Right ferns"
+        ],
+        "start": 1,
+        "swaps": [
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            0,
+            2
+          ]
+        ],
+        "stepMs": 1500
+      },
+      "onSuccess": {
+        "goto": "scene_read_herd",
+        "narration": "You check the safe edge. Beyond it, every gray patch is avoided."
+      },
+      "onFailure": {
+        "goto": "interaction_herd_friends",
+        "narration": "A mosshorn wanders over, inspects you thoroughly, sneezes on you, and leaves. That, apparently, was the whole conversation. You walk on, and soon your boots find a bare gray patch where nothing grows at all."
+      },
+      "onAssisted": {
+        "goto": "scene_read_herd",
+        "narration": "The mosshorn points its nose while you follow. Together you check the safe edge."
+      },
+      "art": "scenes/gemfall/gray-moss-patch",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ]
+    },
+    "interaction_small_mend": {
+      "type": "interaction",
+      "narration": "Find the soft place beside the crumb. Press when the marker meets the gold, gently rather than hard. A beetle waits at the edge as though it has an appointment.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Press when the marker is inside the gold soft spot.",
+        "actionLabel": "Press gently",
+        "target": 0.5,
+        "width": 0.35,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "interaction_spring_cup",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "greened_a_patch",
+            "value": true
+          }
+        ],
+        "narration": "You press it down, gently, and the moss takes it like a pocket closing. The hum goes muffled, then quiet. And right in the middle of the gray ring, one bright green shoot pokes up and unrolls. A very small mend. Somebody nearby, with ears, has noticed."
+      },
+      "onFailure": {
+        "goto": "interaction_spring_cup",
+        "narration": "You press it down. It pops back up. You press it again. It pops up again, like a cork in a bath. On the third try you give up and plant a stick beside it as a flag, so whoever mends these things can find it. Somebody nearby, with ears, has noticed that too."
+      },
+      "onAssisted": {
+        "goto": "interaction_spring_cup",
+        "narration": "A fern steadies your fingers. You press the crumb into soft moss, and a green shoot opens with help.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "greened_a_patch",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/gray-moss-patch"
+    },
+    "interaction_mending_circle": {
+      "type": "interaction",
+      "narration": "Hold the loose moss in place while the acting hero carries the hum across it. Alone, use the support prop. The elder unicorn keeps the note low. The flowers turn one at a time, checking your work.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the moss steady while the acting hero carries the hum.",
+        "actionLabel": "Carry the mending hum",
+        "supportLabel": "Hold the moss"
+      },
+      "onSuccess": {
+        "goto": "scene_finding",
+        "narration": "Green spreads through the held moss. The unicorns show you how to lay a quiet strip when you need one.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_mend",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_finding",
+        "narration": "You hum, and the moss goes green, then gray, then a sort of hopeful beige. The unicorns finish it themselves, very kindly, while you hold their saddlebags."
+      },
+      "onAssisted": {
+        "goto": "scene_finding",
+        "narration": "The elder braces the loose moss beside you. Together you mend it and learn how to lay a quiet strip.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "helped_mend",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/fern-spring-glade",
+      "cast": [
+        {
+          "figure": "cast/elder_unicorn",
+          "name": "Elder Unicorn",
+          "size": "large"
+        },
+        {
+          "figure": "characters/unicorn"
+        }
+      ]
+    },
+    "interaction_calf_load": {
+      "type": "interaction",
+      "narration": "A broad cloth supports the calf. Raise or lower your end until its weight is level, then carry it toward the herd. The calf samples the cloth. It appears to taste like a very disappointing leaf.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Raise or lower your side to level the calf's sling.",
+        "actionLabel": "Carry the calf home",
+        "objectLabel": "The calf's supported sling"
+      },
+      "onSuccess": {
+        "goto": "scene_lost_calf_carry",
+        "narration": "The sling stays level. You bring the calf safely back to the waiting herd."
+      },
+      "onFailure": {
+        "goto": "scene_sitting_beech",
+        "narration": "The calf's mother comes to collect it while you steady the cloth. It is safe, but you have not earned the herd's escort."
+      },
+      "onAssisted": {
+        "goto": "scene_lost_calf_carry",
+        "narration": "A low branch supports the sling while you level it. With that help, you carry the calf back to its herd."
+      },
+      "art": "scenes/gemfall/gray-moss-patch",
+      "cast": [
+        {
+          "figure": "entities/mosshorn",
+          "size": "small"
+        }
+      ]
+    },
+    "interaction_quiet_moss": {
+      "type": "interaction",
+      "narration": "The unicorns taught you how to hold a strip of living moss flat. Brace its edge while the acting hero guides the quiet crossing. The echo hunter listens to the empty gaps between your steps.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the moss strip flat while the acting hero guides the crossing.",
+        "actionLabel": "Guide the quiet crossing",
+        "supportLabel": "Hold the moss flat"
+      },
+      "onSuccess": {
+        "goto": "scene_glade_heart",
+        "narration": "The moss softens your steps. The hunter listens past you into the empty gaps, and you reach the center.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "forest_moss_used",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "encounter_echo",
+        "narration": "The strip lifts with a snap. The listener turns toward you."
+      },
+      "onAssisted": {
+        "goto": "scene_glade_heart",
+        "narration": "A root curls up to hold the far edge while you guide the crossing. You reach the center with help.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "forest_moss_used",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/gray-moss-patch",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        }
+      ]
+    },
+    "interaction_guard_chorus": {
+      "type": "interaction",
+      "narration": "Leave room for the woodland neighbors. A clap lands between squirrel rustles; a stamp meets a birdcall; a leaf brushes under a tapping branch. Choose your part and make it aloud if you like. No single sound stands alone.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Each hero adds a sound between the woodland's answers.",
+        "actionLabel": "Finish the mixed chorus",
+        "options": [
+          {
+            "id": "clap",
+            "label": "Clap between the rustles",
+            "icon": "hand",
+            "reaction": "Squirrels rustle around your clap."
+          },
+          {
+            "id": "stamp",
+            "label": "Stamp after the birdcall",
+            "icon": "boot",
+            "reaction": "A bird answers before your stamp can repeat."
+          },
+          {
+            "id": "leaf",
+            "label": "Brush leaves under the tapping branch",
+            "icon": "leaf",
+            "reaction": "The branch taps across your leaf-rustle."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_glade_heart",
+        "narration": "The hunter cannot isolate one sound from the chorus you prepared. It slips back into its crack. Your guard work made this approach possible.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "forest_chorus_used",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_glade_heart",
+        "narration": "The woodland joins your sounds and the hunter retreats.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "forest_chorus_used",
+            "value": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "scene_glade_heart",
+        "narration": "The woodland supplies the gaps while you add sounds with help. The hunter retreats from the mixed chorus.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "forest_chorus_used",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/gray-moss-patch",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        }
+      ]
+    },
+    "scene_echo_recovery": {
+      "type": "choice_point",
+      "narration": "The hunter has pushed you out, and the path closes. Risk finding it from memory, or reconstruct the gray edges if you checked the herd's map. The herd never stepped on the gray itself.",
+      "choices": [
+        {
+          "id": "guess",
+          "label": "Risk finding the hidden way back",
+          "goto": "check_way_back",
+          "icon": "clever"
+        },
+        {
+          "id": "herd_map",
+          "label": "Reconstruct the route from the herd's checked map",
+          "goto": "interaction_gray_route",
+          "icon": "map",
+          "requiresFlag": "read_the_herd"
+        }
+      ],
+      "art": "scenes/gemfall/gray-moss-patch"
+    },
+    "interaction_gray_route": {
+      "type": "interaction",
+      "narration": "Share what you checked: safe ferns before the gray ring, then the worst hollow. Match the route in travel order. The mosshorns still refuse to step on the gray; they can show an edge without pretending it is safe ground.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Share the map clues and rebuild the route to the hollow.",
+        "actionLabel": "Follow the checked edges",
+        "options": [
+          {
+            "id": "hollow",
+            "label": "Worst hollow",
+            "icon": "glyph_stone"
+          },
+          {
+            "id": "ferns",
+            "label": "Safe ferns",
+            "icon": "leaf"
+          },
+          {
+            "id": "ring",
+            "label": "Gray ring",
+            "icon": "glyph_pond"
+          }
+        ],
+        "answer": [
+          "ferns",
+          "ring",
+          "hollow"
+        ],
+        "clues": [
+          "The safe ferns come before the gray ring.",
+          "The worst hollow is beyond the gray ring.",
+          "Follow the edges; the herd never walked on the gray."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_glade_heart",
+        "narration": "You follow the checked edges back to the hollow. The earlier observation survived the lost fight.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "forest_map_recovered",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "ending_shown_the_door",
+        "narration": "The edges lead into a loop. After the lost fight and this mistaken route, the forest shows you out."
+      },
+      "onAssisted": {
+        "goto": "scene_glade_heart",
+        "narration": "The trees rustle at the marks you checked. With their help, you compare the edges and return to the hollow.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "forest_map_recovered",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/gray-moss-patch"
     }
   },
   "voiceGuide": {
@@ -2029,6 +2565,44 @@
         "coverIcons": [
           "prop_fern",
           "prop_fern",
+          "prop_fern"
+        ]
+      },
+      "interaction_forest_inventory": {
+        "props": [
+          "prop_letters"
+        ]
+      },
+      "interaction_herd_map": {
+        "props": [],
+        "coverIcons": [
+          "prop_fern",
+          "prop_fern",
+          "prop_fern"
+        ]
+      },
+      "interaction_small_mend": {
+        "props": [
+          "prop_fern"
+        ]
+      },
+      "interaction_mending_circle": {
+        "props": [
+          "prop_fern"
+        ]
+      },
+      "interaction_calf_load": {
+        "props": [
+          "wind-blanket"
+        ]
+      },
+      "interaction_quiet_moss": {
+        "props": [
+          "prop_fern"
+        ]
+      },
+      "interaction_gray_route": {
+        "props": [
           "prop_fern"
         ]
       }

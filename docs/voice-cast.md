@@ -32,6 +32,7 @@ One entry per speaker, keyed by id:
 | `chapters` | every chapter they appear in, so one person keeps one voice across the game |
 | `gemini.voice` | one of Gemini's 30 prebuilt voices |
 | `accent` | set only to override the sheet-wide `accent` (General American) |
+| `direction` | a person's direction for the voice model, told after who they are ("a touch quicker than usual") |
 | `lines` | up to three real quotes of theirs from the narration, each with its address |
 | `speaks` | false for those who only bleat or sigh |
 | `status` | `provisional` (assigned by the builder) or `approved` (chosen by a person) |
@@ -76,8 +77,8 @@ genders there are as best known, so check them by ear). Recurring characters are
 - Two speakers never share a voice in any chapter.
 - Nobody else gets the narrator's voice (Sulafat), since the narrator is in every chapter.
 - A rebuild never moves a voice. A person's decisions (status, voice, a gender they set, accent,
-  notes, history) carry over, and everything the content says is refreshed for everyone. Run it
-  again after writing a chapter, and only the new people are placed.
+  direction, notes, history) carry over, and everything the content says is refreshed for
+  everyone. Run it again after writing a chapter, and only the new people are placed.
 
 `npm run voice:cast -- --check` reports without writing, and exits 1 if any chapter has two
 speakers on one voice.
@@ -97,7 +98,15 @@ Each profile has:
   - the line it's on, with **‹ ›** to change lines;
   - one big **Play** button (**Render and play** the first time a line is heard in this voice);
   - a progress bar;
-  - **Play all**, to hear every line in turn.
+  - **Play all**, to hear every line in turn;
+  - **New take**, to render the same words again. Gemini has no seed, so each take reads a little
+    differently. It's one more call, up to five takes, and **back to take N** returns to an
+    earlier one.
+
+  **When anything changes what is sent** (the voice, accent, direction, or the narrator's
+  description), the button turns back into **Render and play**, with a note that this line hasn't
+  been heard in these words yet. One click renders the new version and plays it. The old clips
+  stay cached, so changing back is free.
 
   The lines further down share the same player.
 - **Their picture:** the figure the scenes draw them with, from `assets/`. The empty margin is
@@ -122,6 +131,12 @@ Each profile has:
 - **Voice and model:**
   - the voice, with a warning if it doesn't match their gender, and any clash in a chapter;
   - their accent;
+  - **your direction for the model**, in plain words ("a touch quicker than usual", "brighter,
+    with a smile in it"). It goes after who they are, in `direction` on the sheet, and is kept on
+    every rebuild. Leave it empty to remove it;
+  - for the narrator and the party, **how they sound**. Their description lives on the sheet
+    rather than in any chapter, so it is edited here. Everyone else's comes from their voice notes
+    in canon, edited above;
   - **what the model is told** besides the words: the exact Gemini 3.8 style, or the Gemini 3.1
     prompt, for the model picked in the header.
 - **Hear them:** every audition line in full, each with its own **Play**, and where it comes

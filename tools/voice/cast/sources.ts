@@ -11,7 +11,7 @@ import { inventory } from "../inventory.ts";
 import { buildSheet, type CastSheet, type ChapterLike, type IndividualLike, type Sources } from "./sheet.ts";
 
 export const SHEET_COMMENT =
-  "The cast voice sheet (docs/voice-cast.md). Built by `npm run voice:cast` from the chapters' voiceGuide.npcVoices, their scene casts and canon/individuals.yaml; edit voices on the cast page (`npm run voice:bakeoff -- --serve`, then /cast) or here. A person's decisions (status, voice, gender, accent, notes, history) survive every rebuild; everything else is refreshed from the content. `lines` are real quotes from the narration, for auditions.";
+  "The cast voice sheet (docs/voice-cast.md). Built by `npm run voice:cast` from the chapters' voiceGuide.npcVoices, their scene casts and canon/individuals.yaml; edit voices on the cast page (`npm run voice:bakeoff -- --serve`, then /cast) or here. A person's decisions (status, voice, gender, accent, direction, notes, history) survive every rebuild; everything else is refreshed from the content. `lines` are real quotes from the narration, for auditions.";
 
 const readDir = (dir: string): { file: string; json: Record<string, unknown> }[] =>
   fs

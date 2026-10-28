@@ -12,7 +12,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { cellOf, estimate, renderCell, type Workspace } from "../bakeoff/bakeoff.ts";
+import { cellOf, estimate, estimateTake, renderTake, type Workspace } from "../bakeoff/bakeoff.ts";
 import type { Cell } from "../bakeoff/page.ts";
 import { GEMINI_VOICES, engineOf, plan, type CastFile, type Fetch, type Keys, type ModelInfo } from "../bakeoff/providers.ts";
 import type { Sample } from "../bakeoff/samples.ts";
@@ -40,6 +40,13 @@ export interface CastRouteOptions {
 }
 
 const rootOf = (options: CastRouteOptions): string => options.root ?? path.resolve(path.dirname(options.sheetPath), "..", "..");
+
+/** A take number from the page: 1 (the first rendering) to MAX_TAKES. Gemini has no seed, so each take is a fresh call. */
+export const MAX_TAKES = 5;
+const takeOf = (value: unknown): number => {
+  const take = Number(value ?? 1);
+  return Number.isInteger(take) && take >= 1 && take <= MAX_TAKES ? take : 1;
+};
 
 /** The longest line the page will have someone say. */
 const SAY_MAX = 400;
@@ -73,6 +80,13 @@ export function auditionSample(id: string, entry: CastEntry, index: number): Sam
   return { id: `cast-${id}-${String(index)}`, tier: "cast", title: entry.name, tests: "", address: line.address, source: line.text, lines: [{ by: id, text: line.text }], speakers: [id] };
 }
 
+/** How a character is described to the voice model: name and notes, then a person's direction if they gave one. */
+export function describe(entry: CastEntry): string {
+  const who = `${entry.name}: ${entry.who}`;
+  const stop = (text: string): string => (/[.!?]$/.test(text.trim()) ? text : `${text}.`);
+  return entry.direction ? `${stop(who)} Direction: ${stop(entry.direction)}` : who;
+}
+
 /** The sheet as the planner's cast: each character described by name and notes, with their voice and accent. */
 export function sheetCast(sheet: CastSheet, base: CastFile): CastFile {
   return {
@@ -81,7 +95,7 @@ export function sheetCast(sheet: CastSheet, base: CastFile): CastFile {
     speakers: Object.fromEntries(
       Object.entries(sheet.speakers).map(([id, entry]) => [
         id,
-        { describe: `${entry.name}: ${entry.who}`, ...(entry.accent ? { accent: entry.accent } : {}), gemini: { voice: entry.gemini.voice } },
+        { describe: describe(entry), ...(entry.accent ? { accent: entry.accent } : {}), gemini: { voice: entry.gemini.voice } },
       ]),
     ),
   };
@@ -138,10 +152,10 @@ export function castPageData(options: CastRouteOptions, include: { profiles?: bo
 
 export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
   /** Renders one sample in the sheet's voices, inside the session's cap. */
-  async function render(sheet: CastSheet, sample: Sample, model: unknown, keys: Keys): Promise<Reply> {
+  async function render(sheet: CastSheet, sample: Sample, model: unknown, keys: Keys, take = 1): Promise<Reply> {
     const ws = { ...options.ws, cast: sheetCast(sheet, options.ws.cast) };
     const engine = engineFor(model, options.catalog);
-    const quoted = estimate(engine, [sample], 1, ws);
+    const quoted = estimateTake(engine, sample, take, ws);
     if (quoted.dollars === null && quoted.requests > 0) {
       return { status: 409, body: { error: `pricing.json has no price for ${engine.model}, so the cap cannot be kept.`, spent: budget.spent, cap: budget.cap } };
     }
@@ -150,7 +164,7 @@ export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
       return { status: 402, body: { error: `This would take the session past its $${budget.cap.toFixed(2)} cap. Raise the cap on the bake-off page to go on.`, spent: budget.spent, cap: budget.cap } };
     }
     budget.spent += price;
-    const cell = await renderCell(engine, sample, 1, ws, keys, options.fetch);
+    const cell = await renderTake(engine, sample, take, ws, keys, options.fetch);
     return { status: 200, body: { cell, spent: budget.spent, cap: budget.cap } };
   }
 
@@ -163,12 +177,14 @@ export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
         const engine = engineFor(body.model, options.catalog);
         const cells: Record<string, Cell[]> = {};
         const samples: Sample[] = [];
+        // A character on a later take is shown through that take: the cell's last.
+        const wanted = typeof body.takes === "object" && body.takes !== null ? (body.takes as Record<string, unknown>) : {};
         for (const [id, entry] of Object.entries(sheet.speakers)) {
           const list: Cell[] = [];
           auditionLines(id, entry).forEach((_, i) => {
             const sample = auditionSample(id, entry, i)!;
             samples.push(sample);
-            list.push(cellOf(engine, sample, 1, ws));
+            list.push(cellOf(engine, sample, takeOf(wanted[id]), ws));
           });
           cells[id] = list;
         }
@@ -183,7 +199,7 @@ export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
         if (!entry) return { status: 400, body: { error: `nobody called ${id} in the sheet` } };
         const sample = auditionSample(id, entry, Number(body.line ?? 0));
         if (!sample) return { status: 400, body: { error: "no such audition line" } };
-        return render(sheet, sample, body.model, keys);
+        return render(sheet, sample, body.model, keys, takeOf(body.take));
       }
       case "/api/cast/say": {
         // Anything typed on the profile page, said in the character's voice. Rendered once, then cached like any line.
@@ -282,6 +298,18 @@ export function createCastRoutes(options: CastRouteOptions, budget: Budget) {
             entry.gemini = { voice: nextVoice(sheet.speakers, id) };
             moved = { from, to: entry.gemini.voice };
           }
+        }
+        if (body.direction !== undefined) {
+          const direction = String(body.direction).replace(/\s+/g, " ").trim().slice(0, 600);
+          if (direction) entry.direction = direction;
+          else delete entry.direction;
+        }
+        if (body.who !== undefined) {
+          // Everyone else's "who" is rebuilt from their chapters and canon: change it there, on their profile.
+          if (entry.kind !== "narrator" && entry.kind !== "party") return { status: 400, body: { error: `${entry.name}'s description comes from their voice notes in canon: edit those, or add a direction` } };
+          const who = String(body.who).replace(/\s+/g, " ").trim().slice(0, 1200);
+          if (!who) return { status: 400, body: { error: "the description can't be blank" } };
+          entry.who = who;
         }
         if (body.accent !== undefined) {
           const accent = String(body.accent).slice(0, 200).trim();

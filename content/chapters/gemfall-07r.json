@@ -1086,9 +1086,9 @@
         },
         {
           "id": "carry",
-          "label": "Everybody carry a sackful up the hill",
+          "label": "Brace the sacks and carry them together",
           "icon": "might",
-          "goto": "check_haul_carry"
+          "goto": "interaction_haul_team"
         },
         {
           "id": "sledge",
@@ -1107,6 +1107,12 @@
               "max": 0
             }
           }
+        },
+        {
+          "id": "quick_carry",
+          "label": "Risk a quick heave with the sacks",
+          "icon": "might",
+          "goto": "check_haul_carry"
         }
       ],
       "variants": [
@@ -1743,7 +1749,7 @@
     },
     "scene_bend_lookout": {
       "type": "story",
-      "narration": "You reach the worst bend with an hour to spare. Far below, a long caravan is winding up the zigzags, twelve wagons long and slow as honey. There is time to get ready. Not much. The ground hums under your boots now, steady, like someone humming a song they cannot remember the end of.",
+      "narration": "The caravan is below the bend. Choose a preparation: a sign asks the master to stop; scouting finds the right wagon. If she hears her bell call, either will let you arrange a handover together. Otherwise you can still negotiate. The ground hums under your boots.",
       "choices": [
         {
           "id": "scout",
@@ -1837,6 +1843,26 @@
       "type": "choice_point",
       "narration": "The north road's worst bend: a hairpin over a long drop, where every wagon has to slow right down. Here comes the fattest caravan in the funnel, twelve wagons long. In the middle wagon something hums so loudly the mules have cotton in their ears.",
       "choices": [
+        {
+          "id": "arrange_return",
+          "label": "Bells answered: guide a handover with your sign",
+          "icon": "ribbon",
+          "goto": "scene_sign_agreement",
+          "requiresFlag": "caravan_listening",
+          "when": {
+            "flag": "big_sign"
+          }
+        },
+        {
+          "id": "marked_wagon",
+          "label": "Bells answered: guide the marked wagon into the lay-by",
+          "icon": "eye",
+          "goto": "scene_wagon_agreement",
+          "requiresFlag": "caravan_listening",
+          "when": {
+            "flag": "knows_the_wagon"
+          }
+        },
         {
           "id": "relay",
           "label": "Whistle for the centaur relay",
@@ -2009,7 +2035,7 @@
     },
     "scene_caravan_won": {
       "type": "story",
-      "narration": "The Caravan Stone is the size of a loaf of bread and hums like a whole choir. The moment it is pointed back up the mountain, the humming changes key, and sounds, very faintly, relieved. The next tremor is a little softer than the last.",
+      "narration": "The caravan's great stone, called the Caravan Stone, is the size of a loaf of bread and hums like a whole choir. The moment it is pointed back up the mountain, the humming changes key, and sounds, very faintly, relieved. The next tremor is a little softer than the last.",
       "onEnter": [
         {
           "type": "grantQuestItem",
@@ -2467,7 +2493,14 @@
       },
       "onSuccess": {
         "goto": "choice_the_bend",
-        "narration": "The master hears her own tune come back from the ridge, blinks, and holds up one hand. The whole caravan eases to a stop on the hairpin, mules snorting, and she looks you over with the first interested look she has had all day."
+        "narration": "The master hears her own tune come back from the ridge, blinks, and holds up one hand. The whole caravan eases to a stop on the hairpin, mules snorting, and she looks you over with the first interested look she has had all day.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "caravan_listening",
+            "value": true
+          }
+        ]
       },
       "onFailure": {
         "goto": "choice_the_bend",
@@ -2475,7 +2508,14 @@
       },
       "onAssisted": {
         "goto": "choice_the_bend",
-        "narration": "The lead wagoneer rings the tune again, slowly, until you have it. The master hears it come back from the ridge, and the whole caravan eases to a stop on the hairpin."
+        "narration": "The lead wagoneer rings the tune again, slowly, until you have it. The master hears it come back from the ridge, and the whole caravan eases to a stop on the hairpin.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "caravan_listening",
+            "value": true
+          }
+        ]
       },
       "art": "scenes/gemfall/caravan-bells-hairpin"
     },
@@ -2558,6 +2598,82 @@
         }
       ],
       "art": "scenes/gemfall/spring-drake-ledge"
+    },
+    "interaction_haul_team": {
+      "type": "interaction",
+      "narration": "The sacks keep leaning uphill. Odo offers a plank; somebody has painted THIS WAY UP on both ends. Brace the load while the next sack is moved. At the shelter you will still need to level the whole pile.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Hold the sacks steady while the load is moved.",
+        "actionLabel": "Move the load",
+        "supportLabel": "Brace a sack"
+      },
+      "onSuccess": {
+        "goto": "interaction_shelter_stack",
+        "narration": "The sacks reach the shelter without a runaway. The plank points both ways, but you do not."
+      },
+      "onFailure": {
+        "goto": "interaction_shelter_stack",
+        "narration": "The shelter keeper comes down to steady the load. The sacks arrive safely."
+      },
+      "onAssisted": {
+        "goto": "interaction_shelter_stack",
+        "narration": "The shelter keeper braces the other side. Together you carry the load uphill."
+      },
+      "art": "scenes/gemfall/way-shelter-stack"
+    },
+    "interaction_return_handover": {
+      "type": "interaction",
+      "narration": "The master reads your signal and turns into the lay-by. She agrees to send the Caravan Stone home if you can hold the wagon steady while she unloads it. The mules have already started their lunch break.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Brace the wagon while the master unloads the stone.",
+        "actionLabel": "Unload the stone",
+        "supportLabel": "Brace the wagon"
+      },
+      "onSuccess": {
+        "goto": "scene_caravan_won",
+        "narration": "The stone is safe in your arms. The master points uphill. \"Home delivery,\" she says. The mules refuse to sign for it."
+      },
+      "onFailure": {
+        "goto": "scene_caravan_won",
+        "narration": "A driver steadies the wheel. Together you finish the agreed handover."
+      },
+      "onAssisted": {
+        "goto": "scene_caravan_won",
+        "narration": "The master brings a wheel block. Together you unload the stone."
+      },
+      "art": "scenes/gemfall/caravan-bells-hairpin",
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
+        }
+      ]
+    },
+    "scene_sign_agreement": {
+      "type": "story",
+      "narration": "The master reads your enormous sign and nods. She will stop in the lay-by so you can send the stone home. One mule tries to eat the sign.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Brace the wagon together",
+          "icon": "hand",
+          "goto": "interaction_return_handover"
+        }
+      ]
+    },
+    "scene_wagon_agreement": {
+      "type": "story",
+      "narration": "You meet the marked wagon exactly where it stops. The master hears the bell call again and agrees to unload in the lay-by. No shouting over twelve wagons.",
+      "choices": [
+        {
+          "id": "on",
+          "label": "Brace the wagon together",
+          "icon": "hand",
+          "goto": "interaction_return_handover"
+        }
+      ]
     }
   },
   "voiceGuide": {
@@ -2601,6 +2717,17 @@
       "interaction_trickle": {
         "props": [
           "prop_red_stones"
+        ]
+      },
+      "interaction_haul_team": {
+        "props": [
+          "prop_stone_board"
+        ]
+      },
+      "interaction_return_handover": {
+        "props": [
+          "prop_wagon_wheels",
+          "prop_humming_stone"
         ]
       }
     }

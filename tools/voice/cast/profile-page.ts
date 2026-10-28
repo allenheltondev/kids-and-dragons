@@ -107,6 +107,8 @@ main { max-width: 1200px; margin: 0 auto; padding: 16px 16px 200px; display: gri
 .listen .big { width: 100%; padding: 12px; font-size: 17px; font-weight: 600; background: var(--accent); color: #fff; border-color: var(--accent); border-radius: 10px; }
 .listen .big.playing { background: var(--ink); border-color: var(--ink); color: var(--bg); }
 .listen .all { width: 100%; }
+.listen .takes { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
+.listen .takes .all { width: auto; white-space: nowrap; }
 .progress { height: 6px; background: var(--line); border-radius: 999px; overflow: hidden; }
 .progress > span { display: block; height: 100%; width: 0; background: var(--accent); }
 .listen .time { font: 12px ui-monospace, monospace; color: var(--muted); display: flex; justify-content: space-between; }
@@ -243,6 +245,10 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
   // ---- Playback ----
   let player = null;
   let picked = 0; // the audition line the player under the picture is on
+  // Which take each character is being heard on, this visit: 1 is the first rendering, and each
+  // "New take" is one fresh call (Gemini has no seed, so the same words come out differently).
+  const takeOf = {};
+  const MAX_TAKES = 5;
   let playingAll = false;
   function halt() {
     if (!player) return;
@@ -307,6 +313,8 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       big.textContent = on ? "■ Stop" : clipOf((cells[current] || [])[picked]) ? "▶ Play line " + (picked + 1) : "▶ Render and play";
       big.classList.toggle("playing", !!on);
     }
+    const note = document.getElementById("listenNote");
+    if (note) note.textContent = clipOf((cells[current] || [])[picked]) ? "" : "Not heard yet in this voice and these words" + ((takeOf[current] || 1) > 1 ? ", on this take" : "") + ": Play renders it first, for a fraction of a cent.";
     const all = document.getElementById("listenAll");
     all.textContent = playingAll ? "■ Stop playing all" : "▶▶ Play all " + lines.length + " lines";
     all.hidden = lines.length < 2;
@@ -316,8 +324,10 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     box.querySelector(".time").replaceChildren(el("span", {}, clock(t)), el("span", {}, d ? clock(d) : ""));
     for (const button of box.querySelectorAll(".pick button")) button.disabled = lines.length < 2;
   }
-  const clipOf = (cell) => { const take = cell && cell.takes && cell.takes[0]; return take && !take.pending && take.clips[0] ? take.clips[0].file : null; };
-  const errorOf = (cell) => { const take = cell && cell.takes && cell.takes[0]; return take && take.error; };
+  // A cell runs through the character's current take; its last take is the one to hear.
+  const lastTake = (cell) => cell && cell.takes && cell.takes[cell.takes.length - 1];
+  const clipOf = (cell) => { const take = lastTake(cell); return take && !take.pending && take.clips[0] ? take.clips[0].file : null; };
+  const errorOf = (cell) => { const take = lastTake(cell); return take && take.error; };
 
   // One button: plays the clip, rendering it first if it was never heard in this voice.
   async function playLine(id, i, row, button) {
@@ -326,7 +336,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       button.disabled = true;
       button.textContent = "Rendering…";
       try {
-        const json = await call("/api/cast/render", { id, line: i, model: prefs.model });
+        const json = await call("/api/cast/render", { id, line: i, model: prefs.model, take: takeOf[id] || 1 });
         (cells[id] ||= [])[i] = json.cell;
         spent = json.spent; cap = json.cap;
       } catch (error) { toast(error.message); }
@@ -366,6 +376,9 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       data.speakers[id] = json.entry;
       clashes = json.clashes;
       if (json.moved) toast("Moved to " + json.moved.to + " to fit (was " + json.moved.from + ")");
+      // What is sent may have changed (voice, accent, direction, description), and with it which
+      // clips exist: look again, so Play offers to render the new words instead of replaying the old.
+      await refreshState();
       return json;
     } catch (error) { toast(error.message); return null; }
   }
@@ -422,16 +435,16 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
   }
 
   // ---- Sections ----
-  function editable(label, text, where, onSave, extra) {
+  function editable(label, text, where, onSave, extra, saveLabel = "Save to canon", allowEmpty = false) {
     const box = el("div", { class: "note" });
     const show = () => {
-      const edit = el("button", { type: "button", class: "link" }, "Edit");
+      const edit = el("button", { type: "button", class: "link" }, text || !allowEmpty ? "Edit" : "Add");
       edit.addEventListener("click", editing);
-      box.replaceChildren(...[el("div", { class: "where" }, el("span", {}, label + (where ? " · " + where : "")), edit), el("div", { class: "text" }, text || "—"), extra].filter(Boolean));
+      box.replaceChildren(...[el("div", { class: "where" }, el("span", {}, label + (where ? " · " + where : "")), edit), el("div", { class: "text" }, text || (allowEmpty ? "None." : "—")), extra].filter(Boolean));
     };
     const editing = () => {
       const area = el("textarea", { "aria-label": label }, text);
-      const saveButton = el("button", { type: "button", class: "primary" }, "Save to canon");
+      const saveButton = el("button", { type: "button", class: "primary" }, saveLabel);
       const cancel = el("button", { type: "button" }, "Cancel");
       cancel.addEventListener("click", show);
       saveButton.addEventListener("click", async () => {
@@ -503,6 +516,23 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     const big = el("button", { type: "button", class: "big", id: "listenPlay", title: "P or space" }, "▶ Play");
     big.addEventListener("click", () => { playingAll = false; listen(picked); });
     const all = el("button", { type: "button", class: "all", id: "listenAll" }, "▶▶ Play all");
+    // Another rendering of the same words, for when the voice is right and the reading isn't.
+    const take = takeOf[id] || 1;
+    const fresh = el("button", { type: "button", class: "all", id: "listenTake", disabled: take >= MAX_TAKES, title: "Render this line again, as a new take" }, "↻ New take");
+    fresh.addEventListener("click", async () => {
+      stop();
+      takeOf[id] = Math.min(MAX_TAKES, take + 1);
+      await refreshState();
+      draw();
+      listen(picked);
+    });
+    const earlier = el("button", { type: "button", class: "link", id: "listenEarlier", hidden: take <= 1 }, "back to take " + (take - 1));
+    earlier.addEventListener("click", async () => {
+      stop();
+      takeOf[id] = Math.max(1, take - 1);
+      await refreshState();
+      draw();
+    });
     all.addEventListener("click", () => {
       if (playingAll) return stop();
       stop();
@@ -518,7 +548,9 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       big,
       el("div", { class: "progress", "aria-hidden": "true" }, el("span")),
       el("div", { class: "time" }),
-      all);
+      all,
+      el("div", { class: "takes" }, fresh, el("span", { class: "hint" }, "take " + take + " of up to " + MAX_TAKES, " ", earlier)),
+      el("div", { class: "hint", id: "listenNote" }));
   }
 
   function about(id, entry, profile) {
@@ -553,18 +585,19 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
     const empty = !notes.length && !individual.length;
     return el("section", { class: "panel" },
       el("h2", {}, "Voice notes in canon"),
-      empty ? el("div", { class: "hint" }, entry.kind === "narrator" || entry.kind === "party" ? "Described on the sheet itself, not in a chapter." : "No chapter gives a voice note for them yet: they appear only in scene casts.") : null,
+      empty ? el("div", { class: "hint" }, entry.kind === "narrator" || entry.kind === "party" ? "Described on the sheet itself, not in a chapter: change it under Voice and model." : "No chapter gives a voice note for them yet: they appear only in scene casts.") : null,
       notes, individual,
       el("div", { class: "hint" }, "Edits are written to the file shown, and the sheet is rebuilt so the voice model hears the new words. Your decisions are kept."));
   }
 
   function modelPanel(id, entry) {
+    const sheetOwned = entry.kind === "narrator" || entry.kind === "party";
     const voice = el("select", { "aria-label": "Voice" }, data.voices.map((v) => el("option", { value: v.id }, voiceLabel(v))));
     voice.value = entry.gemini.voice;
     voice.addEventListener("change", async () => { await save(id, { voice: voice.value }); draw(); loadTold(); if (prefs.autoplay) autoPlay(); });
     const others = Object.entries(data.speakers).filter(([other, e]) => other !== id && e.gemini.voice === entry.gemini.voice).length;
     const accent = el("input", { value: entry.accent || "", placeholder: data.accent, "aria-label": "Accent" });
-    accent.addEventListener("change", async () => { await save(id, { accent: accent.value }); loadTold(); });
+    accent.addEventListener("change", async () => { await save(id, { accent: accent.value }); draw(); loadTold(); });
     const info = voiceInfo[entry.gemini.voice];
     const mismatch = info && info.gender && entry.gender && (entry.gender === "female" || entry.gender === "male") && (info.gender === "f") !== (entry.gender === "female");
     return el("section", { class: "panel" },
@@ -573,8 +606,19 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
       mismatch ? el("div", { class: "clash" }, "This voice reads as a " + (info.gender === "f" ? "woman's" : "man's") + ", and they're marked " + entry.gender + ".") : null,
       (clashes[id] || []).map((clash) => el("div", { class: "clash" }, "Same voice as " + clash.with.map((other) => (data.speakers[other] || { name: other }).name).join(", ") + " in " + clash.chapter)),
       el("label", { class: "inline grow" }, "Accent", accent),
+      sheetOwned ? editable("How they sound", entry.who, "on the sheet: the " + entry.name.toLowerCase() + " isn't in any chapter's canon", async (text) => {
+        const json = await save(id, { who: text });
+        if (json) loadTold();
+        return !!json;
+      }, null, "Save") : null,
+      editable("Your direction for the model", entry.direction || "", "added after who they are, kept on every rebuild", async (text) => {
+        const json = await save(id, { direction: text });
+        if (json) loadTold();
+        return !!json;
+      }, el("div", { class: "hint" }, "Plain words, like \u201ca touch quicker than usual\u201d or \u201cbrighter, with a smile in it\u201d. Leave it empty to remove it."), "Save", true),
       el("div", { class: "hint" }, "What " + (told ? told.model : prefs.model) + " is told, besides the words:"),
-      el("pre", { class: "told", id: "told" }, told && told.id === id ? told.display : "…"));
+      el("pre", { class: "told", id: "told" }, told && told.id === id ? told.display : "…"),
+      el("div", { class: "hint" }, "Changing the description or direction changes what is sent, so each line renders once more in the new words."));
   }
 
   function hearPanel(id, entry) {
@@ -661,7 +705,7 @@ label.inline { display: inline-flex; gap: 6px; align-items: center; font-size: 1
 
   async function refreshState() {
     try {
-      const json = await call("/api/cast/state", { model: prefs.model });
+      const json = await call("/api/cast/state", { model: prefs.model, takes: takeOf });
       cells = json.cells;
       clashes = json.clashes;
       spent = json.spent;
