@@ -219,8 +219,11 @@ function validateAgainstSchema(rep, ajv, schemaName, path, data) {
  */
 function checkVoiceCast(rep, ajv) {
   const castPath = join(CONTENT, "voice", "cast.json");
-  if (!existsSync(castPath)) return;
   console.log(`\n${BOLD}voice cast${RESET}`);
+  if (!existsSync(castPath)) {
+    rep.fail(rel(castPath), "", "the cast voice sheet is missing", "Recorded narration reads it for every line. Run `npm run voice:cast` to build it.");
+    return;
+  }
   const sheet = readJson(rep, castPath);
   if (!sheet || !validateAgainstSchema(rep, ajv, "voice-cast", castPath, sheet)) return;
   const file = rel(castPath);
@@ -229,18 +232,31 @@ function checkVoiceCast(rep, ajv) {
     ok = false;
     rep.fail(file, "/speakers/narrator", "the sheet has no narrator", "One narrator voice reads every line no script gives to someone else.");
   }
-  for (const clash of voiceClashes(sheet)) {
+  // Who is in which chapter comes from the content as it is now, joined to the voices on the sheet:
+  // a known speaker who walks into a new chapter must not share a voice there, even before
+  // `npm run voice:cast` refreshes the sheet's own chapter lists.
+  let drafts = null;
+  try {
+    drafts = collectCharacters(loadSources(ROOT));
+  } catch (error) {
+    // Without the sources the clash check would fall back to the sheet's own, possibly stale,
+    // chapter lists: that is the gate quietly checking less, so it fails instead.
+    ok = false;
+    rep.fail(file, "", `could not read who appears where: ${String(error?.message ?? error)}`, "The cast check reads the chapters and canon/individuals.yaml, as `npm run voice:cast` does.");
+  }
+  const byId = new Map((drafts ?? []).map((d) => [d.id, d]));
+  const current = {
+    ...sheet,
+    speakers: Object.fromEntries(
+      Object.entries(sheet.speakers).map(([id, entry]) => [id, byId.has(id) ? { ...entry, chapters: [...byId.get(id).chapters].sort() } : entry]),
+    ),
+  };
+  for (const clash of voiceClashes(current)) {
     ok = false;
     rep.fail(file, `/${clash.chapter}`, `${clash.speakers.join(", ")} share the voice ${clash.voice} in ${clash.chapter}`, "Two people in one chapter must sound different, and nobody may sound like the narrator: give one of them another voice on the cast page.");
   }
-  // Coverage reads the content the same way the builder does, so the gate and `voice:cast` agree on who speaks.
-  let missing = [];
-  try {
-    const known = new Set(Object.keys(sheet.speakers));
-    missing = collectCharacters(loadSources(ROOT)).filter((d) => !known.has(d.id)).map((d) => d.name);
-  } catch (error) {
-    rep.warn(`${file}: could not read the cast sources`, String(error?.message ?? error));
-  }
+  const known = new Set(Object.keys(sheet.speakers));
+  const missing = (drafts ?? []).filter((d) => !known.has(d.id)).map((d) => d.name);
   if (missing.length) {
     rep.warn(`${file}: ${String(missing.length)} speaker(s) in the content are not on the sheet yet`, `Run \`npm run voice:cast\` to add them: ${missing.slice(0, 8).join(", ")}${missing.length > 8 ? ", ..." : ""}`);
   }
