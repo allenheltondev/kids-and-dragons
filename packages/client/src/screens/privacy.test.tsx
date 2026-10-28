@@ -47,7 +47,7 @@ describe("reaching it", () => {
     const link = screen.getByRole("link", { name: /^privacy$/i });
     // A footer under the page's body, not a card or a line among the buttons.
     expect(link.closest("footer.privacy-footer")).not.toBeNull();
-    expect(container.querySelector(".home__inner > footer.privacy-footer")).not.toBeNull();
+    expect(container.querySelector("main.home > footer.privacy-footer")).not.toBeNull();
     // It opens the policy in a tab of its own, so a name or code already typed is not lost.
     expect(link.getAttribute("href")).toBe("/privacy");
     expect(link.getAttribute("target")).toBe("_blank");

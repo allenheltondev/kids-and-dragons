@@ -371,9 +371,10 @@ export function SharedHome(): ReactElement {
             </button>
           </div>
         </div>
-        {/* The privacy policy (#523): a quiet footer under the body, there whether joining or hosting. */}
-        <PrivacyFooter />
       </div>
+
+      {/* The privacy policy (#523): the page's footer, there whether joining or hosting. */}
+      <PrivacyFooter />
 
       <LazySignInFlow />
     </main>
