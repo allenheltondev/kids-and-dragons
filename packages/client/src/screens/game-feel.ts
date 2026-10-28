@@ -31,7 +31,7 @@ export function buzz(pattern: number | number[]): void {
 const STAMP_WIN: Record<InteractionKind, string> = {
   precision: "Bullseye!",
   timing: "Just right!",
-  memory: "Perfect!",
+  memory: "You remembered!",
   sequence: "That's the way!",
   tracking: "Found it!",
   balance: "Steady!",
@@ -41,14 +41,14 @@ const STAMP_WIN: Record<InteractionKind, string> = {
 };
 
 export function stampFor(prompt: InteractionPrompt): string {
-  if (prompt.outcome === "assisted") return "Phew!";
-  if (prompt.outcome === "failure") return "Whoops!";
+  if (prompt.outcome === "assisted") return "Together!";
+  if (prompt.outcome === "failure") return "Plot twist!";
   return STAMP_WIN[prompt.spec.kind];
 }
 
 /** Kinds whose first moment is a GO, rather than a pattern everyone has to be watching. */
 export function saysGo(kind: InteractionKind): boolean {
-  return kind !== "memory" && kind !== "tracking";
+  return kind !== "memory" && kind !== "tracking" && kind !== "relay";
 }
 
 /** Which pad is lit during a pattern's playback, or null between steps and after it. */

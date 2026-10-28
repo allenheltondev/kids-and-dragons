@@ -1,5 +1,5 @@
 import { useState, type CSSProperties } from "react";
-import { balanceReady, precisionPosition, precisionSuccess, relayHolder, supportsReady } from "@kad/shared";
+import { balanceReady, supportsReady } from "@kad/shared";
 import type { InteractionPrompt, PartyMember } from "@kad/shared";
 import { useChapter, useRunState } from "../store";
 import { reducedMotion } from "../a11y/prefs";
@@ -24,9 +24,9 @@ export function glyphUrl(label: string): string | null {
 export function PaintedGlyph({label}:{label:string}) {
  const url=glyphUrl(label);return url?<img className="painted-glyph" src={url} alt="" aria-hidden="true" />:null;
 }
-export function PaintedCover({ bells, reveal, diving=false, icon, target }: {bells:boolean;reveal:boolean;diving?:boolean;icon?:string;target?:string}) {
+export function PaintedCover({ bells, reveal, diving=false, icon, target, raised=false }: {bells:boolean;reveal:boolean;diving?:boolean;icon?:string;target?:string;raised?:boolean}) {
  const [failed,setFailed]=useState(false);
- return <span className={"painted-cover"+(bells?" painted-cover--bell":"")} aria-hidden="true">
+ return <span className={"painted-cover"+(bells?" painted-cover--bell":"")} data-raised={raised} aria-hidden="true">
   {reveal&&(icon?<span className="painted-cover__glow" />:<img className="painted-cover__peek" src={bells?propUrl("ticking-crystal"):"/assets/cast/"+(diving?"kid_burrowing":"kid_peeking")+"/assembled.png"} alt="" />)}
   {reveal && target && <img className="painted-cover__target" src={propUrl(target)} alt="" onError={e=>{e.currentTarget.style.visibility="hidden";}} />}
   {!failed && <img className="painted-cover__front" src={propUrl(icon ?? (bells?"wind-bells":"snow-mound"))} alt="" onError={()=>setFailed(true)} />}
@@ -41,7 +41,7 @@ export function PaintedInteraction({prompt,party,now}:{prompt:InteractionPrompt;
  const state=useRunState();
  const chapter=useChapter();
  const appearance=interactionAppearance(chapter?.id===state?.chapterId?chapter:null,state?.sceneId);
- if(!appearance || prompt.spec.kind==="tracking")return null;
+ if(!appearance || prompt.spec.kind==="tracking" || prompt.spec.kind==="relay")return null;
  const {spec}=prompt;
  const still=reducedMotion()||prompt.relaxed||prompt.phase!=="active";
  const elapsed=Math.max(0,now-Date.parse(prompt.startedAt??new Date(now).toISOString()));
@@ -53,27 +53,6 @@ export function PaintedInteraction({prompt,party,now}:{prompt:InteractionPrompt;
  }
  const primary=props[0];
  const style:CSSProperties={};
- if(!still && (spec.kind==="precision" || spec.kind==="timing")) {
-  const position=precisionPosition(elapsed,spec.periodMs);
-  if(spec.kind==="precision") {style.left=(10+position*80)+"%";style.top=(65-Math.sin(position*Math.PI)*25)+"%";style.transform="translate(-50%,-50%) rotate("+(-25+position*50)+"deg)";}
-  else {const safe=precisionSuccess(spec,position,prompt.relaxed);style.transform="translate(-50%,-50%) scaleY("+(safe?0.65:1)+")";style.opacity=safe?0.68:1; if(primary==="moving-floe" || primary==="ferry-boat")style.left=(40+position*20)+"%";}
- }
- if(spec.kind==="balance") {
-  const levels=connected.map(id=>prompt.levels?.[id]??0);
-  const tilt=levels.length>1?(levels.at(-1)!-levels[0]!)*20:0;
-  style.transform="translate(-50%,-50%) rotate("+(still?0:tilt)+"deg)";
- }
- if(spec.kind==="relay") {
-  const holder=relayHolder(prompt,connected);
-  const index=holder?Math.max(0,party.findIndex(m=>m.playerId===holder)):party.length;
-  style.left=(15+(index/Math.max(1,party.length))*70)+"%";
-  style.top=prompt.caughtBy===holder?"44%":"35%";
- }
- if(prompt.phase==="ready"&&state?.sceneId==="interaction_egg_baskets"&&primary==="prop_egg_basket"){style.left="70%";style.top="48%";}
- if(spec.kind==="cooperate" && primary) {
-  const supported=supportsReady(prompt,connected,new Date(now).toISOString());
-  style.top=supported?"40%":"60%";
- }
  if(state?.sceneId==="chalk_snap"){style.left="50%";style.top="50%";style.transform="translate(-50%,-50%)";}
  if(spec.kind==="play"&&primary==="hatch-cover"){const open=spec.stages?.length?Math.min(1,(prompt.taps??0)/spec.stages.length):1;style.transform="translate(-50%,-50%) rotate("+(-open*65)+"deg)";}
  if(spec.kind==="play")style.filter=prompt.reactions?.length?"drop-shadow(0 0 6px #e6c878)":"none";
@@ -84,8 +63,8 @@ export function PaintedInteraction({prompt,party,now}:{prompt:InteractionPrompt;
   {primary&&<Picture id={primary} style={style} className="interaction-art__main" />}
   {extras.map((id,index)=><img key={id} className="interaction-art__extra" src={"/assets/cast/"+id+"/assembled.png"} alt="" style={{left:(10+index*65/Math.max(1,extras.length-1))+"%"}} />)}
   {reaction&&<img className="interaction-art__reaction" src={"/assets/cast/"+reaction+"/assembled.png"} alt="" />}
-  {["relay","cooperate","balance","precision","timing"].includes(spec.kind)&&party.map((member,index)=><img key={member.playerId}
-   className={"interaction-art__hero"+(spec.kind==="relay"&&prompt.caughtBy===member.playerId?" interaction-art__hero--catch":"")}
+  {["cooperate","balance","precision","timing"].includes(spec.kind)&&party.map((member,index)=><img key={member.playerId}
+   className="interaction-art__hero"
    src={characterWorldArtUrl(member.character.species,member.character.tier,member.character.class)} alt=""
    style={{left:(15+index*70/Math.max(1,party.length))+"%"}} />)}
  </div>;

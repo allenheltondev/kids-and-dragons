@@ -30,12 +30,12 @@ All three kinds require `cue` and `actionLabel`:
 | Kind | Additional fields | Reusable behavior |
 | --- | --- | --- |
 | `precision` | `target` (0–1), `width` (0.05–1), `periodMs` (2000–20000) | Repeating aim marker; relaxed play doubles target width. |
-| `cooperate` | `supportLabel` | Friends hold supports while the acting hero completes the action; solo and relaxed play use props. A painted prop can illustrate the moment. |
+| `cooperate` | `supportLabel` | Everyone holds together for a short shared lift. Releasing resets progress. Solo and relaxed play use props, and the action finishes automatically. |
 | `sequence` | `options` with unique `id`, `label`, `icon`; `answer` as an ordered list of option ids; `clues` as shareable strings | Players share clues and assemble a sequence. Repeated option ids in an answer are allowed. |
 | `tracking` | `covers` (2–4 position labels); `start` (zero-based position), `swaps` (pairs of different position indexes), `stepMs` (800–5000) | Reveal a glow, move the covers, then choose its final position. Relaxed play reveals the final location. |
 | `memory` | `options`, `answer`, `stepMs` (600–5000) | Watch a symbol pattern and echo it. Repeats are allowed. Relaxed play keeps a reference visible. |
 | `timing` | Same fields as `precision` | A repeating wait/now signal for sneaking, jumping, or dodging. No deadline. |
-| `balance` | `objectLabel` | Every connected hero raises or lowers their side in quarter steps, aiming for the middle before carrying the object. Relaxed play allows a wider range. |
+| `balance` | `objectLabel` | Every connected hero contributes lift in quarter steps. Different contributions can balance the shared load; it finishes automatically when everyone is lifting and the shared marker reaches the gold. Relaxed play widens the target. |
 | `relay` | `objectLabel` | Each connected hero catches and passes the object in turn. Disconnected receivers are skipped; solo play catches and sends to the destination. |
 | `play` | `options` with `id`, `label`, `icon`, and `reaction`; `participation` (`any` or `everyone`); optional `stages` | Freely feed, pet, celebrate, or contribute to a shared scene. Optional stages advance on each tap, useful for waking a creature. |
 
