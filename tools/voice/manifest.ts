@@ -11,25 +11,21 @@
  * clip is `missing`, which is a report and never a gate.
  */
 
+import { manifestName, type ManifestClip, type VoiceManifest } from "../../packages/shared/src/voice-clips";
 import type { ClassifiedLine } from "./lines";
 import type { Desired, DesiredLine } from "./desired";
 
-export interface ManifestClip {
-  /** The clip key (clip-key.ts), which is also its file name in the bucket. */
-  clip: string;
-  ms: number;
-}
-
+export type { ManifestClip };
 /** address, then variant (`""` when the line has no tokens), then the clips in play order. */
-export type Manifest = Record<string, Record<string, ManifestClip[]>>;
+export type Manifest = VoiceManifest;
 
 export interface Lock {
   approved: Record<string, { at?: string; note?: string }>;
 }
 
-/** Which manifest file holds a line: its chapter, or `_<campaign>` / `_help` for text outside one. */
-export function manifestName(line: Pick<ClassifiedLine, "chapter" | "campaign">): string {
-  return line.chapter.startsWith("@") ? `_${line.campaign}` : line.chapter;
+/** Which manifest file holds a line (voice-clips.ts, the layout the client reads too). */
+export function groupOf(line: Pick<ClassifiedLine, "chapter" | "campaign">): string {
+  return manifestName(line.chapter, line.campaign);
 }
 
 export type ClipState = "approved" | "awaiting-review" | "stale" | "missing";
@@ -101,4 +97,37 @@ export function linesByClip(desired: Desired): Map<string, DesiredLine[]> {
   const out = new Map<string, DesiredLine[]>();
   for (const line of desired.lines) for (const segment of line.segments) out.set(segment.key, [...(out.get(segment.key) ?? []), line]);
   return out;
+}
+
+/**
+ * The manifest after a run. A line gets an entry once *every* clip it needs is
+ * rendered (all or nothing, as playback is), with each clip's length. Entries
+ * already there stay, so a partial run never takes away a take that was good;
+ * `prune` drops the ones nothing asks for any more. Output is sorted so the
+ * file diffs cleanly in git.
+ */
+export function mergeManifest(existing: Manifest, lines: readonly DesiredLine[], lengths: ReadonlyMap<string, number>, prune = false): Manifest {
+  const wanted = new Set(lines.map((line) => `${line.address}\u0000${line.variant}`));
+  const merged: Manifest = {};
+  for (const [address, variants] of Object.entries(existing)) {
+    for (const [variant, clips] of Object.entries(variants)) {
+      if (prune && !wanted.has(`${address}\u0000${variant}`)) continue;
+      (merged[address] ??= {})[variant] = clips;
+    }
+  }
+  for (const line of lines) {
+    const clips: ManifestClip[] = [];
+    for (const segment of line.segments) {
+      const ms = lengths.get(segment.key);
+      if (ms === undefined) break;
+      clips.push({ clip: segment.key, ms });
+    }
+    if (clips.length === line.segments.length) (merged[line.address] ??= {})[line.variant] = clips;
+  }
+  const sorted: Manifest = {};
+  for (const address of Object.keys(merged).sort()) {
+    sorted[address] = {};
+    for (const variant of Object.keys(merged[address] ?? {}).sort()) sorted[address][variant] = merged[address]?.[variant] ?? [];
+  }
+  return sorted;
 }

@@ -1,6 +1,6 @@
 # Voice narration plan (ElevenLabs or Gemini TTS)
 
-**Status: plan. Built so far: `npm run voice:cost` (§9), the script sidecar schema and join-equals-source check in `content:validate` (§3), the clip key, desired-clip list and `npm run voice:status` (§4: `tools/voice/clip-key.ts`, `desired.ts`, `manifest.ts`), `npm run voice:extract`, the line inventory (§1, phase 1 minus `narrationParts`), the phase-0 bake-off harness `npm run voice:bakeoff` ([voice-bakeoff.md](./voice-bakeoff.md)), the cast voice sheet `npm run voice:cast` and its `/cast` page ([voice-cast.md](./voice-cast.md)), and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
+**Status: plan. Built so far: `npm run voice:cost` (§9), the script sidecar schema and join-equals-source check in `content:validate` (§3), the clip key, desired-clip list and `npm run voice:status` (§4: `tools/voice/clip-key.ts`, `desired.ts`, `manifest.ts`), `npm run voice:generate` with direct-to-S3 upload and the shared clip layout (`packages/shared/src/voice-clips.ts`, §4-§5), `npm run voice:extract`, the line inventory (§1, phase 1 minus `narrationParts`), the phase-0 bake-off harness `npm run voice:bakeoff` ([voice-bakeoff.md](./voice-bakeoff.md)), the cast voice sheet `npm run voice:cast` and its `/cast` page ([voice-cast.md](./voice-cast.md)), and read-aloud on by default on the TV (§7).** This covers recorded, multi-voice narration: a narrator plus a
 consistent voice for each cast member. It also covers the pipeline that turns authored text into
 audio linked to that text, knows what needs (re)generating, and caches hard at every layer.
 
@@ -253,6 +253,39 @@ What follows from that:
   `voice:status` as stale with its cost before anyone spends anything.
 - Neighboring lines (providers' previous/next-text context, if used) are **not** in the key. This
   way, editing one line doesn't regenerate the paragraph around it.
+
+### Running it: `npm run voice:generate`
+
+Renders what `voice:status` says is owed, and **spends nothing unless you pass
+`--render`**. Without it, it reads the destination, prints what is already there
+and what the rest would cost, and stops.
+
+```bash
+npm run voice:generate -- --chapter bramblewood-01                       # plan and price only
+npm run voice:generate -- --chapter bramblewood-01 --fake --dir /tmp/clips --render   # fake tones, no key, no AWS
+GEMINI_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stage staging --render
+… --stage staging,prod        # render once, upload to both buckets
+```
+
+- **Straight to S3.** `--stage` finds the site bucket from the `kad-<stage>` stack's
+  `SiteBucketName` output (as `deploy.sh` does); `--bucket NAME` names one. It uses your own AWS
+  credentials, like `timing:export`. Each clip goes to `voice/<key[0:2]>/<key>.webm` with
+  `Cache-Control: public,max-age=31536000,immutable`, `Content-Type: audio/webm` and its length in
+  object metadata, by a conditional write (`If-None-Match: *`): a clip that exists is never replaced,
+  even by two runs racing. A `HEAD` before the provider call is the generation cache.
+- **Caps.** `--max-dollars` (default 75) and `--max-chars` stop the run *before* the request that
+  would cross them, priced with the same model as `voice:cost`, with in-flight requests reserved
+  against the cap. What is left is the next run's.
+- **Manifests.** After a real run, `content/voice/manifest/<chapter>.json` gets an entry for every
+  line whose clips all exist. Commit them: they deploy with `content/` and the client reads them at
+  `/content/voice/manifest/<chapter>.json`. `--prune` drops entries nothing asks for any more.
+- **Referencing.** `packages/shared/src/voice-clips.ts` is the one place that knows the layout
+  (`clipPath`, `manifestPath`, `variantKey`, `playlistFor`). The tool that uploads and the client that
+  plays share it. `playlistFor(narrationParts, manifest)` returns the clips to play, or `null` when any
+  part is unrecorded, so the whole utterance falls back to the device voice.
+- **Deploys leave `voice/` alone.** `deploy.sh` syncs `--delete` only into `bundle/`, `assets/` and
+  `content/`, and a test pins that. CloudFront serves `/voice/*` from the site bucket with no SPA
+  router, so a missing clip is a 403/404 and never an `index.html`.
 
 ### Manifest and lock (in git)
 

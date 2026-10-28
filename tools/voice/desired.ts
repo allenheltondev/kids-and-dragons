@@ -14,7 +14,7 @@
  */
 
 import type { ClassifiedLine } from "./lines";
-import { clipKey, spokenForm, type Lexicon } from "./clip-key";
+import { clipKey, spokenForm, stableStringify, type Lexicon } from "./clip-key";
 import { scriptReport, type ScriptEntry, type ScriptFile } from "./script";
 
 export interface CastSpeaker {
@@ -67,6 +67,12 @@ export interface DesireOptions {
   scripts: ReadonlyMap<string, ScriptFile>;
   provider?: Provider;
   lexicon?: Lexicon;
+  /**
+   * What each delivery name means (bakeoff cast.json `delivery`): the style
+   * words a provider is given. They are in the key, so rewording "whisper"
+   * re-renders the lines that whisper and nobody else's.
+   */
+  deliveries?: Readonly<Record<string, unknown>>;
 }
 
 /**
@@ -93,7 +99,8 @@ export function desiredClips(lines: readonly ClassifiedLine[], options: DesireOp
     if (voice === undefined) return null;
     const spoken = spokenForm(text, variant, options.lexicon);
     if (spoken === "") return null;
-    const key = clipKey({ ...provider, voice, ...(delivery ? { delivery } : {}), text: spoken });
+    const meaning = delivery === undefined ? undefined : options.deliveries?.[delivery] ?? delivery;
+    const key = clipKey({ ...provider, voice, ...(meaning !== undefined ? { delivery: stableStringify(meaning) } : {}), text: spoken });
     return { key, by, text: spoken, ...(delivery ? { delivery } : {}) };
   };
 

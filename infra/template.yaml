@@ -887,6 +887,18 @@ Resources:
             Compress: true
             AllowedMethods: [GET, HEAD, OPTIONS]
             CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          # Recorded narration (docs/voice-narration-plan.md §5). Its own top-level
+          # prefix, uploaded by `voice:generate` and never synced or deleted by
+          # deploy.sh. Each clip is named by a hash of its sound, so it is served
+          # with the immutable one-year header it was uploaded with. No SPA
+          # router here: a clip that is not there is a 403/404 the client turns
+          # into the device voice, never an index.html it would try to decode.
+          - PathPattern: /voice/*
+            TargetOriginId: site
+            ViewerProtocolPolicy: redirect-to-https
+            Compress: false
+            AllowedMethods: [GET, HEAD, OPTIONS]
+            CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
 
   # ---------------------------------------------------------------------------
   # Logs
