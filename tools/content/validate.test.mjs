@@ -21,11 +21,12 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { afterAll, describe, expect, it } from "vitest";
+import { sourceHash } from "../voice/script.ts";
 
 const REPO = fileURLToPath(new URL("../..", import.meta.url));
 const VALIDATOR = join(REPO, "tools", "content", "validate.mjs");
@@ -1608,6 +1609,60 @@ describe("matchups (docs/matchups.md)", () => {
       },
     );
     expect(result.out).toContain("no traits yet");
+    expect(result.code).toBe(0);
+  });
+});
+
+describe("voice scripts (docs/voice-narration-plan.md section 3)", () => {
+  const SCRIPT = ["content", "voice", "scripts", "bramblewood-01.json"];
+
+  /** A script for the entry scene's narration, cut in two, then bent by `mutate`. */
+  function withScript(mutate) {
+    const dir = copyTree();
+    const chapter = readJson(dir, ...CHAPTER);
+    const address = `bramblewood-01/${chapter.entry}/narration`;
+    const text = chapter.scenes[chapter.entry].narration;
+    const middle = Math.floor(text.length / 2);
+    const entry = {
+      source: sourceHash(text),
+      lines: [
+        { by: "narrator", text: text.slice(0, middle) },
+        { by: "narrator", text: text.slice(middle) },
+      ],
+    };
+    mutate(entry, text);
+    mkdirSync(join(dir, "content", "voice", "scripts"), { recursive: true });
+    writeJson(dir, SCRIPT, { [address]: entry });
+    return validate(dir);
+  }
+
+  it("passes a script whose lines rebuild the screen text", () => {
+    const result = withScript(() => {});
+    expect(result.out).toContain("voice script");
+    expect(result.code).toBe(0);
+  });
+
+  it("fails a script that would say something the screen does not", () => {
+    const result = withScript((entry) => {
+      entry.lines[1].text += " And a surprise.";
+    });
+    expect(result.out).toContain("do not equal the authored text");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("fails a line by someone who is not cast", () => {
+    const result = withScript((entry) => {
+      entry.lines[0].by = "nobody-cast-this";
+    });
+    expect(result.out).toContain("not in the cast");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("only warns when the text changed since the script was cut", () => {
+    const result = withScript((entry) => {
+      entry.source = sourceHash("older words");
+    });
+    expect(result.out).toContain("stale");
     expect(result.code).toBe(0);
   });
 });

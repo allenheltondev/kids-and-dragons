@@ -17,14 +17,11 @@
  * expected to be rendered again after review.
  */
 
-import fs from "node:fs";
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { billedChars, inventory, quotedChars, type VoiceLine } from "./inventory";
 import { dollars, hours, quote, type Pricing, type Quote, type Workload } from "./cost-model";
-
-const ROOT = path.resolve(import.meta.dirname, "..", "..");
-const CONTENT = path.join(ROOT, "content");
+import { loadContent, readJson, reachableFacets } from "./load";
 
 const { values } = parseArgs({
   options: {
@@ -32,7 +29,7 @@ const { values } = parseArgs({
     retakes: { type: "string", default: "1.25" },
     campaign: { type: "string" },
     "with-choices": { type: "boolean", default: false },
-    "facets-max": { type: "string", default: "6" },
+    "facets-max": { type: "string" },
     batch: { type: "boolean", default: false },
     on: { type: "string", default: new Date().toISOString().slice(0, 10) },
     json: { type: "boolean", default: false },
@@ -41,29 +38,16 @@ const { values } = parseArgs({
 
 const budget = Number(values.budget);
 const retakes = Number(values.retakes);
-const facetsMax = Number(values["facets-max"]);
+const content = loadContent();
+// {facets} is rendered 0 through the most great stones the content can hand out.
+const facetsMax = values["facets-max"] === undefined ? reachableFacets(content) : Number(values["facets-max"]);
 if (!Number.isFinite(budget) || !Number.isFinite(retakes) || retakes < 1 || !Number.isInteger(facetsMax) || facetsMax < 0) {
   console.error("--budget and --retakes take numbers (--retakes at least 1), --facets-max a whole number.");
   process.exit(2);
 }
 
-function readJson(file: string): Record<string, unknown> {
-  return JSON.parse(fs.readFileSync(file, "utf8")) as Record<string, unknown>;
-}
-
-function readDir(dir: string): Record<string, unknown>[] {
-  return fs.readdirSync(dir).filter((name) => name.endsWith(".json")).sort().map((name) => readJson(path.join(dir, name)));
-}
-
 const pricing = readJson(path.join(import.meta.dirname, "pricing.json")) as unknown as Pricing;
-const all = inventory(
-  {
-    chapters: readDir(path.join(CONTENT, "chapters")),
-    campaigns: readDir(path.join(CONTENT, "campaigns")),
-    help: readJson(path.join(CONTENT, "help.json")),
-  },
-  { facetsMax },
-);
+const all = inventory(content, { facetsMax });
 
 const lines = all.filter((line) => (values["with-choices"] || line.kind !== "choice") && (values.campaign === undefined || line.campaign === values.campaign));
 if (lines.length === 0) {

@@ -117,7 +117,14 @@ import { tierForLevel } from "./rules.js";
 import { addItem, addQuestItem, freeSlots, hasItem, removeItem, swapItem, useConsumable } from "./inventory.js";
 import { sceneChoices, visibleChoices } from "./chapter-graph.js";
 import { combatTurnAway, readyWithoutAway, swapOwnerAway } from "./away.js";
-import { composeNarration, fillTokens } from "./narration.js";
+import {
+  composeNarrationPieces,
+  fillTokens,
+  narrationPartsOf,
+  type AddressedPiece,
+  type NarrationPart,
+  type NarrationPiece,
+} from "./narration.js";
 import { heardWith } from "./story-so-far.js";
 import { loadDie, readDie } from "./playtest.js";
 import type { CheckBuffOffer, RunBuff } from "./types/buffs.js";
@@ -991,7 +998,7 @@ function openScenePrompt(
          * of the branch's, so the beat still reads even though the board
          * never goes up.
          */
-        return takeBranch(draft, scene.onVictory, ctx, undefined, scene.narration);
+        return takeBranch(draft, scene.onVictory, ctx, undefined, { text: scene.narration ?? "", authored: true });
       }
       // An encounter waits on a ready-up before the board goes up. That pause
       // is deliberate: three phones have to swap to a combat UI, and a fight
@@ -1013,6 +1020,10 @@ interface Transition {
   variants?: NarrationVariant[];
   /** Shown before the branch's text, unconditionally. */
   lead?: string;
+  /** Where the lead was authored, when it was: absent for text composed at run time (spoils). */
+  leadAt?: string;
+  /** The branch's own line address (`chapter/scene/onSuccess`), when it can be found. */
+  branchAt?: string;
 }
 
 /**
@@ -1021,20 +1032,45 @@ interface Transition {
  * `{facets}` / `{party}` tokens filled. Evaluated against the party as it is
  * now — the caller runs this after the scene's `onEnter`.
  */
-function composeSceneNarration(draft: RunState, scene: Scene, transition?: Transition): string {
+function composeSceneNarration(
+  draft: RunState,
+  scene: Scene,
+  sceneAt: string,
+  transition?: Transition,
+): { text: string; parts: NarrationPart[] } {
   const who = party(draft);
+  const baseKey = scene.type === "check" && scene.narration === undefined ? "prompt" : "narration";
   const base =
     scene.type === "check" ? (scene.narration ?? scene.prompt) : (scene.narration ?? "");
-  const authored = scene.type === "encounter" ? base : composeNarration(base, scene.variants, who);
-  const branchLine = transition
-    ? [transition.lead, composeNarration(transition.narration ?? "", transition.variants, who)]
-        .filter((part): part is string => !!part)
-        .join("\n\n")
-    : "";
+  const authoredPieces = addressed(
+    scene.type === "encounter" ? [{ text: base }] : composeNarrationPieces(base, scene.variants, who),
+    `${sceneAt}/${baseKey}`,
+    sceneAt,
+  );
+  const branchPieces: AddressedPiece[] = transition
+    ? [
+        ...(transition.lead ? [{ text: transition.lead, ...(transition.leadAt ? { address: transition.leadAt } : {}) }] : []),
+        ...addressed(
+          composeNarrationPieces(transition.narration ?? "", transition.variants, who),
+          transition.branchAt ? `${transition.branchAt}/narration` : undefined,
+          transition.branchAt,
+        ).filter((piece) => !!piece.text),
+      ]
+    : [];
+  const authored = authoredPieces.map((piece) => piece.text).join("\n\n");
+  const branchLine = branchPieces.map((piece) => piece.text).join("\n\n");
   // A branch's narration is the line that explains *how you got here*; showing
   // it above the destination's text is how it reads at the table.
   const whole = branchLine ? `${branchLine}\n\n${authored}`.trim() : authored;
-  return fillTokens(whole, who);
+  return { text: fillTokens(whole, who), parts: narrationPartsOf([...branchPieces, ...authoredPieces], who) };
+}
+
+/** Each piece with the address it was authored at: the base text's, or its variant's index under `at`. */
+function addressed(pieces: readonly NarrationPiece[], baseAt: string | undefined, at: string | undefined): AddressedPiece[] {
+  return pieces.map((piece) => {
+    const address = piece.variant === undefined ? baseAt : at === undefined ? undefined : `${at}/variants/${String(piece.variant)}`;
+    return { text: piece.text, ...(address !== undefined ? { address } : {}) };
+  });
 }
 
 function enterSceneDraft(
@@ -1109,7 +1145,9 @@ function enterSceneDraft(
   // Composed after `onEnter`, on purpose: variants and tokens read the party
   // as it is when the scene opens, so an item this scene grants counts (#159).
   // Stored rather than recomputed, so a reload mid-scene reads the same words.
-  draft.narration = composeSceneNarration(draft, scene, transition);
+  const composed = composeSceneNarration(draft, scene, `${chapter.id}/${sceneId}`, transition);
+  draft.narration = composed.text;
+  draft.narrationParts = composed.parts;
   // A revelation that reads the bag keeps the bag it was heard with, once a chapter (#358).
   if (scene.type !== "encounter" && scene.priority === 1 && draft.revealHeld?.[sceneId] === undefined) {
     const held = heardWith(scene, party(draft));
@@ -1149,11 +1187,18 @@ function takeBranch(
   branch: Branch,
   ctx: EngineContext,
   rollerCharacterId?: string,
-  lead?: string,
+  lead?: { text: string; authored?: boolean },
 ): Presentation | undefined {
+  // The branch's address: the departing scene, and the key its branch object sits under.
+  const departing = draft.sceneId;
+  const from = departing === null ? undefined : ctx.chapter?.scenes[departing];
+  const key = from === undefined ? undefined : Object.entries(from).find(([, value]) => value === branch)?.[0];
+  const branchAt = key === undefined ? undefined : `${ctx.chapter?.id ?? ""}/${departing ?? ""}/${key}`;
   applyEffectsDraft(draft, branch.effects, ctx, rollerCharacterId);
   return enterSceneDraft(draft, branch.goto, ctx, {
-    ...(lead ? { lead } : {}),
+    ...(lead?.text ? { lead: lead.text } : {}),
+    ...(lead?.text && lead.authored && departing !== null ? { leadAt: `${ctx.chapter?.id ?? ""}/${departing}/narration` } : {}),
+    ...(branchAt !== undefined ? { branchAt } : {}),
     ...(branch.narration !== undefined ? { narration: branch.narration } : {}),
     ...(branch.variants ? { variants: branch.variants } : {}),
   });
@@ -2879,7 +2924,7 @@ function settleEncounter(draft: RunState, ctx: EngineContext): Presentation | un
   const spoils = lootFrom(draft, encounter, outcome, ctx);
   const coinsEarned=(draft.coins ?? 0)-coinsBefore;
   const sourceScene = draft.sceneId;
-  const branched = takeBranch(draft, outcomeBranch(scene, outcome), ctx, undefined, spoils);
+  const branched = takeBranch(draft, outcomeBranch(scene, outcome), ctx, undefined, { text: spoils ?? "" });
   // A persisted presentation receipt distinguishes shared win/loss destinations.
   draft.lastEncounter = { chapterId: draft.chapterId, sceneId: sourceScene, destination: draft.sceneId, outcome, coinsEarned };
   announceRankUps(draft, ups);
@@ -2950,6 +2995,7 @@ function returnToLobby(draft: RunState): void {
   draft.sceneId = null;
   draft.sceneType = null;
   draft.narration = "";
+  delete draft.narrationParts;
   draft.art = null;
   draft.scenePriority = null;
   delete draft.hint;
