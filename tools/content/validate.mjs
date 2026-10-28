@@ -41,6 +41,8 @@ import { factTestProblems } from "../../packages/shared/src/world-state.ts";
 import { helpProblems } from "../../packages/shared/src/help.ts";
 import { DEED_OWNERS } from "../../packages/shared/src/types/domain.ts";
 import { BUILT_IN_ICON_IDS } from "../../packages/shared/src/icon-registry.ts";
+import { chapterLines } from "../voice/inventory.ts";
+import { scriptReport } from "../voice/script.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 import { classPlaceReach, classPlaceVerdict, loadAllowList as loadClassPlaceAllow } from "./class-places.mjs";
 
@@ -205,6 +207,37 @@ function validateAgainstSchema(rep, ajv, schemaName, path, data) {
 }
 
 // ----------------------------------------------------------------------------- cross-file checks
+
+/**
+ * Voice scripts (docs/voice-narration-plan.md section 3): content/voice/scripts/<chapterId>.json
+ * cuts authored lines by speaker. A script that would make the audio say something the screen
+ * does not, or names a speaker who is not cast, fails here. One whose text has since changed is
+ * only reported: that scene plays with the device voice until it is re-cut.
+ */
+function checkVoiceScripts(rep, ajv, chaptersById) {
+  const files = listJson(join(CONTENT, "voice", "scripts"));
+  if (!files.length) return;
+  console.log(`\n${BOLD}voice scripts${RESET}`);
+  const castPath = join(CONTENT, "voice", "cast.json");
+  const cast = existsSync(castPath) ? readJson(rep, castPath) : null;
+  const speakers = new Set(Object.keys(cast?.speakers ?? {}));
+  for (const file of files) {
+    const script = readJson(rep, file);
+    if (!script || !validateAgainstSchema(rep, ajv, "voice-script", file, script)) continue;
+    const chapterId = basename(file, ".json");
+    const chapter = chaptersById.get(chapterId);
+    if (!chapter) {
+      rep.fail(rel(file), "", `no chapter "${chapterId}" for this script`, "A script is named for its chapter.");
+      continue;
+    }
+    const lines = new Map(chapterLines(chapter, { facetsMax: 6 }).map((line) => [line.address, line.text]));
+    const report = scriptReport(script, { chapter: chapterId, lines, speakers });
+    for (const problem of report.problems) rep.fail(rel(file), problem.at, problem.message);
+    for (const address of report.orphaned) rep.warn(`${rel(file)}: ${address} names no authored line`, "The text moved or was removed; drop the entry.");
+    if (report.stale.length) rep.warn(`${rel(file)}: ${String(report.stale.length)} script(s) are stale`, "The text changed since it was cut; those scenes use the device voice until re-cut.");
+    if (!report.problems.length) rep.ok(`${rel(file)}  voice script  (${String(Object.keys(report.state).length)} scene(s))`);
+  }
+}
 
 /** Rules invariants a schema cannot state: ordering and one-class-per-stat. */
 function checkRules(rep, file, rules) {
@@ -1677,7 +1710,7 @@ function main() {
   const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
   addFormats(ajv);
 
-  for (const name of ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help"]) {
+  for (const name of ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "voice-script"]) {
     const path = join(SCHEMAS, `${name}.schema.json`);
     if (!existsSync(path)) {
       rep.fail(rel(path), "", "schema is missing");
@@ -1816,6 +1849,7 @@ function main() {
     chaptersById.set(chapter.id, chapter);
   }
 
+  checkVoiceScripts(rep, ajv, chaptersById);
   checkFittingStall(rep, rules, chaptersById, brokenChapterIds);
   checkMatchups(rep, rules, abilities, bestiary, chaptersById);
 
