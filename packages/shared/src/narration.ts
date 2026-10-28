@@ -31,7 +31,19 @@ export function composeNarration(
   variants: readonly NarrationVariant[] | undefined,
   party: ChoiceParty,
 ): string {
-  if (!variants || variants.length === 0) return base;
+  return composeNarrationPieces(base, variants, party).join(JOIN);
+}
+
+/**
+ * The authored strings `composeNarration` joins, in the order it joins them:
+ * the pieces a recorded voice is keyed on (docs/voice-narration-plan.md §1).
+ */
+export function composeNarrationPieces(
+  base: string,
+  variants: readonly NarrationVariant[] | undefined,
+  party: ChoiceParty,
+): string[] {
+  if (!variants || variants.length === 0) return [base];
   const start: string[] = [];
   const end: string[] = [];
   let replacement: NarrationVariant | undefined;
@@ -45,7 +57,31 @@ export function composeNarration(
   }
   // A replacing variant takes the base's place, and sits there whatever its `at`.
   const middle = replacement ? replacement.text : base;
-  return [...start, middle, ...end].filter((part) => part.trim().length > 0).join(JOIN);
+  return [...start, middle, ...end].filter((part) => part.trim().length > 0);
+}
+
+/**
+ * One composed piece of a scene's narration, as authored (tokens unfilled),
+ * with the value of each token it carries: `{ line: "{party} hold on.",
+ * token: { party: "3" } }`. A recorded clip is chosen by the line and its
+ * token values; the engine writes these beside `RunState.narration`, from the
+ * same pieces, so the two cannot disagree.
+ */
+export interface NarrationPart {
+  line: string;
+  token?: Record<string, string>;
+}
+
+/** The parts for `pieces`, each with the token values `fillTokens` would use. */
+export function narrationPartsOf(pieces: readonly string[], party: ChoiceParty): NarrationPart[] {
+  return pieces
+    .filter((line) => line.trim().length > 0)
+    .map((line) => {
+      const token: Record<string, string> = {};
+      if (line.includes("{facets}")) token.facets = String(countPartyItems(party, "facet_*"));
+      if (line.includes("{party}")) token.party = String(party.members.length);
+      return Object.keys(token).length > 0 ? { line, token } : { line };
+    });
 }
 
 const NUMBER_WORDS = [

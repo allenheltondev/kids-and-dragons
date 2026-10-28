@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   NARRATION_TOKENS,
   composeNarration,
+  composeNarrationPieces,
+  narrationPartsOf,
   fillTokens,
   numberWord,
   partyPhrase,
@@ -188,5 +190,37 @@ describe("revelationsOf (the end-of-chapter recap)", () => {
 
   it("is empty for a road with no revelation on it", () => {
     expect(revelationsOf({ scenes }, ["s_start", "s_clue"], partyOf(1))).toEqual([]);
+  });
+});
+
+describe("narration parts", () => {
+  const variants: NarrationVariant[] = [
+    { when: { flag: "lit" }, text: "A lamp burns.", at: "start" },
+    { when: { flag: "lit" }, text: "{party} may enter." },
+  ];
+
+  it("joins back to composeNarration, whatever variants hold", () => {
+    for (const flags of [{}, { lit: true }]) {
+      const party = partyOf(2, 0, flags);
+      expect(composeNarrationPieces(BASE, variants, party).join("\n\n")).toBe(composeNarration(BASE, variants, party));
+    }
+  });
+
+  it("keeps each piece as authored and notes the token values it carries", () => {
+    const party = partyOf(3, 2, { lit: true });
+    const pieces = composeNarrationPieces(BASE, variants, party);
+    expect(pieces).toEqual(["A lamp burns.", BASE, "{party} may enter."]);
+    expect(narrationPartsOf(pieces, party)).toEqual([
+      { line: "A lamp burns." },
+      { line: BASE },
+      { line: "{party} may enter.", token: { party: "3" } },
+    ]);
+    expect(narrationPartsOf(["{facets} stones, {party}."], party)).toEqual([
+      { line: "{facets} stones, {party}.", token: { facets: "2", party: "3" } },
+    ]);
+  });
+
+  it("leaves out a blank piece", () => {
+    expect(narrationPartsOf(["", "  ", BASE], partyOf(1))).toEqual([{ line: BASE }]);
   });
 });
