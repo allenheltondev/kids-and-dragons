@@ -128,7 +128,7 @@ export function PlayerView({ roomControls }: { roomControls?: ReactNode }): Reac
       {!creating ? <PlayerPanel roomControls={roomControls} /> : null}
       {/* The privacy link (#523), while this phone is making a hero or waiting in the lobby, not
           once the game is on. */}
-      {creating || state?.phase === "lobby" || state?.phase === "creation" ? <PrivacyFooter /> : null}
+      {creating || state?.phase === "lobby" || state?.phase === "creation" ? <PrivacyFooter compact /> : null}
       {/* A panel over the surface, not a route: the game keeps running behind
           it and closing it costs nobody their place. Renders nothing until
           somebody opens it. */}
