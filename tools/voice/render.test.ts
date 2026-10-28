@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import type { DesiredSegment } from "./desired";
-import { renderOwed, type RenderDeps } from "./render";
-import { MemoryClipStore } from "./store";
+import { candidates, renderOwed, type RenderDeps } from "./render";
+import { MemoryClipStore, StoreSet } from "./store";
 
 const segment = (n: number, chars = 100): DesiredSegment => ({ key: String(n).padStart(64, "0"), by: "narrator", text: "x".repeat(chars) });
 const owed = (count: number, chars = 100): DesiredSegment[] => Array.from({ length: count }, (_, i) => segment(i + 1, chars));
@@ -99,7 +99,7 @@ describe("when the provider fails", () => {
     expect(store.clips.size).toBe(1);
   });
 
-  it("gives up after its attempts, keeps nothing, and hands the reservation back", async () => {
+  it("gives up after its attempts and keeps nothing, but still counts every try as spend", async () => {
     const { made, store } = deps({ synth: () => Promise.reject(new Error("HTTP 400: bad voice")) });
     const report = await renderOwed(owed(2), made, { ...live, attempts: 2 });
     expect(report.failed).toEqual([
@@ -107,7 +107,59 @@ describe("when the provider fails", () => {
       { key: segment(2).key, error: "HTTP 400: bad voice" },
     ]);
     expect(store.clips.size).toBe(0);
-    expect(report.dollars).toBe(0);
     expect(report.lengths.size).toBe(0);
+    // Two clips, two tries each, a dollar a try: a failed call may have been billed.
+    expect(report.dollars).toBeCloseTo(4);
+  });
+
+  it("counts every retry against the cap: one clip's budget buys one call, not four", async () => {
+    const synth = vi.fn(() => Promise.reject(new Error("HTTP 503")));
+    const { made } = deps({ synth });
+    const report = await renderOwed(owed(1), made, { ...live, maxDollars: 1, attempts: 4 });
+    expect(synth).toHaveBeenCalledTimes(1);
+    expect(report.dollars).toBeLessThanOrEqual(1);
+    expect(report.stoppedBy).toBe("dollars");
+    expect(report.failed[0]?.error).toMatch(/retry stopped by the spend cap/);
+  });
+
+  it("counts a try whose audio could not be kept: encode or upload failing is still a billed call", async () => {
+    const encode = vi.fn(() => {
+      throw new Error("ffmpeg failed");
+    });
+    const { made, synth } = deps({ encode });
+    const report = await renderOwed(owed(1), made, { ...live, attempts: 3 });
+    expect(synth).toHaveBeenCalledTimes(3);
+    expect(report.dollars).toBeCloseTo(3);
+    expect(report.rendered).toHaveLength(0);
+  });
+});
+
+describe("the destination decides what is owed", () => {
+  it("puts every wanted clip to the store, whatever any manifest says", () => {
+    const wantedSegments = candidates([{ lines: [{ address: "a", chapter: "c", campaign: "k", variant: "", segments: [segment(1), segment(2)] }] }]);
+    expect(wantedSegments.map((s) => s.key)).toEqual([segment(1).key, segment(2).key]);
+  });
+
+  it("filters by speaker and counts a shared clip once", () => {
+    const pib = { ...segment(2), by: "pib#a" };
+    const lines = [{ address: "a", chapter: "c", campaign: "k", variant: "", segments: [segment(1), pib] }, { address: "b", chapter: "c", campaign: "k", variant: "", segments: [pib] }];
+    expect(candidates([{ lines }], "pib").map((s) => s.key)).toEqual([pib.key]);
+    expect(candidates([{ lines }])).toHaveLength(2);
+  });
+
+  it("backfills a destination that lacks a clip another has: a new bucket is repaired, not trusted", async () => {
+    const staging = new MemoryClipStore();
+    const prod = new MemoryClipStore();
+    await staging.put(segment(1).key, Buffer.from("webm"), { ms: 1234 });
+    const { made, synth } = deps({ store: new StoreSet([staging, prod]) });
+    const report = await renderOwed([segment(1)], made, live);
+    expect(synth).toHaveBeenCalledTimes(1);
+    expect(prod.clips.has(segment(1).key)).toBe(true);
+    expect(report.rendered).toHaveLength(1);
+    // And a clip both have costs nothing.
+    synth.mockClear();
+    const again = await renderOwed([segment(1)], made, live);
+    expect(synth).not.toHaveBeenCalled();
+    expect(again.cached).toHaveLength(1);
   });
 });
