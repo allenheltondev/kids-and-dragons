@@ -84,17 +84,24 @@ The important change was what occupied the time:
 | Give the careful copy to local visitors or to Orin's research | Build and test a public viewpoint, or prepare and relay a research copy while closing the work area for a later visit. |
 | Share chime readings or keep them private | Preserve the existing campaign consequence; neither copy destination silently shares private readings. |
 
-The class-assisted paths retain ten activities across at least five mechanics.
-Those counts describe this implementation, not a template for other chapters.
-The controls include shared clues, observation timing, tracking a sample pot,
-cooperation, balance, memory, relay and playful contributions. Humor comes from
-Orin's brush, sample labels, notebook and sandwiches rather than longer speeches.
+A later owner playthrough found that this revision overcorrected into minigame
+after minigame. Requiring ten activities across five mechanics in tests rewarded
+quantity rather than rhythm. Those quotas have been removed. Ground testing,
+sample comparison, explaining the river, rebuilding notes and handing over a
+copy now happen through story. Cleanup and the trial visit offer ordinary
+expressive choices with character replies. The equipment, rescue priority and
+copy destination still change the work and conclusion.
 
-Sixteen route tests cover equipment, rescue priority, copy destination and party
-size, including missed timing and memory challenges. They check different tasks
-and conclusions, not merely different flags. Continuity tests cover the other
-routes and protect the required river discovery. The thirty-minute time budget
-is still a planning estimate until a family playtest measures it.
+Construction, looking under the arch, watching the pulse and using the chosen
+equipment retain direct play. The surrounding scenes give the evidence and
+characters space. Other Riftlight chapters retain real-risk dice and combat
+where those serve the fiction; this bridge mystery needs neither a fight nor
+a roll to approve evidence the players already earned.
+
+Engine route tests cover equipment, rescue priority, copy destination and party
+size. They check the changed tasks and conclusions, including missed timing,
+not a number of widgets. The thirty-minute target still needs fresh family
+measurement after this change.
 
 See the [playtest plan](../../../../docs/campaigns/continental-rift/buried-bridge-playtest.md),
 [design audit](../../../../docs/reviews/riftlight-play-audit.md), and

@@ -2023,17 +2023,6 @@
       "art": "scenes/riftlight/ashspan-broken-deck"
     },
     "knots_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Whoever ties the best knots lashes the planks to the beams while everyone else holds the ends.",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "lashed"
-      },
-      "onFailure": {
-        "goto": "lashed_loose"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -2048,20 +2037,19 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "type": "story",
+      "narration": "You tie the plank ends to the beams while Bryn checks each knot.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "lashed"
+        }
+      ]
     },
     "pegs_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "prompt": "Hammer a peg through each plank end, nice and straight, one after another. Choose who leads; everyone can help.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "lashed"
-      },
-      "onFailure": {
-        "goto": "lashed_loose"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -2076,20 +2064,19 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "type": "story",
+      "narration": "You drive the pegs while Bryn holds the planks square.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "lashed"
+        }
+      ]
     },
     "whistle_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "The brave whistle brings the goats at a trot. Can you hitch them to the lashing line and walk it tight?",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "lashed"
-      },
-      "onFailure": {
-        "goto": "lashed_loose"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -2104,20 +2091,19 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "type": "story",
+      "narration": "The whistle brings the goats. Ossley hitches them to the line, and you walk it tight together.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "lashed"
+        }
+      ]
     },
     "straps_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "prompt": "A duskrunner secures each strap with a quick hitch. Can you pull them all tight?",
-      "roller": "best",
-      "onSuccess": {
-        "goto": "lashed"
-      },
-      "onFailure": {
-        "goto": "lashed_loose"
-      },
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -2132,7 +2118,17 @@
           "name": "Bryn"
         }
       ],
-      "art": "scenes/riftlight/ashspan-broken-deck"
+      "art": "scenes/riftlight/ashspan-broken-deck",
+      "type": "story",
+      "narration": "Your duskrunner secures the straps while friends hold the loose ends.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "lashed"
+        }
+      ]
     },
     "lashed": {
       "type": "story",
@@ -2161,68 +2157,32 @@
       ],
       "art": "scenes/riftlight/ashspan-mended-deck"
     },
-    "lashed_loose": {
+    "test_check": {
+      "cast": [
+        {
+          "figure": "cast/old_ossley",
+          "name": "Old Ossley"
+        },
+        {
+          "figure": "cast/tilly",
+          "name": "Tilly"
+        },
+        {
+          "figure": "cast/bryn",
+          "name": "Bryn"
+        }
+      ],
+      "art": "scenes/riftlight/ashspan-mended-deck",
       "type": "story",
-      "narration": "Some of the knots slip, and one rope bites your palm. You redo them with Bryn watching, her tongue between her teeth. \"Better a slow knot than a quick swim,\" she says. At last the deck stops creaking. \"One more thing. A bridge has to carry everyone at once. Everyone, on the deck, now.\"",
+      "narration": "You walk the finished deck with Bryn, stopping at each plank. She checks the fastenings before calling the waiting travelers.",
       "choices": [
         {
           "id": "continue",
-          "label": "Step onto the deck",
-          "icon": "hand",
-          "goto": "test_check"
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "bridge_open"
         }
-      ],
-      "onEnter": [
-        {
-          "type": "damage",
-          "amount": 1,
-          "to": "party",
-          "nonlethal": true
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
-    },
-    "test_check": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 12,
-      "prompt": "Everyone step onto the new deck together. Tap each plank with a toe, and shout if anything moves!",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "bridge_open"
-      },
-      "onFailure": {
-        "goto": "bridge_creak"
-      },
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
+      ]
     },
     "bridge_open": {
       "type": "story",
@@ -2239,45 +2199,6 @@
         {
           "type": "setFlag",
           "flag": "mended_the_bridge_deck"
-        }
-      ],
-      "cast": [
-        {
-          "figure": "cast/old_ossley",
-          "name": "Old Ossley"
-        },
-        {
-          "figure": "cast/tilly",
-          "name": "Tilly"
-        },
-        {
-          "figure": "cast/bryn",
-          "name": "Bryn"
-        }
-      ],
-      "art": "scenes/riftlight/ashspan-mended-deck"
-    },
-    "bridge_creak": {
-      "type": "story",
-      "narration": "Two planks creak and one squeaks like a mouse. You hammer them again, bruising a thumb, until nobody can find a squeak. \"Now it holds,\" says Bryn. \"Now it truly holds.\" At the far end, the market folk, who have been waiting all afternoon with baskets on their heads, start across in a long, chattering line.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Watch them cross",
-          "icon": "hand",
-          "goto": "folk_cross"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "mended_the_bridge_deck"
-        },
-        {
-          "type": "damage",
-          "amount": 1,
-          "to": "party",
-          "nonlethal": true
         }
       ],
       "cast": [

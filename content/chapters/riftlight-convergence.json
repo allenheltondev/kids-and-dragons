@@ -579,8 +579,8 @@
       }
     },
     "clear_path": {
-      "type": "interaction",
-      "narration": "Pass the loose benches back from the working edge. Bram checks the lane with his shoulders. The sled and the map must not become a climbing course when everyone needs shelter.",
+      "type": "story",
+      "narration": "You and Bram move the loose benches behind the working line. He checks the passage with his shoulders. There is room to turn back together. Orin rescues his notebook from beneath a bench leg. \"An excellent support. A poor library.\"",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -596,24 +596,14 @@
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the benches out of the retreat lane.",
-        "actionLabel": "Pass the bench",
-        "objectLabel": "loose bench"
-      },
-      "onSuccess": {
-        "goto": "signals",
-        "narration": "A clear lane now runs from the map to shelter."
-      },
-      "onFailure": {
-        "goto": "signals",
-        "narration": "A clear lane now runs from the map to shelter."
-      },
-      "onAssisted": {
-        "goto": "signals",
-        "narration": "A clear lane now runs from the map to shelter."
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "signals"
+        }
+      ]
     },
     "signals": {
       "type": "interaction",
@@ -715,7 +705,7 @@
       "art": "scenes/riftlight/convergence-ledge"
     },
     "proposal": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Olivia wants to call one small opening near the pull. Orin asks for more observations; Bram keeps the retreat clear. Give one condition the people must meet before anyone approaches. Olivia still believes she can choose what she calls.",
       "cast": [
         {
@@ -732,44 +722,26 @@
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "interaction": {
-        "kind": "play",
-        "cue": "Agree on the people's boundary before the test.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "wait",
-            "label": "Keep everyone behind the line",
-            "icon": "hand",
-            "reaction": "Bram moves the last loose gear back."
-          },
-          {
-            "id": "stop",
-            "label": "Agree on a stop signal",
-            "icon": "hand",
-            "reaction": "Olivia agrees to stop before anyone crosses."
-          },
-          {
-            "id": "watch",
-            "label": "Keep someone watching the way back",
-            "icon": "hand",
-            "reaction": "Seren takes a clear view of the retreat lane."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "summoning",
-        "narration": "The people have a boundary and a way back."
-      },
-      "onFailure": {
-        "goto": "summoning",
-        "narration": "The people have a boundary and a way back."
-      },
-      "onAssisted": {
-        "goto": "summoning",
-        "narration": "The people have a boundary and a way back."
-      }
+      "choices": [
+        {
+          "id": "wait",
+          "label": "Keep everyone behind the line",
+          "icon": "hand",
+          "goto": "proposal_response_wait"
+        },
+        {
+          "id": "stop",
+          "label": "Agree on a stop signal",
+          "icon": "hand",
+          "goto": "proposal_response_stop"
+        },
+        {
+          "id": "watch",
+          "label": "Keep someone watching the way back",
+          "icon": "hand",
+          "goto": "proposal_response_watch"
+        }
+      ]
     },
     "summoning": {
       "type": "story",
@@ -1162,7 +1134,7 @@
       }
     },
     "orin_account": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Orin has the chime account you shared beside the buried bridge. Choose which checked limit helps him talk Olivia back. The opening is not required to obey anybody's request.",
       "cast": [
         {
@@ -1179,44 +1151,26 @@
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "interaction": {
-        "kind": "play",
-        "cue": "Help Orin use the shared chime account.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "wait",
-            "label": "Waiting gave us a clearer reading",
-            "icon": "hand",
-            "reaction": "Orin asks Olivia to let this opening answer first."
-          },
-          {
-            "id": "back",
-            "label": "An echo checked an open way back",
-            "icon": "hand",
-            "reaction": "Orin points to the walking route you already have."
-          },
-          {
-            "id": "rules",
-            "label": "A clear note never chose a destination",
-            "icon": "hand",
-            "reaction": "Olivia lowers her hand and listens."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "bram_clear",
-        "narration": "Olivia agrees to step behind the line with you."
-      },
-      "onFailure": {
-        "goto": "bram_clear",
-        "narration": "Olivia agrees to step behind the line with you."
-      },
-      "onAssisted": {
-        "goto": "bram_clear",
-        "narration": "Olivia agrees to step behind the line with you."
-      }
+      "choices": [
+        {
+          "id": "wait",
+          "label": "Waiting gave us a clearer reading",
+          "icon": "hand",
+          "goto": "orin_account_response_wait"
+        },
+        {
+          "id": "back",
+          "label": "An echo checked an open way back",
+          "icon": "hand",
+          "goto": "orin_account_response_back"
+        },
+        {
+          "id": "rules",
+          "label": "A clear note never chose a destination",
+          "icon": "hand",
+          "goto": "orin_account_response_rules"
+        }
+      ]
     },
     "count": {
       "type": "story",
@@ -1630,7 +1584,7 @@
       ]
     },
     "account": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Make the experiment useful to the next watcher. Choose one checked result to add; guesses stay questions. Olivia adds her own sentence: she called an opening, but did not choose its rules.",
       "cast": [
         {
@@ -1647,44 +1601,26 @@
         }
       ],
       "art": "scenes/riftlight/convergence-ledge",
-      "interaction": {
-        "kind": "play",
-        "cue": "Leave an honest experiment account.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "cord",
-            "label": "Draw the held and released cord",
-            "icon": "hand",
-            "reaction": "Seren labels the changed condition."
-          },
-          {
-            "id": "lane",
-            "label": "Draw where everyone withdrew",
-            "icon": "hand",
-            "reaction": "Bram thickens the safe boundary line."
-          },
-          {
-            "id": "limit",
-            "label": "Leave the unknown destination blank",
-            "icon": "hand",
-            "reaction": "Orin puts a question beside the blank, then another beside Pip's confident doodle."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "ending",
-        "narration": "Your account names what changed and what did not."
-      },
-      "onFailure": {
-        "goto": "ending",
-        "narration": "Your account names what changed and what did not."
-      },
-      "onAssisted": {
-        "goto": "ending",
-        "narration": "Your account names what changed and what did not."
-      }
+      "choices": [
+        {
+          "id": "cord",
+          "label": "Draw the held and released cord",
+          "icon": "hand",
+          "goto": "account_response_cord"
+        },
+        {
+          "id": "lane",
+          "label": "Draw where everyone withdrew",
+          "icon": "hand",
+          "goto": "account_response_lane"
+        },
+        {
+          "id": "limit",
+          "label": "Leave the unknown destination blank",
+          "icon": "hand",
+          "goto": "account_response_limit"
+        }
+      ]
     },
     "ending": {
       "type": "story",
@@ -1760,6 +1696,249 @@
       ],
       "art": "scenes/riftlight/convergence-ledge",
       "rift": "steady"
+    },
+    "proposal_response_wait": {
+      "type": "story",
+      "narration": "Bram moves the last loose gear back. The people have a boundary and a way back.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "summoning"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "proposal_response_stop": {
+      "type": "story",
+      "narration": "Olivia agrees to stop before anyone crosses. The people have a boundary and a way back.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "summoning"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "proposal_response_watch": {
+      "type": "story",
+      "narration": "Seren takes a clear view of the retreat lane. The people have a boundary and a way back.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "summoning"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "orin_account_response_wait": {
+      "type": "story",
+      "narration": "Orin asks Olivia to let this opening answer first. Olivia agrees to step behind the line with you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "bram_clear"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "orin_account_response_back": {
+      "type": "story",
+      "narration": "Orin points to the walking route you already have. Olivia agrees to step behind the line with you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "bram_clear"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "orin_account_response_rules": {
+      "type": "story",
+      "narration": "Olivia lowers her hand and listens. Olivia agrees to step behind the line with you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "bram_clear"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/bram_lock",
+          "name": "Bram Lock"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "account_response_cord": {
+      "type": "story",
+      "narration": "Seren labels the changed condition. Your account names what changed and what did not.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "account_response_lane": {
+      "type": "story",
+      "narration": "Bram thickens the safe boundary line. Your account names what changed and what did not.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
+    },
+    "account_response_limit": {
+      "type": "story",
+      "narration": "Orin puts a question beside the blank, then another beside Pip's confident doodle. Your account names what changed and what did not.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/orin_vale",
+          "name": "Orin Vale"
+        },
+        {
+          "figure": "cast/lady_olivia",
+          "name": "Lady Olivia"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/convergence-ledge"
     }
   },
   "presentation": {
@@ -1807,17 +1986,7 @@
           "relay-plank"
         ]
       },
-      "clear_path": {
-        "props": [
-          "relay-plank"
-        ]
-      },
       "signals": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "proposal": {
         "props": [
           "wind-banner"
         ]
@@ -1836,12 +2005,6 @@
         "props": [
           "wind-blanket",
           "rope-loop"
-        ]
-      },
-      "orin_account": {
-        "props": [
-          "note-low",
-          "clue-scrap"
         ]
       },
       "count_check": {
@@ -1875,11 +2038,6 @@
         "props": [
           "relay-plank",
           "rope-loop"
-        ]
-      },
-      "account": {
-        "props": [
-          "clue-scrap"
         ]
       }
     }

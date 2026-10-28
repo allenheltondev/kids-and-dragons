@@ -551,3 +551,24 @@ is immutable. Versioning is enabled on the site bucket, so the previous client
 and assets remain recoverable object versions after a sync — but roll-forward
 (or ref-rollback) stays the primary story; the versions are a safety net, not a
 deploy path.
+
+
+---
+
+## Recorded narration (`voice/`)
+
+Narration clips live in the same site bucket as the site, under their own top-level `voice/`
+prefix, and are uploaded by `npm run voice:generate`, not by `deploy.sh`. They are named by a hash
+of their sound, so they are immutable and cached for a year.
+
+- `deploy.sh` syncs `--delete` only into `bundle/`, `assets/` and `content/`, and syncs the bucket
+  root without `--delete`, so a deploy never removes a clip. `tools/voice/deploy-guard.test.ts` fails
+  if that changes. Do not add a `--delete` sync of the root or of `voice/`.
+- `/voice/*` is its own CloudFront behavior (`infra/template.yaml`), without the SPA router.
+- The chapter manifests are in git under `content/voice/manifest/` and deploy with `content/`.
+- Staging and production each have their own bucket. `voice:generate --stage staging,prod` renders
+  once and uploads to both, so the same manifest works on either.
+- Clips are never deleted by the tooling. Old ones cost almost nothing and an old manifest may still
+  name them; remove a clip by hand only once no deployed manifest does.
+
+See [voice-narration-plan.md](./voice-narration-plan.md#running-it-npm-run-voicegenerate).
