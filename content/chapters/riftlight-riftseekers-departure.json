@@ -1799,7 +1799,7 @@
     },
     "camp_play": {
       "type": "interaction",
-      "narration": "The Riftseekers are gone down the path. The herder's goats wander over to the sledge, and the yetis lean out of the hall door. \"Nobody leaves a road without a proper send-off,\" says the herder.",
+      "narration": "The Riftseekers are gone down the path. The herder's goats wander over to the sledge, and the yetis lean out of the hall door. \"Nobody leaves a road without a real send-off,\" says the herder.",
       "interaction": {
         "kind": "play",
         "cue": "Give the goats and the hall a proper send-off.",

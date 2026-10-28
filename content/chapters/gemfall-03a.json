@@ -1247,7 +1247,7 @@
     },
     "scene_skip_passes": {
       "type": "story",
-      "narration": "The six brass hats call themselves the Brassbuckle Expedition. One strolls down the queue selling SKIP PASSES. \"Skip the queue!\" he sings. The small print is tiny. Old Lintel takes stories at the front. He does not appear to be taking passes.",
+      "narration": "The six brass hats call themselves the Brassbuckle Expedition. One strolls down the queue selling SKIP PASSES. \"Skip the line!\" he sings. The small print is tiny. Old Lintel takes stories at the front. He does not appear to be taking passes.",
       "choices": [
         {
           "id": "small_print",
