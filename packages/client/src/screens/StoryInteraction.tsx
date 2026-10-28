@@ -44,6 +44,22 @@ function useClock(active: boolean, everyMs?: number): number {
   return now;
 }
 
+/** Measure a server-authored lift from receipt using monotonic elapsed time.
+ * Receipt may trail the server slightly; it must never finish a lift early.
+ * Renewals preserve this anchor, while retries and roster changes restart it.
+ */
+function useCooperationClock(prompt: InteractionPrompt | null, localNow: number, team: string): number {
+  const anchor = useRef({ key: "", server: 0, received: 0 });
+  if (prompt?.spec.kind !== "cooperate" || prompt.phase !== "active") return localNow;
+  const key = `${prompt.openedSeq}:${prompt.attempt}:${prompt.steadySince ?? ""}:${team}`;
+  if (anchor.current.key !== key) {
+    anchor.current = { key, server: Date.parse(prompt.steadySince ?? prompt.startedAt ?? ""), received: performance.now() };
+  }
+  return Number.isFinite(anchor.current.server)
+    ? anchor.current.server + Math.max(0, performance.now() - anchor.current.received)
+    : localNow;
+}
+
 const SLOW_CLOCK_MS = 250;
 /**
  * Frame rate while a marker moves: precision and timing read the stop position from it, and
@@ -150,7 +166,8 @@ export function StoryInteractionWorld() {
   const state = useRunState();
   const prompt = state?.prompt?.kind === "interaction" ? state.prompt : null;
   const still = reducedMotion();
-  const now = useClock(prompt?.phase === "active", still ? SLOW_CLOCK_MS : prompt ? clockFor(prompt) : undefined);
+  const localNow = useClock(prompt?.phase === "active", still ? SLOW_CLOCK_MS : prompt ? clockFor(prompt) : undefined);
+  const now = useCooperationClock(prompt, localNow, (state?.party ?? []).filter((member) => member.connected).map((member) => member.playerId).join(","));
   const settled = useRelayArrival(prompt);
   useResultSound(prompt, settled);
   const connected = (state?.party ?? []).filter((member) => member.connected).map((member) => member.playerId);
@@ -201,7 +218,8 @@ function Controls({ prompt, party, playerId, dispatch, busy }: {
   const [answer, setAnswer] = useState<string[]>([]);
   const [holding, setHolding] = useState(false);
   const [stop, setStop] = useState<number | null>(null);
-  const now = useClock(prompt.phase === "active", still ? SLOW_CLOCK_MS : clockFor(prompt));
+  const localNow = useClock(prompt.phase === "active", still ? SLOW_CLOCK_MS : clockFor(prompt));
+  const now = useCooperationClock(prompt, localNow, connected.join(","));
   const latest = useRef({ prompt, busy, dispatch });
   latest.current = { prompt, busy, dispatch };
   const send = (action: InteractionAction) => dispatch({ type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, ...action });

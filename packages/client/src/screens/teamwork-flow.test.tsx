@@ -10,10 +10,10 @@ const initial = useGameStore.getState();
 beforeEach(() => { vi.useFakeTimers(); vi.setSystemTime(2_000_000); });
 afterEach(() => { cleanup(); useGameStore.setState(initial, true); vi.useRealTimers(); });
 
-function game(players: number, relaxed: boolean) {
+function game(players: number, relaxed: boolean, serverOffset = 0) {
   const chapter = makeChapter();
   chapter.scenes.teamwork = { type: "interaction", narration: "Lift together!", interaction: { kind: "cooperate", cue: "Lift the sling", supportLabel: "Hold the sling", actionLabel: "Lift it" }, onSuccess: { goto: "scene_clearing", effects: [{ type: "setFlag", flag: "lifted" }] }, onFailure: { goto: "scene_clearing" } } satisfies InteractionScene;
-  const context = (): EngineContext => ({ chapter, rules: makeRules(), items: makeItems(), rng: makeRng("teamwork"), now: new Date().toISOString(), householdId: "h" });
+  const context = (): EngineContext => ({ chapter, rules: makeRules(), items: makeItems(), rng: makeRng("teamwork"), now: new Date(Date.now() + serverOffset).toISOString(), householdId: "h" });
   let state = createRunState({ runId: "r", roomCode: "TEST", mode: "party", now: new Date().toISOString() });
   state.chapterId = chapter.id;
   state.party = Array.from({ length: players }, (_, i) => ({ playerId: `p${i}`, character: resolveCharacter(makeCharacter({ id: `c${i}`, ownerPlayerId: `p${i}` }), makeRules(), makeItems()), connected: true, ready: true, down: false, hp: 10 }));
@@ -51,6 +51,18 @@ describe("phone controls playing against the authoritative engine", () => {
     expect(useGameStore.getState().state!.flags.lifted).toBeUndefined();
     await act(async () => { fireEvent.click(screen.getByRole("button", { name: "See what happens next" })); });
     expect(useGameStore.getState().state!.flags.lifted).toBe(true);
+    expect(errors).toEqual([]);
+  });
+  it.each([-30_000, 30_000])("a solo prop completes with server clock offset %s", async (offset) => {
+    const { errors, send } = game(1, true, offset);
+    render(<StoryInteractionControls />);
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Hold the sling" })); });
+    await act(async () => { vi.advanceTimersByTime(1000); });
+    expect(Number(screen.getByRole("progressbar", { name: "Lifting together" }).getAttribute("aria-valuenow"))).toBeGreaterThan(0);
+    expect((useGameStore.getState().state!.prompt as InteractionPrompt).phase).toBe("active");
+    await act(async () => { vi.advanceTimersByTime(1000); });
+    expect((useGameStore.getState().state!.prompt as InteractionPrompt).outcome).toBe("success");
+    expect(send.mock.calls.filter(([intent]) => intent.type === "INTERACT" && intent.action === "complete")).toHaveLength(1);
     expect(errors).toEqual([]);
   });
   it("every player participates, then a held phone completes without a finish tap", async () => {
