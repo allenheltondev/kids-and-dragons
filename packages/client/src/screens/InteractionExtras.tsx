@@ -6,8 +6,8 @@
 import { useChapter, useRunState } from "../store";
 import { interactionAppearance } from "../world/riftlight-art";
 import { characterWorldArtUrl } from "../world/art-paths";
-import { PaintedCover, PaintedGlyph } from "./InteractionArt";
-import { balanceReady, interactionClues, playbackMs, playReady, precisionPosition, precisionSuccess, relayHolder, supportPlayers, supportsReady, trackedCover } from "@kad/shared";
+import { PaintedCover, PaintedGlyph, propUrl } from "./InteractionArt";
+import { balanceReady, interactionActor, interactionClues, playbackMs, playReady, precisionPosition, precisionSuccess, relayHolder, supportPlayers, supportsReady, trackedCover } from "@kad/shared";
 import type { InteractionAction, InteractionOption, InteractionPrompt, PartyMember } from "@kad/shared";
 import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
@@ -31,19 +31,25 @@ export interface BoardProps {
   playerId?: string;
 }
 
-function HeroChip({ member, state, tone, mark }: { member: PartyMember; state?: string; tone?: "on" | "done" | "off"; mark?: string }) {
+function HeroChip({ member, state, tone, mark, token }: { member: PartyMember; state?: string; tone?: "on" | "done" | "off"; mark?: string; token?: string }) {
   return <li className={`game-hero${tone ? ` game-hero--${tone}` : ""}`}>
     <span className="game-hero__face">
       <img src={characterWorldArtUrl(member.character.species, member.character.tier, member.character.class)} alt="" decoding="async" onError={(event) => { event.currentTarget.style.visibility = "hidden"; }} />
-      {mark ? <span className="game-hero__mark"><Icon name={mark} /></span> : null}
+      {mark ? <span className="game-hero__mark" key={mark}><Icon name={mark} /></span> : null}
+      {token ? <img className="game-hero__token" src={token} alt="" decoding="async" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : null}
     </span>
     <span className="game-hero__name">{member.character.name}</span>
     {state ? <span className="game-hero__state">{state}</span> : null}
   </li>;
 }
 
-function Tile({ option, size, index, muted }: { option: InteractionOption; size?: "lg"; index?: number; muted?: boolean }) {
-  return <span className={`game-tile${size ? ` game-tile--${size}` : ""}${muted ? " game-tile--muted" : ""}`}>
+/** Which colour an option wears, by its place in the authored list, the same on every screen. */
+export function toneOf(options: readonly InteractionOption[], id: string): number {
+  return Math.max(0, options.findIndex((option) => option.id === id)) % 4;
+}
+
+function Tile({ option, size, index, muted, tone }: { option: InteractionOption; size?: "lg"; index?: number; muted?: boolean; tone?: number }) {
+  return <span className={`game-tile${size ? ` game-tile--${size}` : ""}${muted ? " game-tile--muted" : ""}`} data-tone={tone}>
     {index !== undefined ? <span className="game-tile__index">{index}</span> : null}
     <span className="game-tile__icon"><PaintedGlyph label={option.label} /><Icon name={option.icon} /></span>
     <span className="game-tile__label">{option.label}</span>
@@ -51,7 +57,7 @@ function Tile({ option, size, index, muted }: { option: InteractionOption; size?
 }
 
 /** The sliding marker and its gold stretch, for precision aiming. */
-export function Meter({ prompt, now }: { prompt: InteractionPrompt; now: number }) {
+export function Meter({ prompt, now, prop }: { prompt: InteractionPrompt; now: number; prop?: string }) {
   if (prompt.spec.kind !== "precision") return null;
   const width = Math.min(1, prompt.spec.width * (prompt.relaxed ? 2 : 1));
   const left = Math.max(0, prompt.spec.target - width / 2);
@@ -60,8 +66,37 @@ export function Meter({ prompt, now }: { prompt: InteractionPrompt; now: number 
   const inGold = precisionSuccess(prompt.spec, position, prompt.relaxed);
   return <div className="story-interaction__track game-track" role="img" aria-label="Moving marker with a gold target" data-gold={inGold}>
     <span className="story-interaction__target game-track__gold" style={{ left: `${left * 100}%`, width: `${(right - left) * 100}%` }}><Icon name="star" /></span>
-    <span className="story-interaction__marker game-track__marker" style={{ left: `${position * 100}%` }} />
+    <span className={`story-interaction__marker game-track__marker${prop ? " game-track__marker--prop" : ""}`} style={{ left: `${position * 100}%` }}>
+      {prop ? <img src={propUrl(prop)} alt="" decoding="async" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : null}
+    </span>
   </div>;
+}
+
+/**
+ * How close a wait/now marker is to its window, 0 (far) to 1 (at the edge), so the lamp can fill
+ * as NOW comes instead of switching from nothing. Pure, and tested beside the copy.
+ */
+export function approach(position: number, target: number, width: number): number {
+  const gap = Math.abs(position - target) - width / 2;
+  if (gap <= 0) return 1;
+  const far = Math.max(target, 1 - target) - width / 2;
+  return far <= 0 ? 1 : Math.max(0, Math.min(1, 1 - gap / far));
+}
+
+/** The numbered boxes the lead's answer fills, one tile popping in at a time. */
+function Slots({ answer, length, options }: { answer: string[]; length: number; options: InteractionOption[] }) {
+  return <ol className="game-row game-row--slots" aria-label="The order so far">{Array.from({ length }, (_, i) => {
+    const o = answer[i] ? options.find((option) => option.id === answer[i]) : undefined;
+    return <li key={i} className={o ? "game-slot game-slot--full" : "game-slot"}>{o ? <Tile key={o.id} option={o} index={i + 1} tone={toneOf(options, o.id)} /> : <span className="game-slot__number">{i + 1}</span>}</li>;
+  })}</ol>;
+}
+
+/** The choices on a screen that is not building the answer: what the lead is picking from. */
+function Choices({ options, note }: { options: InteractionOption[]; note: string }) {
+  return <>
+    <ul className="game-row game-row--legend" aria-label="The pictures to choose from">{options.map((option, i) => <li key={option.id}><Tile option={option} tone={i % 4} /></li>)}</ul>
+    <p className="game-note game-note--dim">{note}</p>
+  </>;
 }
 
 /** The same observation surface on TV and phone; it never sends an intent. */
@@ -80,19 +115,28 @@ export function Board({ prompt, party, now, answer = [], playerId }: BoardProps)
   const bells = state?.sceneId === "song_track";
   const painted = appearance !== null;
   const view = { prompt, party, connected, now };
+  const leadId = interactionActor(prompt, connected);
+  const lead = name(leadId ?? "");
+  /** This screen builds the answer: the lead's phone. The TV and the other phones see the choices instead. */
+  const building = playerId !== undefined && playerId === leadId;
+  const object = appearance?.props?.find((id) => !id.startsWith("note-"));
   switch (spec.kind) {
     case "precision":
       if (!active) return null;
       return still
         ? <p className="game-note"><Icon name="hand" /> Moving parts are switched off. Take a helping hand to get past this one.</p>
-        : <><Meter prompt={prompt} now={now} /><p className="game-note">Tap when the marker is in the gold.</p></>;
+        : <><Meter prompt={prompt} now={now} prop={object} /><p className="game-note">Tap when the marker is in the gold.</p></>;
     case "timing": {
       if (!active) return null;
       if (still) return <p className="game-note"><Icon name="hand" /> Moving parts are switched off. Take a helping hand to get past this one.</p>;
-      const safe = precisionSuccess(spec, precisionPosition(elapsed, spec.periodMs), prompt.relaxed);
-      return <div className="story-interaction__signal game-lamp" data-safe={safe} role="img" aria-label={safe ? "Now!" : "Wait"}>
-        <span className="game-lamp__light"><Icon name={safe ? "boot" : "eye"} /></span>
-        <strong className="game-lamp__word">{safe ? "NOW!" : "Wait…"}</strong>
+      const position = precisionPosition(elapsed, spec.periodMs);
+      const safe = precisionSuccess(spec, position, prompt.relaxed);
+      const fill = approach(position, spec.target, Math.min(1, spec.width * (prompt.relaxed ? 2 : 1)));
+      const soon = !safe && fill > 0.6;
+      return <div className="story-interaction__signal game-lamp" data-safe={safe} data-soon={soon} role="img" aria-label={safe ? "Now!" : "Wait"}
+        style={{ "--fill": `${Math.round((safe ? 1 : fill) * 360)}deg` } as React.CSSProperties}>
+        <span className="game-lamp__light"><span className="game-lamp__ring" aria-hidden="true" /><Icon name={safe ? "boot" : "eye"} /></span>
+        <strong className="game-lamp__word">{safe ? "NOW!" : soon ? "Get ready…" : "Wait…"}</strong>
       </div>;
     }
     case "tracking": {
@@ -129,7 +173,7 @@ export function Board({ prompt, party, now, answer = [], playerId }: BoardProps)
       if (visible) {
         return <div className="story-interaction__memory game-memory" aria-label="Magic pattern">
           <p className="game-note">The pattern stays on screen. Copy it in this order:</p>
-          <ol className="game-row">{spec.answer.map((id, i) => { const o = option(id); return o ? <li key={i}><Tile option={o} index={i + 1} /></li> : null; })}</ol>
+          <ol className="game-row">{spec.answer.map((id, i) => { const o = option(id); return o ? <li key={i}><Tile option={o} index={i + 1} tone={toneOf(spec.options, id)} /></li> : null; })}</ol>
           {answer.length > 0 && <p className="game-note" aria-live="polite">So far: {answer.map((id) => option(id)?.label).join(", ")}</p>}
         </div>;
       }
@@ -137,23 +181,24 @@ export function Board({ prompt, party, now, answer = [], playerId }: BoardProps)
         const current = option(spec.answer[index] ?? "");
         return <div className="story-interaction__memory game-memory" aria-label="Magic pattern">
           <p className="game-note">Watch and remember…</p>
-          {current ? <Tile option={current} size="lg" /> : null}
+          {current ? <Tile key={index} option={current} size="lg" tone={toneOf(spec.options, current.id)} /> : null}
           <p className="game-dots" aria-label={`${index + 1} of ${spec.answer.length}`}>{spec.answer.map((_, i) => <span key={i} className={i <= index ? "game-dots__dot game-dots__dot--on" : "game-dots__dot"} />)}<small> {index + 1} of {spec.answer.length}</small></p>
         </div>;
       }
       return <div className="story-interaction__memory game-memory" aria-label="Magic pattern">
-        <p className="game-note game-note--big">Now copy it!</p>
-        <ol className="game-row game-row--slots">{spec.answer.map((_, i) => { const o = answer[i] ? option(answer[i]!) : undefined; return <li key={i} className={o ? "game-slot game-slot--full" : "game-slot"}>{o ? <Tile option={o} index={i + 1} /> : <span className="game-slot__number">{i + 1}</span>}</li>; })}</ol>
+        <p className="game-note game-note--big">{building ? "Now copy it!" : `Now ${lead} copies it!`}</p>
+        {building ? <Slots answer={answer} length={spec.answer.length} options={spec.options} />
+          : <Choices options={spec.options} note={`${lead} taps the ${spec.answer.length} pictures on their phone. Say the order out loud to help!`} />}
       </div>;
     }
     case "sequence": {
       if (!active) return null;
-      const option = (id: string) => spec.options.find((o) => o.id === id);
       const mine = playerId ? interactionClues(prompt, playerId, connected) : [];
       return <div className="game-sequence">
         {playerId ? (mine.length > 0 && <div className="game-clue"><span className="game-clue__eyebrow"><Icon name="scroll" /> Your clue{mine.length > 1 ? "s" : ""}. Read {mine.length > 1 ? "them" : "it"} out loud!</span><ul>{mine.map((clue, i) => <li key={i}>{clue}</li>)}</ul></div>)
           : <p className="game-note"><Icon name="phone" /> Every phone holds a clue. Put them together to find the order.</p>}
-        <ol className="game-row game-row--slots" aria-label="The order so far">{spec.answer.map((_, i) => { const o = answer[i] ? option(answer[i]!) : undefined; return <li key={i} className={o ? "game-slot game-slot--full" : "game-slot"}>{o ? <Tile option={o} index={i + 1} /> : <span className="game-slot__number">{i + 1}</span>}</li>; })}</ol>
+        {building ? <Slots answer={answer} length={spec.answer.length} options={spec.options} />
+          : <Choices options={spec.options} note={`${lead} puts the ${spec.answer.length} steps in order on their phone.`} />}
       </div>;
     }
     case "balance": {
@@ -183,8 +228,10 @@ export function Board({ prompt, party, now, answer = [], playerId }: BoardProps)
       return <div className="story-interaction__spark game-relay">
         <ul className="game-heroes">{order.map((id) => { const m = member(id); if (!m) return null;
           const passed = prompt.passed?.includes(id);
-          return <HeroChip key={id} member={m} tone={passed ? "done" : holder === id ? "on" : "off"} mark={passed ? "check" : holder === id ? "star" : undefined} state={passed ? "passed it" : holder === id ? (prompt.caughtBy === id ? "has it!" : "catch it!") : "waiting"} />; })}
-          <li className={`game-hero game-hero--goal${holder ? " game-hero--off" : " game-hero--on"}`}><span className="game-hero__face game-hero__face--goal"><Icon name="quest" /></span><span className="game-hero__name">Finish</span></li>
+          const has = holder === id && prompt.caughtBy === id;
+          return <HeroChip key={id} member={m} tone={passed ? "done" : holder === id ? "on" : "off"} mark={passed ? "check" : holder === id && !has ? "hand" : undefined}
+            token={has && object ? propUrl(object) : undefined} state={passed ? "passed it" : holder === id ? (has ? "has it!" : "catch it!") : "waiting"} />; })}
+          <li className={`game-hero game-hero--goal${holder ? " game-hero--off" : " game-hero--on"}`}><span className="game-hero__face game-hero__face--goal">{!holder && object ? <img className="game-hero__token game-hero__token--home" src={propUrl(object)} alt="" decoding="async" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : <Icon name="quest" />}</span><span className="game-hero__name">Finish</span></li>
         </ul>
         <p className="game-note" role="status"><Icon name="star" /> {holder ? `${spec.objectLabel}: ${name(holder)} ${prompt.caughtBy === holder ? "has it!" : "can catch it"}` : "It made it all the way!"}</p>
         <p className="game-note game-note--dim">{(prompt.passed ?? []).map(name).join(" → ") || "Everyone gets a turn."}</p>
@@ -213,7 +260,7 @@ export function Board({ prompt, party, now, answer = [], playerId }: BoardProps)
       const chosen = (id: string) => spec.options.find((o) => o.id === prompt.contributions?.[id]);
       const count = connected.filter((id) => prompt.contributions?.[id] !== undefined).length;
       return <div className="story-interaction__reactions game-play" aria-live="polite">
-        <ul className="game-bubbles">{(prompt.reactions ?? []).slice(-3).map((reaction, index) => <li key={`${prompt.taps}:${index}`} className="game-bubble"><strong>{name(reaction.playerId)}:</strong> {reaction.text}</li>)}</ul>
+        <ul className="game-bubbles">{(prompt.reactions ?? []).slice(-3).map((reaction, index, shown) => <li key={(prompt.taps ?? 0) - shown.length + index} className="game-bubble"><strong>{name(reaction.playerId)}:</strong> {reaction.text}</li>)}</ul>
         {(prompt.reactions ?? []).length === 0 && <p className="game-note game-note--dim">What you pick shows up here.</p>}
         {spec.participation === "everyone" && <>
           <ul className="game-heroes">{connectedMembers.map((m) => { const o = chosen(m.playerId); return <HeroChip key={m.playerId} member={m} tone={o ? "done" : "off"} mark={o ? "check" : undefined} state={o?.label ?? "choosing something"} />; })}</ul>
@@ -267,7 +314,7 @@ export function KindControls({ prompt, playerId, connected, mine, now, busy, sen
       if (locked) return <p className="game-note"><Icon name="tv" /> Watch the TV first…</p>;
       return <>
         <div className="game-options game-options--grid">
-          {spec.options.map((option) => <button key={option.id} type="button" className="story-interaction__button game-option kad-focusable" disabled={busy || full} onClick={() => setAnswer((current) => [...current, option.id])}>
+          {spec.options.map((option, i) => <button key={option.id} type="button" className="story-interaction__button game-option kad-focusable" data-tone={i % 4} disabled={busy || full} onClick={() => setAnswer((current) => [...current, option.id])}>
             <span className="game-option__icon"><PaintedGlyph label={option.label} /><Icon name={option.icon} /></span>
             <span className="game-option__label">{option.label}</span>
           </button>)}

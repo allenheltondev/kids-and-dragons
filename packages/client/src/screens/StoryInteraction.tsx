@@ -20,6 +20,8 @@ import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
 import { Button } from "../ui/Button";
 import { Board, KindControls } from "./InteractionExtras";
+import { DiceCelebration } from "./DiceCelebration";
+import { cue } from "../audio/cue";
 import { GAME, HELPING_HAND, outcomeLine, phoneJob, tvStatus } from "./interaction-copy";
 import "./StoryInteraction.css";
 
@@ -52,6 +54,29 @@ function clockFor(prompt: InteractionPrompt): number | undefined {
   return SLOW_CLOCK_MS;
 }
 
+/**
+ * The result, felt: confetti for a success or a helping hand, a little dust for a miss, on every
+ * screen. Keyed on the attempt so a retry earns its own burst. Nothing under reduced motion; the
+ * banner's words already say it.
+ */
+function Burst({ prompt }: { prompt: InteractionPrompt }) {
+  if (prompt.phase !== "result" || reducedMotion()) return null;
+  const kind = prompt.outcome === "failure" ? "miss" : "success";
+  return <span className="game__burst" aria-hidden="true"><DiceCelebration key={`${prompt.openedSeq}:${prompt.attempt}`} kind={kind} seed={prompt.openedSeq * 31 + prompt.attempt} /></span>;
+}
+
+/** One sound for the room, from the TV only, so four phones do not chime over each other. */
+function useResultSound(prompt: InteractionPrompt | null): void {
+  const played = useRef<string | null>(null);
+  const key = prompt ? `${prompt.openedSeq}:${prompt.attempt}:${prompt.phase}` : null;
+  useEffect(() => {
+    if (!prompt || key === null || played.current === key) return;
+    played.current = key;
+    if (prompt.phase === "active") cue("party-ready");
+    if (prompt.phase === "result") cue(prompt.outcome === "failure" ? "chime-sour" : "chime-echo");
+  }, [key, prompt]);
+}
+
 /** The game's name and the story's cue, the same heading on every screen. */
 function GameHead({ prompt }: { prompt: InteractionPrompt }) {
   const game = GAME[prompt.spec.kind];
@@ -67,6 +92,7 @@ export function StoryInteractionWorld() {
   const prompt = state?.prompt?.kind === "interaction" ? state.prompt : null;
   const still = reducedMotion();
   const now = useClock(prompt?.phase === "active" && !still, prompt ? clockFor(prompt) : undefined);
+  useResultSound(prompt);
   if (!prompt || !state) return null;
   const connected = state.party.filter((member) => member.connected).map((member) => member.playerId);
   const view = { prompt, party: state.party, connected, now };
@@ -79,7 +105,8 @@ export function StoryInteractionWorld() {
       <Board prompt={prompt} party={state.party} now={now} />
       {prompt.phase === "result" && <p className={`game__outcome game__outcome--${prompt.outcome ?? "failure"}`}><Icon name={prompt.outcome === "failure" ? "shuffle" : "star"} /> {outcomeLine(prompt)}</p>}
     </div>
-    <p className="game__status" role="status"><Icon name="phone" /><span>{status}</span></p>
+    <p className="game__status" role="status" key={status}><Icon name="phone" /><span>{status}</span></p>
+    <Burst prompt={prompt} />
   </section>;
 }
 
@@ -164,6 +191,7 @@ function Controls({ prompt, party, playerId, dispatch, busy }: {
         </div>}
       </>}
     </div>
+    <Burst prompt={prompt} />
     {prompt.phase !== "result" && <details className="game__help" open={needsHand || undefined}>
       <summary className="game__help-summary kad-focusable"><Icon name="hand" /> {HELPING_HAND.summary}</summary>
       {prompt.phase === "ready" && mine && <label className="game__help-option">
