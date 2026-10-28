@@ -168,6 +168,10 @@ console.log(`  wanted          ${num(wanted.length)} distinct clips${values.spea
 console.log(`  already there   ${num(report.cached.length)} at every destination (no provider call)`);
 if (values.render) console.log(`  rendered        ${num(report.rendered.length)} clips; ${num(report.chars)} characters sent, about ${dollars(report.dollars)} (retries counted) in ${((Date.now() - startedAt) / 1000).toFixed(1)}s`);
 else console.log(`  would render    ${num(report.planned.length)} clips, ${num(report.chars)} characters, ${dollars(report.dollars)} (cap ${dollars(maxDollars)})`);
+if (report.measured.tokensPerSecond !== null) {
+  const m = report.measured;
+  console.log(`  measured        ${num(m.audioTokens)} audio tokens billed for ${m.seconds.toFixed(1)}s of audio in ${num(m.clips)} clips: ${m.tokensPerSecond!.toFixed(1)} tokens a second (pricing.json assumes ${String(pricing.speech.audioTokensPerSecond)})`);
+}
 if (report.failed.length > 0) {
   console.log(`  FAILED          ${num(report.failed.length)}`);
   for (const f of report.failed.slice(0, 5)) console.log(`    ${f.key.slice(0, 10)}: ${f.error}`);

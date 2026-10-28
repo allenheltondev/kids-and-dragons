@@ -434,8 +434,10 @@ summaries. Check the unconfirmed ones before spending on them. Three things chan
   v3's $0.10. Plan overage has been quoted anywhere from $0.10 to $0.30.
 - **Audio tokens per second is an estimate.** Google gives 25 to 32 audio tokens for each second of
   speech. `pricing.json` uses 32, the top of the range, so estimates and the spend cap err on the
-  safe side; `voice:cost --tokens-per-second 25` shows the low end. The staging smoke test should log
-  the real count so the next estimate uses a measured rate.
+  safe side; `voice:cost --tokens-per-second 25` shows the low end. `voice:generate` reads the audio
+  tokens Gemini reports for each clip (`usageMetadata`) and prints the measured rate at the end of a
+  run (`measured ... tokens a second`), so after the staging smoke test `audioTokensPerSecond` can be
+  set from a real number.
 
 **Budget: $75 cap on the first run.** `voice:generate` will take `--max-dollars 75` and stop before
 the request that would cross it, priced with the same model. On Gemini 3.8 Flash the cap covers

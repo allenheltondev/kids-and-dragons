@@ -163,3 +163,34 @@ describe("the destination decides what is owed", () => {
     expect(again.cached).toHaveLength(1);
   });
 });
+
+describe("measuring what the provider bills", () => {
+  it("adds up reported audio tokens against the seconds of audio they bought", async () => {
+    const { pcmToWav } = await import("./bakeoff/providers");
+    // Two seconds of 24 kHz audio, billed as 60 tokens: 30 a second.
+    const wav = pcmToWav(Buffer.alloc(24000 * 2 * 2), 24000);
+    const { made } = deps({ synth: () => Promise.resolve({ wav, audioTokens: 60 }) });
+    const report = await renderOwed(owed(2), made, live);
+    expect(report.measured).toEqual({ audioTokens: 120, seconds: 4, clips: 2, tokensPerSecond: 30 });
+  });
+
+  it("measures nothing when the provider reports no tokens", async () => {
+    const { made } = deps();
+    const report = await renderOwed(owed(1), made, live);
+    expect(report.measured.tokensPerSecond).toBeNull();
+  });
+
+  it("reads Gemini's usage report, preferring its audio tokens", async () => {
+    const { audioTokensOf } = await import("./bakeoff/providers");
+    expect(audioTokensOf({ candidatesTokenCount: 90, candidatesTokensDetails: [{ modality: "AUDIO", tokenCount: 80 }] })).toBe(80);
+    expect(audioTokensOf({ candidatesTokenCount: 90 })).toBe(90);
+    expect(audioTokensOf(undefined)).toBeUndefined();
+  });
+
+  it("knows the length of a WAV, and that other bytes are not one", async () => {
+    const { pcmToWav } = await import("./bakeoff/providers");
+    const { wavSeconds } = await import("./render");
+    expect(wavSeconds(pcmToWav(Buffer.alloc(48000), 24000))).toBe(1);
+    expect(wavSeconds(Buffer.from("not audio"))).toBeNull();
+  });
+});

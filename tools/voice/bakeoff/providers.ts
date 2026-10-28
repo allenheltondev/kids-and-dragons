@@ -354,6 +354,16 @@ export interface Rendered {
   raw?: Buffer;
   /** Gemini: how much end-of-turn noise the cleaning silenced. */
   removedMs?: number;
+  /** Gemini: the audio tokens the response says it billed (usageMetadata), when it says. */
+  audioTokens?: number;
+}
+
+/** The audio tokens a Gemini response reports: its AUDIO output tokens, else all its output tokens. */
+export function audioTokensOf(usage: unknown): number | undefined {
+  const u = usage as { candidatesTokenCount?: number; candidatesTokensDetails?: { modality?: string; tokenCount?: number }[] } | undefined;
+  const audio = u?.candidatesTokensDetails?.find((d) => d.modality === "AUDIO")?.tokenCount;
+  const count = audio ?? u?.candidatesTokenCount;
+  return typeof count === "number" && Number.isFinite(count) ? count : undefined;
 }
 
 export type Fetch = (url: string, init: { method: string; headers: Record<string, string>; body?: string }) => Promise<{
@@ -445,6 +455,7 @@ export async function send(job: Job, keys: Keys, fetch: Fetch): Promise<Rendered
 
   const json = JSON.parse(await response.text()) as {
     candidates?: { content?: { parts?: { inlineData?: { mimeType?: string; data?: string } }[] } }[];
+    usageMetadata?: unknown;
   };
   const parts = json.candidates?.[0]?.content?.parts ?? [];
   const audio = parts.map((part) => part.inlineData).filter((data) => data?.data);
@@ -458,6 +469,7 @@ export async function send(job: Job, keys: Keys, fetch: Fetch): Promise<Rendered
     raw: pcmToWav(pcm, rate),
     removedMs: cleaned.removed.reduce((sum, r) => sum + r.endMs - r.startMs, 0),
     ext: "wav",
+    ...(audioTokensOf(json.usageMetadata) === undefined ? {} : { audioTokens: audioTokensOf(json.usageMetadata) }),
   };
 }
 
