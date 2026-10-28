@@ -259,3 +259,65 @@ describe("reusable story controls", () => {
     expect(screen.getByTestId("turn-key").textContent).not.toBe(key);
   });
 });
+
+describe("how a game feels", () => {
+  it("fills the wait/now ring as the window comes, and is full inside it", async () => {
+    const { approach } = await import("./InteractionExtras");
+    expect(approach(0.5, 0.5, 0.3)).toBe(1);
+    expect(approach(0.6, 0.5, 0.3)).toBe(1);
+    expect(approach(0, 0.5, 0.3)).toBe(0);
+    const near = approach(0.3, 0.5, 0.3);
+    const far = approach(0.1, 0.5, 0.3);
+    expect(near).toBeGreaterThan(far);
+    expect(near).toBeLessThan(1);
+  });
+  it("says Get ready before NOW on a timing board", () => {
+    // 6000ms period: position 0.3 at 900ms, just short of a 0.35-0.65 window.
+    seed({ kind: "timing", cue: "Wait", actionLabel: "Go", target: 0.5, width: 0.3, periodMs: 6000 }, { startedAt: new Date(Date.now() - 900).toISOString() });
+    const { container } = render(<StoryInteractionWorld />);
+    expect(container.querySelector(".game-lamp")?.getAttribute("data-soon")).toBe("true");
+    expect(screen.getByText("Get ready…")).toBeTruthy();
+  });
+  it("colours each pattern option the same on the tile and the button", () => {
+    seed({ kind: "memory", cue: "Echo", actionLabel: "Send", options: [{ id: "star", label: "Star", icon: "star" }, { id: "leaf", label: "Leaf", icon: "leaf" }], answer: ["leaf", "star"], stepMs: 1000 }, { relaxed: true });
+    render(<StoryInteractionControls />);
+    expect(screen.getByRole("button", { name: "Leaf" }).getAttribute("data-tone")).toBe("1");
+    const tiles = [...document.querySelectorAll(".game-tile[data-tone]")].map((tile) => [tile.textContent?.replace(/\d/g, ""), tile.getAttribute("data-tone")]);
+    expect(tiles).toContainEqual(["Leaf", "1"]);
+    expect(tiles).toContainEqual(["Star", "0"]);
+  });
+  it("shows the TV the choices, not empty slots, while the lead builds an order on their phone", () => {
+    seed({ kind: "sequence", cue: "Clues", actionLabel: "Try", options: [{ id: "a", label: "Reeds", icon: "eye" }, { id: "b", label: "Shells", icon: "eye" }], answer: ["a", "b"], clues: ["Reeds first", "Shells last"] });
+    const { container, unmount } = render(<StoryInteractionWorld />);
+    expect(container.querySelector(".game-slot")).toBeNull();
+    expect(container.querySelectorAll(".game-row--legend .game-tile")).toHaveLength(2);
+    unmount();
+    render(<StoryInteractionControls />);
+    expect(document.querySelectorAll(".game-slot")).toHaveLength(2);
+  });
+  it("puts the authored object on the precision marker and on whoever holds the relay", () => {
+    seed(precision);
+    authoredChapter({ props: ["goat-brush"] });
+    const { container, unmount } = render(<StoryInteractionWorld />);
+    expect(container.querySelector(".game-track__marker--prop img")?.getAttribute("src")).toBe("/assets/story-props/goat-brush.webp");
+    unmount();
+    seed({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "the mat" }, { caughtBy: "p" });
+    authoredChapter({ props: ["relay-plank"] });
+    const relay = render(<StoryInteractionWorld />);
+    expect(relay.container.querySelector(".game-hero__token")?.getAttribute("src")).toBe("/assets/story-props/relay-plank.webp");
+  });
+  it("bursts on a result, and stays still under reduced motion", () => {
+    seed(precision, { phase: "result", outcome: "success" });
+    const { container, unmount } = render(<StoryInteractionWorld />);
+    expect(container.querySelector(".game__burst .celebration--success")).toBeTruthy();
+    unmount();
+    seed(precision, { phase: "result", outcome: "failure" });
+    const miss = render(<StoryInteractionWorld />);
+    expect(miss.container.querySelector(".game__burst .celebration--miss")).toBeTruthy();
+    miss.unmount();
+    document.documentElement.setAttribute("data-motion", "reduced");
+    seed(precision, { phase: "result", outcome: "success" });
+    const still = render(<StoryInteractionWorld />);
+    expect(still.container.querySelector(".game__burst")).toBeNull();
+  });
+});

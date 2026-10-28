@@ -254,6 +254,7 @@
   padding: var(--space-2, 0.5em);
 }
 .game-lamp__light {
+  position: relative;
   display: grid;
   place-items: center;
   inline-size: 4.5em;
@@ -491,6 +492,112 @@
 .game__help-option small { color: var(--kad-ink-dim, #b9b0d8); line-height: 1.3; }
 .game__help-text { line-height: 1.35; }
 .game__help > .kad-button { color: var(--kad-ink, #f4f0ff); }
+
+/* --- motion: one stage, and every tap lands ------------------------------------
+ * Recorded on a real table: the painted layer and the board each drew the heroes and the
+ * object, on different paths, so a precision brush arced through the air above a separate
+ * puck and a rope loop sat on a unicorn. While a game runs the board is the stage: the painted
+ * heroes step back (the board has their faces), and the object the board carries itself (the
+ * precision marker, the relay token) leaves the painting. The scene still sets the stage at the
+ * ready and on the result.
+ */
+.game--active .game__board .interaction-art__hero,
+.game--active .game__board .interaction-art__reaction { display: none; }
+.game--active.game--precision .game__board .interaction-art__main,
+.game--active.game--relay .game__board .interaction-art__main { display: none; }
+/* A painting earns its place on the board only as the thing being played with: the precision
+   marker, the relay token, the sling being held or levelled. For a pattern, clues or a playful
+   pick the authored props are scenery that looks like a clue (a shell and a snow mound beside
+   "Nothing, just air" and "The whole snowy landing"), so the board leaves them out. */
+.game--memory .game__board > .interaction-art,
+.game--sequence .game__board > .interaction-art,
+.game--play .game__board > .interaction-art { display: none; }
+
+/* What stays in the painting breathes a little, instead of sitting there or jumping. */
+.game__board .interaction-art__prop { animation: game-bob 2.6s ease-in-out infinite; }
+.game__board .interaction-art__support { animation-delay: -1.3s; }
+@keyframes game-bob { 50% { translate: 0 -0.18em; } }
+
+/* Precision: the gold wakes up when the marker is in it, and the authored object is the marker. */
+.game-track[data-gold="true"] .game-track__gold { filter: brightness(1.15); transform: scaleY(1.12); }
+.game-track__gold { transition: transform var(--kad-dur-fast, 120ms), filter var(--kad-dur-fast, 120ms); }
+.game-track__marker--prop {
+  inline-size: 3.2em;
+  block-size: 3.2em;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.35), transparent 70%);
+  box-shadow: none;
+}
+.game-track__marker--prop > img { inline-size: 100%; block-size: 100%; object-fit: contain; filter: drop-shadow(0 0.15em 0.25em rgba(0, 0, 0, 0.6)); }
+.game-track[data-gold="true"] .game-track__marker--prop > img { filter: drop-shadow(0 0 0.5em rgba(255, 217, 116, 0.95)); }
+
+/* Timing: a ring fills as NOW comes, so it can be seen coming rather than only reacted to. */
+.game-lamp__ring {
+  position: absolute;
+  inset: -0.35em;
+  border-radius: 50%;
+  background: conic-gradient(var(--kad-gold, #f5c86c) var(--fill, 0deg), rgba(190, 178, 255, 0.14) 0);
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 0.4em), #000 calc(100% - 0.35em));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 0.4em), #000 calc(100% - 0.35em));
+}
+.game-lamp[data-soon="true"] .game-lamp__word { color: var(--kad-gold-hi, #ffe6a8); }
+.game-lamp[data-soon="true"] .game-lamp__light { animation: game-shiver 0.35s ease-in-out infinite; }
+.game-lamp[data-safe="true"] .game-lamp__word { animation: game-pop 0.3s var(--kad-ease-out, ease-out); }
+@keyframes game-shiver { 25% { rotate: -3deg; } 75% { rotate: 3deg; } }
+
+/* Options wear a colour by their place, on the tiles and the buttons alike. */
+[data-tone="0"] { --tone: var(--kad-stat-quick, #6bd6ff); }
+[data-tone="1"] { --tone: var(--kad-stat-heart, #ff6bab); }
+[data-tone="2"] { --tone: var(--kad-gold, #f5c86c); }
+[data-tone="3"] { --tone: var(--kad-stat-clever, #c98bff); }
+.game-tile[data-tone], .game-option[data-tone] {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 0.14em var(--tone),
+    0 0.15em 0 var(--kad-raised-edge, #0a0814);
+}
+.game-tile[data-tone] .game-tile__icon, .game-option[data-tone] .game-option__icon {
+  /* A TV on Chromium 108 keeps the first: the tone's own colour as a ring. */
+  box-shadow: inset 0 0 0 0.14em var(--tone), inset 0 0.3em 0.6em rgba(0, 0, 0, 0.5);
+  background: radial-gradient(circle at 50% 35%, #1d1838, #0c0917);
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--tone) 45%, #1d1838), #0c0917);
+}
+.game-tile--lg[data-tone] { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), inset 0 0 0 0.18em var(--tone), 0 0 1.4em var(--tone); }
+.game-row--legend .game-tile { min-inline-size: 5em; }
+
+/* The small pops that make a tap land: a tile in a slot, a pattern step, a speech bubble,
+   a check on a hero, the token landing on whoever caught it, the result banner. */
+.game-slot--full > .game-tile,
+.game-tile--lg,
+.game-bubble:last-child,
+.game-hero__mark,
+.game-hero__token,
+.game__status > span { animation: game-pop 0.32s var(--kad-ease-out, cubic-bezier(0.2, 0.9, 0.3, 1.3)) both; }
+.game__outcome { animation: game-pop-big 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.4) both; }
+@keyframes game-pop { from { scale: 0.6; opacity: 0; } 60% { scale: 1.08; opacity: 1; } to { scale: 1; } }
+@keyframes game-pop-big { from { scale: 0.4; opacity: 0; } 55% { scale: 1.12; opacity: 1; } to { scale: 1; } }
+
+/* The relay object rides on whoever has it, and waits at Finish when it gets there. */
+.game-hero__token {
+  position: absolute;
+  inset-block-end: -0.4em;
+  inset-inline-end: -0.7em;
+  inline-size: 2.4em;
+  block-size: 2.4em;
+  object-fit: contain;
+  filter: drop-shadow(0 0.15em 0.25em rgba(0, 0, 0, 0.6));
+  z-index: 2;
+}
+.game-hero__token--home { position: static; inline-size: 100%; block-size: 100%; }
+
+/* Holding on: the button glows and breathes while a finger is on it. */
+.game-hold[aria-pressed="true"] { animation: game-breathe 1.1s ease-in-out infinite; }
+@keyframes game-breathe { 50% { box-shadow: 0 0 0 0.2em rgba(245, 200, 108, 0.45), 0 0 1.6em rgba(245, 200, 108, 0.55); } }
+.game-hero--done .game-hero__face { transition: box-shadow var(--kad-dur-base, 200ms); }
+
+/* The result's burst sits over the whole frame and never makes it scroll. */
+.game { position: relative; }
+.game__burst { position: absolute; inset: 0; overflow: clip; pointer-events: none; z-index: 3; font-size: 1.4rem; }
+.game--phone .game__burst { font-size: 1rem; }
 
 @media (prefers-reduced-motion: reduce) {
   .game *, .game *::before, .game *::after { transition: none !important; animation: none !important; }
