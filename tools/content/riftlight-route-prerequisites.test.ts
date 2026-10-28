@@ -83,4 +83,4 @@ it("proves regional prerequisites across every incoming graph route rather than 
     expect(bypass.incoming.get(node)!.has("orin")).toBe(false);
     expect(bypass.incoming.get(node)!.has("olivia")).toBe(false);
   }
-}, 20_000); // Walks every chapter twice through the real engine, class rooms included; V8 coverage slows it in CI.
+}, 60_000); // Walks every chapter twice through the real engine, class rooms included. About 17s on its own and V8 coverage slows it in CI, so 20s timed out on a busy runner.
