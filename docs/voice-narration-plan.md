@@ -429,5 +429,5 @@ pipeline, and rewriting before the full render (8) avoids paying to render text 
 - **Storage:** clips go in the existing site bucket, under a `voice/` prefix next to `assets/`
   (not inside it, so deploy's `--delete` never touches them).
 - **One narrator voice** for the whole game.
-- **Names:** a player's name never goes to a TTS provider. A recorded line says "hero" instead; every name-bearing surface gets a sweep (section 8).
+- **Names:** text on screen can say a player's name; audio always says "hero", from the recorded voice and the device voice alike. A name never reaches any speaker or provider; every name-bearing surface gets a sweep (section 8).
 - **Provider and model:** Gemini 3.8 Flash TTS (`gemini-3.8-flash-tts`), decided by the owner. ElevenLabs stays in the bake-off for comparison only.
