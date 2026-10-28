@@ -20,7 +20,7 @@
 import path from "node:path";
 import { parseArgs } from "node:util";
 import { billedChars, inventory, quotedChars, type VoiceLine } from "./inventory";
-import { dollars, hours, quote, type Pricing, type Quote, type Workload } from "./cost-model";
+import { dollars, hours, parseTokensPerSecond, quote, type Pricing, type Quote, type Workload } from "./cost-model";
 import { loadContent, readJson, reachableFacets } from "./load";
 
 const { values } = parseArgs({
@@ -49,9 +49,9 @@ if (!Number.isFinite(budget) || !Number.isFinite(retakes) || retakes < 1 || !Num
 
 const pricing = readJson(path.join(import.meta.dirname, "pricing.json")) as unknown as Pricing;
 if (values["tokens-per-second"] !== undefined) {
-  const rate = Number(values["tokens-per-second"]);
-  if (!(rate > 0)) {
-    console.error("--tokens-per-second takes a positive number (Google estimates 25 to 32).");
+  const rate = parseTokensPerSecond(values["tokens-per-second"]);
+  if (rate === null) {
+    console.error("--tokens-per-second takes a finite number above zero (Google estimates 25 to 32).");
     process.exit(2);
   }
   pricing.speech.audioTokensPerSecond = rate;

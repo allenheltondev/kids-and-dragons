@@ -60,6 +60,16 @@ export function rateOn<T extends { from?: string; until?: string }>(rates: reado
   return rates.find((rate) => (rate.from === undefined || rate.from <= day) && (rate.until === undefined || day <= rate.until)) ?? null;
 }
 
+/**
+ * `--tokens-per-second` as a number: finite and above zero, or null. `Infinity`
+ * and an overflow like `1e999` are above zero but would price everything at
+ * infinity, so they are refused too.
+ */
+export function parseTokensPerSecond(text: string): number | null {
+  const rate = Number(text);
+  return text.trim() !== "" && Number.isFinite(rate) && rate > 0 ? rate : null;
+}
+
 export function audioSeconds(chars: number, speech: SpeechAssumptions): number {
   return chars / speech.charsPerSecond;
 }
