@@ -3,6 +3,8 @@ import { describe, expect, it } from "vitest";
 import {
   NARRATION_TOKENS,
   composeNarration,
+  composeNarrationPieces,
+  narrationPartsOf,
   fillTokens,
   numberWord,
   partyPhrase,
@@ -188,5 +190,53 @@ describe("revelationsOf (the end-of-chapter recap)", () => {
 
   it("is empty for a road with no revelation on it", () => {
     expect(revelationsOf({ scenes }, ["s_start", "s_clue"], partyOf(1))).toEqual([]);
+  });
+});
+
+describe("narration parts", () => {
+  const variants: NarrationVariant[] = [
+    { when: { flag: "lit" }, text: "A lamp burns.", at: "start" },
+    { when: { flag: "lit" }, text: "{party} may enter." },
+  ];
+
+  it("joins back to composeNarration, whatever variants hold", () => {
+    for (const flags of [{}, { lit: true }] as Record<string, boolean>[]) {
+      const party = partyOf(2, 0, flags);
+      const joined = composeNarrationPieces(BASE, variants, party)
+        .map((piece) => piece.text)
+        .join("\n\n");
+      expect(joined).toBe(composeNarration(BASE, variants, party));
+    }
+  });
+
+  it("keeps each piece as authored, with the variant it came from", () => {
+    const party = partyOf(3, 2, { lit: true });
+    expect(composeNarrationPieces(BASE, variants, party)).toEqual([
+      { text: "A lamp burns.", variant: 0 },
+      { text: BASE },
+      { text: "{party} may enter.", variant: 1 },
+    ]);
+  });
+
+  it("notes the address and token values of each part", () => {
+    const party = partyOf(3, 2);
+    expect(
+      narrationPartsOf(
+        [
+          { text: "A lamp burns.", address: "ch/s1/variants/0" },
+          { text: "{facets} stones, {party}.", address: "ch/s1/narration" },
+          { text: "Spoils." },
+        ],
+        party,
+      ),
+    ).toEqual([
+      { address: "ch/s1/variants/0", line: "A lamp burns." },
+      { address: "ch/s1/narration", line: "{facets} stones, {party}.", token: { facets: "2", party: "3" } },
+      { line: "Spoils." },
+    ]);
+  });
+
+  it("leaves out a blank piece", () => {
+    expect(narrationPartsOf([{ text: "" }, { text: "  " }, { text: BASE }], partyOf(1))).toEqual([{ line: BASE }]);
   });
 });

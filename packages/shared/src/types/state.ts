@@ -13,6 +13,7 @@ import type { FieldGuideFind } from "../field-guide-record.js";
 import type { FactId, FactValue, JourneyView, NodeId } from "./campaign-graph.js";
 import type { BuffId, CheckBuffOffer, RunBuff } from "./buffs.js";
 import type { MatchupNote } from "./matchups.js";
+import type { NarrationPart } from "../narration.js";
 
 export type RoomMode = "party" | "travel";
 
@@ -285,6 +286,13 @@ export interface RunState {
    * reload mid-scene shows the same words.
    */
   narration: string;
+  /**
+   * The authored pieces `narration` was composed from, in reading order, with
+   * the value of each token they carry (narration.ts `NarrationPart`). Written
+   * by the same call as `narration`, for recorded voice to choose clips by.
+   * Absent on runs saved before it existed, and outside a scene.
+   */
+  narrationParts?: NarrationPart[];
   art: string | null;
   /**
    * The current scene's `priority` (chapter.ts `ScenePriority`), so the shared

@@ -101,7 +101,11 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
  */
 // 318 -> 320 for story interactions (#493): 319KB measured. The store needs
 // stable interaction/relay turn identity; the controls and visuals stay lazy.
-const FIRST_PAINT_BUDGET_KB = 320;
+// 320 -> 322 for the privacy page (#523): 321KB measured, 320 before it. The 1KB
+// that landed in the first paint is the `/privacy` route and the link on both
+// start screens, which has to be there before anyone joins or hosts. The page
+// itself, its words and the "what we store" text it shares are lazy chunks.
+const FIRST_PAINT_BUDGET_KB = 322;
 
 /**
  * Everything, including what is lazily fetched.
@@ -123,11 +127,13 @@ const FIRST_PAINT_BUDGET_KB = 320;
  */
 // 1440 -> 1460 for nine reusable story mechanics (#493): 1452KB measured,
 // mostly the lazy StoryInteraction and InteractionExtras controls and views.
-// 1460 -> 1495 on 2026-10-28, deliberately (#493 playtest). 1486KB measured. The
+// 1460 -> 1475 for the privacy page (#523): 1467KB measured, 1457 before it. The
+// policy's words and its page are a lazy chunk; nothing else moved.
+// 1475 -> 1505 on 2026-10-28, deliberately (#493 playtest). 1497KB measured. The
 // mini-games became full-screen boards with real play (pads, a TAP pad, a lever,
 // catch and flick, stamps, room sounds); the StoryInteraction chunk went 18KB to
 // 45KB (13KB gzipped), all lazy. The first paint did not move (320KB).
-const TOTAL_BUDGET_KB = 1495;
+const TOTAL_BUDGET_KB = 1505;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
