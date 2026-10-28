@@ -7086,6 +7086,24 @@
             "stone"
           ],
           "introduces": {}
+        },
+        "paperweight_response_rock": {
+          "requires": [
+            "stone"
+          ],
+          "introduces": {}
+        },
+        "paperweight_response_fold": {
+          "requires": [
+            "stone"
+          ],
+          "introduces": {}
+        },
+        "paperweight_response_hold": {
+          "requires": [
+            "stone"
+          ],
+          "introduces": {}
         }
       }
     },
@@ -7652,6 +7670,48 @@
             "orin"
           ],
           "introduces": {}
+        },
+        "restore_bank_response_play0": {
+          "requires": [
+            "bank",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "restore_bank_response_play1": {
+          "requires": [
+            "bank",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "restore_bank_response_play2": {
+          "requires": [
+            "bank",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "visitor_trial_response_stop": {
+          "requires": [
+            "bank",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "visitor_trial_response_clue": {
+          "requires": [
+            "bank",
+            "orin"
+          ],
+          "introduces": {}
+        },
+        "visitor_trial_response_return": {
+          "requires": [
+            "bank",
+            "orin"
+          ],
+          "introduces": {}
         }
       }
     },
@@ -7833,7 +7893,7 @@
             "valley_priority"
           ],
           "introduces": {
-            "valley_signals": "The workers demonstrate their crossing signs:"
+            "valley_signals": "The workers demonstrate lantern up for wait"
           }
         },
         "camp": {
@@ -7999,6 +8059,42 @@
               ]
             }
           ]
+        },
+        "record_return_response_west": {
+          "requires": [
+            "valley_change"
+          ],
+          "introduces": {}
+        },
+        "record_return_response_old": {
+          "requires": [
+            "valley_change"
+          ],
+          "introduces": {}
+        },
+        "record_return_response_quiet": {
+          "requires": [
+            "valley_change"
+          ],
+          "introduces": {}
+        },
+        "last_check_response_stop": {
+          "requires": [
+            "valley_change"
+          ],
+          "introduces": {}
+        },
+        "last_check_response_look": {
+          "requires": [
+            "valley_change"
+          ],
+          "introduces": {}
+        },
+        "last_check_response_ask": {
+          "requires": [
+            "valley_change"
+          ],
+          "introduces": {}
         }
       }
     },
@@ -8036,7 +8132,7 @@
             "room_arrival"
           ],
           "introduces": {
-            "quiet_rule": "The elder sets a cup of tea beside the marked floor."
+            "quiet_rule": "The elder sets down the tea."
           }
         },
         "witness_first": {
@@ -8064,7 +8160,7 @@
             "witness_first"
           ],
           "introduces": {
-            "catalog_cards": "The elder lays out three cards for the same memory."
+            "catalog_cards": "The elder joins a standing-place card"
           }
         },
         "listening_floor": {
@@ -8589,6 +8685,27 @@
             "teach_back"
           ],
           "introduces": {}
+        },
+        "claim_limit_response_date": {
+          "requires": [
+            "compare_accounts",
+            "claim_limit"
+          ],
+          "introduces": {}
+        },
+        "claim_limit_response_cause": {
+          "requires": [
+            "compare_accounts",
+            "claim_limit"
+          ],
+          "introduces": {}
+        },
+        "claim_limit_response_compare": {
+          "requires": [
+            "compare_accounts",
+            "claim_limit"
+          ],
+          "introduces": {}
         }
       },
       "entryByFlag": {
@@ -9026,7 +9143,7 @@
             "island_signals"
           ],
           "introduces": {
-            "island_orientation": "Three ridges show through the cloud below."
+            "island_orientation": "Three ridges show through the cloud."
           }
         },
         "comparison": {
@@ -9375,6 +9492,72 @@
             "island_handoff"
           ],
           "introduces": {}
+        },
+        "stone_care_response_feet": {
+          "requires": [
+            "island_landing",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals",
+            "island_stone"
+          ],
+          "introduces": {}
+        },
+        "stone_care_response_grass": {
+          "requires": [
+            "island_landing",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals",
+            "island_stone"
+          ],
+          "introduces": {}
+        },
+        "stone_care_response_shade": {
+          "requires": [
+            "island_landing",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals",
+            "island_stone"
+          ],
+          "introduces": {}
+        },
+        "alternative_response_date": {
+          "requires": [
+            "island_land",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals",
+            "island_limits"
+          ],
+          "introduces": {}
+        },
+        "alternative_response_test": {
+          "requires": [
+            "island_land",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals",
+            "island_limits"
+          ],
+          "introduces": {}
+        },
+        "alternative_response_cause": {
+          "requires": [
+            "island_land",
+            "island_keeper",
+            "island_pip",
+            "island_arrival",
+            "island_signals",
+            "island_limits"
+          ],
+          "introduces": {}
         }
       }
     },
@@ -9651,6 +9834,42 @@
           }
         },
         "ending": {
+          "requires": [
+            "flats_warning"
+          ],
+          "introduces": {}
+        },
+        "warm_goat_response_shelter": {
+          "requires": [
+            "flats_sling"
+          ],
+          "introduces": {}
+        },
+        "warm_goat_response_brush": {
+          "requires": [
+            "flats_sling"
+          ],
+          "introduces": {}
+        },
+        "warm_goat_response_reed": {
+          "requires": [
+            "flats_sling"
+          ],
+          "introduces": {}
+        },
+        "credit_response_guide": {
+          "requires": [
+            "flats_warning"
+          ],
+          "introduces": {}
+        },
+        "credit_response_herder": {
+          "requires": [
+            "flats_warning"
+          ],
+          "introduces": {}
+        },
+        "credit_response_team": {
           "requires": [
             "flats_warning"
           ],
@@ -9954,6 +10173,87 @@
           "introduces": {}
         },
         "ending": {
+          "requires": [
+            "bones_warning"
+          ],
+          "introduces": {}
+        },
+        "test_response_pebble": {
+          "requires": [
+            "bones_return",
+            "bones_rule"
+          ],
+          "introduces": {}
+        },
+        "test_response_plank": {
+          "requires": [
+            "bones_return",
+            "bones_rule"
+          ],
+          "introduces": {}
+        },
+        "test_response_draw": {
+          "requires": [
+            "bones_return",
+            "bones_rule"
+          ],
+          "introduces": {}
+        },
+        "inventory_response_draw": {
+          "requires": [
+            "bones_plan",
+            "bones_owned_gear"
+          ],
+          "introduces": {}
+        },
+        "inventory_response_loop": {
+          "requires": [
+            "bones_plan",
+            "bones_owned_gear"
+          ],
+          "introduces": {}
+        },
+        "inventory_response_sole": {
+          "requires": [
+            "bones_plan",
+            "bones_owned_gear"
+          ],
+          "introduces": {}
+        },
+        "boundary_response_boots": {
+          "requires": [
+            "bones_exit",
+            "bones_boundary"
+          ],
+          "introduces": {}
+        },
+        "boundary_response_mats": {
+          "requires": [
+            "bones_exit",
+            "bones_boundary"
+          ],
+          "introduces": {}
+        },
+        "boundary_response_packs": {
+          "requires": [
+            "bones_exit",
+            "bones_boundary"
+          ],
+          "introduces": {}
+        },
+        "keep_account_response_route": {
+          "requires": [
+            "bones_warning"
+          ],
+          "introduces": {}
+        },
+        "keep_account_response_rule": {
+          "requires": [
+            "bones_warning"
+          ],
+          "introduces": {}
+        },
+        "keep_account_response_gear": {
           "requires": [
             "bones_warning"
           ],
@@ -10275,6 +10575,54 @@
             "nest_builders",
             "nest_bench",
             "nest_hollow"
+          ],
+          "introduces": {}
+        },
+        "boundary_response_pad": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "boundary_response_stool": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "boundary_response_sign": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "quiet_response_tools": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "quiet_response_space": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
+          ],
+          "introduces": {}
+        },
+        "quiet_response_notes": {
+          "requires": [
+            "nest_wyrm",
+            "nest_builders",
+            "nest_bench"
           ],
           "introduces": {}
         }
@@ -10721,6 +11069,60 @@
             "temple_messenger"
           ],
           "introduces": {}
+        },
+        "ready_lane_response_door": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "ready_lane_response_count": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "ready_lane_response_cushion": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "watch_help_response_hold": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "watch_help_response_cloth": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
+        },
+        "watch_help_response_account": {
+          "requires": [
+            "temple_keeper",
+            "temple_island",
+            "temple_crawlers",
+            "temple_landing"
+          ],
+          "introduces": {}
         }
       }
     },
@@ -11044,6 +11446,78 @@
           "introduces": {}
         },
         "finish": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "proposal_response_wait": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "proposal_response_stop": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "proposal_response_watch": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "orin_account_response_wait": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "orin_account_response_back": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "orin_account_response_rules": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "account_response_cord": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "account_response_lane": {
+          "requires": [
+            "converge_bram",
+            "converge_travelers",
+            "converge_map"
+          ],
+          "introduces": {}
+        },
+        "account_response_limit": {
           "requires": [
             "converge_bram",
             "converge_travelers",
@@ -11659,6 +12133,90 @@
             "final_companions",
             "corvane",
             "final_brace",
+            "final_watcher"
+          ],
+          "introduces": {}
+        },
+        "voices_response_homes": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "voices_response_map": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "voices_response_people": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions"
+          ],
+          "introduces": {}
+        },
+        "help_him_response_blanket": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "corvane",
+            "final_watcher"
+          ],
+          "introduces": {}
+        },
+        "help_him_response_path": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "corvane",
+            "final_watcher"
+          ],
+          "introduces": {}
+        },
+        "help_him_response_ribbon": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "corvane",
+            "final_watcher"
+          ],
+          "introduces": {}
+        },
+        "home_watcher_response_path": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "corvane",
+            "final_watcher"
+          ],
+          "introduces": {}
+        },
+        "home_watcher_response_room": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "corvane",
+            "final_watcher"
+          ],
+          "introduces": {}
+        },
+        "home_watcher_response_home": {
+          "requires": [
+            "final_map",
+            "final_tear",
+            "final_companions",
+            "corvane",
             "final_watcher"
           ],
           "introduces": {}

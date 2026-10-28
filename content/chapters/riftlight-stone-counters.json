@@ -131,73 +131,23 @@
           "name": "Pip Thistledown"
         }
       ],
-      "type": "interaction",
-      "narration": "Each keeper remembers the stone from a different place. One saw the forked rock behind it; another saw the ridge over its top. Share the clues to put three landmarks in order from the road. When everyone points together, Pip draws a line through the map. \"That stone is definitely not where we left it.\"",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Put the landmarks in order, starting at the road.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "ridge",
-            "label": "High ridge",
-            "icon": "eye"
-          },
-          {
-            "id": "hollow",
-            "label": "Empty hollow",
-            "icon": "eye"
-          },
-          {
-            "id": "fork",
-            "label": "Forked rock",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "fork",
-          "hollow",
-          "ridge"
-        ],
-        "clues": [
-          "The forked rock is the first landmark beside the road.",
-          "The empty hollow lies between the forked rock and the ridge.",
-          "The ridge is farthest from the road."
-        ]
-      },
-      "onSuccess": {
-        "goto": "grass_test",
-        "narration": "Your matching sight lines fix where the stone stood yesterday.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "measured_the_empty_hollow",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "grass_test",
-        "narration": "The keepers each point from their old drawing place. You fix the order together, then mark yesterday's position.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "measured_the_empty_hollow",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "grass_test",
-        "narration": "Your matching sight lines fix where the stone stood yesterday.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "measured_the_empty_hollow",
-            "value": true
-          }
-        ]
-      }
+      "type": "story",
+      "narration": "One keeper points from the forked rock. Another checks from the ridge. Their sight lines meet at yesterday's empty hollow. Pip draws a line through the map. \"That stone is definitely not where we left it.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "grass_test",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "measured_the_empty_hollow",
+              "value": true
+            }
+          ]
+        }
+      ]
     },
     "grass_test": {
       "art": "scenes/riftlight/stone-counters",
@@ -246,49 +196,16 @@
           "name": "Pip Thistledown"
         }
       ],
-      "type": "interaction",
-      "narration": "The keepers show two drawings, made from the road and the ridge. Watch the marks from the road view, then copy that view while Pip holds the other sheet beside it. A rock hidden from one place appears from the other. \"Two honest drawings,\" says the keeper. \"One very inconvenient stone.\"",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the road view, then copy its four marks.",
-        "actionLabel": "Copy the marks",
-        "options": [
-          {
-            "id": "ridge",
-            "label": "Ridge",
-            "icon": "eye"
-          },
-          {
-            "id": "fork",
-            "label": "Forked rock",
-            "icon": "eye"
-          },
-          {
-            "id": "stone",
-            "label": "Counting stone",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "fork",
-          "stone",
-          "ridge",
-          "stone"
-        ],
-        "stepMs": 1200
-      },
-      "onSuccess": {
-        "goto": "witness_result",
-        "narration": "You can explain why the drawings differ without erasing either keeper's record."
-      },
-      "onFailure": {
-        "goto": "witness_result",
-        "narration": "One mark lands in the wrong place. You compare it with the keeper's drawing and correct it. Both viewpoints remain in the record."
-      },
-      "onAssisted": {
-        "goto": "witness_result",
-        "narration": "You can explain why the drawings differ without erasing either keeper's record."
-      }
+      "type": "story",
+      "narration": "You lay the road drawing beside the ridge drawing. A rock hidden from the road stands in plain view from the ridge. Both keepers lean in. \"Two honest drawings,\" one says. \"One very inconvenient stone.\" Neither record needs erasing.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "witness_result"
+        }
+      ]
     },
     "witness_result": {
       "art": "scenes/riftlight/stone-counters-routes",
@@ -614,46 +531,28 @@
           "name": "Pip Thistledown"
         }
       ],
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Pip holds the flapping page with one paw and the remains of his apple with the other. The keepers have seen this before. Each friend can help solve the extremely local problem of keeping a drawing on a rock.",
-      "interaction": {
-        "kind": "play",
-        "cue": "Choose a way to help Pip keep his drawing still.",
-        "actionLabel": "Back to the road problem",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "rock",
-            "label": "Offer a small clean pebble",
-            "icon": "hand",
-            "reaction": "Pip puts the pebble on the corner. \"A paperweight that does not become lunch. Excellent.\""
-          },
-          {
-            "id": "fold",
-            "label": "Fold the empty edge under the slate",
-            "icon": "hand",
-            "reaction": "The page stays flat. Pip gives the folded corner a suspicious look, then nods."
-          },
-          {
-            "id": "hold",
-            "label": "Hold the corner while he finishes",
-            "icon": "hand",
-            "reaction": "Pip finishes the line and thanks you. His tail tries to help. You move it off the ink."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "warning",
-        "narration": "With the drawing safely weighted, you can deal with the actual road."
-      },
-      "onFailure": {
-        "goto": "warning",
-        "narration": "With the drawing safely weighted, you can deal with the actual road."
-      },
-      "onAssisted": {
-        "goto": "warning",
-        "narration": "With the drawing safely weighted, you can deal with the actual road."
-      }
+      "choices": [
+        {
+          "id": "rock",
+          "label": "Offer a small clean pebble",
+          "icon": "hand",
+          "goto": "paperweight_response_rock"
+        },
+        {
+          "id": "fold",
+          "label": "Fold the empty edge under the slate",
+          "icon": "hand",
+          "goto": "paperweight_response_fold"
+        },
+        {
+          "id": "hold",
+          "label": "Hold the corner while he finishes",
+          "icon": "hand",
+          "goto": "paperweight_response_hold"
+        }
+      ]
     },
     "warning": {
       "art": "scenes/riftlight/stone-counters",
@@ -1071,49 +970,16 @@
           "name": "Pip Thistledown"
         }
       ],
-      "type": "interaction",
-      "narration": "Copy the visible outline before packing the cord. Watch the keeper's marks, then place the same marks on the drawing. The chipped corner stays dotted even on a precise page. The keeper checks that you copied her uncertainty too. Pip asks whether a very small question mark needs a very small hat.",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the outline marks, then copy them.",
-        "actionLabel": "Copy the marks",
-        "options": [
-          {
-            "id": "dot",
-            "label": "Dotted corner",
-            "icon": "eye"
-          },
-          {
-            "id": "curve",
-            "label": "Curved edge",
-            "icon": "eye"
-          },
-          {
-            "id": "line",
-            "label": "Straight edge",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "line",
-          "curve",
-          "dot",
-          "curve"
-        ],
-        "stepMs": 1200
-      },
-      "onSuccess": {
-        "goto": "motion",
-        "narration": "The exact visible outline and its uncertain corner travel together."
-      },
-      "onFailure": {
-        "goto": "motion",
-        "narration": "You compare the copy against the still-visible edge and correct the mismatched mark. The uncertain corner remains dotted."
-      },
-      "onAssisted": {
-        "goto": "motion",
-        "narration": "The exact visible outline and its uncertain corner travel together."
-      }
+      "type": "story",
+      "narration": "You copy the visible outline with the keeper. Even on the precise page, the chipped corner stays dotted. Pip adds a tiny question mark. \"Does it need a hat?\" The keeper gives him a look that answers a different question.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "motion"
+        }
+      ]
     },
     "landmark_copy": {
       "art": "scenes/riftlight/stone-counters",
@@ -1127,52 +993,16 @@
           "name": "Pip Thistledown"
         }
       ],
-      "type": "interaction",
-      "narration": "Build a record from things the group already checked: the forked rock, the old hollow, then today's stone. The washed or covered fine edge stays blank. Each friend supplies a landmark. The keeper writes \"from the road\" above the drawing so another viewpoint cannot turn into another argument.",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Build the road-view record from the near landmark to today's stone.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "stone",
-            "label": "Today's counting stone",
-            "icon": "eye"
-          },
-          {
-            "id": "fork",
-            "label": "Forked rock",
-            "icon": "eye"
-          },
-          {
-            "id": "hollow",
-            "label": "Old hollow",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "fork",
-          "hollow",
-          "stone"
-        ],
-        "clues": [
-          "Start with the forked rock beside the road.",
-          "The old hollow comes between the forked rock and today's stone.",
-          "Today's stone is the final point in this drawing."
-        ]
-      },
-      "onSuccess": {
-        "goto": "motion",
-        "narration": "Your landmark drawing is useful without restoring a fine edge you no longer have."
-      },
-      "onFailure": {
-        "goto": "motion",
-        "narration": "The keepers point from the road one landmark at a time. You fix the order and keep the missing fine edge blank."
-      },
-      "onAssisted": {
-        "goto": "motion",
-        "narration": "Your landmark drawing is useful without restoring a fine edge you no longer have."
-      }
+      "type": "story",
+      "narration": "The keeper records the forked rock, old hollow and today's stone. The washed or covered fine edge stays blank. She writes \"from the road\" above the drawing. The next keeper will know where you stood, even where you could not measure.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "motion"
+        }
+      ]
     },
     "motion": {
       "art": "scenes/riftlight/stone-counters",
@@ -1350,26 +1180,16 @@
           "name": "Pip Thistledown"
         }
       ],
-      "type": "interaction",
-      "narration": "Pass the route drawing around the group before handing it to Pip. Each friend points out one landmark or warning before passing it on. The owner keeps the local copy for tomorrow's delivery. Pip puts the traveling page on top of his notebook. This one will be ready to use when the next road disagrees with the map.",
-      "interaction": {
-        "kind": "relay",
-        "objectLabel": "traveling road drawing",
-        "cue": "Catch the drawing, check its route, and pass it on.",
-        "actionLabel": "Pass the checked drawing"
-      },
-      "onSuccess": {
-        "goto": "rest",
-        "narration": "The traveling road plan is ready. Pip can offer it as a starting point at another changed crossing."
-      },
-      "onFailure": {
-        "goto": "rest",
-        "narration": "The traveling road plan is ready. Pip can offer it as a starting point at another changed crossing."
-      },
-      "onAssisted": {
-        "goto": "rest",
-        "narration": "The traveling road plan is ready. Pip can offer it as a starting point at another changed crossing."
-      }
+      "type": "story",
+      "narration": "The cart owner keeps the local road plan for tomorrow's delivery. Pip checks the traveling copy with you and slides it into his notebook. \"Next time the road argues with the map, we have a starting point.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "rest"
+        }
+      ]
     },
     "carving_copy": {
       "art": "scenes/riftlight/stone-counters",
@@ -1383,49 +1203,16 @@
           "name": "Pip Thistledown"
         }
       ],
-      "type": "interaction",
-      "narration": "Watch the keeper copy the old marks: long stroke, short stroke, uncertain chip, short stroke. Copy the pattern without turning the chip into a made-up number. The eruption still has no agreed date. Pip puts a large dotted box beside the page. \"For the bit we do not know. It may need a bigger notebook.\"",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Copy the marks, keeping the chip uncertain.",
-        "actionLabel": "Copy the marks",
-        "options": [
-          {
-            "id": "chip",
-            "label": "Uncertain chip",
-            "icon": "eye"
-          },
-          {
-            "id": "short",
-            "label": "Short stroke",
-            "icon": "eye"
-          },
-          {
-            "id": "long",
-            "label": "Long stroke",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "long",
-          "short",
-          "chip",
-          "short"
-        ],
-        "stepMs": 1200
-      },
-      "onSuccess": {
-        "goto": "rest",
-        "narration": "The traveling page preserves the old marks and their uncertainty. The road plan stays with the local keepers."
-      },
-      "onFailure": {
-        "goto": "rest",
-        "narration": "You compare the page with the original and correct it. The chipped mark stays uncertain, and the road plan stays with the local keepers."
-      },
-      "onAssisted": {
-        "goto": "rest",
-        "narration": "The traveling page preserves the old marks and their uncertainty. The road plan stays with the local keepers."
-      }
+      "type": "story",
+      "narration": "The keeper copies the long stroke, short strokes and uncertain chip. The chip stays a question. The eruption still has no agreed date. Pip draws a dotted box beside the marks. \"For the bit we do not know. Might need a bigger notebook.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "rest"
+        }
+      ]
     },
     "rest": {
       "art": "scenes/riftlight/stone-counters",
@@ -1482,6 +1269,75 @@
           "text": "The fine edge is no longer clear. The checked landmarks remain on the page; the missing detail stays missing."
         }
       ]
+    },
+    "paperweight_response_rock": {
+      "type": "story",
+      "narration": "Pip puts the pebble on the corner. \"A paperweight that does not become lunch. Excellent.\" With the drawing safely weighted, you can deal with the actual road.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "warning"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters"
+    },
+    "paperweight_response_fold": {
+      "type": "story",
+      "narration": "The page stays flat. Pip gives the folded corner a suspicious look, then nods. With the drawing safely weighted, you can deal with the actual road.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "warning"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters"
+    },
+    "paperweight_response_hold": {
+      "type": "story",
+      "narration": "Pip finishes the line and thanks you. His tail tries to help. You move it off the ink. With the drawing safely weighted, you can deal with the actual road.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "warning"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_stone_keeper",
+          "name": "Stone keeper"
+        },
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        }
+      ],
+      "art": "scenes/riftlight/stone-counters"
     }
   },
   "voiceGuide": {
@@ -1549,25 +1405,7 @@
           "note-low"
         ]
       },
-      "footprint": {
-        "props": [
-          "carved-stone",
-          "prop_stepping_stones"
-        ]
-      },
-      "views": {
-        "props": [
-          "carved-stone",
-          "prop_stepping_stones"
-        ]
-      },
       "lower_neighbor": {
-        "props": [
-          "carved-stone",
-          "prop_stepping_stones"
-        ]
-      },
-      "landmark_copy": {
         "props": [
           "carved-stone",
           "prop_stepping_stones"
@@ -1578,36 +1416,12 @@
           "prop_tall_grass"
         ]
       },
-      "paperweight": {
-        "props": [
-          "clue-scrap",
-          "toss-pebble"
-        ]
-      },
       "upper_cart": {
         "props": [
           "prop_wagon_wheels"
         ]
       },
-      "exact_copy": {
-        "props": [
-          "clue-scrap",
-          "carved-stone"
-        ]
-      },
       "motion_memory": {
-        "props": [
-          "clue-scrap",
-          "carved-stone"
-        ]
-      },
-      "route_copy": {
-        "props": [
-          "clue-scrap",
-          "carved-stone"
-        ]
-      },
-      "carving_copy": {
         "props": [
           "clue-scrap",
           "carved-stone"

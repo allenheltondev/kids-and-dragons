@@ -185,7 +185,7 @@
       }
     },
     "boundary": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Help the builders move everything outside that margin. Choose a quiet job; nothing is taken from under the wyrm. One builder knits a hat for a chisel that does not yet have a hat.",
       "cast": [
         {
@@ -198,44 +198,26 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "play",
-        "cue": "Make the observation useful.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "pad",
-            "label": "Pad loose tools",
-            "icon": "hand",
-            "reaction": "The chisels travel without scraping."
-          },
-          {
-            "id": "stool",
-            "label": "Move the empty stool",
-            "icon": "hand",
-            "reaction": "The stool is beyond the tail mark."
-          },
-          {
-            "id": "sign",
-            "label": "Show the no-scrape edge",
-            "icon": "hand",
-            "reaction": "A builder marks only the new surface."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "supplies",
-        "narration": "The builders can prepare a reading place without testing the nest with a foot."
-      },
-      "onFailure": {
-        "goto": "supplies",
-        "narration": "The builders can prepare a reading place without testing the nest with a foot."
-      },
-      "onAssisted": {
-        "goto": "supplies",
-        "narration": "The builders can prepare a reading place without testing the nest with a foot."
-      }
+      "choices": [
+        {
+          "id": "pad",
+          "label": "Pad loose tools",
+          "icon": "hand",
+          "goto": "boundary_response_pad"
+        },
+        {
+          "id": "stool",
+          "label": "Move the empty stool",
+          "icon": "hand",
+          "goto": "boundary_response_stool"
+        },
+        {
+          "id": "sign",
+          "label": "Show the no-scrape edge",
+          "icon": "hand",
+          "goto": "boundary_response_sign"
+        }
+      ]
     },
     "supplies": {
       "type": "choice_point",
@@ -1528,7 +1510,7 @@
       ]
     },
     "quiet": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Choose one useful agreement for readers and builders. Nobody promises that a wild wyrm will obey a sign. The new rule is for the people holding the chisels.",
       "cast": [
         {
@@ -1542,44 +1524,26 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest",
-      "interaction": {
-        "kind": "play",
-        "cue": "Help people share this glacier.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "tools",
-            "label": "Keep the tools padded",
-            "icon": "hand",
-            "reaction": "The builder re-hats the largest chisel."
-          },
-          {
-            "id": "space",
-            "label": "Keep the nest margin visible",
-            "icon": "hand",
-            "reaction": "Readers can see where not to stand."
-          },
-          {
-            "id": "notes",
-            "label": "Keep notes off the walking lane",
-            "icon": "hand",
-            "reaction": "The smallest reader carries the last loose page."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "ending",
-        "narration": "The readers can work without anyone testing the old ice."
-      },
-      "onFailure": {
-        "goto": "ending",
-        "narration": "The readers can work without anyone testing the old ice."
-      },
-      "onAssisted": {
-        "goto": "ending",
-        "narration": "The readers can work without anyone testing the old ice."
-      }
+      "choices": [
+        {
+          "id": "tools",
+          "label": "Keep the tools padded",
+          "icon": "hand",
+          "goto": "quiet_response_tools"
+        },
+        {
+          "id": "space",
+          "label": "Keep the nest margin visible",
+          "icon": "hand",
+          "goto": "quiet_response_space"
+        },
+        {
+          "id": "notes",
+          "label": "Keep notes off the walking lane",
+          "icon": "hand",
+          "goto": "quiet_response_notes"
+        }
+      ]
     },
     "ending": {
       "type": "story",
@@ -1637,6 +1601,147 @@
         }
       ],
       "art": "scenes/riftlight/wyrm-nest"
+    },
+    "boundary_response_pad": {
+      "type": "story",
+      "narration": "The chisels travel without scraping. The builders can prepare a reading place without testing the nest with a foot.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "supplies"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest"
+    },
+    "boundary_response_stool": {
+      "type": "story",
+      "narration": "The stool is beyond the tail mark. The builders can prepare a reading place without testing the nest with a foot.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "supplies"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest"
+    },
+    "boundary_response_sign": {
+      "type": "story",
+      "narration": "A builder marks only the new surface. The builders can prepare a reading place without testing the nest with a foot.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "supplies"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "entities/frost_wyrm",
+          "name": "Frost wyrm"
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest"
+    },
+    "quiet_response_tools": {
+      "type": "story",
+      "narration": "The builder re-hats the largest chisel. The readers can work without anyone testing the old ice.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest"
+    },
+    "quiet_response_space": {
+      "type": "story",
+      "narration": "Readers can see where not to stand. The readers can work without anyone testing the old ice.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest"
+    },
+    "quiet_response_notes": {
+      "type": "story",
+      "narration": "The smallest reader carries the last loose page. The readers can work without anyone testing the old ice.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "ending"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "entities/yeti",
+          "name": "Yeti builder"
+        },
+        {
+          "figure": "cast/memory_reader",
+          "name": "Memory readers",
+          "count": 2
+        }
+      ],
+      "art": "scenes/riftlight/wyrm-nest"
     }
   },
   "presentation": {
@@ -1644,12 +1749,6 @@
       "watch_check": {
         "props": [
           "snow-mound"
-        ]
-      },
-      "boundary": {
-        "props": [
-          "relay-plank",
-          "wind-blanket"
         ]
       },
       "table_kit": {
@@ -1726,12 +1825,6 @@
       "readers_markers": {
         "props": [
           "clue-scrap"
-        ]
-      },
-      "quiet": {
-        "props": [
-          "clue-scrap",
-          "wind-blanket"
         ]
       }
     }
