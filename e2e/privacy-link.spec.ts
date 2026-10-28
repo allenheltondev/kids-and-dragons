@@ -35,6 +35,10 @@ test.describe("the privacy link where a kid can land", () => {
     await expect(privacy(host)).toBeVisible(TAP);
     await expect(privacy(host)).toHaveAttribute("href", "/privacy");
     await expect(privacy(host)).toHaveAttribute("target", "_blank");
+    // The grown-up's guide sits beside it, also in a tab of its own.
+    const guide = host.getByRole("link", { name: /^grown-up.s guide$/i });
+    await expect(guide).toHaveAttribute("href", "/guide");
+    await expect(guide).toHaveAttribute("target", "_blank");
 
     // A first-time phone lands on the room link directly, before any start screen.
     const guestContext = await browser.newContext({ viewport: { width: 390, height: 844 } });

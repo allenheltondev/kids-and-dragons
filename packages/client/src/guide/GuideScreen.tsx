@@ -138,7 +138,7 @@ export function GuideScreen(): ReactElement {
             Back to the start
           </Button>
         </div>
-        <PrivacyFooter />
+        <PrivacyFooter guide={false} />
       </article>
     </main>
   );
