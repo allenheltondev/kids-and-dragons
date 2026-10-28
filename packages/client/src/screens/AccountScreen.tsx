@@ -209,9 +209,10 @@ export function AccountScreen(): ReactElement {
               Back to the start
             </Button>
           </div>
-          <PrivacyFooter />
         </div>
       </div>
+
+      <PrivacyFooter />
 
       <LazySignInFlow />
     </main>

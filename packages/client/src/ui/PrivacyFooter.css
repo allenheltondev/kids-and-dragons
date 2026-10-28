@@ -1,11 +1,15 @@
-/* The privacy link (#523) off the start screens: small and plain, there because it has to be.
-   The secondary text colour keeps it readable; the height is just enough to tap. */
+/* The privacy link (#523): the footer of the page, a full-width strip with a divider above it. Small
+   and plain, there because it has to be. The secondary text colour keeps it readable; the height is
+   just enough to tap. In a column it takes the bottom edge (margin-top: auto). */
 .privacy-footer {
   display: flex;
   justify-content: center;
+  align-self: stretch;
   flex: 0 0 auto;
-  margin: 0;
+  margin: auto 0 0;
   padding: 0;
+  border-block-start: 1px solid var(--color-border, #3a3468);
+  background: var(--color-surface-sunken, #120f26);
 }
 
 .privacy-footer__link {
@@ -22,4 +26,8 @@
 .privacy-footer__link:focus-visible {
   color: var(--color-text, #f4f1ff);
   text-decoration: underline;
+}
+
+@media print {
+  .privacy-footer { display: none; }
 }
