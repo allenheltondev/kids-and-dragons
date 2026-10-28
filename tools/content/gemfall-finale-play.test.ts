@@ -17,6 +17,7 @@ const outcomes = ["success", "assisted"] as const;
 function initial(size: number, flags: Record<string, boolean> = {}, items: string[] = []): RunState {
   const state = start(chapter, "manticore", "duskrunner", flags, size);
   state.campaignId = "gemfall";
+  for (const member of state.party) member.character.questItems = member.character.questItems.filter(id => id !== "listening_chime");
   state.party[0]!.character.questItems.push(...items);
   return state;
 }
