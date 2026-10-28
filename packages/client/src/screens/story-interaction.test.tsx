@@ -290,7 +290,8 @@ describe("how a game feels", () => {
     seed({ kind: "sequence", cue: "Clues", actionLabel: "Try", options: [{ id: "a", label: "Reeds", icon: "eye" }, { id: "b", label: "Shells", icon: "eye" }], answer: ["a", "b"], clues: ["Reeds first", "Shells last"] });
     const { container, unmount } = render(<StoryInteractionWorld />);
     expect(container.querySelector(".game-slot")).toBeNull();
-    expect(container.querySelectorAll(".game-row--legend .game-tile")).toHaveLength(2);
+    expect(container.querySelectorAll(".game-pad")).toHaveLength(2);
+    expect(container.querySelectorAll("button.game-pad")).toHaveLength(0);
     unmount();
     render(<StoryInteractionControls />);
     expect(document.querySelectorAll(".game-slot")).toHaveLength(2);
@@ -319,5 +320,124 @@ describe("how a game feels", () => {
     seed(precision, { phase: "result", outcome: "success" });
     const still = render(<StoryInteractionWorld />);
     expect(still.container.querySelector(".game__burst")).toBeNull();
+  });
+});
+
+describe("each game has something to do with your hands", () => {
+  it("lights the pattern's pads one at a time on every screen, dark between steps", async () => {
+    const { litStep } = await import("./game-feel");
+    expect(litStep(100, 1000, 3)).toBe(0);
+    expect(litStep(900, 1000, 3)).toBeNull();
+    expect(litStep(1100, 1000, 3)).toBe(1);
+    expect(litStep(3100, 1000, 3)).toBeNull();
+    const spec: InteractionSpec = { kind: "memory", cue: "Echo", actionLabel: "Send", options: [{ id: "star", label: "Star", icon: "star" }, { id: "leaf", label: "Leaf", icon: "leaf" }], answer: ["leaf", "star"], stepMs: 1000 };
+    seed(spec, { startedAt: new Date(Date.now() - 200).toISOString() });
+    const { container } = render(<StoryInteractionWorld />);
+    const lit = [...container.querySelectorAll(".game-pad[data-lit='true']")].map((pad) => pad.textContent);
+    expect(lit).toEqual(["Leaf"]);
+  });
+  it("plays a pad's note and buzzes when the lead taps it", async () => {
+    const audio = await import("../audio/cue");
+    const played: string[] = [];
+    audio.setAudioSink({ cue: (id) => played.push(id), music: () => undefined });
+    const vibrate = vi.fn();
+    Object.defineProperty(navigator, "vibrate", { value: vibrate, configurable: true });
+    seed({ kind: "sequence", cue: "Clues", actionLabel: "Try", options: [{ id: "a", label: "Reeds", icon: "eye" }, { id: "b", label: "Shells", icon: "eye" }], answer: ["a", "b"], clues: ["Reeds first"] });
+    render(<StoryInteractionControls />);
+    fireEvent.click(screen.getByRole("button", { name: "Shells" }));
+    expect(played).toContain("pad-2");
+    expect(vibrate).toHaveBeenCalled();
+    expect(document.querySelector(".game-slot--full")?.textContent).toContain("Shells");
+    audio.setAudioSink(null);
+  });
+  it("freezes the precision marker where the TAP landed and stamps it", async () => {
+    const send = seed(precision);
+    render(<StoryInteractionControls />);
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Toss!" })); });
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "stop" }));
+    expect(document.querySelector(".game-track")?.getAttribute("data-stopped")).toMatch(/hit|miss/);
+    expect(document.querySelector(".game-track__splat")).toBeTruthy();
+    expect((screen.getByRole("button", { name: "Toss!" }) as HTMLButtonElement).disabled).toBe(true);
+  });
+  it("makes the timing lamp the lead's button", () => {
+    const send = seed({ kind: "timing", cue: "Wait", actionLabel: "Ring it", target: 0.5, width: 0.3, periodMs: 4000 });
+    render(<StoryInteractionControls />);
+    const lamp = screen.getByRole("button", { name: "Ring it" });
+    expect(lamp.querySelector(".game-lamp")).toBeTruthy();
+    fireEvent.click(lamp);
+    expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "stop" }));
+  });
+  it("drops the relay thing in to catch, and flicks it on once caught", async () => {
+    vi.useFakeTimers();
+    try {
+      const spec: InteractionSpec = { kind: "relay", cue: "Pass", actionLabel: "Pass it on", objectLabel: "the mat" };
+      let send = seed(spec);
+      const first = render(<StoryInteractionControls />);
+      expect(document.querySelector(".game-catcher[data-caught='false']")).toBeTruthy();
+      fireEvent.click(screen.getByRole("button", { name: "Catch the mat" }));
+      expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "catch" }));
+      first.unmount();
+      send = seed(spec, { caughtBy: "p" });
+      render(<StoryInteractionControls />);
+      const stage = document.querySelector(".game-catcher__stage")!;
+      fireEvent.pointerDown(stage, { clientY: 300, pointerId: 1 });
+      fireEvent.pointerMove(stage, { clientY: 200, pointerId: 1 });
+      expect(document.querySelector(".game-catcher[data-thrown='true']")).toBeTruthy();
+      await act(async () => { vi.advanceTimersByTime(300); });
+      expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "pass" }));
+    } finally { vi.useRealTimers(); }
+  });
+  it("shows where a relay thing is on the TV: in the air above the catcher, then in their hands", () => {
+    const spec: InteractionSpec = { kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "the mat" };
+    seed(spec);
+    authoredChapter({ props: ["relay-plank"] });
+    const coming = render(<StoryInteractionWorld />);
+    expect(coming.container.querySelector(".game-hero__token--air")).toBeTruthy();
+    coming.unmount();
+    seed(spec, { caughtBy: "p" });
+    authoredChapter({ props: ["relay-plank"] });
+    const caught = render(<StoryInteractionWorld />);
+    expect(caught.container.querySelector(".game-hero__token--air")).toBeNull();
+    expect(caught.container.querySelector(".game-hero__token")).toBeTruthy();
+  });
+  it("sends one adjust per notch when the balance lever is dragged", () => {
+    const send = seed({ kind: "balance", cue: "Level", actionLabel: "Carry", objectLabel: "Basket" });
+    render(<StoryInteractionControls />);
+    const track = document.querySelector(".game-lever__track") as HTMLElement;
+    track.getBoundingClientRect = () => ({ top: 0, bottom: 100, height: 100, left: 0, right: 40, width: 40, x: 0, y: 0, toJSON: () => ({}) });
+    fireEvent.pointerDown(track, { clientY: 95, pointerId: 1 });
+    fireEvent.pointerUp(track, { clientY: 50, pointerId: 1 });
+    const adjusts = send.mock.calls.filter(([intent]) => (intent as { action?: string }).action === "adjust");
+    expect(adjusts).toHaveLength(2);
+    expect(adjusts.every(([intent]) => (intent as { direction?: string }).direction === "up")).toBe(true);
+  });
+  it("stamps a word on a finished game, kind by kind, and never scolds a miss", async () => {
+    const { stampFor } = await import("./game-feel");
+    seed(precision, { phase: "result", outcome: "success" });
+    render(<StoryInteractionWorld />);
+    expect(document.querySelector(".game-stamp")?.textContent).toBe("Bullseye!");
+    const prompt = useGameStore.getState().state!.prompt as InteractionPrompt;
+    expect(stampFor({ ...prompt, outcome: "failure" })).toBe("Whoops!");
+    expect(stampFor({ ...prompt, outcome: "assisted" })).toBe("Phew!");
+  });
+  it("says GO as a game with no pattern starts, and not under reduced motion", () => {
+    seed(precision, { startedAt: new Date(Date.now() - 100).toISOString() });
+    const { unmount } = render(<StoryInteractionWorld />);
+    expect(document.querySelector(".game-stamp--go")).toBeTruthy();
+    unmount();
+    document.documentElement.setAttribute("data-motion", "reduced");
+    seed(precision, { startedAt: new Date(Date.now() - 100).toISOString() });
+    render(<StoryInteractionWorld />);
+    expect(document.querySelector(".game-stamp--go")).toBeNull();
+  });
+  it("has the TV sing each pad as the pattern plays", async () => {
+    const audio = await import("../audio/cue");
+    const played: string[] = [];
+    audio.setAudioSink({ cue: (id) => played.push(id), music: () => undefined });
+    const spec: InteractionSpec = { kind: "memory", cue: "Echo", actionLabel: "Send", options: [{ id: "star", label: "Star", icon: "star" }, { id: "leaf", label: "Leaf", icon: "leaf" }], answer: ["leaf", "star"], stepMs: 1000 };
+    seed(spec, { startedAt: new Date(Date.now() - 100).toISOString() });
+    render(<StoryInteractionWorld />);
+    expect(played).toContain("pad-2");
+    audio.setAudioSink(null);
   });
 });

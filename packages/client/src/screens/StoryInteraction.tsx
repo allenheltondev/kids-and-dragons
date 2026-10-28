@@ -19,7 +19,8 @@ import { useSend, useRunState, useMe, useGameStore, useSynced } from "../store";
 import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
 import { Button } from "../ui/Button";
-import { Board, KindControls } from "./InteractionExtras";
+import { Board, KindControls, lampAt } from "./InteractionExtras";
+import { litStep, padNote, saysGo, stampFor } from "./game-feel";
 import { DiceCelebration } from "./DiceCelebration";
 import { cue } from "../audio/cue";
 import { GAME, HELPING_HAND, outcomeLine, phoneJob, tvStatus } from "./interaction-copy";
@@ -77,6 +78,51 @@ function useResultSound(prompt: InteractionPrompt | null): void {
   }, [key, prompt]);
 }
 
+/**
+ * The TV directs the room's ears: each pad's note as a pattern plays, a tick as NOW comes and a
+ * bright note on NOW, a whoosh for a pass or a shuffle, a soft catch when someone catches.
+ */
+function useRoomSounds(prompt: InteractionPrompt | null, now: number, connected: readonly string[]): void {
+  const last = useRef<{ key: string; step: number | null; lamp: string; passed: number; caught: string | null; swap: number }>({ key: "", step: null, lamp: "", passed: 0, caught: null, swap: -1 });
+  useEffect(() => {
+    if (!prompt || prompt.phase !== "active") return;
+    const key = `${prompt.openedSeq}:${prompt.attempt}`;
+    const seen = last.current;
+    if (seen.key !== key) Object.assign(seen, { key, step: null, lamp: "", passed: prompt.passed?.length ?? 0, caught: prompt.caughtBy ?? null, swap: -1 });
+    const spec = prompt.spec;
+    const elapsed = now - Date.parse(prompt.startedAt ?? "");
+    if (spec.kind === "memory" && !prompt.relaxed) {
+      const step = litStep(elapsed, spec.stepMs, spec.answer.length);
+      if (step !== null && step !== seen.step) padNote(Math.max(0, spec.options.findIndex((option) => option.id === spec.answer[step])));
+      seen.step = step;
+    }
+    if (spec.kind === "timing") {
+      const lamp = lampAt(prompt, now);
+      const word = lamp.safe ? "now" : lamp.soon ? "soon" : "wait";
+      if (word !== seen.lamp && seen.lamp !== "") { if (word === "soon") cue("tick"); if (word === "now") padNote(3); }
+      seen.lamp = word;
+    }
+    if (spec.kind === "tracking" && !prompt.relaxed) {
+      const swap = Math.floor((elapsed - spec.stepMs) / spec.stepMs);
+      if (swap >= 0 && swap < spec.swaps.length && swap !== seen.swap) cue("whoosh");
+      seen.swap = swap;
+    }
+    if (spec.kind === "relay") {
+      const passed = prompt.passed?.length ?? 0;
+      if (passed > seen.passed) cue("whoosh");
+      if (prompt.caughtBy && prompt.caughtBy !== seen.caught) cue("catch");
+      seen.passed = passed; seen.caught = prompt.caughtBy ?? null;
+    }
+  }, [prompt, now, connected]);
+}
+
+/** The word stamped over a finished game, and a GO when a game starts that has no pattern to watch. */
+function Stamp({ prompt, now }: { prompt: InteractionPrompt; now: number }) {
+  if (prompt.phase === "result") return <span className={`game-stamp game-stamp--${prompt.outcome ?? "failure"}`} key={`r:${prompt.attempt}`} aria-hidden="true">{stampFor(prompt)}</span>;
+  if (prompt.phase === "active" && saysGo(prompt.spec.kind) && !reducedMotion() && now - Date.parse(prompt.startedAt ?? "") < 900) return <span className="game-stamp game-stamp--go" key={`g:${prompt.attempt}`} aria-hidden="true">GO!</span>;
+  return null;
+}
+
 /** The game's name and the story's cue, the same heading on every screen. */
 function GameHead({ prompt }: { prompt: InteractionPrompt }) {
   const game = GAME[prompt.spec.kind];
@@ -93,8 +139,9 @@ export function StoryInteractionWorld() {
   const still = reducedMotion();
   const now = useClock(prompt?.phase === "active" && !still, prompt ? clockFor(prompt) : undefined);
   useResultSound(prompt);
+  const connected = (state?.party ?? []).filter((member) => member.connected).map((member) => member.playerId);
+  useRoomSounds(prompt, now, connected);
   if (!prompt || !state) return null;
-  const connected = state.party.filter((member) => member.connected).map((member) => member.playerId);
   const view = { prompt, party: state.party, connected, now };
   const status = tvStatus(view);
   return <section className={`story-interaction game game--tv game--${prompt.spec.kind} game--${prompt.phase}`} aria-label="Story interaction">
@@ -103,6 +150,7 @@ export function StoryInteractionWorld() {
       <PaintedInteraction prompt={prompt} party={state.party} now={now} />
       {prompt.phase === "ready" && <p className="game-how"><Icon name={GAME[prompt.spec.kind].icon} /> {GAME[prompt.spec.kind].how}</p>}
       <Board prompt={prompt} party={state.party} now={now} />
+      <Stamp prompt={prompt} now={now} />
       {prompt.phase === "result" && <p className={`game__outcome game__outcome--${prompt.outcome ?? "failure"}`}><Icon name={prompt.outcome === "failure" ? "shuffle" : "star"} /> {outcomeLine(prompt)}</p>}
     </div>
     <p className="game__status" role="status" key={status}><Icon name="phone" /><span>{status}</span></p>
@@ -137,6 +185,7 @@ function Controls({ prompt, party, playerId, dispatch, busy }: {
   const [relaxed, setRelaxed] = useState(reducedMotion);
   const [answer, setAnswer] = useState<string[]>([]);
   const [holding, setHolding] = useState(false);
+  const [stop, setStop] = useState<number | null>(null);
   const now = useClock(prompt.phase === "active", clockFor(prompt));
   const latest = useRef({ prompt, busy, dispatch });
   latest.current = { prompt, busy, dispatch };
@@ -175,7 +224,8 @@ function Controls({ prompt, party, playerId, dispatch, busy }: {
     <div className="game__board">
       <PaintedInteraction prompt={prompt} party={party} now={now} />
       {prompt.phase === "ready" && <p className="game-how"><Icon name={GAME[prompt.spec.kind].icon} /> {GAME[prompt.spec.kind].how}</p>}
-      {prompt.phase === "active" && <Board prompt={prompt} party={party} now={now} answer={mine ? answer : []} playerId={playerId} />}
+      {prompt.phase === "active" && <Board prompt={prompt} party={party} now={now} answer={mine ? answer : []} playerId={playerId} stop={stop} />}
+      <Stamp prompt={prompt} now={now} />
       {prompt.phase === "result" && <p className={`game__outcome game__outcome--${prompt.outcome ?? "failure"}`} role="status"><Icon name={prompt.outcome === "failure" ? "shuffle" : "star"} /> {outcomeLine(prompt)}</p>}
     </div>
     <div className="game__controls">
@@ -185,7 +235,7 @@ function Controls({ prompt, party, playerId, dispatch, busy }: {
       </>}
       {prompt.phase === "ready" && mine && <Button variant="primary" size="lg" block icon={<Icon name="ready" />} className="story-interaction__button game-action" disabled={busy} onClick={() => send({ action: "start", relaxed })}>We’re ready</Button>}
       {prompt.phase === "active" && <>
-        <KindControls prompt={prompt} playerId={playerId} connected={connected} mine={mine} now={now} busy={busy} send={send} answer={answer} setAnswer={setAnswer} holding={holding} setHolding={setHolding} />
+        <KindControls prompt={prompt} playerId={playerId} connected={connected} mine={mine} now={now} busy={busy} send={send} answer={answer} setAnswer={setAnswer} holding={holding} setHolding={setHolding} setStop={setStop} />
         {mine && <div className="game-actions-row">
           <Button variant="ghost" icon={<Icon name="shuffle" />} className="story-interaction__button" disabled={busy} onClick={() => send({ action: "retry" })}>Start this attempt again</Button>
         </div>}

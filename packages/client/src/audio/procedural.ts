@@ -107,6 +107,13 @@ const cueVoices: Partial<Record<CueId, Voice[]>> = {
   ],
   tap: wood(0, 0.09, 750).map((v) => ({ ...v, duration: 0.06 })),
   "page-turn": [{ at: 0, duration: 0.2, freq: 0, noise: true, cutoff: 3200, highpass: 700, gain: 0.1, swell: true }],
+  "pad-1": [bell(523.25, 0, 0.45, 0.2)],
+  "pad-2": [bell(659.25, 0, 0.45, 0.2)],
+  "pad-3": [bell(783.99, 0, 0.45, 0.2)],
+  "pad-4": [bell(880, 0, 0.45, 0.2)],
+  catch: [...wood(0, 0.22, 392), { at: 0.03, duration: 0.2, freq: 523.25, endFreq: 784, gain: 0.08, attack: 0.01 }],
+  whoosh: [{ at: 0, duration: 0.34, freq: 0, noise: true, cutoff: 2600, highpass: 400, gain: 0.12, swell: true }],
+  tick: wood(0, 0.08, 1100).map((v) => ({ ...v, duration: 0.04 })),
   error: [0, 0.14].map((at) => ({ at, duration: 0.13, freq: 196, endFreq: 174.61, gain: 0.16, attack: 0.012 })),
 };
 
