@@ -45,6 +45,7 @@
     "audio:preview": "tsx tools/audio/procedural-preview.ts",
     "audio:install": "tsx tools/audio/procedural-install.ts",
     "voice:cost": "tsx tools/voice/cost.ts",
+    "voice:extract": "tsx tools/voice/extract.ts",
     "voice:bakeoff": "tsx tools/voice/bakeoff/run.ts",
     "voice:cast": "tsx tools/voice/cast/build.ts",
     "voice:clean": "tsx tools/voice/bakeoff/clean-report.ts",

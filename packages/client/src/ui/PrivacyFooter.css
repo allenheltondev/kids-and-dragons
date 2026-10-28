@@ -1,0 +1,52 @@
+/* The privacy link (#523): the footer of the page, a full-width strip with a divider above it. Small
+   and plain, there because it has to be. The secondary text colour keeps it readable; the height is
+   just enough to tap. In a column it takes the bottom edge (margin-top: auto). */
+.privacy-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  flex: 0 0 auto;
+  margin: auto 0 0;
+  padding: 0;
+  border-block-start: 1px solid var(--color-border, #3a3468);
+  background: var(--color-surface-sunken, #120f26);
+}
+
+.privacy-footer__links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.privacy-footer__copy {
+  padding-block-end: var(--space-2, 0.5em);
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-xs, 0.75em);
+}
+
+.privacy-footer__link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.25rem;
+  padding: 0 var(--space-3, 0.75em);
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-xs, 0.75em);
+  text-decoration: none;
+}
+
+.privacy-footer__dot {
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-xs, 0.75em);
+}
+
+.privacy-footer__link:hover,
+.privacy-footer__link:focus-visible {
+  color: var(--color-text, #f4f1ff);
+  text-decoration: underline;
+}
+
+@media print {
+  .privacy-footer { display: none; }
+}

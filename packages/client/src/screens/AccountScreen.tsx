@@ -23,6 +23,7 @@ import { Icon } from "./icons";
 import { LazySignInFlow } from "./HomeScreen";
 import "./shared.css";
 import "./HomeScreen.css";
+import { PrivacyFooter } from "../ui/PrivacyFooter";
 
 const PairHere = lazyChunk(() => import("./PairDevice"), (module) => module.PairHere);
 const PlayAsMe = lazyChunk(() => import("./PairDevice"), (module) => module.PlayAsMe);
@@ -210,6 +211,8 @@ export function AccountScreen(): ReactElement {
           </div>
         </div>
       </div>
+
+      <PrivacyFooter />
 
       <LazySignInFlow />
     </main>

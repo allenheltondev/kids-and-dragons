@@ -47,7 +47,7 @@ export const STORED: readonly StoredThing[] = [
   {
     title: "Each kid",
     what:
-      "A nickname, a color and an avatar, and when they last played. If a kid chooses to dress up her own page, which she opens from her own phone, that is kept too: a color, a frame for each hero and a title, all picked from a short list, never typed or uploaded. No real name, email, birthday, photo or contact detail is asked for, and no kid ever has a login or a password.",
+      "A nickname, a color and an avatar, and when they last played. If a kid chooses to dress up her own page, which she opens from her own phone, that is kept too: a color, a frame for each hero and a title, all picked from a short list, never typed or uploaded. No real name, email, birthday, photo or contact detail is asked for, and no kid ever has a login or a password. The nickname is typed, and the game checks it for bad words, not for personal details, so it could hold a real name if someone types one.",
     kept: UNTIL_DELETED,
     owner: "kid",
     rows: ["Player profile"],
@@ -136,7 +136,7 @@ export const STORED: readonly StoredThing[] = [
   {
     title: "The grown-ups",
     what:
-      "The household's name, which signed-in grown-ups run it, the email each signed in with, and how long it keeps a kid who stops playing. The sign-in itself is handled by a separate sign-in service, which holds the email.",
+      "The household's name, which signed-in grown-ups run it, and how long it keeps a kid who stops playing. The email each grown-up signed in with is held in two places: by the separate sign-in service (Amazon Cognito), and as a copy on the household's list of grown-ups, so they can tell each other apart.",
     kept: "Until the household is deleted, or that grown-up leaves it.",
     owner: "grown-up",
     rows: ["Household", "Owner", "Account → household"],
@@ -172,7 +172,7 @@ export const STORED: readonly StoredThing[] = [
 export const ELSEWHERE: readonly { title: string; what: string }[] = [
   {
     title: "Request logs",
-    what: "Our servers log each request (its address, what it asked for, and any error) for a limited time, to keep the game running.",
+    what: "Our servers log each request (its address, what it asked for, and any error) to keep the game running. We have not yet confirmed how long our hosting provider keeps these logs or its backups.",
   },
   {
     title: "Crash reports",

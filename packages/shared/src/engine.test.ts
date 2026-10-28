@@ -1318,6 +1318,11 @@ describe("a full walk of a chapter", () => {
     // The gated scene's narration still reads, ahead of the destination's.
     expect(result.state.narration).toContain("Three wisps rise out of the bracken.");
     expect(result.state.narration).toContain("A hollow out of the wind.");
+    // And that lead is the encounter's own authored line, so it has its address.
+    expect(result.state.narrationParts?.[0]).toMatchObject({
+      address: "bramblewood-01/encounter_wisps/narration",
+      line: "Three wisps rise out of the bracken.",
+    });
   });
 
   it("goes entry → check → shrine → encounter → rest → vote → ending", () => {
@@ -3391,6 +3396,62 @@ describe("narration variants and tokens (#159)", () => {
         "Scratched, but through.",
       ].join("\n\n"),
     );
+  });
+
+  it("writes parts beside the narration, each at the address it was authored at", () => {
+    const context = ctx({ chapter: chapterWithVariants() });
+    const state = walk(
+      atClearing(context),
+      [{ playerId: "p_1", intent: { type: "CHOOSE", choiceId: "over" } }],
+      context,
+    ).state;
+    expect(state.narrationParts).toEqual([
+      { address: "bramblewood-01/scene_shrine/variants/2", line: "Nothing glitters yet." },
+      { address: "bramblewood-01/scene_shrine/narration", line: "A small stone shrine, half-swallowed by roots." },
+      { address: "bramblewood-01/scene_shrine/variants/0", line: "The key hums for {party}.", token: { party: "2" } },
+    ]);
+  });
+
+  it("tells identical words apart by where they were authored", () => {
+    const chapter = chapterWithVariants();
+    const squeeze = chapter.scenes["check_squeeze"];
+    if (squeeze?.type !== "check") throw new Error("fixture changed");
+    // Success and failure read the same and land in the same place.
+    squeeze.onSuccess = { goto: "scene_scratched", narration: "Through the thorns." };
+    squeeze.onFailure = { goto: "scene_scratched", narration: "Through the thorns." };
+    const play = (roll: number) => {
+      const context = ctx({ chapter, rng: fixedRng(roll) });
+      return walk(
+        atClearing(context),
+        [
+          { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+          { playerId: "p_2", intent: { type: "ROLL" } },
+        ],
+        context,
+      ).state;
+    };
+    const won = play(20).narrationParts?.[0];
+    const lost = play(1).narrationParts?.[0];
+    expect(won?.line).toBe("Through the thorns.");
+    expect(lost?.line).toBe(won?.line);
+    expect(won?.address).toBe("bramblewood-01/check_squeeze/onSuccess/narration");
+    expect(lost?.address).toBe("bramblewood-01/check_squeeze/onFailure/narration");
+  });
+
+  it("addresses a branch's line, its variants and the destination's own text", () => {
+    const state = walk(
+      atClearing(ctx({ chapter: chapterWithVariants() })),
+      [
+        { playerId: "p_1", intent: { type: "CHOOSE", choiceId: "squeeze" } },
+        { playerId: "p_2", intent: { type: "ROLL" } },
+      ],
+      ctx({ chapter: chapterWithVariants(), rng: fixedRng(1) }),
+    ).state;
+    expect(state.narrationParts?.map((part) => part.address)).toEqual([
+      "bramblewood-01/check_squeeze/onFailure/narration",
+      "bramblewood-01/check_squeeze/onFailure/variants/0",
+      "bramblewood-01/scene_scratched/narration",
+    ]);
   });
 
   it("stores the composed text, so a reload mid-scene reads the same words", () => {

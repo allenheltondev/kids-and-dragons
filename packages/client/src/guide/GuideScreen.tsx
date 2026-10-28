@@ -21,6 +21,7 @@ import { Icon } from "../screens/icons";
 import { parseGuide, type Block, type Inline } from "./markdown";
 import source from "./guide.md?raw";
 import "./GuideScreen.css";
+import { PrivacyFooter } from "../ui/PrivacyFooter";
 
 /** Where the pictures are served from (packages/client/public/guide-pictures). */
 export const PICTURES = "/guide-pictures";
@@ -137,6 +138,7 @@ export function GuideScreen(): ReactElement {
             Back to the start
           </Button>
         </div>
+        <PrivacyFooter guide={false} />
       </article>
     </main>
   );
