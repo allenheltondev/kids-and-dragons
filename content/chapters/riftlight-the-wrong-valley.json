@@ -807,8 +807,8 @@
       }
     },
     "signals": {
-      "type": "interaction",
-      "narration": "The workers demonstrate their crossing signs: lantern up for wait, staff sideways for stop, a hand toward the path for proceed. Watch their practice pattern, then show it back. Pip tries to hold a pencil and signal at once. The pencil loses.",
+      "type": "story",
+      "narration": "The workers demonstrate lantern up for wait, staff sideways for stop and a hand toward the checked path for clear. You practice together until everyone can see the next signal. Pip holds his notebook under one arm. It is having a very quiet adventure.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -824,46 +824,14 @@
         }
       ],
       "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the workers' signal pattern, then echo it.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "proceed",
-            "label": "Hand toward the path",
-            "icon": "eye"
-          },
-          {
-            "id": "wait",
-            "label": "Raised lantern",
-            "icon": "eye"
-          },
-          {
-            "id": "stop",
-            "label": "Sideways staff",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "wait",
-          "stop",
-          "proceed"
-        ],
-        "stepMs": 1300
-      },
-      "onSuccess": {
-        "goto": "camp",
-        "narration": "Both workers can distinguish stop, wait and proceed."
-      },
-      "onFailure": {
-        "goto": "camp",
-        "narration": "The workers slow the demonstration and repeat the signs aloud. Nobody starts across until the meanings are shared."
-      },
-      "onAssisted": {
-        "goto": "camp",
-        "narration": "Both workers can distinguish stop, wait and proceed."
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "camp"
+        }
+      ]
     },
     "camp": {
       "type": "rest",
@@ -1257,7 +1225,7 @@
       ]
     },
     "return_observation": {
-      "type": "interaction",
+      "type": "check",
       "narration": "The worker points to the changing water. Watch the observation pattern for the western stream, old bed and quiet western channel. Remember which changed first.",
       "cast": [
         {
@@ -1274,34 +1242,6 @@
         }
       ],
       "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the water-change pattern, then echo it.",
-        "actionLabel": "Show what we saw",
-        "options": [
-          {
-            "id": "quiet",
-            "label": "Western channel quiet",
-            "icon": "eye"
-          },
-          {
-            "id": "west",
-            "label": "Western stream falls",
-            "icon": "eye"
-          },
-          {
-            "id": "old",
-            "label": "Old bed fills",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "west",
-          "old",
-          "quiet"
-        ],
-        "stepMs": 1300
-      },
       "onSuccess": {
         "goto": "return_water",
         "narration": "You keep the whole visible sequence in order.",
@@ -1324,17 +1264,10 @@
           }
         ]
       },
-      "onAssisted": {
-        "goto": "return_water",
-        "narration": "You keep the whole visible sequence in order.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_return_observed",
-            "value": true
-          }
-        ]
-      }
+      "stat": "clever",
+      "tn": 12,
+      "roller": "party",
+      "prompt": "Read the river's changing course through the spray. A clear view gives you the whole sequence; a missed view leaves only the before-and-after landmarks. Choose who watches; everyone can help."
     },
     "return_water": {
       "type": "choice_point",
@@ -1648,8 +1581,8 @@
       ]
     },
     "repair_gear": {
-      "type": "interaction",
-      "narration": "The workers have used their spare line. Pass the replacement cord and drying cloths along the high path to their repair bundle before leaving.",
+      "type": "story",
+      "narration": "The workers have used their spare line to finish the recovery. You replace its cord and help spread drying cloths beside their kit. The wet tools will cost them an afternoon. Your help makes that work possible; it does not make the cost disappear.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1665,45 +1598,21 @@
         }
       ],
       "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the repair supplies along the high path.",
-        "actionLabel": "Pass the repair kit",
-        "objectLabel": "Replacement cord and drying cloths"
-      },
-      "onSuccess": {
-        "goto": "tell_together",
-        "narration": "The repair supplies are ready. The workers take over the crossing watch.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_workers_finished",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "tell_together",
-        "narration": "The repair supplies are ready. The workers take over the crossing watch.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_workers_finished",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "tell_together",
-        "narration": "The repair supplies are ready. The workers take over the crossing watch.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_workers_finished",
-            "value": true
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "tell_together",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "valley_workers_finished",
+              "value": true
+            }
+          ]
+        }
+      ]
     },
     "tell_together": {
       "type": "choice_point",
@@ -1742,8 +1651,8 @@
       ]
     },
     "record_landmarks": {
-      "type": "interaction",
-      "narration": "Share the known events without filling the spray-hidden moments. The changed stream was already there when you arrived; your crossing came before it returned to its older bed.",
+      "type": "story",
+      "narration": "Pip records the landmarks you all checked. The changed stream was there when you arrived; you crossed before it returned to its older bed. Spray-hidden moments stay blank. The workers add their own view beside yours. Together the pages tell what happened without guessing why.",
       "cast": [
         {
           "figure": "cast/pip_thistledown",
@@ -1759,74 +1668,24 @@
         }
       ],
       "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "sequence",
-        "cue": "Arrange the events everyone can place.",
-        "actionLabel": "Try our plan",
-        "options": [
-          {
-            "id": "old",
-            "label": "River back in old bed",
-            "icon": "eye"
-          },
-          {
-            "id": "new",
-            "label": "Water in the dry valley",
-            "icon": "eye"
-          },
-          {
-            "id": "cross",
-            "label": "Party reaches far path",
-            "icon": "eye"
-          }
-        ],
-        "answer": [
-          "new",
-          "cross",
-          "old"
-        ],
-        "clues": [
-          "The water was already in the dry valley when the party arrived.",
-          "The party reached the far path before the river returned.",
-          "The river back in its old bed is the final event."
-        ]
-      },
-      "onSuccess": {
-        "goto": "last_check",
-        "narration": "Pip records both river lines and the known order. Any hidden moment stays blank.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_record_detailed",
-            "value": false
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "last_check",
-        "narration": "The workers place the crossing between the two observed river courses. Pip records the corrected order, leaving the hidden moments blank.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_record_detailed",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "last_check",
-        "narration": "Pip records both river lines and the known order. Any hidden moment stays blank.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_record_detailed",
-            "value": false
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "last_check",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "valley_record_detailed",
+              "value": false
+            }
+          ]
+        }
+      ]
     },
     "record_return": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Your party watched the complete return. Give the workers the sequence while each of you points out a checked part of the view. Nobody needs to invent why it happened.",
       "cast": [
         {
@@ -1843,68 +1702,29 @@
         }
       ],
       "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "play",
-        "cue": "Contribute a checked observation to the account.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "west",
-            "label": "Show where the western stream fell",
-            "icon": "hand",
-            "reaction": "The worker marks the falling western stream."
-          },
-          {
-            "id": "old",
-            "label": "Show where the old bed filled",
-            "icon": "hand",
-            "reaction": "Pip marks the returning water beside the old channel."
-          },
-          {
-            "id": "quiet",
-            "label": "Show the quiet western course",
-            "icon": "hand",
-            "reaction": "The wet western line stays on the page for comparison."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "last_check",
-        "narration": "The account includes the complete observed return as well as the two course outlines.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_record_detailed",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "last_check",
-        "narration": "The account includes the complete observed return as well as the two course outlines.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_record_detailed",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "last_check",
-        "narration": "The account includes the complete observed return as well as the two course outlines.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "valley_record_detailed",
-            "value": true
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "west",
+          "label": "Show where the western stream fell",
+          "icon": "hand",
+          "goto": "record_return_response_west"
+        },
+        {
+          "id": "old",
+          "label": "Show where the old bed filled",
+          "icon": "hand",
+          "goto": "record_return_response_old"
+        },
+        {
+          "id": "quiet",
+          "label": "Show the quiet western course",
+          "icon": "hand",
+          "goto": "record_return_response_quiet"
+        }
+      ]
     },
     "last_check": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Pip pretends to be the next traveler. He stops when your party points out the upper warning. Choose a useful instruction to leave with the lantern. The workers are checking whether the instructions are clear.",
       "cast": [
         {
@@ -1921,65 +1741,26 @@
         }
       ],
       "art": "scenes/riftlight/wrong-valley",
-      "interaction": {
-        "kind": "play",
-        "cue": "Leave a useful warning for the next traveler.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "stop",
-            "label": "Show the upper stopping place",
-            "icon": "hand",
-            "reaction": "Pip stops at the lantern, well above the old bed."
-          },
-          {
-            "id": "look",
-            "label": "Point out both river channels",
-            "icon": "hand",
-            "reaction": "The worker checks both channels before offering a route."
-          },
-          {
-            "id": "ask",
-            "label": "Show where to find the route worker",
-            "icon": "hand",
-            "reaction": "The next traveler has someone to ask when the view changes."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "rest",
-        "narration": "The workers can maintain the upper warning after your party leaves.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "tested_the_upper_warning",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "rest",
-        "narration": "The workers can maintain the upper warning after your party leaves.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "tested_the_upper_warning",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "rest",
-        "narration": "The workers can maintain the upper warning after your party leaves.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "tested_the_upper_warning",
-            "value": true
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "stop",
+          "label": "Show the upper stopping place",
+          "icon": "hand",
+          "goto": "last_check_response_stop"
+        },
+        {
+          "id": "look",
+          "label": "Point out both river channels",
+          "icon": "hand",
+          "goto": "last_check_response_look"
+        },
+        {
+          "id": "ask",
+          "label": "Show where to find the route worker",
+          "icon": "hand",
+          "goto": "last_check_response_ask"
+        }
+      ]
     },
     "rest": {
       "type": "rest",
@@ -2047,6 +1828,210 @@
           "text": "The page preserves the checked landmarks and known order, without inventing the missing detail."
         }
       ]
+    },
+    "record_return_response_west": {
+      "type": "story",
+      "narration": "The worker marks the falling western stream. The account includes the complete observed return as well as the two course outlines.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "last_check",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "valley_record_detailed",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley"
+    },
+    "record_return_response_old": {
+      "type": "story",
+      "narration": "Pip marks the returning water beside the old channel. The account includes the complete observed return as well as the two course outlines.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "last_check",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "valley_record_detailed",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley"
+    },
+    "record_return_response_quiet": {
+      "type": "story",
+      "narration": "The wet western line stays on the page for comparison. The account includes the complete observed return as well as the two course outlines.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "last_check",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "valley_record_detailed",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley"
+    },
+    "last_check_response_stop": {
+      "type": "story",
+      "narration": "Pip stops at the lantern, well above the old bed. The workers can maintain the upper warning after your party leaves.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "tested_the_upper_warning",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley"
+    },
+    "last_check_response_look": {
+      "type": "story",
+      "narration": "The worker checks both channels before offering a route. The workers can maintain the upper warning after your party leaves.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "tested_the_upper_warning",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley"
+    },
+    "last_check_response_ask": {
+      "type": "story",
+      "narration": "The next traveler has someone to ask when the view changes. The workers can maintain the upper warning after your party leaves.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "tested_the_upper_warning",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pip_thistledown",
+          "name": "Pip Thistledown"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Route worker"
+        },
+        {
+          "figure": "cast/route_worker_yeti",
+          "name": "Far worker"
+        }
+      ],
+      "art": "scenes/riftlight/wrong-valley"
     }
   },
   "voiceGuide": {
@@ -2069,11 +2054,6 @@
   "presentation": {
     "interactions": {
       "test_flow": {
-        "props": [
-          "water-surge"
-        ]
-      },
-      "return_observation": {
         "props": [
           "water-surge"
         ]
@@ -2138,18 +2118,7 @@
           "rope-loop"
         ]
       },
-      "repair_gear": {
-        "props": [
-          "relay-plank",
-          "rope-loop"
-        ]
-      },
       "people_signal": {
-        "props": [
-          "wind-banner"
-        ]
-      },
-      "signals": {
         "props": [
           "wind-banner"
         ]
@@ -2167,21 +2136,6 @@
       "worker_beacon": {
         "props": [
           "wind-banner"
-        ]
-      },
-      "record_landmarks": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "record_return": {
-        "props": [
-          "clue-scrap"
-        ]
-      },
-      "last_check": {
-        "props": [
-          "clue-scrap"
         ]
       }
     }

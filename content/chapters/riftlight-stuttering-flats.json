@@ -370,8 +370,8 @@
       }
     },
     "shell_markers": {
-      "type": "interaction",
-      "narration": "Pass the little shell markers along the longer curve so everyone can follow it back. The goat watches the bag as if the shells might be lunch.",
+      "type": "story",
+      "narration": "You and the guide set shell markers along the longer dry curve. Your stiff mat stays rolled for the crossing ahead. The goat watches the shell bag with deep interest. The guide moves it beyond nibbling distance. \"Road signs,\" she tells the goat. \"Not lunch.\"",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -382,45 +382,21 @@
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Pass the route markers along the shell banks.",
-        "actionLabel": "Pass the shell markers",
-        "objectLabel": "Shell route markers"
-      },
-      "onSuccess": {
-        "goto": "approach",
-        "narration": "The longer return curve is marked and the stiff mat is still free.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "flats_path_done",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "approach",
-        "narration": "The longer return curve is marked and the stiff mat is still free.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "flats_path_done",
-            "value": true
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "approach",
-        "narration": "The longer return curve is marked and the stiff mat is still free.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "flats_path_done",
-            "value": true
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "approach",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "flats_path_done",
+              "value": true
+            }
+          ]
+        }
+      ]
     },
     "approach": {
       "type": "choice_point",
@@ -757,7 +733,7 @@
       ]
     },
     "warm_goat": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "Choose a small comfort while the guide rubs the leg dry. The goat has decided the lunch basket is the most reassuring part of your team.",
       "cast": [
         {
@@ -769,65 +745,26 @@
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
-      "interaction": {
-        "kind": "play",
-        "cue": "Help the freed goat warm up.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "shelter",
-            "label": "Hold the soft mat against the wind",
-            "icon": "hand",
-            "reaction": "The goat stops shivering behind the mat."
-          },
-          {
-            "id": "brush",
-            "label": "Brush loose mud from the coat",
-            "icon": "hand",
-            "reaction": "Mud drops away. The goat shakes one ear at you."
-          },
-          {
-            "id": "reed",
-            "label": "Offer another dry reed",
-            "icon": "hand",
-            "reaction": "The goat chews instead of investigating the sling."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "rest",
-        "narration": "The cold leg is dry and ready for the herder's help.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "flats_leg_mended",
-            "value": false
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "rest",
-        "narration": "The cold leg is dry and ready for the herder's help.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "flats_leg_mended",
-            "value": false
-          }
-        ]
-      },
-      "onAssisted": {
-        "goto": "rest",
-        "narration": "The cold leg is dry and ready for the herder's help.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "flats_leg_mended",
-            "value": false
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "shelter",
+          "label": "Hold the soft mat against the wind",
+          "icon": "hand",
+          "goto": "warm_goat_response_shelter"
+        },
+        {
+          "id": "brush",
+          "label": "Brush loose mud from the coat",
+          "icon": "hand",
+          "goto": "warm_goat_response_brush"
+        },
+        {
+          "id": "reed",
+          "label": "Offer another dry reed",
+          "icon": "hand",
+          "goto": "warm_goat_response_reed"
+        }
+      ]
     },
     "mended_goat": {
       "type": "story",
@@ -1642,7 +1579,7 @@
       ]
     },
     "credit": {
-      "type": "interaction",
+      "type": "choice_point",
       "narration": "The guide asks what the next traveler should know about your rescue. Choose a true part of the teamwork while she finishes the warning.",
       "cast": [
         {
@@ -1654,44 +1591,26 @@
         }
       ],
       "art": "scenes/riftlight/stuttering-flats",
-      "interaction": {
-        "kind": "play",
-        "cue": "Give credit for a checked part of the rescue.",
-        "actionLabel": "Finish together",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "guide",
-            "label": "Name the guide's firm-ground help",
-            "icon": "hand",
-            "reaction": "The guide taps the shell route with one fin."
-          },
-          {
-            "id": "herder",
-            "label": "Name the herder's snowy landing",
-            "icon": "hand",
-            "reaction": "The empty view still has her cleared landing in your notes."
-          },
-          {
-            "id": "team",
-            "label": "Name your team's steady sling work",
-            "icon": "hand",
-            "reaction": "The guide adds a sling beside the route drawing."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "next",
-        "narration": "The warning shows what helped, without promising the opening will return."
-      },
-      "onFailure": {
-        "goto": "next",
-        "narration": "The warning shows what helped, without promising the opening will return."
-      },
-      "onAssisted": {
-        "goto": "next",
-        "narration": "The warning shows what helped, without promising the opening will return."
-      }
+      "choices": [
+        {
+          "id": "guide",
+          "label": "Name the guide's firm-ground help",
+          "icon": "hand",
+          "goto": "credit_response_guide"
+        },
+        {
+          "id": "herder",
+          "label": "Name the herder's snowy landing",
+          "icon": "hand",
+          "goto": "credit_response_herder"
+        },
+        {
+          "id": "team",
+          "label": "Name your team's steady sling work",
+          "icon": "hand",
+          "goto": "credit_response_team"
+        }
+      ]
     },
     "next": {
       "type": "story",
@@ -1762,6 +1681,159 @@
         }
       ],
       "art": "scenes/riftlight/stuttering-flats"
+    },
+    "warm_goat_response_shelter": {
+      "type": "story",
+      "narration": "The goat stops shivering behind the mat. The cold leg is dry and ready for the herder's help.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "flats_leg_mended",
+              "value": false
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "warm_goat_response_brush": {
+      "type": "story",
+      "narration": "Mud drops away. The goat shakes one ear at you. The cold leg is dry and ready for the herder's help.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "flats_leg_mended",
+              "value": false
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "warm_goat_response_reed": {
+      "type": "story",
+      "narration": "The goat chews instead of investigating the sling. The cold leg is dry and ready for the herder's help.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "rest",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "flats_leg_mended",
+              "value": false
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "credit_response_guide": {
+      "type": "story",
+      "narration": "The guide taps the shell route with one fin. The warning shows what helped, without promising the opening will return.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "next"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "credit_response_herder": {
+      "type": "story",
+      "narration": "The empty view still has her cleared landing in your notes. The warning shows what helped, without promising the opening will return.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "next"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
+    },
+    "credit_response_team": {
+      "type": "story",
+      "narration": "The guide adds a sling beside the route drawing. The warning shows what helped, without promising the opening will return.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue",
+          "icon": "forward",
+          "goto": "next"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/saltrot_guide",
+          "name": "Saltrot guide"
+        },
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "art": "scenes/riftlight/stuttering-flats"
     }
   },
   "presentation": {
@@ -1776,11 +1848,6 @@
           "shell-cockle"
         ]
       },
-      "shell_markers": {
-        "props": [
-          "shell-cockle"
-        ]
-      },
       "calm_goat": {
         "props": [
           "goat-brush"
@@ -1790,11 +1857,6 @@
         "props": [
           "wind-blanket",
           "rope-loop"
-        ]
-      },
-      "warm_goat": {
-        "props": [
-          "goat-brush"
         ]
       },
       "signal_visual": {
@@ -1871,11 +1933,6 @@
       "signal_relay": {
         "props": [
           "wind-banner"
-        ]
-      },
-      "credit": {
-        "props": [
-          "clue-scrap"
         ]
       }
     }

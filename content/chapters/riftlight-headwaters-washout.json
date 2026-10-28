@@ -74,22 +74,17 @@
       "art": "scenes/riftlight/headwaters-floes"
     },
     "count": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "narration": "The rope runs from hand to hand. If you squeeze it twice, the next person squeezes it back.",
-      "prompt": "Everyone squeezes the rope twice to say: I'm here.",
-      "roller": "all",
-      "checkKind": "doing",
-      "onSuccess": {
-        "goto": "ride",
-        "narration": "Squeeze, squeeze. Squeeze, squeeze. Every hand answers, and the rope feels like one long, wet handshake."
-      },
-      "onFailure": {
-        "goto": "ride",
-        "narration": "One squeeze comes late, and your heart jumps. A hand finds the late one and holds it tight."
-      },
-      "art": "scenes/riftlight/headwaters-floes"
+      "narration": "The rope runs from hand to hand. If you squeeze it twice, the next person squeezes it back. Squeeze, squeeze. Squeeze, squeeze. Every hand answers, and the rope feels like one long, wet handshake.",
+      "art": "scenes/riftlight/headwaters-floes",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "ride"
+        }
+      ]
     },
     "pack_grab": {
       "type": "check",
@@ -116,22 +111,17 @@
       "art": "scenes/riftlight/headwaters-floes"
     },
     "rally_breath": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "narration": "Rally is for lifting friends up, and right now everyone needs lifting.",
-      "prompt": "Call out a steady breathing rhythm: in, two, three, out.",
-      "roller": "party",
-      "checkKind": "doing",
-      "onSuccess": {
-        "goto": "ride",
-        "narration": "In, two, three, out. Panting turns into breathing, and breathing turns into something almost calm."
-      },
-      "onFailure": {
-        "goto": "ride",
-        "narration": "Your voice shakes, but the others pick up the rhythm, and it steadies you in return."
-      },
-      "art": "scenes/riftlight/headwaters-floes"
+      "narration": "Rally is for lifting friends up, and right now everyone needs lifting. In, two, three, out. Panting turns into breathing, and breathing turns into something almost calm.",
+      "art": "scenes/riftlight/headwaters-floes",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "ride"
+        }
+      ]
     },
     "ride": {
       "type": "choice_point",
@@ -821,41 +811,30 @@
       "art": "scenes/riftlight/headwaters-floes"
     },
     "shiver_sing": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 8,
-      "narration": "It does not have to be a good song. It only has to be a long one, with a chorus where everybody can yell.",
-      "prompt": "Lead a silly song that gets everyone's mouths, and minds, moving.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "goats",
-        "narration": "By the second chorus, everyone is yelling, and the cold seems to have gone to listen from a distance."
-      },
-      "onFailure": {
-        "goto": "goats",
-        "narration": "Your song runs out after three lines. Somebody invents a fourth, and it is worse, and everyone laughs anyway."
-      },
-      "art": "scenes/riftlight/headwaters-floes"
+      "narration": "It does not have to be a good song. It only has to be a long one, with a chorus where everybody can yell. By the second chorus, everyone is yelling, and the cold seems to have gone to listen from a distance.",
+      "art": "scenes/riftlight/headwaters-floes",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "goats"
+        }
+      ]
     },
     "shiver_paddle": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "tags": [
-        "swim"
-      ],
-      "narration": "Paddling is hard work, and hard work makes heat. You take turns on the outside of the line.",
-      "prompt": "Paddle in turns to push the line along and warm up.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "goats",
-        "narration": "Paddle, swap, paddle, swap. By the end of the bend, you are puffing, and warm to your toes."
-      },
-      "onFailure": {
-        "goto": "goats",
-        "narration": "The paddling is lopsided, and you drift in circles for a moment. But the shivers ease a little."
-      },
-      "art": "scenes/riftlight/headwaters-floes"
+      "narration": "Paddling is hard work, and hard work makes heat. You take turns on the outside of the line. Paddle, swap, paddle, swap. By the end of the bend, you are puffing, and warm to your toes.",
+      "art": "scenes/riftlight/headwaters-floes",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "goats"
+        }
+      ]
     },
     "goats": {
       "type": "choice_point",
@@ -1327,38 +1306,30 @@
       "art": "scenes/riftlight/headwaters-floes"
     },
     "tend_warm": {
-      "type": "check",
-      "stat": "quick",
-      "tn": 8,
-      "narration": "Jogging on the spot is a silly thing to do, and silly things are warm.",
-      "prompt": "Everyone jogs, hops and shakes until the shivers give up.",
-      "roller": "all",
-      "onSuccess": {
-        "goto": "early",
-        "narration": "Hop, shake, wiggle! By the end, steam is coming off your coats, and everyone is laughing too hard to shiver."
-      },
-      "onFailure": {
-        "goto": "early",
-        "narration": "The hopping goes sideways, and two of you fall in a heap. It is warm in the heap."
-      },
-      "art": "scenes/riftlight/headwaters-floes"
+      "narration": "Jogging on the spot is a silly thing to do, and silly things are warm. Hop, shake, wiggle! By the end, steam is coming off your coats, and everyone is laughing too hard to shiver.",
+      "art": "scenes/riftlight/headwaters-floes",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "early"
+        }
+      ]
     },
     "tend_dry": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 8,
-      "narration": "A wet rope is a cranky rope. A wrung-out rope is a friend again.",
-      "prompt": "Wring out the rope and the packs, and hang what you can on the rocks.",
-      "roller": "party",
-      "onSuccess": {
-        "goto": "early",
-        "narration": "Twist, squeeze, drip. The rope goes from a wet carpet to a rope again, and the packs sit in the sun like sleepy cats."
-      },
-      "onFailure": {
-        "goto": "early",
-        "narration": "The rope fights back, and wins a little. You get most of the water out, and the rest can drip on its own."
-      },
-      "art": "scenes/riftlight/headwaters-floes"
+      "narration": "A wet rope is a cranky rope. A wrung-out rope is a friend again. Twist, squeeze, drip. The rope goes from a wet carpet to a rope again, and the packs sit in the sun like sleepy cats.",
+      "art": "scenes/riftlight/headwaters-floes",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "early"
+        }
+      ]
     },
     "early": {
       "type": "rest",
@@ -2094,51 +2065,32 @@
       "art": "scenes/riftlight/headwaters-floes"
     },
     "haul_loop": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "narration": "The loop is already on the knob. Now all of you have to pull.",
-      "prompt": "Haul on the rope to pull the whole line in to the ledge.",
-      "roller": "party",
-      "tags": [
-        "force"
-      ],
-      "onSuccess": {
-        "goto": "ashore",
-        "narration": "The line draws tight, and the whole party swings into the shallows.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "river_escaped_early",
-            "value": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "reached_for_the_ledge"
-          },
-          {
-            "type": "setFlag",
-            "flag": "found_a_way_out"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "tree",
-        "narration": "The loop slips off the knob at the last moment. You keep the line and float onward together.",
-        "effects": [
-          {
-            "type": "damage",
-            "amount": 1,
-            "to": "party",
-            "nonlethal": true
-          },
-          {
-            "type": "setFlag",
-            "flag": "reached_for_the_ledge"
-          }
-        ]
-      },
-      "art": "scenes/riftlight/ice-shelf-headwaters"
+      "narration": "The loop is already on the knob. Now all of you have to pull. The loop you hooked over the knob is holding. Everyone takes the line and pulls together. The river swings your party toward the shallows.",
+      "art": "scenes/riftlight/ice-shelf-headwaters",
+      "type": "story",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "ashore",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "river_escaped_early",
+              "value": true
+            },
+            {
+              "type": "setFlag",
+              "flag": "reached_for_the_ledge"
+            },
+            {
+              "type": "setFlag",
+              "flag": "found_a_way_out"
+            }
+          ]
+        }
+      ]
     },
     "drake_shallows": {
       "type": "story",

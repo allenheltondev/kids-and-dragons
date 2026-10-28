@@ -944,17 +944,6 @@
       ]
     },
     "post_a_check": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "prompt": "Hold the hum steady while the others listen at the cup. Choose who leads; everyone can help.",
-      "checkKind": "doing",
-      "onSuccess": {
-        "goto": "post_done"
-      },
-      "onFailure": {
-        "goto": "post_off"
-      },
       "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
@@ -965,19 +954,19 @@
           "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
         }
+      ],
+      "type": "story",
+      "narration": "You hum into the listening cup while the herder listens. She joins your note, then falls quiet to hear what answers.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "post_done"
+        }
       ]
     },
     "post_b_check": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Count the ticks and draw the pattern in the snow. Choose who leads; everyone can help.",
-      "onSuccess": {
-        "goto": "post_done"
-      },
-      "onFailure": {
-        "goto": "post_off"
-      },
       "art": "scenes/riftlight/hidden-ticking-ridge",
       "cast": [
         {
@@ -987,35 +976,22 @@
         {
           "figure": "cast/snowhorn_kid",
           "name": "Kid goat"
+        }
+      ],
+      "type": "story",
+      "narration": "You count the ticks together and draw them in the snow. The herder places a claw beside each mark. Her grandmother listened here too.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "post_done"
         }
       ]
     },
     "post_done": {
       "type": "story",
       "narration": "The pattern matches the song you learned in the hall. Slow, slow, quick. The ticking is not random. It is the hall note, answered from far below. \"Under the hall,\" says the herder. \"Of course it is.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Take a breath with the herder",
-          "icon": "hand",
-          "goto": "warm"
-        }
-      ],
-      "art": "scenes/riftlight/hidden-ticking-ridge",
-      "cast": [
-        {
-          "figure": "cast/yeti_herder",
-          "name": "Yeti herder"
-        },
-        {
-          "figure": "cast/snowhorn_kid",
-          "name": "Kid goat"
-        }
-      ]
-    },
-    "post_off": {
-      "type": "story",
-      "narration": "Your count wobbles, and you lose your place twice. The herder takes a turn at the cup and hears it. \"Slow, slow, quick,\" she says. \"Your hall song, only answered from far below.\" She looks at the ground. \"Under the hall. Of course it is.\"",
       "choices": [
         {
           "id": "continue",
@@ -1432,49 +1408,34 @@
       "art": "scenes/riftlight/hidden-sealed-seam"
     },
     "seam_a": {
-      "type": "check",
-      "stat": "heart",
-      "tn": 12,
-      "prompt": "Hum the hall note softly, steady as a pulse. The steadiest voice should lead!",
-      "roller": "best",
-      "checkKind": "doing",
-      "onSuccess": {
-        "goto": "seam_done"
-      },
-      "onFailure": {
-        "goto": "seam_off"
-      },
-      "art": "scenes/riftlight/hidden-sealed-seam"
+      "art": "scenes/riftlight/hidden-sealed-seam",
+      "type": "story",
+      "narration": "You hum the familiar hall note at the back of the seam. The herder listens with you.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "seam_done"
+        }
+      ]
     },
     "seam_b": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Tap the ticking back at the seam with a stone: slow, slow, quick. Choose who leads; everyone can help.",
-      "onSuccess": {
-        "goto": "seam_done"
-      },
-      "onFailure": {
-        "goto": "seam_off"
-      },
-      "art": "scenes/riftlight/hidden-sealed-seam"
+      "art": "scenes/riftlight/hidden-sealed-seam",
+      "type": "story",
+      "narration": "You tap slow, slow, quick against the seam. Then everyone leaves a little silence for its answer.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "seam_done"
+        }
+      ]
     },
     "seam_done": {
       "type": "story",
       "narration": "The seam ticks back at you, quicker. Frost sparkles down the wall in a pattern, over and over, as if it wants you to say it back.",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Watch the frost",
-          "icon": "hand",
-          "goto": "seam_echo"
-        }
-      ],
-      "art": "scenes/riftlight/hidden-sealed-seam"
-    },
-    "seam_off": {
-      "type": "story",
-      "narration": "The seam goes quiet, as if it is sulking. You wait, and wait. Then frost sparkles down the wall in a pattern of its own, over and over, as if to show you how.",
       "choices": [
         {
           "id": "continue",
@@ -1780,16 +1741,6 @@
       "rift": "steady"
     },
     "cairn_a": {
-      "type": "check",
-      "stat": "might",
-      "tn": 12,
-      "prompt": "Stack heavy ice blocks across the passage mouth, with a gap for people. Choose who leads; everyone can help.",
-      "onSuccess": {
-        "goto": "cairn_done"
-      },
-      "onFailure": {
-        "goto": "cairn_off"
-      },
       "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
@@ -1801,19 +1752,19 @@
           "name": "Kid goat"
         }
       ],
-      "rift": "steady"
+      "rift": "steady",
+      "type": "story",
+      "narration": "You stack the passage marker with the herder, leaving room for people to pass. She tests the blocks before calling the kid back.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "cairn_done"
+        }
+      ]
     },
     "cairn_b": {
-      "type": "check",
-      "stat": "clever",
-      "tn": 12,
-      "prompt": "Tie bells to a line across the passage mouth, high enough for people, low enough that goats hear it. Choose who leads; everyone can help.",
-      "onSuccess": {
-        "goto": "cairn_done"
-      },
-      "onFailure": {
-        "goto": "cairn_off"
-      },
       "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
@@ -1825,7 +1776,17 @@
           "name": "Kid goat"
         }
       ],
-      "rift": "steady"
+      "rift": "steady",
+      "type": "story",
+      "narration": "You tie the bells across the passage mouth. The herder checks their height against the kid, who immediately tries to eat one.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "cairn_done"
+        }
+      ]
     },
     "cairn_smash": {
       "type": "story",
@@ -1852,16 +1813,6 @@
       "rift": "steady"
     },
     "cairn_smash_check": {
-      "type": "check",
-      "stat": "might",
-      "tn": 8,
-      "prompt": "A bigfoot sets the big blocks. The bigfoot assists; choose who leads the team check.",
-      "onSuccess": {
-        "goto": "cairn_done"
-      },
-      "onFailure": {
-        "goto": "cairn_off"
-      },
       "art": "scenes/riftlight/hidden-ticking-fold",
       "cast": [
         {
@@ -1873,35 +1824,21 @@
           "name": "Kid goat"
         }
       ],
-      "rift": "steady"
+      "rift": "steady",
+      "type": "story",
+      "narration": "Your bigfoot sets the broad blocks while friends mark a gap for travelers. The herder checks that a curious goat cannot squeeze through.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "cairn_done"
+        }
+      ]
     },
     "cairn_done": {
       "type": "story",
       "narration": "The passage mouth is marked. Goats will stay out, and travelers will know to look before they step in. The herder pats the cairn as if it were a friend's head. \"There. It can be as strange as it likes, on the other side of that.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Ask what she thinks",
-          "icon": "hand",
-          "goto": "herder_say"
-        }
-      ],
-      "art": "scenes/riftlight/hidden-ticking-fold",
-      "cast": [
-        {
-          "figure": "cast/yeti_herder",
-          "name": "Yeti herder"
-        },
-        {
-          "figure": "cast/snowhorn_kid",
-          "name": "Kid goat"
-        }
-      ],
-      "rift": "steady"
-    },
-    "cairn_off": {
-      "type": "story",
-      "narration": "The first blocks tip over, or the bell line sags into a muddle. The kid steps in to help and hooks the line over a peg by accident. It is crooked, and it jingles out of tune, but it will keep goats out. The herder nods slowly. \"Good enough. Goats do not care about neat.\"",
       "choices": [
         {
           "id": "continue",

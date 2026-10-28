@@ -23,7 +23,9 @@ Preserve the user's target duration when revising a boring chapter. Ordinary cam
 should offer about a thirty-minute sitting unless the brief says otherwise; practice and other
 intentionally short chapters keep their own targets. Shorter prose does not imply a shorter
 adventure. Fill the time with worthwhile discoveries, complications, debate and interactive play.
-Do not solve repetition by shrinking the chapter or by replacing each roll with the same minigame.
+Do not solve repetition by shrinking the chapter or by replacing rolls with a parade of minigames.
+Story, dice, decisions without games, decisions with games and fights are available modes, not
+a checklist each chapter must fill. Choose a mix that serves this chapter's dramatic purpose.
 
 For a new design or substantial rewrite, read [references/play-design.md](references/play-design.md).
 It covers time budgets, mechanics, consequential branches and verification. Historic Gemfall scene
@@ -97,6 +99,29 @@ Scene 1 says, in the story's own words, what the party is here to do tonight and
   about 600 characters: longer ones overflow the TV (`layout-fit` e2e; #364 hit it).
 
 ### 3. The spine offers varied play and consequential choices
+
+- For a campaign audit, list every chapter and its review status. Distinguish a count-only
+  screening from a route review. A chapter with few games can still repeat dice checks,
+  method-selection votes or tasks that only restate an earned result. Include those chapters
+  before calling the campaign review complete.
+
+- Before drafting, map the efficient and engaged routes by what players experience: story,
+  a decision without a game, a dice risk, a decision leading to a game, or a fight. A short
+  result paragraph or an equipment-selection vote between games does not necessarily give
+  children a change of pace. Read the whole movement, including recovery branches.
+- Give discoveries, character reactions and aftermath room without another widget. Let
+  meaningful priorities and relationship choices resolve through discussion and their
+  consequences alone. Routine packing, passing a report and repeating known instructions
+  usually belong in narration. Expressive choices are welcome without a participation gate.
+- Question clusters of games even when each uses a different mechanic. Keep the strongest
+  hands-on moment and let its neighboring scenes develop the story or invite a real choice.
+  Back-to-back games can serve a deliberate climax; justify that rhythm in the route review.
+- Do not impose minimum minigame totals, mechanic counts or equal shares of the five modes.
+  Keep dice for uncertain risks with useful consequences and fights for conflicts that change
+  the situation. Some chapters can be quiet, some dangerous, some playful. Do not add a fight
+  or roll merely to complete the mix. Test route consequences and recovery rather than
+  activity quotas. Preserve session substance through relationships, discoveries and debate,
+  without padding the chapter with replacement chores.
 
 - Trace what the children actually do on required routes: choose priorities, share clues, aim,
   remember, balance, support a friend, explore, use an ability, fight, or play with the cast.
