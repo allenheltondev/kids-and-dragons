@@ -45,24 +45,20 @@ Dated 2026-10-27. Engineering status, not legal advice.
    author of this note). Before a public U.S. launch, add suitable *business* contact details to
    `screens/operator.ts` and `PrivacyScreen.tsx`, not a residential address. Until then the page is
    incomplete.
-8. **Link proximity.** 312.4(d) says "The link must be in close proximity to the requests for
-   information in each such area" (same source). The policy is linked only from the two start
-   screens. Children also enter names at a direct room link (`/p/<code>`), the creation flow and a
-   family tablet's kid picker, and none links to it. The owner has chosen to keep the link to the
-   start screens (see below), so this item is now a question for counsel, not a to-do.
-   **Decision 2026-10-27 (owner):** the link is a small, quiet "Privacy" footer at the bottom of
-   the start screens, not a visible line among the buttons, because it is there only because it has
-   to be. The footer keeps the secondary text colour and a full-height tap target. **Risk to put to
-   counsel:** as the author understands the notice rule, the link must also be *clear and
-   prominent* (unchecked here; the review's excerpt quotes only the proximity sentence). A small
-   footer may not satisfy that for a service aimed at children, and it is not near the places
-   children type names. If counsel says it does not, the fix is to make it more visible at those
-   places, not to revert this.
-   **Scope, 2026-10-27 (owner):** the link lives on the start screens only, not in gameplay,
-   hero creation or the room screens. The consequence to put to counsel: a child who arrives by a
-   direct room link (`/p/<code>`) or a family tablet's saved page never sees the start screen, so
-   reaches name entry with no link at all. Today's other entry points to the policy are the
-   "What we store" links in the sign-in panel and the organizer screen.
+8. **Link placement.** 16 CFR 312.4(d) (excerpts supplied by the owner's review; the issue #523
+   comment of 2026-10-28 quotes "prominent and clearly labeled link" and "in close proximity to the
+   requests for information") puts the link where information is requested.
+   **Decision 2026-10-28 (owner):** a quiet "Privacy" footer link on every screen that is not the
+   game itself and on anywhere a kid can land directly, and not in gameplay. Built:
+   the two start screens, a direct room link (which shows the start screen with the code
+   filled in), hero creation, the phone's lobby, the adventure book, the account and guide pages,
+   and the closed-room and removed-phone screens. It opens `/privacy` in a new tab so a name or
+   code already typed is not lost. Not linked: gameplay, and the shared TV screen, which asks
+   nobody for anything. Tested end to end from a direct room link (`e2e/privacy-link.spec.ts`).
+   **Still a risk for counsel:** the link is small and quiet by choice. The comment on #523 calls
+   for a "prominent and clearly labeled" link and recommends a small link beside each name field;
+   whether a quiet footer satisfies that is unanswered, and the fix if it does not is a more
+   visible link at the name-entry controls.
 9. **Launch blockers this page does not fix.** Publishing `/privacy` is not proof of compliance.
    Still open: the parental consent and collection boundary (#522), verifiable consent and direct
    notice (#523), a procedure for parents to review, delete or stop collection (#523), and an

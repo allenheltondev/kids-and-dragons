@@ -42,6 +42,7 @@ import { EntryScene } from "./EntryScene";
 import { TableNameField } from "./TableNameField";
 import "./shared.css";
 import "./HomeScreen.css";
+import { PrivacyFooter } from "../ui/PrivacyFooter";
 
 
 const MODE_BLURB: Record<RoomMode, string> = {
@@ -494,11 +495,7 @@ function PersonalHome(): ReactElement {
           </div>
         </div>
         {/* The privacy policy (#523): a quiet footer under the body, there whether joining or hosting. */}
-        <footer className="home__footer">
-          <button type="button" className="home__footer-link kad-focusable" onClick={() => navigate({ name: "privacy" })}>
-            Privacy
-          </button>
-        </footer>
+        <PrivacyFooter />
       </div>
 
       <LazySignInFlow />
