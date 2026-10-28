@@ -2344,76 +2344,43 @@
       ]
     },
     "interaction_stone_chain": {
-      "type": "interaction",
-      "narration": "The warden who dropped his pencil has found another one, and a plan. He lines everybody up along the road, and the runaway stones are to go hand to hand, away from the wheels, into his sacks. \"Pass them back and do not drop any!\" he calls. \"There is a little pay in it for the people in this line.\"",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the stone, then pass it down the line.",
-        "actionLabel": "Pass the stone",
-        "objectLabel": "A humming stone"
-      },
-      "onSuccess": {
-        "goto": "scene_road_gifts",
-        "narration": "The last stone drops into the last sack, and the warden writes a very tidy number in his ledger. He counts three coins into your hands. \"Honest work,\" he says, and then, quieter, \"I have never been so glad to be bored.\"",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_road_gifts",
-        "narration": "One stone slips through and rolls off uphill to join its friends. The warden writes it down sadly. The rest are safe in the sacks, and the line cheers anyway."
-      },
-      "onAssisted": {
-        "goto": "scene_road_gifts",
-        "narration": "The warden joins the line himself, and together you pass the stones along without losing a single one. He counts three coins into your hands. \"Honest work,\" he says.",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
-      "art": "scenes/gemfall/stone-chain-road"
+      "art": "scenes/gemfall/stone-chain-road",
+      "type": "story",
+      "narration": "You help the warden pack the runaway stones into sacks away from the wagon wheels. He counts the last one and closes his ledger. The next traveler can pass without being chased by a pebble. He pays you three coins. \"Honest work,\" he says, then quietly, \"I have never been so glad to be bored.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_road_gifts",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ]
     },
     "interaction_shelter_stack": {
-      "type": "interaction",
-      "narration": "At the dragonling way-shelter, the keeper meets your pile at the gate. Her name is Brindle, and she is carrying a board as big as a door. \"Stack them on here, then carry the board up to the top shelf,\" she says. \"Level, mind. Stones hum louder when they tilt, and then nobody sleeps.\" She wants every one of them safe before the next shrug.",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Everyone lift or lower your side until the stones sit level, then carry the board.",
-        "actionLabel": "Carry the board",
-        "objectLabel": "A board of humming stones"
-      },
-      "onSuccess": {
-        "goto": "scene_evening",
-        "narration": "The stones sit as still as eggs. Brindle taps the shelf twice, satisfied, and tucks a wrapped supper into your pack. \"From my own pot,\" she says. \"Do not tell the cat.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "supper_bundle",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_evening",
-        "narration": "The board tips and the stones hum like angry bees. Brindle lays one hand on the loudest of them, and it quiets down at once, embarrassed. \"Wobbly day,\" she says. \"Up they go.\""
-      },
-      "onAssisted": {
-        "goto": "scene_evening",
-        "narration": "Brindle takes one corner of the board herself, and the stones sit as still as eggs. She tucks a wrapped supper into your pack. \"From my own pot,\" she says. \"Do not tell the cat.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "supper_bundle",
-            "to": "party"
-          }
-        ]
-      },
-      "art": "scenes/gemfall/way-shelter-stack"
+      "art": "scenes/gemfall/way-shelter-stack",
+      "type": "story",
+      "narration": "At the way-shelter, a keeper named Brindle brings a board as big as a door. She helps settle the stones you hauled up the hill. The load is finally allowed to stop moving. The stones sit as still as eggs. Brindle taps the shelf twice, satisfied, and tucks a wrapped supper into your pack. \"From my own pot,\" she says. \"Do not tell the cat.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_evening",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "supper_bundle",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "scene_evening_cakes": {
       "type": "story",
@@ -2704,16 +2671,6 @@
   },
   "presentation": {
     "interactions": {
-      "interaction_shelter_stack": {
-        "props": [
-          "prop_stone_board"
-        ]
-      },
-      "interaction_stone_chain": {
-        "props": [
-          "prop_humming_stone"
-        ]
-      },
       "interaction_trickle": {
         "props": [
           "prop_red_stones"
@@ -2730,6 +2687,80 @@
           "prop_humming_stone"
         ]
       }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_stone_chain": {
+      "type": "interaction",
+      "narration": "The warden who dropped his pencil has found another one, and a plan. He lines everybody up along the road, and the runaway stones are to go hand to hand, away from the wheels, into his sacks. \"Pass them back and do not drop any!\" he calls. \"There is a little pay in it for the people in this line.\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the stone, then pass it down the line.",
+        "actionLabel": "Pass the stone",
+        "objectLabel": "A humming stone"
+      },
+      "onSuccess": {
+        "goto": "scene_road_gifts",
+        "narration": "The last stone drops into the last sack, and the warden writes a very tidy number in his ledger. He counts three coins into your hands. \"Honest work,\" he says, and then, quieter, \"I have never been so glad to be bored.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_road_gifts",
+        "narration": "One stone slips through and rolls off uphill to join its friends. The warden writes it down sadly. The rest are safe in the sacks, and the line cheers anyway."
+      },
+      "onAssisted": {
+        "goto": "scene_road_gifts",
+        "narration": "The warden joins the line himself, and together you pass the stones along without losing a single one. He counts three coins into your hands. \"Honest work,\" he says.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "art": "scenes/gemfall/stone-chain-road"
+    },
+    "interaction_shelter_stack": {
+      "type": "interaction",
+      "narration": "At the dragonling way-shelter, the keeper meets your pile at the gate. Her name is Brindle, and she is carrying a board as big as a door. \"Stack them on here, then carry the board up to the top shelf,\" she says. \"Level, mind. Stones hum louder when they tilt, and then nobody sleeps.\" She wants every one of them safe before the next shrug.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Everyone lift or lower your side until the stones sit level, then carry the board.",
+        "actionLabel": "Carry the board",
+        "objectLabel": "A board of humming stones"
+      },
+      "onSuccess": {
+        "goto": "scene_evening",
+        "narration": "The stones sit as still as eggs. Brindle taps the shelf twice, satisfied, and tucks a wrapped supper into your pack. \"From my own pot,\" she says. \"Do not tell the cat.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_evening",
+        "narration": "The board tips and the stones hum like angry bees. Brindle lays one hand on the loudest of them, and it quiets down at once, embarrassed. \"Wobbly day,\" she says. \"Up they go.\""
+      },
+      "onAssisted": {
+        "goto": "scene_evening",
+        "narration": "Brindle takes one corner of the board herself, and the stones sit as still as eggs. She tucks a wrapped supper into your pack. \"From my own pot,\" she says. \"Do not tell the cat.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/way-shelter-stack"
     }
   }
 }

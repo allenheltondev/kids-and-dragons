@@ -1,5 +1,8 @@
 # Gemfall play-design audit
 
+Pacing guidance superseded by the [Gemfall balance revision](../gemfall-balance-revision.md).
+Keep this inventory as history; game/mechanic quotas are no longer authoring requirements.
+
 Audited 2026-10-27 after Riftlight's deeper chapter passes, using
 [chapter-cohesion](../../../.claude/skills/chapter-cohesion/SKILL.md) and its
 [play-design reference](../../../.claude/skills/chapter-cohesion/references/play-design.md).

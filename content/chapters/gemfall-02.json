@@ -2335,46 +2335,29 @@
       ]
     },
     "interaction_egg_baskets": {
-      "type": "interaction",
-      "narration": "Neighbors arrive with baskets. Catch and pass the eggs down the line while the seller counts them out. The hen supervises every shell.",
       "cast": [
         {
           "figure": "entities/faun"
         }
       ],
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the basket, then pass it down the line.",
-        "actionLabel": "Pass the basket",
-        "objectLabel": "A basket of fresh eggs"
-      },
-      "onSuccess": {
-        "goto": "scene_jackalope_road",
-        "narration": "Not one egg cracks. The last basket reaches the faun dad at the back, and he is grinning from ear to ear. The egg faun tucks a wrapped supper into your pack. \"Bread, cheese and a bit of everything,\" she says. \"For the road.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "supper_bundle",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_jackalope_road",
-        "narration": "One egg rolls off the cart, and the hen catches it in her wing, which nobody knew she could do. \"Professional,\" says the egg faun. The line goes on."
-      },
-      "onAssisted": {
-        "goto": "scene_jackalope_road",
-        "narration": "The egg faun passes half the baskets herself, and between you not one egg cracks. She tucks a wrapped supper into your pack. \"Bread, cheese and a bit of everything,\" she says. \"For the road.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "supper_bundle",
-            "to": "party"
-          }
-        ]
-      },
-      "art": "scenes/gemfall/egg-stall-baskets"
+      "art": "scenes/gemfall/egg-stall-baskets",
+      "type": "story",
+      "narration": "The price is settled. You and the neighbors pass the baskets while the egg seller counts them out. The hen watches every shell, then steps off the chalk at last. Not one egg cracks. The last basket reaches the faun dad at the back, and he is grinning from ear to ear. The egg faun tucks a wrapped supper into your pack. \"Bread, cheese and a bit of everything,\" she says. \"For the road.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_jackalope_road",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "supper_bundle",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "interaction_jackalope_hats": {
       "type": "interaction",
@@ -2585,56 +2568,23 @@
       "art": "scenes/gemfall/ditch-plank-mimics"
     },
     "interaction_moth_bells": {
-      "type": "interaction",
-      "narration": "Straggler moths glow on the wagon bells in a pattern. Echo their lullaby. The cook waits with her ladle raised. She would like to go to bed too.",
       "cast": [
         {
           "figure": "entities/embermoth",
           "count": 3
         }
       ],
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the bells glow, then ring them back in order.",
-        "actionLabel": "Ring the bells",
-        "stepMs": 1300,
-        "options": [
-          {
-            "id": "little",
-            "label": "Little bell",
-            "icon": "glyph_bell_little"
-          },
-          {
-            "id": "big",
-            "label": "Big bell",
-            "icon": "glyph_bell_big"
-          },
-          {
-            "id": "brass",
-            "label": "Brass bell",
-            "icon": "glyph_bell_brass"
-          }
-        ],
-        "answer": [
-          "little",
-          "big",
-          "big",
-          "brass"
-        ]
-      },
-      "onSuccess": {
-        "goto": "choice_night_tremor",
-        "narration": "Ding, dong, dong, clang. The stragglers sigh in a glowing sort of way and tuck their wings in. The camp goes dark and cozy, and everybody falls asleep fast."
-      },
-      "onFailure": {
-        "goto": "choice_night_tremor",
-        "narration": "Ding, clang, dong. The moths flicker crossly, then give up and settle down anyway. The camp goes dark and cozy, and everybody falls asleep fast."
-      },
-      "onAssisted": {
-        "goto": "choice_night_tremor",
-        "narration": "The cook hums the lullaby under her breath, and you ring along. The stragglers sigh and tuck their wings in, and everybody falls asleep fast."
-      },
-      "art": "scenes/gemfall/moth-bell-wagons"
+      "art": "scenes/gemfall/moth-bell-wagons",
+      "type": "story",
+      "narration": "The cook hums while the last moths settle onto the wagon bells. You listen beside the fire. A little wing folds over the final clang. The stragglers tuck their wings in, and the whole camp grows dark and cozy.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "choice_night_tremor"
+        }
+      ]
     },
     "interaction_stuck_wagon": {
       "type": "interaction",
@@ -2892,6 +2842,279 @@
       ]
     },
     "interaction_hedge_request": {
+      "cast": [
+        {
+          "figure": "cast/pib",
+          "name": "Pib",
+          "size": "tiny"
+        }
+      ],
+      "art": "scenes/gemfall/hedge-knit-gate",
+      "type": "choice_point",
+      "narration": "Pib makes a quiet space by the hedge. Each hero asks to come in, says why you are traveling, or offers to help. The hedge waits for the whole answer. One leaf leans closer than the others.",
+      "choices": [
+        {
+          "id": "ask",
+          "label": "Ask to come in",
+          "icon": "heart",
+          "goto": "interaction_hedge_request_response_ask"
+        },
+        {
+          "id": "reason",
+          "label": "Explain why I am traveling",
+          "icon": "map",
+          "goto": "interaction_hedge_request_response_reason"
+        },
+        {
+          "id": "help",
+          "label": "Offer Pib some help",
+          "icon": "hand",
+          "goto": "interaction_hedge_request_response_help"
+        }
+      ]
+    },
+    "interaction_hedge_request_response_ask": {
+      "type": "story",
+      "narration": "Your request gets a thoughtful rustle. Pib repeats your request gently. The hedge opens a path at your height.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "choice_pib_gift",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "let_in_properly",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pib",
+          "name": "Pib",
+          "size": "tiny"
+        }
+      ],
+      "art": "scenes/gemfall/hedge-knit-gate"
+    },
+    "interaction_hedge_request_response_reason": {
+      "type": "story",
+      "narration": "The hedge listens without interrupting your answer. Pib repeats your request gently. The hedge opens a path at your height.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "choice_pib_gift",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "let_in_properly",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pib",
+          "name": "Pib",
+          "size": "tiny"
+        }
+      ],
+      "art": "scenes/gemfall/hedge-knit-gate"
+    },
+    "interaction_hedge_request_response_help": {
+      "type": "story",
+      "narration": "Pib names a small job, and the listening leaf leans closer. Pib helps you ask one part at a time. Together you find words the hedge will listen to.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "choice_pib_gift",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "let_in_properly",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/pib",
+          "name": "Pib",
+          "size": "tiny"
+        }
+      ],
+      "art": "scenes/gemfall/hedge-knit-gate"
+    }
+  },
+  "voiceGuide": {
+    "tone": "warm green farm country with something wrong at the edges; funny, kind, a little uneasy, never scary",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "wolves hurting anyone badly",
+      "explaining why the embermoths are flying the wrong way",
+      "naming a sheeple, or showing fewer than three"
+    ],
+    "npcVoices": {
+      "hob": "Hob Thistledown, a faun field foreman; warm and half-singing, turns every answer into an anecdote, waves his hat a lot",
+      "sprites": "harvest sprites; tiny, earnest, over-explaining, very serious about guard duty and award ceremonies, heartbroken by a refusal for about four seconds",
+      "pib": "a bramble sprite the size of a teapot who keeps the hedges; earnest, narrates their own maintenance, offers you things you did not ask for, cannot open the hedges for anyone who has not asked properly",
+      "marda": "Marda Thorn, a gray-dappled centaur innkeeper; unhurried, asks one question and waits for the whole answer, never repeats herself",
+      "drover": "a grumpy rush-caravan drover in a hurry who is, underneath, fond of her dinner",
+      "sheeple": "a flock of sheeple, never fewer than three and never named; warm, agreeable, and in chorus, checks with the others first (\"What do we think?\"), answers in three voices slightly out of step, finishes each other's sentences, skittish but never silly",
+      "flute_faun": "the faun with the irrigation flute; startled, whispery, generous to anyone polite",
+      "egg_faun": "a faun egg-seller at the crossroads; laughs easily, cannot do sums, fierce about neighbors paying neighbor prices",
+      "cook": "the caravan cook; only ever talks in her sleep, about gravy",
+      "ferrier": "a frogfolk ferrier with reeds in her hat; slow, storytelling, fond of the marsh and politely firm about rude passengers",
+      "relay_runner": "a muddy centaur relay runner; talks fast, plain, practical, has seen the whole road east"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_stuck_wagon": {
+        "props": [
+          "prop_rope_pole"
+        ]
+      },
+      "interaction_jackalope_hats": {
+        "props": [],
+        "coverIcons": [
+          "prop_straw_hat",
+          "prop_straw_hat",
+          "prop_straw_hat"
+        ]
+      },
+      "interaction_egg_prices": {
+        "props": [
+          "prop_letters"
+        ]
+      },
+      "interaction_bridge_load": {
+        "props": [
+          "prop_plank"
+        ]
+      },
+      "interaction_hay_line": {
+        "props": [
+          "relay-hay"
+        ]
+      },
+      "interaction_hedge_brace": {
+        "props": [
+          "prop_plank"
+        ]
+      }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_egg_baskets": {
+      "type": "interaction",
+      "narration": "Neighbors arrive with baskets. Catch and pass the eggs down the line while the seller counts them out. The hen supervises every shell.",
+      "cast": [
+        {
+          "figure": "entities/faun"
+        }
+      ],
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the basket, then pass it down the line.",
+        "actionLabel": "Pass the basket",
+        "objectLabel": "A basket of fresh eggs"
+      },
+      "onSuccess": {
+        "goto": "scene_jackalope_road",
+        "narration": "Not one egg cracks. The last basket reaches the faun dad at the back, and he is grinning from ear to ear. The egg faun tucks a wrapped supper into your pack. \"Bread, cheese and a bit of everything,\" she says. \"For the road.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_jackalope_road",
+        "narration": "One egg rolls off the cart, and the hen catches it in her wing, which nobody knew she could do. \"Professional,\" says the egg faun. The line goes on."
+      },
+      "onAssisted": {
+        "goto": "scene_jackalope_road",
+        "narration": "The egg faun passes half the baskets herself, and between you not one egg cracks. She tucks a wrapped supper into your pack. \"Bread, cheese and a bit of everything,\" she says. \"For the road.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "art": "scenes/gemfall/egg-stall-baskets"
+    },
+    "interaction_moth_bells": {
+      "type": "interaction",
+      "narration": "Straggler moths glow on the wagon bells in a pattern. Echo their lullaby. The cook waits with her ladle raised. She would like to go to bed too.",
+      "cast": [
+        {
+          "figure": "entities/embermoth",
+          "count": 3
+        }
+      ],
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the bells glow, then ring them back in order.",
+        "actionLabel": "Ring the bells",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "little",
+            "label": "Little bell",
+            "icon": "glyph_bell_little"
+          },
+          {
+            "id": "big",
+            "label": "Big bell",
+            "icon": "glyph_bell_big"
+          },
+          {
+            "id": "brass",
+            "label": "Brass bell",
+            "icon": "glyph_bell_brass"
+          }
+        ],
+        "answer": [
+          "little",
+          "big",
+          "big",
+          "brass"
+        ]
+      },
+      "onSuccess": {
+        "goto": "choice_night_tremor",
+        "narration": "Ding, dong, dong, clang. The stragglers sigh in a glowing sort of way and tuck their wings in. The camp goes dark and cozy, and everybody falls asleep fast."
+      },
+      "onFailure": {
+        "goto": "choice_night_tremor",
+        "narration": "Ding, clang, dong. The moths flicker crossly, then give up and settle down anyway. The camp goes dark and cozy, and everybody falls asleep fast."
+      },
+      "onAssisted": {
+        "goto": "choice_night_tremor",
+        "narration": "The cook hums the lullaby under her breath, and you ring along. The stragglers sigh and tuck their wings in, and everybody falls asleep fast."
+      },
+      "art": "scenes/gemfall/moth-bell-wagons"
+    },
+    "interaction_hedge_request": {
       "type": "interaction",
       "narration": "Pib makes a quiet space by the hedge. Each hero asks to come in, says why you are traveling, or offers to help. The hedge waits for the whole answer. One leaf leans closer than the others.",
       "interaction": {
@@ -2954,80 +3177,6 @@
           "size": "tiny"
         }
       ]
-    }
-  },
-  "voiceGuide": {
-    "tone": "warm green farm country with something wrong at the edges; funny, kind, a little uneasy, never scary",
-    "vocabulary": "age-8",
-    "forbidden": [
-      "death",
-      "blood",
-      "permanent loss",
-      "weapons that wound",
-      "anyone being left behind",
-      "wolves hurting anyone badly",
-      "explaining why the embermoths are flying the wrong way",
-      "naming a sheeple, or showing fewer than three"
-    ],
-    "npcVoices": {
-      "hob": "Hob Thistledown, a faun field foreman; warm and half-singing, turns every answer into an anecdote, waves his hat a lot",
-      "sprites": "harvest sprites; tiny, earnest, over-explaining, very serious about guard duty and award ceremonies, heartbroken by a refusal for about four seconds",
-      "pib": "a bramble sprite the size of a teapot who keeps the hedges; earnest, narrates their own maintenance, offers you things you did not ask for, cannot open the hedges for anyone who has not asked properly",
-      "marda": "Marda Thorn, a gray-dappled centaur innkeeper; unhurried, asks one question and waits for the whole answer, never repeats herself",
-      "drover": "a grumpy rush-caravan drover in a hurry who is, underneath, fond of her dinner",
-      "sheeple": "a flock of sheeple, never fewer than three and never named; warm, agreeable, and in chorus, checks with the others first (\"What do we think?\"), answers in three voices slightly out of step, finishes each other's sentences, skittish but never silly",
-      "flute_faun": "the faun with the irrigation flute; startled, whispery, generous to anyone polite",
-      "egg_faun": "a faun egg-seller at the crossroads; laughs easily, cannot do sums, fierce about neighbors paying neighbor prices",
-      "cook": "the caravan cook; only ever talks in her sleep, about gravy",
-      "ferrier": "a frogfolk ferrier with reeds in her hat; slow, storytelling, fond of the marsh and politely firm about rude passengers",
-      "relay_runner": "a muddy centaur relay runner; talks fast, plain, practical, has seen the whole road east"
-    }
-  },
-  "presentation": {
-    "interactions": {
-      "interaction_stuck_wagon": {
-        "props": [
-          "prop_rope_pole"
-        ]
-      },
-      "interaction_egg_baskets": {
-        "props": [
-          "prop_egg_basket"
-        ]
-      },
-      "interaction_jackalope_hats": {
-        "props": [],
-        "coverIcons": [
-          "prop_straw_hat",
-          "prop_straw_hat",
-          "prop_straw_hat"
-        ]
-      },
-      "interaction_egg_prices": {
-        "props": [
-          "prop_letters"
-        ]
-      },
-      "interaction_bridge_load": {
-        "props": [
-          "prop_plank"
-        ]
-      },
-      "interaction_hay_line": {
-        "props": [
-          "relay-hay"
-        ]
-      },
-      "interaction_hedge_brace": {
-        "props": [
-          "prop_plank"
-        ]
-      },
-      "interaction_hedge_request": {
-        "props": [
-          "prop_fern"
-        ]
-      }
     }
   }
 }

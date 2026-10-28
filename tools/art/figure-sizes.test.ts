@@ -28,9 +28,8 @@ describe("figure sizes (#362)", () => {
     const cast = Object.values(chapter.scenes).flatMap((scene) => scene.type === "encounter" ? [] : scene.cast ?? []);
     expect(cast.some((member) => member.figure === "entities/legend_dragon")).toBe(false);
     const keeper = cast.filter((member) => member.figure === "cast/seal_keeper");
-    // The 82 shipped appearances plus five finale activities: verdict,
-    // carried/empty-handed restoration, latch and prepared handover.
-    expect(keeper).toHaveLength(87);
+    // The three ordinary verdict replies keep the commissioned figure visible.
+    expect(keeper).toHaveLength(90);
     expect(keeper.every((member) => member.name === "Seal-Keeper")).toBe(true);
   });
 

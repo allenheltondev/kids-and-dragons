@@ -1876,45 +1876,29 @@
       ]
     },
     "interaction_pry_bars": {
-      "type": "interaction",
-      "narration": "Prospectors hand over pry bars at the stones. Pass them up the slope to the grandmothers' wall. A grandmother has left room for the huge one. She is an optimist.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the pry bar, then pass it up the line.",
-        "actionLabel": "Pass the pry bar",
-        "objectLabel": "A heavy iron pry bar"
-      },
-      "onSuccess": {
-        "goto": "scene_tallies",
-        "narration": "The last pry bar reaches the wall with a clunk, and the grandmother hangs it up, very pleased. \"Wall-hanging rate,\" she says, and counts three coins into your hands. \"Honest work, honestly paid.\"",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_tallies",
-        "narration": "One pry bar slips, and a prospector catches it with his boot. \"Ow,\" he says, bravely. The line laughs, and the pry bars go on up the hill."
-      },
-      "onAssisted": {
-        "goto": "scene_tallies",
-        "narration": "The grandmother takes the heavy end herself, and together you pass the pry bars up the slope without a single clunk. She counts three coins into your hands. \"Wall-hanging rate,\" she says.",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
         }
       ],
-      "art": "scenes/gemfall/pry-bar-wall"
+      "art": "scenes/gemfall/pry-bar-wall",
+      "type": "story",
+      "narration": "You and the prospectors carry the pry bars up to the grandmothers' wall. A grandmother makes room for the enormous one. \"Nobody uses that near my stones,\" she says, hanging it safely out of reach. The last pry bar reaches the wall with a clunk, and the grandmother hangs it up, very pleased. \"Wall-hanging rate,\" she says, and counts three coins into your hands. \"Honest work, honestly paid.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_tallies",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ]
     },
     "interaction_bell_cart": {
       "type": "interaction",
@@ -2064,108 +2048,59 @@
       "art": "scenes/gemfall/bell-house-supper"
     },
     "interaction_bell_tuck": {
-      "type": "interaction",
-      "narration": "Help tuck the bells in with soft cloths so they will not ring in the night. \"Company helps,\" says Ashby. A little bell gives a sleepy ting before you reach it.",
-      "interaction": {
-        "kind": "play",
-        "participation": "everyone",
-        "cue": "Tuck the bells in for the night, any way you like.",
-        "actionLabel": "Tuck in the bells",
-        "options": [
-          {
-            "id": "cloth",
-            "label": "Drape a cloth over a bell",
-            "icon": "play_bell_cloth",
-            "reaction": "The bell settles with a very small, sleepy tink."
-          },
-          {
-            "id": "hum",
-            "label": "Hum a bell lullaby",
-            "icon": "play_bell_lullaby",
-            "reaction": "Every bell on the rafters hums along, softly."
-          },
-          {
-            "id": "polish",
-            "label": "Give one a last polish",
-            "icon": "play_bell_polish",
-            "reaction": "The bell shines, and you can see your sleepy face in it."
-          }
-        ],
-        "stages": [
-          "A few bells go quiet.",
-          "Most of the bells are tucked in.",
-          "The whole bell house is hushed."
-        ]
-      },
-      "onSuccess": {
-        "goto": "rest_bell_house",
-        "narration": "The last bell goes quiet, and the whole bell house breathes out. A grandmother tucks a bundle of leftover bread into your pack. \"Breakfast,\" she whispers. \"Bells sleep better when guests are fed.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "supper_bundle",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "rest_bell_house",
-        "narration": "One small bell goes ting at the very last second. Forty grandmothers say shhh at once, and then they all giggle, and the bell house settles down for the night anyway."
-      },
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
           "name": "Great-Gran Ashby"
         }
       ],
-      "art": "scenes/gemfall/bell-house-tuck-in"
+      "art": "scenes/gemfall/bell-house-tuck-in",
+      "type": "story",
+      "narration": "You help Ashby wrap the bells in their soft cloths. One gives a tiny ting, and the grandmothers answer with a soft shhh. Then even the smallest bell is quiet. The last bell goes quiet, and the whole bell house breathes out. A grandmother tucks a bundle of leftover bread into your pack. \"Breakfast,\" she whispers. \"Bells sleep better when guests are fed.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_bell_house",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "supper_bundle",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "interaction_gear_inventory": {
-      "type": "interaction",
-      "narration": "Lay out what your hero carries and say what each thing is for. The grandmother checks beside you. One sock has been mistaken for a digging tool. It is a particularly stiff sock.",
-      "interaction": {
-        "kind": "play",
-        "cue": "Each hero names a real item and explains its use.",
-        "actionLabel": "Finish the inspection",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "show",
-            "label": "Show what I carry",
-            "icon": "hand",
-            "reaction": "The grandmother checks the things you show against her tally."
-          },
-          {
-            "id": "use",
-            "label": "Explain what my gear is for",
-            "icon": "scroll",
-            "reaction": "She writes the uses beside the gear. The sock receives a question mark."
-          },
-          {
-            "id": "check",
-            "label": "Ask her to check with me",
-            "icon": "eye",
-            "reaction": "She helps check one pocket at a time, leaving room for your answer."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_gate_town",
-        "narration": "The grandmother finishes checking the packs. She records your actual gear and waves you through."
-      },
-      "onFailure": {
-        "goto": "scene_gate_town",
-        "narration": "You lay it all out, but your packs are still ringing like a shop door. The grandmother inspects everything anyway, including your socks, and writes PROBABLY HONEST in the tally book. Then she hugs you, because that is what grandmothers do after an inspection."
-      },
-      "onAssisted": {
-        "goto": "scene_gate_town",
-        "narration": "The grandmother helps name the gear, then records what you showed. The inspection is complete."
-      },
-      "art": "scenes/gemfall/bell-cart-stones",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
           "name": "Grandmother"
+        }
+      ],
+      "art": "scenes/gemfall/bell-cart-stones",
+      "type": "choice_point",
+      "narration": "Lay out what your hero carries and say what each thing is for. The grandmother checks beside you. One sock has been mistaken for a digging tool. It is a particularly stiff sock.",
+      "choices": [
+        {
+          "id": "show",
+          "label": "Show what I carry",
+          "icon": "hand",
+          "goto": "interaction_gear_inventory_response_show"
+        },
+        {
+          "id": "use",
+          "label": "Explain what my gear is for",
+          "icon": "scroll",
+          "goto": "interaction_gear_inventory_response_use"
+        },
+        {
+          "id": "check",
+          "label": "Ask her to check with me",
+          "icon": "eye",
+          "goto": "interaction_gear_inventory_response_check"
         }
       ]
     },
@@ -2464,6 +2399,362 @@
       ]
     },
     "interaction_crowd_account": {
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "art": "scenes/gemfall/bell-cart-stones",
+      "type": "choice_point",
+      "narration": "The grandmothers make a place beside the cart for your account. Each hero shares something witnessed here, or asks for one of the tallies to be read. You do not have to outshout the feathered hat. The hat is running out of breath.",
+      "choices": [
+        {
+          "id": "moths",
+          "label": "Describe the moths we saw leaving",
+          "icon": "wing",
+          "goto": "interaction_crowd_account_response_moths"
+        },
+        {
+          "id": "tallies",
+          "label": "Ask Ashby to read the changed tallies",
+          "icon": "scroll",
+          "goto": "interaction_crowd_account_response_tallies"
+        },
+        {
+          "id": "rule",
+          "label": "Explain the boundary rule in my own words",
+          "icon": "hand",
+          "goto": "interaction_crowd_account_response_rule"
+        }
+      ]
+    },
+    "interaction_gear_inventory_response_show": {
+      "type": "story",
+      "narration": "The grandmother checks the things you show against her tally. The grandmother finishes checking the packs. She records your actual gear and waves you through.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_gate_town"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "art": "scenes/gemfall/bell-cart-stones"
+    },
+    "interaction_gear_inventory_response_use": {
+      "type": "story",
+      "narration": "She writes the uses beside the gear. The sock receives a question mark. The grandmother finishes checking the packs. She records your actual gear and waves you through.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_gate_town"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "art": "scenes/gemfall/bell-cart-stones"
+    },
+    "interaction_gear_inventory_response_check": {
+      "type": "story",
+      "narration": "She helps check one pocket at a time, leaving room for your answer. The grandmother helps name the gear, then records what you showed. The inspection is complete.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_gate_town"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "art": "scenes/gemfall/bell-cart-stones"
+    },
+    "interaction_crowd_account_response_moths": {
+      "type": "story",
+      "narration": "Your account of the southbound moths gives the waiting people something to listen to. The grandmothers repeat your account down the line. The crowd listens, and the pushing stops.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_centaur_whisper"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "art": "scenes/gemfall/bell-cart-stones"
+    },
+    "interaction_crowd_account_response_tallies": {
+      "type": "story",
+      "narration": "Ashby reads the broken pattern aloud. The feathered hat stops to hear the numbers. The grandmothers repeat your account down the line. The crowd listens, and the pushing stops.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_centaur_whisper"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "art": "scenes/gemfall/bell-cart-stones"
+    },
+    "interaction_crowd_account_response_rule": {
+      "type": "story",
+      "narration": "You explain what is freely dropped and what must stay held. A listener lowers a digging tool. The grandmothers repeat your account down the line. The crowd listens, and the pushing stops.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_centaur_whisper"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "art": "scenes/gemfall/bell-cart-stones"
+    }
+  },
+  "voiceGuide": {
+    "tone": "warm, loud dragonling home country under a worried sky; grandmothers in charge, bells everywhere, a little spooky about the unrung bell, never scary",
+    "vocabulary": "age-8",
+    "forbidden": [
+      "death",
+      "blood",
+      "permanent loss",
+      "weapons that wound",
+      "anyone being left behind",
+      "what the unrung bell means",
+      "what lies under the mountain"
+    ],
+    "npcVoices": {
+      "great_gran_ashby": "the oldest dragonling grandmother; brisk, tender, unarguable, taps things with her walking stick",
+      "grandmother": "a gate-town grandmother; spectacles on a chain, counts everything, hugs first and inspects later",
+      "small_dragonling": "a bell-code expert aged about six; talks at top speed until the unrung bell comes up",
+      "prospector": "a stubborn rush prospector with a pry bar; says 'right, right' and doesn't listen until he does",
+      "perrin": "Perrin Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument",
+      "wend": "a Deep Hollow ladler from the north road; gentle, generous, remembers every name, certain the world can be fixed at the root",
+      "sergeant_holloway": "a Skywarden supply sergeant from the north road; rigid, honest, calls everything 'arithmetic', writes everything down",
+      "feathered_hat": "a loud prospector on a cart; blustering, sure the stones are just old rocks, quiet once he really listens"
+    }
+  },
+  "presentation": {
+    "interactions": {
+      "interaction_bell_cart": {
+        "props": [
+          "prop_wagon_wheel_rut"
+        ]
+      },
+      "interaction_one_rule": {
+        "props": [
+          "prop_pry_bar"
+        ]
+      },
+      "interaction_crab_warning": {
+        "props": [
+          "prop_letters"
+        ]
+      },
+      "interaction_kept_stone": {
+        "props": [
+          "prop_humming_stone"
+        ]
+      },
+      "interaction_dawn_rope": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "interaction_crowd_bell_line": {
+        "props": [
+          "prop_hand_bell"
+        ]
+      },
+      "interaction_crowd_hand_bells": {
+        "props": [
+          "prop_hand_bell"
+        ]
+      }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_pry_bars": {
+      "type": "interaction",
+      "narration": "Prospectors hand over pry bars at the stones. Pass them up the slope to the grandmothers' wall. A grandmother has left room for the huge one. She is an optimist.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the pry bar, then pass it up the line.",
+        "actionLabel": "Pass the pry bar",
+        "objectLabel": "A heavy iron pry bar"
+      },
+      "onSuccess": {
+        "goto": "scene_tallies",
+        "narration": "The last pry bar reaches the wall with a clunk, and the grandmother hangs it up, very pleased. \"Wall-hanging rate,\" she says, and counts three coins into your hands. \"Honest work, honestly paid.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_tallies",
+        "narration": "One pry bar slips, and a prospector catches it with his boot. \"Ow,\" he says, bravely. The line laughs, and the pry bars go on up the hill."
+      },
+      "onAssisted": {
+        "goto": "scene_tallies",
+        "narration": "The grandmother takes the heavy end herself, and together you pass the pry bars up the slope without a single clunk. She counts three coins into your hands. \"Wall-hanging rate,\" she says.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "art": "scenes/gemfall/pry-bar-wall"
+    },
+    "interaction_bell_tuck": {
+      "type": "interaction",
+      "narration": "Help tuck the bells in with soft cloths so they will not ring in the night. \"Company helps,\" says Ashby. A little bell gives a sleepy ting before you reach it.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Tuck the bells in for the night, any way you like.",
+        "actionLabel": "Tuck in the bells",
+        "options": [
+          {
+            "id": "cloth",
+            "label": "Drape a cloth over a bell",
+            "icon": "play_bell_cloth",
+            "reaction": "The bell settles with a very small, sleepy tink."
+          },
+          {
+            "id": "hum",
+            "label": "Hum a bell lullaby",
+            "icon": "play_bell_lullaby",
+            "reaction": "Every bell on the rafters hums along, softly."
+          },
+          {
+            "id": "polish",
+            "label": "Give one a last polish",
+            "icon": "play_bell_polish",
+            "reaction": "The bell shines, and you can see your sleepy face in it."
+          }
+        ],
+        "stages": [
+          "A few bells go quiet.",
+          "Most of the bells are tucked in.",
+          "The whole bell house is hushed."
+        ]
+      },
+      "onSuccess": {
+        "goto": "rest_bell_house",
+        "narration": "The last bell goes quiet, and the whole bell house breathes out. A grandmother tucks a bundle of leftover bread into your pack. \"Breakfast,\" she whispers. \"Bells sleep better when guests are fed.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_bell_house",
+        "narration": "One small bell goes ting at the very last second. Forty grandmothers say shhh at once, and then they all giggle, and the bell house settles down for the night anyway."
+      },
+      "cast": [
+        {
+          "figure": "cast/great_gran_ashby",
+          "name": "Great-Gran Ashby"
+        }
+      ],
+      "art": "scenes/gemfall/bell-house-tuck-in"
+    },
+    "interaction_gear_inventory": {
+      "type": "interaction",
+      "narration": "Lay out what your hero carries and say what each thing is for. The grandmother checks beside you. One sock has been mistaken for a digging tool. It is a particularly stiff sock.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Each hero names a real item and explains its use.",
+        "actionLabel": "Finish the inspection",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "show",
+            "label": "Show what I carry",
+            "icon": "hand",
+            "reaction": "The grandmother checks the things you show against her tally."
+          },
+          {
+            "id": "use",
+            "label": "Explain what my gear is for",
+            "icon": "scroll",
+            "reaction": "She writes the uses beside the gear. The sock receives a question mark."
+          },
+          {
+            "id": "check",
+            "label": "Ask her to check with me",
+            "icon": "eye",
+            "reaction": "She helps check one pocket at a time, leaving room for your answer."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_gate_town",
+        "narration": "The grandmother finishes checking the packs. She records your actual gear and waves you through."
+      },
+      "onFailure": {
+        "goto": "scene_gate_town",
+        "narration": "You lay it all out, but your packs are still ringing like a shop door. The grandmother inspects everything anyway, including your socks, and writes PROBABLY HONEST in the tally book. Then she hugs you, because that is what grandmothers do after an inspection."
+      },
+      "onAssisted": {
+        "goto": "scene_gate_town",
+        "narration": "The grandmother helps name the gear, then records what you showed. The inspection is complete."
+      },
+      "art": "scenes/gemfall/bell-cart-stones",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ]
+    },
+    "interaction_crowd_account": {
       "type": "interaction",
       "narration": "The grandmothers make a place beside the cart for your account. Each hero shares something witnessed here, or asks for one of the tallies to be read. You do not have to outshout the feathered hat. The hat is running out of breath.",
       "interaction": {
@@ -2511,83 +2802,6 @@
           "name": "Grandmother"
         }
       ]
-    }
-  },
-  "voiceGuide": {
-    "tone": "warm, loud dragonling home country under a worried sky; grandmothers in charge, bells everywhere, a little spooky about the unrung bell, never scary",
-    "vocabulary": "age-8",
-    "forbidden": [
-      "death",
-      "blood",
-      "permanent loss",
-      "weapons that wound",
-      "anyone being left behind",
-      "what the unrung bell means",
-      "what lies under the mountain"
-    ],
-    "npcVoices": {
-      "great_gran_ashby": "the oldest dragonling grandmother; brisk, tender, unarguable, taps things with her walking stick",
-      "grandmother": "a gate-town grandmother; spectacles on a chain, counts everything, hugs first and inspects later",
-      "small_dragonling": "a bell-code expert aged about six; talks at top speed until the unrung bell comes up",
-      "prospector": "a stubborn rush prospector with a pry bar; says 'right, right' and doesn't listen until he does",
-      "perrin": "Perrin Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument",
-      "wend": "a Deep Hollow ladler from the north road; gentle, generous, remembers every name, certain the world can be fixed at the root",
-      "sergeant_holloway": "a Skywarden supply sergeant from the north road; rigid, honest, calls everything 'arithmetic', writes everything down",
-      "feathered_hat": "a loud prospector on a cart; blustering, sure the stones are just old rocks, quiet once he really listens"
-    }
-  },
-  "presentation": {
-    "interactions": {
-      "interaction_bell_cart": {
-        "props": [
-          "prop_wagon_wheel_rut"
-        ]
-      },
-      "interaction_pry_bars": {
-        "props": [
-          "prop_pry_bar"
-        ]
-      },
-      "interaction_gear_inventory": {
-        "props": [
-          "prop_letters"
-        ]
-      },
-      "interaction_one_rule": {
-        "props": [
-          "prop_pry_bar"
-        ]
-      },
-      "interaction_crab_warning": {
-        "props": [
-          "prop_letters"
-        ]
-      },
-      "interaction_kept_stone": {
-        "props": [
-          "prop_humming_stone"
-        ]
-      },
-      "interaction_dawn_rope": {
-        "props": [
-          "rope-loop"
-        ]
-      },
-      "interaction_crowd_bell_line": {
-        "props": [
-          "prop_hand_bell"
-        ]
-      },
-      "interaction_crowd_hand_bells": {
-        "props": [
-          "prop_hand_bell"
-        ]
-      },
-      "interaction_crowd_account": {
-        "props": [
-          "prop_letters"
-        ]
-      }
     }
   }
 }

@@ -9,21 +9,6 @@
   "xpAward": 100,
   "presentation": {
     "interactions": {
-      "interaction_lantern_pole": {
-        "props": [
-          "prop_rope_pole"
-        ]
-      },
-      "interaction_jars": {
-        "props": [
-          "prop_jar_tray"
-        ]
-      },
-      "interaction_quay_line": {
-        "props": [
-          "prop_pear_crate"
-        ]
-      },
       "interaction_letters": {
         "props": [
           "prop_letters"
@@ -42,11 +27,6 @@
       "interaction_checked_mail": {
         "props": [
           "prop_letters"
-        ]
-      },
-      "interaction_inn_account": {
-        "props": [
-          "prop_tea_mug"
         ]
       },
       "interaction_crew_introduction": {
@@ -2697,27 +2677,17 @@
       ]
     },
     "interaction_quay_line": {
-      "type": "interaction",
-      "narration": "A gap opens in the dockhands' pear-crate line. Catch and pass the crates along the quay. \"Every pair of hands helps!\" calls the dockmaster. His hat is sliding over his eyes.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the crate, then pass it down the line.",
-        "actionLabel": "Pass the crate",
-        "objectLabel": "A crate of pears"
-      },
-      "onSuccess": {
-        "goto": "scene_docks",
-        "narration": "Not one pear drops. The last crate reaches the top of the quay, and the dockmaster tips his hat so far forward it falls off. You each get a pear for the walk to the docks, and it is the best pear in the Exchange, which is saying something this week."
-      },
-      "onFailure": {
-        "goto": "scene_docks",
-        "narration": "One crate slips, and a pear rolls all the way down the quay with a dockhand running after it. Everybody cheers when he catches it. You each get a slightly bruised pear for the walk to the docks."
-      },
-      "onAssisted": {
-        "goto": "scene_docks",
-        "narration": "The dockmaster joins the gap in the line himself, and the crates go by smooth as a river. You each get a pear for the walk to the docks."
-      },
-      "art": "scenes/gemfall/exchange-docks"
+      "art": "scenes/gemfall/exchange-docks",
+      "type": "story",
+      "narration": "With the family's bags delivered, you join the dockhands for the last pear crates. The dockmaster fills the other gap in the line, using his hat to point when his hands are full. Not one pear drops. The last crate reaches the top of the quay, and the dockmaster tips his hat so far forward it falls off. You each get a pear for the walk to the docks, and it is the best pear in the Exchange, which is saying something this week.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_docks"
+        }
+      ]
     },
     "interaction_letters": {
       "type": "interaction",
@@ -2745,55 +2715,25 @@
       "art": "scenes/gemfall/exchange-docks"
     },
     "interaction_jars": {
-      "type": "interaction",
-      "narration": "Mrs. Tuft loads a tray of jars for the Outfitters' Steps. Keep it level. One jar contains pickles; it would not mind a swim. The others would.",
-      "interaction": {
-        "kind": "balance",
-        "cue": "Everyone lift or lower your side until the jars sit level, then carry the tray.",
-        "actionLabel": "Carry the tray",
-        "objectLabel": "A tray of wobbling jars"
-      },
-      "onSuccess": {
-        "goto": "scene_market",
-        "narration": "Not a jar clinks. Mrs. Tuft counts them twice, finds every one, and writes a small tick in the air with her pencil. \"Good hands,\" she says, which from a grocer is a lot. You carry the tray to the top of the steps."
-      },
-      "onFailure": {
-        "goto": "scene_market",
-        "narration": "The jars clink, tilt and slide, and one of them goes for a swim. Mrs. Tuft fishes it out with a net. \"It was the pickled kind,\" she says. \"It will not mind.\" You carry the rest of the tray to the top of the steps."
-      },
-      "onAssisted": {
-        "goto": "scene_market",
-        "narration": "Mrs. Tuft grabs one corner of the tray, and the jars settle at once. You carry it to the top of the steps together."
-      },
       "cast": [
         {
           "figure": "cast/mrs_tuft",
           "name": "Mrs. Tuft"
         }
       ],
-      "art": "scenes/gemfall/exchange-quay"
+      "art": "scenes/gemfall/exchange-quay",
+      "type": "story",
+      "narration": "Mrs. Tuft carries the tray beside you up the Outfitters' Steps. The pickle jar rattles at every step. She tells it sternly that the canal is not a shortcut. At the top she counts every jar and writes a tick in the air. \"Good hands,\" she says, which from a grocer is a lot.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_market"
+        }
+      ]
     },
     "interaction_lantern_pole": {
-      "type": "interaction",
-      "narration": "The lantern pole catches a washing line. Hold it steady while someone unhooks it. Long underwear flaps overhead. Hesper hopes it is not the new caravan flag.",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends hold the pole steady while someone unhooks the washing line.",
-        "actionLabel": "Unhook the line",
-        "supportLabel": "Steady the pole"
-      },
-      "onSuccess": {
-        "goto": "scene_north_gate",
-        "narration": "Click. The line comes free, and the long underwear floats down onto a very surprised goat. Not a lantern swings. Hesper nods once, and the wagons roll on to the North Gate."
-      },
-      "onFailure": {
-        "goto": "scene_north_gate",
-        "narration": "The pole sways, the lanterns chime like bells, and the long underwear comes down on Hesper's head. She wears it with great dignity all the way to the North Gate."
-      },
-      "onAssisted": {
-        "goto": "scene_north_gate",
-        "narration": "Hesper holds the pole steady herself and the line comes free. Not a lantern swings, and the wagons roll on to the North Gate."
-      },
       "cast": [
         {
           "figure": "cast/hesper",
@@ -2801,7 +2741,17 @@
           "size": "large"
         }
       ],
-      "art": "scenes/gemfall/caravan-yard"
+      "art": "scenes/gemfall/caravan-yard",
+      "type": "story",
+      "narration": "You stop the lantern pole while Hesper frees the washing line. The wagons wait. Long underwear floats onto a goat, which now looks like a very small caravan ghost. Hesper lifts the last peg from the hook, nods once, and sends the wagons on to the North Gate.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_north_gate"
+        }
+      ]
     },
     "scene_quay_wisps": {
       "type": "story",
@@ -3042,51 +2992,33 @@
       "art": "scenes/gemfall/exchange-griffin-post"
     },
     "interaction_inn_account": {
-      "type": "interaction",
-      "narration": "Flint makes room beside the hearth. Each hero tells a little of the red night, or adds a sound to the story. Take your time. Flint has put his nightcap over the bidding bell.",
-      "interaction": {
-        "kind": "play",
-        "cue": "Each hero adds a memory or a sound from the red night.",
-        "actionLabel": "Finish the shared story",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "sky",
-            "label": "Describe the red sky",
-            "icon": "spark",
-            "reaction": "Your part of the sky joins the story. Flint stops counting offers."
-          },
-          {
-            "id": "city",
-            "label": "Tell what the city did",
-            "icon": "map",
-            "reaction": "Your memory of the city gets a nod from someone who was there."
-          },
-          {
-            "id": "sound",
-            "label": "Add a gull or harbor sound",
-            "icon": "note",
-            "reaction": "The room answers your sound with another. Flint laughs into his dishcloth."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "rest_empty_chair",
-        "narration": "Flint thanks you for the story and gives you a warm place for the night."
-      },
-      "onFailure": {
-        "goto": "rest_empty_chair",
-        "narration": "Your story wanders off somewhere around the fish and never quite comes back. The prospectors laugh so kindly that Flint gives the cupboard to someone else and you the hayloft above the mules, which is warm, smells of apples, and is honestly nicer."
-      },
-      "onAssisted": {
-        "goto": "rest_empty_chair",
-        "narration": "Flint helps keep the story in order while you add your parts. He finds you a warm place for the night."
-      },
-      "art": "scenes/gemfall/empty-chair-tavern",
       "cast": [
         {
           "figure": "cast/innkeeper_flint",
           "name": "Innkeeper Flint"
+        }
+      ],
+      "art": "scenes/gemfall/empty-chair-tavern",
+      "type": "choice_point",
+      "narration": "Flint makes room beside the hearth. Each hero tells a little of the red night, or adds a sound to the story. Take your time. Flint has put his nightcap over the bidding bell.",
+      "choices": [
+        {
+          "id": "sky",
+          "label": "Describe the red sky",
+          "icon": "spark",
+          "goto": "interaction_inn_account_response_sky"
+        },
+        {
+          "id": "city",
+          "label": "Tell what the city did",
+          "icon": "map",
+          "goto": "interaction_inn_account_response_city"
+        },
+        {
+          "id": "sound",
+          "label": "Add a gull or harbor sound",
+          "icon": "note",
+          "goto": "interaction_inn_account_response_sound"
         }
       ]
     },
@@ -3153,6 +3085,63 @@
           "size": "large"
         }
       ]
+    },
+    "interaction_inn_account_response_sky": {
+      "type": "story",
+      "narration": "Your part of the sky joins the story. Flint stops counting offers. Flint thanks you for the story and gives you a warm place for the night.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_empty_chair"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/innkeeper_flint",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "art": "scenes/gemfall/empty-chair-tavern"
+    },
+    "interaction_inn_account_response_city": {
+      "type": "story",
+      "narration": "Your memory of the city gets a nod from someone who was there. Flint thanks you for the story and gives you a warm place for the night.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_empty_chair"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/innkeeper_flint",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "art": "scenes/gemfall/empty-chair-tavern"
+    },
+    "interaction_inn_account_response_sound": {
+      "type": "story",
+      "narration": "The room answers your sound with another. Flint laughs into his dishcloth. Flint thanks you for the story and gives you a warm place for the night.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_empty_chair"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/innkeeper_flint",
+          "name": "Innkeeper Flint"
+        }
+      ],
+      "art": "scenes/gemfall/empty-chair-tavern"
     }
   },
   "voiceGuide": {
@@ -3183,6 +3172,139 @@
       "mrs_tuft": "Mrs. Tuft, a sheeple grocer on a provision barge, wool full of price tags; everything comes in a jar; brisk and a little dry",
       "selkie_grandmother": "the grandmother of a selkie family just arrived for a fresh start; brisk, warm, decides things are settled and they are",
       "innkeeper_flint": "Innkeeper Flint, a stone troll who runs the Empty Chair inn in a very small nightcap; rumbles, folds his arms, secretly soft"
+    }
+  },
+  "resumeInteractions": {
+    "interaction_quay_line": {
+      "type": "interaction",
+      "narration": "A gap opens in the dockhands' pear-crate line. Catch and pass the crates along the quay. \"Every pair of hands helps!\" calls the dockmaster. His hat is sliding over his eyes.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the crate, then pass it down the line.",
+        "actionLabel": "Pass the crate",
+        "objectLabel": "A crate of pears"
+      },
+      "onSuccess": {
+        "goto": "scene_docks",
+        "narration": "Not one pear drops. The last crate reaches the top of the quay, and the dockmaster tips his hat so far forward it falls off. You each get a pear for the walk to the docks, and it is the best pear in the Exchange, which is saying something this week."
+      },
+      "onFailure": {
+        "goto": "scene_docks",
+        "narration": "One crate slips, and a pear rolls all the way down the quay with a dockhand running after it. Everybody cheers when he catches it. You each get a slightly bruised pear for the walk to the docks."
+      },
+      "onAssisted": {
+        "goto": "scene_docks",
+        "narration": "The dockmaster joins the gap in the line himself, and the crates go by smooth as a river. You each get a pear for the walk to the docks."
+      },
+      "art": "scenes/gemfall/exchange-docks"
+    },
+    "interaction_jars": {
+      "type": "interaction",
+      "narration": "Mrs. Tuft loads a tray of jars for the Outfitters' Steps. Keep it level. One jar contains pickles; it would not mind a swim. The others would.",
+      "interaction": {
+        "kind": "balance",
+        "cue": "Everyone lift or lower your side until the jars sit level, then carry the tray.",
+        "actionLabel": "Carry the tray",
+        "objectLabel": "A tray of wobbling jars"
+      },
+      "onSuccess": {
+        "goto": "scene_market",
+        "narration": "Not a jar clinks. Mrs. Tuft counts them twice, finds every one, and writes a small tick in the air with her pencil. \"Good hands,\" she says, which from a grocer is a lot. You carry the tray to the top of the steps."
+      },
+      "onFailure": {
+        "goto": "scene_market",
+        "narration": "The jars clink, tilt and slide, and one of them goes for a swim. Mrs. Tuft fishes it out with a net. \"It was the pickled kind,\" she says. \"It will not mind.\" You carry the rest of the tray to the top of the steps."
+      },
+      "onAssisted": {
+        "goto": "scene_market",
+        "narration": "Mrs. Tuft grabs one corner of the tray, and the jars settle at once. You carry it to the top of the steps together."
+      },
+      "cast": [
+        {
+          "figure": "cast/mrs_tuft",
+          "name": "Mrs. Tuft"
+        }
+      ],
+      "art": "scenes/gemfall/exchange-quay"
+    },
+    "interaction_lantern_pole": {
+      "type": "interaction",
+      "narration": "The lantern pole catches a washing line. Hold it steady while someone unhooks it. Long underwear flaps overhead. Hesper hopes it is not the new caravan flag.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends hold the pole steady while someone unhooks the washing line.",
+        "actionLabel": "Unhook the line",
+        "supportLabel": "Steady the pole"
+      },
+      "onSuccess": {
+        "goto": "scene_north_gate",
+        "narration": "Click. The line comes free, and the long underwear floats down onto a very surprised goat. Not a lantern swings. Hesper nods once, and the wagons roll on to the North Gate."
+      },
+      "onFailure": {
+        "goto": "scene_north_gate",
+        "narration": "The pole sways, the lanterns chime like bells, and the long underwear comes down on Hesper's head. She wears it with great dignity all the way to the North Gate."
+      },
+      "onAssisted": {
+        "goto": "scene_north_gate",
+        "narration": "Hesper holds the pole steady herself and the line comes free. Not a lantern swings, and the wagons roll on to the North Gate."
+      },
+      "cast": [
+        {
+          "figure": "cast/hesper",
+          "name": "Hesper Longstride",
+          "size": "large"
+        }
+      ],
+      "art": "scenes/gemfall/caravan-yard"
+    },
+    "interaction_inn_account": {
+      "type": "interaction",
+      "narration": "Flint makes room beside the hearth. Each hero tells a little of the red night, or adds a sound to the story. Take your time. Flint has put his nightcap over the bidding bell.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Each hero adds a memory or a sound from the red night.",
+        "actionLabel": "Finish the shared story",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "sky",
+            "label": "Describe the red sky",
+            "icon": "spark",
+            "reaction": "Your part of the sky joins the story. Flint stops counting offers."
+          },
+          {
+            "id": "city",
+            "label": "Tell what the city did",
+            "icon": "map",
+            "reaction": "Your memory of the city gets a nod from someone who was there."
+          },
+          {
+            "id": "sound",
+            "label": "Add a gull or harbor sound",
+            "icon": "note",
+            "reaction": "The room answers your sound with another. Flint laughs into his dishcloth."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "rest_empty_chair",
+        "narration": "Flint thanks you for the story and gives you a warm place for the night."
+      },
+      "onFailure": {
+        "goto": "rest_empty_chair",
+        "narration": "Your story wanders off somewhere around the fish and never quite comes back. The prospectors laugh so kindly that Flint gives the cupboard to someone else and you the hayloft above the mules, which is warm, smells of apples, and is honestly nicer."
+      },
+      "onAssisted": {
+        "goto": "rest_empty_chair",
+        "narration": "Flint helps keep the story in order while you add your parts. He finds you a warm place for the night."
+      },
+      "art": "scenes/gemfall/empty-chair-tavern",
+      "cast": [
+        {
+          "figure": "cast/innkeeper_flint",
+          "name": "Innkeeper Flint"
+        }
+      ]
     }
   }
 }

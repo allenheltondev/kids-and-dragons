@@ -222,7 +222,10 @@ export const FULL_COLLECTION: PartyPlan = {
   label: "full collection",
   facets: "collect",
   species: ["dragonling"],
-  steer: ["hoard"],
+  // A collector takes an available agreed exchange before gambling on a
+  // negotiation. Added story replies change seq-keyed dice, so an arbitrary
+  // equal-score tie must not decide whether this coverage party collects.
+  steer: ["hoard", "gemfall-03a/honeycake", "gemfall-05a/find_rule"],
   avoid: CLIMB,
   beforeEvening: async ({ evening, repo, householdId, facetIds }) => {
     // The finale is the eighth beat. If the road gave fewer than nine, fill the

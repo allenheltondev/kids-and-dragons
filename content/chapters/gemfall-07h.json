@@ -2898,47 +2898,30 @@
       "art": "scenes/gemfall/fleecewick-cabinet-road"
     },
     "interaction_boxes": {
-      "type": "interaction",
-      "narration": "Beside the checkpoint table, the numbered boxes are piling up faster than the clerk can stamp them. \"You! Yes, you! Hands!\" he cries, pointing at a long shelf by the road. The boxes have to go down the line hand to hand, and every single one is humming. The top one seems to be humming a song about lunch.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the box, then pass it down the line.",
-        "actionLabel": "Pass the box",
-        "objectLabel": "A humming numbered box"
-      },
-      "onSuccess": {
-        "goto": "scene_milestone_boy",
-        "narration": "Every box reaches the shelf. The clerk stamps the last one with both stamps at once, and pulls a honeycake out of his hat. \"For the hands,\" he says. \"It has only been in there since Tuesday.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "honeycake",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_milestone_boy",
-        "narration": "One box slips and rolls downhill, humming happily, and three wardens chase it. The clerk sighs and stamps the rest himself, one stamp at a time."
-      },
-      "onAssisted": {
-        "goto": "scene_milestone_boy",
-        "narration": "Every box reaches the shelf. The clerk stamps the last one with both stamps at once, and pulls a honeycake out of his hat. \"For the hands,\" he says. \"It has only been in there since Tuesday.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "honeycake",
-            "to": "party"
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/warden_clerk",
           "name": "Warden clerk"
         }
       ],
-      "art": "scenes/gemfall/checkpoint-box-shelf"
+      "art": "scenes/gemfall/checkpoint-box-shelf",
+      "type": "story",
+      "narration": "You and the clerk move the numbered boxes onto his waiting shelf. He stamps the last lid with both stamps at once, then pulls a honeycake out of his hat. \"For the hands,\" he says. \"It has only been in there since Tuesday.\" For a moment the checkpoint has more shelf than queue.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_milestone_boy",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "interaction_hairpin": {
       "type": "interaction",
@@ -2966,56 +2949,23 @@
       "art": "scenes/gemfall/hairpin-wagons"
     },
     "interaction_tidewell_knocks": {
-      "type": "interaction",
-      "narration": "Before she hurries off, Professor Tidewell kneels and knocks on a rock with her pencil: a slow beat in three kinds of knock. \"The mountain says it in this order,\" she whispers. \"Watch it, and knock it back to me. Then I will know somebody besides me has heard it.\"",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the knocks, then knock them back in order.",
-        "actionLabel": "Knock it back",
-        "stepMs": 1300,
-        "options": [
-          {
-            "id": "thump",
-            "label": "Thump",
-            "icon": "glyph_knock_thump"
-          },
-          {
-            "id": "tap",
-            "label": "Tap",
-            "icon": "glyph_knock_tap"
-          },
-          {
-            "id": "rumble",
-            "label": "Rumble",
-            "icon": "glyph_knock_rumble"
-          }
-        ],
-        "answer": [
-          "thump",
-          "tap",
-          "tap",
-          "rumble"
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_tamsins_offer",
-        "narration": "Thump, tap, tap, rumble. Professor Tidewell writes it down with a flourish and says you may be the second person in the world to have heard it properly. Then she hands back the pencil. It was yours."
-      },
-      "onFailure": {
-        "goto": "scene_tamsins_offer",
-        "narration": "Your knocks come out a little tangled, and Tidewell writes down the tangle too. \"Even a muddle is data,\" she says cheerfully. \"Mine usually are.\""
-      },
-      "onAssisted": {
-        "goto": "scene_tamsins_offer",
-        "narration": "Thump, tap, tap, rumble. Professor Tidewell writes it down with a flourish and says you may be the second person in the world to have heard it properly. Then she hands back the pencil. It was yours."
-      },
       "cast": [
         {
           "figure": "cast/tidewell",
           "name": "Professor Tidewell"
         }
       ],
-      "art": "scenes/gemfall/tidewell-knock-rock"
+      "art": "scenes/gemfall/tidewell-knock-rock",
+      "type": "story",
+      "narration": "Professor Tidewell knocks the mountain's pattern onto a rock, then writes it beside your notes. Thump, tap, tap, rumble. You listen together. She says you may be the second person in the world to hear it properly, then hands back her pencil. It was yours.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_tamsins_offer"
+        }
+      ]
     },
     "scene_echo_cutting": {
       "type": "story",
@@ -3274,11 +3224,6 @@
           "prop_glass_cabinet"
         ]
       },
-      "interaction_boxes": {
-        "props": [
-          "prop_numbered_box"
-        ]
-      },
       "interaction_hairpin": {
         "props": [
           "prop_wagon_wheels"
@@ -3299,6 +3244,103 @@
           "prop_mule_cart"
         ]
       }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_boxes": {
+      "type": "interaction",
+      "narration": "Beside the checkpoint table, the numbered boxes are piling up faster than the clerk can stamp them. \"You! Yes, you! Hands!\" he cries, pointing at a long shelf by the road. The boxes have to go down the line hand to hand, and every single one is humming. The top one seems to be humming a song about lunch.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the box, then pass it down the line.",
+        "actionLabel": "Pass the box",
+        "objectLabel": "A humming numbered box"
+      },
+      "onSuccess": {
+        "goto": "scene_milestone_boy",
+        "narration": "Every box reaches the shelf. The clerk stamps the last one with both stamps at once, and pulls a honeycake out of his hat. \"For the hands,\" he says. \"It has only been in there since Tuesday.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_milestone_boy",
+        "narration": "One box slips and rolls downhill, humming happily, and three wardens chase it. The clerk sighs and stamps the rest himself, one stamp at a time."
+      },
+      "onAssisted": {
+        "goto": "scene_milestone_boy",
+        "narration": "Every box reaches the shelf. The clerk stamps the last one with both stamps at once, and pulls a honeycake out of his hat. \"For the hands,\" he says. \"It has only been in there since Tuesday.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/warden_clerk",
+          "name": "Warden clerk"
+        }
+      ],
+      "art": "scenes/gemfall/checkpoint-box-shelf"
+    },
+    "interaction_tidewell_knocks": {
+      "type": "interaction",
+      "narration": "Before she hurries off, Professor Tidewell kneels and knocks on a rock with her pencil: a slow beat in three kinds of knock. \"The mountain says it in this order,\" she whispers. \"Watch it, and knock it back to me. Then I will know somebody besides me has heard it.\"",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the knocks, then knock them back in order.",
+        "actionLabel": "Knock it back",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "thump",
+            "label": "Thump",
+            "icon": "glyph_knock_thump"
+          },
+          {
+            "id": "tap",
+            "label": "Tap",
+            "icon": "glyph_knock_tap"
+          },
+          {
+            "id": "rumble",
+            "label": "Rumble",
+            "icon": "glyph_knock_rumble"
+          }
+        ],
+        "answer": [
+          "thump",
+          "tap",
+          "tap",
+          "rumble"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_tamsins_offer",
+        "narration": "Thump, tap, tap, rumble. Professor Tidewell writes it down with a flourish and says you may be the second person in the world to have heard it properly. Then she hands back the pencil. It was yours."
+      },
+      "onFailure": {
+        "goto": "scene_tamsins_offer",
+        "narration": "Your knocks come out a little tangled, and Tidewell writes down the tangle too. \"Even a muddle is data,\" she says cheerfully. \"Mine usually are.\""
+      },
+      "onAssisted": {
+        "goto": "scene_tamsins_offer",
+        "narration": "Thump, tap, tap, rumble. Professor Tidewell writes it down with a flourish and says you may be the second person in the world to have heard it properly. Then she hands back the pencil. It was yours."
+      },
+      "cast": [
+        {
+          "figure": "cast/tidewell",
+          "name": "Professor Tidewell"
+        }
+      ],
+      "art": "scenes/gemfall/tidewell-knock-rock"
     }
   }
 }

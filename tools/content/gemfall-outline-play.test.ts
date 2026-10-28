@@ -234,7 +234,6 @@ it.each(sizes)("incomplete non-failing jobs award no preparation at %i seats", s
   [boundary, "interaction_dawn_rope", "bell_crew_ready"],
   [woods, "interaction_falls_logs", "high_path_brace"],
   [boundary, "interaction_kept_stone", "got_the_unassigned_stone"],
-  [bridge, "interaction_survey_evidence", "plotted_it_yourself"],
  ] as const) {
   let state = enterScene(initial(chapter, size), id, context(chapter)).state;
   expect(miss(chapter, state)).toBeNull();
@@ -251,7 +250,8 @@ it.each(sizes)("mixed miss profile reports the actual outcomes and gates at %i s
  const a=walk(bridge,size,{...bridgePicks,scene_crack_string:"read_chalk",scene_crossing:"settled_interval"},"miss-supported");
  expect(a.interactionOutcomes.get("interaction_transfer_rule")).toBe("failure");
  expect(a.interactionOutcomes.get("interaction_settled_span")).toBe("failure");
- expect(a.interactionOutcomes.get("interaction_survey_evidence")).toBe("success");
+ expect(a.trace.has("interaction_survey_evidence_response_road")).toBe(true);
+ expect(a.state.flags.plotted_it_yourself).toBe(true);
  expect(a.trace.has("scene_under_bridge")).toBe(true);
  expect(a.state.flags.bridge_preparation_used).not.toBe(true);
  const b=walk(woods,size,woodsPicks,"miss-supported");
