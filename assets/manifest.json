@@ -3260,6 +3260,7 @@
       "prop_numbered_box",
       "prop_tea_mug",
       "prop_humming_stone",
+      "prop_hand_bell",
       "prop_faun_bundle",
       "prop_reed_gate",
       "prop_goat_bucket",
@@ -3775,6 +3776,10 @@
       "prop_cracked_rock": {
         "preset": "still",
         "durationMs": 3200
+      },
+      "prop_hand_bell": {
+        "preset": "swing",
+        "durationMs": 2600
       }
     }
   },

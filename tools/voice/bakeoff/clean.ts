@@ -9,19 +9,47 @@
  * What this does, on 16-bit mono PCM:
  *  1. removes any DC offset, which turns a drop to silence into a click;
  *  2. finds each short, noise-like island of sound that comes after speech
- *     and is followed by silence (or the end of the clip), and silences it,
- *     with short fades so the cut makes no click of its own;
- *  3. fades the clip's very start and end.
+ *     and is followed by silence, and silences it, with short fades so the
+ *     cut makes no click of its own;
+ *  3. ends the clip where the speech ends: after the last voiced sound it
+ *     keeps only a word's own loud tail (an "s", a "t", which live in the
+ *     high frequencies), and silences the rest, however long, loud or quiet
+ *     it is, whether or not silence separates it from the word, and whether
+ *     or not it is as loud as the word (static spreads across every
+ *     frequency, which is how it is told from an "s");
+ *  4. gates the quiet hiss in pauses, well under any speech;
+ *  5. fades the clip's very start and end.
  *
  * What it keeps: a breath before a line (speech follows it closely), a sigh or
- * a laugh (longer than a burst), and a word's own "s" (attached to the word,
- * with no silence between). The raw audio is kept beside the cleaned clip so
- * the page can play either.
+ * a laugh in the middle of a line (longer than a burst), a word's own "s"
+ * (loud, and attached to the word), and a sound the line ends on when the
+ * script says it does (`endsOnSound`: "…," <laugh>). The raw audio is kept
+ * beside the cleaned clip so the page can play either, and so a better
+ * cleaner can start again from it (CLEANER_VERSION).
  */
+
+/** Bumped whenever cleaning changes, so clips cleaned the old way are cleaned again from their raw audio. */
+export const CLEANER_VERSION = 3;
 
 export interface CleanOptions {
   /** Longest island that can be a burst. Real breaths and gasps run longer. */
   maxBurstMs: number;
+  /** How much of a word's own sound may follow its last voiced frame: a final "s" or "t". */
+  maxTailMs: number;
+  /** A word's tail is loud: above this, relative to the loudest frame. Hiss and bursts are quieter. */
+  tailDb: number;
+  /**
+   * A word's "s" lives in the highs; static is spread across every frequency.
+   * A noisy tail frame with more than this share of its energy under about
+   * 1.5 kHz is static, and the tail ends there.
+   */
+  fricativeLowShare: number;
+  /** Speech: above this, relative to the loudest frame, and voiced (under noiseZcr). */
+  speechDb: number;
+  /** Pauses quieter than this, relative to the loudest frame, are hiss and are gated to silence. */
+  gateDb: number;
+  /** Shortest quiet run the gate silences, so it never chops inside a word. */
+  minGateMs: number;
   /** Silence before an island that sets it apart from the word it follows. */
   minGapBeforeMs: number;
   /** Silence after an island that makes it the end of a turn, not a breath before speech. */
@@ -32,7 +60,24 @@ export interface CleanOptions {
   silenceDb: number;
 }
 
-export const CLEAN_DEFAULTS: CleanOptions = { maxBurstMs: 180, minGapBeforeMs: 20, minGapAfterMs: 150, noiseZcr: 0.3, silenceDb: -40 };
+export const CLEAN_DEFAULTS: CleanOptions = {
+  maxBurstMs: 300,
+  minGapBeforeMs: 20,
+  minGapAfterMs: 100,
+  noiseZcr: 0.3,
+  silenceDb: -40,
+  maxTailMs: 150,
+  tailDb: -32,
+  fricativeLowShare: 0.1,
+  speechDb: -30,
+  gateDb: -40,
+  minGateMs: 50,
+};
+
+export interface CleanContext {
+  /** The script ends on a sound, not a word ("…," <laugh>): keep what follows the last word. */
+  endsOnSound?: boolean;
+}
 
 export interface Cleaned {
   pcm: Buffer;
@@ -42,6 +87,10 @@ export interface Cleaned {
 
 const FRAME_MS = 10;
 const FADE_MS = 6;
+/** The end of a line fades out over a little longer, so a cut tail sounds like the word ending. */
+const TAIL_FADE_MS = 25;
+/** Where "low" ends, for telling a word's "s" from static. */
+const LOW_HZ = 1500;
 
 function toFloats(pcm: Buffer): Float32Array {
   const samples = new Float32Array(Math.floor(pcm.length / 2));
@@ -62,7 +111,7 @@ function silence(samples: Float32Array, from: number, to: number, fade: number):
   for (let i = to; i < Math.min(samples.length, to + fade); i += 1) samples[i]! *= (i - to) / fade;
 }
 
-export function cleanPcm16(pcm: Buffer, rate: number, options: CleanOptions = CLEAN_DEFAULTS): Cleaned {
+export function cleanPcm16(pcm: Buffer, rate: number, context: CleanContext = {}, options: CleanOptions = CLEAN_DEFAULTS): Cleaned {
   const samples = toFloats(pcm);
   if (samples.length === 0) return { pcm, removed: [] };
 
@@ -75,17 +124,26 @@ export function cleanPcm16(pcm: Buffer, rate: number, options: CleanOptions = CL
   const frames = Math.ceil(samples.length / frame);
   const rms = new Float32Array(frames);
   const zcr = new Float32Array(frames);
+  // How much of each frame's energy is low, through a one-pole low-pass at LOW_HZ: white static
+  // keeps about a fifth there, a word's "s" a few percent.
+  const low = new Float32Array(frames);
+  const pole = 1 - Math.exp((-2 * Math.PI * LOW_HZ) / rate);
+  let smoothed = 0;
   for (let f = 0; f < frames; f += 1) {
     const start = f * frame;
     const end = Math.min(samples.length, start + frame);
     let energy = 0;
+    let lowEnergy = 0;
     let crossings = 0;
     for (let i = start; i < end; i += 1) {
       energy += samples[i]! * samples[i]!;
+      smoothed += pole * (samples[i]! - smoothed);
+      lowEnergy += smoothed * smoothed;
       if (i > start && Math.sign(samples[i]!) !== Math.sign(samples[i - 1]!)) crossings += 1;
     }
     rms[f] = Math.sqrt(energy / (end - start));
     zcr[f] = crossings / Math.max(1, end - start - 1);
+    low[f] = energy > 0 ? lowEnergy / energy : 0;
   }
   // A loop, not Math.max(...rms): one argument per 10ms frame would overflow the call on a long recording.
   let peak = 0;
@@ -104,6 +162,16 @@ export function cleanPcm16(pcm: Buffer, rate: number, options: CleanOptions = CL
 
   const removed: Cleaned["removed"] = [];
   const toMs = (frames: number): number => frames * FRAME_MS;
+  const fade = Math.round((rate * FADE_MS) / 1000);
+  const above = (f: number, db: number): boolean => rms[f]! >= peak * 10 ** (db / 20);
+  // What a frame sounds like now, after the cuts so far.
+  const audibleNow = (f: number): boolean => {
+    const start = f * frame;
+    const end = Math.min(samples.length, start + frame);
+    let energy = 0;
+    for (let i = start; i < end; i += 1) energy += samples[i]! * samples[i]!;
+    return Math.sqrt(energy / Math.max(1, end - start)) >= peak * 10 ** (options.gateDb / 20);
+  };
   islands.forEach((island, i) => {
     if (i === 0) return; // a burst ends a turn, so there is always speech before it
     const before = islands[i - 1]!;
@@ -115,13 +183,61 @@ export function cleanPcm16(pcm: Buffer, rate: number, options: CleanOptions = CL
     for (let f = island.from; f < island.to; f += 1) crossings += zcr[f]!;
     const noisy = crossings / (island.to - island.from) >= options.noiseZcr;
     if (length <= options.maxBurstMs && gapBefore >= options.minGapBeforeMs && gapAfter >= options.minGapAfterMs && noisy) {
-      silence(samples, island.from * frame, Math.min(samples.length, island.to * frame), Math.round((rate * FADE_MS) / 1000));
+      silence(samples, island.from * frame, Math.min(samples.length, island.to * frame), fade);
       removed.push({ startMs: toMs(island.from), endMs: toMs(island.to) });
     }
   });
 
+  // The end of the line: after the last voiced frame, a word's own loud tail and nothing else.
+  let lastSpeech = -1;
+  for (let f = frames - 1; f >= 0; f -= 1) {
+    if (above(f, options.speechDb) && zcr[f]! < options.noiseZcr) {
+      lastSpeech = f;
+      break;
+    }
+  }
+  if (lastSpeech >= 0 && !context.endsOnSound) {
+    let cut = lastSpeech + 1;
+    const tailFrames = Math.round(options.maxTailMs / FRAME_MS);
+    // Loud, and either still voiced or shaped like a fricative: static straight off the word stops it.
+    const wordTail = (f: number): boolean => above(f, options.tailDb) && (zcr[f]! < options.noiseZcr || low[f]! < options.fricativeLowShare);
+    while (cut < frames && cut - lastSpeech - 1 < tailFrames && wordTail(cut)) cut += 1;
+    // Only worth a cut if something audible is left after it.
+    let audible = false;
+    for (let f = cut; f < frames && !audible; f += 1) audible = audibleNow(f);
+    if (audible) {
+      silence(samples, cut * frame, samples.length, Math.round((rate * TAIL_FADE_MS) / 1000));
+      removed.push({ startMs: toMs(cut), endMs: toMs(frames) });
+    }
+  }
+
+  // Hiss in the pauses: long-enough runs under the silence floor go to true silence.
+  const gateFrames = Math.max(1, Math.round(options.minGateMs / FRAME_MS));
+  for (let f = 0; f < frames; f += 1) {
+    if (above(f, options.gateDb)) continue;
+    const from = f;
+    while (f < frames && !above(f, options.gateDb)) f += 1;
+    if (f - from >= gateFrames) {
+      // Only hiss: a run that is already digital silence is left be. Measured around its own mean,
+      // so the steady offset the DC removal leaves in true silence is not mistaken for sound.
+      const start = from * frame;
+      const end = Math.min(samples.length, f * frame);
+      let sum = 0;
+      let squares = 0;
+      for (let i = start; i < end; i += 1) {
+        sum += samples[i]!;
+        squares += samples[i]! * samples[i]!;
+      }
+      const n = Math.max(1, end - start);
+      if (Math.sqrt(Math.max(0, squares / n - (sum / n) ** 2)) >= peak * 10 ** (-70 / 20)) {
+        silence(samples, from * frame, Math.min(samples.length, f * frame), fade);
+        removed.push({ startMs: toMs(from), endMs: toMs(f) });
+      }
+    }
+  }
+
   // The clip's own edges: a short fade so a playlist of clips never clicks between them.
-  const edge = Math.min(Math.round((rate * FADE_MS) / 1000), Math.floor(samples.length / 2));
+  const edge = Math.min(fade, Math.floor(samples.length / 2));
   for (let i = 0; i < edge; i += 1) {
     samples[i]! *= i / edge;
     samples[samples.length - 1 - i]! *= i / edge;
@@ -134,4 +250,9 @@ export function readWav16(wav: Buffer): { pcm: Buffer; rate: number } | null {
   if (wav.length < 44 || wav.toString("ascii", 0, 4) !== "RIFF" || wav.toString("ascii", 8, 12) !== "WAVE") return null;
   if (wav.readUInt16LE(20) !== 1 || wav.readUInt16LE(22) !== 1 || wav.readUInt16LE(34) !== 16) return null;
   return { pcm: wav.subarray(44), rate: wav.readUInt32LE(24) };
+}
+
+/** Whether a request's spoken text ends on a sound (a laugh, a sigh) rather than a word, in either Gemini's form of the tags. */
+export function endsOnSound(text: string): boolean {
+  return /(<(sigh|laugh|chuckle|giggle|gasp|breath|yawn)>|\[(sighs?|laughs?|chuckles?|giggles?|gasps?|breath|inhales|gulps?|yawns?)\])[\s"'”’.,!?…]*$/i.test(text.trim());
 }

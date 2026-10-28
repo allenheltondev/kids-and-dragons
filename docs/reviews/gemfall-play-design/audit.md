@@ -122,12 +122,13 @@ claim it mattered.
 ## Implementation order
 
 1. **03A + 03B:** toll/river and marsh/fog; see [first-wave.md](first-wave.md).
-2. **03C + 04C:** queue priorities and the north road's signs/forms/signals.
-3. **04A + 04B:** regional behavior, observation and intervention.
-4. **05A/B/C:** all three routes to the Outline of Truth and disclosure.
-5. **01 + 02:** thirty-minute opening/onboarding pass, preserving the art pilot.
-6. **06:** evidence and purpose, with a separate reveal/continuity review.
-7. **07R/H/L:** each pursuit's own play, preserving Walk and clock economics.
+2. **03C + 04C:** queue priorities and the north road's signs/forms/signals;
+   see the [implementation and verification](../gemfall-ford-road-play/README.md).
+3. **04A + 04B:** regional behavior, observation and intervention. Implemented in the [third-wave review](../gemfall-pride-forest-play/README.md): marker brace versus checked line, prepared sash clues, herd-map recovery, and mending versus woodland chorus.
+4. **05A/B/C:** all three routes to the Outline of Truth and disclosure. Implemented in the [fourth-wave review](../gemfall-outline-play/README.md): survey crossing choices, high-path braces/runoff recovery, shared evidence and bell-duty crowd approaches.
+5. **01 + 02:** thirty-minute opening/onboarding pass, preserving the art pilot. Implemented in the [fifth-wave review](../gemfall-opening-play/README.md): checked mail rescue, shared introductions and farm-work hedge help. Timing remains a target requiring family calibration.
+6. **06:** evidence and purpose. Implemented in the [sixth-wave review](../gemfall-ashfall-play/README.md): dated evidence, learned-call gate recovery and a purpose council; reveal/continuity and persistent ally/pursuit/clock checks included. Timing still needs family calibration.
+7. **07R/H/L:** implemented in the [seventh-wave review](../gemfall-pursuit-play/README.md): earned return handovers, market clues and wagon tracking, table rules and playable tether instruments. Walk, clock economics and all shipped rolls remain. Timing needs family calibration.
 8. **08:** final philosophy/confrontation pass, after the upstream payoffs exist.
 
 Ordinary targets are approximately thirty minutes, to be planned and tested rather
@@ -135,7 +136,7 @@ than enforced by counting scenes. Review a finale-specific budget explicitly; do
 not silently retain 55 minutes or promise thirty without timing its alternatives.
 After each wave, run meaningful complete routes for solo/two/four players, assisted
 and missed actions, and the relevant real board outcomes. Record actual timings
-only from observed sessions; the proposed tracker remains #511.
+only from observed sessions; the tracker from #511 is now integrated. See [session timing](../../session-timing.md) for revision-aware exports and reports.
 
 ## Baseline and first-wave verification
 

@@ -30,6 +30,7 @@ export interface ReviewJson {
     voice: string;
     chapters: number;
     notes?: string;
+    direction?: string;
     history: Decision[];
   }[];
 }
@@ -57,6 +58,7 @@ export function reviewJson(sheet: CastSheet, generated = new Date().toISOString(
       voice: e.gemini.voice,
       chapters: e.chapters.length,
       ...(e.notes ? { notes: e.notes } : {}),
+      ...(e.direction ? { direction: e.direction } : {}),
       history: e.history ?? [],
     })),
   };

@@ -18,7 +18,7 @@
  */
 
 import { createHash } from "node:crypto";
-import { cleanPcm16 } from "./clean.ts";
+import { cleanPcm16, endsOnSound } from "./clean.ts";
 import { BEAT, withoutBeats, type Sample, type ScriptLine } from "./samples.ts";
 
 export type Provider = "elevenlabs" | "gemini" | "fake";
@@ -432,6 +432,13 @@ async function failure(response: Awaited<ReturnType<Fetch>>): Promise<Error> {
   return new Error(`HTTP ${String(response.status)}: ${text}`);
 }
 
+/** Whether the last thing a Gemini job says is a sound (a laugh, a sigh), which the cleaner must keep. */
+export function jobEndsOnSound(job: Job): boolean {
+  const body = job.request.body as { contents?: { parts?: { text?: string }[] }[] } | undefined;
+  const parts = body?.contents?.[0]?.parts ?? [];
+  return endsOnSound(parts[parts.length - 1]?.text ?? "");
+}
+
 /** Sends one job and returns its audio. Throws with the provider's own words on failure. */
 export async function send(job: Job, keys: Keys, fetch: Fetch): Promise<Rendered> {
   if (job.provider === "fake") {
@@ -452,7 +459,7 @@ export async function send(job: Job, keys: Keys, fetch: Fetch): Promise<Rendered
   const rate = Number(/rate=(\d+)/.exec(audio[0]?.mimeType ?? "")?.[1] ?? 24000);
   const pcm = Buffer.concat(audio.map((data) => Buffer.from(data!.data!, "base64")));
   // Raw Gemini audio carries a burst of noise where a turn ends; AI Studio's player gates it, so do we.
-  const cleaned = cleanPcm16(pcm, rate);
+  const cleaned = cleanPcm16(pcm, rate, { endsOnSound: jobEndsOnSound(job) });
   return {
     bytes: pcmToWav(cleaned.pcm, rate),
     raw: pcmToWav(pcm, rate),
