@@ -363,17 +363,17 @@ counted once per value, and retakes are padded in (`--retakes`, default ×1.25).
 audio tokens (25 a second), so its price depends on reading speed: 14 characters a second, set
 in `pricing.json`.
 
-The whole game, choice labels excluded, ×1.25 for retakes, priced 2026-10-27:
+The whole game, choice labels excluded, ×1.25 for retakes, `{facets}` expanded 0–14 (every great stone the content can hand out), priced 2026-10-28:
 
 | Model | Whole game | Gemfall | Riftlight | Fits the $75 first run? |
 |---|---|---|---|---|
-| ElevenLabs v4 | $107.94 | $59.56 | $46.71 | no: one campaign at a time |
-| ElevenLabs v4 Turbo | $53.97 | $29.78 | $23.36 | yes |
-| ElevenLabs v3 / Multilingual v2 | $134.93 | $74.45 | $58.39 | no: one campaign at a time |
-| ElevenLabs Flash v2.5 | $67.46 | $37.22 | $29.20 | yes |
-| Gemini 3.8 Flash TTS | $22.78 | $12.56 | $9.86 | yes, 3× over |
-| Gemini 3.8 Flash-Lite TTS | $15.00 | $8.27 | $6.50 | yes |
-| Gemini 3.1 Flash TTS | $49.28 | $27.18 | $21.33 | yes |
+| ElevenLabs v4 | $114.45 | $66.33 | $46.45 | no: one campaign at a time |
+| ElevenLabs v4 Turbo | $57.22 | $33.16 | $23.23 | yes |
+| ElevenLabs v3 / Multilingual v2 | $143.06 | $82.91 | $58.07 | no: Gemfall alone is over |
+| ElevenLabs Flash v2.5 | $71.53 | $41.45 | $29.03 | yes |
+| Gemini 3.8 Flash TTS | $24.18 | $14.01 | $9.81 | yes, 3× over |
+| Gemini 3.8 Flash-Lite TTS | $15.92 | $9.22 | $6.46 | yes |
+| Gemini 3.1 Flash TTS | $52.28 | $30.29 | $21.22 | yes |
 
 Every rate is marked unconfirmed in `pricing.json`. They came from third-party summaries,
 because the provider pages couldn't be fetched from here. Check them before spending. Two things
@@ -389,8 +389,8 @@ change the numbers:
 **Budget: $75 cap on the first run.** `voice:generate` will take `--max-dollars 75` and stop before
 the request that would cross it, priced with the same model. On Gemini 3.8 Flash the cap covers
 the whole game with room for a second pass, and on ElevenLabs v4 Turbo the whole game once. On
-ElevenLabs v4 it covers Gemfall ($59.56) or Riftlight ($46.71) with the small campaigns, and on v3
-one campaign at a time (Gemfall alone is $74).
+ElevenLabs v4 it covers Gemfall ($66.33) or Riftlight ($46.45) with the small campaigns, and on v3
+Riftlight but not Gemfall ($82.91).
 
 ---
 

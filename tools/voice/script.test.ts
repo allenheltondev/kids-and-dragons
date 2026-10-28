@@ -45,6 +45,29 @@ describe("a script", () => {
     expect(report.problems[0]?.message).toMatch(/do not equal the authored text/);
   });
 
+  it("is broken when a word boundary moves: the same letters can be different words", () => {
+    const text = "We found an ice dragon.";
+    const ctx = { ...context, lines: new Map([[ADDRESS, text]]) };
+    const entry = (said: string): ScriptEntry => ({ source: sourceHash(text), lines: [{ by: "narrator", text: said }] });
+    expect(scriptReport({ [ADDRESS]: entry("We found an ice dragon.") }, ctx).state[ADDRESS]).toBe("fresh");
+    expect(scriptReport({ [ADDRESS]: entry("We found a nice dragon.") }, ctx).state[ADDRESS]).toBe("broken");
+  });
+
+  it("allows a cut at a quotation mark with or without a space, and any spacing", () => {
+    const tight: ScriptEntry = {
+      source: cut.source,
+      lines: [
+        { by: "narrator", text: "The captain  grins." },
+        { by: "captain", text: '"We owe you one,"' },
+        { by: "narrator", text: "says the captain," },
+        { by: "captain", text: '"and sailors pay their debts."' },
+      ],
+    };
+    expect(scriptReport({ [ADDRESS]: tight }, context).state[ADDRESS]).toBe("fresh");
+    const hugged = { ...tight, lines: [...tight.lines.slice(0, 1), { by: "captain", text: '"We owe you one,"says the captain,' }, ...tight.lines.slice(3)] };
+    expect(scriptReport({ [ADDRESS]: hugged }, context).state[ADDRESS]).toBe("fresh");
+  });
+
   it("is broken when a line is by someone who is not cast", () => {
     const lines = [{ by: "ghost", text: TEXT }];
     const report = scriptReport({ [ADDRESS]: { ...cut, lines } }, context);

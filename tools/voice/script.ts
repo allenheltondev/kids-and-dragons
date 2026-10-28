@@ -85,9 +85,15 @@ export function stripBeats(text: string): string {
   return text.replace(/<[a-z][a-z -]*>/gi, "").replace(/\[[a-z][a-z -]*\]/gi, "");
 }
 
-/** The characters that must match, in order: spacing between spans is the cutter's choice. */
-function skeleton(text: string): string {
-  return normalizeSpoken(text).replace(/\s+/g, "");
+/**
+ * What must match: the same words in the same order. Spacing is cosmetic and a
+ * cut may fall between any two words, so fragments join with a space and every
+ * run of whitespace is one. Word boundaries stay meaningful ("an ice dragon" is
+ * not "a nice dragon"). Spaces beside a quotation mark are the one exception:
+ * a cut at a quote leaves `"Hi,"says` or `"Hi," says` and both read the same.
+ */
+function words(text: string): string {
+  return normalizeSpoken(text).replace(/\s*"\s*/g, '"');
 }
 
 export function joinedLines(entry: ScriptEntry): string {
@@ -131,7 +137,7 @@ export function scriptReport(file: Record<string, unknown>, context: ScriptConte
       report.state[address] ??= "stale";
       continue;
     }
-    if (skeleton(joinedLines(entry)) !== skeleton(authored)) {
+    if (words(joinedLines(entry)) !== words(authored)) {
       fail("the lines, joined, do not equal the authored text; the audio would say something the screen does not");
       continue;
     }

@@ -11,47 +11,30 @@
  *   npm run voice:extract -- --json                # the full list, for tooling
  */
 
-import fs from "node:fs";
-import path from "node:path";
 import { parseArgs } from "node:util";
 import { inventory } from "./inventory";
 import { classify, duplicateAddresses } from "./lines";
-
-const ROOT = path.resolve(import.meta.dirname, "..", "..");
-const CONTENT = path.join(ROOT, "content");
+import { loadContent, reachableFacets } from "./load";
 
 const { values } = parseArgs({
   options: {
     chapter: { type: "string" },
-    "facets-max": { type: "string", default: "6" },
+    "facets-max": { type: "string" },
     lines: { type: "boolean", default: false },
     json: { type: "boolean", default: false },
   },
 });
 
-const facetsMax = Number(values["facets-max"]);
+const content = loadContent();
+// {facets} is rendered 0 through the most great stones the content can hand out.
+const facetsMax = values["facets-max"] === undefined ? reachableFacets(content) : Number(values["facets-max"]);
 if (!Number.isInteger(facetsMax) || facetsMax < 0) {
   console.error("--facets-max takes a whole number.");
   process.exit(2);
 }
 
-function readJson(file: string): Record<string, unknown> {
-  return JSON.parse(fs.readFileSync(file, "utf8")) as Record<string, unknown>;
-}
-
-function readDir(dir: string): Record<string, unknown>[] {
-  return fs.readdirSync(dir).filter((name) => name.endsWith(".json")).sort().map((name) => readJson(path.join(dir, name)));
-}
-
 const options = { facetsMax };
-const raw = inventory(
-  {
-    chapters: readDir(path.join(CONTENT, "chapters")),
-    campaigns: readDir(path.join(CONTENT, "campaigns")),
-    help: readJson(path.join(CONTENT, "help.json")),
-  },
-  options,
-);
+const raw = inventory(content, options);
 const dupes = duplicateAddresses(raw);
 const all = classify(raw, options);
 const lines = values.chapter === undefined ? all : all.filter((line) => line.chapter === values.chapter);
