@@ -113,17 +113,14 @@ provider config for each provider:
 }
 ```
 
-**`content/voice/cast.json`**: who speaks with which voice. Keys are speaker ids that already
-exist:
-
-- `narrator`: **one narrator voice for the whole game**, every campaign, plate, prologue and help
-  line. There is no override per campaign.
-- canon individuals: `individual.pib`. **One voice everywhere they appear, across campaigns.**
-  This is the consistency guarantee: a speaker's voice is decided once, here.
-- chapter-scoped characters: `bramblewood-01:wisp` (the `npcVoices` keys).
-- peoples, for unnamed speakers: `npc.harvest_sprite`, "a yeti fishmonger". Each draws from a small
-  pool with a deterministic pick (hash of speaker id), so the same unnamed captain sounds the same
-  on every visit, and two different yetis in one scene can be told apart.
+**`content/voice/cast.json`**: who speaks with which voice. This is the cast voice sheet
+([voice-cast.md](./voice-cast.md)) and it is the source of truth for speaker ids. Each key under
+`speakers` is the id a script's `by` uses: `narrator`, `party`, and one id per speaker as the
+sheet already names them (`pib`, `wisp`, `door_voice`; groups such as `sprites`; creatures such as
+`drake`). Where a speaker is a canon individual the entry carries `canon: "individual.pib"`, so the
+voice is decided once and holds across campaigns and chapters. Chapter `voiceGuide.npcVoices` keys
+are recorded as `voiceNotes` and `aliases`. Peoples and unnamed speakers draw from a small pool with a
+deterministic pick (hash of speaker id), so the same unnamed captain sounds the same on every visit.
 
 Rules the validator enforces: every speaker a script uses is cast. Every voice cast exists and has
 a config for the active provider. No two named speakers in one scene share a voice.
