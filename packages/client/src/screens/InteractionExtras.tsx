@@ -355,7 +355,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null }
 }
 
 /** A drag lever for one side of a balance: five notches, the middle band glowing. */
-function Lever({ level, window, busy, onStep }: { level: number; window: number; busy: boolean; onStep: (direction: "up" | "down", steps: number) => void }) {
+function Lever({ level, window, busy, onStep }: { level: number; window: number; busy: boolean; onStep: (direction: "up" | "down", steps: number) => Promise<void> }) {
   const track = useRef<HTMLDivElement>(null);
   const [drag, setDrag] = useState<number | null>(null);
   const notch = (event: ReactPointerEvent) => {
@@ -368,7 +368,7 @@ function Lever({ level, window, busy, onStep }: { level: number; window: number;
   const release = (target: number) => {
     setDrag(null);
     const steps = Math.round((target - level) * 4);
-    if (steps !== 0) { buzz(Math.min(60, 12 * Math.abs(steps))); onStep(steps > 0 ? "up" : "down", Math.abs(steps)); }
+    if (steps !== 0) { buzz(Math.min(60, 12 * Math.abs(steps))); void onStep(steps > 0 ? "up" : "down", Math.abs(steps)); }
   };
   return <div className="game-lever" data-ok={Math.abs(shown - 0.5) <= window}>
     <div ref={track} className="game-lever__track" aria-hidden="true"
@@ -384,23 +384,40 @@ function Lever({ level, window, busy, onStep }: { level: number; window: number;
   </div>;
 }
 
+/** How far up, in px, a finger has to travel before letting go counts as a flick. */
+export const FLICK_PX = 50;
+
 /** The thing you have, on a phone: catch it as it drops in, flick it up to pass it on. */
 function Catcher({ object, caught, label, catchLabel, busy, onCatch, onPass }: {
-  object?: string; caught: boolean; label: string; catchLabel: string; busy: boolean; onCatch: () => void; onPass: () => void;
+  object?: string; caught: boolean; label: string; catchLabel: string; busy: boolean;
+  onCatch: () => void;
+  /** Resolves false when the pass was refused or never arrived. */
+  onPass: () => Promise<boolean>;
 }) {
   const [thrown, setThrown] = useState(false);
   const start = useRef<number | null>(null);
-  const pass = () => { if (thrown || busy) return; setThrown(true); buzz([10, 30, 20]); window.setTimeout(onPass, reducedMotion() ? 0 : 260); };
+  const pass = async () => {
+    if (thrown || busy) return;
+    setThrown(true);
+    buzz([10, 30, 20]);
+    // Let the throw be seen leaving before the next phone takes it.
+    if (!reducedMotion()) await new Promise((resolve) => window.setTimeout(resolve, 260));
+    // A refused or lost pass gives the thing back, so the child can throw again rather than
+    // being left with a dead button until the whole game restarts (#555 review).
+    if (!(await onPass())) setThrown(false);
+  };
   return <div className="game-catcher" data-caught={caught} data-thrown={thrown}>
     <div className="game-catcher__stage"
       onPointerDown={(event) => { if (!caught) return; start.current = event.clientY; event.currentTarget.setPointerCapture?.(event.pointerId); }}
-      onPointerMove={(event) => { if (start.current !== null && start.current - event.clientY > 50) { start.current = null; pass(); } }}
-      onPointerUp={() => { start.current = null; }}>
+      // The flick counts on letting go, after an upward swipe: a finger resting and wobbling
+      // while the child decides never throws it (#555 review).
+      onPointerUp={(event) => { const from = start.current; start.current = null; if (from !== null && from - event.clientY > FLICK_PX) void pass(); }}
+      onPointerCancel={() => { start.current = null; }}>
       {object ? <Prop key={caught ? "hand" : "air"} id={object} className="game-catcher__thing" /> : <span key={caught ? "hand" : "air"} className="game-catcher__thing game-catcher__thing--star"><Icon name="star" /></span>}
       {caught && <span className="game-catcher__hint" aria-hidden="true">↑ flick up to pass</span>}
     </div>
     {caught
-      ? <Button variant="primary" size="lg" block icon={<Icon name="forward" />} className="story-interaction__button game-action game-action--go" disabled={busy || thrown} onClick={pass}>{label}</Button>
+      ? <Button variant="primary" size="lg" block icon={<Icon name="forward" />} className="story-interaction__button game-action game-action--go" disabled={busy || thrown} onClick={() => void pass()}>{label}</Button>
       : <Button variant="primary" size="lg" block icon={<Icon name="hand" />} className="story-interaction__button game-action game-action--catch" disabled={busy} onClick={() => { buzz(25); onCatch(); }}>{catchLabel}</Button>}
   </div>;
 }
@@ -420,7 +437,9 @@ function useStickers(): [{ id: number; icon: string; x: number }[], (icon: strin
 
 export interface KindControlsProps {
   prompt: InteractionPrompt; playerId: string; connected: readonly string[]; mine: boolean;
-  now: number; busy: boolean; send: (action: InteractionAction) => void;
+  now: number; busy: boolean;
+  /** Resolves false when the server refused the intent or it never arrived. */
+  send: (action: InteractionAction) => Promise<boolean>;
   answer: string[]; setAnswer: (update: (current: string[]) => string[]) => void;
   holding: boolean; setHolding: (holding: boolean) => void;
   /** Precision: where this phone's tap stopped the marker, for the board to freeze it. */
@@ -485,7 +504,11 @@ export function KindControls({ prompt, playerId, connected, mine, now, busy, sen
     case "balance": {
       const level = prompt.levels?.[playerId] ?? 0;
       const ready = balanceReady(prompt, connected);
-      const step = (direction: "up" | "down", steps: number) => { for (let i = 0; i < steps; i++) send({ action: "adjust", direction }); };
+      // One notch per intent, each sent only once the last has landed: fired together they raced
+      // on the run's seq and the lever could stop short of where it was dragged (#555 review).
+      const step = async (direction: "up" | "down", steps: number) => {
+        for (let i = 0; i < steps; i++) if (!(await send({ action: "adjust", direction }))) return;
+      };
       return <>
         <div className="game-balance-controls">
           {!still && <Lever level={level} window={prompt.relaxed ? 0.25 : 0.125} busy={busy} onStep={step} />}
