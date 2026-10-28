@@ -429,9 +429,8 @@ pipeline, and rewriting before the full render (8) avoids paying to render text 
 - **Storage:** clips go in the existing site bucket, under a `voice/` prefix next to `assets/`
   (not inside it, so deploy's `--delete` never touches them).
 - **One narrator voice** for the whole game.
-- **Provider:** choose after `voice:cost` and the phase-0 bake-off.
+- **Provider and model:** Gemini 3.8 Flash TTS (`gemini-3.8-flash-tts`), decided by the owner. ElevenLabs stays in the bake-off for comparison only.
 
 ## Still open
 
 1. **Names:** confirm that player names never go to a TTS provider (my recommendation).
-2. **Provider:** the bake-off decides, with the costs above in hand.
