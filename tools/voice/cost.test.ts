@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from "vitest";
 import { billedChars, chapterLines, campaignLines, helpLines, quotedChars, rendersOf } from "./inventory";
-import { quote, rateOn, type PricedModel, type SpeechAssumptions } from "./cost-model";
+import { parseTokensPerSecond, quote, rateOn, type PricedModel, type SpeechAssumptions } from "./cost-model";
 
 const OPTIONS = { facetsMax: 6 };
 
@@ -146,5 +146,18 @@ describe("the API math", () => {
 
   it("has no price on a day no rate covers", () => {
     expect(rateOn([{ from: "2027-01-01" }], "2026-10-27")).toBeNull();
+  });
+});
+
+describe("--tokens-per-second", () => {
+  it("takes a finite number above zero", () => {
+    expect(parseTokensPerSecond("25")).toBe(25);
+    expect(parseTokensPerSecond("28.5")).toBe(28.5);
+  });
+
+  it("refuses what would make every quote nonsense", () => {
+    for (const bad of ["Infinity", "-Infinity", "1e999", "NaN", "0", "-3", "", "  ", "abc"]) {
+      expect(parseTokensPerSecond(bad), bad).toBeNull();
+    }
   });
 });

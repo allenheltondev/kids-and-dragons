@@ -422,9 +422,9 @@ The whole game, choice labels excluded, ×1.25 for retakes, `{facets}` expanded 
 The Gemini 3.8 Flash TTS rates through 2026 are confirmed against Google's pricing page
 (`cloud.google.com/text-to-speech/pricing`, read 2026-10-28): $0.50 per million text input tokens,
 $9.00 per million audio output tokens, no free tier. Every other rate in `pricing.json` is still
-marked unconfirmed: the 2027 figures and batch discount came from search summaries, and the
-ElevenLabs and other Gemini rates from third-party summaries. Check them before spending on those.
-Three things change the numbers:
+marked unconfirmed. Google's pages show the 2027 rates and the 50% batch price for the 3.8 models
+(`ai.google.dev/gemini-api/docs/pricing`); the ElevenLabs rates and the 3.1 model are from third-party
+summaries. Check the unconfirmed ones before spending on them. Three things change the numbers:
 
 - **Gemini 3.8 doubles on 2027-01-01** ($9 → $18 per million audio tokens for Flash). A first
   render before then is half the price: `voice:cost -- --on 2027-01-15` shows the difference.
