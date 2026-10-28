@@ -189,7 +189,8 @@ function Controls({ prompt, party, playerId, dispatch, busy }: {
   const now = useClock(prompt.phase === "active", clockFor(prompt));
   const latest = useRef({ prompt, busy, dispatch });
   latest.current = { prompt, busy, dispatch };
-  const send = (action: InteractionAction) => void dispatch({ type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, ...action });
+  /** Resolves false when the server refused it or it never arrived, so a gesture can take itself back. */
+  const send = (action: InteractionAction): Promise<boolean> => dispatch({ type: "INTERACT", openedSeq: prompt.openedSeq, attempt: prompt.attempt, ...action });
   useEffect(() => { speak(prompt.spec.cue, { source: "prompt" }); }, [prompt.openedSeq, prompt.spec.cue]);
   // Hold leases expire without a release message, including a closed phone.
   // The ordinary sequenced action lane handles concurrent renewals and retries.

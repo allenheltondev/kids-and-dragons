@@ -381,10 +381,41 @@ describe("each game has something to do with your hands", () => {
       render(<StoryInteractionControls />);
       const stage = document.querySelector(".game-catcher__stage")!;
       fireEvent.pointerDown(stage, { clientY: 300, pointerId: 1 });
-      fireEvent.pointerMove(stage, { clientY: 200, pointerId: 1 });
+      fireEvent.pointerUp(stage, { clientY: 200, pointerId: 1 });
       expect(document.querySelector(".game-catcher[data-thrown='true']")).toBeTruthy();
       await act(async () => { vi.advanceTimersByTime(300); });
       expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "pass" }));
+    } finally { vi.useRealTimers(); }
+  });
+  it("throws only on letting go after an upward swipe, never while a finger rests or wobbles", () => {
+    const send = seed({ kind: "relay", cue: "Pass", actionLabel: "Pass it on", objectLabel: "the mat" }, { caughtBy: "p" });
+    render(<StoryInteractionControls />);
+    const stage = document.querySelector(".game-catcher__stage")!;
+    fireEvent.pointerDown(stage, { clientY: 300, pointerId: 1 });
+    fireEvent.pointerMove(stage, { clientY: 150, pointerId: 1 });
+    expect(document.querySelector(".game-catcher[data-thrown='true']")).toBeNull();
+    // Back down before letting go: the child changed their mind.
+    fireEvent.pointerUp(stage, { clientY: 290, pointerId: 1 });
+    expect(document.querySelector(".game-catcher[data-thrown='true']")).toBeNull();
+    expect(send).not.toHaveBeenCalledWith(expect.objectContaining({ action: "pass" }));
+  });
+  it("gives the thing back when a pass is refused or lost, so it can be thrown again", async () => {
+    vi.useFakeTimers();
+    try {
+      const send = seed({ kind: "relay", cue: "Pass", actionLabel: "Pass it on", objectLabel: "the mat" }, { caughtBy: "p" });
+      send.mockResolvedValueOnce(false);
+      render(<StoryInteractionControls />);
+      const button = screen.getByRole("button", { name: "Pass it on" }) as HTMLButtonElement;
+      fireEvent.click(button);
+      expect(button.disabled).toBe(true);
+      await act(async () => { vi.advanceTimersByTime(300); });
+      expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "pass" }));
+      expect(document.querySelector(".game-catcher[data-thrown='false']")).toBeTruthy();
+      expect(button.disabled).toBe(false);
+      // The second try goes through.
+      fireEvent.click(button);
+      await act(async () => { vi.advanceTimersByTime(300); });
+      expect(send.mock.calls.filter(([intent]) => (intent as { action?: string }).action === "pass")).toHaveLength(2);
     } finally { vi.useRealTimers(); }
   });
   it("shows where a relay thing is on the TV: in the air above the catcher, then in their hands", () => {
@@ -400,16 +431,32 @@ describe("each game has something to do with your hands", () => {
     expect(caught.container.querySelector(".game-hero__token--air")).toBeNull();
     expect(caught.container.querySelector(".game-hero__token")).toBeTruthy();
   });
-  it("sends one adjust per notch when the balance lever is dragged", () => {
+  it("sends one adjust per notch when the balance lever is dragged, each after the last has landed", async () => {
     const send = seed({ kind: "balance", cue: "Level", actionLabel: "Carry", objectLabel: "Basket" });
+    const pending: ((ok: boolean) => void)[] = [];
+    send.mockImplementation(() => new Promise<boolean>((resolve) => { pending.push(resolve); }));
     render(<StoryInteractionControls />);
     const track = document.querySelector(".game-lever__track") as HTMLElement;
     track.getBoundingClientRect = () => ({ top: 0, bottom: 100, height: 100, left: 0, right: 40, width: 40, x: 0, y: 0, toJSON: () => ({}) });
     fireEvent.pointerDown(track, { clientY: 95, pointerId: 1 });
     fireEvent.pointerUp(track, { clientY: 50, pointerId: 1 });
-    const adjusts = send.mock.calls.filter(([intent]) => (intent as { action?: string }).action === "adjust");
-    expect(adjusts).toHaveLength(2);
-    expect(adjusts.every(([intent]) => (intent as { direction?: string }).direction === "up")).toBe(true);
+    const adjusts = () => send.mock.calls.filter(([intent]) => (intent as { action?: string }).action === "adjust");
+    // Never two in flight: the second waits for the first to land.
+    expect(adjusts()).toHaveLength(1);
+    await act(async () => { pending.shift()!(true); });
+    expect(adjusts()).toHaveLength(2);
+    await act(async () => { pending.shift()!(true); });
+    expect(adjusts().every(([intent]) => (intent as { direction?: string }).direction === "up")).toBe(true);
+  });
+  it("stops a dragged lever at the first refused notch", async () => {
+    const send = seed({ kind: "balance", cue: "Level", actionLabel: "Carry", objectLabel: "Basket" });
+    send.mockResolvedValue(false);
+    render(<StoryInteractionControls />);
+    const track = document.querySelector(".game-lever__track") as HTMLElement;
+    track.getBoundingClientRect = () => ({ top: 0, bottom: 100, height: 100, left: 0, right: 40, width: 40, x: 0, y: 0, toJSON: () => ({}) });
+    fireEvent.pointerDown(track, { clientY: 95, pointerId: 1 });
+    await act(async () => { fireEvent.pointerUp(track, { clientY: 5, pointerId: 1 }); });
+    expect(send.mock.calls.filter(([intent]) => (intent as { action?: string }).action === "adjust")).toHaveLength(1);
   });
   it("stamps a word on a finished game, kind by kind, and never scolds a miss", async () => {
     const { stampFor } = await import("./game-feel");

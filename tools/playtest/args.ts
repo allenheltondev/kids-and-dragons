@@ -44,6 +44,9 @@ export function parse(argv: string[]): Args {
     else args.positional.push(arg);
   }
   if (!Number.isInteger(args.players) || args.players < 1 || args.players > 4) throw new Error("--players is 1 to 4");
+  // A zero or nonsense interval would never step the recorder forward (#555 review).
+  if (!Number.isFinite(args.record) || args.record < 0) throw new Error("--record is a number of milliseconds, 0 or more");
+  if (!Number.isInteger(args.every) || args.every < 1) throw new Error("--every is a whole number of milliseconds, 1 or more");
   return args;
 }
 

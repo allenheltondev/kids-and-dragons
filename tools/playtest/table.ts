@@ -268,6 +268,7 @@ export async function openTable(options: TableOptions): Promise<Table> {
       // while a frame is being composed; the composites are built afterwards, one per `everyMs`,
       // each showing what every screen last painted by then.
       const every = recordOptions.everyMs ?? 200;
+      if (!Number.isFinite(every) || every <= 0) throw new Error(`record: everyMs must be a positive number of milliseconds, not ${every}`);
       const dir = outDir(recordOptions.dir);
       const devices = [...(seeded.tv ? [tv] : []), ...phones];
       const streams = await Promise.all(devices.map(async (page) => {
