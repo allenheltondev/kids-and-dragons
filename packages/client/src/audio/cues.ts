@@ -78,5 +78,12 @@ export const CUE_QUIET: Record<CueId, "keep" | "drop"> = {
   victory: "drop",
   tap: "keep",
   "page-turn": "keep",
+  "pad-1": "keep",
+  "pad-2": "keep",
+  "pad-3": "keep",
+  "pad-4": "keep",
+  catch: "keep",
+  whoosh: "keep",
+  tick: "keep",
   error: "drop",
 };

@@ -161,6 +161,27 @@ chime when the whole snowy landing shows"), never the mechanic's vocabulary.
 The Stuttering Flats cues and labels were rewritten this way. The engine,
 protocol, and authored fields did not change.
 
+## Play, not forms
+
+Each kind is now played with the hands, with the engine's intents unchanged:
+
+- **Precision** is a big round TAP pad. The marker leaves a short trail, freezes where
+  the tap landed, and says THUNK! or boing.
+- **Timing**: the lamp is the lead's button, filling its ring as NOW comes.
+- **Memory and sequence** are coloured pads, Simon-style. The TV lights each pad and
+  plays its note as the pattern runs; the lead taps the pads back and hears them.
+- **Relay**: the object flies to the next hero, hovers until caught, and leaves with
+  a flick up the phone (or the button).
+- **Balance** is a seesaw carrying the load, with a lever each hero drags into the
+  glowing middle. One notch is one `adjust`.
+- **Cooperate**: the load lifts as hands take hold, and a held button fills.
+- **Play** picks fly off as stickers; each bubble shows who did it.
+- Every game opens with GO! (patterns excepted) and ends on a stamped word.
+
+The TV voices the room with new cues (`pad-1` to `pad-4`, `catch`, `whoosh`,
+`tick`), synthesized until recorded files exist. Phones answer their own taps with
+short vibrations. All motion and vibration stop under reduced motion.
+
 ## Family playtest
 
 For each prototype, observe whether the child understands a one-sentence cue,

@@ -63,6 +63,15 @@ export type CueId =
   | "tap"
   // A map card opening: a soft paper flick.
   | "page-turn"
+  // Story interaction (#493) game sounds: one note per coloured pad, a pattern's voice; a soft
+  // catch, a whoosh for a pass or a shuffle, and the tick that says NOW is coming.
+  | "pad-1"
+  | "pad-2"
+  | "pad-3"
+  | "pad-4"
+  | "catch"
+  | "whoosh"
+  | "tick"
   | "error";
 
 export type AmbienceId = "gate-hum" | "cavern-air";
