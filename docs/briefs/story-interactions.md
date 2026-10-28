@@ -124,6 +124,43 @@ Proposed Clever benefit: reveal a helpful ordering hint on request.
   change views while supporting the way. Reduced-motion devices offer assistance
   without rendering the aiming animation.
 
+## The game board (first family playtest)
+
+The first family to play a chapter built on these mechanics (the goat rescue on
+the Stuttering Flats) came away confused: the game was a small bordered widget
+under the narration on both screens, the authored cue read like a manual
+("Test while the whole-landing interval is clear"), every phone offered
+"Take a helping hand" with no word about what it did, and nothing said whose
+phone mattered or whether to look at the TV or the phone.
+
+An interaction is now the whole screen, framed the same way everywhere
+(`StoryInteraction.tsx`, `InteractionExtras.tsx`, `interaction-copy.ts`):
+
+- **A name for the game** in kid words, from the kind (`Hit the gold`,
+  `Wait for NOW`, `Copy the pattern`, `Share the clues`, `Follow the glow`,
+  `Hold it level`, `Pass it along`, `All together`, `Everyone joins in`), then
+  the authored cue. Before anyone starts, the board says how the game is played
+  in one breath.
+- **The board** fills the TV's plate and the phone's pane: the painted props
+  and heroes, and the kind's own picture (a sliding marker with a gold stretch,
+  a lamp that says Wait… / NOW!, the pattern tile by tile with progress dots,
+  numbered answer slots, this phone's clue, a gauge per hero for balance, a
+  row of hero faces for relays and holds, speech bubbles for play).
+- **One line that says who does what, on which phone.** The TV reads
+  `Aster: when the lamp says NOW!, tap "Ring the chime" on your phone.` A
+  phone reads its own job, with a TV or phone icon for where to look:
+  `Press and hold until Aster is done.` The lead follows the connected
+  actor the engine already picks; nothing is asked of a phone that is away.
+- **Help is one fold, explained.** `Stuck? Get help` holds Relaxed play and
+  the helping hand, each with a sentence saying what it does. The helping hand
+  is still offered on every phone (a parent can take it for a child), and it
+  opens by itself on a phone that cannot aim under reduced motion.
+
+Authored cues should still be plain: name the thing and the moment ("Ring the
+chime when the whole snowy landing shows"), never the mechanic's vocabulary.
+The Stuttering Flats cues and labels were rewritten this way. The engine,
+protocol, and authored fields did not change.
+
 ## Family playtest
 
 For each prototype, observe whether the child understands a one-sentence cue,

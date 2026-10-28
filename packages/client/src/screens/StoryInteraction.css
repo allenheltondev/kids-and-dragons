@@ -1,18 +1,498 @@
-.story-interaction { padding: 1rem; margin-block: 1rem; border: 1px solid currentColor; border-radius: 1rem; font-size: var(--font-size-md, 1em); }
-.narration__plate .story-interaction { font-size: var(--font-size-lg, 1.25em); }
-.story-interaction__button { display: block; width: 100%; min-height: 3.5rem; padding: .8rem; margin-block: .7rem; border: 2px solid currentColor; border-radius: .8rem; font: inherit; color: inherit; background: var(--kad-bg-raised, #22352e); cursor: pointer; }
-.story-interaction__button:disabled { opacity: .5; cursor: default; }
+/*
+ * Story interactions as a game board (#493 playtest follow-up).
+ *
+ * One frame on every screen: name + cue up top, the board in the middle, and the one line
+ * that tells the table what to do under it. The TV's frame fills the plate (NarrationPanel.css
+ * `--game`), a phone's fills its pane (PlayerPanel.css `--game`). Tokens from theme.css, the
+ * raised-card recipe from PlayerPanel's `.choice`, so a game reads as part of the same tray as
+ * the choices and the fight cards, not a widget pasted on.
+ */
+
+.game {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3, 0.75em);
+  min-block-size: 0;
+  color: var(--kad-ink, #f4f0ff);
+  font-size: var(--font-size-md, 1em);
+}
+
+.game--tv { flex: 1 1 0; font-size: var(--font-size-md, 1em); }
+.game--tv > * { flex: 0 0 auto; }
+.game--phone { flex: 1 0 auto; padding: var(--space-3, 0.75em); }
+
+/* --- head: the game's name, then the story's cue ------------------------ */
+
+.game__head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25em);
+}
+/* On the TV the name sits beside the cue: one line less, and the board gets it. */
+.game--tv .game__head { flex-direction: row; flex-wrap: wrap; align-items: center; gap: var(--space-2, 0.5em) var(--space-3, 0.75em); }
+.game--tv .game__badge { align-self: center; }
+
+.game__badge {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: 0.2em 0.8em 0.2em 0.6em;
+  border-radius: var(--radius-pill, 999em);
+  background: linear-gradient(to bottom, var(--kad-gold-hi, #ffe6a8), var(--kad-gold-lo, #c9962f));
+  color: var(--kad-accent-ink, #0d0b1a);
+  font-size: 0.8em;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  box-shadow: 0 0.12em 0 rgba(0, 0, 0, 0.35);
+}
+
+.game__cue {
+  margin: 0;
+  font-size: 1.35em;
+  font-weight: 800;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+/* --- the board ---------------------------------------------------------- */
+
+.game__board {
+  position: relative;
+  flex: 1 1 auto;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-3, 0.75em);
+  border-radius: var(--radius-lg, 1.25em);
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgba(139, 108, 245, 0.16), transparent 60%),
+    linear-gradient(to bottom, rgb(var(--kad-bg-raised-rgb, 26 23 48) / 92%), rgb(var(--kad-bg-sunken-rgb, 8 7 17) / 96%));
+  box-shadow:
+    inset 0 0 0 1px var(--kad-raised-rim, rgba(190, 178, 255, 0.22)),
+    inset 0 0.4em 1em rgba(0, 0, 0, 0.45);
+  overflow: auto;
+  scrollbar-width: none;
+  container-type: inline-size;
+}
+/* Centred when there is room, clipped at the bottom (never the top) when there is not. */
+.game__board > :first-child { margin-block-start: auto; }
+.game__board > :last-child { margin-block-end: auto; }
+
+/* The TV's board takes whatever the head and the status line leave; it never pushes them off. */
+.game--tv .game__board { flex: 1 1 0; min-block-size: 5em; padding: var(--space-2, 0.5em) var(--space-5, 1.5em); }
+.game--phone .game__board { min-block-size: 7em; }
+
+/* The painted props and heroes get the room the old strip never had, and give it back first. */
+.game__board > .interaction-art { flex: 0 1 auto; min-block-size: 3em; block-size: clamp(4em, 24cqw, 7em); }
+.game--tv .game__board > .interaction-art { block-size: clamp(4em, 16cqw, 9em); }
+.game--tv .game__board > .interaction-art .interaction-art__prop { inline-size: clamp(4em, 16cqw, 10em); }
+.game--tv .game__board > .interaction-art .interaction-art__hero { inline-size: clamp(3em, 10cqw, 7em); }
+
+/* --- under the board: the TV's "who, what, which phone" line -------------- */
+
+.game__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75em);
+  margin: 0;
+  padding: var(--space-2, 0.5em) var(--space-4, 1em);
+  border-radius: var(--radius-md, 0.75em);
+  background: rgb(var(--kad-gold-rgb, 245 200 108) / 14%);
+  box-shadow: inset 0 0 0 1px rgb(var(--kad-gold-rgb, 245 200 108) / 45%);
+  font-size: 1.1em;
+  font-weight: 700;
+  line-height: 1.25;
+}
+.game__status > .kad-icon { flex: 0 0 auto; font-size: 1.6em; color: var(--kad-gold, #f5c86c); }
+
+/* --- on a phone: this person's job ---------------------------------------- */
+
+.game__job {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-3, 0.75em);
+  margin: 0;
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border-radius: var(--radius-md, 0.75em);
+  background: rgb(var(--kad-accent-rgb, 139 108 245) / 16%);
+  box-shadow: inset 0 0 0 1px rgb(var(--kad-accent-rgb, 139 108 245) / 40%);
+  line-height: 1.25;
+}
+.game__job--tv {
+  background: rgb(var(--kad-gold-rgb, 245 200 108) / 14%);
+  box-shadow: inset 0 0 0 1px rgb(var(--kad-gold-rgb, 245 200 108) / 45%);
+}
+.game__job-eye {
+  display: grid;
+  place-items: center;
+  inline-size: 2.4em;
+  block-size: 2.4em;
+  border-radius: var(--radius-md, 0.75em);
+  background: radial-gradient(circle at 50% 35%, #1d1838, var(--color-surface-sunken, #0c0917));
+  box-shadow: inset 0 0 0 1px rgba(190, 178, 255, 0.12), inset 0 0.3em 0.6em rgba(0, 0, 0, 0.5);
+  color: var(--kad-gold, #f5c86c);
+  font-size: 1.1em;
+}
+.game__job-text { display: flex; flex-direction: column; gap: 0.15em; min-inline-size: 0; }
+.game__job-text > strong { font-size: 1.1em; font-weight: 800; }
+.game__job-detail { color: var(--kad-ink-dim, #b9b0d8); font-size: 0.92em; }
+
+/* --- controls ------------------------------------------------------------- */
+
+.game__controls { display: flex; flex-direction: column; gap: var(--space-2, 0.5em); }
+.game__controls:empty { display: none; }
+
+.game-action { font-size: var(--font-size-lg, 1.25em); }
 .story-interaction__hold { touch-action: none; user-select: none; -webkit-user-select: none; }
-.story-interaction__track { position: relative; height: 3rem; margin: 1.5rem .5rem; background: #172128; border-radius: .5rem; }
-.story-interaction__target { position: absolute; inset-block: 0; background: #b98b2c; border: 2px solid #ffe0a0; }
-.story-interaction__marker { position: absolute; inset-block: -.5rem; width: .4rem; background: white; transform: translateX(-50%); }
-.story-interaction__covers { position: relative; height: 6em; margin-block: 1em; }
-.story-interaction__cover { position: absolute; top: 1em; transform: translateX(-50%); text-align: center; width: 25%; }
-.story-interaction__cover > span { display: block; font-size: 2em; color: var(--kad-gold, #ffe0a0); }
-.story-interaction__cover small { display: block; font-size: .7em; overflow-wrap: anywhere; }
-.story-interaction__cover-label { top: 4em; }
-.story-interaction__tracking-help { display: block; padding-top: 6em; font-size: .7em; }
-.story-interaction__memory, .story-interaction__signal, .story-interaction__spark { padding: 1em; text-align: center; background: var(--kad-bg-raised, #1a1730); border-radius: 1em; }
-.story-interaction__signal[data-safe="true"] { border: 3px solid var(--kad-gold, #ffe0a0); }
-.story-interaction__balance { text-align: center; padding: 1em; border-bottom: .4em solid var(--kad-gold, #ffe0a0); transform-origin: center; }
-.story-interaction__reactions { min-height: 3em; }
+.game-hold { position: relative; flex-direction: column; gap: 0.1em; padding-block: var(--space-3, 0.75em); }
+.game-hold__hint { font-size: 0.65em; font-weight: 600; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.04em; }
+.game-hold[aria-pressed="true"] { background: linear-gradient(to bottom, var(--kad-gold-hi, #ffe6a8), var(--kad-gold-lo, #c9962f)); color: var(--kad-accent-ink, #0d0b1a); }
+
+.game-actions-row { display: flex; justify-content: center; gap: var(--space-2, 0.5em); flex-wrap: wrap; }
+.game-actions-row--pair > * { flex: 1 1 0; min-inline-size: 0; }
+
+.game-options { display: flex; flex-direction: column; gap: var(--space-2, 0.5em); }
+.game-options--grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5em, 1fr)); }
+
+/* An option is a raised card like a choice: a tile with the picture, the words under it. */
+.game-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  min-block-size: var(--touch-min, 48px);
+  padding: var(--space-3, 0.75em) var(--space-2, 0.5em);
+  border: 0;
+  border-radius: var(--radius-lg, 1.25em);
+  background: linear-gradient(to bottom, var(--kad-raised-hi, #352c5c) 0%, var(--kad-raised-lo, #1b1631) 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 0 0 1px var(--kad-raised-rim, rgba(190, 178, 255, 0.22)),
+    0 0.18em 0 var(--kad-raised-edge, #0a0814),
+    0 0.4em 0.8em rgba(0, 0, 0, 0.4);
+  color: inherit;
+  font: inherit;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: transform var(--kad-dur-fast, 120ms) var(--kad-ease), box-shadow var(--kad-dur-fast, 120ms) var(--kad-ease);
+}
+.game-option:active:not(:disabled) { transform: translateY(0.12em); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), inset 0 0 0 1px var(--kad-raised-rim, rgba(190, 178, 255, 0.22)), 0 0.06em 0 var(--kad-raised-edge, #0a0814); }
+.game-option:disabled { opacity: 0.45; cursor: not-allowed; }
+.game-option__icon {
+  display: grid;
+  place-items: center;
+  inline-size: 3.2em;
+  block-size: 3.2em;
+  border-radius: var(--radius-md, 0.75em);
+  background: radial-gradient(circle at 50% 35%, #1d1838, var(--color-surface-sunken, #0c0917));
+  box-shadow: inset 0 0 0 1px rgba(190, 178, 255, 0.12), inset 0 0.3em 0.6em rgba(0, 0, 0, 0.5);
+  color: var(--kad-gold, #f5c86c);
+  font-size: 1.2em;
+}
+.game-option__icon > .kad-icon, .game-option__icon > .painted-glyph { inline-size: 2em; block-size: 2em; }
+.game-option__icon:has(.painted-glyph) > .kad-icon { display: none; }
+.game-option__label { line-height: 1.2; }
+
+/* --- the board's parts ----------------------------------------------------- */
+
+.game-note { margin: 0; text-align: center; font-weight: 600; line-height: 1.3; }
+.game-how { margin: 0; padding: var(--space-2, 0.5em) var(--space-3, 0.75em); text-align: center; font-size: 1.1em; font-weight: 600; line-height: 1.35; color: var(--kad-ink, #f4f0ff); text-wrap: balance; }
+.game-how > .kad-icon { color: var(--kad-gold, #f5c86c); vertical-align: -0.15em; }
+.game-note > .kad-icon { color: var(--kad-gold, #f5c86c); vertical-align: -0.15em; }
+.game-note--big { font-size: 1.4em; font-weight: 800; color: var(--kad-gold, #f5c86c); }
+.game-note--dim { color: var(--kad-ink-dim, #b9b0d8); font-weight: 500; }
+
+/* Precision: the slide, the gold, the puck. */
+.game-track {
+  position: relative;
+  block-size: 3.6em;
+  margin: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border-radius: var(--radius-pill, 999em);
+  background: linear-gradient(to bottom, #0b0a16, #1a1730);
+  box-shadow: inset 0 0.2em 0.5em rgba(0, 0, 0, 0.6), inset 0 0 0 1px var(--kad-raised-rim, rgba(190, 178, 255, 0.22));
+  transition: box-shadow var(--kad-dur-fast, 120ms);
+}
+.game-track[data-gold="true"] { box-shadow: inset 0 0.2em 0.5em rgba(0, 0, 0, 0.6), var(--kad-chosen-glow, 0 0 0 0.15em #f5c86c); }
+.game-track__gold {
+  position: absolute;
+  inset-block: 0.35em;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-pill, 999em);
+  background: linear-gradient(to bottom, var(--kad-gold-hi, #ffe6a8), var(--kad-gold-lo, #c9962f));
+  color: var(--kad-accent-ink, #0d0b1a);
+  font-size: 1.3em;
+  box-shadow: 0 0 0.8em rgba(245, 200, 108, 0.45);
+}
+.game-track__marker {
+  position: absolute;
+  top: 50%;
+  inline-size: 1.6em;
+  block-size: 1.6em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #ffffff, #cfc6ff 60%, #8b6cf5);
+  box-shadow: 0 0 0 0.15em rgba(255, 255, 255, 0.35), 0 0 1em rgba(183, 161, 255, 0.8);
+  transform: translate(-50%, -50%);
+}
+/* Old names kept for the tests and the art layer; the look is above. */
+.story-interaction__track { position: relative; }
+
+/* Timing: a lamp that says it. */
+.game-lamp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  margin: 0 auto;
+  padding: var(--space-2, 0.5em);
+}
+.game-lamp__light {
+  display: grid;
+  place-items: center;
+  inline-size: 4.5em;
+  block-size: 4.5em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, #2a2550, #0c0917);
+  box-shadow: inset 0 0 0 0.2em rgba(190, 178, 255, 0.18), inset 0 0.4em 0.8em rgba(0, 0, 0, 0.6);
+  color: var(--kad-ink-dim, #b9b0d8);
+  font-size: 1.3em;
+  transition: transform var(--kad-dur-fast, 120ms), box-shadow var(--kad-dur-fast, 120ms);
+}
+.game-lamp__word { font-size: 1.6em; font-weight: 900; color: var(--kad-ink-dim, #b9b0d8); letter-spacing: 0.02em; }
+.game-lamp[data-safe="true"] .game-lamp__light {
+  background: radial-gradient(circle at 50% 40%, var(--kad-gold-hi, #ffe6a8), var(--kad-gold-lo, #c9962f));
+  color: var(--kad-accent-ink, #0d0b1a);
+  box-shadow: 0 0 0 0.25em rgba(245, 200, 108, 0.55), 0 0 2em rgba(245, 200, 108, 0.8);
+  transform: scale(1.12);
+}
+.game-lamp[data-safe="true"] .game-lamp__word { color: var(--kad-gold, #f5c86c); }
+.game--tv .game-lamp { flex-direction: row; gap: var(--space-4, 1em); }
+.game--tv .game-lamp__light { inline-size: 4.5em; block-size: 4.5em; font-size: 1.5em; }
+.game--tv .game-lamp__word { font-size: 2.4em; }
+
+/* Tiles: a picture with its word, for patterns, clues and answers. */
+.game-row { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2, 0.5em); margin: 0; padding: 0; list-style: none; }
+.game-tile {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3em;
+  min-inline-size: 4.5em;
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border-radius: var(--radius-md, 0.75em);
+  background: linear-gradient(to bottom, var(--kad-raised-hi, #352c5c), var(--kad-raised-lo, #1b1631));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 0 0 1px var(--kad-raised-rim, rgba(190, 178, 255, 0.22)), 0 0.15em 0 var(--kad-raised-edge, #0a0814);
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+}
+.game-tile--lg { min-inline-size: 7em; padding: var(--space-3, 0.75em) var(--space-4, 1em); font-size: 1.3em; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 0.15em 0 var(--kad-raised-edge, #0a0814), var(--kad-chosen-glow, 0 0 0 0.15em #f5c86c); }
+.game-tile--muted { opacity: 0.55; }
+.game-tile__icon { display: grid; place-items: center; font-size: 1.6em; color: var(--kad-gold, #f5c86c); }
+.game-tile__icon > .painted-glyph { inline-size: 1.4em; block-size: 1.4em; }
+.game-tile__icon:has(.painted-glyph) > .kad-icon { display: none; }
+.game-tile__label { font-size: 0.85em; }
+.game-tile__index {
+  position: absolute;
+  top: -0.5em;
+  left: -0.5em;
+  display: grid;
+  place-items: center;
+  inline-size: 1.5em;
+  block-size: 1.5em;
+  border-radius: 50%;
+  background: var(--kad-gold, #f5c86c);
+  color: var(--kad-accent-ink, #0d0b1a);
+  font-size: 0.8em;
+  font-weight: 900;
+}
+
+.game-dots { display: flex; align-items: center; justify-content: center; gap: 0.4em; margin: 0; }
+.game-dots__dot { inline-size: 0.7em; block-size: 0.7em; border-radius: 50%; background: rgba(190, 178, 255, 0.22); }
+.game-dots__dot--on { background: var(--kad-gold, #f5c86c); box-shadow: 0 0 0.5em rgba(245, 200, 108, 0.6); }
+.game-dots > small { color: var(--kad-ink-dim, #b9b0d8); margin-inline-start: 0.4em; }
+
+/* Slots: numbered empty boxes that fill as the answer is built. */
+.game-row--slots { align-items: stretch; }
+.game-slot {
+  display: grid;
+  place-items: center;
+  min-inline-size: 4.5em;
+  min-block-size: 4.5em;
+  border-radius: var(--radius-md, 0.75em);
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: inset 0 0 0 0.12em rgba(190, 178, 255, 0.25);
+}
+.game-slot--full { background: none; box-shadow: none; }
+.game-slot__number { font-size: 1.6em; font-weight: 900; color: rgba(190, 178, 255, 0.4); }
+
+.game-clue {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1, 0.25em);
+  padding: var(--space-3, 0.75em);
+  border-radius: var(--radius-md, 0.75em);
+  background: rgb(var(--kad-gold-rgb, 245 200 108) / 12%);
+  box-shadow: inset 0 0 0 1px rgb(var(--kad-gold-rgb, 245 200 108) / 40%);
+}
+.game-clue__eyebrow { font-size: 0.8em; font-weight: 800; text-transform: uppercase; letter-spacing: 0.03em; color: var(--kad-gold, #f5c86c); }
+.game-clue > ul { margin: 0; padding-inline-start: 1.1em; font-size: 1.1em; font-weight: 600; line-height: 1.3; }
+.game-sequence { display: flex; flex-direction: column; gap: var(--space-3, 0.75em); }
+.game-memory { display: flex; flex-direction: column; align-items: center; gap: var(--space-2, 0.5em); }
+.game--tv .game-memory { flex-direction: row; flex-wrap: wrap; justify-content: center; gap: var(--space-3, 0.75em) var(--space-5, 1.5em); }
+.game--tv .game-balance { gap: var(--space-2, 0.5em); }
+.game--tv .game-gauge__well { block-size: 2.8em; }
+.game--tv .game-beam { padding-block: var(--space-1, 0.25em); }
+
+/* Heroes: a row of faces with a word under each. */
+.game-heroes { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-3, 0.75em); margin: 0; padding: 0; list-style: none; }
+.game-hero { display: flex; flex-direction: column; align-items: center; gap: 0.2em; min-inline-size: 4.5em; text-align: center; transition: opacity var(--kad-dur-base, 200ms); }
+.game-hero--off { opacity: 0.55; }
+.game-hero__face {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 4em;
+  block-size: 4.6em;
+  border-radius: var(--radius-md, 0.75em);
+  background: radial-gradient(circle at 50% 35%, #1d1838, var(--color-surface-sunken, #0c0917));
+  box-shadow: inset 0 0 0 1px rgba(190, 178, 255, 0.12), inset 0 0.3em 0.6em rgba(0, 0, 0, 0.5);
+  overflow: visible;
+}
+.game-hero__face > img { inline-size: 100%; block-size: 100%; object-fit: contain; object-position: 50% 100%; }
+.game-hero__face--goal { color: var(--kad-gold, #f5c86c); font-size: 1.8em; inline-size: 2.3em; block-size: 2.55em; }
+.game-hero--on .game-hero__face { box-shadow: inset 0 0 0 1px rgba(190, 178, 255, 0.12), var(--kad-chosen-glow, 0 0 0 0.15em #f5c86c); }
+.game-hero--done .game-hero__face { box-shadow: inset 0 0 0 1px rgba(190, 178, 255, 0.12), 0 0 0 0.15em var(--kad-success, #5fd6a0); }
+.game-hero__mark {
+  position: absolute;
+  top: -0.5em;
+  right: -0.5em;
+  display: grid;
+  place-items: center;
+  inline-size: 1.6em;
+  block-size: 1.6em;
+  border-radius: 50%;
+  background: var(--kad-gold, #f5c86c);
+  color: var(--kad-accent-ink, #0d0b1a);
+  box-shadow: 0 0.1em 0.3em rgba(0, 0, 0, 0.5);
+}
+.game-hero--done .game-hero__mark { background: var(--kad-success, #5fd6a0); }
+.game-hero__name { font-weight: 800; line-height: 1.1; }
+.game-hero__state { font-size: 0.8em; color: var(--kad-ink-dim, #b9b0d8); line-height: 1.1; }
+.game-hero--on .game-hero__state { color: var(--kad-gold, #f5c86c); font-weight: 700; }
+
+/* Balance: the beam and a gauge per hero. */
+.game-balance { display: flex; flex-direction: column; align-items: center; gap: var(--space-3, 0.75em); }
+.game-beam {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  padding: var(--space-2, 0.5em) var(--space-4, 1em);
+  border-radius: var(--radius-md, 0.75em);
+  border-bottom: 0.4em solid var(--kad-gold, #f5c86c);
+  background: linear-gradient(to bottom, var(--kad-raised-hi, #352c5c), var(--kad-raised-lo, #1b1631));
+  font-weight: 800;
+  transform-origin: center;
+  transition: transform var(--kad-dur-base, 200ms) var(--kad-ease);
+}
+.game-balance[data-ready="true"] .game-beam { box-shadow: var(--kad-chosen-glow, 0 0 0 0.15em #f5c86c); }
+.game-gauges { display: flex; justify-content: center; gap: var(--space-4, 1em); margin: 0; padding: 0; list-style: none; }
+.game-gauge { display: flex; flex-direction: column; align-items: center; gap: 0.2em; min-inline-size: 4.5em; text-align: center; }
+.game-gauge__well {
+  position: relative;
+  inline-size: 1.6em;
+  block-size: 5em;
+  border-radius: var(--radius-pill, 999em);
+  background: linear-gradient(to bottom, #0b0a16, #1a1730);
+  box-shadow: inset 0 0.2em 0.5em rgba(0, 0, 0, 0.6), inset 0 0 0 1px var(--kad-raised-rim, rgba(190, 178, 255, 0.22));
+  overflow: hidden;
+}
+.game-gauge__fill { position: absolute; inset-inline: 0; bottom: 0; background: linear-gradient(to top, var(--kad-accent-lo, #6a4ee0), var(--kad-accent-hi, #b7a1ff)); transition: height var(--kad-dur-base, 200ms) var(--kad-ease); }
+.game-gauge__middle { position: absolute; inset-inline: 0; top: 50%; block-size: 0.2em; background: var(--kad-gold, #f5c86c); transform: translateY(-50%); z-index: 1; }
+.game-gauge--ok .game-gauge__fill { background: linear-gradient(to top, #2f9a6c, var(--kad-success, #5fd6a0)); }
+.game-gauge__name { font-weight: 800; line-height: 1.1; }
+.game-gauge__word { font-size: 0.8em; color: var(--kad-ink-dim, #b9b0d8); }
+.game-gauge--ok .game-gauge__word { color: var(--kad-success, #5fd6a0); font-weight: 700; }
+
+/* Relay and cooperate. */
+.game-relay, .game-cooperate { display: flex; flex-direction: column; align-items: center; gap: var(--space-3, 0.75em); }
+
+/* Play: what everyone did, as little bubbles. */
+.game-play { display: flex; flex-direction: column; gap: var(--space-2, 0.5em); }
+.game-bubbles { display: flex; flex-direction: column; gap: var(--space-2, 0.5em); margin: 0; padding: 0; list-style: none; }
+.game-bubble {
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  border-radius: var(--radius-lg, 1.25em);
+  background: rgb(var(--kad-ink-rgb, 244 240 255) / 8%);
+  box-shadow: inset 0 0 0 1px rgba(190, 178, 255, 0.16);
+  line-height: 1.3;
+}
+.game-bubble:last-child { background: rgb(var(--kad-gold-rgb, 245 200 108) / 14%); box-shadow: inset 0 0 0 1px rgb(var(--kad-gold-rgb, 245 200 108) / 40%); }
+
+/* Tracking covers: the old layout, inside the board. */
+.story-interaction__covers { position: relative; block-size: 6em; margin-block: var(--space-2, 0.5em); }
+.story-interaction__cover { position: absolute; top: 1em; transform: translateX(-50%); text-align: center; inline-size: 25%; }
+.story-interaction__cover > .game-cover { display: block; font-size: 2.4em; color: var(--kad-ink-dim, #b9b0d8); }
+.story-interaction__cover > .game-cover--glow { color: var(--kad-gold, #f5c86c); text-shadow: 0 0 0.5em rgba(245, 200, 108, 0.8); }
+.story-interaction__cover small { display: block; font-size: 0.8em; font-weight: 700; overflow-wrap: anywhere; }
+.story-interaction__cover-label { top: 4.2em; }
+.story-interaction__tracking-help { display: block; padding-top: 6em; font-size: 0.85em; font-weight: 700; text-align: center; }
+
+/* --- the result ----------------------------------------------------------- */
+
+.game__outcome {
+  margin: 0;
+  padding: var(--space-3, 0.75em) var(--space-4, 1em);
+  border-radius: var(--radius-md, 0.75em);
+  text-align: center;
+  font-size: 1.3em;
+  font-weight: 800;
+  line-height: 1.25;
+}
+.game__outcome > .kad-icon { vertical-align: -0.15em; }
+.game__outcome--success { background: rgb(var(--kad-gold-rgb, 245 200 108) / 16%); color: var(--kad-gold, #f5c86c); box-shadow: inset 0 0 0 1px rgb(var(--kad-gold-rgb, 245 200 108) / 50%); }
+.game__outcome--assisted { background: rgb(var(--kad-success-rgb, 95 214 160) / 14%); color: var(--kad-success, #5fd6a0); box-shadow: inset 0 0 0 1px rgb(var(--kad-success-rgb, 95 214 160) / 50%); }
+.game__outcome--failure { background: rgb(var(--kad-accent-rgb, 139 108 245) / 16%); box-shadow: inset 0 0 0 1px rgb(var(--kad-accent-rgb, 139 108 245) / 45%); }
+
+/* --- help: relaxed play and the helping hand, explained where they live -------- */
+
+.game__help {
+  margin-block-start: auto;
+  border-radius: var(--radius-md, 0.75em);
+  background: rgb(var(--kad-ink-rgb, 244 240 255) / 5%);
+  box-shadow: inset 0 0 0 1px var(--kad-border, rgba(190, 178, 255, 0.16));
+  color: var(--kad-ink-dim, #b9b0d8);
+}
+.game__help-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5em);
+  min-block-size: var(--touch-min, 48px);
+  padding: var(--space-2, 0.5em) var(--space-3, 0.75em);
+  font-weight: 700;
+  cursor: pointer;
+  list-style: none;
+}
+.game__help-summary::-webkit-details-marker { display: none; }
+.game__help-summary::after { content: "▾"; margin-inline-start: auto; opacity: 0.7; }
+.game__help[open] > .game__help-summary::after { content: "▴"; }
+.game__help > :not(summary) { margin: 0 var(--space-3, 0.75em) var(--space-3, 0.75em); }
+.game__help-option { display: flex; align-items: flex-start; gap: var(--space-2, 0.5em); color: var(--kad-ink, #f4f0ff); cursor: pointer; }
+.game__help-option > input { inline-size: 1.4em; block-size: 1.4em; margin: 0.1em 0 0; flex: 0 0 auto; }
+.game__help-option > span { display: flex; flex-direction: column; gap: 0.15em; }
+.game__help-option small { color: var(--kad-ink-dim, #b9b0d8); line-height: 1.3; }
+.game__help-text { line-height: 1.35; }
+.game__help > .kad-button { color: var(--kad-ink, #f4f0ff); }
+
+@media (prefers-reduced-motion: reduce) {
+  .game *, .game *::before, .game *::after { transition: none !important; animation: none !important; }
+}
+[data-motion="reduced"] .game * { transition: none !important; animation: none !important; }
