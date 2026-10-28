@@ -4,7 +4,7 @@
   "index": 8,
   "title": "Gemfall",
   "biome": "mount_red_sky",
-  "estimatedMinutes": 55,
+  "estimatedMinutes": 30,
   "xpAward": 120,
   "entry": "interaction_climb_warmup",
   "plate": {
@@ -64,7 +64,7 @@
       "discovers": [
         "location.mount_red_sky"
       ],
-      "narration": "The last tree on the mountain has a sign nailed to it: NO ROAD BEYOND THIS POINT. SERIOUSLY. Above it, Mount Red Sky glows at the top like a lamp somebody forgot to turn off. Everyone else is running from this mountain. You are going to climb it, find the seal deep inside, and give your answer to whatever is waking under it. Two ways go up: an old zigzag stair, or a slope of loose stones.",
+      "narration": "The last tree carries a sign: NO ROAD BEYOND THIS POINT. SERIOUSLY. Mount Red Sky glows above it. Climb the mountain, find the seal and give your answer. Choose the old zigzag stair or the loose-stone slope.",
       "variants": [
         {
           "when": {
@@ -308,7 +308,7 @@
       "discovers": [
         "creature.cinder_wolf"
       ],
-      "narration": "The path squeezes along a narrow ledge, and a pack of cinder wolves is lying across it, resting on the only warm rock. Nobody is growling. They look like dogs who have heard thunder and are pretending they have not. The biggest one opens one ember-colored eye.",
+      "narration": "Cinder wolves cover the only warm ledge. They look like worried dogs pretending they never heard thunder. The biggest opens an ember-colored eye. It wants the warm rock. You need the path.",
       "cast": [
         {
           "figure": "entities/cinder_wolf",
@@ -428,7 +428,7 @@
     },
     "scene_warden_post": {
       "type": "story",
-      "narration": "Higher up is the wardens' last post, and it is empty. On the table is a logbook and a very neat sign: ALL CLIMBERS MUST SIGN IN. Under it, a smaller sign: THIS MEANS YOU. Beside the log sits a little box labeled FOR CLIMBERS WHO SIGNED. Beside the box sits a dented tin with a slot in the lid: FOR THE NEXT ONES UP. ONE COIN, PLEASE.",
+      "narration": "The last warden post is empty. Its log says ALL CLIMBERS MUST SIGN IN. A box beside it says FOR CLIMBERS WHO SIGNED. A dented tin asks ONE COIN FOR THE NEXT ONES UP. Even the pencil is tied down.",
       "variants": [
         {
           "when": {
@@ -563,7 +563,7 @@
     },
     "scene_overlook": {
       "type": "story",
-      "narration": "At the mountain's shoulder the clouds pull apart, and you can see the whole realm: the city where you started, the fields, the river roads and the forest roads, all winding north to here. Tiny lights crawl along every one of them, going the other way.",
+      "narration": "At the mountain's shoulder, clouds part around the whole realm: your city, fields, river and forest roads. Tiny lights hurry south. Your road brought you here. Take a look before the last climb.",
       "choices": [
         {
           "id": "home",
@@ -679,7 +679,7 @@
     },
     "choice_cairn": {
       "type": "choice_point",
-      "narration": "Near the top stands a cairn: a tall pile of stones, each one left by somebody who climbed this far. Some have names on them. One is wearing a tiny knitted hat. The rule is that you leave something before the last climb. Everybody vote: what do we leave?",
+      "narration": "A cairn of travelers' stones stands near the top. One pebble wears a knitted hat. Leave a message or wish for the next climber. The snack choice means only a few crumbs found in your pocket.",
       "choices": [
         {
           "id": "names",
@@ -695,7 +695,7 @@
         },
         {
           "id": "snack",
-          "label": "Our last snack, for whoever climbs up next",
+          "label": "Leave pocket crumbs for the next climber",
           "icon": "cake",
           "goto": "choice_cairn_snack"
         },
@@ -717,7 +717,7 @@
     },
     "choice_cairn_names": {
       "type": "story",
-      "narration": "You scratch your names onto a pebble and set it near the top. It looks very small among all the other names. But it will still be there tomorrow, whatever happens. The pile creaks, as if making room.",
+      "narration": "Your names fit on a very small pebble. You set it among the others. The pile creaks, making room.",
       "variants": [
         {
           "when": {
@@ -740,7 +740,7 @@
     },
     "choice_cairn_wish": {
       "type": "story",
-      "narration": "You whisper wishes into the same pebble, taking turns, and nobody tells anybody what they wished. For a moment the pebble feels warm. You walk on, everybody pretending not to guess each other's wishes. Everybody is guessing.",
+      "narration": "You whisper a wish into a pebble, then leave it warm on the pile. Nobody has to say the wish aloud.",
       "variants": [
         {
           "when": {
@@ -763,7 +763,7 @@
     },
     "choice_cairn_snack": {
       "type": "story",
-      "narration": "You set your very last snack on the cairn, wrapped up neatly, for whoever climbs up next. Your stomachs grumble about it all the way up. But someday somebody tired is going to find a snack on top of a mountain.",
+      "narration": "You fold a paper scrap around the crumbs in your pocket. A tired climber might enjoy them. A mountain mouse certainly will.",
       "choices": [
         {
           "id": "on",
@@ -799,7 +799,7 @@
     },
     "scene_bell_hut": {
       "type": "story",
-      "narration": "Just below the summit is the highest bell-hut in the foothills, where the dragonlings start the bell-code on its way down. It is empty. The rope is tied to a hook with a note: TIED SO NOBODY RINGS THE LAST ONE BY ACCIDENT. There is just enough slack for an ordinary ring.",
+      "narration": "The highest dragonling bell-hut is empty. Its rope is tied to a hook: DO NOT RING THE LAST ONE BY ACCIDENT. There is enough slack for an ordinary message to everyone below.",
       "variants": [
         {
           "when": {
@@ -939,7 +939,7 @@
       "discovers": [
         "creature.glassback_crab"
       ],
-      "narration": "The path crosses a field of gray ash covered in big, glittering gems. Except every so often, a gem blinks. They are glassback crabs, hundreds of them, pretending to be a gem deposit so nobody will dig them up. It is not a very good plan. Several are waving their claws at you.",
+      "narration": "Glittering gems cover the ash field. Then a gem blinks. Glassback crabs are pretending to be a deposit so nobody digs them up. Several wave their claws. They are very poor at being rocks.",
       "cast": [
         {
           "figure": "entities/glassback_crab",
@@ -1075,7 +1075,7 @@
     },
     "scene_ember_drift": {
       "type": "story",
-      "narration": "Near the top, something tiny glows in a drift of ash: one embermoth, stuck up to its wings, blinking like a nightlight running low. Every moth out here has flown away from the mountain, except the old ones deep inside it. This one looks up at you like a lost puppy.",
+      "narration": "An embermoth is stuck in warm ash. All the other moths outside have fled; the old ones stay deep inside. This straggler blinks up at you. Its wings need help, not a lecture.",
       "cast": [
         {
           "figure": "entities/embermoth"
@@ -1197,7 +1197,7 @@
     },
     "choice_last_breath": {
       "type": "choice_point",
-      "narration": "At the very top, the path ends at a dark round hole: a lava tube, breathing warm air out at you, slow and steady, like something asleep. The stones in your packs hum so loudly you feel it in your teeth. Everybody vote: what do we do with our last minute outside?",
+      "narration": "The summit path ends at a lava tube: a round hole breathing warm air. Your packs hum against your teeth. Before going inside, choose one thing to remember or check.",
       "choices": [
         {
           "id": "best",
@@ -1260,7 +1260,7 @@
     },
     "choice_last_breath_best": {
       "type": "story",
-      "narration": "You tell each other the best bit of the whole road. Nobody picks the same one. Somebody picks a thing so small that everybody had forgotten it, and everybody laughs. Most of the best bits were the soggy bits.",
+      "narration": "Name a favorite moment, aloud if you like. Small and soggy moments count. Then follow the warm air inside.",
       "variants": [
         {
           "when": {
@@ -1283,7 +1283,7 @@
     },
     "choice_last_breath_count": {
       "type": "story",
-      "narration": "You tip the stones out on a flat rock and count them one more time. They hum together, like a choir warming up. You remember where every one came from, and who was there. Then you pack them away, carefully.",
+      "narration": "You count the stones and remember their givers. They hum together. You pack them carefully for the cave.",
       "variants": [
         {
           "when": {
@@ -1329,7 +1329,7 @@
     },
     "choice_last_breath_count_brought": {
       "type": "story",
-      "narration": "You turn out your pockets on a flat rock: a few rush gems, some crumbs, a bit of string. Then you count the things that do not fit in pockets: the people who waved you on, the promises you made, the friends waiting at home. That count takes the whole minute.",
+      "narration": "Your pockets hold rush gems, crumbs and string. Your memory holds helpers and promises. You brought those too.",
       "choices": [
         {
           "id": "on",
@@ -1615,7 +1615,7 @@
         "creature.embermoth"
       ],
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "A side gallery where the air is cool and the gem-veins glow just bright enough to read by. Embermoths are dusting the walls, and one has missed a spot. Eat what you have left, patch your scrapes, and listen to the mountain breathing below. It is breathing faster.",
+      "narration": "Embermoths dust a cool side gallery; one has missed a spot. Patch your scrapes. The mountain breathes faster below. A steady clock leaves time for the moths' cool route; otherwise, prepare to run.",
       "heal": 3,
       "choices": [
         {
@@ -2571,7 +2571,7 @@
     "scene_q2_road": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "You tell it what happened: the good bits, the soggy bits, the bits you are not proud of. The Seal-Keeper listens to all of it without interrupting. \"Yes,\" it says at the end. \"That is a road.\" It does not say whether it was a good one.",
+      "narration": "You tell the good bits, the soggy bits and the mistakes. The Keeper listens. \"That is a road,\" it says. It lets you decide what kind.",
       "cast": [
         {
           "figure": "cast/seal_keeper",
@@ -2590,7 +2590,7 @@
     "scene_q2_people": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "You tell it about the people who lent you rope, and pointed the way, and fed you soup that was only soup. The Seal-Keeper listens with its head on one side. \"People,\" it says, trying the word out. \"They do keep turning up.\" It does not sound annoyed.",
+      "narration": "You remember people who lent rope, pointed the way or fed you. \"People,\" says the Keeper. \"They do keep turning up.\" It sounds pleased.",
       "cast": [
         {
           "figure": "cast/seal_keeper",
@@ -2617,6 +2617,12 @@
         }
       ],
       "choices": [
+        {
+          "id": "each_voice",
+          "label": "Each hero shares what the journey taught them",
+          "icon": "party",
+          "goto": "interaction_verdict_council"
+        },
         {
           "id": "honest",
           "label": "Tell it what you want, honestly",
@@ -3347,7 +3353,7 @@
       "type": "story",
       "priority": 1,
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "Here is the whole truth, plain at last. Every gemstone the mountain ever threw out is a piece of the seal, and under the seal sleeps the titan, older than the mountain's name. The seal is its blanket. Every stone carried off let the cold in, and now it is waking. It is not angry. It is asking, and the Seal-Keeper says it out loud: \"Is it morning? Should I get up?\" On top of the seal sits the crown stone, bigger than your head, holding it all together. \"I always answered for it,\" says the Keeper. \"Today it asked you.\"",
+      "narration": "Here is the whole truth, plain at last. Every gemstone the mountain ever threw out is a piece of the seal, and under the seal sleeps the titan, older than the mountain's name. The seal is its blanket. Every stone carried off let the cold in, and now it is waking. It is not angry. It is asking, and the Seal-Keeper says it out loud: \"Is it morning? Should I get up?\" On top of the seal sits the crown stone, bigger than your head, holding it all together. \"I always answered for it,\" says the Keeper. \"Today it asked you.\" Choose the consequence: Restore returns the stones to the seal. Destroy ends the titan's song for good. Control gives its power to a holder. Taking the crown keeps the treasure and leaves the Keeper holding the damaged seal.",
       "variants": [
         {
           "when": {
@@ -3464,6 +3470,30 @@
         }
       ],
       "choices": [
+        {
+          "id": "match_by_hum",
+          "label": "Use a carried stone's hum to fit the pieces together",
+          "icon": "gem",
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "min": 1
+            }
+          },
+          "goto": "interaction_restore_fit"
+        },
+        {
+          "id": "brace_together",
+          "label": "Empty hands: brace the seal with the Keeper",
+          "icon": "hand",
+          "when": {
+            "count": {
+              "of": "facet_*",
+              "max": 0
+            }
+          },
+          "goto": "interaction_restore_brace"
+        },
         {
           "id": "fit",
           "label": "Match each piece to its gap, quick, before they move",
@@ -3704,6 +3734,12 @@
           "label": "Hunt for the latch that lets the wheel turn",
           "icon": "clever",
           "goto": "check_wheel_latch"
+        },
+        {
+          "id": "steady_latch",
+          "label": "Feel for the old latch as the wheel moves",
+          "icon": "hand",
+          "goto": "interaction_wheel_latch"
         }
       ]
     },
@@ -3833,7 +3869,7 @@
     "scene_tether": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "The titan stirs, and its power rises toward your hands like warm bathwater. It wants a leash, and a leash wants a holder. Under the glass, the great eye watches to see whose hand it will be. \"Whose hand?\" asks the Seal-Keeper. \"And did you bring a leash, or only hands?\"",
+      "narration": "The titan stirs, and its power rises toward your hands like warm bathwater. It wants a leash, and a leash wants a holder. Under the glass, the great eye watches to see whose hand it will be. \"Whose hand?\" asks the Seal-Keeper. \"And did you bring a leash, or only hands?\" Preparing a tether on the road makes a self-held or choir leash easier. An unprepared hold is harder. If it slips, letting go keeps other answers open; hauling again risks breaking the seal.",
       "cast": [
         {
           "figure": "cast/seal_keeper",
@@ -3905,9 +3941,9 @@
       "choices": [
         {
           "id": "on",
-          "label": "Pass her the leash",
+          "label": "Pass the leash along the prepared line",
           "icon": "whistle",
-          "goto": "check_pass_leash"
+          "goto": "interaction_leash_transfer"
         }
       ]
     },
@@ -5369,7 +5405,7 @@
       "type": "story",
       "priority": 2,
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "The crown stone is bigger than your head and warm as bread. Under it, the titan's eye opens wide. The Seal-Keeper does not stop you. It only watches, and says: \"Everyone who climbs reaches for it once. Most of them have no idea what they would do with it.\"",
+      "narration": "The crown stone is bigger than your head and warm as bread. Under it, the titan's eye opens wide. The Seal-Keeper does not stop you. It only watches, and says: \"Everyone who climbs reaches for it once. Most of them have no idea what they would do with it.\" A party that came to complete the collection can lift it directly. Others must risk prying it free: failure stings and closes this option. You can step back before trying.",
       "variants": [
         {
           "when": {
@@ -5686,7 +5722,7 @@
     },
     "interaction_climb_warmup": {
       "type": "interaction",
-      "narration": "At the foot of the last climb, cold wind makes your fingers stiff. Take a moment to wake up hands and feet. A mountain this tall deserves your best stomping boots.",
+      "narration": "At Mount Red Sky, everyone else is running downhill. You must climb, find the seal and answer what is waking below. Cold fingers first: wake your hands and boots before the rocks put them to work.",
       "interaction": {
         "kind": "play",
         "participation": "any",
@@ -5724,6 +5760,237 @@
       "onFailure": {
         "goto": "scene_tree_line"
       }
+    },
+    "interaction_verdict_council": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "The Keeper asks whom you told and what you want. Make room for every hero: name something carried, remember a helper, or say what should happen now. The dragon lowers its head to listen.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Each hero shares one thing they carried, learned, or chose.",
+        "actionLabel": "Finish our answer",
+        "options": [
+          {
+            "id": "carried",
+            "label": "Name something I carried",
+            "icon": "gem",
+            "reaction": "The dragon asks what changed because you carried it."
+          },
+          {
+            "id": "helped",
+            "label": "Remember someone who helped",
+            "icon": "heart",
+            "reaction": "An embermoth settles closer to listen."
+          },
+          {
+            "id": "choice",
+            "label": "Say what I want for the realm",
+            "icon": "star",
+            "reaction": "The Seal-Keeper waits until your answer is complete."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_seal_cracks",
+        "narration": "The dragon heard everyone. It moves aside. \"You came a long way to give your own answers,\" it says.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "dragon_satisfied",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_seal_cracks",
+        "narration": "The Keeper helps find the words and makes room for the party at the seal."
+      },
+      "onAssisted": {
+        "goto": "scene_seal_cracks",
+        "narration": "The Keeper asks a question at a time. Together you finish your answer, and it lets you pass.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "dragon_satisfied",
+            "value": true
+          }
+        ]
+      }
+    },
+    "interaction_restore_fit": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "One of your carried stones hums beside its own gap. Follow that sound to arrange the work: listen for the matching note, set the stone where it belongs, then keep it steady while the Keeper warms the seal. The pieces do not mind taking turns.",
+      "interaction": {
+        "kind": "sequence",
+        "cue": "Arrange the steps: listen, fit, then hold steady.",
+        "actionLabel": "Fit the carried stones",
+        "options": [
+          {
+            "id": "listen",
+            "label": "Listen for a matching hum",
+            "icon": "ear"
+          },
+          {
+            "id": "place",
+            "label": "Fit the stone in its own gap",
+            "icon": "gem"
+          },
+          {
+            "id": "steady",
+            "label": "Keep it steady as the seal warms",
+            "icon": "hand"
+          }
+        ],
+        "answer": [
+          "listen",
+          "place",
+          "steady"
+        ],
+        "clues": [
+          "The right gap answers the stone before anyone touches it.",
+          "A stone must be placed before it can be held still.",
+          "The Keeper warms the seal only after the pieces are in place."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_restore_last_gap",
+        "narration": "Each piece finds a home, then settles under your hands. Only the last gap remains."
+      },
+      "onFailure": {
+        "goto": "scene_restore_last_gap",
+        "narration": "A stone slips and bumps your fingers. The Keeper catches it and helps fit it correctly; the last gap remains.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "scene_restore_last_gap",
+        "narration": "The Keeper hums back each note so you can find its gap. Together you finish all but the last one."
+      }
+    },
+    "interaction_wheel_latch": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "The stone wheel turns a little, then sticks. You can feel the small moth-shaped latch moving beneath its rim. Wait for the wheel to settle and catch the latch gently. A very old mechanism deserves a careful hand.",
+      "interaction": {
+        "kind": "precision",
+        "cue": "Stop at the calm place to release the latch.",
+        "actionLabel": "Release the old latch",
+        "target": 0.6,
+        "width": 0.34,
+        "periodMs": 5000
+      },
+      "onSuccess": {
+        "goto": "scene_titan_goes",
+        "narration": "Click. The latch opens, and the wheel turns the rest of the way. Beneath the seal, the old note becomes soft."
+      },
+      "onFailure": {
+        "goto": "scene_titan_goes",
+        "narration": "The latch catches your fingers, but the Keeper steadies the wheel so you can free it. Together you turn it all the way.",
+        "effects": [
+          {
+            "type": "damage",
+            "amount": 1,
+            "to": "roller",
+            "nonlethal": true
+          }
+        ]
+      },
+      "onAssisted": {
+        "goto": "scene_titan_goes",
+        "narration": "The Keeper braces the rim as you feel for the latch. It opens, and the wheel turns gently."
+      }
+    },
+    "interaction_leash_transfer": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/captain_voss",
+          "name": "Captain Voss"
+        },
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        },
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "The wardens form the line your warning made possible. Pellam holds a coil; Captain Voss waits at the end. Catch and pass the bucking leash into her hands. Her ledger is finally shut.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the leash and pass it along the prepared line.",
+        "actionLabel": "Pass the leash",
+        "objectLabel": "The humming leash"
+      },
+      "onSuccess": {
+        "goto": "scene_cage_closes",
+        "narration": "Hand to hand, the leash reaches Captain Voss. She braces it while the wardens finish their promises."
+      },
+      "onFailure": {
+        "goto": "scene_cage_closes",
+        "narration": "The line wobbles, but the wardens catch and steady the leash before it reaches Voss."
+      },
+      "onAssisted": {
+        "goto": "scene_cage_closes",
+        "narration": "Pellam steps into the gap. Everyone passes the leash safely into Voss's hands."
+      }
+    },
+    "interaction_restore_brace": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "You brought your hands and rush gems. The Keeper puts a claw against the cracked seal. Brace its loose pieces together while warm breath joins them. A moth helps by sitting on a crack. It has misunderstood the job.",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Brace the loose pieces while the Keeper warms the cracks.",
+        "actionLabel": "Hold the seal steady",
+        "supportLabel": "Brace a piece"
+      },
+      "onSuccess": {
+        "goto": "scene_restore_last_gap",
+        "narration": "Your hands and the Keeper's claw hold the pieces still. The cracks join. One last gap remains."
+      },
+      "onFailure": {
+        "goto": "scene_restore_last_gap",
+        "narration": "The Keeper steadies the loose edge with another claw. Together you join the cracks."
+      },
+      "onAssisted": {
+        "goto": "scene_restore_last_gap",
+        "narration": "The Keeper braces beside you. Together you hold the pieces until the cracks join."
+      }
     }
   },
   "voiceGuide": {
@@ -5758,6 +6025,26 @@
       "interaction_bundles": {
         "props": [
           "prop_faun_bundle"
+        ]
+      },
+      "interaction_restore_fit": {
+        "props": [
+          "prop_humming_stone"
+        ]
+      },
+      "interaction_wheel_latch": {
+        "props": [
+          "prop_pry_bar"
+        ]
+      },
+      "interaction_leash_transfer": {
+        "props": [
+          "rope-loop"
+        ]
+      },
+      "interaction_restore_brace": {
+        "props": [
+          "prop_stone_board"
         ]
       }
     }

@@ -1,0 +1,928 @@
+{
+  "gemfall-07r": {
+    "check_glitter_barrow": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Heave Odo's wheelbarrow out of the Pinch",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "choice_how",
+        "narration": "With a grunt and a heave, the barrow pops free and forty wagons cheer. Odo is so grateful he digs through the glitter and hands you the humming thing: a real stone, warm as a teapot. \"Keeps me up at night,\" he says. \"Singing.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "odo_friend",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_how",
+        "narration": "You heave. The wheel pops off entirely and rolls away down the hill, and half the Pinch runs after it. In all the fuss the barrow tips, and one real stone rolls out humming at your feet. Odo waves at you to keep it. He is busy chasing a wheel."
+      },
+      "cast": [
+        {
+          "figure": "cast/odo",
+          "name": "Odo"
+        }
+      ]
+    },
+    "check_handcart": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Talk travelers into letting their stones go home",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_noon_shake",
+        "narration": "A handcart, a sign that says STONES GOING HOME, and a lot of honest talking. By lunchtime the cart is half full, and somebody has drawn a smiley face on the sign.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "cart_full",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_noon_shake",
+        "narration": "Most people walk straight past the sign. One man gives you a stone, asks for it back, then gives it again. The cart is nearly empty, but at least you know which wagons hum the loudest."
+      }
+    },
+    "check_noon_shake": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Scoop up a sack of stones that are rolling the wrong way",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_stone_chain",
+        "narration": "You dive, scoop and juggle. Every last stone ends up in your arms, still humming, still leaning gently uphill, like puppies pulling on a lead."
+      },
+      "onFailure": {
+        "goto": "interaction_stone_chain",
+        "narration": "The stones slip through your fingers and roll straight into a goat pen. The goat gives them back one at a time, very slowly, and wants a scratch behind the ears for every single one."
+      }
+    },
+    "check_posy": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Help a little girl decide to give up her lucky stone",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_masks",
+        "narration": "You tell Posy about the mountain and the hum, the gentle version. She thinks about it very hard. Then she opens her fists and puts the stone on your pile herself. \"So it can go home,\" she says. Corbin lets out a breath he has been holding since spring."
+      },
+      "onFailure": {
+        "goto": "scene_masks",
+        "narration": "Posy listens, and then hides the stone behind her back. \"It's mine,\" she says, and her lip wobbles. You do not push. Corbin gives you a small, sorry nod, and the two of them go on up the road toward the camps.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "posy_kept",
+            "value": true
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/corbin_carrying_posy",
+          "name": "Corbin and Posy"
+        }
+      ]
+    },
+    "check_tamsin": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 16,
+      "prompt": "Convince Hessa the seal is not a cage",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_haul",
+        "narration": "Hessa takes off her mask. \"I only wanted somebody to fix things,\" she says quietly. She hands you her whole sack of stones, and then her ladle, and asks you to fix things.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "mask_off",
+            "value": true
+          },
+          {
+            "type": "setFlag",
+            "flag": "cart_full",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_haul",
+        "narration": "She listens kindly, all the way to the end. Then she puts her mask back on. \"I hope you're right,\" she says. \"I don't think you are.\" Her cell rolls on with a full sack."
+      },
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_frogfolk",
+          "name": "Masked choir singer"
+        },
+        {
+          "figure": "cast/masked_choir_singer",
+          "name": "Masked choir singer"
+        }
+      ]
+    },
+    "check_haul_goat": {
+      "type": "check",
+      "discovers": [
+        "creature.snowhorn_goat"
+      ],
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Make friends with a grumpy snowhorn goat",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_shelter_stack",
+        "narration": "The goat sniffs you, sniffs the cart, and decides you are acceptable. It pulls the whole load up the hill at a steady trot, stopping only once, to eat the corner of your sign."
+      },
+      "onFailure": {
+        "goto": "interaction_shelter_stack",
+        "narration": "The goat sits down. It will not move. In the end you pull the cart on your own, and the goat rides on top of the stones, looking very pleased with itself, all the way to the shelter."
+      }
+    },
+    "check_haul_carry": {
+      "type": "check",
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Carry the whole pile up the hill, sack by sack",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "interaction_shelter_stack",
+        "narration": "You make a chain up the hill and pass the sacks along, hand to hand, singing a counting song. Strangers on the road join in. By the top the chain is forty people long, and nobody remembers who started it."
+      },
+      "onFailure": {
+        "goto": "interaction_shelter_stack",
+        "narration": "Halfway up, your arms turn to noodles. You sit down on the sacks to rest, and a passing grandmother tuts, hitches your cart to her own wagon, and tows the lot up the hill without a word."
+      }
+    },
+    "check_haul_sledge": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Build a sledge that slides uphill",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_shelter_stack",
+        "narration": "Rope, a broken door and some greased planks. The sledge glides up the slope on its runners like a dream, and a crowd of dragonling children follow it all the way to the shelter, asking for a turn."
+      },
+      "onFailure": {
+        "goto": "interaction_shelter_stack",
+        "narration": "The sledge works beautifully, in the wrong direction. It slides gently back to the bottom of the hill twice before you think to tie it to a tree and winch it up, one heave at a time. It gets there. Eventually."
+      }
+    },
+    "check_morning_slide": {
+      "type": "check",
+      "stat": "might",
+      "tn": 12,
+      "prompt": "Find the one rock that holds up all the others, and pull",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_trickle",
+        "narration": "You find the one rock that holds up all the rest, and pull. The whole heap shrugs, sighs, and slides politely off the edge of the road. The warden crosses out CLOSED and writes OPEN, in slightly bigger letters."
+      },
+      "onFailure": {
+        "goto": "interaction_trickle",
+        "narration": "The big rock will not budge. But behind it, between two boulders, there is a gap just wide enough to wriggle through. You come out the other side red with dust from head to toe, and the warden writes that down too."
+      }
+    },
+    "check_wolves": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Roll a smoked sausage down the side trail at exactly the right moment",
+      "cast": [
+        {
+          "figure": "entities/cinder_wolf",
+          "count": 3
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_bend_lookout",
+        "narration": "The sausage bounces down the side trail, and the whole pack follows it with enormous dignity, as if that was where they were going all along.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "wolves_turned",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "encounter_wolves",
+        "narration": "The sausage bounces off a rock and lands right back at your feet. The wolves look at the sausage. Then they look at you."
+      }
+    },
+    "check_bend_scout": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Sneak along the ridge and pick out the humming wagon",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "interaction_wagon_bells",
+        "narration": "You creep along the ridge and watch. Mules with cotton in their ears. A caravan master rubbing her head every few minutes, as if it aches. And the middle wagon, humming so hard its canvas trembles. You know exactly where to go now.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "knows_the_wagon",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_wagon_bells",
+        "narration": "You creep along the ridge, slip on loose gravel, and slide most of the way down to the road on your bottom. A mule looks at you. You look at the mule. Neither of you tells anybody, and you scramble back up just in time."
+      }
+    },
+    "check_caravan_helped": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Ask the caravan master to send the humming stone home, with help at your back",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_caravan_won",
+        "narration": "The caravan master looks at you, at the help behind you, at the shaking ground, and sighs a sigh that goes all the way down to her boots. \"Fine. Take it. It's been giving me headaches.\""
+      },
+      "onFailure": {
+        "goto": "scene_caravan_lost",
+        "narration": "She almost says yes. Then the ground lurches, the mules bolt, and in the muddle a masked wagoneer steers the middle wagon off up a side track."
+      },
+      "cast": [
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
+        },
+        {
+          "figure": "entities/mule",
+          "name": "Road mule"
+        }
+      ]
+    },
+    "check_caravan": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Convince a tired caravan master to give up the best stone she has ever carried",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_caravan_won",
+        "narration": "You tell her the whole truth, from the humming to the seal. She is quiet for a long time. Then she climbs into the middle wagon and comes back holding the stone in both hands."
+      },
+      "onFailure": {
+        "goto": "scene_caravan_lost",
+        "narration": "She has heard a lot of stories this season. She does not believe yours. While you are still arguing, a masked wagoneer quietly steers the middle wagon off up a side track."
+      },
+      "cast": [
+        {
+          "figure": "entities/mule",
+          "name": "Road mule"
+        },
+        {
+          "figure": "cast/caravan_master",
+          "name": "Caravan Master"
+        }
+      ]
+    },
+    "check_downhill_cart": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/faun",
+          "size": "small"
+        }
+      ],
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Heave a faun cart out of a crack in the road",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "choice_last_climb",
+        "narration": "One, two, three, heave! The wheel pops out of the crack and the cart rolls on. The fauns shout thank you all the way down the hill, and the smallest one throws you a very squashed flower."
+      },
+      "onFailure": {
+        "goto": "choice_last_climb",
+        "narration": "Heave as you might, the wheel stays stuck. So you lift the whole cart out instead, which takes everybody, the mule and a passing warden. The fauns say thank you seven times each."
+      }
+    },
+    "check_last_climb_stair": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Race up a steep stair before the light goes",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_drake_ledge",
+        "narration": "Up and up and up, two steps at a time. You reach the top with your legs wobbling and your heart thumping, well ahead of the dark."
+      },
+      "onFailure": {
+        "goto": "scene_drake_ledge",
+        "narration": "Halfway up, a tremor shakes loose a shower of little stones. You press flat against the rock and wait, and then climb on carefully, one step at a time, and reach the top dusty but whole, just as the light turns orange."
+      }
+    }
+  },
+  "gemfall-07h": {
+    "check_price_board": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/bryony",
+          "name": "Bryony",
+          "size": "small"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Read a price board that changes every time the ground shrugs",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "choice_the_race",
+        "narration": "Every time the ground shrugs, prices jump. But the loudest stones are the cheapest: buyers think the humming means they are cracked. Nobody here knows what you know. You do the sums, and grin.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "loud_is_cheap",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_the_race",
+        "narration": "The numbers change faster than you can read them, and a puff of chalk dust sets you sneezing. Bryony laughs so hard she nearly falls off her ladder, and throws you down a stick of chalk, for luck."
+      }
+    },
+    "check_rival_collector": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/lady_fleecewick",
+          "name": "Lady Fleecewick"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Out-talk a sheeple who has been collecting since before you were born",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_cabinet",
+        "narration": "You admire her cabinet so knowledgeably that she goes pink to the tips of her wool. In the end she will not trade at all. She gives you a luckstone, just for the conversation, and asks you to write.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "luckstone",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_cabinet",
+        "narration": "You haggle hard. She haggles harder. By the end you have traded nothing, agreed to everything, and promised to visit her cabinet at home, which apparently has a room of its own. She seems delighted."
+      }
+    },
+    "check_mosshorn_calf": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/mosshorn"
+        }
+      ],
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Coax a lost mosshorn calf along a trail of moss",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_evening",
+        "narration": "Moss, moss, moss, all the way up the ridge. The calf follows it, nibbling, and walks straight into its mother's side with a happy bump."
+      },
+      "onFailure": {
+        "goto": "scene_evening",
+        "narration": "The calf ignores the moss and follows you instead, everywhere, like a shadow with knees. In the end you walk it all the way up the ridge, packs and all, and its mother is so cross with you that she forgets to be frightened."
+      }
+    },
+    "check_humming_night": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Sing a whole pack of humming stones to sleep",
+      "roller": "best",
+      "onSuccess": {
+        "goto": "rest_lonely_camp",
+        "narration": "You sing the softest song you know. Slowly the stones find your note and hum along, then softer, and softer, until they are only purring. Three tents away, somebody says thank you."
+      },
+      "onFailure": {
+        "goto": "rest_lonely_camp",
+        "narration": "You sing. The stones love it. They hum along at the tops of their voices, and the mule joins in, and the camp three tents away joins in too, and soon everybody is singing and nobody minds about sleep at all."
+      }
+    },
+    "check_checkpoint": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/warden_clerk",
+          "name": "Warden Clerk"
+        }
+      ],
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Everybody scramble round a warden checkpoint over loose scree",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "interaction_boxes",
+        "narration": "Up the scree and round the gate, quick and light as goats. Nobody sees. Well. One goat sees. It does not tell."
+      },
+      "onFailure": {
+        "goto": "interaction_boxes",
+        "narration": "Halfway round, the scree starts to slide, and so do you, all the way down into the checkpoint queue, right at the front. The clerk looks at you, sighs, and waves you through, because the paperwork for this would take all day."
+      }
+    },
+    "check_crabs": {
+      "type": "check",
+      "discovers": [
+        "creature.glassback_crab"
+      ],
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Read what the glittering lumps are trying to tell you",
+      "cast": [
+        {
+          "figure": "entities/glassback_crab",
+          "count": 3
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_bend_approach",
+        "narration": "They are glassback crabs, and they are waving their claws in the most polite warning in the realm: this is our warm spot. You walk the long way round, and they wave you off like aunties.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "crabs_read",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "encounter_crabs",
+        "narration": "You step a little closer to get a better look, which turns out to be exactly the wrong thing to do."
+      }
+    },
+    "check_bend_approach": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Everybody scramble up a crumbly rock for a look inside the caravan",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "choice_the_bend",
+        "narration": "From the top you can see into every wagon. Eleven are full of pots, pans and grumpy passengers. The middle one holds a single crate, nailed shut, and the canvas above it is trembling. Now you know exactly where to stand.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "knows_middle_wagon",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "choice_the_bend",
+        "narration": "The rock is crumblier than it looks. You come down faster than you went up, in a little landslide of your own, and land at the feet of a grandmother, who hands you a biscuit without a word."
+      }
+    },
+    "check_bend": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 16,
+      "prompt": "Outbid three other crowds for one humming wagon",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_caravan_won",
+        "narration": "Your offer is so good, and so fast, that the caravan master shakes your hand before anybody else has finished shouting."
+      },
+      "onFailure": {
+        "goto": "interaction_hairpin",
+        "narration": "While you are still counting, a masked wagoneer quietly steers the middle wagon off up a side track. The masterpiece stone is gone, and the masks have it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "raced_for_the_stone"
+          }
+        ]
+      }
+    },
+    "check_tidewell": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/tidewell",
+          "name": "Professor Tidewell"
+        }
+      ],
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Follow a very fast-talking scholar to the end of her theory",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_tidewell_knocks",
+        "narration": "She grabs a napkin and draws on it, very fast. \"The eighth is the crown of the seal, the stone the whole arch leans on. It isn't lying loose, it isn't for sale, and taking it would be like pulling the lid off a jar.\" She folds the napkin into your hand. \"I only ever wanted to be right,\" she says. \"Not this right.\"",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "knows_keystone",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_tidewell_knocks",
+        "narration": "She starts to explain, talking faster and faster, and then the ground shakes, and her notes fly off down the hill like startled birds. She runs after them, shouting back over her shoulder, \"Whatever you do, don't PRY!\" You never quite hear the rest."
+      }
+    },
+    "check_dawn_bell": {
+      "type": "check",
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Catch a swinging bell rope before it rings",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_echo_cutting",
+        "narration": "You reach it in three bounds and hang on with everything you have. The bell swings, slows, and stops, one hair from ringing. A grandmother in a nightcap looks out of a window and nods at you, once."
+      },
+      "onFailure": {
+        "goto": "scene_echo_cutting",
+        "narration": "You are one step too slow. The bell gives a single small tink. The whole valley freezes. Then a grandmother leans out of a window in her nightcap and shouts, \"Just the wind, dears!\" and everybody breathes again."
+      }
+    },
+    "walk_check_send_word": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Get a message about the seal back up the mountain in time",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "walk_ending_collectors",
+        "narration": "A griffin courier takes your letter straight up into the smoke. By morning, the warden checkpoints are reading it aloud."
+      },
+      "onFailure": {
+        "goto": "walk_check_last_chance",
+        "narration": "Your letter goes up with a caravan that turns round halfway, because caravans do that now."
+      }
+    },
+    "walk_check_last_chance": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Give your best stone to a dragonling runner heading uphill, and ask them to hurry",
+      "cast": [
+        {
+          "figure": "characters/dragonling",
+          "name": "Dragonling Runner"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "walk_ending_collectors",
+        "narration": "The runner takes your stone and your message, and runs. You never learn their name. They get there."
+      },
+      "onFailure": {
+        "goto": "walk_ending_not_there",
+        "narration": "The runner is kind, and quick, and just too late."
+      }
+    }
+  },
+  "gemfall-07l": {
+    "check_ledger": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Work out how to carry a chained ledger and its desk up the valley together",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "roller": "best",
+      "onSuccess": {
+        "goto": "scene_two_scouts",
+        "narration": "Two poles, a rope and a lot of squinting. You turn the desk into a little throne on poles, with the ledger riding on top, still chained, and off it goes up the valley, desk and all. Pellam reads his own rule twice, frowns at it twice, and cannot find a single word wrong. Nobody has ever seen Pellam almost smile. He very nearly does.",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "tether_ledger"
+          },
+          {
+            "type": "setFlag",
+            "flag": "wardens_trust",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_two_scouts",
+        "narration": "You try poles. You try rope. You try lifting the whole desk at once, and the chain goes clank, and the desk does not go anywhere. Pellam writes NOT LENT in his column, very neatly. You leave with nothing but a very clear picture of the cover."
+      }
+    },
+    "check_two_scouts": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/cadet_linnet",
+          "name": "Cadet Linnet"
+        },
+        {
+          "figure": "cast/rook",
+          "name": "Rook"
+        }
+      ],
+      "stat": "heart",
+      "checkKind": "doing",
+      "tn": 12,
+      "prompt": "Hold the middle of a tug-of-war so neither side wins",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_choir",
+        "narration": "You take the middle of the rope and dig in your heels. Linnet pulls. Rook pulls. You hold, right in the middle, and nobody moves an inch. At last they both let go at once and sit down hard in the heather, laughing. Linnet holds out her hand. Rook looks at it as if it might bite, then shakes it.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "scouts_friends",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_choir",
+        "narration": "You grab the middle, but the sash slides through your hands, and both of them land in the heather. They stomp off to tell their bosses. But they stomp off the same way, and the last you see of them, they are arguing in a way that sounds a lot like talking."
+      }
+    },
+    "check_chord": {
+      "type": "check",
+      "stat": "heart",
+      "checkKind": "doing",
+      "tn": 16,
+      "prompt": "Hum three notes back to a whole masked choir, true and steady",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_choir_warmup",
+        "narration": "Hessa hums the first note. You hum it back. She hums the second. You hum it back, wobbly. The third is so low it buzzes in your teeth, and you hold it anyway. The whole choir goes quiet. \"Don't make me sorry,\" says Hessa.",
+        "effects": [
+          {
+            "type": "grantQuestItem",
+            "itemId": "tether_chord"
+          },
+          {
+            "type": "setFlag",
+            "flag": "choir_trust",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_choir_warmup",
+        "narration": "They sing it for you once, very fast, and then pull their masks down. You match the first note. Only the first."
+      },
+      "cast": [
+        {
+          "figure": "cast/hessa_wren",
+          "name": "Hessa Wren"
+        },
+        {
+          "figure": "cast/cult_bigfoot",
+          "name": "Masked choir singer"
+        },
+        {
+          "figure": "cast/masked_choir_singer",
+          "name": "Masked choir singer"
+        }
+      ]
+    },
+    "check_first_sitting": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "stat": "clever",
+      "tn": 8,
+      "prompt": "Fix a wobbly table while two sides watch you do it",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_road_gifts",
+        "narration": "A flat stone, a bit of string and a lot of squinting. The table stands dead level. Pellam tests it with his pencil, which does not roll. Hessa tests it with her soup, which does not spill. They both nod, at the table, which is nearly the same as nodding at each other."
+      },
+      "onFailure": {
+        "goto": "scene_road_gifts",
+        "narration": "You fix it. Now it wobbles toward Hessa instead. You fix it again. Now it wobbles both ways at once. Pellam makes a small noise that might be a laugh, and Hessa definitely laughs, and somehow, after that, they both stay sitting down."
+      }
+    },
+    "check_returning_cart": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/dragonling_grandmother",
+          "name": "Grandmother"
+        }
+      ],
+      "stat": "might",
+      "tn": 8,
+      "prompt": "Push a cart full of stones up the steep bit",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "interaction_tea_cups",
+        "narration": "Shoulders down, everybody push. The cart groans up the steep bit and over the top. The grandmother hands a warm bead from her apron to every hand, and says, \"Practice tonight, dears. You'll need it.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "hearthstone_bead",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_tea_cups",
+        "narration": "The cart rolls back two steps for every three you push it. In the end you sit on the back of it like a seesaw while the grandmother pulls, and between you it gets over the top. She laughs so hard she has to sit down."
+      }
+    },
+    "check_night_visitor": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "stat": "heart",
+      "tn": 16,
+      "prompt": "Get a warden clerk and a choir singer to ask each other their own questions",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_under_the_table",
+        "narration": "Hessa comes over with two cups of soup. Pellam takes one. They talk until the fire is embers, about the mountain, and the rules, and which of them is more tired. When they go back to their own sides, they say goodnight to each other. Out loud.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "table_works",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "rest_under_the_table",
+        "narration": "Hessa comes over, but she and Pellam sit at opposite ends and only talk to you. \"Ask him why,\" says Hessa. \"Ask her what for,\" says Pellam. You pass the questions back and forth until midnight. It is slow. It is still talking."
+      }
+    },
+    "check_rope_bridge": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "entities/snowhorn_goat"
+        }
+      ],
+      "stat": "quick",
+      "tn": 12,
+      "prompt": "Everyone dash across a swinging bridge between tremors",
+      "roller": "all",
+      "onSuccess": {
+        "goto": "scene_switchback",
+        "narration": "You wait for the swing to settle, then go, light as leaves. The goat watches you squeeze past it, chews thoughtfully, and follows you off the far end, as if that had been its plan all along."
+      },
+      "onFailure": {
+        "goto": "scene_switchback",
+        "narration": "Halfway over, the ground shrugs and the bridge swings, and you end up clinging to the goat, who does not mind at all. When it stops swinging, the goat walks you the rest of the way across, very slowly, like a nanny."
+      }
+    },
+    "check_echoes": {
+      "type": "check",
+      "stat": "clever",
+      "tn": 12,
+      "prompt": "Make the cutting so noisy the echo cannot pick one sound to follow",
+      "cast": [
+        {
+          "figure": "entities/echo_hunter"
+        },
+        {
+          "figure": "entities/cinder_wolf"
+        }
+      ],
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_bend_crowds",
+        "narration": "Clapping, stamping, humming, one terrible whistle. The echo hunter cannot choose, gets a headache, and backs off into the rocks. The wolf, who hates the noise even more, runs straight past you."
+      },
+      "onFailure": {
+        "goto": "encounter_echoes",
+        "narration": "Somebody stops a moment too early, and in the silence the echo hunter hears exactly one heartbeat. Yours."
+      }
+    },
+    "check_bend_crowds": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Talk both sides into lending you one helper each",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "interaction_box_slide",
+        "narration": "A warden steps over, and then, after a long pause, a mask. They stand on either side of you, not looking at each other, ready to help. It is the first time all season they have stood on the same bit of road.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "two_helpers",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "interaction_box_slide",
+        "narration": "Both sides send their grumpiest. The two of them argue about where to stand until the caravan is nearly here. But while they are arguing, nobody else grabs anything, which is almost as good."
+      }
+    },
+    "check_hold_easy": {
+      "type": "check",
+      "stat": "heart",
+      "tn": 8,
+      "prompt": "Ask the stone in the wagon what it actually wants, and listen for the answer",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "You ask the witch's question out loud. The stone goes quiet, the way a person goes quiet when somebody finally asks the right thing. For one long breath, nothing on the whole hillside hums at all."
+      },
+      "onFailure": {
+        "goto": "scene_tether_slips",
+        "narration": "You ask the question, but the ground lurches halfway through and the stone never hears the end of it. The hum leaps free, and the whole hillside answers it."
+      }
+    },
+    "check_hold": {
+      "type": "check",
+      "stat": "heart",
+      "checkKind": "doing",
+      "tn": 12,
+      "prompt": "Lay your hands on the wagon stone and hold its hum still for one whole breath",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "For one long breath the humming stops, like a bell under a hand. The mules take their earmuffs off. The wardens stop writing. The masks stop humming. Then it starts again, softer, as if it is listening to you. It feels like holding a leash, loose and steady."
+      },
+      "onFailure": {
+        "goto": "scene_tether_slips",
+        "narration": "You almost have it. Then the hum slides through your fingers like a fish, and the whole hillside answers it."
+      }
+    },
+    "check_hold_hard": {
+      "type": "check",
+      "stat": "heart",
+      "checkKind": "doing",
+      "tn": 16,
+      "prompt": "Put your bare hands on the wagon stone and hold its hum still, with nothing else to help",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "scene_tether_holds",
+        "narration": "No ledger, no chord, no question. Just you, holding on. And for one long breath, astonishingly, it is enough."
+      },
+      "onFailure": {
+        "goto": "scene_tether_slips",
+        "narration": "It is like trying to hold a thunderstorm in a teacup. The hum leaps free, and the whole hillside answers it."
+      }
+    },
+    "check_who_keeps_table": {
+      "type": "check",
+      "cast": [
+        {
+          "figure": "cast/pellam",
+          "name": "Pellam"
+        }
+      ],
+      "stat": "heart",
+      "tn": 12,
+      "prompt": "Get Pellam and Hessa to pick up the old door together",
+      "roller": "party",
+      "onSuccess": {
+        "goto": "rest_up_the_mountain",
+        "narration": "Pellam looks at Hessa. Hessa looks at Pellam. Then they each take one end of the old door and lift it together. \"Mind the short leg,\" says Hessa. \"I've logged the short leg,\" says Pellam. They carry it down the hill side by side."
+      },
+      "onFailure": {
+        "goto": "rest_up_the_mountain",
+        "narration": "They cannot agree whose end is the front. In the end they carry it down the hill sideways, both talking at once. But they carry it together, and they do not put it down."
+      }
+    }
+  }
+}
