@@ -137,6 +137,61 @@ describe("a seeded table", () => {
   });
 });
 
+describe("a playtest start: any chapter, any scene", () => {
+  // Two beats, so the second is out of order for a fresh household.
+  const SECOND = { ...makeChapter(), id: "bramblewood-02", index: 2, title: "The Second Path" };
+  const TWO: Campaign = { ...CAMPAIGN, chapters: ["bramblewood-01", "bramblewood-02"] };
+  const twoBeats = (playtest: boolean) => makeHarness({
+    engine: { applyIntent, createRunState },
+    content: makeContent({ chapters: [makeChapter(), SECOND], campaigns: [TWO] }),
+    playtest,
+  });
+
+  it("starts a later chapter out of order, at the scene asked for, holding the flags given", async () => {
+    const h = twoBeats(true);
+    const seeded = await seed(h, {
+      mode: "party", tv: true, campaignId: TWO.id,
+      heroes: [{ name: "Sam", species: "unicorn" }, { name: "Rosie", species: "griffin" }],
+      chapterId: "bramblewood-02", sceneId: "scene_shrine", flags: { took_the_river: true },
+    });
+    const state = (await h.repo.getState(seeded.runId))!;
+    expect(state).toMatchObject({ phase: "scene", chapterId: "bramblewood-02", sceneId: "scene_shrine" });
+    expect(state.flags["took_the_river"]).toBe(true);
+    // No attempt: the household's journey never hears of it.
+    expect(state.campaignAttemptId ?? null).toBeNull();
+    expect(await h.repo.getCampaignProgress(seeded.phones[0]!.householdId, TWO.id)).toBeNull();
+  });
+
+  it("starts at the chapter's entry when no scene is asked for", async () => {
+    const h = twoBeats(true);
+    const seeded = await seed(h, { mode: "travel", campaignId: TWO.id, heroes: [{ name: "Sam", species: "unicorn" }], chapterId: "bramblewood-02" });
+    expect((await h.repo.getState(seeded.runId))!).toMatchObject({ chapterId: "bramblewood-02", sceneId: "scene_clearing" });
+  });
+
+  it("keeps the campaign's order where the playtest switch is off, as production has it", async () => {
+    const h = twoBeats(false);
+    const seeded = await seedRoom({ mode: "travel", campaignId: TWO.id, heroes: [{ name: "Sam", species: "unicorn" }], chapterId: "bramblewood-02" }, h.deps);
+    expect(seeded.ok).toBe(false);
+    if (!seeded.ok) expect(seeded.error.message).toMatch(/next chapter/);
+  });
+
+  it("names a chapter that does not exist", async () => {
+    const seeded = await seedRoom({ mode: "travel", heroes: [{ name: "Sam", species: "unicorn" }], chapterId: "nowhere-01" }, twoBeats(true).deps);
+    expect(seeded.ok).toBe(false);
+    if (!seeded.ok) expect(seeded.error.message).toMatch(/unknown chapter "nowhere-01"/);
+  });
+
+  it("checks the request's shape", () => {
+    const hero = [{ name: "Sam", species: "unicorn" }];
+    expect(readSeedRequest({ mode: "party", heroes: hero, chapterId: 7 })).toMatch(/chapterId/);
+    expect(readSeedRequest({ mode: "party", tv: true, heroes: [], chapterId: "x" })).toMatch(/at least one hero/);
+    expect(readSeedRequest({ mode: "party", heroes: hero, chapterId: "x", ready: false })).toMatch(/ready/);
+    expect(readSeedRequest({ mode: "party", heroes: hero, chapterId: "x", flags: { a: "yes" } })).toMatch(/flags/);
+    expect(readSeedRequest({ mode: "party", heroes: hero, flags: { a: true } })).toMatch(/need chapterId/);
+    expect(typeof readSeedRequest({ mode: "party", heroes: hero, chapterId: "x", sceneId: "y", flags: { a: true }, facts: { tide: 2 } })).toBe("object");
+  });
+});
+
 describe("the seed route", () => {
   const src = fileURLToPath(new URL(".", import.meta.url));
   const imports = (file: string) => /from "\.\.?\/(?:\.\.\/)*dev-seed\.ts"/.test(readFileSync(file, "utf8"));
