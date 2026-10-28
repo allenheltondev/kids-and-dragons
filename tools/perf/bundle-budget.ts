@@ -123,7 +123,11 @@ const FIRST_PAINT_BUDGET_KB = 320;
  */
 // 1440 -> 1460 for nine reusable story mechanics (#493): 1452KB measured,
 // mostly the lazy StoryInteraction and InteractionExtras controls and views.
-const TOTAL_BUDGET_KB = 1460;
+// 1460 -> 1495 on 2026-10-28, deliberately (#493 playtest). 1486KB measured. The
+// mini-games became full-screen boards with real play (pads, a TAP pad, a lever,
+// catch and flick, stamps, room sounds); the StoryInteraction chunk went 18KB to
+// 45KB (13KB gzipped), all lazy. The first paint did not move (320KB).
+const TOTAL_BUDGET_KB = 1495;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);
