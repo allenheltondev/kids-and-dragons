@@ -237,12 +237,12 @@ function checkVoiceCast(rep, ajv) {
   // `npm run voice:cast` refreshes the sheet's own chapter lists.
   let drafts = null;
   try {
-    drafts = collectCharacters(loadSources(ROOT));
+    drafts = collectCharacters(loadSources(ROOT, { canon: false }));
   } catch (error) {
     // Without the sources the clash check would fall back to the sheet's own, possibly stale,
     // chapter lists: that is the gate quietly checking less, so it fails instead.
     ok = false;
-    rep.fail(file, "", `could not read who appears where: ${String(error?.message ?? error)}`, "The cast check reads the chapters and canon/individuals.yaml, as `npm run voice:cast` does.");
+    rep.fail(file, "", `could not read who appears where: ${String(error?.message ?? error)}`, "The cast check reads who appears in each chapter from content/chapters, as `npm run voice:cast` does.");
   }
   const byId = new Map((drafts ?? []).map((d) => [d.id, d]));
   const current = {

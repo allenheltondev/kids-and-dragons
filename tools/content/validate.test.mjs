@@ -39,16 +39,14 @@ afterAll(() => {
 }, 60_000);
 
 /**
- * A copy of the real tree: the content, the schemas that judge it, the canon the
- * cast check reads, and the asset manifest the biome check reads.
+ * A copy of the real tree: the content, the schemas that judge it, and the
+ * asset manifest the biome check reads.
  */
 function copyTree() {
   const dir = mkdtempSync(join(tmpdir(), "kad-content-"));
   temps.push(dir);
   cpSync(join(REPO, "content"), join(dir, "content"), { recursive: true });
   cpSync(join(REPO, "schemas"), join(dir, "schemas"), { recursive: true });
-  // The cast check reads canon/individuals.yaml to know who appears where, as voice:cast does.
-  cpSync(join(REPO, "canon"), join(dir, "canon"), { recursive: true });
   // The world map's painting is checked for presence, like the manifest.
   cpSync(join(REPO, "assets", "world"), join(dir, "assets", "world"), { recursive: true });
   cpSync(join(REPO, "assets", "manifest.json"), join(dir, "assets", "manifest.json"), {
