@@ -306,9 +306,15 @@ const DIGESTS: PreEpicSave["digests"] = {
 // evidence and instrument activities. All 40 shipped checks, ending effects,
 // trades and Walk exits remain. Old/new loader probes match campaign digests
 // and normalized resumed fight play. Gameplay digest constants are unchanged.
+// Re-pinned for the eighth-wave finale play changes: all 27 old check scenes
+// remain identical. Four playable verdict/confrontation paths are additive
+// alternatives; terminal outcomes and encounter definitions are preserved.
 // Re-pinned for #534 review: remove automatic quiet-practice duplication.
 // Successful/assisted practice now visits the unchanged legacy result scene;
 // misses earn no practice. Legacy rolls and gameplay digests remain unchanged.
+// Re-pinned for #535 completion: concise approach, explicit philosophy risks,
+// and empty-handed shared restoration. All 27 shipped checks and terminal
+// effects remain; campaign gameplay digest constants stay unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
   "chapters/gemfall-01.json": "fbf4c3bd06198c0e4c7e0d34d8b70fe5ba61cf74a531b1eb4014b529ba14a821",
@@ -326,7 +332,7 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-07h.json": "984d7fbf2f81f241cdbd79725257c58ae0f18e9e9fbef556406244ae4d2f5d2d",
   "chapters/gemfall-07l.json": "e21fcc1885f9006768301083bc3ac2641a0044e43ec85dd98bccc0ded19c71de",
   "chapters/gemfall-07r.json": "3b9617681bfd7ddf9abadce6cf48dd18f161974f5f86646f1defc83909b636dc",
-  "chapters/gemfall-08.json": "982f9a5a7650d213e659c38c6f13dbba12d6c4b3c6fbdac4d2ed11e2f7ee73b3",
+  "chapters/gemfall-08.json": "3fa88afc4f44bebc1e5064abdb959b286369af6e48cc36258b98eb21a62788e6",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {
