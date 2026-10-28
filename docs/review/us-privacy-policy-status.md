@@ -23,11 +23,11 @@ Dated 2026-10-27. Engineering status, not legal advice.
 ## Not done
 
 1. **Operator name and contact** (`screens/operator.ts`): the operator is named as **Ready, Set,
-   Cloud!** (owner, 2026-10-28; it also holds the footer copyright, and a test keeps the two the
-   same) with the contact allenheltondev@gmail.com, which was given on 2026-10-27. Still owed: the
-   legal form of Ready, Set, Cloud! (company, DBA or sole proprietorship) to confirm it is the
-   right operator name (#526), and a business address, a phone number and ideally a business email
-   address, not a personal Gmail.
+   Cloud! LLC** with the contact **allen@readysetcloud.io** (owner, 2026-10-28; the earlier personal
+   Gmail address is gone from the page). The footer's copyright line carries the name "Ready, Set,
+   Cloud!", and a test keeps it a prefix of the operator's name. Still owed: confirm the exact
+   registered legal name (punctuation and "LLC" as filed), and a business mailing address and a
+   telephone number, which 312.4(d)(1) lists for the operator and the page does not show yet.
 2. **Direct notice and consent.** Nothing asks a parent before a child's first write. This waits
    on the #522 decision (option A, B or C). The page says plainly that no such step exists yet.
 3. **Parental access, deletion and revocation procedure.** A signed-in grown-up can delete a kid or
