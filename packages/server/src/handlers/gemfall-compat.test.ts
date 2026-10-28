@@ -302,6 +302,19 @@ const DIGESTS: PreEpicSave["digests"] = {
 // learned-call recovery preserve the original reveal and clock commitments.
 // Old/new loader-based probes match campaign digests and normalized fight
 // play-on. Fixed legacy save and gameplay digest constants remain unchanged.
+// Re-pinned for the owner-authorized pursuit play wave: earned signal, market
+// evidence and instrument activities. All 40 shipped checks, ending effects,
+// trades and Walk exits remain. Old/new loader probes match campaign digests
+// and normalized resumed fight play. Gameplay digest constants are unchanged.
+// Re-pinned for the eighth-wave finale play changes: all 27 old check scenes
+// remain identical. Four playable verdict/confrontation paths are additive
+// alternatives; terminal outcomes and encounter definitions are preserved.
+// Re-pinned for #534 review: remove automatic quiet-practice duplication.
+// Successful/assisted practice now visits the unchanged legacy result scene;
+// misses earn no practice. Legacy rolls and gameplay digests remain unchanged.
+// Re-pinned for #535 completion: concise approach, explicit philosophy risks,
+// and empty-handed shared restoration. All 27 shipped checks and terminal
+// effects remain; campaign gameplay digest constants stay unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
   "chapters/gemfall-01.json": "fbf4c3bd06198c0e4c7e0d34d8b70fe5ba61cf74a531b1eb4014b529ba14a821",
@@ -316,10 +329,10 @@ const GEMFALL_FILES: Record<string, string> = {
   "chapters/gemfall-05b.json": "83d2572e23ba3b618bf3ffaec99274b6e3e06f57608bb4051f5230a78aed914e",
   "chapters/gemfall-05c.json": "9755b91a3046f20c8d2b1451bb62ad6a2dc9d42d997e243756b1e02500734279",
   "chapters/gemfall-06.json": "79c4e653be3c9358f7773894c62060f361758f72036d6ecf7fde961c53eb90c6",
-  "chapters/gemfall-07h.json": "1c90cbaf7f0fd268ebe0112a9ef568b844f5b84784612f3601a0eba8483af38e",
-  "chapters/gemfall-07l.json": "a890db266b3d0624a33be91687b18b873dafb3c584fa845cd90942b5bb9db577",
-  "chapters/gemfall-07r.json": "ea45e9c3b0b6d05e20a1329ecb2de52129e760b58aad5ee097c52ed158193626",
-  "chapters/gemfall-08.json": "982f9a5a7650d213e659c38c6f13dbba12d6c4b3c6fbdac4d2ed11e2f7ee73b3",
+  "chapters/gemfall-07h.json": "984d7fbf2f81f241cdbd79725257c58ae0f18e9e9fbef556406244ae4d2f5d2d",
+  "chapters/gemfall-07l.json": "e21fcc1885f9006768301083bc3ac2641a0044e43ec85dd98bccc0ded19c71de",
+  "chapters/gemfall-07r.json": "3b9617681bfd7ddf9abadce6cf48dd18f161974f5f86646f1defc83909b636dc",
+  "chapters/gemfall-08.json": "3fa88afc4f44bebc1e5064abdb959b286369af6e48cc36258b98eb21a62788e6",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {
