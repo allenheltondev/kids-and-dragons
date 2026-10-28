@@ -385,7 +385,7 @@
     },
     "map_shelter": {
       "type": "choice_point",
-      "narration": "Corvane's old map snaps upward in a gust. \"Mind the corners,\" he says. Keep it in a dry case, or spread it beside today's map where he can compare both at once. The open page needs a careful corner catch; a miss can blur fine old marks. The case protects those marks, but must be unpacked for a later side-by-side conversation.",
+      "narration": "Corvane's old map snaps upward in a gust. \"Watch the corners,\" he says. Keep it in a dry case, or spread it beside today's map where he can compare both at once. The open page needs a careful corner catch; a miss can blur fine old marks. The case protects those marks, but must be unpacked for a later side-by-side conversation.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",

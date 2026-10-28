@@ -119,7 +119,7 @@
     },
     "scene_soup_line": {
       "type": "story",
-      "narration": "A woman named Hollis stirs a bathtub-sized soup pot. DEEP HOLLOW is stitched on her apron. She hands a muddy prospector a bowl. \"Eat first, love,\" she says. \"Questions later.\" His wheelbarrow has lost a wheel. He is holding the soup much more carefully.",
+      "narration": "A woman named Hollis stirs a bathtub-sized soup pot. DEEP HOLLOW is stitched on her apron. She hands a muddy prospector a bowl. \"Eat first, dear,\" she says. \"Questions later.\" His wheelbarrow has lost a wheel. He is holding the soup much more carefully.",
       "choices": [
         {
           "id": "take_bowl",

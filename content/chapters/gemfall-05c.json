@@ -1315,7 +1315,7 @@
           "name": "Bell-Code Expert"
         }
       ],
-      "narration": "\"Help the big-bell crew set its supports and learn the passing line,\" says the bell-code expert, very fast, \"or polish the hand bells for a little answering chorus. Either job helps at the morning queue!\" The corner bell stays untouched, its rope tied high. The bell-code expert keeps looking somewhere else.",
+      "narration": "\"Help the big-bell crew set its supports and learn the passing line,\" says the bell-code expert, very fast, \"or polish the hand bells for a little answering chorus. Either job helps at the morning line!\" The corner bell stays untouched, its rope tied high. The bell-code expert keeps looking somewhere else.",
       "choices": [
         {
           "id": "pull_rope",
