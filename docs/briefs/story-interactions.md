@@ -28,7 +28,20 @@ memory and tracking answers cannot be submitted before the server’s playback
 ends. Relaxed tracking reveals the final cover; relaxed memory keeps the pattern
 visible and allows an immediate answer. Replay is a fresh attempt.
 
-Balance uses deliberate lift/lower taps, not device tilt or continuous physics.
+Balance uses deliberate lift/lower taps or a drag lever, not device tilt or continuous physics.
+The shared marker follows the team's average lift, and everyone must contribute.
+Different amounts can succeed together (for example, a quarter lift and a three-quarter
+lift). The final adjustment resolves success without a separate finish tap. A drag
+sends its whole notch count in one bounded intent so it cannot finish halfway through
+and then leave extra adjustments queued.
+
+Cooperation gives every connected hero the same job: hold together until the object
+reaches the star. The server records when this exact team began a continuous hold;
+after 1.8 seconds a support renewal or the lead phone's automatic completion resolves
+success. Release, expired leases and a changed connected team reset progress. Solo and
+relaxed players tap a prop instead of maintaining pressure. Results still wait for an
+explicit continue before applying the authored story branch.
+
 Relay is an untimed catch/pass chain. Catch ownership follows the current player;
 disconnecting after a catch cannot give the next receiver an already-caught spark.
 Playful reactions remain shared text with the existing cast backdrop. Painted
@@ -170,24 +183,41 @@ An interaction is now the whole screen, framed the same way everywhere
 
 Authored cues should still be plain: name the thing and the moment ("Ring the
 chime when the whole snowy landing shows"), never the mechanic's vocabulary.
-The Stuttering Flats cues and labels were rewritten this way. The engine,
-protocol, and authored fields did not change.
+The Stuttering Flats cues and labels were rewritten this way. Authored scene fields
+remain the same; the teamwork behavior described above is enforced by the engine.
 
 ## Play, not forms
 
-Each kind is now played with the hands, with the engine's intents unchanged:
+Each kind is played with the hands. A balance adjustment may carry a bounded notch
+count; cooperation stores the shared hold start time for synchronized feedback:
 
-- **Precision** is a big round TAP pad. The marker leaves a short trail, freezes where
-  the tap landed, and says THUNK! or boing.
-- **Timing**: the lamp is the lead's button, filling its ring as NOW comes.
+- **Precision** makes the moving-object board itself the large touch surface. The
+  marker leaves a short trail and freezes at the finger-down position on every screen,
+  including after refresh. The start badge stays out of the aiming path.
+- **Timing**: the authored prop sits inside the tappable lamp. Its ring fills as NOW
+  comes, and the finger-down moment remains frozen on both the phone and TV. Keyboard
+  activation remains available for both aiming games.
 - **Memory and sequence** are coloured pads, Simon-style. The TV lights each pad and
-  plays its note as the pattern runs; the lead taps the pads back and hears them.
-- **Relay**: the object flies to the next hero, hovers until caught, and leaves with
-  a flick up the phone (or the button).
-- **Balance** is a seesaw carrying the load, with a lever each hero drags into the
-  glowing middle. One notch is one `adjust`.
-- **Cooperate**: the load lifts as hands take hold, and a held button fills.
-- **Play** picks fly off as stickers; each bubble shows who did it.
+  plays its note as the pattern runs; the same phone pads stay in place when answering
+  unlocks. Chosen tiles can be touched to remove a mistaken step. Submitted orders stay
+  visible on the result screen, including the TV.
+- **Relay**: one prop travels between the heroes' hand positions on the TV. The
+  receiving phone is a pair of hands: touching the object catches it, and an upward
+  drag moves both hands and object. Release to send it; short, sideways and canceled
+  drags settle back. A tap also sends, and optional buttons live in a small fold.
+  There is no separate decorative relay scene. A failed send returns the object to
+  the hands for another try. The last flight lands before the success sound, stamp
+  and Continue appear; reduced motion skips that animation delay.
+- **Balance** is a shared load with one marker to bring into the gold. Each hero drags
+  a lever or taps lift/lower; the team can contribute different amounts.
+- **Cooperate**: everyone presses the object itself and the load rises to a star
+  inside that hold surface. The TV has the same single object. Progress and the finish
+  come from the shared server state. No extra decorative lift competes with it.
+- **Tracking**: touch the actual cover after shuffling. It lifts to reveal the chosen
+  position and the correct hiding place on every screen. The painted cover identities
+  and positional answers remain aligned after swaps.
+- **Play** picks fly off as stickers; each bubble shows who did it, and the chosen
+  card stays visibly selected. A single-action prop, when authored, is the touch target.
 - Every game opens with GO! (patterns excepted) and ends on a stamped word.
 
 The TV voices the room with new cues (`pad-1` to `pad-4`, `catch`, `whoosh`,

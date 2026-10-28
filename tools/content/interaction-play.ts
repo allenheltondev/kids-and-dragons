@@ -6,7 +6,7 @@
  */
 
 import { expect } from "vitest";
-import { applyIntent, enterScene, playbackMs } from "@kad/shared";
+import { TEAM_HOLD_MS, applyIntent, enterScene, playbackMs } from "@kad/shared";
 import type { Chapter, InteractionAction, InteractionPrompt, InteractionScene, RunState } from "@kad/shared";
 import { context, start } from "./riftlight-test-support.ts";
 
@@ -49,7 +49,6 @@ export function solve(chapter: Chapter, opened: RunState): RunState {
   const first = promptOf(opened);
   const { spec } = first;
   const actor = first.actorId;
-  const others = first.playerIds.filter((id) => id !== actor);
   let state = act(chapter, opened, { action: "start", relaxed: true }, actor);
   const wait = playbackMs(spec, true) + 1000;
   switch (spec.kind) {
@@ -57,9 +56,9 @@ export function solve(chapter: Chapter, opened: RunState): RunState {
     case "timing":
       return act(chapter, state, { action: "stop", position: spec.target }, actor);
     case "cooperate":
-      // Friends hold; a lone hero props the way. Props are always allowed.
-      for (const id of others.length > 0 ? others : [actor]) state = act(chapter, state, { action: "support", mode: "prop" }, id);
-      return act(chapter, state, { action: "complete" }, actor);
+      // Every hero joins the lift; props remove the need for simultaneous touch.
+      for (const id of first.playerIds) state = act(chapter, state, { action: "support", mode: "prop" }, id);
+      return act(chapter, state, { action: "complete" }, actor, TEAM_HOLD_MS);
     case "sequence":
     case "memory":
       return act(chapter, state, { action: "answer", answer: [...spec.answer] }, actor, wait);
@@ -67,10 +66,9 @@ export function solve(chapter: Chapter, opened: RunState): RunState {
       return act(chapter, state, { action: "answer", answer: [String(finalCover(spec))] }, actor, wait);
     case "balance":
       for (const id of first.playerIds) {
-        state = act(chapter, state, { action: "adjust", direction: "up" }, id);
-        state = act(chapter, state, { action: "adjust", direction: "up" }, id);
+        state = act(chapter, state, { action: "adjust", direction: "up", steps: 2 }, id);
       }
-      return act(chapter, state, { action: "complete" }, actor);
+      return state;
     case "relay":
       // Each connected hero catches and passes in turn; a lone hero does both.
       for (const id of first.playerIds) {

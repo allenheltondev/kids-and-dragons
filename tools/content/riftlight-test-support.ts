@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { expect } from "vitest";
-import { applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
+import { TEAM_HOLD_MS, applyEffects, applyIntent, classPlaceWaitingOn, createRunState, enterScene, itemCatalog, keepClassIntent, newCharacter, resolveCharacter, switchClass } from "@kad/shared";
 import type { Campaign, Chapter, ClassId, ClientIntent, EngineContext, ItemCatalog, RulesContent, RunState, SpeciesId } from "@kad/shared";
 import { APPEARANCE } from "../../packages/shared/src/test-fixtures.ts";
 import { RIFTLIGHT_DESIGN } from "./riftlight-preview.ts";
@@ -243,14 +243,15 @@ export function finishInteraction(state: RunState, chapter: Chapter, outcome: "s
         act({ action: "answer", answer: outcome === "failure" ? [spec.options.find(o => o.id !== spec.answer[0])!.id, ...spec.answer.slice(1)] : spec.answer }); break;
       case "sequence": act({ action: "answer", answer: outcome === "failure" ? [spec.options.find(o => o.id !== spec.answer[0])!.id, ...spec.answer.slice(1)] : spec.answer }); break;
       case "cooperate":
-        for (const m of current.party.filter(m => m.connected && (m.playerId !== actor || current.party.length === 1))) act({ action: "support", mode: "prop" }, m.playerId);
+        for (const m of current.party.filter(m => m.connected)) act({ action: "support", mode: "prop" }, m.playerId);
+        elapsedMs = TEAM_HOLD_MS;
         act({ action: "complete" }); break;
       case "balance":
         for (const m of current.party.filter(m => m.connected)) {
           act({ action: "adjust", direction: "up" }, m.playerId);
           act({ action: "adjust", direction: "up" }, m.playerId);
         }
-        act({ action: "complete" }); break;
+        break;
       case "relay":
         for (const m of current.party.filter(m => m.connected)) {
           act({ action: "catch" }, m.playerId);

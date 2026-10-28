@@ -699,8 +699,6 @@ button.game-pad:active:not(:disabled) { transform: translateY(0.2em) scale(0.97)
 .game-tap--lamp:has(.game-lamp[data-safe="true"]) { background: radial-gradient(circle at 50% 35%, #fff6d8, var(--kad-gold, #f5c86c) 60%, var(--kad-gold-lo, #c9962f)); color: var(--kad-accent-ink, #0d0b1a); }
 .game-tap--lamp:has(.game-lamp[data-safe="true"]) .game-tap__label { color: var(--kad-accent-ink, #0d0b1a); }
 .game-lamp[data-hit] .game-lamp__light { animation: game-thunk 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.5); }
-/* The lead's phone has the lamp as its button, so the board above it does not show a second one. */
-.game--lead.game--timing .game__board .game-lamp-stage { display: none; }
 .game-lamp-stage { display: flex; justify-content: center; }
 .game--tv .game-lamp__light { inline-size: 6em; block-size: 6em; font-size: 1.8em; }
 
@@ -756,34 +754,9 @@ button.game-pad:active:not(:disabled) { transform: translateY(0.2em) scale(0.97)
   font-size: 0.9em;
   transition: bottom 0.18s cubic-bezier(0.3, 1.5, 0.5, 1);
 }
-.game-lever[data-ok="true"] .game-lever__knob { background: radial-gradient(circle at 40% 35%, #ffffff, var(--kad-success, #5fd6a0) 60%, #2f9a6c); }
+.game-lever[data-lifting="true"] .game-lever__knob { background: radial-gradient(circle at 40% 35%, #ffffff, var(--kad-success, #5fd6a0) 60%, #2f9a6c); }
 .game-lever__hint { font-size: 0.75em; font-weight: 700; color: var(--kad-ink-dim, #b9b0d8); text-transform: uppercase; letter-spacing: 0.04em; }
 @keyframes game-glow { 50% { opacity: 0.6; } }
-
-/* Relay: the thing hovers over whoever it is coming to, then lands in their hands. */
-.game-hero__token--air { inset-block-end: auto; inset-block-start: -1.6em; inset-inline-end: auto; inset-inline-start: 50%; translate: -50% 0; animation: game-fly-in 0.55s cubic-bezier(0.2, 0.8, 0.3, 1.2) both, game-hover 1s ease-in-out 0.55s infinite; }
-.game-hero__token:not(.game-hero__token--air):not(.game-hero__token--home) { animation: game-land 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.4) both; }
-@keyframes game-fly-in { from { translate: -260% 0.8em; rotate: -40deg; opacity: 0; } 60% { translate: -80% -1.4em; rotate: 10deg; opacity: 1; } to { translate: -50% 0; rotate: 0deg; } }
-@keyframes game-hover { 50% { translate: -50% -0.35em; } }
-@keyframes game-land { from { translate: 0 -2em; scale: 1.2; } 60% { translate: 0 0.2em; scale: 0.95; } to { translate: 0 0; scale: 1; } }
-.game-hero--on .game-hero__face { animation: game-beckon 1.2s ease-in-out infinite; }
-@keyframes game-beckon { 50% { scale: 1.06; } }
-
-/* On the phone it is coming to: drop it in, then flick it away. */
-.game-catcher { display: flex; flex-direction: column; gap: var(--space-2, 0.5em); }
-.game-catcher__stage { position: relative; display: grid; place-items: center; block-size: 6.5em; border-radius: var(--radius-lg, 1.25em); background: rgb(var(--kad-gold-rgb, 245 200 108) / 8%); touch-action: none; overflow: hidden; }
-.game-catcher__thing { block-size: 4.4em; inline-size: auto; max-inline-size: 8em; object-fit: contain; filter: drop-shadow(0 0.3em 0.3em rgba(0, 0, 0, 0.6)); user-select: none; -webkit-user-drag: none; }
-.game-catcher__thing--star { display: grid; place-items: center; font-size: 4em; color: var(--kad-gold, #f5c86c); }
-.game-catcher[data-caught="false"] .game-catcher__thing { animation: game-drop-in 0.7s cubic-bezier(0.3, 1.4, 0.5, 1) both, game-hover 0.9s ease-in-out 0.7s infinite; }
-.game-catcher[data-caught="true"] .game-catcher__thing { animation: game-land 0.4s cubic-bezier(0.2, 0.9, 0.3, 1.4) both; }
-.game-catcher[data-thrown="true"] .game-catcher__thing { animation: game-throw 0.28s ease-in forwards; }
-.game-catcher__hint { position: absolute; inset-block-end: 0.4em; font-size: 0.8em; font-weight: 800; letter-spacing: 0.03em; color: var(--kad-gold, #f5c86c); animation: game-glow 1.2s ease-in-out infinite; }
-@keyframes game-drop-in { from { translate: 0 -6em; rotate: -25deg; } to { translate: 0 0; rotate: 0deg; } }
-@keyframes game-throw { to { translate: 0 -10em; rotate: 30deg; scale: 0.6; opacity: 0; } }
-
-/* On a phone the relay keeps to what matters: who has it, and the thing in your hands. */
-.game--phone.game--relay .game-relay .game-note--dim { display: none; }
-.game--phone.game--relay .game-relay { gap: var(--space-2, 0.5em); }
 
 /* Cooperate: the load lifts as hands take hold; holders strain. */
 .game-lift { display: flex; justify-content: center; block-size: 4.5em; }
@@ -853,3 +826,59 @@ button.game-pad:active:not(:disabled) { transform: translateY(0.2em) scale(0.97)
   .game *, .game *::before, .game *::after { transition: none !important; animation: none !important; }
 }
 [data-motion="reduced"] .game * { transition: none !important; animation: none !important; }
+
+/* Keep the thing being played and its controls together, within thumb reach. */
+.game--phone.game--active .game__board { flex: 0 0 auto; }
+.game--phone.game--active .game__job-detail { display: none; }
+.game--phone .game__board > .game-tap { align-self: center; }
+.game-answer-progress { margin: 0; text-align: center; font-weight: 700; color: var(--kad-gold, #f5c86c); }
+.game-catcher__stage { inline-size: 100%; border: 1px solid rgb(var(--kad-gold-rgb, 245 200 108) / 35%); color: inherit; font: inherit; cursor: pointer; }
+.game-catcher__stage:disabled { cursor: default; }
+.game--phone .game-stamp { max-inline-size: 100%; white-space: normal; text-align: center; font-size: clamp(1.4em, 7cqw, 2.2em); }
+[data-motion="reduced"] .game *::before,
+[data-motion="reduced"] .game *::after { transition: none !important; animation: none !important; }
+
+/* The finished board is a keepsake of the action, rather than another moving target. */
+.game--result .game-track,
+.game--result .game-balance *,
+.game--result .game-relay *,
+.game--result .game-play * { animation: none !important; }
+
+/* One shared goal, with each hero's contribution visible underneath. */
+.game-team-meter { position: relative; inline-size: min(24em, 100%); block-size: 1.4em; margin: 0.6em auto; border-radius: 1em; background: #100d22; box-shadow: inset 0 0 0 1px var(--kad-raised-rim, #665885); }
+.game-team-meter__gold { position: absolute; block-size: 100%; background: var(--kad-gold, #f5c86c); }
+.game-team-meter__marker { position: absolute; inset-block: -0.4em; inline-size: 0.5em; translate: -50% 0; border-radius: 1em; background: var(--kad-ink, #f4f0ff); box-shadow: 0 0 0 2px #201a38; transition: left 0.2s ease; }
+.game-team-progress { block-size: 1em; inline-size: min(24em, 100%); margin-inline: auto; border-radius: 1em; overflow: hidden; background: #100d22; box-shadow: inset 0 0 0 1px var(--kad-raised-rim, #665885); }
+.game-team-progress > span { display: block; block-size: 100%; background: linear-gradient(90deg, var(--kad-success, #5fd6a0), var(--kad-gold, #f5c86c)); transition: width 0.25s linear; }
+.game-cooperate .game-lift, .game-hold .game-lift { position: relative; block-size: 7em; overflow: visible; }
+.game-lift__goal { position: absolute; inset-block-start: 0; inset-inline-start: 50%; translate: -50% 0; font-size: 1.8em; color: var(--kad-gold, #f5c86c); opacity: 0.6; }
+.game-cooperate .game-lift__load, .game-hold .game-lift__load { position: absolute; inset-block-end: 0; translate: 0 calc(var(--lift, 0) * -3.5em); }
+.game-lift__fallback { display: grid; place-items: center; inline-size: 2em; block-size: 2em; font-size: 1.7em; color: var(--kad-gold, #f5c86c); }
+.game--result .game-lift__goal { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .game-cooperate .game-lift__load, .game-hold .game-lift__load { translate: none; } }
+[data-motion="reduced"] .game-cooperate .game-lift__load, [data-motion="reduced"] .game-hold .game-lift__load { translate: none; }
+
+/* The picture is the touch surface; controls no longer sit below a separate board. */
+.game-aim { inline-size: 100%; min-block-size: 9em; border: 0; border-radius: 1.2em; padding: 1em 0.5em; background: transparent; color: inherit; font: inherit; cursor: pointer; display: flex; flex-direction: column; justify-content: center; align-items: stretch; gap: 0.7em; }
+.game-aim > .game-track { align-self: stretch; }
+.game-aim .game-track { pointer-events: none; }
+.game-aim > small { text-align: center; color: var(--kad-ink-dim, #b9b0d8); }
+.game-aim:disabled { cursor: default; }
+.game-lamp__object { position: relative; z-index: 1; inline-size: 85%; block-size: 85%; object-fit: contain; }
+.game-cover-choices { display: grid; grid-template-columns: repeat(var(--cover-count, 3), minmax(0, 1fr)); gap: 0.6em; padding-block: 2.5em 0.5em; }
+.game-cover-pick { position: relative; display: flex; flex-direction: column; align-items: center; gap: 0.6em; padding: 0.5em; border: 0; border-radius: 1em; background: rgb(var(--kad-gold-rgb, 245 200 108) / 6%); color: inherit; font: inherit; text-align: center; cursor: pointer; min-inline-size: 0; }
+.game-cover-pick > .painted-cover { inline-size: 100%; block-size: 6em; transform: none; }
+.game-cover-pick[data-picked="true"] { box-shadow: inset 0 0 0 0.18em var(--kad-accent, #8b6cf5); }
+.game-cover-pick[data-correct="true"] { background: rgb(var(--kad-gold-rgb, 245 200 108) / 18%); }
+.painted-cover[data-raised="true"] .painted-cover__front, .painted-cover[data-raised="true"] .painted-cover__fallback { translate: 0 -2.5em; rotate: -12deg; transition: translate 0.35s ease-out, rotate 0.35s ease-out; }
+.game-cover-pick small { min-block-size: 1em; color: var(--kad-gold, #f5c86c); }
+.game-slot__edit { position: relative; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.game-slot__edit > .kad-icon { position: absolute; inset-block-start: -0.35em; inset-inline-end: -0.35em; border-radius: 50%; padding: 0.2em; background: var(--kad-bg-raised, #30264d); }
+.game-option[aria-pressed="true"] { box-shadow: inset 0 0 0 0.2em var(--kad-gold, #f5c86c); }
+.game-play-object { inline-size: 100%; block-size: 100%; object-fit: contain; }
+.game--phone.game--play .game-options:has(.game-play-object) .game-option__icon { inline-size: 7em; block-size: 7em; background: none; box-shadow: none; }
+
+.game-prop-fallback { display: grid; place-items: center; border-radius: 50%; color: var(--kad-gold, #f5c86c); background: #30264d; }
+
+/* Start feedback must leave the moving object and its target visible. */
+.game .game-stamp--go { inset-block-start: 0.4em; inset-inline-start: auto; inset-inline-end: 0.5em; translate: none; font-size: 1em; }

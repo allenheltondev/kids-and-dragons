@@ -95,7 +95,7 @@ describe("reusable story controls", () => {
   it("offers final cover positions in relaxed tracking", () => {
     const send = seed({ kind: "tracking", cue: "Watch", actionLabel: "Look under", covers: ["Left", "Middle", "Right"], start: 0, swaps: [[0, 2]], stepMs: 1000 }, { relaxed: true });
     render(<StoryInteractionControls />);
-    expect(screen.getByText("The glow waits under: Right.")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Look under: Right" }).querySelector(".painted-cover__glow")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Look under: Right" }));
     expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "answer", answer: ["2"] }));
   });
@@ -151,23 +151,25 @@ describe("reusable story controls", () => {
       chapter: { id: "test", presentation: { interactions: { interaction_egg_baskets: { props: ["prop_egg_basket"] } } } } as never,
     });
     const { container } = render(<StoryInteractionWorld />);
-    const basket = () => container.querySelector(".interaction-art__main") as HTMLImageElement;
-    const position = () => [basket().style.left, basket().style.top];
+    const basket = () => container.querySelector(".relay-world__flight") as HTMLElement;
+    const position = () => [basket().style.getPropertyValue("--to-x"), basket().style.getPropertyValue("--to-y")];
+    expect(container.querySelectorAll('[src="/assets/story-props/prop_egg_basket.webp"]')).toHaveLength(1);
     const update = (change: Partial<InteractionPrompt>) => act(() => {
       const current = useGameStore.getState().state!;
       useGameStore.setState({ state: { ...current, prompt: { ...current.prompt as InteractionPrompt, ...change } } });
     });
-    expect(position()).toEqual(["70%", "48%"]);
+    expect(position()).toEqual(["10%", "64%"]);
     update({ phase: "active" });
-    expect(position()).toEqual(["15%", "35%"]);
+    expect(position()).toEqual(["10%", "32%"]);
     update({ caughtBy: "p" });
-    expect(position()).toEqual(["15%", "44%"]);
+    expect(position()).toEqual(["10%", "64%"]);
     update({ passed: ["p"], caughtBy: undefined });
-    expect(position()).toEqual(["50%", "35%"]);
+    expect(position()).toEqual(["50%", "32%"]);
     update({ caughtBy: "p2" });
-    expect(position()).toEqual(["50%", "44%"]);
+    expect(position()).toEqual(["50%", "64%"]);
     update({ passed: ["p", "p2"], caughtBy: undefined, phase: "result", outcome: "success" });
-    expect(basket().style.left).toBe("85%");
+    expect(basket().style.getPropertyValue("--to-x")).toBe("90%");
+    expect(basket().style.getPropertyValue("--from-x")).toBe("50%");
   });
   it("preserves catalog-only Riftlight visuals when content has no prop", () => {
     seed({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "bundle" });
@@ -175,14 +177,14 @@ describe("reusable story controls", () => {
     const { container } = render(<StoryInteractionWorld />);
     expect(container.querySelector(`img[src="/assets/story-props/relay-log.webp"]`)).toBeTruthy();
   });
-  it("hides a painted interaction image if its asset fails at runtime", () => {
+  it("keeps a labeled relay object if its painting fails", () => {
     seed({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "bundle" });
     authoredChapter({ props: ["relay-sack"] });
     const { container } = render(<StoryInteractionWorld />);
-    const image = container.querySelector(".interaction-art__main") as HTMLImageElement;
+    const image = container.querySelector("img.relay-object") as HTMLImageElement;
     expect(image).toBeTruthy();
     fireEvent.error(image);
-    expect(container.querySelector(".interaction-art__main")).toBeTruthy();
+    expect(container.querySelector(".relay-object--fallback")?.textContent).toContain("bundle");
   });
   it("keeps the original text widget when neither content nor catalog art exists", () => {
     seed({ kind: "balance", cue: "Steady", actionLabel: "Lift", objectLabel: "basket" });
@@ -217,7 +219,7 @@ describe("reusable story controls", () => {
   it("provides a solo prop instead of requiring two simultaneous controls", () => {
     const send = seed({ kind: "cooperate", cue: "Hold the way", supportLabel: "Prop the branch", actionLabel: "Rescue" });
     render(<StoryInteractionControls />);
-    expect((screen.getByRole("button", { name: "Rescue" }) as HTMLButtonElement).disabled).toBe(true);
+    expect(screen.queryByRole("button", { name: "Rescue" })).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Prop the branch" }));
     expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "support", mode: "prop" }));
   });
@@ -305,7 +307,7 @@ describe("how a game feels", () => {
     seed({ kind: "relay", cue: "Pass", actionLabel: "Pass", objectLabel: "the mat" }, { caughtBy: "p" });
     authoredChapter({ props: ["relay-plank"] });
     const relay = render(<StoryInteractionWorld />);
-    expect(relay.container.querySelector(".game-hero__token")?.getAttribute("src")).toBe("/assets/story-props/relay-plank.webp");
+    expect(relay.container.querySelector(".relay-world__flight img.relay-object")?.getAttribute("src")).toBe("/assets/story-props/relay-plank.webp");
   });
   it("bursts on a result, and stays still under reduced motion", () => {
     seed(precision, { phase: "result", outcome: "success" });
@@ -381,6 +383,7 @@ describe("each game has something to do with your hands", () => {
       render(<StoryInteractionControls />);
       const stage = document.querySelector(".game-catcher__stage")!;
       fireEvent.pointerDown(stage, { clientY: 300, pointerId: 1 });
+      fireEvent.pointerMove(stage, { clientY: 200, pointerId: 1 });
       fireEvent.pointerUp(stage, { clientY: 200, pointerId: 1 });
       expect(document.querySelector(".game-catcher[data-thrown='true']")).toBeTruthy();
       await act(async () => { vi.advanceTimersByTime(300); });
@@ -423,15 +426,15 @@ describe("each game has something to do with your hands", () => {
     seed(spec);
     authoredChapter({ props: ["relay-plank"] });
     const coming = render(<StoryInteractionWorld />);
-    expect(coming.container.querySelector(".game-hero__token--air")).toBeTruthy();
+    expect(coming.container.querySelector('.relay-world__flight[data-caught="false"]')).toBeTruthy();
     coming.unmount();
     seed(spec, { caughtBy: "p" });
     authoredChapter({ props: ["relay-plank"] });
     const caught = render(<StoryInteractionWorld />);
-    expect(caught.container.querySelector(".game-hero__token--air")).toBeNull();
-    expect(caught.container.querySelector(".game-hero__token")).toBeTruthy();
+    expect(caught.container.querySelector('.relay-world__flight[data-caught="false"]')).toBeNull();
+    expect(caught.container.querySelector(".relay-world__flight img.relay-object")).toBeTruthy();
   });
-  it("sends one adjust per notch when the balance lever is dragged, each after the last has landed", async () => {
+  it("sends the whole lever gesture atomically", async () => {
     const send = seed({ kind: "balance", cue: "Level", actionLabel: "Carry", objectLabel: "Basket" });
     const pending: ((ok: boolean) => void)[] = [];
     send.mockImplementation(() => new Promise<boolean>((resolve) => { pending.push(resolve); }));
@@ -440,22 +443,11 @@ describe("each game has something to do with your hands", () => {
     track.getBoundingClientRect = () => ({ top: 0, bottom: 100, height: 100, left: 0, right: 40, width: 40, x: 0, y: 0, toJSON: () => ({}) });
     fireEvent.pointerDown(track, { clientY: 95, pointerId: 1 });
     fireEvent.pointerUp(track, { clientY: 50, pointerId: 1 });
-    const adjusts = () => send.mock.calls.filter(([intent]) => (intent as { action?: string }).action === "adjust");
-    // Never two in flight: the second waits for the first to land.
-    expect(adjusts()).toHaveLength(1);
-    await act(async () => { pending.shift()!(true); });
-    expect(adjusts()).toHaveLength(2);
-    await act(async () => { pending.shift()!(true); });
-    expect(adjusts().every(([intent]) => (intent as { direction?: string }).direction === "up")).toBe(true);
-  });
-  it("stops a dragged lever at the first refused notch", async () => {
-    const send = seed({ kind: "balance", cue: "Level", actionLabel: "Carry", objectLabel: "Basket" });
-    send.mockResolvedValue(false);
-    render(<StoryInteractionControls />);
-    const track = document.querySelector(".game-lever__track") as HTMLElement;
-    track.getBoundingClientRect = () => ({ top: 0, bottom: 100, height: 100, left: 0, right: 40, width: 40, x: 0, y: 0, toJSON: () => ({}) });
-    fireEvent.pointerDown(track, { clientY: 95, pointerId: 1 });
-    await act(async () => { fireEvent.pointerUp(track, { clientY: 5, pointerId: 1 }); });
+    const adjusts = send.mock.calls.filter(([intent]) => (intent as { action?: string }).action === "adjust");
+    expect(adjusts).toHaveLength(1);
+    expect(adjusts[0]![0]).toMatchObject({ steps: 2 });
+    expect(adjusts.every(([intent]) => (intent as { direction?: string }).direction === "up")).toBe(true);
+    await act(async () => { pending.shift()!(false); });
     expect(send.mock.calls.filter(([intent]) => (intent as { action?: string }).action === "adjust")).toHaveLength(1);
   });
   it("stamps a word on a finished game, kind by kind, and never scolds a miss", async () => {
@@ -464,8 +456,8 @@ describe("each game has something to do with your hands", () => {
     render(<StoryInteractionWorld />);
     expect(document.querySelector(".game-stamp")?.textContent).toBe("Bullseye!");
     const prompt = useGameStore.getState().state!.prompt as InteractionPrompt;
-    expect(stampFor({ ...prompt, outcome: "failure" })).toBe("Whoops!");
-    expect(stampFor({ ...prompt, outcome: "assisted" })).toBe("Phew!");
+    expect(stampFor({ ...prompt, outcome: "failure" })).toBe("Plot twist!");
+    expect(stampFor({ ...prompt, outcome: "assisted" })).toBe("Together!");
   });
   it("says GO as a game with no pattern starts, and not under reduced motion", () => {
     seed(precision, { startedAt: new Date(Date.now() - 100).toISOString() });
@@ -486,5 +478,68 @@ describe("each game has something to do with your hands", () => {
     render(<StoryInteractionWorld />);
     expect(played).toContain("pad-2");
     audio.setAudioSink(null);
+  });
+});
+
+
+describe("mini-game playtest refinements", () => {
+  it("keeps the stopped marker visible when the server returns the result", async () => {
+    seed(precision);
+    const { container } = render(<StoryInteractionControls />);
+    await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Toss!" })); });
+    const stopped = container.querySelector(".game-track__marker")!.getAttribute("style");
+    const state = useGameStore.getState().state!;
+    await act(async () => { useGameStore.setState({ state: { ...state, prompt: { ...state.prompt as InteractionPrompt, phase: "result", outcome: "failure" } } }); });
+    expect(container.querySelector(".game-track__marker")!.getAttribute("style")).toBe(stopped);
+    expect(screen.getByText("Plot twist!")).toBeTruthy();
+  });
+  it("puts one timing lamp inside the lead phone's play surface", () => {
+    seed({ kind: "timing", cue: "Ring", actionLabel: "Ring it", target: 0.5, width: 0.3, periodMs: 4000 });
+    const { container } = render(<StoryInteractionControls />);
+    expect(container.querySelectorAll(".game-lamp")).toHaveLength(1);
+    expect(container.querySelector(".game__board button.game-tap--lamp")).toBeTruthy();
+  });
+  it("unlocks reduced-motion pattern controls after the server's playback window", async () => {
+    vi.useFakeTimers();
+    try {
+      document.documentElement.setAttribute("data-motion", "reduced");
+      seed({ kind: "memory", cue: "Echo", actionLabel: "Send", options: [{ id: "a", label: "Leaf", icon: "leaf" }], answer: ["a", "a"], stepMs: 1000 });
+      render(<StoryInteractionControls />);
+      expect((screen.getByRole("button", { name: "Leaf" }) as HTMLButtonElement).disabled).toBe(true);
+      await act(async () => { vi.advanceTimersByTime(2250); });
+      fireEvent.click(screen.getByRole("button", { name: "Leaf" }));
+      expect(screen.getByText("1 of 2 chosen")).toBeTruthy();
+      fireEvent.click(screen.getByRole("button", { name: "Leaf" }));
+      expect(screen.getByText("Ready! Check your order, then send it.")).toBeTruthy();
+      expect((screen.getByRole("button", { name: "Send" }) as HTMLButtonElement).disabled).toBe(false);
+    } finally { vi.useRealTimers(); }
+  });
+  it("keeps support leases ticking on a reduced-motion TV", async () => {
+    vi.useFakeTimers();
+    try {
+      document.documentElement.setAttribute("data-motion", "reduced");
+      seed({ kind: "cooperate", cue: "Hold", actionLabel: "Go", supportLabel: "Hold it" }, { supports: { p: new Date(Date.now() + 500).toISOString() } });
+      render(<StoryInteractionWorld />);
+      expect(screen.getByText("Keep holding together. Up it goes!")).toBeTruthy();
+      await act(async () => { vi.advanceTimersByTime(1000); });
+      expect(screen.queryByText("Keep holding together. Up it goes!")).toBeNull();
+    } finally { vi.useRealTimers(); }
+  });
+  it("catches by tapping the object and cancels a pending pass when the game leaves", async () => {
+    vi.useFakeTimers();
+    try {
+      const spec: InteractionSpec = { kind: "relay", cue: "Pass", actionLabel: "Pass it on", objectLabel: "the mat" };
+      let send = seed(spec);
+      const first = render(<StoryInteractionControls />);
+      await act(async () => { fireEvent.click(screen.getByRole("button", { name: "Catch the mat" })); });
+      expect(send).toHaveBeenCalledWith(expect.objectContaining({ action: "catch" }));
+      first.unmount();
+      send = seed(spec, { caughtBy: "p" });
+      const second = render(<StoryInteractionControls />);
+      fireEvent.click(screen.getByRole("button", { name: "Pass it on" }));
+      second.unmount();
+      await act(async () => { vi.advanceTimersByTime(300); });
+      expect(send).not.toHaveBeenCalledWith(expect.objectContaining({ action: "pass" }));
+    } finally { vi.useRealTimers(); }
   });
 });

@@ -46,24 +46,24 @@ describe("what a game says about itself", () => {
     expect(tvStatus(away)).toContain("Fern: watch the marker");
     expect(phoneJob(away, "p1").lookAt).toBe("phone");
   });
-  it("tells supporters to hold and the lead to wait, then to go", () => {
+  it("gives every friend the same job and calls out who has yet to join", () => {
     const view = table(cooperate, ["Aster", "Fern", "Moss"]);
-    expect(tvStatus(view)).toBe('Fern and Moss: press and hold "Hold the sling sides" on your phone. Then Aster taps "Set the sling".');
-    expect(phoneJob(view, "p1").headline).toBe("Press and hold until Aster is done.");
-    expect(phoneJob(view, "p0").headline).toBe("Wait for your friends to hold on.");
-    const held = { ...view, prompt: { ...view.prompt, supports: { p1: null, p2: null } } };
-    expect(tvStatus(held)).toBe('Holding steady! Aster: tap "Set the sling" on your phone.');
-    expect(phoneJob(held, "p0").headline).toBe("Everyone is holding. Go!");
+    expect(tvStatus(view)).toContain('Aster, Fern and Moss: press and hold "Hold the sling sides"');
+    expect(phoneJob(view, "p1").headline).toBe("Press and hold together!");
+    expect(phoneJob(view, "p0").headline).toBe("Press and hold together!");
+    const held = { ...view, prompt: { ...view.prompt, supports: { p0: null, p1: null, p2: null } } };
+    expect(tvStatus(held)).toBe("Keep holding together. Watch it rise to the star!");
+    expect(phoneJob(held, "p0").headline).toBe("Your prop is holding!");
   });
   it("names the catcher in a relay with the real button names", () => {
     const view = table(relay, ["Aster", "Fern"]);
-    expect(tvStatus(view)).toBe('Aster: the stiff mat is coming to you. Tap "Catch the stiff mat" on your phone!');
-    expect(phoneJob(view, "p0").detail).toBe('Tap "Catch the stiff mat".');
+    expect(tvStatus(view)).toBe('Aster: touch the stiff mat on your phone to catch it!');
+    expect(phoneJob(view, "p0").detail).toBe('Touch the arriving object on your phone.');
     const caught = { ...view, prompt: { ...view.prompt, caughtBy: "p0" } };
-    expect(tvStatus(caught)).toBe('Aster has it! Tap "Pass the mat" on your phone.');
+    expect(tvStatus(caught)).toBe('Aster: slide the stiff mat up to send it to Fern.');
     expect(phoneJob(caught, "p1").headline).toBe("Aster has it. Your turn is coming.");
     const done = { ...view, prompt: { ...view.prompt, passed: ["p0", "p1"] } };
-    expect(tvStatus(done)).toBe('Aster: tap "Pass the mat" on your phone to finish.');
+    expect(tvStatus(done)).toBe('Delivered! It made it all the way.');
   });
   it("sends everyone's eyes to the TV while a pattern plays, then to the lead's phone", () => {
     const playing = table(memory, ["Aster", "Fern"], { startedAt: new Date(Date.now() - 500).toISOString() });
