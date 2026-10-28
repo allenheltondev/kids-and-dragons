@@ -106,22 +106,22 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "memory",
-        "cue": "Watch the opening pattern, then echo it.",
+        "cue": "Watch the opening blink, then copy the order you saw.",
         "actionLabel": "Show what we saw",
         "options": [
           {
             "id": "blank",
-            "label": "Empty air",
+            "label": "Nothing, just air",
             "icon": "eye"
           },
           {
             "id": "thin",
-            "label": "Narrow snowy view",
+            "label": "A thin slice of snow",
             "icon": "eye"
           },
           {
             "id": "snow",
-            "label": "Whole snowy landing",
+            "label": "The whole snowy landing",
             "icon": "eye"
           }
         ],
@@ -197,8 +197,8 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "timing",
-        "cue": "Test while the whole-landing interval is clear.",
-        "actionLabel": "Sound the chime",
+        "cue": "Ring the chime when the whole snowy landing shows.",
+        "actionLabel": "Ring the chime",
         "target": 0.5,
         "width": 0.3,
         "periodMs": 6000
@@ -273,9 +273,9 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the stiff approach mat to the guide.",
-        "actionLabel": "Pass the approach mat",
-        "objectLabel": "Stiff approach mat"
+        "cue": "Pass the stiff mat hand to hand, all the way to the guide.",
+        "actionLabel": "Pass the mat on",
+        "objectLabel": "the stiff mat"
       },
       "onSuccess": {
         "goto": "approach",
@@ -326,8 +326,8 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "sequence",
-        "cue": "Mark the shell-bank approach from the guide's pool.",
-        "actionLabel": "Try our plan",
+        "cue": "Put the three shell-bank stops in order, first to last.",
+        "actionLabel": "Try our path",
         "options": [
           {
             "id": "white",
@@ -384,9 +384,9 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the route markers along the shell banks.",
-        "actionLabel": "Pass the shell markers",
-        "objectLabel": "Shell route markers"
+        "cue": "Pass the shell markers along the curve so everyone can follow it back.",
+        "actionLabel": "Pass the markers on",
+        "objectLabel": "the shell markers"
       },
       "onSuccess": {
         "goto": "approach",
@@ -466,8 +466,8 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "play",
-        "cue": "Help the goat settle.",
-        "actionLabel": "Finish together",
+        "cue": "Say hello to the goat, your way.",
+        "actionLabel": "The goat is calm",
         "participation": "everyone",
         "options": [
           {
@@ -540,7 +540,7 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Support the broad sling while the guide slides it under.",
+        "cue": "Hold the sides of the sling while the guide slides it under the goat.",
         "actionLabel": "Set the sling",
         "supportLabel": "Hold the sling sides"
       },
@@ -601,7 +601,7 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "precision",
-        "cue": "Loosen the packed rim in the supported interval.",
+        "cue": "Wiggle the tool into the mud while the goat's weight rests on the sling.",
         "actionLabel": "Loosen the mud",
         "target": 0.5,
         "width": 0.3,
@@ -635,9 +635,9 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the small cup along the firm edge.",
-        "actionLabel": "Pass the water cup",
-        "objectLabel": "Small mud-loosening cup"
+        "cue": "Pass the little water cup along the firm edge.",
+        "actionLabel": "Pass the cup on",
+        "objectLabel": "the water cup"
       },
       "onSuccess": {
         "goto": "lift_balance",
@@ -689,9 +689,9 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "balance",
-        "cue": "Level the sling before helping the goat step free.",
-        "actionLabel": "Lift the sling gently",
-        "objectLabel": "Goat rescue sling"
+        "cue": "Lift the sling together until it is level.",
+        "actionLabel": "Help the goat step free",
+        "objectLabel": "The goat's sling"
       },
       "onSuccess": {
         "goto": "dry_patch",
@@ -771,8 +771,8 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "play",
-        "cue": "Help the freed goat warm up.",
-        "actionLabel": "Finish together",
+        "cue": "Help the shivering goat warm up.",
+        "actionLabel": "The goat is warm",
         "participation": "everyone",
         "options": [
           {
@@ -965,7 +965,7 @@
       "art": "scenes/riftlight/stuttering-flats-goat-crossing",
       "interaction": {
         "kind": "memory",
-        "cue": "Watch the mat-signal pattern, then echo it.",
+        "cue": "Watch the herder's mat signals, then copy them in order.",
         "actionLabel": "Show what we saw",
         "options": [
           {
@@ -1044,9 +1044,9 @@
       "art": "scenes/riftlight/stuttering-flats-goat-crossing",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the stop call to the next helper.",
-        "actionLabel": "Pass the quiet call",
-        "objectLabel": "Herder's stop call"
+        "cue": "Pass the herder's stop call from helper to helper.",
+        "actionLabel": "Pass the call on",
+        "objectLabel": "the stop call"
       },
       "onSuccess": {
         "goto": "crossing",
@@ -1154,8 +1154,8 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "timing",
-        "cue": "Guide the step inside the full-landing interval.",
-        "actionLabel": "Guide the goat's step",
+        "cue": "Guide the goat's step when the whole snowy landing shows.",
+        "actionLabel": "Guide the step",
         "target": 0.5,
         "width": 0.3,
         "periodMs": 6000
@@ -1206,8 +1206,8 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "timing",
-        "cue": "Guide the step inside the full-landing interval.",
-        "actionLabel": "Guide the goat's step",
+        "cue": "Guide the goat's step when the whole snowy landing shows.",
+        "actionLabel": "Guide the step",
         "target": 0.5,
         "width": 0.55,
         "periodMs": 6000
@@ -1258,8 +1258,8 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "timing",
-        "cue": "Guide the step inside the full-landing interval.",
-        "actionLabel": "Guide the goat's step",
+        "cue": "Guide the goat's step when the whole snowy landing shows.",
+        "actionLabel": "Guide the step",
         "target": 0.5,
         "width": 0.6,
         "periodMs": 6000
@@ -1310,9 +1310,9 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Keep the sling supported while the herder receives the goat.",
-        "actionLabel": "Let the herder take the weight",
-        "supportLabel": "Support the rescue sling"
+        "cue": "Hold the sling steady while the herder takes the goat.",
+        "actionLabel": "Hand the goat over",
+        "supportLabel": "Hold the sling steady"
       },
       "onSuccess": {
         "goto": "crossing_changed",
@@ -1367,9 +1367,9 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "balance",
-        "cue": "Level the stiff mat for the goat's supported step.",
-        "actionLabel": "Set the low ramp",
-        "objectLabel": "Saved stiff ramp mat"
+        "cue": "Lift the stiff mat together until it is level, like a little ramp.",
+        "actionLabel": "Set the ramp",
+        "objectLabel": "The stiff mat"
       },
       "onSuccess": {
         "goto": "ramp_return",
@@ -1403,9 +1403,9 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "relay",
-        "cue": "Pass the recovered stiff mat back to the guide.",
-        "actionLabel": "Pass the ramp mat back",
-        "objectLabel": "Returning stiff ramp mat"
+        "cue": "Pass the stiff mat back along the line to the guide.",
+        "actionLabel": "Pass the mat back",
+        "objectLabel": "the stiff mat"
       },
       "onSuccess": {
         "goto": "crossing_clear",
@@ -1538,9 +1538,9 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "cooperate",
-        "cue": "Support the last marker while the guide clears the line.",
+        "cue": "Hold the last marker steady while the guide clears the line.",
         "actionLabel": "Clear the bank",
-        "supportLabel": "Hold the bank marker"
+        "supportLabel": "Hold the marker"
       },
       "onSuccess": {
         "goto": "record",
@@ -1656,8 +1656,8 @@
       "art": "scenes/riftlight/stuttering-flats",
       "interaction": {
         "kind": "play",
-        "cue": "Give credit for a checked part of the rescue.",
-        "actionLabel": "Finish together",
+        "cue": "Say who helped most. Every true answer counts.",
+        "actionLabel": "Finish the note",
         "participation": "everyone",
         "options": [
           {
