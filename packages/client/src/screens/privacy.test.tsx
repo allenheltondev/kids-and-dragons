@@ -12,6 +12,7 @@ import { useKeepsakeStore } from "../store/keepsake";
 import { navigate, parseRoute, formatRoute } from "../router";
 import { HomeScreen } from "./HomeScreen";
 import PrivacyScreen, { OperatorLines } from "./PrivacyScreen";
+import { PrivacyFooter } from "../ui/PrivacyFooter";
 import { PRIVACY_LEDE, PRIVACY_SECTIONS } from "./privacy-policy";
 import { DELETING, ELSEWHERE, STORED } from "./what-we-store";
 
@@ -52,6 +53,20 @@ describe("reaching it", () => {
     expect(link.getAttribute("href")).toBe("/privacy");
     expect(link.getAttribute("target")).toBe("_blank");
     expect(link.getAttribute("rel")).toContain("noopener");
+  });
+
+  it("carries the grown-up's guide beside it, also in a tab of its own", () => {
+    render(<HomeScreen />);
+    const guide = screen.getByRole("link", { name: /^grown-up.s guide$/i });
+    expect(guide.closest("footer.privacy-footer")).not.toBeNull();
+    expect(guide.getAttribute("href")).toBe("/guide");
+    expect(guide.getAttribute("target")).toBe("_blank");
+  });
+
+  it("leaves the guide link out of the guide's own footer", () => {
+    const { container } = render(<PrivacyFooter guide={false} />);
+    expect(container.querySelector('a[href="/guide"]')).toBeNull();
+    expect(container.querySelector('a[href="/privacy"]')).not.toBeNull();
   });
 });
 

@@ -3,6 +3,7 @@
    just enough to tap. In a column it takes the bottom edge (margin-top: auto). */
 .privacy-footer {
   display: flex;
+  align-items: center;
   justify-content: center;
   align-self: stretch;
   flex: 0 0 auto;
@@ -20,6 +21,11 @@
   color: var(--color-text-muted, #b7b0d8);
   font-size: var(--font-size-xs, 0.75em);
   text-decoration: none;
+}
+
+.privacy-footer__dot {
+  color: var(--color-text-muted, #b7b0d8);
+  font-size: var(--font-size-xs, 0.75em);
 }
 
 .privacy-footer__link:hover,
