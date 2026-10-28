@@ -97,9 +97,11 @@ describe("what it says", () => {
     expect(container.textContent).not.toContain("!.");
   });
 
-  it("names the same party as the copyright line in the footer", () => {
-    expect(OPERATOR.name).toBe(COPYRIGHT_HOLDER);
-    expect(OPERATOR.contact).not.toBe("");
+  it("names the party the footer's copyright line names, and a business contact", () => {
+    // The operator is the company ("Ready, Set, Cloud! LLC"); the copyright line carries its name.
+    expect(OPERATOR.name.startsWith(COPYRIGHT_HOLDER)).toBe(true);
+    expect(OPERATOR.contact).toBe("allen@readysetcloud.io");
+    expect(OPERATOR.contact).not.toMatch(/gmail\./i);
   });
 
   it("renders every section, with its title", () => {

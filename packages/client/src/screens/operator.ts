@@ -12,6 +12,6 @@ export interface Operator {
 }
 
 export const OPERATOR: Operator = {
-  name: "Ready, Set, Cloud!",
-  contact: "allenheltondev@gmail.com",
+  name: "Ready, Set, Cloud! LLC",
+  contact: "allen@readysetcloud.io",
 };
