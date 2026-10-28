@@ -28,6 +28,7 @@
     "content:cast:mentions": "node tools/content/cast-report.mjs",
     "content:graph": "tsx tools/content/graph.ts",
     "content:journey": "tsx tools/content/journey.ts",
+    "play:jump": "tsx tools/playtest/jump.ts",
     "canon:check": "tsx tools/canon/check.ts",
     "canon:bestiary": "tsx tools/canon/bestiary.ts",
     "canon:items": "tsx tools/canon/items.ts",

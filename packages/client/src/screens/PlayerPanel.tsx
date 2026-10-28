@@ -969,7 +969,8 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
           wanted the room for the cards, and the fight is the goal's step for now. */}
       {/* Not while a point is waiting to be spent: the grow list needs the room, and on a short phone
           the goal card above it left too little pane to scroll in. */}
-      {inChapter && !inEncounter && !(atRest && banked > 0) ? <ChapterGoalCard place="phone" /> : null}
+      {/* Nor during a story interaction (#493): the game is the whole pane, and its goal step is the game. */}
+      {inChapter && !inEncounter && !(atRest && banked > 0) && myPrompt?.kind !== "interaction" ? <ChapterGoalCard place="phone" /> : null}
 
       {/*
         What the world is asking, echoed here.
@@ -986,15 +987,17 @@ export function PlayerPanel({ roomControls }: { roomControls?: ReactNode } = {})
       */}
       {/* `hidden`, not unmounted: an aim half-made in a fight survives a look
           at the bag. */}
-      <div className="player__prompt" ref={promptBox} hidden={showSheet}>
+      <div className={`player__prompt${myPrompt?.kind === "interaction" ? " player__prompt--game" : ""}`} ref={promptBox} hidden={showSheet}>
         {/* Inside the prompt's scroll box rather than above it, so that while
             deciding the words sit at the top and the answers sink to the
             bottom — read down, tap at the thumb — with the scene showing
             between them, and a long scene scrolls with its choices. */}
         {/* A check scene with no narration of its own is narrated by its
             prompt, and the roll card below already says it; twice is noise. */}
+        {/* A story interaction's board carries its own cue; the scene's paragraph stays on the TV. */}
         {state.narration &&
         myPrompt !== null &&
+        myPrompt.kind !== "interaction" &&
         !(myPrompt.kind === "roll" && myPrompt.prompt === state.narration) ? (
           <p className="player__echo" aria-hidden="true">
             {state.narration}

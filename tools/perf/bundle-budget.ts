@@ -129,7 +129,11 @@ const FIRST_PAINT_BUDGET_KB = 322;
 // mostly the lazy StoryInteraction and InteractionExtras controls and views.
 // 1460 -> 1475 for the privacy page (#523): 1467KB measured, 1457 before it. The
 // policy's words and its page are a lazy chunk; nothing else moved.
-const TOTAL_BUDGET_KB = 1475;
+// 1475 -> 1505 on 2026-10-28, deliberately (#493 playtest). 1497KB measured. The
+// mini-games became full-screen boards with real play (pads, a TAP pad, a lever,
+// catch and flick, stamps, room sounds); the StoryInteraction chunk went 18KB to
+// 45KB (13KB gzipped), all lazy. The first paint did not move (320KB).
+const TOTAL_BUDGET_KB = 1505;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

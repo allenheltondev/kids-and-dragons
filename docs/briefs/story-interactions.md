@@ -48,6 +48,18 @@ Results remain visible until a player continues. Branch effects apply exactly
 once on continuing. The acting hero may retry without spending resources. Every
 scene offers an untimed helping hand, using `onAssisted` or `onSuccess`.
 
+## Jump to any game
+
+`npm run play:jump -- <chapter> <scene>` seats a TV and phones at any scene of any
+chapter and writes one composite PNG of every screen to `test-results/playtest/`.
+`--start` taps "We’re ready" and shoots the game running; `--record 2000` captures
+every painted frame for two seconds as a strip of composites; `--open` leaves visible
+browsers up to play by hand. `--list riftlight-stuttering-flats` lists a chapter's
+scenes with each game's kind and cue. The start is a dev-server playtest start
+(`chapterId` on `POST /api/dev/seed`): out of campaign order, unlocked, with any
+`--flag` and `--fact`, and it settles nothing into a saved journey. Scripts can use
+`openTable()` from `tools/playtest/table.ts` directly to drive the phones.
+
 ## Try the prototypes
 
 Run `npm run dev:client` and open `http://localhost:5173/interactions.html`.
@@ -123,6 +135,64 @@ Proposed Clever benefit: reveal a helpful ordering hint on request.
 - Travel precision shows the marker beside its button. Props allow a player to
   change views while supporting the way. Reduced-motion devices offer assistance
   without rendering the aiming animation.
+
+## The game board (first family playtest)
+
+The first family to play a chapter built on these mechanics (the goat rescue on
+the Stuttering Flats) came away confused: the game was a small bordered widget
+under the narration on both screens, the authored cue read like a manual
+("Test while the whole-landing interval is clear"), every phone offered
+"Take a helping hand" with no word about what it did, and nothing said whose
+phone mattered or whether to look at the TV or the phone.
+
+An interaction is now the whole screen, framed the same way everywhere
+(`StoryInteraction.tsx`, `InteractionExtras.tsx`, `interaction-copy.ts`):
+
+- **A name for the game** in kid words, from the kind (`Hit the gold`,
+  `Wait for NOW`, `Copy the pattern`, `Share the clues`, `Follow the glow`,
+  `Hold it level`, `Pass it along`, `All together`, `Everyone joins in`), then
+  the authored cue. Before anyone starts, the board says how the game is played
+  in one breath.
+- **The board** fills the TV's plate and the phone's pane: the painted props
+  and heroes, and the kind's own picture (a sliding marker with a gold stretch,
+  a lamp that says Wait… / NOW!, the pattern tile by tile with progress dots,
+  numbered answer slots, this phone's clue, a gauge per hero for balance, a
+  row of hero faces for relays and holds, speech bubbles for play).
+- **One line that says who does what, on which phone.** The TV reads
+  `Aster: when the lamp says NOW!, tap "Ring the chime" on your phone.` A
+  phone reads its own job, with a TV or phone icon for where to look:
+  `Press and hold until Aster is done.` The lead follows the connected
+  actor the engine already picks; nothing is asked of a phone that is away.
+- **Help is one fold, explained.** `Stuck? Get help` holds Relaxed play and
+  the helping hand, each with a sentence saying what it does. The helping hand
+  is still offered on every phone (a parent can take it for a child), and it
+  opens by itself on a phone that cannot aim under reduced motion.
+
+Authored cues should still be plain: name the thing and the moment ("Ring the
+chime when the whole snowy landing shows"), never the mechanic's vocabulary.
+The Stuttering Flats cues and labels were rewritten this way. The engine,
+protocol, and authored fields did not change.
+
+## Play, not forms
+
+Each kind is now played with the hands, with the engine's intents unchanged:
+
+- **Precision** is a big round TAP pad. The marker leaves a short trail, freezes where
+  the tap landed, and says THUNK! or boing.
+- **Timing**: the lamp is the lead's button, filling its ring as NOW comes.
+- **Memory and sequence** are coloured pads, Simon-style. The TV lights each pad and
+  plays its note as the pattern runs; the lead taps the pads back and hears them.
+- **Relay**: the object flies to the next hero, hovers until caught, and leaves with
+  a flick up the phone (or the button).
+- **Balance** is a seesaw carrying the load, with a lever each hero drags into the
+  glowing middle. One notch is one `adjust`.
+- **Cooperate**: the load lifts as hands take hold, and a held button fills.
+- **Play** picks fly off as stickers; each bubble shows who did it.
+- Every game opens with GO! (patterns excepted) and ends on a stamped word.
+
+The TV voices the room with new cues (`pad-1` to `pad-4`, `catch`, `whoosh`,
+`tick`), synthesized until recorded files exist. Phones answer their own taps with
+short vibrations. All motion and vibration stop under reduced motion.
 
 ## Family playtest
 

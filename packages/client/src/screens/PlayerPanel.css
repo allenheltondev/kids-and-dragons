@@ -238,6 +238,18 @@
   border-bottom: 0.08em solid var(--color-border, #3a3468);
 }
 
+/* A story interaction (#493) is the whole pane: the board is edge to edge and at least as
+   tall as the pane, so the game is the thing in the hand, not a card among others. */
+.player__prompt--game {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+.player__prompt--game > .game {
+  flex: 1 0 auto;
+  min-block-size: 100%;
+}
+
 .prompt {
   display: flex;
   flex-direction: column;
