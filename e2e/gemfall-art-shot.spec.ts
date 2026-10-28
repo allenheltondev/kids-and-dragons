@@ -85,6 +85,8 @@ test("photograph Gemfall chapter 02 art and relaxed tracking on TV and phone", a
     await send(phone, code, { type: "PLAYTEST_GOTO", sceneId: "interaction_jackalope_hats" });
     const phoneControls = phone.getByRole("region", { name: "Interaction controls" });
     const tvWorld = tv.getByRole("region", { name: "Story interaction" });
+    // Relaxed play and the helping hand live under the "Stuck? Get help" fold.
+    await phoneControls.locator("summary.game__help-summary").click();
     await expect(phoneControls.getByLabel("Relaxed play")).toBeVisible();
     await phoneControls.getByLabel("Relaxed play").check();
     await phoneControls.getByRole("button", { name: "We’re ready" }).click();
@@ -131,7 +133,8 @@ test("photograph Gemfall chapter 02 art and relaxed tracking on TV and phone", a
     const basketHero = await basketArt.locator(".interaction-art__hero").boundingBox();
     expect(basketHero).not.toBeNull();
     expect(basketBox!.x).toBeGreaterThan(basketHero!.x + basketHero!.width);
-    const helpButton = phoneControls.getByRole("button", { name: "Take a helping hand" });
+    // The help fold's summary is what stays on screen; the helping hand is one tap inside it.
+    const helpButton = phoneControls.locator("summary.game__help-summary");
     await expect(readyButton).toBeInViewport();
     await expect(helpButton).toBeInViewport();
     await phone.screenshot({ path: `${SHOTS}/chapter02-egg-basket-phone.png`, fullPage: true });
@@ -229,6 +232,7 @@ test(`photograph chapter ${batch.number} fight introductions and outcomes on TV 
           await phone.getByRole("button", { name: "Your turn", exact: true }).click();
           const controls = phone.getByRole("region", { name: "Interaction controls" });
           await expect(controls).toBeVisible({ timeout: 60_000 });
+          await controls.locator("summary.game__help-summary").click();
           await controls.getByLabel("Relaxed play").check();
           await controls.getByRole("button", { name: "We’re ready" }).click();
           if (scene.type === "interaction" && scene.interaction.kind === "play") {
