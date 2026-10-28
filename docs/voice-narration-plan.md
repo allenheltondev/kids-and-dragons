@@ -407,21 +407,24 @@ counted once per value, and retakes are padded in (`--retakes`, default ×1.25).
 audio tokens (25 a second), so its price depends on reading speed: 14 characters a second, set
 in `pricing.json`.
 
-The whole game, choice labels excluded, ×1.25 for retakes, `{facets}` expanded 0–14 (every great stone the content can hand out), priced 2026-10-28:
+The whole game, choice labels excluded, ×1.25 for retakes, `{facets}` expanded 0–14 (every great stone the content can hand out), priced 2026-10-28 on the content as of the Riftlight rebalance (#554):
 
 | Model | Whole game | Gemfall | Riftlight | Fits the $75 first run? |
 |---|---|---|---|---|
-| ElevenLabs v4 | $114.45 | $66.33 | $46.45 | no: one campaign at a time |
-| ElevenLabs v4 Turbo | $57.22 | $33.16 | $23.23 | yes |
-| ElevenLabs v3 / Multilingual v2 | $143.06 | $82.91 | $58.07 | no: Gemfall alone is over |
-| ElevenLabs Flash v2.5 | $71.53 | $41.45 | $29.03 | yes |
-| Gemini 3.8 Flash TTS | $24.18 | $14.01 | $9.81 | yes, 3× over |
-| Gemini 3.8 Flash-Lite TTS | $15.92 | $9.22 | $6.46 | yes |
-| Gemini 3.1 Flash TTS | $52.28 | $30.29 | $21.22 | yes |
+| ElevenLabs v4 | $113.36 | $66.47 | $45.22 | no: one campaign at a time |
+| ElevenLabs v4 Turbo | $56.68 | $33.24 | $22.61 | yes |
+| ElevenLabs v3 / Multilingual v2 | $141.71 | $83.09 | $56.53 | no: Gemfall alone is over |
+| ElevenLabs Flash v2.5 | $70.85 | $41.55 | $28.27 | yes |
+| Gemini 3.8 Flash TTS | $23.36 | $13.70 | $9.31 | yes, 3× over |
+| Gemini 3.8 Flash-Lite TTS | $15.77 | $9.25 | $6.29 | yes |
+| Gemini 3.1 Flash TTS | $51.78 | $30.36 | $20.65 | yes |
 
-Every rate is marked unconfirmed in `pricing.json`. They came from third-party summaries,
-because the provider pages couldn't be fetched from here. Check them before spending. Two things
-change the numbers:
+The Gemini 3.8 Flash TTS rates through 2026 are confirmed against Google's pricing page
+(`cloud.google.com/text-to-speech/pricing`, read 2026-10-28): $0.50 per million text input tokens,
+$9.00 per million audio output tokens, no free tier. Every other rate in `pricing.json` is still
+marked unconfirmed: the 2027 figures and batch discount came from search summaries, and the
+ElevenLabs and other Gemini rates from third-party summaries. Check them before spending on those.
+Three things change the numbers:
 
 - **Gemini 3.8 doubles on 2027-01-01** ($9 → $18 per million audio tokens for Flash). A first
   render before then is half the price: `voice:cost -- --on 2027-01-15` shows the difference.
@@ -429,12 +432,15 @@ change the numbers:
 - **ElevenLabs' rate depends on the model and the plan.** Eleven v4 (its newest, built for
   long-form narration) is quoted at $0.08 per thousand characters and v4 Turbo at $0.04, below
   v3's $0.10. Plan overage has been quoted anywhere from $0.10 to $0.30.
+- **Audio tokens per second is unverified.** Google's docs and `pricing.json` say 25 a second; a
+  developer-forum report says tests return about 32. If that holds, output cost, nearly all of the
+  bill, runs about 28% above these figures. The staging smoke test should log the real count.
 
 **Budget: $75 cap on the first run.** `voice:generate` will take `--max-dollars 75` and stop before
 the request that would cross it, priced with the same model. On Gemini 3.8 Flash the cap covers
 the whole game with room for a second pass, and on ElevenLabs v4 Turbo the whole game once. On
-ElevenLabs v4 it covers Gemfall ($66.33) or Riftlight ($46.45) with the small campaigns, and on v3
-Riftlight but not Gemfall ($82.91).
+ElevenLabs v4 it covers Gemfall ($66.47) or Riftlight ($45.22) with the small campaigns, and on v3
+Riftlight but not Gemfall ($83.09).
 
 ---
 
