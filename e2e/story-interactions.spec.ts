@@ -76,7 +76,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     await expect(one.locator(".interaction-art__main").first()).toHaveAttribute("src", "/assets/story-props/rope-loop.webp");
     await relaxed(two);
     await controls(two).getByRole("button", { name: "We’re ready" }).click();
-    await expect(controls(two).getByRole("button", { name: "Fetch the ribbon" })).toBeDisabled();
+    await expect(controls(two).getByRole("button", { name: "Fetch the ribbon" })).toHaveCount(0);
     await one.setViewportSize({ width: 390, height: 640 });
     await controls(one).getByRole("button", { name: "Hold the branch", exact: true }).scrollIntoViewIfNeeded();
     const shortPhoneAction = await controls(one).getByRole("button", { name: "Hold the branch", exact: true }).boundingBox();
@@ -84,7 +84,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     expect(shortPhoneAction!.y).toBeGreaterThanOrEqual(0);
     expect(shortPhoneAction!.y + shortPhoneAction!.height).toBeLessThanOrEqual(640);
     await controls(one).getByRole("button", { name: "Hold the branch", exact: true }).click();
-    await controls(two).getByRole("button", { name: "Fetch the ribbon" }).click();
+    await controls(two).getByRole("button", { name: "Hold the branch", exact: true }).click();
     await expect(world).toContainText("You did it together");
     await controls(two).getByRole("button", { name: "See what happens next" }).click();
     await controls(one).getByRole("button", { name: "We’re ready" }).click();
@@ -114,10 +114,12 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
       if (sceneId === "interaction_sneak") await controls(lead).getByRole("button", { name: "Tiptoe!", exact: true }).click();
       if (sceneId === "interaction_balance") {
         for (const phone of [one, two]) {
-          await controls(phone).getByRole("button", { name: "Lift my side", exact: true }).click();
-          await controls(phone).getByRole("button", { name: "Lift my side", exact: true }).click();
+          for (let lift = 0; lift < 2; lift++) {
+            const prompt = (await roomState<RunState>(phone, code)).prompt;
+            if (prompt?.kind === "interaction" && prompt.phase === "result") break;
+            await controls(phone).getByRole("button", { name: "Lift my side", exact: true }).click();
+          }
         }
-        await controls(lead).getByRole("button", { name: "Carry it through", exact: true }).click();
       }
       if (sceneId === "interaction_spark") for (const phone of [one, two]) {
         await controls(phone).getByRole("button", { name: "Catch the starlight", exact: true }).click();
