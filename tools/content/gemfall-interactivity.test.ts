@@ -1,18 +1,15 @@
 /**
  * What the table plays in Gemfall besides voting (#496's Riftlight pass, applied to Gemfall).
  *
- * Every chapter has a fight every success ending walks, four or more story
- * interactions on every success route in at least three kinds, two or more
- * whole-party rolls, a class moment beside an ungated way, and things to earn
- * (items, coins). Setback endings may skip the fight: a lost fight is a rescue
- * that rejoins the spine, and the setbacks that exist were authored first.
- * `content:pacing` reports the same numbers; this is the gate.
+ * Preserve authored battles, ungated alternatives, rewards and recoveries.
+ * Scene, roll and minigame quotas do not establish pacing or enjoyment;
+ * complete-route suites check the actual decisions and consequences.
  */
 
 import fs from "node:fs";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
-import { pacingReport, shortestSuccessPath } from "@kad/shared";
+import { pacingReport } from "@kad/shared";
 import type { Campaign, Chapter, Scene } from "@kad/shared";
 
 const ROOT = path.resolve(import.meta.dirname, "../..");
@@ -58,34 +55,7 @@ const shortestReport = (chapter: Chapter) => pacingReport(chapter, undefined, 0)
 const text = (chapter: Chapter): string => JSON.stringify(chapter.scenes);
 const count = (chapter: Chapter, re: RegExp): number => (text(chapter).match(re) ?? []).length;
 
-/** Explore every edge, including gated choices and missed checks. This
- * over-approximates playable routes, proving coverage without assuming a party
- * or flag history. Capped counts and kind sets keep loops finite. */
-function interactionCoverageGaps(chapter: Chapter): string[][] {
-  const queue = [{ id: chapter.entry, count: 0, kinds: [] as string[], route: [] as string[] }];
-  const seen = new Set<string>();
-  const gaps: string[][] = [];
-  for (let i = 0; i < queue.length; i++) {
-    const state = queue[i]!;
-    const scene = chapter.scenes[state.id]!;
-    const count = Math.min(4, state.count + Number(scene.type === "interaction"));
-    const kinds = [...new Set([...state.kinds, ...(scene.type === "interaction" ? [scene.interaction.kind] : [])])].sort();
-    const key = JSON.stringify([state.id, count, kinds]);
-    if (seen.has(key)) continue;
-    seen.add(key);
-    if (count >= 4 && kinds.length >= 3) continue;
-    const route = [...state.route, state.id];
-    if (isSuccessEnding(scene)) gaps.push(route);
-    for (const id of exits(scene)) queue.push({ id, count, kinds, route });
-  }
-  return gaps;
-}
-
 describe.each(chapters)("$id", (chapter) => {
-  it("puts four interactions in three kinds on every success route, including alternate choices", () => {
-    expect(interactionCoverageGaps(chapter)).toEqual([]);
-  });
-
   it("has a fight that every success ending walks", () => {
     if (NO_SPINE_FIGHT[chapter.id]) return;
     const fights = Object.entries(chapter.scenes).filter(([, s]) => s.type === "encounter").map(([id]) => id);
@@ -94,24 +64,7 @@ describe.each(chapters)("$id", (chapter) => {
     for (const { shortest } of shortestReport(chapter).scenarios) expect(shortest!.encounters).toBeGreaterThanOrEqual(1);
   });
 
-  it("keeps the standard length: 30 scenes and 14 votes and checks on the shortest path", () => {
-    for (const { shortest } of shortestReport(chapter).scenarios) {
-      expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
-      expect(shortest!.decisions + shortest!.checks).toBeGreaterThanOrEqual(14);
-    }
-  });
-
-  it("puts four story interactions in three kinds on the shortest path", () => {
-    for (const { scenario } of shortestReport(chapter).scenarios) {
-      const onPath = (shortestSuccessPath(chapter, scenario) ?? []).map((id) => chapter.scenes[id]!).filter((s) => s.type === "interaction");
-      expect(onPath.length, `${chapter.id} (${scenario.id})`).toBeGreaterThanOrEqual(4);
-      const kinds = new Set(onPath.map((s) => (s.type === "interaction" ? s.interaction.kind : "")));
-      expect(kinds.size, `${chapter.id} (${scenario.id}): ${[...kinds].join(", ")}`).toBeGreaterThanOrEqual(3);
-    }
-  });
-
-  it("asks the whole table to roll twice or more, and gives a class a moment beside an ungated way", () => {
-    expect(count(chapter, /"roller":"all"/g)).toBeGreaterThanOrEqual(2);
+  it("keeps an ungated way beside class-specific approaches", () => {
     for (const [id, scene] of Object.entries(chapter.scenes)) {
       const choices = "choices" in scene ? (scene.choices ?? []) : [];
       if (choices.some((c) => c.requiresClass)) expect(choices.some((c) => !c.requiresClass && !c.requiresSpecies && !c.requiresItem && !c.requiresFlag && !c.when), `${id} has only gated choices`).toBe(true);

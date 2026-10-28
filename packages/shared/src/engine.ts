@@ -1279,8 +1279,12 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
   if (!prompt || prompt.kind !== "interaction" || prompt.openedSeq !== intent.openedSeq || prompt.attempt !== intent.attempt) {
     throw new Illegal("ILLEGAL", "This interaction has moved on.");
   }
-  const scene = ctx.chapter?.scenes[prompt.sceneId];
-  if (!scene || scene.type !== "interaction") throw new Illegal("ILLEGAL", "No interaction scene.");
+  const currentScene = ctx.chapter?.scenes[prompt.sceneId];
+  // A saved activity keeps its original controls and outcome contract even if
+  // fresh play now enters a story or conversation at this scene id.
+  const scene = currentScene?.type === "interaction"
+    ? currentScene : ctx.chapter?.resumeInteractions?.[prompt.sceneId];
+  if (!currentScene || !scene || scene.type !== "interaction") throw new Illegal("ILLEGAL", "No interaction scene.");
   const connected = draft.party.filter((member) => member.connected).map((member) => member.playerId);
   if (!connected.includes(playerId)) throw new Illegal("FORBIDDEN", "Only a connected hero may act.");
   const actor = interactionActor(prompt, connected);

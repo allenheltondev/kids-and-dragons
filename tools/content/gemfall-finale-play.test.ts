@@ -13,6 +13,7 @@ const chapter = read<Chapter>("content/chapters/gemfall-08.json");
 const legacy = read<Record<string, CheckScene>>("tools/content/fixtures/gemfall-finale-legacy-checks.json");
 const sizes = [1, 2, 4];
 const outcomes = ["success", "assisted"] as const;
+const responses = ["carried", "helped", "choice"] as const;
 
 function initial(size: number, flags: Record<string, boolean> = {}, items: string[] = []): RunState {
   const state = start(chapter, "manticore", "duskrunner", flags, size);
@@ -56,14 +57,17 @@ it.each(sizes)("The four final philosophies remain available to %i-player partie
   expect(chapter.scenes.encounter_gallery?.type).toBe("encounter");
 });
 
-it.each(sizes.flatMap(size => outcomes.map(outcome => ({ size, outcome }))))
-  ("Finale verdict: $size / $outcome each hero can contribute without a persuasion roll", ({ size, outcome }) => {
+it.each(sizes.flatMap(size => responses.map(response => ({ size, response }))))
+  ("Finale verdict: $size / $response resolves discussion without a game or persuasion roll", ({ size, response }) => {
     const decision = at(size, "scene_verdict");
     expect(offered(decision, "honest")).toBe(true); // historical die route remains
     const interaction = choose(decision, "each_voice");
     expect(interaction.sceneId).toBe("interaction_verdict_council");
-    expect(promptOf(interaction).spec.kind).toBe("play");
-    const after = finish(interaction, outcome);
+    expect(interaction.prompt?.kind).toBe("choice");
+    const reply = choose(interaction, response);
+    expect(reply.narration).toBeTruthy();
+    expect(reply.flags.dragon_satisfied).not.toBe(true);
+    const after = choose(reply, "continue");
     expect(after.sceneId).toBe("scene_seal_cracks");
     expect(after.flags.dragon_satisfied).toBe(true);
     expect(chapter.scenes.check_verdict?.type).toBe("check");
@@ -140,7 +144,7 @@ it.each(sizes.flatMap(size => [1, 20].map(face => ({ size, face }))))
 
 it("Confrontation interaction art uses registered existing assets", () => {
   const manifest = read<{ sceneIllustrations: string[]; storyProps: { ids: string[] } }>("assets/manifest.json");
-  for (const id of ["interaction_verdict_council", "interaction_restore_fit", "interaction_wheel_latch", "interaction_leash_transfer"]) {
+  for (const id of ["interaction_restore_fit", "interaction_wheel_latch", "interaction_leash_transfer"]) {
     const scene = chapter.scenes[id];
     expect(scene?.type, id).toBe("interaction");
     if (scene?.art) {

@@ -5540,40 +5540,6 @@
       ]
     },
     "interaction_bundles": {
-      "type": "interaction",
-      "narration": "Down the slope, the faun family has stopped again. Their goat has parked the cart across a washed-out step, and it will not budge. Tansy's father waves both arms at you. \"Help us pass the bundles over the gap, hand to hand!\" he calls. \"Quick, before the goat has opinions!\"",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the bundle, then pass it along.",
-        "actionLabel": "Pass the bundle",
-        "objectLabel": "A faun family's bundle"
-      },
-      "onSuccess": {
-        "goto": "scene_wolf_ledge",
-        "narration": "Bundle after bundle goes over the gap, and not one lands in the mud. The goat watches the whole thing, chewing. Tansy's mother presses a warm honeycake into your hands. \"For the climb,\" she says, \"and for being nice to my small one.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "honeycake",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_wolf_ledge",
-        "narration": "One bundle bursts open, and a whole pillow's worth of feathers floats down the mountain like snow. The goat sneezes. The family laughs, and the cart rolls on."
-      },
-      "onAssisted": {
-        "goto": "scene_wolf_ledge",
-        "narration": "Together you and Tansy's father pass the bundles in a slow, steady row, and not one lands in the mud. Tansy's mother presses a warm honeycake into your hands. \"For the climb,\" she says.",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "honeycake",
-            "to": "party"
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/tansy",
@@ -5581,7 +5547,24 @@
           "size": "small"
         }
       ],
-      "art": "scenes/gemfall/washed-out-step-cart"
+      "art": "scenes/gemfall/washed-out-step-cart",
+      "type": "story",
+      "narration": "The faun family's goat has parked its cart across a washed-out step. You and Tansy's father move the bundles to the waiting shelf while the goat considers another route. The family has room to turn back. Bundle after bundle goes over the gap, and not one lands in the mud. The goat watches the whole thing, chewing. Tansy's mother presses a warm honeycake into your hands. \"For the climb,\" she says, \"and for being nice to my small one.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_wolf_ledge",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "scene_warden_post_tin": {
       "type": "story",
@@ -5721,108 +5704,47 @@
       "art": "scenes/gemfall/crab-field-guards"
     },
     "interaction_climb_warmup": {
-      "type": "interaction",
-      "narration": "At Mount Red Sky, everyone else is running downhill. You must climb, find the seal and answer what is waking below. Cold fingers first: wake your hands and boots before the rocks put them to work.",
-      "interaction": {
-        "kind": "play",
-        "participation": "any",
-        "cue": "Warm up before the mountain climb.",
-        "actionLabel": "Ready to climb!",
-        "options": [
-          {
-            "id": "stamp",
-            "label": "Stamp your boots",
-            "icon": "boot",
-            "reaction": "Loose grit dances around your feet."
-          },
-          {
-            "id": "stretch",
-            "label": "Stretch up high",
-            "icon": "hand",
-            "reaction": "The summit still looks very far away."
-          },
-          {
-            "id": "shake",
-            "label": "Shake out your hands",
-            "icon": "spark",
-            "reaction": "Your fingers feel ready for the rocks."
-          }
-        ],
-        "stages": [
-          "Wake your feet.",
-          "Wake your shoulders.",
-          "Wake your hands."
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_tree_line"
-      },
-      "onFailure": {
-        "goto": "scene_tree_line"
-      }
+      "type": "story",
+      "narration": "At Mount Red Sky, everyone else is running downhill. You stop at the last sheltered rock, rub your hands, and check one another's packs. Beyond the tree line, the summit waits. Climb, find the seal, and give your answer.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_tree_line"
+        }
+      ]
     },
     "interaction_verdict_council": {
-      "type": "interaction",
-      "art": "scenes/gemfall/seal-chamber",
       "cast": [
         {
           "figure": "cast/seal_keeper",
           "name": "Seal-Keeper"
         }
       ],
+      "art": "scenes/gemfall/seal-chamber",
+      "type": "choice_point",
       "narration": "The Keeper asks whom you told and what you want. Make room for every hero: name something carried, remember a helper, or say what should happen now. The dragon lowers its head to listen.",
-      "interaction": {
-        "kind": "play",
-        "participation": "everyone",
-        "cue": "Each hero shares one thing they carried, learned, or chose.",
-        "actionLabel": "Finish our answer",
-        "options": [
-          {
-            "id": "carried",
-            "label": "Name something I carried",
-            "icon": "gem",
-            "reaction": "The dragon asks what changed because you carried it."
-          },
-          {
-            "id": "helped",
-            "label": "Remember someone who helped",
-            "icon": "heart",
-            "reaction": "An embermoth settles closer to listen."
-          },
-          {
-            "id": "choice",
-            "label": "Say what I want for the realm",
-            "icon": "star",
-            "reaction": "The Seal-Keeper waits until your answer is complete."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_seal_cracks",
-        "narration": "The dragon heard everyone. It moves aside. \"You came a long way to give your own answers,\" it says.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "dragon_satisfied",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_seal_cracks",
-        "narration": "The Keeper helps find the words and makes room for the party at the seal."
-      },
-      "onAssisted": {
-        "goto": "scene_seal_cracks",
-        "narration": "The Keeper asks a question at a time. Together you finish your answer, and it lets you pass.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "dragon_satisfied",
-            "value": true
-          }
-        ]
-      }
+      "choices": [
+        {
+          "id": "carried",
+          "label": "Name something I carried",
+          "icon": "gem",
+          "goto": "interaction_verdict_council_response_carried"
+        },
+        {
+          "id": "helped",
+          "label": "Remember someone who helped",
+          "icon": "heart",
+          "goto": "interaction_verdict_council_response_helped"
+        },
+        {
+          "id": "choice",
+          "label": "Say what I want for the realm",
+          "icon": "star",
+          "goto": "interaction_verdict_council_response_choice"
+        }
+      ]
     },
     "interaction_restore_fit": {
       "type": "interaction",
@@ -5991,6 +5913,84 @@
         "goto": "scene_restore_last_gap",
         "narration": "The Keeper braces beside you. Together you hold the pieces until the cracks join."
       }
+    },
+    "interaction_verdict_council_response_carried": {
+      "type": "story",
+      "narration": "The dragon asks what changed because you carried it. The dragon heard everyone. It moves aside. \"You came a long way to give your own answers,\" it says.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_seal_cracks",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dragon_satisfied",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "art": "scenes/gemfall/seal-chamber"
+    },
+    "interaction_verdict_council_response_helped": {
+      "type": "story",
+      "narration": "An embermoth settles closer to listen. The dragon heard everyone. It moves aside. \"You came a long way to give your own answers,\" it says.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_seal_cracks",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dragon_satisfied",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "art": "scenes/gemfall/seal-chamber"
+    },
+    "interaction_verdict_council_response_choice": {
+      "type": "story",
+      "narration": "The Seal-Keeper waits until your answer is complete. The dragon heard everyone. It moves aside. \"You came a long way to give your own answers,\" it says.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_seal_cracks",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "dragon_satisfied",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "art": "scenes/gemfall/seal-chamber"
     }
   },
   "voiceGuide": {
@@ -6022,11 +6022,6 @@
           "prop_rope_pole"
         ]
       },
-      "interaction_bundles": {
-        "props": [
-          "prop_faun_bundle"
-        ]
-      },
       "interaction_restore_fit": {
         "props": [
           "prop_humming_stone"
@@ -6045,6 +6040,156 @@
       "interaction_restore_brace": {
         "props": [
           "prop_stone_board"
+        ]
+      }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_climb_warmup": {
+      "type": "interaction",
+      "narration": "At Mount Red Sky, everyone else is running downhill. You must climb, find the seal and answer what is waking below. Cold fingers first: wake your hands and boots before the rocks put them to work.",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Warm up before the mountain climb.",
+        "actionLabel": "Ready to climb!",
+        "options": [
+          {
+            "id": "stamp",
+            "label": "Stamp your boots",
+            "icon": "boot",
+            "reaction": "Loose grit dances around your feet."
+          },
+          {
+            "id": "stretch",
+            "label": "Stretch up high",
+            "icon": "hand",
+            "reaction": "The summit still looks very far away."
+          },
+          {
+            "id": "shake",
+            "label": "Shake out your hands",
+            "icon": "spark",
+            "reaction": "Your fingers feel ready for the rocks."
+          }
+        ],
+        "stages": [
+          "Wake your feet.",
+          "Wake your shoulders.",
+          "Wake your hands."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_tree_line"
+      },
+      "onFailure": {
+        "goto": "scene_tree_line"
+      }
+    },
+    "interaction_bundles": {
+      "type": "interaction",
+      "narration": "Down the slope, the faun family has stopped again. Their goat has parked the cart across a washed-out step, and it will not budge. Tansy's father waves both arms at you. \"Help us pass the bundles over the gap, hand to hand!\" he calls. \"Quick, before the goat has opinions!\"",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the bundle, then pass it along.",
+        "actionLabel": "Pass the bundle",
+        "objectLabel": "A faun family's bundle"
+      },
+      "onSuccess": {
+        "goto": "scene_wolf_ledge",
+        "narration": "Bundle after bundle goes over the gap, and not one lands in the mud. The goat watches the whole thing, chewing. Tansy's mother presses a warm honeycake into your hands. \"For the climb,\" she says, \"and for being nice to my small one.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_wolf_ledge",
+        "narration": "One bundle bursts open, and a whole pillow's worth of feathers floats down the mountain like snow. The goat sneezes. The family laughs, and the cart rolls on."
+      },
+      "onAssisted": {
+        "goto": "scene_wolf_ledge",
+        "narration": "Together you and Tansy's father pass the bundles in a slow, steady row, and not one lands in the mud. Tansy's mother presses a warm honeycake into your hands. \"For the climb,\" she says.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/tansy",
+          "name": "Tansy",
+          "size": "small"
+        }
+      ],
+      "art": "scenes/gemfall/washed-out-step-cart"
+    },
+    "interaction_verdict_council": {
+      "type": "interaction",
+      "art": "scenes/gemfall/seal-chamber",
+      "cast": [
+        {
+          "figure": "cast/seal_keeper",
+          "name": "Seal-Keeper"
+        }
+      ],
+      "narration": "The Keeper asks whom you told and what you want. Make room for every hero: name something carried, remember a helper, or say what should happen now. The dragon lowers its head to listen.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Each hero shares one thing they carried, learned, or chose.",
+        "actionLabel": "Finish our answer",
+        "options": [
+          {
+            "id": "carried",
+            "label": "Name something I carried",
+            "icon": "gem",
+            "reaction": "The dragon asks what changed because you carried it."
+          },
+          {
+            "id": "helped",
+            "label": "Remember someone who helped",
+            "icon": "heart",
+            "reaction": "An embermoth settles closer to listen."
+          },
+          {
+            "id": "choice",
+            "label": "Say what I want for the realm",
+            "icon": "star",
+            "reaction": "The Seal-Keeper waits until your answer is complete."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_seal_cracks",
+        "narration": "The dragon heard everyone. It moves aside. \"You came a long way to give your own answers,\" it says.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "dragon_satisfied",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_seal_cracks",
+        "narration": "The Keeper helps find the words and makes room for the party at the seal."
+      },
+      "onAssisted": {
+        "goto": "scene_seal_cracks",
+        "narration": "The Keeper asks a question at a time. Together you finish your answer, and it lets you pass.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "dragon_satisfied",
+            "value": true
+          }
         ]
       }
     }

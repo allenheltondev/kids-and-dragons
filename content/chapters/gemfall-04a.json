@@ -1897,126 +1897,74 @@
       "art": "scenes/gemfall/pride-marker-road"
     },
     "interaction_plates": {
-      "type": "interaction",
-      "narration": "Granny Ash's cake is the pride's welcome, and the whole pride lines up along a long table for it. \"Pass the plates down!\" she calls. \"Gently! Cake this spicy has opinions.\" The plates go hand to hand, and the cubs cheer every one.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the plate, then pass it down the table.",
-        "actionLabel": "Pass the plate",
-        "objectLabel": "A plate of spiced grass-cake"
-      },
-      "onSuccess": {
-        "goto": "scene_pride_camp",
-        "narration": "Every plate arrives, and not one slice jumps off. Granny Ash tucks a honeycake into your pack. \"For later,\" she says. \"Something normal.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "honeycake",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_pride_camp",
-        "narration": "One plate wobbles, and a cub catches the cake on his head. He wears it proudly. The line laughs, and the plates go on."
-      },
-      "onAssisted": {
-        "goto": "scene_pride_camp",
-        "narration": "Granny Ash passes every other plate herself, and not one slice jumps off. She tucks a honeycake into your pack. \"For later,\" she says. \"Something normal.\"",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "honeycake",
-            "to": "party"
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/granny_ash",
           "name": "Granny Ash"
         }
       ],
-      "art": "scenes/gemfall/sefa-ridge-camp"
+      "art": "scenes/gemfall/sefa-ridge-camp",
+      "type": "story",
+      "narration": "You and Granny Ash carry the plates down the pride's long table. A cub solemnly guards each slice until its owner sits down. Cake this spicy deserves an escort. Every plate arrives, and not one slice jumps off. Granny Ash tucks a honeycake into your pack. \"For later,\" she says. \"Something normal.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_pride_camp",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "honeycake",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "interaction_post_hole": {
-      "type": "interaction",
-      "narration": "The manticores have the post at its new hole at last, and it leans over the hole like a tired giraffe. \"Hold it straight,\" says the bigger one, \"while somebody stamps the earth in.\"",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends hold the post upright while someone stamps the earth in.",
-        "actionLabel": "Stamp the earth in",
-        "supportLabel": "Hold the post straight"
-      },
-      "onSuccess": {
-        "goto": "scene_waystation",
-        "narration": "The post goes in straight the first time. The manticores tie a fresh tuft of tail-fur on top and say it is the neatest move all month. The smaller one pays you three coins from the pride jar. \"Hole-digging wages,\" she says. \"Do not tell the Brassbuckles.\"",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_waystation",
-        "narration": "The post goes in slightly crooked. The manticores tilt their heads, decide crooked is fine, and tie a fresh tuft on top. \"It still says keep away,\" one of them says."
-      },
-      "onAssisted": {
-        "goto": "scene_waystation",
-        "narration": "The bigger manticore holds the post straight herself, and it goes in first time. They tie a fresh tuft of tail-fur on top, and the smaller one pays you three coins from the pride jar. \"Hole-digging wages,\" she says. \"Do not tell the Brassbuckles.\"",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
-      "art": "scenes/gemfall/pride-marker-road"
+      "art": "scenes/gemfall/pride-marker-road",
+      "type": "story",
+      "narration": "The post is already level from your carrying work. The movers take its weight while you guide it into the hole. Nobody lets go until the new marker stands. The post goes in straight the first time. The manticores tie a fresh tuft of tail-fur on top and say it is the neatest move all month. The smaller one pays you three coins from the pride jar. \"Hole-digging wages,\" she says. \"Do not tell the Brassbuckles.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_waystation",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ]
     },
     "interaction_lost_moths": {
-      "type": "interaction",
+      "art": "scenes/gemfall/pride-stone-crater",
+      "type": "story",
       "narration": "The glowing river has gone, but a handful of little moths got left behind. They huddle in the grass, flickering, too scared to fly south by themselves.",
-      "interaction": {
-        "kind": "play",
-        "participation": "any",
-        "cue": "Help the lost moths feel safe until they glow steady again.",
-        "actionLabel": "Calm the moths",
-        "options": [
-          {
-            "id": "hand",
-            "label": "Hold out a warm hand",
-            "icon": "play_warm_hand",
-            "reaction": "A moth lands on your thumb and stops shaking."
-          },
-          {
-            "id": "hum",
-            "label": "Hum very softly",
-            "icon": "play_soft_hum",
-            "reaction": "The moths lean toward the sound, glowing a little brighter."
-          },
-          {
-            "id": "dim",
-            "label": "Cup your hands around the glow",
-            "icon": "play_cupped_hands",
-            "reaction": "The moths settle into the shadow, like birds into a nest."
-          }
-        ],
-        "stages": [
-          "One moth stops flickering.",
-          "The little ones glow steady.",
-          "They lift off together, heading south."
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_mud_posts",
-        "narration": "The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft."
-      },
-      "onFailure": {
-        "goto": "scene_mud_posts",
-        "narration": "The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft."
-      },
-      "art": "scenes/gemfall/pride-stone-crater"
+      "choices": [
+        {
+          "id": "hand",
+          "label": "Hold out a warm hand",
+          "icon": "play_warm_hand",
+          "goto": "interaction_lost_moths_response_hand"
+        },
+        {
+          "id": "hum",
+          "label": "Hum very softly",
+          "icon": "play_soft_hum",
+          "goto": "interaction_lost_moths_response_hum"
+        },
+        {
+          "id": "dim",
+          "label": "Cup your hands around the glow",
+          "icon": "play_cupped_hands",
+          "goto": "interaction_lost_moths_response_dim"
+        }
+      ]
     },
     "scene_mud_posts": {
       "type": "story",
@@ -2105,52 +2053,34 @@
       "art": "scenes/gemfall/mud-wallow-mimic-posts"
     },
     "interaction_cub_lullaby": {
-      "type": "interaction",
-      "narration": "The cubs need a soft sound. Each hero adds a hum, a gentle beat or a sleepy word. Make it aloud if you like. Sefa keeps the cubs' tails from drumming on the bowls. That part is harder than it looks.",
-      "interaction": {
-        "kind": "play",
-        "participation": "everyone",
-        "cue": "Each hero adds something to the bedtime song.",
-        "actionLabel": "Finish the lullaby",
-        "options": [
-          {
-            "id": "hum",
-            "label": "Hum softly",
-            "icon": "note",
-            "reaction": "A cub folds one ear toward the hum."
-          },
-          {
-            "id": "beat",
-            "label": "Tap a very gentle beat",
-            "icon": "hand",
-            "reaction": "Sefa taps softly underneath your beat."
-          },
-          {
-            "id": "word",
-            "label": "Offer a sleepy word",
-            "icon": "moon",
-            "reaction": "A cub repeats your word into a yawn."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_moving_marker",
-        "narration": "The cubs settle into a furry heap. Sefa mouths thank you. Your packs still hum; the song has helped the cubs, not silenced the stones."
-      },
-      "onFailure": {
-        "goto": "scene_moving_marker",
-        "narration": "Sefa joins the song until the cubs settle."
-      },
-      "onAssisted": {
-        "goto": "scene_moving_marker",
-        "narration": "Sefa holds the tune while you add quiet sounds. The cubs sleep with everyone's help."
-      },
-      "art": "scenes/gemfall/sefa-ridge-camp",
       "cast": [
         {
           "figure": "cast/elder_sefa",
           "name": "Elder Sefa",
           "size": "large"
+        }
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp",
+      "type": "story",
+      "narration": "The cubs need a soft sound. Each hero adds a hum, a gentle beat or a sleepy word. Make it aloud if you like. Sefa keeps the cubs' tails from drumming on the bowls. That part is harder than it looks.",
+      "choices": [
+        {
+          "id": "hum",
+          "label": "Hum softly",
+          "icon": "note",
+          "goto": "interaction_cub_lullaby_response_hum"
+        },
+        {
+          "id": "beat",
+          "label": "Tap a very gentle beat",
+          "icon": "hand",
+          "goto": "interaction_cub_lullaby_response_beat"
+        },
+        {
+          "id": "word",
+          "label": "Offer a sleepy word",
+          "icon": "moon",
+          "goto": "interaction_cub_lullaby_response_word"
         }
       ]
     },
@@ -2387,6 +2317,105 @@
         ]
       },
       "art": "scenes/gemfall/abandoned-caravan-rest"
+    },
+    "interaction_cub_lullaby_response_hum": {
+      "type": "story",
+      "narration": "A cub folds one ear toward the hum. The cubs settle into a furry heap. Sefa mouths thank you. Your packs still hum; the song has helped the cubs, not silenced the stones.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_moving_marker"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
+        }
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
+    },
+    "interaction_cub_lullaby_response_beat": {
+      "type": "story",
+      "narration": "Sefa taps softly underneath your beat. The cubs settle into a furry heap. Sefa mouths thank you. Your packs still hum; the song has helped the cubs, not silenced the stones.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_moving_marker"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
+        }
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
+    },
+    "interaction_cub_lullaby_response_word": {
+      "type": "story",
+      "narration": "A cub repeats your word into a yawn. The cubs settle into a furry heap. Sefa mouths thank you. Your packs still hum; the song has helped the cubs, not silenced the stones.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_moving_marker"
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
+        }
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
+    },
+    "interaction_lost_moths_response_hand": {
+      "type": "story",
+      "narration": "A moth lands on your thumb and stops shaking. The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_mud_posts"
+        }
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
+    },
+    "interaction_lost_moths_response_hum": {
+      "type": "story",
+      "narration": "The moths lean toward the sound, glowing a little brighter. The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_mud_posts"
+        }
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
+    },
+    "interaction_lost_moths_response_dim": {
+      "type": "story",
+      "narration": "The moths settle into the shadow, like birds into a nest. The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_mud_posts"
+        }
+      ],
+      "art": "scenes/gemfall/pride-stone-crater"
     }
   },
   "voiceGuide": {
@@ -2413,16 +2442,6 @@
   },
   "presentation": {
     "interactions": {
-      "interaction_post_hole": {
-        "props": [
-          "prop_post_ropes"
-        ]
-      },
-      "interaction_plates": {
-        "props": [
-          "prop_cake_plate"
-        ]
-      },
       "interaction_ridge_creep": {
         "props": [
           "prop_tall_grass"
@@ -2457,6 +2476,180 @@
           "prop_post_ropes"
         ]
       }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_plates": {
+      "type": "interaction",
+      "narration": "Granny Ash's cake is the pride's welcome, and the whole pride lines up along a long table for it. \"Pass the plates down!\" she calls. \"Gently! Cake this spicy has opinions.\" The plates go hand to hand, and the cubs cheer every one.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the plate, then pass it down the table.",
+        "actionLabel": "Pass the plate",
+        "objectLabel": "A plate of spiced grass-cake"
+      },
+      "onSuccess": {
+        "goto": "scene_pride_camp",
+        "narration": "Every plate arrives, and not one slice jumps off. Granny Ash tucks a honeycake into your pack. \"For later,\" she says. \"Something normal.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_pride_camp",
+        "narration": "One plate wobbles, and a cub catches the cake on his head. He wears it proudly. The line laughs, and the plates go on."
+      },
+      "onAssisted": {
+        "goto": "scene_pride_camp",
+        "narration": "Granny Ash passes every other plate herself, and not one slice jumps off. She tucks a honeycake into your pack. \"For later,\" she says. \"Something normal.\"",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "honeycake",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/granny_ash",
+          "name": "Granny Ash"
+        }
+      ],
+      "art": "scenes/gemfall/sefa-ridge-camp"
+    },
+    "interaction_post_hole": {
+      "type": "interaction",
+      "narration": "The manticores have the post at its new hole at last, and it leans over the hole like a tired giraffe. \"Hold it straight,\" says the bigger one, \"while somebody stamps the earth in.\"",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends hold the post upright while someone stamps the earth in.",
+        "actionLabel": "Stamp the earth in",
+        "supportLabel": "Hold the post straight"
+      },
+      "onSuccess": {
+        "goto": "scene_waystation",
+        "narration": "The post goes in straight the first time. The manticores tie a fresh tuft of tail-fur on top and say it is the neatest move all month. The smaller one pays you three coins from the pride jar. \"Hole-digging wages,\" she says. \"Do not tell the Brassbuckles.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_waystation",
+        "narration": "The post goes in slightly crooked. The manticores tilt their heads, decide crooked is fine, and tie a fresh tuft on top. \"It still says keep away,\" one of them says."
+      },
+      "onAssisted": {
+        "goto": "scene_waystation",
+        "narration": "The bigger manticore holds the post straight herself, and it goes in first time. They tie a fresh tuft of tail-fur on top, and the smaller one pays you three coins from the pride jar. \"Hole-digging wages,\" she says. \"Do not tell the Brassbuckles.\"",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "art": "scenes/gemfall/pride-marker-road"
+    },
+    "interaction_cub_lullaby": {
+      "type": "interaction",
+      "narration": "The cubs need a soft sound. Each hero adds a hum, a gentle beat or a sleepy word. Make it aloud if you like. Sefa keeps the cubs' tails from drumming on the bowls. That part is harder than it looks.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Each hero adds something to the bedtime song.",
+        "actionLabel": "Finish the lullaby",
+        "options": [
+          {
+            "id": "hum",
+            "label": "Hum softly",
+            "icon": "note",
+            "reaction": "A cub folds one ear toward the hum."
+          },
+          {
+            "id": "beat",
+            "label": "Tap a very gentle beat",
+            "icon": "hand",
+            "reaction": "Sefa taps softly underneath your beat."
+          },
+          {
+            "id": "word",
+            "label": "Offer a sleepy word",
+            "icon": "moon",
+            "reaction": "A cub repeats your word into a yawn."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_moving_marker",
+        "narration": "The cubs settle into a furry heap. Sefa mouths thank you. Your packs still hum; the song has helped the cubs, not silenced the stones."
+      },
+      "onFailure": {
+        "goto": "scene_moving_marker",
+        "narration": "Sefa joins the song until the cubs settle."
+      },
+      "onAssisted": {
+        "goto": "scene_moving_marker",
+        "narration": "Sefa holds the tune while you add quiet sounds. The cubs sleep with everyone's help."
+      },
+      "art": "scenes/gemfall/sefa-ridge-camp",
+      "cast": [
+        {
+          "figure": "cast/elder_sefa",
+          "name": "Elder Sefa",
+          "size": "large"
+        }
+      ]
+    },
+    "interaction_lost_moths": {
+      "type": "interaction",
+      "narration": "The glowing river has gone, but a handful of little moths got left behind. They huddle in the grass, flickering, too scared to fly south by themselves.",
+      "interaction": {
+        "kind": "play",
+        "participation": "any",
+        "cue": "Help the lost moths feel safe until they glow steady again.",
+        "actionLabel": "Calm the moths",
+        "options": [
+          {
+            "id": "hand",
+            "label": "Hold out a warm hand",
+            "icon": "play_warm_hand",
+            "reaction": "A moth lands on your thumb and stops shaking."
+          },
+          {
+            "id": "hum",
+            "label": "Hum very softly",
+            "icon": "play_soft_hum",
+            "reaction": "The moths lean toward the sound, glowing a little brighter."
+          },
+          {
+            "id": "dim",
+            "label": "Cup your hands around the glow",
+            "icon": "play_cupped_hands",
+            "reaction": "The moths settle into the shadow, like birds into a nest."
+          }
+        ],
+        "stages": [
+          "One moth stops flickering.",
+          "The little ones glow steady.",
+          "They lift off together, heading south."
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_mud_posts",
+        "narration": "The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft."
+      },
+      "onFailure": {
+        "goto": "scene_mud_posts",
+        "narration": "The moths rise together and go south after the others, glowing steady. The grass is quiet. Ahead, the ground turns soft."
+      },
+      "art": "scenes/gemfall/pride-stone-crater"
     }
   }
 }

@@ -752,23 +752,17 @@
       ]
     },
     "check_chair_sit": {
-      "type": "interaction",
-      "narration": "The small archivist with the string waves you over. \"It will not stand up for one person,\" she says. \"Somebody sits and leans, and everybody pushes on the back. The chair has to feel the whole group.\"",
-      "interaction": {
-        "kind": "cooperate",
-        "cue": "Friends push the chair upright while someone sits and leans back.",
-        "actionLabel": "Lean back",
-        "supportLabel": "Push the chair"
-      },
-      "onSuccess": {
-        "goto": "rest_guest_tree",
-        "narration": "You sit and lean back hard. With a long creak the chair comes upright, and holds, and holds, and the moment you stand up it leans straight back again, slowly, like a sunflower turning. The small archivist writes on her sign, under FILE OPENED: STILL OPEN."
-      },
-      "onFailure": {
-        "goto": "rest_guest_tree",
-        "narration": "You sit, and lean, and the chair politely tips you out onto the moss, the way you would tip out a cat that has sat on your homework. The small archivist laughs so hard she drops her string. \"It does that to everybody,\" she says. \"Even the Eldest. Especially the Eldest.\""
-      },
-      "art": "scenes/gemfall/archive-leaning-chair"
+      "art": "scenes/gemfall/archive-leaning-chair",
+      "type": "story",
+      "narration": "The archivist brings a chair to the tree. You steady its back while she helps the next person sit. It holds upright until they stand, then leans back toward the tree like a sunflower turning. The archivist writes on her sign, under FILE OPENED: STILL OPEN.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "rest_guest_tree"
+        }
+      ]
     },
     "scene_leaning_chair_follow": {
       "type": "story",
@@ -1836,38 +1830,6 @@
       ]
     },
     "interaction_post_relay": {
-      "type": "interaction",
-      "narration": "A runner hands you knotted news cords. Pass them along the stump to the runner at the far end. \"Out of legs!\" she pants, still jogging on two perfectly good ones.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the bundle of cords, then pass it down the line.",
-        "actionLabel": "Pass the cords",
-        "objectLabel": "A bundle of knotted cords"
-      },
-      "onSuccess": {
-        "goto": "scene_cloud_gatherer",
-        "narration": "The cords fly from hand to hand and reach the far runner with a whole breath to spare. \"Post fee!\" she calls, and tosses you three coins, jingling. Then she jogs off with the news, still jogging.",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_cloud_gatherer",
-        "narration": "One bundle lands in a puddle, and two cords tie themselves to a runner's boot. She hops, laughs, and untangles it. \"The news will get there,\" she says. \"News always does.\""
-      },
-      "onAssisted": {
-        "goto": "scene_cloud_gatherer",
-        "narration": "A runner jogs in between you and takes every other throw. The cords reach the far end in good time, and a runner tosses you three coins, jingling, for the help.",
-        "effects": [
-          {
-            "type": "grantCoins",
-            "amount": 3
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -1875,48 +1837,25 @@
           "size": "medium_to_large"
         }
       ],
-      "art": "scenes/gemfall/runners-post-stump"
+      "art": "scenes/gemfall/runners-post-stump",
+      "type": "story",
+      "narration": "You hand the news cords along the stump while the runner takes a breath. She keeps jogging on the spot. \"Out of legs,\" she says. Her legs appear to disagree. The cords fly from hand to hand and reach the far runner with a whole breath to spare. \"Post fee!\" she calls, and tosses you three coins, jingling. Then she jogs off with the news, still jogging.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_cloud_gatherer",
+          "effects": [
+            {
+              "type": "grantCoins",
+              "amount": 3
+            }
+          ]
+        }
+      ]
     },
     "interaction_cord_knots": {
-      "type": "interaction",
-      "narration": "The runner holds up a record cord. Watch the loops, then echo them. \"The record likes to know you can.\" A loose loop resembles a confused spider. The runner asks it to behave.",
-      "interaction": {
-        "kind": "memory",
-        "cue": "Watch the knots light up, then tie them back in the same order.",
-        "actionLabel": "Tie the knots",
-        "stepMs": 1300,
-        "options": [
-          {
-            "id": "loop",
-            "label": "Loop",
-            "icon": "glyph_knot_loop"
-          },
-          {
-            "id": "twist",
-            "label": "Twist",
-            "icon": "glyph_knot_twist"
-          },
-          {
-            "id": "pull",
-            "label": "Pull",
-            "icon": "glyph_knot_pull"
-          }
-        ],
-        "answer": [
-          "loop",
-          "twist",
-          "pull",
-          "loop"
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_runner",
-        "narration": "Loop, twist, pull, loop. Your cord comes out exactly like hers, and the runner whoops. \"Not one wrong knot!\" she says. \"I will tell the record.\""
-      },
-      "onFailure": {
-        "goto": "scene_runner",
-        "narration": "Your knots come out in a tangle shaped like a very confused spider. The runner unties it with one finger. \"Close,\" she says kindly. \"I will do the last loop for you.\""
-      },
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -1924,7 +1863,17 @@
           "size": "medium_to_large"
         }
       ],
-      "art": "scenes/gemfall/runner-cord-knots"
+      "art": "scenes/gemfall/runner-cord-knots",
+      "type": "story",
+      "narration": "The runner shows the loops slowly and leaves the finished cord beside yours. Loop, twist, pull, loop. You compare them together. One loose loop looks like a confused spider. She tucks it straight and shows you how to read it. \"There,\" she says. \"Now the news can find its way.\"",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_runner"
+        }
+      ]
     },
     "scene_hut_honeycake": {
       "type": "story",
@@ -2083,48 +2032,29 @@
       "art": "scenes/gemfall/high-stream-drake"
     },
     "interaction_camp": {
-      "type": "interaction",
+      "art": "scenes/gemfall/foothills-rim-camp",
+      "type": "story",
       "narration": "The flat rock at the edge of the foothills is bare and a little cold, and the sun is nearly gone. A camp will not make itself. Everybody does a piece of it.",
-      "interaction": {
-        "kind": "play",
-        "participation": "everyone",
-        "cue": "Everybody add something to the camp until it feels cozy.",
-        "actionLabel": "Make camp",
-        "options": [
-          {
-            "id": "fire",
-            "label": "Light a little fire",
-            "icon": "play_little_fire",
-            "reaction": "A small flame crackles on the rock."
-          },
-          {
-            "id": "blankets",
-            "label": "Roll out the blankets",
-            "icon": "play_blankets",
-            "reaction": "The blankets go down in a soft row."
-          },
-          {
-            "id": "tea",
-            "label": "Warm the moss tea",
-            "icon": "play_moss_tea",
-            "reaction": "Tea steam curls up into the dusk."
-          }
-        ],
-        "stages": [
-          "A spark catches.",
-          "The fire settles down to a glow.",
-          "The camp feels like home."
-        ]
-      },
-      "onSuccess": {
-        "goto": "ending_foothills_rim",
-        "narration": "The fire glows, the blankets are warm, and the tea tastes like a rainy afternoon, in a good way."
-      },
-      "onFailure": {
-        "goto": "ending_foothills_rim",
-        "narration": "The fire is a little smoky and the blankets are a little crooked, but the camp will do."
-      },
-      "art": "scenes/gemfall/foothills-rim-camp"
+      "choices": [
+        {
+          "id": "fire",
+          "label": "Light a little fire",
+          "icon": "play_little_fire",
+          "goto": "interaction_camp_response_fire"
+        },
+        {
+          "id": "blankets",
+          "label": "Roll out the blankets",
+          "icon": "play_blankets",
+          "goto": "interaction_camp_response_blankets"
+        },
+        {
+          "id": "tea",
+          "label": "Warm the moss tea",
+          "icon": "play_moss_tea",
+          "goto": "interaction_camp_response_tea"
+        }
+      ]
     },
     "interaction_falls_logs": {
       "type": "interaction",
@@ -2373,6 +2303,45 @@
           "value": true
         }
       ]
+    },
+    "interaction_camp_response_fire": {
+      "type": "story",
+      "narration": "A small flame crackles on the rock. The fire glows, the blankets are warm, and the tea tastes like a rainy afternoon, in a good way.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "ending_foothills_rim"
+        }
+      ],
+      "art": "scenes/gemfall/foothills-rim-camp"
+    },
+    "interaction_camp_response_blankets": {
+      "type": "story",
+      "narration": "The blankets go down in a soft row. The fire glows, the blankets are warm, and the tea tastes like a rainy afternoon, in a good way.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "ending_foothills_rim"
+        }
+      ],
+      "art": "scenes/gemfall/foothills-rim-camp"
+    },
+    "interaction_camp_response_tea": {
+      "type": "story",
+      "narration": "Tea steam curls up into the dusk. The fire glows, the blankets are warm, and the tea tastes like a rainy afternoon, in a good way.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "ending_foothills_rim"
+        }
+      ],
+      "art": "scenes/gemfall/foothills-rim-camp"
     }
   },
   "voiceGuide": {
@@ -2399,19 +2368,9 @@
   },
   "presentation": {
     "interactions": {
-      "check_chair_sit": {
-        "props": [
-          "prop_leaning_chair"
-        ]
-      },
       "check_bridge_test": {
         "props": [
           "prop_plank"
-        ]
-      },
-      "interaction_post_relay": {
-        "props": [
-          "prop_knotted_cords"
         ]
       },
       "interaction_stones": {
@@ -2444,6 +2403,162 @@
           "prop_knotted_cords"
         ]
       }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_post_relay": {
+      "type": "interaction",
+      "narration": "A runner hands you knotted news cords. Pass them along the stump to the runner at the far end. \"Out of legs!\" she pants, still jogging on two perfectly good ones.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the bundle of cords, then pass it down the line.",
+        "actionLabel": "Pass the cords",
+        "objectLabel": "A bundle of knotted cords"
+      },
+      "onSuccess": {
+        "goto": "scene_cloud_gatherer",
+        "narration": "The cords fly from hand to hand and reach the far runner with a whole breath to spare. \"Post fee!\" she calls, and tosses you three coins, jingling. Then she jogs off with the news, still jogging.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_cloud_gatherer",
+        "narration": "One bundle lands in a puddle, and two cords tie themselves to a runner's boot. She hops, laughs, and untangles it. \"The news will get there,\" she says. \"News always does.\""
+      },
+      "onAssisted": {
+        "goto": "scene_cloud_gatherer",
+        "narration": "A runner jogs in between you and takes every other throw. The cords reach the far end in good time, and a runner tosses you three coins, jingling, for the help.",
+        "effects": [
+          {
+            "type": "grantCoins",
+            "amount": 3
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ],
+      "art": "scenes/gemfall/runners-post-stump"
+    },
+    "interaction_cord_knots": {
+      "type": "interaction",
+      "narration": "The runner holds up a record cord. Watch the loops, then echo them. \"The record likes to know you can.\" A loose loop resembles a confused spider. The runner asks it to behave.",
+      "interaction": {
+        "kind": "memory",
+        "cue": "Watch the knots light up, then tie them back in the same order.",
+        "actionLabel": "Tie the knots",
+        "stepMs": 1300,
+        "options": [
+          {
+            "id": "loop",
+            "label": "Loop",
+            "icon": "glyph_knot_loop"
+          },
+          {
+            "id": "twist",
+            "label": "Twist",
+            "icon": "glyph_knot_twist"
+          },
+          {
+            "id": "pull",
+            "label": "Pull",
+            "icon": "glyph_knot_pull"
+          }
+        ],
+        "answer": [
+          "loop",
+          "twist",
+          "pull",
+          "loop"
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_runner",
+        "narration": "Loop, twist, pull, loop. Your cord comes out exactly like hers, and the runner whoops. \"Not one wrong knot!\" she says. \"I will tell the record.\""
+      },
+      "onFailure": {
+        "goto": "scene_runner",
+        "narration": "Your knots come out in a tangle shaped like a very confused spider. The runner unties it with one finger. \"Close,\" she says kindly. \"I will do the last loop for you.\""
+      },
+      "cast": [
+        {
+          "figure": "cast/mosshome_runner",
+          "name": "MossHome Runner",
+          "size": "medium_to_large"
+        }
+      ],
+      "art": "scenes/gemfall/runner-cord-knots"
+    },
+    "check_chair_sit": {
+      "type": "interaction",
+      "narration": "The small archivist with the string waves you over. \"It will not stand up for one person,\" she says. \"Somebody sits and leans, and everybody pushes on the back. The chair has to feel the whole group.\"",
+      "interaction": {
+        "kind": "cooperate",
+        "cue": "Friends push the chair upright while someone sits and leans back.",
+        "actionLabel": "Lean back",
+        "supportLabel": "Push the chair"
+      },
+      "onSuccess": {
+        "goto": "rest_guest_tree",
+        "narration": "You sit and lean back hard. With a long creak the chair comes upright, and holds, and holds, and the moment you stand up it leans straight back again, slowly, like a sunflower turning. The small archivist writes on her sign, under FILE OPENED: STILL OPEN."
+      },
+      "onFailure": {
+        "goto": "rest_guest_tree",
+        "narration": "You sit, and lean, and the chair politely tips you out onto the moss, the way you would tip out a cat that has sat on your homework. The small archivist laughs so hard she drops her string. \"It does that to everybody,\" she says. \"Even the Eldest. Especially the Eldest.\""
+      },
+      "art": "scenes/gemfall/archive-leaning-chair"
+    },
+    "interaction_camp": {
+      "type": "interaction",
+      "narration": "The flat rock at the edge of the foothills is bare and a little cold, and the sun is nearly gone. A camp will not make itself. Everybody does a piece of it.",
+      "interaction": {
+        "kind": "play",
+        "participation": "everyone",
+        "cue": "Everybody add something to the camp until it feels cozy.",
+        "actionLabel": "Make camp",
+        "options": [
+          {
+            "id": "fire",
+            "label": "Light a little fire",
+            "icon": "play_little_fire",
+            "reaction": "A small flame crackles on the rock."
+          },
+          {
+            "id": "blankets",
+            "label": "Roll out the blankets",
+            "icon": "play_blankets",
+            "reaction": "The blankets go down in a soft row."
+          },
+          {
+            "id": "tea",
+            "label": "Warm the moss tea",
+            "icon": "play_moss_tea",
+            "reaction": "Tea steam curls up into the dusk."
+          }
+        ],
+        "stages": [
+          "A spark catches.",
+          "The fire settles down to a glow.",
+          "The camp feels like home."
+        ]
+      },
+      "onSuccess": {
+        "goto": "ending_foothills_rim",
+        "narration": "The fire glows, the blankets are warm, and the tea tastes like a rainy afternoon, in a good way."
+      },
+      "onFailure": {
+        "goto": "ending_foothills_rim",
+        "narration": "The fire is a little smoky and the blankets are a little crooked, but the camp will do."
+      },
+      "art": "scenes/gemfall/foothills-rim-camp"
     }
   }
 }

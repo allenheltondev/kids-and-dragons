@@ -1914,47 +1914,30 @@
       "art": "scenes/gemfall/redspire-rim-lookout"
     },
     "interaction_bowls": {
-      "type": "interaction",
-      "narration": "Hot soup bowls come down the shaky line. Pass them hand to hand to the tired travelers. The carter takes off her hat, considers using it as a bowl, and thinks better of it.",
-      "interaction": {
-        "kind": "relay",
-        "cue": "Catch the bowl, then pass it down the line.",
-        "actionLabel": "Pass the bowl",
-        "objectLabel": "A bowl of hot soup"
-      },
-      "onSuccess": {
-        "goto": "scene_soup_line",
-        "narration": "Not a drop spills. The last bowl reaches the tired carter, who drinks it with both hands. \"Humming gives me the shakes,\" she says. The woman with the ladle nods at you, as if you had passed a test she never said she was giving, and tucks a wrapped supper into your pack.",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "supper_bundle",
-            "to": "party"
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_soup_line",
-        "narration": "One bowl slips, and a prospector catches it on his hat. \"Hot hat,\" he says, bravely. The line laughs, and the soup goes on."
-      },
-      "onAssisted": {
-        "goto": "scene_soup_line",
-        "narration": "Together you and the carter pass the bowls in a slow, steady row. Not a drop spills, and the woman with the ladle tucks a wrapped supper into your pack.",
-        "effects": [
-          {
-            "type": "grantItem",
-            "itemId": "supper_bundle",
-            "to": "party"
-          }
-        ]
-      },
       "cast": [
         {
           "figure": "cast/hollis",
           "name": "Hollis"
         }
       ],
-      "art": "scenes/gemfall/hollis-soup-queue"
+      "art": "scenes/gemfall/hollis-soup-queue",
+      "type": "story",
+      "narration": "You help the soup woman serve the tired travelers. The carter takes off her hat, considers using it as a bowl, and accepts a proper bowl instead. Nobody has to race for supper. Not a drop spills. The last bowl reaches the tired carter, who drinks it with both hands. \"Humming gives me the shakes,\" she says. The woman with the ladle nods at you, as if you had passed a test she never said she was giving, and tucks a wrapped supper into your pack.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_soup_line",
+          "effects": [
+            {
+              "type": "grantItem",
+              "itemId": "supper_bundle",
+              "to": "party"
+            }
+          ]
+        }
+      ]
     },
     "interaction_level": {
       "type": "interaction",
@@ -2134,23 +2117,17 @@
       "art": "scenes/gemfall/cracked-bridge-span"
     },
     "interaction_flag_rope": {
-      "type": "interaction",
-      "narration": "The warden gives the signal rope a tug. Its loose end swings out over the bridge rail. Catch it as it swings back, so the flags can keep guiding the carts across.",
-      "interaction": {
-        "kind": "timing",
-        "cue": "Catch the rope when it swings back to the rail.",
-        "actionLabel": "Catch the rope!",
-        "target": 0.5,
-        "width": 0.3,
-        "periodMs": 4000
-      },
-      "onSuccess": {
-        "goto": "interaction_crossing_signal"
-      },
-      "onFailure": {
-        "goto": "interaction_crossing_signal"
-      },
-      "art": "scenes/gemfall/cracked-bridge-span"
+      "art": "scenes/gemfall/cracked-bridge-span",
+      "type": "story",
+      "narration": "The warden catches her loose signal rope and ties it where the next watcher can reach it. She brings you beside the rail. Now there is time to learn what her flags mean.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "interaction_crossing_signal"
+        }
+      ]
     },
     "interaction_transfer_rule": {
       "type": "interaction",
@@ -2208,65 +2185,33 @@
       ]
     },
     "interaction_survey_evidence": {
-      "type": "interaction",
-      "narration": "Put what you noticed beside the crack survey. Say one observation aloud, or ask Brask to read one of her measurements. Each hero adds a piece. Brask moves her tea before the chalk arrives. Experience has taught her this.",
-      "interaction": {
-        "kind": "play",
-        "cue": "Each hero contributes an observation or checks a measurement.",
-        "actionLabel": "Compare the evidence",
-        "participation": "everyone",
-        "options": [
-          {
-            "id": "road",
-            "label": "Describe a road we walked",
-            "icon": "map",
-            "reaction": "Your road goes beside the crack lines. Brask checks where it bends."
-          },
-          {
-            "id": "stone",
-            "label": "Describe what we noticed near stones",
-            "icon": "gem",
-            "reaction": "Brask marks the places you describe, asking where the observation came from."
-          },
-          {
-            "id": "measure",
-            "label": "Ask Brask for a bridge measurement",
-            "icon": "scroll",
-            "reaction": "Brask reads yesterday and today from the survey. One pencil falls out of her hair."
-          }
-        ]
-      },
-      "onSuccess": {
-        "goto": "scene_outline",
-        "narration": "Your observations and the engineers' measurements fit on one survey. Together you compare the bends.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "plotted_it_yourself",
-            "value": true
-          }
-        ]
-      },
-      "onFailure": {
-        "goto": "scene_outline",
-        "narration": "Your map comes out looking like a cat walked across it. Brask takes the chalk, says \"no, no, you're right, look,\" and draws it again properly."
-      },
-      "onAssisted": {
-        "goto": "scene_outline",
-        "narration": "Brask reads the survey aloud while you add your observations. Together you see where the lines meet.",
-        "effects": [
-          {
-            "type": "setFlag",
-            "flag": "plotted_it_yourself",
-            "value": true
-          }
-        ]
-      },
-      "art": "scenes/gemfall/bridge-engineers-tent",
       "cast": [
         {
           "figure": "cast/brask",
           "name": "Engineer Brask"
+        }
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent",
+      "type": "story",
+      "narration": "Put what you noticed beside the crack survey. Say one observation aloud, or ask Brask to read one of her measurements. Each hero adds a piece. Brask moves her tea before the chalk arrives. Experience has taught her this.",
+      "choices": [
+        {
+          "id": "road",
+          "label": "Describe a road we walked",
+          "icon": "map",
+          "goto": "interaction_survey_evidence_response_road"
+        },
+        {
+          "id": "stone",
+          "label": "Describe what we noticed near stones",
+          "icon": "gem",
+          "goto": "interaction_survey_evidence_response_stone"
+        },
+        {
+          "id": "measure",
+          "label": "Ask Brask for a bridge measurement",
+          "icon": "scroll",
+          "goto": "interaction_survey_evidence_response_measure"
         }
       ]
     },
@@ -2345,6 +2290,84 @@
         ]
       },
       "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "interaction_survey_evidence_response_road": {
+      "type": "story",
+      "narration": "Your road goes beside the crack lines. Brask checks where it bends. Your observations and the engineers' measurements fit on one survey. Together you compare the bends.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_outline",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "plotted_it_yourself",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/brask",
+          "name": "Engineer Brask"
+        }
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
+    },
+    "interaction_survey_evidence_response_stone": {
+      "type": "story",
+      "narration": "Brask marks the places you describe, asking where the observation came from. Your observations and the engineers' measurements fit on one survey. Together you compare the bends.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_outline",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "plotted_it_yourself",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/brask",
+          "name": "Engineer Brask"
+        }
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
+    },
+    "interaction_survey_evidence_response_measure": {
+      "type": "story",
+      "narration": "Brask reads yesterday and today from the survey. One pencil falls out of her hair. Your observations and the engineers' measurements fit on one survey. Together you compare the bends.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "scene_outline",
+          "effects": [
+            {
+              "type": "setFlag",
+              "flag": "plotted_it_yourself",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "cast": [
+        {
+          "figure": "cast/brask",
+          "name": "Engineer Brask"
+        }
+      ],
+      "art": "scenes/gemfall/bridge-engineers-tent"
     }
   },
   "voiceGuide": {
@@ -2384,17 +2407,7 @@
           "prop_water_tray"
         ]
       },
-      "interaction_bowls": {
-        "props": [
-          "prop_soup_bowl"
-        ]
-      },
       "interaction_transfer_rule": {
-        "props": [
-          "prop_letters"
-        ]
-      },
-      "interaction_survey_evidence": {
         "props": [
           "prop_letters"
         ]
@@ -2409,6 +2422,133 @@
           "prop_letters"
         ]
       }
+    }
+  },
+  "resumeInteractions": {
+    "interaction_bowls": {
+      "type": "interaction",
+      "narration": "Hot soup bowls come down the shaky line. Pass them hand to hand to the tired travelers. The carter takes off her hat, considers using it as a bowl, and thinks better of it.",
+      "interaction": {
+        "kind": "relay",
+        "cue": "Catch the bowl, then pass it down the line.",
+        "actionLabel": "Pass the bowl",
+        "objectLabel": "A bowl of hot soup"
+      },
+      "onSuccess": {
+        "goto": "scene_soup_line",
+        "narration": "Not a drop spills. The last bowl reaches the tired carter, who drinks it with both hands. \"Humming gives me the shakes,\" she says. The woman with the ladle nods at you, as if you had passed a test she never said she was giving, and tucks a wrapped supper into your pack.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_soup_line",
+        "narration": "One bowl slips, and a prospector catches it on his hat. \"Hot hat,\" he says, bravely. The line laughs, and the soup goes on."
+      },
+      "onAssisted": {
+        "goto": "scene_soup_line",
+        "narration": "Together you and the carter pass the bowls in a slow, steady row. Not a drop spills, and the woman with the ladle tucks a wrapped supper into your pack.",
+        "effects": [
+          {
+            "type": "grantItem",
+            "itemId": "supper_bundle",
+            "to": "party"
+          }
+        ]
+      },
+      "cast": [
+        {
+          "figure": "cast/hollis",
+          "name": "Hollis"
+        }
+      ],
+      "art": "scenes/gemfall/hollis-soup-queue"
+    },
+    "interaction_flag_rope": {
+      "type": "interaction",
+      "narration": "The warden gives the signal rope a tug. Its loose end swings out over the bridge rail. Catch it as it swings back, so the flags can keep guiding the carts across.",
+      "interaction": {
+        "kind": "timing",
+        "cue": "Catch the rope when it swings back to the rail.",
+        "actionLabel": "Catch the rope!",
+        "target": 0.5,
+        "width": 0.3,
+        "periodMs": 4000
+      },
+      "onSuccess": {
+        "goto": "interaction_crossing_signal"
+      },
+      "onFailure": {
+        "goto": "interaction_crossing_signal"
+      },
+      "art": "scenes/gemfall/cracked-bridge-span"
+    },
+    "interaction_survey_evidence": {
+      "type": "interaction",
+      "narration": "Put what you noticed beside the crack survey. Say one observation aloud, or ask Brask to read one of her measurements. Each hero adds a piece. Brask moves her tea before the chalk arrives. Experience has taught her this.",
+      "interaction": {
+        "kind": "play",
+        "cue": "Each hero contributes an observation or checks a measurement.",
+        "actionLabel": "Compare the evidence",
+        "participation": "everyone",
+        "options": [
+          {
+            "id": "road",
+            "label": "Describe a road we walked",
+            "icon": "map",
+            "reaction": "Your road goes beside the crack lines. Brask checks where it bends."
+          },
+          {
+            "id": "stone",
+            "label": "Describe what we noticed near stones",
+            "icon": "gem",
+            "reaction": "Brask marks the places you describe, asking where the observation came from."
+          },
+          {
+            "id": "measure",
+            "label": "Ask Brask for a bridge measurement",
+            "icon": "scroll",
+            "reaction": "Brask reads yesterday and today from the survey. One pencil falls out of her hair."
+          }
+        ]
+      },
+      "onSuccess": {
+        "goto": "scene_outline",
+        "narration": "Your observations and the engineers' measurements fit on one survey. Together you compare the bends.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "plotted_it_yourself",
+            "value": true
+          }
+        ]
+      },
+      "onFailure": {
+        "goto": "scene_outline",
+        "narration": "Your map comes out looking like a cat walked across it. Brask takes the chalk, says \"no, no, you're right, look,\" and draws it again properly."
+      },
+      "onAssisted": {
+        "goto": "scene_outline",
+        "narration": "Brask reads the survey aloud while you add your observations. Together you see where the lines meet.",
+        "effects": [
+          {
+            "type": "setFlag",
+            "flag": "plotted_it_yourself",
+            "value": true
+          }
+        ]
+      },
+      "art": "scenes/gemfall/bridge-engineers-tent",
+      "cast": [
+        {
+          "figure": "cast/brask",
+          "name": "Engineer Brask"
+        }
+      ]
     }
   }
 }
