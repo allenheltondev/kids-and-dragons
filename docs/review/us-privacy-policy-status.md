@@ -55,6 +55,11 @@ Dated 2026-10-27. Engineering status, not legal advice.
    and the closed-room and removed-phone screens. It opens `/privacy` in a new tab so a name or
    code already typed is not lost. Not linked: gameplay, and the shared TV screen, which asks
    nobody for anything. Tested end to end from a direct room link (`e2e/privacy-link.spec.ts`).
+   The links sit in a full-width page footer strip with the grown-up's guide beside Privacy and a
+   "© <year> Ready, Set, Cloud!" line under them (the phone's hero-creation and lobby screens keep
+   one line of links, for height). Note: the copyright names Ready, Set, Cloud! while the
+   privacy page names the operator as Allen Helton; the notice rule asks for the operator's
+   identity, so confirm which legal name should appear on the page (see #526).
    **Still a risk for counsel:** the link is small and quiet by choice. The comment on #523 calls
    for a "prominent and clearly labeled" link and recommends a small link beside each name field;
    whether a quiet footer satisfies that is unanswered, and the fix if it does not is a more

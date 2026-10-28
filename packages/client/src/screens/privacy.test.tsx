@@ -63,6 +63,17 @@ describe("reaching it", () => {
     expect(guide.getAttribute("target")).toBe("_blank");
   });
 
+  it("carries the copyright with the current year, and drops it where the footer is compact", () => {
+    const year = new Date().getFullYear();
+    const { container, rerender } = render(<PrivacyFooter />);
+    expect(container.querySelector(".privacy-footer__copy")?.textContent).toBe(`\u00A9 ${String(year)} Ready, Set, Cloud!`);
+    rerender(<PrivacyFooter year={2031} />);
+    expect(container.querySelector(".privacy-footer__copy")?.textContent).toBe("\u00A9 2031 Ready, Set, Cloud!");
+    rerender(<PrivacyFooter compact />);
+    expect(container.querySelector(".privacy-footer__copy")).toBeNull();
+    expect(container.querySelector('a[href="/privacy"]')).not.toBeNull();
+  });
+
   it("leaves the guide link out of the guide's own footer", () => {
     const { container } = render(<PrivacyFooter guide={false} />);
     expect(container.querySelector('a[href="/guide"]')).toBeNull();
