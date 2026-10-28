@@ -34,7 +34,13 @@ export interface InteractionPrompt {
   contributions?: Record<string, string>;
   reactions?: { playerId: string; text: string }[];
   taps?: number;
+  /** The actual tap/guess, retained for shared visual feedback and refresh. */
+  stopPosition?: number;
+  submittedAnswer?: string[];
   outcome?: "success" | "failure" | "assisted";
+  /** Server time when this exact connected team began holding together. */
+  steadySince?: string;
+  steadyPlayerIds?: string[];
 }
 
 export type InteractionAction =
@@ -43,7 +49,7 @@ export type InteractionAction =
   | { action: "support"; mode: "hold" | "prop" | "release" }
   | { action: "complete" }
   | { action: "answer"; answer: string[] }
-  | { action: "adjust"; direction: "up" | "down" }
+  | { action: "adjust"; direction: "up" | "down"; steps?: number }
   | { action: "catch" }
   | { action: "pass" }
   | { action: "play"; optionId: string }
@@ -73,8 +79,9 @@ export function trackedCover(spec: Extract<InteractionSpec, { kind: "tracking" }
 }
 
 export function balanceReady(prompt: InteractionPrompt, connected: readonly string[]): boolean {
-  const levels = connected.map((id) => prompt.levels?.[id] ?? 0);
-  return levels.length > 0 && levels.every((level) => Math.abs(level - 0.5) <= (prompt.relaxed ? 0.25 : 0.125));
+  const total = connected.reduce((sum, id) => sum + (prompt.levels?.[id] ?? 0), 0);
+  return connected.length > 0 && connected.every((id) => (prompt.levels?.[id] ?? 0) > 0) &&
+    Math.abs(total - connected.length * 0.5) <= (prompt.relaxed ? 0.25 : 0.125);
 }
 
 export function relayHolder(prompt: InteractionPrompt, connected: readonly string[]): string | undefined {
@@ -93,10 +100,8 @@ export function interactionActor(prompt: InteractionPrompt, connected: readonly 
   return connected.includes(prompt.actorId) ? prompt.actorId : connected[0];
 }
 
-export function supportPlayers(prompt: InteractionPrompt, connected: readonly string[]): string[] {
-  const actor = interactionActor(prompt, connected);
-  const supporters = connected.filter((id) => id !== actor);
-  return supporters.length ? supporters : actor ? [actor] : [];
+export function supportPlayers(_prompt: InteractionPrompt, connected: readonly string[]): string[] {
+  return [...connected];
 }
 
 export function supportsReady(prompt: InteractionPrompt, connected: readonly string[], now: string): boolean {

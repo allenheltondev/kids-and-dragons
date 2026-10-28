@@ -3,7 +3,8 @@ import { applyIntent, createRunState, enterScene, type EngineContext } from "./e
 import { resolveCharacter } from "./character.js";
 import { makeRng } from "./dice.js";
 import { makeChapter, makeCharacter, makeItems, makeRules } from "./test-fixtures.js";
-import { interactionClues, supportsReady, type InteractionAction, type InteractionPrompt, type InteractionSpec } from "./interactions.js";
+import { balanceReady, interactionClues, supportsReady, type InteractionAction, type InteractionPrompt, type InteractionSpec } from "./interactions.js";
+import { cooperationProgress, TEAM_HOLD_MS } from "./teamwork.js";
 import { sceneEdges, validateChapter } from "./chapter-graph.js";
 import { edgesOf } from "./chapter-map.js";
 import type { InteractionScene, RunState } from "./index.js";
@@ -104,7 +105,7 @@ describe("authoritative story interactions", () => {
       next = step(next, ctx, { action: "adjust", direction: "up" }, `p${seat}`);
       next = step(next, ctx, { action: "adjust", direction: "up" }, `p${seat}`);
     }
-    expect(prompt(step(next, ctx, { action: "complete" })).outcome).toBe("success");
+    expect(prompt(next).outcome).toBe("success");
     next = step(next, ctx, { action: "retry" });
     expect(prompt(next).levels).toBeUndefined();
   });
@@ -201,19 +202,22 @@ describe("authoritative story interactions", () => {
     let next = step(state, ctx, { action: "start", relaxed: false });
     expect(act(next, ctx, { action: "complete" }).error).toBeDefined();
     next = step(next, ctx, { action: "support", mode: "hold" }, "p1");
+    expect(supportsReady(prompt(next), ["p0", "p1"], now)).toBe(false);
+    next = step(next, ctx, { action: "support", mode: "hold" }, "p0");
     expect(supportsReady(prompt(next), ["p0", "p1"], now)).toBe(true);
     expect(act(next, { ...ctx, now: "2026-10-25T19:00:07.000Z" }, { action: "complete" }).error).toBeDefined();
     next = step(next, ctx, { action: "support", mode: "release" }, "p1");
     expect(act(next, ctx, { action: "complete" }).error).toBeDefined();
     next = step(next, ctx, { action: "support", mode: "prop" }, "p1");
-    expect(prompt(step(next, ctx, { action: "complete" })).outcome).toBe("success");
+    expect(act(next, ctx, { action: "complete" }).error).toBeDefined();
+    expect(prompt(step(next, { ...ctx, now: new Date(Date.parse(now) + TEAM_HOLD_MS).toISOString() }, { action: "complete" })).outcome).toBe("success");
   });
   it("supports a solo prop and reassignment when the acting phone disconnects", () => {
     const { state, ctx } = setup({ kind: "cooperate", cue: "Hold", supportLabel: "Hold", actionLabel: "Rescue" });
     state.party[0]!.connected = false;
     let next = step(state, ctx, { action: "start", relaxed: true }, "p1");
     next = step(next, ctx, { action: "support", mode: "prop" }, "p1");
-    expect(prompt(step(next, ctx, { action: "complete" }, "p1")).outcome).toBe("success");
+    expect(prompt(step(next, { ...ctx, now: new Date(Date.parse(now) + TEAM_HOLD_MS).toISOString() }, { action: "complete" }, "p1")).outcome).toBe("success");
   });
   it.each([1, 2, 3, 4])("keeps all clues available at a table of %i", (players) => {
     const { state } = setup(sequence, players);
@@ -236,5 +240,105 @@ describe("authoritative story interactions", () => {
     expect(sceneEdges(scene).map((edge) => edge.to)).toEqual(edgesOf("test", scene).map((edge) => edge.to));
     scene.interaction = { ...sequence, answer: ["missing"] };
     expect(validateChapter(ctx.chapter!).some((issue) => issue.code === "BAD_INTERACTION")).toBe(true);
+  });
+});
+
+
+describe("teamwork that plays through to its own finish", () => {
+  const cooperation: InteractionSpec = { kind: "cooperate", cue: "Lift", supportLabel: "Hold", actionLabel: "Lift it" };
+  const at = (ctx: EngineContext, ms: number) => ({ ...ctx, now: new Date(Date.parse(now) + ms).toISOString() });
+  it("lets friends share the balance unequally and finishes on the final lift", () => {
+    const { state, ctx } = setup({ kind: "balance", cue: "Lift", actionLabel: "Go", objectLabel: "Sling" });
+    let next = step(state, ctx, { action: "start", relaxed: false });
+    for (let i = 0; i < 3; i++) next = step(next, ctx, { action: "adjust", direction: "up" });
+    expect(prompt(next).phase).toBe("active");
+    next = step(next, ctx, { action: "adjust", direction: "up" }, "p1");
+    expect(prompt(next)).toMatchObject({ phase: "result", outcome: "success", levels: { p0: 0.75, p1: 0.25 } });
+    expect(next.flags["interaction_won"]).toBeUndefined();
+    expect(step(next, ctx, { action: "continue" }, "p1").flags["interaction_won"]).toBe(true);
+  });
+  it("never lets a strong hero leave a connected friend out", () => {
+    const { state, ctx } = setup({ kind: "balance", cue: "Lift", actionLabel: "Go", objectLabel: "Sling" });
+    state.prompt = { ...prompt(state), levels: { p0: 1, p1: 0 } };
+    expect(balanceReady(prompt(state), ["p0", "p1"])).toBe(false);
+  });
+  it.each([1, 2, 3, 4])("requires the whole team to hold at a table of %i", (players) => {
+    const { state, ctx } = setup(cooperation, players);
+    let next = step(state, ctx, { action: "start", relaxed: true });
+    for (let seat = 0; seat < players; seat++) next = step(next, ctx, { action: "support", mode: "prop" }, `p${seat}`);
+    expect(act(next, ctx, { action: "complete" }).error).toBeDefined();
+    expect(cooperationProgress(prompt(next), next.party.map((m) => m.playerId), at(ctx, 900).now)).toBe(0.5);
+    next = step(next, at(ctx, TEAM_HOLD_MS), { action: "complete" });
+    expect(prompt(next).outcome).toBe("success");
+    next = step(next, ctx, { action: "retry" });
+    expect(prompt(next).steadySince).toBeUndefined();
+  });
+  it("resets progress on release and does not bank an abandoned hold", () => {
+    const { state, ctx } = setup(cooperation);
+    let next = step(state, ctx, { action: "start", relaxed: false });
+    next = step(next, ctx, { action: "support", mode: "hold" });
+    next = step(next, ctx, { action: "support", mode: "hold" }, "p1");
+    next = step(next, at(ctx, 900), { action: "support", mode: "release" }, "p1");
+    expect(prompt(next).steadySince).toBeUndefined();
+    next = step(next, at(ctx, 1000), { action: "support", mode: "hold" }, "p1");
+    expect(act(next, at(ctx, 2000), { action: "complete" }).error).toBeDefined();
+    next = step(next, at(ctx, 7000), { action: "support", mode: "hold" });
+    expect(prompt(next).steadySince).toBeUndefined();
+    next = step(next, at(ctx, 7000), { action: "support", mode: "hold" }, "p1");
+    expect(cooperationProgress(prompt(next), ["p0", "p1"], at(ctx, 7500).now)).toBeCloseTo(500 / TEAM_HOLD_MS);
+  });
+  it("restarts the shared hold when a phone disconnects, then accepts the new lead", () => {
+    const { state, ctx } = setup(cooperation);
+    let next = step(state, ctx, { action: "start", relaxed: true });
+    next = step(next, ctx, { action: "support", mode: "prop" });
+    next = step(next, ctx, { action: "support", mode: "prop" }, "p1");
+    next.party[0]!.connected = false;
+    expect(act(next, at(ctx, 2000), { action: "complete" }, "p1").error).toBeDefined();
+    next = step(next, at(ctx, 2000), { action: "support", mode: "prop" }, "p1");
+    next = JSON.parse(JSON.stringify(next)) as RunState;
+    expect(prompt(step(next, at(ctx, 2000 + TEAM_HOLD_MS), { action: "complete" }, "p1")).outcome).toBe("success");
+  });
+  it("can finish from a support renewal without the lead phone sending a finish", () => {
+    const { state, ctx } = setup(cooperation);
+    let next = step(state, ctx, { action: "start", relaxed: false });
+    next = step(next, ctx, { action: "support", mode: "hold" });
+    next = step(next, ctx, { action: "support", mode: "hold" }, "p1");
+    expect(prompt(step(next, at(ctx, TEAM_HOLD_MS), { action: "support", mode: "hold" }, "p1")).outcome).toBe("success");
+  });
+});
+
+
+it("judges a whole lever gesture at its destination and rejects malformed notch counts", () => {
+  const { state, ctx } = setup({ kind: "balance", cue: "Lift", actionLabel: "Go", objectLabel: "Sling" });
+  let next = step(state, ctx, { action: "start", relaxed: false });
+  next = step(next, ctx, { action: "adjust", direction: "up", steps: 2 }, "p1");
+  for (const steps of [0, -1, 5, 1.5, NaN, null]) {
+    expect(act(next, ctx, { action: "adjust", direction: "up", steps } as InteractionAction).error).toBeDefined();
+  }
+  next = step(next, ctx, { action: "adjust", direction: "up", steps: 4 });
+  expect(prompt(next)).toMatchObject({ phase: "active", levels: { p0: 1, p1: 0.5 } });
+  next = step(next, ctx, { action: "adjust", direction: "down", steps: 2 });
+  expect(prompt(next)).toMatchObject({ phase: "result", outcome: "success" });
+});
+
+
+describe("shared visual receipts", () => {
+  it.each([precision, { ...precision, kind: "timing" } as InteractionSpec])("retains the actual $kind tap across persistence and clears it on retry", (spec) => {
+    const { state, ctx } = setup(spec);
+    const active = step(state, ctx, { action: "start", relaxed: false });
+    const done = step(active, ctx, { action: "stop", position: 0.63 });
+    expect(prompt(JSON.parse(JSON.stringify(done)) as RunState).stopPosition).toBe(0.63);
+    expect(prompt(step(done, ctx, { action: "retry" })).stopPosition).toBeUndefined();
+  });
+  it.each([tracking, memory, sequence])("retains the $kind guess without borrowing the input array", (spec) => {
+    const { state, ctx } = setup(spec);
+    const active = step(state, ctx, { action: "start", relaxed: true });
+    const answer = spec.kind === "tracking" ? ["2"] : spec.kind === "memory" || spec.kind === "sequence" ? [...spec.answer] : [];
+    const done = step(active, ctx, { action: "answer", answer });
+    const saved = JSON.parse(JSON.stringify(done)) as RunState;
+    expect(prompt(saved).submittedAnswer).toEqual(answer);
+    answer.length = 0;
+    expect(prompt(done).submittedAnswer!.length).toBeGreaterThan(0);
+    expect(prompt(step(done, ctx, { action: "retry" })).submittedAnswer).toBeUndefined();
   });
 });

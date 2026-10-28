@@ -32,6 +32,7 @@
  */
 
 import { INVENTORY_SLOTS, MAX_PARTY } from "./types/domain.js";
+import { cooperationProgress } from "./teamwork.js";
 import { balanceReady, interactionActor, playbackMs, playReady, precisionSuccess, relayHolder, supportsReady, trackedCover, SUPPORT_LEASE_MS } from "./interactions.js";
 import type {
   Character,
@@ -1302,6 +1303,8 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
     delete prompt.outcome; delete prompt.resolvedActorId; delete prompt.startedAt;
     delete prompt.levels; delete prompt.passed; delete prompt.caughtBy;
     delete prompt.contributions; delete prompt.reactions; delete prompt.taps;
+    delete prompt.steadySince; delete prompt.steadyPlayerIds;
+    delete prompt.stopPosition; delete prompt.submittedAnswer;
     return undefined;
   }
   if (prompt.phase === "result") throw new Illegal("ILLEGAL", "This attempt is complete.");
@@ -1317,37 +1320,57 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
       if ((prompt.spec.kind !== "precision" && prompt.spec.kind !== "timing") || playerId !== actor || typeof intent.position !== "number" || !Number.isFinite(intent.position) || intent.position < 0 || intent.position > 1) throw new Illegal("ILLEGAL", "Invalid precision input.");
       // Score the displayed phone position, not network arrival time. This is
       // a cooperative family game; a modified client can forge its own timing.
+      prompt.stopPosition = intent.position;
       result(precisionSuccess(prompt.spec, intent.position, prompt.relaxed) ? "success" : "failure");
       return undefined;
-    case "support":
+    case "support": {
       if (prompt.spec.kind !== "cooperate" || !["hold", "prop", "release"].includes(intent.mode)) throw new Illegal("ILLEGAL", "Invalid support input.");
+      // Check before renewing: an expired lease cannot count as continuous holding.
+      const sameTeam = prompt.steadyPlayerIds?.length === connected.length && connected.every((id) => prompt.steadyPlayerIds?.includes(id));
+      if (!sameTeam || !supportsReady(prompt, connected, ctx.now)) {
+        delete prompt.steadySince; delete prompt.steadyPlayerIds;
+      }
       if (intent.mode === "release") delete prompt.supports[playerId];
       else if (intent.mode === "prop") prompt.supports[playerId] = null;
       else prompt.supports[playerId] = new Date(Date.parse(ctx.now) + SUPPORT_LEASE_MS).toISOString();
+      if (!supportsReady(prompt, connected, ctx.now)) {
+        delete prompt.steadySince; delete prompt.steadyPlayerIds;
+      } else {
+        prompt.steadySince ??= ctx.now;
+        prompt.steadyPlayerIds = [...connected];
+        if (cooperationProgress(prompt, connected, ctx.now) === 1) result("success");
+      }
       return undefined;
+    }
     case "complete":
-      if (playerId !== actor || !(prompt.spec.kind === "cooperate" ? supportsReady(prompt, connected, ctx.now) : prompt.spec.kind === "balance" ? balanceReady(prompt, connected) : prompt.spec.kind === "play" ? playReady(prompt, connected) : prompt.spec.kind === "relay" ? !relayHolder(prompt, connected) : false)) throw new Illegal("ILLEGAL", "Finish working together first.");
+      if (playerId !== actor || !(prompt.spec.kind === "cooperate" ? cooperationProgress(prompt, connected, ctx.now) === 1 : prompt.spec.kind === "balance" ? balanceReady(prompt, connected) : prompt.spec.kind === "play" ? playReady(prompt, connected) : prompt.spec.kind === "relay" ? !relayHolder(prompt, connected) : false)) throw new Illegal("ILLEGAL", "Finish working together first.");
       result("success");
       return undefined;
     case "answer":
       if (prompt.spec.kind === "tracking") {
         if (playerId !== actor || !Array.isArray(intent.answer) || intent.answer.length !== 1 || !prompt.spec.covers.some((_, index) => String(index) === intent.answer[0]) || (!prompt.relaxed && Date.parse(ctx.now) - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, prompt.relaxed))) throw new Illegal("ILLEGAL", "Watch the trick before choosing a cover.");
+        prompt.submittedAnswer = [...intent.answer];
         result(intent.answer[0] === String(trackedCover(prompt.spec)) ? "success" : "failure");
         return undefined;
       }
       if (prompt.spec.kind === "memory") {
         const spec = prompt.spec;
         if (playerId !== actor || !Array.isArray(intent.answer) || intent.answer.length !== spec.answer.length || !intent.answer.every((id) => typeof id === "string" && spec.options.some((option) => option.id === id)) || (!prompt.relaxed && Date.parse(ctx.now) - Date.parse(prompt.startedAt ?? "") < playbackMs(spec, prompt.relaxed))) throw new Illegal("ILLEGAL", "Watch the magic before answering.");
+        prompt.submittedAnswer = [...intent.answer];
         result(intent.answer.every((id, index) => id === spec.answer[index]) ? "success" : "failure");
         return undefined;
       }
       if (prompt.spec.kind !== "sequence" || playerId !== actor || !Array.isArray(intent.answer) || intent.answer.length !== prompt.spec.answer.length || !intent.answer.every((id) => typeof id === "string" && prompt.spec.kind === "sequence" && prompt.spec.options.some((option) => option.id === id))) throw new Illegal("ILLEGAL", "Choose a complete path.");
+      prompt.submittedAnswer = [...intent.answer];
       result(intent.answer.every((id, index) => prompt.spec.kind === "sequence" && id === prompt.spec.answer[index]) ? "success" : "failure");
       return undefined;
     case "adjust": {
       if (prompt.spec.kind !== "balance" || (intent.direction !== "up" && intent.direction !== "down")) throw new Illegal("ILLEGAL", "Invalid balance input.");
+      const steps = intent.steps === undefined ? 1 : intent.steps;
+      if (!Number.isInteger(steps) || steps < 1 || steps > 4) throw new Illegal("ILLEGAL", "Invalid lift amount.");
       const levels = prompt.levels ??= {};
-      levels[playerId] = Math.max(0, Math.min(1, (levels[playerId] ?? 0) + (intent.direction === "up" ? 0.25 : -0.25)));
+      levels[playerId] = Math.max(0, Math.min(1, (levels[playerId] ?? 0) + (intent.direction === "up" ? 0.25 : -0.25) * steps));
+      if (balanceReady(prompt, connected)) result("success");
       return undefined;
     }
     case "catch":

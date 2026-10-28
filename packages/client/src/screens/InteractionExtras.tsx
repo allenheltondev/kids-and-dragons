@@ -5,18 +5,19 @@
  *
  * Each kind is a small game, not a form: a pad to TAP, a lamp to hit on NOW, coloured pads that
  * sing a pattern, a thing to catch and flick on, a lever to drag level, a button to grip, picks
- * that fly off as stickers. The engine's intents are unchanged; only how they are asked for is.
+ * that fly off as stickers. The server validates participation and decides when the shared action is complete.
  */
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as ReactPointerEvent } from "react";
 import { useChapter, useRunState } from "../store";
 import { interactionAppearance } from "../world/riftlight-art";
 import { characterWorldArtUrl } from "../world/art-paths";
 import { PaintedCover, PaintedGlyph, propUrl } from "./InteractionArt";
-import { balanceReady, interactionActor, interactionClues, playReady, precisionPosition, precisionSuccess, relayHolder, supportPlayers, supportsReady, trackedCover } from "@kad/shared";
+import { balanceLift, cooperationProgress, balanceReady, interactionActor, interactionClues, playReady, precisionPosition, precisionSuccess, relayHolder, supportPlayers, supportsReady, trackedCover } from "@kad/shared";
 import type { InteractionAction, InteractionOption, InteractionPrompt, PartyMember } from "@kad/shared";
 import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
 import { Button } from "../ui/Button";
+import { RelayCatcher, RelayWorld, relaySeats } from "./RelayGame";
 import { showing } from "./interaction-copy";
 import { buzz, litStep, padNote } from "./game-feel";
 
@@ -37,6 +38,9 @@ export interface BoardProps {
   playerId?: string;
   /** Where the lead's tap stopped the marker, so the board can freeze it there. */
   stop?: number | null;
+  settled?: boolean;
+  busy?: boolean;
+  onCover?: (index: number) => Promise<boolean>;
 }
 
 /** The authored object a board can carry: the first prop that is not a musical note. */
@@ -48,19 +52,20 @@ function useObject(): string | undefined {
 }
 
 function Prop({ id, className }: { id: string; className: string }) {
-  return <img className={className} src={propUrl(id)} alt="" decoding="async" draggable={false} onError={(event) => { event.currentTarget.style.display = "none"; }} />;
+  const [failed, setFailed] = useState(false);
+  useEffect(() => setFailed(false), [id]);
+  return failed ? <span className={`${className} game-prop-fallback`} aria-hidden="true"><Icon name="star" /></span>
+    : <img className={className} src={propUrl(id)} alt="" decoding="async" draggable={false} onError={() => setFailed(true)} />;
 }
 
-function HeroChip({ member, state, tone, mark, token, air, strain }: {
+function HeroChip({ member, state, tone, mark, strain }: {
   member: PartyMember; state?: string; tone?: "on" | "done" | "off"; mark?: string;
-  /** The relay object, in this hero's hands (or in the air above them, coming in). */
-  token?: string; air?: boolean; strain?: boolean;
+  strain?: boolean;
 }) {
   return <li className={`game-hero${tone ? ` game-hero--${tone}` : ""}${strain ? " game-hero--strain" : ""}`}>
     <span className="game-hero__face">
       <img src={characterWorldArtUrl(member.character.species, member.character.tier, member.character.class)} alt="" decoding="async" onError={(event) => { event.currentTarget.style.visibility = "hidden"; }} />
       {mark ? <span className="game-hero__mark" key={mark}><Icon name={mark} /></span> : null}
-      {token ? <img key={air ? "air" : "hands"} className={`game-hero__token${air ? " game-hero__token--air" : ""}`} src={token} alt="" decoding="async" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : null}
     </span>
     <span className="game-hero__name">{member.character.name}</span>
     {state ? <span className="game-hero__state">{state}</span> : null}
@@ -121,7 +126,7 @@ export function Meter({ prompt, now, prop, stop = null }: { prompt: InteractionP
   const inGold = precisionSuccess(spec, position, prompt.relaxed);
   // A short trail behind the marker, so which way it is going reads at a glance.
   const trail = stop === null ? [70, 140, 210].map((ms) => at(now - ms)) : [];
-  return <div className="story-interaction__track game-track" role="img" aria-label="Moving marker with a gold target" data-gold={inGold}
+  return <div className="story-interaction__track game-track" role="img" aria-label={stop === null ? "Moving marker with a gold target" : "Stopped marker with a gold target"} data-gold={inGold}
     data-stopped={stop !== null ? (inGold ? "hit" : "miss") : undefined}>
     <span className="story-interaction__target game-track__gold" style={{ left: `${left * 100}%`, width: `${(right - left) * 100}%` }}><Icon name="star" /></span>
     {trail.map((ghost, i) => <span key={i} className="game-track__ghost" style={{ left: `${ghost * 100}%`, opacity: 0.35 - i * 0.1 }} />)}
@@ -147,33 +152,33 @@ export function approach(position: number, target: number, width: number): numbe
 export function lampAt(prompt: InteractionPrompt, now: number): { safe: boolean; soon: boolean; fill: number } {
   if (prompt.spec.kind !== "timing") return { safe: false, soon: false, fill: 0 };
   const spec = prompt.spec;
-  const position = precisionPosition(now - Date.parse(prompt.startedAt ?? new Date(now).toISOString()), spec.periodMs);
+  const position = prompt.stopPosition ?? precisionPosition(now - Date.parse(prompt.startedAt ?? new Date(now).toISOString()), spec.periodMs);
   const safe = precisionSuccess(spec, position, prompt.relaxed);
   const fill = safe ? 1 : approach(position, spec.target, Math.min(1, spec.width * (prompt.relaxed ? 2 : 1)));
   return { safe, soon: !safe && fill > 0.6, fill };
 }
 
-function Lamp({ prompt, now, hit }: { prompt: InteractionPrompt; now: number; hit?: boolean }) {
+function Lamp({ prompt, now, hit, object }: { prompt: InteractionPrompt; now: number; hit?: boolean; object?: string }) {
   const { safe, soon, fill } = lampAt(prompt, now);
   return <span className="story-interaction__signal game-lamp" data-safe={safe} data-soon={soon} data-hit={hit || undefined} role="img" aria-label={safe ? "Now!" : "Wait"}
     style={{ "--fill": `${Math.round(fill * 360)}deg` } as CSSProperties}>
-    <span className="game-lamp__light"><span className="game-lamp__ring" aria-hidden="true" /><Icon name={safe ? "boot" : "eye"} /></span>
+    <span className="game-lamp__light"><span className="game-lamp__ring" aria-hidden="true" />{object ? <Prop id={object} className="game-lamp__object" /> : <Icon name={safe ? "boot" : "eye"} />}</span>
     <strong className="game-lamp__word">{safe ? "NOW!" : soon ? "Get ready…" : "Wait…"}</strong>
   </span>;
 }
 
 /** The numbered boxes the lead's answer fills, one tile popping in at a time. */
-function Slots({ answer, length, options }: { answer: string[]; length: number; options: InteractionOption[] }) {
+function Slots({ answer, length, options, onRemove, busy }: { answer: string[]; length: number; options: InteractionOption[]; onRemove?: (index: number) => void; busy?: boolean }) {
   return <ol className="game-row game-row--slots" aria-label="The order so far">{Array.from({ length }, (_, i) => {
     const o = answer[i] ? options.find((option) => option.id === answer[i]) : undefined;
-    return <li key={i} className={o ? "game-slot game-slot--full" : "game-slot"}>{o ? <Tile key={o.id} option={o} index={i + 1} tone={toneOf(options, o.id)} /> : <span className="game-slot__number">{i + 1}</span>}</li>;
+    return <li key={i} className={o ? "game-slot game-slot--full" : "game-slot"}>{o ? onRemove ? <button type="button" className="game-slot__edit kad-focusable" disabled={busy} aria-label={`Remove step ${i + 1}: ${o.label}`} onClick={() => onRemove(i)}><Tile option={o} index={i + 1} tone={toneOf(options, o.id)} /><Icon name="close" /></button> : <Tile key={o.id} option={o} index={i + 1} tone={toneOf(options, o.id)} /> : <span className="game-slot__number">{i + 1}</span>}</li>;
   })}</ol>;
 }
 
 const STILL_NOTE = <p className="game-note"><Icon name="hand" /> Moving parts are switched off. Take a helping hand to get past this one.</p>;
 
 /** The same observation surface on TV and phone; it never sends an intent. */
-export function Board({ prompt, party, now, answer = [], playerId, stop = null }: BoardProps) {
+export function Board({ prompt, party, now, answer = [], playerId, stop = null, settled = true, busy, onCover }: BoardProps) {
   const chapter = useChapter();
   const state = useRunState();
   const appearance = interactionAppearance(chapter?.id === state?.chapterId ? chapter : null, state?.sceneId);
@@ -195,16 +200,18 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null }
   const object = appearance?.props?.find((id) => !id.startsWith("note-"));
   switch (spec.kind) {
     case "precision":
-      if (!active) return null;
-      return still ? STILL_NOTE : <><Meter prompt={prompt} now={now} prop={object} stop={stop} /><p className="game-note">Tap when the marker is in the gold.</p></>;
+      if (building && active && !still) return null;
+      if (!active && prompt.stopPosition === undefined && stop === null) return null;
+      return still ? STILL_NOTE : <><Meter prompt={prompt} now={now} prop={object} stop={prompt.stopPosition ?? stop} /><p className="game-note">{active ? "Tap when the marker is in the gold." : "This is where your tap landed."}</p></>;
     case "timing":
-      if (!active) return null;
-      return still ? STILL_NOTE : <div className="game-lamp-stage"><Lamp prompt={prompt} now={now} /></div>;
+      if (!active && prompt.stopPosition === undefined) return null;
+      if (building && active && !still) return null;
+      return still ? STILL_NOTE : <><div className="game-lamp-stage"><Lamp prompt={prompt} now={now} object={object} /></div>{!active && <p className="game-note">This is the moment you tapped.</p>}</>;
     case "tracking": {
-      if (!active) return null;
+      if (!active && prompt.phase !== "result") return null;
       const labels = trackingLabels(spec.covers, appearance?.coverIcons);
       const step = spec.stepMs * (prompt.relaxed ? 2 : 1);
-      const progress = still || prompt.relaxed ? spec.swaps.length : Math.max(0, (elapsed - step) / step);
+      const progress = still || prompt.relaxed || !active ? spec.swaps.length : Math.max(0, (elapsed - step) / step);
       const done = Math.min(spec.swaps.length, Math.floor(progress));
       const positions = spec.covers.map((_, index) => index);
       for (const [a, b] of spec.swaps.slice(0, done)) {
@@ -212,6 +219,17 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null }
       }
       const swap = spec.swaps[done];
       const moving = !still && !prompt.relaxed && swap !== undefined && progress > 0;
+      if ((building && !showing(view)) || prompt.phase === "result") {
+        const picked = Number((prompt.submittedAnswer ?? answer)[0] ?? -1);
+        return <div className="game-cover-choices" style={{ "--cover-count": labels.length } as CSSProperties}>{labels.map((label, slot) => {
+          const source = positions.indexOf(slot);
+          const correct = slot === trackedCover(spec);
+          const reveal = (!active && correct) || ((still || prompt.relaxed) && correct);
+          const body = <><PaintedCover bells={bells} icon={appearance?.coverIcons?.[source] ?? (painted ? undefined : "prop_brass_cup")} target={appearance?.props?.[0]} reveal={reveal} raised={!active && (correct || picked === slot)} /><strong>{label}</strong>{!active && <small>{correct ? "Found it!" : picked === slot ? "Your pick" : ""}</small>}</>;
+          return active ? <button key={slot} type="button" className="game-cover-pick kad-focusable" aria-label={`${spec.actionLabel}: ${label}`} disabled={busy} data-picked={picked === slot} onClick={() => { buzz(15); void onCover?.(slot); }}>{body}</button>
+            : <div key={slot} className="game-cover-pick" data-picked={picked === slot} data-correct={correct}>{body}</div>;
+        })}</div>;
+      }
       return <div className={"story-interaction__covers" + (painted ? " story-interaction__covers--painted" : "")} role="img" aria-label={elapsed < step && !still ? "Watch the glowing object before the covers move" : "Follow the moving covers"}>
         {spec.covers.map((label, index) => {
           const at = positions[index]!;
@@ -222,7 +240,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null }
           const hop = moving && destination !== at ? Math.sin(Math.PI * t) * (destination > at ? -1 : 0.4) : 0;
           const reveal = (!prompt.relaxed && !still && elapsed < step && index === spec.start) || ((still || prompt.relaxed) && at === trackedCover(spec));
           return <span className="story-interaction__cover" key={index} style={{ left: `${(position + 0.5) / spec.covers.length * 100}%`, translate: `0 ${(hop * 1.4).toFixed(2)}em` }}>
-            {painted ? <PaintedCover bells={bells} icon={appearance?.coverIcons?.[index]} target={appearance?.props?.[0]} diving={elapsed > step * .5 && elapsed < step} reveal={reveal} /> : <span aria-hidden="true" className={reveal ? "game-cover game-cover--glow" : "game-cover"}>{reveal ? "✦" : "▰"}</span>}
+            <PaintedCover bells={bells} icon={appearance?.coverIcons?.[index] ?? (painted ? undefined : "prop_brass_cup")} target={appearance?.props?.[0]} diving={elapsed > step * .5 && elapsed < step} reveal={reveal} />
           </span>;
         })}
         {labels.map((label, index) => <span className="story-interaction__cover story-interaction__cover-label" key={`label:${index}`} style={{ left: `${(index + 0.5) / spec.covers.length * 100}%` }}><small>{label}</small></span>)}
@@ -230,7 +248,9 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null }
       </div>;
     }
     case "memory": {
-      if (!active) return null;
+      if (!active && prompt.phase !== "result") return null;
+      if (!active) return <Slots answer={prompt.submittedAnswer ?? []} length={spec.answer.length} options={spec.options} />;
+      if (building && !prompt.relaxed && !still) return null;
       const step = spec.stepMs * (prompt.relaxed ? 2 : 1);
       const index = Math.floor(elapsed / step);
       const visible = prompt.relaxed || still;
@@ -239,7 +259,7 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null }
         return <div className="story-interaction__memory game-memory" aria-label="Magic pattern">
           <p className="game-note">The pattern stays on screen. Copy it in this order:</p>
           <ol className="game-row">{spec.answer.map((id, i) => { const o = option(id); return o ? <li key={i}><Tile option={o} index={i + 1} tone={toneOf(spec.options, id)} /></li> : null; })}</ol>
-          {building && <Slots answer={answer} length={spec.answer.length} options={spec.options} />}
+
         </div>;
       }
       if (index < spec.answer.length) {
@@ -252,26 +272,27 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null }
       }
       return <div className="story-interaction__memory game-memory" aria-label="Magic pattern">
         <p className="game-note game-note--big">{building ? "Now copy it!" : `Now ${lead} copies it!`}</p>
-        {building ? <Slots answer={answer} length={spec.answer.length} options={spec.options} />
+        {building ? null
           : <><Pads options={spec.options} /><p className="game-note game-note--dim">{lead} taps the {spec.answer.length} pads on their phone. Say the order out loud to help!</p></>}
       </div>;
     }
     case "sequence": {
-      if (!active) return null;
+      if (!active && prompt.phase !== "result") return null;
+      if (!active) return <Slots answer={prompt.submittedAnswer ?? []} length={spec.answer.length} options={spec.options} />;
       const mine = playerId ? interactionClues(prompt, playerId, connected) : [];
       return <div className="game-sequence">
         {playerId ? (mine.length > 0 && <div className="game-clue"><span className="game-clue__eyebrow"><Icon name="scroll" /> Your clue{mine.length > 1 ? "s" : ""}. Read {mine.length > 1 ? "them" : "it"} out loud!</span><ul>{mine.map((clue, i) => <li key={i}>{clue}</li>)}</ul></div>)
           : <p className="game-note"><Icon name="phone" /> Every phone holds a clue. Put them together to find the order.</p>}
-        {building ? <Slots answer={answer} length={spec.answer.length} options={spec.options} />
+        {building ? null
           : <><Pads options={spec.options} /><p className="game-note game-note--dim">{lead} puts the {spec.answer.length} steps in order on their phone.</p></>}
       </div>;
     }
     case "balance": {
-      if (!active) return null;
+      if (!active && prompt.phase !== "result") return null;
       const levels = connected.map((id) => prompt.levels?.[id] ?? 0);
-      const tilt = levels.length > 1 ? (levels[levels.length - 1]! - levels[0]!) * 24 : (levels[0]! - 0.5) * 30;
+      const lift = balanceLift(prompt, connected);
+      const tilt = (lift - 0.5) * 45;
       const ready = balanceReady(prompt, connected);
-      const window = prompt.relaxed ? 0.25 : 0.125;
       return <div className="game-balance" data-ready={ready}>
         <div className="game-seesaw">
           <div className="story-interaction__balance game-beam" style={{ transform: still ? undefined : `rotate(${tilt.toFixed(1)}deg)` }}>
@@ -280,58 +301,55 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null }
           </div>
           <span className="game-seesaw__pivot" aria-hidden="true" />
         </div>
+        <p className="game-note">Our shared lift</p>
+        <div className="game-team-meter" role="meter" aria-label="Our shared lift" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(lift * 100)}>
+          <span className="game-team-meter__gold" style={{ left: `${(0.5 - (prompt.relaxed ? 0.25 : 0.125) / Math.max(1, connected.length)) * 100}%`, width: `${(prompt.relaxed ? 0.5 : 0.25) / Math.max(1, connected.length) * 100}%` }} />
+          <span className="game-team-meter__marker" style={{ left: `${lift * 100}%` }} />
+        </div>
         <ul className="game-gauges">{connectedMembers.map((m) => {
           const level = prompt.levels?.[m.playerId] ?? 0;
-          const ok = Math.abs(level - 0.5) <= window;
-          const word = ok ? "Just right" : level < 0.5 ? "Too low" : "Too high";
+          const ok = level > 0;
+          const word = ok ? "Lifting!" : "Join the lift";
           return <li key={m.playerId} className={`game-gauge${ok ? " game-gauge--ok" : ""}`}>
-            <span className="game-gauge__well"><span className="game-gauge__middle" /><span className="game-gauge__fill" style={{ height: `${Math.round(level * 100)}%` }} /></span>
+            <span className="game-gauge__well"><span className="game-gauge__fill" style={{ height: `${Math.round(level * 100)}%` }} /></span>
             <span className="game-gauge__name">{m.character.name}</span>
             <span className="game-gauge__word">{word}</span>
           </li>;
         })}</ul>
-        <p role="status" className="game-note">{ready ? "Steady together!" : "Bring everyone’s side to the middle."}</p>
+        <p role="status" className="game-note">{ready ? "Steady together!" : levels.some((level) => level === 0) ? "Everyone lift a little. Bring the shared marker into the gold." : lift < 0.5 ? "A little more lift! Someone lift higher." : "Too much lift! Someone ease down."}</p>
       </div>;
     }
     case "relay": {
-      if (!active) return null;
-      const holder = relayHolder(prompt, connected);
-      const order = [...prompt.playerIds, ...connected.filter((id) => !prompt.playerIds.includes(id))].filter((id) => connected.includes(id));
-      const token = object ? propUrl(object) : undefined;
-      return <div className="story-interaction__spark game-relay">
-        <ul className="game-heroes">{order.map((id) => { const m = member(id); if (!m) return null;
-          const passed = prompt.passed?.includes(id);
-          const has = holder === id && prompt.caughtBy === id;
-          const coming = holder === id && !has;
-          return <HeroChip key={id} member={m} tone={passed ? "done" : holder === id ? "on" : "off"} mark={passed ? "check" : undefined}
-            token={holder === id ? token : undefined} air={coming} state={passed ? "passed it" : holder === id ? (has ? "has it!" : "catch it!") : "waiting"} />; })}
-          <li className={`game-hero game-hero--goal${holder ? " game-hero--off" : " game-hero--on"}`}><span className="game-hero__face game-hero__face--goal">{!holder && object ? <Prop id={object} className="game-hero__token game-hero__token--home" /> : <Icon name="quest" />}</span><span className="game-hero__name">Finish</span></li>
-        </ul>
-        <p className="game-note" role="status"><Icon name="star" /> {holder ? `${spec.objectLabel}: ${name(holder)} ${prompt.caughtBy === holder ? "has it!" : "can catch it"}` : "It made it all the way!"}</p>
-        <p className="game-note game-note--dim">{(prompt.passed ?? []).map(name).join(" → ") || "Everyone gets a turn."}</p>
-      </div>;
+      if (playerId && relayHolder(prompt, connected) === playerId && active) return null;
+      return <RelayWorld prompt={prompt} party={party} object={object} settled={settled} />;
     }
     case "cooperate": {
-      if (!active) return null;
+      if (!active && prompt.phase !== "result") return null;
       const supporters = supportPlayers(prompt, connected);
       const nowIso = new Date(now).toISOString();
       const ready = supportsReady(prompt, connected, nowIso);
+      const progress = cooperationProgress(prompt, connected, nowIso);
       const held = supporters.filter((id) => { const lease = prompt.supports[id]; return lease === null || (typeof lease === "string" && Date.parse(lease) > now); }).length;
       return <div className="game-cooperate" data-ready={ready}>
-        {object ? <div className="game-lift" style={{ "--lift": supporters.length ? held / supporters.length : 0 } as CSSProperties}><Prop id={object} className="game-lift__load" /></div> : null}
+        {(!playerId || !active) && <div className="game-lift" style={{ "--lift": progress } as CSSProperties}>
+          <span className="game-lift__goal"><Icon name="star" /></span>
+          {object ? <Prop id={object} className="game-lift__load" /> : <span className="game-lift__load game-lift__fallback"><Icon name="party" /></span>}
+        </div>}
+        <div className="game-team-progress" role="progressbar" aria-label="Lifting together" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}><span style={{ width: `${progress * 100}%` }} /></div>
         <ul className="game-heroes">{connectedMembers.map((m) => {
           const supporting = supporters.includes(m.playerId);
           const lease = prompt.supports[m.playerId];
-          const holding = supporting && (lease === null || (typeof lease === "string" && Date.parse(lease) > now));
+          const finished = prompt.phase === "result" && prompt.outcome === "success";
+          const holding = finished || (supporting && (lease === null || (typeof lease === "string" && Date.parse(lease) > now)));
           const isLead = m.playerId === leadId;
           return <HeroChip key={m.playerId} member={m} tone={holding ? "done" : supporting ? "off" : "on"} mark={holding ? "check" : isLead && !supporting ? "star" : undefined}
-            strain={holding && lease !== null} state={supporting ? (holding ? (lease === null ? "propped" : "holding!") : "not yet") : "ready to go"} />;
+            strain={holding && !finished && lease !== null} state={finished ? "lifted!" : supporting ? (holding ? (lease === null ? "propped" : "holding!") : "not yet") : "ready to go"} />;
         })}</ul>
-        <p role="status" className="game-note">{ready ? "Holding steady!" : `${held} of ${supporters.length} holding…`}</p>
+        <p role="status" className="game-note">{prompt.phase === "result" ? "Up it goes!" : ready ? "Keep holding together. Up it goes!" : `${held} of ${supporters.length} holding. Join in!`}</p>
       </div>;
     }
     case "play": {
-      if (!active) return null;
+      if (!active && prompt.phase !== "result") return null;
       const chosen = (id: string) => spec.options.find((o) => o.id === prompt.contributions?.[id]);
       const count = connected.filter((id) => prompt.contributions?.[id] !== undefined).length;
       return <div className="story-interaction__reactions game-play" aria-live="polite">
@@ -354,8 +372,8 @@ export function Board({ prompt, party, now, answer = [], playerId, stop = null }
   }
 }
 
-/** A drag lever for one side of a balance: five notches, the middle band glowing. */
-function Lever({ level, window, busy, onStep }: { level: number; window: number; busy: boolean; onStep: (direction: "up" | "down", steps: number) => Promise<void> }) {
+/** Five lift notches per hero; the goal belongs to the shared load, not this lever. */
+function Lever({ level, busy, onStep }: { level: number; busy: boolean; onStep: (direction: "up" | "down", steps: number) => void }) {
   const track = useRef<HTMLDivElement>(null);
   const [drag, setDrag] = useState<number | null>(null);
   const notch = (event: ReactPointerEvent) => {
@@ -370,55 +388,16 @@ function Lever({ level, window, busy, onStep }: { level: number; window: number;
     const steps = Math.round((target - level) * 4);
     if (steps !== 0) { buzz(Math.min(60, 12 * Math.abs(steps))); void onStep(steps > 0 ? "up" : "down", Math.abs(steps)); }
   };
-  return <div className="game-lever" data-ok={Math.abs(shown - 0.5) <= window}>
+  return <div className="game-lever" data-lifting={shown > 0}>
     <div ref={track} className="game-lever__track" aria-hidden="true"
       onPointerDown={(event) => { if (busy) return; event.currentTarget.setPointerCapture?.(event.pointerId); setDrag(notch(event)); }}
       onPointerMove={(event) => { if (drag === null) return; const next = notch(event); if (next !== drag) { setDrag(next); buzz(6); } }}
       onPointerUp={(event) => { if (drag !== null) release(notch(event)); }}
       onPointerCancel={() => setDrag(null)}>
-      <span className="game-lever__band" style={{ bottom: `${(0.5 - window) * 100}%`, height: `${window * 200}%` }} />
       {[0, 0.25, 0.5, 0.75, 1].map((n) => <span key={n} className="game-lever__notch" style={{ bottom: `${n * 100}%` }} />)}
       <span className="game-lever__knob" style={{ bottom: `${shown * 100}%` }}><Icon name="hand" /></span>
     </div>
-    <span className="game-lever__hint">Drag to the glow</span>
-  </div>;
-}
-
-/** How far up, in px, a finger has to travel before letting go counts as a flick. */
-export const FLICK_PX = 50;
-
-/** The thing you have, on a phone: catch it as it drops in, flick it up to pass it on. */
-function Catcher({ object, caught, label, catchLabel, busy, onCatch, onPass }: {
-  object?: string; caught: boolean; label: string; catchLabel: string; busy: boolean;
-  onCatch: () => void;
-  /** Resolves false when the pass was refused or never arrived. */
-  onPass: () => Promise<boolean>;
-}) {
-  const [thrown, setThrown] = useState(false);
-  const start = useRef<number | null>(null);
-  const pass = async () => {
-    if (thrown || busy) return;
-    setThrown(true);
-    buzz([10, 30, 20]);
-    // Let the throw be seen leaving before the next phone takes it.
-    if (!reducedMotion()) await new Promise((resolve) => window.setTimeout(resolve, 260));
-    // A refused or lost pass gives the thing back, so the child can throw again rather than
-    // being left with a dead button until the whole game restarts (#555 review).
-    if (!(await onPass())) setThrown(false);
-  };
-  return <div className="game-catcher" data-caught={caught} data-thrown={thrown}>
-    <div className="game-catcher__stage"
-      onPointerDown={(event) => { if (!caught) return; start.current = event.clientY; event.currentTarget.setPointerCapture?.(event.pointerId); }}
-      // The flick counts on letting go, after an upward swipe: a finger resting and wobbling
-      // while the child decides never throws it (#555 review).
-      onPointerUp={(event) => { const from = start.current; start.current = null; if (from !== null && from - event.clientY > FLICK_PX) void pass(); }}
-      onPointerCancel={() => { start.current = null; }}>
-      {object ? <Prop key={caught ? "hand" : "air"} id={object} className="game-catcher__thing" /> : <span key={caught ? "hand" : "air"} className="game-catcher__thing game-catcher__thing--star"><Icon name="star" /></span>}
-      {caught && <span className="game-catcher__hint" aria-hidden="true">↑ flick up to pass</span>}
-    </div>
-    {caught
-      ? <Button variant="primary" size="lg" block icon={<Icon name="forward" />} className="story-interaction__button game-action game-action--go" disabled={busy || thrown} onClick={() => void pass()}>{label}</Button>
-      : <Button variant="primary" size="lg" block icon={<Icon name="hand" />} className="story-interaction__button game-action game-action--catch" disabled={busy} onClick={() => { buzz(25); onCatch(); }}>{catchLabel}</Button>}
+    <span className="game-lever__hint">Drag to lift or lower</span>
   </div>;
 }
 
@@ -443,17 +422,15 @@ export interface KindControlsProps {
   answer: string[]; setAnswer: (update: (current: string[]) => string[]) => void;
   holding: boolean; setHolding: (holding: boolean) => void;
   /** Precision: where this phone's tap stopped the marker, for the board to freeze it. */
-  setStop: (position: number) => void;
+  setStop: (position: number | null) => void;
 }
 
 /** The phone's buttons for one kind of game, lead and helper alike. */
 export function KindControls({ prompt, playerId, connected, mine, now, busy, send, answer, setAnswer, holding, setHolding, setStop }: KindControlsProps) {
-  const chapter = useChapter();
   const state = useRunState();
-  const appearance = interactionAppearance(chapter?.id === state?.chapterId ? chapter : null, state?.sceneId);
   const object = useObject();
   const [stickers, addSticker] = useStickers();
-  const [tapped, setTapped] = useState(false);
+  const [tapped, setTapped] = useState<number | null>(null);
   const spec = prompt.spec;
   const still = reducedMotion();
   const primary = (label: string, action: InteractionAction, icon: string, disabled = false, extra = "") =>
@@ -463,105 +440,93 @@ export function KindControls({ prompt, playerId, connected, mine, now, busy, sen
   const positionNow = () => precisionPosition(Date.now() - Date.parse(prompt.startedAt ?? ""), spec.kind === "precision" || spec.kind === "timing" ? spec.periodMs : 1);
   switch (spec.kind) {
     case "precision":
+    case "timing": {
       if (!mine || still) return null;
-      // One big round pad, not a form button: the whole thing is the throw.
-      return <button type="button" className="game-tap kad-focusable" aria-label={spec.actionLabel} disabled={busy || tapped}
-        onClick={() => { const position = positionNow(); setTapped(true); setStop(position); buzz(precisionSuccess(spec, position, prompt.relaxed) ? [20, 40, 30] : 30); send({ action: "stop", position }); }}>
-        <span className="game-tap__ring" aria-hidden="true" />
-        <span className="game-tap__word">TAP!</span>
+      const takeShot = async () => {
+        if (busy || tapped !== null) return;
+        const position = positionNow(); setTapped(position); setStop(position);
+        buzz(precisionSuccess(spec, position, prompt.relaxed) ? [20, 40, 30] : 30);
+        try { if (await send({ action: "stop", position })) return; } catch { /* The control stays available after a failed send. */ }
+        setTapped(null); setStop(null);
+      };
+      return <button type="button" className={`game-aim kad-focusable${spec.kind === "timing" ? " game-tap game-tap--lamp" : ""}`} aria-label={spec.actionLabel} disabled={busy || tapped !== null}
+        onPointerDown={(event) => { if (event.button === 0) void takeShot(); }}
+        onClick={(event) => { if (event.detail === 0) void takeShot(); }}>
+        {spec.kind === "precision" ? <Meter prompt={prompt} now={now} prop={object} stop={tapped} /> : <Lamp prompt={tapped === null ? prompt : { ...prompt, stopPosition: tapped }} now={now} hit={tapped !== null} object={object} />}
         <span className="game-tap__label">{spec.actionLabel}</span>
+        {spec.kind === "precision" && <small>Touch the moving object when it reaches the gold</small>}
       </button>;
-    case "timing":
-      if (!mine || still) return null;
-      // The lamp is the button: tap it when it says NOW.
-      return <button type="button" className="game-tap game-tap--lamp kad-focusable" aria-label={spec.actionLabel} disabled={busy || tapped}
-        onClick={() => { const position = positionNow(); setTapped(true); buzz(precisionSuccess(spec, position, prompt.relaxed) ? [20, 40, 30] : 30); send({ action: "stop", position }); }}>
-        <Lamp prompt={prompt} now={now} hit={tapped} />
-        <span className="game-tap__label">{spec.actionLabel}</span>
-      </button>;
-    case "tracking": {
-      if (!mine) return null;
-      const view = { prompt, party: [], connected, now };
-      if (showing(view)) return <p className="game-note"><Icon name="tv" /> Keep your eyes on the covers…</p>;
-      return <div className="game-options game-options--covers">{trackingLabels(spec.covers, appearance?.coverIcons).map((label, index) =>
-        <Button key={index} variant="secondary" size="lg" block icon={<Icon name="eye" />} className="story-interaction__button game-action" disabled={busy} onClick={() => { buzz(15); send({ action: "answer", answer: [String(index)] }); }}>{`${spec.actionLabel}: ${label}`}</Button>)}</div>;
     }
+    case "tracking": return null;
     case "memory":
     case "sequence": {
       if (!mine) return null;
       const view = { prompt, party: [], connected, now };
       const locked = spec.kind === "memory" && showing(view);
       const full = answer.length >= spec.answer.length;
-      if (locked) return <p className="game-note"><Icon name="tv" /> Watch the pads light up…</p>;
       return <>
-        <Pads options={spec.options} disabled={busy || full} onTap={(option) => setAnswer((current) => current.length >= spec.answer.length ? current : [...current, option.id])} />
-        <div className="game-actions-row">
-          <Button variant="ghost" icon={<Icon name="back" />} className="story-interaction__button" disabled={busy || !answer.length} onClick={() => setAnswer((current) => current.slice(0, -1))}>Change last step</Button>
-        </div>
-        {primary(spec.actionLabel, { action: "answer", answer }, "check", answer.length !== spec.answer.length, full ? " game-action--go" : "")}
+        <p className="game-answer-progress" role="status">{locked ? "Watch the pads light up!" : full ? "Ready! Check your order, then send it." : `${answer.length} of ${spec.answer.length} chosen`}</p>
+        <Pads options={spec.options} lit={locked && !still && spec.kind === "memory" ? spec.answer[litStep(Math.max(0, now - Date.parse(prompt.startedAt ?? "")), spec.stepMs, spec.answer.length) ?? -1] ?? null : null} disabled={busy || full || locked} onTap={(option) => setAnswer((current) => current.length >= spec.answer.length ? current : [...current, option.id])} />
+        {!locked && <><Slots answer={answer} length={spec.answer.length} options={spec.options} busy={busy} onRemove={(index) => setAnswer((current) => current.filter((_, i) => i !== index))} />
+          {answer.length > 0 && <small className="game-note">Tap a chosen step to take it out.</small>}
+          {primary(spec.actionLabel, { action: "answer", answer }, "check", !full, full ? " game-action--go" : "")}
+        </>}
       </>;
     }
     case "balance": {
       const level = prompt.levels?.[playerId] ?? 0;
-      const ready = balanceReady(prompt, connected);
-      // One notch per intent, each sent only once the last has landed: fired together they raced
-      // on the run's seq and the lever could stop short of where it was dragged (#555 review).
-      const step = async (direction: "up" | "down", steps: number) => {
-        for (let i = 0; i < steps; i++) if (!(await send({ action: "adjust", direction }))) return;
-      };
+      const step = (direction: "up" | "down", steps: number) => send({ action: "adjust", direction, steps });
       return <>
         <div className="game-balance-controls">
-          {!still && <Lever level={level} window={prompt.relaxed ? 0.25 : 0.125} busy={busy} onStep={step} />}
+          {!still && <Lever level={level} busy={busy} onStep={step} />}
           <div className="game-balance-controls__buttons">
             {secondary("Lift my side", { action: "adjust", direction: "up" }, "forward", level >= 1)}
             {secondary("Lower my side", { action: "adjust", direction: "down" }, "back", level <= 0)}
           </div>
         </div>
-        {mine && primary(spec.actionLabel, { action: "complete" }, "check", !ready, ready ? " game-action--go" : "")}
+
       </>;
     }
     case "relay": {
       const holder = relayHolder(prompt, connected);
-      if (!holder) return mine ? primary(spec.actionLabel, { action: "complete" }, "check", false, " game-action--go") : null;
+      if (!holder) return null;
       if (holder !== playerId) return null;
-      return <Catcher key={prompt.caughtBy === playerId ? "caught" : "coming"} object={object} caught={prompt.caughtBy === playerId} label={spec.actionLabel} catchLabel={`Catch ${spec.objectLabel}`} busy={busy}
+      const order = relaySeats(prompt, state?.party ?? []);
+      const next = order.find((id) => id !== holder && !prompt.passed?.includes(id));
+      const nextName = state?.party.find((m) => m.playerId === next)?.character.name ?? "home";
+      return <RelayCatcher object={object} caught={prompt.caughtBy === playerId} label={spec.actionLabel} catchLabel={`Catch ${spec.objectLabel}`} nextName={nextName} busy={busy}
         onCatch={() => send({ action: "catch" })} onPass={() => send({ action: "pass" })} />;
     }
     case "cooperate": {
-      const supporter = supportPlayers(prompt, connected).includes(playerId);
       const propped = prompt.supports[playerId] === null;
-      const nowIso = new Date(now).toISOString();
-      const ready = supportsReady(prompt, connected, nowIso);
+      const toggle = prompt.relaxed || connected.length === 1;
+      const progress = cooperationProgress(prompt, connected, new Date(now).toISOString());
       return <>
-        {supporter && (prompt.relaxed || connected.length === 1
-          ? secondary(propped ? "Remove support" : spec.supportLabel, { action: "support", mode: propped ? "release" : "prop" }, propped ? "close" : "hand")
-          : <button type="button" className="kad-button kad-button--secondary kad-button--lg kad-button--block story-interaction__button story-interaction__hold game-action game-hold kad-focusable" aria-pressed={holding}
-            onPointerDown={(event) => { event.currentTarget.setPointerCapture?.(event.pointerId); buzz(20); setHolding(true); }}
-            onPointerUp={() => setHolding(false)} onPointerCancel={() => setHolding(false)} onLostPointerCapture={() => setHolding(false)} onBlur={() => setHolding(false)}
-            onKeyDown={(event) => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); setHolding(true); } }}
-            onKeyUp={(event) => { if (event.key === " " || event.key === "Enter") { event.preventDefault(); setHolding(false); } }}>
-            <span className="game-hold__grip" aria-hidden="true" />
-            <span className="kad-button__icon" aria-hidden="true"><Icon name="hand" /></span>
-            <span className="kad-button__label">{holding ? "I’ve got it!" : spec.supportLabel}</span>
-            <span className="game-hold__hint" aria-hidden="true">{holding ? "keep holding" : "press and hold"}</span>
-          </button>)}
-        {supporter && !prompt.relaxed && connected.length > 1 && <div className="game-actions-row">
-          <Button variant="ghost" icon={<Icon name="hand" />} className="story-interaction__button" disabled={busy || holding || propped} onClick={() => send({ action: "support", mode: "prop" })}>Use a prop instead</Button>
-        </div>}
-        {mine && primary(spec.actionLabel, { action: "complete" }, "check", !ready, ready ? " game-action--go" : "")}
+        <button type="button" className="kad-button kad-button--secondary kad-button--lg kad-button--block story-interaction__button story-interaction__hold game-action game-hold kad-focusable" aria-pressed={toggle ? propped : holding} disabled={busy && !holding}
+          onClick={() => { if (toggle) void send({ action: "support", mode: propped ? "release" : "prop" }); }}
+          onPointerDown={(event) => { if (toggle) return; event.currentTarget.setPointerCapture?.(event.pointerId); buzz(20); setHolding(true); }}
+          onPointerUp={() => setHolding(false)} onPointerCancel={() => setHolding(false)} onLostPointerCapture={() => setHolding(false)} onBlur={() => setHolding(false)}
+          onKeyDown={(event) => { if (!toggle && (event.key === " " || event.key === "Enter")) { event.preventDefault(); setHolding(true); } }}
+          onKeyUp={(event) => { if (!toggle && (event.key === " " || event.key === "Enter")) { event.preventDefault(); setHolding(false); } }}>
+          <span className="game-hold__grip" aria-hidden="true" />
+          <span className="game-lift" style={{ "--lift": progress } as CSSProperties} aria-hidden="true"><span className="game-lift__goal"><Icon name="star" /></span>{object ? <Prop id={object} className="game-lift__load" /> : <span className="game-lift__load game-lift__fallback"><Icon name="hand" /></span>}</span>
+          <span className="kad-button__label">{toggle ? propped ? "Remove support" : spec.supportLabel : holding ? "I’ve got it!" : spec.supportLabel}</span>
+          <span className="game-hold__hint" aria-hidden="true">{toggle ? "tap to prop it" : holding ? "keep holding" : "press and hold the object"}</span>
+        </button>
+        {!toggle && <div className="game-actions-row"><Button variant="ghost" icon={<Icon name="hand" />} disabled={busy || holding || propped} onClick={() => send({ action: "support", mode: "prop" })}>Use a prop instead</Button></div>}
       </>;
     }
     case "play":
       return <>
         <div className="game-options game-options--grid game-options--play">
-          {spec.options.map((option, i) => <button key={option.id} type="button" className="story-interaction__button game-option kad-focusable" data-tone={i % 4} disabled={busy}
+          {spec.options.map((option, i) => <button key={option.id} type="button" className="story-interaction__button game-option kad-focusable" data-tone={i % 4} aria-pressed={prompt.contributions?.[playerId] === option.id} disabled={busy}
             onClick={(event) => {
               const box = event.currentTarget.getBoundingClientRect();
               const parent = event.currentTarget.parentElement?.getBoundingClientRect();
               addSticker(option.icon, parent && parent.width ? ((box.left + box.width / 2 - parent.left) / parent.width) * 100 : 50);
               padNote(i); buzz(15); send({ action: "play", optionId: option.id });
             }}>
-            <span className="game-option__icon"><Icon name={option.icon} /></span>
+            <span className="game-option__icon">{spec.options.length === 1 && object ? <Prop id={object} className="game-play-object" /> : <Icon name={option.icon} />}</span>
             <span className="game-option__label">{option.label}</span>
           </button>)}
           {stickers.map((sticker) => <span key={sticker.id} className="game-sticker" style={{ left: `${sticker.x}%` }} aria-hidden="true"><Icon name={sticker.icon} /></span>)}

@@ -1903,7 +1903,7 @@
       },
       "mud_recovery": {
         "props": [
-          "prop_brass_cup"
+          "prop_leaf_cup"
         ]
       },
       "lift_balance": {

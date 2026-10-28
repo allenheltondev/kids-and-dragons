@@ -22,9 +22,9 @@ export const GAME: Record<InteractionKind, { name: string; icon: string; how: st
   memory: { name: "Copy the pattern", icon: "eye", how: "The TV shows a pattern. Then one of you taps it back in the same order." },
   sequence: { name: "Share the clues", icon: "map", how: "Every phone gets a clue. Read them out loud and put the steps in order." },
   tracking: { name: "Follow the glow", icon: "eye", how: "Watch where the glow starts. Follow it while the covers shuffle, then pick its cover." },
-  balance: { name: "Hold it level", icon: "hand", how: "Everyone lifts or lowers their own side until it is level in the middle." },
-  relay: { name: "Pass it along", icon: "forward", how: "It goes from phone to phone. Catch it when it comes to you, then pass it on." },
-  cooperate: { name: "All together", icon: "party", how: "Friends press and hold on their phones. While they hold, one of you does the job." },
+  balance: { name: "Hold it level", icon: "hand", how: "Everyone lifts a little. Lift more or ease down to bring the shared marker into the gold." },
+  relay: { name: "Pass it along", icon: "forward", how: "Touch the arriving object to catch it. Slide it up to send it to your friend." },
+  cooperate: { name: "All together", icon: "party", how: "Everyone presses and holds together. Keep holding while the object rises to the star." },
   play: { name: "Everyone joins in", icon: "heart", how: "Pick something to do. What you pick shows up on the TV. No wrong answers." },
 };
 
@@ -88,25 +88,27 @@ export function tvStatus(view: TableView): string {
     case "sequence":
       return `Every phone has a clue. Read them out loud! Then ${lead} taps the steps in order.`;
     case "cooperate": {
-      const supporters = supportPlayers(prompt, connected);
       const ready = supportsReady(prompt, connected, new Date(now).toISOString());
-      if (ready) return `Holding steady! ${lead}: tap "${spec.actionLabel}" on your phone.`;
-      const helpers = supporters.filter((id) => id !== leadOf(view)).map((id) => nameOf(party, id));
-      return helpers.length
-        ? `${list(helpers)}: press and hold "${spec.supportLabel}" on your phone. Then ${lead} taps "${spec.actionLabel}".`
-        : `${lead}: tap "${spec.supportLabel}" on your phone, then "${spec.actionLabel}".`;
+      if (ready) return "Keep holding together. Watch it rise to the star!";
+      const waiting = supportPlayers(prompt, connected).filter((id) => {
+        const lease = prompt.supports[id];
+        return lease !== null && !(typeof lease === "string" && Date.parse(lease) > now);
+      }).map((id) => nameOf(party, id));
+      return `${list(waiting)}: ${prompt.relaxed || connected.length === 1 ? "tap" : "press and hold"} "${spec.supportLabel}" on your phone. Everyone lifts together!`;
     }
     case "balance":
       return balanceReady(prompt, connected)
-        ? `Level! ${lead}: tap "${spec.actionLabel}" on your phone.`
-        : `Everyone: tap "Lift my side" or "Lower my side" on your phone until every side is in the middle.`;
+        ? "Level together!"
+        : "Everyone lift a little. Lift higher or ease down to bring the shared marker into the gold.";
     case "relay": {
       const holder = relayHolder(prompt, connected);
-      if (!holder) return `${lead}: tap "${spec.actionLabel}" on your phone to finish.`;
+      if (!holder) return "Delivered! It made it all the way.";
       const name = nameOf(party, holder);
+      const next = relayHolder({ ...prompt, passed: [...(prompt.passed ?? []), holder] }, connected);
+      const destination = next ? nameOf(party, next) : "home";
       return prompt.caughtBy === holder
-        ? `${name} has it! Tap "${spec.actionLabel}" on your phone.`
-        : `${name}: ${spec.objectLabel} is coming to you. Tap "Catch ${spec.objectLabel}" on your phone!`;
+        ? `${name}: slide ${spec.objectLabel} up to send it to ${destination}.`
+        : `${name}: touch ${spec.objectLabel} on your phone to catch it!`;
     }
     case "play":
       return playReady(prompt, connected)
@@ -122,7 +124,7 @@ export function outcomeLine(prompt: InteractionPrompt): string {
     ? "You did it together!"
     : prompt.outcome === "assisted"
       ? "A helping hand makes a way."
-      : "That went a little differently. Try again, or see what happens next.";
+      : "A little twist in the adventure! Try once more, or carry on to see where it leads.";
 }
 
 export interface Job {
@@ -173,29 +175,24 @@ export function phoneJob(view: TableView, playerId: string): Job {
         ? { headline: "Read your clue out loud, then tap the steps in order.", detail: `Everyone's phone has a different clue. When the order is right, tap "${spec.actionLabel}".`, lookAt: "phone" }
         : { headline: "Read your clue out loud!", detail: `${lead} taps the steps in order. Help them get it right.`, lookAt: "phone" };
     case "cooperate": {
-      const supporter = supportPlayers(prompt, connected).includes(playerId);
+      if (prompt.supports[playerId] === null) return { headline: "Your prop is holding!", detail: "Watch the lift. It finishes when everyone is helping.", lookAt: "both" };
       const ready = supportsReady(prompt, connected, new Date(now).toISOString());
-      if (mine && ready) return { headline: "Everyone is holding. Go!", detail: `Tap "${spec.actionLabel}".`, lookAt: "phone" };
-      if (mine && supporter) return { headline: "Hold on, then go.", detail: `Tap "${spec.supportLabel}", then "${spec.actionLabel}".`, lookAt: "phone" };
-      if (mine) return { headline: "Wait for your friends to hold on.", detail: `When the TV says "Holding steady", tap "${spec.actionLabel}".`, lookAt: "both" };
-      return { headline: `Press and hold until ${lead} is done.`, detail: `Keep your finger on "${spec.supportLabel}". Let go and it drops.`, lookAt: "phone" };
+      if (ready) return { headline: "Keep holding. Up it goes!", detail: "It finishes by itself at the star.", lookAt: "both" };
+      return { headline: prompt.relaxed || connected.length === 1 ? "Tap to add your support." : "Press and hold together!", detail: "Everyone helps lift. Keep holding until it reaches the star.", lookAt: "phone" };
     }
-    case "balance": {
-      const ready = balanceReady(prompt, connected);
-      if (mine && ready) return { headline: "It's level. Go!", detail: `Tap "${spec.actionLabel}".`, lookAt: "phone" };
-      return { headline: "Get your side to the middle.", detail: mine ? `Tap "Lift my side" or "Lower my side". When every side is level, tap "${spec.actionLabel}".` : "Tap \"Lift my side\" or \"Lower my side\". The TV shows everyone's side.", lookAt: "both" };
-    }
+    case "balance":
+      return { headline: "Lift together. Find the gold!", detail: "Watch the shared marker. You can lift different amounts. It finishes when everyone is lifting and the marker reaches the gold.", lookAt: "both" };
     case "relay": {
       const holder = relayHolder(prompt, connected);
-      if (!holder) return mine
-        ? { headline: "It made it all the way!", detail: `Tap "${spec.actionLabel}".`, lookAt: "phone" }
-        : { headline: "It made it all the way!", detail: `${lead} finishes it off.`, lookAt: "tv" };
+      if (!holder) return { headline: "It made it all the way!", detail: "Delivered together.", lookAt: "tv" };
+      const next = relayHolder({ ...prompt, passed: [...(prompt.passed ?? []), holder] }, connected);
+      const destination = next ? nameOf(party, next) : "home";
       if (holder === playerId) return prompt.caughtBy === playerId
-        ? { headline: "You've got it! Pass it on.", detail: `Tap "${spec.actionLabel}".`, lookAt: "phone" }
-        : { headline: "It's coming to you!", detail: `Tap "Catch ${spec.objectLabel}".`, lookAt: "phone" };
+        ? { headline: `Slide it up to ${destination}!`, detail: "The object follows your finger. Release to send it, or tap the object.", lookAt: "phone" }
+        : { headline: "Catch it in your hands!", detail: "Touch the arriving object on your phone.", lookAt: "phone" };
       return prompt.passed?.includes(playerId)
-        ? { headline: "You passed it. Nice!", detail: "Watch it travel on the TV.", lookAt: "tv" }
-        : { headline: `${nameOf(party, holder)} has it. Your turn is coming.`, detail: "Watch the TV.", lookAt: "tv" };
+        ? { headline: "You passed it. Nice!", detail: "Watch it travel to your friend on the TV.", lookAt: "tv" }
+        : { headline: prompt.caughtBy === holder ? `${nameOf(party, holder)} has it. Your turn is coming.` : `It's arriving for ${nameOf(party, holder)}. Your turn is coming.`, detail: "Watch the object travel on the TV.", lookAt: "tv" };
     }
     case "play": {
       const done = prompt.contributions?.[playerId] !== undefined;

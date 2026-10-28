@@ -1,0 +1,56 @@
+/* The same prop is the action, the flight and the thing in a hero's hands. */
+.relay-object { display: block; inline-size: 100%; block-size: 100%; object-fit: contain; user-select: none; -webkit-user-drag: none; filter: drop-shadow(0 0.35em 0.25em rgba(0, 0, 0, 0.4)); }
+.relay-object--fallback { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2em; border-radius: 40%; color: var(--kad-gold, #f5c86c); background: #30264d; }
+.relay-object--fallback > .kad-icon { font-size: 2em; }
+.relay-object--fallback > span { font-size: 0.65em; text-align: center; }
+.relay-world { inline-size: 100%; }
+.relay-world__caption { margin: 0; text-align: center; font-size: 1.3em; font-weight: 800; color: var(--kad-gold, #f5c86c); }
+.relay-world__stage { position: relative; block-size: clamp(16em, 37cqw, 27em); inline-size: 100%; isolation: isolate; }
+.relay-world__path { position: absolute; inset-inline: 10%; inset-block-start: 67%; border-block-end: 0.2em dashed rgb(var(--kad-gold-rgb, 245 200 108) / 30%); }
+.relay-world__heroes { list-style: none; margin: 0; padding: 0; }
+.relay-world__hero { position: absolute; inset-block-start: 64%; translate: -50% -60%; block-size: clamp(4em, 9cqw, 7em); inline-size: 17%; max-inline-size: 8em; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.relay-world__hero > img { inline-size: 100%; block-size: 100%; object-fit: contain; object-position: center bottom; transform-origin: 50% 100%; }
+.relay-world__hero > strong { position: absolute; inset-block-start: calc(100% + 1em); inline-size: 100%; max-inline-size: 100%; overflow-wrap: anywhere; line-height: 1.1; margin-block-start: 0.3em; }
+.relay-world__hero > small { position: absolute; inset-block-start: calc(100% + 3.7em); inline-size: 100%; font-size: 0.8em; color: var(--kad-ink-dim, #b9b0d8); }
+.relay-world__hero[data-active="true"] > img { filter: drop-shadow(0 0 0.7em rgb(var(--kad-gold-rgb, 245 200 108) / 40%)); }
+.relay-world__hero[data-done="true"] > small { color: var(--kad-success, #5fd6a0); }
+.relay-world__hands { position: absolute; inset-block-start: 60%; inset-inline-start: 50%; translate: -50% -50%; font-size: 1.8em; color: var(--kad-gold, #f5c86c); opacity: 0.8; }
+.relay-world__hero[data-active="true"] .relay-world__hands { animation: relay-reach 0.65s ease-out; }
+.relay-world__home { position: absolute; inset-inline-start: 90%; inset-block-start: 58%; translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 0.3em; inline-size: 17%; padding-block-start: 2em; border-block-end: 0.35em solid var(--kad-gold-lo, #c9962f); border-radius: 0.6em; color: var(--kad-ink-dim, #b9b0d8); }
+.relay-world__home > .kad-icon { font-size: 1.8em; }
+.relay-world__home[data-delivered="true"] { color: var(--kad-success, #5fd6a0); }
+.relay-world__flight { position: absolute; z-index: 2; left: var(--to-x); top: var(--to-y); translate: -50% -50%; inline-size: clamp(3em, 9cqw, 6em); block-size: clamp(3em, 9cqw, 6em); transition: top 0.25s ease-out, translate 0.25s ease-out; animation: relay-journey 0.65s cubic-bezier(0.25, 0.6, 0.35, 1); }
+.relay-world__shadow { position: absolute; z-index: -1; inset-inline: 15%; inset-block-end: -0.15em; block-size: 0.4em; border-radius: 50%; background: rgba(0, 0, 0, 0.35); filter: blur(0.15em); }
+.relay-world[data-phase="ready"] .relay-world__flight { animation: none; }
+.relay-world[data-caught="true"] .relay-world__hero[data-active="true"] > img { animation: relay-receive 0.3s ease-out; }
+@keyframes relay-journey { from { left: var(--from-x); top: var(--from-y); rotate: -12deg; scale: 0.85; } 45% { top: 8%; rotate: 12deg; scale: 1.08; } to { left: var(--to-x); top: var(--to-y); rotate: 0deg; scale: 1; } }
+@keyframes relay-reach { from { translate: -50% 0; } 65% { translate: -50% -80%; } to { translate: -50% -50%; } }
+@keyframes relay-receive { 40% { scale: 1.05 0.95; } to { scale: 1; } }
+
+/* On a phone the empty hands, incoming object and throw belong to one touch surface. */
+.relay-hands { inline-size: 100%; }
+.relay-hands__destination { display: flex; align-items: center; justify-content: center; gap: 0.5em; margin: 0; font-size: 1.1em; font-weight: 800; color: var(--kad-gold, #f5c86c); }
+.game-catcher__stage.relay-hands__stage { position: relative; block-size: clamp(17em, 65cqw, 23em); inline-size: 100%; overflow: hidden; touch-action: none; color: inherit; border: 0; border-radius: 1.5em; background: radial-gradient(ellipse at 50% 68%, rgb(var(--kad-gold-rgb, 245 200 108) / 18%), transparent 62%), linear-gradient(#17132c, #0e0b1c); cursor: grab; }
+.relay-hands[data-dragging="true"] .relay-hands__stage { cursor: grabbing; }
+.relay-hands__object { position: absolute; z-index: 2; inset-inline-start: 50%; inset-block-start: 53%; translate: -50% calc(-50% - var(--drag, 0px)); rotate: var(--turn, 0deg); inline-size: 8em; block-size: 8em; max-inline-size: 65%; transition: translate 0.3s cubic-bezier(0.25, 1.4, 0.5, 1), rotate 0.3s ease-out; }
+.relay-hands[data-dragging="true"] .relay-hands__object { transition: none; }
+.relay-hands[data-caught="false"] .relay-hands__object { animation: relay-phone-arrive 0.65s cubic-bezier(0.2, 0.75, 0.3, 1); }
+.relay-hands[data-thrown="true"] .relay-hands__object { animation: relay-phone-send 0.28s ease-in forwards; }
+.relay-hands__cradle { position: absolute; z-index: 1; inset-inline-start: 50%; inset-block-start: 67%; translate: -50% calc(-50% - var(--drag, 0px)); display: flex; gap: 1.2em; font-size: 3em; color: var(--kad-gold, #f5c86c); opacity: 0.6; transition: translate 0.3s ease-out, gap 0.25s ease-out, opacity 0.25s; }
+.relay-hands__cradle > :first-child { rotate: -25deg; }
+.relay-hands__cradle > :last-child { rotate: 25deg; scale: -1 1; }
+.relay-hands[data-caught="true"] .relay-hands__cradle { gap: 0.15em; opacity: 1; }
+.relay-hands[data-dragging="true"] .relay-hands__cradle { transition: none; }
+.relay-hands[data-thrown="true"] .relay-hands__cradle { translate: -50% -50%; transition: translate 0.3s ease-out, gap 0.25s ease-out; gap: 1.1em; opacity: 0.6; }
+.relay-hands__guide { position: absolute; inset-inline-start: 50%; inset-block-start: 8%; translate: -50% 0; display: flex; flex-direction: column; align-items: center; gap: 0.2em; color: var(--kad-gold, #f5c86c); opacity: 0.7; }
+.relay-hands__guide > .kad-icon { rotate: -90deg; font-size: 2em; }
+.relay-hands__instruction { position: absolute; inset-inline: 0.8em; inset-block-end: 0.8em; text-align: center; font-size: 0.95em; font-weight: 700; }
+.relay-hands__buttons { font-size: 0.85em; color: var(--kad-ink-dim, #b9b0d8); }
+.relay-hands__buttons > summary { padding: 0.7em; text-align: center; cursor: pointer; }
+.relay-hands__buttons .kad-button { margin-block-start: 0.5em; }
+@keyframes relay-phone-arrive { from { translate: -50% -23em; rotate: -20deg; scale: 0.65; } 75% { translate: -50% -40%; rotate: 7deg; scale: 1.03; } to { translate: -50% -50%; rotate: 0deg; scale: 1; } }
+@keyframes relay-phone-send { from { translate: -50% calc(-50% - var(--drag, 0px)); } to { translate: -50% -28em; rotate: 18deg; scale: 0.5; opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .relay-world *, .relay-hands * { animation: none !important; transition: none !important; } }
+[data-motion="reduced"] .relay-world *, [data-motion="reduced"] .relay-hands * { animation: none !important; transition: none !important; }
+
+.relay-world__flight[data-caught="true"], .relay-world__flight[data-delivered="true"] { translate: -50% -80%; }
