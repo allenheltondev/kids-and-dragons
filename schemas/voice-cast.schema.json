@@ -31,7 +31,8 @@
         "name",
         "kind",
         "gemini",
-        "status"
+        "status",
+        "chapters"
       ],
       "properties": {
         "name": {

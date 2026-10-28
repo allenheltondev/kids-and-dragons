@@ -39,14 +39,16 @@ afterAll(() => {
 }, 60_000);
 
 /**
- * A copy of the real tree: the content, the schemas that judge it, and the
- * asset manifest the biome check reads.
+ * A copy of the real tree: the content, the schemas that judge it, the canon the
+ * cast check reads, and the asset manifest the biome check reads.
  */
 function copyTree() {
   const dir = mkdtempSync(join(tmpdir(), "kad-content-"));
   temps.push(dir);
   cpSync(join(REPO, "content"), join(dir, "content"), { recursive: true });
   cpSync(join(REPO, "schemas"), join(dir, "schemas"), { recursive: true });
+  // The cast check reads canon/individuals.yaml to know who appears where, as voice:cast does.
+  cpSync(join(REPO, "canon"), join(dir, "canon"), { recursive: true });
   // The world map's painting is checked for presence, like the manifest.
   cpSync(join(REPO, "assets", "world"), join(dir, "assets", "world"), { recursive: true });
   cpSync(join(REPO, "assets", "manifest.json"), join(dir, "assets", "manifest.json"), {
@@ -1702,6 +1704,39 @@ describe("the cast voice sheet and the lexicon (#539)", () => {
       cast.speakers.pib.gemini.voice = cast.speakers.narrator.gemini.voice;
     });
     expect(result.out).toContain("share the voice");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("fails when the cast sheet is missing, so the gate cannot be skipped", () => {
+    const dir = copyTree();
+    rmSync(join(dir, ...CAST));
+    const result = validate(dir);
+    expect(result.out).toContain("the cast voice sheet is missing");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("fails a speaker entry with no chapter list, as a schema error and not a crash", () => {
+    const result = withCast((cast) => {
+      delete cast.speakers.pib.chapters;
+    });
+    expect(result.out).toMatch(/FAIL\s+content\/voice\/cast\.json/);
+    expect(result.out).not.toContain("TypeError");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("checks voices against who is in each chapter now, not the sheet's stale lists", () => {
+    // Pib and Bun share a voice and never meet. Bun walks into bramblewood-01 (Pib's chapter)
+    // and the sheet is not rebuilt: the clash must still be caught.
+    const dir = copyTree();
+    const cast = readJson(dir, ...CAST);
+    expect(cast.speakers.bun.gemini.voice).toBe(cast.speakers.pib.gemini.voice);
+    expect(cast.speakers.bun.chapters).not.toContain("bramblewood-01");
+    const chapter = readJson(dir, ...CHAPTER);
+    chapter.voiceGuide.npcVoices.bun = "Bun, visiting, talks fast.";
+    writeJson(dir, CHAPTER, chapter);
+    const result = validate(dir);
+    expect(result.out).toContain("share the voice");
+    expect(result.out).toContain("bramblewood-01");
     expect(result.code).not.toBe(0);
   });
 
