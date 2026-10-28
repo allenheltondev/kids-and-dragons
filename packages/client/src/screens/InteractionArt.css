@@ -18,18 +18,16 @@
 .painted-cover>.kad-icon{position:absolute;inset:0;inline-size:100%;block-size:100%;object-fit:contain;z-index:2}
 .painted-cover--bell{overflow:hidden}
 .painted-cover--bell .painted-cover__front{inline-size:300%;max-inline-size:none;left:-100%}
-.story-interaction__covers--painted{height:7em!important}
-.story-interaction__covers--painted .story-interaction__cover-label{bottom:0}
 @media(prefers-reduced-motion:reduce){.interaction-art *{transition:none!important;animation:none!important}}
 [data-motion=reduced] .interaction-art *{transition:none!important;animation:none!important}
 
-.story-interaction__cover>.painted-cover{font-size:1em;inline-size:100%;block-size:4em;transform:none}
-.story-interaction__covers--painted .story-interaction__cover-label{top:5em}
+.story-interaction__cover>.painted-cover{font-size:1em;inline-size:100%;block-size:4.5em;transform:none}
+.story-interaction__covers--painted .story-interaction__cover-label{top:5.6em}
 .story-interaction__memory:has(.painted-glyph) svg{display:none}
 
 .interaction-art__extra{position:absolute;bottom:0;block-size:85%;inline-size:28%;object-fit:contain;z-index:3}
 
-.story-interaction__covers--painted{height:8em!important}
+.story-interaction__covers--painted{block-size:8.5em!important}
 .story-interaction__covers--painted .story-interaction__tracking-help{position:absolute;inset-inline:0;top:auto;bottom:0;padding:0;text-align:center;line-height:1.2}
 .interaction-art[data-scene=interaction_egg_baskets]{block-size:clamp(8em,20cqh,12em)}
 .interaction-art[data-scene=interaction_egg_baskets] .interaction-art__main{inline-size:clamp(6em,22cqw,9em)}

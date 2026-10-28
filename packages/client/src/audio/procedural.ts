@@ -40,6 +40,12 @@ const wood = (at: number, gain = 0.3, freq = 420): Voice[] => [
   { at, duration: 0.075, freq, endFreq: freq * 0.65, gain, attack: 0.003, partials: [[1, 1], [1.57, 0.3]] },
   { at, duration: 0.04, freq: 0, gain: gain * 0.45, noise: true, cutoff: 1800, attack: 0.002 },
 ];
+/** A toy marimba bar: a warm fundamental with the bar's own overtones, and a soft mallet. */
+const marimba = (freq: number, pan: number): Voice[] => [
+  { at: 0, duration: 0.6, freq, gain: 0.3, pan, attack: 0.003, decay: 6, partials: [[1, 1], [3.93, 0.22], [9.2, 0.05]] },
+  { at: 0, duration: 0.6, freq: freq * 2, gain: 0.05, pan, attack: 0.004, decay: 9 },
+  { at: 0, duration: 0.02, freq: 0, gain: 0.06, pan, noise: true, cutoff: 3500, highpass: 800, attack: 0.001 },
+];
 const notes = (frequencies: number[], spacing: number, duration: number): Voice[] =>
   frequencies.map((freq, i) => bell(freq, i * spacing, duration, 0.22, (i % 2 ? 1 : -1) * 0.2));
 
@@ -107,6 +113,30 @@ const cueVoices: Partial<Record<CueId, Voice[]>> = {
   ],
   tap: wood(0, 0.09, 750).map((v) => ({ ...v, duration: 0.06 })),
   "page-turn": [{ at: 0, duration: 0.2, freq: 0, noise: true, cutoff: 3200, highpass: 700, gain: 0.1, swell: true }],
+  // Story interaction (#493) game sounds. The four pads are one toy marimba in C pentatonic,
+  // so any pattern a chapter writes plays as a little tune.
+  "pad-1": marimba(523.25, -0.25),
+  "pad-2": marimba(659.25, -0.08),
+  "pad-3": marimba(783.99, 0.08),
+  "pad-4": marimba(880, 0.25),
+  // A beanbag landing in cupped hands: a soft low thump, then two quick rising notes.
+  catch: [
+    { at: 0, duration: 0.09, freq: 196, endFreq: 150, gain: 0.32, attack: 0.002, decay: 5, partials: [[1, 1], [2.1, 0.2]] },
+    { at: 0, duration: 0.05, freq: 0, gain: 0.12, noise: true, cutoff: 900, attack: 0.001 },
+    bell(1046.5, 0.05, 0.16, 0.12, -0.15),
+    bell(1567.98, 0.11, 0.24, 0.11, 0.15),
+  ],
+  // A toss to a friend: soft air that brightens as it passes, with a faint rising whistle.
+  whoosh: [
+    { at: 0, duration: 0.3, freq: 0, noise: true, cutoff: 900, highpass: 150, gain: 0.16, swell: true, pan: -0.35 },
+    { at: 0.08, duration: 0.3, freq: 0, noise: true, cutoff: 2000, highpass: 500, gain: 0.12, swell: true, pan: 0.35 },
+    { at: 0.04, duration: 0.3, freq: 440, endFreq: 880, gain: 0.025, swell: true },
+  ],
+  // A tiny wooden tick: something is about to happen. Quiet enough to repeat.
+  tick: [
+    { at: 0, duration: 0.035, freq: 1760, endFreq: 1400, gain: 0.2, attack: 0.001, decay: 7, partials: [[1, 1], [2.4, 0.25]] },
+    { at: 0, duration: 0.015, freq: 0, gain: 0.08, noise: true, cutoff: 5000, highpass: 2000, attack: 0.001 },
+  ],
   error: [0, 0.14].map((at) => ({ at, duration: 0.13, freq: 196, endFreq: 174.61, gain: 0.16, attack: 0.012 })),
 };
 
@@ -191,7 +221,7 @@ function entryMusic(): ProceduralSound[] {
 export function proceduralSounds(): ProceduralSound[] {
   const game: ProceduralSound[] = (Object.entries(CUE_SPECS) as [CueId, (typeof CUE_SPECS)[CueId]][]).filter(([id]) => cueVoices[id]).map(([id, spec]) => ({
     id, label: id.replaceAll("-", " "), group: "Game effects", ...spec,
-    loop: false, voices: cueVoices[id]!, echo: id === "dice" ? 0 : ["heal", "transform", "victory", "level-up"].includes(id) ? 0.15 : 0.03,
+    loop: false, voices: cueVoices[id]!, echo: id === "dice" || id === "tick" ? 0 : ["heal", "transform", "victory", "level-up"].includes(id) ? 0.15 : 0.03,
   }));
   const extras: ProceduralSound[] = [
     { id: "gem-pickup", label: "Gem pickup", brief: "Three small rising crystal notes with a shimmering tail.", seconds: 1.1, voices: notes([659.25, 783.99, 1046.5], 0.13, 0.65), echo: 0.22 },
@@ -268,7 +298,7 @@ export function renderProcedural(sound: ProceduralSound, sampleRate = 24000): [F
   let peak = 0, squares = 0;
   for (const channel of channels) for (const value of channel) { peak = Math.max(peak, Math.abs(value)); squares += value * value; }
   const rms = Math.sqrt(squares / (frames * 2));
-  const target = sound.id === "entry-lobby" ? 0.035 : sound.id === "party-ready" ? 0.075 : sound.group === "Music" ? 0.055 : sound.id === "tap" ? 0.04 : 0.12;
+  const target = sound.id === "entry-lobby" ? 0.035 : sound.id === "party-ready" ? 0.075 : sound.group === "Music" ? 0.055 : sound.id === "tap" || sound.id === "tick" ? 0.04 : sound.id.startsWith("pad-") ? 0.09 : 0.12;
   const scale = Math.min(target / Math.max(rms, 0.00001), 0.6 / Math.max(peak, 0.00001));
   for (const channel of channels) for (let i = 0; i < frames; i++) {
     const edge = sound.loop ? 1 : Math.min(1, i / (sampleRate * 0.004), (frames - 1 - i) / (sampleRate * 0.012));

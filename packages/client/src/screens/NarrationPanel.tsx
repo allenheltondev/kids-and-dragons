@@ -482,7 +482,7 @@ export function NarrationPanel(): ReactElement | null {
         roadmap chapter 8's transitions, DOM half. The key is the content
         itself: same words, same node, no re-animation on unrelated patches.
       */}
-      <div className="narration__plate" ref={plate}>
+      <div className={`narration__plate${prompt?.kind === "interaction" ? " narration__plate--game" : ""}`} ref={plate}>
         <div className="narration__story">
           {choices !== null && choices.length > 0 && turnPrompt ? (
             <p className={`narration__turn${turnName === null ? " narration__turn--empty" : ""}`}>

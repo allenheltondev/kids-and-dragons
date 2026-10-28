@@ -11,6 +11,12 @@ contract; where a schema disagrees with them, the schema is wrong.
 - `npm run content:validate` — schemas and scene graphs; a malformed chapter must fail here, never at the table
 - `npm run content:proofs` — after changing a graph campaign's graph or the flags its chapters set: re-walks it and writes `content/graph-proofs/`, which the server trusts at start
 - `npm run content:continuity` — names a scene uses that some way in never showed, across every campaign in `content/campaigns`
+- `npm run play:jump -- <chapter> [scene]` — a TV and phones seated at any scene of any chapter,
+  out of campaign order and unlocked (`--flag`, `--fact`, `--players`), shot side by side into
+  `test-results/playtest/`; `--list [chapter]` to find ids, `--start` to start a story
+  interaction, `--record MS` for motion, `--open` for visible browsers. Starts the dev server
+  if none is up. For looking, not testing: the table is a throwaway household
+  (tools/playtest/table.ts is the library under it)
 - `npm run content:graph` — a chapter's scene graph, with its gates labeled
 - `npm run content:cast` — scenes whose words name someone the chapter casts elsewhere but whose own `cast` leaves them off (reports, never gates)
 - `npm run content:pacing` — shortest and typical path through each chapter, and its predicted minutes (reports, never gates)

@@ -12,7 +12,7 @@
  * collision, and get the same dice twice.
  */
 
-import type { Rng, TimingSource } from "@kad/shared";
+import type { FactValue, Rng, TimingSource } from "@kad/shared";
 import type { ActionResponse, RoomChannel } from "@kad/shared";
 import type { ContentStore } from "../content/loader.ts";
 import type { Engine } from "../engine/port.ts";
@@ -55,6 +55,13 @@ export interface HandlerDeps {
    * that must never be reached by accident (playtest.ts).
    */
   playtest: boolean;
+  /**
+   * A playtest start (dev-seed.ts `chapterId`): this one chapter may start out of campaign
+   * order, with the route flags and world facts given, as a chapter of no campaign attempt.
+   * Read only when `playtest` is true, so a deployed entry point cannot reach it even if a
+   * value somehow arrived; dev-seed.ts sets it on a copy of the deps for its one start.
+   */
+  playtestStart?: { chapterId: string; flags?: Record<string, boolean>; facts?: Record<string, FactValue> } | undefined;
   /**
    * "It's your turn" pushes (#466), when this entry point turned them on
    * (`KAD_PUSH`) and has VAPID keys. Absent means off: nothing is sent, and the

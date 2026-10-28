@@ -129,6 +129,37 @@
   gap: var(--space-1, 0.25em) var(--space-2, 0.5em);
 }
 
+/*
+ * A story interaction (#493) is the whole plate: the board fills what the head leaves, the
+ * paragraph above it steps down to a caption, and the figures on the stage give way to the
+ * board's own. The plate still reports its height, so the camera keeps the stage's floor.
+ */
+.narration__plate--game {
+  /* A zero basis: the plate is whatever the head leaves, never its content's height, so a tall
+     board shrinks into the pane instead of pushing the head off the top or scrolling. */
+  flex: 1 1 0;
+  min-block-size: 0;
+  max-block-size: none;
+  gap: var(--space-2, 0.5em);
+  padding-block-start: var(--space-4, 1em);
+  overflow: hidden;
+}
+.narration__plate--game .narration__story {
+  flex: 1 1 0;
+  min-block-size: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2, 0.5em);
+}
+.narration__plate--game .narration__story > * { flex: 0 0 auto; }
+.narration__plate--game .narration__body {
+  max-inline-size: none;
+  font-size: max(calc(var(--font-size-md, 1em) * var(--fit-story, 1)), calc(1em / var(--kad-text-scale, 1)));
+  line-height: 1.3;
+  color: var(--kad-ink-dim, #b9b0d8);
+}
+.narration__plate--game .narration__story > .game { flex: 1 1 0; min-block-size: 0; }
+
 /* Past the last rung the story alone scrolls, its edge faded so it reads as more to come. */
 .narration__plate[data-clipped] .narration__story {
   flex-shrink: 1;

@@ -133,6 +133,17 @@ export const CUE_TONES: Record<CueId, Tone[]> = {
   ],
   tap: [{ type: "square", freq: [A5, A5], at: 0, duration: 0.03, gain: 0.04 }],
   "page-turn": [{ type: "noise", freq: [0, 0], at: 0, duration: 0.15, gain: 0.04 }],
+  // The four pads are a pentatonic, so any pattern a chapter writes is a tune, never a clash.
+  "pad-1": [{ type: "triangle", freq: [C5, C5], at: 0, duration: 0.32, gain: 0.1 }],
+  "pad-2": [{ type: "triangle", freq: [E5, E5], at: 0, duration: 0.32, gain: 0.1 }],
+  "pad-3": [{ type: "triangle", freq: [G5, G5], at: 0, duration: 0.32, gain: 0.1 }],
+  "pad-4": [{ type: "triangle", freq: [A5, A5], at: 0, duration: 0.32, gain: 0.1 }],
+  catch: [
+    { type: "triangle", freq: [G4, G4], at: 0, duration: 0.06, gain: 0.09 },
+    { type: "sine", freq: [C5, G5], at: 0.03, duration: 0.14, gain: 0.07 },
+  ],
+  whoosh: [{ type: "noise", freq: [0, 0], at: 0, duration: 0.28, gain: 0.05 }, { type: "sine", freq: [C4, E4], at: 0, duration: 0.25, gain: 0.03 }],
+  tick: [{ type: "square", freq: [E5, E5], at: 0, duration: 0.025, gain: 0.03 }],
   // Two low pulses — audibly "no", never harsh.
   error: [
     { type: "square", freq: [196, 196], at: 0, duration: 0.08, gain: 0.06 },

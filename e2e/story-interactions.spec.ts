@@ -55,6 +55,11 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     await action(one, code, { type: "START_PRACTICE" });
     await action(one, code, { type: "PLAYTEST_GOTO", sceneId: "interaction_bell" });
     const controls = (page: Page) => page.getByRole("region", { name: "Interaction controls" });
+    // Relaxed play lives under the "Stuck? Get help" fold with the helping hand, so a phone opens it first.
+    const relaxed = async (page: Page) => {
+      await controls(page).locator("summary.game__help-summary").click();
+      await controls(page).getByLabel("Relaxed play").check();
+    };
     const world = tv.getByRole("region", { name: "Story interaction" });
     await expect(world).toContainText("seed reaches the gold");
     await controls(one).getByRole("button", { name: "We’re ready" }).click();
@@ -69,7 +74,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
     await expect(world).toContainText("Hold the branch");
     await expect(tv.locator(".interaction-art__main").first()).toHaveAttribute("src", "/assets/story-props/rope-loop.webp");
     await expect(one.locator(".interaction-art__main").first()).toHaveAttribute("src", "/assets/story-props/rope-loop.webp");
-    await controls(two).getByLabel("Relaxed play").check();
+    await relaxed(two);
     await controls(two).getByRole("button", { name: "We’re ready" }).click();
     await expect(controls(two).getByRole("button", { name: "Fetch the ribbon" })).toBeDisabled();
     await one.setViewportSize({ width: 390, height: 640 });
@@ -99,7 +104,7 @@ test("reusable interactions run through real phones, TV, refresh, and authored b
       const state = await roomState<RunState>(one, code);
       if (state.prompt?.kind !== "interaction") throw Error("Expected authored interaction");
       const lead = state.prompt.actorId === firstPlayerId ? one : two;
-      await controls(lead).getByLabel("Relaxed play").check();
+      await relaxed(lead);
       await controls(lead).getByRole("button", { name: "We’re ready" }).click();
       if (sceneId === "interaction_cups") await controls(lead).getByRole("button", { name: "Look under: Right cup", exact: true }).click();
       if (sceneId === "interaction_echo") {
