@@ -238,7 +238,7 @@
       "discovers": [
         "npc.faun"
       ],
-      "narration": "At the west branch, the ford queue is two days long. A faun provisioner named Burdock sells numbered pebbles and very expensive honeycakes. Your pebble says 412. The ford is on number 9.",
+      "narration": "At the west branch, the ford queue is two days long. A faun provisioner named Burdock sells numbered pebbles and very expensive honeycakes. Your pebble says 412. \"My lucky number!\" says Burdock. The ford is on number 9.",
       "cast": [
         {
           "figure": "cast/burdock",
@@ -926,7 +926,7 @@
     },
     "choice_tolls": {
       "type": "choice_point",
-      "narration": "Choose one queue job before dusk. Free the wagon to earn its crew's help if a load tips in the ford. Restore the marker line for an easier ford approach. Or help the Brackens, a faun family beside a cracked wheel, and earn a ride on their cart. You cannot do every job tonight.",
+      "narration": "Choose one queue job before dusk. Free the wagon to earn its crew's help if a load tips in the ford. Restore the marker line for an easier ford approach. Or help the Brackens, a faun family beside a cracked wheel, and earn a ride on their cart. \"We are being very brave,\" says Littlest Bracken. You cannot do every job tonight.",
       "cast": [
         {
           "figure": "cast/mother_bracken",
@@ -1855,7 +1855,7 @@
     },
     "choice_ford": {
       "type": "choice_point",
-      "narration": "The river is wide and fast. The drovers cross one wagon at a time. Your queue job matters now: restored markers or a known verse ease the ford roll; the Brackens offer a cart to balance instead. The wagon crew can help if a load tips. Tamsin's unfair Number 1 sends you into the unready crossing.",
+      "narration": "The river is wide and fast. \"One wagon at a time,\" booms the lead drover. Your queue job matters now: restored markers or a known verse ease the ford roll; the Brackens offer a cart to balance instead. The wagon crew can help if a load tips. Tamsin's unfair Number 1 sends you into the unready crossing.",
       "choices": [
         {
           "id": "drovers_pace",

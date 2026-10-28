@@ -352,7 +352,7 @@
     },
     "seren": {
       "type": "story",
-      "narration": "Seren asks where the opening appeared and how long it lasted. She listens without interrupting. Orin rolls the map around a wooden rod so nobody can stand on it again.",
+      "narration": "\"Where did the opening appear, and how long did it last?\" Seren asks. She listens without interrupting. Orin rolls the map around a wooden rod so nobody can stand on it again.",
       "choices": [
         {
           "id": "continue",
@@ -897,7 +897,7 @@
       "stat": "quick",
       "tn": 8,
       "roller": "all",
-      "narration": "The gust arrives, cold and rude. It slides under the sledge cover and lifts it like a big white sail.",
+      "narration": "The gust arrives, cold and rude. It slides under the sledge cover and lifts it high. \"Our cover thinks it is a sail!\" shouts Olivia.",
       "variants": [
         {
           "when": {
@@ -1194,7 +1194,7 @@
     },
     "test_chime": {
       "type": "choice_point",
-      "narration": "The Listening Chime hangs from a short cord. It is light enough to carry in one hand. Orin holds his bag open while you decide how to test it.",
+      "narration": "The Listening Chime hangs from a short cord. It is light enough to carry in one hand. Orin holds his bag open. \"How would you test it?\" he asks.",
       "choices": [
         {
           "id": "ring",
@@ -1491,7 +1491,7 @@
     },
     "trial_echo": {
       "type": "interaction",
-      "narration": "Seren holds up one paw, and the blanket goes still. She taps the three rings in a pattern, slow and clear. Orin leans in. Olivia stops breathing, which for Olivia is a lot.",
+      "narration": "\"Listen,\" says Seren, holding up one paw, and the blanket goes still. She taps the three rings in a pattern, slow and clear. Orin leans in. Olivia stops breathing, which for Olivia is a lot.",
       "interaction": {
         "kind": "memory",
         "cue": "Watch Seren tap the rings, then tap the same rings in the same order.",
@@ -1799,7 +1799,7 @@
     },
     "camp_play": {
       "type": "interaction",
-      "narration": "The Riftseekers are gone down the path. The herder's goats wander over to the sledge, and the yetis lean out of the hall door. Nobody says goodbye to a road without a proper send-off.",
+      "narration": "The Riftseekers are gone down the path. The herder's goats wander over to the sledge, and the yetis lean out of the hall door. \"Nobody leaves a road without a proper send-off,\" says the herder.",
       "interaction": {
         "kind": "play",
         "cue": "Give the goats and the hall a proper send-off.",

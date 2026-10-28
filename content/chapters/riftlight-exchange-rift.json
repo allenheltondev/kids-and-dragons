@@ -280,7 +280,7 @@
     },
     "morning": {
       "type": "choice_point",
-      "narration": "Snow falls over one fish stall. The sky above it is clear. On a mooring post, a gull shakes frost from its wings. Beyond it, a ship has docked a day early. Its kitsune captain is arguing with the harbor clock. Where do you look first?",
+      "narration": "Snow falls over one fish stall. The sky above it is clear. On a mooring post, a gull shakes frost from its wings. \"Cold,\" it grumbles. Beyond it, a ship has docked a day early. Its kitsune captain is arguing with the harbor clock. Where do you look first?",
       "choices": [
         {
           "id": "snow",
@@ -1072,7 +1072,7 @@
     },
     "quay_rest": {
       "type": "rest",
-      "narration": "The pilot calls a thank-you from his deck and tosses up a bag of warm potato skins. You sit on an upturned crate by the noodle stall to eat them. Behind the stalls, a ladder climbs the harbor master's house to the rooftops. From up there comes a lot of cawing, all of it on purpose. The skins are salty and perfect, and for a minute nobody mentions snow. The pilot asks whether anybody has ever eaten a potato skin on a day when the weather was going wrong. Nobody has. It is excellent.",
+      "narration": "The pilot calls a thank-you from his deck and tosses up a bag of warm potato skins. You sit on an upturned crate by the noodle stall to eat them. Behind the stalls, a ladder climbs the harbor master's house to the rooftops. From up there comes a lot of cawing, all of it on purpose. The skins are salty and perfect, and for a minute nobody mentions snow. \"Anybody ever eat a potato skin on a day the weather went wrong?\" the pilot asks. Nobody has. It is excellent.",
       "heal": 2,
       "choices": [
         {
@@ -1712,7 +1712,7 @@
     },
     "pull": {
       "type": "choice_point",
-      "narration": "The rope snaps straight. Crates scrape over the boards. The kid skids toward the opening, all four hooves spread. A dock worker throws you a loose line. You have time to make one move.",
+      "narration": "The rope snaps straight. Crates scrape over the boards. The kid skids toward the opening, all four hooves spread. A dock worker throws you a loose line and shouts, \"Grab this!\" You have time to make one move.",
       "choices": [
         {
           "id": "catch",

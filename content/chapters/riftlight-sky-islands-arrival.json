@@ -74,7 +74,7 @@
       "stat": "might",
       "tn": 8,
       "roller": "all",
-      "prompt": "The wind hits the landing pad like a slammed door. Everyone grab a rope ring and hold on!",
+      "prompt": "The wind hits the landing pad like a slammed door. \"Everyone grab a rope ring and hold on!\" shouts the keeper.",
       "onSuccess": {
         "goto": "landing_held"
       },
@@ -346,7 +346,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The keeper shows you a rope stretched between two marker posts. Yesterday it pointed toward a neighboring island. Now it points into empty sky, and travelers keep following it. A low song sounds beyond the mist. How will you help her keep travelers clear of the edge?",
+      "narration": "The keeper shows you a rope stretched between two marker posts. Yesterday it pointed toward a neighboring island. Now it points into empty sky. \"And travelers keep following it,\" she says. A low song sounds beyond the mist. How will you help her keep travelers clear of the edge?",
       "choices": [
         {
           "id": "markers",
@@ -976,7 +976,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "There is no fire without fuel. The oil jars cracked in the move, and the keeper's store is a sad shiny puddle. She points two ways. A woodshed under the shrine eaves holds dry logs, if you can carry them across the yard. The orchard has fresh windfall twigs, if you can catch them. The wind wants both. What will you fetch?",
+      "narration": "\"There is no fire without fuel,\" says the keeper. The oil jars cracked in the move, and her store is a sad shiny puddle. She points two ways. A woodshed under the shrine eaves holds dry logs, if you can carry them across the yard. The orchard has fresh windfall twigs, if you can catch them. The wind wants both. What will you fetch?",
       "choices": [
         {
           "id": "logs",
@@ -1847,7 +1847,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "Everyone has a piece. There is the hum you listened for this morning, the keeper's chalk slate, Thimble's ferry rail, Fenwick's feather, and Pip's notebook of crossed-out arrows. Laid together, they should show where the song leads. Seren waits with her tail curled around her feet. Where will you start?",
+      "narration": "Everyone has a piece. There is the hum you listened for this morning, the keeper's chalk slate, Thimble's ferry rail, Fenwick's feather, and Pip's notebook of crossed-out arrows. \"Laid together, they should show where the song leads,\" says Seren, her tail curled around her feet. Where will you start?",
       "choices": [
         {
           "id": "notes",
@@ -2183,7 +2183,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The fuel must reach the basket at the top of the pole, and the ladder only fits one at a time. The keeper stands at the bottom and Pip waits at the top, holding his arms out like a very small harbor. Pass each log hand to hand, and do not drop one on the keeper.",
+      "narration": "The fuel must reach the basket at the top of the pole, and the ladder only fits one at a time. The keeper stands at the bottom and Pip waits at the top, holding his arms out like a very small harbor. \"Hand to hand,\" the keeper says, \"and do not drop one on me.\"",
       "interaction": {
         "kind": "relay",
         "cue": "Catch the logs and pass them up the line.",
@@ -2216,7 +2216,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "Everyone settles in behind the wind wall. The keeper asks what would make this a good camp tonight. Pip suggests more hens. The hens, listening, suggest more barley. Add something to the camp, one at a time.",
+      "narration": "Everyone settles in behind the wind wall. \"What would make this a good camp tonight?\" the keeper asks. Pip suggests more hens. The hens, listening, suggest more barley. Add something to the camp, one at a time.",
       "interaction": {
         "kind": "play",
         "cue": "Add something to your cozy camp.",
@@ -2328,7 +2328,7 @@
           "name": "Seren Wisp"
         }
       ],
-      "narration": "The song comes again, closer than ever, in a pattern: low, high, low, middle. Thimble says it is how the whales say here we are. Seren says to answer in the same pattern, so they know a friend is listening. The shrine bell hangs ready, with three notes.",
+      "narration": "The song comes again, closer than ever, in a pattern: low, high, low, middle. Thimble says it is how the whales say here we are. \"Answer in the same pattern,\" says Seren, \"so they know a friend is listening.\" The shrine bell hangs ready, with three notes.",
       "interaction": {
         "kind": "memory",
         "cue": "Watch the pattern, then ring it back on the bell.",

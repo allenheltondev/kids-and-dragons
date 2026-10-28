@@ -663,7 +663,7 @@
     },
     "scene_barge": {
       "type": "story",
-      "narration": "A barge sits in the reeds. ABANDONED, says its very helpful sign. One gem hums on deck. Prospector footprints lead toward it. None come back. Gullet stops an arm's length from the bank.",
+      "narration": "A barge sits in the reeds. ABANDONED, says its very helpful sign. One gem hums on deck. Prospector footprints lead toward it. None come back. Gullet stops an arm's length from the bank and hums, \"That is certainly a barge.\"",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -950,7 +950,7 @@
     },
     "rest_reed_raft": {
       "type": "rest",
-      "narration": "Gullet ties her raft to a lantern pole and fries duckweed fritters on a flat hot stone. They taste like crunchy pond, which is better than it sounds. Rest a while. The fog is coming in, thick as porridge, and Gullet keeps glancing at it the way you glance at a dog that might be about to sneeze.",
+      "narration": "Gullet ties her raft to a lantern pole and fries duckweed fritters on a flat hot stone. They taste like crunchy pond, which is better than it sounds. \"Rest a while,\" Gullet hums. The fog is coming in, thick as porridge, and Gullet keeps glancing at it the way you glance at a dog that might be about to sneeze.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1014,7 +1014,7 @@
     },
     "scene_fog_bank": {
       "type": "story",
-      "narration": "Fog hides the channel fork and its stumps. Gullet needs a direction. Follow a gap from the bow to check a broad landing, risk the high pole, or steer by the bells behind you. A mosslight jar can reveal the landing too.",
+      "narration": "Fog hides the channel fork and its stumps. \"Which way, then?\" Gullet asks, humming. Follow a gap from the bow to check a broad landing, risk the high pole, or steer by the bells behind you. A mosslight jar can reveal the landing too.",
       "cast": [
         {
           "figure": "cast/gullet",

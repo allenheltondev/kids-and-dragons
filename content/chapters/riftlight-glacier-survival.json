@@ -461,7 +461,7 @@
       "stat": "clever",
       "tn": 8,
       "prompt": "Whoever reads ice best picks out the edges that will hold.",
-      "narration": "Along the channel the ice comes in two kinds. One looks dark and wet and holds a boot. The other looks like sugar and holds nothing at all. The herder waits to see what you see.",
+      "narration": "Along the channel the ice comes in two kinds. One looks dark and wet and holds a boot. The other looks like sugar and holds nothing at all. \"Tell me what you see,\" the herder says, and waits.",
       "roller": "best",
       "onSuccess": {
         "goto": "channel",
@@ -485,7 +485,7 @@
     },
     "channel": {
       "type": "choice_point",
-      "narration": "Meltwater gurgles through a narrow gap. The nearest snow bridge sags when the yeti tests it. A flat stone projects farther upstream. The herder points out dark patches of ice that will hold a careful foot. The herd waits on the other side, bells clinking.",
+      "narration": "Meltwater gurgles through a narrow gap. The nearest snow bridge sags when the yeti tests it. A flat stone projects farther upstream. The herder points out dark patches of ice. \"Those will hold a careful foot,\" she says. The herd waits on the other side, bells clinking.",
       "choices": [
         {
           "id": "stone",
@@ -919,7 +919,7 @@
       },
       "onAssisted": {
         "goto": "herd",
-        "narration": "The herder shows you a good scratching spot, and the herd settles around it."
+        "narration": "\"Behind the ears,\" the herder says, showing you a good scratching spot. The herd settles around it."
       },
       "art": "scenes/riftlight/glacier-herd-rest",
       "cast": [
@@ -938,7 +938,7 @@
     },
     "herd": {
       "type": "choice_point",
-      "narration": "The herder calls the goats toward a low opening in the ice. The kid plants its feet at the entrance. From inside comes a deep note that trembles through your boots. How do you coax it in?",
+      "narration": "\"In you go,\" the herder calls, waving the goats toward a low opening in the ice. The kid plants its feet at the entrance. From inside comes a deep note that trembles through your boots. How do you coax it in?",
       "choices": [
         {
           "id": "patient",
@@ -1724,7 +1724,7 @@
     },
     "departure": {
       "type": "rest",
-      "narration": "Warm and dry, you step out beside the singing hall. The kid stays with its herd. A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner. Neither has noticed that the corner is under her hoof.",
+      "narration": "Warm and dry, you step out beside the singing hall. The kid stays with its herd. A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner. \"It will not fold,\" the griffin mutters. Neither has noticed that the corner is under her hoof.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -2014,7 +2014,7 @@
     },
     "seam_response": {
       "type": "choice_point",
-      "narration": "The note fades. So does the trembling under the herder's palm. A narrow line of frost has fallen to the floor beneath the sealed seam. You still remember the note. What do you try?",
+      "narration": "The note fades. \"The trembling stopped too,\" the herder says, her palm on the ice. A narrow line of frost has fallen to the floor beneath the sealed seam. You still remember the note. What do you try?",
       "choices": [
         {
           "id": "hum",

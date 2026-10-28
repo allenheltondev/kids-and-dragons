@@ -119,7 +119,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "A grandmother passes a bell over each pack and tallies every ring. Rules are rules. Your turn. She adjusts her spectacles, then her pencil, then her spectacles again.",
+      "narration": "A grandmother passes a bell over each pack and tallies every ring. \"Rules are rules,\" she says. \"Your turn.\" She adjusts her spectacles, then her pencil, then her spectacles again.",
       "choices": [
         {
           "id": "open_packs",
@@ -1113,7 +1113,7 @@
           "name": "Great-Gran Ashby"
         }
       ],
-      "narration": "Supper in the bell house is a long table, forty grandmothers, and bread baked on hot rocks. The rule at this table is old: every guest brings something to it. A story, a recipe, a thing from the road. Forty pairs of spectacles turn your way, all at once, and wait.",
+      "narration": "Supper in the bell house is a long table, forty grandmothers, and bread baked on hot rocks. Great-Gran Ashby taps the table with her stick. \"Old rule at this table. Every guest brings something. A story, a recipe, a thing from the road.\" Forty pairs of spectacles turn your way, all at once, and wait.",
       "choices": [
         {
           "id": "tell_road",
@@ -1315,7 +1315,7 @@
           "name": "Bell-Code Expert"
         }
       ],
-      "narration": "Help the big-bell crew set its supports and learn their passing line, or polish the hand bells and prepare a small answering chorus. Either job will help at the morning queue. The corner bell stays untouched, its rope tied high. The bell-code expert keeps looking somewhere else.",
+      "narration": "\"Help the big-bell crew set its supports and learn the passing line,\" says the bell-code expert, very fast, \"or polish the hand bells for a little answering chorus. Either job helps at the morning queue!\" The corner bell stays untouched, its rope tied high. The bell-code expert keeps looking somewhere else.",
       "choices": [
         {
           "id": "pull_rope",
@@ -1417,7 +1417,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "The morning queue is pushing. A feathered hat shouts from a cart that the stones are ordinary rocks. The grandmothers hold their ground. Help make room, share what you know, or use the bell job you prepared.",
+      "narration": "The morning queue is pushing. A feathered hat shouts from a cart that the stones are ordinary rocks. The grandmothers hold their ground. \"Not one step back, dears,\" says one grandmother. Help make room, share what you know, or use the bell job you prepared.",
       "choices": [
         {
           "id": "tell_story",
@@ -1708,7 +1708,7 @@
     },
     "scene_who_to_tell": {
       "type": "choice_point",
-      "narration": "Who gets the outline first? The Skywardens keep logs at their citadel. The gathering grandmothers can send news through the bell towns. Or keep it close until you know more. Ashby waits while you decide.",
+      "narration": "\"Who gets the outline first?\" asks Great-Gran Ashby. \"The Skywardens keep logs at their citadel. We grandmothers can send news through the bell towns. Or keep it close until you know more.\" She taps her stick and waits while you decide.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",

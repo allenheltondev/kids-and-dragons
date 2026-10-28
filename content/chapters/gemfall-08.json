@@ -3209,7 +3209,7 @@
     "scene_titan_eye": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "Under the glass, something opens: an eye as big as a pond, the color of the red sky at sunset. It looks up at you, slow and sleepy. Then the old, old note the stones have always hummed comes up through the floor, and every rush gem in your pockets hums with it.",
+      "narration": "\"Look,\" says the Seal-Keeper, very quietly. Under the glass, something opens: an eye as big as a pond, the color of the red sky at sunset. It looks up at you, slow and sleepy. Then the old, old note the stones have always hummed comes up through the floor, and every rush gem in your pockets hums with it.",
       "variants": [
         {
           "when": {

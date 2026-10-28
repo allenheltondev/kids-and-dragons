@@ -810,7 +810,7 @@
           "name": "Road Boss"
         }
       ],
-      "narration": "A centaur crew is moving the road around a scorched hollow. The road boss offers two jobs: help carry posts and the crew will help you through tonight's ash wind, or study the detour with her so you can bypass the confusing sign puzzle ahead. Everyone can help raise the final post.",
+      "narration": "A centaur crew is moving the road around a scorched hollow. The road boss offers two jobs: help carry posts and the crew will help you through tonight's ash wind, or study the detour with her so you can bypass the confusing sign puzzle ahead. \"Everyone helps raise the last post,\" says the road boss.",
       "choices": [
         {
           "id": "haul",
@@ -945,7 +945,7 @@
       "discovers": [
         "faction.skywardens"
       ],
-      "narration": "A Skywarden patrol has stopped the road. Sergeant Holloway wants two coins at a fixed rate for Redspire, the wardens' citadel. You can pay, argue the arithmetic, or balance the supply tray to earn passage without coins. Holloway has written WORKS INSTEAD on a spare form. It has its own box.",
+      "narration": "A Skywarden patrol has stopped the road. Sergeant Holloway wants two coins at a fixed rate for Redspire, the wardens' citadel. \"It is only arithmetic,\" he says. You can pay, argue the arithmetic, or balance the supply tray to earn passage without coins. Holloway has written WORKS INSTEAD on a spare form. It has its own box.",
       "cast": [
         {
           "figure": "cast/holloway",
@@ -1165,7 +1165,7 @@
     },
     "scene_depot": {
       "type": "story",
-      "narration": "Clerk Pennywhistle runs a depot barn full of strongboxes. Number nine rings like a dinner bell. Use Ma Ruddle's bill, make a shared claim, risk a quick Form 9, or leave the stone. The clerk has a form for deciding which form.",
+      "narration": "Clerk Pennywhistle runs a depot barn full of strongboxes. Number nine rings like a dinner bell. Use Ma Ruddle's bill, make a shared claim, risk a quick Form 9, or leave the stone. \"There is a form for deciding which form,\" the clerk says happily.",
       "choices": [
         {
           "id": "bill",
@@ -1463,7 +1463,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "At the relay campfire, centaurs sing one verse per landmark. New detours mean new verses. A centaur called Old Corran offers you a line. Sing, listen, or hear the crew's verse if you helped them.",
+      "narration": "At the relay campfire, centaurs sing one verse per landmark. New detours mean new verses. A centaur called Old Corran offers you a line. \"Your turn, travelers,\" he hums. Sing, listen, or hear the crew's verse if you helped them.",
       "cast": [
         {
           "figure": "cast/old_corran",

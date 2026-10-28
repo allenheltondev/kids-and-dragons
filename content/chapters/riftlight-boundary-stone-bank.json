@@ -1580,7 +1580,7 @@
         }
       ],
       "art": "scenes/riftlight/boundary-mountain-carving",
-      "narration": "The runner needs a breath before another question. The keeper offers her a cup. You can sit with her for the whole account, or ask for the urgent news and let her rest. What would help her now?",
+      "narration": "\"She needs a breath before another question,\" says the keeper, and offers the runner a cup. You can sit with her for the whole account, or ask for the urgent news and let her rest. What would help her now?",
       "choices": [
         {
           "id": "listen",
@@ -1763,7 +1763,7 @@
     },
     "rest_row": {
       "type": "rest",
-      "narration": "The sun slides toward the hills, and the keeper decides that nobody walks anywhere hungry. She boils water and pours tea into cups that do not match. Splash watches from the bottom of the row. The river hurries by, a little lower than before. Everyone's knees hurt in a good way.",
+      "narration": "The sun slides toward the hills. \"Nobody walks anywhere hungry,\" says the keeper. She boils water and pours tea into cups that do not match. Splash watches from the bottom of the row. The river hurries by, a little lower than before. Everyone's knees hurt in a good way.",
       "heal": 3,
       "choices": [
         {
@@ -1916,7 +1916,7 @@
     },
     "bank_rest": {
       "type": "rest",
-      "narration": "The keeper will walk to the counting circle at first light, and you are welcome to come. A road follows the east bank to a crossing called Ashspan Bridge. The carved mountain gives you a reason to stay; the road gives you another way onward. For tonight, there is a warm cup and nine straight stones.",
+      "narration": "\"I walk to the counting circle at first light,\" says the keeper. \"You are welcome to come.\" A road follows the east bank to a crossing called Ashspan Bridge. The carved mountain gives you a reason to stay; the road gives you another way onward. For tonight, there is a warm cup and nine straight stones.",
       "heal": 0,
       "choices": [],
       "outcome": "success",

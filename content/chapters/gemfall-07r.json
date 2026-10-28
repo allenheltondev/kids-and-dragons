@@ -664,7 +664,7 @@
     },
     "scene_mosshome_runner": {
       "type": "story",
-      "narration": "A MossHome runner jogs up with moss in her hair and a string of grumbling mules behind her. She counts the knots on your cord twice, nods, and unloads everything the Woods confiscated from careless hunters: shovels, a teapot, one very surprised hat, and stones. Lots of stones.",
+      "narration": "A MossHome runner jogs up with moss in her hair and a string of grumbling mules behind her. She counts the knots on your cord twice. \"Knot, knot, knot. Good!\" she puffs, and nods, and unloads everything the Woods confiscated from careless hunters: shovels, a teapot, one very surprised hat, and stones. Lots of stones.",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -1534,7 +1534,7 @@
           "name": "Skywardens"
         }
       ],
-      "narration": "In the night the mountain shrugged so hard that half a hillside slid onto the road. A heap of red rocks taller than a wagon sits right across it. A warden stands in front of it with a clipboard, writing ROAD CLOSED in very small letters, as if that will help.",
+      "narration": "In the night the mountain shrugged so hard that half a hillside slid onto the road. A heap of red rocks taller than a wagon sits right across it. A warden stands in front of it with a clipboard. \"Road closed,\" the warden says, and writes ROAD CLOSED in very small letters, as if that will help.",
       "choices": [
         {
           "id": "shift",
