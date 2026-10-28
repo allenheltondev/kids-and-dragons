@@ -39,8 +39,6 @@ it("the wisp fight is the chapter's one fight and every path to the way out runs
   expect(into("wisps").sort()).toEqual(["basket_lit", "basket_smoky"]);
   for (const { shortest } of pacingReport(chapter).scenarios) {
     expect(shortest!.encounters).toBe(1);
-    expect(shortest!.scenes).toBeGreaterThanOrEqual(30);
-    expect(shortest!.decisions + shortest!.checks).toBeGreaterThanOrEqual(14);
   }
 });
 

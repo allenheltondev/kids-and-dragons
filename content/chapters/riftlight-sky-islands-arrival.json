@@ -1599,23 +1599,29 @@
       "art": "scenes/riftlight/sky-landing"
     },
     "passengers": {
-      "type": "check",
+      "type": "choice_point",
       "cast": [
         {
           "figure": "cast/captain_thimble",
           "name": "Captain Thimble"
         }
       ],
-      "stat": "heart",
-      "tn": 8,
-      "prompt": "The passengers will not leave the rail, and Thimble cannot think over the noise. Calm them and coax them off the ferry.",
-      "onSuccess": {
-        "goto": "passengers_calm"
-      },
-      "onFailure": {
-        "goto": "passengers_stuck"
-      },
-      "art": "scenes/riftlight/sky-ferry"
+      "art": "scenes/riftlight/sky-ferry",
+      "narration": "The ferry is secured, but its passengers still cling to the rail. The keeper brings a ladder and a blanket. There is time to help them settle. Offer a steady hand, or ask the keeper to bring her rice crackers?",
+      "choices": [
+        {
+          "id": "hand",
+          "label": "Offer a steady hand and walk beside them",
+          "icon": "hand",
+          "goto": "passengers_calm"
+        },
+        {
+          "id": "crackers",
+          "label": "Let them settle with the keeper's rice crackers",
+          "icon": "cake",
+          "goto": "passengers_stuck"
+        }
+      ]
     },
     "passengers_fed": {
       "type": "story",
@@ -1675,7 +1681,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The passengers cling harder. The keeper has to bring a ladder, then a blanket, then a plate of rice crackers, and finally the passengers climb down, one crunch at a time. It takes ages. Thimble drops onto a barrel, worn out and still slightly shouted at. \"Next time,\" she says, \"I bring only hens.\"",
+      "narration": "The keeper brings a plate of rice crackers. Nobody hurries the passengers. Eventually they climb down, one crunch at a time, wrapped in her blanket. Thimble sits on a barrel and watches the hens follow them. \"Next time,\" she says, \"I bring only hens.\"",
       "choices": [
         {
           "id": "continue",
@@ -1873,7 +1879,6 @@
       "art": "scenes/riftlight/windbreak-camp"
     },
     "bearing_notes": {
-      "type": "check",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1884,20 +1889,19 @@
           "name": "Pip Thistledown"
         }
       ],
-      "stat": "clever",
-      "tn": 12,
-      "roller": "best",
-      "prompt": "The sharpest mind lines up the crossed-out arrows with the chalk lines until one direction wins.",
-      "onSuccess": {
-        "goto": "bearing_found"
-      },
-      "onFailure": {
-        "goto": "bearing_blurred"
-      },
-      "art": "scenes/riftlight/windbreak-camp"
+      "art": "scenes/riftlight/windbreak-camp",
+      "type": "story",
+      "narration": "You lay the notebook over the chalk slate. Thimble holds the pages while the keeper checks the crossed-out arrows.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "bearing_found"
+        }
+      ]
     },
     "bearing_air": {
-      "type": "check",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1912,20 +1916,19 @@
           "name": "Seren Wisp"
         }
       ],
-      "stat": "clever",
-      "tn": 12,
-      "roller": "all",
-      "prompt": "Each of you takes a place around the edge with a feather or a lantern. Call out when yours leans, and see if most of you agree.",
-      "onSuccess": {
-        "goto": "bearing_found"
-      },
-      "onFailure": {
-        "goto": "bearing_blurred"
-      },
-      "art": "scenes/riftlight/windbreak-camp"
+      "art": "scenes/riftlight/windbreak-camp",
+      "type": "story",
+      "narration": "You compare the feathers and lanterns from the marked edge. The keeper calls each direction back so everyone can check it.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "bearing_found"
+        }
+      ]
     },
     "bearing_chime": {
-      "type": "check",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1936,19 +1939,19 @@
           "name": "Seren Wisp"
         }
       ],
-      "stat": "clever",
-      "tn": 8,
-      "prompt": "Ring the listening chime beside the song. An echo that leans one way shows where the song leads. Can you read it?",
-      "onSuccess": {
-        "goto": "bearing_found"
-      },
-      "onFailure": {
-        "goto": "bearing_blurred"
-      },
-      "art": "scenes/riftlight/windbreak-camp"
+      "art": "scenes/riftlight/windbreak-camp",
+      "type": "story",
+      "narration": "You ring the chime beside the song. Seren listens with you and points where its answering note leans.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "bearing_found"
+        }
+      ]
     },
     "bearing_sing": {
-      "type": "check",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1959,17 +1962,17 @@
           "name": "Seren Wisp"
         }
       ],
-      "stat": "heart",
-      "tn": 8,
-      "checkKind": "doing",
-      "prompt": "A songkeeper hums back, low and long, and listens for how the answer returns. The qualified hero assists; choose who leads the team check.",
-      "onSuccess": {
-        "goto": "bearing_found"
-      },
-      "onFailure": {
-        "goto": "bearing_blurred"
-      },
-      "art": "scenes/riftlight/windbreak-camp"
+      "art": "scenes/riftlight/windbreak-camp",
+      "type": "story",
+      "narration": "Your songkeeper answers the low song. Seren waits for the echo while friends mark its direction on the slate.",
+      "choices": [
+        {
+          "id": "continue",
+          "label": "Continue together",
+          "icon": "forward",
+          "goto": "bearing_found"
+        }
+      ]
     },
     "bearing_found": {
       "type": "story",
@@ -1988,39 +1991,6 @@
         }
       ],
       "narration": "All the pieces point one way: east, past the dark edge, to a place where the sky is singing. Thimble taps her chart. Fenwick fluffs his feathers. The keeper smiles for the first time since you landed. \"The old keepers said the cloud whales sing where the sky is safe to cross. If they are singing there, then something has changed there, and they will need help before we do. Someone must go and see. It is a long way for a ferry and a short way for a kind heart.\"",
-      "choices": [
-        {
-          "id": "continue",
-          "label": "Listen as the song comes closer",
-          "icon": "hand",
-          "goto": "song_echo"
-        }
-      ],
-      "onEnter": [
-        {
-          "type": "setFlag",
-          "flag": "found_the_whale_song"
-        }
-      ],
-      "art": "scenes/riftlight/windbreak-camp"
-    },
-    "bearing_blurred": {
-      "type": "story",
-      "cast": [
-        {
-          "figure": "cast/kitsune_temple_keeper",
-          "name": "Temple keeper"
-        },
-        {
-          "figure": "cast/captain_thimble",
-          "name": "Captain Thimble"
-        },
-        {
-          "figure": "cast/courier_griffin",
-          "name": "Fenwick"
-        }
-      ],
-      "narration": "The pieces almost fit. Seren sets them out again, patient as a cat. Then it clicks: the feather, the rail, the notebook, the chalk. East, past the dark edge, to a place where the sky is singing. It takes most of the night. Fenwick says you were close, and that he would say so either way. \"Cloud whales,\" the keeper says. \"The old keepers said they sing where the sky is safe to cross. If they are singing there, something has changed, and they will need help before we do. Someone must go and see. It is a long way for a ferry and a short way for a kind heart.\"",
       "choices": [
         {
           "id": "continue",
