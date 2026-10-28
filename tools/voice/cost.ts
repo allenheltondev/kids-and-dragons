@@ -30,6 +30,7 @@ const { values } = parseArgs({
     campaign: { type: "string" },
     "with-choices": { type: "boolean", default: false },
     "facets-max": { type: "string" },
+    "tokens-per-second": { type: "string" },
     batch: { type: "boolean", default: false },
     on: { type: "string", default: new Date().toISOString().slice(0, 10) },
     json: { type: "boolean", default: false },
@@ -47,6 +48,14 @@ if (!Number.isFinite(budget) || !Number.isFinite(retakes) || retakes < 1 || !Num
 }
 
 const pricing = readJson(path.join(import.meta.dirname, "pricing.json")) as unknown as Pricing;
+if (values["tokens-per-second"] !== undefined) {
+  const rate = Number(values["tokens-per-second"]);
+  if (!(rate > 0)) {
+    console.error("--tokens-per-second takes a positive number (Google estimates 25 to 32).");
+    process.exit(2);
+  }
+  pricing.speech.audioTokensPerSecond = rate;
+}
 const all = inventory(content, { facetsMax });
 
 const lines = all.filter((line) => (values["with-choices"] || line.kind !== "choice") && (values.campaign === undefined || line.campaign === values.campaign));
@@ -110,7 +119,7 @@ console.log(`Lines            ${num(total.lines)} (${num(total.distinct)} distin
 console.log(`Characters       ${num(raw)} as written, ${num(total.chars)} billed`);
 console.log(`                 (distinct texts, {party}/{facets} expanded with {facets} 0-${String(facetsMax)}, ×${String(retakes)} for retakes)`);
 console.log(`Spoken by cast   ${num(total.quoted)} characters inside quotes (${((100 * total.quoted) / Math.max(1, total.chars / retakes)).toFixed(0)}%)`);
-console.log(`Audio            about ${hours(totalQuotes[0]?.audioSeconds ?? 0)} at ${String(pricing.speech.charsPerSecond)} characters a second`);
+console.log(`Audio            about ${hours(totalQuotes[0]?.audioSeconds ?? 0)} at ${String(pricing.speech.charsPerSecond)} characters a second, ${String(pricing.speech.audioTokensPerSecond)} audio tokens a second`);
 console.log(`Choice labels    ${values["with-choices"] ? "included" : "not included (phones read their own; add --with-choices)"}\n`);
 
 console.log("By kind of line (billed characters):");

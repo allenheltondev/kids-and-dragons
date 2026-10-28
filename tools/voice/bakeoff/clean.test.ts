@@ -190,7 +190,7 @@ describe("in the harness", () => {
     fs.mkdirSync(path.join(outDir, "clips"));
     fs.writeFileSync(path.join(outDir, "clips", `${job!.key}.wav`), pcmToWav(dirty, RATE));
     fs.writeFileSync(path.join(outDir, "clips", `${job!.key}.json`), JSON.stringify({ ext: "wav", chars: 10, renderMs: 5, bytes: 1, at: "then" }));
-    const ws = { outDir, cast, pricing: { checked: "", speech: { charsPerSecond: 14, charsPerTextToken: 4, promptTokensPerRequest: 0 }, models: [] }, today: "2026-10-27" };
+    const ws = { outDir, cast, pricing: { checked: "", speech: { charsPerSecond: 14, charsPerTextToken: 4, promptTokensPerRequest: 0, audioTokensPerSecond: 25 }, models: [] }, today: "2026-10-27" };
 
     const clip = cellOf(engine, sample, 1, ws).takes![0]!.clips[0]!;
     expect(clip.raw).toBe(`clips/${job!.key}.raw.wav`);
@@ -214,7 +214,7 @@ describe("in the harness", () => {
     fs.writeFileSync(path.join(clips, `${job!.key}.wav`), pcmToWav(hissy, RATE));
     fs.writeFileSync(path.join(clips, `${job!.key}.raw.wav`), pcmToWav(hissy, RATE));
     fs.writeFileSync(path.join(clips, `${job!.key}.json`), JSON.stringify({ ext: "wav", chars: 10, renderMs: 5, bytes: 1, at: "then", cleaned: true, removedMs: 0 }));
-    const ws = { outDir, cast, pricing: { checked: "", speech: { charsPerSecond: 14, charsPerTextToken: 4, promptTokensPerRequest: 0 }, models: [] }, today: "2026-10-27" };
+    const ws = { outDir, cast, pricing: { checked: "", speech: { charsPerSecond: 14, charsPerTextToken: 4, promptTokensPerRequest: 0, audioTokensPerSecond: 25 }, models: [] }, today: "2026-10-27" };
     const clip = cellOf(engine, sample, 1, ws).takes![0]!.clips[0]!;
     expect(clip.file).toBe(`clips/${job!.key}.wav?cleaned=${String(CLEANER_VERSION)}`);
     expect(clip.removedMs).toBeGreaterThan(0);
