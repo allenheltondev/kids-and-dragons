@@ -32,9 +32,11 @@ const REPO = fileURLToPath(new URL("../..", import.meta.url));
 const VALIDATOR = join(REPO, "tools", "content", "validate.mjs");
 
 const temps = [];
+// Every negative case copies the whole content tree, so removing them all is real disk work:
+// give it a minute rather than the default ten seconds. It deletes temp dirs and asserts nothing.
 afterAll(() => {
   for (const dir of temps) rmSync(dir, { recursive: true, force: true });
-});
+}, 60_000);
 
 /**
  * A copy of the real tree: the content, the schemas that judge it, and the
