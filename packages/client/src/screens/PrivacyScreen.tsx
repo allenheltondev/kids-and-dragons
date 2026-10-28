@@ -28,7 +28,8 @@ export function OperatorLines({ name = OPERATOR.name, contact = OPERATOR.contact
   }
   return (
     <p className="guide__p">
-      Kids &amp; Dragons is run by {name}. Write to <a href={`mailto:${contact}`}>{contact}</a> with privacy questions.
+      Kids &amp; Dragons is run by {/[.!?]$/.test(name) ? name : `${name}.`} Write to{" "}
+      <a href={`mailto:${contact}`}>{contact}</a> with privacy questions.
     </p>
   );
 }
