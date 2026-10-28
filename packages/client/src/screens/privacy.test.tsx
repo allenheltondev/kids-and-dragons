@@ -1,0 +1,171 @@
+// @vitest-environment jsdom
+/**
+ * The privacy policy (#523): reachable before anybody joins or hosts, honest
+ * about what is collected, and never again saying what was wrong about it.
+ */
+
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { cleanup, render, screen } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import { useKeepsakeStore } from "../store/keepsake";
+import { navigate, parseRoute, formatRoute } from "../router";
+import { HomeScreen } from "./HomeScreen";
+import PrivacyScreen, { OperatorLines } from "./PrivacyScreen";
+import { COPYRIGHT_HOLDER, PrivacyFooter } from "../ui/PrivacyFooter";
+import { OPERATOR } from "./operator";
+import { PRIVACY_LEDE, PRIVACY_SECTIONS } from "./privacy-policy";
+import { DELETING, ELSEWHERE, STORED } from "./what-we-store";
+
+const SRC = path.resolve(import.meta.dirname, "..");
+
+/** Everything a grown-up can read about what the game keeps, as one string. */
+function allWords(): string {
+  const policy = [PRIVACY_LEDE, ...PRIVACY_SECTIONS.flatMap((s) => [s.title, ...(s.paragraphs ?? []), ...(s.bullets ?? [])])];
+  const stored = [...STORED.flatMap((s) => [s.what, s.kept, ...Object.values(s.fields ?? {})]), ...ELSEWHERE.map((e) => e.what), ...DELETING];
+  const screens = ["WhatWeStore.tsx", "SignInFlow.tsx"].map((f) => readFileSync(path.join(SRC, "screens", f), "utf8"));
+  return [...policy, ...stored, ...screens].join("\n").replace(/\s+/g, " ");
+}
+
+beforeEach(() => {
+  localStorage.clear();
+  navigate("/", { replace: true });
+  useKeepsakeStore.setState({ check: async () => undefined, step: "closed", account: null, shared: false });
+});
+
+afterEach(() => cleanup());
+
+describe("the /privacy route", () => {
+  it("parses and formats, and needs no room", () => {
+    expect(parseRoute("/privacy")).toEqual({ name: "privacy" });
+    expect(parseRoute("/privacy?x=1")).toEqual({ name: "privacy" });
+    expect(formatRoute({ name: "privacy" })).toBe("/privacy");
+  });
+});
+
+describe("reaching it", () => {
+  it("is a quiet footer link on the start screen, before anyone joins or hosts", () => {
+    const { container } = render(<HomeScreen />);
+    const link = screen.getByRole("link", { name: /^privacy$/i });
+    // A footer under the page's body, not a card or a line among the buttons.
+    expect(link.closest("footer.privacy-footer")).not.toBeNull();
+    expect(container.querySelector("main.home > footer.privacy-footer")).not.toBeNull();
+    // It opens the policy in a tab of its own, so a name or code already typed is not lost.
+    expect(link.getAttribute("href")).toBe("/privacy");
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toContain("noopener");
+  });
+
+  it("carries the grown-up's guide beside it, also in a tab of its own", () => {
+    render(<HomeScreen />);
+    const guide = screen.getByRole("link", { name: /^grown-up.s guide$/i });
+    expect(guide.closest("footer.privacy-footer")).not.toBeNull();
+    expect(guide.getAttribute("href")).toBe("/guide");
+    expect(guide.getAttribute("target")).toBe("_blank");
+  });
+
+  it("carries the copyright with the current year, and drops it where the footer is compact", () => {
+    const year = new Date().getFullYear();
+    const { container, rerender } = render(<PrivacyFooter />);
+    expect(container.querySelector(".privacy-footer__copy")?.textContent).toBe(`\u00A9 ${String(year)} Ready, Set, Cloud!`);
+    rerender(<PrivacyFooter year={2031} />);
+    expect(container.querySelector(".privacy-footer__copy")?.textContent).toBe("\u00A9 2031 Ready, Set, Cloud!");
+    rerender(<PrivacyFooter compact />);
+    expect(container.querySelector(".privacy-footer__copy")).toBeNull();
+    expect(container.querySelector('a[href="/privacy"]')).not.toBeNull();
+  });
+
+  it("leaves the guide link out of the guide's own footer", () => {
+    const { container } = render(<PrivacyFooter guide={false} />);
+    expect(container.querySelector('a[href="/guide"]')).toBeNull();
+    expect(container.querySelector('a[href="/privacy"]')).not.toBeNull();
+  });
+});
+
+describe("what it says", () => {
+  it("names the operator, or says plainly that nobody is named yet", () => {
+    const { unmount } = render(<OperatorLines name="" contact="" />);
+    expect(screen.getByText(/have not been published yet/i)).toBeTruthy();
+    unmount();
+    render(<OperatorLines name="Example Co" contact="privacy@example.test" />);
+    expect(screen.getByRole("link", { name: "privacy@example.test" }).getAttribute("href")).toBe("mailto:privacy@example.test");
+  });
+
+  it("does not double the punctuation of a name that ends in one", () => {
+    const { container } = render(<OperatorLines name="Ready, Set, Cloud!" contact="privacy@example.test" />);
+    expect(container.textContent).toContain("is run by Ready, Set, Cloud! Write to");
+    expect(container.textContent).not.toContain("!.");
+  });
+
+  it("names the party the footer's copyright line names, and a business contact", () => {
+    // The operator is the company ("Ready, Set, Cloud! LLC"); the copyright line carries its name.
+    expect(OPERATOR.name.startsWith(COPYRIGHT_HOLDER)).toBe(true);
+    expect(OPERATOR.contact).toBe("allen@readysetcloud.io");
+    expect(OPERATOR.contact).not.toMatch(/gmail\./i);
+  });
+
+  it("renders every section, with its title", () => {
+    render(<PrivacyScreen />);
+    for (const section of PRIVACY_SECTIONS) {
+      expect(screen.getByRole("heading", { name: section.title })).toBeTruthy();
+    }
+    expect(screen.getByRole("heading", { name: "Who runs this" })).toBeTruthy();
+  });
+
+  it("covers what #523 asks of it", () => {
+    const titles = PRIVACY_SECTIONS.map((s) => s.id);
+    for (const id of ["what-kids-give", "what-grown-ups-give", "automatic", "who-else", "how-long", "your-choices", "consent"]) {
+      expect(titles).toContain(id);
+    }
+  });
+});
+
+describe("what it must never claim again", () => {
+  const FALSE_CLAIMS: readonly [RegExp, string][] = [
+    [/never type anything personal/i, "kids do type a nickname and a hero name"],
+    [/only live on this phone/i, "the game keeps them on its servers"],
+    [/compl(y|ies|iant|iance)/i, "no claim of legal compliance before it is verified"],
+    [/\bCOPPA\b/, "no claim about COPPA before counsel has looked"],
+    [/never (stored|kept|collected)/i, "absolute claims about storage"],
+    [/stay for good/i, "kept households have no promise of forever"],
+    [/always (offline|on the device)/i, "browser speech is not verified offline"],
+  ];
+
+  it.each(FALSE_CLAIMS)("%s (%s)", (pattern) => {
+    expect(allWords()).not.toMatch(pattern);
+  });
+
+  it("does not deny analytics outright while it measures chapter durations itself", () => {
+    const text = allWords();
+    // Every mention of analytics or trackers is limited to third parties or advertising.
+    for (const sentence of text.split(/(?<=[.!?])\s+/).filter((t) => /analytics|trackers?\b/i.test(t))) {
+      expect(sentence, sentence).toMatch(/third-party|advertising/i);
+    }
+    // And the first-party measuring it does is described, with how long it is kept.
+    const automatic = PRIVACY_SECTIONS.find((s) => s.id === "automatic")!.bullets!.join(" ");
+    expect(automatic).toMatch(/how long chapters take/i);
+    expect(automatic).toMatch(/add these up/i);
+    // The table sets an expiry, and its cleanup follows some days later: say expire, not an exact-day deletion.
+    expect(automatic).toMatch(/expire after 180 days/);
+    expect(automatic).toMatch(/normally deletes expired records in the days that follow/);
+    expect(automatic).not.toMatch(/deleted after 180 days/i);
+    const why = PRIVACY_SECTIONS.find((s) => s.id === "why")!.paragraphs!.join(" ");
+    expect(why).toMatch(/our own, of how long chapters take/i);
+  });
+
+  it("says the nickname filter checks bad words, not personal details", () => {
+    expect(allWords()).toMatch(/not for personal details/i);
+  });
+
+  it("says the parent email is held twice, as the server's owner rows do", () => {
+    const grownUps = STORED.find((s) => s.entities.includes("owner"))!;
+    expect(grownUps.what).toMatch(/two places/i);
+    expect(grownUps.what).toMatch(/Cognito/);
+  });
+
+  it("does not promise a retention limit that is not enforced", () => {
+    const howLong = PRIVACY_SECTIONS.find((s) => s.id === "how-long")!;
+    expect(howLong.bullets!.join(" ")).toMatch(/no automatic end today/i);
+    expect(howLong.bullets!.join(" ")).toMatch(/no warning before a household is deleted/i);
+  });
+});
