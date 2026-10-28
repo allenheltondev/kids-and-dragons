@@ -35,11 +35,11 @@ import { CloudFormationClient, DescribeStacksCommand } from "@aws-sdk/client-clo
 import { S3Client } from "@aws-sdk/client-s3";
 import { keysFromEnv } from "./bakeoff/providers";
 import { dollars, quote, type PricedModel, type Pricing } from "./cost-model";
-import { GEMINI, type DesiredSegment } from "./desired";
+import { GEMINI } from "./desired";
 import { encodeVoice } from "./encode";
 import { readJson } from "./load";
-import { clipStatus, mergeManifest, toRender } from "./manifest";
-import { renderOwed } from "./render";
+import { mergeManifest } from "./manifest";
+import { candidates, renderOwed } from "./render";
 import { DirClipStore, MemoryClipStore, S3ClipStore, StoreSet, type ClipStore } from "./store";
 import { makeSynthesizer } from "./synth";
 import { desire, loadWorld, MANIFEST_DIR } from "./world";
@@ -112,22 +112,16 @@ const stores = await destinations();
 if (values.render && stores.length === 0) fail("Nothing to upload to. Name a destination: --stage staging, --bucket NAME or --dir FOLDER.");
 const store: ClipStore = stores.length === 0 ? new MemoryClipStore() : new StoreSet(stores);
 
-// What is owed, across the chosen chapters, as distinct clips.
-const owed = new Map<string, DesiredSegment>();
+// Every clip the chosen chapters want. The destination decides what is owed, not the manifest:
+// a manifest says a clip was rendered somewhere, never that *this* bucket has it.
 const perGroup = new Map<string, ReturnType<typeof desire>>();
 let deviceVoice = 0;
 for (const name of names) {
   const desired = desire(world, name, provider);
   perGroup.set(name, desired);
   deviceVoice += desired.deviceVoice.length;
-  const status = clipStatus(desired, world.manifests.get(name) ?? {}, world.lock);
-  const wantedNow = new Set(toRender(status).map((row) => row.key));
-  for (const line of desired.lines) {
-    for (const segment of line.segments) {
-      if (wantedNow.has(segment.key) && (values.speaker === undefined || segment.by.split("#")[0] === values.speaker)) owed.set(segment.key, segment);
-    }
-  }
 }
+const wanted = candidates([...perGroup.values()], values.speaker);
 
 const today = new Date().toISOString().slice(0, 10);
 const price = (chars: number): number => (values.fake ? 0 : (quote(model, { chars, requests: 1 }, pricing.speech, today)?.dollars ?? 0));
@@ -144,28 +138,19 @@ const synth = makeSynthesizer({
 
 const startedAt = Date.now();
 const report = await renderOwed(
-  [...owed.values()],
+  wanted,
   { synth, encode: encodeVoice, store, price, log: (message) => console.log(`  ${message}`) },
   { render: values.render, maxDollars, ...(maxChars === undefined ? {} : { maxChars }), concurrency },
 );
 
-// The manifest: every line whose clips all exist, with lengths from the store or an earlier manifest.
-let written = 0;
+// The manifest: every line whose clips are all known to exist at the destination, with their
+// lengths from the store. Lengths from an old manifest are not proof of anything and are not used.
 // A dry run, or a trial with fake tones, writes no manifest: it would describe clips nobody can play.
+let written = 0;
 if (values.render && !values.fake) {
   for (const [name, desired] of perGroup) {
     const existing = world.manifests.get(name) ?? {};
-    const lengths = new Map(report.lengths);
-    for (const variants of Object.values(existing)) for (const clips of Object.values(variants)) for (const c of clips) if (!lengths.has(c.clip)) lengths.set(c.clip, c.ms);
-    // A clip kept by an earlier run is known to the store too.
-    for (const line of desired.lines) {
-      for (const segment of line.segments) {
-        if (lengths.has(segment.key)) continue;
-        const there = await store.head(segment.key);
-        if (there !== null) lengths.set(segment.key, there.ms);
-      }
-    }
-    const merged = mergeManifest(existing, desired.lines, lengths, values.prune);
+    const merged = mergeManifest(existing, desired, report.lengths, values.prune);
     const text = `${JSON.stringify(merged, null, 2)}\n`;
     const file = path.join(MANIFEST_DIR, `${name}.json`);
     const before = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
@@ -179,9 +164,9 @@ if (values.render && !values.fake) {
 const num = (n: number): string => n.toLocaleString("en-US");
 const mode = values.render ? "Rendered" : "Dry run";
 console.log(`${mode}: ${values.fake ? "fake tones" : model.label}${model.confirmed || values.fake ? "" : " *"} -> ${stores.length === 0 ? "no destination (plan only)" : store.name}`);
-console.log(`  owed            ${num(owed.size)} distinct clips${values.speaker ? ` by ${values.speaker}` : ""}, ${num(deviceVoice)} lines left to the device voice`);
-console.log(`  already there   ${num(report.cached.length)} (no provider call)`);
-if (values.render) console.log(`  rendered        ${num(report.rendered.length)} clips, ${num(report.chars)} characters, ${dollars(report.dollars)} in ${((Date.now() - startedAt) / 1000).toFixed(1)}s`);
+console.log(`  wanted          ${num(wanted.length)} distinct clips${values.speaker ? ` by ${values.speaker}` : ""}, ${num(deviceVoice)} lines left to the device voice`);
+console.log(`  already there   ${num(report.cached.length)} at every destination (no provider call)`);
+if (values.render) console.log(`  rendered        ${num(report.rendered.length)} clips; ${num(report.chars)} characters sent, about ${dollars(report.dollars)} (retries counted) in ${((Date.now() - startedAt) / 1000).toFixed(1)}s`);
 else console.log(`  would render    ${num(report.planned.length)} clips, ${num(report.chars)} characters, ${dollars(report.dollars)} (cap ${dollars(maxDollars)})`);
 if (report.failed.length > 0) {
   console.log(`  FAILED          ${num(report.failed.length)}`);

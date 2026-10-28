@@ -100,34 +100,61 @@ export function linesByClip(desired: Desired): Map<string, DesiredLine[]> {
 }
 
 /**
- * The manifest after a run. A line gets an entry once *every* clip it needs is
- * rendered (all or nothing, as playback is), with each clip's length. Entries
- * already there stay, so a partial run never takes away a take that was good;
- * `prune` drops the ones nothing asks for any more. Output is sorted so the
- * file diffs cleanly in git.
+ * The manifest after a run: what the client may play, and nothing it may not.
+ *
+ * A line is played from its entry or, with no entry, from the device voice, so
+ * an entry must always describe the words the line says *now*. For each line
+ * the game wants:
+ *  - every clip it needs is known to exist (`lengths`): it gets a fresh entry;
+ *  - else, if the entry already there is for exactly these clips, it stays
+ *    (the last run verified it; a capped run must not lose a good take);
+ *  - else its entry is *omitted*: the old one is for words, a voice or a
+ *    delivery that has since changed, and playing it would speak outdated text.
+ *    The old audio is kept in the bucket; only the mapping goes, and the line
+ *    falls back to the device voice until its new clips exist.
+ * A line the device voice reads now (a stale or broken script) loses its entry
+ * for the same reason. Entries for addresses the game no longer has are kept
+ * unless `prune`. Output is sorted so the file diffs cleanly in git.
  */
-export function mergeManifest(existing: Manifest, lines: readonly DesiredLine[], lengths: ReadonlyMap<string, number>, prune = false): Manifest {
-  const wanted = new Set(lines.map((line) => `${line.address}\u0000${line.variant}`));
+export function mergeManifest(existing: Manifest, desired: Desired, lengths: ReadonlyMap<string, number>, prune = false): Manifest {
+  const lines = new Map(desired.lines.map((line) => [`${line.address}\u0000${line.variant}`, line]));
+  const deviceVoice = new Set(desired.deviceVoice.map((d) => d.address));
   const merged: Manifest = {};
+  const keep = (address: string, variant: string, clips: ManifestClip[]): void => {
+    (merged[address] ??= {})[variant] = clips;
+  };
+
   for (const [address, variants] of Object.entries(existing)) {
+    if (deviceVoice.has(address)) continue;
     for (const [variant, clips] of Object.entries(variants)) {
-      if (prune && !wanted.has(`${address}\u0000${variant}`)) continue;
-      (merged[address] ??= {})[variant] = clips;
+      const line = lines.get(`${address}\u0000${variant}`);
+      if (line === undefined) {
+        // Not a line the game wants any more (or a variant that no longer exists).
+        if (!prune) keep(address, variant, clips);
+      } else if (sameClips(clips, line)) {
+        keep(address, variant, clips);
+      }
+      // else: it maps to different words; leave it out so the line is read by the device voice.
     }
   }
-  for (const line of lines) {
+  for (const line of lines.values()) {
     const clips: ManifestClip[] = [];
     for (const segment of line.segments) {
       const ms = lengths.get(segment.key);
       if (ms === undefined) break;
       clips.push({ clip: segment.key, ms });
     }
-    if (clips.length === line.segments.length) (merged[line.address] ??= {})[line.variant] = clips;
+    if (clips.length === line.segments.length) keep(line.address, line.variant, clips);
   }
+
   const sorted: Manifest = {};
   for (const address of Object.keys(merged).sort()) {
     sorted[address] = {};
     for (const variant of Object.keys(merged[address] ?? {}).sort()) sorted[address][variant] = merged[address]?.[variant] ?? [];
   }
   return sorted;
+}
+
+function sameClips(clips: readonly ManifestClip[], line: DesiredLine): boolean {
+  return clips.length === line.segments.length && clips.every((clip, i) => clip.clip === line.segments[i]?.key);
 }

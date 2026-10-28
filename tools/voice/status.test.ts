@@ -155,24 +155,52 @@ describe("the manifest after a run", () => {
   const lengths = (keys: string[]) => new Map(keys.map((k) => [k, 1500]));
   const desired = wanted([A, B]);
   const keysOfLine = (address: string) => desired.lines.find((l) => l.address === address)!.segments.map((s) => s.key);
+  const clipsFor = (address: string) => keysOfLine(address).map((clip) => ({ clip, ms: 1500 }));
 
   it("gives a line an entry once all its clips exist, with their lengths", async () => {
     const { mergeManifest } = await import("./manifest");
-    const merged = mergeManifest({}, desired.lines, lengths(keysOfLine(A.address)));
+    const merged = mergeManifest({}, desired, lengths(keysOfLine(A.address)));
     expect(Object.keys(merged)).toEqual([A.address]);
     expect(merged[A.address]?.[""]).toEqual([{ clip: keysOfLine(A.address)[0], ms: 1500 }]);
   });
 
-  it("keeps entries already there, and only prune drops what nothing asks for", async () => {
+  it("keeps a line's entry when it is still for exactly these clips, even if this run could not verify it", async () => {
+    const { mergeManifest } = await import("./manifest");
+    const old = { [A.address]: { "": clipsFor(A.address) } };
+    expect(mergeManifest(old, desired, new Map())).toEqual(old);
+  });
+
+  it("omits the entry of a line whose words changed until its new clips exist, so it is read by the device voice", async () => {
+    const { mergeManifest } = await import("./manifest");
+    const old = { [A.address]: { "": clipsFor(A.address) }, [B.address]: { "": clipsFor(B.address) } };
+    const edited = wanted([A, line(B.address, "The path ends at a wall of roses.")]);
+    const newB = edited.lines.find((l) => l.address === B.address)!.segments.map((s) => s.key);
+    // A partial render: the new take for B is not done. B must not keep speaking "thorns".
+    const partial = mergeManifest(old, edited, new Map());
+    expect(Object.keys(partial)).toEqual([A.address]);
+    // Once it exists, B maps to the new clip.
+    const done = mergeManifest(old, edited, lengths(newB));
+    expect(done[B.address]?.[""]).toEqual([{ clip: newB[0], ms: 1500 }]);
+  });
+
+  it("drops the entry of a line the device voice reads now (a stale script)", async () => {
+    const { mergeManifest } = await import("./manifest");
+    const old = { [A.address]: { "": clipsFor(A.address) } };
+    const stale = { lines: [], deviceVoice: [{ address: A.address, chapter: "ch-01", reason: "stale-script" as const }] };
+    expect(mergeManifest(old, stale, new Map())).toEqual({});
+  });
+
+  it("keeps entries for addresses the game no longer has, and only prune drops them", async () => {
     const { mergeManifest } = await import("./manifest");
     const old = { "ch-01/gone/narration": { "": [{ clip: "0".repeat(64), ms: 10 }] } };
-    expect(Object.keys(mergeManifest(old, desired.lines, new Map()))).toEqual(["ch-01/gone/narration"]);
-    expect(mergeManifest(old, desired.lines, new Map(), true)).toEqual({});
+    expect(Object.keys(mergeManifest(old, desired, new Map()))).toEqual(["ch-01/gone/narration"]);
+    expect(mergeManifest(old, desired, new Map(), true)).toEqual({});
   });
 
   it("is sorted, so the file diffs cleanly", async () => {
     const { mergeManifest } = await import("./manifest");
-    const merged = mergeManifest({}, [...desired.lines].reverse(), lengths([...keysOfLine(A.address), ...keysOfLine(B.address)]));
+    const reversed = { ...desired, lines: [...desired.lines].reverse() };
+    const merged = mergeManifest({}, reversed, lengths([...keysOfLine(A.address), ...keysOfLine(B.address)]));
     expect(Object.keys(merged)).toEqual([...Object.keys(merged)].sort());
   });
 });

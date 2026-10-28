@@ -275,10 +275,21 @@ GEMINI_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stage st
   even by two runs racing. A `HEAD` before the provider call is the generation cache.
 - **Caps.** `--max-dollars` (default 75) and `--max-chars` stop the run *before* the request that
   would cross them, priced with the same model as `voice:cost`, with in-flight requests reserved
-  against the cap. What is left is the next run's.
-- **Manifests.** After a real run, `content/voice/manifest/<chapter>.json` gets an entry for every
-  line whose clips all exist. Commit them: they deploy with `content/` and the client reads them at
-  `/content/voice/manifest/<chapter>.json`. `--prune` drops entries nothing asks for any more.
+  against the cap. Every provider call counts, retries included, and a failed call is not refunded
+  (it may have been billed), so a clip's retries cannot spend past the cap. The total is an
+  estimate of spend, not a billing ceiling. What is left is the next run's.
+- **The destination decides what is owed.** Every clip the game wants is checked against the
+  bucket (a `HEAD`), not only the ones the manifest does not list: the manifest says a clip was
+  rendered somewhere, never that *this* bucket has it. A new production bucket, a half-uploaded
+  staging one or a deleted object is repaired by running the same command against it.
+- **Manifests.** After a real run, `content/voice/manifest/<chapter>.json` maps each line to its
+  clips once *all* of them are confirmed at the destination. An entry always describes the words a
+  line says now: if a line's text, voice or delivery changed and its new clips are not all there yet,
+  its old entry is omitted (the old audio stays in the bucket) so the line is read by the device
+  voice, never by outdated words. A line whose script went stale loses its entry the same way. Commit
+  the manifests: they deploy with `content/` and the client reads them at
+  `/content/voice/manifest/<chapter>.json`. `--prune` also drops entries for addresses the game no
+  longer has.
 - **Referencing.** `packages/shared/src/voice-clips.ts` is the one place that knows the layout
   (`clipPath`, `manifestPath`, `variantKey`, `playlistFor`). The tool that uploads and the client that
   plays share it. `playlistFor(narrationParts, manifest)` returns the clips to play, or `null` when any

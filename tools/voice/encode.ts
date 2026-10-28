@@ -15,11 +15,17 @@ export interface Encoded {
   ms: number;
 }
 
-/** ffmpeg's filter chain: trim edge silence, then normalise loudness for speech. */
-export const VOICE_FILTER = [
-  "silenceremove=start_periods=1:start_duration=0.02:start_threshold=-50dB:stop_periods=1:stop_duration=0.15:stop_threshold=-50dB:stop_silence=0.05",
-  "loudnorm=I=-16:TP=-1.5:LRA=11",
-].join(",");
+/**
+ * ffmpeg's filter chain: trim the silence a provider leaves at either end, then
+ * normalise loudness for speech.
+ *
+ * Trailing silence is trimmed by reversing, trimming the (now leading) silence,
+ * and reversing back. `silenceremove`'s own `stop_periods` would end the clip at
+ * the first pause longer than `stop_duration` anywhere after speech starts, and
+ * a sentence breathes: it would cut every clip off at its first comma.
+ */
+const TRIM_LEADING = "silenceremove=start_periods=1:start_duration=0.02:start_threshold=-50dB";
+export const VOICE_FILTER = [TRIM_LEADING, "areverse", TRIM_LEADING, "areverse", "loudnorm=I=-16:TP=-1.5:LRA=11"].join(",");
 
 export function encodeVoice(wav: Buffer): Encoded {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "kad-voice-"));
