@@ -1,0 +1,683 @@
+{
+  "check_stair": {
+    "type": "check",
+    "stat": "might",
+    "tn": 8,
+    "roller": "all",
+    "prompt": "Climb all four hundred zigzag steps without stopping",
+    "onSuccess": {
+      "goto": "scene_faun_family",
+      "narration": "Left, right, left, right, four hundred times. Every hundredth step has a tiny carved dragonling face, each one more tired than the last. You never stop once."
+    },
+    "onFailure": {
+      "goto": "scene_faun_family",
+      "narration": "You stop on every hundredth step, beside a tiny carved dragonling face as tired as you are. It takes ages. But the top is much closer now."
+    }
+  },
+  "check_scree": {
+    "type": "check",
+    "stat": "quick",
+    "tn": 12,
+    "prompt": "Scramble straight up the loose, sliding stones",
+    "roller": "all",
+    "onSuccess": {
+      "goto": "scene_faun_family",
+      "narration": "You go up like mountain goats, and the stones only slide where you just were. At the top you look down at the long zigzag stair and feel extremely smug."
+    },
+    "onFailure": {
+      "goto": "scene_faun_family",
+      "narration": "The slope slides, and you slide with it, like a sled, right onto the old stair halfway up. That was not the plan. It works anyway."
+    }
+  },
+  "check_wolf_ledge": {
+    "type": "check",
+    "cast": [
+      {
+        "figure": "entities/cinder_wolf",
+        "count": 3
+      }
+    ],
+    "stat": "quick",
+    "tn": 12,
+    "prompt": "Tiptoe along the cliff edge past a pack of sleepy wolves",
+    "roller": "party",
+    "onSuccess": {
+      "goto": "scene_warden_post",
+      "narration": "Not one wolf wakes up. Well, one does, but only to roll over with all four paws in the air. You step over the paws, holding your breath, and you are past."
+    },
+    "onFailure": {
+      "goto": "scene_warden_post",
+      "narration": "A pebble clatters off the edge, and every wolf looks up. The big one sighs and shuffles over to make room, like a grandpa on a crowded bench. You squeeze past, saying sorry to each wolf."
+    }
+  },
+  "check_crab_field": {
+    "type": "check",
+    "cast": [
+      {
+        "figure": "entities/glassback_crab",
+        "count": 3
+      }
+    ],
+    "stat": "clever",
+    "tn": 12,
+    "prompt": "Read what the glassback crabs are waving about",
+    "roller": "best",
+    "onSuccess": {
+      "goto": "scene_crab_guards",
+      "narration": "Claw up means not here. Claw sideways means go on. You read them like a signpost and walk a wiggly line across, and not one crab gets stepped on."
+    },
+    "onFailure": {
+      "goto": "scene_crab_guards",
+      "narration": "You read go on where it clearly said absolutely not, and step on a crab. It is not hurt, only very offended, and it holds onto your bootlace all the way across like a ticket."
+    }
+  },
+  "check_crab_edge": {
+    "type": "check",
+    "cast": [
+      {
+        "figure": "entities/glassback_crab",
+        "count": 3
+      }
+    ],
+    "stat": "quick",
+    "tn": 12,
+    "roller": "party",
+    "prompt": "Hop from rock to rock around the crumbly edge of the ash field",
+    "onSuccess": {
+      "goto": "scene_crab_guards",
+      "narration": "You hop from rock to rock, quick as a sparrow. The whole field of crabs shuffles sideways to keep an eye on you, glittering, like the world's most suspicious audience."
+    },
+    "onFailure": {
+      "goto": "scene_crab_guards",
+      "narration": "A rock rolls, and you sit down hard in the ash. A hundred crabs turn to stare. One pats your boot, very kindly, as if you were a new and slightly broken gem. You get up and keep going, dusty."
+    }
+  },
+  "check_ember_drift": {
+    "type": "check",
+    "cast": [
+      {
+        "figure": "entities/embermoth"
+      }
+    ],
+    "stat": "might",
+    "tn": 8,
+    "prompt": "Dig the embermoth out of the ash without squashing it",
+    "roller": "party",
+    "onSuccess": {
+      "goto": "choice_last_breath",
+      "narration": "You dig gently, like digging out a sandcastle you want to keep. The moth pops free, shakes off the ash, and zooms ahead up the path, glowing brighter every second."
+    },
+    "onFailure": {
+      "goto": "choice_last_breath",
+      "narration": "You dig too fast, and ash flies everywhere, mostly up your nose. While you sneeze, the moth wriggles out by itself, gives you a very dignified look, and flies off uphill."
+    }
+  },
+  "check_remains": {
+    "type": "check",
+    "art": "scenes/gemfall/gem-gallery",
+    "stat": "heart",
+    "tn": 8,
+    "checkKind": "doing",
+    "prompt": "Walk the bones back to their places in the wall, one gentle step at a time",
+    "cast": [
+      {
+        "figure": "entities/restless_remains"
+      }
+    ],
+    "roller": "party",
+    "onSuccess": {
+      "goto": "rest_cool_gallery",
+      "effects": [
+        {
+          "type": "setFlag",
+          "flag": "remains_settled",
+          "value": true
+        }
+      ],
+      "narration": "You take a bony hand, very gently, and walk it back to its place, like walking a sleepwalker back to bed. The others follow. One of them nods, which is a lot of nodding for a bone."
+    },
+    "onFailure": {
+      "goto": "encounter_gallery",
+      "narration": "You reach for the nearest bony hand, but the stones in your pockets hum louder than you can be gentle. The bones slip past you and keep walking toward the hum."
+    }
+  },
+  "check_race_1": {
+    "type": "check",
+    "art": "scenes/gemfall/gem-gallery",
+    "stat": "quick",
+    "tn": 12,
+    "prompt": "Race the shaking floor down the last long tube",
+    "roller": "all",
+    "onSuccess": {
+      "goto": "scene_keeper",
+      "narration": "You run, jump, slide, and arrive at the bottom in a heap. But it is an on-time heap."
+    },
+    "onFailure": {
+      "goto": "scene_bells_ringing",
+      "narration": "A tremor knocks you flat, and the tube fills with ash-dust. When it clears, you can hear the bells, all the way from the foothills."
+    }
+  },
+  "check_race_2": {
+    "type": "check",
+    "art": "scenes/gemfall/gem-gallery",
+    "stat": "might",
+    "tn": 16,
+    "prompt": "Shove through the last stone door before the last ring",
+    "roller": "party",
+    "onSuccess": {
+      "goto": "scene_keeper",
+      "narration": "You put your shoulders to the stone door and push, and push, and it grinds open just as the bells go quiet to catch their breath."
+    },
+    "onFailure": {
+      "goto": "scene_door_holds",
+      "narration": "The door holds. Far above you, very far away, the bells keep counting down."
+    }
+  },
+  "check_ash_map": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "stat": "clever",
+    "tn": 12,
+    "roller": "best",
+    "prompt": "Draw your whole road in the ash on the cave floor, every turn of it",
+    "onSuccess": {
+      "goto": "scene_verdict",
+      "narration": "You draw it all with a stick: the bridges, the bogs, the bits where you got lost. The Seal-Keeper follows every line with one claw. \"Yes,\" it says. \"You walked all of it.\""
+    },
+    "onFailure": {
+      "goto": "scene_verdict",
+      "narration": "Your map wanders off the ash and partway up the wall. The Seal-Keeper tilts its head and reads it anyway. \"I can read a smudge,\" it says. \"I have had a lot of practice.\""
+    }
+  },
+  "check_verdict": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "stat": "heart",
+    "tn": 12,
+    "prompt": "Hold the Seal-Keeper's gaze, and mean every word",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "roller": "party",
+    "onSuccess": {
+      "goto": "scene_seal_cracks",
+      "effects": [
+        {
+          "type": "setFlag",
+          "flag": "dragon_satisfied",
+          "value": true
+        }
+      ],
+      "narration": "The dragon is quiet for a long, long time. Then it moves aside. \"Hm,\" it says. From a dragon, that is a standing ovation."
+    },
+    "onFailure": {
+      "goto": "encounter_dragon",
+      "narration": "The dragon sighs. The sigh is warm, and not the good kind of warm. \"Then show me,\" it says."
+    }
+  },
+  "check_dragon_claw": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "stat": "might",
+    "tn": 12,
+    "prompt": "Hang on to the Seal-Keeper's claw and don't let go",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "onSuccess": {
+      "goto": "scene_seal_cracks",
+      "narration": "You hang on. The Seal-Keeper gives its claw one gentle shake, and you hang on anyway, stuck fast like a burr on a sock. It makes a noise that might be a laugh. \"Stubborn,\" it says, and sets you down in front of the seal, bruised but still here."
+    },
+    "onFailure": {
+      "goto": "scene_dragon_claw_slip",
+      "narration": "Your fingers slip. The Seal-Keeper does not drop you. It only holds you up, very patiently, and waits."
+    }
+  },
+  "check_catch_piece": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "stat": "quick",
+    "tn": 12,
+    "roller": "party",
+    "prompt": "Dive across the shaking floor and catch the sliding piece of seal",
+    "onSuccess": {
+      "goto": "scene_titan_eye",
+      "narration": "You dive, skid, and grab it by the edge just before it tips. Heave! It clunks back into its gap and hums, like somebody saying thank you through a closed door."
+    },
+    "onFailure": {
+      "goto": "scene_titan_eye",
+      "effects": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "roller",
+          "nonlethal": true
+        }
+      ],
+      "narration": "Your fingers scrape the edge, and it slides into the dark. Then, very slowly, it floats back up on a warm breath from below and settles into its gap. Something down there caught it. Something very big."
+    }
+  },
+  "check_brace_seal": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "stat": "might",
+    "tn": 12,
+    "roller": "all",
+    "prompt": "Brace the cracking seal with your shoulders and hold it still",
+    "onSuccess": {
+      "goto": "scene_titan_eye",
+      "narration": "You put your shoulders to the edge and push. The cracks stop running, one by one, like ice deciding not to break. The Seal-Keeper's eyebrows go up. That is a lot of eyebrow."
+    },
+    "onFailure": {
+      "goto": "scene_titan_eye",
+      "effects": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        }
+      ],
+      "narration": "The floor bucks and sits you down hard. The crack runs a little further. Then, from underneath, something pushes back, gently, and the crack closes. Something down there is holding it too."
+    }
+  },
+  "check_restore_fit": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "stat": "clever",
+    "tn": 12,
+    "roller": "best",
+    "prompt": "Match every piece to its own gap while the seal slides about",
+    "onSuccess": {
+      "goto": "scene_restore_last_gap",
+      "narration": "This one here, that one there. You slot the pieces in as fast as the gaps move, and each one clicks home like a key in its own lock."
+    },
+    "onFailure": {
+      "goto": "scene_restore_last_gap",
+      "effects": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "roller",
+          "nonlethal": true
+        }
+      ],
+      "narration": "A piece goes in upside down and pops straight back out, right at your nose. The Seal-Keeper catches it with one claw and turns it the right way around. Click."
+    }
+  },
+  "check_restore_hold": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "stat": "might",
+    "tn": 12,
+    "roller": "all",
+    "prompt": "Lean on the rolling seal and hold every piece still",
+    "onSuccess": {
+      "goto": "scene_restore_last_gap",
+      "narration": "You lean on the seal with everything you have, and it holds still. The Seal-Keeper breathes on the cracks, warm and slow, and they set like toffee."
+    },
+    "onFailure": {
+      "goto": "scene_restore_last_gap",
+      "effects": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        }
+      ],
+      "narration": "The seal bucks, and everybody bounces. But you keep your hands on it, and slowly the Keeper's warm breath sets the cracks like toffee."
+    }
+  },
+  "check_lullaby": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "stat": "heart",
+    "tn": 12,
+    "roller": "all",
+    "checkKind": "doing",
+    "prompt": "Hum the old note slow and soft, like a lullaby, until the eye closes",
+    "onSuccess": {
+      "goto": "scene_titan_sleeps",
+      "narration": "You hum, slow and soft. The great eye droops, and droops, and the last gap fills with light all by itself, like a window when somebody inside lights a lamp."
+    },
+    "onFailure": {
+      "goto": "scene_titan_sleeps",
+      "narration": "You yawn halfway through, which is not very helpful. But yawns are catching. The titan yawns too, a warm wind that blows your hair straight back, and the last gap fills with light."
+    }
+  },
+  "check_turn_wheel": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "stat": "might",
+    "tn": 12,
+    "roller": "all",
+    "prompt": "Put your shoulders to the huge stone wheel and turn it all the way around",
+    "onSuccess": {
+      "goto": "scene_titan_goes",
+      "narration": "It grinds, then rolls, then turns all the way around, smooth as a millstone. The red light under the glass goes soft and gold."
+    },
+    "onFailure": {
+      "goto": "scene_titan_goes",
+      "effects": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "party",
+          "nonlethal": true
+        }
+      ],
+      "narration": "It sticks halfway, and your feet slide. Then the Seal-Keeper sets its tail beside your shoulders, and together, slowly, the wheel turns all the way around. The red light goes soft and gold."
+    }
+  },
+  "check_wheel_latch": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "stat": "clever",
+    "tn": 12,
+    "roller": "best",
+    "prompt": "Hunt along the edge of the wheel for the old latch that lets it turn",
+    "onSuccess": {
+      "goto": "scene_titan_goes",
+      "narration": "There! A little stone latch shaped like a sleeping moth. You flip it, and the wheel turns all the way around by itself, smooth as a millstone. The red light under the glass goes soft and gold."
+    },
+    "onFailure": {
+      "goto": "scene_titan_goes",
+      "effects": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "roller",
+          "nonlethal": true
+        }
+      ],
+      "narration": "You poke every bump on the wheel. The ninth one is the latch, and it pinches your finger. Ow. But the wheel turns, slowly, all the way around, and the red light goes soft and gold."
+    }
+  },
+  "check_pass_leash": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      },
+      {
+        "figure": "cast/captain_voss",
+        "name": "Captain Voss"
+      }
+    ],
+    "stat": "quick",
+    "tn": 12,
+    "roller": "all",
+    "prompt": "Pass the bucking leash hand to hand across the shaking cave without letting go",
+    "onSuccess": {
+      "goto": "scene_cage_closes",
+      "narration": "Hand to hand, quick as a bucket line, the leash goes across the cave and into Captain Voss's hands. She does not drop it. Wardens never drop things."
+    },
+    "onFailure": {
+      "goto": "scene_cage_closes",
+      "effects": [
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "roller",
+          "nonlethal": true
+        }
+      ],
+      "narration": "The leash bucks and drags you halfway across the floor, but you do not let go. Captain Voss grabs your collar, then the leash, and holds on."
+    }
+  },
+  "check_tether_self": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "stat": "heart",
+    "tn": 12,
+    "prompt": "Hold the leash steady, every hand on it",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "roller": "party",
+    "onSuccess": {
+      "goto": "scene_leash_held",
+      "narration": "It pulls, and pulls, every hand on it pulling back. Then, all at once, it stops pulling."
+    },
+    "onFailure": {
+      "goto": "scene_tether_slipping",
+      "narration": "It pulls once, hard, and the leash starts to slide through every one of your hands."
+    }
+  },
+  "check_tether_cult": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "stat": "clever",
+    "tn": 12,
+    "narration": "You call up the tube for Hessa, and she comes at once, as if she had been waiting on the stair all along. Behind her come her friends from the Deep Hollow in their painted bark masks, humming one low note. Hessa looks at the leash, then at the tether in your hands. \"We'll sing,\" she says. \"You keep us to the bargain.\"",
+    "prompt": "Hold the Deep Hollow choir to every word of the bargain",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      },
+      {
+        "figure": "cast/hessa_wren",
+        "name": "Hessa Wren"
+      },
+      {
+        "figure": "cast/masked_choir_singer",
+        "name": "Masked choir singer"
+      }
+    ],
+    "roller": "party",
+    "onSuccess": {
+      "goto": "scene_chord_held",
+      "narration": "You read the bargain back to them line by line, twice, like a warden clerk. They keep every word."
+    },
+    "onFailure": {
+      "goto": "scene_chord_slipping",
+      "narration": "The choir sings one note more than the bargain said. Just one. The seal shivers, and Hessa's face falls before anyone else's."
+    }
+  },
+  "check_tether_haul": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "stat": "might",
+    "tn": 12,
+    "prompt": "Dig in your heels and haul the leash back before it cracks the seal",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "onSuccess": {
+      "goto": "scene_leash_held",
+      "narration": "You dig in your heels and haul, and haul, and the leash stops sliding. It has decided you are in charge."
+    },
+    "onFailure": {
+      "goto": "ending_broken_tether",
+      "narration": "You haul with everything you have, and the leash slips through every hand on it."
+    }
+  },
+  "check_chord_catch": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "stat": "heart",
+    "tn": 12,
+    "checkKind": "doing",
+    "prompt": "Hum the right note back to the choir before the crack runs",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      },
+      {
+        "figure": "cast/hessa_wren",
+        "name": "Hessa Wren"
+      },
+      {
+        "figure": "cast/masked_choir_singer",
+        "name": "Masked choir singer"
+      }
+    ],
+    "onSuccess": {
+      "goto": "scene_chord_held",
+      "narration": "You find the note and hum it, loud and wobbly, and the whole choir catches it from you. The crack closes like a zipper."
+    },
+    "onFailure": {
+      "goto": "ending_broken_tether",
+      "narration": "You hum, but the extra note is louder. The crack runs all the way across, and Hessa's face falls before anyone else's."
+    }
+  },
+  "check_tether_self_bare": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "stat": "heart",
+    "tn": 16,
+    "prompt": "Hold the leash with nothing but your own hands",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "roller": "party",
+    "onSuccess": {
+      "goto": "scene_leash_held",
+      "narration": "No tether this time, only hands, so you become the tether. It pulls, and pulls, and then it stops. The Seal-Keeper blinks, which it has not done in a very long time."
+    },
+    "onFailure": {
+      "goto": "scene_tether_slipping",
+      "narration": "Bare hands are not enough. It pulls once, hard, and starts to slide through every hand on it."
+    }
+  },
+  "check_tether_cult_bare": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "stat": "clever",
+    "tn": 16,
+    "narration": "You call up the tube for Hessa, and she comes at once, as if she had been waiting on the stair all along. Behind her come her friends from the Deep Hollow in their painted bark masks, humming one low note. Hessa looks at the leash, then at your empty hands. \"We'll sing,\" she says. \"Tell us the bargain, and we'll keep it.\"",
+    "prompt": "Hold Hessa's singers to a bargain you made up just now",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      },
+      {
+        "figure": "cast/hessa_wren",
+        "name": "Hessa Wren"
+      },
+      {
+        "figure": "cast/masked_choir_singer",
+        "name": "Masked choir singer"
+      }
+    ],
+    "roller": "party",
+    "onSuccess": {
+      "goto": "scene_chord_held",
+      "narration": "You make the bargain up as you go, and you make it very carefully. Hessa reads it twice and nods. They keep every word."
+    },
+    "onFailure": {
+      "goto": "scene_chord_slipping",
+      "narration": "Nobody wrote the bargain down, so Hessa's singers sing it the way they remember it, one note more than you meant. The seal shivers, and Hessa's face falls before anyone else's."
+    }
+  },
+  "check_keystone": {
+    "type": "check",
+    "art": "scenes/gemfall/seal-chamber",
+    "stat": "might",
+    "tn": 16,
+    "prompt": "Pry the crown stone out of a seal that does not want to let it go",
+    "cast": [
+      {
+        "figure": "cast/seal_keeper",
+        "name": "Seal-Keeper"
+      }
+    ],
+    "roller": "party",
+    "onSuccess": {
+      "goto": "scene_keystone_lifted",
+      "narration": "It comes loose with a sound like a cork from the biggest bottle in the world. You did not come up here for this. You are holding it anyway.",
+      "effects": [
+        {
+          "type": "grantQuestItem",
+          "itemId": "facet_keystone"
+        }
+      ]
+    },
+    "onFailure": {
+      "goto": "scene_keystone_refused",
+      "effects": [
+        {
+          "type": "setFlag",
+          "flag": "keystone_refused",
+          "value": true
+        },
+        {
+          "type": "damage",
+          "amount": 1,
+          "to": "roller",
+          "nonlethal": true
+        }
+      ],
+      "narration": "The crown stone does not budge. It is hot as an oven door, and your hands sting. Then the Seal-Keeper puts one claw on it, very gently, and the decision is no longer yours."
+    }
+  }
+}
