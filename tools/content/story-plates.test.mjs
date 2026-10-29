@@ -85,7 +85,7 @@ describe("story plates", () => {
     }
   });
 
-  it("gives every ending of Gemfall's and Riftlight's last chapter an epilogue, named after it", () => {
+  it("gives every ending of Gemfall's and Riftlight's last chapter an epilogue, named after it and painted", () => {
     for (const [id, last] of [["gemfall", "gemfall-08"], ["riftlight", "riftlight-finale"]]) {
       const campaign = campaigns.find((c) => c.id === id);
       const finale = chapters.find((c) => c.id === last);
@@ -93,7 +93,10 @@ describe("story plates", () => {
       expect(campaign.epilogues.flatMap((e) => e.endings).sort(), id).toEqual(endings.sort());
       for (const epilogue of campaign.epilogues) {
         expect(epilogue.chapter).toBe(last);
-        epilogue.plates.forEach((plate, i) => expect(plate.art).toBe(`plates/${id}/epilogue-${epilogue.id}-${String(i + 1)}`));
+        epilogue.plates.forEach((plate, i) => {
+          expect(plate.art).toBe(`plates/${id}/epilogue-${epilogue.id}-${String(i + 1)}`);
+          expect(existsSync(join(REPO, "assets", `${plate.art}.webp`)), plate.art).toBe(true);
+        });
       }
     }
   });

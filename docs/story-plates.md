@@ -52,14 +52,24 @@ that plays them is `packages/client/src/screens/StoryPlates.tsx` (`StoryPlates` 
    all) and reads them aloud first. That is true of every chapter's ending, epilogue or not.
 2. On the completion that **ends the campaign** (`RunState.campaign.ended`), if the campaign
    names an epilogue for the scene the party ended on, and this device has not shown it, the
-   summary says the ending's words alone and holds the rest. Once they have had time to be read
-   (about two seconds plus 0.4 s a word, between 6.5 and 60 seconds; a remote's OK brings it up
-   sooner), the epilogue comes up over the summary and plays like a prologue: the first plate
-   wears the epilogue's `title`, the name history gives the party.
-3. When it is done or skipped, this device remembers it (`epilogue:<campaign>:<id>`) and the
-   summary says the rest: the campaign's ending line, the XP, the recap. A painting that has not
-   been delivered is left out, as at the start; with none delivered, the summary simply follows.
-4. If a phone taps "Keep going" during the epilogue, play moves on and the reel goes away,
+   summary shows and says the ending's words alone, under its heading, and holds the rest (the
+   tally, the recap, "Keep going"). Once they have had time to be read (about two seconds plus
+   0.4 s a word, between 6.5 and 60 seconds; a remote's OK brings it up sooner), the epilogue
+   comes up over the summary and plays like a prologue: the first plate wears the epilogue's
+   `title`, the name history gives the party.
+3. Its paintings are fetched the moment it is due, **while** the ending is read, not after. A
+   painting that has not been delivered is left out, as at the start; if none arrives (each gets
+   PLATE_LOAD_MS, which is shorter than the shortest hold) the epilogue is passed over for this
+   page load then and there, and the summary goes on at once.
+4. When it is done or skipped, this device remembers it (`epilogue:<campaign>:<id>`) and the
+   summary shows and says the rest: the campaign's ending line, the XP, the recap. Skipping
+   (Escape, or Skip on a phone's pane) also silences the plate being read, for any reel, so what
+   follows is heard at once rather than queued behind it.
+5. A run in a campaign the lobby did not launch has its campaign file fetched. Until it lands
+   nobody knows whether an epilogue follows, so the summary says nothing and shows the ending
+   alone, for at most four seconds (`CAMPAIGN_WAIT_MS`); if the file has not come by then, it
+   speaks as if there were none.
+6. If a phone taps "Keep going" during the epilogue, play moves on and the reel goes away,
    unmarked, as a prologue does.
 
 Not in v1, on purpose: skipping on the shared screen from a phone (it needs a protocol message),
@@ -247,13 +257,12 @@ the TV view with the caption band shaded and the surviving middle outlined, besi
 
 ## 4. Coverage
 
-85 paintings are declared: 49 for Gemfall and 36 for Riftlight. The 46 prologue and chapter
-paintings are delivered: each campaign's four-plate prologue represents its opening chapter, and
-Gemfall's other 15 authored chapters (including all road and pursuit variants) and Riftlight's
-other 23 chapters each have their own representative plate. The 39 epilogue paintings (three
-for each of Gemfall's ten endings and Riftlight's three) are **owed**: `npm run art:inventory`
-lists them, and each ending goes straight to its summary until its paintings land. The narration
-is in the content; the prompts are in [story-plates-prompts.json](story-plates-prompts.json).
+All 85 paintings are delivered: 49 for Gemfall and 36 for Riftlight. Each campaign's four-plate
+prologue represents its opening chapter; Gemfall's other 15 authored chapters (including all
+road and pursuit variants) and Riftlight's other 23 chapters each have their own representative
+plate; and every ending of each campaign's last chapter has a three-plate epilogue (30 for
+Gemfall's ten endings, 9 for Riftlight's three; #562). The narration is in the content; the
+prompts are in [story-plates-prompts.json](story-plates-prompts.json).
 
 ### Gemfall
 
@@ -294,8 +303,8 @@ and seven chapter plates; the selected branches each have their own painting.
 | `07l` | The Tether | A wobbly door-table and a knitting grandmother between two arguing factions |
 | `08` | Gemfall | Two routes up the glowing mountain while a prospector hurries downhill |
 
-**Epilogues** (`content/campaigns/gemfall.json`, after the endings of *Gemfall*, `gemfall-08`;
-owed). Every ending of the finale has one, setbacks included. The words carry on from the ending
+**Epilogues** (`content/campaigns/gemfall.json`, after the endings of *Gemfall*, `gemfall-08`).
+Every ending of the finale has one, setbacks included. The words carry on from the ending
 scene's own, name only who it names, and never show the titan:
 
 | Epilogue | After | Plates |
@@ -351,7 +360,7 @@ scene's own, name only who it names, and never show the titan:
 | `finale` | The Glacier Remembers | The glacier quiet and enormous, the wind holding its breath |
 
 **Epilogues** (`content/campaigns/riftlight.json`, after the endings of *The Glacier Remembers*,
-`riftlight-finale`; owed). The two success endings share their ending scene's words, so the
+`riftlight-finale`). The two success endings share their ending scene's words, so the
 epilogue carries what the scene before (`keepers` or `listened`) decided:
 
 | Epilogue | After | Plates |

@@ -30,7 +30,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { createPortal } from "react-dom";
-import { plateWordCount, speak, storyPlateUrl } from "@kad/shared";
+import { plateWordCount, speak, stopSpeaking, storyPlateUrl } from "@kad/shared";
 import type { Campaign, StartPlates, StoryPlate } from "@kad/shared";
 import { useRunState, useSession } from "../store";
 import { markStoryPlatesSeen, markStoryPlatesUnavailable } from "../store/story-plates-seen";
@@ -81,9 +81,13 @@ function spoken(picked: StartPlates, frame: Frame, index: number): string {
   return index === 0 ? `${picked.ribbon}. ${frame.narration}` : frame.narration;
 }
 
-function Reel({ picked, onDone }: { picked: StartPlates; onDone?: () => void }): ReactElement | null {
+/**
+ * One reel. `preloaded` is its paintings already fetched (EpiloguePlates fetches them while the
+ * ending is read); without it the reel fetches its own.
+ */
+function Reel({ picked, onDone, preloaded }: { picked: StartPlates; onDone?: () => void; preloaded?: Frame[] }): ReactElement | null {
   const display = (useSession()?.playerId ?? "") === "";
-  const [frames, setFrames] = useState<Frame[] | null>(null);
+  const [frames, setFrames] = useState<Frame[] | null>(preloaded ?? null);
   const [index, setIndex] = useState(0);
   const done = useRef(false);
   const root = useRef<HTMLElement | null>(null);
@@ -98,7 +102,15 @@ function Reel({ picked, onDone }: { picked: StartPlates; onDone?: () => void }):
     else markStoryPlatesSeen(picked.key);
   }, [picked.key, onDone]);
 
+  // Skipping is skipping what is being said too: whatever follows the reel is heard at once,
+  // not queued behind the rest of a plate nobody is looking at any more.
+  const skip = useCallback(() => {
+    stopSpeaking();
+    finish();
+  }, [finish]);
+
   useEffect(() => {
+    if (preloaded) return;
     let live = true;
     void preload(picked.plates).then((loaded) => {
       if (!live) return;
@@ -158,7 +170,7 @@ function Reel({ picked, onDone }: { picked: StartPlates; onDone?: () => void }):
       const target = event.target instanceof Element ? event.target : null;
       if (target?.closest("input, textarea, select, [contenteditable='true']")) return;
       if (event.key === "Escape") {
-        finish();
+        skip();
       } else if (event.key === "ArrowLeft") {
         event.preventDefault();
         back();
@@ -169,7 +181,7 @@ function Reel({ picked, onDone }: { picked: StartPlates; onDone?: () => void }):
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [ready, finish, advance, back]);
+  }, [ready, skip, advance, back]);
 
   if (frames === null || frame === undefined) return null;
   const last = index === frames.length - 1;
@@ -225,7 +237,7 @@ function Reel({ picked, onDone }: { picked: StartPlates; onDone?: () => void }):
                   Next
                 </button>
               )}
-              <button type="button" className="plates__button plates__button--skip" onClick={finish}>
+              <button type="button" className="plates__button plates__button--skip" onClick={skip}>
                 {last ? "Continue" : "Skip"}
               </button>
             </div>
@@ -248,18 +260,33 @@ export function endingHoldMs(words: number): number {
  * The campaign's epilogue for the ending the party reached (`useEndPlates`), over the summary.
  * It waits while the summary reads the ending's words (`endingHoldMs`); a remote's OK brings it
  * up sooner. Remembered once shown or skipped, like any reel.
+ *
+ * Its paintings are fetched the moment it is due, alongside that wait rather than after it, so an
+ * epilogue whose art has not been delivered is known within PLATE_LOAD_MS and passed over then
+ * (`markStoryPlatesUnavailable`), and the summary goes on without sitting out the rest of the hold.
  */
 export function EpiloguePlates(): ReactElement | null {
   const picked = useEndPlates();
   const ending = useRunState()?.narration ?? "";
   const [up, setUp] = useState(false);
+  const [frames, setFrames] = useState<Frame[] | null>(null);
   const key = picked?.key ?? null;
   useEffect(() => {
-    if (key === null) return;
+    if (key === null || picked === null) return;
     setUp(false);
+    setFrames(null);
+    let live = true;
+    void preload(picked.plates).then((loaded) => {
+      if (!live) return;
+      if (loaded.length === 0) markStoryPlatesUnavailable(key);
+      else setFrames(loaded);
+    });
     const timer = setTimeout(() => setUp(true), endingHoldMs(plateWordCount(ending)));
-    return () => clearTimeout(timer);
-    // The ending's words are fixed for a key: the hold is set once, when the epilogue is due.
+    return () => {
+      live = false;
+      clearTimeout(timer);
+    };
+    // The plates and the ending's words are fixed for a key: fetched and timed once, when it is due.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
   // Only while it waits: once the reel is up, OK is the reel's to turn its pages with.
@@ -278,8 +305,9 @@ export function EpiloguePlates(): ReactElement | null {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [waiting]);
-  if (picked === null || !up) return null;
-  return <Reel key={picked.key} picked={picked} />;
+  // Up early (a remote's OK) with the paintings still on their way: it comes up when they land.
+  if (picked === null || !up || frames === null) return null;
+  return <Reel key={picked.key} picked={picked} preloaded={frames} />;
 }
 
 export function StoryPlates(): ReactElement | null {

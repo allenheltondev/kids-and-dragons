@@ -13,12 +13,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { setSpeaker } from "@kad/shared";
-import type { Campaign, CampaignView, Chapter, ItemCatalog, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
+import type { Campaign, SpeakOptions, CampaignView, Chapter, ItemCatalog, PartyMember, ResolvedCharacter, RunState } from "@kad/shared";
 import { makeItems } from "../../../shared/src/test-fixtures";
 import { useGameStore } from "../store";
 import { STORY_PLATES_SEEN_KEY, markStoryPlatesSeen, resetStoryPlatesSeen } from "../store/story-plates-seen";
 import { ChapterCompletePanel } from "./ChapterCompletePanel";
-import { EpiloguePlates, endingHoldMs } from "./StoryPlates";
+import { CAMPAIGN_WAIT_MS } from "./end-plates";
+import { resetPrefaceCampaigns } from "./run-campaign";
+import { EpiloguePlates, PLATE_LOAD_MS, endingHoldMs } from "./StoryPlates";
 
 const ENDING = "You walk out of the mountain into morning. History files you as the Heroes.";
 
@@ -103,14 +105,44 @@ function seed(overrides: Partial<RunState> = {}): void {
   });
 }
 
-/** An Image that loads on the next tick. */
+/** An Image that loads on the next tick; one whose URL is in `missing` fails, and in `hanging` never answers. */
+const missing = new Set<string>();
+const hanging = new Set<string>();
 class FakeImage {
   onload: (() => void) | null = null;
   onerror: (() => void) | null = null;
-  set src(_url: string) {
-    void Promise.resolve().then(() => this.onload?.());
+  set src(url: string) {
+    if (hanging.has(url)) return;
+    void Promise.resolve().then(() => (missing.has(url) ? this.onerror?.() : this.onload?.()));
   }
 }
+const urls = (id: string) => plates(id).map((plate) => `/assets/${plate.art}.webp`);
+
+/**
+ * A speaker that behaves like a real one: lines queue, `interrupt` and `cancel` clear the queue.
+ * `queue` is what is still to be heard; `said` is everything ever handed over, with its options.
+ */
+function queueingSpeaker() {
+  const out = { queue: [] as string[], said: [] as { text: string; opts?: SpeakOptions }[] };
+  const speaker = Object.assign(
+    (text: string, opts?: SpeakOptions) => {
+      if (opts?.interrupt) out.queue = [];
+      out.queue.push(text);
+      out.said.push({ text, opts });
+    },
+    { cancel: () => { out.queue = []; } },
+  );
+  setSpeaker(speaker);
+  return out;
+}
+
+const both = () =>
+  render(
+    <>
+      <ChapterCompletePanel />
+      <EpiloguePlates />
+    </>,
+  );
 
 const flush = async (): Promise<void> => {
   await act(async () => {
@@ -122,6 +154,9 @@ const flush = async (): Promise<void> => {
 let spoken: string[] = [];
 beforeEach(() => {
   spoken = [];
+  missing.clear();
+  hanging.clear();
+  resetPrefaceCampaigns();
   setSpeaker((text) => spoken.push(text));
   resetStoryPlatesSeen();
   vi.stubGlobal("Image", FakeImage);
@@ -161,8 +196,9 @@ describe("the epilogue", () => {
         <EpiloguePlates />
       </>,
     );
-    // The ending is said alone: the tally waits for the paintings.
+    // The ending is said alone: the tally waits for the paintings, which load meanwhile.
     expect(spoken).toEqual([ENDING]);
+    await flush();
     expect(screen.queryByTestId("story-plates")).toBeNull();
 
     await act(async () => {
@@ -216,5 +252,108 @@ describe("the epilogue", () => {
     expect(spoken).toHaveLength(1);
     expect(spoken[0]).toMatch(/^You walk out of the mountain/);
     expect(spoken[0]).toContain("The Walk is complete!");
+  });
+});
+
+describe("waiting on what the epilogue needs", () => {
+  it("holds the summary's words while the campaign is still being fetched, then plays the epilogue first", async () => {
+    let answer: (value: Response) => void = () => undefined;
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>((resolve) => { answer = resolve; })));
+    seed();
+    useGameStore.setState({ campaign: null });
+    both();
+    // Nothing is said yet: an epilogue may still turn up, and the tally must not go first.
+    expect(spoken).toEqual([]);
+    expect(screen.queryByText(/XP for everyone/)).toBeNull();
+
+    await act(async () => {
+      answer({ ok: true, json: async () => CAMPAIGN } as Response);
+    });
+    await flush();
+    expect(spoken).toEqual([ENDING]);
+    await act(async () => {
+      vi.advanceTimersByTime(endingHoldMs(ENDING.split(" ").length));
+    });
+    await flush();
+    expect(screen.getByTestId("story-plates").dataset.kind).toBe("epilogue");
+    expect(spoken.some((line) => line.includes("is complete!"))).toBe(false);
+  });
+
+  it("gives up on a campaign that never arrives, and says everything", async () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => undefined)));
+    seed();
+    useGameStore.setState({ campaign: null });
+    both();
+    expect(spoken).toEqual([]);
+    await act(async () => {
+      vi.advanceTimersByTime(CAMPAIGN_WAIT_MS);
+    });
+    expect(spoken).toHaveLength(1);
+    expect(spoken[0]).toMatch(/^You walk out of the mountain/);
+    expect(spoken[0]).toContain("The Walk is complete!");
+  });
+
+  it("drops an epilogue with no paintings as soon as they fail, without cutting the ending off", async () => {
+    for (const url of urls("heroes")) missing.add(url);
+    const speaker = queueingSpeaker();
+    seed();
+    both();
+    await flush();
+    // Well inside the ending's hold, the tally follows the ending in the queue.
+    expect(speaker.queue).toHaveLength(2);
+    expect(speaker.queue[0]).toBe(ENDING);
+    expect(speaker.queue[1]).toMatch(/^The Walk is complete!/);
+    expect(screen.queryByTestId("story-plates")).toBeNull();
+    expect(screen.getByText(/XP for everyone/)).toBeTruthy();
+  });
+
+  it("drops an epilogue whose paintings never answer once they time out, inside the ending's hold", async () => {
+    for (const url of urls("heroes")) hanging.add(url);
+    seed();
+    both();
+    expect(PLATE_LOAD_MS).toBeLessThan(endingHoldMs(ENDING.split(" ").length));
+    await act(async () => {
+      vi.advanceTimersByTime(PLATE_LOAD_MS);
+    });
+    await flush();
+    expect(spoken).toHaveLength(2);
+    expect(spoken[1]).toMatch(/^The Walk is complete!/);
+    await act(async () => {
+      vi.advanceTimersByTime(60_000);
+    });
+    expect(screen.queryByTestId("story-plates")).toBeNull();
+  });
+});
+
+describe("skipping the epilogue", () => {
+  it("silences the plate being read, so the summary is heard at once", async () => {
+    const speaker = queueingSpeaker();
+    seed();
+    both();
+    await flush();
+    await act(async () => {
+      vi.advanceTimersByTime(endingHoldMs(ENDING.split(" ").length));
+    });
+    await flush();
+    expect(speaker.queue).toEqual(["The Heroes. After heroes, plate 1."]);
+
+    fireEvent.keyDown(window, { key: "Escape" });
+    await flush();
+    expect(speaker.queue).toHaveLength(1);
+    expect(speaker.queue[0]).toMatch(/^The Walk is complete!/);
+  });
+
+  it("shows only the ending until the epilogue is done, then the tally", async () => {
+    seed();
+    both();
+    await flush();
+    expect(screen.getByTestId("chapter-ending")).toBeTruthy();
+    expect(screen.queryByText(/XP for everyone/)).toBeNull();
+    expect(screen.queryByText(/Keep going/)).toBeNull();
+    fireEvent.keyDown(window, { key: "Enter" });
+    await flush();
+    fireEvent.keyDown(window, { key: "Escape" });
+    await flush();
+    expect(screen.getByText(/XP for everyone/)).toBeTruthy();
   });
 });
