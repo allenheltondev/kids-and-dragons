@@ -2333,7 +2333,7 @@
     },
     "memory_observation": {
       "type": "interaction",
-      "narration": "Water moves inside the ice, past a forked ridge and two rocks. Watch the displayed river pattern. \"Your boots stay on our floor while the remembered water passes,\" says the elder.",
+      "narration": "Water moves inside the ice, past a forked ridge and two rocks. Watch the displayed river pattern. Your own boots remain on the room's floor while the remembered water passes.",
       "cast": [
         {
           "figure": "cast/yeti_elder",
