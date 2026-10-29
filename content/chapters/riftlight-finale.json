@@ -87,7 +87,7 @@
     },
     "retreat": {
       "type": "choice_point",
-      "narration": "The walking passage gives you a broad way back. \"A handline gathers us by touch if we fall back,\" says Orin. \"Bright cloth marks we follow by sight. Pick one.\" Loose edges stay outside both routes. Neither line goes around a traveler.",
+      "narration": "The walking passage gives you a broad way back. Choose a handline to gather people by touch if you fall back, or bright cloth marks to follow by sight. Loose edges stay outside both routes. Neither line goes around a traveler.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -385,7 +385,7 @@
     },
     "map_shelter": {
       "type": "choice_point",
-      "narration": "Corvane's old map snaps upward in a gust. \"Watch the corners,\" he says. Keep it in a dry case, or spread it beside today's map where he can compare both at once. The open page needs a careful corner catch; a miss can blur fine old marks. The case protects those marks, but must be unpacked for a later side-by-side conversation.",
+      "narration": "Corvane's old map snaps upward in a gust. \"Watch the corners!\" Corvane calls. Keep it in a dry case, or spread it beside today's map where he can compare both at once. The open page needs a careful corner catch; a miss can blur fine old marks. The case protects those marks, but must be unpacked for a later side-by-side conversation.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -543,7 +543,7 @@
     },
     "remember": {
       "type": "choice_point",
-      "narration": "Your two checked accounts show places as they lie now, with people living there. \"Lead the first anchor with a place you truly learned,\" Orin says. \"Or I can guide your checked notes.\" The original memories and stones remain with their keepers.",
+      "narration": "Your two checked accounts show places as they lie now, with people living there. Choose one you actually learned to lead the first anchor, or have Orin guide your checked notes. The original memories and stones remain with their keepers.",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",
@@ -881,7 +881,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "Two parts of the great opening close. The ground stops sliding toward the old map. \"The last seam is still pulling,\" Seren says.",
+      "narration": "Two parts of the great opening close. The ground stops sliding toward the old map. Seren frowns at the last seam. \"It is still pulling.\"",
       "onEnter": [
         {
           "type": "setFlag",
@@ -916,7 +916,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "Orin opens the supper bag he brought from camp. You sit inside a solid ice rib and share dried apples while Seren pours warm water from her flask. Orin checks his boot for a lost apple ring. \"It has been a long day for this boot,\" he says.",
+      "narration": "Orin opens the supper bag he brought from camp. You sit inside a solid ice rib and share dried apples while Seren pours warm water from her flask. Orin checks his boot for a lost apple ring. \"It has been a long day for this boot.\"",
       "heal": 2,
       "choices": [
         {
@@ -1192,7 +1192,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "The two places you described hold the land against the pull. Corvane grips the last seam, and crawlers gather beside it. \"One more steady support would fold the opening thinner,\" Orin says. \"Then he has less room to pull.\" Choose a support, or keep Orin and Seren ready on the rescue lane.",
+      "narration": "The two places you described hold the land against the pull. Corvane grips the last seam, and crawlers gather beside it. One more steady support would fold the opening thinner and leave him less room to pull. Choose a support, or keep Orin and Seren ready on the rescue lane.",
       "choices": [
         {
           "id": "reserve",
@@ -2020,7 +2020,7 @@
     },
     "help_him": {
       "type": "choice_point",
-      "narration": "The watcher brings a blanket large enough for Corvane. His mustache has escaped its ribbon, and he looks like someone who has been cold for a very long time. \"Ask before you wrap or move him,\" the watcher says softly.",
+      "narration": "The watcher brings a blanket large enough for Corvane. His mustache has escaped its ribbon, and he looks like someone who has been cold for a very long time. \"Offer to help,\" the watcher whispers. \"Ask before you wrap or move him.\"",
       "cast": [
         {
           "figure": "cast/deep-ice-figure",

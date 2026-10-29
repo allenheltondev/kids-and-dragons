@@ -94,7 +94,7 @@
     },
     "watch_check": {
       "type": "interaction",
-      "narration": "Watch the wyrm curl, breathe and relax. Echo the observed pattern before anyone marks a lane. \"The marks show its reach today,\" says the builder. \"Not a command it must obey.\"",
+      "narration": "Watch the wyrm curl, breathe and relax. Echo the observed pattern before anyone marks a lane. A builder nods at the wyrm. \"The marks show its reach today. Not a command it must obey.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -221,7 +221,7 @@
     },
     "supplies": {
       "type": "choice_point",
-      "narration": "\"The readers will need furniture after the encounter,\" says a builder. A folded table travels easily if the room must move, but takes more setting up if you win this doorway. Shelf parts make a sturdy low shelf here; after a retreat they must be unpacked into a temporary tabletop. Which kit will you carry?",
+      "narration": "The readers will need furniture after the encounter. A folded table travels easily if the room must move, but takes more setting up if you win this doorway. Shelf parts make a sturdy low shelf here; after a retreat they must be unpacked into a temporary tabletop. Which kit will you carry?",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -351,7 +351,7 @@
     },
     "cold_opening": {
       "type": "choice_point",
-      "narration": "An opening in the far wall shows a sheltered snow hollow. The Listening Chime is the travelers' chime: its echo checks an open way back; it cannot command a rift. Loose bones rattle on this side, and the builders leave them alone. \"Check the hollow before inviting any creature into it,\" says a builder slowly.",
+      "narration": "An opening in the far wall shows a sheltered snow hollow. The Listening Chime is the travelers' chime: its echo checks an open way back; it cannot command a rift. Loose bones rattle on this side, and the builders leave them alone. Check the hollow before inviting any creature into it.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -574,7 +574,7 @@
     },
     "bed": {
       "type": "choice_point",
-      "narration": "The hollow is safe. Soft new snow will make a welcoming bowl: on the board, holding its approach for one clear round can invite the wyrm in. A broad slab takes two clear rounds to invite it, but can later be recovered as a low reader step if the hollow stays empty. \"Neither plan promises the wyrm will cooperate,\" says the builder.",
+      "narration": "The hollow is safe. Soft new snow will make a welcoming bowl: on the board, holding its approach for one clear round can invite the wyrm in. A broad slab takes two clear rounds to invite it, but can later be recovered as a low reader step if the hollow stays empty. A builder shrugs. \"Neither plan promises the wyrm will cooperate.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -726,7 +726,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "The builders lead you into a side alcove, away from the nest. They share oat cakes from a tool tin scrubbed clean for lunches. You rest on folded work blankets. One cake has the shape of a very blunt chisel. \"My best work,\" says a builder.",
+      "narration": "The builders lead you into a side alcove, away from the nest. They share oat cakes from a tool tin scrubbed clean for lunches. You rest on folded work blankets. One cake has the shape of a very blunt chisel. A builder beams at it. \"My best work.\"",
       "heal": 2,
       "choices": [
         {
@@ -752,7 +752,7 @@
     },
     "signal": {
       "type": "interaction",
-      "narration": "A builder raises a mitten for wait, spreads both palms for clear and lowers them to finish. Remember the observed signal round. \"These are builder signals,\" says the builder. \"They do not control the wyrm.\"",
+      "narration": "A builder raises a mitten for wait, spreads both palms for clear and lowers them to finish. Remember the observed signal round. The builder wiggles the mitten. \"These are for us. They do not control the wyrm.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1473,7 +1473,7 @@
     },
     "readers_clear": {
       "type": "story",
-      "narration": "The readers reach their safe working place with their notes. \"Every page is here,\" says one.",
+      "narration": "The readers reach their safe working place with their notes. One reader pats the stack. \"Every page is here.\"",
       "onEnter": [
         {
           "type": "setFlag",

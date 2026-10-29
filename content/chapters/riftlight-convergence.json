@@ -81,7 +81,7 @@
     },
     "accounts": {
       "type": "choice_point",
-      "narration": "Orin makes room on the sled. \"Show me the accounts you actually brought,\" he says. Seren Wisp, the kitsune teacher, brings her chime; Pip catches a page with his tail and pretends he meant to. Choose a comparison your road supports, or ask Orin to guide your two checked pages. Nothing here requires taking a memory or a stone.",
+      "narration": "Orin makes room for your accounts. \"Only the ones you actually brought.\" Seren Wisp, the kitsune teacher, brings her chime; Pip catches a page with his tail and pretends he meant to. Choose a comparison your road supports, or ask Orin to guide your two checked pages. Nothing here requires taking a memory or a stone.",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -496,7 +496,7 @@
     },
     "evidence": {
       "type": "story",
-      "narration": "Orin labels the places your party actually visited. Checked observations and the help you received stay on the page together. \"A very confident guess still gets a question mark,\" says Orin.",
+      "narration": "Orin labels the places your party actually visited. Checked observations and the help you received stay on the page together. Orin grins. \"A very confident guess still gets a question mark.\"",
       "choices": [
         {
           "id": "continue",
@@ -774,7 +774,7 @@
     },
     "decision": {
       "type": "choice_point",
-      "narration": "\"Help me stop the experiment,\" Bram asks. \"Stay beside me,\" says Olivia. \"I will stop feeding it and watch what it does.\" What will you do?",
+      "narration": "Bram turns to you. \"Help me stop the experiment.\" Olivia shakes her head. \"Stay beside me. I will stop feeding it and watch what it does.\" What will you do?",
       "choices": [
         {
           "id": "bram",
@@ -1201,7 +1201,7 @@
     },
     "count_check": {
       "type": "interaction",
-      "narration": "Hold the screen cord still while a friend notes the chime's answer. \"We move the cord, not the chime,\" says Seren. Solo heroes can support it on Seren's fixed hook.",
+      "narration": "Hold the screen cord still while a friend notes the chime's answer. The control moves the cord, not the chime. Solo heroes can support it on Seren's fixed hook.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1264,7 +1264,7 @@
       },
       "onSuccess": {
         "goto": "lesson",
-        "narration": "The note wavers again with the cord loose. \"Holding it changed a condition,\" says Seren, \"not an opening's rule.\"",
+        "narration": "The note wavers again with the cord loose. Seren nods. \"Holding it changed a condition, not an opening's rule.\"",
         "effects": [
           {
             "type": "setFlag",
@@ -1335,7 +1335,7 @@
     },
     "lesson": {
       "type": "choice_point",
-      "narration": "Seren calls the lesson Manipulate. \"Hold a condition that is already there,\" she says. \"Do not change a one-way rule or grant a second use.\" Practice by handing the padded grip from helper to helper, or by balancing the felt prop at the cord's mark. A prop still pinning your string measure must first be brought back.",
+      "narration": "Seren calls the lesson Manipulate. \"Hold a condition that is already there. Do not change a one-way rule or grant a second use.\" Practice by handing the padded grip from helper to helper, or by balancing the felt prop at the cord's mark. A prop still pinning your string measure must first be brought back.",
       "cast": [
         {
           "figure": "cast/seren_wisp",
@@ -1685,7 +1685,7 @@
     },
     "finish": {
       "type": "story",
-      "narration": "Seren checks the shelter once more. \"The experimental opening stays marked for watchers,\" she says. You carry the map down the walking passage toward the heart of the glacier.",
+      "narration": "Seren checks the shelter once more. The experimental opening stays marked for watchers. You carry the map down the walking passage toward the heart of the glacier.",
       "choices": [],
       "outcome": "success",
       "cast": [
