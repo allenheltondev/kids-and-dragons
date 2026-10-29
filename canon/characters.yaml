@@ -386,7 +386,7 @@ characters:
         - of: npc.centaur
           because: "The other people who understand that a road is a promise."
         - of: npc.stone_troll
-          because: "A riddle traded at the crossing is worth the whole queue."
+          because: "A riddle traded at the crossing is worth the whole line."
         - of: creature.jackalope
           because: "Keeps the cubs humble and exercised at no charge to the pride."
       dislikes:

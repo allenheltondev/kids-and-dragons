@@ -1347,7 +1347,7 @@
     "cache_fight": {
       "type": "encounter",
       "map": "switchback",
-      "narration": "The wolves wag their glowing tails and creep toward the cairn. They are hungry and cheeky, and they are not very big. A good shout and a firm stand should do it. Pebble hides behind Brask and cheers.",
+      "narration": "The wolves wag their glowing tails and creep toward the cairn. They are hungry and bold, and they are not very big. A good shout and a firm stand should do it. Pebble hides behind Brask and cheers.",
       "enemies": [
         {
           "id": "wolf",

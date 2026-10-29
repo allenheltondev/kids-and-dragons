@@ -819,7 +819,7 @@
     },
     "cord_tangle": {
       "type": "story",
-      "narration": "The cord ties itself into a knot as big as a pillow. You sit in the grass and untangle it one loop at a time while the keeper hums and hands round crackers. A loop snaps tight around a wrist, then lets go, embarrassed. By the end the cord is threaded, the crackers are gone, and nobody can say who ate the last one.",
+      "narration": "The cord ties itself into a knot as big as a pillow. You sit in the grass and untangle it one loop at a time while the keeper hums and hands around crackers. A loop snaps tight around a wrist, then lets go, embarrassed. By the end the cord is threaded, the crackers are gone, and nobody can say who ate the last one.",
       "choices": [
         {
           "id": "continue",
@@ -1135,7 +1135,7 @@
     },
     "nudge_plan": {
       "type": "choice_point",
-      "narration": "The fourth stone leans only a little, but it is big as a bathtub and twice as stubborn. The keeper walks round it twice, like a cat deciding about a box. \"It does not want to move,\" she says. \"It would like us to know that.\" How will you straighten it?",
+      "narration": "The fourth stone leans only a little, but it is big as a bathtub and twice as stubborn. The keeper walks around it twice, like a cat deciding about a box. \"It does not want to move,\" she says. \"It would like us to know that.\" How will you straighten it?",
       "choices": [
         {
           "id": "push",
@@ -1227,7 +1227,7 @@
     },
     "fourth_ok": {
       "type": "story",
-      "narration": "The fourth stone settles with a deep thud. A line of ants walks out from under it in a polite queue, carrying their furniture. Now all nine stones stand along the cord like children waiting for supper, and the keeper walks the row twice just to look at it. \"Straight,\" she says. \"Straight!\"",
+      "narration": "The fourth stone settles with a deep thud. A line of ants walks out from under it in a polite line, carrying their furniture. Now all nine stones stand along the cord like children waiting for supper, and the keeper walks the row twice just to look at it. \"Straight,\" she says. \"Straight!\"",
       "choices": [
         {
           "id": "continue",

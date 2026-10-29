@@ -70,7 +70,7 @@
       "choices": [
         {
           "id": "join_queue",
-          "label": "Join the inspection queue",
+          "label": "Join the inspection line",
           "icon": "travel",
           "goto": "scene_inspection"
         },
@@ -88,7 +88,7 @@
       "discovers": [
         "character.dragonling"
       ],
-      "narration": "A grandmother with spectacles on a chain looks up from her tally book, looks at you, and drops the pencil. \"Well! Look who came home the FRONT way.\" Within a minute you have been hugged by four aunts and handed a warm rock to hold. Then her face goes serious. \"Worst season in the tallies, love. Come and help.\"",
+      "narration": "A grandmother with glasses on a chain looks up from her tally book, looks at you, and drops the pencil. \"Well! Look who came home the FRONT way.\" Within a minute you have been hugged by four aunts and handed a warm rock to hold. Then her face goes serious. \"Worst season in the tallies, love. Come and help.\"",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -119,7 +119,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "A grandmother passes a bell over each pack and tallies every ring. \"Rules are rules,\" she says. \"Your turn.\" She adjusts her spectacles, then her pencil, then her spectacles again.",
+      "narration": "A grandmother passes a bell over each pack and tallies every ring. \"Rules are rules,\" she says. \"Your turn.\" She adjusts her glasses, then her pencil, then her glasses again.",
       "choices": [
         {
           "id": "open_packs",
@@ -280,7 +280,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "You plant your feet and say it exactly the way your grandmother says it, finger wagging and all: \"Take what the mountain drops. Never pry at what it holds. And wipe your feet.\" The man with the pry bar blinks. Every grandmother in earshot nods so hard their spectacles bounce.",
+      "narration": "You plant your feet and say it exactly the way your grandmother says it, finger wagging and all: \"Take what the mountain drops. Never pry at what it holds. And wipe your feet.\" The man with the pry bar blinks. Every grandmother in earshot nods so hard their glasses bounce.",
       "choices": [
         {
           "id": "on",
@@ -466,7 +466,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "Out past the stones, the grandmothers fish you out of the heather, one collar at a time. They bandage your scrapes, hand everybody a warm rock, and give you a stern look over their spectacles. \"Bandages cost, this season,\" says one. \"Everything costs, this season.\" Up the hill, the crabs clack, very pleased with themselves.",
+      "narration": "Out past the stones, the grandmothers fish you out of the heather, one collar at a time. They bandage your scrapes, hand everybody a warm rock, and give you a stern look over their glasses. \"Bandages cost, this season,\" says one. \"Everything costs, this season.\" Up the hill, the crabs clack, very pleased with themselves.",
       "choices": [
         {
           "id": "pay",
@@ -656,11 +656,11 @@
     },
     "scene_tallies": {
       "type": "story",
-      "narration": "Great-Gran Ashby opens a book in the tally house. Eruptions fill its pages in orderly marks. This season's page is mostly question marks. \"Show me what you know,\" says the oldest grandmother. \"We will compare.\"",
+      "narration": "Great-Grandma Ashby opens a book in the tally house. Eruptions fill its pages in orderly marks. This season's page is mostly question marks. \"Show me what you know,\" says the oldest grandmother. \"We will compare.\"",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -697,7 +697,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "narration": "For a thousand years: moons, small Gemfall, moons again. Ashby reads the old rhythm, then this season's broken one. Somebody has drawn a very worried face in the margin.",
@@ -712,11 +712,11 @@
     },
     "scene_charm_rings": {
       "type": "story",
-      "narration": "The witch's charm rings the moment you hold it up, and Great-Gran Ashby goes very still. She opens the oldest book on the shelf, the one with the cracked spine, and points to a mark drawn like a little bell. \"Same note,\" she says. \"My great-great-gran heard it too.\"",
+      "narration": "The witch's charm rings the moment you hold it up, and Great-Grandma Ashby goes very still. She opens the oldest book on the shelf, the one with the cracked spine, and points to a mark drawn like a little bell. \"Same note,\" she says. \"My great-great-grandma heard it too.\"",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -734,7 +734,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -748,7 +748,7 @@
     },
     "check_outline": {
       "type": "interaction",
-      "narration": "Great-Gran Ashby sets a piece of chalk in your hand and taps the clues on the floor map, one at a time, in the order that makes the shape. \"Watch,\" she says. \"Then put them back the same way. Slowly, dears. The map is older than I am.\"",
+      "narration": "Great-Grandma Ashby sets a piece of chalk in your hand and taps the clues on the floor map, one at a time, in the order that makes the shape. \"Watch,\" she says. \"Then put them back the same way. Slowly, dears. The map is older than I am.\"",
       "interaction": {
         "kind": "memory",
         "cue": "Watch the clues light up, then chalk them back in order.",
@@ -796,11 +796,11 @@
       },
       "onFailure": {
         "goto": "scene_here_first",
-        "narration": "You get the pieces muddled, so Great-Gran Ashby moves the chalk marks around with her walking stick, one by one, humming, until the shape is plain."
+        "narration": "You get the pieces muddled, so Great-Grandma Ashby moves the chalk marks around with her walking stick, one by one, humming, until the shape is plain."
       },
       "onAssisted": {
         "goto": "scene_here_first",
-        "narration": "Great-Gran Ashby taps the last clue with her walking stick, just once, and the shape on the floor map is plain: the one note every stone hums, the songs that curl, the jackalopes going quiet, the tallies breaking.",
+        "narration": "Great-Grandma Ashby taps the last clue with her walking stick, just once, and the shape on the floor map is plain: the one note every stone hums, the songs that curl, the jackalopes going quiet, the tallies breaking.",
         "effects": [
           {
             "type": "setFlag",
@@ -812,7 +812,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "art": "scenes/gemfall/tally-house-floor-map"
@@ -820,11 +820,11 @@
     "scene_here_first": {
       "type": "story",
       "priority": 1,
-      "narration": "\"One more thing,\" says Great-Gran Ashby. \"The boundary stones were here first. Before the first families. Already marking the line we mark now.\" She taps the floor map. Everything since Bramblewood points one way: the stones are older than the mountain's name, and the land has always known.",
+      "narration": "\"One more thing,\" says Great-Grandma Ashby. \"The boundary stones were here first. Before the first families. Already marking the line we mark now.\" She taps the floor map. Everything since Bramblewood points one way: the stones are older than the mountain's name, and the land has always known.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -856,17 +856,17 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "roller": "best",
       "onSuccess": {
         "goto": "scene_unassigned",
-        "narration": "On the oldest stone, under the moss, are rows of marks worn almost smooth. They are tally marks, like the grandmothers' marks, but far older. Somebody was counting here before the first families came. The land has been keeping records. Great-Gran Ashby only nods. \"Now come and see my shelf.\""
+        "narration": "On the oldest stone, under the moss, are rows of marks worn almost smooth. They are tally marks, like the grandmothers' marks, but far older. Somebody was counting here before the first families came. The land has been keeping records. Great-Grandma Ashby only nods. \"Now come and see my shelf.\""
       },
       "onFailure": {
         "goto": "scene_unassigned",
-        "narration": "The marks are worn so smooth you cannot tell scratches from weather. Great-Gran Ashby takes your hand and runs your fingers along them: one, one, one, and a gap. \"Counting,\" she says. \"Before us. Come and see the shelf.\""
+        "narration": "The marks are worn so smooth you cannot tell scratches from weather. Great-Grandma Ashby takes your hand and runs your fingers along them: one, one, one, and a gap. \"Counting,\" she says. \"Before us. Come and see the shelf.\""
       }
     },
     "scene_here_first_onward": {
@@ -874,10 +874,10 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
-      "narration": "Behind Great-Gran Ashby, on a shelf of its own, something glints. She sees you looking and does not pretend she hasn't. \"Clever eyes,\" she says, and she reaches up with her walking stick, very gently, the way you would touch a sleeping baby's blanket. \"Come here, then. Carefully.\"",
+      "narration": "Behind Great-Grandma Ashby, on a shelf of its own, something glints. She sees you looking and does not pretend she hasn't. \"Clever eyes,\" she says, and she reaches up with her walking stick, very gently, the way you would touch a sleeping baby's blanket. \"Come here, then. Carefully.\"",
       "choices": [
         {
           "id": "on",
@@ -889,11 +889,11 @@
     },
     "scene_unassigned": {
       "type": "story",
-      "narration": "A fresh-fallen gem rests on an old list of caves nobody may gather in. \"Keeping,\" says Great-Gran Ashby. \"Not hiding.\" Her stick straightens the list without touching the gem.",
+      "narration": "A fresh-fallen gem rests on an old list of caves nobody may gather in. \"Keeping,\" says Great-Grandma Ashby. \"Not hiding.\" Her stick straightens the list without touching the gem.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -948,7 +948,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -962,11 +962,11 @@
     },
     "scene_unassigned_ask_proper": {
       "type": "story",
-      "narration": "You hold the warm rock in both hands and ask, the proper way, the way every dragonling child learns before they learn to fly. Great-Gran Ashby watches you do it with her mouth pressed tight, and then she lifts the gem off its list and sets it in your hands on top of the rock. \"Keeping,\" she says. \"Not taking. You know the difference. Don't you dare sell it.\"",
+      "narration": "You hold the warm rock in both hands and ask, the proper way, the way every dragonling child learns before they learn to fly. Great-Grandma Ashby watches you do it with her mouth pressed tight, and then she lifts the gem off its list and sets it in your hands on top of the rock. \"Keeping,\" she says. \"Not taking. You know the difference. Don't you dare sell it.\"",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -986,7 +986,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "roller": "party",
@@ -1003,11 +1003,11 @@
             "value": true
           }
         ],
-        "narration": "Two hands, slow as a snail, and you square the list after with one finger. Great-Gran Ashby wraps the gem in a page torn from nothing important and puts it in your hands. \"The Unassigned Stone. Keep it. Don't you dare sell it.\""
+        "narration": "Two hands, slow as a snail, and you square the list after with one finger. Great-Grandma Ashby wraps the gem in a page torn from nothing important and puts it in your hands. \"The Unassigned Stone. Keep it. Don't you dare sell it.\""
       },
       "onFailure": {
         "goto": "scene_crawlers_porch",
-        "narration": "Your fingers bump the list crooked, and you grab at the gem as if it might run off. Great-Gran Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
+        "narration": "Your fingers bump the list crooked, and you grab at the gem as if it might run off. Great-Grandma Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
       },
       "checkKind": "doing"
     },
@@ -1110,10 +1110,10 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
-      "narration": "Supper in the bell house is a long table, forty grandmothers, and bread baked on hot rocks. Great-Gran Ashby taps the table with her stick. \"Old rule at this table. Every guest brings something. A story, a recipe, a thing from the road.\" Forty pairs of spectacles turn your way, all at once, and wait.",
+      "narration": "Supper in the bell house is a long table, forty grandmothers, and bread baked on hot rocks. Great-Grandma Ashby taps the table with her stick. \"Old rule at this table. Every guest brings something. A story, a recipe, a thing from the road.\" Forty pairs of glasses turn your way, all at once, and wait.",
       "choices": [
         {
           "id": "tell_road",
@@ -1161,13 +1161,13 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "roller": "party",
       "onSuccess": {
         "goto": "interaction_bell_tuck",
-        "narration": "You tell them about the queues and the jackalopes and the roads that bend, and you do all the voices. Forty grandmothers laugh in the right places and gasp in the right places, and one of them cries a little at the end, and says it is the onions."
+        "narration": "You tell them about the lines and the jackalopes and the roads that bend, and you do all the voices. Forty grandmothers laugh in the right places and gasp in the right places, and one of them cries a little at the end, and says it is the onions."
       },
       "onFailure": {
         "goto": "interaction_bell_tuck",
@@ -1179,7 +1179,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "narration": "Asking forty grandmothers for one recipe gets you forty recipes, all different, and an argument that lasts until dessert. The only thing they agree on is that you are far too thin. You go to bed carrying a pile of loaves, and a list of instructions you will never fully understand.",
@@ -1204,10 +1204,10 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
-      "narration": "You set the Depot Stone on the table. The whole bell house goes silent. Great-Gran Ashby picks up the SOLD tag with two fingers, as if it smells. \"Nobody sells what the mountain drops,\" she says, and she drops the tag in the fire. She pushes the stone back to you. \"Now you're keeping it. Not owning it.\"",
+      "narration": "You set the Depot Stone on the table. The whole bell house goes silent. Great-Grandma Ashby picks up the SOLD tag with two fingers, as if it smells. \"Nobody sells what the mountain drops,\" she says, and she drops the tag in the fire. She pushes the stone back to you. \"Now you're keeping it. Not owning it.\"",
       "choices": [
         {
           "id": "on",
@@ -1219,7 +1219,7 @@
     },
     "rest_bell_house": {
       "type": "rest",
-      "narration": "Sleep on warm stone under silent bells. A grandmother adds a hot rock to your blanket. Outside, the rush still queues by lantern light. Inside, even the smallest bell is tucked in.",
+      "narration": "Sleep on warm stone under silent bells. A grandmother adds a hot rock to your blanket. Outside, the rush still lines up by lantern light. Inside, even the smallest bell is tucked in.",
       "heal": 3,
       "choices": [
         {
@@ -1399,7 +1399,7 @@
           "name": "Bell-Code Expert"
         }
       ],
-      "narration": "You ask about the bell in the corner. The small dragonling, who has talked without stopping since yesterday, stops. \"Nobody rings that one,\" she says quietly. \"Not ever. Great-Gran says we'll know.\" She reaches up on tiptoe and touches its rim, just once. It is cold, in a house full of warm stones.",
+      "narration": "You ask about the bell in the corner. The small dragonling, who has talked without stopping since yesterday, stops. \"Nobody rings that one,\" she says quietly. \"Not ever. Great-Grandma says we'll know.\" She reaches up on tiptoe and touches its rim, just once. It is cold, in a house full of warm stones.",
       "choices": [
         {
           "id": "on",
@@ -1417,7 +1417,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "The morning queue is pushing. A feathered hat shouts from a cart that the stones are ordinary rocks. The grandmothers hold their ground. \"Not one step back, dears,\" says one grandmother. Help make room, share what you know, or use the bell job you prepared.",
+      "narration": "The morning line is pushing. A feathered hat shouts from a cart that the stones are ordinary rocks. The grandmothers hold their ground. \"Not one step back, dears,\" says one grandmother. Help make room, share what you know, or use the bell job you prepared.",
       "choices": [
         {
           "id": "tell_story",
@@ -1708,11 +1708,11 @@
     },
     "scene_who_to_tell": {
       "type": "choice_point",
-      "narration": "\"Who gets the outline first?\" asks Great-Gran Ashby. \"The Skywardens keep logs at their citadel. We grandmothers can send news through the bell towns. Or keep it close until you know more.\" She taps her stick and waits while you decide.",
+      "narration": "\"Who gets the outline first?\" asks Great-Grandma Ashby. \"The Skywardens keep logs at their citadel. We grandmothers can send news through the bell towns. Or keep it close until you know more.\" She taps her stick and waits while you decide.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -1773,11 +1773,11 @@
     },
     "scene_who_to_tell_ring_home": {
       "type": "story",
-      "narration": "You ring your own family's bell, the pattern you learned before you could talk. For a moment nothing. Then, from three towns up the hills, faint and clear, a bell rings the pattern back, and then adds the one that means hurry home for supper. Great-Gran Ashby pretends very hard not to have heard.",
+      "narration": "You ring your own family's bell, the pattern you learned before you could talk. For a moment nothing. Then, from three towns up the hills, faint and clear, a bell rings the pattern back, and then adds the one that means hurry home for supper. Great-Grandma Ashby pretends very hard not to have heard.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -1795,7 +1795,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -1819,7 +1819,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -1843,7 +1843,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -1930,7 +1930,7 @@
       "discovers": [
         "creature.bone_crawler"
       ],
-      "narration": "The moment you step out onto the porch, the humming in your packs jumps. Under the boards something clatters. Out scuttle bone crawlers, small and pale and many-legged, the color of old teeth, and they are drawn to the hum like cats to a warm lap. They are heading straight for the tally house door and the rows and rows of books inside, which is the best nest a crawler ever saw. Great-Gran Ashby plants her walking stick. \"Not in my books,\" she says. \"Shoo them off my porch, dears, before they get in the cabinets.\"",
+      "narration": "The moment you step out onto the porch, the humming in your packs jumps. Under the boards something clatters. Out scuttle bone crawlers, small and pale and many-legged, the color of old teeth, and they are drawn to the hum like cats to a warm lap. They are heading straight for the tally house door and the rows and rows of books inside, which is the best nest a crawler ever saw. Great-Grandma Ashby plants her walking stick. \"Not in my books,\" she says. \"Shoo them off my porch, dears, before they get in the cabinets.\"",
       "cast": [
         {
           "figure": "entities/bone_crawler",
@@ -1938,7 +1938,7 @@
         },
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -1985,11 +1985,11 @@
     },
     "scene_crawlers_shooed": {
       "type": "story",
-      "narration": "The crawlers click, spin, and scuttle away under the porch in one tidy line, as if they had an appointment. Great-Gran Ashby counts the books anyway, twice. Then she digs in her apron and hands you a little brass whistle. \"One loud note,\" she says. \"Crawlers hate it. So do I. Take it.\" Above the hills, the first tiny lights are coming out.",
+      "narration": "The crawlers click, spin, and scuttle away under the porch in one tidy line, as if they had an appointment. Great-Grandma Ashby counts the books anyway, twice. Then she digs in her apron and hands you a little brass whistle. \"One loud note,\" she says. \"Crawlers hate it. So do I. Take it.\" Above the hills, the first tiny lights are coming out.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -2004,11 +2004,11 @@
     },
     "scene_crawlers_scattered": {
       "type": "story",
-      "narration": "The crawlers swarm around and around your boots until the porch is all clatter. Then every grandmother in the tally house comes out ringing a hand bell at once, and the crawlers pop away under the boards like popcorn in reverse. Great-Gran Ashby wraps everybody in blankets and hands out hot tea. Nobody gets a whistle tonight, but the books are safe. Above the hills, the first tiny lights are coming out.",
+      "narration": "The crawlers swarm around and around your boots until the porch is all clatter. Then every grandmother in the tally house comes out ringing a hand bell at once, and the crawlers pop away under the boards like popcorn in reverse. Great-Grandma Ashby wraps everybody in blankets and hands out hot tea. Nobody gets a whistle tonight, but the books are safe. Above the hills, the first tiny lights are coming out.",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -2023,7 +2023,7 @@
     },
     "scene_bell_house_supper_honey": {
       "type": "story",
-      "narration": "You put a coin on the long table. Forty grandmothers go quiet, and then one of them carries in a pot of honey the size of her head. It goes around the table twice, on bread, on porridge, and once, by mistake, on a spectacles case. A grandmother wraps a honeycake in a napkin and slides it into your pack. \"For the road,\" she says. \"The coin was a very nice thought.\"",
+      "narration": "You put a coin on the long table. Forty grandmothers go quiet, and then one of them carries in a pot of honey the size of her head. It goes around the table twice, on bread, on porridge, and once, by mistake, on a glasses case. A grandmother wraps a honeycake in a napkin and slides it into your pack. \"For the road,\" she says. \"The coin was a very nice thought.\"",
       "onEnter": [
         {
           "type": "grantItem",
@@ -2034,7 +2034,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "choices": [
@@ -2051,7 +2051,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "art": "scenes/gemfall/bell-house-tuck-in",
@@ -2200,7 +2200,7 @@
     },
     "interaction_kept_stone": {
       "type": "interaction",
-      "narration": "Great-Gran Ashby agrees to let you carry the stone if you can keep its wrapping level. Raise or lower your side, then lift it gently. Her walking stick hovers over the list, ready to straighten it.",
+      "narration": "Great-Grandma Ashby agrees to let you carry the stone if you can keep its wrapping level. Raise or lower your side, then lift it gently. Her walking stick hovers over the list, ready to straighten it.",
       "interaction": {
         "kind": "balance",
         "cue": "Level the wrapped stone before lifting it from the list.",
@@ -2220,11 +2220,11 @@
             "value": true
           }
         ],
-        "narration": "You level the wrapped stone before lifting it. Great-Gran Ashby checks the list, then gives permission to carry the Unassigned Stone north."
+        "narration": "You level the wrapped stone before lifting it. Great-Grandma Ashby checks the list, then gives permission to carry the Unassigned Stone north."
       },
       "onFailure": {
         "goto": "scene_crawlers_porch",
-        "narration": "Your fingers bump the list crooked, and you grab at the gem as if it might run off. Great-Gran Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
+        "narration": "Your fingers bump the list crooked, and you grab at the gem as if it might run off. Great-Grandma Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
       },
       "onAssisted": {
         "goto": "scene_crawlers_porch",
@@ -2239,19 +2239,19 @@
             "value": true
           }
         ],
-        "narration": "Great-Gran Ashby supports the wrapping with her stick. With that help, you lift the stone, and she gives permission to carry it north."
+        "narration": "Great-Grandma Ashby supports the wrapping with her stick. With that help, you lift the stone, and she gives permission to carry it north."
       },
       "art": "scenes/gemfall/tally-house-floor-map",
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ]
     },
     "interaction_dawn_rope": {
       "type": "interaction",
-      "narration": "Brace the big bell's rope while the acting hero guides the dawn pull. Alone, use the fixed cleat. The expert teaches the crew's hand-to-hand line for bringing help to the queue. She has a clipboard almost as tall as she is.",
+      "narration": "Brace the big bell's rope while the acting hero guides the dawn pull. Alone, use the fixed cleat. The expert teaches the crew's hand-to-hand line for bringing help to the line. She has a clipboard almost as tall as she is.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the rope supports while the acting hero guides the dawn pull.",
@@ -2260,7 +2260,7 @@
       },
       "onSuccess": {
         "goto": "interaction_bell_cart",
-        "narration": "The dawn bell rings cleanly. You practice the crew's passing line for the queue.",
+        "narration": "The dawn bell rings cleanly. You practice the crew's passing line for the line.",
         "effects": [
           {
             "type": "setFlag",
@@ -2299,11 +2299,11 @@
         "kind": "relay",
         "cue": "Catch the signal bell and pass it toward the gate.",
         "actionLabel": "Pass the signal bell",
-        "objectLabel": "The queue's small signal bell"
+        "objectLabel": "The line's small signal bell"
       },
       "onSuccess": {
         "goto": "scene_centaur_whisper",
-        "narration": "The bell reaches the gate. The grandmothers call the queue forward in rows until the pushing stops.",
+        "narration": "The bell reaches the gate. The grandmothers call the line forward in rows until the pushing stops.",
         "effects": [
           {
             "type": "setFlag",
@@ -2314,11 +2314,11 @@
       },
       "onFailure": {
         "goto": "scene_centaur_whisper",
-        "narration": "A grandmother catches the bell before it drops. She leads the queue into rows while you help keep the gap clear."
+        "narration": "A grandmother catches the bell before it drops. She leads the line into rows while you help keep the gap clear."
       },
       "onAssisted": {
         "goto": "scene_centaur_whisper",
-        "narration": "A grandmother fills the gap in the line beside you. Together you deliver the bell and settle the queue.",
+        "narration": "A grandmother fills the gap in the line beside you. Together you deliver the bell and settle the line.",
         "effects": [
           {
             "type": "setFlag",
@@ -2377,11 +2377,11 @@
       },
       "onFailure": {
         "goto": "scene_centaur_whisper",
-        "narration": "The expert fills the missing note. The queue settles while you keep the space clear."
+        "narration": "The expert fills the missing note. The line settles while you keep the space clear."
       },
       "onAssisted": {
         "goto": "scene_centaur_whisper",
-        "narration": "The expert guides the answers beside you. Together you settle the queue with the hand bells.",
+        "narration": "The expert guides the answers beside you. Together you settle the line with the hand bells.",
         "effects": [
           {
             "type": "setFlag",
@@ -2558,7 +2558,7 @@
     ],
     "npcVoices": {
       "great_gran_ashby": "the oldest dragonling grandmother; brisk, tender, unarguable, taps things with her walking stick",
-      "grandmother": "a gate-town grandmother; spectacles on a chain, counts everything, hugs first and inspects later",
+      "grandmother": "a gate-town grandmother; glasses on a chain, counts everything, hugs first and inspects later",
       "small_dragonling": "a bell-code expert aged about six; talks at top speed until the unrung bell comes up",
       "prospector": "a stubborn rush prospector with a pry bar; says 'right, right' and doesn't listen until he does",
       "perrin": "Perrin Nine-Verse, a centaur guide; conspiratorial, emotional, desperate the Shortcut stays an argument",

@@ -200,7 +200,7 @@
     },
     "choice_the_rule_bring_one": {
       "type": "story",
-      "narration": "You chalk BRING ONE THING TO SHARE. By noon the table holds a warden's biscuit tin, a pot of the masks' soup, a pencil, a lump of honeycomb, and a very old map nobody can read. People sit down just to see what is on it. That was the idea.",
+      "narration": "You chalk BRING ONE THING TO SHARE. By noon the table holds a warden's cookie tin, a pot of the masks' soup, a pencil, a lump of honeycomb, and a very old map nobody can read. People sit down just to see what is on it. That was the idea.",
       "choices": [
         {
           "id": "on",
@@ -636,7 +636,7 @@
     },
     "scene_choir_vouch": {
       "type": "story",
-      "narration": "The grandmother hums with them. Not the chord, just a low knitting sort of hum, and the choir softens around it the way a room softens when somebody's nan comes in. \"Teach them,\" she says, and they do, slowly, three notes, until you have them.",
+      "narration": "The grandmother hums with them. Not the chord, just a low knitting sort of hum, and the choir softens around it the way a room softens when somebody's grandma comes in. \"Teach them,\" she says, and they do, slowly, three notes, until you have them.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -1011,7 +1011,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "Mother Thrum, the witch from the ford queue, has come all the way up the road with a wool sock under one arm, and something in it is ringing. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
+      "narration": "Mother Thrum, the witch from the ford line, has come all the way up the road with a wool sock under one arm, and something in it is ringing. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1294,7 +1294,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "Your bigfoot puts one enormous hand on the cart and pushes it up the hill as if it were a pram, while holding a small humming stone in the other hand and frowning at it. Halfway up, the stone goes still for half a breath. The grandmother says she has never seen anything like it, and she has seen a lot.",
+      "narration": "Your bigfoot puts one enormous hand on the cart and pushes it up the hill as if it were a stroller, while holding a small humming stone in the other hand and frowning at it. Halfway up, the stone goes still for half a breath. The grandmother says she has never seen anything like it, and she has seen a lot.",
       "choices": [
         {
           "id": "on",

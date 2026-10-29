@@ -27,7 +27,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Run a message down a two-day queue, with the fastest of you in front",
+      "prompt": "Run a message down a two-day line, with the fastest of you in front",
       "cast": [
         {
           "figure": "cast/relay_runner",
@@ -48,7 +48,7 @@
       },
       "onFailure": {
         "goto": "choice_tolls",
-        "narration": "You run as fast as you can and hand the note to the wrong drover, who reads it out loud to absolutely everybody. That, it turns out, works just as well. By lunchtime the whole queue knows the river is rising."
+        "narration": "You run as fast as you can and hand the note to the wrong drover, who reads it out loud to absolutely everybody. That, it turns out, works just as well. By lunchtime the whole line knows the river is rising."
       },
       "art": "scenes/gemfall/ford-queue-market"
     },
@@ -396,7 +396,7 @@
       },
       "onFailure": {
         "goto": "scene_box_ten",
-        "narration": "You fill in Form 9. It needed Form 7B first. Clerk Pennywhistle is very sorry. The queue behind you is not."
+        "narration": "You fill in Form 9. It needed Form 7B first. Clerk Pennywhistle is very sorry. The line behind you is not."
       },
       "art": "scenes/gemfall/rush-depot",
       "cast": [

@@ -114,7 +114,7 @@
       "tests": "A gasp, then a shout that is funny, not startling, at TV volume.",
       "address": "gemfall-01/scene_griffin_post/narration",
       "script": [
-        { "by": "narrator", "text": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins queue on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with spectacles on a chain, is losing count." },
+        { "by": "narrator", "text": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins line up on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with glasses on a chain, is losing count." },
         { "by": "quill", "text": "<gasp> \"Hands!\"", "delivery": "shout" },
         { "by": "narrator", "text": "she squawks." },
         { "by": "quill", "text": "\"Anybody with hands!\"", "delivery": "shout" }

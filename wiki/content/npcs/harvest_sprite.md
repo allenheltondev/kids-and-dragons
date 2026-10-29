@@ -78,7 +78,7 @@ Harvest sprites tend everything the big folk overlook: the crooked row, the drop
 
 - Competitive tidying. Two sprites, one messy row: it is a race now, and it was always a race.
 - Riding jackalopes. Without the jackalope's knowledge. Briefly.
-- Award ceremonies for plants. The season's best beetroot receives a small woven medal. Attendance is mandatory.
+- Award ceremonies for plants. The season's best beet receives a small woven medal. Attendance is mandatory.
 
 ### Getting Along
 

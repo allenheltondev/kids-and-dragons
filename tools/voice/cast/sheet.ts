@@ -386,8 +386,10 @@ export function collectCharacters(sources: Sources): Draft[] {
       const s = identity(name);
       const parts = s.split("_");
       // The chapter's own voice notes, if they are about this person: same key, or one inside the other's name.
+      // The figure names them too ("cast/nan_rummage"), and survives a rename of the display name.
       const key =
         keys.find((k) => k === s) ??
+        keys.find((k) => figures.has(`cast/${k}`)) ??
         keys.find((k) => parts.includes(k) || k.split("_").every((part) => parts.includes(part)) || (!isRoleName(name) && parts.every((part) => k.split("_").includes(part)))) ??
         keyed.find((k) => identity(nameFromNotes(k.id, k.notes)) === s)?.id;
       // Elsewhere in the game under a fuller or shorter form of the same proper name: "Madame Fenn" is "Coralie Fenn".

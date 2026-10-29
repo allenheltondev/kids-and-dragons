@@ -381,7 +381,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The keeper has three cairn stones, each as heavy as a sleeping goat. They belong on the path, where a traveler will see them before the rope road ends. The boards are slick with mist, and the wind keeps trying to help. Each stone rides a wooden sledge. Someone strong must pull, and the rest must keep the sledge straight.",
+      "narration": "The keeper has three cairn stones, each as heavy as a sleeping goat. They belong on the path, where a traveler will see them before the rope road ends. The boards are slick with mist, and the wind keeps trying to help. Each stone rides a wooden sled. Someone strong must pull, and the rest must keep the sled straight.",
       "choices": [
         {
           "id": "continue",
@@ -403,7 +403,7 @@
       "stat": "might",
       "tn": 12,
       "roller": "best",
-      "prompt": "Drag the cairn stones along the slick path. The strongest of you pulls, and the rest steady the sledge.",
+      "prompt": "Drag the cairn stones along the slick path. The strongest of you pulls, and the rest steady the sled.",
       "onSuccess": {
         "goto": "markers_set"
       },
@@ -439,7 +439,7 @@
           "name": "Temple keeper"
         }
       ],
-      "narration": "The last stone slides off its sledge, rolls to the edge, and drops out of sight. You wait for a crash. Nothing comes. \"It will arrive somewhere,\" says the keeper. She ties her own washing line between the two cairns you saved and clips a spoon to it. The spoon clatters in the wind, which is more warning than you expected.",
+      "narration": "The last stone slides off its sled, rolls to the edge, and drops out of sight. You wait for a crash. Nothing comes. \"It will arrive somewhere,\" says the keeper. She ties her own washing line between the two cairns you saved and clips a spoon to it. The spoon clatters in the wind, which is more warning than you expected.",
       "choices": [
         {
           "id": "continue",
@@ -2467,7 +2467,7 @@
           "name": "Pip Thistledown"
         }
       ],
-      "narration": "The wisps swirl around you until the world is all dizzy sparkles. The keeper rings the shrine bell with both paws. Wisps hate a loud, honest bell, and they scatter into the dusk with a rude little pop. The keeper wraps everyone in blankets and passes round hot tea. Nobody gets a jar of glow tonight, but the basket is still burning, a little singed and very proud.",
+      "narration": "The wisps swirl around you until the world is all dizzy sparkles. The keeper rings the shrine bell with both paws. Wisps hate a loud, honest bell, and they scatter into the dusk with a rude little pop. The keeper wraps everyone in blankets and passes around hot tea. Nobody gets a jar of glow tonight, but the basket is still burning, a little singed and very proud.",
       "choices": [
         {
           "id": "continue",

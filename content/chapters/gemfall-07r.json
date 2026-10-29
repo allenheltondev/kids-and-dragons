@@ -14,7 +14,7 @@
   "entry": "scene_the_pinch",
   "plate": {
     "art": "plates/gemfall/07r",
-    "narration": "At the Pinch, a wheelbarrow full of glitter has jammed between two rocks. Its owner looks proudly at the load. Behind him, the wagon queue grows longer. Before this road can turn toward home, somebody has to get it moving."
+    "narration": "At the Pinch, a wheelbarrow full of glitter has jammed between two rocks. Its owner looks proudly at the load. Behind him, the wagon line grows longer. Before this road can turn toward home, somebody has to get it moving."
   },
   "objectives": [
     {
@@ -376,7 +376,7 @@
         },
         {
           "id": "queue",
-          "label": "Keep the queue of sorry buyers moving",
+          "label": "Keep the line of sorry buyers moving",
           "icon": "forward",
           "goto": "scene_grandmothers_queue",
           "effects": [
@@ -391,7 +391,7 @@
     },
     "scene_grandmothers_queue": {
       "type": "story",
-      "narration": "You keep the queue of sorry buyers moving. It is a long queue and they are very sorry. One of them tries to leave without handing anything over, and three grandmothers say \"No, dear\" at once, in harmony, and he comes back without a word and empties both pockets.",
+      "narration": "You keep the line of sorry buyers moving. It is a long line and they are very sorry. One of them tries to leave without handing anything over, and three grandmothers say \"No, dear\" at once, in harmony, and he comes back without a word and empties both pockets.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -767,7 +767,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "It is Mother Thrum, the witch from the ford queue, in her pointed hat, with a wool sock tucked under one arm. Something in the sock is ringing. She has walked the whole road north for this. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
+      "narration": "It is Mother Thrum, the witch from the ford line, in her pointed hat, with a wool sock tucked under one arm. Something in the sock is ringing. She has walked the whole road north for this. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -827,7 +827,7 @@
     },
     "scene_ford_witch_put_back": {
       "type": "story",
-      "narration": "\"To put them all back,\" you say. Mother Thrum looks at you for a long moment over her spectacles. Then she unwraps the sock and sets a stone from the ford in your hands, and for the first time since the ford it stops ringing. \"There,\" she says. \"That was the answer. Took you long enough.\"",
+      "narration": "\"To put them all back,\" you say. Mother Thrum looks at you for a long moment over her glasses. Then she unwraps the sock and sets a stone from the ford in your hands, and for the first time since the ford it stops ringing. \"There,\" she says. \"That was the answer. Took you long enough.\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1092,7 +1092,7 @@
         },
         {
           "id": "sledge",
-          "label": "Build a sledge out of a broken door",
+          "label": "Build a sled out of a broken door",
           "icon": "clever",
           "goto": "check_haul_sledge"
         },
@@ -1194,15 +1194,15 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Build a sledge that slides uphill",
+      "prompt": "Build a sled that slides uphill",
       "roller": "party",
       "onSuccess": {
         "goto": "interaction_shelter_stack",
-        "narration": "Rope, a broken door and some greased planks. The sledge glides up the slope on its runners like a dream, and a crowd of dragonling children follow it all the way to the shelter, asking for a turn."
+        "narration": "Rope, a broken door and some greased planks. The sled glides up the slope on its runners like a dream, and a crowd of dragonling children follow it all the way to the shelter, asking for a turn."
       },
       "onFailure": {
         "goto": "interaction_shelter_stack",
-        "narration": "The sledge works beautifully, in the wrong direction. It slides gently back to the bottom of the hill twice before you think to tie it to a tree and winch it up, one heave at a time. It gets there. Eventually."
+        "narration": "The sled works beautifully, in the wrong direction. It slides gently back to the bottom of the hill twice before you think to tie it to a tree and winch it up, one heave at a time. It gets there. Eventually."
       }
     },
     "choice_haul_others": {
@@ -1591,7 +1591,7 @@
       "discovers": [
         "creature.snowhorn_goat"
       ],
-      "narration": "There is a goat path above the slide, about as wide as a sandwich. You go round in single file, one careful step at a time, not looking down. A snowhorn goat coming the other way stops, considers you, and steps politely aside onto what appears to be nothing at all.",
+      "narration": "There is a goat path above the slide, about as wide as a sandwich. You go around in single file, one careful step at a time, not looking down. A snowhorn goat coming the other way stops, considers you, and steps politely aside onto what appears to be nothing at all.",
       "choices": [
         {
           "id": "on",
@@ -1943,7 +1943,7 @@
     },
     "choice_the_bend_heard_it": {
       "type": "story",
-      "narration": "You heard this caravan in last night's verse, and you are at the bend an hour before it is. When the lead wagon comes round the hairpin, you are already sitting on the rock it has to stop at, and the caravan master looks at you as if you have cheated, which, in a way, you have.",
+      "narration": "You heard this caravan in last night's verse, and you are at the bend an hour before it is. When the lead wagon comes around the hairpin, you are already sitting on the rock it has to stop at, and the caravan master looks at you as if you have cheated, which, in a way, you have.",
       "choices": [
         {
           "id": "on",
@@ -2555,7 +2555,7 @@
     },
     "scene_drake_rescued": {
       "type": "story",
-      "narration": "The drake's tail sweeps your feet out from under you, and everyone sits down hard in the moss. Nobody is hurt. A warden runner jogging down the mountain skids to a halt, sees the drake's dry sides, and empties a whole water-skin over its snout. The drake forgets all about you and goes to sulk in the spring. The runner hands round hot tea and warm blankets. Nobody gets a flask of spring water tonight, but the path is clear.",
+      "narration": "The drake's tail sweeps your feet out from under you, and everyone sits down hard in the moss. Nobody is hurt. A warden runner jogging down the mountain skids to a halt, sees the drake's dry sides, and empties a whole water-skin over its snout. The drake forgets all about you and goes to sulk in the spring. The runner hands around hot tea and warm blankets. Nobody gets a flask of spring water tonight, but the path is clear.",
       "choices": [
         {
           "id": "on",

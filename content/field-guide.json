@@ -976,7 +976,7 @@
         "story": "A river drake claims a stretch of deep water the way other folk claim a trade, and it works the position with genuine professionalism: it knows the ferry schedule better than the ferryman, adjusts its rates by cargo, weather, and how the day is going, and never takes more than the toll. Where the toll came from, and by what authority, are questions the drake considers closed.",
         "pastimes": [
           "Rearranging the hoard shelf: fish bones, boat fittings, and one perfect otter-polished stone it will not discuss.",
-          "Timing the caravan queue from underwater and surfacing at the exact moment it is longest.",
+          "Timing the caravan line from underwater and surfacing at the exact moment it is longest.",
           "Napping in the bridge's shadow with one eye open, which it considers being at work."
         ],
         "likes": [
@@ -1555,7 +1555,7 @@
           {
             "of": "npc.stone_troll",
             "title": "Stone Troll",
-            "because": "A riddle traded at the crossing is worth the whole queue."
+            "because": "A riddle traded at the crossing is worth the whole line."
           },
           {
             "of": "creature.jackalope",
@@ -2032,7 +2032,7 @@
         "pastimes": [
           "Competitive tidying. Two sprites, one messy row: it is a race now, and it was always a race.",
           "Riding jackalopes. Without the jackalope's knowledge. Briefly.",
-          "Award ceremonies for plants. The season's best beetroot receives a small woven medal. Attendance is mandatory."
+          "Award ceremonies for plants. The season's best beet receives a small woven medal. Attendance is mandatory."
         ],
         "likes": [
           {
@@ -2317,7 +2317,7 @@
         {
           "of": "character.manticore",
           "title": "Manticore",
-          "because": "A riddle traded at the crossing is worth the whole queue."
+          "because": "A riddle traded at the crossing is worth the whole line."
         },
         {
           "of": "creature.echo_hunter",
@@ -2634,7 +2634,7 @@
           {
             "place": "location.stone_crossing",
             "title": "Stone Crossing",
-            "relationship": "The southern door and the social calendar: escorts begin and end there, riddles are traded there, and a pride's reputation is half made in the bridge queue."
+            "relationship": "The southern door and the social calendar: escorts begin and end there, riddles are traded there, and a pride's reputation is half made in the bridge line."
           },
           {
             "place": "route.northern_river_bridge",
@@ -2941,7 +2941,7 @@
           {
             "place": "route.northern_river_bridge",
             "title": "Ashspan Bridge",
-            "relationship": "The one way east without wings. When the bridge queue backs up, foothill trade holds its breath."
+            "relationship": "The one way east without wings. When the bridge line backs up, foothill trade holds its breath."
           }
         ],
         "recorded_history": "Dragonling history is kept as eruption tallies and boundary stones. The great dates are the eruptions with names, each one the founding of some part of the warning system - the bells after one, the moth-watch after another, the grandmothers' authority after a third, which nobody has been reckless enough to question since.",
@@ -3054,7 +3054,7 @@
           {
             "place": "location.stone_crossing",
             "title": "Stone Crossing",
-            "relationship": "The eastern gate: everything bound over the river queues at the bridge, and a bad week at the crossing is a fine week for every wayside pie stand in the southern Fields."
+            "relationship": "The eastern gate: everything bound over the river lines up at the bridge, and a bad week at the crossing is a fine week for every wayside pie stand in the southern Fields."
           },
           {
             "place": "location.bramblewood",
@@ -3067,7 +3067,7 @@
             "relationship": "The Fields' ditches borrow the water and the marsh keeps the ledger; the two settle accounts through the frogfolk every dry year, and have never once been overdrawn."
           }
         ],
-        "recorded_history": "The Fields' history is a festival calendar with the history attached: every flood, drought, and triumphant beetroot is remembered as the festival founded about it. The cooperatives are older than money and keep their records in song, pie, and extremely durable grudges about weather.",
+        "recorded_history": "The Fields' history is a festival calendar with the history attached: every flood, drought, and triumphant beet is remembered as the festival founded about it. The cooperatives are older than money and keep their records in song, pie, and extremely durable grudges about weather.",
         "cultural_significance": "The realm eats because the Fields work. Every region knows it, the Fields never mention it, and the resulting politeness is one of the realm's great diplomatic assets."
       }
     },
@@ -3188,7 +3188,7 @@
           {
             "place": "location.stone_crossing",
             "title": "Stone Crossing",
-            "relationship": "Bridge news arrives with every wagon, and a queue at the crossing is a full inn at Bramblewood."
+            "relationship": "Bridge news arrives with every wagon, and a line at the crossing is a full inn at Bramblewood."
           },
           {
             "place": "location.exchange",
@@ -3450,7 +3450,7 @@
       "asset_id": "stone_crossing",
       "art": "/assets/biomes/stone_crossing/portrait.webp",
       "place": {
-        "origin": "The accepted account is that the trolls built the bridge because the river was being unreasonable, and that the settlement is, at bottom, a queue that put down roots.",
+        "origin": "The accepted account is that the trolls built the bridge because the river was being unreasonable, and that the settlement is, at bottom, a line that put down roots.",
         "common_beliefs": [
           "Pay the drake, answer the troll, and tip the ferryman in song. The crossing is cheap if you count right.",
           "A riddle owed at the bridge is a debt. The interest is embarrassment.",
@@ -3468,7 +3468,7 @@
           {
             "place": "biome.sunward_fields",
             "title": "The Sunward Fields",
-            "relationship": "The western approach is Fields country, and a long queue at the bridge is the best market day the nearby cooperatives get."
+            "relationship": "The western approach is Fields country, and a long line at the bridge is the best market day the nearby cooperatives get."
           },
           {
             "place": "biome.eastern_plains",

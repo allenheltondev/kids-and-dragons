@@ -10,7 +10,7 @@
   "entry": "arrival",
   "plate": {
     "art": "plates/riftlight/convergence",
-    "narration": "A sheltered ledge looks out across the glacier. On an upturned sledge, a broad map waits beside loose sheets and a warm lantern. Beyond the shelter, the ice stretches blue and quiet."
+    "narration": "A sheltered ledge looks out across the glacier. On an upturned sled, a broad map waits beside loose sheets and a warm lantern. Beyond the shelter, the ice stretches blue and quiet."
   },
   "goal": {
     "text": "Compare your discoveries and help the travelers steady a new opening.",

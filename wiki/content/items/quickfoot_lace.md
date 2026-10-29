@@ -17,7 +17,7 @@ related:
 ai_context:
   mood: "A boot lace of braided otter-hair that never once needs retying."
   themes: "Charm, Quick, Exchange, Common"
-  visual_style: "Dark plaited cord with a silver sheen through it, threaded through one boot only."
+  visual_style: "Dark braided cord with a silver sheen through it, threaded through one boot only."
   common_encounters: "Bought by couriers. Traded for far more than it costs."
   lore_highlights: ""
   related_entities: "location.exchange, creature.silver_otter"
