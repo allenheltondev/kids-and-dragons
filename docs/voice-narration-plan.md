@@ -384,8 +384,8 @@ Two layers, both in code:
   the wording that reads best there.
 - **The `speak()` seam rewords everything** (`withoutNames`, `packages/shared/src/spoken-names.ts`).
   The client registers the party's hero names with `setUnspokenNames` whenever the party changes
-  (`store/index.ts`), and `speak()` and `hear()` say each one as "the hero", "the hero's",
-  "the heroes" for a list, or "hero" when it is addressed ("Well done, hero!"). A line a surface
+  (`store/index.ts`), and `speak()` and `hear()` say each one as "hero" ("Hero chose…",
+  "Hero's turn", "at hero"), or "heroes" for a list ("Ana, Bo and Cy" → "heroes"). A line a surface
   forgot, or an engine string that grows a name later, is caught here. A name is matched whole, as
   typed or capitalised, so "a rose" stays a rose for a hero called Rose; a sentence beginning
   "Rose petals" would be reworded too, which is the accepted cost.
@@ -397,15 +397,15 @@ synthesizer refuses a segment with an unfilled token. Recorded clips are authore
 
 | Surface | Shown | Heard (device voice) |
 |---|---|---|
-| Whose turn (`NarrationPanel`) | Ana's turn to choose | Your turn, hero. |
-| Decision line (`NarrationPanel`) | Ana chose: Climb the wall. | The hero chose: Climb the wall. |
-| Hand-offs (`NarrationPanel`) | Ana wants to give Bo a Sunbloom Draught. | A hero wants to give a friend a Sunbloom Draught. |
-| Rank-ups (engine `rankUpLine`) | Ana is a Thornguard Apprentice now! | The hero is a Thornguard Apprentice now! (the seam) |
-| Roll results (`DiceOverlay`) | Ana rolled 14 … | The hero rolled 14 …, help "from a friend" |
-| Fight log and matchups (`FightLog`) | Ana hits the bog troll. | The hero hits the bog troll. (the seam) |
-| Transform cutscene (`TransformCutscene`) | Ana is shining! | Our hero is shining! |
-| Chapter recap (`ChapterCompletePanel`) | Ana earned 10 experience from their own good rolls. | A hero earned 10 experience from their own good rolls. |
-| Anything else the engine composes with a name | Ana and Bo found it. | The heroes found it. (the seam) |
+| Whose turn (`NarrationPanel`) | Ana's turn to choose | Hero's turn. |
+| Decision line (`NarrationPanel`) | Ana chose: Climb the wall. | Hero chose: Climb the wall. |
+| Hand-offs (`NarrationPanel`) | Ana wants to give Bo a Sunbloom Draught. | Hero wants to give another hero a Sunbloom Draught. |
+| Rank-ups (engine `rankUpLine`) | Ana is a Thornguard Apprentice now! | Hero is a Thornguard Apprentice now! (the seam) |
+| Roll results (`DiceOverlay`) | Ana rolled 14, plus 3 from Bo … | Hero rolled 14, plus 3 from another hero … |
+| Fight log and matchups (`FightLog`) | Ana hits the bog troll. | Hero hits the bog troll. (the seam) |
+| Transform cutscene (`TransformCutscene`) | Ana is shining! | Hero is shining! |
+| Chapter recap (`ChapterCompletePanel`) | Ana earned 10 experience from their own good rolls. | Hero earned 10 experience from their own good rolls. |
+| Anything else the engine composes with a name | Ana and Bo found it. | Heroes found it. (the seam) |
 
 The same list is `NAME_BEARING_SURFACES` in code. Authored narration carries no hero names (only
 `{party}` and `{facets}`, which the validator enforces), so every recorded line stays recordable.

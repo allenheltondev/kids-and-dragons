@@ -120,7 +120,7 @@ describe("announcing a hand-off (spec §9.4)", () => {
   });
   it("says what is being given out loud, with the names left on screen (#552)", () => {
     mount({ trades: [OFFER] });
-    expect(spoken).toContain("A hero wants to give a friend a Sunbloom Draught.");
+    expect(spoken).toContain("Hero wants to give another hero a Sunbloom Draught.");
     expect(spoken.join(" ")).not.toMatch(/Sparklehoof|Thistle/);
   });
 
@@ -261,7 +261,7 @@ describe("the story turn (spec §6.1)", () => {
     mount(storyChoice(["p_2"]));
     expect(screen.getByText(/Thistle.s turn to choose/)).toBeTruthy();
     // The name is on screen; the room hears "hero" (#552).
-    expect(spoken).toContain("Your turn, hero.");
+    expect(spoken).toContain("Hero's turn.");
     expect(spoken.join(" ")).not.toContain("Thistle");
   });
 
@@ -375,8 +375,8 @@ describe("what the table picked (RunState.decision)", () => {
   it("names the kid who picked, when one kid chose for everyone", () => {
     mount({ sceneId: "camp", decision: { ...DECIDED, label: "Go west", vote: false } });
     expect(screen.getByTestId("decision").textContent).toBe("Thistle chose: Go west.");
-    // Named on screen, "the hero" out loud (#552).
-    expect(spoken.some((line) => line.startsWith("The hero chose: Go west."))).toBe(true);
+    // Named on screen, "hero" out loud (#552).
+    expect(spoken.some((line) => line.startsWith("Hero chose: Go west."))).toBe(true);
   });
 
   it("does not add a full stop to a label that already has one", () => {
@@ -604,10 +604,10 @@ describe("a hero's name is shown, never spoken (#552)", () => {
     expect(screen.getByTestId("rank-up").textContent).toContain(NAME);
 
     const heard = spoken.join(" ");
-    expect(heard).toContain("The hero chose: Rest a while.");
-    expect(heard).toContain("The hero is a Duskrunner Apprentice now!");
-    expect(heard).toContain("Your turn, hero.");
-    expect(heard).toContain("A hero wants to give a friend a Sunbloom Draught.");
+    expect(heard).toContain("Hero chose: Rest a while.");
+    expect(heard).toContain("Hero is a Duskrunner Apprentice now!");
+    expect(heard).toContain("Hero's turn.");
+    expect(heard).toContain("Hero wants to give another hero a Sunbloom Draught.");
     expect(heard).not.toMatch(/Zephyrine|Quillfeather|Thistle/);
   });
 });

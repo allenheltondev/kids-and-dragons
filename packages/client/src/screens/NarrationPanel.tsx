@@ -49,7 +49,7 @@ function prettyChapter(chapterId: string): string {
 
 /**
  * "Sparklehoof wants to give Thistle a Sunbloom Draught." on screen; heard as
- * "A hero wants to give a friend a Sunbloom Draught." (#552: a name is shown,
+ * "Hero wants to give another hero a Sunbloom Draught." (#552: a name is shown,
  * never spoken). `nameOf` is left out to get the spoken line.
  *
  * Third person and on the shared surface, because a hand-off is a table event
@@ -63,7 +63,7 @@ export function offerLine(
   nameOf: ((playerId: string) => string) | null,
   itemName: (itemId: string) => string,
 ): string {
-  if (nameOf === null) return `A hero wants to give a friend a ${itemName(offer.itemId)}.`;
+  if (nameOf === null) return `Hero wants to give another hero a ${itemName(offer.itemId)}.`;
   return `${nameOf(offer.fromPlayerId)} wants to give ${nameOf(offer.toPlayerId)} a ${itemName(offer.itemId)}.`;
 }
 
@@ -102,9 +102,9 @@ export function NarrationPanel(): ReactElement | null {
       : decided.vote
         ? `The party voted: ${picked}`
         : `${party.find((m) => m.playerId === decided.byPlayerId)?.character.name ?? "Someone"} chose: ${picked}`;
-  // The same line as heard: who chose is on the screen, and the room hears "the hero" (#552).
+  // The same line as heard: who chose is on the screen, and the room hears "hero" (#552).
   const spokenDecision =
-    decided === null || picked === null ? null : decided.vote ? `The party voted: ${picked}` : `The hero chose: ${picked}`;
+    decided === null || picked === null ? null : decided.vote ? `The party voted: ${picked}` : `Hero chose: ${picked}`;
   // The practice's line of what to tap (#255): shown under the words, in a
   // fight too, because that is where the board's lesson is.
   const hint = state?.hint ?? null;
@@ -249,7 +249,7 @@ export function NarrationPanel(): ReactElement | null {
    * that owns them (PlayerPanel), so a table of phones does not hear every
    * list twice; the shared screen announces only what is the room's business.
    *
-   * The screen names the holder; the room hears "Your turn, hero." (#552), once
+   * The screen names the holder; the room hears "Hero's turn." (#552), once
    * per holder, so a turn passing from one hero to the next is still announced.
    */
   const turnHolder = turnName === null || prompt?.kind !== "choice" ? "" : prompt.forPlayerIds[0] ?? "";
@@ -257,7 +257,7 @@ export function NarrationPanel(): ReactElement | null {
   useEffect(() => {
     if (turnHolder === "" || spokenChoices.current === turnHolder || prefacePending) return;
     spokenChoices.current = turnHolder;
-    speak("Your turn, hero.", { source: "prompt" });
+    speak("Hero's turn.", { source: "prompt" });
   }, [turnHolder, prefacePending]);
 
   const rollText = prompt !== null && prompt.kind === "roll" ? prompt.prompt : "";

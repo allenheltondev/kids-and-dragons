@@ -21,7 +21,7 @@ Each device decides for itself, and speaks only when its own switch is on.
 
 | Surface | Reads |
 | --- | --- |
-| Party Mode display (TV) | narration, "Your turn, hero.", roll prompts, hand-offs |
+| Party Mode display (TV) | narration, "Hero's turn.", roll prompts, hand-offs |
 | Party Mode phone | its own player's choices (once per question) |
 | Travel Mode phone | both, narration first, then its choices |
 
