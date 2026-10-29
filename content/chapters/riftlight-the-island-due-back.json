@@ -933,7 +933,7 @@
     },
     "signal_plan": {
       "type": "choice_point",
-      "narration": "The keeper lays out the cloths: white means watch; striped means stop. \"I can repeat your signal so you know it reached me,\" says Pip. \"Or I keep watching the island while the keeper calls.\" Repeating will help with the later bearing; continuous watching follows the notch. Which job will you practice?",
+      "narration": "The keeper lays out the cloths: white means watch; striped means stop. Pip can repeat your signal so you know it reached him, or keep watching the island while the keeper calls. Repeating will help with the later bearing; continuous watching follows the notch. Which job will you practice?",
       "choices": [
         {
           "id": "option_1",
@@ -1090,7 +1090,7 @@
     },
     "bearings": {
       "type": "choice_point",
-      "narration": "The returning island clears the cloud with its flat shelf and stone's empty eye. \"The board only fits while the shelves are close,\" Pip reminds you. Compare its painted marks with the gap, or follow the shelves' movement. Your repeated signal, if practiced, gives a wider measuring interval. How will you check the approach?",
+      "narration": "The returning island clears the cloud with its flat shelf and stone's empty eye. The landing board fits only while the shelves are close. Compare its painted marks with the gap, or follow the shelves' movement. Your repeated signal, if practiced, gives a wider measuring interval. How will you check the approach?",
       "choices": [
         {
           "id": "option_1",
@@ -1412,7 +1412,7 @@
     },
     "landing": {
       "type": "choice_point",
-      "narration": "The keeper lays the board between the close shelves. A second keeper secures the far rope. You can center the near foot, or level the loaded board before following its side ropes. \"We will watch the gap the whole time,\" says the keeper, \"and call you back.\" Which job will you take?",
+      "narration": "The keeper lays the board between the close shelves. A second keeper secures the far rope. You can center the near foot, or level the loaded board before following its side ropes. \"We will watch the gap the whole time,\" the keeper promises, \"and call you back.\" Which job will you take?",
       "choices": [
         {
           "id": "option_1",
@@ -2335,7 +2335,7 @@
     },
     "record": {
       "type": "choice_point",
-      "narration": "The keeper asks permission to keep a copy of your observations. Your sketch can stay private or help other readers test the match. \"The stone stays here either way,\" says the keeper. What may she copy?",
+      "narration": "The keeper asks permission to keep a copy of your observations. Your sketch can stay private or help other readers test the match. The keeper smiles. \"The stone stays here either way.\" What may she copy?",
       "choices": [
         {
           "id": "option_1",
@@ -3200,7 +3200,7 @@
     },
     "camp": {
       "type": "rest",
-      "narration": "The keeper brings ginger tea to the lookout roof while your party rests. Pip tries to weigh down a song slip with his cup, then remembers that he wants the tea. Outside, the island keeps its slow course. \"The landing board and signal cloths are ready for the next job,\" says the keeper.",
+      "narration": "The keeper brings ginger tea to the lookout roof while your party rests. Pip tries to weigh down a song slip with his cup, then remembers that he wants the tea. Outside, the island keeps its slow course. The landing board and signal cloths are ready for the next job.",
       "cast": [
         {
           "figure": "cast/island_keeper",

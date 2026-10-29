@@ -440,7 +440,7 @@
     },
     "hatch_party": {
       "type": "interaction",
-      "narration": "The whole town is out in the thin sunlight, blinking, and everybody wants something at once. The families need many hands. \"Pick a job and do it,\" says the guide, \"and do it loudly.\" Her grandmother is last through the hatch, and she is not patient.",
+      "narration": "The whole town is out in the thin sunlight, blinking, and everybody wants something at once. The families need many hands. The guide claps her fins. \"Pick a job and do it, and do it loudly.\" Her grandmother is last through the hatch, and she is not patient.",
       "interaction": {
         "kind": "play",
         "participation": "everyone",
@@ -1057,7 +1057,7 @@
     },
     "camp": {
       "type": "rest",
-      "narration": "The families of Tidepocket press a hot kelp cake into every hand. \"Diggers eat first,\" says the guide. You rest on the dry top of the burrow while the tide comes in around you, silver and quiet. The fiddler crabs wave goodnight, or possibly good morning. Across the flats, two travelers wade toward you in Riftseeker clasps, one of them with far too many tails to count.",
+      "narration": "The families of Tidepocket press a hot kelp cake into every hand. The guide waves you forward. \"Diggers eat first.\" You rest on the dry top of the burrow while the tide comes in around you, silver and quiet. The fiddler crabs wave goodnight, or possibly good morning. Across the flats, two travelers wade toward you in Riftseeker clasps, one of them with far too many tails to count.",
       "heal": 2,
       "choices": [
         {
