@@ -118,6 +118,8 @@ it("a background-only story biome needs explicit scene art rather than tactical 
       if (!kept.includes(id)) fs.rmSync(path.join(root, "content/chapters", `${id}.json`));
     }
     fixture.chapters = kept;
+    // The finale is gone, and its epilogues with it.
+    delete fixture.epilogues;
     fixture.graph = { version: 1, entry: kept[0], flags: fixture.graph.flags,
       nodes: Object.fromEntries(kept.map((id, i) => [id, { chapter: id, ...(i === kept.length - 1 ? { ending: { title: "Art fixture" } } : {}) }])),
       edges: Object.fromEntries(kept.slice(1).map((id, i) => [`next_${i}`, { from: kept[i], to: id, kind: "forward" }])) };

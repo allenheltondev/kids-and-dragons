@@ -339,7 +339,7 @@ describe("cross-file rules", () => {
       expect(result.code).not.toBe(0);
     });
 
-    it("catches a campaign requiring itself, and a requires the schema refuses", () => {
+    it("catches a campaign requiring itself", () => {
       const self = copyTree();
       const crown = readJson(self, ...CROWN);
       crown.requires = ["the-hollow-crown"];
@@ -347,7 +347,9 @@ describe("cross-file rules", () => {
       const selfResult = validate(self);
       expect(selfResult.out).toContain('campaign "the-hollow-crown" cannot require itself');
       expect(selfResult.code).not.toBe(0);
+    });
 
+    it("catches an empty prerequisite list the schema refuses", () => {
       const empty = copyTree();
       const bare = readJson(empty, ...CROWN);
       bare.requires = [];
@@ -1359,9 +1361,16 @@ describe("class deeds (#310, docs/class-mastery.md §6)", () => {
     expect(result.out).toContain("Master includes a story deed");
   });
 
-  it("rejects a deed the game does not count, and a class with no ladder", () => {
-    expect(withRules((r) => { r.classes.starweaver.deeds.apprentice.withFriends = { stare_hard: 2 }; }).code).not.toBe(0);
-    expect(withRules((r) => { delete r.classes.thornguard.deeds; }).code).not.toBe(0);
+  // Each validation copies and checks the full content tree. Keep the cases
+  // separate so two subprocess runs do not share one five-second CI timeout.
+  it("rejects a deed the game does not count", () => {
+    const result = withRules((r) => { r.classes.starweaver.deeds.apprentice.withFriends = { stare_hard: 2 }; });
+    expect(result.code, result.out).not.toBe(0);
+  });
+
+  it("rejects a class with no ladder", () => {
+    const result = withRules((r) => { delete r.classes.thornguard.deeds; });
+    expect(result.code, result.out).not.toBe(0);
   });
 });
 
@@ -1482,27 +1491,37 @@ describe("story plates (docs/story-plates.md)", () => {
     expect(result.code).not.toBe(0);
   });
 
-  it("catches a plate that counts the party or leaves a token", () => {
+  // Each case runs the full-tree validator once, with its own CI timeout.
+  it("catches a plate that counts the party", () => {
     const counted = breaking(RIFTLIGHT, (c) => {
       c.prologue.plates[1].narration = "All three of you hear the bell.";
     });
     expect(counted.out).toContain("counts the party");
+    expect(counted.code, counted.out).not.toBe(0);
+  });
+
+  it("catches a plate that leaves a token", () => {
     const token = breaking(FINALE, (c) => {
       c.plate.narration = "Welcome back, {party}.";
     });
     expect(token.out).toContain("has a {token}");
+    expect(token.code, token.out).not.toBe(0);
   });
 
-  it("catches a prologue of two plates, and a painting in another campaign's folder", () => {
+  it("catches a prologue of two plates", () => {
     const short = breaking(RIFTLIGHT, (c) => {
       c.prologue.plates.length = 2;
     });
     expect(short.out).toContain("/prologue");
     expect(short.code).not.toBe(0);
+  });
+
+  it("catches a painting in another campaign's folder", () => {
     const strayed = breaking(FINALE, (c) => {
       c.plate.art = "plates/gemfall/finale";
     });
     expect(strayed.out).toContain("is not under plates/riftlight/");
+    expect(strayed.code, strayed.out).not.toBe(0);
   });
 
   it("catches a painting used twice", () => {

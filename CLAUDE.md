@@ -94,11 +94,14 @@ out on Gemfall), and for a nonlinear campaign
 
 A campaign may open with a `prologue` (3 to 6 painted plates with the story told over them) and a
 chapter that begins somewhere new may have one `plate`. They are shown once per device and
-skippable, and the chapter's "Last time…" and first scene wait behind them. A plate's words are
+skippable, and the chapter's "Last time…" and first scene wait behind them. At the other end, a
+campaign's `epilogues` give each ending of its last chapter 2 to 4 plates of what came after,
+shown once the ending's own words (which head the summary) have been read. A plate's words are
 at most 45, the same for every party, and name a place and a feeling rather than anyone the party
-may not have met. The art is declared in `assets/manifest.json` → `storyPlates` and owed in
-`npm run art:inventory`. See [docs/story-plates.md](docs/story-plates.md) and
-[content/README.md](content/README.md#story-plates-the-prologue-and-chapter-plates).
+may not have met; an epilogue names only who its endings already said. The art is declared in
+`assets/manifest.json` → `storyPlates` and owed in `npm run art:inventory`. See
+[docs/story-plates.md](docs/story-plates.md) and
+[content/README.md](content/README.md#story-plates-the-prologue-chapter-plates-and-epilogues).
 
 ### Priority scenes
 

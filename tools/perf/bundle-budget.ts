@@ -133,7 +133,11 @@ const FIRST_PAINT_BUDGET_KB = 322;
 // mini-games became full-screen boards with real play (pads, a TAP pad, a lever,
 // catch and flick, stamps, room sounds); the StoryInteraction chunk went 18KB to
 // 45KB (13KB gzipped), all lazy. The first paint did not move (320KB).
-const TOTAL_BUDGET_KB = 1505;
+// 1505 -> 1515 for campaign epilogues (#562): 1506KB in CI, 1507KB locally.
+// The StoryPlates reel now also plays endings, with the epilogue hook and
+// staged narration in lazy room screens. First paint keeps its 322KB cap;
+// the paintings themselves are fetched separately and are not JavaScript.
+const TOTAL_BUDGET_KB = 1515;
 
 function kb(bytes: number): number {
   return Math.round(bytes / 1024);

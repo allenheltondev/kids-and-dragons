@@ -99,6 +99,228 @@
       }
     ]
   },
+  "epilogues": [
+    {
+      "id": "heroes",
+      "title": "The Heroes of Red Sky",
+      "chapter": "gemfall-08",
+      "endings": [
+        "ending_heroes"
+      ],
+      "plates": [
+        {
+          "art": "plates/gemfall/epilogue-heroes-1",
+          "narration": "The bells ring the happy ring all morning. Down in the villages, the bakers bake extra buns, just in case any heroes come by hungry. Heroes usually are."
+        },
+        {
+          "art": "plates/gemfall/epilogue-heroes-2",
+          "narration": "That summer, Tansy's family teaches the goat to ring the happy ring with its nose. It rings it at breakfast, and at lunch, and once at midnight. Nobody minds very much."
+        },
+        {
+          "art": "plates/gemfall/epilogue-heroes-3",
+          "narration": "Under the mountain, the titan sleeps, snug under its mended seal. And every year, on the morning you came down, a little dragonling climbs the bell tower and rings the happy ring, just in case."
+        }
+      ]
+    },
+    {
+      "id": "heroes-destroy",
+      "title": "The Heroes of Red Sky",
+      "chapter": "gemfall-08",
+      "endings": [
+        "ending_heroes_destroy"
+      ],
+      "plates": [
+        {
+          "art": "plates/gemfall/epilogue-heroes-destroy-1",
+          "narration": "The mountain stays quiet now. It is a good quiet, like a house after a long, happy party. Nobody knows what the titan was. People leave wildflowers at the foot of the old stair anyway."
+        },
+        {
+          "art": "plates/gemfall/epilogue-heroes-destroy-2",
+          "narration": "High overhead, the Seal-Keeper finds out what clouds feel like. It flies slowly over every village in the realm with embermoths riding on its back, and it waves to everyone. The mail griffins are a little jealous."
+        },
+        {
+          "art": "plates/gemfall/epilogue-heroes-destroy-3",
+          "narration": "At the tree line, Tansy's family listens to the quiet. It is so big you can hear a beetle walking. Then the goat sneezes, and everybody laughs, and the long walk home begins."
+        }
+      ]
+    },
+    {
+      "id": "quiet-fixers",
+      "title": "The Quiet Fixers",
+      "chapter": "gemfall-08",
+      "endings": [
+        "ending_quiet_fixers"
+      ],
+      "plates": [
+        {
+          "art": "plates/gemfall/epilogue-quiet-fixers-1",
+          "narration": "Nobody throws a parade. Nobody rings a bell for you. The tremors just stop, the moths come home, and the foothills call it a lucky year and get on with things."
+        },
+        {
+          "art": "plates/gemfall/epilogue-quiet-fixers-2",
+          "narration": "Tansy's family goes home and plants their beans. One morning there is a tiny painted moth on their gatepost, and nobody knows who left it. Tansy keeps it on her windowsill."
+        },
+        {
+          "art": "plates/gemfall/epilogue-quiet-fixers-3",
+          "narration": "Four hundred years from now, a warden clerk opens a dusty ledger bound in a different color. One line inside makes the clerk smile. The ledger never says who. It keeps the secret."
+        }
+      ]
+    },
+    {
+      "id": "collectors",
+      "title": "The Collectors",
+      "chapter": "gemfall-08",
+      "endings": [
+        "ending_collectors"
+      ],
+      "plates": [
+        {
+          "art": "plates/gemfall/epilogue-collectors-1",
+          "narration": "You carry the warm stone all the way down the mountain. It hums like a kettle that never quite boils. Tansy follows you to the edge of the trees, staring with very round eyes."
+        },
+        {
+          "art": "plates/gemfall/epilogue-collectors-2",
+          "narration": "Up in the mountain, the Seal-Keeper lies across the seal and means to stay. It does not sleep. Neither does the titan underneath. They keep each other company, and they wait."
+        },
+        {
+          "art": "plates/gemfall/epilogue-collectors-3",
+          "narration": "Somewhere, a grandmother opens a very old list and adds your names. Under them she leaves a space, in case. Then she puts the kettle on, because some things are better thought about with tea."
+        }
+      ]
+    },
+    {
+      "id": "wardens-regret",
+      "title": "The Wardens' Regret",
+      "chapter": "gemfall-08",
+      "endings": [
+        "ending_wardens_regret"
+      ],
+      "plates": [
+        {
+          "art": "plates/gemfall/epilogue-wardens-regret-1",
+          "narration": "The wardens march down the mountain in neat rows. Behind them, under the stone, the titan waits in its cage of oaths. The realm is safe, the way a locked room is safe."
+        },
+        {
+          "art": "plates/gemfall/epilogue-wardens-regret-2",
+          "narration": "Tansy asks if the thing in the cage minds. Nobody answers. That evening she leaves a cup of warm milk on the bottom step of the stair, in case it gets lonely."
+        },
+        {
+          "art": "plates/gemfall/epilogue-wardens-regret-3",
+          "narration": "Years later, Captain Voss writes one line in a ledger and closes it softly. And every evening, the embermoths still fly up the mountain to visit, because nobody ever told them not to."
+        }
+      ]
+    },
+    {
+      "id": "cure",
+      "title": "The Cure",
+      "chapter": "gemfall-08",
+      "endings": [
+        "ending_cure"
+      ],
+      "plates": [
+        {
+          "art": "plates/gemfall/epilogue-cure-1",
+          "narration": "The Deep Hollow choir sings all the way down the mountain and all the way home. Under the seal, the titan hums along. It is a little off key, which makes everybody like it more."
+        },
+        {
+          "art": "plates/gemfall/epilogue-cure-2",
+          "narration": "Hessa cries into a pot of soup, then serves it anyway. It is the saltiest soup in the realm. Everybody says it is delicious, which is what friends are for."
+        },
+        {
+          "art": "plates/gemfall/epilogue-cure-3",
+          "narration": "Each morning the sky is a little less red. Maybe the world is mending. Maybe it is only a nice week. Tansy hums the chord on the way to school, and the question mark stays."
+        }
+      ]
+    },
+    {
+      "id": "new-weather",
+      "title": "The New Weather",
+      "chapter": "gemfall-08",
+      "endings": [
+        "ending_new_weather"
+      ],
+      "plates": [
+        {
+          "art": "plates/gemfall/epilogue-new-weather-1",
+          "narration": "You make camp on the mountain's shoulder, and the leash hums in your hands. Under the seal, the titan lies still, half awake, listening for you."
+        },
+        {
+          "art": "plates/gemfall/epilogue-new-weather-2",
+          "narration": "Farmers watch your campfire to know if it will rain. Wolf packs set their routes by your smoke. Tansy's family plants their beans by your weather, and the beans have never been happier."
+        },
+        {
+          "art": "plates/gemfall/epilogue-new-weather-3",
+          "narration": "Some afternoons, the Seal-Keeper visits for tea. It brings a cake shaped like a mountain, and you never ask who baked it. The realm has new weather now, and the new weather is you."
+        }
+      ]
+    },
+    {
+      "id": "turned-back",
+      "title": "Turned Back",
+      "chapter": "gemfall-08",
+      "endings": [
+        "ending_turned_back"
+      ],
+      "plates": [
+        {
+          "art": "plates/gemfall/epilogue-turned-back-1",
+          "narration": "All night, you watch the summit glow with the rest of the realm. Nobody blames you. A grandmother shares her blanket. A griffin shares its biscuits. The mountain grumbles on."
+        },
+        {
+          "art": "plates/gemfall/epilogue-turned-back-2",
+          "narration": "Deep under the mountain, the Seal-Keeper holds the seal alone, the way it always has. It is tired. But it is very, very good at holding on."
+        },
+        {
+          "art": "plates/gemfall/epilogue-turned-back-3",
+          "narration": "At dawn, an embermoth lands on your hand and stays. It only does that for someone it expects to see again. Somewhere up the mountain, a road is waiting for you to try once more."
+        }
+      ]
+    },
+    {
+      "id": "last-ring",
+      "title": "The Almost-Heroes",
+      "chapter": "gemfall-08",
+      "endings": [
+        "ending_last_ring"
+      ],
+      "plates": [
+        {
+          "art": "plates/gemfall/epilogue-last-ring-1",
+          "narration": "The realm does not end. It rearranges. Rivers wander off to new valleys. Roads bend around corners that were never there. The red sky turns into ordinary weather, like rain."
+        },
+        {
+          "art": "plates/gemfall/epilogue-last-ring-2",
+          "narration": "Everybody has to learn the new map. Bakers find their ovens in new villages. A mail griffin delivers a letter to a house that used to be across a lake. It is a very confusing year."
+        },
+        {
+          "art": "plates/gemfall/epilogue-last-ring-3",
+          "narration": "But down in the foothills, a dragonling child is learning the bell code backwards, in case there is a ring that puts it all to sleep again. She practices every single night."
+        }
+      ]
+    },
+    {
+      "id": "broken-tether",
+      "title": "Still Holding",
+      "chapter": "gemfall-08",
+      "endings": [
+        "ending_broken_tether"
+      ],
+      "plates": [
+        {
+          "art": "plates/gemfall/epilogue-broken-tether-1",
+          "narration": "The sky fills with gemstones, falling like warm, bright rain. Under the mountain, the seal is cracked, not broken. The Seal-Keeper lies across the crack and holds it."
+        },
+        {
+          "art": "plates/gemfall/epilogue-broken-tether-2",
+          "narration": "Everybody who reached for the leash is sad for a long time. That is the worst part. But being sad together is better than being sad alone, and nobody here is alone."
+        },
+        {
+          "art": "plates/gemfall/epilogue-broken-tether-3",
+          "narration": "The Keeper is still holding. Holding is something somebody can help with, someday. And when that day comes, the Keeper already knows whose hands it hopes to see."
+        }
+      ]
+    }
+  ],
   "setbackLimit": 4,
   "purseBackfill": { "coins": 6, "byFlag": { "ember_sold": 15 } }
 }
