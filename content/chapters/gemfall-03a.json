@@ -184,7 +184,7 @@
     },
     "scene_queue": {
       "type": "story",
-      "narration": "At Stone Crossing, giant flat stones cross the narrow river. The line fills the road. Someone sells line soup. Someone sells a map of the line. Near the front, six brass hats are quietly moving the line rope. \"Don't mind us,\" one says, smiling.",
+      "narration": "At Stone Crossing, giant flat stones cross the narrow river. The line fills the road. Someone sells soup to everyone waiting in line. Someone sells a map of the line. Near the front, six brass hats are quietly moving the rope that marks the line. \"Don't mind us,\" one says, smiling.",
       "choices": [
         {
           "id": "call_out",
@@ -232,7 +232,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 16,
-      "prompt": "Find the fresh brass-hat knots in the line rope",
+      "prompt": "Find the fresh brass-hat knots in the rope that marks the line",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_rivals_caught",
@@ -470,7 +470,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Join the line camp",
+          "label": "Join the camp by the crossing",
           "icon": "gem",
           "goto": "interaction_hum"
         }
@@ -490,7 +490,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Join the line camp",
+          "label": "Join the camp by the crossing",
           "icon": "ear",
           "goto": "interaction_hum"
         }
@@ -499,7 +499,7 @@
     },
     "scene_troll_hum_answer_honest": {
       "type": "story",
-      "narration": "You tell him about the red stone that landed by your boot at the Exchange, and where you think all of them are going, as honestly as you can. Old Lintel listens all the way to the end. \"Good,\" he says. \"Keep asking it. Of everyone.\" He lifts his palm off the stone just long enough to wave you toward the line camp.",
+      "narration": "You tell him about the red stone that landed by your boot at the Exchange, and where you think all of them are going, as honestly as you can. Old Lintel listens all the way to the end. \"Good,\" he says. \"Keep asking it. Of everyone.\" He lifts his palm off the stone just long enough to wave you toward the camp by the crossing.",
       "cast": [
         {
           "figure": "cast/old_lintel",
@@ -510,7 +510,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Join the line camp",
+          "label": "Join the camp by the crossing",
           "icon": "heart",
           "goto": "interaction_hum"
         }
@@ -519,7 +519,7 @@
     },
     "rest_queue_camp": {
       "type": "rest",
-      "narration": "The line camps for the night. Toffee is shared, then stolen by a goat. Rest and listen to the river. Under the bridge, something rubs numbers off a slate and writes larger ones.",
+      "narration": "The travelers camp for the night. Toffee is shared, then stolen by a goat. Rest and listen to the river. Under the bridge, something rubs numbers off a slate and writes larger ones.",
       "heal": 2,
       "choices": [
         {
@@ -1673,7 +1673,7 @@
         },
         {
           "id": "pay_fish",
-          "label": "Pay it a fish from the line soup",
+          "label": "Pay it a fish from the travelers' soup",
           "icon": "cake",
           "goto": "scene_wake_fee_pay_fish"
         },
@@ -1734,7 +1734,7 @@
     },
     "scene_wake_fee_pay_fish": {
       "type": "story",
-      "narration": "You fish a fish out of the line soup and hold it out, dripping. The drake takes it with enormous dignity, checks it against a chart only it can see, and writes PAID. The soup seller looks into her pot, counts, and decides not to ask.",
+      "narration": "You fish a fish out of the travelers' soup and hold it out, dripping. The drake takes it with enormous dignity, checks it against a chart only it can see, and writes PAID. The soup seller looks into her pot, counts, and decides not to ask.",
       "cast": [
         {
           "figure": "entities/river_drake"
@@ -1976,7 +1976,7 @@
       ],
       "art": "scenes/gemfall/lintel-toll-stone",
       "type": "story",
-      "narration": "Old Lintel hums his low note and lets you listen until it settles in your ears. The ground seems to hum beneath it. \"Remember that,\" he says. \"Songs travel farther than lines.\" You hum it back, low, high, middle, low, and under your boots the bridge hums with you, very faintly. Old Lintel's mossy face does something that might be a smile. \"There,\" he says. \"You will know it again.\" He puts his palm back on the stone and waves you toward the line camp.",
+      "narration": "Old Lintel hums his low note and lets you listen until it settles in your ears. The ground seems to hum beneath it. \"Remember that,\" he says. \"Songs travel farther than lines.\" You hum it back, low, high, middle, low, and under your boots the bridge hums with you, very faintly. Old Lintel's mossy face does something that might be a smile. \"There,\" he says. \"You will know it again.\" He puts his palm back on the stone and waves you toward the camp by the crossing.",
       "choices": [
         {
           "id": "continue",

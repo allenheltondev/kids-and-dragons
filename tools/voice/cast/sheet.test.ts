@@ -41,6 +41,18 @@ describe("whose line is it", () => {
     expect(attributeQuotes(text, speakers).map((q) => q.id)).toEqual(["party", "pib", "pib"]);
   });
 
+  it("gives a quote after an action beat to the speaker the beat is about, with the beat's pronoun", () => {
+    expect(attributeQuotes('The Seal-Keeper shakes her head. "And travelers keep following it."', speakers)).toEqual([
+      { id: "keeper", words: "And travelers keep following it.", pronoun: "she" },
+    ]);
+    expect(attributeQuotes('Pib points at the map. "Both show the river!"', speakers)).toEqual([{ id: "pib", words: "Both show the river!" }]);
+    // "her hand" is somebody else's: the beat names whose quote it is, not whose pronoun.
+    expect(attributeQuotes('Pib reaches toward her hand. "Enough."', speakers)).toEqual([{ id: "pib", words: "Enough." }]);
+    // Two speakers in the beat, or a beat that is not about a speaker: nobody can be sure.
+    expect(attributeQuotes('Pib hands the dragon a cup. "Thank you."', speakers)).toEqual([]);
+    expect(attributeQuotes('The rain stops. "Finally."', speakers)).toEqual([]);
+  });
+
   it("leaves a quote nobody is tagged for", () => {
     expect(quotesFor('A sign says "NO MESSING." Pib shrugs.', ["Pib"])).toEqual([]);
   });

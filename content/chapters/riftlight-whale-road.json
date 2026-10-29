@@ -1437,7 +1437,10 @@
       "Hollow Gate",
       "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Kitsune keeper": "Calm signal keeper of the whale road. She smooths her whiskers, counts the cloths twice, and never guesses what she cannot see.",
+      "New keeper": "A kitsune keeper who has just arrived to take over the watch. She is a little out of breath and wants to learn your signals properly."
+    }
   },
   "presentation": {
     "interactions": {

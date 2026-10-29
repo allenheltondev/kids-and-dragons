@@ -43,7 +43,9 @@
       "emperor",
       "Pangea"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Passing fisher": "A fisher passing along the flats. She stops to study your warning, then makes up her own mind."
+    }
   },
   "scenes": {
     "arrival": {
