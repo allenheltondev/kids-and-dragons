@@ -82,7 +82,7 @@
     },
     "look": {
       "type": "interaction",
-      "narration": "\"From behind the low fence, watch the drifting island edge against the fixed bell tower,\" the keeper says. \"Mark the clear sighting interval.\" The bell rope has a tiny raincoat and is taking the weather very seriously.",
+      "narration": "From behind the low fence, watch the drifting island edge against the fixed bell tower. Mark the clear sighting interval. The bell rope has a tiny raincoat and is taking the weather very seriously.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -113,7 +113,7 @@
     },
     "people": {
       "type": "story",
-      "narration": "\"Everyone needs a dry lane into the hall,\" says the keeper. Your earlier warning, if sent, has already moved the heavy furniture; otherwise the folded screen still blocks the doorway. Check the actual yard before doing another carrying job.",
+      "narration": "The keeper points across the yard. \"Everyone needs a dry lane into the hall.\" Your earlier warning, if sent, has already moved the heavy furniture; otherwise the folded screen still blocks the doorway. Check the actual yard before doing another carrying job.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -326,7 +326,7 @@
     },
     "gear": {
       "type": "choice_point",
-      "narration": "One team can prepare the long turning rope, shortening the push objective from three working turns to two, or fasten wind cover that removes the storm's Guard penalty from your party. The other job stays ordinary. Neither removes the crawlers or the crosswind tiles. \"Which help fits your plan?\" asks the keeper.",
+      "narration": "One team can prepare the long turning rope, shortening the push objective from three working turns to two, or fasten wind cover that removes the storm's Guard penalty from your party. The other job stays ordinary. Neither removes the crawlers or the crosswind tiles. Which advantage fits your plan?",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -544,7 +544,7 @@
     },
     "signals": {
       "type": "interaction",
-      "narration": "The keeper raises a cloth for hold and lowers it for release. \"Watch my practice round before anyone takes the load,\" she says. Shouted guesses would vanish into the squall.",
+      "narration": "The keeper raises a cloth for hold and lowers it for release. \"Watch me once before anyone takes the load.\" Shouted guesses would vanish into the squall.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -612,7 +612,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "\"Rice buns for everyone,\" says the keeper, passing a basket around the covered hall. You rest on cushions rescued from the rain. One cushion has a solemn embroidered bird with a bun crumb on its beak.",
+      "narration": "\"Rice buns for everyone!\" the keeper calls, passing a basket around the covered hall. You rest on cushions rescued from the rain. One cushion has a solemn embroidered bird with a bun crumb on its beak.",
       "heal": 2,
       "choices": [
         {
@@ -638,7 +638,7 @@
     },
     "plan": {
       "type": "choice_point",
-      "narration": "The island's low edge comes alongside the posts. \"Turn it away, or hold the sheltered landing until it settles,\" says the keeper. Choose the job your party will play on the board. Your preparation changes that encounter; it does not settle the island by itself.",
+      "narration": "The island's low edge comes alongside the posts. Choose the job your party will play on the board: turn it away, or hold the sheltered landing until it settles. Your preparation changes that encounter; it does not settle the island by itself.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1472,7 +1472,7 @@
     },
     "repair": {
       "type": "choice_point",
-      "narration": "\"The next crew needs a real handover,\" says the keeper. You may leave your spare boards and line with her, or recover the unused kit from checked ground. Your boundary marks stay in place either way.",
+      "narration": "The keeper taps the log. \"The next crew needs a real handover.\" You may leave your spare boards and line with her, or recover the unused kit from checked ground. Your boundary marks stay in place either way.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
@@ -1936,7 +1936,7 @@
     },
     "finish": {
       "type": "story",
-      "narration": "The keeper closes the log. \"Before the pages drink any more rain,\" she says. Your party can rest, return to the lookout, or follow the griffin messenger down to the Cairnstep.",
+      "narration": "The keeper closes the log fast. \"Before the pages drink any more rain!\" Your party can rest, return to the lookout, or follow the griffin messenger down to the Cairnstep.",
       "choices": [],
       "outcome": "success",
       "cast": [
