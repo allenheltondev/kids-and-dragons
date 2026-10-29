@@ -13,9 +13,10 @@
  */
 import { PaintedInteraction } from "./InteractionArt";
 import { useEffect, useRef, useState } from "react";
-import { cooperationProgress, interactionActor, playbackMs, speak, supportsReady } from "@kad/shared";
+import { cooperationProgress, interactionActor, interactionStartLocal, playbackMs, speak, supportsReady } from "@kad/shared";
 import type { InteractionAction, InteractionPrompt, PartyMember } from "@kad/shared";
 import { useSend, useRunState, useMe, useGameStore, useSynced } from "../store";
+import { clockGap } from "../store/server-clock";
 import { reducedMotion } from "../a11y/prefs";
 import { Icon } from "./icons";
 import { Button } from "../ui/Button";
@@ -44,6 +45,25 @@ function useClock(active: boolean, everyMs?: number): number {
   return now;
 }
 
+/** Each attempt's start on this device's clock, fixed the first time this device sees it. */
+const localStarts = new Map<string, number>();
+
+/**
+ * This device's clock moved onto the server's for the attempt under way, so `now - startedAt`
+ * reads the same on the TV and every phone whatever their clocks say (interactionStartLocal):
+ * the marker, the lamp, a memory pattern and a cup shuffle play at the server's pace everywhere.
+ * Fixed per attempt, so a better clock estimate arriving mid-sweep never makes the marker jump.
+ */
+function serverNow(runId: string | undefined, prompt: InteractionPrompt | null, updatedAt: string | undefined, now: number): number {
+  if (!prompt?.startedAt || !updatedAt) return now;
+  const key = `${runId}:${prompt.openedSeq}:${prompt.attempt}:${prompt.startedAt}`;
+  if (!localStarts.has(key)) {
+    if (localStarts.size >= 32) localStarts.clear();
+    localStarts.set(key, interactionStartLocal(prompt.startedAt, updatedAt, Date.now(), clockGap()));
+  }
+  return now - localStarts.get(key)! + Date.parse(prompt.startedAt);
+}
+
 /** Measure a server-authored lift from receipt using monotonic elapsed time.
  * Receipt may trail the server slightly; it must never finish a lift early.
  * Renewals preserve this anchor, while retries and roster changes restart it.
@@ -65,10 +85,10 @@ const SLOW_CLOCK_MS = 250;
  * Frame rate while a marker moves: precision and timing read the stop position from it, and
  * tracking animates its cups during playback. Everything else is static enough for a slow tick.
  */
-function clockFor(prompt: InteractionPrompt): number | undefined {
+function clockFor(prompt: InteractionPrompt, now: number): number | undefined {
   const { kind } = prompt.spec;
   if (kind === "precision" || kind === "timing") return undefined;
-  if (kind === "tracking" && !prompt.relaxed && Date.now() - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, false)) return undefined;
+  if (kind === "tracking" && !prompt.relaxed && now - Date.parse(prompt.startedAt ?? "") < playbackMs(prompt.spec, false)) return undefined;
   return SLOW_CLOCK_MS;
 }
 
@@ -166,7 +186,8 @@ export function StoryInteractionWorld() {
   const state = useRunState();
   const prompt = state?.prompt?.kind === "interaction" ? state.prompt : null;
   const still = reducedMotion();
-  const localNow = useClock(prompt?.phase === "active", still ? SLOW_CLOCK_MS : prompt ? clockFor(prompt) : undefined);
+  const aligned = (t: number) => serverNow(state?.runId, prompt, state?.updatedAt, t);
+  const localNow = aligned(useClock(prompt?.phase === "active", still ? SLOW_CLOCK_MS : prompt ? clockFor(prompt, aligned(Date.now())) : undefined));
   const now = useCooperationClock(prompt, localNow, (state?.party ?? []).filter((member) => member.connected).map((member) => member.playerId).join(","));
   const settled = useRelayArrival(prompt);
   useResultSound(prompt, settled);
@@ -202,11 +223,11 @@ export function StoryInteractionControls() {
   };
   const prompt = state?.prompt?.kind === "interaction" ? state.prompt : null;
   if (!prompt || !state || !me) return null;
-  return <Controls key={`${prompt.openedSeq}:${prompt.attempt}`} prompt={prompt} party={state.party} playerId={me.playerId} dispatch={dispatch} busy={pending > 0 || !synced} />;
+  return <Controls key={`${prompt.openedSeq}:${prompt.attempt}`} prompt={prompt} party={state.party} runId={state.runId} updatedAt={state.updatedAt} playerId={me.playerId} dispatch={dispatch} busy={pending > 0 || !synced} />;
 }
 
-function Controls({ prompt, party, playerId, dispatch, busy }: {
-  prompt: InteractionPrompt; party: PartyMember[]; playerId: string;
+function Controls({ prompt, party, runId, updatedAt, playerId, dispatch, busy }: {
+  prompt: InteractionPrompt; party: PartyMember[]; runId: string; updatedAt: string; playerId: string;
   dispatch: ReturnType<typeof useSend>; busy: boolean;
 }) {
   const settled = useRelayArrival(prompt);
@@ -218,7 +239,8 @@ function Controls({ prompt, party, playerId, dispatch, busy }: {
   const [answer, setAnswer] = useState<string[]>([]);
   const [holding, setHolding] = useState(false);
   const [stop, setStop] = useState<number | null>(null);
-  const localNow = useClock(prompt.phase === "active", still ? SLOW_CLOCK_MS : clockFor(prompt));
+  const aligned = (t: number) => serverNow(runId, prompt, updatedAt, t);
+  const localNow = aligned(useClock(prompt.phase === "active", still ? SLOW_CLOCK_MS : clockFor(prompt, aligned(Date.now()))));
   const now = useCooperationClock(prompt, localNow, connected.join(","));
   const latest = useRef({ prompt, busy, dispatch });
   latest.current = { prompt, busy, dispatch };

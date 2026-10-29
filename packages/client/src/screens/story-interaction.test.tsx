@@ -5,6 +5,7 @@ import { createRunState, resolveCharacter } from "@kad/shared";
 import type { ClientIntent, InteractionPrompt, InteractionSpec } from "@kad/shared";
 import { makeCharacter, makeItems, makeRules } from "../../../shared/src/test-fixtures";
 import { useGameStore, useMyTurnKey } from "../store";
+import { forgetServerTime, noteServerTime } from "../store/server-clock";
 import { StoryInteractionControls, StoryInteractionWorld } from "./StoryInteraction";
 import { PaintedCover } from "./InteractionArt";
 import wagons from "../../../../content/chapters/gemfall-04c.json";
@@ -20,6 +21,8 @@ function seed(spec: InteractionSpec = precision, extra: Partial<InteractionPromp
   state.sceneId = "test";
   state.party = [{ playerId: "p", character: resolveCharacter(makeCharacter(), makeRules(), makeItems()), connected: true, ready: true, down: false, hp: 10 }];
   state.prompt = { kind: "interaction", sceneId: "test", openedSeq: 4, attempt: 0, spec, playerIds: ["p"], actorId: "p", phase: "active", relaxed: false, supports: {}, startedAt: new Date().toISOString(), ...extra };
+  // Sent just now, on the server clock the screens align to.
+  state.updatedAt = new Date(Date.now()).toISOString();
   const send = vi.fn(async (_intent: ClientIntent) => true);
   useGameStore.setState({ state, send, synced: true, session: { playerId: "p", runId: "r", roomCode: "TEST", mode: "party", sessionToken: "test" } });
   return send;
@@ -541,5 +544,79 @@ describe("mini-game playtest refinements", () => {
       await act(async () => { vi.advanceTimersByTime(300); });
       expect(send).not.toHaveBeenCalledWith(expect.objectContaining({ action: "pass" }));
     } finally { vi.useRealTimers(); }
+  });
+});
+
+describe("timing fairness across clocks, frames and taps (#566)", () => {
+  const T = Date.parse("2026-10-29T20:00:00.000Z");
+  let local = 0;
+  let frames: FrameRequestCallback[] = [];
+  let seq = 100;
+  beforeEach(() => {
+    frames = [];
+    vi.spyOn(Date, "now").mockImplementation(() => local);
+    vi.spyOn(window, "requestAnimationFrame").mockImplementation((callback) => { frames.push(callback); return frames.length; });
+  });
+  afterEach(() => forgetServerTime());
+  /** The state this screen receives `sentMs` into an attempt, read on a clock `skewMs` off the server's. */
+  function arrive(spec: InteractionSpec, sentMs: number, skewMs: number) {
+    local = T + sentMs + skewMs;
+    const send = seed(spec, { openedSeq: seq++, startedAt: new Date(T).toISOString() });
+    useGameStore.setState({ state: { ...useGameStore.getState().state!, updatedAt: new Date(T + sentMs).toISOString() } });
+    return send;
+  }
+  const tick = (ms: number) => act(() => { local += ms; const due = frames; frames = []; due.forEach((callback) => callback(local)); });
+  const markers = () => [...document.querySelectorAll<HTMLElement>(".game-track__marker")].map((marker) => parseFloat(marker.style.left));
+  const stops = (send: ReturnType<typeof seed>) => send.mock.calls.map(([intent]) => intent as { action?: string; position?: number }).filter((intent) => intent.action === "stop");
+
+  it.each([-5000, -250, 0, 250, 5000])("draws the TV and phone markers where the server is, on a clock %i ms off", (skewMs) => {
+    arrive(precision, 1000, skewMs);
+    render(<><StoryInteractionWorld /><StoryInteractionControls /></>);
+    expect(markers()).toEqual([50, 50]);
+    tick(500);
+    expect(markers()).toEqual([75, 75]);
+  });
+  it("picks the sweep up where it is for a phone that rejoins mid-attempt", () => {
+    arrive(precision, 2500, 1000);
+    render(<StoryInteractionControls />);
+    expect(markers()).toEqual([75]);
+  });
+  it("draws the server's sweep, not a slow delivery's, once it has seen a quick one", () => {
+    // Earlier states reached this phone, on a clock 5 s fast, in 20 ms; the start took 300.
+    noteServerTime(new Date(T - 60_000).toISOString(), T - 60_000 + 5000 + 20);
+    noteServerTime(new Date(T - 30_000).toISOString(), T - 30_000 + 5000 + 400);
+    arrive(precision, 1000, 5000 + 300);
+    render(<><StoryInteractionWorld /><StoryInteractionControls /></>);
+    // 1000 ms into the attempt when sent, 300 on the way, 20 of which the quick delivery accounts for.
+    expect(markers()).toEqual([64, 64]);
+  });
+  it("reads the sweep straight off a clock in step with the server's, however slow the start's delivery", () => {
+    noteServerTime(new Date(T - 60_000).toISOString(), T - 60_000 + 120);
+    arrive(precision, 1000, 300);
+    render(<StoryInteractionControls />);
+    expect(markers()).toEqual([65]);
+  });
+  it.each([30, 60, 120])("sends the position drawn on the frame the finger went down on, at %i frames a second", async (fps) => {
+    const send = arrive(precision, 0, 5000);
+    render(<StoryInteractionControls />);
+    while (markers()[0]! < 45) tick(1000 / fps);
+    const drawn = markers()[0]!;
+    local += 1000 / fps / 2; // the finger lands between frames
+    await act(async () => { fireEvent.pointerDown(screen.getByRole("button", { name: "Toss!" }), { button: 0 }); });
+    expect(stops(send)).toHaveLength(1);
+    expect(stops(send)[0]!.position! * 100).toBeCloseTo(drawn);
+  });
+  it.each([precision, { kind: "timing", cue: "Wait", actionLabel: "Toss!", target: 0.5, width: 0.3, periodMs: 4000 } as InteractionSpec])("sends one stop from a double tap: $kind", async (spec) => {
+    const send = arrive(spec, 1000, 0);
+    render(<StoryInteractionControls />);
+    const button = screen.getByRole("button", { name: "Toss!" });
+    await act(async () => { fireEvent.pointerDown(button, { button: 0 }); fireEvent.pointerDown(button, { button: 0 }); fireEvent.click(button, { detail: 0 }); });
+    expect(stops(send)).toHaveLength(1);
+    expect(stops(send)[0]!.position).toBeCloseTo(0.5);
+  });
+  it("shows a memory pattern from its start on a phone whose clock is 5 s fast", () => {
+    arrive({ kind: "memory", cue: "Echo", actionLabel: "Echo", options: [{ id: "a", label: "Shells", icon: "star" }, { id: "b", label: "Leaves", icon: "leaf" }], answer: ["a", "b", "a"], stepMs: 1000 }, 0, 5000);
+    render(<StoryInteractionControls />);
+    expect(screen.getByText("Watch the pads light up!")).toBeTruthy();
   });
 });
