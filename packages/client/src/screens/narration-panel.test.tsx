@@ -118,9 +118,10 @@ describe("announcing a hand-off (spec §9.4)", () => {
     expect(screen.getByRole("heading", { name: "Chapter 1 · The City That Smelled Opportunity" })).toBeTruthy();
     expect(screen.queryByText("The story")).toBeNull();
   });
-  it("says who is giving what to whom, out loud", () => {
+  it("says what is being given out loud, with the names left on screen (#552)", () => {
     mount({ trades: [OFFER] });
-    expect(spoken).toContain("Sparklehoof wants to give Thistle a Sunbloom Draught.");
+    expect(spoken).toContain("A hero wants to give a friend a Sunbloom Draught.");
+    expect(spoken.join(" ")).not.toMatch(/Sparklehoof|Thistle/);
   });
 
   it("names it in the third person, so it works on a television", () => {
@@ -259,7 +260,9 @@ describe("the story turn (spec §6.1)", () => {
   it("tells the room whose turn it is, on screen and out loud", () => {
     mount(storyChoice(["p_2"]));
     expect(screen.getByText(/Thistle.s turn to choose/)).toBeTruthy();
-    expect(spoken.some((line) => line.startsWith("Thistle's turn."))).toBe(true);
+    // The name is on screen; the room hears "hero" (#552).
+    expect(spoken).toContain("Your turn, hero.");
+    expect(spoken.join(" ")).not.toContain("Thistle");
   });
 
   it("leaves the options to the phone that owns them", () => {
@@ -372,6 +375,8 @@ describe("what the table picked (RunState.decision)", () => {
   it("names the kid who picked, when one kid chose for everyone", () => {
     mount({ sceneId: "camp", decision: { ...DECIDED, label: "Go west", vote: false } });
     expect(screen.getByTestId("decision").textContent).toBe("Thistle chose: Go west.");
+    // Named on screen, "the hero" out loud (#552).
+    expect(spoken.some((line) => line.startsWith("The hero chose: Go west."))).toBe(true);
   });
 
   it("does not add a full stop to a label that already has one", () => {
@@ -568,5 +573,41 @@ describe("a check waiting on its roll", () => {
     const line = document.querySelector(".narration__check")!;
     expect(line.textContent).toContain("Sparklehoof rolls d20 + 3 Quick, plus Thistle's d4.");
     expect(line.querySelector(".narration__target")!.textContent).toBe("Tricky: 12 or more makes it.");
+  });
+});
+
+describe("a hero's name is shown, never spoken (#552)", () => {
+  const NAME = "Zephyrine Quillfeather";
+  const named = [member("p_1", NAME), member("p_2", "Thistle")];
+
+  it("keeps every name on screen and out of every line this screen says", () => {
+    mount({
+      party: named,
+      sceneId: "camp",
+      sceneType: "rest",
+      narration: "A fire, and the road beyond it.",
+      decision: { sceneId: "camp", label: "Rest a while.", byPlayerId: "p_1", vote: false },
+      rankUps: {
+        sceneId: "camp",
+        ups: [{ characterId: "c_p_1", class: "duskrunner", rank: "apprentice", line: `${NAME} is a Duskrunner Apprentice now!` }],
+      },
+      prompt: {
+        kind: "choice",
+        sceneId: "camp",
+        options: [{ id: "sleep", label: "Sleep by the fire", icon: "moon" }],
+        forPlayerIds: ["p_1"],
+        vote: false,
+      },
+      trades: [{ id: "t9", fromPlayerId: "p_1", toPlayerId: "p_2", itemId: "sunbloom_draught" }],
+    });
+    expect(screen.getByTestId("decision").textContent).toContain(NAME);
+    expect(screen.getByTestId("rank-up").textContent).toContain(NAME);
+
+    const heard = spoken.join(" ");
+    expect(heard).toContain("The hero chose: Rest a while.");
+    expect(heard).toContain("The hero is a Duskrunner Apprentice now!");
+    expect(heard).toContain("Your turn, hero.");
+    expect(heard).toContain("A hero wants to give a friend a Sunbloom Draught.");
+    expect(heard).not.toMatch(/Zephyrine|Quillfeather|Thistle/);
   });
 });

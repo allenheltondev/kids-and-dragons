@@ -20,7 +20,7 @@
  */
 
 import { create } from "zustand";
-import { setSpeaker, stopSpeaking, type SpeakOptions } from "@kad/shared";
+import { setSpeaker, spokenText, stopSpeaking, type SpeakOptions } from "@kad/shared";
 
 export const READ_ALOUD_KEY = "kad.readaloud";
 
@@ -124,7 +124,8 @@ export function hear(text: string, opts: SpeakOptions = {}): void {
   void loadEngine()
     .then((speaker) => {
       try {
-        speaker(text, options);
+        // Through the same rewording as speak(): a tap never says a hero's name either (#552).
+        speaker(spokenText(text), options);
       } catch {
         // as speak()
       }

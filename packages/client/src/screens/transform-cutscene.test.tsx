@@ -184,7 +184,7 @@ describe("the transformation cutscene (spec §8.1)", () => {
     act(() => {
       vi.advanceTimersByTime(900);
     });
-    expect(spoken).toEqual(["Sparklehoof is Sworn!"]);
+    expect(spoken).toEqual(["Our hero is Sworn!"]);
 
     act(() => {
       vi.advanceTimersByTime(200);
@@ -204,7 +204,7 @@ describe("the transformation cutscene (spec §8.1)", () => {
     act(() => {
       vi.advanceTimersByTime(4000);
     });
-    expect(spoken).toEqual(["Sparklehoof is Sworn!"]);
+    expect(spoken).toEqual(["Our hero is Sworn!"]);
   });
 
   it("gets out of the way when the beat is over", () => {
@@ -244,7 +244,7 @@ describe("the transformation cutscene (spec §8.1)", () => {
 
     playBeat();
     expect(screen.queryByText("Thistle")).toBeNull();
-    expect(spoken).toEqual(["Sparklehoof is Sworn!", "Thistle is Sworn!"]);
+    expect(spoken).toEqual(["Our hero is Sworn!", "Our hero is Sworn!"]);
   });
 
   it("still plays for a character the party list does not have", () => {

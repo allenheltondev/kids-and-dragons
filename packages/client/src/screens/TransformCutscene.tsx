@@ -139,13 +139,6 @@ export function TransformCutscene(): ReactElement | null {
   const current = queue[0] ?? null;
   const currentId = current?.id ?? null;
 
-  /*
-   * The party as of now, read from inside a timer rather than closed over. The
-   * beat outlives several renders and the lineup can be re-resolved underneath
-   * it; a stale closure would announce a name from before the patch landed.
-   */
-  const partyRef = useRef(party);
-  partyRef.current = party;
   const beatRef = useRef(current);
   beatRef.current = current;
 
@@ -170,15 +163,13 @@ export function TransformCutscene(): ReactElement | null {
     const announce = (): void => {
       const beat = beatRef.current;
       if (!beat) return;
-      const name =
-        partyRef.current.find((m) => m.character.id === beat.characterId)?.character.name ??
-        "Someone";
       /*
        * Interrupts, unlike every other aside on this surface. The party has
        * stopped to watch; whatever was still being read out belongs to the
        * scene they have just finished.
        */
-      speak(`${name} is ${TIER_WORD[beat.tier]}!`, { source: "narration", interrupt: true });
+      // The screen shows whose cutscene it is; the room hears "our hero" (#552).
+      speak(`Our hero is ${TIER_WORD[beat.tier]}!`, { source: "narration", interrupt: true });
     };
 
     /*

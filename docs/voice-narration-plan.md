@@ -74,7 +74,7 @@ each kind, so "what needs voice" is never a guess:
 |---|---|---|
 | **recorded** | scene/branch narration, variants, check prompts, goal text, hints, story plates and prologue, recap lines, `help.json`, field guide | pre-generated clips |
 | **templated** | finite-valued pieces: `{party}` (4 forms), `{facets}` (0–14), number words, "Your goal:", "Last time…" | pre-generated per value; the token's value picks the clip |
-| **live** | anything with a player-entered name: turns, decision lines, fight log, transform cutscene | device voice (unchanged), see Privacy |
+| **live** | anything composed at run time that can carry a player-entered name: turns, decision lines, hand-offs, rank-ups, roll results, fight log, transform cutscene, recap | device voice, with every name said as "hero" (section 8); the voice tools refuse these lines |
 | **silent** | UI chrome, ids, `$comment`, `voiceGuide`, labels the TV never reads | nothing |
 
 Token expansion: a line containing `{party}` becomes four clips (`#party=1..4`), and `{facets}`
@@ -374,11 +374,45 @@ GEMINI_API_KEY=… npm run voice:generate -- --chapter bramblewood-01 --stage st
 
 ## 8. Privacy and live lines
 
-Lines that contain a player's character name stay on the **device voice**, so the name never goes
-to ElevenLabs or Google. These are children's names, often their real ones. The quality hit is
-limited: these lines are short, and many can be reworded to avoid the name. For example, the TV
-can play a recorded "Your turn!" while the name shows on screen. A server-side live-TTS proxy
-with caching is possible later, but it's a privacy decision first and an engineering one second.
+**Decided (#552): text on screen can say a player's name; audio always says "hero".** These are
+children's names, often their real ones, so a name never goes to Google or ElevenLabs, and the
+device voice says "hero" too, so the table hears the same words whichever voice is speaking.
+
+Two layers, both in code:
+
+- **Each name-bearing surface composes its spoken words separately** from the words it shows, in
+  the wording that reads best there.
+- **The `speak()` seam rewords everything** (`withoutNames`, `packages/shared/src/spoken-names.ts`).
+  The client registers the party's hero names with `setUnspokenNames` whenever the party changes
+  (`store/index.ts`), and `speak()` and `hear()` say each one as "the hero", "the hero's",
+  "the heroes" for a list, or "hero" when it is addressed ("Well done, hero!"). A line a surface
+  forgot, or an engine string that grows a name later, is caught here. A name is matched whole, as
+  typed or capitalised, so "a rose" stays a rose for a hero called Rose; a sentence beginning
+  "Rose petals" would be reworded too, which is the accepted cost.
+
+The voice tools refuse any line that could carry a name: `classify` (tools/voice/lines.ts, which
+`voice:extract`, `voice:status`, `voice:cost` and `voice:generate` all go through) refuses a line
+of any kind that is not authored, and any `{token}` other than `{party}` and `{facets}`; the
+synthesizer refuses a segment with an unfilled token. Recorded clips are authored content only.
+
+| Surface | Shown | Heard (device voice) |
+|---|---|---|
+| Whose turn (`NarrationPanel`) | Ana's turn to choose | Your turn, hero. |
+| Decision line (`NarrationPanel`) | Ana chose: Climb the wall. | The hero chose: Climb the wall. |
+| Hand-offs (`NarrationPanel`) | Ana wants to give Bo a Sunbloom Draught. | A hero wants to give a friend a Sunbloom Draught. |
+| Rank-ups (engine `rankUpLine`) | Ana is a Thornguard Apprentice now! | The hero is a Thornguard Apprentice now! (the seam) |
+| Roll results (`DiceOverlay`) | Ana rolled 14 … | The hero rolled 14 …, help "from a friend" |
+| Fight log and matchups (`FightLog`) | Ana hits the bog troll. | The hero hits the bog troll. (the seam) |
+| Transform cutscene (`TransformCutscene`) | Ana is shining! | Our hero is shining! |
+| Chapter recap (`ChapterCompletePanel`) | Ana earned 10 experience from their own good rolls. | A hero earned 10 experience from their own good rolls. |
+| Anything else the engine composes with a name | Ana and Bo found it. | The heroes found it. (the seam) |
+
+The same list is `NAME_BEARING_SURFACES` in code. Authored narration carries no hero names (only
+`{party}` and `{facets}`, which the validator enforces), so every recorded line stays recordable.
+The screen-reader text for a roll keeps the name: it is read by the device's own assistive
+technology, not by `speak()`. Tests: `spoken-names.test.ts` (the rewording, and `speak()` with a
+hero called Zephyrine Quillfeather), the "never spoken" case in `narration-panel.test.tsx` (every
+line the TV says for that hero), and `tools/voice/lines.test.ts` (the refusals).
 
 ---
 
