@@ -326,24 +326,28 @@ const DIGESTS: PreEpicSave["digests"] = {
 // someone already on stage, then an American-vernacular pass over the new lines. No id, goto, effect, flag, condition, choice, cast
 // or outcome changed; the endings, roads, setbacks and resumed-save digests
 // below are unchanged.
+// Re-pinned for the owner-requested American-vocabulary sweep: queue -> line,
+// spectacles -> glasses, draught -> potion, Nan -> Nana, Great-Gran ->
+// Great-Grandma, "hands round" -> "hands around" and the like, in text only.
+// resumeInteractions keep their shipped words; gameplay digests are unchanged.
 const GEMFALL_FILES: Record<string, string> = {
   "campaigns/gemfall.json": "7d2f26f62f10f83a316c4ee4eeae91a69bbda88908a34c5bf0cafd4dffe418ae",
-  "chapters/gemfall-01.json": "2cf162d141964a4d83de6d743307d84e1e4253670ff0e4b819fe2b4da7da5b88",
-  "chapters/gemfall-02.json": "abece35bd5572dbb5e2d4b4a211850742323949d3b6db5b37dfd21dfce6785b7",
-  "chapters/gemfall-03a.json": "1d3656a38655505ee5795debc7eada3da74e5d49959f7307c4c7095ff8c15e86",
-  "chapters/gemfall-03b.json": "0b6a68949b1490c9e9a4ac4410a06c46fd7062485daa6d1d083efcc26b1a13b5",
-  "chapters/gemfall-03c.json": "bcd1067bd55a9d6e1efb46c3db51a64cd1498efb7b1bd55f94b07a3ba12ba2aa",
+  "chapters/gemfall-01.json": "125a3a89b10229cd2cf820e43c75182df7e35518135b9499ff31217535ccb28a",
+  "chapters/gemfall-02.json": "6ad8d9140df234888d00080f013a2a42db50ed5394a3d077f05810cfc166b586",
+  "chapters/gemfall-03a.json": "84f7aed2b9513a7979b9aa6e157f0cf23783deb72d88d199000032baa06cf961",
+  "chapters/gemfall-03b.json": "4e90b4e0bbe67a35c97bc1342489a71be9ded6594b8da133067939dada4a5d7f",
+  "chapters/gemfall-03c.json": "ff38b900b60e71c8170b1853b354e8af76c87e4fa51776f87524f4f50a2360b6",
   "chapters/gemfall-04a.json": "80efc832ba44638506c757dee3cf36bbcc8f5900fb09cfeffa0ea84022977379",
   "chapters/gemfall-04b.json": "ade4daf5559ad90f00eb95d276a701c63f7b629eed3f25888bc1fcc29c239d76",
-  "chapters/gemfall-04c.json": "dc17cbff6c02cf2f56f00eb86abb0038d8a3eb777ffd95440b7ea22fddcb6b18",
-  "chapters/gemfall-05a.json": "bb2da94cc6a0e974d68e7d39de1fffbb9d53bf9c1b1b70dd9ee7d0b0464ace50",
-  "chapters/gemfall-05b.json": "dca2d23dd2b5c49b890c13d59ba7d9be7b4bd24001807c95aac51d9e9137292b",
-  "chapters/gemfall-05c.json": "1ffcfd265cf320d59458e1378ce53f52ffd0e18d1786f7155353b8153b8b3faa",
+  "chapters/gemfall-04c.json": "5c36014e21684a8e93b8fbf71da12026dbabedacf5f4e5f9b15b8775f619218f",
+  "chapters/gemfall-05a.json": "0b2edfce9380935c66bee73bf598032582ec0500ae29f7e31a144c124db2675f",
+  "chapters/gemfall-05b.json": "60198586f10a8f8dc3c40f115d8f83283d740e0a07e12478f2119afb342b335c",
+  "chapters/gemfall-05c.json": "a71f969da7f46e4360527c6d637ca297b496f1dd5ea45d8cbe360205e222aa88",
   "chapters/gemfall-06.json": "7d1c998fe223e8b4ce66fbd5dbb6ec5e6211cde65e37b4b9eeeed382f28fb9a4",
-  "chapters/gemfall-07h.json": "7240fc3b8e2ba58e77cd866095ef95e87df628764d4c48cbd9176bc1b5e46079",
-  "chapters/gemfall-07l.json": "bb11660a2337b37f6dcaa96f1140bd1164a33adf9dcd3e8fc3448a0495d49134",
-  "chapters/gemfall-07r.json": "dbe88f45294d97927290ab27952e063f55e538f89fef99401f29456dc1e1adec",
-  "chapters/gemfall-08.json": "110ca004d7298ad2b972e6cffef066445d28d21cb000640f9ecf9be743b1ddcf",
+  "chapters/gemfall-07h.json": "d834bca2205bd5285503fc273a4f9e065eaae514539a6c267c938a1618c3e54f",
+  "chapters/gemfall-07l.json": "f5375c72bc42d2e26c17356352a5fe16dae06ea0a747d467fd2740a1f2cfc350",
+  "chapters/gemfall-07r.json": "1efdb0a3904de428e034571bbb4580b6263842278cd13a8b02f6d70cea880806",
+  "chapters/gemfall-08.json": "6280826c5a2cd08170c047f088e1b0a6913f35200724fa1d27cf4a64e748b169",
 };
 
 describe("Gemfall's files are the files that shipped before the epic", () => {

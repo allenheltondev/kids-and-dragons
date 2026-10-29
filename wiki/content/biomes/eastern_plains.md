@@ -12,7 +12,7 @@ regional_relationships:
   - id: location.stone_crossing
     title: "Stone Crossing"
     url: "/locations/stone_crossing/"
-    relationship: "The southern door and the social calendar: escorts begin and end there, riddles are traded there, and a pride's reputation is half made in the bridge queue."
+    relationship: "The southern door and the social calendar: escorts begin and end there, riddles are traded there, and a pride's reputation is half made in the bridge line."
   - id: route.northern_river_bridge
     title: "Ashspan Bridge"
     url: "/routes/northern_river_bridge/"
@@ -149,7 +149,7 @@ East of the river, safe passage is a manticore promise, and the realm has learne
 
 ### Neighbors
 
-- **[Stone Crossing](/locations/stone_crossing/)**: The southern door and the social calendar: escorts begin and end there, riddles are traded there, and a pride's reputation is half made in the bridge queue.
+- **[Stone Crossing](/locations/stone_crossing/)**: The southern door and the social calendar: escorts begin and end there, riddles are traded there, and a pride's reputation is half made in the bridge line.
 - **[Ashspan Bridge](/routes/northern_river_bridge/)**: The northern door, quieter and colder, held in reserve; when Stone Crossing closes, the prides reroute the realm's traffic overnight and consider it good exercise.
 - **[Frostfang Peaks](/biomes/frostfang_peaks/)**: The peaks watch the north and the prides watch the ground, and between them very little crosses the east unobserved.
 - **[The Sallow Wastelands](/biomes/sallow_wastelands/)**: The southern flats are where pride escorts stop, hand travelers to the Saltrot guides, and wish everyone luck in a tone that means it.
@@ -157,7 +157,7 @@ East of the river, safe passage is a manticore promise, and the realm has learne
 ### Current Tensions
 
 - Gemfall caravan volume has stretched the escort tradition thin, and some prides now book seasons in advance, which the elders regard as the end of civilization.
-- The queue at Stone Crossing has grown long enough to cut across two prides' seasonal grounds, and the resulting etiquette problem is being negotiated at the pace etiquette deserves.
+- The line at Stone Crossing has grown long enough to cut across two prides' seasonal grounds, and the resulting etiquette problem is being negotiated at the pace etiquette deserves.
 
 ### Story Hooks
 

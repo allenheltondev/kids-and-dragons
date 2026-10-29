@@ -14,7 +14,7 @@
   "entry": "scene_east_road",
   "plate": {
     "art": "plates/gemfall/03a",
-    "narration": "At Stone Crossing, a mossy troll rests one enormous palm on the first stone. A bird is building a nest on his shoulder. The queue can wait. Every traveler owes him a story or a riddle."
+    "narration": "At Stone Crossing, a mossy troll rests one enormous palm on the first stone. A bird is building a nest on his shoulder. The line can wait. Every traveler owes him a story or a riddle."
   },
   "objectives": [
     {
@@ -25,7 +25,7 @@
     },
     {
       "id": "queue",
-      "label": "Kept the crossing queue fair",
+      "label": "Kept the crossing line fair",
       "flag": "kept_queue_honest",
       "xp": 7
     },
@@ -51,7 +51,7 @@
       },
       {
         "id": "camp_queue",
-        "label": "Camp in the queue for the night",
+        "label": "Camp in the line for the night",
         "flag": "camped_in_the_queue"
       },
       {
@@ -78,7 +78,7 @@
   "scenes": {
     "scene_east_road": {
       "type": "story",
-      "narration": "Marda's rumor board said the crossing queue was moving again. Tonight, pay the troll's toll at Stone Crossing and get across the Great River. First comes the Long Mile. Its markers are missing. Someone is cooking porridge on the stump marked MILE 3. It smells like a mistake.",
+      "narration": "Marda's rumor board said the crossing line was moving again. Tonight, pay the troll's toll at Stone Crossing and get across the Great River. First comes the Long Mile. Its markers are missing. Someone is cooking porridge on the stump marked MILE 3. It smells like a mistake.",
       "choices": [
         {
           "id": "restore",
@@ -184,7 +184,7 @@
     },
     "scene_queue": {
       "type": "story",
-      "narration": "At Stone Crossing, giant flat stones cross the narrow river. The queue fills the road. Someone sells queue soup. Someone sells a map of the queue. Near the front, six brass hats are quietly moving the queue rope. \"Don't mind us,\" one says, smiling.",
+      "narration": "At Stone Crossing, giant flat stones cross the narrow river. The line fills the road. Someone sells line soup. Someone sells a map of the line. Near the front, six brass hats are quietly moving the line rope. \"Don't mind us,\" one says, smiling.",
       "choices": [
         {
           "id": "call_out",
@@ -232,7 +232,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 16,
-      "prompt": "Find the fresh brass-hat knots in the queue rope",
+      "prompt": "Find the fresh brass-hat knots in the line rope",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_rivals_caught",
@@ -267,7 +267,7 @@
       "choices": [
         {
           "id": "to_troll",
-          "label": "Take your place in the queue",
+          "label": "Take your place in the line",
           "icon": "arrow",
           "goto": "scene_skip_passes"
         }
@@ -419,7 +419,7 @@
     "scene_troll_hum": {
       "type": "story",
       "priority": 1,
-      "narration": "Old Lintel stops listening to the queue and starts listening to the bridge. \"The stones are humming,\" he rumbles. \"Every pack in this queue, and the whole road behind it. A note older than this bridge, and this bridge is not young.\" Stories and riddles are not enough this season. Now there is one more toll, and it is a question he asks everyone: \"Where did you get that? And where is it going?\"",
+      "narration": "Old Lintel stops listening to the line and starts listening to the bridge. \"The stones are humming,\" he rumbles. \"Every pack in this line, and the whole road behind it. A note older than this bridge, and this bridge is not young.\" Stories and riddles are not enough this season. Now there is one more toll, and it is a question he asks everyone: \"Where did you get that? And where is it going?\"",
       "cast": [
         {
           "figure": "cast/old_lintel",
@@ -470,7 +470,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Join the queue camp",
+          "label": "Join the line camp",
           "icon": "gem",
           "goto": "interaction_hum"
         }
@@ -490,7 +490,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Join the queue camp",
+          "label": "Join the line camp",
           "icon": "ear",
           "goto": "interaction_hum"
         }
@@ -499,7 +499,7 @@
     },
     "scene_troll_hum_answer_honest": {
       "type": "story",
-      "narration": "You tell him about the red stone that landed by your boot at the Exchange, and where you think all of them are going, as honestly as you can. Old Lintel listens all the way to the end. \"Good,\" he says. \"Keep asking it. Of everyone.\" He lifts his palm off the stone just long enough to wave you toward the queue camp.",
+      "narration": "You tell him about the red stone that landed by your boot at the Exchange, and where you think all of them are going, as honestly as you can. Old Lintel listens all the way to the end. \"Good,\" he says. \"Keep asking it. Of everyone.\" He lifts his palm off the stone just long enough to wave you toward the line camp.",
       "cast": [
         {
           "figure": "cast/old_lintel",
@@ -510,7 +510,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Join the queue camp",
+          "label": "Join the line camp",
           "icon": "heart",
           "goto": "interaction_hum"
         }
@@ -519,7 +519,7 @@
     },
     "rest_queue_camp": {
       "type": "rest",
-      "narration": "The queue camps for the night. Toffee is shared, then stolen by a goat. Rest and listen to the river. Under the bridge, something rubs numbers off a slate and writes larger ones.",
+      "narration": "The line camps for the night. Toffee is shared, then stolen by a goat. Rest and listen to the river. Under the bridge, something rubs numbers off a slate and writes larger ones.",
       "heal": 2,
       "choices": [
         {
@@ -612,7 +612,7 @@
     },
     "scene_drake_deal": {
       "type": "story",
-      "narration": "The new gem is warm, and it hums against your palm like a cat purring under a blanket. The drake writes PAID on its slate, underlines it twice, and goes back to timing the queue.",
+      "narration": "The new gem is warm, and it hums against your palm like a cat purring under a blanket. The drake writes PAID on its slate, underlines it twice, and goes back to timing the line.",
       "cast": [
         {
           "figure": "entities/river_drake"
@@ -665,7 +665,7 @@
       "discovers": [
         "npc.frogfolk"
       ],
-      "narration": "Your turn at last. Brown water hides the last stepping stones. Wait for a lull and cross, or use a line you prepared for a wider safe window. You can also risk a quick scramble. A frog in a flat boat watches from the reeds. His hat looks older than the queue.",
+      "narration": "Your turn at last. Brown water hides the last stepping stones. Wait for a lull and cross, or use a line you prepared for a wider safe window. You can also risk a quick scramble. A frog in a flat boat watches from the reeds. His hat looks older than the line.",
       "cast": [
         {
           "figure": "cast/old_ossley",
@@ -843,7 +843,7 @@
     },
     "scene_swept": {
       "type": "story",
-      "narration": "The river carries you south like a parcel nobody signed for. Past the queue, past the Sunward banks, past a heron who watches the whole thing with deep disapproval. It goes on for a long, long time, and the heron follows, just to keep disapproving.",
+      "narration": "The river carries you south like a parcel nobody signed for. Past the line, past the Sunward banks, past a heron who watches the whole thing with deep disapproval. It goes on for a long, long time, and the heron follows, just to keep disapproving.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1162,7 +1162,7 @@
         },
         {
           "id": "queue_map",
-          "label": "Buy a map of the queue from a boy with a tray",
+          "label": "Buy a map of the line from a boy with a tray",
           "icon": "map",
           "goto": "scene_river_view_queue_map"
         },
@@ -1205,7 +1205,7 @@
     },
     "scene_river_view_queue_map": {
       "type": "story",
-      "narration": "The map of the queue costs one button. It is a long wiggly sausage with YOU ARE HERE written at the very end, which turns out to be completely correct. On the back, in pencil, somebody has copied out the river drake's rates from last week. They were a lot smaller last week.",
+      "narration": "The map of the line costs one button. It is a long wiggly sausage with YOU ARE HERE written at the very end, which turns out to be completely correct. On the back, in pencil, somebody has copied out the river drake's rates from last week. They were a lot smaller last week.",
       "choices": [
         {
           "id": "on",
@@ -1238,7 +1238,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Follow her arrow down to the queue",
+          "label": "Follow her arrow down to the line",
           "icon": "map",
           "goto": "scene_queue"
         }
@@ -1247,7 +1247,7 @@
     },
     "scene_skip_passes": {
       "type": "story",
-      "narration": "The six brass hats call themselves the Brassbuckle Expedition. One strolls down the queue selling SKIP PASSES. \"Skip the line!\" he sings. The small print is tiny. Old Lintel takes stories at the front. He does not appear to be taking passes.",
+      "narration": "The six brass hats call themselves the Brassbuckle Expedition. One strolls down the line selling SKIP PASSES. \"Skip the line!\" he sings. The small print is tiny. Old Lintel takes stories at the front. He does not appear to be taking passes.",
       "choices": [
         {
           "id": "small_print",
@@ -1282,7 +1282,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "interaction_hats",
-        "narration": "You squint. In letters the size of ants it says: VALID ON DAYS WHEN THE RIVER RUNS UPHILL. You read it out loud. The whole queue laughs, and the Brassbuckle sells exactly no passes at all. She tips her hat to you, quite sportingly."
+        "narration": "You squint. In letters the size of ants it says: VALID ON DAYS WHEN THE RIVER RUNS UPHILL. You read it out loud. The whole line laughs, and the Brassbuckle sells exactly no passes at all. She tips her hat to you, quite sportingly."
       },
       "onFailure": {
         "goto": "interaction_hats",
@@ -1296,7 +1296,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Shuffle forward in the queue",
+          "label": "Shuffle forward in the line",
           "icon": "arrow",
           "goto": "interaction_hats"
         }
@@ -1597,7 +1597,7 @@
       "roller": "all",
       "onSuccess": {
         "goto": "scene_wake_fee",
-        "narration": "You grab the rope just as the river grabs the first Brassbuckle. Everybody pulls. Out he pops, soaked, minus his hat, and says thank you so quietly you nearly miss it. All six creep back to their places in the queue and stay there."
+        "narration": "You grab the rope just as the river grabs the first Brassbuckle. Everybody pulls. Out he pops, soaked, minus his hat, and says thank you so quietly you nearly miss it. All six creep back to their places in the line and stay there."
       },
       "onFailure": {
         "goto": "scene_wake_fee",
@@ -1673,7 +1673,7 @@
         },
         {
           "id": "pay_fish",
-          "label": "Pay it a fish from the queue soup",
+          "label": "Pay it a fish from the line soup",
           "icon": "cake",
           "goto": "scene_wake_fee_pay_fish"
         },
@@ -1734,7 +1734,7 @@
     },
     "scene_wake_fee_pay_fish": {
       "type": "story",
-      "narration": "You fish a fish out of the queue soup and hold it out, dripping. The drake takes it with enormous dignity, checks it against a chart only it can see, and writes PAID. The soup seller looks into her pot, counts, and decides not to ask.",
+      "narration": "You fish a fish out of the line soup and hold it out, dripping. The drake takes it with enormous dignity, checks it against a chart only it can see, and writes PAID. The soup seller looks into her pot, counts, and decides not to ask.",
       "cast": [
         {
           "figure": "entities/river_drake"
@@ -1901,7 +1901,7 @@
     },
     "interaction_hats": {
       "type": "interaction",
-      "narration": "Another of the brass hats has set up a little game on an upturned barrel, hoping to win back what the passes did not earn. Three brass cups. One shiny button. \"Watch the button!\" she calls to the queue. \"Find it, and there's a prize from my tray. Miss it, and you only lose your dignity!\" She slides the button under the middle cup, and her hands begin to fly.",
+      "narration": "Another of the brass hats has set up a little game on an upturned barrel, hoping to win back what the passes did not earn. Three brass cups. One shiny button. \"Watch the button!\" she calls to the line. \"Find it, and there's a prize from my tray. Miss it, and you only lose your dignity!\" She slides the button under the middle cup, and her hands begin to fly.",
       "cast": [
         {
           "figure": "cast/brassbuckle_recordkeeper",
@@ -1940,7 +1940,7 @@
       },
       "onSuccess": {
         "goto": "scene_first_story",
-        "narration": "You lift the right cup, and there is the button, winking at you. The queue cheers. The Brassbuckle grumbles, tips her hat and pays up with a little brass whistle from her tray. \"One tweet,\" she says, \"and think of me kindly.\"",
+        "narration": "You lift the right cup, and there is the button, winking at you. The line cheers. The Brassbuckle grumbles, tips her hat and pays up with a little brass whistle from her tray. \"One tweet,\" she says, \"and think of me kindly.\"",
         "effects": [
           {
             "type": "grantItem",
@@ -1951,11 +1951,11 @@
       },
       "onFailure": {
         "goto": "scene_first_story",
-        "narration": "You lift the wrong cup. Under it there is nothing but a very small spider, who looks offended. The Brassbuckle bows to the queue. \"Better luck in the next line!\" she sings, and the spider goes back to bed."
+        "narration": "You lift the wrong cup. Under it there is nothing but a very small spider, who looks offended. The Brassbuckle bows to the line. \"Better luck in the next line!\" she sings, and the spider goes back to bed."
       },
       "onAssisted": {
         "goto": "scene_first_story",
-        "narration": "The Brassbuckle slows her hands, grinning, until the whole queue can follow the button. You lift the right cup, and she pays up with a little brass whistle from her tray. \"One tweet,\" she says, \"and think of me kindly.\"",
+        "narration": "The Brassbuckle slows her hands, grinning, until the whole line can follow the button. You lift the right cup, and she pays up with a little brass whistle from her tray. \"One tweet,\" she says, \"and think of me kindly.\"",
         "effects": [
           {
             "type": "grantItem",
@@ -1976,7 +1976,7 @@
       ],
       "art": "scenes/gemfall/lintel-toll-stone",
       "type": "story",
-      "narration": "Old Lintel hums his low note and lets you listen until it settles in your ears. The ground seems to hum beneath it. \"Remember that,\" he says. \"Songs travel farther than queues.\" You hum it back, low, high, middle, low, and under your boots the bridge hums with you, very faintly. Old Lintel's mossy face does something that might be a smile. \"There,\" he says. \"You will know it again.\" He puts his palm back on the stone and waves you toward the queue camp.",
+      "narration": "Old Lintel hums his low note and lets you listen until it settles in your ears. The ground seems to hum beneath it. \"Remember that,\" he says. \"Songs travel farther than lines.\" You hum it back, low, high, middle, low, and under your boots the bridge hums with you, very faintly. Old Lintel's mossy face does something that might be a smile. \"There,\" he says. \"You will know it again.\" He puts his palm back on the stone and waves you toward the line camp.",
       "choices": [
         {
           "id": "continue",
@@ -1989,7 +1989,7 @@
     "interaction_pot": {
       "art": "scenes/gemfall/east-road-markers",
       "type": "story",
-      "narration": "The cook calls you back to her enormous supper pot. Together you tip a fat brown ribbon of porridge into the waiting bowls. The queue can wait while everyone gets something warm. She wraps a hot supper for you. \"Better than the porridge at MILE 3,\" she says. \"That is not hard.\" Down the road, a wagon is stuck across the way.",
+      "narration": "The cook calls you back to her enormous supper pot. Together you tip a fat brown ribbon of porridge into the waiting bowls. The line can wait while everyone gets something warm. She wraps a hot supper for you. \"Better than the porridge at MILE 3,\" she says. \"That is not hard.\" Down the road, a wagon is stuck across the way.",
       "choices": [
         {
           "id": "continue",
@@ -2011,7 +2011,7 @@
       "discovers": [
         "creature.glassback_crab"
       ],
-      "narration": "Blankets down, supper started, the sky gone orange. Then the river goes click. Two crabs haul themselves up the bank, and their shells are clear as windowpanes, with a faint glow inside. Glassback crabs. Every pack in the queue is humming, and the crabs have decided that the humming is a dinner bell. They are marching for the gem carts at the end of the line, claws high, and a row of sleepy mules is starting to wake up and complain. \"Somebody do something!\" cries the soup seller. \"They'll tip the whole line!\"",
+      "narration": "Blankets down, supper started, the sky gone orange. Then the river goes click. Two crabs haul themselves up the bank, and their shells are clear as windowpanes, with a faint glow inside. Glassback crabs. Every pack in the line is humming, and the crabs have decided that the humming is a dinner bell. They are marching for the gem carts at the end of the line, claws high, and a row of sleepy mules is starting to wake up and complain. \"Somebody do something!\" cries the soup seller. \"They'll tip the whole line!\"",
       "cast": [
         {
           "figure": "entities/glassback_crab",
@@ -2063,7 +2063,7 @@
     },
     "scene_crabs_turned": {
       "type": "story",
-      "narration": "The crabs rock from side to side, grumble, and back down the bank into the water, shells flashing, as if they had only come to look. The mules go back to sleep. The soup seller has watched the whole thing with her ladle raised like a sword. She lowers it and presses a warm bottle into your hands. \"Queue tonic,\" she says. \"On the house. Do not tell the others.\"",
+      "narration": "The crabs rock from side to side, grumble, and back down the bank into the water, shells flashing, as if they had only come to look. The mules go back to sleep. The soup seller has watched the whole thing with her ladle raised like a sword. She lowers it and presses a warm bottle into your hands. \"Waiting tonic,\" she says. \"On the house. Do not tell the others.\"",
       "choices": [
         {
           "id": "on",
@@ -2387,7 +2387,7 @@
     }
   },
   "voiceGuide": {
-    "tone": "warm, playful, a little spooky but never scary; a river crossing that is a real hazard and a busy, funny queue",
+    "tone": "warm, playful, a little spooky but never scary; a river crossing that is a real hazard and a busy, funny line",
     "vocabulary": "age-8",
     "forbidden": [
       "death",
@@ -2401,7 +2401,7 @@
       "fennick": "Fennick Longstride, a road-warden centaur; brisk, proud of her stitched route-sash, deeply offended that people burn road markers for firewood",
       "old_lintel": "a stone troll toll-taker, mostly moss; speaks very slowly, hears everything in full, palm always on the bridge; asks only 'where did you get that, and where is it going?'",
       "drake": "a river drake; semi-sapient, transactional, writes its rates on a slate; communicates in huffs, tail-taps and underlinings",
-      "brassbuckles": "the Brassbuckle Expedition, six people in matching brass hats; smooth, smiling, always somehow ahead in the queue",
+      "brassbuckles": "the Brassbuckle Expedition, six people in matching brass hats; smooth, smiling, always somehow ahead in the line",
       "old_ossley": "frogfolk ferryman; very few words, long pauses that are not hesitation; answers the question you meant; never asks for coin",
       "kettle_campers": "a rush camp boiling a kettle on the centaurs' detour signs; cheerful, agreeable, say 'oh, absolutely' and do not change",
       "wagon_driver": "a big rush wagon driver in a bigger coat, stuck in a rut, too proud to ask for help; 'admiring the view'",

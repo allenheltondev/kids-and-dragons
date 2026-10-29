@@ -16,7 +16,7 @@ regional_relationships:
   - id: biome.sunward_fields
     title: "The Sunward Fields"
     url: "/biomes/sunward_fields/"
-    relationship: "The western approach is Fields country, and a long queue at the bridge is the best market day the nearby cooperatives get."
+    relationship: "The western approach is Fields country, and a long line at the bridge is the best market day the nearby cooperatives get."
   - id: biome.eastern_plains
     title: "The Eastern Plains"
     url: "/biomes/eastern_plains/"
@@ -95,8 +95,8 @@ ai_context:
   mood: "A narrow, strategically important crossing where the Great River compresses travel between the Sunward Fields and Eastern Plains into a single route."
   themes: "River_crossing, Bridge, Bottleneck, Current, Trade_route"
   visual_style: "Fast blue water, stone and timber bridgework, steep banks, weathered route structures, waiting caravans, river spray, and a clear sense of constrained passage."
-  common_encounters: "Blocked travel, bridge defense, rescues from the current, negotiations, caravan queues, missing cargo, river creatures, and choices where every traveler must pass through the same place."
-  lore_highlights: "The accepted account is that the trolls built the bridge because the river was being unreasonable, and that the settlement is, at bottom, a queue that put down roots."
+  common_encounters: "Blocked travel, bridge defense, rescues from the current, negotiations, caravan lines, missing cargo, river creatures, and choices where every traveler must pass through the same place."
+  lore_highlights: "The accepted account is that the trolls built the bridge because the river was being unreasonable, and that the settlement is, at bottom, a line that put down roots."
   related_entities: "feature.great_river, biome.sunward_fields, biome.eastern_plains, biome.eastern_plains, feature.great_river, biome.sunward_fields, biome.eastern_plains, npc.stone_troll, npc.centaur, creature.silver_otter, creature.river_drake, biome.sunward_fields, biome.eastern_plains, campaign.gemfall, character.manticore, creature.silver_otter, creature.river_drake, item.brave_whistle, item.river_charm, npc.centaur, npc.stone_troll"
   writing_guidance: "Stone Crossing is a location and transition environment, not a broad grassland biome. The current is a real hazard, and alternate nearby crossings should not be invented casually."
   generation_hints: "Traffic, river level, weather, maintenance, and danger can change whether the crossing is open, delayed, or impassable."
@@ -108,7 +108,7 @@ infobox: location
 <!-- BEGIN GENERATED: lore -->
 ## Lore
 
-The accepted account is that the trolls built the bridge because the river was being unreasonable, and that the settlement is, at bottom, a queue that put down roots.
+The accepted account is that the trolls built the bridge because the river was being unreasonable, and that the settlement is, at bottom, a line that put down roots.
 
 ### Recorded History
 
@@ -137,13 +137,13 @@ The realm's bottleneck, and proud of it: every eastern story crosses here eventu
 ### Neighbors
 
 - **[The Great River](/features/great_river/)**: The river is the reason, the obstacle, and the business model. The crossing exists because the Great River narrows here once, briefly, and has never been talked into doing it anywhere else.
-- **[The Sunward Fields](/biomes/sunward_fields/)**: The western approach is Fields country, and a long queue at the bridge is the best market day the nearby cooperatives get.
+- **[The Sunward Fields](/biomes/sunward_fields/)**: The western approach is Fields country, and a long line at the bridge is the best market day the nearby cooperatives get.
 - **[The Eastern Plains](/biomes/eastern_plains/)**: The eastern side is pride country, where escorts begin and end and the riddle account is honored; the bridge is the seam between two halves of the realm, stitched daily.
 
 ### Current Tensions
 
-- Gemfall traffic has produced the longest queues in the crossing's history, and the petition for a second bridge has reached the troll, who is weighing the question aloud. Estimates for the answer run from seasons to decades.
-- The drake has raised its rates, citing volume. The queue's opinion of this is loud; the drake's opinion of the queue's opinion is underwater.
+- Gemfall traffic has produced the longest lines in the crossing's history, and the petition for a second bridge has reached the troll, who is weighing the question aloud. Estimates for the answer run from seasons to decades.
+- The drake has raised its rates, citing volume. The line's opinion of this is loud; the drake's opinion of the line's opinion is underwater.
 
 ### Story Hooks
 

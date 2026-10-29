@@ -521,7 +521,7 @@ biomes:
             storytelling.
         - place: route.northern_river_bridge
           relationship: >-
-            The one way east without wings. When the bridge queue backs up,
+            The one way east without wings. When the bridge line backs up,
             foothill trade holds its breath.
       current_tensions:
         - "The Gemfall rush has filled the hills with prospectors who have never heard of gathering law, and the moths, the crabs, and the grandmothers are all being tested at once."
@@ -689,7 +689,7 @@ biomes:
         argument became an irrigation system.
       recorded_history: >-
         The Fields' history is a festival calendar with the history attached:
-        every flood, drought, and triumphant beetroot is remembered as the
+        every flood, drought, and triumphant beet is remembered as the
         festival founded about it. The cooperatives are older than money and
         keep their records in song, pie, and extremely durable grudges about
         weather.
@@ -713,7 +713,7 @@ biomes:
             it is feeding the other.
         - place: location.stone_crossing
           relationship: >-
-            The eastern gate: everything bound over the river queues at the
+            The eastern gate: everything bound over the river lines up at the
             bridge, and a bad week at the crossing is a fine week for every
             wayside pie stand in the southern Fields.
         - place: location.bramblewood
@@ -996,7 +996,7 @@ biomes:
           relationship: >-
             The southern door and the social calendar: escorts begin and end
             there, riddles are traded there, and a pride's reputation is half
-            made in the bridge queue.
+            made in the bridge line.
         - place: route.northern_river_bridge
           relationship: >-
             The northern door, quieter and colder, held in reserve; when Stone
@@ -1013,7 +1013,7 @@ biomes:
             it.
       current_tensions:
         - "Gemfall caravan volume has stretched the escort tradition thin, and some prides now book seasons in advance, which the elders regard as the end of civilization."
-        - "The queue at Stone Crossing has grown long enough to cut across two prides' seasonal grounds, and the resulting etiquette problem is being negotiated at the pace etiquette deserves."
+        - "The line at Stone Crossing has grown long enough to cut across two prides' seasonal grounds, and the resulting etiquette problem is being negotiated at the pace etiquette deserves."
       historical_hooks:
         - "One riddle has stood unanswered on the account for sixty years, accruing honor like interest. Solving it would make someone famous at both ends of the bridge; several careers have quietly been spent trying."
         - "An unclaimed pride marker stands far out on the eastern grass, older than any current pride and maintained by all of them, on the principle that somebody's promise should not lapse just because the somebody is gone."

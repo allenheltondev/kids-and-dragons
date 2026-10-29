@@ -465,17 +465,17 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "roller": "best",
       "onSuccess": {
         "goto": "scene_unassigned",
-        "narration": "On the oldest stone, under the moss, are rows of marks worn almost smooth. They are tally marks, like the grandmothers' marks, but far older. Somebody was counting here before the first families came. The land has been keeping records. Great-Gran Ashby only nods. \"Now come and see my shelf.\""
+        "narration": "On the oldest stone, under the moss, are rows of marks worn almost smooth. They are tally marks, like the grandmothers' marks, but far older. Somebody was counting here before the first families came. The land has been keeping records. Great-Grandma Ashby only nods. \"Now come and see my shelf.\""
       },
       "onFailure": {
         "goto": "scene_unassigned",
-        "narration": "The marks are worn so smooth you cannot tell scratches from weather. Great-Gran Ashby takes your hand and runs your fingers along them: one, one, one, and a gap. \"Counting,\" she says. \"Before us. Come and see the shelf.\""
+        "narration": "The marks are worn so smooth you cannot tell scratches from weather. Great-Grandma Ashby takes your hand and runs your fingers along them: one, one, one, and a gap. \"Counting,\" she says. \"Before us. Come and see the shelf.\""
       }
     },
     "check_carry": {
@@ -486,7 +486,7 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "roller": "party",
@@ -503,11 +503,11 @@
             "value": true
           }
         ],
-        "narration": "Two hands, slow as a snail, and you square the list after with one finger. Great-Gran Ashby wraps the gem in a page torn from nothing important and puts it in your hands. \"The Unassigned Stone. Keep it. Don't you dare sell it.\""
+        "narration": "Two hands, slow as a snail, and you square the list after with one finger. Great-Grandma Ashby wraps the gem in a page torn from nothing important and puts it in your hands. \"The Unassigned Stone. Keep it. Don't you dare sell it.\""
       },
       "onFailure": {
         "goto": "scene_crawlers_porch",
-        "narration": "Your fingers bump the list crooked, and you grab at the gem as if it might run off. Great-Gran Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
+        "narration": "Your fingers bump the list crooked, and you grab at the gem as if it might run off. Great-Grandma Ashby pats your hand. \"You'll know the difference soon. Not today.\" The stone stays on its list, and somehow that feels right too."
       },
       "checkKind": "doing"
     },
@@ -534,13 +534,13 @@
       "cast": [
         {
           "figure": "cast/great_gran_ashby",
-          "name": "Great-Gran Ashby"
+          "name": "Great-Grandma Ashby"
         }
       ],
       "roller": "party",
       "onSuccess": {
         "goto": "interaction_bell_tuck",
-        "narration": "You tell them about the queues and the jackalopes and the roads that bend, and you do all the voices. Forty grandmothers laugh in the right places and gasp in the right places, and one of them cries a little at the end, and says it is the onions."
+        "narration": "You tell them about the lines and the jackalopes and the roads that bend, and you do all the voices. Forty grandmothers laugh in the right places and gasp in the right places, and one of them cries a little at the end, and says it is the onions."
       },
       "onFailure": {
         "goto": "interaction_bell_tuck",

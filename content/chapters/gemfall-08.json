@@ -1687,7 +1687,7 @@
     "scene_bells_ringing_unassigned_wedge": {
       "type": "story",
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "You put the Unassigned Stone back where nobody should ever dig, which is exactly here, and the ground stops shaking as if it has recognized something. For one breath. Great-Gran Ashby was right about the list. One ring bought. You snatch the stone back up and run.",
+      "narration": "You put the Unassigned Stone back where nobody should ever dig, which is exactly here, and the ground stops shaking as if it has recognized something. For one breath. Great-Grandma Ashby was right about the list. One ring bought. You snatch the stone back up and run.",
       "choices": [
         {
           "id": "on",

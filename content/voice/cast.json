@@ -578,7 +578,7 @@
     "postmaster_quill": {
       "name": "Postmaster Quill",
       "kind": "character",
-      "who": "Postmaster Quill, a griffin with spectacles on a chain who runs the Griffin Post; squawks, loses count, insists it will all come out in the wash",
+      "who": "Postmaster Quill, a griffin with glasses on a chain who runs the Griffin Post; squawks, loses count, insists it will all come out in the wash",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
@@ -661,7 +661,7 @@
       },
       "lines": [
         {
-          "text": "Food to share, a healing draught, or light for dark roads. Pick one.",
+          "text": "Food to share, a healing potion, or light for dark roads. Pick one.",
           "address": "gemfall-01/scene_provisions/narration"
         },
         {
@@ -1146,7 +1146,7 @@
       },
       "lines": [
         {
-          "text": "Remember that. Songs travel farther than queues. There. You will know it again.",
+          "text": "Remember that. Songs travel farther than lines. There. You will know it again.",
           "address": "gemfall-03a/interaction_hum/narration"
         },
         {
@@ -1187,7 +1187,7 @@
     "brassbuckles": {
       "name": "Brassbuckles",
       "kind": "group",
-      "who": "the Brassbuckle Expedition, six people in matching brass hats; smooth, smiling, always somehow ahead in the queue",
+      "who": "the Brassbuckle Expedition, six people in matching brass hats; smooth, smiling, always somehow ahead in the line",
       "gender": "unknown",
       "genderFrom": "none",
       "voiceNotes": [
@@ -1457,7 +1457,7 @@
       "status": "provisional"
     },
     "nan_rummage": {
-      "name": "Nan Rummage",
+      "name": "Nana Rummage",
       "kind": "character",
       "who": "a boggart; talks sideways to the lost things she is sorting, never answers the question you asked, adores a really good sound",
       "pronouns": "she/her",
@@ -1474,7 +1474,10 @@
       "chapters": [
         "gemfall-03b"
       ],
-      "aliases": [],
+      "aliases": [
+        "Nan Rummage",
+        "Nana Rummage"
+      ],
       "gemini": {
         "voice": "Autonoe"
       },
@@ -1720,7 +1723,7 @@
     "mother_thrum": {
       "name": "Mother Thrum",
       "kind": "character",
-      "who": "a ford witch; careful and instructive, peers over spectacles, always asks 'what do you actually want?'",
+      "who": "a ford witch; careful and instructive, peers over glasses, always asks 'what do you actually want?'",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
@@ -1820,7 +1823,7 @@
     "red_scarves": {
       "name": "Red Scarves",
       "kind": "group",
-      "who": "the red-scarf queue-jumpers' leader; pushy and impatient, but fair when fairly beaten",
+      "who": "the red-scarf line-cutters' leader; pushy and impatient, but fair when fairly beaten",
       "pronouns": "he/him",
       "pronounsFrom": "narration",
       "gender": "male",
@@ -2707,7 +2710,7 @@
     "nim": {
       "name": "Nim",
       "kind": "character",
-      "who": "a dragonling bell-rider on a tiny fast pony called Pepper; quick, proud, a little cheeky about her grandmother",
+      "who": "a dragonling bell-rider on a tiny fast pony called Pepper; quick, proud, a little sassy about her grandmother",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
@@ -2949,6 +2952,7 @@
       "who": "a Deep Hollow Cult member; genuinely kind, soft-spoken, believes every word; kindness first, always, and never menacing",
       "gender": "female",
       "genderFrom": "notes",
+      "figure": "cast/soup_woman",
       "voiceNotes": [
         {
           "chapter": "gemfall-05b",
@@ -2958,7 +2962,9 @@
       "chapters": [
         "gemfall-05b"
       ],
-      "aliases": [],
+      "aliases": [
+        "Marigold"
+      ],
       "gemini": {
         "voice": "Achernar"
       },
@@ -3033,7 +3039,7 @@
       "status": "provisional"
     },
     "great_gran_ashby": {
-      "name": "Great Gran Ashby",
+      "name": "Great-Grandma Ashby",
       "kind": "character",
       "who": "the oldest dragonling grandmother; brisk, tender, unarguable, taps things with her walking stick",
       "pronouns": "she/her",
@@ -3051,7 +3057,8 @@
         "gemfall-05c"
       ],
       "aliases": [
-        "Great-Gran Ashby"
+        "Great Gran Ashby",
+        "Great-Grandma Ashby"
       ],
       "gemini": {
         "voice": "Vindemiatrix"
@@ -3076,7 +3083,7 @@
     "grandmother": {
       "name": "Grandmother",
       "kind": "character",
-      "who": "a gate-town grandmother; spectacles on a chain, counts everything, hugs first and inspects later",
+      "who": "a gate-town grandmother; glasses on a chain, counts everything, hugs first and inspects later",
       "pronouns": "she/her",
       "pronounsFrom": "narration",
       "gender": "female",
@@ -3147,7 +3154,7 @@
       },
       "lines": [
         {
-          "text": "Nobody rings that one. Not ever. Great-Gran says we'll know.",
+          "text": "Nobody rings that one. Not ever. Great-Grandma says we'll know.",
           "address": "gemfall-05c/scene_morning_bells_unrung/narration"
         },
         {
@@ -4206,12 +4213,12 @@
           "address": "riftlight-convergence/ending/variants/1"
         },
         {
-          "text": "Stay beside me. I will stop feeding it and watch what it does.",
-          "address": "riftlight-convergence/decision/narration"
-        },
-        {
           "text": "I called an opening, but I did not choose its rules.",
           "address": "riftlight-convergence/account/narration"
+        },
+        {
+          "text": "Let me call one small opening near the pull.",
+          "address": "riftlight-convergence/proposal/narration"
         }
       ],
       "speaks": true,
@@ -4241,16 +4248,12 @@
       },
       "lines": [
         {
-          "text": "Hold my measuring board still while a friend marks the grains?",
+          "text": "Could you steady my board while your friend marks the grains?",
           "address": "riftlight-convergence/pull/narration"
         },
         {
           "text": "Help me keep everyone behind the line when an opening comes.",
           "address": "riftlight-convergence/arrival/narration"
-        },
-        {
-          "text": "Help me stop the experiment.",
-          "address": "riftlight-convergence/decision/narration"
         }
       ],
       "speaks": true,
@@ -4354,12 +4357,12 @@
           "address": "riftlight-sky-islands-arrival/pip_night/narration"
         },
         {
-          "text": "The drawing goes in the traveling pages, not my tea-stained scrap.",
-          "address": "riftlight-reading-room/rest/narration"
-        },
-        {
           "text": "If we follow it to the end, we find where it starts. The cousin saw posts. I want to see posts.",
           "address": "riftlight-saltrot-arrival/trail/narration"
+        },
+        {
+          "text": "The pale silt starts somewhere upriver. I need good ears.",
+          "address": "riftlight-saltrot-arrival/lesson/variants/0"
         }
       ],
       "speaks": true,
@@ -4616,10 +4619,8 @@
       "name": "Kitsune keeper",
       "kind": "character",
       "who": "Practical, welcoming navigator. Uses songs alongside observations; never knows an unseen cause.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
+      "gender": "unknown",
+      "genderFrom": "none",
       "figure": "cast/island_keeper",
       "voiceNotes": [
         {
@@ -4635,12 +4636,7 @@
       "gemini": {
         "voice": "Schedar"
       },
-      "lines": [
-        {
-          "text": "Show me your signals, before anyone decides about the folds.",
-          "address": "riftlight-whale-road/small_whale_result/narration"
-        }
-      ],
+      "lines": [],
       "speaks": true,
       "status": "provisional"
     },
@@ -5045,24 +5041,6 @@
       "speaks": true,
       "status": "provisional"
     },
-    "marigold": {
-      "name": "Marigold",
-      "kind": "character",
-      "who": "Marigold.",
-      "gender": "unknown",
-      "genderFrom": "none",
-      "figure": "cast/soup_woman",
-      "chapters": [
-        "gemfall-05b"
-      ],
-      "aliases": [],
-      "gemini": {
-        "voice": "Despina"
-      },
-      "lines": [],
-      "speaks": true,
-      "status": "provisional"
-    },
     "bell_code_expert": {
       "name": "Bell-Code Expert",
       "kind": "character",
@@ -5406,8 +5384,8 @@
           "address": "riftlight-ashspan-bridge/share_bryn/narration"
         },
         {
-          "text": "The new beam goes up into its notches. Level, and nobody underneath.",
-          "address": "riftlight-ashspan-bridge/beam_plan/narration"
+          "text": "Now, it needs tying down, so it stays put when the river sulks.",
+          "address": "riftlight-ashspan-bridge/planks_laid/narration"
         }
       ],
       "speaks": true,
@@ -5473,16 +5451,16 @@
       },
       "lines": [
         {
-          "text": "Follow my rim calls, or fetch your short line if the passage stayed clear.",
-          "address": "riftlight-bone-yard/exit_strip/narration"
-        },
-        {
           "text": "The tide reaches this pocket later. We have time to look, then we pack up. No crossing.",
           "address": "riftlight-buried-bridge/guide_limits/narration"
         },
         {
-          "text": "A caught plank needs a stone in its place first. Used mats need untying.",
-          "address": "riftlight-bone-yard/unbrace/narration"
+          "text": "A useful warning needs the whole account. Inconvenient bits too.",
+          "address": "riftlight-bone-yard/report/narration"
+        },
+        {
+          "text": "Buried bridge. No river. Still not walking on it.",
+          "address": "riftlight-buried-bridge/bank/narration"
         }
       ],
       "speaks": true,
@@ -5624,12 +5602,12 @@
       },
       "lines": [
         {
-          "text": "Pass them down the line, friend to friend. And mind the puddles. Potatoes hate puddles.",
-          "address": "riftlight-exchange-rift/sack_chain/narration"
-        },
-        {
           "text": "Throw me the end of that rope! Right over my hook, if you please!",
           "address": "riftlight-exchange-rift/barge_toss/narration"
+        },
+        {
+          "text": "Pass them down the line, friend to friend. And watch out for the puddles. Potatoes hate puddles.",
+          "address": "riftlight-exchange-rift/sack_chain/narration"
         },
         {
           "text": "Anybody ever eat a potato skin on a day the weather went wrong?",
@@ -5762,7 +5740,7 @@
           "address": "riftlight-finale/shelter/narration"
         },
         {
-          "text": "Ask before you wrap or move him.",
+          "text": "Offer to help. Ask before you wrap or move him.",
           "address": "riftlight-finale/help_him/narration"
         }
       ],
@@ -5925,16 +5903,16 @@
       },
       "lines": [
         {
-          "text": "An earlier record could help, but nobody needs to invent one to complete this visit.",
-          "address": "riftlight-reading-room/compare_accounts/narration"
+          "text": "A blank is easier to fix than a confident mistake.",
+          "address": "riftlight-reading-room/claim_limit/narration"
         },
         {
-          "text": "Support it for a clearer view, but your papers will stay near meltwater.",
-          "address": "riftlight-reading-room/support_ice/narration"
+          "text": "Which will challenge your first impression?",
+          "address": "riftlight-reading-room/second_view/narration"
         },
         {
-          "text": "Your boots stay on our floor while the remembered water passes.",
-          "address": "riftlight-reading-room/memory_observation/narration"
+          "text": "Help us compare that view with the river you crossed. We have inspected it three times and filed it three different ways.",
+          "address": "riftlight-reading-room/arrival/narration"
         }
       ],
       "speaks": true,
@@ -6089,8 +6067,8 @@
           "address": "riftlight-squall-temple/messages/narration"
         },
         {
-          "text": "Turn it away, or hold the sheltered landing until it settles.",
-          "address": "riftlight-squall-temple/plan/narration"
+          "text": "So the song is not where it was. Neither are we.",
+          "address": "riftlight-sky-islands-arrival/song_bearing/narration"
         }
       ],
       "speaks": true,
@@ -6197,10 +6175,8 @@
       "name": "Passing fisher",
       "kind": "character",
       "who": "Passing fisher.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
+      "gender": "unknown",
+      "genderFrom": "none",
       "figure": "cast/passing_fisher",
       "chapters": [
         "riftlight-stuttering-flats"
@@ -6209,12 +6185,7 @@
       "gemini": {
         "voice": "Achird"
       },
-      "lines": [
-        {
-          "text": "I will wait at the marked spot, then.",
-          "address": "riftlight-stuttering-flats/next/variants/0"
-        }
-      ],
+      "lines": [],
       "speaks": true,
       "status": "provisional"
     },
@@ -6317,10 +6288,8 @@
       "name": "New keeper",
       "kind": "character",
       "who": "New keeper.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
+      "gender": "unknown",
+      "genderFrom": "none",
       "figure": "cast/new_island_keeper",
       "chapters": [
         "riftlight-whale-road"
@@ -6329,12 +6298,7 @@
       "gemini": {
         "voice": "Iapetus"
       },
-      "lines": [
-        {
-          "text": "White means watch this approach. Striped means stop and wait.",
-          "address": "riftlight-whale-road/handoff_sky/narration"
-        }
-      ],
+      "lines": [],
       "speaks": true,
       "status": "provisional"
     },
@@ -6354,16 +6318,8 @@
       },
       "lines": [
         {
-          "text": "The marks show its reach today. Not a command it must obey.",
-          "address": "riftlight-wyrm-nest/watch_check/narration"
-        },
-        {
-          "text": "These are builder signals. They do not control the wyrm.",
-          "address": "riftlight-wyrm-nest/signal/narration"
-        },
-        {
-          "text": "Neither plan promises the wyrm will cooperate.",
-          "address": "riftlight-wyrm-nest/bed/narration"
+          "text": "The bench has become a very expensive pillow.",
+          "address": "riftlight-wyrm-nest/listen/narration"
         }
       ],
       "speaks": true,

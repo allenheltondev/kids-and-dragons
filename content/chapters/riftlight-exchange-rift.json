@@ -2210,7 +2210,7 @@
     },
     "sack_chain": {
       "type": "interaction",
-      "narration": "Six crews are waiting at their boats along the quay, and every one of them is hungry. The pilot sets a sack on the boards. \"Pass them down the line, friend to friend,\" he says. \"And mind the puddles. Potatoes hate puddles.\"",
+      "narration": "Six crews are waiting at their boats along the quay, and every one of them is hungry. The pilot sets a sack on the boards. \"Pass them down the line, friend to friend,\" he says. \"And watch out for the puddles. Potatoes hate puddles.\"",
       "cast": [
         {
           "figure": "entities/frogfolk",

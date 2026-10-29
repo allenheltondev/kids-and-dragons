@@ -15,7 +15,7 @@ regional_relationships:
   - id: location.stone_crossing
     title: "Stone Crossing"
     url: "/locations/stone_crossing/"
-    relationship: "Bridge news arrives with every wagon, and a queue at the crossing is a full inn at Bramblewood."
+    relationship: "Bridge news arrives with every wagon, and a line at the crossing is a full inn at Bramblewood."
   - id: location.exchange
     title: "The Exchange"
     url: "/locations/exchange/"
@@ -88,12 +88,12 @@ The Sunward Fields' far waystop and its filter: the first roof after the bridge 
 ### Neighbors
 
 - **[The Sunward Fields](/biomes/sunward_fields/)**: A Fields town to the bone - cooperative, festival-keeping, fed by the same harvest road it watches over; waystop duty is its contribution to the cooperatives.
-- **[Stone Crossing](/locations/stone_crossing/)**: Bridge news arrives with every wagon, and a queue at the crossing is a full inn at Bramblewood.
+- **[Stone Crossing](/locations/stone_crossing/)**: Bridge news arrives with every wagon, and a line at the crossing is a full inn at Bramblewood.
 - **[The Exchange](/locations/exchange/)**: Far ends of the same road: the city sends travelers, prices, and fashion; Bramblewood sends produce, gossip with the mud still on it, and travelers it has already vetted.
 
 ### Current Tensions
 
-- Gemfall traffic wants through the hedges in a hurry, and the hedges do not do hurry; the inn is full, the paths are long, and the queue outside the north gap has developed its own economy.
+- Gemfall traffic wants through the hedges in a hurry, and the hedges do not do hurry; the inn is full, the paths are long, and the line outside the north gap has developed its own economy.
 
 ### Story Hooks
 

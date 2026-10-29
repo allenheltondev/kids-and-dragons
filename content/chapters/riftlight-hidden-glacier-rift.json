@@ -112,11 +112,11 @@
     },
     "plan": {
       "type": "choice_point",
-      "narration": "The herder points at the east ridge. \"Snow is soft up there. Haul the sledge, or go light?\" Her sledge waits by the door with a coil of rope and a lantern tied on. The kid goat has already started chewing the rope. Beside the door, the hay pile is shorter than it was yesterday, and she keeps glancing at it.",
+      "narration": "The herder points at the east ridge. \"Snow is soft up there. Haul the sled, or go light?\" Her sled waits by the door with a coil of rope and a lantern tied on. The kid goat has already started chewing the rope. Beside the door, the hay pile is shorter than it was yesterday, and she keeps glancing at it.",
       "choices": [
         {
           "id": "loaded",
-          "label": "Load the sledge and haul it up",
+          "label": "Load the sled and haul it up",
           "icon": "hand",
           "goto": "plan_a"
         },
@@ -141,7 +141,7 @@
     },
     "plan_a": {
       "type": "story",
-      "narration": "You stack the rope, the lantern and a bundle of hay on the sledge. The kid climbs on top of the hay and will not get off. The runners squeak like mice. \"Every hand on the rope,\" says the herder. \"Hay is heavy when it has opinions.\"",
+      "narration": "You stack the rope, the lantern and a bundle of hay on the sled. The kid climbs on top of the hay and will not get off. The runners squeak like mice. \"Every hand on the rope,\" says the herder. \"Hay is heavy when it has opinions.\"",
       "choices": [
         {
           "id": "continue",
@@ -189,7 +189,7 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "Every hand on the rope! Haul the loaded sledge up the soft slope, step by step.",
+      "prompt": "Every hand on the rope! Haul the loaded sled up the soft slope, step by step.",
       "roller": "all",
       "onSuccess": {
         "goto": "climb_done"

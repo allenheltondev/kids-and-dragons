@@ -1013,7 +1013,7 @@
       "discovers": [
         "character.griffin"
       ],
-      "narration": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins queue on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with spectacles on a chain, is losing count. \"Hands!\" she squawks. \"Anybody with hands!\"",
+      "narration": "On the way back you pass the Griffin Post, a tall tower full of round windows. Courier griffins line up on the roof while clerks stuff claim letters into their sacks, and then a few more, and then a few more after that. The postmaster, a griffin called Quill with glasses on a chain, is losing count. \"Hands!\" she squawks. \"Anybody with hands!\"",
       "cast": [
         {
           "figure": "cast/postmaster_quill",
@@ -1563,7 +1563,7 @@
       "discovers": [
         "npc.sheeple"
       ],
-      "narration": "At the Outfitters' Steps, Mrs. Tuft, a sheeple grocer, gives each northbound party one supply. Her price tags stick in her wool. \"Food to share, a healing draught, or light for dark roads,\" she says. \"Pick one.\" Her jars even come in jars.",
+      "narration": "At the Outfitters' Steps, Mrs. Tuft, a sheeple grocer, gives each northbound party one supply. Her price tags stick in her wool. \"Food to share, a healing potion, or light for dark roads,\" she says. \"Pick one.\" Her jars even come in jars.",
       "cast": [
         {
           "figure": "cast/mrs_tuft",
@@ -1590,7 +1590,7 @@
         },
         {
           "id": "sunbloom",
-          "label": "A sunbloom draught, for bumps and scrapes",
+          "label": "A sunbloom potion, for bumps and scrapes",
           "icon": "potion",
           "goto": "scene_provisions_sunbloom",
           "effects": [
@@ -1664,7 +1664,7 @@
     },
     "scene_provisions_sunbloom": {
       "type": "story",
-      "narration": "The sunbloom draught glows in its bottle like a little sunrise. \"For bumps, scrapes and grumps,\" says Mrs. Tuft. \"Mostly grumps.\" She wraps it in a sock so it will not clink against anything, and then throws in the sock for free.",
+      "narration": "The sunbloom potion glows in its bottle like a little sunrise. \"For bumps, scrapes and grumps,\" says Mrs. Tuft. \"Mostly grumps.\" She wraps it in a sock so it will not clink against anything, and then throws in the sock for free.",
       "cast": [
         {
           "figure": "cast/mrs_tuft",
@@ -3167,7 +3167,7 @@
       "mortar": "Mortar, a stone troll noodle cook; stirs one full slow turn before answering anything, says very little, and means all of it",
       "old_wick": "Old Wick, a very old frogfolk lamplighter; croaks softly, wishes every lamp goodnight by name, knows the paths nobody else looks for",
       "orange_captain": "the yeti captain of the Sunny Disposition, an orange ship; cheerful, orange peel in his fur, pays every debt, mostly in oranges",
-      "postmaster_quill": "Postmaster Quill, a griffin with spectacles on a chain who runs the Griffin Post; squawks, loses count, insists it will all come out in the wash",
+      "postmaster_quill": "Postmaster Quill, a griffin with glasses on a chain who runs the Griffin Post; squawks, loses count, insists it will all come out in the wash",
       "courier_griffin": "a young courier griffin, always hungry, bows with wings out to people it will remember",
       "mrs_tuft": "Mrs. Tuft, a sheeple grocer on a provision barge, wool full of price tags; everything comes in a jar; brisk and a little dry",
       "selkie_grandmother": "the grandmother of a selkie family just arrived for a fresh start; brisk, warm, decides things are settled and they are",

@@ -79,6 +79,17 @@ describe("who is in the game", () => {
     expect([...drafts.get("wisp")!.chapters]).toEqual(["a-01"]);
   });
 
+  it("joins a cast member to the voice notes their figure is named for, whatever the display name", () => {
+    const renamed = new Map(collectCharacters({
+      chapters: [{ id: "c-01", campaignId: "c", voiceGuide: { npcVoices: { nan_rummage: "a boggart", soup_woman: "kind, soft-spoken" } },
+        scenes: { s: { cast: [{ figure: "cast/nan_rummage", name: "Nana Rummage" }, { figure: "cast/soup_woman", name: "Marigold" }] } } }],
+      individuals: [], narration: [],
+    }).map((d) => [d.id, d]));
+    expect([...renamed.keys()].sort()).toEqual(["nan_rummage", "soup_woman"]);
+    expect(renamed.get("nan_rummage")!.name).toBe("Nana Rummage");
+    expect([...renamed.get("soup_woman")!.aliases]).toContain("Marigold");
+  });
+
   it("guesses a voice's gender and size from pronouns and notes", () => {
     expect(genderOf({ name: "Hessa Wren", who: "warm, generous", pronouns: "she/her" })).toBe("f");
     expect(genderOf({ name: "Old Wick", who: "a very old frogfolk lamplighter; he croaks" })).toBe("m");

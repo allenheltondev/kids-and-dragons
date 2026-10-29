@@ -22,7 +22,7 @@ likes:
   - id: npc.stone_troll
     title: "Stone Troll"
     url: "/npcs/stone_troll/"
-    because: "A riddle traded at the crossing is worth the whole queue."
+    because: "A riddle traded at the crossing is worth the whole line."
   - id: creature.jackalope
     title: "Jackalope"
     url: "/creatures/jackalope/"
@@ -92,7 +92,7 @@ Proud, courteous, and resigned to being misjudged on sight, which every manticor
 ### Likes
 
 - **[Centaur](/npcs/centaur/)**: The other people who understand that a road is a promise.
-- **[Stone Troll](/npcs/stone_troll/)**: A riddle traded at the crossing is worth the whole queue.
+- **[Stone Troll](/npcs/stone_troll/)**: A riddle traded at the crossing is worth the whole line.
 - **[Jackalope](/creatures/jackalope/)**: Keeps the cubs humble and exercised at no charge to the pride.
 
 ### Dislikes

@@ -628,7 +628,7 @@
         }
       ],
       "art": "scenes/riftlight/island-due-back",
-      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled holiday.",
+      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled vacation.",
       "interaction": {
         "kind": "precision",
         "cue": "Tap when the marker reaches the gold.",
@@ -2744,7 +2744,7 @@
         }
       ],
       "art": "scenes/riftlight/island-due-back",
-      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled holiday.",
+      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled vacation.",
       "interaction": {
         "kind": "precision",
         "cue": "Tap when the marker reaches the gold.",

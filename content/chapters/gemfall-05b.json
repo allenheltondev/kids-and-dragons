@@ -873,7 +873,7 @@
     },
     "scene_runners_post_rush": {
       "type": "story",
-      "narration": "\"The rush road?\" A runner puffs out the news. A ford queue two days long. A witch whose charms ring by themselves. Cinder wolves that won't sleep near the gem wagons. And a soup line, very kind, that keeps asking people about the mountain. \"Same shape as here,\" she says. \"Different country. Everybody's noticing.\"",
+      "narration": "\"The rush road?\" A runner puffs out the news. A ford line two days long. A witch whose charms ring by themselves. Cinder wolves that won't sleep near the gem wagons. And a soup line, very kind, that keeps asking people about the mountain. \"Same shape as here,\" she says. \"Different country. Everybody's noticing.\"",
       "cast": [
         {
           "figure": "cast/mosshome_runner",

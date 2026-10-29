@@ -222,7 +222,7 @@ the story without ever pretending the party wasn't warned.
      door.
    - *Rush Road:* **The Ford That Decides**: the caravan ford where the
      [west branch](/features/great_river_west_branch/) cuts the southern
-     [Plains](/biomes/plains/). A two-day queue with its own economy, a
+     [Plains](/biomes/plains/). A two-day line with its own economy, a
      Deep Hollow soup line, displaced [cinder wolves](/creatures/cinder_wolf/)
      that will not bed near the gem wagons, and a witch whose charms have
      been ringing themselves all season. Fail the ford and the branch's real
