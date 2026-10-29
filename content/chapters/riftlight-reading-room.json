@@ -138,7 +138,7 @@
     },
     "witness_first": {
       "type": "choice_point",
-      "narration": "The route worker gives the elder a drawing of the two valleys. Pip keeps your crossing sketch beside it. \"Start with each bank's own view, or point out the fixed landmarks together,\" says the elder. \"Leave the spray-hidden moments blank.\" How will you begin?",
+      "narration": "The route worker gives the elder a drawing of the two valleys. Pip keeps your crossing sketch beside it. Start with each bank's own view, or point out the fixed landmarks together. Leave the spray-hidden moments blank. How will you begin?",
       "choices": [
         {
           "id": "option_1",
@@ -270,7 +270,7 @@
     },
     "support_ice": {
       "type": "choice_point",
-      "narration": "The close reading place needs a settled cradle to catch flakes. \"Support it for a clearer view,\" says the elder, \"but your papers will stay near meltwater.\" Or prepare the farther dry table: a cloudier view, but no paper rescue later. Which will you ready?",
+      "narration": "The close reading place needs a settled cradle to catch flakes. Support it for a clearer viewing window; your papers will stay near meltwater. Or prepare the farther dry table: a cloudier view, but no paper rescue later. Which will you ready?",
       "choices": [
         {
           "id": "option_1",
@@ -511,7 +511,7 @@
     },
     "first_memory": {
       "type": "choice_point",
-      "narration": "The pale ice clears. A remembered river moves between familiar ridges into the valley your earlier sketch left dry. Divide the water and ridge watching, or follow one fixed landmark together. \"If we split up, we get separate notes to compare later,\" says Pip. Which will you try?",
+      "narration": "The pale ice clears. A remembered river moves between familiar ridges into the valley your earlier sketch left dry. Divide the water and ridge watching, or follow one fixed landmark together. The first plan gives you separate notes to compare later. Which will you try?",
       "choices": [
         {
           "id": "option_1",
@@ -971,7 +971,7 @@
     },
     "what_matches": {
       "type": "choice_point",
-      "narration": "The outside drawing and memory account lie on the elder's table. \"Both show the river in that other valley!\" says Pip. Choose what the evidence supports: cite your independent test, ask the elder to sign her co-reading, or keep the claim limited to visible landmarks.",
+      "narration": "The outside drawing and memory account lie on the elder's table. Pip points from one to the other. \"Both show the river in that other valley!\" Choose what the evidence supports: cite your independent test, ask the elder to sign her co-reading, or keep the claim limited to visible landmarks.",
       "choices": [
         {
           "id": "option_1",
@@ -1120,7 +1120,7 @@
     },
     "catalog_test": {
       "type": "choice_point",
-      "narration": "A younger yeti keeper brings a fresh catalog slip. \"I need a route from a visitor's question to the checked view,\" she says. Start with the crossing report or the remembered river. The elder's signed reference, if you requested it, offers another route to test.",
+      "narration": "A younger yeti keeper brings a fresh catalog slip. \"I need a route from a visitor's question to the checked view,\" she explains. Start with the crossing report or the remembered river. The elder's signed reference, if you requested it, offers another route to test.",
       "choices": [
         {
           "id": "option_1",
@@ -1650,7 +1650,7 @@
     },
     "compare_accounts": {
       "type": "choice_point",
-      "narration": "The elder asks whether your party has another checked observation of a river where today's geography does not fit it. \"An earlier record could help,\" she says, \"but nobody needs to invent one to complete this visit.\" The new memory already gives you a local clue: a river once left by a different valley. Pip separates the space for a comparison from the space for the observation itself. How will you handle what you know beyond this room?",
+      "narration": "The elder asks whether your party has another checked observation of a river where today's geography does not fit it. An earlier record could help, but nobody needs to invent one to complete this visit. The new memory already gives you a local clue: a river once left by a different valley. Pip separates the space for a comparison from the space for the observation itself. How will you handle what you know beyond this room?",
       "choices": [
         {
           "id": "option_1",
@@ -1772,7 +1772,7 @@
     },
     "record_choice": {
       "type": "choice_point",
-      "narration": "The elder offers to keep a copy of your party's finished comparison. \"Keep it private, or share it with the catalog,\" she says. A filing route that passed its test can become a posted guide; a corrected route needs a guiding keeper. What will you authorize?",
+      "narration": "The elder offers to keep a copy of your party's finished comparison. Keep it private or share it with the catalog. A filing route that passed its test can become a posted guide; a corrected route needs a guiding keeper. What will you authorize?",
       "choices": [
         {
           "id": "option_1",
@@ -1985,7 +1985,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "Your river crossing and the memory agree on another valley. The date and cause remain unanswered. \"The drawing goes in the traveling pages, not my tea-stained scrap,\" says Pip, checking twice. You can rest, return to the workers by the upper path, or follow the northern strand farther into the glacier.",
+      "narration": "Your river crossing and the memory agree on another valley. The date and cause remain unanswered. Pip checks twice. \"The drawing goes in the traveling pages, not my tea-stained scrap.\" You can rest, return to the workers by the upper path, or follow the northern strand farther into the glacier.",
       "heal": 0,
       "choices": [],
       "outcome": "success",

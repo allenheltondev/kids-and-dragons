@@ -84,7 +84,7 @@
     },
     "sky_map": {
       "type": "story",
-      "narration": "The keeper unfolds a cloth map. Yesterday's lane runs straight into today's sky. \"A rock marker, a waiting rope and a broad grass lane,\" she says. \"We set them all out before anyone approaches the folds.\" Share the keeper's clues to lay out the approach. Olivia holds a corner before the wind can improve the map again.",
+      "narration": "The keeper unfolds a cloth map. Yesterday's lane runs straight into today's sky. She has a rock marker, a waiting rope and a broad grass lane to arrange before anyone approaches the folds. Share the keeper's clues to lay out the approach. Olivia holds a corner before the wind can improve the map again.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -252,7 +252,7 @@
     },
     "keeper_lesson": {
       "type": "choice_point",
-      "narration": "The keeper can teach a quiet note or a slow arm signal. The note lets you time an invitation when a whale faces the lane. The arm signal lets your friends hold a visible greeting while another keeper watches its response. \"Both leave the whale free to turn away,\" says the keeper. Which greeting will you practice?",
+      "narration": "The keeper can teach a quiet note or a slow arm signal. The note lets you time an invitation when a whale faces the lane. The arm signal lets your friends hold a visible greeting while another keeper watches its response. The keeper smiles. \"Both leave the whale free to turn away.\" Which greeting will you practice?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -514,7 +514,7 @@
     },
     "loose_kit": {
       "type": "story",
-      "narration": "Olivia catches the rolling shelter cloth against her notebook. For a moment she is a unicorn wearing a very practical curtain. The keeper helps peel it away. \"One cloth,\" says the keeper, \"and two places that need it.\"",
+      "narration": "Olivia catches the rolling shelter cloth against her notebook. For a moment she is a unicorn wearing a very practical curtain. The keeper helps peel it away. \"One cloth, and two places that need it.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -806,7 +806,7 @@
     },
     "small_whale_result": {
       "type": "rest",
-      "narration": "The small whale has room, but the whole group is still circling. The keeper brings warm barley cakes to your chosen waiting place. Olivia watches a crumb take flight, then eats the next one quickly. A new kitsune keeper arrives to take over. \"Show me your signals,\" she says, \"before anyone decides about the folds.\"",
+      "narration": "The small whale has room, but the whole group is still circling. The keeper brings warm barley cakes to your chosen waiting place. Olivia watches a crumb take flight, then eats the next one quickly. A new kitsune keeper arrives to take over, a little out of breath. \"Show me your signals before anyone decides about the folds.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -840,7 +840,7 @@
     },
     "handoff_sky": {
       "type": "choice_point",
-      "narration": "The new keeper has not seen your work. The first keeper shows the two cloths. \"White means watch this approach,\" she says. \"Striped means stop and wait.\" The newcomer needs to pass a stop signal from the watcher to the waiting travelers. Anyone can rehearse the relay around the rock. With an open viewpoint, you can instead teach her to watch the cloth signals directly. Which handover will you demonstrate?",
+      "narration": "The new keeper has not seen your work. The first keeper shows the two cloths: white means watch this approach; striped means stop and wait. The newcomer needs to pass a stop signal from the watcher to the waiting travelers. Anyone can rehearse the relay around the rock. With an open viewpoint, you can instead teach her to watch the cloth signals directly. Which handover will you demonstrate?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -972,7 +972,7 @@
     },
     "keeper_echo": {
       "type": "story",
-      "narration": "The new keeper repeats the stop signal, then points out the waiting place on your copied route. The first keeper checks it with her. \"A whale's turn is an invitation to watch,\" says the first keeper. \"It is never permission for travelers to cross the rope.\" The keepers take the watch together.",
+      "narration": "The new keeper repeats the stop signal, then points out the waiting place on your copied route. The first keeper checks it with her. A whale's turn is an invitation to watch; it is never permission for travelers to cross the rope. The keepers take the watch together.",
       "cast": [
         {
           "figure": "cast/island_keeper",

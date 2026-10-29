@@ -243,7 +243,7 @@
         }
       ],
       "type": "choice_point",
-      "narration": "\"The moved stone blocks the cart's old turn,\" says a keeper. Keep the jars aboard and build a short ramp around it: you will balance a heavy load, but the cart can use the ramp again. Or leave the cart above the turn and carry the jars along the high path: more passing, less weight near the hollow. The empty cart will still need guiding. Which plan suits your team?",
+      "narration": "The moved stone blocks the cart's old turn. Keep the jars aboard and build a short ramp around it: you will balance a heavy load, but the cart can use the ramp again. Or leave the cart above the turn and carry the jars along the high path: more passing, less weight near the hollow. The empty cart will still need guiding. Which plan suits your team?",
       "choices": [
         {
           "id": "ramp",
@@ -472,7 +472,7 @@
         }
       ],
       "type": "story",
-      "narration": "Water reaches the counting circle. The keepers fill their cups before returning to the mystery. Pip drinks, counts the cups, and carefully does not count the party. \"One more useful thing,\" says a keeper, nodding at the owner. \"A warning, so the next traveler does not trust the old turn.\"",
+      "narration": "Water reaches the counting circle. The keepers fill their cups before returning to the mystery. Pip drinks, counts the cups, and carefully does not count the party. The owner asks for one more useful thing: a warning that will stop the next traveler trusting the old turn.",
       "choices": [
         {
           "id": "rest",
@@ -503,7 +503,7 @@
       ],
       "type": "rest",
       "heal": 0,
-      "narration": "You rest on a low stone while the owner parks the cart. A keeper shares apple slices. Pip uses one to hold his drawing flat, takes a bite, then wonders where his paperweight went. \"Two neighbors are due,\" says a keeper. \"A walker from below the blind rise, and a cart from the upper road. Both will need the new turn explained.\"",
+      "narration": "You rest on a low stone while the owner parks the cart. A keeper shares apple slices. Pip uses one to hold his drawing flat, takes a bite, then wonders where his paperweight went. Two neighbors are due: a walker from below the blind rise, and a cart from the upper road. Both will need the new turn explained.",
       "choices": [
         {
           "id": "plan",
@@ -814,7 +814,7 @@
         }
       ],
       "type": "choice_point",
-      "narration": "The trickle will wash away the sharp edge that helped you measure the hollow. You can aim a small drain into the empty gravel and try to preserve that edge. Or spread loose gravel across the wet patch: a steadier road surface, but the fine footprint will be covered and your drawing must rely on the landmarks you already checked. \"Which work should last after you leave?\" asks a keeper.",
+      "narration": "The trickle will wash away the sharp edge that helped you measure the hollow. You can aim a small drain into the empty gravel and try to preserve that edge. Or spread loose gravel across the wet patch: a steadier road surface, but the fine footprint will be covered and your drawing must rely on the landmarks you already checked. Which work should last after you leave?",
       "choices": [
         {
           "id": "drain",
@@ -939,7 +939,7 @@
         }
       ],
       "type": "choice_point",
-      "narration": "You have the old drawings, today's measurements and whatever the water left visible. Make the traveling page match that evidence. The stone fits its old hollow. The grass has no dragged track. None of this supplies a date for the eruption. Pip leaves the uncertain stroke dotted and offers you the pencil. \"Only what we saw,\" he says.",
+      "narration": "You have the old drawings, today's measurements and whatever the water left visible. Make the traveling page match that evidence. The stone fits its old hollow. The grass has no dragged track. None of this supplies a date for the eruption. Pip leaves the uncertain stroke dotted and offers you the pencil. \"Only what we saw.\"",
       "choices": [
         {
           "id": "exact",
@@ -1138,7 +1138,7 @@
         }
       ],
       "type": "choice_point",
-      "narration": "\"I can give one drawing the biggest space on my traveling page,\" says Pip. A road plan will be useful at the next changed crossing; an old-mark drawing preserves the uncertain count for comparison with another stone. The keepers retain both full records here. Choose which work your party will finish and carry forward first.",
+      "narration": "Pip holds up his traveling page. \"I can give one drawing the biggest space.\" A road plan will be useful at the next changed crossing; an old-mark drawing preserves the uncertain count for comparison with another stone. The keepers retain both full records here. Choose which work your party will finish and carry forward first.",
       "choices": [
         {
           "id": "route",
@@ -1228,7 +1228,7 @@
       ],
       "type": "rest",
       "heal": 0,
-      "narration": "The water jars stand beside full cups. The old hollow and today's stone are recorded, with no invented eruption date. Both neighbors can explain the new turn. Pip packs the traveling page. \"Thank you, team,\" he says. The road to Ashspan Bridge is open. The narrowing fold is another possible way onward; if you take the road instead, its remaining chance will pass.",
+      "narration": "The water jars stand beside full cups. The old hollow and today's stone are recorded, with no invented eruption date. Both neighbors can explain the new turn. Pip packs the traveling page. \"Thank you, team.\" The road to Ashspan Bridge is open. The narrowing fold is another possible way onward; if you take the road instead, its remaining chance will pass.",
       "choices": [],
       "outcome": "success",
       "variants": [
