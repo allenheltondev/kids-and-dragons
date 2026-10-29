@@ -38,6 +38,7 @@ import {
   isPromptForPlayer,
   previewContext,
   relayHolder,
+  setUnspokenNames,
 } from "@kad/shared";
 import { isMyCombatTurn, parseAbilityCatalog } from "./combat";
 import type {
@@ -87,6 +88,7 @@ import {
 import { appSyncEventSource } from "../sync/appsync-socket";
 import { setFieldGuideDiscoveries } from "./field-guide-discoveries";
 import { announceFieldGuideNews, clearFieldGuideNews } from "./field-guide-news";
+import { noteServerTime } from "./server-clock";
 import { navigate } from "../router";
 import { nudgeReconnect } from "../sync/wake-reconnect";
 
@@ -352,6 +354,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         gate: runtime.gate,
         handlers: {
           onState: (state) => {
+            noteServerTime(state.updatedAt);
             set({ state });
             // The household's Field Guide rides the mirror (`RunState.fieldGuide`);
             // its own store is a projection of it (the journal borrows it only
@@ -1523,6 +1526,19 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
 }
 
 export const useGameStore = create<InternalGameStore>()(gameStoreCreator(defaultDeps()));
+
+/*
+ * A hero's name is shown, never spoken (#552): whoever is at the table, the
+ * speak() seam says "hero" for them. Kept current with every party change, so
+ * a hero who joins mid-chapter is covered before their first line is read.
+ */
+let namedParty: readonly PartyMember[] | null = null;
+useGameStore.subscribe((store) => {
+  const party = store.state?.party ?? null;
+  if (party === namedParty) return;
+  namedParty = party;
+  setUnspokenNames((party ?? []).map((m) => m.character.name));
+});
 
 // ---------------------------------------------------------------------------
 // Selector hooks — the screens' entire view of the store (contract.ts)

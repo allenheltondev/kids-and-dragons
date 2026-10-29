@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { VoiceLine } from "./inventory";
-import { classify, duplicateAddresses, variantsOf } from "./lines";
+import { classify, duplicateAddresses, refuseNameBearing, variantsOf } from "./lines";
 
 const OPTIONS = { facetsMax: 2 };
 const line = (address: string, text: string): VoiceLine => ({ address, campaign: "c", chapter: "ch", kind: "narration", text, renders: 1 });
@@ -44,5 +44,40 @@ describe("the {facets} bound", () => {
     // The top count is a rendered variant, not an omitted one.
     expect(variantsOf("{facets} stones.", { facetsMax: max })).toContain(`facets=${String(max)}`);
     expect(variantsOf("{facets} stones.", { facetsMax: max })).toHaveLength(max + 1);
+  });
+});
+
+describe("a hero's name is never recorded (#552)", () => {
+  const NAME = "Zephyrine Quillfeather";
+
+  it("refuses a line from a surface that composes names at run time", () => {
+    const decision = { ...line("live/decision", `${NAME} chose: Open the gate.`), kind: "decision" } as unknown as VoiceLine;
+    expect(() => classify([decision], OPTIONS)).toThrow(/not an authored line/);
+  });
+
+  it("refuses a token the engine would fill with a name", () => {
+    expect(() => classify([line("a", "{hero} opens the gate.")], OPTIONS)).toThrow(/\{hero\} is filled at run time/);
+    expect(() => refuseNameBearing(line("a", "{party} and {facets}"))).not.toThrow();
+  });
+
+  it("passes every shipped line, which is all authored", async () => {
+    const { loadContent } = await import("./load");
+    const { inventory } = await import("./inventory");
+    const all = inventory(loadContent(), { facetsMax: 14 });
+    expect(all.length).toBeGreaterThan(1000);
+    expect(() => classify(all, { facetsMax: 14 })).not.toThrow();
+  });
+
+  it("never hands a provider an unfilled token", async () => {
+    const { makeSynthesizer } = await import("./synth");
+    const fetch = (): Promise<never> => { throw new Error("no provider may be called"); };
+    const synth = makeSynthesizer({
+      provider: { provider: "fake", model: "fake" },
+      cast: { speakers: { narrator: { who: "the narrator" } } },
+      tables: { delivery: {}, beats: {} } as never,
+      keys: {},
+      fetch: fetch as never,
+    });
+    await expect(synth({ key: "k", by: "narrator", text: "{hero} waves." })).rejects.toThrow(/unfilled token/);
   });
 });

@@ -15,7 +15,13 @@
  * prompt's option labels already have their narration variants applied and
  * `{facets}` / `{party}` tokens filled by the engine (narration.ts, #159), so
  * read-aloud says exactly what the screen shows and never a raw `{token}`.
+ *
+ * With one exception: a player's name is shown, never spoken (#552). Every
+ * line is reworded through `withoutNames` with the party's names before a
+ * speaker hears it, so a name never reaches the device voice or a provider.
  */
+
+import { withoutNames } from "./spoken-names.js";
 
 export interface SpeakOptions {
   /** What is being spoken. A speaker may want a different voice per source. */
@@ -34,6 +40,20 @@ export type Speaker = ((text: string, opts?: SpeakOptions) => void) & {
 };
 
 let current: Speaker | null = null;
+let unspoken: readonly string[] = [];
+
+/**
+ * The names no speaker may say: the party's hero names, set by the client
+ * whenever the party changes. They are said as "hero" (spoken-names.ts).
+ */
+export function setUnspokenNames(names: readonly string[]): void {
+  unspoken = [...names];
+}
+
+/** `text` as a speaker may hear it: no party name in it. For a path that calls a speaker directly. */
+export function spokenText(text: string): string {
+  return withoutNames(text, unspoken);
+}
 
 /**
  * Installs a speaker. Pass `null` to go back to silence — the accessibility
@@ -67,7 +87,7 @@ export function speak(text: string, opts?: SpeakOptions): void {
   const speaker = current;
   if (!speaker || !text) return;
   try {
-    speaker(text, opts);
+    speaker(spokenText(text), opts);
   } catch {
     // Flavor, never load-bearing (spec §10.3, same principle).
   }

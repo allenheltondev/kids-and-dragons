@@ -20,7 +20,7 @@
  */
 
 import { create } from "zustand";
-import { setSpeaker, stopSpeaking, type SpeakOptions } from "@kad/shared";
+import { setSpeaker, spokenText, stopSpeaking, type SpeakOptions } from "@kad/shared";
 
 export const READ_ALOUD_KEY = "kad.readaloud";
 
@@ -121,10 +121,14 @@ export function useReadAloudOn(): boolean {
 export function hear(text: string, opts: SpeakOptions = {}): void {
   if (!readAloudSupported()) return;
   const options = { ...opts, interrupt: true };
+  // Through the same rewording as speak(): a tap never says a hero's name either (#552). Reworded
+  // now, with the names of the party the tap was made in: the engine may still be loading when
+  // that party changes, and the new list would no longer know the old hero's name.
+  const said = spokenText(text);
   void loadEngine()
     .then((speaker) => {
       try {
-        speaker(text, options);
+        speaker(said, options);
       } catch {
         // as speak()
       }

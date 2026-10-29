@@ -437,17 +437,22 @@ export function KindControls({ prompt, playerId, connected, mine, now, busy, sen
     <Button variant="primary" size="lg" block icon={<Icon name={icon} />} className={`story-interaction__button game-action${extra}`} disabled={busy || disabled} onClick={() => send(action)}>{label}</Button>;
   const secondary = (label: string, action: InteractionAction, icon: string, disabled = false) =>
     <Button variant="secondary" size="lg" block icon={<Icon name={icon} />} className="story-interaction__button game-action" disabled={busy || disabled} onClick={() => send(action)}>{label}</Button>;
-  const positionNow = () => precisionPosition(Date.now() - Date.parse(prompt.startedAt ?? ""), spec.kind === "precision" || spec.kind === "timing" ? spec.periodMs : 1);
+  // Where the marker was drawn when the finger went down: the frame the child saw, on the
+  // server-aligned clock the board draws with, not this phone's own clock read a moment later.
+  const positionNow = () => precisionPosition(now - Date.parse(prompt.startedAt ?? ""), spec.kind === "precision" || spec.kind === "timing" ? spec.periodMs : 1);
+  const shot = useRef(false);
   switch (spec.kind) {
     case "precision":
     case "timing": {
       if (!mine || still) return null;
       const takeShot = async () => {
-        if (busy || tapped !== null) return;
+        // A second tap can land before the first one's render disables the button.
+        if (busy || tapped !== null || shot.current) return;
+        shot.current = true;
         const position = positionNow(); setTapped(position); setStop(position);
         buzz(precisionSuccess(spec, position, prompt.relaxed) ? [20, 40, 30] : 30);
         try { if (await send({ action: "stop", position })) return; } catch { /* The control stays available after a failed send. */ }
-        setTapped(null); setStop(null);
+        shot.current = false; setTapped(null); setStop(null);
       };
       return <button type="button" className={`game-aim kad-focusable${spec.kind === "timing" ? " game-tap game-tap--lamp" : ""}`} aria-label={spec.actionLabel} disabled={busy || tapped !== null}
         onPointerDown={(event) => { if (event.button === 0) void takeShot(); }}

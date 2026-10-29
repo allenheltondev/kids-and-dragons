@@ -48,7 +48,9 @@ function prettyChapter(chapterId: string): string {
 }
 
 /**
- * "Sparklehoof wants to give Thistle a Sunbloom Draught."
+ * "Sparklehoof wants to give Thistle a Sunbloom Draught." on screen; heard as
+ * "Hero wants to give another hero a Sunbloom Draught." (#552: a name is shown,
+ * never spoken). `nameOf` is left out to get the spoken line.
  *
  * Third person and on the shared surface, because a hand-off is a table event
  * rather than a private one (spec §9.4 — it is "the point in the session where
@@ -56,11 +58,12 @@ function prettyChapter(chapterId: string): string {
  * is something the room hears; said only on the receiving phone, it is a card
  * that appears while she is looking at the television.
  */
-function offerLine(
+export function offerLine(
   offer: { fromPlayerId: string; toPlayerId: string; itemId: string },
-  nameOf: (playerId: string) => string,
+  nameOf: ((playerId: string) => string) | null,
   itemName: (itemId: string) => string,
 ): string {
+  if (nameOf === null) return `Hero wants to give another hero a ${itemName(offer.itemId)}.`;
   return `${nameOf(offer.fromPlayerId)} wants to give ${nameOf(offer.toPlayerId)} a ${itemName(offer.itemId)}.`;
 }
 
@@ -99,6 +102,9 @@ export function NarrationPanel(): ReactElement | null {
       : decided.vote
         ? `The party voted: ${picked}`
         : `${party.find((m) => m.playerId === decided.byPlayerId)?.character.name ?? "Someone"} chose: ${picked}`;
+  // The same line as heard: who chose is on the screen, and the room hears "hero" (#552).
+  const spokenDecision =
+    decided === null || picked === null ? null : decided.vote ? `The party voted: ${picked}` : `Hero chose: ${picked}`;
   // The practice's line of what to tap (#255): shown under the words, in a
   // fight too, because that is where the board's lesson is.
   const hint = state?.hint ?? null;
@@ -172,7 +178,7 @@ export function NarrationPanel(): ReactElement | null {
     spokenNarration.current = key;
     const ribbonned = ribbon === null ? narration : `${ribbon.label} ${narration}`;
     // What was picked comes first, as it is on the screen: the story follows from it.
-    const story = decisionLine === null ? ribbonned : `${decisionLine} ${ribbonned}`;
+    const story = spokenDecision === null ? ribbonned : `${spokenDecision} ${ribbonned}`;
     if (preface.status === "ready" && prefaceSaid.current !== preface.key) {
       prefaceSaid.current = preface.key;
       if (preface.goal !== null) goalSaidIn.current = state?.chapterId ?? null;
@@ -242,14 +248,17 @@ export function NarrationPanel(): ReactElement | null {
    * Whose turn it is, and no more. The options themselves are read by the phone
    * that owns them (PlayerPanel), so a table of phones does not hear every
    * list twice; the shared screen announces only what is the room's business.
+   *
+   * The screen names the holder; the room hears "Hero's turn." (#552), once
+   * per holder, so a turn passing from one hero to the next is still announced.
    */
-  const choiceText = choices === null || turnName === null ? "" : `${turnName}'s turn.`;
+  const turnHolder = turnName === null || prompt?.kind !== "choice" ? "" : prompt.forPlayerIds[0] ?? "";
   const spokenChoices = useRef<string | null>(null);
   useEffect(() => {
-    if (choiceText === "" || spokenChoices.current === choiceText || prefacePending) return;
-    spokenChoices.current = choiceText;
-    speak(choiceText, { source: "prompt" });
-  }, [choiceText, prefacePending]);
+    if (turnHolder === "" || spokenChoices.current === turnHolder || prefacePending) return;
+    spokenChoices.current = turnHolder;
+    speak("Hero's turn.", { source: "prompt" });
+  }, [turnHolder, prefacePending]);
 
   const rollText = prompt !== null && prompt.kind === "roll" ? prompt.prompt : "";
   const spokenRoll = useRef<string | null>(null);
@@ -281,14 +290,13 @@ export function NarrationPanel(): ReactElement | null {
   const spokenOffers = useRef<Set<string>>(new Set());
   /*
    * Read through a ref so the effect depends on the offer *ids* alone. The
-   * sentence is built from party names and the item catalog, both of which can
-   * arrive after the offer; depending on the text would make their arrival a
-   * reason to speak again.
+   * sentence is built from the item catalog, which can arrive after the offer;
+   * depending on the text would make its arrival a reason to speak again.
    */
   const line = useRef(offerLine);
   line.current = offerLine;
-  const namesRef = useRef({ nameOfPlayer, nameOfItem });
-  namesRef.current = { nameOfPlayer, nameOfItem };
+  const namesRef = useRef({ nameOfItem });
+  namesRef.current = { nameOfItem };
   const pending = trades.filter((offer) => !spokenOffers.current.has(offer.id));
   const pendingKey = pending.map((offer) => offer.id).join("|");
   useEffect(() => {
@@ -301,7 +309,8 @@ export function NarrationPanel(): ReactElement | null {
     speak(
       fresh
         .map((offer) =>
-          line.current(offer, namesRef.current.nameOfPlayer, namesRef.current.nameOfItem),
+          // Heard without names (#552): the card on screen says who.
+          line.current(offer, null, namesRef.current.nameOfItem),
         )
         .join(" "),
       { source: "prompt" },
