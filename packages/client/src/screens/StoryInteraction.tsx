@@ -45,23 +45,33 @@ function useClock(active: boolean, everyMs?: number): number {
   return now;
 }
 
-/** Each attempt's start on this device's clock, fixed the first time this device sees it. */
-const localStarts = new Map<string, number>();
+/**
+ * Each attempt's anchor, fixed the first time this device sees it: how far into the attempt it was
+ * then (`into`), and the monotonic clock's reading at that moment (`mono`).
+ */
+const anchors = new Map<string, { into: number; mono: number }>();
 
 /**
  * This device's clock moved onto the server's for the attempt under way, so `now - startedAt`
  * reads the same on the TV and every phone whatever their clocks say (interactionStartLocal):
  * the marker, the lamp, a memory pattern and a cup shuffle play at the server's pace everywhere.
  * Fixed per attempt, so a better clock estimate arriving mid-sweep never makes the marker jump.
+ *
+ * The wall clock is read once, to align; after that the attempt runs on `performance.now()`, so
+ * the phone's clock being corrected mid-attempt (a network time update, a time zone change) can
+ * neither skip a memory pattern nor jump the marker. The `now` the caller ticked with only says
+ * when to draw.
  */
 function serverNow(runId: string | undefined, prompt: InteractionPrompt | null, updatedAt: string | undefined, now: number): number {
   if (!prompt?.startedAt || !updatedAt) return now;
   const key = `${runId}:${prompt.openedSeq}:${prompt.attempt}:${prompt.startedAt}`;
-  if (!localStarts.has(key)) {
-    if (localStarts.size >= 32) localStarts.clear();
-    localStarts.set(key, interactionStartLocal(prompt.startedAt, updatedAt, Date.now(), clockGap()));
+  if (!anchors.has(key)) {
+    if (anchors.size >= 32) anchors.clear();
+    const wall = Date.now();
+    anchors.set(key, { into: wall - interactionStartLocal(prompt.startedAt, updatedAt, wall, clockGap()), mono: performance.now() });
   }
-  return now - localStarts.get(key)! + Date.parse(prompt.startedAt);
+  const anchor = anchors.get(key)!;
+  return Date.parse(prompt.startedAt) + anchor.into + (performance.now() - anchor.mono);
 }
 
 /** Measure a server-authored lift from receipt using monotonic elapsed time.

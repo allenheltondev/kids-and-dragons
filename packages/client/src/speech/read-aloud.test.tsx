@@ -104,6 +104,15 @@ describe("read-aloud switch", () => {
     expect(getSpeaker()).toBeNull();
   });
 
+  it("hear() rewords a hero's name with the party it was tapped in, while the engine is still loading (#552)", async () => {
+    const { hear, setUnspokenNames } = await load();
+    setUnspokenNames(["Zephyrine Quillfeather"]);
+    hear("Zephyrine Quillfeather waves.");
+    // The party changes before the lazy engine has loaded.
+    setUnspokenNames([]);
+    await waitFor(() => expect(spoken).toEqual(["Hero waves."]));
+  });
+
   it("hear() speaks on request even with the switch off, interrupting", async () => {
     const { hear } = await load();
     hear("Tap to hear me.");
