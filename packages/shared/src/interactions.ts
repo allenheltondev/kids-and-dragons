@@ -64,6 +64,39 @@ export function precisionPosition(elapsedMs: number, periodMs: number): number {
   return phase <= 1 ? phase : 2 - phase;
 }
 
+/**
+ * When an attempt began, on this device's own clock. A TV's and a phone's clocks can disagree
+ * by seconds, so reading the server's `startedAt` against `Date.now()` drew the marker in a
+ * different place on every screen, or held it at the start while a slow clock caught up.
+ *
+ * `clockGapMs` is the smallest `received - updatedAt` this device has seen lately (serverClockGap):
+ * its clock's offset plus its quickest delivery, which one-way stamps cannot tell apart. A gap
+ * that could be just a delivery (0 to CLOCK_TRUSTED_MS) means a clock in step with the server's,
+ * the usual case, and the sweep is read straight off it. A larger or negative gap means a clock
+ * that is off, and the gap stands in for its offset, give or take the quickest delivery.
+ *
+ * Without a gap (or when the gap would start the sweep later than this state shows), `updatedAt`
+ * still helps: it is stamped by the same clock as `startedAt`, so their difference is how far into
+ * the attempt this state was sent, and only this delivery's delay is left over. Either way a phone
+ * that rejoins mid-attempt picks the sweep up where it is.
+ */
+export function interactionStartLocal(startedAt: string, updatedAt: string, receivedAt: number, clockGapMs?: number): number {
+  const into = Date.parse(updatedAt) - Date.parse(startedAt);
+  const byReceipt = receivedAt - (Number.isFinite(into) ? Math.max(0, into) : 0);
+  if (clockGapMs === undefined || !Number.isFinite(clockGapMs)) return byReceipt;
+  const offset = clockGapMs >= 0 && clockGapMs <= CLOCK_TRUSTED_MS ? 0 : clockGapMs;
+  return Math.min(byReceipt, Date.parse(startedAt) + offset);
+}
+
+/** The largest clock gap that could still be only a delivery delay, from a clock in step with the server's. */
+export const CLOCK_TRUSTED_MS = 400;
+
+/** The smallest `received - sent` of recent states: this clock's offset from the server's, plus the quickest delivery. */
+export function serverClockGap(samples: readonly { sentAt: string; receivedAt: number }[]): number | undefined {
+  const gaps = samples.map((sample) => sample.receivedAt - Date.parse(sample.sentAt)).filter(Number.isFinite);
+  return gaps.length ? Math.min(...gaps) : undefined;
+}
+
 export function precisionSuccess(spec: Extract<InteractionSpec, { kind: "precision" } | { kind: "timing" }>, position: number, relaxed: boolean): boolean {
   return Number.isFinite(position) && position >= 0 && position <= 1 &&
     Math.abs(position - spec.target) <= Math.min(1, spec.width * (relaxed ? 2 : 1)) / 2;

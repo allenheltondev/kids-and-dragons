@@ -88,6 +88,7 @@ import {
 import { appSyncEventSource } from "../sync/appsync-socket";
 import { setFieldGuideDiscoveries } from "./field-guide-discoveries";
 import { announceFieldGuideNews, clearFieldGuideNews } from "./field-guide-news";
+import { noteServerTime } from "./server-clock";
 import { navigate } from "../router";
 import { nudgeReconnect } from "../sync/wake-reconnect";
 
@@ -353,6 +354,7 @@ export function gameStoreCreator(deps: GameStoreDeps): StateCreator<InternalGame
         gate: runtime.gate,
         handlers: {
           onState: (state) => {
+            noteServerTime(state.updatedAt);
             set({ state });
             // The household's Field Guide rides the mirror (`RunState.fieldGuide`);
             // its own store is a projection of it (the journal borrows it only

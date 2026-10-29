@@ -1329,6 +1329,10 @@ function doInteract(draft: RunState, playerId: string, intent: Extract<ClientInt
       return undefined;
     case "support": {
       if (prompt.spec.kind !== "cooperate" || !["hold", "prop", "release"].includes(intent.mode)) throw new Illegal("ILLEGAL", "Invalid support input.");
+      // A lift the team already held for its whole time is done, whatever this message says. The
+      // phones draw it full from their own receipt, so a child who lets go when it looks full
+      // sends a release that can land before any renewal or "complete" has told the server.
+      if (cooperationProgress(prompt, connected, ctx.now) === 1) { result("success"); return undefined; }
       // Check before renewing: an expired lease cannot count as continuous holding.
       const sameTeam = prompt.steadyPlayerIds?.length === connected.length && connected.every((id) => prompt.steadyPlayerIds?.includes(id));
       if (!sameTeam || !supportsReady(prompt, connected, ctx.now)) {
