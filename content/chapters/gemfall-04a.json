@@ -581,7 +581,7 @@
     },
     "rest_waystation": {
       "type": "rest",
-      "narration": "The centaurs feed you oat-cakes, wrap up a supper bundle for the road, and argue about whose stitching is neatest. \"Mine,\" says the warden, tutting. The barn smells of hay and new thread. Sit a while and get your breath.",
+      "narration": "The centaurs feed you oat-cakes, wrap up a supper bundle for the road, and argue about whose stitching is neatest. \"Mine,\" says the warden with a sniff. The barn smells of hay and new thread. Sit a while and get your breath.",
       "cast": [
         {
           "figure": "cast/road_warden",
