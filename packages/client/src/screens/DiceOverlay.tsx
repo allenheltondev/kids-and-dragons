@@ -256,8 +256,8 @@ export function DiceOverlay(): ReactElement | null {
     )
       return;
     spokenFor.current = shownId;
-    // Shown with names, heard as "the hero" and "a friend" (#552).
-    speak(spokenRoll(roll, "The hero", null));
+    // Shown with names, heard as "hero" and "another hero" (#552).
+    speak(spokenRoll(roll, "Hero", "another hero"));
     // A natural 1 keeps its friendly bonk when the result is revealed.
     if (roll.die === 1) cue("bonk");
   }, [roll, settled, shownId]);

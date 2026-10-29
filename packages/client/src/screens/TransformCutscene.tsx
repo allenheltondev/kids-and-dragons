@@ -168,8 +168,8 @@ export function TransformCutscene(): ReactElement | null {
        * stopped to watch; whatever was still being read out belongs to the
        * scene they have just finished.
        */
-      // The screen shows whose cutscene it is; the room hears "our hero" (#552).
-      speak(`Our hero is ${TIER_WORD[beat.tier]}!`, { source: "narration", interrupt: true });
+      // The screen shows whose cutscene it is; the room hears "hero" (#552).
+      speak(`Hero is ${TIER_WORD[beat.tier]}!`, { source: "narration", interrupt: true });
     };
 
     /*

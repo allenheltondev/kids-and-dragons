@@ -486,9 +486,9 @@ describe("each hero's own roll XP (spec §8.2)", () => {
         vi.advanceTimersByTime(2000);
       });
       expect(spoken).toHaveLength(1);
-      // Heard as "a hero", never by name (#552); the screen keeps the names.
-      expect(spoken[0]).toContain("A hero earned 4 experience from their own good rolls.");
-      expect(spoken[0]).toContain("A hero earned 2 experience from their own good rolls.");
+      // Heard as "hero", never by name (#552); the screen keeps the names.
+      expect(spoken[0]).toContain("Hero earned 4 experience from their own good rolls.");
+      expect(spoken[0]).toContain("Hero earned 2 experience from their own good rolls.");
       expect(spoken[0]).not.toMatch(/Sparklehoof|Pip/);
     } finally {
       setSpeaker(null);

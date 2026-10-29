@@ -21,15 +21,15 @@
  * are composed at run time, so every one of them is the device voice.
  */
 export const NAME_BEARING_SURFACES: readonly { surface: string; shows: string; says: string }[] = [
-  { surface: "Whose turn (NarrationPanel)", shows: "Ana's turn to choose", says: "Your turn, hero." },
-  { surface: "Decision line (NarrationPanel)", shows: "Ana chose: Climb the wall.", says: "The hero chose: Climb the wall." },
-  { surface: "Hand-offs (NarrationPanel)", shows: "Ana wants to give Bo a Sunbloom Draught.", says: "A hero wants to give a friend a Sunbloom Draught." },
-  { surface: "Rank-ups (engine rankUpLine)", shows: "Ana is a Thornguard Apprentice now!", says: "The hero is a Thornguard Apprentice now!" },
-  { surface: "Roll results (DiceOverlay)", shows: "Ana rolled 14", says: "The hero rolled 14, with a friend's help." },
-  { surface: "Fight log and matchups (FightLog)", shows: "Ana hits the bog troll.", says: "The hero hits the bog troll." },
-  { surface: "Transform cutscene (TransformCutscene)", shows: "Ana is shining!", says: "Our hero is shining!" },
-  { surface: "Chapter recap (ChapterCompletePanel)", shows: "Ana earned 10 experience from their own good rolls.", says: "A hero earned 10 experience from their own good rolls." },
-  { surface: "Anything else the engine composes with a name", shows: "Ana and Bo found it.", says: "The heroes found it. (the seam's rewording)" },
+  { surface: "Whose turn (NarrationPanel)", shows: "Ana's turn to choose", says: "Hero's turn." },
+  { surface: "Decision line (NarrationPanel)", shows: "Ana chose: Climb the wall.", says: "Hero chose: Climb the wall." },
+  { surface: "Hand-offs (NarrationPanel)", shows: "Ana wants to give Bo a Sunbloom Draught.", says: "Hero wants to give another hero a Sunbloom Draught." },
+  { surface: "Rank-ups (engine rankUpLine)", shows: "Ana is a Thornguard Apprentice now!", says: "Hero is a Thornguard Apprentice now!" },
+  { surface: "Roll results (DiceOverlay)", shows: "Ana rolled 14, plus 3 from Bo", says: "Hero rolled 14, plus 3 from another hero" },
+  { surface: "Fight log and matchups (FightLog)", shows: "Ana hits the bog troll.", says: "Hero hits the bog troll." },
+  { surface: "Transform cutscene (TransformCutscene)", shows: "Ana is shining!", says: "Hero is shining!" },
+  { surface: "Chapter recap (ChapterCompletePanel)", shows: "Ana earned 10 experience from their own good rolls.", says: "Hero earned 10 experience from their own good rolls." },
+  { surface: "Anything else the engine composes with a name", shows: "Ana and Bo found it.", says: "Heroes found it. (the seam's rewording)" },
 ];
 
 const escape = (text: string): string => text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -43,10 +43,9 @@ function spellings(name: string): string[] {
 const capitalise = (text: string): string => text.charAt(0).toUpperCase() + text.slice(1);
 
 /**
- * `text` with every party name said as "hero":
- *  - "Ana chose" → "The hero chose", "Ana's turn" → "The hero's turn";
- *  - "Ana, Bo and Cy" → "the heroes";
- *  - an address ("Ana, tap Roll", "Well done, Ana!") → "Hero, tap Roll", "Well done, hero!".
+ * `text` with every party name said as "hero", decided by the owner:
+ *  - "Ana chose" → "Hero chose", "Ana's turn" → "Hero's turn", "at Ana" → "at hero";
+ *  - a list, "Ana, Bo and Cy" → "heroes" ("heroes'" when it owns something).
  *
  * A name is matched as typed or capitalised, as a whole word: lowercase "rose"
  * in a sentence is left alone for a hero called Rose, though a sentence that
@@ -65,16 +64,8 @@ export function withoutNames(text: string, names: readonly string[]): string {
   return text.replace(pattern, (match: string, offset: number) => {
     const many = (match.match(one)?.length ?? 1) > 1;
     const possessive = /['’]s$/.test(match);
-    const before = text.slice(0, offset);
-    const after = text.slice(offset + match.length);
-    const starts = /(^|[.!?:]["”’)]?\s+|\n\s*|^["“‘(]+)$/.test(before);
-    const addressed =
-      !possessive && !many && ((starts && /^\s*,/.test(after)) || (/,\s*$/.test(before) && /^\s*([.!?,]|$)/.test(after)));
-    const said = addressed
-      ? "hero"
-      : many
-        ? possessive ? "the heroes'" : "the heroes"
-        : possessive ? "the hero's" : "the hero";
+    const starts = /(^|[.!?:]["”’)]?\s+|\n\s*|^["“‘(]+)$/.test(text.slice(0, offset));
+    const said = many ? (possessive ? "heroes'" : "heroes") : possessive ? "hero's" : "hero";
     return starts ? capitalise(said) : said;
   });
 }
