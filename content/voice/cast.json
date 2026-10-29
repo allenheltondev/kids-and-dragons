@@ -283,12 +283,12 @@
           "address": "gemfall-07h/scene_tidewell_ember/narration"
         },
         {
-          "text": "and you are the first people who have believed me all week.",
-          "address": "gemfall-01/scene_scholar_believed/narration"
+          "text": "You may be the second person in the world to hear that properly.",
+          "address": "gemfall-07h/interaction_tidewell_knocks/narration"
         },
         {
-          "text": "Count them! Every stone you see, count it! Write it down!",
-          "address": "gemfall-01/scene_north_gate_tidewell/narration"
+          "text": "and you are the first people who have believed me all week.",
+          "address": "gemfall-01/scene_scholar_believed/narration"
         }
       ],
       "speaks": true,
@@ -298,10 +298,8 @@
       "name": "Madame Coralie Fenn",
       "kind": "character",
       "who": "Madame Coralie Fenn, a merfolk gem-buyer in a barrel on wheels; calls everyone darlings, names enormous numbers cheerfully, never forgets a seller",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
       "gender": "female",
-      "genderFrom": "narration",
+      "genderFrom": "notes",
       "figure": "cast/coralie_fenn",
       "voiceNotes": [
         {
@@ -349,6 +347,10 @@
       },
       "lines": [
         {
+          "text": "Quick feet, sweet price!",
+          "address": "gemfall-01/scene_market/narration"
+        },
+        {
           "text": "A fresh start.",
           "address": "gemfall-01/scene_market_fresh_start/narration"
         }
@@ -384,12 +386,12 @@
           "address": "gemfall-01/scene_caravan_yard_mortar/narration"
         },
         {
-          "text": "Front. Don't drop it.",
-          "address": "gemfall-01/scene_caravan_yard_banner/narration"
+          "text": "No hurry. Leave however you like.",
+          "address": "gemfall-01/scene_north_gate/narration"
         },
         {
-          "text": "The lantern wagon.",
-          "address": "gemfall-01/scene_caravan_yard_guard/narration"
+          "text": "Front. Don't drop it.",
+          "address": "gemfall-01/scene_caravan_yard_banner/narration"
         }
       ],
       "speaks": true,
@@ -529,10 +531,8 @@
       "name": "Old Wick",
       "kind": "character",
       "who": "Old Wick, a very old frogfolk lamplighter; croaks softly, wishes every lamp goodnight by name, knows the paths nobody else looks for",
-      "pronouns": "he/him",
-      "pronounsFrom": "narration",
-      "gender": "male",
-      "genderFrom": "narration",
+      "gender": "unknown",
+      "genderFrom": "none",
       "figure": "cast/old_wick",
       "voiceNotes": [
         {
@@ -610,8 +610,10 @@
       "name": "Courier Griffin",
       "kind": "character",
       "who": "a young courier griffin, always hungry, bows with wings out to people it will remember",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
       "figure": "cast/courier_griffin",
       "voiceNotes": [
         {
@@ -659,16 +661,16 @@
       },
       "lines": [
         {
+          "text": "Food to share, a healing draught, or light for dark roads. Pick one.",
+          "address": "gemfall-01/scene_provisions/narration"
+        },
+        {
           "text": "Picked far to the west by my cousins. It likes to be talked to. Not sung to. It's very particular.",
           "address": "gemfall-01/scene_provisions_mosslight/narration"
         },
         {
           "text": "For bumps, scrapes and grumps. Mostly grumps.",
           "address": "gemfall-01/scene_provisions_sunbloom/narration"
-        },
-        {
-          "text": "It was the pickled kind. It will not mind.",
-          "address": "gemfall-01/interaction_jars/onFailure/narration"
         }
       ],
       "speaks": true,
@@ -725,7 +727,12 @@
       "gemini": {
         "voice": "Algenib"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "One warm bed. Earn it.",
+          "address": "gemfall-01/scene_inn_full/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -733,10 +740,8 @@
       "name": "Hob Thistledown",
       "kind": "character",
       "who": "Hob Thistledown, a faun field foreman; warm and half-singing, turns every answer into an anecdote, waves his hat a lot",
-      "pronouns": "he/him",
-      "pronounsFrom": "narration",
       "gender": "male",
-      "genderFrom": "narration",
+      "genderFrom": "notes",
       "figure": "cast/hob",
       "voiceNotes": [
         {
@@ -779,7 +784,12 @@
       "gemini": {
         "voice": "Fenrir"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "It belongs right here.",
+          "address": "gemfall-02/choice_harvest_stone/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -808,12 +818,16 @@
       },
       "lines": [
         {
+          "text": "Whose road news will you hear?",
+          "address": "gemfall-02/choice_common_room/narration"
+        },
+        {
           "text": "Here is what I ask everybody this season. Where is it all going? Me, I believe all three rumors. That's the trouble with this season.",
           "address": "gemfall-02/scene_marda_question/narration"
         },
         {
-          "text": "Shorter is not quicker.",
-          "address": "gemfall-02/choice_rumour_board/narration"
+          "text": "Eat first. There is time.",
+          "address": "gemfall-02/rest_marda_inn/narration"
         }
       ],
       "speaks": true,
@@ -960,7 +974,7 @@
         },
         {
           "text": "Bread, cheese and a bit of everything. For the road.",
-          "address": "gemfall-02/interaction_egg_baskets/onSuccess/narration"
+          "address": "gemfall-02/interaction_egg_baskets/narration"
         },
         {
           "text": "Neighbor price, which is free.",
@@ -1132,16 +1146,16 @@
       },
       "lines": [
         {
-          "text": "Hear the note first. Then you will know it when it comes around again. Now you. Hum it back.",
+          "text": "Remember that. Songs travel farther than queues. There. You will know it again.",
           "address": "gemfall-03a/interaction_hum/narration"
-        },
-        {
-          "text": "Close. Close counts, for a first time.",
-          "address": "gemfall-03a/interaction_hum/onFailure/narration"
         },
         {
           "text": "Never been told before. Rare, that.",
           "address": "gemfall-03a/scene_troll_new_story/narration"
+        },
+        {
+          "text": "Good. Keep asking it. Of everyone.",
+          "address": "gemfall-03a/scene_troll_hum_answer_honest/narration"
         }
       ],
       "speaks": true,
@@ -1269,8 +1283,10 @@
       "name": "Kettle Campers",
       "kind": "group",
       "who": "a rush camp boiling a kettle on the centaurs' detour signs; cheerful, agreeable, say 'oh, absolutely' and do not change",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
       "voiceNotes": [
         {
           "chapter": "gemfall-03a",
@@ -1284,7 +1300,12 @@
       "gemini": {
         "voice": "Fenrir"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "Plank money. I was admiring the view, but I am also grateful.",
+          "address": "gemfall-03a/interaction_planks/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -1315,8 +1336,10 @@
       "name": "Dilly",
       "kind": "character",
       "who": "a small girl from a carpet caravan telling a troll her first ever story; nervous, then magnificent",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
       "gender": "female",
-      "genderFrom": "notes",
+      "genderFrom": "narration",
       "voiceNotes": [
         {
           "chapter": "gemfall-03a",
@@ -1343,10 +1366,8 @@
       "name": "Rush prospector",
       "kind": "character",
       "who": "a pushy prospector who tries to pay the troll toll with a gem; tells the shortest story ever told",
-      "pronouns": "he/him",
-      "pronounsFrom": "narration",
-      "gender": "male",
-      "genderFrom": "narration",
+      "gender": "unknown",
+      "genderFrom": "none",
       "figure": "cast/rush_prospector",
       "voiceNotes": [
         {
@@ -1543,10 +1564,8 @@
       "name": "Sausage Seller",
       "kind": "character",
       "who": "a rush-road sausage seller stuck in the mud; out of breath, generous, shouts everything",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
+      "gender": "unknown",
+      "genderFrom": "none",
       "voiceNotes": [
         {
           "chapter": "gemfall-03b",
@@ -1802,8 +1821,10 @@
       "name": "Red Scarves",
       "kind": "group",
       "who": "the red-scarf queue-jumpers' leader; pushy and impatient, but fair when fairly beaten",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
       "voiceNotes": [
         {
           "chapter": "gemfall-03c",
@@ -1849,6 +1870,10 @@
       },
       "lines": [
         {
+          "text": "I have tried counting cubs.",
+          "address": "gemfall-04a/choice_cub_nap/narration"
+        },
+        {
           "text": "Come to the fire.",
           "address": "gemfall-04a/scene_leave_stone/narration"
         }
@@ -1886,8 +1911,10 @@
       "name": "Waystation Centaur",
       "kind": "character",
       "who": "a road-warden centaur re-embroidering sashes; talks around spools of thread; tuts a great deal; precise about roads",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
       "voiceNotes": [
         {
           "chapter": "gemfall-04a",
@@ -1901,7 +1928,12 @@
       "gemini": {
         "voice": "Pulcherrima"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "Tsk. Every sash needs changing this season.",
+          "address": "gemfall-04a/scene_waystation/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -1955,10 +1987,8 @@
       "name": "Manticore Cubs",
       "kind": "group",
       "who": "two manticore cubs who pretend to be rocks; giggly, honest, dream the ground is singing",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
+      "gender": "unknown",
+      "genderFrom": "none",
       "voiceNotes": [
         {
           "chapter": "gemfall-04a",
@@ -1974,8 +2004,8 @@
       },
       "lines": [
         {
-          "text": "Hole-digging wages. Do not tell the Brassbuckles.",
-          "address": "gemfall-04a/interaction_post_hole/onAssisted/narration"
+          "text": "We are rocks.",
+          "address": "gemfall-04a/scene_cub_scouts/narration"
         }
       ],
       "speaks": true,
@@ -2009,12 +2039,12 @@
           "address": "gemfall-04a/scene_granny_cake_share_back/narration"
         },
         {
-          "text": "Pass the plates down! Gently! Cake this spicy has opinions.",
-          "address": "gemfall-04a/interaction_plates/narration"
+          "text": "Nobody has ever finished a slice.",
+          "address": "gemfall-04a/scene_granny_cake/narration"
         },
         {
           "text": "For later. Something normal.",
-          "address": "gemfall-04a/interaction_plates/onSuccess/narration"
+          "address": "gemfall-04a/interaction_plates/narration"
         }
       ],
       "speaks": true,
@@ -2024,8 +2054,10 @@
       "name": "Marker Movers",
       "kind": "character",
       "who": "two polite manticores moving a pride marker post further from the caravans, again",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
       "voiceNotes": [
         {
           "chapter": "gemfall-04a",
@@ -2039,7 +2071,12 @@
       "gemini": {
         "voice": "Achird"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "Hole-digging wages. Do not tell the Brassbuckles.",
+          "address": "gemfall-04a/interaction_post_hole/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -2094,12 +2131,12 @@
           "address": "gemfall-04b/scene_finding/narration"
         },
         {
-          "text": "Down. Not away. Down.",
-          "address": "gemfall-04b/scene_unicorns_patch/narration"
+          "text": "Mend the glade, and the stone sinks back into the ground where the forest keeps it. Take it, and this glade will never mend.",
+          "address": "gemfall-04b/scene_glade_heart/narration"
         },
         {
-          "text": "Slowly. The forest dislikes hurry. And something lives in the worst glade now that listens for loud things. Go quiet, or go so noisy it can't follow.",
-          "address": "gemfall-04b/scene_finding_how/narration"
+          "text": "Down. Not away. Down.",
+          "address": "gemfall-04b/scene_unicorns_patch/narration"
         }
       ],
       "speaks": true,
@@ -2138,6 +2175,10 @@
         {
           "text": "You're the soggy ones! The whole forest heard about you!",
           "address": "gemfall-05b/scene_falls_stair_dripping/narration"
+        },
+        {
+          "text": "Pass me logs and I'll teach you a brace for the narrow high path. Or watch the runoff, and learn where a dropped pack would wash.",
+          "address": "gemfall-05b/scene_falls_stair/narration"
         },
         {
           "text": "Proper work.",
@@ -2211,8 +2252,8 @@
           "address": "gemfall-04b/check_runner_path/onSuccess/narration"
         },
         {
-          "text": "Not one wrong knot! I will tell the record.",
-          "address": "gemfall-05b/interaction_cord_knots/onSuccess/narration"
+          "text": "Happens to everybody this season.",
+          "address": "gemfall-04b/check_runner_path/onFailure/narration"
         }
       ],
       "speaks": true,
@@ -2245,10 +2286,8 @@
       "name": "Ma Ruddle",
       "kind": "character",
       "who": "a sold-out prospector; tired, blunt, cares about Tib and nothing else",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
       "gender": "female",
-      "genderFrom": "narration",
+      "genderFrom": "notes",
       "figure": "cast/ma_ruddle",
       "voiceNotes": [
         {
@@ -2300,8 +2339,10 @@
       "name": "Sergeant Holloway",
       "kind": "character",
       "who": "a Skywarden supply sergeant; rigid, honest, calls everything 'arithmetic', writes everything down",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "he/him",
+      "pronounsFrom": "narration",
+      "gender": "male",
+      "genderFrom": "narration",
       "figure": "cast/holloway",
       "voiceNotes": [
         {
@@ -2366,6 +2407,10 @@
           "address": "gemfall-04c/scene_box_ten/narration"
         },
         {
+          "text": "There is a form for deciding which form.",
+          "address": "gemfall-04c/scene_depot/narration"
+        },
+        {
           "text": "Lost since spring. So has my patience.",
           "address": "gemfall-04c/scene_boxes_gone/narration"
         }
@@ -2399,6 +2444,10 @@
         {
           "text": "There. The road just learned you.",
           "address": "gemfall-04c/interaction_verses/onSuccess/narration"
+        },
+        {
+          "text": "Your turn, travelers.",
+          "address": "gemfall-04c/scene_relay_sing/narration"
         }
       ],
       "speaks": true,
@@ -2432,12 +2481,12 @@
           "address": "gemfall-04c/scene_road_crew_ask_why/narration"
         },
         {
-          "text": "One to steer, the rest to hold the ropes. Straight up, mind. A crooked post sends the whole relay the wrong way.",
-          "address": "gemfall-04c/interaction_last_post/narration"
-        },
-        {
           "text": "Good work. The relay will sing about this.",
           "address": "gemfall-04c/check_haul_posts/onSuccess/narration"
+        },
+        {
+          "text": "Well. That would explain a thing or two.",
+          "address": "gemfall-04c/scene_road_crew_charm/narration"
         }
       ],
       "speaks": true,
@@ -2555,8 +2604,8 @@
       },
       "lines": [
         {
-          "text": "Tea for the other side. From us. Hand to hand, please. Nobody has to cross anything.",
-          "address": "gemfall-07l/interaction_tea_cups/narration"
+          "text": "I can log your packs, or explain the records, or check a tag that is already logged.",
+          "address": "gemfall-06/scene_citadel_gate_desk/narration"
         },
         {
           "text": "Leash. Holding is harder than asking. You have to know you are choosing it.",
@@ -2649,7 +2698,7 @@
         },
         {
           "text": "Humming gives me the shakes.",
-          "address": "gemfall-05a/interaction_bowls/onSuccess/narration"
+          "address": "gemfall-05a/interaction_bowls/narration"
         }
       ],
       "speaks": true,
@@ -3060,16 +3109,16 @@
       },
       "lines": [
         {
+          "text": "Nobody uses that near my stones. Wall-hanging rate. Honest work, honestly paid.",
+          "address": "gemfall-05c/interaction_pry_bars/narration"
+        },
+        {
           "text": "Take what the mountain drops. Never pry at what it holds. And wipe your feet.",
           "address": "gemfall-05c/scene_gate_town_explain_home/narration"
         },
         {
           "text": "For calling a village when something copies you. You will not need it. Keep it anyway.",
           "address": "gemfall-07h/scene_echo_quiet/narration"
-        },
-        {
-          "text": "You're the weather people. Everybody's talking about you.",
-          "address": "gemfall-07h/scene_price_board_ask/narration"
         }
       ],
       "speaks": true,
@@ -3301,6 +3350,10 @@
       },
       "lines": [
         {
+          "text": "The unused bell is nothing to worry about.",
+          "address": "gemfall-06/rest_warm_stones/narration"
+        },
+        {
           "text": "That one has never been rung. Not by me. Not by my grandmother. Everybody knows what it would mean, and nobody says it. Nothing to worry about.",
           "address": "gemfall-06/scene_morning_bells_sock/narration"
         }
@@ -3389,11 +3442,11 @@
       "lines": [
         {
           "text": "For the hands. It has only been in there since Tuesday.",
-          "address": "gemfall-07h/interaction_boxes/onSuccess/narration"
+          "address": "gemfall-07h/interaction_boxes/narration"
         },
         {
-          "text": "You! Yes, you! Hands!",
-          "address": "gemfall-07h/interaction_boxes/narration"
+          "text": "Everything that hums goes into a numbered box.",
+          "address": "gemfall-07h/scene_checkpoint/narration"
         }
       ],
       "speaks": true,
@@ -3403,8 +3456,10 @@
       "name": "Mosshome Runner",
       "kind": "character",
       "who": "breathless, cheerful, counts knots out loud, then counts packs",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
       "figure": "cast/mosshome_runner",
       "voiceNotes": [
         {
@@ -3432,7 +3487,12 @@
       "gemini": {
         "voice": "Fenrir"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "Knot, knot, knot. Good!",
+          "address": "gemfall-07r/scene_mosshome_runner/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -4146,12 +4206,12 @@
           "address": "riftlight-convergence/ending/variants/1"
         },
         {
-          "text": "Some of us would like to do more than write.",
-          "address": "riftlight-riftseekers-departure/fellowship/narration"
+          "text": "Stay beside me. I will stop feeding it and watch what it does.",
+          "address": "riftlight-convergence/decision/narration"
         },
         {
-          "text": "I will compare the notes with Orin.",
-          "address": "riftlight-convergence/ending/variants/0"
+          "text": "I called an opening, but I did not choose its rules.",
+          "address": "riftlight-convergence/account/narration"
         }
       ],
       "speaks": true,
@@ -4181,8 +4241,16 @@
       },
       "lines": [
         {
+          "text": "Hold my measuring board still while a friend marks the grains?",
+          "address": "riftlight-convergence/pull/narration"
+        },
+        {
           "text": "Help me keep everyone behind the line when an opening comes.",
           "address": "riftlight-convergence/arrival/narration"
+        },
+        {
+          "text": "Help me stop the experiment.",
+          "address": "riftlight-convergence/decision/narration"
         }
       ],
       "speaks": true,
@@ -4286,12 +4354,12 @@
           "address": "riftlight-sky-islands-arrival/pip_night/narration"
         },
         {
-          "text": "If we follow it to the end, we find where it starts. The cousin saw posts. I want to see posts.",
-          "address": "riftlight-saltrot-arrival/trail/narration"
+          "text": "The drawing goes in the traveling pages, not my tea-stained scrap.",
+          "address": "riftlight-reading-room/rest/narration"
         },
         {
-          "text": "The pale silt starts somewhere upriver. I need good ears.",
-          "address": "riftlight-saltrot-arrival/lesson/variants/0"
+          "text": "If we follow it to the end, we find where it starts. The cousin saw posts. I want to see posts.",
+          "address": "riftlight-saltrot-arrival/trail/narration"
         }
       ],
       "speaks": true,
@@ -4435,8 +4503,16 @@
       },
       "lines": [
         {
+          "text": "My old map left those out.",
+          "address": "riftlight-finale/first_anchor/narration"
+        },
+        {
           "text": "It was a very good map.",
           "address": "riftlight-finale/spent/narration"
+        },
+        {
+          "text": "Where did my river go?",
+          "address": "riftlight-finale/home_now/narration"
         }
       ],
       "speaks": true,
@@ -4540,8 +4616,10 @@
       "name": "Kitsune keeper",
       "kind": "character",
       "who": "Practical, welcoming navigator. Uses songs alongside observations; never knows an unseen cause.",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
       "figure": "cast/island_keeper",
       "voiceNotes": [
         {
@@ -4557,7 +4635,12 @@
       "gemini": {
         "voice": "Schedar"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "Show me your signals, before anyone decides about the folds.",
+          "address": "riftlight-whale-road/small_whale_result/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -4613,7 +4696,12 @@
       "gemini": {
         "voice": "Enceladus"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "We are just going home.",
+          "address": "gemfall-05a/scene_brass_south/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -4669,7 +4757,12 @@
       "gemini": {
         "voice": "Puck"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "We are being very brave.",
+          "address": "gemfall-03c/choice_tolls/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -4755,7 +4848,12 @@
       "gemini": {
         "voice": "Sadaltager"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "I give up.",
+          "address": "gemfall-06/scene_moths/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -4791,7 +4889,12 @@
       "gemini": {
         "voice": "Algieba"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "That hedge is new!",
+          "address": "gemfall-04b/scene_attendance/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -4832,7 +4935,7 @@
       "lines": [
         {
           "text": "Nobody does that on the first try. Courier's tip. Do not tell the grandmothers.",
-          "address": "gemfall-04c/interaction_pony/onSuccess/narration"
+          "address": "gemfall-04c/interaction_pony_response_brush/narration"
         },
         {
           "text": "She wants a fuss. Any fuss will do. She is not picky, except about carrots.",
@@ -4868,10 +4971,8 @@
       "name": "Muddy prospector",
       "kind": "character",
       "who": "Muddy prospector.",
-      "pronouns": "he/him",
-      "pronounsFrom": "narration",
-      "gender": "male",
-      "genderFrom": "narration",
+      "gender": "unknown",
+      "genderFrom": "none",
       "figure": "cast/rush_prospector",
       "chapters": [
         "gemfall-05a"
@@ -4882,8 +4983,12 @@
       },
       "lines": [
         {
-          "text": "Hot hat.",
-          "address": "gemfall-05a/interaction_bowls/onFailure/narration"
+          "text": "Eat first, dear. Questions later.",
+          "address": "gemfall-05a/scene_soup_line/narration"
+        },
+        {
+          "text": "Worked anyway.",
+          "address": "gemfall-05a/scene_soup_line_fix_barrow/narration"
         }
       ],
       "speaks": true,
@@ -4925,16 +5030,16 @@
       },
       "lines": [
         {
-          "text": "It does that to everybody. Even the Eldest. Especially the Eldest.",
-          "address": "gemfall-05b/check_chair_sit/onFailure/narration"
-        },
-        {
           "text": "Oh. Oh, come in. Wipe your feet. Wipe them twice.",
           "address": "gemfall-05b/check_archive_door/onSuccess/narration"
         },
         {
           "text": "North. That's all it wants.",
           "address": "gemfall-05b/scene_pile_visit_carry/narration"
+        },
+        {
+          "text": "Three paths moved in the first week. Pin them in the order they moved, and the shape will show itself. The archive remembers a little. Put your memories together.",
+          "address": "gemfall-05b/check_plot/narration"
         }
       ],
       "speaks": true,
@@ -4944,10 +5049,8 @@
       "name": "Marigold",
       "kind": "character",
       "who": "Marigold.",
-      "pronouns": "she/her",
-      "pronounsFrom": "narration",
-      "gender": "female",
-      "genderFrom": "narration",
+      "gender": "unknown",
+      "genderFrom": "none",
       "figure": "cast/soup_woman",
       "chapters": [
         "gemfall-05b"
@@ -4980,6 +5083,10 @@
         {
           "text": "On the list. Nobody gathers there.",
           "address": "gemfall-05c/scene_night_lights/narration"
+        },
+        {
+          "text": "Help the big-bell crew set its supports and learn the passing line, or polish the hand bells for a little answering chorus. Either job helps at the morning line!",
+          "address": "gemfall-05c/scene_morning_bells/narration"
         }
       ],
       "speaks": true,
@@ -5017,7 +5124,12 @@
       "gemini": {
         "voice": "Umbriel"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "Off the road, you silly coals!",
+          "address": "gemfall-06/scene_wolves/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -5053,7 +5165,12 @@
       "gemini": {
         "voice": "Iapetus"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "Mine.",
+          "address": "gemfall-06/scene_claim_boulder/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -5071,7 +5188,12 @@
       "gemini": {
         "voice": "Algenib"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "Mine.",
+          "address": "gemfall-06/scene_claim_boulder/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -5284,8 +5406,8 @@
           "address": "riftlight-ashspan-bridge/share_bryn/narration"
         },
         {
-          "text": "Now, it needs tying down, so it stays put when the river sulks.",
-          "address": "riftlight-ashspan-bridge/planks_laid/narration"
+          "text": "The new beam goes up into its notches. Level, and nobody underneath.",
+          "address": "riftlight-ashspan-bridge/beam_plan/narration"
         }
       ],
       "speaks": true,
@@ -5351,16 +5473,16 @@
       },
       "lines": [
         {
+          "text": "Follow my rim calls, or fetch your short line if the passage stayed clear.",
+          "address": "riftlight-bone-yard/exit_strip/narration"
+        },
+        {
           "text": "The tide reaches this pocket later. We have time to look, then we pack up. No crossing.",
           "address": "riftlight-buried-bridge/guide_limits/narration"
         },
         {
-          "text": "Buried bridge. No river. Still not walking on it.",
-          "address": "riftlight-buried-bridge/bank/narration"
-        },
-        {
-          "text": "Clear a safe way past those ruins. Take nothing. Here, anything taken comes back. I will watch from water that suits my fins.",
-          "address": "riftlight-bone-yard/arrival/narration"
+          "text": "A caught plank needs a stone in its place first. Used mats need untying.",
+          "address": "riftlight-bone-yard/unbrace/narration"
         }
       ],
       "speaks": true,
@@ -5510,8 +5632,8 @@
           "address": "riftlight-exchange-rift/barge_toss/narration"
         },
         {
-          "text": "Six crews eating tonight. Mostly. Still need a new way home.",
-          "address": "riftlight-exchange-rift/sacks_dropped/narration"
+          "text": "Anybody ever eat a potato skin on a day the weather went wrong?",
+          "address": "riftlight-exchange-rift/quay_rest/narration"
         }
       ],
       "speaks": true,
@@ -5622,8 +5744,10 @@
       "name": "Yeti watcher",
       "kind": "character",
       "who": "Yeti watcher.",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
       "figure": "cast/yeti_watcher",
       "chapters": [
         "riftlight-finale"
@@ -5632,7 +5756,16 @@
       "gemini": {
         "voice": "Orus"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "I will keep the retreat open. I will not go into the tear.",
+          "address": "riftlight-finale/shelter/narration"
+        },
+        {
+          "text": "Ask before you wrap or move him.",
+          "address": "riftlight-finale/help_him/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -5792,16 +5925,16 @@
       },
       "lines": [
         {
-          "text": "Three visits. The river did not leave us a birthday.",
-          "address": "riftlight-reading-room/catalog_cards/narration"
+          "text": "An earlier record could help, but nobody needs to invent one to complete this visit.",
+          "address": "riftlight-reading-room/compare_accounts/narration"
         },
         {
-          "text": "A blank is easier to fix than a confident mistake.",
-          "address": "riftlight-reading-room/claim_limit/narration"
+          "text": "Support it for a clearer view, but your papers will stay near meltwater.",
+          "address": "riftlight-reading-room/support_ice/narration"
         },
         {
-          "text": "Help us compare that view with the river you crossed. We have inspected it three times and filed it three different ways.",
-          "address": "riftlight-reading-room/arrival/narration"
+          "text": "Your boots stay on our floor while the remembered water passes.",
+          "address": "riftlight-reading-room/memory_observation/narration"
         }
       ],
       "speaks": true,
@@ -5839,7 +5972,12 @@
       "gemini": {
         "voice": "Rasalgethi"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "Where is a safe way to look?",
+          "address": "riftlight-reading-room/teach_back/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -5947,12 +6085,12 @@
           "address": "riftlight-sky-islands-arrival/landing_held/narration"
         },
         {
-          "text": "So the song is not where it was. Neither are we.",
-          "address": "riftlight-sky-islands-arrival/song_bearing/narration"
+          "text": "There is shelter for everyone, even the bell rope's spare raincoat.",
+          "address": "riftlight-squall-temple/messages/narration"
         },
         {
-          "text": "Welcome. That is how the pad says hello.",
-          "address": "riftlight-sky-islands-arrival/landing_slid/narration"
+          "text": "Turn it away, or hold the sheltered landing until it settles.",
+          "address": "riftlight-squall-temple/plan/narration"
         }
       ],
       "speaks": true,
@@ -6059,8 +6197,10 @@
       "name": "Passing fisher",
       "kind": "character",
       "who": "Passing fisher.",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
       "figure": "cast/passing_fisher",
       "chapters": [
         "riftlight-stuttering-flats"
@@ -6069,7 +6209,12 @@
       "gemini": {
         "voice": "Achird"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "I will wait at the marked spot, then.",
+          "address": "riftlight-stuttering-flats/next/variants/0"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -6105,7 +6250,12 @@
       "gemini": {
         "voice": "Umbriel"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "My letters!",
+          "address": "riftlight-the-island-due-back/priority/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -6167,8 +6317,10 @@
       "name": "New keeper",
       "kind": "character",
       "who": "New keeper.",
-      "gender": "unknown",
-      "genderFrom": "none",
+      "pronouns": "she/her",
+      "pronounsFrom": "narration",
+      "gender": "female",
+      "genderFrom": "narration",
       "figure": "cast/new_island_keeper",
       "chapters": [
         "riftlight-whale-road"
@@ -6177,7 +6329,12 @@
       "gemini": {
         "voice": "Iapetus"
       },
-      "lines": [],
+      "lines": [
+        {
+          "text": "White means watch this approach. Striped means stop and wait.",
+          "address": "riftlight-whale-road/handoff_sky/narration"
+        }
+      ],
       "speaks": true,
       "status": "provisional"
     },
@@ -6197,8 +6354,16 @@
       },
       "lines": [
         {
-          "text": "The bench has become a very expensive pillow.",
-          "address": "riftlight-wyrm-nest/listen/narration"
+          "text": "The marks show its reach today. Not a command it must obey.",
+          "address": "riftlight-wyrm-nest/watch_check/narration"
+        },
+        {
+          "text": "These are builder signals. They do not control the wyrm.",
+          "address": "riftlight-wyrm-nest/signal/narration"
+        },
+        {
+          "text": "Neither plan promises the wyrm will cooperate.",
+          "address": "riftlight-wyrm-nest/bed/narration"
         }
       ],
       "speaks": true,
