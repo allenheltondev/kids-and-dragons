@@ -543,7 +543,7 @@
     },
     "pull": {
       "type": "interaction",
-      "narration": "Snow grains slide toward the deep passage. \"Hold my measuring board still while a friend marks the grains?\" Bram asks. Your Listening Chime tests readiness and an open way back; it cannot tell an opening where to go. Pip moves his tail out of the experiment.",
+      "narration": "Snow grains slide toward the deep passage. \"Could you steady my board while your friend marks the grains?\" Bram asks. Your Listening Chime tests readiness and an open way back; it cannot tell an opening where to go. Pip moves his tail out of the experiment.",
       "cast": [
         {
           "figure": "cast/orin_vale",

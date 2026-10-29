@@ -1712,7 +1712,7 @@
     },
     "watch": {
       "type": "story",
-      "narration": "\"A boundary watch station is always useful,\" says the keeper. If you chose a signal account, you can instead use it to lead the cloth drill. Choose the job you will actually show the next watch.",
+      "narration": "A boundary observation station is always useful. If you chose a signal account, you can instead use it to lead the cloth drill. Choose the job you will actually show the next watch.",
       "cast": [
         {
           "figure": "cast/kitsune_temple_keeper",
