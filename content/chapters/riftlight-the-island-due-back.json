@@ -52,7 +52,7 @@
     ],
     "npcVoices": {
       "Pip Thistledown": "Eager manticore scout. Asks before guessing, repeats signals, and credits another observer.",
-      "Kitsune keeper": "Practical, welcoming navigator. Uses songs alongside observations; never knows an unseen cause."
+      "Kitsune keeper": "Practical, welcoming navigator. She uses songs alongside observations and never knows an unseen cause."
     }
   },
   "scenes": {
@@ -453,7 +453,7 @@
     },
     "priority": {
       "type": "choice_point",
-      "narration": "A gust rattles the song box. A messenger's letter bag slides toward the low fence; a keeper has hold of the messenger herself. Your team can recover the sealed letters or ready the signal station. The other job must wait. Dry letters preserve a messenger departure; a ready station can send a temple signal. Which comes first?",
+      "narration": "A gust rattles the song box. A messenger's letter bag slides toward the low fence; a keeper has hold of the messenger herself. Your team can recover the sealed letters or ready the signal station. The other job must wait. Dry letters preserve a messenger departure; a ready station can send a temple signal. \"My letters!\" calls the messenger. Which comes first?",
       "choices": [
         {
           "id": "option_1",
@@ -628,7 +628,7 @@
         }
       ],
       "art": "scenes/riftlight/island-due-back",
-      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled holiday.",
+      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled vacation.",
       "interaction": {
         "kind": "precision",
         "cue": "Tap when the marker reaches the gold.",
@@ -1412,7 +1412,7 @@
     },
     "landing": {
       "type": "choice_point",
-      "narration": "The keeper lays the board between the close shelves. A second keeper secures the far rope. You can center the near foot, or level the loaded board before following its side ropes. The keepers will watch the gap throughout your visit and call you back. Which job will you take?",
+      "narration": "The keeper lays the board between the close shelves. A second keeper secures the far rope. You can center the near foot, or level the loaded board before following its side ropes. \"We will watch the gap the whole time,\" the keeper promises, \"and call you back.\" Which job will you take?",
       "choices": [
         {
           "id": "option_1",
@@ -1662,7 +1662,7 @@
     },
     "stone_care": {
       "type": "choice_point",
-      "narration": "On the returning island, a round hole looks through an old standing stone. Grooves wind between three raised shapes below it. Pip crouches to move his shadow away. Choose a small job to prepare the reading place without touching a worn line.",
+      "narration": "On the returning island, a round hole looks through an old standing stone. Grooves wind between three raised shapes below it. Pip crouches to move his shadow away. \"Nobody touch a worn line,\" he whispers. Choose a small job to prepare the reading place.",
       "onEnter": [
         {
           "type": "setFlag",
@@ -2335,7 +2335,7 @@
     },
     "record": {
       "type": "choice_point",
-      "narration": "The keeper asks permission to keep a copy of your observations. Your sketch can stay private or help other readers test the match. The stone stays here either way. What may she copy?",
+      "narration": "The keeper asks permission to keep a copy of your observations. Your sketch can stay private or help other readers test the match. The keeper smiles. \"The stone stays here either way.\" What may she copy?",
       "choices": [
         {
           "id": "option_1",
@@ -2744,7 +2744,7 @@
         }
       ],
       "art": "scenes/riftlight/island-due-back",
-      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled holiday.",
+      "narration": "The mailbag hangs by its strap beside the fence. Reach with the looped pole from the marked ground. The letters are taking an unscheduled vacation.",
       "interaction": {
         "kind": "precision",
         "cue": "Tap when the marker reaches the gold.",

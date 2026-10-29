@@ -19,7 +19,8 @@ import type { Encoded } from "./encode";
 import type { ClipStore } from "./store";
 
 export interface RenderDeps {
-  synth: (segment: DesiredSegment) => Promise<Buffer>;
+  /** The provider call: WAV audio, and the audio tokens billed when the provider reports them. */
+  synth: (segment: DesiredSegment) => Promise<Buffer | { wav: Buffer; audioTokens?: number }>;
   encode: (wav: Buffer) => Encoded;
   store: ClipStore;
   /** Dollars one request for this many characters costs (an estimate). */
@@ -56,6 +57,20 @@ export interface RenderReport {
   chars: number;
   /** Every clip now known to exist, with its length: what the manifest is built from. */
   lengths: Map<string, number>;
+  /**
+   * What the provider billed, measured: audio tokens it reported and the seconds of audio
+   * they were for (before trimming). `tokensPerSecond` is the rate to put in pricing.json
+   * once enough clips are measured; null until a provider reports tokens.
+   */
+  measured: { audioTokens: number; seconds: number; clips: number; tokensPerSecond: number | null };
+}
+
+/** Seconds of audio in a 16-bit PCM WAV (what the providers here return), or null if it is not one. */
+export function wavSeconds(wav: Buffer): number | null {
+  if (wav.length < 44 || wav.toString("ascii", 0, 4) !== "RIFF" || wav.toString("ascii", 8, 12) !== "WAVE") return null;
+  const byteRate = wav.readUInt32LE(28);
+  const dataBytes = wav.readUInt32LE(40);
+  return byteRate > 0 ? dataBytes / byteRate : null;
 }
 
 export async function renderOwed(owed: readonly DesiredSegment[], deps: RenderDeps, options: RenderOptions): Promise<RenderReport> {
@@ -69,6 +84,7 @@ export async function renderOwed(owed: readonly DesiredSegment[], deps: RenderDe
     dollars: 0,
     chars: 0,
     lengths: new Map(),
+    measured: { audioTokens: 0, seconds: 0, clips: 0, tokensPerSecond: null },
   };
   const sleep = deps.sleep ?? ((ms: number) => new Promise<void>((done) => setTimeout(done, ms)));
   const attempts = options.attempts ?? 4;
@@ -114,7 +130,17 @@ export async function renderOwed(owed: readonly DesiredSegment[], deps: RenderDe
         return;
       }
       try {
-        const encoded = deps.encode(await deps.synth(segment));
+        const said = await deps.synth(segment);
+        const wav = Buffer.isBuffer(said) ? said : said.wav;
+        const tokens = Buffer.isBuffer(said) ? undefined : said.audioTokens;
+        const seconds = wavSeconds(wav);
+        if (tokens !== undefined && seconds !== null && seconds > 0) {
+          report.measured.audioTokens += tokens;
+          report.measured.seconds += seconds;
+          report.measured.clips += 1;
+          report.measured.tokensPerSecond = report.measured.audioTokens / report.measured.seconds;
+        }
+        const encoded = deps.encode(wav);
         await deps.store.put(segment.key, encoded.bytes, { ms: encoded.ms });
         report.rendered.push(segment.key);
         report.lengths.set(segment.key, encoded.ms);

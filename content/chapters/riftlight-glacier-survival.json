@@ -121,7 +121,7 @@
     },
     "rocks": {
       "type": "story",
-      "narration": "The rocks give your feet something firm to find under the snow. Beside them are deep footprints. A broad wooden sledge has scraped a second track toward the bell.",
+      "narration": "The rocks give your feet something firm to find under the snow. Beside them are deep footprints. A broad wooden sled has scraped a second track toward the bell.",
       "choices": [
         {
           "id": "continue",
@@ -178,7 +178,7 @@
     },
     "kid_burrow": {
       "type": "interaction",
-      "narration": "The kid wriggles out of your coat, warm enough now to be cheeky. It dives under a snow mound and vanishes. Three mounds sit in a row, all exactly the same shape. Then the snow starts to move.",
+      "narration": "The kid wriggles out of your coat, warm enough now to be bold. It dives under a snow mound and vanishes. Three mounds sit in a row, all exactly the same shape. Then the snow starts to move.",
       "interaction": {
         "kind": "tracking",
         "cue": "Watch the mound the kid hides under, then pick where it is.",
@@ -330,7 +330,7 @@
     },
     "tracks": {
       "type": "story",
-      "narration": "A yeti herder comes around the ridge pulling an empty sledge. She stops at the sight of the kid. \"There you are.\" Then she notices the rest of you. \"There you all are. Did you come with the weather?\"",
+      "narration": "A yeti herder comes around the ridge pulling an empty sled. She stops at the sight of the kid. \"There you are.\" Then she notices the rest of you. \"There you all are. Did you come with the weather?\"",
       "choices": [
         {
           "id": "truth",
@@ -382,7 +382,7 @@
     },
     "tell_rift": {
       "type": "story",
-      "narration": "The yeti looks at your wet boots, then at the harbor rope. \"The Exchange,\" she says. \"That is a long way to arrive without a hat.\" She lays a folded blanket on the sledge. \"Stand on the dark ice when I say. Walk around the white patches.\"",
+      "narration": "The yeti looks at your wet boots, then at the harbor rope. \"The Exchange,\" she says. \"That is a long way to arrive without a hat.\" She lays a folded blanket on the sled. \"Stand on the dark ice when I say. Walk around the white patches.\"",
       "choices": [
         {
           "id": "continue",
@@ -405,7 +405,7 @@
     },
     "ask_help": {
       "type": "story",
-      "narration": "\"First we get you warm enough to help,\" says the yeti. She takes a folded blanket from the sledge and wraps it around the kid and your arms together. \"I keep this herd. The glacier keeps surprising me.\" She turns the sledge toward the melt channel.",
+      "narration": "\"First we get you warm enough to help,\" says the yeti. She takes a folded blanket from the sled and wraps it around the kid and your arms together. \"I keep this herd. The glacier keeps surprising me.\" She turns the sled toward the melt channel.",
       "choices": [
         {
           "id": "continue",
@@ -428,7 +428,7 @@
     },
     "herder_gift": {
       "type": "story",
-      "narration": "At the channel's edge the herder stops and looks you over. \"I saw you leave my tin tidy,\" she says. \"Keep the coins. I leave them for whoever needs them, and today that was you.\" She digs in the sledge and hands over a bundle wrapped in a cloth. \"Bread, cheese, and a sausage that has not made up its mind. You are thin as icicles.\" She points across the water. \"The herd is over there, and the snow bridge looks tired. First we read the ice. Then we cross.\"",
+      "narration": "At the channel's edge the herder stops and looks you over. \"I saw you leave my tin tidy,\" she says. \"Keep the coins. I leave them for whoever needs them, and today that was you.\" She digs in the sled and hands over a bundle wrapped in a cloth. \"Bread, cheese, and a sausage that has not made up its mind. You are thin as icicles.\" She points across the water. \"The herd is over there, and the snow bridge looks tired. First we read the ice. Then we cross.\"",
       "choices": [
         {
           "id": "continue",
@@ -461,7 +461,7 @@
       "stat": "clever",
       "tn": 8,
       "prompt": "Whoever reads ice best picks out the edges that will hold.",
-      "narration": "Along the channel the ice comes in two kinds. One looks dark and wet and holds a boot. The other looks like sugar and holds nothing at all. The herder waits to see what you see.",
+      "narration": "Along the channel the ice comes in two kinds. One looks dark and wet and holds a boot. The other looks like sugar and holds nothing at all. \"Tell me what you see,\" the herder says, and waits.",
       "roller": "best",
       "onSuccess": {
         "goto": "channel",
@@ -485,7 +485,7 @@
     },
     "channel": {
       "type": "choice_point",
-      "narration": "Meltwater gurgles through a narrow gap. The nearest snow bridge sags when the yeti tests it. A flat stone projects farther upstream. The herder points out dark patches of ice that will hold a careful foot. The herd waits on the other side, bells clinking.",
+      "narration": "Meltwater gurgles through a narrow gap. The nearest snow bridge sags when the yeti tests it. A flat stone projects farther upstream. The herder points out dark patches of ice. \"Those will hold a careful foot,\" she says. The herd waits on the other side, bells clinking.",
       "choices": [
         {
           "id": "stone",
@@ -495,7 +495,7 @@
         },
         {
           "id": "sledge",
-          "label": "Make a bridge with the sledge",
+          "label": "Make a bridge with the sled",
           "icon": "hand",
           "goto": "sledge"
         },
@@ -566,7 +566,7 @@
       "type": "check",
       "stat": "might",
       "tn": 12,
-      "prompt": "Hold the sledge steady while everyone crosses.",
+      "prompt": "Hold the sled steady while everyone crosses.",
       "roller": "best",
       "onSuccess": {
         "goto": "dry_bank",
@@ -574,7 +574,7 @@
       },
       "onFailure": {
         "goto": "wet_bank",
-        "narration": "A runner slips. The herder grabs the sledge and you scramble across, soaked to the elbows.",
+        "narration": "A runner slips. The herder grabs the sled and you scramble across, soaked to the elbows.",
         "effects": [
           {
             "type": "damage",
@@ -919,7 +919,7 @@
       },
       "onAssisted": {
         "goto": "herd",
-        "narration": "The herder shows you a good scratching spot, and the herd settles around it."
+        "narration": "\"Behind the ears,\" the herder says, showing you a good scratching spot. The herd settles around it."
       },
       "art": "scenes/riftlight/glacier-herd-rest",
       "cast": [
@@ -938,7 +938,7 @@
     },
     "herd": {
       "type": "choice_point",
-      "narration": "The herder calls the goats toward a low opening in the ice. The kid plants its feet at the entrance. From inside comes a deep note that trembles through your boots. How do you coax it in?",
+      "narration": "\"In you go,\" the herder calls, waving the goats toward a low opening in the ice. The kid plants its feet at the entrance. From inside comes a deep note that trembles through your boots. How do you coax it in?",
       "choices": [
         {
           "id": "patient",
@@ -1513,7 +1513,7 @@
     },
     "ledge_look": {
       "type": "choice_point",
-      "narration": "The herder leads you past the end of the hall, where the ground drops to a stream. A path ran here last week. Now meltwater nibbles the snow shelf along its bank, and the shelf looks like it is deciding whether to fall in. \"The herd will not walk where it cannot see poles,\" she says. \"And the hay must go down to the lower pen before dark. I have two jobs and one sledge.\"",
+      "narration": "The herder leads you past the end of the hall, where the ground drops to a stream. A path ran here last week. Now meltwater nibbles the snow shelf along its bank, and the shelf looks like it is deciding whether to fall in. \"The herd will not walk where it cannot see poles,\" she says. \"And the hay must go down to the lower pen before dark. I have two jobs and one sled.\"",
       "choices": [
         {
           "id": "poles",
@@ -1523,7 +1523,7 @@
         },
         {
           "id": "hay",
-          "label": "Haul the hay sledge down to the lower pen",
+          "label": "Haul the hay sled down to the lower pen",
           "icon": "might",
           "goto": "ledge_hay"
         },
@@ -1597,16 +1597,16 @@
       "type": "check",
       "stat": "might",
       "tn": 8,
-      "prompt": "The strongest of you takes the front of the sledge while the others push.",
-      "narration": "The hay sledge is heavy as a sleeping bear and slides like a happy one.",
+      "prompt": "The strongest of you takes the front of the sled while the others push.",
+      "narration": "The hay sled is heavy as a sleeping bear and slides like a happy one.",
       "roller": "best",
       "onSuccess": {
         "goto": "shelf_cross",
-        "narration": "The sledge glides down the slope with a hiss. The pile at the lower pen grows by a whole sledge's worth."
+        "narration": "The sled glides down the slope with a hiss. The pile at the lower pen grows by a whole sled's worth."
       },
       "onFailure": {
         "goto": "shelf_cross",
-        "narration": "The sledge gets away from you and slides to the bottom on its own, scattering hay. You collect most of it. The goats help, which means they eat some."
+        "narration": "The sled gets away from you and slides to the bottom on its own, scattering hay. You collect most of it. The goats help, which means they eat some."
       },
       "art": "scenes/riftlight/singing-hall-camp",
       "cast": [
@@ -1724,7 +1724,7 @@
     },
     "departure": {
       "type": "rest",
-      "narration": "Warm and dry, you step out beside the singing hall. The kid stays with its herd. A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner. Neither has noticed that the corner is under her hoof.",
+      "narration": "Warm and dry, you step out beside the singing hall. The kid stays with its herd. A griffin in a travel cloak is trying to fold a map while a unicorn stands on one corner. \"It will not fold,\" the griffin mutters. Neither has noticed that the corner is under her hoof.",
       "heal": 0,
       "choices": [],
       "outcome": "success",
@@ -2014,7 +2014,7 @@
     },
     "seam_response": {
       "type": "choice_point",
-      "narration": "The note fades. So does the trembling under the herder's palm. A narrow line of frost has fallen to the floor beneath the sealed seam. You still remember the note. What do you try?",
+      "narration": "The note fades. \"The trembling stopped too,\" the herder says, her palm on the ice. A narrow line of frost has fallen to the floor beneath the sealed seam. You still remember the note. What do you try?",
       "choices": [
         {
           "id": "hum",

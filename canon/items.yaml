@@ -163,7 +163,7 @@ items:
   # -------------------------------------------------------------------------
 
   - id: item.sunbloom_draught
-    title: "Sunbloom Draught"
+    title: "Sunbloom Potion"
     canon_status: newly_defined
     category: provision
     rarity: uncommon
@@ -346,7 +346,7 @@ items:
     tags: [thrown, noise, enchanted_woods, uncommon]
     short_description: >-
       An acorn from a storm-struck oak, holding one crack of thunder that has
-      not gone off yet.
+      not spoiled yet.
     visual_identity: >-
       Oversized acorn, shell scorched in a spiral, hairline fractures showing
       white light when it is turned.
@@ -517,7 +517,7 @@ items:
     short_description: >-
       A boot lace of braided otter-hair that never once needs retying.
     visual_identity: >-
-      Dark plaited cord with a silver sheen through it, threaded through one
+      Dark braided cord with a silver sheen through it, threaded through one
       boot only.
     acquisition: >-
       Braided at the Exchange from silver otter hair collected off riverside

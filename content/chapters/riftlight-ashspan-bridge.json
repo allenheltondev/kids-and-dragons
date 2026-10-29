@@ -1016,7 +1016,7 @@
     },
     "jam_plan": {
       "type": "choice_point",
-      "narration": "The jam is a heap of logs, roots and one entire fence. Pull the wrong log and the rest may roll. What will you do about the jam?",
+      "narration": "The jam is a heap of logs, roots and one entire fence. Ossley squints at it. \"Pull the wrong log and the rest may roll.\" What will you do about the jam?",
       "choices": [
         {
           "id": "hook",
@@ -1175,7 +1175,7 @@
     },
     "jam_clear": {
       "type": "story",
-      "narration": "The last log slides free and bobs away. One log floats upriver for a few lengths, as if it changed its mind, then turns round and follows the rest. Ossley watches it go. \"Changed melt,\" he says again, more quietly this time. The pier stands straight, and the deck waits above it with a cracked middle beam. Even the goats look thoughtful.",
+      "narration": "The last log slides free and bobs away. One log floats upriver for a few lengths, as if it changed its mind, then turns around and follows the rest. Ossley watches it go. \"Changed melt,\" he says again, more quietly this time. The pier stands straight, and the deck waits above it with a cracked middle beam. Even the goats look thoughtful.",
       "choices": [
         {
           "id": "continue",
@@ -1438,7 +1438,7 @@
     },
     "beam_slip": {
       "type": "story",
-      "narration": "The beam sags and thumps into the notches off by a finger, scraping everyone's hands. Bryn taps it with a mallet until it sits straight. \"It was shy,\" she says. \"Now it is brave.\" Ossley taps it with his pole. It rings, a bit flat, but it rings. Bryn passes round her lunch pail: a supper bundle, still warm.",
+      "narration": "The beam sags and thumps into the notches off by a finger, scraping everyone's hands. Bryn taps it with a mallet until it sits straight. \"It was shy,\" she says. \"Now it is brave.\" Ossley taps it with his pole. It rings, a bit flat, but it rings. Bryn passes around her lunch pail: a supper bundle, still warm.",
       "choices": [
         {
           "id": "continue",
@@ -1977,7 +1977,7 @@
     },
     "lash_plan": {
       "type": "choice_point",
-      "narration": "A deck stays only if it is tied down. The long ropes wait in a coil, the pegs in a bucket. How will you lash the planks?",
+      "narration": "Bryn taps a loose plank. \"A deck stays only if it is tied down.\" The long ropes wait in a coil, the pegs in a bucket. How will you lash the planks?",
       "choices": [
         {
           "id": "knots",
@@ -2174,7 +2174,7 @@
       ],
       "art": "scenes/riftlight/ashspan-mended-deck",
       "type": "story",
-      "narration": "You walk the finished deck with Bryn, stopping at each plank. She checks the fastenings before calling the waiting travelers.",
+      "narration": "You walk the finished deck with Bryn, stopping at each plank. \"Fastenings first,\" she says. \"Then I call the travelers.\"",
       "choices": [
         {
           "id": "continue",

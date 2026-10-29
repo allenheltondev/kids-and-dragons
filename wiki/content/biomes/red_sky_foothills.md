@@ -20,7 +20,7 @@ regional_relationships:
   - id: route.northern_river_bridge
     title: "Ashspan Bridge"
     url: "/routes/northern_river_bridge/"
-    relationship: "The one way east without wings. When the bridge queue backs up, foothill trade holds its breath."
+    relationship: "The one way east without wings. When the bridge line backs up, foothill trade holds its breath."
 related:
   - id: location.mount_red_sky
     type: location
@@ -156,7 +156,7 @@ Every gemstone in the realm started here, which makes the foothills the realm's 
 
 - **[Mount Red Sky](/locations/mount_red_sky/)**: Landlord, weather, calendar, and subject of every song. The foothills exist at the mountain's pleasure and have made a culture out of never forgetting it.
 - **[The Plains](/biomes/plains/)**: The caravan road west is the foothills' front door: gemstones go out twice a season, everything else comes in, and the centaurs rate the route among their favorites for the trade and the storytelling.
-- **[Ashspan Bridge](/routes/northern_river_bridge/)**: The one way east without wings. When the bridge queue backs up, foothill trade holds its breath.
+- **[Ashspan Bridge](/routes/northern_river_bridge/)**: The one way east without wings. When the bridge line backs up, foothill trade holds its breath.
 
 ### Current Tensions
 

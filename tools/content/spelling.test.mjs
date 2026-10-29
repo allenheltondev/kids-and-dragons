@@ -57,8 +57,19 @@ describe("the spelling scanner", () => {
     expect(words("color, favor, hour, glamour, mumble, center, traveled, afterwards, surprise, promise")).toEqual([]);
   });
 
+  it("flags British words with the American one", () => {
+    const cases = {
+      queue: "line", Queues: "Lines", queuing: "waiting in line", sledge: "sled", spectacles: "glasses",
+      draught: "potion", beetroot: "beet", pram: "stroller", plaited: "braided", cheeky: "sassy",
+    };
+    for (const [bad, good] of Object.entries(cases)) {
+      expect(checkText(`a ${bad} here`).map((h) => h.suggestion), bad).toEqual([good]);
+    }
+    expect(words("a line of sleds, glasses, and a drought")).toEqual([]);
+  });
+
   it("honors the documented exceptions", () => {
-    expect(words("Drink the Sunbloom Draught afterwards.")).toEqual([]);
+    expect(words("Drink the Sunbloom Potion afterwards.")).toEqual([]);
   });
 
   it("scans text and skips ids and keys", () => {

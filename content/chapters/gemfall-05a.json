@@ -119,7 +119,7 @@
     },
     "scene_soup_line": {
       "type": "story",
-      "narration": "A woman named Hollis stirs a bathtub-sized soup pot. DEEP HOLLOW is stitched on her apron. She feeds a muddy prospector before asking anything. His wheelbarrow has lost a wheel. He is holding the soup much more carefully.",
+      "narration": "A woman named Hollis stirs a bathtub-sized soup pot. DEEP HOLLOW is stitched on her apron. She hands a muddy prospector a bowl. \"Eat first, dear,\" she says. \"Questions later.\" His wheelbarrow has lost a wheel. He is holding the soup much more carefully.",
       "choices": [
         {
           "id": "take_bowl",
@@ -161,7 +161,7 @@
     },
     "scene_soup_line_fix_barrow": {
       "type": "story",
-      "narration": "You knock the wheel back on with a rock. The prospector gives you his luck pebble, the only thing he has left. It is not a gem. He says it worked anyway.",
+      "narration": "You knock the wheel back on with a rock. The prospector gives you his luck pebble, the only thing he has left. It is not a gem. \"Worked anyway,\" he says.",
       "choices": [
         {
           "id": "on",
@@ -425,7 +425,7 @@
     },
     "scene_engineers": {
       "type": "story",
-      "narration": "Engineer Brask pins every bridge crack in red on a chalk survey. She has a pencil behind each ear and has forgotten the third in her hair. She frowns at the drawing, as though it has said something rude.",
+      "narration": "Engineer Brask pins every bridge crack in red on a chalk survey. She has a pencil behind each ear and has forgotten the third in her hair. She frowns at the drawing. \"Don't you take that tone with me,\" she tells it.",
       "cast": [
         {
           "figure": "cast/brask",
@@ -533,7 +533,7 @@
     },
     "rest_tent": {
       "type": "rest",
-      "narration": "The engineers share strong tea. Every cup has a tremor ripple. Outside, the bridge creaks. Rest and decide who should hear what you found.",
+      "narration": "The engineers share strong tea. Every cup has a tremor ripple. \"Even the tea is nervous,\" says Brask. Outside, the bridge creaks. Rest and decide who should hear what you found.",
       "cast": [
         {
           "figure": "cast/brask",
@@ -553,7 +553,7 @@
     },
     "scene_who_to_tell": {
       "type": "choice_point",
-      "narration": "Tell the wardens here, and they can use the survey to manage the crossing. Send the news with Nim the bell-rider, and the gathering towns will hear it. Or keep it close until you know more. Who should hear the outline first?",
+      "narration": "Brask taps the survey. \"Tell the wardens here, and we can use this to manage the crossing.\" Send the news with Nim the bell-rider, and the gathering towns will hear it. Or keep it close until you know more. Who should hear the outline first?",
       "cast": [
         {
           "figure": "cast/brask",
@@ -908,7 +908,7 @@
     },
     "scene_brass_south": {
       "type": "story",
-      "narration": "Six tired people in dented brass hats push an empty wheelbarrow south. The Brassbuckle Expedition. They stop when they see you. Nobody smiles smoothly this time.",
+      "narration": "Six tired people in dented brass hats push an empty wheelbarrow south. The Brassbuckle Expedition. They stop when they see you. Nobody smiles smoothly this time. \"We are just going home,\" says the Brassbuckle scout.",
       "choices": [
         {
           "id": "ask_what",
@@ -1093,7 +1093,7 @@
       "discovers": [
         "character.dragonling"
       ],
-      "narration": "Nim, a dragonling bell-rider, argues with her pony Pepper at the bridge foot. She wants north. Pepper wants grass. Her bell keeps ringing while she explains the difference.",
+      "narration": "Nim, a dragonling bell-rider, argues with her pony Pepper at the bridge foot. \"North, Pepper!\" she says. Pepper wants grass. Her bell keeps ringing while she explains the difference.",
       "cast": [
         {
           "figure": "cast/nim",
@@ -2387,7 +2387,7 @@
       "pellam": "a Skywarden clerk; dry, precise, logs everything and keeps nothing; 'logged is not owned'; secretly enjoys irregular-but-legal",
       "brask": "Skywarden engineer; pencils behind both ears; blunt and honest; talks about arithmetic and acceptable losses but is not unkind",
       "carter": "a tired caravan driver; has heard gem 4117 hum for nine days; trades for a song; grateful when you catch her crates",
-      "nim": "a dragonling bell-rider on a tiny fast pony called Pepper; quick, proud, a little cheeky about her grandmother",
+      "nim": "a dragonling bell-rider on a tiny fast pony called Pepper; quick, proud, a little sassy about her grandmother",
       "brassbuckles": "the Brassbuckle Expedition, coming home south with an empty wheelbarrow and dented hats; tired, honest for once",
       "tibbet": "Corporal Tibbet, a very new Skywarden guarding the engineers' tent; helmet too big; wants reasons in writing",
       "apprentice": "an apprentice engineer measuring the crack with knotted string every evening; 'a hair wider than yesterday'",

@@ -2125,7 +2125,7 @@ it:
   "$comment": "…generated from canon/items.yaml and every chapter's props…",
   "sunbloom_draught": {                    // from canon: the world has these
     "kind": "consumable", "icon": "potion",
-    "name": "Sunbloom Draught", "text": "Heal 4 HP.",
+    "name": "Sunbloom Potion", "text": "Heal 4 HP.",
     "effect": { "type": "heal", "amount": 4 }
   },
   "river_charm": {

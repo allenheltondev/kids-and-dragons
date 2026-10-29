@@ -221,7 +221,7 @@
     },
     "scene_archive_table": {
       "type": "story",
-      "narration": "Every moved forest path is drawn on the archive's great tree-slice table. Fresh thorns mark this season's changes. There are so many that an archivist has put her tea on the floor.",
+      "narration": "Every moved forest path is drawn on the archive's great tree-slice table. Fresh thorns mark this season's changes. There are so many that an archivist has put her tea on the floor. \"No room for tea,\" she sighs.",
       "cast": [
         {
           "figure": "cast/mosshome_archivist",
@@ -841,7 +841,7 @@
     },
     "scene_runners_post": {
       "type": "story",
-      "narration": "Runners steam gently at their hollow-stump post, jogging in place with news from the other roads. You get the first question. One runner has tied a reminder cord around a banana.",
+      "narration": "Runners steam gently at their hollow-stump post, jogging in place with news from the other roads. \"First question's yours!\" puffs the runner. One runner has tied a reminder cord around a banana.",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -873,7 +873,7 @@
     },
     "scene_runners_post_rush": {
       "type": "story",
-      "narration": "\"The rush road?\" A runner puffs out the news. A ford queue two days long. A witch whose charms ring by themselves. Cinder wolves that won't sleep near the gem wagons. And a soup line, very kind, that keeps asking people about the mountain. \"Same shape as here,\" she says. \"Different country. Everybody's noticing.\"",
+      "narration": "\"The rush road?\" A runner puffs out the news. A ford line two days long. A witch whose charms ring by themselves. Cinder wolves that won't sleep near the gem wagons. And a soup line, very kind, that keeps asking people about the mountain. \"Same shape as here,\" she says. \"Different country. Everybody's noticing.\"",
       "cast": [
         {
           "figure": "cast/mosshome_runner",
@@ -1185,7 +1185,7 @@
     },
     "scene_falls_stair": {
       "type": "story",
-      "narration": "Water covers the falls stair. A bigfoot flood-warden in tall boots checks her notched pole. Help pass logs and learn a brace for the narrow high path, or watch the runoff and learn where a dropped pack would wash. Her boots contain one very surprised frog.",
+      "narration": "Water covers the falls stair. A bigfoot flood-warden in tall boots checks her notched pole. \"Pass me logs and I'll teach you a brace for the narrow high path,\" she says. \"Or watch the runoff, and learn where a dropped pack would wash.\" Her boots contain one very surprised frog.",
       "cast": [
         {
           "figure": "cast/flood_warden",

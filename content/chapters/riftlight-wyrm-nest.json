@@ -94,7 +94,7 @@
     },
     "watch_check": {
       "type": "interaction",
-      "narration": "Watch the wyrm curl, breathe and relax. Echo the observed pattern before anyone marks a lane. The marks describe its reach today, not a command it must obey.",
+      "narration": "Watch the wyrm curl, breathe and relax. Echo the observed pattern before anyone marks a lane. A builder nods at the wyrm. \"The marks show its reach today. Not a command it must obey.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -186,7 +186,7 @@
     },
     "boundary": {
       "type": "choice_point",
-      "narration": "Help the builders move everything outside that margin. Choose a quiet job; nothing is taken from under the wyrm. One builder knits a hat for a chisel that does not yet have a hat.",
+      "narration": "Help the builders move everything outside that margin. \"Nothing is taken from under the wyrm,\" says a builder. Choose a quiet job. One builder knits a hat for a chisel that does not yet have a hat.",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -574,7 +574,7 @@
     },
     "bed": {
       "type": "choice_point",
-      "narration": "The hollow is safe. Soft new snow will make a welcoming bowl: on the board, holding its approach for one clear round can invite the wyrm in. A broad slab takes two clear rounds to invite it, but can later be recovered as a low reader step if the hollow stays empty. Neither plan promises the wyrm will cooperate.",
+      "narration": "The hollow is safe. Soft new snow will make a welcoming bowl: on the board, holding its approach for one clear round can invite the wyrm in. A broad slab takes two clear rounds to invite it, but can later be recovered as a low reader step if the hollow stays empty. A builder shrugs. \"Neither plan promises the wyrm will cooperate.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -726,7 +726,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "The builders lead you into a side alcove, away from the nest. They share oat cakes from a tool tin scrubbed clean for lunches. You rest on folded work blankets. One cake has the shape of a very blunt chisel.",
+      "narration": "The builders lead you into a side alcove, away from the nest. They share oat cakes from a tool tin scrubbed clean for lunches. You rest on folded work blankets. One cake has the shape of a very blunt chisel. A builder beams at it. \"My best work.\"",
       "heal": 2,
       "choices": [
         {
@@ -752,7 +752,7 @@
     },
     "signal": {
       "type": "interaction",
-      "narration": "A builder raises a mitten for wait, spreads both palms for clear and lowers them to finish. Remember the observed signal round. These are builder signals, not instructions that control the wyrm.",
+      "narration": "A builder raises a mitten for wait, spreads both palms for clear and lowers them to finish. Remember the observed signal round. The builder wiggles the mitten. \"These are for us. They do not control the wyrm.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1473,7 +1473,7 @@
     },
     "readers_clear": {
       "type": "story",
-      "narration": "The readers reach their safe working place with their notes.",
+      "narration": "The readers reach their safe working place with their notes. One reader pats the stack. \"Every page is here.\"",
       "onEnter": [
         {
           "type": "setFlag",
@@ -1511,7 +1511,7 @@
     },
     "quiet": {
       "type": "choice_point",
-      "narration": "Choose one useful agreement for readers and builders. Nobody promises that a wild wyrm will obey a sign. The new rule is for the people holding the chisels.",
+      "narration": "Choose one useful agreement for readers and builders. Nobody promises that a wild wyrm will obey a sign. \"The new rule is for us,\" says a builder, \"the people holding the chisels.\"",
       "cast": [
         {
           "figure": "entities/yeti",
@@ -1547,7 +1547,7 @@
     },
     "ending": {
       "type": "story",
-      "narration": "The readers have room for their notes. The wyrm has room to rest. The old ice stays quiet. A builder hangs the chisel hats beside the doorway and adds one last reminder: no scraping near the neighbor. You leave a glacier where people and wyrm have more room because your party made it.",
+      "narration": "The readers have room for their notes. The wyrm has room to rest. The old ice stays quiet. A builder hangs the chisel hats beside the doorway with one last reminder: \"No scraping near the neighbor.\" You leave a glacier where people and wyrm have more room because your party made it.",
       "choices": [],
       "outcome": "success",
       "variants": [

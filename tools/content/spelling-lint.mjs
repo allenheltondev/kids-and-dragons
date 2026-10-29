@@ -1,5 +1,5 @@
 /**
- * US-spelling lint for player-facing text. The rules live here; the test in
+ * US-spelling and US-vocabulary lint for player-facing text. The rules live here; the test in
  * spelling.test.mjs runs them over content and canon.
  *
  * `scanDocument` walks parsed JSON/YAML and checks string values, never
@@ -23,21 +23,36 @@ export const RULES = [
   { re: /\bmum(?:s|my)?\b/gi, fix: (w) => w.replace(/mum/i, (m) => (m[0] === "M" ? "Mom" : "mom")) },
   { re: /\b(?:whilst|amongst)\b/gi, fix: (w) => (/^whilst$/i.test(w) ? "while" : "among") },
   { re: /\bcos(?:y|ier|iest|ily)\b/gi, fix: (w) => w.replace(/cos/i, (m) => (m[0] === "C" ? "Coz" : "coz")) },
+  // British words, not spellings: an American child says the word on the right.
+  ...Object.entries({
+    queue: "line", queues: "lines", queued: "lined up", queuing: "waiting in line", queueing: "waiting in line",
+    sledge: "sled", sledges: "sleds", spectacles: "glasses", draught: "potion", draughts: "potions",
+    beetroot: "beet", beetroots: "beets", pram: "stroller", prams: "strollers", plaited: "braided", cheeky: "sassy",
+  }).map(([british, us]) => ({
+    re: new RegExp(`\\b${british}\\b`, "gi"),
+    fix: (w) => (w[0] === w[0].toUpperCase() ? us[0].toUpperCase() + us.slice(1) : us),
+  })),
 ];
 
 /**
  * Documented exceptions. Matched phrases are blanked before scanning.
- * "Sunbloom Draught" keeps its spelling (the item's name). "afterwards" is
- * accepted; the rules above do not flag it, but it is listed so a future
- * broader rule will not.
+ * "afterwards" is accepted; the rules above do not flag it, but it is listed
+ * so a future broader rule will not.
  */
-export const EXCEPTIONS = [/Sunbloom Draught/gi, /\bafterwards\b/gi];
+export const EXCEPTIONS = [/\bafterwards\b/gi];
 
 /** Keys whose string values are ids, refs, or machine values, not text. */
 const ID_KEYS = new Set(["id", "goto", "flag", "icon", "art", "figure", "entry", "asset_id", "itemId", "canon_id", "map", "src", "campaignId", "schema_version", "document_type", "updated"]);
 
 /** Top-level YAML keys that are guidance to authors, not game text. */
 const META_KEYS = new Set(["purpose", "agent_instructions", "controlled_values"]);
+
+/**
+ * A chapter's `resumeInteractions` are retired activities kept byte for byte
+ * for saves made before they were replaced (gemfall-story-balance.test.ts
+ * pins them), so only those old saves ever read their words.
+ */
+const RETIRED_KEYS = new Set(["resumeInteractions"]);
 
 const ID_SHAPED = /^(?:[a-z0-9_.:/#]+|[a-z]+-\d+[a-z]*)$/;
 
@@ -61,6 +76,7 @@ export function* textFields(node, path = "", key = "", topLevel = true) {
   } else if (node && typeof node === "object") {
     for (const [k, v] of Object.entries(node)) {
       if (topLevel && META_KEYS.has(k)) continue;
+      if (RETIRED_KEYS.has(k)) continue;
       yield* textFields(v, path ? `${path}.${k}` : k, k, false);
     }
   }

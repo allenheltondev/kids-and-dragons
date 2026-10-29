@@ -20,7 +20,7 @@
  * Pure: content in, sheet out. build.ts reads and writes the files.
  */
 
-import { GEMINI_VOICES } from "../bakeoff/providers.ts";
+import { GEMINI_VOICES } from "../gemini-voices.ts";
 
 /** Google's prebuilt Gemini voices: the word Google gives each, and whether it reads as a woman's or a man's voice. */
 export const GEMINI_VOICE_TRAITS: Record<string, { gender: "f" | "m"; traits: string[] }> = {
@@ -191,7 +191,7 @@ export function genderOf(entry: Pick<CastEntry, "name" | "who" | "pronouns">): "
   if (entry.pronouns?.startsWith("they")) return null;
   const text = `${entry.name} ${entry.who}`;
   const count = (re: RegExp): number => (text.match(re) ?? []).length;
-  const f = count(/\b(she|her|hers|herself|woman|girl|grandmother|granny|gran|mother|ma|madame|mrs\.?|lady|aunt|nan|queen|witch|sister|daughter|ferrywoman|elder sefa)\b/gi);
+  const f = count(/\b(she|her|hers|herself|woman|girl|grandmother|grandma|granny|gran|nana|mother|ma|madame|mrs\.?|lady|aunt|nan|queen|witch|sister|daughter|ferrywoman|elder sefa)\b/gi);
   const m = count(/\b(he|him|his|himself|man|boy|grandfather|father|mister|mr\.?|sir|lord|king|uncle|brother|son|ferryman|master)\b/gi);
   if (f > m) return "f";
   if (m > f) return "m";
@@ -241,6 +241,7 @@ export interface Speaker {
  *  - a speech tag naming someone ("…," says Pib / Pib says, "…") gives it to them;
  *  - a tag with a pronoun ("…," he croaks) gives it to whoever was named last before it;
  *  - "you say" gives it to the party;
+ *  - with no tag, an action beat just before it ("The keeper shakes her head.") gives it to the one speaker the beat is about;
  *  - a quote right after an attributed one, with no new speaker tagged between, is the same speaker's.
  * Quotes nobody can be sure of are left out.
  */
@@ -271,6 +272,31 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[]): { i
     if (pronoun) return `pronoun:${pronoun[1]!.toLowerCase()}`;
     return null;
   };
+  // An action beat: the sentence just before the quote is about one named speaker, who starts it
+  // ("The keeper shakes her head. "…""). Its she/her or he/his is that speaker's too.
+  const beatBefore = (start: number): { id: string; pronoun?: string } | null => {
+    const head = text.slice(Math.max(0, start - 200), start);
+    if (!/[.!?]["”]?\s+$/.test(head)) return null;
+    const sentence = /(?:^|[.!?]["”]?\s+)([^.!?"“”]+[.!?])\s+$/.exec(head)?.[1];
+    if (!sentence) return null;
+    let subject: { id: string } | undefined;
+    let rest = "";
+    for (const speaker of named) {
+      const at = new RegExp(`^(?:(?:the|a|an|one)\\s+)?(?:${speaker.names.join("|")})\\b`, "i").exec(sentence);
+      if (at) {
+        subject = speaker;
+        rest = sentence.slice(at[0].length);
+        break;
+      }
+    }
+    if (!subject) return null;
+    const others = named.filter((speaker) => speaker.id !== subject.id && new RegExp(`\\b(?:${speaker.names.join("|")})\\b`, "i").test(sentence));
+    if (others.length > 0) return null;
+    // Their own: "shakes her head", or a later "she"; not "reaches toward her hand", which is someone else's.
+    const own = /^\s+\w+\s+(her|his)\b/i.exec(rest)?.[1] ?? /\b(she|he)\b/i.exec(rest)?.[1];
+    const pronoun = own ? (/^(?:her|she)$/i.test(own) ? "she" : "he") : undefined;
+    return { id: subject.id, ...(pronoun ? { pronoun } : {}) };
+  };
 
   const found: { id: string; words: string; pronoun?: string }[] = [];
   let previous: { id: string; end: number } | null = null;
@@ -286,6 +312,7 @@ export function attributeQuotes(text: string, speakers: readonly Speaker[]): { i
       id = lastNamed;
       pronoun = tag.slice("pronoun:".length);
     } else if (tag !== null) id = tag;
+    else if (beatBefore(start)) ({ id, pronoun } = beatBefore(start)!);
     else if (previous !== null && start - previous.end <= 60) {
       // Untagged right after an attributed quote: theirs, unless someone new is named between.
       const between = mentions.filter((m) => m.at > previous!.end && m.at < start && m.id !== previous!.id);
@@ -386,8 +413,10 @@ export function collectCharacters(sources: Sources): Draft[] {
       const s = identity(name);
       const parts = s.split("_");
       // The chapter's own voice notes, if they are about this person: same key, or one inside the other's name.
+      // The figure names them too ("cast/nan_rummage"), and survives a rename of the display name.
       const key =
         keys.find((k) => k === s) ??
+        keys.find((k) => figures.has(`cast/${k}`)) ??
         keys.find((k) => parts.includes(k) || k.split("_").every((part) => parts.includes(part)) || (!isRoleName(name) && parts.every((part) => k.split("_").includes(part)))) ??
         keyed.find((k) => identity(nameFromNotes(k.id, k.notes)) === s)?.id;
       // Elsewhere in the game under a fuller or shorter form of the same proper name: "Madame Fenn" is "Coralie Fenn".

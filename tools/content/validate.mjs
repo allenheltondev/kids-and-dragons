@@ -43,6 +43,8 @@ import { DEED_OWNERS } from "../../packages/shared/src/types/domain.ts";
 import { BUILT_IN_ICON_IDS } from "../../packages/shared/src/icon-registry.ts";
 import { chapterLines } from "../voice/inventory.ts";
 import { scriptReport } from "../voice/script.ts";
+import { collectCharacters, voiceClashes } from "../voice/cast/sheet.ts";
+import { loadSources } from "../voice/cast/sources.ts";
 import { routeSetConflicts } from "./route-paths.mjs";
 import { classPlaceReach, classPlaceVerdict, loadAllowList as loadClassPlaceAllow } from "./class-places.mjs";
 
@@ -207,6 +209,81 @@ function validateAgainstSchema(rep, ajv, schemaName, path, data) {
 }
 
 // ----------------------------------------------------------------------------- cross-file checks
+
+/**
+ * The cast voice sheet (docs/voice-cast.md, issue #539): who speaks with which voice. Broken is
+ * a failure: a voice that is not one of Gemini's, or two speakers on one voice in a chapter
+ * (the narrator counts as in every chapter, so nobody else may have the narrator's voice). Unfinished is not:
+ * a speaker the content names who is not on the sheet yet is a warning, since casting is done
+ * by a person on the cast page and `npm run voice:cast` adds the newcomers.
+ */
+function checkVoiceCast(rep, ajv) {
+  const castPath = join(CONTENT, "voice", "cast.json");
+  console.log(`\n${BOLD}voice cast${RESET}`);
+  if (!existsSync(castPath)) {
+    rep.fail(rel(castPath), "", "the cast voice sheet is missing", "Recorded narration reads it for every line. Run `npm run voice:cast` to build it.");
+    return;
+  }
+  const sheet = readJson(rep, castPath);
+  if (!sheet || !validateAgainstSchema(rep, ajv, "voice-cast", castPath, sheet)) return;
+  const file = rel(castPath);
+  let ok = true;
+  if (sheet.speakers.narrator?.kind !== "narrator") {
+    ok = false;
+    rep.fail(file, "/speakers/narrator", "the sheet has no narrator", "One narrator voice reads every line no script gives to someone else.");
+  }
+  // Who is in which chapter comes from the content as it is now, joined to the voices on the sheet:
+  // a known speaker who walks into a new chapter must not share a voice there, even before
+  // `npm run voice:cast` refreshes the sheet's own chapter lists.
+  let drafts = null;
+  try {
+    drafts = collectCharacters(loadSources(ROOT, { canon: false }));
+  } catch (error) {
+    // Without the sources the clash check would fall back to the sheet's own, possibly stale,
+    // chapter lists: that is the gate quietly checking less, so it fails instead.
+    ok = false;
+    rep.fail(file, "", `could not read who appears where: ${String(error?.message ?? error)}`, "The cast check reads who appears in each chapter from content/chapters, as `npm run voice:cast` does.");
+  }
+  const byId = new Map((drafts ?? []).map((d) => [d.id, d]));
+  const current = {
+    ...sheet,
+    speakers: Object.fromEntries(
+      Object.entries(sheet.speakers).map(([id, entry]) => {
+        if (byId.has(id)) return [id, { ...entry, chapters: [...byId.get(id).chapters].sort() }];
+        // On the sheet but in no chapter any more (retired or renamed): kept on disk for its
+        // history, but in no chapter now, so its old voice cannot clash with anybody.
+        const speaksEverywhere = entry.kind === "narrator" || entry.kind === "party";
+        return [id, drafts === null || speaksEverywhere ? entry : { ...entry, chapters: [] }];
+      }),
+    ),
+  };
+  for (const clash of voiceClashes(current)) {
+    ok = false;
+    rep.fail(file, `/${clash.chapter}`, `${clash.speakers.join(", ")} share the voice ${clash.voice} in ${clash.chapter}`, "Two people in one chapter must sound different, and nobody may sound like the narrator: give one of them another voice on the cast page.");
+  }
+  const known = new Set(Object.keys(sheet.speakers));
+  const missing = (drafts ?? []).filter((d) => !known.has(d.id)).map((d) => d.name);
+  if (missing.length) {
+    rep.warn(`${file}: ${String(missing.length)} speaker(s) in the content are not on the sheet yet`, `Run \`npm run voice:cast\` to add them: ${missing.slice(0, 8).join(", ")}${missing.length > 8 ? ", ..." : ""}`);
+  }
+  if (ok) rep.ok(`${file}  voice cast  (${String(Object.keys(sheet.speakers).length)} speakers, no shared voices in a chapter)`);
+}
+
+/**
+ * The pronunciation lexicon (#539): how made-up words are said. A word no spoken text uses any
+ * more is only a warning; it costs nothing, but it is probably a renamed character.
+ */
+function checkLexicon(rep, ajv) {
+  const lexPath = join(CONTENT, "voice", "lexicon.json");
+  if (!existsSync(lexPath)) return;
+  const lexicon = readJson(rep, lexPath);
+  if (!lexicon || !validateAgainstSchema(rep, ajv, "voice-lexicon", lexPath, lexicon)) return;
+  const words = Object.keys(lexicon.words);
+  if (!words.length) return;
+  const corpus = [join(CONTENT, "chapters"), join(CONTENT, "campaigns")].flatMap((dir) => listJson(dir).map((f) => readFileSync(f, "utf8"))).join("\n");
+  const unused = words.filter((w) => !new RegExp(`\\b${w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`).test(corpus));
+  if (unused.length) rep.warn(`${rel(lexPath)}: ${String(unused.length)} word(s) no content says any more`, unused.join(", "));
+}
 
 /**
  * Voice scripts (docs/voice-narration-plan.md section 3): content/voice/scripts/<chapterId>.json
@@ -1725,7 +1802,7 @@ function main() {
   const ajv = new Ajv2020({ allErrors: true, strict: true, allowUnionTypes: true });
   addFormats(ajv);
 
-  for (const name of ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "voice-script"]) {
+  for (const name of ["rules", "items", "chapter", "campaign", "map", "abilities", "world", "help", "voice-script", "voice-cast", "voice-lexicon"]) {
     const path = join(SCHEMAS, `${name}.schema.json`);
     if (!existsSync(path)) {
       rep.fail(rel(path), "", "schema is missing");
@@ -1864,6 +1941,8 @@ function main() {
     chaptersById.set(chapter.id, chapter);
   }
 
+  checkVoiceCast(rep, ajv);
+  checkLexicon(rep, ajv);
   checkVoiceScripts(rep, ajv, chaptersById);
   checkFittingStall(rep, rules, chaptersById, brokenChapterIds);
   checkMatchups(rep, rules, abilities, bestiary, chaptersById);

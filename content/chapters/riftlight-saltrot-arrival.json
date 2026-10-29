@@ -440,7 +440,7 @@
     },
     "hatch_party": {
       "type": "interaction",
-      "narration": "The whole town is out in the thin sunlight, blinking, and everybody wants something at once. The families need many hands. Pick a job and do it, and do it loudly. The guide's grandmother is last through the hatch, and she is not patient.",
+      "narration": "The whole town is out in the thin sunlight, blinking, and everybody wants something at once. The families need many hands. The guide claps her fins. \"Pick a job and do it, and do it loudly.\" Her grandmother is last through the hatch, and she is not patient.",
       "interaction": {
         "kind": "play",
         "participation": "everyone",
@@ -1057,7 +1057,7 @@
     },
     "camp": {
       "type": "rest",
-      "narration": "The families of Tidepocket press a hot kelp cake into every hand. You rest on the dry top of the burrow while the tide comes in around you, silver and quiet. The fiddler crabs wave goodnight, or possibly good morning. Across the flats, two travelers wade toward you in Riftseeker clasps, one of them with far too many tails to count.",
+      "narration": "The families of Tidepocket press a hot kelp cake into every hand. The guide waves you forward. \"Diggers eat first.\" You rest on the dry top of the burrow while the tide comes in around you, silver and quiet. The fiddler crabs wave goodnight, or possibly good morning. Across the flats, two travelers wade toward you in Riftseeker clasps, one of them with far too many tails to count.",
       "heal": 2,
       "choices": [
         {
@@ -2400,7 +2400,7 @@
     },
     "flats_rest": {
       "type": "rest",
-      "narration": "You rest on the high shells above the tide line while the water goes back out. The guide scratches the day's lesson in the mud with one fin: look again. Farther along the flats, new silt is hiding old routes. When you are ready, your guide will take you to the bank of the buried bridge.",
+      "narration": "You rest on the high shells above the tide line while the water goes back out. The guide scratches the day's lesson in the mud with one fin. \"Look again,\" she says. Farther along the flats, new silt is hiding old routes. When you are ready, your guide will take you to the bank of the buried bridge.",
       "heal": 0,
       "choices": [],
       "variants": [

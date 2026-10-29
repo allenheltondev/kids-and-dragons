@@ -43,7 +43,9 @@
       "emperor",
       "Pangea"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Passing fisher": "A fisher passing along the flats. She stops to study your warning, then makes up her own mind."
+    }
   },
   "scenes": {
     "arrival": {
@@ -151,7 +153,7 @@
       },
       "onFailure": {
         "goto": "sound",
-        "narration": "One blink escaped your count. The guide will call the clear views while your party handles the rescue.",
+        "narration": "One blink escaped your count. The guide flicks a fin at the opening. \"I will call the clear views. You handle the rescue.\"",
         "effects": [
           {
             "type": "setFlag",
@@ -167,7 +169,7 @@
       },
       "onAssisted": {
         "goto": "sound",
-        "narration": "One blink escaped your count. The guide will call the clear views while your party handles the rescue.",
+        "narration": "One blink escaped your count. The guide flicks a fin at the opening. \"I will call the clear views. You handle the rescue.\"",
         "effects": [
           {
             "type": "setFlag",
@@ -400,7 +402,7 @@
     },
     "approach": {
       "type": "choice_point",
-      "narration": "The goat tries to eat the rescue line. Its front hooves are free, but the back pair are stuck. Your party can settle it with a quiet greeting, or let a songkeeper lead the calming hum while everyone readies the sling.",
+      "narration": "The goat tries to eat the rescue line. The guide tugs it back. \"Front hooves free. The back pair are stuck.\" Your party can settle it with a quiet greeting, or let a songkeeper lead the calming hum while everyone readies the sling.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -503,7 +505,7 @@
     },
     "sling": {
       "type": "interaction",
-      "narration": "The broad reed sling spreads the pull under the goat. Hold its sides while the guide slides the soft middle beneath it. Solo heroes can use her fixed poles as supports.",
+      "narration": "The broad reed sling spreads the pull under the goat. The guide crouches beside it. \"Hold the sides while I slide the soft middle under.\" Solo heroes can use her fixed poles as supports.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -535,7 +537,7 @@
     },
     "lift": {
       "type": "choice_point",
-      "narration": "The mud holds the goat like two stubborn boots. Loosen the packed rim before lifting, or ask a bigfoot to break that rim beside the hoof holes. The sling still needs a gentle, level lift either way.",
+      "narration": "The guide peers at the goat's legs. \"The mud holds that goat like two stubborn boots.\" Loosen the packed rim before lifting, or ask a bigfoot to break that rim beside the hoof holes. The sling still needs a gentle, level lift either way.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -807,7 +809,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "The guide leads you onto a raised shell bank while the goat waits safely in its sling. She opens her waterproof lunch basket: warm kelp cakes and a flask of broth. Steam curls over the shells. There is time to eat before the next crossing.",
+      "narration": "The guide leads you onto a raised shell bank while the goat waits safely in its sling. She opens her waterproof lunch basket: warm kelp cakes and a flask of broth. Steam curls over the shells. The guide pours the broth. \"There is time to eat before the next crossing.\"",
       "heal": 2,
       "choices": [
         {
@@ -827,7 +829,7 @@
     },
     "glimpse": {
       "type": "story",
-      "narration": "Through a full clear blink, a yeti herder waves from the snow. She recognizes the goat from her herd: an adult, not the kid you helped before. She clears a landing while your guide keeps everyone on the flats. The herder will receive the goat; your party will not cross.",
+      "narration": "Through a full clear blink, a yeti herder waves from the snow. She recognizes the goat from her herd: an adult, not the kid you helped before. She clears a landing while your guide keeps everyone on the flats. \"I will take the goat from here,\" the herder calls. \"You stay on the flats.\"",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1580,7 +1582,7 @@
     },
     "credit": {
       "type": "choice_point",
-      "narration": "The guide asks what the next traveler should know about your rescue. Choose a true part of the teamwork while she finishes the warning.",
+      "narration": "\"What should the next traveler know about your rescue?\" asks the guide. Choose a true part of the teamwork while she finishes the warning.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1639,13 +1641,13 @@
           "when": {
             "flag": "flats_warning_pictures"
           },
-          "text": "Your picture warning catches a passing fisher. She stops at the missing middle and chooses the marked waiting spot."
+          "text": "Your picture warning catches a passing fisher. She stops at the missing middle. \"I will wait at the marked spot, then,\" the fisher decides."
         },
         {
           "when": {
             "notFlag": "flats_warning_pictures"
           },
-          "text": "A passing fisher follows your safe-bank drawing straight to the waiting spot. The guide nods: the new marker works."
+          "text": "A passing fisher follows your safe-bank drawing straight to the waiting spot. The guide nods. \"The new marker works.\""
         }
       ]
     },

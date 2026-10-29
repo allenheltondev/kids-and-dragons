@@ -157,9 +157,9 @@ transparent background. Subject top around y90, wheel bottoms on y900 exactly, a
 props within x50..974. No ground shadow, no floor, no text, no border. Preserve
 recognizably merfolk anatomy and palette, modest clothing.
 
-### Great-Gran Ashby generation prompt
+### Great-Grandma Ashby generation prompt
 
-Use case illustration-story. NEW transparent game cast figure Great-Gran Ashby, the
+Use case illustration-story. NEW transparent game cast figure Great-Grandma Ashby, the
 oldest dragonling grandmother, same species and anatomy and green ivory scales, dark
 emerald dorsal spines, small orange membrane wings as reference dragonling. Clearly
 elderly, larger adult proportions, long kind muzzle, faded scales, gentle wrinkles,
@@ -175,7 +175,7 @@ unmistakably grandmother.
 
 Final correction, using the first generated Ashby as the edit reference:
 
-Edit Great-Gran Ashby into unmistakably an ELDER ADULT dragon grandmother. Preserve
+Edit Great-Grandma Ashby into unmistakably an ELDER ADULT dragon grandmother. Preserve
 ivory pale green spotted scales, charcoal emerald spines, orange wings, rust shawl,
 walking stick, left facing silhouette, warm hand painted style, transparency. Reduce
 head size relative to torso by about 20 percent and lengthen muzzle and neck, give
@@ -189,7 +189,7 @@ feet/stick row at y900, no shadow or floor or lettering. Keep distinct species a
 
 Anatomy correction after pilot review, using the packaged Ashby as the edit reference:
 
-Edit this existing Great-Gran Ashby dragon illustration to fix an anatomical error: she currently has FIVE legs (four planted feet plus an extra raised foreleg holding the stick). Remove the extra planted FRONT leg on the far side, the leftmost planted foot directly behind the walking stick. Keep the raised near foreleg resting on the stick, ONE planted front leg below the shoulder, and TWO planted hind legs below the hips. EXACTLY FOUR limbs total: one raised foreleg, one planted foreleg, two planted hind legs. No fifth limb, no extra paw. Fill the removed limb area with transparent background and natural torso contour. Preserve her face, elder proportions, shawl, walking stick, tail, wings, scales, left-facing pose, colors, and painted style. One complete dragon on a true transparent background, no ground shadow, no text. Square canvas with clear margins. This is a targeted anatomy correction, not a redesign.
+Edit this existing Great-Grandma Ashby dragon illustration to fix an anatomical error: she currently has FIVE legs (four planted feet plus an extra raised foreleg holding the stick). Remove the extra planted FRONT leg on the far side, the leftmost planted foot directly behind the walking stick. Keep the raised near foreleg resting on the stick, ONE planted front leg below the shoulder, and TWO planted hind legs below the hips. EXACTLY FOUR limbs total: one raised foreleg, one planted foreleg, two planted hind legs. No fifth limb, no extra paw. Fill the removed limb area with transparent background and natural torso contour. Preserve her face, elder proportions, shawl, walking stick, tail, wings, scales, left-facing pose, colors, and painted style. One complete dragon on a true transparent background, no ground shadow, no text. Square canvas with clear margins. This is a targeted anatomy correction, not a redesign.
 
 The first pilot accidentally showed four planted legs plus the raised foreleg. The
 corrected production image has exactly four legs: one raised foreleg, one planted
@@ -349,7 +349,7 @@ y.
 
 ### Grandmother Tull
 
-Revised: broad compact body silhouette and a clear mint-green dragonling coat distinguish Tull from the taller, long-necked gate-town grandmother. Great-Gran Ashby remains the deliberately faded pale elder.
+Revised: broad compact body silhouette and a clear mint-green dragonling coat distinguish Tull from the taller, long-necked gate-town grandmother. Great-Grandma Ashby remains the deliberately faded pale elder.
 
 ### Grandmother
 
@@ -440,9 +440,9 @@ NEW single game cast figure Hob Thistledown. Match the supplied species referenc
 
 Reference: `assets/entities/faun/assembled.png`.
 
-### Nan Rummage generation prompt
+### Nana Rummage generation prompt
 
-NEW single game cast figure Nan Rummage. Match the supplied species reference and its crafted painted storybook style. One older female boggart with dark olive skin, enormous pointed ears, scruffy grey-brown fur, amber eyes, patched teal clothes. Both arms cradle an untidy bundle of LOST THINGS: a pair of wool mittens, a small teapot LID, one folded UMBRELLA tucked diagonally beside shoulder fully within canvas. Kind mischievous smile. Exactly two arms and two big feet planted, no key or lantern. Complete figure three-quarter LEFT: nose and gaze point toward image left. One complete character, defining props included, relaxed noncombat pose, readable at 120px. Warm brown tapered line, controlled shading, upper-left light, family friendly. 1024x1024 RGBA with TRUE TRANSPARENCY, no ground shadow or floor, no text or border. Clear 40px margins, head top around y80 and lowest feet around y900. No cropped props or duplicate limbs.
+NEW single game cast figure Nana Rummage. Match the supplied species reference and its crafted painted storybook style. One older female boggart with dark olive skin, enormous pointed ears, scruffy grey-brown fur, amber eyes, patched teal clothes. Both arms cradle an untidy bundle of LOST THINGS: a pair of wool mittens, a small teapot LID, one folded UMBRELLA tucked diagonally beside shoulder fully within canvas. Kind mischievous smile. Exactly two arms and two big feet planted, no key or lantern. Complete figure three-quarter LEFT: nose and gaze point toward image left. One complete character, defining props included, relaxed noncombat pose, readable at 120px. Warm brown tapered line, controlled shading, upper-left light, family friendly. 1024x1024 RGBA with TRUE TRANSPARENCY, no ground shadow or floor, no text or border. Clear 40px margins, head top around y80 and lowest feet around y900. No cropped props or duplicate limbs.
 
 Reference: `assets/entities/boggart/assembled.png`.
 

@@ -227,7 +227,7 @@
       "discovers": [
         "character.manticore"
       ],
-      "narration": "A manticore elder greets you with her tail curled politely away. Somebody in a caravan faints anyway. Elder Sefa sighs. Answer the formal greeting, come home as a manticore, or let the cubs introduce you if they offered.",
+      "narration": "A manticore elder greets you with her tail curled politely away. Somebody in a caravan faints anyway. \"Every time,\" sighs Elder Sefa. \"Welcome, travelers.\" Answer the formal greeting, come home as a manticore, or let the cubs introduce you if they offered.",
       "cast": [
         {
           "figure": "cast/elder_sefa",
@@ -434,7 +434,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "At the centaur waystation, road maps are stitched onto sashes. This season every sash needs changing. A warden waves you to her table, spools in her mouth. Compare her lantern pattern, help prepare pinned clues, or pay a coin for prepared tags.",
+      "narration": "At the centaur waystation, road maps are stitched onto sashes. A warden waves you to her table, spools in her mouth. \"Tsk. Every sash needs changing this season,\" she mutters. Compare her lantern pattern, help prepare pinned clues, or pay a coin for prepared tags.",
       "cast": [
         {
           "figure": "cast/road_warden",
@@ -581,7 +581,7 @@
     },
     "rest_waystation": {
       "type": "rest",
-      "narration": "The centaurs feed you oat-cakes, wrap up a supper bundle for the road, and argue about whose stitching is neatest. The barn smells of hay and new thread. Sit a while and get your breath.",
+      "narration": "The centaurs feed you oat-cakes, wrap up a supper bundle for the road, and argue about whose stitching is neatest. \"Mine,\" says the warden with a sniff. The barn smells of hay and new thread. Sit a while and get your breath.",
       "cast": [
         {
           "figure": "cast/road_warden",
@@ -924,7 +924,7 @@
     },
     "scene_brass_rope": {
       "type": "story",
-      "narration": "Six brass hats have stretched a rope across the road. The Brassbuckle Expedition is trying a toll of its own. Ask Old Lintel's question, walk around, or ask whose road this is. The rope is not attached to anything very convincing.",
+      "narration": "Six brass hats have stretched a rope across the road. \"Brassbuckle Expedition toll,\" says the scout smoothly. \"Brand new, and very official.\" Ask Old Lintel's question, walk around, or ask whose road this is. The rope is not attached to anything very convincing.",
       "choices": [
         {
           "id": "ask_question",
@@ -960,7 +960,7 @@
     },
     "scene_brass_rope_ask_question": {
       "type": "story",
-      "narration": "\"Where did you get that rope?\" you ask. \"And where is this road going?\" The Brassbuckles look at each other. Nobody knows where the road goes. Nobody even knows where the rope came from. One of them says \"Tuesday?\" They take the sign down, quite quietly, and fold their stools.",
+      "narration": "\"Where did you get that rope?\" you ask. \"And where is this road going?\" The Brassbuckles look at each other. Nobody knows where the road goes. Nobody even knows where the rope came from. \"Tuesday?\" says the recordkeeper. They take the sign down, quite quietly, and fold their stools.",
       "choices": [
         {
           "id": "on",
@@ -1125,7 +1125,7 @@
     },
     "scene_cub_scouts": {
       "type": "story",
-      "narration": "Two rocks on the ridge are breathing. They have ears and tufted tails. Manticore cubs, pretending hard to be rocks. One giggles. Pretend not to see them, play along, or ask about the road.",
+      "narration": "Two rocks on the ridge are breathing. They have ears and tufted tails. Manticore cubs, pretending hard to be rocks. One giggles. \"We are rocks,\" it whispers. Pretend not to see them, play along, or ask about the road.",
       "cast": [
         {
           "figure": "characters/manticore",
@@ -1240,7 +1240,7 @@
     },
     "scene_granny_cake": {
       "type": "story",
-      "narration": "Granny Ash, a manticore grandmother, bars the fire with a plate of spiced grass-cake. Nobody has finished a slice. The cubs want to see if you can. Granny Ash also accepts a serious interest in her recipe.",
+      "narration": "Granny Ash, a manticore grandmother, bars the fire with a plate of spiced grass-cake. \"Nobody has ever finished a slice,\" she says proudly. The cubs want to see if you can. Granny Ash also accepts a serious interest in her recipe.",
       "cast": [
         {
           "figure": "cast/granny_ash",
@@ -1338,7 +1338,7 @@
     },
     "choice_cub_nap": {
       "type": "choice_point",
-      "narration": "Nap time. The cubs stare at your humming packs and cannot sleep. Move the packs to study the grass outside, make a soft song together, or tell Old Lintel's story. Sefa has tried counting cubs. They keep changing places.",
+      "narration": "Nap time. The cubs stare at your humming packs and cannot sleep. Move the packs to study the grass outside, make a soft song together, or tell Old Lintel's story. \"I have tried counting cubs,\" Sefa sighs. \"They keep changing places.\"",
       "cast": [
         {
           "figure": "cast/elder_sefa",

@@ -200,7 +200,7 @@
     },
     "choice_the_rule_bring_one": {
       "type": "story",
-      "narration": "You chalk BRING ONE THING TO SHARE. By noon the table holds a warden's biscuit tin, a pot of the masks' soup, a pencil, a lump of honeycomb, and a very old map nobody can read. People sit down just to see what is on it. That was the idea.",
+      "narration": "You chalk BRING ONE THING TO SHARE. By noon the table holds a warden's cookie tin, a pot of the masks' soup, a pencil, a lump of honeycomb, and a very old map nobody can read. People sit down just to see what is on it. That was the idea.",
       "choices": [
         {
           "id": "on",
@@ -453,7 +453,7 @@
       "discovers": [
         "faction.deep_hollow_cult"
       ],
-      "narration": "Up a side valley, Hessa's soup-tent people, the Deep Hollow, are humming in a ring with their painted bark masks pushed up on their heads. This is how they sing to the mountain, to wake it gently so it can fix things. Their chord is three notes long, and they do not teach it to strangers. The stones in your packs hum along anyway, as if they know the words.",
+      "narration": "Up a side valley, Hessa's soup-tent people, the Deep Hollow, are humming in a ring with their painted bark masks pushed up on their heads. This is how they sing to the mountain. \"We wake it gently, so it can fix things,\" Hessa whispers. Their chord is three notes long, and they do not teach it to strangers. The stones in your packs hum along anyway, as if they know the words.",
       "variants": [
         {
           "when": {
@@ -636,7 +636,7 @@
     },
     "scene_choir_vouch": {
       "type": "story",
-      "narration": "The grandmother hums with them. Not the chord, just a low knitting sort of hum, and the choir softens around it the way a room softens when somebody's nan comes in. \"Teach them,\" she says, and they do, slowly, three notes, until you have them.",
+      "narration": "The grandmother hums with them. Not the chord, just a low knitting sort of hum, and the choir softens around it the way a room softens when somebody's grandma comes in. \"Teach them,\" she says, and they do, slowly, three notes, until you have them.",
       "cast": [
         {
           "figure": "cast/dragonling_grandmother",
@@ -701,7 +701,7 @@
           "name": "Pellam"
         }
       ],
-      "narration": "Back at the table, it finally happens: Pellam sits down on one side, and Hessa sits down on the other. Nobody speaks. Then the ground shrugs, the sock shoots out from under the short leg, and the whole table tips toward Pellam. Hessa grabs her soup. Pellam grabs his ledger. Everyone looks at you.",
+      "narration": "Back at the table, it finally happens: Pellam sits down on one side, and Hessa sits down on the other. Nobody speaks. Then the ground shrugs, the sock shoots out from under the short leg, and the whole table tips toward Pellam. Hessa grabs her soup. Pellam grabs his ledger. \"That will need writing down,\" says Pellam. Everyone looks at you.",
       "choices": [
         {
           "id": "fix_leg",
@@ -1011,7 +1011,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "Mother Thrum, the witch from the ford queue, has come all the way up the road with a wool sock under one arm, and something in it is ringing. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
+      "narration": "Mother Thrum, the witch from the ford line, has come all the way up the road with a wool sock under one arm, and something in it is ringing. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1216,7 +1216,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "On the way back, a grandmothers' cart full of stones going home has stuck on the steep bit, and the grandmother pushing it is very small. But tomorrow is the test at the bend, and you have never held a hum still in your life. There is one afternoon left. Help with the cart, or practice?",
+      "narration": "On the way back, a grandmothers' cart full of stones going home has stuck on the steep bit, and the grandmother pushing it is very small. \"Only a little stuck, dear,\" she puffs. But tomorrow is the test at the bend, and you have never held a hum still in your life. There is one afternoon left. Help with the cart, or practice?",
       "choices": [
         {
           "id": "push",
@@ -1294,7 +1294,7 @@
           "name": "Grandmother"
         }
       ],
-      "narration": "Your bigfoot puts one enormous hand on the cart and pushes it up the hill as if it were a pram, while holding a small humming stone in the other hand and frowning at it. Halfway up, the stone goes still for half a breath. The grandmother says she has never seen anything like it, and she has seen a lot.",
+      "narration": "Your bigfoot puts one enormous hand on the cart and pushes it up the hill as if it were a stroller, while holding a small humming stone in the other hand and frowning at it. Halfway up, the stone goes still for half a breath. The grandmother says she has never seen anything like it, and she has seen a lot.",
       "choices": [
         {
           "id": "on",
@@ -2192,7 +2192,7 @@
           "name": "Pellam"
         }
       ],
-      "narration": "Before you climb, you go back down to the Pinch one last time. Your old door is still there on its two barrels, chalk and all. People are packing up and running. But somebody has to keep the table while you are up the mountain, or there will be nothing to come back to. Who?",
+      "narration": "Before you climb, you go back down to the Pinch one last time. Your old door is still there on its two barrels, chalk and all. People are packing up and running. \"Somebody has to keep the table while you are up the mountain,\" says Pellam, \"or there will be nothing to come back to.\" Who?",
       "variants": [
         {
           "when": {

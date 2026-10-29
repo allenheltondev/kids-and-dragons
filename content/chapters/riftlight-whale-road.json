@@ -252,7 +252,7 @@
     },
     "keeper_lesson": {
       "type": "choice_point",
-      "narration": "The keeper can teach a quiet note or a slow arm signal. The note lets you time an invitation when a whale faces the lane. The arm signal lets your friends hold a visible greeting while another keeper watches its response. Both leave the whale free to turn away. Which greeting will you practice?",
+      "narration": "The keeper can teach a quiet note or a slow arm signal. The note lets you time an invitation when a whale faces the lane. The arm signal lets your friends hold a visible greeting while another keeper watches its response. The keeper smiles. \"Both leave the whale free to turn away.\" Which greeting will you practice?",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -491,7 +491,7 @@
     },
     "lesson_result": {
       "type": "story",
-      "narration": "The whale resumes its circle. You have a greeting, not a leash. Olivia sketches its fin, then has to move her notebook when a rolled shelter cloth starts sliding past her hoof.",
+      "narration": "The whale resumes its circle. \"You have a greeting, not a leash,\" says the keeper. Olivia sketches its fin, then has to move her notebook when a rolled shelter cloth starts sliding past her hoof.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -514,7 +514,7 @@
     },
     "loose_kit": {
       "type": "story",
-      "narration": "Olivia catches the rolling shelter cloth against her notebook. For a moment she is a unicorn wearing a very practical curtain. The keeper helps peel it away. You have one cloth and two places that need it.",
+      "narration": "Olivia catches the rolling shelter cloth against her notebook. For a moment she is a unicorn wearing a very practical curtain. The keeper helps peel it away. \"One cloth, and two places that need it.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -646,7 +646,7 @@
     },
     "site_ready": {
       "type": "story",
-      "narration": "The keeper checks your waiting place and takes the first watch. A little whale turns toward the open lane, then hesitates as the folds pulse. Its fin stirs the empty grass. Give it room to finish that turn.",
+      "narration": "The keeper checks your waiting place and takes the first watch. A little whale turns toward the open lane, then hesitates as the folds pulse. Its fin stirs the empty grass. \"Give it room to finish that turn,\" the keeper whispers.",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -806,7 +806,7 @@
     },
     "small_whale_result": {
       "type": "rest",
-      "narration": "The small whale has room, but the whole group is still circling. The keeper brings warm barley cakes to your chosen waiting place. Olivia watches a crumb take flight, then eats the next one quickly. A new kitsune keeper arrives to take over; she needs to learn your signals before you decide about the folds.",
+      "narration": "The small whale has room, but the whole group is still circling. The keeper brings warm barley cakes to your chosen waiting place. Olivia watches a crumb take flight, then eats the next one quickly. A new kitsune keeper arrives to take over, a little out of breath. \"Show me your signals before anyone decides about the folds.\"",
       "cast": [
         {
           "figure": "cast/island_keeper",
@@ -1120,7 +1120,7 @@
         }
       ],
       "rift": "steady",
-      "narration": "The waiting rope is set. The lane is clear. Olivia looks from her notebook to the circling whales. You can finish the gentle invitation and wait for them to move, or hear her offer to wake the folds early. That shortcut would scatter the whales and disrupt the island neighbors' familiar route. Nobody else will choose for your party. What do you decide?",
+      "narration": "The waiting rope is set. The lane is clear. Olivia looks from her notebook to the circling whales. \"Waiting is so slow,\" she sighs. You can finish the gentle invitation and wait for them to move, or hear her offer to wake the folds early. That shortcut would scatter the whales and disrupt the island neighbors' familiar route. Nobody else will choose for your party. What do you decide?",
       "choices": [
         {
           "id": "guide",
@@ -1437,7 +1437,10 @@
       "Hollow Gate",
       "Legend Dragon"
     ],
-    "npcVoices": {}
+    "npcVoices": {
+      "Kitsune keeper": "Calm signal keeper of the whale road. She smooths her whiskers, counts the cloths twice, and never guesses what she cannot see.",
+      "New keeper": "A kitsune keeper who has just arrived to take over the watch. She is a little out of breath and wants to learn your signals properly."
+    }
   },
   "presentation": {
     "interactions": {

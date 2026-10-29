@@ -1,0 +1,4 @@
+{
+  "$comment": "How made-up words are said (docs/voice-narration-plan.md section 2). Each entry replaces the whole word, case as written, in what is sent to the voice model; the screen never changes. `npm run voice:lexicon` lists the names heard aloud that have no entry. Leave a word out when the model already says it right.",
+  "words": {}
+}

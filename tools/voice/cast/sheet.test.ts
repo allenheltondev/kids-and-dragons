@@ -41,6 +41,18 @@ describe("whose line is it", () => {
     expect(attributeQuotes(text, speakers).map((q) => q.id)).toEqual(["party", "pib", "pib"]);
   });
 
+  it("gives a quote after an action beat to the speaker the beat is about, with the beat's pronoun", () => {
+    expect(attributeQuotes('The Seal-Keeper shakes her head. "And travelers keep following it."', speakers)).toEqual([
+      { id: "keeper", words: "And travelers keep following it.", pronoun: "she" },
+    ]);
+    expect(attributeQuotes('Pib points at the map. "Both show the river!"', speakers)).toEqual([{ id: "pib", words: "Both show the river!" }]);
+    // "her hand" is somebody else's: the beat names whose quote it is, not whose pronoun.
+    expect(attributeQuotes('Pib reaches toward her hand. "Enough."', speakers)).toEqual([{ id: "pib", words: "Enough." }]);
+    // Two speakers in the beat, or a beat that is not about a speaker: nobody can be sure.
+    expect(attributeQuotes('Pib hands the dragon a cup. "Thank you."', speakers)).toEqual([]);
+    expect(attributeQuotes('The rain stops. "Finally."', speakers)).toEqual([]);
+  });
+
   it("leaves a quote nobody is tagged for", () => {
     expect(quotesFor('A sign says "NO MESSING." Pib shrugs.', ["Pib"])).toEqual([]);
   });
@@ -77,6 +89,17 @@ describe("who is in the game", () => {
     expect(drafts.has("seren_wisp")).toBe(true);
     // "Seren Wisp" is not Bramblewood's wisp: different campaigns, and "wisp" is what someone is, not who.
     expect([...drafts.get("wisp")!.chapters]).toEqual(["a-01"]);
+  });
+
+  it("joins a cast member to the voice notes their figure is named for, whatever the display name", () => {
+    const renamed = new Map(collectCharacters({
+      chapters: [{ id: "c-01", campaignId: "c", voiceGuide: { npcVoices: { nan_rummage: "a boggart", soup_woman: "kind, soft-spoken" } },
+        scenes: { s: { cast: [{ figure: "cast/nan_rummage", name: "Nana Rummage" }, { figure: "cast/soup_woman", name: "Marigold" }] } } }],
+      individuals: [], narration: [],
+    }).map((d) => [d.id, d]));
+    expect([...renamed.keys()].sort()).toEqual(["nan_rummage", "soup_woman"]);
+    expect(renamed.get("nan_rummage")!.name).toBe("Nana Rummage");
+    expect([...renamed.get("soup_woman")!.aliases]).toContain("Marigold");
   });
 
   it("guesses a voice's gender and size from pronouns and notes", () => {
