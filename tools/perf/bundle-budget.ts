@@ -105,7 +105,12 @@ const DIST = path.join(ROOT, "packages", "client", "dist");
 // that landed in the first paint is the `/privacy` route and the link on both
 // start screens, which has to be there before anyone joins or hosts. The page
 // itself, its words and the "what we store" text it shares are lazy chunks.
-const FIRST_PAINT_BUDGET_KB = 322;
+// 322 -> 324 for spoken names and mini-game clocks (#552, #566): 324KB measured, 322 before.
+// About 1KB is the name rewording on the `speak()` seam, which is in the entry and must say
+// "hero" before any speaker can; the other is the store recording each state's server stamp,
+// which has to see every state as it lands, before a lazy screen exists to ask. The surface
+// list, the interaction controls and their clock maths stay in lazy chunks.
+const FIRST_PAINT_BUDGET_KB = 324;
 
 /**
  * Everything, including what is lazily fetched.
@@ -135,7 +140,7 @@ const FIRST_PAINT_BUDGET_KB = 322;
 // 45KB (13KB gzipped), all lazy. The first paint did not move (320KB).
 // 1505 -> 1515 for campaign epilogues (#562): 1506KB in CI, 1507KB locally.
 // The StoryPlates reel now also plays endings, with the epilogue hook and
-// staged narration in lazy room screens. First paint keeps its 322KB cap;
+// staged narration in lazy room screens. First paint kept its 322KB cap then;
 // the paintings themselves are fetched separately and are not JavaScript.
 const TOTAL_BUDGET_KB = 1515;
 
