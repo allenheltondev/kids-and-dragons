@@ -71,7 +71,7 @@ A river drake claims a stretch of deep water the way other folk claim a trade, a
 ### For Fun
 
 - Rearranging the hoard shelf: fish bones, boat fittings, and one perfect otter-polished stone it will not discuss.
-- Timing the caravan queue from underwater and surfacing at the exact moment it is longest.
+- Timing the caravan line from underwater and surfacing at the exact moment it is longest.
 - Napping in the bridge's shadow with one eye open, which it considers being at work.
 
 ### Getting Along

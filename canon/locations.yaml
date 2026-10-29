@@ -381,7 +381,7 @@ locations:
       passage.
     common_story_uses: >-
       Blocked travel, bridge defense, rescues from the current, negotiations,
-      caravan queues, missing cargo, river creatures, and choices where every
+      caravan lines, missing cargo, river creatures, and choices where every
       traveler must pass through the same place.
     canon_constraints: >-
       Stone Crossing is a location and transition environment, not a broad
@@ -394,7 +394,7 @@ locations:
       origin: >-
         The accepted account is that the trolls built the bridge because the
         river was being unreasonable, and that the settlement is, at bottom, a
-        queue that put down roots.
+        line that put down roots.
       recorded_history: >-
         Crossing history is toll history: generations of stories, riddles, and
         promises paid at the bridge, the long riddle account with the eastern
@@ -421,7 +421,7 @@ locations:
             briefly, and has never been talked into doing it anywhere else.
         - place: biome.sunward_fields
           relationship: >-
-            The western approach is Fields country, and a long queue at the
+            The western approach is Fields country, and a long line at the
             bridge is the best market day the nearby cooperatives get.
         - place: biome.eastern_plains
           relationship: >-
@@ -429,8 +429,8 @@ locations:
             the riddle account is honored; the bridge is the seam between two
             halves of the realm, stitched daily.
       current_tensions:
-        - "Gemfall traffic has produced the longest queues in the crossing's history, and the petition for a second bridge has reached the troll, who is weighing the question aloud. Estimates for the answer run from seasons to decades."
-        - "The drake has raised its rates, citing volume. The queue's opinion of this is loud; the drake's opinion of the queue's opinion is underwater."
+        - "Gemfall traffic has produced the longest lines in the crossing's history, and the petition for a second bridge has reached the troll, who is weighing the question aloud. Estimates for the answer run from seasons to decades."
+        - "The drake has raised its rates, citing volume. The line's opinion of this is loud; the drake's opinion of the line's opinion is underwater."
       historical_hooks:
         - "The bridge's central span contains one stone that matches no local rock, and the troll, asked about it, begins the answer so slowly that no traveler has yet had time to hear the end."
         - "The sixty-year riddle on the pride account is the troll's to answer, and the troll is still weighing it, one word per season. Both ends of the bridge agree that whoever interrupts will carry the blame forever."
@@ -884,7 +884,7 @@ locations:
             contribution to the cooperatives.
         - place: location.stone_crossing
           relationship: >-
-            Bridge news arrives with every wagon, and a queue at the crossing
+            Bridge news arrives with every wagon, and a line at the crossing
             is a full inn at Bramblewood.
         - place: location.exchange
           relationship: >-
@@ -892,7 +892,7 @@ locations:
             fashion; Bramblewood sends produce, gossip with the mud still on
             it, and travelers it has already vetted.
       current_tensions:
-        - "Gemfall traffic wants through the hedges in a hurry, and the hedges do not do hurry; the inn is full, the paths are long, and the queue outside the north gap has developed its own economy."
+        - "Gemfall traffic wants through the hedges in a hurry, and the hedges do not do hurry; the inn is full, the paths are long, and the line outside the north gap has developed its own economy."
       historical_hooks:
         - "Once in the town's history the hedges opened a path straight through - both gaps, one line, no turns. Nobody now living knows for whom, and the keepers' records note only the date and, underneath, 'as agreed.'"
         - "A door-sized gap in the oldest hedge wall has been sealed with thorns as long as anyone remembers. The hedge maintains it - the way you maintain a thing you intend to use again."

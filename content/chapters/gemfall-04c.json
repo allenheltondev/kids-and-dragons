@@ -117,7 +117,7 @@
     },
     "scene_drovers_wagon": {
       "type": "story",
-      "narration": "The lead drover from the ford spots you and booms, \"Mudlarks! Up you get!\" It is what he calls everybody he likes. You ride the tailboard of a gem wagon with your legs dangling, eating dried apples, while the whole queue rolls north like one long creaking animal.",
+      "narration": "The lead drover from the ford spots you and booms, \"Mudlarks! Up you get!\" It is what he calls everybody he likes. You ride the tailboard of a gem wagon with your legs dangling, eating dried apples, while the whole line rolls north like one long creaking animal.",
       "choices": [
         {
           "id": "onward",
@@ -810,7 +810,7 @@
           "name": "Road Boss"
         }
       ],
-      "narration": "A centaur crew is moving the road around a scorched hollow. The road boss offers two jobs: help carry posts and the crew will help you through tonight's ash wind, or study the detour with her so you can bypass the confusing sign puzzle ahead. Everyone can help raise the final post.",
+      "narration": "A centaur crew is moving the road around a scorched hollow. The road boss offers two jobs: help carry posts and the crew will help you through tonight's ash wind, or study the detour with her so you can bypass the confusing sign puzzle ahead. \"Everyone helps raise the last post,\" says the road boss.",
       "choices": [
         {
           "id": "haul",
@@ -945,7 +945,7 @@
       "discovers": [
         "faction.skywardens"
       ],
-      "narration": "A Skywarden patrol has stopped the road. Sergeant Holloway wants two coins at a fixed rate for Redspire, the wardens' citadel. You can pay, argue the arithmetic, or balance the supply tray to earn passage without coins. Holloway has written WORKS INSTEAD on a spare form. It has its own box.",
+      "narration": "A Skywarden patrol has stopped the road. Sergeant Holloway wants two coins at a fixed rate for Redspire, the wardens' citadel. \"It is only arithmetic,\" he says. You can pay, argue the arithmetic, or balance the supply tray to earn passage without coins. Holloway has written WORKS INSTEAD on a spare form. It has its own box.",
       "cast": [
         {
           "figure": "cast/holloway",
@@ -1165,7 +1165,7 @@
     },
     "scene_depot": {
       "type": "story",
-      "narration": "Clerk Pennywhistle runs a depot barn full of strongboxes. Number nine rings like a dinner bell. Use Ma Ruddle's bill, make a shared claim, risk a quick Form 9, or leave the stone. The clerk has a form for deciding which form.",
+      "narration": "Clerk Pennywhistle runs a depot barn full of strongboxes. Number nine rings like a dinner bell. Use Ma Ruddle's bill, make a shared claim, risk a quick Form 9, or leave the stone. \"There is a form for deciding which form,\" the clerk says happily.",
       "choices": [
         {
           "id": "bill",
@@ -1219,7 +1219,7 @@
       },
       "onFailure": {
         "goto": "scene_box_ten",
-        "narration": "You fill in Form 9. It needed Form 7B first. Clerk Pennywhistle is very sorry. The queue behind you is not."
+        "narration": "You fill in Form 9. It needed Form 7B first. Clerk Pennywhistle is very sorry. The line behind you is not."
       },
       "art": "scenes/gemfall/rush-depot",
       "cast": [
@@ -1290,7 +1290,7 @@
         },
         {
           "id": "ford_news",
-          "label": "Tell them about the two-day queue at the ford",
+          "label": "Tell them about the two-day line at the ford",
           "icon": "drop",
           "goto": "scene_rumor_fire_ford_news",
           "requiresFlag": "forded_clean"
@@ -1336,7 +1336,7 @@
     },
     "scene_rumor_fire_ford_news": {
       "type": "story",
-      "narration": "You tell them about the two-day queue, the numbered pebbles, Burdock's goat with a bucket on her head, and the drovers singing the crossing verse. The ring gasps in all the right places. By sunset the story has gone up and down the road twice and come back with three extra goats.",
+      "narration": "You tell them about the two-day line, the numbered pebbles, Burdock's goat with a bucket on her head, and the drovers singing the crossing verse. The ring gasps in all the right places. By sunset the story has gone up and down the road twice and come back with three extra goats.",
       "choices": [
         {
           "id": "on",
@@ -1463,7 +1463,7 @@
       "discovers": [
         "npc.centaur"
       ],
-      "narration": "At the relay campfire, centaurs sing one verse per landmark. New detours mean new verses. A centaur called Old Corran offers you a line. Sing, listen, or hear the crew's verse if you helped them.",
+      "narration": "At the relay campfire, centaurs sing one verse per landmark. New detours mean new verses. A centaur called Old Corran offers you a line. \"Your turn, travelers,\" he hums. Sing, listen, or hear the crew's verse if you helped them.",
       "cast": [
         {
           "figure": "cast/old_corran",
@@ -1976,7 +1976,7 @@
     "encounter_boxes": {
       "type": "encounter",
       "map": "roadside",
-      "narration": "The two boxes crash out into the depot yard, snapping their lids and burping ink. Drive them off before they swallow the whole queue's paperwork.",
+      "narration": "The two boxes crash out into the depot yard, snapping their lids and burping ink. Drive them off before they swallow the whole line's paperwork.",
       "enemies": [
         {
           "id": "box",
@@ -2026,7 +2026,7 @@
     },
     "scene_boxes_sulking": {
       "type": "story",
-      "narration": "The boxes burp you out in a puff of ink. Pennywhistle slams a ledger on their lids. The queue sits on it until they shuffle away. Hot tea follows. No lost-property whistle this time.",
+      "narration": "The boxes burp you out in a puff of ink. Pennywhistle slams a ledger on their lids. The line sits on it until they shuffle away. Hot tea follows. No lost-property whistle this time.",
       "cast": [
         {
           "figure": "cast/clerk_pennywhistle",

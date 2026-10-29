@@ -743,7 +743,7 @@
           ],
           "introduces": {
             "footprints": "deep footprints",
-            "sledge_tracks": "A broad wooden sledge"
+            "sledge_tracks": "A broad wooden sled"
           }
         },
         "mend": {
@@ -803,7 +803,7 @@
           ],
           "introduces": {
             "herder": "A yeti herder",
-            "sledge": "an empty sledge"
+            "sledge": "an empty sled"
           },
           "conditional": [
             {
@@ -1415,7 +1415,7 @@
           "introduces": {
             "riftseekers": "Riftseekers",
             "rifts": "these openings rifts",
-            "trav_sledge": "travelers' sledge"
+            "trav_sledge": "travelers' sled"
           }
         },
         "sledge_lift": {

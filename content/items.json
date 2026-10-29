@@ -33,7 +33,7 @@
   "sunbloom_draught": {
     "kind": "consumable",
     "icon": "potion",
-    "name": "Sunbloom Draught",
+    "name": "Sunbloom Potion",
     "text": "Heal 4 HP.",
     "effect": {
       "type": "heal",

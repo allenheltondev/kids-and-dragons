@@ -266,11 +266,13 @@ who, write the `{party}` token and let the engine count: "The gate opens for {pa
 mid-sentence.
 
 Spell everything players read in US English: color, favorite, harbor, neighbor, center, gray,
-traveled, realize, defense, catalog, mom, while, among, cozy. `spelling.test.mjs` scans the
-text of every chapter, the generated content JSON, and the canon YAML, and fails with the file,
-line, field, and the US spelling to use. It reads text, not ids, so `scene_harbor_wall` style
-ids may spell anything. Two documented exceptions: the "Sunbloom Draught" keeps its name, and
-"afterwards" is accepted. The word list and exceptions live in `tools/content/spelling-lint.mjs`.
+traveled, realize, defense, catalog, mom, while, among, cozy. Use the American word too: a
+line (never a queue), a sled, glasses, a potion, a beet, a stroller, braided, sassy; a grandmother
+is Grandma or Nana, and things go around, not round. `spelling.test.mjs` scans the text of every
+chapter, the generated content JSON, and the canon YAML, and fails with the file, line, field,
+and the US word to use. It reads text, not ids, so `scene_queue` and `scene_harbour_wall` style
+ids may spell anything. "afterwards" is accepted. The word list and exceptions live in
+`tools/content/spelling-lint.mjs`.
 
 ### Priority scenes
 

@@ -11,7 +11,7 @@
   "entry": "map",
   "plate": {
     "art": "plates/riftlight/riftseekers-departure",
-    "narration": "Outside the singing hall, packs rest beside a waiting sledge. Beyond its sheltered ledge, white paths disappear between the peaks. There is room on the map for more than one road."
+    "narration": "Outside the singing hall, packs rest beside a waiting sled. Beyond its sheltered ledge, white paths disappear between the peaks. There is room on the map for more than one road."
   },
   "goal": {
     "text": "Meet the travelers and get ready for the road ahead.",
@@ -124,24 +124,24 @@
     },
     "fellowship": {
       "type": "choice_point",
-      "narration": "\"Riftseekers,\" says Orin, touching the broken-circle clasp on his cloak. \"We call these openings rifts. We follow them and write down what they do.\" \"Some of us would like to do more than write,\" says Lady Olivia. Seren closes her ring case. \"Some of us would like to arrive with all our luggage.\" Beside them, the travelers' sledge leans like a sleepy goat. Orin frowns at it. \"We leave when it stops leaning. Hands would help.\"",
+      "narration": "\"Riftseekers,\" says Orin, touching the broken-circle clasp on his cloak. \"We call these openings rifts. We follow them and write down what they do.\" \"Some of us would like to do more than write,\" says Lady Olivia. Seren closes her ring case. \"Some of us would like to arrive with all our luggage.\" Beside them, the travelers' sled leans like a sleepy goat. Orin frowns at it. \"We leave when it stops leaning. Hands would help.\"",
       "choices": [
         {
           "id": "lift",
-          "label": "Lift the trunks onto the sledge together",
+          "label": "Lift the trunks onto the sled together",
           "icon": "might",
           "goto": "sledge_lift"
         },
         {
           "id": "brace",
-          "label": "Use brace to hold the leaning sledge steady",
+          "label": "Use brace to hold the leaning sled steady",
           "icon": "shield",
           "goto": "sledge_brace",
           "requiresClass": "thornguard"
         },
         {
           "id": "smash",
-          "label": "Smash the ice off the sledge runners",
+          "label": "Smash the ice off the sled runners",
           "icon": "fist",
           "goto": "sledge_smash",
           "requiresSpecies": "bigfoot"
@@ -168,13 +168,13 @@
       "narration": "Four trunks, three sacks, a crate of notebooks and a barrel that sloshes. Olivia points with one hoof. \"Heavy things low, light things high.\" Orin has drawn a diagram on his sleeve. \"Hand to hand,\" he says. \"Nobody carries the whole pile.\"",
       "interaction": {
         "kind": "relay",
-        "cue": "Catch each trunk and pass it along to the sledge.",
+        "cue": "Catch each trunk and pass it along to the sled.",
         "actionLabel": "Pass the trunk",
         "objectLabel": "a heavy trunk"
       },
       "onSuccess": {
         "goto": "ring_sort",
-        "narration": "Up it all goes, hand to hand. The sledge stops leaning and sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
+        "narration": "Up it all goes, hand to hand. The sled stops leaning and sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
         "effects": [
           {
             "type": "grantItem",
@@ -185,7 +185,7 @@
       },
       "onFailure": {
         "goto": "ring_sort",
-        "narration": "The barrel goes up faster than the trunks, and everything meets in the middle. A sack of oats bursts. Olivia hops over it with great dignity. You restack the load, but the sledge keeps its lean.",
+        "narration": "The barrel goes up faster than the trunks, and everything meets in the middle. A sack of oats bursts. Olivia hops over it with great dignity. You restack the load, but the sled keeps its lean.",
         "effects": [
           {
             "type": "setFlag",
@@ -195,7 +195,7 @@
       },
       "onAssisted": {
         "goto": "ring_sort",
-        "narration": "Orin steadies the chain with a long pole, and the trunks glide along. The sledge sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
+        "narration": "Orin steadies the chain with a long pole, and the trunks glide along. The sled sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
         "effects": [
           {
             "type": "grantItem",
@@ -221,11 +221,11 @@
       "stat": "might",
       "tn": 8,
       "roller": "best",
-      "narration": "Brace is a stout sort of magic: plant your feet and become a wall. You set a shoulder to the sledge while the others lift.",
-      "prompt": "Hold the sledge steady while the heavy trunks go on.",
+      "narration": "Brace is a stout sort of magic: plant your feet and become a wall. You set a shoulder to the sled while the others lift.",
+      "prompt": "Hold the sled steady while the heavy trunks go on.",
       "onSuccess": {
         "goto": "ring_sort",
-        "narration": "Not one runner wobbles. The trunks settle in with soft thumps, and the sledge sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
+        "narration": "Not one runner wobbles. The trunks settle in with soft thumps, and the sled sits level as a loaf. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
         "effects": [
           {
             "type": "grantItem",
@@ -236,7 +236,7 @@
       },
       "onFailure": {
         "goto": "ring_sort",
-        "narration": "The barrel goes up faster than the trunks, and everything meets in the middle. A sack of oats bursts. Olivia hops over it with great dignity. You restack the load, but the sledge keeps its lean.",
+        "narration": "The barrel goes up faster than the trunks, and everything meets in the middle. A sack of oats bursts. Olivia hops over it with great dignity. You restack the load, but the sled keeps its lean.",
         "effects": [
           {
             "type": "setFlag",
@@ -260,11 +260,11 @@
         "force"
       ],
       "roller": "best",
-      "narration": "A crust of old ice holds the sledge runners like a hand. Smash is a good answer to a crust.",
-      "prompt": "Smash the ice off the runners, then shove the sledge level.",
+      "narration": "A crust of old ice holds the sled runners like a hand. Smash is a good answer to a crust.",
+      "prompt": "Smash the ice off the runners, then shove the sled level.",
       "onSuccess": {
         "goto": "ring_sort",
-        "narration": "Crack! The ice flies off in a shower of glitter, and the sledge rocks upright. Everyone pats the trunks into place. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
+        "narration": "Crack! The ice flies off in a shower of glitter, and the sled rocks upright. Everyone pats the trunks into place. Olivia lifts the lid of a small clay jar to check it. \"Mosslight, for the road. You earned it.\" The moss inside glows like a sleepy star.",
         "effects": [
           {
             "type": "grantItem",
@@ -275,7 +275,7 @@
       },
       "onFailure": {
         "goto": "ring_sort",
-        "narration": "The barrel goes up faster than the trunks, and everything meets in the middle. A sack of oats bursts. Olivia hops over it with great dignity. You restack the load, but the sledge keeps its lean.",
+        "narration": "The barrel goes up faster than the trunks, and everything meets in the middle. A sack of oats bursts. Olivia hops over it with great dignity. You restack the load, but the sled keeps its lean.",
         "effects": [
           {
             "type": "setFlag",
@@ -352,7 +352,7 @@
     },
     "seren": {
       "type": "story",
-      "narration": "Seren asks where the opening appeared and how long it lasted. She listens without interrupting. Orin rolls the map around a wooden rod so nobody can stand on it again.",
+      "narration": "\"Where did the opening appear, and how long did it last?\" Seren asks. She listens without interrupting. Orin rolls the map around a wooden rod so nobody can stand on it again.",
       "choices": [
         {
           "id": "continue",
@@ -498,11 +498,11 @@
     },
     "help_now": {
       "type": "story",
-      "narration": "Olivia takes a supper bundle from her pack and calls the herder over. \"This much can go by hand.\" Orin makes room for it on the sledge. \"And we can learn the route before we send more.\" Seren nods to you. \"A useful place to begin.\"",
+      "narration": "Olivia takes a supper bundle from her pack and calls the herder over. \"This much can go by hand.\" Orin makes room for it on the sled. \"And we can learn the route before we send more.\" Seren nods to you. \"A useful place to begin.\"",
       "choices": [
         {
           "id": "continue",
-          "label": "Pull the sledge to the herder's tent",
+          "label": "Pull the sled to the herder's tent",
           "icon": "hand",
           "goto": "haul_supper"
         }
@@ -567,11 +567,11 @@
       "stat": "quick",
       "tn": 8,
       "roller": "party",
-      "narration": "The herder's tent stands across a yard of slick, packed ice. The supper has to get there warm, and the sledge has to get there upright.",
-      "prompt": "Steer the sledge around the slick patches to the herder's tent.",
+      "narration": "The herder's tent stands across a yard of slick, packed ice. The supper has to get there warm, and the sled has to get there upright.",
+      "prompt": "Steer the sled around the slick patches to the herder's tent.",
       "onSuccess": {
         "goto": "route",
-        "narration": "The sledge glides like a duck on a pond. The herder lifts the lid, sniffs, and closes her eyes. \"Warm.\" Orin taps a flat tin on his belt, the Riftseekers' helper fund. \"Everyone who hauls gets paid.\" Four coins clink into your hands, and the herder slips you a honeycake too.",
+        "narration": "The sled glides like a duck on a pond. The herder lifts the lid, sniffs, and closes her eyes. \"Warm.\" Orin taps a flat tin on his belt, the Riftseekers' helper fund. \"Everyone who hauls gets paid.\" Four coins clink into your hands, and the herder slips you a honeycake too.",
         "effects": [
           {
             "type": "grantCoins",
@@ -586,7 +586,7 @@
       },
       "onFailure": {
         "goto": "route",
-        "narration": "The sledge hits glare ice and spins once, slowly, with everyone's dignity. The supper arrives a little shaken, and the goats rush over to check it. The herder laughs into her sleeve. Orin counts two coins from a flat tin, the Riftseekers' helper fund. \"For effort.\"",
+        "narration": "The sled hits glare ice and spins once, slowly, with everyone's dignity. The supper arrives a little shaken, and the goats rush over to check it. The herder laughs into her sleeve. Orin counts two coins from a flat tin, the Riftseekers' helper fund. \"For effort.\"",
         "effects": [
           {
             "type": "grantCoins",
@@ -782,7 +782,7 @@
     },
     "sketch": {
       "type": "choice_point",
-      "narration": "Orin unrolls his map beside the sledge and hands you his pencil. \"Draw what you saw,\" he says. \"Maps are made by whoever looked last.\" Seren props a corner with a rock. What do you add?",
+      "narration": "Orin unrolls his map beside the sled and hands you his pencil. \"Draw what you saw,\" he says. \"Maps are made by whoever looked last.\" Seren props a corner with a rock. What do you add?",
       "choices": [
         {
           "id": "shelf",
@@ -897,13 +897,13 @@
       "stat": "quick",
       "tn": 8,
       "roller": "all",
-      "narration": "The gust arrives, cold and rude. It slides under the sledge cover and lifts it like a big white sail.",
+      "narration": "The gust arrives, cold and rude. It slides under the sled cover and lifts it high. \"Our cover thinks it is a sail!\" shouts Olivia.",
       "variants": [
         {
           "when": {
             "flag": "sledge_leans"
           },
-          "text": " The leaning sledge catches the wind like a sail, too."
+          "text": " The leaning sled catches the wind like a sail, too."
         }
       ],
       "prompt": "Everyone grab a corner and tie the cover down before it flies!",
@@ -934,7 +934,7 @@
     "tea": {
       "type": "rest",
       "heal": 2,
-      "narration": "Seren builds a small stove from a tin and a candle in the lee of the sledge. Steam fogs Orin's spectacles at once. He leaves them fogged. \"Hands first,\" says Seren. \"Questions after.\" You sit in a row on the trunks. Whose story do you ask for while the tea warms?",
+      "narration": "Seren builds a small stove from a tin and a candle in the lee of the sled. Steam fogs Orin's glasses at once. He leaves them fogged. \"Hands first,\" says Seren. \"Questions after.\" You sit in a row on the trunks. Whose story do you ask for while the tea warms?",
       "choices": [
         {
           "id": "seren",
@@ -1005,7 +1005,7 @@
     },
     "supplies": {
       "type": "choice_point",
-      "narration": "Seren props open the lid of a battered tin on the sledge. Inside lie spare things for the road: a coil of cord, a very small spoon, and a brass whistle on a loop. \"Fair swaps,\" she says. \"A brave whistle costs three coins.\" Behind the sledge, the herder's goats are chewing the tow rope again, and they look hungry. What do you do with your last minutes here?",
+      "narration": "Seren props open the lid of a battered tin on the sled. Inside lie spare things for the road: a coil of cord, a very small spoon, and a brass whistle on a loop. \"Fair swaps,\" she says. \"A brave whistle costs three coins.\" Behind the sled, the herder's goats are chewing the tow rope again, and they look hungry. What do you do with your last minutes here?",
       "choices": [
         {
           "id": "buy",
@@ -1050,13 +1050,13 @@
         },
         {
           "id": "tighten",
-          "label": "Tighten every knot on the sledge ropes",
+          "label": "Tighten every knot on the sled ropes",
           "icon": "hand",
           "goto": "supplies_tight"
         },
         {
           "id": "oil",
-          "label": "Rub tallow on the sledge runners",
+          "label": "Rub tallow on the sled runners",
           "icon": "hand",
           "goto": "supplies_oil"
         }
@@ -1131,7 +1131,7 @@
     },
     "supplies_tight": {
       "type": "story",
-      "narration": "You check every knot twice and tug the lashings tight. The sledge stops creaking. Seren nods at the ropes. \"The best spare is a good knot.\"",
+      "narration": "You check every knot twice and tug the lashings tight. The sled stops creaking. Seren nods at the ropes. \"The best spare is a good knot.\"",
       "choices": [
         {
           "id": "continue",
@@ -1150,7 +1150,7 @@
     },
     "supplies_oil": {
       "type": "story",
-      "narration": "The tallow smells like warm candles. You rub it into the runners until they shine. The sledge slides forward at a nudge, and Olivia has to catch it by the tail.",
+      "narration": "The tallow smells like warm candles. You rub it into the runners until they shine. The sled slides forward at a nudge, and Olivia has to catch it by the tail.",
       "choices": [
         {
           "id": "continue",
@@ -1194,7 +1194,7 @@
     },
     "test_chime": {
       "type": "choice_point",
-      "narration": "The Listening Chime hangs from a short cord. It is light enough to carry in one hand. Orin holds his bag open while you decide how to test it.",
+      "narration": "The Listening Chime hangs from a short cord. It is light enough to carry in one hand. Orin holds his bag open. \"How would you test it?\" he asks.",
       "choices": [
         {
           "id": "ring",
@@ -1491,7 +1491,7 @@
     },
     "trial_echo": {
       "type": "interaction",
-      "narration": "Seren holds up one paw, and the blanket goes still. She taps the three rings in a pattern, slow and clear. Orin leans in. Olivia stops breathing, which for Olivia is a lot.",
+      "narration": "\"Listen,\" says Seren, holding up one paw, and the blanket goes still. She taps the three rings in a pattern, slow and clear. Orin leans in. Olivia stops breathing, which for Olivia is a lot.",
       "interaction": {
         "kind": "memory",
         "cue": "Watch Seren tap the rings, then tap the same rings in the same order.",
@@ -1578,7 +1578,7 @@
     },
     "prep": {
       "type": "choice_point",
-      "narration": "The sledge is packed. The practice is done. Orin taps the ice shelf on the rolled-up map. Seren glances back at the singing hall. \"Two roads are worth walking ready,\" she says. \"The shelf toward the Cairnstep, with food for the herd, or the glacier, looking for openings. There is also the long bank road to Ashspan Bridge, if you would rather stay off the ice.\" Which road do you get ready for?",
+      "narration": "The sled is packed. The practice is done. Orin taps the ice shelf on the rolled-up map. Seren glances back at the singing hall. \"Two roads are worth walking ready,\" she says. \"The shelf toward the Cairnstep, with food for the herd, or the glacier, looking for openings. There is also the long bank road to Ashspan Bridge, if you would rather stay off the ice.\" Which road do you get ready for?",
       "choices": [
         {
           "id": "ice",
@@ -1734,7 +1734,7 @@
       ]
     },
     "prep_dash": {
-      "narration": "A duskrunner's feet know the quiet way. One of you takes off along the bank road, light and fast, while the others watch from the sledge. You come back breathless, with the road clear in your head: no gaps, no drifts, only a goat on a rock. Orin writes down \"goat on rock.\"",
+      "narration": "A duskrunner's feet know the quiet way. One of you takes off along the bank road, light and fast, while the others watch from the sled. You come back breathless, with the road clear in your head: no gaps, no drifts, only a goat on a rock. Orin writes down \"goat on rock.\"",
       "cast": [
         {
           "figure": "cast/orin_vale",
@@ -1778,7 +1778,7 @@
           "when": {
             "flag": "sledge_leans"
           },
-          "text": " The sledge still leans a little. Olivia pats it. \"Character,\" she says."
+          "text": " The sled still leans a little. Olivia pats it. \"Character,\" she says."
         }
       ],
       "cast": [
@@ -1799,7 +1799,7 @@
     },
     "camp_play": {
       "type": "interaction",
-      "narration": "The Riftseekers are gone down the path. The herder's goats wander over to the sledge, and the yetis lean out of the hall door. Nobody says goodbye to a road without a proper send-off.",
+      "narration": "The Riftseekers are gone down the path. The herder's goats wander over to the sled, and the yetis lean out of the hall door. \"Nobody leaves a road without a real send-off,\" says the herder.",
       "interaction": {
         "kind": "play",
         "cue": "Give the goats and the hall a proper send-off.",

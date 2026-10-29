@@ -16,7 +16,7 @@ regional_relationships:
   - id: location.stone_crossing
     title: "Stone Crossing"
     url: "/locations/stone_crossing/"
-    relationship: "The eastern gate: everything bound over the river queues at the bridge, and a bad week at the crossing is a fine week for every wayside pie stand in the southern Fields."
+    relationship: "The eastern gate: everything bound over the river lines up at the bridge, and a bad week at the crossing is a fine week for every wayside pie stand in the southern Fields."
   - id: location.bramblewood
     title: "Bramblewood"
     url: "/locations/bramblewood/"
@@ -158,7 +158,7 @@ The accepted account is that the river made the Fields and the fauns merely nego
 
 ### Recorded History
 
-The Fields' history is a festival calendar with the history attached: every flood, drought, and triumphant beetroot is remembered as the festival founded about it. The cooperatives are older than money and keep their records in song, pie, and extremely durable grudges about weather.
+The Fields' history is a festival calendar with the history attached: every flood, drought, and triumphant beet is remembered as the festival founded about it. The cooperatives are older than money and keep their records in song, pie, and extremely durable grudges about weather.
 
 ### Cultural Significance
 
@@ -183,7 +183,7 @@ The realm eats because the Fields work. Every region knows it, the Fields never 
 ### Neighbors
 
 - **[The Exchange](/locations/exchange/)**: The harvest road ends at the city's markets, and the city's appetite sets the Fields' spring planting. Each privately believes it is feeding the other.
-- **[Stone Crossing](/locations/stone_crossing/)**: The eastern gate: everything bound over the river queues at the bridge, and a bad week at the crossing is a fine week for every wayside pie stand in the southern Fields.
+- **[Stone Crossing](/locations/stone_crossing/)**: The eastern gate: everything bound over the river lines up at the bridge, and a bad week at the crossing is a fine week for every wayside pie stand in the southern Fields.
 - **[Bramblewood](/locations/bramblewood/)**: The far waystop, first to hear eastern news; the hedges decide who arrives, and the Fields have learned to trust the hedges' taste.
 - **[Whispering Marsh](/biomes/whispering_marsh/)**: The Fields' ditches borrow the water and the marsh keeps the ledger; the two settle accounts through the frogfolk every dry year, and have never once been overdrawn.
 
@@ -227,7 +227,7 @@ The realm eats because the Fields work. Every region knows it, the Fields never 
 - [Hearthstone Bead](/items/hearthstone_bead/) `Found In`
 - [Honeycake](/items/honeycake/) `Found In`
 - [Songbird Ribbon](/items/songbird_ribbon/) `Found In`
-- [Sunbloom Draught](/items/sunbloom_draught/) `Found In`
+- [Sunbloom Potion](/items/sunbloom_draught/) `Found In`
 
 ### Locations
 - [Bramblewood](/locations/bramblewood/) `Locations` `Biome`

@@ -324,7 +324,7 @@
       "discovers": [
         "npc.boggart"
       ],
-      "narration": "A boggart called Nan Rummage sorts lost things on an island: mittens, umbrellas, a teapot lid. A bag hums in her lap. \"Trade, maybe,\" she tells a mitten. She wants an unusual sound, if you can work out which one.",
+      "narration": "A boggart called Nana Rummage sorts lost things on an island: mittens, umbrellas, a teapot lid. A bag hums in her lap. \"Trade, maybe,\" she tells a mitten. She wants an unusual sound, if you can work out which one.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -333,7 +333,7 @@
         },
         {
           "figure": "cast/nan_rummage",
-          "name": "Nan Rummage",
+          "name": "Nana Rummage",
           "size": "small"
         }
       ],
@@ -364,7 +364,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Poke through her piles and find the one lost thing Nan Rummage hasn't got",
+      "prompt": "Poke through her piles and find the one lost thing Nana Rummage hasn't got",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -373,7 +373,7 @@
         },
         {
           "figure": "cast/nan_rummage",
-          "name": "Nan Rummage",
+          "name": "Nana Rummage",
           "size": "small"
         }
       ],
@@ -397,7 +397,7 @@
     "scene_boggart_clue": {
       "type": "story",
       "priority": 1,
-      "narration": "Nan opens her bag. A gem chip hums one low note. \"Like the old Gate in the still water,\" she tells a teapot lid. \"The Hollow Gate. Exactly the same.\" Then, to an umbrella: \"Not that I said.\"",
+      "narration": "Nana opens her bag. A gem chip hums one low note. \"Like the old Gate in the still water,\" she tells a teapot lid. \"The Hollow Gate. Exactly the same.\" Then, to an umbrella: \"Not that I said.\"",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -406,7 +406,7 @@
         },
         {
           "figure": "cast/nan_rummage",
-          "name": "Nan Rummage",
+          "name": "Nana Rummage",
           "size": "small"
         }
       ],
@@ -454,7 +454,7 @@
     },
     "scene_boggart_clue_thanks": {
       "type": "story",
-      "narration": "\"Thank you,\" you tell the nearest umbrella, very politely. Nan Rummage is so pleased she nearly looks at you. She tucks a teapot lid under your arm \"for the road\", changes her mind, and takes it back. That is how boggarts say goodbye. Gullet pushes off from the island, humming.",
+      "narration": "\"Thank you,\" you tell the nearest umbrella, very politely. Nana Rummage is so pleased she nearly looks at you. She tucks a teapot lid under your arm \"for the road\", changes her mind, and takes it back. That is how boggarts say goodbye. Gullet pushes off from the island, humming.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -463,7 +463,7 @@
         },
         {
           "figure": "cast/nan_rummage",
-          "name": "Nan Rummage",
+          "name": "Nana Rummage",
           "size": "small"
         }
       ],
@@ -478,7 +478,7 @@
     },
     "scene_boggart_clue_where": {
       "type": "story",
-      "narration": "You ask where the hum is loudest. Nan answers the mitten instead. \"Barges are very convenient this season,\" she tells it. \"Abandoned ones. Just sitting there. Gem on the deck. Very, very convenient.\" She gives the mitten a long look. The mitten, wisely, says nothing. Gullet pushes off, and everybody tries to work out what she meant.",
+      "narration": "You ask where the hum is loudest. Nana answers the mitten instead. \"Barges are very convenient this season,\" she tells it. \"Abandoned ones. Just sitting there. Gem on the deck. Very, very convenient.\" She gives the mitten a long look. The mitten, wisely, says nothing. Gullet pushes off, and everybody tries to work out what she meant.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -487,7 +487,7 @@
         },
         {
           "figure": "cast/nan_rummage",
-          "name": "Nan Rummage",
+          "name": "Nana Rummage",
           "size": "small"
         }
       ],
@@ -502,7 +502,7 @@
     },
     "scene_boggart_clue_lost": {
       "type": "story",
-      "narration": "Nan tells the teapot lid what she found: umbrellas, a brown hat, and three prospectors. \"Barge spat them out. Sitting north of here on a tussock. Too loud for my collection.\"",
+      "narration": "Nana tells the teapot lid what she found: umbrellas, a brown hat, and three prospectors. \"Barge spat them out. Sitting north of here on a tussock. Too loud for my collection.\"",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -511,7 +511,7 @@
         },
         {
           "figure": "cast/nan_rummage",
-          "name": "Nan Rummage",
+          "name": "Nana Rummage",
           "size": "small"
         }
       ],
@@ -663,7 +663,7 @@
     },
     "scene_barge": {
       "type": "story",
-      "narration": "A barge sits in the reeds. ABANDONED, says its very helpful sign. One gem hums on deck. Prospector footprints lead toward it. None come back. Gullet stops an arm's length from the bank.",
+      "narration": "A barge sits in the reeds. ABANDONED, says its very helpful sign. One gem hums on deck. Prospector footprints lead toward it. None come back. Gullet stops an arm's length from the bank and hums, \"That is certainly a barge.\"",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -705,7 +705,7 @@
         },
         {
           "id": "convenient",
-          "label": "Say \"very convenient\" out loud, like Nan did",
+          "label": "Say \"very convenient\" out loud, like Nana did",
           "icon": "note",
           "requiresFlag": "nan_hinted_barge",
           "goto": "scene_barge_convenient",
@@ -724,7 +724,7 @@
       "discovers": [
         "creature.mire_mimic"
       ],
-      "narration": "\"Very convenient,\" you say loudly, the way Nan said it to her mitten. \"An abandoned barge. With one gem on it. Very, very convenient.\" The barge goes stiff. One of its barnacles blinks. Then the whole thing sighs, unfolds into a long, muddy, deeply embarrassed mire mimic, and slides away into the reeds.",
+      "narration": "\"Very convenient,\" you say loudly, the way Nana said it to her mitten. \"An abandoned barge. With one gem on it. Very, very convenient.\" The barge goes stiff. One of its barnacles blinks. Then the whole thing sighs, unfolds into a long, muddy, deeply embarrassed mire mimic, and slides away into the reeds.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -950,7 +950,7 @@
     },
     "rest_reed_raft": {
       "type": "rest",
-      "narration": "Gullet ties her raft to a lantern pole and fries duckweed fritters on a flat hot stone. They taste like crunchy pond, which is better than it sounds. Rest a while. The fog is coming in, thick as porridge, and Gullet keeps glancing at it the way you glance at a dog that might be about to sneeze.",
+      "narration": "Gullet ties her raft to a lantern pole and fries duckweed fritters on a flat hot stone. They taste like crunchy pond, which is better than it sounds. \"Rest a while,\" Gullet hums. The fog is coming in, thick as porridge, and Gullet keeps glancing at it the way you glance at a dog that might be about to sneeze.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1014,7 +1014,7 @@
     },
     "scene_fog_bank": {
       "type": "story",
-      "narration": "Fog hides the channel fork and its stumps. Gullet needs a direction. Follow a gap from the bow to check a broad landing, risk the high pole, or steer by the bells behind you. A mosslight jar can reveal the landing too.",
+      "narration": "Fog hides the channel fork and its stumps. \"Which way, then?\" Gullet asks, humming. Follow a gap from the bow to check a broad landing, risk the high pole, or steer by the bells behind you. A mosslight jar can reveal the landing too.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1166,7 +1166,7 @@
         },
         {
           "id": "nan",
-          "label": "Tell them Nan Rummage has their hat",
+          "label": "Tell them Nana Rummage has their hat",
           "icon": "heart",
           "requiresFlag": "heard_of_prospectors",
           "goto": "scene_tussock_nan",
@@ -1236,7 +1236,7 @@
     },
     "scene_tussock_nan": {
       "type": "story",
-      "narration": "\"Nan Rummage has your hat,\" you say. \"Brown, with a buckle.\" The tallest prospector gasps. \"My good hat?\" Gullet sighs a long sigh and poles all three back to the boggart's island, where Nan hands the hat over, very slowly, to an umbrella. Then Gullet drops them at a landing with a path toward the northeast roads, and they wave the hat at you in turns.",
+      "narration": "\"Nana Rummage has your hat,\" you say. \"Brown, with a buckle.\" The tallest prospector gasps. \"My good hat?\" Gullet sighs a long sigh and poles all three back to the boggart's island, where Nana hands the hat over, very slowly, to an umbrella. Then Gullet drops them at a landing with a path toward the northeast roads, and they wave the hat at you in turns.",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -1661,11 +1661,11 @@
     },
     "scene_nan_washtub": {
       "type": "story",
-      "narration": "Nan rows a washtub toward you with a soup ladle. \"Lost things drift here. More lately,\" she tells it. She fishes out a spoon and a surprised fish, puts the fish back, and waits for your question.",
+      "narration": "Nana rows a washtub toward you with a soup ladle. \"Lost things drift here. More lately,\" she tells it. She fishes out a spoon and a surprised fish, puts the fish back, and waits for your question.",
       "cast": [
         {
           "figure": "cast/nan_rummage",
-          "name": "Nan Rummage",
+          "name": "Nana Rummage",
           "size": "small"
         }
       ],
@@ -1687,11 +1687,11 @@
     },
     "scene_nan_washtub_north": {
       "type": "story",
-      "narration": "\"The trees keep lost things too,\" Nan tells the ladle. \"Not mittens. Humming things.\" She sniffs at their poor taste, then rows backward into the fog.",
+      "narration": "\"The trees keep lost things too,\" Nana tells the ladle. \"Not mittens. Humming things.\" She sniffs at their poor taste, then rows backward into the fog.",
       "cast": [
         {
           "figure": "cast/nan_rummage",
-          "name": "Nan Rummage",
+          "name": "Nana Rummage",
           "size": "small"
         }
       ],
@@ -1707,11 +1707,11 @@
     },
     "scene_nan_washtub_road": {
       "type": "story",
-      "narration": "\"Everybody on the roads is going the same way,\" Nan tells a spoon. \"None knows they are lost. Lovely and loud, though.\" She rows backward into the fog.",
+      "narration": "\"Everybody on the roads is going the same way,\" Nana tells a spoon. \"None knows they are lost. Lovely and loud, though.\" She rows backward into the fog.",
       "cast": [
         {
           "figure": "cast/nan_rummage",
-          "name": "Nan Rummage",
+          "name": "Nana Rummage",
           "size": "small"
         }
       ],
@@ -1758,7 +1758,7 @@
     },
     "scene_reed_edge": {
       "type": "story",
-      "narration": "At the rush road, a sausage cart is stuck to its axles. \"Free sausages for help!\" pants the seller. A wagon queue waits behind her. A goose honks on behalf of everyone.",
+      "narration": "At the rush road, a sausage cart is stuck to its axles. \"Free sausages for help!\" pants the seller. A wagon line waits behind her. A goose honks on behalf of everyone.",
       "choices": [
         {
           "id": "push",
@@ -1789,7 +1789,7 @@
       "roller": "all",
       "onSuccess": {
         "goto": "ending_walked_over",
-        "narration": "One, two, three, HEAVE. The cart pops out of the mud like a cork from a bottle, and the sausage seller hands out sausages hot off the griddle. The whole queue cheers, and the goose is beside itself. Nobody has ever been welcomed onto a road this loudly.",
+        "narration": "One, two, three, HEAVE. The cart pops out of the mud like a cork from a bottle, and the sausage seller hands out sausages hot off the griddle. The whole line cheers, and the goose is beside itself. Nobody has ever been welcomed onto a road this loudly.",
         "effects": [
           {
             "type": "grantItem",
@@ -1831,7 +1831,7 @@
     },
     "scene_reed_edge_prospectors": {
       "type": "story",
-      "narration": "\"Tussock people!\" Your rescued prospectors run from the queue to push. The cart shoots free. The seller chases it, then returns with supper for everyone. The tallest prospector gets an extra sausage.",
+      "narration": "\"Tussock people!\" Your rescued prospectors run from the line to push. The cart shoots free. The seller chases it, then returns with supper for everyone. The tallest prospector gets an extra sausage.",
       "choices": [
         {
           "id": "on",
@@ -2399,7 +2399,7 @@
     },
     "scene_crabs_shooed": {
       "type": "story",
-      "narration": "The crabs decide you are not worth the shine. They scuttle backwards into the deep water, clacking cross remarks, and leave their heap behind. Gullet picks through it with her pole. \"Spoons are Nan's,\" she says, \"and so are buttons. But this whistle is nobody's.\" She tosses it to you. It is a very loud little tin whistle.",
+      "narration": "The crabs decide you are not worth the shine. They scuttle backwards into the deep water, clacking cross remarks, and leave their heap behind. Gullet picks through it with her pole. \"Spoons are Nana's,\" she says, \"and so are buttons. But this whistle is nobody's.\" She tosses it to you. It is a very loud little tin whistle.",
       "cast": [
         {
           "figure": "cast/gullet",

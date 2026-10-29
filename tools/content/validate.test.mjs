@@ -32,9 +32,11 @@ const REPO = fileURLToPath(new URL("../..", import.meta.url));
 const VALIDATOR = join(REPO, "tools", "content", "validate.mjs");
 
 const temps = [];
+// Every negative case copies the whole content tree, so removing them all is real disk work:
+// give it a minute rather than the default ten seconds. It deletes temp dirs and asserts nothing.
 afterAll(() => {
   for (const dir of temps) rmSync(dir, { recursive: true, force: true });
-});
+}, 60_000);
 
 /**
  * A copy of the real tree: the content, the schemas that judge it, and the
@@ -1664,5 +1666,93 @@ describe("voice scripts (docs/voice-narration-plan.md section 3)", () => {
     });
     expect(result.out).toContain("stale");
     expect(result.code).toBe(0);
+  });
+});
+
+describe("the cast voice sheet and the lexicon (#539)", () => {
+  const CAST = ["content", "voice", "cast.json"];
+  const LEXICON = ["content", "voice", "lexicon.json"];
+
+  function withCast(mutate) {
+    const dir = copyTree();
+    const cast = readJson(dir, ...CAST);
+    mutate(cast);
+    writeJson(dir, CAST, cast);
+    return validate(dir);
+  }
+
+  it("fails a voice that is not one of Gemini's", () => {
+    const result = withCast((cast) => {
+      cast.speakers.pib.gemini.voice = "Robotron";
+    });
+    expect(result.out).toMatch(/FAIL\s+content\/voice\/cast\.json/);
+    expect(result.code).not.toBe(0);
+  });
+
+  it("fails two speakers on one voice in a chapter", () => {
+    const result = withCast((cast) => {
+      cast.speakers.wisp.gemini.voice = cast.speakers.pib.gemini.voice;
+    });
+    expect(result.out).toContain("share the voice");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("fails anybody else on the narrator's voice", () => {
+    const result = withCast((cast) => {
+      cast.speakers.pib.gemini.voice = cast.speakers.narrator.gemini.voice;
+    });
+    expect(result.out).toContain("share the voice");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("fails when the cast sheet is missing, so the gate cannot be skipped", () => {
+    const dir = copyTree();
+    rmSync(join(dir, ...CAST));
+    const result = validate(dir);
+    expect(result.out).toContain("the cast voice sheet is missing");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("fails a speaker entry with no chapter list, as a schema error and not a crash", () => {
+    const result = withCast((cast) => {
+      delete cast.speakers.pib.chapters;
+    });
+    expect(result.out).toMatch(/FAIL\s+content\/voice\/cast\.json/);
+    expect(result.out).not.toContain("TypeError");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("checks voices against who is in each chapter now, not the sheet's stale lists", () => {
+    // Pib and Bun share a voice and never meet. Bun walks into bramblewood-01 (Pib's chapter)
+    // and the sheet is not rebuilt: the clash must still be caught.
+    const dir = copyTree();
+    const cast = readJson(dir, ...CAST);
+    expect(cast.speakers.bun.gemini.voice).toBe(cast.speakers.pib.gemini.voice);
+    expect(cast.speakers.bun.chapters).not.toContain("bramblewood-01");
+    const chapter = readJson(dir, ...CHAPTER);
+    chapter.voiceGuide.npcVoices.bun = "Bun, visiting, talks fast.";
+    writeJson(dir, CHAPTER, chapter);
+    const result = validate(dir);
+    expect(result.out).toContain("share the voice");
+    expect(result.out).toContain("bramblewood-01");
+    expect(result.code).not.toBe(0);
+  });
+
+  it("does not count a speaker the content no longer has, even if the sheet still lists them", () => {
+    // A retired character left on the sheet with Pib's voice and Pib's chapter: not a clash,
+    // because nobody by that id appears in bramblewood-01 any more.
+    const result = withCast((cast) => {
+      cast.speakers.retired_ghost = { ...cast.speakers.pib, name: "Retired Ghost", chapters: ["bramblewood-01"], aliases: [] };
+    });
+    expect(result.out).not.toContain("share the voice");
+    expect(result.code).toBe(0);
+  });
+
+  it("fails a lexicon entry with nothing to say", () => {
+    const dir = copyTree();
+    writeJson(dir, LEXICON, { words: { Pib: { say: "" } } });
+    const result = validate(dir);
+    expect(result.out).toMatch(/FAIL\s+content\/voice\/lexicon\.json/);
+    expect(result.code).not.toBe(0);
   });
 });

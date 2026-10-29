@@ -25,10 +25,18 @@ export function chapterFiles(root: string): Map<string, string> {
   return new Map(readDir(path.join(root, "content", "chapters")).map(({ file, json }) => [String(json.id), file]));
 }
 
-export function loadSources(root: string): Sources {
+/**
+ * `canon: false` leaves the canon individuals out. Who appears in which chapter
+ * comes from the chapters alone (canon only adds a canon id and pronouns), so the
+ * content gate reads it that way and works on a content tree without `canon/`.
+ */
+export function loadSources(root: string, options: { canon?: boolean } = {}): Sources {
   const chapters = readDir(path.join(root, "content", "chapters")).map((entry) => entry.json);
   const campaigns = readDir(path.join(root, "content", "campaigns")).map((entry) => entry.json);
-  const canon = yaml.load(fs.readFileSync(path.join(root, "canon", "individuals.yaml"), "utf8")) as { individuals?: IndividualLike[] };
+  const canon =
+    options.canon === false
+      ? {}
+      : (yaml.load(fs.readFileSync(path.join(root, "canon", "individuals.yaml"), "utf8")) as { individuals?: IndividualLike[] });
   const narration = inventory({ chapters, campaigns }, { facetsMax: 6 })
     .filter((line) => line.kind === "narration" || line.kind === "cue" || line.kind === "prompt")
     .map((line) => ({ address: line.address, chapter: line.chapter, text: line.text }));

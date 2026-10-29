@@ -13,7 +13,7 @@
   "entry": "scene_parade",
   "plate": {
     "art": "plates/gemfall/03c",
-    "narration": "The rush road has stopped at the ford. Wagon wheels sink into ruts while a centaur hurries past with queue tokens. Somewhere ahead, the river is deciding who gets across. First, everyone has to wait their turn."
+    "narration": "The rush road has stopped at the ford. Wagon wheels sink into ruts while a centaur hurries past with line tokens. Somewhere ahead, the river is deciding who gets across. First, everyone has to wait their turn."
   },
   "objectives": [
     {
@@ -45,12 +45,12 @@
       },
       {
         "id": "help_queue",
-        "label": "Help someone stuck in the queue",
+        "label": "Help someone stuck in the line",
         "flag": "helped_in_the_queue"
       },
       {
         "id": "night_queue",
-        "label": "Spend the night in the queue",
+        "label": "Spend the night in the line",
         "flag": "slept_in_the_queue"
       },
       {
@@ -134,7 +134,7 @@
     },
     "scene_parade_read_crowd": {
       "type": "story",
-      "narration": "Your kitsune reads the queue the way other people read a menu. That wagon is two places ahead of where it should be. That man is selling the same pebble twice. Those three are a family and that one only says she is. By the time you are halfway up the column, you know the whole queue's business, and the queue does not know you know.",
+      "narration": "Your kitsune reads the line the way other people read a menu. That wagon is two places ahead of where it should be. That man is selling the same pebble twice. Those three are a family and that one only says she is. By the time you are halfway up the column, you know the whole line's business, and the line does not know you know.",
       "choices": [
         {
           "id": "on",
@@ -238,7 +238,7 @@
       "discovers": [
         "npc.faun"
       ],
-      "narration": "At the west branch, the ford queue is two days long. A faun provisioner named Burdock sells numbered pebbles and very expensive honeycakes. Your pebble says 412. The ford is on number 9.",
+      "narration": "At the west branch, the ford line is two days long. A faun provisioner named Burdock sells numbered pebbles and very expensive honeycakes. Your pebble says 412. \"My lucky number!\" says Burdock. The ford is on number 9.",
       "cast": [
         {
           "figure": "cast/burdock",
@@ -323,11 +323,11 @@
           "name": "Burdock"
         }
       ],
-      "narration": "Burdock's goat, Pudding, gallops down the queue with the pebble bucket on her head. Numbers fly everywhere. \"My bucket! My GOAT!\" wails Burdock. Chase her, sort the spilled numbers for a honeycake, or use a crumb to tempt her back.",
+      "narration": "Burdock's goat, Pudding, gallops down the line with the pebble bucket on her head. Numbers fly everywhere. \"My bucket! My GOAT!\" wails Burdock. Chase her, sort the spilled numbers for a honeycake, or use a crumb to tempt her back.",
       "choices": [
         {
           "id": "chase",
-          "label": "Chase Pudding down the queue",
+          "label": "Chase Pudding down the line",
           "icon": "quick",
           "goto": "check_goat_chase"
         },
@@ -363,7 +363,7 @@
     },
     "check_goat_chase": {
       "type": "interaction",
-      "narration": "Pudding gallops down the queue with the bucket on her head. Then she skids to a stop at a cabbage stall and starts to chew, because a goat cannot walk past a cabbage. She does it every few steps. \"Wait for the chew!\" wails Burdock. \"Then grab!\"",
+      "narration": "Pudding gallops down the line with the bucket on her head. Then she skids to a stop at a cabbage stall and starts to chew, because a goat cannot walk past a cabbage. She does it every few steps. \"Wait for the chew!\" wails Burdock. \"Then grab!\"",
       "interaction": {
         "kind": "timing",
         "cue": "Tap when Pudding stops to chew.",
@@ -458,7 +458,7 @@
       "discovers": [
         "character.kitsune"
       ],
-      "narration": "A kitsune named Tamsin Three-Cards shuffles on a barrel. \"Find the Sun Card! Win a front-of-the-queue pebble!\" Her third tail twitches. You can watch the trick, walk away, or help her con the crowd for an unfair Number 1.",
+      "narration": "A kitsune named Tamsin Three-Cards shuffles on a barrel. \"Find the Sun Card! Win a front-of-the-line pebble!\" Her third tail twitches. You can watch the trick, walk away, or help her con the crowd for an unfair Number 1.",
       "cast": [
         {
           "figure": "cast/tamsin",
@@ -571,7 +571,7 @@
     },
     "scene_join_con": {
       "type": "story",
-      "narration": "You stand in the crowd and gasp very loudly every time somebody almost wins. Tamsin pays you with a front-of-the-queue pebble and a wink. It is shiny and it says number 1, and it is absolutely not fair.",
+      "narration": "You stand in the crowd and gasp very loudly every time somebody almost wins. Tamsin pays you with a front-of-the-line pebble and a wink. It is shiny and it says number 1, and it is absolutely not fair.",
       "cast": [
         {
           "figure": "cast/tamsin",
@@ -688,7 +688,7 @@
     },
     "scene_queue_jumpers": {
       "type": "story",
-      "narration": "Red scarves push up the queue. \"Ford closes tomorrow!\" their leader shouts. An old faun doubts this. Block them, fetch the drovers, or use someone who knows their tricks. If you hold the line, the scarves will owe you fair treatment.",
+      "narration": "Red scarves push up the line. \"Ford closes tomorrow!\" their leader shouts. An old faun doubts this. Block them, fetch the drovers, or use someone who knows their tricks. If you hold the line, the scarves will owe you fair treatment.",
       "choices": [
         {
           "id": "block",
@@ -762,17 +762,17 @@
             "amount": 2
           }
         ],
-        "narration": "You link arms with the old faun and two very surprised strangers, and the red scarves bounce off you like a ball off a wall. They grumble all the way back to the end of the queue. The whole line cheers, and the red scarves will remember you. The old faun fishes his hat out of the soup and, dripping, gives you two coins for the trouble."
+        "narration": "You link arms with the old faun and two very surprised strangers, and the red scarves bounce off you like a ball off a wall. They grumble all the way back to the end of the line. The whole line cheers, and the red scarves will remember you. The old faun fishes his hat out of the soup and, dripping, gives you two coins for the trouble."
       },
       "onFailure": {
         "goto": "interaction_clear_lane",
-        "narration": "The red scarves squeeze past, all elbows. Then the last one trips over Pudding's bucket, and the whole gang goes down in a red-scarfed heap. The queue laughs so hard that they slink off to the back anyway."
+        "narration": "The red scarves squeeze past, all elbows. Then the last one trips over Pudding's bucket, and the whole gang goes down in a red-scarfed heap. The line laughs so hard that they slink off to the back anyway."
       },
       "art": "scenes/gemfall/ford-queue-market"
     },
     "scene_queue_jumpers_call_drovers": {
       "type": "story",
-      "narration": "You run down to the ford and fetch the lead drover. He walks back up the queue without hurrying, stands in front of the red scarves, and says one word. \"BACK.\" His voice rattles the wagon wheels. They go back. The drover gives you a slow nod, and fishes the old faun's hat out of the soup.",
+      "narration": "You run down to the ford and fetch the lead drover. He walks back up the line without hurrying, stands in front of the red scarves, and says one word. \"BACK.\" His voice rattles the wagon wheels. They go back. The drover gives you a slow nod, and fishes the old faun's hat out of the soup.",
       "choices": [
         {
           "id": "on",
@@ -785,7 +785,7 @@
     },
     "scene_queue_jumpers_send_back": {
       "type": "story",
-      "narration": "Your kitsune smiles the sweetest smile in the queue. \"Oh, haven't you heard? The ford moved. The back is the front now.\" The red scarves look at each other and then sprint, very fast, all the way to the back. It takes them an hour to work it out. By then they are too embarrassed to come back.",
+      "narration": "Your kitsune smiles the sweetest smile in the line. \"Oh, haven't you heard? The ford moved. The back is the front now.\" The red scarves look at each other and then sprint, very fast, all the way to the back. It takes them an hour to work it out. By then they are too embarrassed to come back.",
       "choices": [
         {
           "id": "on",
@@ -804,7 +804,7 @@
           "name": "Tamsin Three-Cards"
         }
       ],
-      "narration": "Tamsin strolls up shuffling her cards. \"Find the Sun Card, win a place at the front!\" The red scarves crowd around to play. They play for an hour. They never find the Sun Card. By the time they give up, the queue has rolled on without them, and Tamsin gives you a wink.",
+      "narration": "Tamsin strolls up shuffling her cards. \"Find the Sun Card, win a place at the front!\" The red scarves crowd around to play. They play for an hour. They never find the Sun Card. By the time they give up, the line has rolled on without them, and Tamsin gives you a wink.",
       "choices": [
         {
           "id": "on",
@@ -826,7 +826,7 @@
           "name": "Relay Runner"
         }
       ],
-      "narration": "A centaur relay-runner skids beside you. \"Message for the drovers. Hill road next. Can't stop!\" The note says RIVER RISING. CROSS SLOW. Run it, sing it down the queue, or fly it to the ford.",
+      "narration": "A centaur relay-runner skids beside you. \"Message for the drovers. Hill road next. Can't stop!\" The note says RIVER RISING. CROSS SLOW. Run it, sing it down the line, or fly it to the ford.",
       "choices": [
         {
           "id": "run",
@@ -836,14 +836,14 @@
         },
         {
           "id": "duskrunner_dash",
-          "label": "Have a duskrunner sprint the note down the queue",
+          "label": "Have a duskrunner sprint the note down the line",
           "icon": "boot",
           "requiresClass": "duskrunner",
           "goto": "check_run_message"
         },
         {
           "id": "sing",
-          "label": "Sing it down the queue, the relay way",
+          "label": "Sing it down the line, the relay way",
           "icon": "note",
           "goto": "scene_relay_message_sing"
         },
@@ -861,7 +861,7 @@
       "type": "check",
       "stat": "quick",
       "tn": 12,
-      "prompt": "Run a message down a two-day queue, with the fastest of you in front",
+      "prompt": "Run a message down a two-day line, with the fastest of you in front",
       "cast": [
         {
           "figure": "cast/relay_runner",
@@ -882,7 +882,7 @@
       },
       "onFailure": {
         "goto": "choice_tolls",
-        "narration": "You run as fast as you can and hand the note to the wrong drover, who reads it out loud to absolutely everybody. That, it turns out, works just as well. By lunchtime the whole queue knows the river is rising."
+        "narration": "You run as fast as you can and hand the note to the wrong drover, who reads it out loud to absolutely everybody. That, it turns out, works just as well. By lunchtime the whole line knows the river is rising."
       },
       "art": "scenes/gemfall/ford-queue-market"
     },
@@ -913,11 +913,11 @@
           "name": "Relay Runner"
         }
       ],
-      "narration": "Your griffin takes the note in a beak and is over the whole queue in four wingbeats. The lead drover reads it, looks up at the river, and nods. When you land back beside the runner, she whistles. \"The relay could use a friend with wings,\" she says, and gallops off before you can answer.",
+      "narration": "Your griffin takes the note in a beak and is over the whole line in four wingbeats. The lead drover reads it, looks up at the river, and nods. When you land back beside the runner, she whistles. \"The relay could use a friend with wings,\" she says, and gallops off before you can answer.",
       "choices": [
         {
           "id": "on",
-          "label": "Land back in the queue",
+          "label": "Land back in the line",
           "icon": "wing",
           "goto": "choice_tolls"
         }
@@ -926,7 +926,7 @@
     },
     "choice_tolls": {
       "type": "choice_point",
-      "narration": "Choose one queue job before dusk. Free the wagon to earn its crew's help if a load tips in the ford. Restore the marker line for an easier ford approach. Or help the Brackens, a faun family beside a cracked wheel, and earn a ride on their cart. You cannot do every job tonight.",
+      "narration": "Choose one job in the line before dusk. Free the wagon to earn its crew's help if a load tips in the ford. Restore the marker line for an easier ford approach. Or help the Brackens, a faun family beside a cracked wheel, and earn a ride on their cart. \"We are being very brave,\" says Littlest Bracken. You cannot do every job tonight.",
       "cast": [
         {
           "figure": "cast/mother_bracken",
@@ -1090,7 +1090,7 @@
     },
     "scene_family": {
       "type": "story",
-      "narration": "The Brackens' cart wheel is cracked, their season is over, and they need to get home before the river rises. The littlest Bracken is holding a queue pebble with a big number on it and trying very hard not to cry about it.",
+      "narration": "The Brackens' cart wheel is cracked, their season is over, and they need to get home before the river rises. The littlest Bracken is holding a line pebble with a big number on it and trying very hard not to cry about it.",
       "cast": [
         {
           "figure": "cast/mother_bracken",
@@ -1276,7 +1276,7 @@
     },
     "scene_wolves_fed": {
       "type": "story",
-      "narration": "You put your supper down on a flat stone and step back. The wolves eat politely, and then the whole pack lies down in a heap by your fire, glowing like a pile of coals. It is the warmest night anybody in the queue has had all week. The road will remember this.",
+      "narration": "You put your supper down on a flat stone and step back. The wolves eat politely, and then the whole pack lies down in a heap by your fire, glowing like a pile of coals. It is the warmest night anybody in the line has had all week. The road will remember this.",
       "cast": [
         {
           "figure": "entities/cinder_wolf",
@@ -1332,7 +1332,7 @@
       ],
       "onVictory": {
         "goto": "scene_campfire_play",
-        "narration": "The pack slinks off down the queue to the next fire, where somebody feeds them. The whole campsite hears about who shooed and who shared."
+        "narration": "The pack slinks off down the line to the next fire, where somebody feeds them. The whole campsite hears about who shooed and who shared."
       },
       "onDefeat": {
         "goto": "scene_campfire_play",
@@ -1442,7 +1442,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk on down the queue",
+          "label": "Walk on down the line",
           "icon": "ear",
           "goto": "interaction_evening_echo"
         }
@@ -1455,7 +1455,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk on down the queue",
+          "label": "Walk on down the line",
           "icon": "acorn",
           "goto": "interaction_evening_echo"
         }
@@ -1468,7 +1468,7 @@
       "choices": [
         {
           "id": "on",
-          "label": "Walk on down the queue",
+          "label": "Walk on down the line",
           "icon": "spark",
           "goto": "interaction_evening_echo"
         }
@@ -1480,7 +1480,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "At a remedy stall, bell charms ring whenever a gem wagon passes. The witch, Mother Thrum, winces over her spectacles. \"What do you actually want?\" she asks. Her pointed hat has a headache remedy tucked in its brim.",
+      "narration": "At a remedy stall, bell charms ring whenever a gem wagon passes. The witch, Mother Thrum, winces over her glasses. \"What do you actually want?\" she asks. Her pointed hat has a headache remedy tucked in its brim.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1512,7 +1512,7 @@
     },
     "scene_witch_stall_sore_feet": {
       "type": "story",
-      "narration": "Mother Thrum hands over a sunbloom draught. \"Feet next. Listen first.\" Another wagon makes every charm ring. She closes her eyes and counts to three.",
+      "narration": "Mother Thrum hands over a sunbloom potion. \"Feet next. Listen first.\" Another wagon makes every charm ring. She closes her eyes and counts to three.",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1713,7 +1713,7 @@
     },
     "scene_charm_walk_ford_stone": {
       "type": "story",
-      "narration": "You hold the charm against the wool sock. The charm and the stone ring together, exactly together, so loudly that every bell in the queue answers. Sleepy people sit up and say \"WHAT?\" Then both go quiet at the very same moment, as if they had finished saying something to each other.",
+      "narration": "You hold the charm against the wool sock. The charm and the stone ring together, exactly together, so loudly that every bell in the line answers. Sleepy people sit up and say \"WHAT?\" Then both go quiet at the very same moment, as if they had finished saying something to each other.",
       "choices": [
         {
           "id": "on",
@@ -1726,7 +1726,7 @@
     },
     "rest_witch_fire": {
       "type": "rest",
-      "narration": "Rest in the queue. The charm chimes at passing wagons, and Pudding visits every supper pot. At dawn, Burdock takes her home. A drover calls numbers from much closer to the water. Your turn is nearly here.",
+      "narration": "Rest in the line. The charm chimes at passing wagons, and Pudding visits every supper pot. At dawn, Burdock takes her home. A drover calls numbers from much closer to the water. Your turn is nearly here.",
       "heal": 2,
       "choices": [
         {
@@ -1855,7 +1855,7 @@
     },
     "choice_ford": {
       "type": "choice_point",
-      "narration": "The river is wide and fast. The drovers cross one wagon at a time. Your queue job matters now: restored markers or a known verse ease the ford roll; the Brackens offer a cart to balance instead. The wagon crew can help if a load tips. Tamsin's unfair Number 1 sends you into the unready crossing.",
+      "narration": "The river is wide and fast. \"One wagon at a time,\" booms the lead drover. Your job in the line matters now: restored markers or a known verse ease the ford roll; the Brackens offer a cart to balance instead. The wagon crew can help if a load tips. Tamsin's unfair Number 1 sends you into the unready crossing.",
       "choices": [
         {
           "id": "drovers_pace",
@@ -1923,7 +1923,7 @@
         },
         {
           "id": "tamsin_pebble",
-          "label": "Use Tamsin's front-of-the-queue pebble",
+          "label": "Use Tamsin's front-of-the-line pebble",
           "icon": "bead",
           "requiresFlag": "joined_the_con",
           "goto": "scene_surge",
@@ -2119,7 +2119,7 @@
           "when": {
             "flag": "ford_crew_used"
           },
-          "text": "The wagon crew repaid your queue work at the tipped load."
+          "text": "The wagon crew repaid your line work at the tipped load."
         },
         {
           "when": {
@@ -2166,7 +2166,7 @@
           "when": {
             "flag": "ford_crew_used"
           },
-          "text": "The wagon crew repaid your queue work at the tipped load."
+          "text": "The wagon crew repaid your line work at the tipped load."
         },
         {
           "when": {
@@ -2214,7 +2214,7 @@
           "when": {
             "flag": "ford_crew_used"
           },
-          "text": "The wagon crew repaid your queue work at the tipped load."
+          "text": "The wagon crew repaid your line work at the tipped load."
         },
         {
           "when": {
@@ -2253,7 +2253,7 @@
     "encounter_crabs": {
       "type": "encounter",
       "map": "reedbank",
-      "narration": "The crabs clack and shuffle sideways, in no hurry at all. Nudge them off the stones before the whole queue loses patience.",
+      "narration": "The crabs clack and shuffle sideways, in no hurry at all. Nudge them off the stones before the whole line loses patience.",
       "enemies": [
         {
           "id": "crab",
@@ -2342,7 +2342,7 @@
     },
     "interaction_clear_lane": {
       "type": "interaction",
-      "narration": "Hoofbeats come racing down the queue. A relay-runner needs a clear lane, and a loose awning has sagged across the road. Hold its pole up while the people underneath duck out of the way.",
+      "narration": "Hoofbeats come racing down the line. A relay-runner needs a clear lane, and a loose awning has sagged across the road. Hold its pole up while the people underneath duck out of the way.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Friends brace the pole while someone lifts the awning.",
@@ -2508,7 +2508,7 @@
       },
       "onSuccess": {
         "goto": "scene_markers_restored",
-        "narration": "The arrows stand along the checked approach. The runner gives the line one last look before the queue moves.",
+        "narration": "The arrows stand along the checked approach. The runner gives the line one last look before the line moves.",
         "effects": [
           {
             "type": "setFlag",
@@ -2519,7 +2519,7 @@
       },
       "onFailure": {
         "goto": "scene_dusk_wolves",
-        "narration": "The post leans over again. The runner fixes the line while you help clear the lane. You have helped the queue, but have not checked the approach yourselves.",
+        "narration": "The post leans over again. The runner fixes the line while you help clear the lane. You have helped the line, but have not checked the approach yourselves.",
         "effects": [
           {
             "type": "setFlag",
@@ -2595,7 +2595,7 @@
     },
     "interaction_surge_brace": {
       "type": "interaction",
-      "narration": "The crew you freed in the queue wades alongside the tipped wagon. They bring the long brace. Hold it in place while the acting hero guides the wheel upright. The drakes argue over the floating bread instead of the instructions.",
+      "narration": "The crew you freed in the line wades alongside the tipped wagon. They bring the long brace. Hold it in place while the acting hero guides the wheel upright. The drakes argue over the floating bread instead of the instructions.",
       "interaction": {
         "kind": "cooperate",
         "cue": "Hold the brace while the acting hero rights the wagon.",
@@ -2695,12 +2695,12 @@
       "burdock": "a faun provisioner; cheerful, shameless about his prices, calls everyone 'my lucky number'; owns Pudding, a goat with a weakness for buckets",
       "tamsin": "Tamsin Three-Cards, a kitsune card-sharp; quick, delighted to be caught, never sore about losing",
       "wend": "a Deep Hollow soup ladler; gentle, generous, asks nothing, says 'kindness first' and means it a little too much",
-      "mother_thrum": "a ford witch; careful and instructive, peers over spectacles, always asks 'what do you actually want?'",
+      "mother_thrum": "a ford witch; careful and instructive, peers over glasses, always asks 'what do you actually want?'",
       "drover": "the lead drover; slow, booming voice, sings the crossing verse and will not be hurried",
       "relay_runner": "a centaur relay-runner; talks while galloping, never finishes a sentence in the same place she started it",
       "brackens": "the Brackens, a faun family whose season is over; tired, polite, the littlest one very brave about it",
       "troupe_leader": "a rush-camp actor-manager; grand and dramatic, calls everyone 'darlings', thrilled by any eruption",
-      "red_scarves": "the red-scarf queue-jumpers' leader; pushy and impatient, but fair when fairly beaten"
+      "red_scarves": "the red-scarf line-cutters' leader; pushy and impatient, but fair when fairly beaten"
     }
   },
   "presentation": {

@@ -1687,7 +1687,7 @@
     "scene_bells_ringing_unassigned_wedge": {
       "type": "story",
       "art": "scenes/gemfall/gem-gallery",
-      "narration": "You put the Unassigned Stone back where nobody should ever dig, which is exactly here, and the ground stops shaking as if it has recognized something. For one breath. Great-Gran Ashby was right about the list. One ring bought. You snatch the stone back up and run.",
+      "narration": "You put the Unassigned Stone back where nobody should ever dig, which is exactly here, and the ground stops shaking as if it has recognized something. For one breath. Great-Grandma Ashby was right about the list. One ring bought. You snatch the stone back up and run.",
       "choices": [
         {
           "id": "on",
@@ -3209,7 +3209,7 @@
     "scene_titan_eye": {
       "type": "story",
       "art": "scenes/gemfall/seal-chamber",
-      "narration": "Under the glass, something opens: an eye as big as a pond, the color of the red sky at sunset. It looks up at you, slow and sleepy. Then the old, old note the stones have always hummed comes up through the floor, and every rush gem in your pockets hums with it.",
+      "narration": "\"Look,\" says the Seal-Keeper, very quietly. Under the glass, something opens: an eye as big as a pond, the color of the red sky at sunset. It looks up at you, slow and sleepy. Then the old, old note the stones have always hummed comes up through the floor, and every rush gem in your pockets hums with it.",
       "variants": [
         {
           "when": {

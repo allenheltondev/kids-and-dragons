@@ -398,7 +398,7 @@
     },
     "scene_attendance": {
       "type": "story",
-      "narration": "Paths open before you and close behind prospectors with humming pockets. The prospectors walk into a hedge that was not there a moment ago. The forest is checking what people carry. Ask about it, or follow the opening path.",
+      "narration": "Paths open before you and close behind prospectors with humming pockets. The prospectors walk into a hedge that was not there a moment ago. \"That hedge is new!\" shouts the boggart prospector. The forest is checking what people carry. Ask about it, or follow the opening path.",
       "choices": [
         {
           "id": "open_path",
@@ -1490,7 +1490,7 @@
     },
     "scene_glade_heart": {
       "type": "choice_point",
-      "narration": "In the very middle of the worst glade, in a bruise of gray moss, sits a gem the size of a fist, humming. Every tree leans away from it. Two unicorns watch from the edge. So, very quietly, does the forest. Mend the glade, and the stone sinks back into the ground where the forest keeps it. Take the stone, and this glade will never mend. Everybody vote.",
+      "narration": "In the very middle of the worst glade, in a bruise of gray moss, sits a gem the size of a fist, humming. Every tree leans away from it. Two unicorns watch from the edge. So, very quietly, does the forest. \"Mend the glade, and the stone sinks back into the ground where the forest keeps it,\" says the Elder Unicorn. \"Take it, and this glade will never mend.\" Everybody vote.",
       "cast": [
         {
           "figure": "cast/elder_unicorn",
@@ -1769,7 +1769,7 @@
       ],
       "art": "scenes/gemfall/sapling-ring",
       "type": "story",
-      "narration": "The saplings rustle their little rhyme as you pass: fern, acorn, bluebell, acorn. Their tallest bows so low that a neighbor has to help it up. A path winks open between them, and they wave you through.",
+      "narration": "The saplings rustle their little rhyme as you pass: \"Fern, acorn, bluebell, acorn.\" Their tallest bows so low that a neighbor has to help it up. A path winks open between them, and they wave you through.",
       "choices": [
         {
           "id": "continue",

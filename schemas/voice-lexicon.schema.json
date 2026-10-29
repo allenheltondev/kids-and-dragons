@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "voice-lexicon",
+  "title": "The pronunciation lexicon",
+  "description": "content/voice/lexicon.json (docs/voice-narration-plan.md section 2): how made-up words are said. A respelling replaces the whole word in what is sent to the voice model, never on screen. `npm run voice:lexicon` lists the names the game says aloud that have no entry yet.",
+  "type": "object",
+  "required": [
+    "words"
+  ],
+  "properties": {
+    "$comment": {
+      "type": "string"
+    },
+    "words": {
+      "type": "object",
+      "propertyNames": {
+        "pattern": "^[A-Za-z][A-Za-z' -]*$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/word"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "word": {
+      "type": "object",
+      "required": [
+        "say"
+      ],
+      "properties": {
+        "say": {
+          "type": "string",
+          "minLength": 1,
+          "description": "The respelling sent to the voice model, e.g. \"Pibb\"."
+        },
+        "ipa": {
+          "type": "string",
+          "minLength": 1
+        },
+        "note": {
+          "type": "string"
+        },
+        "reviewed": {
+          "type": "boolean",
+          "description": "false until a person has heard it; absent reads as reviewed."
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

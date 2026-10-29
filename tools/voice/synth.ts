@@ -21,7 +21,13 @@ export interface DeliveryTables {
   beats: CastFile["beats"];
 }
 
-export type Synthesizer = (segment: DesiredSegment) => Promise<Buffer>;
+/** What a provider sent back: the audio, and the audio tokens it billed when it says (Gemini does). */
+export interface Synthesized {
+  wav: Buffer;
+  audioTokens?: number;
+}
+
+export type Synthesizer = (segment: DesiredSegment) => Promise<Synthesized>;
 
 export interface SynthOptions {
   provider: ProviderChoice | { provider: "fake"; model: string };
@@ -64,6 +70,6 @@ export function makeSynthesizer(options: SynthOptions): Synthesizer {
     if (job === undefined) throw new Error("no request was planned");
     const rendered = await send(job, options.keys, options.fetch);
     if (rendered.ext !== "wav") throw new Error(`expected WAV audio, got ${rendered.ext}`);
-    return rendered.bytes;
+    return { wav: rendered.bytes, ...(rendered.audioTokens === undefined ? {} : { audioTokens: rendered.audioTokens }) };
   };
 }

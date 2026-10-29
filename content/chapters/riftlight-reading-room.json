@@ -606,7 +606,7 @@
     },
     "second_view": {
       "type": "choice_point",
-      "narration": "The elder leads you to a second marked viewpoint, still on the safe floor. A reflection slides across the river. Track the fixed ridge, remember the rock passage, or use preparation that gives your team another test. Which will challenge your first impression?",
+      "narration": "The elder leads you to a second marked viewpoint, still on the safe floor. A reflection slides across the river. Track the fixed ridge, remember the rock passage, or use preparation that gives your team another test. \"Which will challenge your first impression?\" the elder asks.",
       "choices": [
         {
           "id": "option_1",
@@ -971,7 +971,7 @@
     },
     "what_matches": {
       "type": "choice_point",
-      "narration": "The outside drawing and memory account lie on the elder's table. Both show the river in that other valley. Choose what the evidence supports: cite your independent test, ask the elder to sign her co-reading, or keep the claim limited to visible landmarks.",
+      "narration": "The outside drawing and memory account lie on the elder's table. Pip points from one to the other. \"Both show the river in that other valley!\" Choose what the evidence supports: cite your independent test, ask the elder to sign her co-reading, or keep the claim limited to visible landmarks.",
       "choices": [
         {
           "id": "option_1",
@@ -1120,7 +1120,7 @@
     },
     "catalog_test": {
       "type": "choice_point",
-      "narration": "A younger yeti keeper brings a fresh catalog slip. She needs a route from a visitor's question to the checked view. Start with the crossing report or the remembered river. The elder's signed reference, if you requested it, offers another route to test.",
+      "narration": "A younger yeti keeper brings a fresh catalog slip. \"I need a route from a visitor's question to the checked view,\" she explains. Start with the crossing report or the remembered river. The elder's signed reference, if you requested it, offers another route to test.",
       "choices": [
         {
           "id": "option_1",
@@ -1493,7 +1493,7 @@
     },
     "sliding_tray": {
       "type": "choice_point",
-      "narration": "A shallow tray holds blank slips and chalk. Near the close view, meltwater has started it sliding toward the table edge. You can catch its rim from the marked floor. If your party prepared the farther dry table, the slips are already safe there and you can pass them straight to the keeper. What will you do?",
+      "narration": "A shallow tray holds blank slips and chalk. Near the close view, meltwater has started it sliding toward the table edge. \"It's escaping!\" squeaks Pip. You can catch its rim from the marked floor. If your party prepared the farther dry table, the slips are already safe there and you can pass them straight to the keeper. What will you do?",
       "choices": [
         {
           "id": "option_1",
@@ -1912,7 +1912,7 @@
     },
     "teach_back": {
       "type": "choice_point",
-      "narration": "An arriving yeti visitor waits at the warm cup. Show the room's own landmarks, or use the guide or copy you chose to share. The newcomer needs a safe way to look. Private notes stay with their owner.",
+      "narration": "An arriving yeti visitor waits at the warm cup. \"Where is a safe way to look?\" the newcomer asks. Show the room's own landmarks, or use the guide or copy you chose to share. Private notes stay with their owner.",
       "choices": [
         {
           "id": "option_1",
@@ -1985,7 +1985,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "Your river crossing and the memory agree on another valley. The date and cause remain unanswered. Pip checks that the drawing, rather than his tea-stained scrap, is in the traveling pages. You can rest, return to the workers by the upper path, or follow the northern strand farther into the glacier.",
+      "narration": "Your river crossing and the memory agree on another valley. The date and cause remain unanswered. Pip checks twice. \"The drawing goes in the traveling pages, not my tea-stained scrap.\" You can rest, return to the workers by the upper path, or follow the northern strand farther into the glacier.",
       "heal": 0,
       "choices": [],
       "outcome": "success",

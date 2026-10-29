@@ -567,7 +567,7 @@
         }
       ],
       "type": "choice_point",
-      "narration": "There is one large board for a warning and loose stones for a smaller marker. Put the big sign below the blind rise and walkers will stop in time; your team will need to guide the upper cart. Put it above the turn and carts will have room to brake; your team must meet the walker below. Both neighbors are coming. Which approach should the large sign protect?",
+      "narration": "There is one large board for a warning and loose stones for a smaller marker. Put the big sign below the blind rise and walkers will stop in time; your team will need to guide the upper cart. Put it above the turn and carts will have room to brake; your team must meet the walker below. \"Both neighbors are coming,\" Pip reminds you. Which approach should the large sign protect?",
       "choices": [
         {
           "id": "lower",
@@ -770,7 +770,7 @@
         }
       ],
       "type": "story",
-      "narration": "Both neighbors are at the counting circle. Your one large sign helped one approach; your team helped the other. The owner marks where another board is needed tomorrow. Pip asks the neighbors to explain the turn back to him. They can. Then a thin trickle begins running down the ridge toward the empty hollow.",
+      "narration": "Both neighbors are at the counting circle. Your one large sign helped one approach; your team helped the other. The owner marks where another board is needed tomorrow. \"Explain the turn back to me,\" Pip asks the neighbors. They can. Then a thin trickle begins running down the ridge toward the empty hollow.",
       "choices": [
         {
           "id": "water",
@@ -939,7 +939,7 @@
         }
       ],
       "type": "choice_point",
-      "narration": "You have the old drawings, today's measurements and whatever the water left visible. Make the traveling page match that evidence. The stone fits its old hollow. The grass has no dragged track. None of this supplies a date for the eruption. Pip leaves the uncertain stroke dotted and offers you the pencil.",
+      "narration": "You have the old drawings, today's measurements and whatever the water left visible. Make the traveling page match that evidence. The stone fits its old hollow. The grass has no dragged track. None of this supplies a date for the eruption. Pip leaves the uncertain stroke dotted and offers you the pencil. \"Only what we saw.\"",
       "choices": [
         {
           "id": "exact",
@@ -1138,7 +1138,7 @@
         }
       ],
       "type": "choice_point",
-      "narration": "Pip can give one drawing the largest space on his traveling page. A road plan will be useful at the next changed crossing; an old-mark drawing preserves the uncertain count for comparison with another stone. The keepers retain both full records here. Choose which work your party will finish and carry forward first.",
+      "narration": "Pip holds up his traveling page. \"I can give one drawing the biggest space.\" A road plan will be useful at the next changed crossing; an old-mark drawing preserves the uncertain count for comparison with another stone. The keepers retain both full records here. Choose which work your party will finish and carry forward first.",
       "choices": [
         {
           "id": "route",
@@ -1228,7 +1228,7 @@
       ],
       "type": "rest",
       "heal": 0,
-      "narration": "The water jars stand beside full cups. The old hollow and today's stone are recorded, with no invented eruption date. Both neighbors can explain the new turn. Pip packs the traveling page and thanks your team. The road to Ashspan Bridge is open. The narrowing fold is another possible way onward; if you take the road instead, its remaining chance will pass.",
+      "narration": "The water jars stand beside full cups. The old hollow and today's stone are recorded, with no invented eruption date. Both neighbors can explain the new turn. Pip packs the traveling page. \"Thank you, team.\" The road to Ashspan Bridge is open. The narrowing fold is another possible way onward; if you take the road instead, its remaining chance will pass.",
       "choices": [],
       "outcome": "success",
       "variants": [

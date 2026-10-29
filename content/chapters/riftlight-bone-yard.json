@@ -72,7 +72,7 @@
     },
     "limit": {
       "type": "choice_point",
-      "narration": "The guide points out the boundary. Her pool is outside it; the ruins are inside. She lends a marked plank and a return line. Carry her spare mats as well and you can cover one loose-stone patch during the encounter, but you must carry and recover them. Leave them here for a lighter approach with no covered board patch. Which kit will you take?",
+      "narration": "The guide points out the boundary. \"My pool is outside it. The ruins are inside.\" She lends a marked plank and a return line. Carry her spare mats as well and you can cover one loose-stone patch during the encounter, but you must carry and recover them. Leave them here for a lighter approach with no covered board patch. Which kit will you take?",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -240,7 +240,7 @@
     },
     "survey_result": {
       "type": "story",
-      "narration": "Both routes are on the page. The wall may block the short one again, so the rim must stay recognizable. One crawler tries to look enormous on a very small pebble.",
+      "narration": "Both routes are on the page. The guide frowns at the short one. \"The wall may block it again. Keep the rim easy to spot.\" One crawler tries to look enormous on a very small pebble.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -259,7 +259,7 @@
     },
     "markers": {
       "type": "choice_point",
-      "narration": "Lay your own return line for a quick way back through a cleared passage, or memorize the arches with the guide. A retreat would leave the short line behind; her outer-rim signs work even then. Which return aid will you prepare?",
+      "narration": "Lay your own return line for a quick way back through a cleared passage, or memorize the arches with the guide. A retreat would leave the short line behind. The guide taps an arch. \"My rim signs work even then.\" Which return aid will you prepare?",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -634,7 +634,7 @@
     },
     "rest": {
       "type": "rest",
-      "narration": "Back at the boundary pool, the guide opens a floating lunch box tied to a reed. There are soft seaweed rolls inside. You sit on your own mat outside the yard and rest. The box bumps her fin whenever she reaches for lunch.",
+      "narration": "Back at the boundary pool, the guide opens a floating lunch box tied to a reed. \"Soft seaweed rolls,\" she says proudly. You sit on your own mat outside the yard and rest. The box bumps her fin whenever she reaches for lunch.",
       "heal": 2,
       "choices": [
         {
@@ -1461,7 +1461,7 @@
     },
     "exit_strip": {
       "type": "choice_point",
-      "narration": "The boundary pool shines beyond the arches. The guide raises her crest. Follow her outer-rim instructions, or collect your short return line if the passage stayed clear.",
+      "narration": "The boundary pool shines beyond the arches. The guide raises her crest. \"Listen for my calls.\" Follow her outer-rim instructions, or collect your short return line if the passage stayed clear.",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1655,7 +1655,7 @@
     },
     "report": {
       "type": "story",
-      "narration": "The guide opens her warning board. You describe the changing inner path, the firm outside route and the yard stones that stayed inside. She adds the gear you actually recovered or left behind. A useful warning needs the whole account, including the inconvenient bits.",
+      "narration": "The guide opens her warning board. You describe the changing inner path, the firm outside route and the yard stones that stayed inside. She adds the gear you actually recovered or left behind. \"A useful warning needs the whole account,\" the guide says. \"Inconvenient bits too.\"",
       "cast": [
         {
           "figure": "cast/saltrot_guide",
@@ -1674,7 +1674,7 @@
     },
     "handoff": {
       "type": "choice_point",
-      "narration": "The guide has her own route warning. An earlier note from Orin asks the Riftseekers to compare sightings at the glacier. You can authorize her to relay your written account too, or keep your copy for the next meeting. Which will you do?",
+      "narration": "The guide waves her own route warning. \"I have one too.\" An earlier note from Orin asks the Riftseekers to compare sightings at the glacier. You can authorize her to relay your written account too, or keep your copy for the next meeting. Which will you do?",
       "cast": [
         {
           "figure": "cast/saltrot_guide",

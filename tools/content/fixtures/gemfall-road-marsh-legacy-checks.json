@@ -27,7 +27,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 16,
-      "prompt": "Find the fresh brass-hat knots in the queue rope",
+      "prompt": "Find the fresh brass-hat knots in the rope that marks the line",
       "roller": "party",
       "onSuccess": {
         "goto": "scene_rivals_caught",
@@ -215,7 +215,7 @@
       "roller": "party",
       "onSuccess": {
         "goto": "interaction_hats",
-        "narration": "You squint. In letters the size of ants it says: VALID ON DAYS WHEN THE RIVER RUNS UPHILL. You read it out loud. The whole queue laughs, and the Brassbuckle sells exactly no passes at all. She tips her hat to you, quite sportingly."
+        "narration": "You squint. In letters the size of ants it says: VALID ON DAYS WHEN THE RIVER RUNS UPHILL. You read it out loud. The whole line laughs, and the Brassbuckle sells exactly no passes at all. She tips her hat to you, quite sportingly."
       },
       "onFailure": {
         "goto": "interaction_hats",
@@ -231,7 +231,7 @@
       "roller": "all",
       "onSuccess": {
         "goto": "scene_wake_fee",
-        "narration": "You grab the rope just as the river grabs the first Brassbuckle. Everybody pulls. Out he pops, soaked, minus his hat, and says thank you so quietly you nearly miss it. All six creep back to their places in the queue and stay there."
+        "narration": "You grab the rope just as the river grabs the first Brassbuckle. Everybody pulls. Out he pops, soaked, minus his hat, and says thank you so quietly you nearly miss it. All six creep back to their places in the line and stay there."
       },
       "onFailure": {
         "goto": "scene_wake_fee",
@@ -312,7 +312,7 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Poke through her piles and find the one lost thing Nan Rummage hasn't got",
+      "prompt": "Poke through her piles and find the one lost thing Nana Rummage hasn't got",
       "cast": [
         {
           "figure": "cast/gullet",
@@ -321,7 +321,7 @@
         },
         {
           "figure": "cast/nan_rummage",
-          "name": "Nan Rummage",
+          "name": "Nana Rummage",
           "size": "small"
         }
       ],
@@ -611,7 +611,7 @@
       "roller": "all",
       "onSuccess": {
         "goto": "ending_walked_over",
-        "narration": "One, two, three, HEAVE. The cart pops out of the mud like a cork from a bottle, and the sausage seller hands out sausages hot off the griddle. The whole queue cheers, and the goose is beside itself. Nobody has ever been welcomed onto a road this loudly.",
+        "narration": "One, two, three, HEAVE. The cart pops out of the mud like a cork from a bottle, and the sausage seller hands out sausages hot off the griddle. The whole line cheers, and the goose is beside itself. Nobody has ever been welcomed onto a road this loudly.",
         "effects": [
           {
             "type": "grantItem",

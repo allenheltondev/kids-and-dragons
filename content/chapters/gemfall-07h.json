@@ -123,7 +123,7 @@
           "size": "small"
         }
       ],
-      "narration": "At the mouth of the Pinch stands a price board as tall as a house. A dragonling girl called Bryony is up a ladder with a stick of chalk, rubbing out numbers and writing bigger ones every time the ground shrugs. Every gem-buyer on the road is staring up at it. So is your pack, which has started humming along.",
+      "narration": "At the mouth of the Pinch stands a price board as tall as a house. A dragonling girl called Bryony is up a ladder with a stick of chalk. Every time the ground shrugs, she rubs out a number and writes a bigger one. \"Up again!\" she sings. Every gem-buyer on the road is staring up at it. So is your pack, which has started humming along.",
       "variants": [
         {
           "when": {
@@ -423,7 +423,7 @@
       "discovers": [
         "npc.sheeple"
       ],
-      "narration": "In the middle of the camps you meet your first real rival. Lady Fleecewick is a sheeple in a lace collar, pushing a glass cabinet on wheels. Inside are forty stones on velvet cushions, every one labeled in tiny writing. She peers at your packs through very small spectacles. \"Collectors,\" she says. \"How lovely. I'll trade. My best for your loudest.\"",
+      "narration": "In the middle of the camps you meet your first real rival. Lady Fleecewick is a sheeple in a lace collar, pushing a glass cabinet on wheels. Inside are forty stones on velvet cushions, every one labeled in tiny writing. She peers at your packs through very small glasses. \"Collectors,\" she says. \"How lovely. I'll trade. My best for your loudest.\"",
       "variants": [
         {
           "when": {
@@ -451,7 +451,7 @@
               "min": 5
             }
           },
-          "text": "Her spectacles slide right down her nose. \"{facets},\" she says faintly. She looks at her forty cushions, and for the first time ever, they look a little small to her."
+          "text": "Her glasses slide right down her nose. \"{facets},\" she says faintly. She looks at her forty cushions, and for the first time ever, they look a little small to her."
         }
       ],
       "choices": [
@@ -543,7 +543,7 @@
           "name": "Lady Fleecewick"
         }
       ],
-      "narration": "Lady Fleecewick takes off her spectacles, cleans them, puts them back on, and looks again. Then she sits down very suddenly on her own cabinet. \"Oh my,\" she says. \"Oh my, oh my.\" She does not offer to trade after that. She only asks, very politely, whether she may draw it.",
+      "narration": "Lady Fleecewick takes off her glasses, cleans them, puts them back on, and looks again. Then she sits down very suddenly on her own cabinet. \"Oh my,\" she says. \"Oh my, oh my.\" She does not offer to trade after that. She only asks, very politely, whether she may draw it.",
       "choices": [
         {
           "id": "on",
@@ -812,7 +812,7 @@
       "discovers": [
         "npc.witch_order"
       ],
-      "narration": "It is Mother Thrum, the witch from the ford queue, with a wool sock under one arm, and something in it is ringing. She looks at your packs, and then at you, and then at your packs again. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
+      "narration": "It is Mother Thrum, the witch from the ford line, with a wool sock under one arm, and something in it is ringing. She looks at your packs, and then at you, and then at your packs again. \"I always ask twice,\" she says. \"Once at the ford, and once at the mountain. What do you actually want?\"",
       "cast": [
         {
           "figure": "cast/mother_thrum",
@@ -1308,11 +1308,11 @@
           "name": "Warden Clerk"
         }
       ],
-      "narration": "Halfway up the north road, the wardens have built a checkpoint overnight: a gate, a long table, and a clerk with two rubber stamps. Everything that hums goes into a numbered box. The queue is very long, and everybody in it is hiding stones in their hats.",
+      "narration": "Halfway up the north road, the wardens have built a checkpoint overnight: a gate, a long table, and a clerk with two rubber stamps. \"Everything that hums goes into a numbered box,\" says the clerk. Stamp, stamp. The line is very long, and everybody in it is hiding stones in their hats.",
       "choices": [
         {
           "id": "declare",
-          "label": "Queue up and declare everything",
+          "label": "Get in line and declare everything",
           "icon": "scroll",
           "goto": "scene_checkpoint_declare"
         },
@@ -1346,7 +1346,7 @@
           "name": "Warden Clerk"
         }
       ],
-      "narration": "You queue for an hour, then set everything on the table. The clerk's eyes go very wide. He stamps, and stamps, and logs it all twice, keeps one stone \"for the seal,\" and hands you a receipt. Then he lets you through with the rest. The receipt hums faintly too, somehow.",
+      "narration": "You wait in line for an hour, then set everything on the table. The clerk's eyes go very wide. He stamps, and stamps, and logs it all twice, keeps one stone \"for the seal,\" and hands you a receipt. Then he lets you through with the rest. The receipt hums faintly too, somehow.",
       "choices": [
         {
           "id": "on",
@@ -1374,7 +1374,7 @@
       },
       "onFailure": {
         "goto": "interaction_boxes",
-        "narration": "Halfway round, the scree starts to slide, and so do you, all the way down into the checkpoint queue, right at the front. The clerk looks at you, sighs, and waves you through, because the paperwork for this would take all day."
+        "narration": "Halfway round, the scree starts to slide, and so do you, all the way down into the checkpoint line, right at the front. The clerk looks at you, sighs, and waves you through, because the paperwork for this would take all day."
       }
     },
     "scene_checkpoint_pass": {
@@ -1385,7 +1385,7 @@
           "name": "Warden Clerk"
         }
       ],
-      "narration": "The clerk sees yesterday's stamp on your pass and waves you through without looking up. Behind you, a boy in the queue watches your humming packs go past the table untouched, and his mouth falls open.",
+      "narration": "The clerk sees yesterday's stamp on your pass and waves you through without looking up. Behind you, a boy in the line watches your humming packs go past the table untouched, and his mouth falls open.",
       "choices": [
         {
           "id": "on",
@@ -1640,7 +1640,7 @@
       },
       "onFailure": {
         "goto": "choice_the_bend",
-        "narration": "The rock is crumblier than it looks. You come down faster than you went up, in a little landslide of your own, and land at the feet of a grandmother, who hands you a biscuit without a word."
+        "narration": "The rock is crumblier than it looks. You come down faster than you went up, in a little landslide of your own, and land at the feet of a grandmother, who hands you a cookie without a word."
       }
     },
     "choice_the_bend": {
@@ -1769,7 +1769,7 @@
     },
     "choice_the_bend_relay_owes": {
       "type": "story",
-      "narration": "The relay owes you one, and the relay pays its debts. The fattest caravan in the funnel comes round the hairpin on the wrong side of the road, straight to where you are standing, and the centaur leading it does not look at you once. \"Once,\" she says to the air, and is gone.",
+      "narration": "The relay owes you one, and the relay pays its debts. The fattest caravan in the funnel comes around the hairpin on the wrong side of the road, straight to where you are standing, and the centaur leading it does not look at you once. \"Once,\" she says to the air, and is gone.",
       "cast": [
         {
           "figure": "cast/relay_runner",
@@ -1895,7 +1895,7 @@
           "name": "Professor Tidewell"
         }
       ],
-      "narration": "Everyone on the road is coming down, except one person going up: a selkie with ink on both elbows and a notebook flapping. It is the selkie scholar from the Exchange, the one who stood on a tavern table shouting that the gem-light fell upward. Professor Tidewell, says the name on her notebook. She stops dead. She listens to your packs like a doctor listening to a heartbeat.",
+      "narration": "Everyone on the road is coming down, except one person going up: a selkie with ink on both elbows and a notebook flapping. It is the selkie scholar from the Exchange, the one who stood on a tavern table shouting that the gem-light fell upward. Professor Tidewell, says the name on her notebook. \"Wait,\" she says, and stops dead. She listens to your packs like a doctor listening to a heartbeat.",
       "variants": [
         {
           "when": {
@@ -2711,7 +2711,7 @@
     },
     "walk_scene_look_back": {
       "type": "story",
-      "narration": "At the bottom of the foothills you turn round, one last time. Mount Red Sky glows against the evening sky. Somebody up there is doing the thing you decided not to do.",
+      "narration": "At the bottom of the foothills you turn around, one last time. Mount Red Sky glows against the evening sky. Somebody up there is doing the thing you decided not to do.",
       "choices": [
         {
           "id": "send_word",
@@ -2754,7 +2754,7 @@
       },
       "onFailure": {
         "goto": "walk_check_last_chance",
-        "narration": "Your letter goes up with a caravan that turns round halfway, because caravans do that now."
+        "narration": "Your letter goes up with a caravan that turns around halfway, because caravans do that now."
       }
     },
     "walk_check_last_chance": {
@@ -2906,7 +2906,7 @@
       ],
       "art": "scenes/gemfall/checkpoint-box-shelf",
       "type": "story",
-      "narration": "You and the clerk move the numbered boxes onto his waiting shelf. He stamps the last lid with both stamps at once, then pulls a honeycake out of his hat. \"For the hands,\" he says. \"It has only been in there since Tuesday.\" For a moment the checkpoint has more shelf than queue.",
+      "narration": "You and the clerk move the numbered boxes onto his waiting shelf. He stamps the last lid with both stamps at once, then pulls a honeycake out of his hat. \"For the hands,\" he says. \"It has only been in there since Tuesday.\" For a moment the checkpoint has more shelf than line.",
       "choices": [
         {
           "id": "continue",
@@ -2957,7 +2957,7 @@
       ],
       "art": "scenes/gemfall/tidewell-knock-rock",
       "type": "story",
-      "narration": "Professor Tidewell knocks the mountain's pattern onto a rock, then writes it beside your notes. Thump, tap, tap, rumble. You listen together. She says you may be the second person in the world to hear it properly, then hands back her pencil. It was yours.",
+      "narration": "Professor Tidewell knocks the mountain's pattern onto a rock, then writes it beside your notes. Thump, tap, tap, rumble. You listen together. \"You may be the second person in the world to hear that properly,\" she says, and hands back her pencil. It was yours.",
       "choices": [
         {
           "id": "continue",

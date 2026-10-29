@@ -522,7 +522,7 @@
     },
     "bar": {
       "type": "choice_point",
-      "narration": "The gravel bar sits in the middle of a brown stream that was not there this morning. It is knee deep and quick. The goats stare at you. The smallest one sneezes. How will you reach them?",
+      "narration": "The gravel bar sits in the middle of a brown stream that was not there this morning. \"Knee deep and quick,\" Tamsin warns. The goats stare at you. The smallest one sneezes. How will you reach them?",
       "choices": [
         {
           "id": "wade",
@@ -1161,7 +1161,7 @@
     },
     "rest_fire": {
       "type": "rest",
-      "narration": "For a few minutes, the shore is cozy. Steam rises from the goats. Steam rises from your socks too, and one sock smells like river pudding. Tamsin watches from her perch with her head on one side. The next thing to do is climb, but nobody has to hurry yet.",
+      "narration": "For a few minutes, the shore is cozy. Steam rises from the goats. Steam rises from your socks too, and one sock smells like river pudding. Tamsin watches from her perch with her head on one side. \"We climb next,\" she says. \"But nobody has to hurry yet.\"",
       "heal": 3,
       "choices": [
         {
@@ -1431,7 +1431,7 @@
     },
     "surge_after": {
       "type": "story",
-      "narration": "The wave breaks around the foot of the ladder, which does not move at all. Tamsin lets out a long breath. The goats trot up the track and out of sight. The water settles into a steady, bossy flow a full body length higher, right over the stones where you stood a minute ago.",
+      "narration": "The wave breaks around the foot of the ladder, which does not move at all. Tamsin lets out a long breath. \"Still standing,\" she says. The goats trot up the track and out of sight. The water settles into a steady, bossy flow a full body length higher, right over the stones where you stood a minute ago.",
       "choices": [
         {
           "id": "continue",
@@ -1883,7 +1883,7 @@
     },
     "climb": {
       "type": "rest",
-      "narration": "The dry path leads away along the ridge, under the peaks of Frostfang. At the end of it, a line of stacked stones climbs toward a notch. Behind you the river mutters, and the ladder sways. You are dry, you are together, and the goats are on their way home. Your rope and packs are still with you. The Cairnstep is next.",
+      "narration": "The dry path leads away along the ridge, under the peaks of Frostfang. At the end of it, a line of stacked stones climbs toward a notch. Behind you the river mutters, and the ladder sways. You are dry, you are together, and the goats are on their way home. Your rope and packs are still with you. \"The Cairnstep is next,\" says Tamsin.",
       "heal": 2,
       "choices": [],
       "outcome": "success",

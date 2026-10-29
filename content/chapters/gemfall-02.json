@@ -354,7 +354,7 @@
     },
     "scene_egg_stall": {
       "type": "story",
-      "narration": "The egg seller raises her board's prices for passing rush wagons. Behind them, a faun dad counts too few coins. His children wait. The hen looks offended by the whole arrangement.",
+      "narration": "The egg seller raises her board's prices for passing rush wagons. \"Rush folk pay rush prices!\" she laughs. Behind them, a faun dad counts too few coins. His children wait. The hen looks offended by the whole arrangement.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -386,7 +386,7 @@
         },
         {
           "id": "queue",
-          "label": "Get the rush buyers into a proper queue",
+          "label": "Get the rush buyers into a proper line",
           "icon": "kitsune",
           "requiresSpecies": "kitsune",
           "goto": "scene_egg_stall_queue",
@@ -523,7 +523,7 @@
     },
     "scene_egg_stall_queue": {
       "type": "story",
-      "narration": "The kitsune hops up on the cart and calls out, very grandly, \"The queue starts here!\" Rush folk cannot resist a queue. Twelve buyers line up behind the faun dad without knowing why. By the time they reach the front, he has his eggs at the old price, and the egg faun is charging the queue a little extra for the fun of standing in it.",
+      "narration": "The kitsune hops up on the cart and calls out, very grandly, \"The line starts here!\" Rush folk cannot resist a line. Twelve buyers line up behind the faun dad without knowing why. By the time they reach the front, he has his eggs at the old price, and the egg faun is charging the line a little extra for the fun of standing in it.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -811,7 +811,7 @@
     },
     "scene_plank_bridge": {
       "type": "story",
-      "narration": "A rush wagon has cracked the canal bridge. Hay carts wait on the far bank. Repair the beam and learn the fauns' long brace, or pass their hay across and earn the hay crew's help. Both crews know the tall hedges ahead. A duck is already riding a floating bale.",
+      "narration": "A rush wagon has cracked the canal bridge. Hay carts wait on the far bank. Repair the beam and learn the fauns' long brace, or pass their hay across and earn the hay crew's help. \"Both crews know the tall hedges ahead!\" a faun calls across. A duck is already riding a floating bale.",
       "cast": [
         {
           "figure": "entities/faun"
@@ -1321,7 +1321,7 @@
     },
     "choice_harvest_stone": {
       "type": "choice_point",
-      "narration": "A green-gold sky-stone rests in the row, wearing a woven BEST medal. The sprites say it belongs here. Trade, earn permission, leave it, or take it against their wishes. They will remember.",
+      "narration": "A green-gold sky-stone rests in the row, wearing a woven BEST medal. \"It belongs right here,\" the sprites say seriously. Trade, earn permission, leave it, or take it against their wishes. They will remember.",
       "cast": [
         {
           "figure": "entities/harvest_sprite",
@@ -1513,7 +1513,7 @@
     },
     "scene_medal_ceremony": {
       "type": "story",
-      "narration": "There is an award ceremony. Attendance is mandatory. The best beetroot gets a medal, the best bean gets a medal, and then the sprites hand you the Harvest Stone, medal and all. They make you promise to keep it somewhere with a nice view.",
+      "narration": "There is an award ceremony. Attendance is mandatory. The best beet gets a medal, the best bean gets a medal, and then the sprites hand you the Harvest Stone, medal and all. They make you promise to keep it somewhere with a nice view.",
       "cast": [
         {
           "figure": "entities/harvest_sprite",
@@ -2030,7 +2030,7 @@
         "individual.marda_thorn",
         "npc.centaur"
       ],
-      "narration": "Centaur innkeeper Marda Thorn brings stew and gives you time to eat. Three tables argue about roads north. The rumor board waits under a lamp. Marda ducks through her enormous door out of habit.",
+      "narration": "Centaur innkeeper Marda Thorn brings stew. \"Eat first,\" she says. \"There is time.\" Three tables argue about roads north. The rumor board waits under a lamp. Marda ducks through her enormous door out of habit.",
       "cast": [
         {
           "figure": "cast/marda_thorn",
@@ -2102,7 +2102,7 @@
     },
     "choice_common_room": {
       "type": "choice_point",
-      "narration": "You can hear one table properly: a frogfolk ferrier by the window, a muddy relay runner at the hearth, or a rush drover eating three dinners by the door. Choose whose road news to hear.",
+      "narration": "You can hear one table properly: a frogfolk ferrier by the window, a muddy relay runner at the hearth, or a rush drover eating three dinners by the door. \"Whose road news will you hear?\" Marda asks, and waits.",
       "cast": [
         {
           "figure": "cast/marda_thorn",
@@ -2160,7 +2160,7 @@
     },
     "choice_common_room_runner": {
       "type": "story",
-      "narration": "The relay runner talks fast, the way runners do. East, the queue at Stone Crossing is moving again, slowly. The trolls there take a story instead of coins, and a river drake is charging double to anyone who won't wait. \"Past the river it's all open country,\" she says. \"You can see trouble coming a day away. Doesn't mean you can stop it.\"",
+      "narration": "The relay runner talks fast, the way runners do. East, the line at Stone Crossing is moving again, slowly. The trolls there take a story instead of coins, and a river drake is charging double to anyone who won't wait. \"Past the river it's all open country,\" she says. \"You can see trouble coming a day away. Doesn't mean you can stop it.\"",
       "cast": [
         {
           "figure": "cast/relay_runner",

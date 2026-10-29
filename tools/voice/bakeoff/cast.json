@@ -28,7 +28,7 @@
       "gemini": { "voice": "Achernar" }
     },
     "quill": {
-      "describe": "A griffin postmaster in spectacles, flustered and squawky, far too busy.",
+      "describe": "A griffin postmaster in glasses, flustered and squawky, far too busy.",
       "elevenlabs": { "voiceId": "9BWtsMINqrJLrRacOk9x", "name": "Aria" },
       "gemini": { "voice": "Zephyr" }
     },

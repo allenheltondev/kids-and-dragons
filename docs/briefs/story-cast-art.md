@@ -20,7 +20,7 @@ A play-test found the story flat: when the party met a new character, the screen
 change. Scenes now cast who is present, and 419 of 672 scenes have someone on stage. But they
 can only use figures that already exist, so:
 
-- **Grown-ups of the party's own species are drawn as children.** Great-Gran Ashby, the oldest
+- **Grown-ups of the party's own species are drawn as children.** Great-Grandma Ashby, the oldest
   dragonling grandmother in the realm, stands on stage as a fledgling dragonling. So do the
   MossHome archivists (bigfoot), Elder Sefa (manticore) and the Elder Unicorn.
 - **Named individuals are generic.** Madame Coralie Fenn is famous for her barrel on wheels;
@@ -166,7 +166,7 @@ After approval, one PR per group in the table below, in order.
 
 | id | name(s) in content | basis | scale | look |
 |---|---|---|---|---|
-| `great_gran_ashby` | Great-Gran Ashby | dragonling | medium | the oldest dragonling grandmother; brisk and tender; taps things with a walking stick; faded scales, shawl |
+| `great_gran_ashby` | Great-Grandma Ashby | dragonling | medium | the oldest dragonling grandmother; brisk and tender; taps things with a walking stick; faded scales, shawl |
 | `grandmother_tull` | Grandmother Tull | dragonling | medium | dragonling bell-keeper grandmother with the night bell; cosy, brisk |
 | `dragonling_grandmother` | Grandmother | dragonling | medium | gate-town grandmother; spectacles on a chain, tally book and pencil; hugs first, inspects later |
 | `mosshome_archivist` | Archivist | bigfoot | large | brisk adult bigfoot archivist; knotted cords on her belt; fussy about feet |
@@ -192,7 +192,7 @@ After approval, one PR per group in the table below, in order.
 | `marda_thorn` | Marda Thorn | centaur | large | grey-dappled centaur innkeeper with an apron |
 | `tobble` | Tobble Reedpipe | faun | medium | faun cobbler mid-song, laces over one arm |
 | `hob` | Hob Thistledown | faun | medium | faun field foreman waving his hat |
-| `nan_rummage` | Nan Rummage | boggart | small | boggart with an armful of lost things (mittens, a teapot lid, an umbrella) |
+| `nan_rummage` | Nana Rummage | boggart | small | boggart with an armful of lost things (mittens, a teapot lid, an umbrella) |
 
 ### A3. One person, currently a group picture
 

@@ -176,15 +176,15 @@
       "type": "check",
       "stat": "clever",
       "tn": 12,
-      "prompt": "Build a sledge that slides uphill",
+      "prompt": "Build a sled that slides uphill",
       "roller": "party",
       "onSuccess": {
         "goto": "interaction_shelter_stack",
-        "narration": "Rope, a broken door and some greased planks. The sledge glides up the slope on its runners like a dream, and a crowd of dragonling children follow it all the way to the shelter, asking for a turn."
+        "narration": "Rope, a broken door and some greased planks. The sled glides up the slope on its runners like a dream, and a crowd of dragonling children follow it all the way to the shelter, asking for a turn."
       },
       "onFailure": {
         "goto": "interaction_shelter_stack",
-        "narration": "The sledge works beautifully, in the wrong direction. It slides gently back to the bottom of the hill twice before you think to tie it to a tree and winch it up, one heave at a time. It gets there. Eventually."
+        "narration": "The sled works beautifully, in the wrong direction. It slides gently back to the bottom of the hill twice before you think to tie it to a tree and winch it up, one heave at a time. It gets there. Eventually."
       }
     },
     "check_morning_slide": {
@@ -450,7 +450,7 @@
       },
       "onFailure": {
         "goto": "interaction_boxes",
-        "narration": "Halfway round, the scree starts to slide, and so do you, all the way down into the checkpoint queue, right at the front. The clerk looks at you, sighs, and waves you through, because the paperwork for this would take all day."
+        "narration": "Halfway round, the scree starts to slide, and so do you, all the way down into the checkpoint line, right at the front. The clerk looks at you, sighs, and waves you through, because the paperwork for this would take all day."
       }
     },
     "check_crabs": {
@@ -503,7 +503,7 @@
       },
       "onFailure": {
         "goto": "choice_the_bend",
-        "narration": "The rock is crumblier than it looks. You come down faster than you went up, in a little landslide of your own, and land at the feet of a grandmother, who hands you a biscuit without a word."
+        "narration": "The rock is crumblier than it looks. You come down faster than you went up, in a little landslide of your own, and land at the feet of a grandmother, who hands you a cookie without a word."
       }
     },
     "check_bend": {
@@ -582,7 +582,7 @@
       },
       "onFailure": {
         "goto": "walk_check_last_chance",
-        "narration": "Your letter goes up with a caravan that turns round halfway, because caravans do that now."
+        "narration": "Your letter goes up with a caravan that turns around halfway, because caravans do that now."
       }
     },
     "walk_check_last_chance": {
