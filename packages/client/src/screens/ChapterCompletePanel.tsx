@@ -218,7 +218,8 @@ export function ChapterCompletePanel(): ReactElement {
         // a recap nobody hears — the §11 seam is where every line of narration
         // goes and this is narration. Appended to the same utterance rather
         // than spoken separately so it cannot interrupt or be interrupted.
-        ...ownRolls.map((r) => `${r.name} earned ${String(r.xp)} experience from their own good rolls.`),
+        // Shown with each hero's name; heard as "a hero" (#552).
+        ...ownRolls.map((r) => `A hero earned ${String(r.xp)} experience from their own good rolls.`),
         ...fightEndings.map(fightEndingLine),
         ...recap,
       ].filter((line) => line !== "").join(" "),

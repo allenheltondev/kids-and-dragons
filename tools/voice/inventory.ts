@@ -19,18 +19,22 @@
  * a line carrying either is rendered once per value (`renders`).
  */
 
-export type LineKind =
-  | "narration"
-  | "prompt"
-  | "cue"
-  | "hint"
-  | "goal"
-  | "plate"
-  | "prologue"
-  | "epilogue"
-  | "last-time"
-  | "help"
-  | "choice";
+/** Every kind of authored line. Nothing a player typed or the game composes at run time is one (#552). */
+export const LINE_KINDS = [
+  "narration",
+  "prompt",
+  "cue",
+  "hint",
+  "goal",
+  "plate",
+  "prologue",
+  "epilogue",
+  "last-time",
+  "help",
+  "choice",
+] as const;
+
+export type LineKind = (typeof LINE_KINDS)[number];
 
 export interface VoiceLine {
   /** Where the words live, e.g. `gemfall-01/scene_docks/onSuccess/narration`. */

@@ -44,6 +44,8 @@ function baseSpeaker(by: string): string {
 export function makeSynthesizer(options: SynthOptions): Synthesizer {
   const engine = engineOf({ provider: options.provider.provider as Provider, model: options.provider.model, mode: "lines", delivery: "tag" });
   return async (segment) => {
+    // The last door before a provider (#552): a token left unfilled is a run-time value, perhaps a hero's name.
+    if (/\{\w+\}/.test(segment.text)) throw new Error(`refusing to send an unfilled token to a provider: ${segment.key}`);
     const by = baseSpeaker(segment.by);
     const entry = options.cast.speakers[by];
     if (entry === undefined) throw new Error(`"${segment.by}" is not in the cast`);
